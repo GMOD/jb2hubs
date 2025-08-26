@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container2 from '../../components/Container2.astro'
 import ClientOnlyDataTable from '../../components/ClientOnlyDataTable.tsx'
+import ClientOnlyPhylogeneticTree from '../../components/ClientOnlyPhylogeneticTree.tsx'
 
 export async function getStaticPaths() {
   const modules = import.meta.glob('../../../processedHubJson/*.json')
@@ -26,9 +27,10 @@ const { rows } = Astro.props
 const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 ---
 
-<Layout>
+<Layout title={`GenArk hubs - ${title}`}>
   <Container2>
     <h1>GenArk hubs - {title}</h1>
+    <ClientOnlyPhylogeneticTree client:load />
     <ClientOnlyDataTable rows={rows} client:load />
   </Container2>
 </Layout>
