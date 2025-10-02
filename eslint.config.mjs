@@ -7,7 +7,12 @@ import globals from 'globals'
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/', 'eslint.config.mjs', 'website/.astro/**/*'],
+    ignores: [
+      '**/dist/',
+      'eslint.config.mjs',
+      'website/.astro/**/*',
+      '.aws-sam/**',
+    ],
   },
 
   {
@@ -42,12 +47,6 @@ export default tseslint.config(
   ...tseslint.configs.stylisticTypeChecked,
   ...tseslint.configs.strictTypeChecked,
   eslintPluginReact.configs.flat.recommended,
-  {
-    plugins: {
-      'react-hooks': eslintPluginReactHooks,
-    },
-    rules: eslintPluginReactHooks.configs.recommended.rules,
-  },
   {
     rules: {
       'react/react-in-jsx-scope': 'off',
