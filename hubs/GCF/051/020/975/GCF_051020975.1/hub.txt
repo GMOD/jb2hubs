@@ -1,0 +1,251 @@
+hub GCF_051020975.1 genome assembly
+shortLabel orchard mason bee (PbOS001 2025)
+longLabel orchard mason bee (PbOS001 2025)/Osmia lignaria lignaria/GCF_051020975.1_iyOsmLign1 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_051020975.1_iyOsmLign1.description.html
+
+genome GCF_051020975.1
+taxId 1437193
+groups groups.txt
+description orchard mason bee (PbOS001 2025)
+twoBitPath GCF_051020975.1.2bit
+twoBitBptUrl GCF_051020975.1.2bit.bpt
+chromSizes GCF_051020975.1.chrom.sizes.txt
+chromAliasBb GCF_051020975.1.chromAlias.bb
+chromAuthority ucsc
+organism iyOsmLign1 Jun. 2025
+defaultPos NW_027478158.1:10629814-10639814
+scientificName Osmia lignaria lignaria
+htmlPath html/GCF_051020975.1_iyOsmLign1.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/020/975/GCF_051020975.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/020/975/GCF_051020975.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/020/975/GCF_051020975.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.assembly.bb
+type bigBed 6
+html html/GCF_051020975.1_iyOsmLign1.assembly
+searchIndex name
+searchTrix ixIxx/GCF_051020975.1_iyOsmLign1.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.gc5Base.bw
+html html/GCF_051020975.1_iyOsmLign1.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCF_051020975.1_iyOsmLign1.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.rmsk.bb
+xrefDataUrl bbi/GCF_051020975.1_iyOsmLign1.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCF_051020975.1_iyOsmLign1.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.simpleRepeat.bb
+html html/GCF_051020975.1_iyOsmLign1.simpleRepeat
+
+track refSeqComposite
+compositeTrack on
+shortLabel NCBI RefSeq
+longLabel RefSeq gene predictions from NCBI
+group genes
+visibility pack
+type bigBed
+dragAndDrop subTracks
+allButtonPair on
+dataVersion NCBI RefSeq GCF_051020975.1-RS_2025_08 (2025-09-03)
+html html/GCF_051020975.1_iyOsmLign1.refSeqComposite
+priority 2
+
+        track ncbiRefSeq
+        parent refSeqComposite on
+        color 12,12,120
+        shortLabel RefSeq All
+        type bigGenePred
+        urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
+        searchIndex name
+        searchTrix ixIxx/GCF_051020975.1_iyOsmLign1.ncbiRefSeq.ix
+        bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.ncbiRefSeq.bb
+        longLabel NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)
+        idXref ncbiRefSeqLink mrnaAcc name
+        baseColorUseCds given
+        baseColorDefault genomicCodons
+        priority 1
+
+        track ncbiRefSeqPredicted
+        color 12,12,120
+        parent refSeqComposite on
+        shortLabel RefSeq Predicted
+        longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
+        type bigGenePred
+        urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
+        searchIndex name
+        searchTrix ixIxx/GCF_051020975.1_iyOsmLign1.ncbiRefSeqPredicted.ix
+        idXref ncbiRefSeqLink mrnaAcc name
+        bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.ncbiRefSeqPredicted.bb
+        baseColorUseCds given
+        baseColorDefault genomicCodons
+        priority 3
+
+        track ncbiRefSeqOther
+        color 32,32,32
+        parent refSeqComposite on
+        shortLabel RefSeq Other
+        longLabel NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)
+        priority 4
+        searchIndex name
+        searchTrix ixIxx/GCF_051020975.1_iyOsmLign1.ncbiRefSeqOther.ix
+        bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.ncbiRefSeqOther.bb
+        type bigBed 12 +
+        labelFields name
+        skipEmptyFields on
+        urls GeneID="https://www.ncbi.nlm.nih.gov/gene/$$" MIM="https://www.ncbi.nlm.nih.gov/omim/$$" HGNC="http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$" FlyBase="http://flybase.org/reports/$$" WormBase="http://www.wormbase.org/db/gene/gene?name=$$" RGD="https://rgd.mcw.edu/rgdweb/search/search.html?term=$$" SGD="https://www.yeastgenome.org/locus/$$" miRBase="http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$" ZFIN="https://zfin.org/$$" MGI="http://www.informatics.jax.org/marker/$$"
+
+        track ncbiRefSeqPsl
+        priority 5
+        parent refSeqComposite off
+        shortLabel RefSeq Alignments
+        longLabel RefSeq Alignments of RNAs
+        type bigPsl
+        searchIndex name
+        bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.bigPsl.bb
+        indelDoubleInsert on
+        indelQueryInsert on
+        showDiffBasesAllScales .
+        showDiffBasesMaxZoom 10000.0
+        showCdsMaxZoom 10000.0
+        showCdsAllScales .
+        baseColorDefault diffCodons
+        pslSequence no
+        baseColorUseSequence lfExtra
+        baseColorUseCds table given
+        color 0,0,0
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_051020975.1_iyOsmLign1.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.windowMasker.bb
+html html/GCF_051020975.1_iyOsmLign1.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.allGaps.bb
+html html/GCF_051020975.1_iyOsmLign1.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility dense
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.augustus.bb
+html html/GCF_051020975.1_iyOsmLign1.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCF_051020975.1_iyOsmLign1.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCF_051020975.1_iyOsmLign1.xenoRefGene.ix
+html html/GCF_051020975.1_iyOsmLign1.xenoRefGene
+
