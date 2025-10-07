@@ -22,16 +22,25 @@ const specializedTypes = new Set(['pgSnp'])
 
 const specializedGroups = new Set(['denisova', 'neandertal'])
 
+const specializedTrackIds = new Set([
+  'gtexGene',
+  'gtexGeneV8',
+  'gtexTranscExpr',
+  'hgIkmc',
+  'crisprAllTargets',
+])
+
 /**
  * Checks if a given track should be categorized as 'Uncommon or Specialized tracks'
- * based on its metadata (type, parent, or group).
+ * based on its metadata (type, parent, group, or trackId).
  * @param track The track object, potentially containing metadata.
  * @returns True if the track should be in the specialized category, false otherwise.
  */
-export function checkIfTrackGoesInSpecializedCategory(track: {
-  metadata?: Record<string, unknown> | undefined
+export function checkIfTrackGoesInSpecializedCategory({
+  metadata,
+}: {
+  metadata?: Record<string, unknown>
 }): boolean {
-  const metadata = track.metadata
   if (!metadata) {
     return false
   }
@@ -39,9 +48,12 @@ export function checkIfTrackGoesInSpecializedCategory(track: {
   const trackType = `${metadata.type}`.split(' ')[0]!
   const trackParent = `${metadata.parent}`.split(' ')[0]!
   const trackGroup = `${metadata.group}`.split(' ')[0]!
+  const trackId = `${metadata.track}`
   return (
     specializedTypes.has(trackType) ||
     specializedParents.has(trackParent) ||
-    specializedGroups.has(trackGroup)
+    specializedGroups.has(trackGroup) ||
+    specializedTrackIds.has(trackId) ||
+    !!metadata.barChartBars
   )
 }
