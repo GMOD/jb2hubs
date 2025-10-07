@@ -18,7 +18,7 @@ const specializedParents = new Set([
   'per_expr_reads_view',
 ])
 
-const specializedTypes = new Set(['pgSnp'])
+const specializedTypes = new Set(['pgSnp', 'bigPsl'])
 
 const specializedGroups = new Set(['denisova', 'neandertal'])
 
@@ -28,6 +28,8 @@ const specializedTrackIds = new Set([
   'gtexTranscExpr',
   'hgIkmc',
   'crisprAllTargets',
+  'lincRNAsTranscripts',
+  'lrgTranscriptAli',
 ])
 
 /**
@@ -36,24 +38,26 @@ const specializedTrackIds = new Set([
  * @param track The track object, potentially containing metadata.
  * @returns True if the track should be in the specialized category, false otherwise.
  */
-export function checkIfTrackGoesInSpecializedCategory({
-  metadata,
-}: {
+export function getCategory(track: {
   metadata?: Record<string, unknown>
-}): boolean {
+  category?: string[]
+}): string[] | undefined {
+  const { metadata } = track
   if (!metadata) {
-    return false
+    return track.category
+  } else {
+    const trackType = `${metadata.type}`.split(' ')[0]!
+    const trackParent = `${metadata.parent}`.split(' ')[0]!
+    const trackGroup = `${metadata.group}`.split(' ')[0]!
+    const trackId = `${metadata.track}`
+    const flag =
+      specializedTypes.has(trackType) ||
+      specializedParents.has(trackParent) ||
+      specializedGroups.has(trackGroup) ||
+      specializedTrackIds.has(trackId) ||
+      !!metadata.barChartBars
+    return flag
+      ? ['Uncommon or Specialized tracks'].concat(track.category ?? [])
+      : track.category
   }
-
-  const trackType = `${metadata.type}`.split(' ')[0]!
-  const trackParent = `${metadata.parent}`.split(' ')[0]!
-  const trackGroup = `${metadata.group}`.split(' ')[0]!
-  const trackId = `${metadata.track}`
-  return (
-    specializedTypes.has(trackType) ||
-    specializedParents.has(trackParent) ||
-    specializedGroups.has(trackGroup) ||
-    specializedTrackIds.has(trackId) ||
-    !!metadata.barChartBars
-  )
 }

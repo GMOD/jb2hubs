@@ -1,6 +1,6 @@
 import { categoryMap } from 'hubtools'
 
-import { checkIfTrackGoesInSpecializedCategory } from './checkIfTrackGoesInSpecializedCategory.ts'
+import { getCategory } from './getCategory.ts'
 import {
   readConfig,
   readJSON,
@@ -70,7 +70,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
     })
     .map(track => ({
       ...track,
-      category: checkIfTrackGoesInSpecializedCategory(track)
+      category: getCategory(track)
         ? ['Uncommon or Specialized tracks'].concat(track.category ?? [])
         : track.category,
     }))
