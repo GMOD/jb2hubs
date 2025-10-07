@@ -353,6 +353,98 @@
       }
     },
     {
+      "type": "MultiQuantitativeTrack",
+      "trackId": "hg38-umap",
+      "name": "Multi-read mappability - Umap",
+      "assemblyNames": ["hg38"],
+      "metadata": {
+        "source": "https://bismap.hoffmanlab.org/"
+      },
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.Umap.MultiTrackMappability.bw"
+            },
+            "source": "Umap M24"
+          },
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k36.Umap.MultiTrackMappability.bw"
+            },
+            "source": "Umap M36"
+          },
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k50.Umap.MultiTrackMappability.bw"
+            },
+            "source": "Umap M50"
+          },
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.Umap.MultiTrackMappability.bw"
+            },
+            "source": "Umap M100"
+          }
+        ]
+      }
+    },
+    {
+      "type": "MultiQuantitativeTrack",
+      "trackId": "hg38-bismap",
+      "name": "Multi-read mappability - Bismap",
+      "assemblyNames": ["hg38"],
+      "metadata": {
+        "source": "https://bismap.hoffmanlab.org/"
+      },
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k24.Bismap.MultiTrackMappability.bw"
+            },
+            "source": "Bismap M24"
+          },
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k36.Bismap.MultiTrackMappability.bw"
+            },
+            "source": "Bismap M36"
+          },
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k50.Bismap.MultiTrackMappability.bw"
+            },
+            "source": "Bismap M50"
+          },
+          {
+            "type": "BigWigAdapter",
+            "bigWigLocation": {
+              "locationType": "UriLocation",
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/hoffmanMappability/k100.Bismap.MultiTrackMappability.bw"
+            },
+            "source": "Bismap M100"
+          }
+        ]
+      }
+    },
+    {
       "trackId": "hg38-phyloP447wayBW",
       "name": "Basewise Conservation (phyloP) - 447 phyloP REV",
       "type": "QuantitativeTrack",
@@ -1167,57 +1259,6 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
-      "trackId": "hg38-cadd1_7_A",
-      "name": "CADD 1.7 - Mutation: A",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd1.7/a.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd1.7/a.bw",
-        "longLabel": "CADD 1.7 Score: Mutation is A",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd1_7 on",
-        "setColorWith": "/gbdb/hg38/cadd1.7/a.color.bb",
-        "shortLabel": "Mutation: A",
-        "track": "cadd1_7_A",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.7 Score: Mutation is A",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg38-caddA",
-      "name": "CADD 1.6 - Mutation: A",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd/a.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd/a.bw",
-        "longLabel": "CADD 1.6 Score: Mutation is A",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd on",
-        "shortLabel": "Mutation: A",
-        "track": "caddA",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.6 Score: Mutation is A",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
       "trackId": "hg38-panelAppGenes",
       "name": "PanelApp - PanelApp GE Genes",
       "type": "FeatureTrack",
@@ -1477,7 +1518,10 @@
         "html": ""
       },
       "description": "UCSC alignment of SwissProt proteins to genome (dark blue: main isoform, light blue: alternative isoforms)",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-TFrPeakClusters",
@@ -1540,7 +1584,7 @@
     },
     {
       "trackId": "hg38-umap24",
-      "name": "Umap - Umap S24",
+      "name": "Single-read mappability - Umap S24",
       "type": "FeatureTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -2412,57 +2456,6 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
-      "trackId": "hg38-cadd1_7_C",
-      "name": "CADD 1.7 - Mutation: C",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd1.7/c.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd1.7/c.bw",
-        "longLabel": "CADD 1.7 Score: Mutation is C",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd1_7 on",
-        "setColorWith": "/gbdb/hg38/cadd1.7/c.color.bb",
-        "shortLabel": "Mutation: C",
-        "track": "cadd1_7_C",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.7 Score: Mutation is C",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg38-caddC",
-      "name": "CADD 1.6 - Mutation: C",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd/c.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd/c.bw",
-        "longLabel": "CADD 1.6 Score: Mutation is C",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd on",
-        "shortLabel": "Mutation: C",
-        "track": "caddC",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.6 Score: Mutation is C",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
       "trackId": "hg38-panelAppCNVs",
       "name": "PanelApp - PanelApp GE CNVs",
       "type": "FeatureTrack",
@@ -2874,11 +2867,14 @@
         "html": ""
       },
       "description": "UCSC alignment of TrEMBL proteins to genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-umap36",
-      "name": "Umap - Umap S36",
+      "name": "Single-read mappability - Umap S36",
       "type": "FeatureTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -3300,57 +3296,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "trackId": "hg38-cadd1_7_G",
-      "name": "CADD 1.7 - Mutation: G",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd1.7/g.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd1.7/g.bw",
-        "longLabel": "CADD 1.7 Score: Mutation is G",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd1_7 on",
-        "setColorWith": "/gbdb/hg38/cadd1.7/g.color.bb",
-        "shortLabel": "Mutation: G",
-        "track": "cadd1_7_G",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.7 Score: Mutation is G",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg38-caddG",
-      "name": "CADD 1.6 - Mutation: G",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd/g.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd/g.bw",
-        "longLabel": "CADD 1.6 Score: Mutation is G",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd on",
-        "shortLabel": "Mutation: G",
-        "track": "caddG",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.6 Score: Mutation is G",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
       "trackId": "hg38-notinalldifficultregions",
       "name": "GIAB Problematic Regions - Not difficult regions",
       "type": "FeatureTrack",
@@ -3531,7 +3476,7 @@
     },
     {
       "trackId": "hg38-umap50",
-      "name": "Umap - Umap S50",
+      "name": "Single-read mappability - Umap S50",
       "type": "FeatureTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -4128,57 +4073,6 @@
       "category": ["Regulation"]
     },
     {
-      "trackId": "hg38-cadd1_7_T",
-      "name": "CADD 1.7 - Mutation: T",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd1.7/t.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd1.7/t.bw",
-        "longLabel": "CADD 1.7 Score: Mutation is T",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd1_7 on",
-        "setColorWith": "/gbdb/hg38/cadd1.7/t.color.bb",
-        "shortLabel": "Mutation: T",
-        "track": "cadd1_7_T",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.7 Score: Mutation is T",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg38-caddT",
-      "name": "CADD 1.6 - Mutation: T",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/cadd/t.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg38/cadd/t.bw",
-        "longLabel": "CADD 1.6 Score: Mutation is T",
-        "maxHeightPixels": "128:20:8",
-        "parent": "cadd on",
-        "shortLabel": "Mutation: T",
-        "track": "caddT",
-        "type": "bigWig",
-        "viewLimits": "10:50",
-        "viewLimitsMax": "0:100",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "CADD 1.6 Score: Mutation is T",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
       "trackId": "hg38-notinalllowmapandsegdupregions",
       "name": "GIAB Problematic Regions - Not lowMap+SegDup",
       "type": "FeatureTrack",
@@ -4311,7 +4205,7 @@
     },
     {
       "trackId": "hg38-umap100",
-      "name": "Umap - Umap S100",
+      "name": "Single-read mappability - Umap S100",
       "type": "FeatureTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -6032,7 +5926,7 @@
     },
     {
       "trackId": "hg38-umap24Quantitative",
-      "name": "Umap - Umap M24",
+      "name": "Multi-read mappability - Umap M24",
       "type": "QuantitativeTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -6372,7 +6266,7 @@
     },
     {
       "trackId": "hg38-umap36Quantitative",
-      "name": "Umap - Umap M36",
+      "name": "Multi-read mappability - Umap M36",
       "type": "QuantitativeTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -6630,7 +6524,7 @@
     },
     {
       "trackId": "hg38-umap50Quantitative",
-      "name": "Umap - Umap M50",
+      "name": "Multi-read mappability - Umap M50",
       "type": "QuantitativeTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -6870,7 +6764,7 @@
     },
     {
       "trackId": "hg38-umap100Quantitative",
-      "name": "Umap - Umap M100",
+      "name": "Multi-read mappability - Umap M100",
       "type": "QuantitativeTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
@@ -7304,7 +7198,10 @@
         "visibility": "pack"
       },
       "description": "TransMap Ensembl and GENCODE Mappings Version 5",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-transMapRefSeqV5",
@@ -7344,7 +7241,10 @@
         "visibility": "pack"
       },
       "description": "TransMap RefSeq Gene Mappings Version 5",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-transMapRnaV5",
@@ -7384,7 +7284,10 @@
         "visibility": "hide"
       },
       "description": "TransMap GenBank RNA Mappings Version 5",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-transMapEstV5",
@@ -7421,7 +7324,10 @@
         "visibility": "hide"
       },
       "description": "TransMap EST Mappings Version 5",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-ukbDepletion",
@@ -13639,7 +13545,10 @@
         "visibility": "hide"
       },
       "description": "CRISPR/Cas9 -NGG Targets, whole genome",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-ddg2p",
@@ -16525,7 +16434,10 @@
         "visibility": "hide"
       },
       "description": "Locus Reference Genomic (LRG) / RefSeqGene Fixed Transcript Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "trackId": "hg38-gnomADPextLung",
@@ -23224,7 +23136,10 @@
         "type": "genePred"
       },
       "description": "lincRNA and TUCP transcripts",
-      "category": ["Genes and Gene Predictions"]
+      "category": [
+        "Uncommon or Specialized tracks",
+        "Genes and Gene Predictions"
+      ]
     },
     {
       "type": "FeatureTrack",

@@ -70,9 +70,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
     })
     .map(track => ({
       ...track,
-      category: getCategory(track)
-        ? ['Uncommon or Specialized tracks'].concat(track.category ?? [])
-        : track.category,
+      category: getCategory(track),
     }))
 
   const updatedConfig: JBrowseConfig = {
