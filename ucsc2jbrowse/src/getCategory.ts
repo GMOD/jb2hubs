@@ -30,6 +30,9 @@ const specializedTrackIds = new Set([
   'crisprAllTargets',
   'lincRNAsTranscripts',
   'lrgTranscriptAli',
+  'mavedb_maps',
+  'mavedb_align_dna',
+  'mavedb_align_aa',
 ])
 
 /**
@@ -55,7 +58,8 @@ export function getCategory(track: {
       specializedParents.has(trackParent) ||
       specializedGroups.has(trackGroup) ||
       specializedTrackIds.has(trackId) ||
-      !!metadata.barChartBars
+      !!metadata.barChartBars ||
+      !!metadata.barChartCategoryUrl
     return flag
       ? ['Uncommon or Specialized tracks'].concat(track.category ?? [])
       : track.category
