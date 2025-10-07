@@ -101,3 +101,10 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
     </div>
   </Container>
 </Layout>
+
+<script>
+  // Check if user visited https://jbrowse.org/jb2hubs and redirect to genomes.jbrowse.org
+  if (window.location.pathname === '/jb2hubs' || window.location.href.includes('/jb2hubs')) {
+    window.location.href = 'https://genomes.jbrowse.org';
+  }
+</script>
