@@ -54,6 +54,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
             ? tracksDb?.[parentTrackId]
             : undefined
 
+          const isAddedByJBrowseTeam = !!track.metadata?.addedByJBrowseTeam
           return {
             ...track,
             metadata: {
@@ -61,9 +62,13 @@ function addMetadata(configPath: string, tracksDbPath: string) {
               ...trackMetadata,
               html: replaceLink(html),
             },
-            name: [parentTrack?.shortLabel, shortLabel]
-              .filter(f => !!f)
-              .join(' - '),
+            name: isAddedByJBrowseTeam
+              ? track.name
+              : [
+                  ...new Set(
+                    [parentTrack?.shortLabel, shortLabel].filter(f => !!f),
+                  ),
+                ].join(' - '),
             description: longLabel,
             category: [
               ...new Set(

@@ -46,7 +46,16 @@ function makeUcscExtensions(targetDir: string) {
         },
       ],
       tracks: dedupe(
-        [...extensionConfig.tracks, ...existingConfig.tracks],
+        [
+          ...extensionConfig.tracks.map(t => ({
+            ...t,
+            metadata: {
+              ...t.metadata,
+              addedByJBrowseTeam: true,
+            },
+          })),
+          ...existingConfig.tracks,
+        ],
         track => track.trackId,
       ),
       // Merge plugins if they exist
