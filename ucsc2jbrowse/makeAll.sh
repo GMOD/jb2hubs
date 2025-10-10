@@ -84,17 +84,8 @@ log "Performing text indexing for search..."
 log "Creating configurations from track hubs..."
 ./generateJBrowseConfigForAssemblyHub.sh
 
-log "Adding metadata to tracks..."
-./addMetadata.sh "$UCSC_RESULTS_DIR"/*
-
 log "Adding non-UCSC 'extension' tracks..."
 node src/makeUcscExtensions.ts "$UCSC_RESULTS_DIR"
-
-log "Renaming some tracks..."
-node src/rewriteUcscTrackNames.ts "$UCSC_RESULTS_DIR"
-
-log "Adding liftover to track name"
-./addOrigAssemblyToAllTrackNames.sh
 
 log "Downloading and processing hs1 GFF..."
 ./downloadNcbiGff.sh
@@ -104,6 +95,15 @@ log "Creating chain track PIFs..."
 
 log "Making hs1 PIFs"
 ./processHs1LiftOver.sh
+
+log "Adding metadata to tracks..."
+./addMetadata.sh "$UCSC_RESULTS_DIR"
+
+log "Adding original assembly to track name (e.g. if an older track was lifted from hg19 to hg38, add hg19 label)"
+./addOrigAssemblyToAllTrackNames.sh
+
+log "Renaming some tracks..."
+node src/rewriteUcscTrackNames.ts "$UCSC_RESULTS_DIR"
 
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'

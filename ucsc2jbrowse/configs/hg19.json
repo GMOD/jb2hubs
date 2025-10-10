@@ -214,7 +214,21 @@
             "source": "Mutation: T"
           }
         ]
-      }
+      },
+      "metadata": {
+        "color": "100,130,160",
+        "compositeTrack": "on",
+        "group": "phenDis",
+        "html": "<h2>Description</h2>\n<p>\nThis track shows AlphaMissense predictions for all possible single amino acid substitutions in \nthe human proteome.\n</p>\n<p>\nAlphaMissense is a deep learning method for predicting the pathogenicity of missense variants\nin human proteins. It classifies 32% of all missense variants as likely pathogenic and 57% \nas likely benign using a cutoff yielding 90% precision on the ClinVar dataset.\n</p>\n\n\n<h2>Display Conventions and Configuration</h2>\n<p>There are four lettered subtracks, one for every nucleotide, showing\nscores for mutation from the reference to that\nnucleotide. All subtracks show the AlphaMissense score on mouseover. Across the exome, \nthere are three values per position, one for every possible\nnucleotide mutation. The fourth value, &quot;no mutation&quot;, representing\nthe reference allele, e.g. A to A, is always set to zero, \"0.0\". AlphaMissense only\ntakes into account amino acid changes, so a nucleotide change that results in no\namino acid change (synonymous) is not scored. These are shown in the tracks\nwith score \"0.0\". \n\n<p>\nWhen using this track, zoom in until you can see every basepair at the\ntop of the display. Otherwise, there are several nucleotides per pixel under \nyour mouse cursor and no score will be shown on the mouseover tooltip.\n</p>\n\n<p><b>Track colors</b></p>\n<p>\nThis track is colored according to the am_class column in the AlphaMissense_hg19.tsv file.\n\n<table style=\"text-align: left;\">\n  <thead>\n    <tr>\n      <th>Range</th>\n      <th>Classification</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>&ge; .564</td>\n      <td style=\"color: rgb(255,0,0);\">Likely Pathogenic</td>\n    </tr>\n    <tr>\n      <td>.565 - .340</td>\n      <td style=\"color: rgb(192,192,192);\">Likely Neutral</td>\n    </tr>\n    <tr>\n      <td>&le; .340</td>\n      <td style=\"color: rgb(80,166,230);\">Likely Benign</td>\n    </tr>\n  </tbody>\n</table>\n\n\n<h2>Data access</h2>\n<p>\nAlphaMissense scores are available at the \n<a href=\"https://console.cloud.google.com/storage/browser/dm_alphamissense\"\ntarget=\"_blank\">\nAlphaMissense cloud storage site</a>.  \nThe site provides precomputed AlphaMissense scores for all possible human missense variants \nto facilitate the identification of pathogenic variants among the large number of \nrare variants discovered in sequencing studies.\n</p>\n\n<p>\nThe AlphaMissense data on the UCSC Genome Browser can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n</p>\n\n<p>\nFor automated download and analysis, the genome annotation is stored at UCSC in\n<a href=\"https://genome.ucsc.edu/goldenPath/help/bigWig.html\">bigWig</a> format that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg19/alphaMissense/\"\ntarget=\"_blank\">our download server</a>.\nThe files for this track are called <tt>a.bw, c.bw, g.bw, t.bw</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigWigToWig</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system.  Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nFor example, to extract only annotations in a given region, you could use the following command:\n</p>\n\n<p>\n<tt>bigWigToBedGraph -chrom=chr1 -start=100000 -end=100500 http://hgdownload.soe.ucsc.edu/gbdb/hg19/alphaMissense/a.bw stdout</tt>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nData were converted from the files provided on\n<a href=\"https://storage.cloud.google.com/dm_alphamissense\"\ntarget = \"_blank\">the AlphaMissense Downloads website</a>. As with all other tracks,\na full log of all commands used for the conversion is available in our \n<a target=_blank\nhref=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/\">source\nrepository</a>, for <a target=_blank\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg19.txt\">hg19</a>\nand <a target=_blank\nhref=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/alphaMissense.txt\">hg38</a>.\nThe release used for each assembly is shown on the track description page.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to \n</p>\n\n<h2>References</h2>\n<p>\nCheng J, Novati G, Pan J, Bycroft C, &#381;emgulyt&#279; A, Applebaum T, Pritzel A, Wong LH,\nZielinski M, Sargeant T <em>et al</em>.\n<a href=\"https://www.science.org/doi/abs/10.1126/science.adg7492\"\ntarget=\"_blank\">Accurate proteome-wide missense variant effect prediction with\nAlphaMissense</a>.\n<em>Science</em>. 2023 Sep 22;381(6664):eadg7492.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37733863\" target=\"_blank\">37733863</a>\n</p>\n\n",
+        "longLabel": "AlphaMissense Score for all possible single-basepair mutations (zoom in for scores)",
+        "maxWindowToDraw": "10000000",
+        "mouseOverFunction": "noAverage",
+        "shortLabel": "AlphaMissense",
+        "track": "alphaMissense",
+        "type": "bigWig",
+        "visibility": "hide"
+      },
+      "description": "AlphaMissense Score for all possible single-basepair mutations (zoom in for scores)"
     },
     {
       "trackId": "hg19-tgpPhase3AccessibilityPilotCriteria",
@@ -840,31 +854,6 @@
         "html": ""
       },
       "description": "CADD 1.6 Score: Mutation is A",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg19-alphaMissense_A",
-      "name": "AlphaMissense - Mutation: A",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/alphaMissense/a.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg19/alphaMissense/a.bw",
-        "longLabel": "AlphaMissense Score: Mutation is A",
-        "maxHeightPixels": "128:20:8",
-        "parent": "alphaMissense on",
-        "setColorWith": "/gbdb/hg19/alphaMissense/a.color.bb",
-        "shortLabel": "Mutation: A",
-        "track": "alphaMissense_A",
-        "type": "bigWig",
-        "viewLimits": "0:1",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "AlphaMissense Score: Mutation is A",
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
@@ -1827,31 +1816,6 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
-      "trackId": "hg19-alphaMissense_C",
-      "name": "AlphaMissense - Mutation: C",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/alphaMissense/c.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg19/alphaMissense/c.bw",
-        "longLabel": "AlphaMissense Score: Mutation is C",
-        "maxHeightPixels": "128:20:8",
-        "parent": "alphaMissense on",
-        "setColorWith": "/gbdb/hg19/alphaMissense/c.color.bb",
-        "shortLabel": "Mutation: C",
-        "track": "alphaMissense_C",
-        "type": "bigWig",
-        "viewLimits": "0:1",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "AlphaMissense Score: Mutation is C",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
       "trackId": "hg19-cadd1_7_C",
       "name": "CADD 1.7 - Mutation: C",
       "type": "QuantitativeTrack",
@@ -2531,31 +2495,6 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
-      "trackId": "hg19-alphaMissense_G",
-      "name": "AlphaMissense - Mutation: G",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/alphaMissense/g.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg19/alphaMissense/g.bw",
-        "longLabel": "AlphaMissense Score: Mutation is G",
-        "maxHeightPixels": "128:20:8",
-        "parent": "alphaMissense on",
-        "setColorWith": "/gbdb/hg19/alphaMissense/g.color.bb",
-        "shortLabel": "Mutation: G",
-        "track": "alphaMissense_G",
-        "type": "bigWig",
-        "viewLimits": "0:1",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "AlphaMissense Score: Mutation is G",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
       "trackId": "hg19-cadd1_7_G",
       "name": "CADD 1.7 - Mutation: G",
       "type": "QuantitativeTrack",
@@ -3128,31 +3067,6 @@
         "html": ""
       },
       "description": "CADD 1.6 Score: Mutation is T",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg19-alphaMissense_T",
-      "name": "AlphaMissense - Mutation: T",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/alphaMissense/t.bw"
-      },
-      "metadata": {
-        "bigDataUrl": "/gbdb/hg19/alphaMissense/t.bw",
-        "longLabel": "AlphaMissense Score: Mutation is T",
-        "maxHeightPixels": "128:20:8",
-        "parent": "alphaMissense on",
-        "setColorWith": "/gbdb/hg19/alphaMissense/t.color.bb",
-        "shortLabel": "Mutation: T",
-        "track": "alphaMissense_T",
-        "type": "bigWig",
-        "viewLimits": "0:1",
-        "visibility": "dense",
-        "html": ""
-      },
-      "description": "AlphaMissense Score: Mutation is T",
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {

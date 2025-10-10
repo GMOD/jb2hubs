@@ -111,7 +111,7 @@ download_file() {
 create_pif() {
   local chain_path="$1"
   local pif_path="$2"
-  if [ ! -f "$pif_path" ]; then
+  if [ ! -f "$pif_path" ] || [ ! -f "$pif_path.csi" ]; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
     local paf_path
     paf_path=$(mktemp) || log_error "Failed to create temporary file"

@@ -35,14 +35,7 @@ const specializedTrackIds = new Set([
   'mavedb_align_aa',
 ])
 
-/**
- * Modifies a track's configuration based on its metadata.
- * If the track should be categorized as 'Uncommon or Specialized tracks',
- * adds that category to the track's category array.
- * @param track The track object to modify.
- * @returns The modified track object, or undefined if the track should be deleted.
- */
-export function getTrackModifications<
+function _getTrackModifications<
   T extends {
     metadata?: Record<string, unknown>
     category?: string[]
@@ -79,11 +72,32 @@ export function getTrackModifications<
     if (flag) {
       return {
         ...track,
-        category: ['Uncommon or Specialized tracks'].concat([
-          ...new Set(track.category ?? []),
-        ]),
+        category: ['Uncommon or Specialized tracks'].concat(
+          track.category ?? [],
+        ),
       }
     }
   }
   return track
+}
+
+/**
+ * Modifies a track's configuration based on its metadata.
+ * If the track should be categorized as 'Uncommon or Specialized tracks',
+ * adds that category to the track's category array.
+ * @param track The track object to modify.
+ * @returns The modified track object, or undefined if the track should be deleted.
+ */
+export function getTrackModifications<
+  T extends {
+    metadata?: Record<string, unknown>
+    category?: string[]
+    assemblyNames: string[]
+  },
+>(track: T): T | undefined {
+  const modifiedTrack = _getTrackModifications(track)
+  if (modifiedTrack?.category) {
+    return { ...modifiedTrack, category: [...new Set(modifiedTrack.category)] }
+  }
+  return modifiedTrack
 }
