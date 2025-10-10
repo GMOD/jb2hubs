@@ -64,25 +64,6 @@ const metadata = readJSON<{ ucscGenomes: Record<string, GenomeRecord> }>(list)
 console.log(
   JSON.stringify(
     {
-      plugins: [
-        {
-          name: 'MafViewer',
-          url: 'https://unpkg.com/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
-        },
-        {
-          name: 'Hubs',
-          url: 'https://unpkg.com/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js',
-        },
-        {
-          name: 'Protein3d',
-          url: 'https://unpkg.com/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js',
-        },
-        {
-          name: 'MsaView',
-          url: 'https://unpkg.com/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js',
-        },
-      ],
-
       assemblies: [
         {
           name: assemblyName,
@@ -120,18 +101,6 @@ console.log(
         },
       ],
       tracks: [],
-      configuration: {
-        hierarchical: {
-          sort: {
-            trackNames: true,
-            categories: true,
-          },
-          defaultCollapsed: {
-            topLevelCategories: true,
-            subCategories: true,
-          },
-        },
-      },
     },
     null,
     2,

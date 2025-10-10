@@ -105,6 +105,9 @@ log "Adding original assembly to track name (e.g. if an older track was lifted f
 log "Renaming some tracks..."
 node src/rewriteUcscTrackNames.ts "$UCSC_RESULTS_DIR"
 
+log "Enhancing configs with plugins and hierarchical configuration..."
+./enhanceConfigs.sh
+
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'
 
