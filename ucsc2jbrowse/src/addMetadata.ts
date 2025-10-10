@@ -1,6 +1,6 @@
 import { categoryMap } from 'hubtools'
 
-import { getCategory } from './getCategory.ts'
+import { getTrackModifications } from './getTrackModifications.ts'
 import {
   readConfig,
   readJSON,
@@ -68,10 +68,8 @@ function addMetadata(configPath: string, tracksDbPath: string) {
         return track
       }
     })
-    .map(track => ({
-      ...track,
-      category: getCategory(track),
-    }))
+    .map(track => getTrackModifications(track))
+    .filter((track): track is NonNullable<typeof track> => track !== undefined)
 
   const updatedConfig: JBrowseConfig = {
     ...config,
