@@ -46,36 +46,44 @@ export function getTrackModifications<
   T extends {
     metadata?: Record<string, unknown>
     category?: string[]
+    assemblyNames: string[]
   },
 >(track: T): T | undefined {
   // Delete tracks with "Primate Chain/Net" as the first category
-  if (track.category?.[0] === 'Primate Chain/Net') {
-    return undefined
-  }
+  const { assemblyNames, metadata, category } = track
+  if (assemblyNames[0] === 'hs1') {
+    const cat0 = category?.[0]
+    if (cat0 === 'Primate Chain/Net' || cat0 === 'Human liftOver') {
+      return undefined
+    } else if (cat0 === 'NCBI RefSeq') {
+      return {
+        ...track,
+        category: ['Genes and Gene Predictions'],
+      }
+    } else {
+      return track
+    }
+  } else if (metadata) {
+    const trackType = `${metadata.type}`.split(' ')[0]!
+    const trackParent = `${metadata.parent}`.split(' ')[0]!
+    const trackGroup = `${metadata.group}`.split(' ')[0]!
+    const trackId = `${metadata.track}`
+    const flag =
+      specializedTypes.has(trackType) ||
+      specializedParents.has(trackParent) ||
+      specializedGroups.has(trackGroup) ||
+      specializedTrackIds.has(trackId) ||
+      !!metadata.barChartBars ||
+      !!metadata.barChartCategoryUrl
 
-  const { metadata } = track
-  if (!metadata) {
-    return track
-  }
-
-  const trackType = `${metadata.type}`.split(' ')[0]!
-  const trackParent = `${metadata.parent}`.split(' ')[0]!
-  const trackGroup = `${metadata.group}`.split(' ')[0]!
-  const trackId = `${metadata.track}`
-  const flag =
-    specializedTypes.has(trackType) ||
-    specializedParents.has(trackParent) ||
-    specializedGroups.has(trackGroup) ||
-    specializedTrackIds.has(trackId) ||
-    !!metadata.barChartBars ||
-    !!metadata.barChartCategoryUrl
-
-  if (flag) {
-    return {
-      ...track,
-      category: ['Uncommon or Specialized tracks'].concat(track.category ?? []),
+    if (flag) {
+      return {
+        ...track,
+        category: ['Uncommon or Specialized tracks'].concat([
+          ...new Set(track.category ?? []),
+        ]),
+      }
     }
   }
-
   return track
 }

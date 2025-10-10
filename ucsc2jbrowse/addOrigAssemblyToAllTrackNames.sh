@@ -6,7 +6,4 @@ if [ -z "$UCSC_RESULTS_DIR" ]; then
   exit 1
 fi
 
-find "$UCSC_RESULTS_DIR" -type f -name "config.json" | while read -r config_file; do
-  echo "Processing $config_file"
-  node src/addOrigAssemblyToTrackName.ts "$config_file"
-done
+find "$UCSC_RESULTS_DIR" -type f -name "config.json" | parallel --bar -j1 node src/addOrigAssemblyToTrackName.ts {}

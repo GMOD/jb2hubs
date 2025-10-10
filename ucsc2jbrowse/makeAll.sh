@@ -81,11 +81,11 @@ log "Generating JBrowse track configurations..."
 log "Performing text indexing for search..."
 ./textIndexGoldenPath.sh "$UCSC_RESULTS_DIR"/*
 
-log "Adding metadata to tracks..."
-./addMetadata.sh "$UCSC_RESULTS_DIR"/*
-
 log "Creating configurations from track hubs..."
 ./generateJBrowseConfigForAssemblyHub.sh
+
+log "Adding metadata to tracks..."
+./addMetadata.sh "$UCSC_RESULTS_DIR"/*
 
 log "Adding non-UCSC 'extension' tracks..."
 node src/makeUcscExtensions.ts "$UCSC_RESULTS_DIR"
@@ -101,6 +101,9 @@ log "Downloading and processing hs1 GFF..."
 
 log "Creating chain track PIFs..."
 ./makePifs.sh
+
+log "Making hs1 PIFs"
+./processHs1LiftOver.sh
 
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'

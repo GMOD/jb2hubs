@@ -22,6 +22,7 @@ export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
 # Processes a single assembly.
 # $1: The assembly directory in the results folder.
 process_assembly() {
+  echo $1
   local assembly_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_dir")
