@@ -29,7 +29,6 @@ process_assembly() {
     return
   fi
 
-  echo "Enhancing config for $assembly_name..."
   node src/enhanceConfig.ts "$config_path"
 }
 

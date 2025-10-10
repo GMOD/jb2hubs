@@ -53,6 +53,16 @@ function _getTrackModifications<
         ...track,
         category: ['Genes and Gene Predictions'],
       }
+    } else if (
+      cat0?.startsWith('CHM13') ||
+      cat0?.startsWith('SGDP') ||
+      cat0 === 'Long-read Variants' ||
+      cat0 === 'T2T Encode'
+    ) {
+      return {
+        ...track,
+        category: ['Uncommon or Specialized tracks', ...(category ?? [])],
+      }
     } else {
       return track
     }
