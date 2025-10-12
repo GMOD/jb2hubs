@@ -288,7 +288,10 @@ export default function PhylogeneticTreeVirtualized({
         node: childNode,
         height: 32,
         isSticky: hasChildren,
-        stickyTop: 0,
+        // Each level sticks below the previous level (depth * row height)
+        stickyTop: hasChildren ? childNode.depth * 32 : undefined,
+        // Higher levels (lower depth) get higher z-index
+        zIndex: hasChildren ? 100 - childNode.depth : undefined,
       }
     })
     console.log('  returning', children.length, 'children')
@@ -494,7 +497,13 @@ export default function PhylogeneticTreeVirtualized({
         }}
       >
         <StickyTree
-          root={{ node: tree[rootId], height: 32 }}
+          root={{
+            node: tree[rootId],
+            height: 32,
+            isSticky: true,
+            stickyTop: 0,
+            zIndex: 100, // Root has highest z-index
+          }}
           width={width || containerWidth}
           height={height}
           getChildren={getChildren}
