@@ -1,7 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container2 from '../../components/Container2.astro'
-import ClientOnlyDataTable from '../../components/ClientOnlyDataTable.tsx'
 import ClientOnlyPhylogeneticTree from '../../components/ClientOnlyPhylogeneticTree.tsx'
 
 export async function getStaticPaths() {
@@ -27,15 +26,14 @@ const { rows } = Astro.props
 const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 ---
 
-<Layout title={`GenArk hubs - ${title}`}>
+<Layout title={`GenArk phylogeny - ${title}`}>
   <Container2>
-    <h1>GenArk hubs - {title}</h1>
+    <h1>GenArk phylogeny - {title}</h1>
     <div style="margin-bottom: 16px;">
-      <a href={`/phylogeny/${slug}`} style="color: #2563eb; text-decoration: underline;">
-        View full phylogenetic tree for {title}
+      <a href={`/hubs/${slug}`} style="color: #2563eb; text-decoration: underline;">
+        View data table for {title}
       </a>
     </div>
-    <ClientOnlyPhylogeneticTree category={slug} speciesData={rows} client:load />
-    <ClientOnlyDataTable rows={rows} client:load />
+    <ClientOnlyPhylogeneticTree category={slug} speciesData={rows} autoShow={true} client:load />
   </Container2>
 </Layout>

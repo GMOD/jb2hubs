@@ -14,15 +14,17 @@ interface SpeciesData {
 interface ClientOnlyPhylogeneticTreeProps {
   category?: string
   speciesData?: SpeciesData[]
+  autoShow?: boolean
 }
 
 export default function ClientOnlyPhylogeneticTree({
   category = 'all',
   speciesData = [],
+  autoShow = false,
 }: ClientOnlyPhylogeneticTreeProps) {
   const [newickData, setNewickData] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [showTree, setShowTree] = useState(false)
+  const [showTree, setShowTree] = useState(autoShow)
 
   useEffect(() => {
     if (!showTree) return

@@ -183,6 +183,8 @@ export default function PhylogeneticTreeVirtualized({
 }: PhylogeneticTreeProps) {
   const [error, setError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['node_0']))
+  const [stickyEnabled, setStickyEnabled] = useState(true)
+  const [maxStickyLevels, setMaxStickyLevels] = useState(8)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = React.useState(800)
 
@@ -282,16 +284,19 @@ export default function PhylogeneticTreeVirtualized({
       if (!childNode) {
         console.warn('  child not found:', childId)
       }
-      // Only make nodes with children sticky (internal nodes)
+      // Only make nodes with children sticky (internal nodes) if sticky is enabled
+      // and limit to maximum configured levels of sticky positioning
       const hasChildren = childNode.children && childNode.children.length > 0
+      const shouldBeSticky =
+        stickyEnabled && hasChildren && childNode.depth < maxStickyLevels
       return {
         node: childNode,
         height: 32,
-        isSticky: hasChildren,
+        isSticky: shouldBeSticky,
         // Each level sticks below the previous level (depth * row height)
-        stickyTop: hasChildren ? childNode.depth * 32 : undefined,
+        stickyTop: shouldBeSticky ? childNode.depth * 32 : undefined,
         // Higher levels (lower depth) get higher z-index
-        zIndex: hasChildren ? 100 - childNode.depth : undefined,
+        zIndex: shouldBeSticky ? 100 - childNode.depth : undefined,
       }
     })
     console.log('  returning', children.length, 'children')
@@ -362,6 +367,20 @@ export default function PhylogeneticTreeVirtualized({
           >
             {node.name || 'Unnamed'}
           </span>
+          {node.name && (
+            <a
+              href={`https://www.google.com/search?q=${encodeURIComponent(node.name)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: '#2563eb',
+                textDecoration: 'none',
+              }}
+              onClick={e => e.stopPropagation()}
+            >
+              [?]
+            </a>
+          )}
           {speciesInfo?.commonName && (
             <span
               style={{
@@ -484,6 +503,51 @@ export default function PhylogeneticTreeVirtualized({
       >
         <button onClick={expandAll}>Expand all</button>
         <button onClick={collapseAll}>Collapse all</button>
+        <label
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            cursor: 'pointer',
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={stickyEnabled}
+            onChange={e => setStickyEnabled(e.target.checked)}
+            style={{ cursor: 'pointer' }}
+          />
+          <span>Sticky headers</span>
+        </label>
+        {stickyEnabled && (
+          <label
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <span>Max levels:</span>
+            <input
+              type="number"
+              min="1"
+              max="20"
+              value={maxStickyLevels}
+              onChange={e => {
+                const val = parseInt(e.target.value, 10)
+                if (!isNaN(val) && val > 0) {
+                  setMaxStickyLevels(val)
+                }
+              }}
+              style={{
+                width: '60px',
+                padding: '4px 8px',
+                border: '1px solid #d1d5db',
+                borderRadius: '4px',
+              }}
+            />
+          </label>
+        )}
         <div style={{ color: '#6b7280', marginLeft: 'auto' }}>
           {accessionCount} accessions
         </div>
@@ -500,9 +564,9 @@ export default function PhylogeneticTreeVirtualized({
           root={{
             node: tree[rootId],
             height: 32,
-            isSticky: true,
-            stickyTop: 0,
-            zIndex: 100, // Root has highest z-index
+            isSticky: stickyEnabled,
+            stickyTop: stickyEnabled ? 0 : undefined,
+            zIndex: stickyEnabled ? 100 : undefined, // Root has highest z-index
           }}
           width={width || containerWidth}
           height={height}
@@ -511,20 +575,6 @@ export default function PhylogeneticTreeVirtualized({
           renderRoot={true}
           overscanRowCount={10}
         />
-      </div>
-      <div style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
-        <p>
-          Click nodes to expand/collapse • Click (info) to view details • Click
-          accessions to copy •{' '}
-          <Star
-            fill="orange"
-            strokeWidth={0}
-            size={12}
-            style={{ display: 'inline' }}
-          />{' '}
-          Designated reference •{' '}
-          <X stroke="red" size={12} style={{ display: 'inline' }} /> Suppressed
-        </p>
       </div>
     </div>
   )
