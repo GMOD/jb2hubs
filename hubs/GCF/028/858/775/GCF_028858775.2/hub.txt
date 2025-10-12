@@ -131,8 +131,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeq.bb
@@ -149,8 +149,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -166,8 +166,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -306,27 +306,6 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
     parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
     spectrum on
 
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
         track chainPanTro6
         parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -335,42 +314,6 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         type bigChain panTro6
         bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainPanTro6.bb
         linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainSynPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Chimp/panTro6 synChain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainRBestPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Chimp/panTro6 rbChain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainLiftOverPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Chimp/panTro6 loChain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverPanTro6Link.bb
         otherDb panTro6
         html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         priority 5.319
@@ -387,6 +330,25 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         priority 9.893
 
+    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
+    spectrum on
+
+        track chainSynPanTro6
+        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Chimp/panTro6 synChain
+        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
+        type bigChain panTro6
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynPanTro6.bb
+        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynPanTro6Link.bb
+        otherDb panTro6
+        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
+        priority 5.319
+
         track chainSynHg38
         parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -399,6 +361,25 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         priority 9.893
 
+    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
+    spectrum on
+
+        track chainRBestPanTro6
+        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Chimp/panTro6 rbChain
+        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
+        type bigChain panTro6
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestPanTro6.bb
+        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestPanTro6Link.bb
+        otherDb panTro6
+        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
+        priority 5.319
+
         track chainRBestHg38
         parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
@@ -410,6 +391,25 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         otherDb hg38
         html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
         priority 9.893
+
+    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
+    spectrum on
+
+        track chainLiftOverPanTro6
+        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Chimp/panTro6 loChain
+        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
+        type bigChain panTro6
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverPanTro6.bb
+        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverPanTro6Link.bb
+        otherDb panTro6
+        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
+        priority 5.319
 
         track chainLiftOverHg38
         parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver off

@@ -136,8 +136,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017639785.1_BCM_Maur_2.0.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.ncbiRefSeq.bb
@@ -154,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017639785.1_BCM_Maur_2.0.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -171,8 +171,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017639785.1_BCM_Maur_2.0.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -330,27 +330,6 @@ html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
     parent GCF_017639785.1_BCM_Maur_2.0ChainNet
     spectrum on
 
-    track GCF_017639785.1_BCM_Maur_2.0ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_017639785.1_BCM_Maur_2.0ChainNet
-    spectrum on
-
-    track GCF_017639785.1_BCM_Maur_2.0ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_017639785.1_BCM_Maur_2.0ChainNet
-    spectrum on
-
-    track GCF_017639785.1_BCM_Maur_2.0ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_017639785.1_BCM_Maur_2.0ChainNet
-    spectrum on
-
         track chainMm10
         parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -359,30 +338,6 @@ html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
         type bigChain mm10
         bigDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainMm10.bb
         linkDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainMm10Link.bb
-        otherDb mm10
-        html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
-        priority 38.274
-
-        track chainSynMm10
-        parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Mouse/mm10 synChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
-        type bigChain mm10
-        bigDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainSynMm10.bb
-        linkDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainSynMm10Link.bb
-        otherDb mm10
-        html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
-        priority 38.274
-
-        track chainRBestMm10
-        parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Mouse/mm10 rbChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
-        type bigChain mm10
-        bigDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainRBestMm10.bb
-        linkDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainRBestMm10Link.bb
         otherDb mm10
         html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
         priority 38.274
@@ -399,6 +354,25 @@ html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
         html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
         priority 62.437
 
+    track GCF_017639785.1_BCM_Maur_2.0ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_017639785.1_BCM_Maur_2.0ChainNet
+    spectrum on
+
+        track chainSynMm10
+        parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Mouse/mm10 synChain
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        type bigChain mm10
+        bigDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainSynMm10.bb
+        linkDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainSynMm10Link.bb
+        otherDb mm10
+        html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
+        priority 38.274
+
         track chainSynHg19
         parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -410,6 +384,25 @@ html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
         otherDb hg19
         html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
         priority 62.437
+
+    track GCF_017639785.1_BCM_Maur_2.0ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_017639785.1_BCM_Maur_2.0ChainNet
+    spectrum on
+
+        track chainRBestMm10
+        parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Mouse/mm10 rbChain
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        type bigChain mm10
+        bigDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainRBestMm10.bb
+        linkDataUrl bbi/GCF_017639785.1_BCM_Maur_2.0.chainRBestMm10Link.bb
+        otherDb mm10
+        html html/GCF_017639785.1_BCM_Maur_2.0.chainNet
+        priority 38.274
 
         track chainRBestHg19
         parent GCF_017639785.1_BCM_Maur_2.0ChainNetViewRBest off

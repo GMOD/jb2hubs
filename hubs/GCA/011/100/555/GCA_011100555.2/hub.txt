@@ -30,7 +30,7 @@ liftOver.hg38 liftOver/GCA_011100555.2ToHg38.over.chain.gz
 track assembly
 longLabel Assembly
 shortLabel Assembly
-visibility pack
+visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
@@ -55,7 +55,7 @@ track gc5Base
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
-visibility full
+visibility dense
 autoScale Off
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
@@ -102,6 +102,17 @@ xrefDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.rmsk.align.bb
 maxWindowToDraw 5000000
 html html/GCA_011100555.2_mCalJa1.2.pat.X.repeatMasker
 
+track repeatModeler
+shortLabel RepeatModeler
+longLabel RepeatModeler Repetitive Elements
+type bigRmsk 9 +
+visibility hide
+group varRep
+bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.rModel.bb
+xrefDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.rModel.align.bb
+maxWindowToDraw 5000000
+html html/GCA_011100555.2_mCalJa1.2.pat.X.repeatModeler
+
 track simpleRepeat
 shortLabel Simple Repeats
 longLabel Simple Tandem Repeats by TRF
@@ -116,7 +127,7 @@ compositeTrack on
 shortLabel CpG Islands
 longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
-visibility pack
+visibility dense
 type bigBed 4 +
 html html/GCA_011100555.2_mCalJa1.2.pat.X.cpgIslands
 
@@ -149,7 +160,7 @@ track allGaps
 shortLabel All Gaps
 longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
-visibility dense
+visibility hide
 type bigBed 3
 bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.allGaps.bb
 html html/GCA_011100555.2_mCalJa1.2.pat.X.allGaps
@@ -207,27 +218,6 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
     parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
     spectrum on
 
-    track GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
-    spectrum on
-
-    track GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
-    spectrum on
-
-    track GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
-    spectrum on
-
         track chainGCA_002754865.1
         parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -236,42 +226,6 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         type bigChain GCA_002754865.1
         bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainGCA_002754865.1.bb
         linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainGCA_002754865.1Link.bb
-        otherDb GCA_002754865.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 4.132
-
-        track chainSynGCA_002754865.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel white-tufted-ear marmoset synChain
-        longLabel white-tufted-ear marmoset/GCA_002754865.1_ASM275486v1 (2017-11-06) Chained Alignments
-        type bigChain GCA_002754865.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_002754865.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_002754865.1Link.bb
-        otherDb GCA_002754865.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 4.132
-
-        track chainRBestGCA_002754865.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel white-tufted-ear marmoset rbChain
-        longLabel white-tufted-ear marmoset/GCA_002754865.1_ASM275486v1 (2017-11-06) Chained Alignments
-        type bigChain GCA_002754865.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_002754865.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_002754865.1Link.bb
-        otherDb GCA_002754865.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 4.132
-
-        track chainLiftOverGCA_002754865.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel white-tufted-ear marmoset loChain
-        longLabel white-tufted-ear marmoset/GCA_002754865.1_ASM275486v1 (2017-11-06) Chained Alignments
-        type bigChain GCA_002754865.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_002754865.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_002754865.1Link.bb
         otherDb GCA_002754865.1
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 4.132
@@ -288,42 +242,6 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 8.140
 
-        track chainSynGCA_031835075.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel cotton-top tamarin synChain
-        longLabel cotton-top tamarin/GCA_031835075.1_ASM3183507v1 (2023-09-25) Chained Alignments
-        type bigChain GCA_031835075.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_031835075.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_031835075.1Link.bb
-        otherDb GCA_031835075.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 8.140
-
-        track chainRBestGCA_031835075.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel cotton-top tamarin rbChain
-        longLabel cotton-top tamarin/GCA_031835075.1_ASM3183507v1 (2023-09-25) Chained Alignments
-        type bigChain GCA_031835075.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_031835075.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_031835075.1Link.bb
-        otherDb GCA_031835075.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 8.140
-
-        track chainLiftOverGCA_031835075.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
-        shortLabel cotton-top tamarin loChain
-        longLabel cotton-top tamarin/GCA_031835075.1_ASM3183507v1 (2023-09-25) Chained Alignments
-        type bigChain GCA_031835075.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_031835075.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_031835075.1Link.bb
-        otherDb GCA_031835075.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 8.140
-
         track chainGCA_004024885.1
         parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -332,42 +250,6 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         type bigChain GCA_004024885.1
         bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainGCA_004024885.1.bb
         linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainGCA_004024885.1Link.bb
-        otherDb GCA_004024885.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 8.765
-
-        track chainSynGCA_004024885.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel tamarin synChain
-        longLabel tamarin/GCA_004024885.1_SagImp_v1_BIUU (2019-01-15) Chained Alignments
-        type bigChain GCA_004024885.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_004024885.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_004024885.1Link.bb
-        otherDb GCA_004024885.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 8.765
-
-        track chainRBestGCA_004024885.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel tamarin rbChain
-        longLabel tamarin/GCA_004024885.1_SagImp_v1_BIUU (2019-01-15) Chained Alignments
-        type bigChain GCA_004024885.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_004024885.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_004024885.1Link.bb
-        otherDb GCA_004024885.1
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 8.765
-
-        track chainLiftOverGCA_004024885.1
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s002 chainType=c03
-        shortLabel tamarin loChain
-        longLabel tamarin/GCA_004024885.1_SagImp_v1_BIUU (2019-01-15) Chained Alignments
-        type bigChain GCA_004024885.1
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_004024885.1.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_004024885.1Link.bb
         otherDb GCA_004024885.1
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 8.765
@@ -384,6 +266,61 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 8.912
 
+        track chainHg38
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
+        shortLabel Human/hg38 Chain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainHg38.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainHg38Link.bb
+        otherDb hg38
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 27.784
+
+    track GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
+    spectrum on
+
+        track chainSynGCA_002754865.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel white-tufted-ear marmoset synChain
+        longLabel white-tufted-ear marmoset/GCA_002754865.1_ASM275486v1 (2017-11-06) Chained Alignments
+        type bigChain GCA_002754865.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_002754865.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_002754865.1Link.bb
+        otherDb GCA_002754865.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 4.132
+
+        track chainSynGCA_031835075.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel cotton-top tamarin synChain
+        longLabel cotton-top tamarin/GCA_031835075.1_ASM3183507v1 (2023-09-25) Chained Alignments
+        type bigChain GCA_031835075.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_031835075.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_031835075.1Link.bb
+        otherDb GCA_031835075.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 8.140
+
+        track chainSynGCA_004024885.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel tamarin synChain
+        longLabel tamarin/GCA_004024885.1_SagImp_v1_BIUU (2019-01-15) Chained Alignments
+        type bigChain GCA_004024885.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_004024885.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynGCA_004024885.1Link.bb
+        otherDb GCA_004024885.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 8.765
+
         track chainSynGCA_028533165.1
         parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
         subGroups view=synten species=s003 chainType=c01
@@ -395,6 +332,61 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         otherDb GCA_028533165.1
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 8.912
+
+        track chainSynHg38
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38_Leontopithecus_rosalia_HiC (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynHg38.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 27.784
+
+    track GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
+    spectrum on
+
+        track chainRBestGCA_002754865.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel white-tufted-ear marmoset rbChain
+        longLabel white-tufted-ear marmoset/GCA_002754865.1_ASM275486v1 (2017-11-06) Chained Alignments
+        type bigChain GCA_002754865.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_002754865.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_002754865.1Link.bb
+        otherDb GCA_002754865.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 4.132
+
+        track chainRBestGCA_031835075.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel cotton-top tamarin rbChain
+        longLabel cotton-top tamarin/GCA_031835075.1_ASM3183507v1 (2023-09-25) Chained Alignments
+        type bigChain GCA_031835075.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_031835075.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_031835075.1Link.bb
+        otherDb GCA_031835075.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 8.140
+
+        track chainRBestGCA_004024885.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
+        shortLabel tamarin rbChain
+        longLabel tamarin/GCA_004024885.1_SagImp_v1_BIUU (2019-01-15) Chained Alignments
+        type bigChain GCA_004024885.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_004024885.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestGCA_004024885.1Link.bb
+        otherDb GCA_004024885.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 8.765
 
         track chainRBestGCA_028533165.1
         parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
@@ -408,6 +400,61 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 8.912
 
+        track chainRBestHg38
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38_Leontopithecus_rosalia_HiC (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestHg38.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 27.784
+
+    track GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCA_011100555.2_mCalJa1.2.pat.XChainNet
+    spectrum on
+
+        track chainLiftOverGCA_002754865.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel white-tufted-ear marmoset loChain
+        longLabel white-tufted-ear marmoset/GCA_002754865.1_ASM275486v1 (2017-11-06) Chained Alignments
+        type bigChain GCA_002754865.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_002754865.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_002754865.1Link.bb
+        otherDb GCA_002754865.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 4.132
+
+        track chainLiftOverGCA_031835075.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel cotton-top tamarin loChain
+        longLabel cotton-top tamarin/GCA_031835075.1_ASM3183507v1 (2023-09-25) Chained Alignments
+        type bigChain GCA_031835075.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_031835075.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_031835075.1Link.bb
+        otherDb GCA_031835075.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 8.140
+
+        track chainLiftOverGCA_004024885.1
+        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s002 chainType=c03
+        shortLabel tamarin loChain
+        longLabel tamarin/GCA_004024885.1_SagImp_v1_BIUU (2019-01-15) Chained Alignments
+        type bigChain GCA_004024885.1
+        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_004024885.1.bb
+        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverGCA_004024885.1Link.bb
+        otherDb GCA_004024885.1
+        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
+        priority 8.765
+
         track chainLiftOverGCA_028533165.1
         parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
         subGroups view=liftover species=s003 chainType=c03
@@ -420,47 +467,11 @@ html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
         priority 8.912
 
-        track chainHg38
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewchain off
-        subGroups view=chain species=s004 chainType=c00
-        shortLabel Human/hg38 Chain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainHg38.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainHg38Link.bb
-        otherDb hg38
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 27.784
-
-        track chainSynHg38
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s004 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynHg38.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 27.784
-
-        track chainRBestHg38
-        parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s004 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestHg38.bb
-        linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCA_011100555.2_mCalJa1.2.pat.X.chainNet
-        priority 27.784
-
         track chainLiftOverHg38
         parent GCA_011100555.2_mCalJa1.2.pat.XChainNetViewLiftOver off
         subGroups view=liftover species=s004 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_Leontopithecus_rosalia_HiC (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverHg38.bb
         linkDataUrl bbi/GCA_011100555.2_mCalJa1.2.pat.X.chainLiftOverHg38Link.bb

@@ -20,7 +20,8 @@
           "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/html/GCF_001984765.1_C.can_genome_v1.0.description.html\">html/GCF_001984765.1_C.can_genome_v1.0.description.html</a>",
           "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1",
           "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1",
-          "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1"
+          "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1",
+          "liftOver.mm39": "liftOver/GCF_001984765.1ToMm39.over.chain.gz"
         },
         "trackId": "GCF_001984765.1-ReferenceSequenceTrack",
         "adapter": {
@@ -212,8 +213,8 @@
         "shortLabel": "RefSeq All",
         "type": "bigGenePred",
         "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-        "labelFields": "name,geneName,geneName2",
-        "defaultLabelFields": "geneName2",
+        "labelFields": "name2,geneName,geneName2",
+        "defaultLabelFields": "name2",
         "searchIndex": "name",
         "searchTrix": "ixIxx/GCF_001984765.1_C.can_genome_v1.0.ncbiRefSeq.ix",
         "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.ncbiRefSeq.bb",
@@ -243,8 +244,8 @@
         "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
         "type": "bigGenePred",
         "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-        "labelFields": "name,geneName,geneName2",
-        "defaultLabelFields": "geneName2",
+        "labelFields": "name2,geneName,geneName2",
+        "defaultLabelFields": "name2",
         "searchIndex": "name",
         "searchTrix": "ixIxx/GCF_001984765.1_C.can_genome_v1.0.ncbiRefSeqPredicted.ix",
         "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -460,6 +461,170 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.xenoRefGene.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainMm39",
+        "parent": "chainNetMm39Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Mouse Chain",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Chained Alignments",
+        "type": "bigChain mm39",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainMm39.bb",
+        "linkDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainMm39Link.bb",
+        "priority": "1"
+      },
+      "category": ["Mouse Chain/Net", "Chain"],
+      "trackId": "GCF_001984765.1-chainMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Chained Alignments",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse Chain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.chainMm39.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainSynMm39",
+        "parent": "chainNetMm39Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Mouse synChain",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Syntenic Chained Alignments",
+        "type": "bigChain mm39",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainSynMm39.bb",
+        "linkDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainSynMm39Link.bb",
+        "priority": "2"
+      },
+      "category": ["Mouse Chain/Net", "Chain"],
+      "trackId": "GCF_001984765.1-chainSynMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Syntenic Chained Alignments",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse synChain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.chainSynMm39.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainRBestMm39",
+        "parent": "chainNetMm39Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Mouse rbChain",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Reciprocal Best Chained Alignments",
+        "type": "bigChain mm39",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainRBestMm39.bb",
+        "linkDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainRBestMm39Link.bb",
+        "priority": "3"
+      },
+      "category": ["Mouse Chain/Net", "Chain"],
+      "trackId": "GCF_001984765.1-chainRBestMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Reciprocal Best Chained Alignments",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse rbChain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.chainRBestMm39.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainLiftOverMm39",
+        "parent": "chainNetMm39Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Mouse loChain",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Lift Over Chained Alignments",
+        "type": "bigChain mm39",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainLiftOverMm39.bb",
+        "linkDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.chainLiftOverMm39Link.bb",
+        "priority": "4"
+      },
+      "category": ["Mouse Chain/Net", "Chain"],
+      "trackId": "GCF_001984765.1-chainLiftOverMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Lift Over Chained Alignments",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse loChain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.chainLiftOverMm39.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "netMm39",
+        "parent": "mafNetMm39Viewnet",
+        "subGroups": "view=net",
+        "shortLabel": "Mouse net",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Net Alignment",
+        "type": "bigMaf",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.net.bb",
+        "summary": "bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.net.summary.bb",
+        "speciesOrder": "mm39",
+        "priority": "5"
+      },
+      "category": ["Mouse Chain/Net", "Net"],
+      "trackId": "GCF_001984765.1-netMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Net Alignment",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse net",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.net.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "synNetMm39",
+        "parent": "mafNetMm39Viewnet",
+        "subGroups": "view=net",
+        "shortLabel": "Mouse synNet",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Syntenic Net Alignment",
+        "type": "bigMaf",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.synNet.bb",
+        "summary": "bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.synNet.summary.bb",
+        "speciesOrder": "mm39",
+        "priority": "6"
+      },
+      "category": ["Mouse Chain/Net", "Net"],
+      "trackId": "GCF_001984765.1-synNetMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Syntenic Net Alignment",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse synNet",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.synNet.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "rbestNetMm39",
+        "parent": "mafNetMm39Viewnet",
+        "subGroups": "view=net",
+        "shortLabel": "Mouse rbestNet",
+        "longLabel": "Mouse (Jun. 2020 (GRCm39/mm39)) Reciprocal Best Net Alignment",
+        "type": "bigMaf",
+        "bigDataUrl": "bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.rbestNet.bb",
+        "summary": "bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.rbestNet.summary.bb",
+        "speciesOrder": "mm39",
+        "priority": "7"
+      },
+      "category": ["Mouse Chain/Net", "Net"],
+      "trackId": "GCF_001984765.1-rbestNetMm39",
+      "description": "Mouse (Jun. 2020 (GRCm39/mm39)) Reciprocal Best Net Alignment",
+      "assemblyNames": ["GCF_001984765.1"],
+      "name": "Mouse rbestNet",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/984/765/GCF_001984765.1/bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.rbestNet.bb"
       }
     },
     {

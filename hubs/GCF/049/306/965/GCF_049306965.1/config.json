@@ -21,7 +21,8 @@
           "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/html/GCF_049306965.1_GRCz12tu.description.html\">html/GCF_049306965.1_GRCz12tu.description.html</a>",
           "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1",
           "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1",
-          "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1"
+          "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1",
+          "liftOver.danRer11": "liftOver/GCF_049306965.1ToDanRer11.over.chain.gz"
         },
         "trackId": "GCF_049306965.1-ReferenceSequenceTrack",
         "adapter": {
@@ -213,8 +214,8 @@
         "shortLabel": "RefSeq All",
         "type": "bigGenePred",
         "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-        "labelFields": "name,geneName,geneName2",
-        "defaultLabelFields": "geneName2",
+        "labelFields": "name2,geneName,geneName2",
+        "defaultLabelFields": "name2",
         "searchIndex": "name",
         "searchTrix": "ixIxx/GCF_049306965.1_GRCz12tu.ncbiRefSeq.ix",
         "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.ncbiRefSeq.bb",
@@ -244,8 +245,8 @@
         "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
         "type": "bigGenePred",
         "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-        "labelFields": "name,geneName,geneName2",
-        "defaultLabelFields": "geneName2",
+        "labelFields": "name2,geneName,geneName2",
+        "defaultLabelFields": "name2",
         "searchIndex": "name",
         "searchTrix": "ixIxx/GCF_049306965.1_GRCz12tu.ncbiRefSeqCurated.ix",
         "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -274,8 +275,8 @@
         "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
         "type": "bigGenePred",
         "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-        "labelFields": "name,geneName,geneName2",
-        "defaultLabelFields": "geneName2",
+        "labelFields": "name2,geneName,geneName2",
+        "defaultLabelFields": "name2",
         "searchIndex": "name",
         "searchTrix": "ixIxx/GCF_049306965.1_GRCz12tu.ncbiRefSeqPredicted.ix",
         "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -491,6 +492,170 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.xenoRefGene.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainDanRer11",
+        "parent": "chainNetDanRer11Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Zebrafish Chain",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Chained Alignments",
+        "type": "bigChain danRer11",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainDanRer11.bb",
+        "linkDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainDanRer11Link.bb",
+        "priority": "1"
+      },
+      "category": ["Zebrafish Chain/Net", "Chain"],
+      "trackId": "GCF_049306965.1-chainDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Chained Alignments",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish Chain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.chainDanRer11.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainSynDanRer11",
+        "parent": "chainNetDanRer11Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Zebrafish synChain",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Chained Alignments",
+        "type": "bigChain danRer11",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11.bb",
+        "linkDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11Link.bb",
+        "priority": "2"
+      },
+      "category": ["Zebrafish Chain/Net", "Chain"],
+      "trackId": "GCF_049306965.1-chainSynDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Chained Alignments",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish synChain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainRBestDanRer11",
+        "parent": "chainNetDanRer11Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Zebrafish rbChain",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Chained Alignments",
+        "type": "bigChain danRer11",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11.bb",
+        "linkDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11Link.bb",
+        "priority": "3"
+      },
+      "category": ["Zebrafish Chain/Net", "Chain"],
+      "trackId": "GCF_049306965.1-chainRBestDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Chained Alignments",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish rbChain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "chainLiftOverDanRer11",
+        "parent": "chainNetDanRer11Viewchain",
+        "subGroups": "view=chain",
+        "shortLabel": "Zebrafish loChain",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Lift Over Chained Alignments",
+        "type": "bigChain danRer11",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11.bb",
+        "linkDataUrl": "bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11Link.bb",
+        "priority": "4"
+      },
+      "category": ["Zebrafish Chain/Net", "Chain"],
+      "trackId": "GCF_049306965.1-chainLiftOverDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Lift Over Chained Alignments",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish loChain",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "netDanRer11",
+        "parent": "mafNetDanRer11Viewnet",
+        "subGroups": "view=net",
+        "shortLabel": "Zebrafish net",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Net Alignment",
+        "type": "bigMaf",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.danRer11.net.bb",
+        "summary": "bbi/GCF_049306965.1_GRCz12tu.danRer11.net.summary.bb",
+        "speciesOrder": "danRer11",
+        "priority": "5"
+      },
+      "category": ["Zebrafish Chain/Net", "Net"],
+      "trackId": "GCF_049306965.1-netDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Net Alignment",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish net",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.danRer11.net.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "synNetDanRer11",
+        "parent": "mafNetDanRer11Viewnet",
+        "subGroups": "view=net",
+        "shortLabel": "Zebrafish synNet",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Net Alignment",
+        "type": "bigMaf",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.bb",
+        "summary": "bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.summary.bb",
+        "speciesOrder": "danRer11",
+        "priority": "6"
+      },
+      "category": ["Zebrafish Chain/Net", "Net"],
+      "trackId": "GCF_049306965.1-synNetDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Net Alignment",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish synNet",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.bb"
+      }
+    },
+    {
+      "metadata": {
+        "track": "rbestNetDanRer11",
+        "parent": "mafNetDanRer11Viewnet",
+        "subGroups": "view=net",
+        "shortLabel": "Zebrafish rbestNet",
+        "longLabel": "Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Net Alignment",
+        "type": "bigMaf",
+        "bigDataUrl": "bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.bb",
+        "summary": "bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.summary.bb",
+        "speciesOrder": "danRer11",
+        "priority": "7"
+      },
+      "category": ["Zebrafish Chain/Net", "Net"],
+      "trackId": "GCF_049306965.1-rbestNetDanRer11",
+      "description": "Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Net Alignment",
+      "assemblyNames": ["GCF_049306965.1"],
+      "name": "Zebrafish rbestNet",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.bb"
       }
     },
     {

@@ -20,6 +20,7 @@ htmlPath html/GCA_002759435.2_Cand_auris_B8441_V2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/002/759/435/GCA_002759435.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/002/759/435/GCA_002759435.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/002/759/435/GCA_002759435.2
+liftOver.GCA_002759435.3 liftOver/GCA_002759435.2ToGCA_002759435.3.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -183,4 +184,109 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_002759435.2_Cand_auris_B8441_V2.xenoRefGene.ix
 html html/GCA_002759435.2_Cand_auris_B8441_V2.xenoRefGene
+
+##############################################################################
+# GCA_002759435.3 - ascomycete fungi - [Candida] auris - taxId: 498019
+##############################################################################
+track chainNetGCA_002759435.3
+compositeTrack on
+shortLabel ascomycete fungi Chain/Net
+longLabel ascomycete fungi (2017-11-15), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_002759435.3
+html html/GCA_002759435.2_Cand_auris_B8441_V2.chainNet
+
+    track chainNetGCA_002759435.3Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_002759435.3
+    spectrum on
+
+        track chainGCA_002759435.3
+        parent chainNetGCA_002759435.3Viewchain
+        subGroups view=chain
+        shortLabel ascomycete fungi Chain
+        longLabel ascomycete fungi (2017-11-15) Chained Alignments
+        type bigChain GCA_002759435.3
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainGCA_002759435.3.bb
+        linkDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainGCA_002759435.3Link.bb
+        priority 1
+
+        track chainSynGCA_002759435.3
+        parent chainNetGCA_002759435.3Viewchain
+        subGroups view=chain
+        shortLabel ascomycete fungi synChain
+        longLabel ascomycete fungi (2017-11-15) Syntenic Chained Alignments
+        type bigChain GCA_002759435.3
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainSynGCA_002759435.3.bb
+        linkDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainSynGCA_002759435.3Link.bb
+        priority 2
+
+        track chainRBestGCA_002759435.3
+        parent chainNetGCA_002759435.3Viewchain
+        subGroups view=chain
+        shortLabel ascomycete fungi rbChain
+        longLabel ascomycete fungi (2017-11-15) Reciprocal Best Chained Alignments
+        type bigChain GCA_002759435.3
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainRBestGCA_002759435.3.bb
+        linkDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainRBestGCA_002759435.3Link.bb
+        priority 3
+
+        track chainLiftOverGCA_002759435.3
+        parent chainNetGCA_002759435.3Viewchain
+        subGroups view=chain
+        shortLabel ascomycete fungi loChain
+        longLabel ascomycete fungi (2017-11-15) Lift Over Chained Alignments
+        type bigChain GCA_002759435.3
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainLiftOverGCA_002759435.3.bb
+        linkDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.chainLiftOverGCA_002759435.3Link.bb
+        priority 4
+
+    track mafNetGCA_002759435.3Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetGCA_002759435.3
+
+        track netGCA_002759435.3
+        parent mafNetGCA_002759435.3Viewnet
+        subGroups view=net
+        shortLabel ascomycete fungi net
+        longLabel ascomycete fungi (2017-11-15) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.GCA_002759435.3.net.bb
+        summary bbi/GCA_002759435.2_Cand_auris_B8441_V2.GCA_002759435.3.net.summary.bb
+        speciesOrder GCA_002759435.3
+        priority 5
+
+        track synNetGCA_002759435.3
+        parent mafNetGCA_002759435.3Viewnet
+        subGroups view=net
+        shortLabel ascomycete fungi synNet
+        longLabel ascomycete fungi (2017-11-15) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.GCA_002759435.3.synNet.bb
+        summary bbi/GCA_002759435.2_Cand_auris_B8441_V2.GCA_002759435.3.synNet.summary.bb
+        speciesOrder GCA_002759435.3
+        priority 6
+
+        track rbestNetGCA_002759435.3
+        parent mafNetGCA_002759435.3Viewnet
+        subGroups view=net
+        shortLabel ascomycete fungi rbestNet
+        longLabel ascomycete fungi (2017-11-15) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCA_002759435.2_Cand_auris_B8441_V2.GCA_002759435.3.rbestNet.bb
+        summary bbi/GCA_002759435.2_Cand_auris_B8441_V2.GCA_002759435.3.rbestNet.summary.bb
+        speciesOrder GCA_002759435.3
+        priority 7
 

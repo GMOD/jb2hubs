@@ -138,8 +138,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_010993605.1_kPetMar1.pri.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.ncbiRefSeq.bb
@@ -156,8 +156,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_010993605.1_kPetMar1.pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -315,27 +315,6 @@ html html/GCF_010993605.1_kPetMar1.pri.chainNet
     parent GCF_010993605.1_kPetMar1.priChainNet
     spectrum on
 
-    track GCF_010993605.1_kPetMar1.priChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_010993605.1_kPetMar1.priChainNet
-    spectrum on
-
-    track GCF_010993605.1_kPetMar1.priChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_010993605.1_kPetMar1.priChainNet
-    spectrum on
-
-    track GCF_010993605.1_kPetMar1.priChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_010993605.1_kPetMar1.priChainNet
-    spectrum on
-
         track chainGCA_014621495.2
         parent GCF_010993605.1_kPetMar1.priChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -344,42 +323,6 @@ html html/GCF_010993605.1_kPetMar1.pri.chainNet
         type bigChain GCA_014621495.2
         bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainGCA_014621495.2.bb
         linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainGCA_014621495.2Link.bb
-        otherDb GCA_014621495.2
-        html html/GCF_010993605.1_kPetMar1.pri.chainNet
-        priority 40.427
-
-        track chainSynGCA_014621495.2
-        parent GCF_010993605.1_kPetMar1.priChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Pacific lamprey synChain
-        longLabel Pacific lamprey/GCA_014621495.2_ETRf_v1 (2020-11-05) Chained Alignments
-        type bigChain GCA_014621495.2
-        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCA_014621495.2.bb
-        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCA_014621495.2Link.bb
-        otherDb GCA_014621495.2
-        html html/GCF_010993605.1_kPetMar1.pri.chainNet
-        priority 40.427
-
-        track chainRBestGCA_014621495.2
-        parent GCF_010993605.1_kPetMar1.priChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Pacific lamprey rbChain
-        longLabel Pacific lamprey/GCA_014621495.2_ETRf_v1 (2020-11-05) Chained Alignments
-        type bigChain GCA_014621495.2
-        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCA_014621495.2.bb
-        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCA_014621495.2Link.bb
-        otherDb GCA_014621495.2
-        html html/GCF_010993605.1_kPetMar1.pri.chainNet
-        priority 40.427
-
-        track chainLiftOverGCA_014621495.2
-        parent GCF_010993605.1_kPetMar1.priChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Pacific lamprey loChain
-        longLabel Pacific lamprey/GCA_014621495.2_ETRf_v1 (2020-11-05) Chained Alignments
-        type bigChain GCA_014621495.2
-        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCA_014621495.2.bb
-        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCA_014621495.2Link.bb
         otherDb GCA_014621495.2
         html html/GCF_010993605.1_kPetMar1.pri.chainNet
         priority 40.427
@@ -396,42 +339,6 @@ html html/GCF_010993605.1_kPetMar1.pri.chainNet
         html html/GCF_010993605.1_kPetMar1.pri.chainNet
         priority 97.336
 
-        track chainSynGCF_000242695.1
-        parent GCF_010993605.1_kPetMar1.priChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel spotted gar synChain
-        longLabel spotted gar/GCF_000242695.1_LepOcu1 (2012-01-13) Chained Alignments
-        type bigChain GCF_000242695.1
-        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCF_000242695.1.bb
-        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCF_000242695.1Link.bb
-        otherDb GCF_000242695.1
-        html html/GCF_010993605.1_kPetMar1.pri.chainNet
-        priority 97.336
-
-        track chainRBestGCF_000242695.1
-        parent GCF_010993605.1_kPetMar1.priChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel spotted gar rbChain
-        longLabel spotted gar/GCF_000242695.1_LepOcu1 (2012-01-13) Chained Alignments
-        type bigChain GCF_000242695.1
-        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCF_000242695.1.bb
-        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCF_000242695.1Link.bb
-        otherDb GCF_000242695.1
-        html html/GCF_010993605.1_kPetMar1.pri.chainNet
-        priority 97.336
-
-        track chainLiftOverGCF_000242695.1
-        parent GCF_010993605.1_kPetMar1.priChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
-        shortLabel spotted gar loChain
-        longLabel spotted gar/GCF_000242695.1_LepOcu1 (2012-01-13) Chained Alignments
-        type bigChain GCF_000242695.1
-        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCF_000242695.1.bb
-        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCF_000242695.1Link.bb
-        otherDb GCF_000242695.1
-        html html/GCF_010993605.1_kPetMar1.pri.chainNet
-        priority 97.336
-
         track chainGCF_000002035.6
         parent GCF_010993605.1_kPetMar1.priChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -443,6 +350,37 @@ html html/GCF_010993605.1_kPetMar1.pri.chainNet
         otherDb GCF_000002035.6
         html html/GCF_010993605.1_kPetMar1.pri.chainNet
         priority 97.796
+
+    track GCF_010993605.1_kPetMar1.priChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_010993605.1_kPetMar1.priChainNet
+    spectrum on
+
+        track chainSynGCA_014621495.2
+        parent GCF_010993605.1_kPetMar1.priChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Pacific lamprey synChain
+        longLabel Pacific lamprey/GCA_014621495.2_ETRf_v1 (2020-11-05) Chained Alignments
+        type bigChain GCA_014621495.2
+        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCA_014621495.2.bb
+        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCA_014621495.2Link.bb
+        otherDb GCA_014621495.2
+        html html/GCF_010993605.1_kPetMar1.pri.chainNet
+        priority 40.427
+
+        track chainSynGCF_000242695.1
+        parent GCF_010993605.1_kPetMar1.priChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel spotted gar synChain
+        longLabel spotted gar/GCF_000242695.1_LepOcu1 (2012-01-13) Chained Alignments
+        type bigChain GCF_000242695.1
+        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCF_000242695.1.bb
+        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainSynGCF_000242695.1Link.bb
+        otherDb GCF_000242695.1
+        html html/GCF_010993605.1_kPetMar1.pri.chainNet
+        priority 97.336
 
         track chainSynGCF_000002035.6
         parent GCF_010993605.1_kPetMar1.priChainNetViewSynTen off
@@ -456,6 +394,37 @@ html html/GCF_010993605.1_kPetMar1.pri.chainNet
         html html/GCF_010993605.1_kPetMar1.pri.chainNet
         priority 97.796
 
+    track GCF_010993605.1_kPetMar1.priChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_010993605.1_kPetMar1.priChainNet
+    spectrum on
+
+        track chainRBestGCA_014621495.2
+        parent GCF_010993605.1_kPetMar1.priChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Pacific lamprey rbChain
+        longLabel Pacific lamprey/GCA_014621495.2_ETRf_v1 (2020-11-05) Chained Alignments
+        type bigChain GCA_014621495.2
+        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCA_014621495.2.bb
+        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCA_014621495.2Link.bb
+        otherDb GCA_014621495.2
+        html html/GCF_010993605.1_kPetMar1.pri.chainNet
+        priority 40.427
+
+        track chainRBestGCF_000242695.1
+        parent GCF_010993605.1_kPetMar1.priChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel spotted gar rbChain
+        longLabel spotted gar/GCF_000242695.1_LepOcu1 (2012-01-13) Chained Alignments
+        type bigChain GCF_000242695.1
+        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCF_000242695.1.bb
+        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainRBestGCF_000242695.1Link.bb
+        otherDb GCF_000242695.1
+        html html/GCF_010993605.1_kPetMar1.pri.chainNet
+        priority 97.336
+
         track chainRBestGCF_000002035.6
         parent GCF_010993605.1_kPetMar1.priChainNetViewRBest off
         subGroups view=rbest species=s002 chainType=c02
@@ -467,6 +436,37 @@ html html/GCF_010993605.1_kPetMar1.pri.chainNet
         otherDb GCF_000002035.6
         html html/GCF_010993605.1_kPetMar1.pri.chainNet
         priority 97.796
+
+    track GCF_010993605.1_kPetMar1.priChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_010993605.1_kPetMar1.priChainNet
+    spectrum on
+
+        track chainLiftOverGCA_014621495.2
+        parent GCF_010993605.1_kPetMar1.priChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Pacific lamprey loChain
+        longLabel Pacific lamprey/GCA_014621495.2_ETRf_v1 (2020-11-05) Chained Alignments
+        type bigChain GCA_014621495.2
+        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCA_014621495.2.bb
+        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCA_014621495.2Link.bb
+        otherDb GCA_014621495.2
+        html html/GCF_010993605.1_kPetMar1.pri.chainNet
+        priority 40.427
+
+        track chainLiftOverGCF_000242695.1
+        parent GCF_010993605.1_kPetMar1.priChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel spotted gar loChain
+        longLabel spotted gar/GCF_000242695.1_LepOcu1 (2012-01-13) Chained Alignments
+        type bigChain GCF_000242695.1
+        bigDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCF_000242695.1.bb
+        linkDataUrl bbi/GCF_010993605.1_kPetMar1.pri.chainLiftOverGCF_000242695.1Link.bb
+        otherDb GCF_000242695.1
+        html html/GCF_010993605.1_kPetMar1.pri.chainNet
+        priority 97.336
 
         track chainLiftOverGCF_000002035.6
         parent GCF_010993605.1_kPetMar1.priChainNetViewLiftOver off

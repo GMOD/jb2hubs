@@ -119,8 +119,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_001704415.1_ARS1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_001704415.1_ARS1.ncbiRefSeq.bb
@@ -137,8 +137,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_001704415.1_ARS1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -154,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_001704415.1_ARS1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -294,27 +294,6 @@ html html/GCF_001704415.1_ARS1.chainNet
     parent GCF_001704415.1_ARS1ChainNet
     spectrum on
 
-    track GCF_001704415.1_ARS1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_001704415.1_ARS1ChainNet
-    spectrum on
-
-    track GCF_001704415.1_ARS1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_001704415.1_ARS1ChainNet
-    spectrum on
-
-    track GCF_001704415.1_ARS1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_001704415.1_ARS1ChainNet
-    spectrum on
-
         track chainHg38
         parent GCF_001704415.1_ARS1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -323,42 +302,6 @@ html html/GCF_001704415.1_ARS1.chainNet
         type bigChain hg38
         bigDataUrl bbi/GCF_001704415.1_ARS1.chainHg38.bb
         linkDataUrl bbi/GCF_001704415.1_ARS1.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_001704415.1_ARS1.chainNet
-        priority 53.865
-
-        track chainSynHg38
-        parent GCF_001704415.1_ARS1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_001704415.1_ARS1.chainSynHg38.bb
-        linkDataUrl bbi/GCF_001704415.1_ARS1.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_001704415.1_ARS1.chainNet
-        priority 53.865
-
-        track chainRBestHg38
-        parent GCF_001704415.1_ARS1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_001704415.1_ARS1.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_001704415.1_ARS1.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_001704415.1_ARS1.chainNet
-        priority 53.865
-
-        track chainLiftOverHg38
-        parent GCF_001704415.1_ARS1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_001704415.1_ARS1.chainLiftOverHg38.bb
-        linkDataUrl bbi/GCF_001704415.1_ARS1.chainLiftOverHg38Link.bb
         otherDb hg38
         html html/GCF_001704415.1_ARS1.chainNet
         priority 53.865
@@ -375,6 +318,25 @@ html html/GCF_001704415.1_ARS1.chainNet
         html html/GCF_001704415.1_ARS1.chainNet
         priority 76.129
 
+    track GCF_001704415.1_ARS1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_001704415.1_ARS1ChainNet
+    spectrum on
+
+        track chainSynHg38
+        parent GCF_001704415.1_ARS1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_001704415.1_ARS1.chainSynHg38.bb
+        linkDataUrl bbi/GCF_001704415.1_ARS1.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_001704415.1_ARS1.chainNet
+        priority 53.865
+
         track chainSynMm39
         parent GCF_001704415.1_ARS1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -387,6 +349,25 @@ html html/GCF_001704415.1_ARS1.chainNet
         html html/GCF_001704415.1_ARS1.chainNet
         priority 76.129
 
+    track GCF_001704415.1_ARS1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_001704415.1_ARS1ChainNet
+    spectrum on
+
+        track chainRBestHg38
+        parent GCF_001704415.1_ARS1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_001704415.1_ARS1.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_001704415.1_ARS1.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_001704415.1_ARS1.chainNet
+        priority 53.865
+
         track chainRBestMm39
         parent GCF_001704415.1_ARS1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
@@ -398,6 +379,25 @@ html html/GCF_001704415.1_ARS1.chainNet
         otherDb mm39
         html html/GCF_001704415.1_ARS1.chainNet
         priority 76.129
+
+    track GCF_001704415.1_ARS1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_001704415.1_ARS1ChainNet
+    spectrum on
+
+        track chainLiftOverHg38
+        parent GCF_001704415.1_ARS1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Human/hg38 loChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_001704415.1_ARS1.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_001704415.1_ARS1.chainLiftOverHg38Link.bb
+        otherDb hg38
+        html html/GCF_001704415.1_ARS1.chainNet
+        priority 53.865
 
         track chainLiftOverMm39
         parent GCF_001704415.1_ARS1ChainNetViewLiftOver off

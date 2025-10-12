@@ -122,8 +122,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_003121395.1_ASM312139v1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_003121395.1_ASM312139v1.ncbiRefSeq.bb
@@ -140,8 +140,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_003121395.1_ASM312139v1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -157,8 +157,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_003121395.1_ASM312139v1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -316,27 +316,6 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
     parent GCF_003121395.1_ASM312139v1ChainNet
     spectrum on
 
-    track GCF_003121395.1_ASM312139v1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_003121395.1_ASM312139v1ChainNet
-    spectrum on
-
-    track GCF_003121395.1_ASM312139v1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_003121395.1_ASM312139v1ChainNet
-    spectrum on
-
-    track GCF_003121395.1_ASM312139v1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_003121395.1_ASM312139v1ChainNet
-    spectrum on
-
         track chainBosTau9
         parent GCF_003121395.1_ASM312139v1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -345,42 +324,6 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         type bigChain bosTau9
         bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainBosTau9.bb
         linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainBosTau9Link.bb
-        otherDb bosTau9
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 4.735
-
-        track chainSynBosTau9
-        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Cow/bosTau9 synChain
-        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
-        type bigChain bosTau9
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynBosTau9.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynBosTau9Link.bb
-        otherDb bosTau9
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 4.735
-
-        track chainRBestBosTau9
-        parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Cow/bosTau9 rbChain
-        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
-        type bigChain bosTau9
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestBosTau9.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestBosTau9Link.bb
-        otherDb bosTau9
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 4.735
-
-        track chainLiftOverBosTau9
-        parent GCF_003121395.1_ASM312139v1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Cow/bosTau9 loChain
-        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
-        type bigChain bosTau9
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverBosTau9.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverBosTau9Link.bb
         otherDb bosTau9
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 4.735
@@ -397,30 +340,6 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 49.365
 
-        track chainSynHs1
-        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel Human/hs1 synChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHs1.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHs1Link.bb
-        otherDb hs1
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 49.365
-
-        track chainRBestHs1
-        parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel Human/hs1 rbChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestHs1.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestHs1Link.bb
-        otherDb hs1
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 49.365
-
         track chainHg38
         parent GCF_003121395.1_ASM312139v1ChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -429,30 +348,6 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         type bigChain hg38
         bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainHg38.bb
         linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 49.757
-
-        track chainSynHg38
-        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHg38.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 49.757
-
-        track chainLiftOverHg38
-        parent GCF_003121395.1_ASM312139v1ChainNetViewLiftOver off
-        subGroups view=liftover species=s002 chainType=c03
-        shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverHg38.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverHg38Link.bb
         otherDb hg38
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 49.757
@@ -469,30 +364,6 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 73.728
 
-        track chainSynMm39
-        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
-        subGroups view=synten species=s003 chainType=c01
-        shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynMm39.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynMm39Link.bb
-        otherDb mm39
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 73.728
-
-        track chainRBestMm39
-        parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
-        subGroups view=rbest species=s003 chainType=c02
-        shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestMm39.bb
-        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestMm39Link.bb
-        otherDb mm39
-        html html/GCF_003121395.1_ASM312139v1.chainNet
-        priority 73.728
-
         track chainMm10
         parent GCF_003121395.1_ASM312139v1ChainNetViewchain off
         subGroups view=chain species=s004 chainType=c00
@@ -504,6 +375,61 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         otherDb mm10
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 73.754
+
+    track GCF_003121395.1_ASM312139v1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_003121395.1_ASM312139v1ChainNet
+    spectrum on
+
+        track chainSynBosTau9
+        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Cow/bosTau9 synChain
+        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
+        type bigChain bosTau9
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynBosTau9.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynBosTau9Link.bb
+        otherDb bosTau9
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 4.735
+
+        track chainSynHs1
+        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Human/hs1 synChain
+        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHs1.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHs1Link.bb
+        otherDb hs1
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 49.365
+
+        track chainSynHg38
+        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHg38.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 49.757
+
+        track chainSynMm39
+        parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
+        subGroups view=synten species=s003 chainType=c01
+        shortLabel Mouse/mm39 synChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynMm39.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainSynMm39Link.bb
+        otherDb mm39
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 73.728
 
         track chainSynMm10
         parent GCF_003121395.1_ASM312139v1ChainNetViewSynTen off
@@ -517,6 +443,49 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 73.754
 
+    track GCF_003121395.1_ASM312139v1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_003121395.1_ASM312139v1ChainNet
+    spectrum on
+
+        track chainRBestBosTau9
+        parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Cow/bosTau9 rbChain
+        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
+        type bigChain bosTau9
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestBosTau9.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestBosTau9Link.bb
+        otherDb bosTau9
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 4.735
+
+        track chainRBestHs1
+        parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Human/hs1 rbChain
+        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestHs1.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestHs1Link.bb
+        otherDb hs1
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 49.365
+
+        track chainRBestMm39
+        parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
+        subGroups view=rbest species=s003 chainType=c02
+        shortLabel Mouse/mm39 rbChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestMm39.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainRBestMm39Link.bb
+        otherDb mm39
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 73.728
+
         track chainRBestMm10
         parent GCF_003121395.1_ASM312139v1ChainNetViewRBest off
         subGroups view=rbest species=s004 chainType=c02
@@ -528,6 +497,37 @@ html html/GCF_003121395.1_ASM312139v1.chainNet
         otherDb mm10
         html html/GCF_003121395.1_ASM312139v1.chainNet
         priority 73.754
+
+    track GCF_003121395.1_ASM312139v1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_003121395.1_ASM312139v1ChainNet
+    spectrum on
+
+        track chainLiftOverBosTau9
+        parent GCF_003121395.1_ASM312139v1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Cow/bosTau9 loChain
+        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
+        type bigChain bosTau9
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverBosTau9.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverBosTau9Link.bb
+        otherDb bosTau9
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 4.735
+
+        track chainLiftOverHg38
+        parent GCF_003121395.1_ASM312139v1ChainNetViewLiftOver off
+        subGroups view=liftover species=s002 chainType=c03
+        shortLabel Human/hg38 loChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_003121395.1_ASM312139v1.chainLiftOverHg38Link.bb
+        otherDb hg38
+        html html/GCF_003121395.1_ASM312139v1.chainNet
+        priority 49.757
 
     track GCF_003121395.1_ASM312139v1MafNetViewnet
     shortLabel Nets

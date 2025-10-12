@@ -136,8 +136,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000242695.1_LepOcu1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_000242695.1_LepOcu1.ncbiRefSeq.bb
@@ -154,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000242695.1_LepOcu1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -171,8 +171,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000242695.1_LepOcu1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -311,27 +311,6 @@ html html/GCF_000242695.1_LepOcu1.chainNet
     parent GCF_000242695.1_LepOcu1ChainNet
     spectrum on
 
-    track GCF_000242695.1_LepOcu1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_000242695.1_LepOcu1ChainNet
-    spectrum on
-
-    track GCF_000242695.1_LepOcu1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_000242695.1_LepOcu1ChainNet
-    spectrum on
-
-    track GCF_000242695.1_LepOcu1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_000242695.1_LepOcu1ChainNet
-    spectrum on
-
         track chainGCF_040954835.1
         parent GCF_000242695.1_LepOcu1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -340,42 +319,6 @@ html html/GCF_000242695.1_LepOcu1.chainNet
         type bigChain GCF_040954835.1
         bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainGCF_040954835.1.bb
         linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainGCF_040954835.1Link.bb
-        otherDb GCF_040954835.1
-        html html/GCF_000242695.1_LepOcu1.chainNet
-        priority 8.602
-
-        track chainSynGCF_040954835.1
-        parent GCF_000242695.1_LepOcu1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel spotted gar synChain
-        longLabel spotted gar/GCF_040954835.1_fLepOcu1.hap2 (2024-08-01) Chained Alignments
-        type bigChain GCF_040954835.1
-        bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainSynGCF_040954835.1.bb
-        linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainSynGCF_040954835.1Link.bb
-        otherDb GCF_040954835.1
-        html html/GCF_000242695.1_LepOcu1.chainNet
-        priority 8.602
-
-        track chainRBestGCF_040954835.1
-        parent GCF_000242695.1_LepOcu1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel spotted gar rbChain
-        longLabel spotted gar/GCF_040954835.1_fLepOcu1.hap2 (2024-08-01) Chained Alignments
-        type bigChain GCF_040954835.1
-        bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainRBestGCF_040954835.1.bb
-        linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainRBestGCF_040954835.1Link.bb
-        otherDb GCF_040954835.1
-        html html/GCF_000242695.1_LepOcu1.chainNet
-        priority 8.602
-
-        track chainLiftOverGCF_040954835.1
-        parent GCF_000242695.1_LepOcu1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel spotted gar loChain
-        longLabel spotted gar/GCF_040954835.1_fLepOcu1.hap2 (2024-08-01) Chained Alignments
-        type bigChain GCF_040954835.1
-        bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainLiftOverGCF_040954835.1.bb
-        linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainLiftOverGCF_040954835.1Link.bb
         otherDb GCF_040954835.1
         html html/GCF_000242695.1_LepOcu1.chainNet
         priority 8.602
@@ -392,6 +335,25 @@ html html/GCF_000242695.1_LepOcu1.chainNet
         html html/GCF_000242695.1_LepOcu1.chainNet
         priority 97.158
 
+    track GCF_000242695.1_LepOcu1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_000242695.1_LepOcu1ChainNet
+    spectrum on
+
+        track chainSynGCF_040954835.1
+        parent GCF_000242695.1_LepOcu1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel spotted gar synChain
+        longLabel spotted gar/GCF_040954835.1_fLepOcu1.hap2 (2024-08-01) Chained Alignments
+        type bigChain GCF_040954835.1
+        bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainSynGCF_040954835.1.bb
+        linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainSynGCF_040954835.1Link.bb
+        otherDb GCF_040954835.1
+        html html/GCF_000242695.1_LepOcu1.chainNet
+        priority 8.602
+
         track chainSynGCF_010993605.1
         parent GCF_000242695.1_LepOcu1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -404,6 +366,25 @@ html html/GCF_000242695.1_LepOcu1.chainNet
         html html/GCF_000242695.1_LepOcu1.chainNet
         priority 97.158
 
+    track GCF_000242695.1_LepOcu1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_000242695.1_LepOcu1ChainNet
+    spectrum on
+
+        track chainRBestGCF_040954835.1
+        parent GCF_000242695.1_LepOcu1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel spotted gar rbChain
+        longLabel spotted gar/GCF_040954835.1_fLepOcu1.hap2 (2024-08-01) Chained Alignments
+        type bigChain GCF_040954835.1
+        bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainRBestGCF_040954835.1.bb
+        linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainRBestGCF_040954835.1Link.bb
+        otherDb GCF_040954835.1
+        html html/GCF_000242695.1_LepOcu1.chainNet
+        priority 8.602
+
         track chainRBestGCF_010993605.1
         parent GCF_000242695.1_LepOcu1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
@@ -415,6 +396,25 @@ html html/GCF_000242695.1_LepOcu1.chainNet
         otherDb GCF_010993605.1
         html html/GCF_000242695.1_LepOcu1.chainNet
         priority 97.158
+
+    track GCF_000242695.1_LepOcu1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000242695.1_LepOcu1ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_040954835.1
+        parent GCF_000242695.1_LepOcu1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel spotted gar loChain
+        longLabel spotted gar/GCF_040954835.1_fLepOcu1.hap2 (2024-08-01) Chained Alignments
+        type bigChain GCF_040954835.1
+        bigDataUrl bbi/GCF_000242695.1_LepOcu1.chainLiftOverGCF_040954835.1.bb
+        linkDataUrl bbi/GCF_000242695.1_LepOcu1.chainLiftOverGCF_040954835.1Link.bb
+        otherDb GCF_040954835.1
+        html html/GCF_000242695.1_LepOcu1.chainNet
+        priority 8.602
 
         track chainLiftOverGCF_010993605.1
         parent GCF_000242695.1_LepOcu1ChainNetViewLiftOver off

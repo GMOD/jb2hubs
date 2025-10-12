@@ -21,6 +21,7 @@ htmlPath html/GCF_049306965.1_GRCz12tu.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1
+liftOver.danRer11 liftOver/GCF_049306965.1ToDanRer11.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -124,8 +125,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_049306965.1_GRCz12tu.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.ncbiRefSeq.bb
@@ -142,8 +143,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_049306965.1_GRCz12tu.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -159,8 +160,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_049306965.1_GRCz12tu.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -271,4 +272,113 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_049306965.1_GRCz12tu.xenoRefGene.ix
 html html/GCF_049306965.1_GRCz12tu.xenoRefGene
+
+##############################################################################
+# danRer11 - Zebrafish - Danio rerio - taxId: 7955
+##############################################################################
+track chainNetDanRer11
+compositeTrack on
+shortLabel Zebrafish Chain/Net
+longLabel Zebrafish (May 2017 (GRCz11/danRer11)), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainMinScore 5000
+chainLinearGap loose
+matrixHeader A, C, G, T
+otherDb danRer11
+html html/GCF_049306965.1_GRCz12tu.chainNet
+
+    track chainNetDanRer11Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetDanRer11
+    spectrum on
+
+        track chainDanRer11
+        parent chainNetDanRer11Viewchain
+        subGroups view=chain
+        shortLabel Zebrafish Chain
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainDanRer11.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainDanRer11Link.bb
+        priority 1
+
+        track chainSynDanRer11
+        parent chainNetDanRer11Viewchain
+        subGroups view=chain
+        shortLabel Zebrafish synChain
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11Link.bb
+        priority 2
+
+        track chainRBestDanRer11
+        parent chainNetDanRer11Viewchain
+        subGroups view=chain
+        shortLabel Zebrafish rbChain
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11Link.bb
+        priority 3
+
+        track chainLiftOverDanRer11
+        parent chainNetDanRer11Viewchain
+        subGroups view=chain
+        shortLabel Zebrafish loChain
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Lift Over Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11Link.bb
+        priority 4
+
+    track mafNetDanRer11Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetDanRer11
+
+        track netDanRer11
+        parent mafNetDanRer11Viewnet
+        subGroups view=net
+        shortLabel Zebrafish net
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.danRer11.net.bb
+        summary bbi/GCF_049306965.1_GRCz12tu.danRer11.net.summary.bb
+        speciesOrder danRer11
+        priority 5
+
+        track synNetDanRer11
+        parent mafNetDanRer11Viewnet
+        subGroups view=net
+        shortLabel Zebrafish synNet
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.bb
+        summary bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.summary.bb
+        speciesOrder danRer11
+        priority 6
+
+        track rbestNetDanRer11
+        parent mafNetDanRer11Viewnet
+        subGroups view=net
+        shortLabel Zebrafish rbestNet
+        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.bb
+        summary bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.summary.bb
+        speciesOrder danRer11
+        priority 7
 

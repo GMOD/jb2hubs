@@ -126,8 +126,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028583685.1_PetGlider_PUasm1.0.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.ncbiRefSeq.bb
@@ -144,8 +144,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028583685.1_PetGlider_PUasm1.0.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -161,8 +161,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028583685.1_PetGlider_PUasm1.0.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -301,27 +301,6 @@ html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
     parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
     spectrum on
 
-    track GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
-    spectrum on
-
-    track GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
-    spectrum on
-
-    track GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
-    spectrum on
-
         track chainGCF_002263795.3
         parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -330,42 +309,6 @@ html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         type bigChain GCF_002263795.3
         bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainGCF_002263795.3.bb
         linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
-        priority 92.620
-
-        track chainSynGCF_002263795.3
-        parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel cattle synChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainSynGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainSynGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
-        priority 92.620
-
-        track chainRBestGCF_002263795.3
-        parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel cattle rbChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainRBestGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainRBestGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
-        priority 92.620
-
-        track chainLiftOverGCF_002263795.3
-        parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel cattle loChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainLiftOverGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainLiftOverGCF_002263795.3Link.bb
         otherDb GCF_002263795.3
         html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         priority 92.620
@@ -382,11 +325,30 @@ html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         priority 92.848
 
+    track GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
+    spectrum on
+
+        track chainSynGCF_002263795.3
+        parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel cattle synChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainSynGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainSynGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
+        priority 92.620
+
         track chainSynHg38
         parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
         shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainSynHg38.bb
         linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainSynHg38Link.bb
@@ -394,11 +356,30 @@ html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         priority 92.848
 
+    track GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
+    spectrum on
+
+        track chainRBestGCF_002263795.3
+        parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel cattle rbChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainRBestGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainRBestGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
+        priority 92.620
+
         track chainRBestHg38
         parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainRBestHg38.bb
         linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainRBestHg38Link.bb
@@ -406,11 +387,30 @@ html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
         priority 92.848
 
+    track GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_028583685.1_PetGlider_PUasm1.0ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_002263795.3
+        parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel cattle loChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainLiftOverGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainLiftOverGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_028583685.1_PetGlider_PUasm1.0.chainNet
+        priority 92.620
+
         track chainLiftOverHg38
         parent GCF_028583685.1_PetGlider_PUasm1.0ChainNetViewLiftOver off
         subGroups view=liftover species=s001 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainLiftOverHg38.bb
         linkDataUrl bbi/GCF_028583685.1_PetGlider_PUasm1.0.chainLiftOverHg38Link.bb

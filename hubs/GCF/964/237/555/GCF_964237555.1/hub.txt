@@ -138,8 +138,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_964237555.1_mOryCun1.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.ncbiRefSeq.bb
@@ -156,8 +156,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_964237555.1_mOryCun1.1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -173,8 +173,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_964237555.1_mOryCun1.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -313,27 +313,6 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
     parent GCF_964237555.1_mOryCun1.1ChainNet
     spectrum on
 
-    track GCF_964237555.1_mOryCun1.1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_964237555.1_mOryCun1.1ChainNet
-    spectrum on
-
-    track GCF_964237555.1_mOryCun1.1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_964237555.1_mOryCun1.1ChainNet
-    spectrum on
-
-    track GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_964237555.1_mOryCun1.1ChainNet
-    spectrum on
-
         track chainHg38
         parent GCF_964237555.1_mOryCun1.1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -342,42 +321,6 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         type bigChain hg38
         bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainHg38.bb
         linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_964237555.1_mOryCun1.1.chainNet
-        priority 53.902
-
-        track chainSynHg38
-        parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynHg38.bb
-        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_964237555.1_mOryCun1.1.chainNet
-        priority 53.902
-
-        track chainRBestHg38
-        parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_964237555.1_mOryCun1.1.chainNet
-        priority 53.902
-
-        track chainLiftOverHg38
-        parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverHg38.bb
-        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverHg38Link.bb
         otherDb hg38
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 53.902
@@ -394,6 +337,25 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
 
+    track GCF_964237555.1_mOryCun1.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_964237555.1_mOryCun1.1ChainNet
+    spectrum on
+
+        track chainSynHg38
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynHg38.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 53.902
+
         track chainSynGCF_002263795.3
         parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -406,6 +368,25 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
 
+    track GCF_964237555.1_mOryCun1.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_964237555.1_mOryCun1.1ChainNet
+    spectrum on
+
+        track chainRBestHg38
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 53.902
+
         track chainRBestGCF_002263795.3
         parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
@@ -417,6 +398,25 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         otherDb GCF_002263795.3
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
+
+    track GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_964237555.1_mOryCun1.1ChainNet
+    spectrum on
+
+        track chainLiftOverHg38
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Human/hg38 loChain
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverHg38Link.bb
+        otherDb hg38
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 53.902
 
         track chainLiftOverGCF_002263795.3
         parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off

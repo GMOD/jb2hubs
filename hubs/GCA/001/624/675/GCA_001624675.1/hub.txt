@@ -201,8 +201,6 @@ baseColorUseCds given
 baseColorDefault genomicCodons
 html html/GCA_001624675.1_NOD_ShiLtJ_v1.ensGene
 
-include rnaSeqData/GCA_001624675.1_NOD_ShiLtJ_v1.trackDb.txt
-
 track GCA_001624675.1_NOD_ShiLtJ_v1ChainNet
 compositeTrack on
 shortLabel Chain/Net
@@ -230,12 +228,60 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
     parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNet
     spectrum on
 
+        track chainMm39
+        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel Mouse/mm39 Chain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm39.bb
+        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm39Link.bb
+        otherDb mm39
+        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
+        priority 25.400
+
+        track chainMm10
+        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel Mouse/mm10 Chain
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        type bigChain mm10
+        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm10.bb
+        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm10Link.bb
+        otherDb mm10
+        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
+        priority 25.405
+
     track GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewSynTen
     shortLabel Syntenic
     view synten
     visibility hide
     parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNet
     spectrum on
+
+        track chainSynMm39
+        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Mouse/mm39 synChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm39.bb
+        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm39Link.bb
+        otherDb mm39
+        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
+        priority 25.400
+
+        track chainSynMm10
+        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Mouse/mm10 synChain
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        type bigChain mm10
+        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm10.bb
+        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm10Link.bb
+        otherDb mm10
+        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
+        priority 25.405
 
     track GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewRBest
     shortLabel Reciprocal best
@@ -244,42 +290,11 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
     parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNet
     spectrum on
 
-    track GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNet
-    spectrum on
-
-        track chainMm39
-        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewchain on
-        subGroups view=chain species=s000 chainType=c00
-        shortLabel mm39 Chain
-        longLabel mm39/mm39 () Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm39.bb
-        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm39Link.bb
-        otherDb mm39
-        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
-        priority 25.400
-
-        track chainSynMm39
-        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel mm39 synChain
-        longLabel mm39/mm39 () Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm39.bb
-        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm39Link.bb
-        otherDb mm39
-        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
-        priority 25.400
-
         track chainRBestMm39
         parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewRBest off
         subGroups view=rbest species=s000 chainType=c02
-        shortLabel mm39 rbChain
-        longLabel mm39/mm39 () Chained Alignments
+        shortLabel Mouse/mm39 rbChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainRBestMm39.bb
         linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainRBestMm39Link.bb
@@ -287,53 +302,36 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         priority 25.400
 
-        track chainLiftOverMm39
-        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel mm39 loChain
-        longLabel mm39/mm39 () Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainLiftOverMm39.bb
-        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainLiftOverMm39Link.bb
-        otherDb mm39
-        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
-        priority 25.400
-
-        track chainMm10
-        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewchain off
-        subGroups view=chain species=s001 chainType=c00
-        shortLabel mm10 Chain
-        longLabel mm10/mm10 () Chained Alignments
-        type bigChain mm10
-        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm10.bb
-        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainMm10Link.bb
-        otherDb mm10
-        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
-        priority 25.405
-
-        track chainSynMm10
-        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel mm10 synChain
-        longLabel mm10/mm10 () Chained Alignments
-        type bigChain mm10
-        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm10.bb
-        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainSynMm10Link.bb
-        otherDb mm10
-        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
-        priority 25.405
-
         track chainRBestMm10
         parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
-        shortLabel mm10 rbChain
-        longLabel mm10/mm10 () Chained Alignments
+        shortLabel Mouse/mm10 rbChain
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainRBestMm10.bb
         linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainRBestMm10Link.bb
         otherDb mm10
         html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         priority 25.405
+
+    track GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNet
+    spectrum on
+
+        track chainLiftOverMm39
+        parent GCA_001624675.1_NOD_ShiLtJ_v1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Mouse/mm39 loChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainLiftOverMm39.bb
+        linkDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.chainLiftOverMm39Link.bb
+        otherDb mm39
+        html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
+        priority 25.400
 
     track GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet
     shortLabel Nets
@@ -344,8 +342,8 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         track netMm39
         parent GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet off
         subGroups view=align species=s000 chainType=c04
-        shortLabel mm39 mafNet
-        longLabel mm39/mm39 () Chained Alignments
+        shortLabel Mouse/mm39 mafNet
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm39.net.bb
         summary bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm39.net.summary.bb
@@ -356,8 +354,8 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         track synNetMm39
         parent GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet off
         subGroups view=align species=s000 chainType=c05
-        shortLabel mm39 synNet
-        longLabel mm39/mm39 () Chained Alignments
+        shortLabel Mouse/mm39 synNet
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm39.synNet.bb
         summary bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm39.synNet.summary.bb
@@ -368,8 +366,8 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         track rbestNetMm39
         parent GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet off
         subGroups view=align species=s000 chainType=c06
-        shortLabel mm39 rbestNet
-        longLabel mm39/mm39 () Chained Alignments
+        shortLabel Mouse/mm39 rbestNet
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm39.rbestNet.bb
         summary bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm39.rbestNet.summary.bb
@@ -380,8 +378,8 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         track netMm10
         parent GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet off
         subGroups view=align species=s001 chainType=c04
-        shortLabel mm10 mafNet
-        longLabel mm10/mm10 () Chained Alignments
+        shortLabel Mouse/mm10 mafNet
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm10.net.bb
         summary bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm10.net.summary.bb
@@ -392,8 +390,8 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         track synNetMm10
         parent GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet off
         subGroups view=align species=s001 chainType=c05
-        shortLabel mm10 synNet
-        longLabel mm10/mm10 () Chained Alignments
+        shortLabel Mouse/mm10 synNet
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm10.synNet.bb
         summary bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm10.synNet.summary.bb
@@ -404,8 +402,8 @@ html html/GCA_001624675.1_NOD_ShiLtJ_v1.chainNet
         track rbestNetMm10
         parent GCA_001624675.1_NOD_ShiLtJ_v1MafNetViewnet off
         subGroups view=align species=s001 chainType=c06
-        shortLabel mm10 rbestNet
-        longLabel mm10/mm10 () Chained Alignments
+        shortLabel Mouse/mm10 rbestNet
+        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm10.rbestNet.bb
         summary bbi/GCA_001624675.1_NOD_ShiLtJ_v1.mm10.rbestNet.summary.bb

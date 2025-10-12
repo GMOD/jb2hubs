@@ -20,6 +20,7 @@ htmlPath html/GCF_001984765.1_C.can_genome_v1.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/984/765/GCF_001984765.1
+liftOver.mm39 liftOver/GCF_001984765.1ToMm39.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -123,8 +124,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_001984765.1_C.can_genome_v1.0.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.ncbiRefSeq.bb
@@ -141,8 +142,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_001984765.1_C.can_genome_v1.0.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -253,6 +254,115 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_001984765.1_C.can_genome_v1.0.xenoRefGene.ix
 html html/GCF_001984765.1_C.can_genome_v1.0.xenoRefGene
+
+##############################################################################
+# mm39 - Mouse - Mus musculus - taxId: 10090
+##############################################################################
+track chainNetMm39
+compositeTrack on
+shortLabel Mouse Chain/Net
+longLabel Mouse (Jun. 2020 (GRCm39/mm39)), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainMinScore 3000
+chainLinearGap medium
+matrixHeader A, C, G, T
+otherDb mm39
+html html/GCF_001984765.1_C.can_genome_v1.0.chainNet
+
+    track chainNetMm39Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetMm39
+    spectrum on
+
+        track chainMm39
+        parent chainNetMm39Viewchain
+        subGroups view=chain
+        shortLabel Mouse Chain
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainMm39.bb
+        linkDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainMm39Link.bb
+        priority 1
+
+        track chainSynMm39
+        parent chainNetMm39Viewchain
+        subGroups view=chain
+        shortLabel Mouse synChain
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Syntenic Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainSynMm39.bb
+        linkDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainSynMm39Link.bb
+        priority 2
+
+        track chainRBestMm39
+        parent chainNetMm39Viewchain
+        subGroups view=chain
+        shortLabel Mouse rbChain
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Reciprocal Best Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainRBestMm39.bb
+        linkDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainRBestMm39Link.bb
+        priority 3
+
+        track chainLiftOverMm39
+        parent chainNetMm39Viewchain
+        subGroups view=chain
+        shortLabel Mouse loChain
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Lift Over Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainLiftOverMm39.bb
+        linkDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.chainLiftOverMm39Link.bb
+        priority 4
+
+    track mafNetMm39Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetMm39
+
+        track netMm39
+        parent mafNetMm39Viewnet
+        subGroups view=net
+        shortLabel Mouse net
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.net.bb
+        summary bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.net.summary.bb
+        speciesOrder mm39
+        priority 5
+
+        track synNetMm39
+        parent mafNetMm39Viewnet
+        subGroups view=net
+        shortLabel Mouse synNet
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.synNet.bb
+        summary bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.synNet.summary.bb
+        speciesOrder mm39
+        priority 6
+
+        track rbestNetMm39
+        parent mafNetMm39Viewnet
+        subGroups view=net
+        shortLabel Mouse rbestNet
+        longLabel Mouse (Jun. 2020 (GRCm39/mm39)) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.rbestNet.bb
+        summary bbi/GCF_001984765.1_C.can_genome_v1.0.mm39.rbestNet.summary.bb
+        speciesOrder mm39
+        priority 7
 
 
 track Tiberius

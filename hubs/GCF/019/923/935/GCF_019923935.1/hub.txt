@@ -132,8 +132,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_019923935.1_NDDB_SH_1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.ncbiRefSeq.bb
@@ -150,8 +150,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_019923935.1_NDDB_SH_1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -167,8 +167,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_019923935.1_NDDB_SH_1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -307,27 +307,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
     parent GCF_019923935.1_NDDB_SH_1ChainNet
     spectrum on
 
-    track GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_019923935.1_NDDB_SH_1ChainNet
-    spectrum on
-
-    track GCF_019923935.1_NDDB_SH_1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_019923935.1_NDDB_SH_1ChainNet
-    spectrum on
-
-    track GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_019923935.1_NDDB_SH_1ChainNet
-    spectrum on
-
         track chainGCF_029407905.1
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -336,42 +315,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         type bigChain GCF_029407905.1
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainGCF_029407905.1.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainGCF_029407905.1Link.bb
-        otherDb GCF_029407905.1
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 0.535
-
-        track chainSynGCF_029407905.1
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel carabao synChain
-        longLabel carabao/GCF_029407905.1_PCC_UOA_SB_1v2 (2023-03-31) Chained Alignments
-        type bigChain GCF_029407905.1
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_029407905.1.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_029407905.1Link.bb
-        otherDb GCF_029407905.1
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 0.535
-
-        track chainRBestGCF_029407905.1
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel carabao rbChain
-        longLabel carabao/GCF_029407905.1_PCC_UOA_SB_1v2 (2023-03-31) Chained Alignments
-        type bigChain GCF_029407905.1
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_029407905.1.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_029407905.1Link.bb
-        otherDb GCF_029407905.1
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 0.535
-
-        track chainLiftOverGCF_029407905.1
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel carabao loChain
-        longLabel carabao/GCF_029407905.1_PCC_UOA_SB_1v2 (2023-03-31) Chained Alignments
-        type bigChain GCF_029407905.1
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_029407905.1.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_029407905.1Link.bb
         otherDb GCF_029407905.1
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 0.535
@@ -388,42 +331,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.771
 
-        track chainSynGCF_002263795.3
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel cattle synChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 3.771
-
-        track chainRBestGCF_002263795.3
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel cattle rbChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 3.771
-
-        track chainLiftOverGCF_002263795.3
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
-        shortLabel cattle loChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 3.771
-
         track chainBosTau9
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -432,30 +339,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         type bigChain bosTau9
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainBosTau9.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainBosTau9Link.bb
-        otherDb bosTau9
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 3.797
-
-        track chainSynBosTau9
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel Cow/bosTau9 synChain
-        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
-        type bigChain bosTau9
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynBosTau9.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynBosTau9Link.bb
-        otherDb bosTau9
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 3.797
-
-        track chainRBestBosTau9
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel Cow/bosTau9 rbChain
-        longLabel Cow/bosTau9/bosTau9 (Apr. 2018) Chained Alignments
-        type bigChain bosTau9
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestBosTau9.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestBosTau9Link.bb
         otherDb bosTau9
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.797
@@ -472,30 +355,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 49.111
 
-        track chainSynHg38
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s003 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg38.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 49.111
-
-        track chainRBestHg38
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s003 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 49.111
-
         track chainHg19
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
         subGroups view=chain species=s004 chainType=c00
@@ -504,30 +363,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         type bigChain hg19
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainHg19.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainHg19Link.bb
-        otherDb hg19
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 49.149
-
-        track chainSynHg19
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s004 chainType=c01
-        shortLabel Human/hg19 synChain
-        longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
-        type bigChain hg19
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg19.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg19Link.bb
-        otherDb hg19
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 49.149
-
-        track chainRBestHg19
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s004 chainType=c02
-        shortLabel Human/hg19 rbChain
-        longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
-        type bigChain hg19
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg19.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg19Link.bb
         otherDb hg19
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 49.149
@@ -544,30 +379,6 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 73.575
 
-        track chainSynMm39
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s005 chainType=c01
-        shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm39.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm39Link.bb
-        otherDb mm39
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 73.575
-
-        track chainRBestMm39
-        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s005 chainType=c02
-        shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm39.bb
-        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm39Link.bb
-        otherDb mm39
-        html html/GCF_019923935.1_NDDB_SH_1.chainNet
-        priority 73.575
-
         track chainMm10
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
         subGroups view=chain species=s006 chainType=c00
@@ -580,11 +391,90 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 73.598
 
+    track GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_019923935.1_NDDB_SH_1ChainNet
+    spectrum on
+
+        track chainSynGCF_029407905.1
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel carabao synChain
+        longLabel carabao/GCF_029407905.1_PCC_UOA_SB_1v2 (2023-03-31) Chained Alignments
+        type bigChain GCF_029407905.1
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_029407905.1.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_029407905.1Link.bb
+        otherDb GCF_029407905.1
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 0.535
+
+        track chainSynGCF_002263795.3
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel cattle synChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 3.771
+
+        track chainSynBosTau9
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel Cow/bosTau9 synChain
+        longLabel Cow/bosTau9/bosTau9_ARS-UCD2.0 (Apr. 2018) Chained Alignments
+        type bigChain bosTau9
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynBosTau9.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynBosTau9Link.bb
+        otherDb bosTau9
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 3.797
+
+        track chainSynHg38
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s003 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg38.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 49.111
+
+        track chainSynHg19
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel Human/hg19 synChain
+        longLabel Human/hg19/hg19_ARS-UCD2.0 (Feb. 2009) Chained Alignments
+        type bigChain hg19
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg19.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg19Link.bb
+        otherDb hg19
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 49.149
+
+        track chainSynMm39
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s005 chainType=c01
+        shortLabel Mouse/mm39 synChain
+        longLabel Mouse/mm39/mm39_ARS-UCD2.0 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm39.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm39Link.bb
+        otherDb mm39
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 73.575
+
         track chainSynMm10
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
         subGroups view=synten species=s006 chainType=c01
         shortLabel Mouse/mm10 synChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS-UCD2.0 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm10.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm10Link.bb
@@ -592,17 +482,127 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 73.598
 
+    track GCF_019923935.1_NDDB_SH_1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_019923935.1_NDDB_SH_1ChainNet
+    spectrum on
+
+        track chainRBestGCF_029407905.1
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel carabao rbChain
+        longLabel carabao/GCF_029407905.1_PCC_UOA_SB_1v2 (2023-03-31) Chained Alignments
+        type bigChain GCF_029407905.1
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_029407905.1.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_029407905.1Link.bb
+        otherDb GCF_029407905.1
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 0.535
+
+        track chainRBestGCF_002263795.3
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel cattle rbChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 3.771
+
+        track chainRBestBosTau9
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
+        shortLabel Cow/bosTau9 rbChain
+        longLabel Cow/bosTau9/bosTau9_ARS-UCD2.0 (Apr. 2018) Chained Alignments
+        type bigChain bosTau9
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestBosTau9.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestBosTau9Link.bb
+        otherDb bosTau9
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 3.797
+
+        track chainRBestHg38
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s003 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 49.111
+
+        track chainRBestHg19
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel Human/hg19 rbChain
+        longLabel Human/hg19/hg19_ARS-UCD2.0 (Feb. 2009) Chained Alignments
+        type bigChain hg19
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg19.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg19Link.bb
+        otherDb hg19
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 49.149
+
+        track chainRBestMm39
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s005 chainType=c02
+        shortLabel Mouse/mm39 rbChain
+        longLabel Mouse/mm39/mm39_ARS-UCD2.0 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm39.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm39Link.bb
+        otherDb mm39
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 73.575
+
         track chainRBestMm10
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
         subGroups view=rbest species=s006 chainType=c02
         shortLabel Mouse/mm10 rbChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS-UCD2.0 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm10.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm10Link.bb
         otherDb mm10
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 73.598
+
+    track GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_019923935.1_NDDB_SH_1ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_029407905.1
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel carabao loChain
+        longLabel carabao/GCF_029407905.1_PCC_UOA_SB_1v2 (2023-03-31) Chained Alignments
+        type bigChain GCF_029407905.1
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_029407905.1.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_029407905.1Link.bb
+        otherDb GCF_029407905.1
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 0.535
+
+        track chainLiftOverGCF_002263795.3
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel cattle loChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 3.771
 
     track GCF_019923935.1_NDDB_SH_1MafNetViewnet
     shortLabel Nets

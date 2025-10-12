@@ -146,8 +146,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_011100555.1_mCalJa1.2.pat.X.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.ncbiRefSeq.bb
@@ -164,8 +164,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_011100555.1_mCalJa1.2.pat.X.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -181,8 +181,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_011100555.1_mCalJa1.2.pat.X.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -321,27 +321,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
     parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
     spectrum on
 
-    track GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
-    spectrum on
-
-    track GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
-    spectrum on
-
-    track GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
-    spectrum on
-
         track chainGCA_028885655.2
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -350,42 +329,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         type bigChain GCA_028885655.2
         bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCA_028885655.2.bb
         linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCA_028885655.2Link.bb
-        otherDb GCA_028885655.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.366
-
-        track chainSynGCA_028885655.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Sumatran orangutan synChain
-        longLabel Sumatran orangutan/GCA_028885655.2_NHGRI_mPonAbe1-v2.0_pri (2024-01-05) Chained Alignments
-        type bigChain GCA_028885655.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885655.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885655.2Link.bb
-        otherDb GCA_028885655.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.366
-
-        track chainRBestGCA_028885655.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Sumatran orangutan rbChain
-        longLabel Sumatran orangutan/GCA_028885655.2_NHGRI_mPonAbe1-v2.0_pri (2024-01-05) Chained Alignments
-        type bigChain GCA_028885655.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885655.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885655.2Link.bb
-        otherDb GCA_028885655.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.366
-
-        track chainLiftOverGCA_028885655.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Sumatran orangutan loChain
-        longLabel Sumatran orangutan/GCA_028885655.2_NHGRI_mPonAbe1-v2.0_pri (2024-01-05) Chained Alignments
-        type bigChain GCA_028885655.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885655.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885655.2Link.bb
         otherDb GCA_028885655.2
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.366
@@ -402,42 +345,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.370
 
-        track chainSynGCA_028885625.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel Bornean orangutan synChain
-        longLabel Bornean orangutan/GCA_028885625.2_NHGRI_mPonPyg2-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_028885625.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885625.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885625.2Link.bb
-        otherDb GCA_028885625.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.370
-
-        track chainRBestGCA_028885625.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel Bornean orangutan rbChain
-        longLabel Bornean orangutan/GCA_028885625.2_NHGRI_mPonPyg2-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_028885625.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885625.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885625.2Link.bb
-        otherDb GCA_028885625.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.370
-
-        track chainLiftOverGCA_028885625.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
-        shortLabel Bornean orangutan loChain
-        longLabel Bornean orangutan/GCA_028885625.2_NHGRI_mPonPyg2-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_028885625.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885625.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885625.2Link.bb
-        otherDb GCA_028885625.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.370
-
         track chainGCA_029281585.2
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -446,42 +353,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         type bigChain GCA_029281585.2
         bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCA_029281585.2.bb
         linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCA_029281585.2Link.bb
-        otherDb GCA_029281585.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.598
-
-        track chainSynGCA_029281585.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel western lowland gorilla synChain
-        longLabel western lowland gorilla/GCA_029281585.2_NHGRI_mGorGor1-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_029281585.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029281585.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029281585.2Link.bb
-        otherDb GCA_029281585.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.598
-
-        track chainRBestGCA_029281585.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel western lowland gorilla rbChain
-        longLabel western lowland gorilla/GCA_029281585.2_NHGRI_mGorGor1-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_029281585.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029281585.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029281585.2Link.bb
-        otherDb GCA_029281585.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.598
-
-        track chainLiftOverGCA_029281585.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s002 chainType=c03
-        shortLabel western lowland gorilla loChain
-        longLabel western lowland gorilla/GCA_029281585.2_NHGRI_mGorGor1-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_029281585.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029281585.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029281585.2Link.bb
         otherDb GCA_029281585.2
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.598
@@ -498,42 +369,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.648
 
-        track chainSynGCA_029289425.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s003 chainType=c01
-        shortLabel pygmy chimpanzee synChain
-        longLabel pygmy chimpanzee/GCA_029289425.2_NHGRI_mPanPan1-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_029289425.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029289425.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029289425.2Link.bb
-        otherDb GCA_029289425.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.648
-
-        track chainRBestGCA_029289425.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s003 chainType=c02
-        shortLabel pygmy chimpanzee rbChain
-        longLabel pygmy chimpanzee/GCA_029289425.2_NHGRI_mPanPan1-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_029289425.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029289425.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029289425.2Link.bb
-        otherDb GCA_029289425.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.648
-
-        track chainLiftOverGCA_029289425.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s003 chainType=c03
-        shortLabel pygmy chimpanzee loChain
-        longLabel pygmy chimpanzee/GCA_029289425.2_NHGRI_mPanPan1-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_029289425.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029289425.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029289425.2Link.bb
-        otherDb GCA_029289425.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.648
-
         track chainGCA_028858775.2
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewchain off
         subGroups view=chain species=s004 chainType=c00
@@ -542,42 +377,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         type bigChain GCA_028858775.2
         bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCA_028858775.2.bb
         linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCA_028858775.2Link.bb
-        otherDb GCA_028858775.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.655
-
-        track chainSynGCA_028858775.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s004 chainType=c01
-        shortLabel chimpanzee synChain
-        longLabel chimpanzee/GCA_028858775.2_NHGRI_mPanTro3-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_028858775.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028858775.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028858775.2Link.bb
-        otherDb GCA_028858775.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.655
-
-        track chainRBestGCA_028858775.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s004 chainType=c02
-        shortLabel chimpanzee rbChain
-        longLabel chimpanzee/GCA_028858775.2_NHGRI_mPanTro3-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_028858775.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028858775.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028858775.2Link.bb
-        otherDb GCA_028858775.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.655
-
-        track chainLiftOverGCA_028858775.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s004 chainType=c03
-        shortLabel chimpanzee loChain
-        longLabel chimpanzee/GCA_028858775.2_NHGRI_mPanTro3-v2.0_pri (2024-01-08) Chained Alignments
-        type bigChain GCA_028858775.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028858775.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028858775.2Link.bb
         otherDb GCA_028858775.2
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.655
@@ -594,42 +393,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.769
 
-        track chainSynHs1
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s005 chainType=c01
-        shortLabel Human/hs1 synChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHs1.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHs1Link.bb
-        otherDb hs1
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.769
-
-        track chainRBestHs1
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s005 chainType=c02
-        shortLabel Human/hs1 rbChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHs1.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHs1Link.bb
-        otherDb hs1
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.769
-
-        track chainLiftOverHs1
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s005 chainType=c03
-        shortLabel Human/hs1 loChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHs1.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHs1Link.bb
-        otherDb hs1
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.769
-
         track chainHg38
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewchain off
         subGroups view=chain species=s006 chainType=c00
@@ -638,42 +401,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         type bigChain hg38
         bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainHg38.bb
         linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.784
-
-        track chainSynHg38
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s006 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHg38.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.784
-
-        track chainRBestHg38
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s006 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 27.784
-
-        track chainLiftOverHg38
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s006 chainType=c03
-        shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHg38.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHg38Link.bb
         otherDb hg38
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 27.784
@@ -690,42 +417,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 29.306
 
-        track chainSynGCA_028878055.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s007 chainType=c01
-        shortLabel siamang synChain
-        longLabel siamang/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri (2024-01-05) Chained Alignments
-        type bigChain GCA_028878055.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028878055.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028878055.2Link.bb
-        otherDb GCA_028878055.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 29.306
-
-        track chainRBestGCA_028878055.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s007 chainType=c02
-        shortLabel siamang rbChain
-        longLabel siamang/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri (2024-01-05) Chained Alignments
-        type bigChain GCA_028878055.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028878055.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028878055.2Link.bb
-        otherDb GCA_028878055.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 29.306
-
-        track chainLiftOverGCA_028878055.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s007 chainType=c03
-        shortLabel siamang loChain
-        longLabel siamang/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri (2024-01-05) Chained Alignments
-        type bigChain GCA_028878055.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028878055.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028878055.2Link.bb
-        otherDb GCA_028878055.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 29.306
-
         track chainGCF_020740605.2
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewchain off
         subGroups view=chain species=s008 chainType=c00
@@ -734,42 +425,6 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         type bigChain GCF_020740605.2
         bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCF_020740605.2.bb
         linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainGCF_020740605.2Link.bb
-        otherDb GCF_020740605.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 74.174
-
-        track chainSynGCF_020740605.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
-        subGroups view=synten species=s008 chainType=c01
-        shortLabel ring-tailed lemur synChain
-        longLabel ring-tailed lemur/GCF_020740605.2_mLemCat1.pri (2021-11-04) Chained Alignments
-        type bigChain GCF_020740605.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCF_020740605.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCF_020740605.2Link.bb
-        otherDb GCF_020740605.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 74.174
-
-        track chainRBestGCF_020740605.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
-        subGroups view=rbest species=s008 chainType=c02
-        shortLabel ring-tailed lemur rbChain
-        longLabel ring-tailed lemur/GCF_020740605.2_mLemCat1.pri (2021-11-04) Chained Alignments
-        type bigChain GCF_020740605.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCF_020740605.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCF_020740605.2Link.bb
-        otherDb GCF_020740605.2
-        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
-        priority 74.174
-
-        track chainLiftOverGCF_020740605.2
-        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
-        subGroups view=liftover species=s008 chainType=c03
-        shortLabel ring-tailed lemur loChain
-        longLabel ring-tailed lemur/GCF_020740605.2_mLemCat1.pri (2021-11-04) Chained Alignments
-        type bigChain GCF_020740605.2
-        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCF_020740605.2.bb
-        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCF_020740605.2Link.bb
         otherDb GCF_020740605.2
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 74.174
@@ -786,6 +441,121 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 87.710
 
+    track GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
+    spectrum on
+
+        track chainSynGCA_028885655.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Sumatran orangutan synChain
+        longLabel Sumatran orangutan/GCA_028885655.2_NHGRI_mPonAbe1-v2.0_pri (2024-01-05) Chained Alignments
+        type bigChain GCA_028885655.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885655.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885655.2Link.bb
+        otherDb GCA_028885655.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.366
+
+        track chainSynGCA_028885625.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Bornean orangutan synChain
+        longLabel Bornean orangutan/GCA_028885625.2_NHGRI_mPonPyg2-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_028885625.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885625.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028885625.2Link.bb
+        otherDb GCA_028885625.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.370
+
+        track chainSynGCA_029281585.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel western lowland gorilla synChain
+        longLabel western lowland gorilla/GCA_029281585.2_NHGRI_mGorGor1-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_029281585.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029281585.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029281585.2Link.bb
+        otherDb GCA_029281585.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.598
+
+        track chainSynGCA_029289425.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s003 chainType=c01
+        shortLabel pygmy chimpanzee synChain
+        longLabel pygmy chimpanzee/GCA_029289425.2_NHGRI_mPanPan1-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_029289425.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029289425.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_029289425.2Link.bb
+        otherDb GCA_029289425.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.648
+
+        track chainSynGCA_028858775.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel chimpanzee synChain
+        longLabel chimpanzee/GCA_028858775.2_NHGRI_mPanTro3-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_028858775.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028858775.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028858775.2Link.bb
+        otherDb GCA_028858775.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.655
+
+        track chainSynHs1
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s005 chainType=c01
+        shortLabel Human/hs1 synChain
+        longLabel Human/hs1/hs1_NHGRI_mPanTro3-v2.0_pri (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHs1.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHs1Link.bb
+        otherDb hs1
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.769
+
+        track chainSynHg38
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s006 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38_NHGRI_mPanTro3-v2.0_pri (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHg38.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.784
+
+        track chainSynGCA_028878055.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s007 chainType=c01
+        shortLabel siamang synChain
+        longLabel siamang/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri (2024-01-05) Chained Alignments
+        type bigChain GCA_028878055.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028878055.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCA_028878055.2Link.bb
+        otherDb GCA_028878055.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 29.306
+
+        track chainSynGCF_020740605.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
+        subGroups view=synten species=s008 chainType=c01
+        shortLabel ring-tailed lemur synChain
+        longLabel ring-tailed lemur/GCF_020740605.2_mLemCat1.pri (2021-11-04) Chained Alignments
+        type bigChain GCF_020740605.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCF_020740605.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainSynGCF_020740605.2Link.bb
+        otherDb GCF_020740605.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 74.174
+
         track chainSynGCF_027406575.1
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewSynTen off
         subGroups view=synten species=s009 chainType=c01
@@ -798,6 +568,121 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 87.710
 
+    track GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
+    spectrum on
+
+        track chainRBestGCA_028885655.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Sumatran orangutan rbChain
+        longLabel Sumatran orangutan/GCA_028885655.2_NHGRI_mPonAbe1-v2.0_pri (2024-01-05) Chained Alignments
+        type bigChain GCA_028885655.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885655.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885655.2Link.bb
+        otherDb GCA_028885655.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.366
+
+        track chainRBestGCA_028885625.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Bornean orangutan rbChain
+        longLabel Bornean orangutan/GCA_028885625.2_NHGRI_mPonPyg2-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_028885625.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885625.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028885625.2Link.bb
+        otherDb GCA_028885625.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.370
+
+        track chainRBestGCA_029281585.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
+        shortLabel western lowland gorilla rbChain
+        longLabel western lowland gorilla/GCA_029281585.2_NHGRI_mGorGor1-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_029281585.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029281585.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029281585.2Link.bb
+        otherDb GCA_029281585.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.598
+
+        track chainRBestGCA_029289425.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s003 chainType=c02
+        shortLabel pygmy chimpanzee rbChain
+        longLabel pygmy chimpanzee/GCA_029289425.2_NHGRI_mPanPan1-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_029289425.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029289425.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_029289425.2Link.bb
+        otherDb GCA_029289425.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.648
+
+        track chainRBestGCA_028858775.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel chimpanzee rbChain
+        longLabel chimpanzee/GCA_028858775.2_NHGRI_mPanTro3-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_028858775.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028858775.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028858775.2Link.bb
+        otherDb GCA_028858775.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.655
+
+        track chainRBestHs1
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s005 chainType=c02
+        shortLabel Human/hs1 rbChain
+        longLabel Human/hs1/hs1_NHGRI_mPanTro3-v2.0_pri (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHs1.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHs1Link.bb
+        otherDb hs1
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.769
+
+        track chainRBestHg38
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s006 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38_NHGRI_mPanTro3-v2.0_pri (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.784
+
+        track chainRBestGCA_028878055.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s007 chainType=c02
+        shortLabel siamang rbChain
+        longLabel siamang/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri (2024-01-05) Chained Alignments
+        type bigChain GCA_028878055.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028878055.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCA_028878055.2Link.bb
+        otherDb GCA_028878055.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 29.306
+
+        track chainRBestGCF_020740605.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
+        subGroups view=rbest species=s008 chainType=c02
+        shortLabel ring-tailed lemur rbChain
+        longLabel ring-tailed lemur/GCF_020740605.2_mLemCat1.pri (2021-11-04) Chained Alignments
+        type bigChain GCF_020740605.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCF_020740605.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainRBestGCF_020740605.2Link.bb
+        otherDb GCF_020740605.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 74.174
+
         track chainRBestGCF_027406575.1
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewRBest off
         subGroups view=rbest species=s009 chainType=c02
@@ -809,6 +694,121 @@ html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         otherDb GCF_027406575.1
         html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
         priority 87.710
+
+    track GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_011100555.1_mCalJa1.2.pat.XChainNet
+    spectrum on
+
+        track chainLiftOverGCA_028885655.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Sumatran orangutan loChain
+        longLabel Sumatran orangutan/GCA_028885655.2_NHGRI_mPonAbe1-v2.0_pri (2024-01-05) Chained Alignments
+        type bigChain GCA_028885655.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885655.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885655.2Link.bb
+        otherDb GCA_028885655.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.366
+
+        track chainLiftOverGCA_028885625.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel Bornean orangutan loChain
+        longLabel Bornean orangutan/GCA_028885625.2_NHGRI_mPonPyg2-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_028885625.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885625.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028885625.2Link.bb
+        otherDb GCA_028885625.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.370
+
+        track chainLiftOverGCA_029281585.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s002 chainType=c03
+        shortLabel western lowland gorilla loChain
+        longLabel western lowland gorilla/GCA_029281585.2_NHGRI_mGorGor1-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_029281585.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029281585.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029281585.2Link.bb
+        otherDb GCA_029281585.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.598
+
+        track chainLiftOverGCA_029289425.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c03
+        shortLabel pygmy chimpanzee loChain
+        longLabel pygmy chimpanzee/GCA_029289425.2_NHGRI_mPanPan1-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_029289425.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029289425.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_029289425.2Link.bb
+        otherDb GCA_029289425.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.648
+
+        track chainLiftOverGCA_028858775.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s004 chainType=c03
+        shortLabel chimpanzee loChain
+        longLabel chimpanzee/GCA_028858775.2_NHGRI_mPanTro3-v2.0_pri (2024-01-08) Chained Alignments
+        type bigChain GCA_028858775.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028858775.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028858775.2Link.bb
+        otherDb GCA_028858775.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.655
+
+        track chainLiftOverHs1
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s005 chainType=c03
+        shortLabel Human/hs1 loChain
+        longLabel Human/hs1/hs1_NHGRI_mPanTro3-v2.0_pri (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHs1.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHs1Link.bb
+        otherDb hs1
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.769
+
+        track chainLiftOverHg38
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s006 chainType=c03
+        shortLabel Human/hg38 loChain
+        longLabel Human/hg38/hg38_NHGRI_mPanTro3-v2.0_pri (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverHg38Link.bb
+        otherDb hg38
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 27.784
+
+        track chainLiftOverGCA_028878055.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s007 chainType=c03
+        shortLabel siamang loChain
+        longLabel siamang/GCA_028878055.2_NHGRI_mSymSyn1-v2.0_pri (2024-01-05) Chained Alignments
+        type bigChain GCA_028878055.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028878055.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCA_028878055.2Link.bb
+        otherDb GCA_028878055.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 29.306
+
+        track chainLiftOverGCF_020740605.2
+        parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off
+        subGroups view=liftover species=s008 chainType=c03
+        shortLabel ring-tailed lemur loChain
+        longLabel ring-tailed lemur/GCF_020740605.2_mLemCat1.pri (2021-11-04) Chained Alignments
+        type bigChain GCF_020740605.2
+        bigDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCF_020740605.2.bb
+        linkDataUrl bbi/GCF_011100555.1_mCalJa1.2.pat.X.chainLiftOverGCF_020740605.2Link.bb
+        otherDb GCF_020740605.2
+        html html/GCF_011100555.1_mCalJa1.2.pat.X.chainNet
+        priority 74.174
 
         track chainLiftOverGCF_027406575.1
         parent GCF_011100555.1_mCalJa1.2.pat.XChainNetViewLiftOver off

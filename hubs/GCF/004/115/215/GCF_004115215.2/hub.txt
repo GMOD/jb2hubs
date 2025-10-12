@@ -132,8 +132,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_004115215.2_mOrnAna1.pri.v4.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.ncbiRefSeq.bb
@@ -150,8 +150,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_004115215.2_mOrnAna1.pri.v4.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -167,8 +167,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_004115215.2_mOrnAna1.pri.v4.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -307,27 +307,6 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
     parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
     spectrum on
 
-    track GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
-    spectrum on
-
-    track GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
-    spectrum on
-
-    track GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
-    spectrum on
-
         track chainGCA_002966995.1
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -336,18 +315,6 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         type bigChain GCA_002966995.1
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCA_002966995.1.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCA_002966995.1Link.bb
-        otherDb GCA_002966995.1
-        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
-        priority 1.373
-
-        track chainSynGCA_002966995.1
-        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel platypus synChain
-        longLabel platypus/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
-        type bigChain GCA_002966995.1
-        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynGCA_002966995.1.bb
-        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynGCA_002966995.1Link.bb
         otherDb GCA_002966995.1
         html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         priority 1.373
@@ -364,30 +331,6 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         priority 85.047
 
-        track chainSynHg38
-        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynHg38.bb
-        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
-        priority 85.047
-
-        track chainRBestHg38
-        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
-        priority 85.047
-
         track chainMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -400,11 +343,42 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         priority 94.879
 
+    track GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
+    spectrum on
+
+        track chainSynGCA_002966995.1
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel platypus synChain
+        longLabel platypus/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
+        type bigChain GCA_002966995.1
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynGCA_002966995.1.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynGCA_002966995.1Link.bb
+        otherDb GCA_002966995.1
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 1.373
+
+        track chainSynHg38
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38_ASM296699v1 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynHg38.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 85.047
+
         track chainSynMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
         subGroups view=synten species=s002 chainType=c01
         shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ASM296699v1 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynMm39Link.bb
@@ -412,11 +386,30 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         priority 94.879
 
+    track GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
+    spectrum on
+
+        track chainRBestHg38
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38_ASM296699v1 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 85.047
+
         track chainRBestMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest off
         subGroups view=rbest species=s002 chainType=c02
         shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ASM296699v1 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestMm39Link.bb
@@ -424,11 +417,18 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         priority 94.879
 
+    track GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
+    spectrum on
+
         track chainLiftOverMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewLiftOver off
         subGroups view=liftover species=s002 chainType=c03
         shortLabel Mouse/mm39 loChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ASM296699v1 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverMm39Link.bb

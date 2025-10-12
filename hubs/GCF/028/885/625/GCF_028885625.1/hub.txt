@@ -141,8 +141,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.ncbiRefSeq.bb
@@ -159,8 +159,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -299,27 +299,6 @@ html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
     parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNet
     spectrum on
 
-    track GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNet
-    spectrum on
-
-    track GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNet
-    spectrum on
-
-    track GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNet
-    spectrum on
-
         track chainHg38
         parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -328,30 +307,6 @@ html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
         type bigChain hg38
         bigDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainHg38.bb
         linkDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
-        priority 12.922
-
-        track chainSynHg38
-        parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainSynHg38.bb
-        linkDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
-        priority 12.922
-
-        track chainRBestHg38
-        parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainRBestHg38Link.bb
         otherDb hg38
         html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
         priority 12.922
@@ -368,6 +323,25 @@ html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
         html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
         priority 13.025
 
+    track GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNet
+    spectrum on
+
+        track chainSynHg38
+        parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainSynHg38.bb
+        linkDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
+        priority 12.922
+
         track chainSynHs1
         parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -379,6 +353,25 @@ html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
         otherDb hs1
         html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
         priority 13.025
+
+    track GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNet
+    spectrum on
+
+        track chainRBestHg38
+        parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_pri.chainNet
+        priority 12.922
 
         track chainRBestHs1
         parent GCF_028885625.1_NHGRI_mPonPyg2-v1.1-hic.freeze_priChainNetViewRBest off

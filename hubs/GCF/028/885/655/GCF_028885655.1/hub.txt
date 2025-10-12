@@ -143,8 +143,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.ncbiRefSeq.bb
@@ -161,8 +161,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -178,8 +178,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -318,27 +318,6 @@ html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
     parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNet
     spectrum on
 
-    track GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNet
-    spectrum on
-
-    track GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNet
-    spectrum on
-
-    track GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNet
-    spectrum on
-
         track chainHg38
         parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -347,30 +326,6 @@ html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         type bigChain hg38
         bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainHg38.bb
         linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
-        priority 14.660
-
-        track chainSynHg38
-        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHg38.bb
-        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
-        priority 14.660
-
-        track chainRBestHg38
-        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHg38Link.bb
         otherDb hg38
         html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         priority 14.660
@@ -387,30 +342,6 @@ html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         priority 14.724
 
-        track chainSynHs1
-        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel Human/hs1 synChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHs1.bb
-        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHs1Link.bb
-        otherDb hs1
-        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
-        priority 14.724
-
-        track chainRBestHs1
-        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel Human/hs1 rbChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
-        type bigChain hs1
-        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHs1.bb
-        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHs1Link.bb
-        otherDb hs1
-        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
-        priority 14.724
-
         track chainMm39
         parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -419,30 +350,6 @@ html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         type bigChain mm39
         bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainMm39.bb
         linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainMm39Link.bb
-        otherDb mm39
-        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
-        priority 71.154
-
-        track chainSynMm39
-        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynMm39.bb
-        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynMm39Link.bb
-        otherDb mm39
-        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
-        priority 71.154
-
-        track chainRBestMm39
-        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestMm39.bb
-        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestMm39Link.bb
         otherDb mm39
         html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         priority 71.154
@@ -459,6 +366,49 @@ html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         priority 71.185
 
+    track GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNet
+    spectrum on
+
+        track chainSynHg38
+        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHg38.bb
+        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
+        priority 14.660
+
+        track chainSynHs1
+        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Human/hs1 synChain
+        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHs1.bb
+        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynHs1Link.bb
+        otherDb hs1
+        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
+        priority 14.724
+
+        track chainSynMm39
+        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel Mouse/mm39 synChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynMm39.bb
+        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainSynMm39Link.bb
+        otherDb mm39
+        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
+        priority 71.154
+
         track chainSynMm10
         parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewSynTen off
         subGroups view=synten species=s003 chainType=c01
@@ -470,6 +420,49 @@ html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         otherDb mm10
         html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
         priority 71.185
+
+    track GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNet
+    spectrum on
+
+        track chainRBestHg38
+        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
+        priority 14.660
+
+        track chainRBestHs1
+        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Human/hs1 rbChain
+        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHs1.bb
+        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestHs1Link.bb
+        otherDb hs1
+        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
+        priority 14.724
+
+        track chainRBestMm39
+        parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
+        shortLabel Mouse/mm39 rbChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestMm39.bb
+        linkDataUrl bbi/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainRBestMm39Link.bb
+        otherDb mm39
+        html html/GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_pri.chainNet
+        priority 71.154
 
         track chainRBestMm10
         parent GCF_028885655.1_NHGRI_mPonAbe1-v1.1-hic.freeze_priChainNetViewRBest off

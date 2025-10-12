@@ -136,8 +136,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_900094665.1_CAROLI_EIJ_v1.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.ncbiRefSeq.bb
@@ -154,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_900094665.1_CAROLI_EIJ_v1.1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -171,8 +171,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_900094665.1_CAROLI_EIJ_v1.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -326,27 +326,6 @@ html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
     parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
     spectrum on
 
-    track GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
-    spectrum on
-
-    track GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
-    spectrum on
-
-    track GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
-    spectrum on
-
         track chainGCF_900095145.1
         parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -355,42 +334,6 @@ html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         type bigChain GCF_900095145.1
         bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainGCF_900095145.1.bb
         linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainGCF_900095145.1Link.bb
-        otherDb GCF_900095145.1
-        html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
-        priority 19.908
-
-        track chainSynGCF_900095145.1
-        parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel shrew mouse synChain
-        longLabel shrew mouse/GCF_900095145.1_PAHARI_EIJ_v1.1 (2017-04-28) Chained Alignments
-        type bigChain GCF_900095145.1
-        bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainSynGCF_900095145.1.bb
-        linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainSynGCF_900095145.1Link.bb
-        otherDb GCF_900095145.1
-        html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
-        priority 19.908
-
-        track chainRBestGCF_900095145.1
-        parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel shrew mouse rbChain
-        longLabel shrew mouse/GCF_900095145.1_PAHARI_EIJ_v1.1 (2017-04-28) Chained Alignments
-        type bigChain GCF_900095145.1
-        bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainRBestGCF_900095145.1.bb
-        linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainRBestGCF_900095145.1Link.bb
-        otherDb GCF_900095145.1
-        html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
-        priority 19.908
-
-        track chainLiftOverGCF_900095145.1
-        parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel shrew mouse loChain
-        longLabel shrew mouse/GCF_900095145.1_PAHARI_EIJ_v1.1 (2017-04-28) Chained Alignments
-        type bigChain GCF_900095145.1
-        bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainLiftOverGCF_900095145.1.bb
-        linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainLiftOverGCF_900095145.1Link.bb
         otherDb GCF_900095145.1
         html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         priority 19.908
@@ -407,11 +350,30 @@ html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         priority 100
 
+    track GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
+    spectrum on
+
+        track chainSynGCF_900095145.1
+        parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel shrew mouse synChain
+        longLabel shrew mouse/GCF_900095145.1_PAHARI_EIJ_v1.1 (2017-04-28) Chained Alignments
+        type bigChain GCF_900095145.1
+        bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainSynGCF_900095145.1.bb
+        linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainSynGCF_900095145.1Link.bb
+        otherDb GCF_900095145.1
+        html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
+        priority 19.908
+
         track chainSynMm10
         parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
         shortLabel Mouse/mm10 synChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_PAHARI_EIJ_v1.1 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainSynMm10.bb
         linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainSynMm10Link.bb
@@ -419,11 +381,30 @@ html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         priority 100
 
+    track GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
+    spectrum on
+
+        track chainRBestGCF_900095145.1
+        parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel shrew mouse rbChain
+        longLabel shrew mouse/GCF_900095145.1_PAHARI_EIJ_v1.1 (2017-04-28) Chained Alignments
+        type bigChain GCF_900095145.1
+        bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainRBestGCF_900095145.1.bb
+        linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainRBestGCF_900095145.1Link.bb
+        otherDb GCF_900095145.1
+        html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
+        priority 19.908
+
         track chainRBestMm10
         parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
         shortLabel Mouse/mm10 rbChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_PAHARI_EIJ_v1.1 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainRBestMm10.bb
         linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainRBestMm10Link.bb
@@ -431,11 +412,30 @@ html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
         priority 100
 
+    track GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_900095145.1
+        parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel shrew mouse loChain
+        longLabel shrew mouse/GCF_900095145.1_PAHARI_EIJ_v1.1 (2017-04-28) Chained Alignments
+        type bigChain GCF_900095145.1
+        bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainLiftOverGCF_900095145.1.bb
+        linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainLiftOverGCF_900095145.1Link.bb
+        otherDb GCF_900095145.1
+        html html/GCF_900094665.1_CAROLI_EIJ_v1.1.chainNet
+        priority 19.908
+
         track chainLiftOverMm10
         parent GCF_900094665.1_CAROLI_EIJ_v1.1ChainNetViewLiftOver off
         subGroups view=liftover species=s001 chainType=c03
         shortLabel Mouse/mm10 loChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_PAHARI_EIJ_v1.1 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainLiftOverMm10.bb
         linkDataUrl bbi/GCF_900094665.1_CAROLI_EIJ_v1.1.chainLiftOverMm10Link.bb

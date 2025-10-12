@@ -119,8 +119,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_011764305.1_ASM1176430v1.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.ncbiRefSeq.bb
@@ -137,8 +137,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_011764305.1_ASM1176430v1.1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -154,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_011764305.1_ASM1176430v1.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -285,27 +285,6 @@ html html/GCF_011764305.1_ASM1176430v1.1.chainNet
     parent GCF_011764305.1_ASM1176430v1.1ChainNet
     spectrum on
 
-    track GCF_011764305.1_ASM1176430v1.1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_011764305.1_ASM1176430v1.1ChainNet
-    spectrum on
-
-    track GCF_011764305.1_ASM1176430v1.1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_011764305.1_ASM1176430v1.1ChainNet
-    spectrum on
-
-    track GCF_011764305.1_ASM1176430v1.1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_011764305.1_ASM1176430v1.1ChainNet
-    spectrum on
-
         track chainMm39
         parent GCF_011764305.1_ASM1176430v1.1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -314,30 +293,6 @@ html html/GCF_011764305.1_ASM1176430v1.1.chainNet
         type bigChain mm39
         bigDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainMm39.bb
         linkDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainMm39Link.bb
-        otherDb mm39
-        html html/GCF_011764305.1_ASM1176430v1.1.chainNet
-        priority 70.465
-
-        track chainSynMm39
-        parent GCF_011764305.1_ASM1176430v1.1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainSynMm39.bb
-        linkDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainSynMm39Link.bb
-        otherDb mm39
-        html html/GCF_011764305.1_ASM1176430v1.1.chainNet
-        priority 70.465
-
-        track chainRBestMm39
-        parent GCF_011764305.1_ASM1176430v1.1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
-        type bigChain mm39
-        bigDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainRBestMm39.bb
-        linkDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainRBestMm39Link.bb
         otherDb mm39
         html html/GCF_011764305.1_ASM1176430v1.1.chainNet
         priority 70.465
@@ -354,6 +309,25 @@ html html/GCF_011764305.1_ASM1176430v1.1.chainNet
         html html/GCF_011764305.1_ASM1176430v1.1.chainNet
         priority 70.673
 
+    track GCF_011764305.1_ASM1176430v1.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_011764305.1_ASM1176430v1.1ChainNet
+    spectrum on
+
+        track chainSynMm39
+        parent GCF_011764305.1_ASM1176430v1.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Mouse/mm39 synChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainSynMm39.bb
+        linkDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainSynMm39Link.bb
+        otherDb mm39
+        html html/GCF_011764305.1_ASM1176430v1.1.chainNet
+        priority 70.465
+
         track chainSynMm10
         parent GCF_011764305.1_ASM1176430v1.1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -365,6 +339,25 @@ html html/GCF_011764305.1_ASM1176430v1.1.chainNet
         otherDb mm10
         html html/GCF_011764305.1_ASM1176430v1.1.chainNet
         priority 70.673
+
+    track GCF_011764305.1_ASM1176430v1.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_011764305.1_ASM1176430v1.1ChainNet
+    spectrum on
+
+        track chainRBestMm39
+        parent GCF_011764305.1_ASM1176430v1.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Mouse/mm39 rbChain
+        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        type bigChain mm39
+        bigDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainRBestMm39.bb
+        linkDataUrl bbi/GCF_011764305.1_ASM1176430v1.1.chainRBestMm39Link.bb
+        otherDb mm39
+        html html/GCF_011764305.1_ASM1176430v1.1.chainNet
+        priority 70.465
 
         track chainRBestMm10
         parent GCF_011764305.1_ASM1176430v1.1ChainNetViewRBest off

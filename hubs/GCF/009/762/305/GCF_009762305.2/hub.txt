@@ -137,8 +137,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_009762305.2_mZalCal1.pri.v2.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.ncbiRefSeq.bb
@@ -155,8 +155,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_009762305.2_mZalCal1.pri.v2.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -172,8 +172,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_009762305.2_mZalCal1.pri.v2.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -331,27 +331,6 @@ html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
     parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
     spectrum on
 
-    track GCF_009762305.2_mZalCal1.pri.v2ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
-    spectrum on
-
-    track GCF_009762305.2_mZalCal1.pri.v2ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
-    spectrum on
-
-    track GCF_009762305.2_mZalCal1.pri.v2ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
-    spectrum on
-
         track chainCanFam3
         parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -360,42 +339,6 @@ html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         type bigChain canFam3
         bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainCanFam3.bb
         linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainCanFam3Link.bb
-        otherDb canFam3
-        html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
-        priority 21.286
-
-        track chainSynCanFam3
-        parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Dog/canFam3 synChain
-        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
-        type bigChain canFam3
-        bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainSynCanFam3.bb
-        linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainSynCanFam3Link.bb
-        otherDb canFam3
-        html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
-        priority 21.286
-
-        track chainRBestCanFam3
-        parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Dog/canFam3 rbChain
-        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
-        type bigChain canFam3
-        bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainRBestCanFam3.bb
-        linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainRBestCanFam3Link.bb
-        otherDb canFam3
-        html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
-        priority 21.286
-
-        track chainLiftOverCanFam3
-        parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Dog/canFam3 loChain
-        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
-        type bigChain canFam3
-        bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainLiftOverCanFam3.bb
-        linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainLiftOverCanFam3Link.bb
         otherDb canFam3
         html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         priority 21.286
@@ -412,6 +355,25 @@ html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         priority 38.034
 
+    track GCF_009762305.2_mZalCal1.pri.v2ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
+    spectrum on
+
+        track chainSynCanFam3
+        parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Dog/canFam3 synChain
+        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
+        type bigChain canFam3
+        bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainSynCanFam3.bb
+        linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainSynCanFam3Link.bb
+        otherDb canFam3
+        html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
+        priority 21.286
+
         track chainSynHg38
         parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
@@ -424,6 +386,25 @@ html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         priority 38.034
 
+    track GCF_009762305.2_mZalCal1.pri.v2ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
+    spectrum on
+
+        track chainRBestCanFam3
+        parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Dog/canFam3 rbChain
+        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
+        type bigChain canFam3
+        bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainRBestCanFam3.bb
+        linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainRBestCanFam3Link.bb
+        otherDb canFam3
+        html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
+        priority 21.286
+
         track chainRBestHg38
         parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
@@ -435,6 +416,25 @@ html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         otherDb hg38
         html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
         priority 38.034
+
+    track GCF_009762305.2_mZalCal1.pri.v2ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_009762305.2_mZalCal1.pri.v2ChainNet
+    spectrum on
+
+        track chainLiftOverCanFam3
+        parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Dog/canFam3 loChain
+        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
+        type bigChain canFam3
+        bigDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainLiftOverCanFam3.bb
+        linkDataUrl bbi/GCF_009762305.2_mZalCal1.pri.v2.chainLiftOverCanFam3Link.bb
+        otherDb canFam3
+        html html/GCF_009762305.2_mZalCal1.pri.v2.chainNet
+        priority 21.286
 
         track chainLiftOverHg38
         parent GCF_009762305.2_mZalCal1.pri.v2ChainNetViewLiftOver off

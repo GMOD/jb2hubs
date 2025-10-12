@@ -131,8 +131,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_014441545.1_ROS_Cfam_1.0.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.ncbiRefSeq.bb
@@ -149,8 +149,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_014441545.1_ROS_Cfam_1.0.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -166,8 +166,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_014441545.1_ROS_Cfam_1.0.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -325,27 +325,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
     parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
     spectrum on
 
-    track GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
-    spectrum on
-
-    track GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
-    spectrum on
-
-    track GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
-    spectrum on
-
         track chainCanFam4
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -354,42 +333,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         type bigChain canFam4
         bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainCanFam4.bb
         linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainCanFam4Link.bb
-        otherDb canFam4
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.385
-
-        track chainSynCanFam4
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Dog/canFam4 synChain
-        longLabel Dog/canFam4/canFam4 (Mar. 2020) Chained Alignments
-        type bigChain canFam4
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam4.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam4Link.bb
-        otherDb canFam4
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.385
-
-        track chainRBestCanFam4
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Dog/canFam4 rbChain
-        longLabel Dog/canFam4/canFam4 (Mar. 2020) Chained Alignments
-        type bigChain canFam4
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam4.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam4Link.bb
-        otherDb canFam4
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.385
-
-        track chainLiftOverCanFam4
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Dog/canFam4 loChain
-        longLabel Dog/canFam4/canFam4 (Mar. 2020) Chained Alignments
-        type bigChain canFam4
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam4.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam4Link.bb
         otherDb canFam4
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 1.385
@@ -406,42 +349,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 1.859
 
-        track chainSynCanFam3
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel Dog/canFam3 synChain
-        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
-        type bigChain canFam3
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam3.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam3Link.bb
-        otherDb canFam3
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.859
-
-        track chainRBestCanFam3
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel Dog/canFam3 rbChain
-        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
-        type bigChain canFam3
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam3.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam3Link.bb
-        otherDb canFam3
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.859
-
-        track chainLiftOverCanFam3
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
-        shortLabel Dog/canFam3 loChain
-        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
-        type bigChain canFam3
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam3.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam3Link.bb
-        otherDb canFam3
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.859
-
         track chainCanFam2
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
@@ -450,30 +357,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         type bigChain canFam2
         bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainCanFam2.bb
         linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainCanFam2Link.bb
-        otherDb canFam2
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.937
-
-        track chainSynCanFam2
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel Dog/canFam2 synChain
-        longLabel Dog/canFam2/canFam2 (May 2005) Chained Alignments
-        type bigChain canFam2
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam2.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam2Link.bb
-        otherDb canFam2
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 1.937
-
-        track chainRBestCanFam2
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel Dog/canFam2 rbChain
-        longLabel Dog/canFam2/canFam2 (May 2005) Chained Alignments
-        type bigChain canFam2
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam2.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam2Link.bb
         otherDb canFam2
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 1.937
@@ -490,42 +373,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 38.484
 
-        track chainSynHg38
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
-        subGroups view=synten species=s003 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg38.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.484
-
-        track chainRBestHg38
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
-        subGroups view=rbest species=s003 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.484
-
-        track chainLiftOverHg38
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s003 chainType=c03
-        shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverHg38.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverHg38Link.bb
-        otherDb hg38
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.484
-
         track chainHg19
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewchain off
         subGroups view=chain species=s004 chainType=c00
@@ -534,30 +381,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         type bigChain hg19
         bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainHg19.bb
         linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainHg19Link.bb
-        otherDb hg19
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.560
-
-        track chainSynHg19
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
-        subGroups view=synten species=s004 chainType=c01
-        shortLabel Human/hg19 synChain
-        longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
-        type bigChain hg19
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg19.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg19Link.bb
-        otherDb hg19
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.560
-
-        track chainRBestHg19
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
-        subGroups view=rbest species=s004 chainType=c02
-        shortLabel Human/hg19 rbChain
-        longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
-        type bigChain hg19
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg19.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg19Link.bb
         otherDb hg19
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 38.560
@@ -574,42 +397,6 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 38.996
 
-        track chainSynRheMac10
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
-        subGroups view=synten species=s005 chainType=c01
-        shortLabel Rhesus/rheMac10 synChain
-        longLabel Rhesus/rheMac10/rheMac10 (Feb. 2019) Chained Alignments
-        type bigChain rheMac10
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynRheMac10.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynRheMac10Link.bb
-        otherDb rheMac10
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.996
-
-        track chainRBestRheMac10
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
-        subGroups view=rbest species=s005 chainType=c02
-        shortLabel Rhesus/rheMac10 rbChain
-        longLabel Rhesus/rheMac10/rheMac10 (Feb. 2019) Chained Alignments
-        type bigChain rheMac10
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestRheMac10.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestRheMac10Link.bb
-        otherDb rheMac10
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.996
-
-        track chainLiftOverRheMac10
-        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s005 chainType=c03
-        shortLabel Rhesus/rheMac10 loChain
-        longLabel Rhesus/rheMac10/rheMac10 (Feb. 2019) Chained Alignments
-        type bigChain rheMac10
-        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverRheMac10.bb
-        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverRheMac10Link.bb
-        otherDb rheMac10
-        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
-        priority 38.996
-
         track chainMm10
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewchain off
         subGroups view=chain species=s006 chainType=c00
@@ -621,6 +408,85 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         otherDb mm10
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 68.090
+
+    track GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
+    spectrum on
+
+        track chainSynCanFam4
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Dog/canFam4 synChain
+        longLabel Dog/canFam4/canFam4 (Mar. 2020) Chained Alignments
+        type bigChain canFam4
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam4.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam4Link.bb
+        otherDb canFam4
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.385
+
+        track chainSynCanFam3
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Dog/canFam3 synChain
+        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
+        type bigChain canFam3
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam3.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam3Link.bb
+        otherDb canFam3
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.859
+
+        track chainSynCanFam2
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel Dog/canFam2 synChain
+        longLabel Dog/canFam2/canFam2 (May 2005) Chained Alignments
+        type bigChain canFam2
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam2.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynCanFam2Link.bb
+        otherDb canFam2
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.937
+
+        track chainSynHg38
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
+        subGroups view=synten species=s003 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg38.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg38Link.bb
+        otherDb hg38
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.484
+
+        track chainSynHg19
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel Human/hg19 synChain
+        longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
+        type bigChain hg19
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg19.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynHg19Link.bb
+        otherDb hg19
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.560
+
+        track chainSynRheMac10
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
+        subGroups view=synten species=s005 chainType=c01
+        shortLabel Rhesus/rheMac10 synChain
+        longLabel Rhesus/rheMac10/rheMac10 (Feb. 2019) Chained Alignments
+        type bigChain rheMac10
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynRheMac10.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainSynRheMac10Link.bb
+        otherDb rheMac10
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.996
 
         track chainSynMm10
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewSynTen off
@@ -634,6 +500,85 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 68.090
 
+    track GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
+    spectrum on
+
+        track chainRBestCanFam4
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Dog/canFam4 rbChain
+        longLabel Dog/canFam4/canFam4 (Mar. 2020) Chained Alignments
+        type bigChain canFam4
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam4.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam4Link.bb
+        otherDb canFam4
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.385
+
+        track chainRBestCanFam3
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Dog/canFam3 rbChain
+        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
+        type bigChain canFam3
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam3.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam3Link.bb
+        otherDb canFam3
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.859
+
+        track chainRBestCanFam2
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
+        shortLabel Dog/canFam2 rbChain
+        longLabel Dog/canFam2/canFam2 (May 2005) Chained Alignments
+        type bigChain canFam2
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam2.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestCanFam2Link.bb
+        otherDb canFam2
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.937
+
+        track chainRBestHg38
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
+        subGroups view=rbest species=s003 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg38Link.bb
+        otherDb hg38
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.484
+
+        track chainRBestHg19
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel Human/hg19 rbChain
+        longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
+        type bigChain hg19
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg19.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestHg19Link.bb
+        otherDb hg19
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.560
+
+        track chainRBestRheMac10
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
+        subGroups view=rbest species=s005 chainType=c02
+        shortLabel Rhesus/rheMac10 rbChain
+        longLabel Rhesus/rheMac10/rheMac10 (Feb. 2019) Chained Alignments
+        type bigChain rheMac10
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestRheMac10.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainRBestRheMac10Link.bb
+        otherDb rheMac10
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.996
+
         track chainRBestMm10
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewRBest off
         subGroups view=rbest species=s006 chainType=c02
@@ -645,6 +590,61 @@ html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         otherDb mm10
         html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
         priority 68.090
+
+    track GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_014441545.1_ROS_Cfam_1.0ChainNet
+    spectrum on
+
+        track chainLiftOverCanFam4
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Dog/canFam4 loChain
+        longLabel Dog/canFam4/canFam4 (Mar. 2020) Chained Alignments
+        type bigChain canFam4
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam4.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam4Link.bb
+        otherDb canFam4
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.385
+
+        track chainLiftOverCanFam3
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel Dog/canFam3 loChain
+        longLabel Dog/canFam3/canFam3 (Sep. 2011) Chained Alignments
+        type bigChain canFam3
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam3.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverCanFam3Link.bb
+        otherDb canFam3
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 1.859
+
+        track chainLiftOverHg38
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c03
+        shortLabel Human/hg38 loChain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverHg38Link.bb
+        otherDb hg38
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.484
+
+        track chainLiftOverRheMac10
+        parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s005 chainType=c03
+        shortLabel Rhesus/rheMac10 loChain
+        longLabel Rhesus/rheMac10/rheMac10 (Feb. 2019) Chained Alignments
+        type bigChain rheMac10
+        bigDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverRheMac10.bb
+        linkDataUrl bbi/GCF_014441545.1_ROS_Cfam_1.0.chainLiftOverRheMac10Link.bb
+        otherDb rheMac10
+        html html/GCF_014441545.1_ROS_Cfam_1.0.chainNet
+        priority 38.996
 
         track chainLiftOverMm10
         parent GCF_014441545.1_ROS_Cfam_1.0ChainNetViewLiftOver off

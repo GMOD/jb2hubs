@@ -138,8 +138,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_950295315.1_mEriEur2.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.ncbiRefSeq.bb
@@ -156,8 +156,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_950295315.1_mEriEur2.1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -173,8 +173,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_950295315.1_mEriEur2.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -313,27 +313,6 @@ html html/GCF_950295315.1_mEriEur2.1.chainNet
     parent GCF_950295315.1_mEriEur2.1ChainNet
     spectrum on
 
-    track GCF_950295315.1_mEriEur2.1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_950295315.1_mEriEur2.1ChainNet
-    spectrum on
-
-    track GCF_950295315.1_mEriEur2.1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_950295315.1_mEriEur2.1ChainNet
-    spectrum on
-
-    track GCF_950295315.1_mEriEur2.1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_950295315.1_mEriEur2.1ChainNet
-    spectrum on
-
         track chainGCF_002263795.3
         parent GCF_950295315.1_mEriEur2.1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -342,42 +321,6 @@ html html/GCF_950295315.1_mEriEur2.1.chainNet
         type bigChain GCF_002263795.3
         bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainGCF_002263795.3.bb
         linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_950295315.1_mEriEur2.1.chainNet
-        priority 71.894
-
-        track chainSynGCF_002263795.3
-        parent GCF_950295315.1_mEriEur2.1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel cattle synChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainSynGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainSynGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_950295315.1_mEriEur2.1.chainNet
-        priority 71.894
-
-        track chainRBestGCF_002263795.3
-        parent GCF_950295315.1_mEriEur2.1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel cattle rbChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainRBestGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainRBestGCF_002263795.3Link.bb
-        otherDb GCF_002263795.3
-        html html/GCF_950295315.1_mEriEur2.1.chainNet
-        priority 71.894
-
-        track chainLiftOverGCF_002263795.3
-        parent GCF_950295315.1_mEriEur2.1ChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel cattle loChain
-        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
-        type bigChain GCF_002263795.3
-        bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainLiftOverGCF_002263795.3.bb
-        linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainLiftOverGCF_002263795.3Link.bb
         otherDb GCF_002263795.3
         html html/GCF_950295315.1_mEriEur2.1.chainNet
         priority 71.894
@@ -394,11 +337,30 @@ html html/GCF_950295315.1_mEriEur2.1.chainNet
         html html/GCF_950295315.1_mEriEur2.1.chainNet
         priority 73.590
 
+    track GCF_950295315.1_mEriEur2.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_950295315.1_mEriEur2.1ChainNet
+    spectrum on
+
+        track chainSynGCF_002263795.3
+        parent GCF_950295315.1_mEriEur2.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel cattle synChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainSynGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainSynGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_950295315.1_mEriEur2.1.chainNet
+        priority 71.894
+
         track chainSynHg38
         parent GCF_950295315.1_mEriEur2.1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
         shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainSynHg38.bb
         linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainSynHg38Link.bb
@@ -406,11 +368,30 @@ html html/GCF_950295315.1_mEriEur2.1.chainNet
         html html/GCF_950295315.1_mEriEur2.1.chainNet
         priority 73.590
 
+    track GCF_950295315.1_mEriEur2.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_950295315.1_mEriEur2.1ChainNet
+    spectrum on
+
+        track chainRBestGCF_002263795.3
+        parent GCF_950295315.1_mEriEur2.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel cattle rbChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainRBestGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainRBestGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_950295315.1_mEriEur2.1.chainNet
+        priority 71.894
+
         track chainRBestHg38
         parent GCF_950295315.1_mEriEur2.1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainRBestHg38.bb
         linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainRBestHg38Link.bb
@@ -418,11 +399,30 @@ html html/GCF_950295315.1_mEriEur2.1.chainNet
         html html/GCF_950295315.1_mEriEur2.1.chainNet
         priority 73.590
 
+    track GCF_950295315.1_mEriEur2.1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_950295315.1_mEriEur2.1ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_002263795.3
+        parent GCF_950295315.1_mEriEur2.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel cattle loChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
+        type bigChain GCF_002263795.3
+        bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainLiftOverGCF_002263795.3.bb
+        linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainLiftOverGCF_002263795.3Link.bb
+        otherDb GCF_002263795.3
+        html html/GCF_950295315.1_mEriEur2.1.chainNet
+        priority 71.894
+
         track chainLiftOverHg38
         parent GCF_950295315.1_mEriEur2.1ChainNetViewLiftOver off
         subGroups view=liftover species=s001 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainLiftOverHg38.bb
         linkDataUrl bbi/GCF_950295315.1_mEriEur2.1.chainLiftOverHg38Link.bb

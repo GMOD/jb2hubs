@@ -127,8 +127,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017654675.1_Xenopus_laevis_v10.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.ncbiRefSeq.bb
@@ -145,8 +145,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017654675.1_Xenopus_laevis_v10.1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -162,8 +162,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017654675.1_Xenopus_laevis_v10.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -321,27 +321,6 @@ html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
     parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
     spectrum on
 
-    track GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
-    spectrum on
-
-    track GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
-    spectrum on
-
-    track GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
-    spectrum on
-
         track chainGCF_000004195.4
         parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -350,30 +329,6 @@ html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         type bigChain GCF_000004195.4
         bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainGCF_000004195.4.bb
         linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainGCF_000004195.4Link.bb
-        otherDb GCF_000004195.4
-        html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
-        priority 54.623
-
-        track chainSynGCF_000004195.4
-        parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel tropical clawed frog synChain
-        longLabel tropical clawed frog/GCF_000004195.4_UCB_Xtro_10.0 (2019-11-14) Chained Alignments
-        type bigChain GCF_000004195.4
-        bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainSynGCF_000004195.4.bb
-        linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainSynGCF_000004195.4Link.bb
-        otherDb GCF_000004195.4
-        html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
-        priority 54.623
-
-        track chainRBestGCF_000004195.4
-        parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel tropical clawed frog rbChain
-        longLabel tropical clawed frog/GCF_000004195.4_UCB_Xtro_10.0 (2019-11-14) Chained Alignments
-        type bigChain GCF_000004195.4
-        bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainRBestGCF_000004195.4.bb
-        linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainRBestGCF_000004195.4Link.bb
         otherDb GCF_000004195.4
         html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         priority 54.623
@@ -390,11 +345,30 @@ html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         priority 57.705
 
+    track GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
+    spectrum on
+
+        track chainSynGCF_000004195.4
+        parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel tropical clawed frog synChain
+        longLabel tropical clawed frog/GCF_000004195.4_UCB_Xtro_10.0 (2019-11-14) Chained Alignments
+        type bigChain GCF_000004195.4
+        bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainSynGCF_000004195.4.bb
+        linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainSynGCF_000004195.4Link.bb
+        otherDb GCF_000004195.4
+        html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
+        priority 54.623
+
         track chainSynXenTro10
         parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
         shortLabel X. tropicalis/xenTro10 synChain
-        longLabel X. tropicalis/xenTro10/xenTro10 (Nov. 2019) Chained Alignments
+        longLabel X. tropicalis/xenTro10/xenTro10_UCB_Xtro_10.0 (Nov. 2019) Chained Alignments
         type bigChain xenTro10
         bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainSynXenTro10.bb
         linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainSynXenTro10Link.bb
@@ -402,11 +376,30 @@ html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         priority 57.705
 
+    track GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
+    spectrum on
+
+        track chainRBestGCF_000004195.4
+        parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel tropical clawed frog rbChain
+        longLabel tropical clawed frog/GCF_000004195.4_UCB_Xtro_10.0 (2019-11-14) Chained Alignments
+        type bigChain GCF_000004195.4
+        bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainRBestGCF_000004195.4.bb
+        linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainRBestGCF_000004195.4Link.bb
+        otherDb GCF_000004195.4
+        html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
+        priority 54.623
+
         track chainRBestXenTro10
         parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
         shortLabel X. tropicalis/xenTro10 rbChain
-        longLabel X. tropicalis/xenTro10/xenTro10 (Nov. 2019) Chained Alignments
+        longLabel X. tropicalis/xenTro10/xenTro10_UCB_Xtro_10.0 (Nov. 2019) Chained Alignments
         type bigChain xenTro10
         bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainRBestXenTro10.bb
         linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainRBestXenTro10Link.bb
@@ -414,11 +407,18 @@ html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         html html/GCF_017654675.1_Xenopus_laevis_v10.1.chainNet
         priority 57.705
 
+    track GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNet
+    spectrum on
+
         track chainLiftOverXenTro10
         parent GCF_017654675.1_Xenopus_laevis_v10.1ChainNetViewLiftOver off
         subGroups view=liftover species=s001 chainType=c03
         shortLabel X. tropicalis/xenTro10 loChain
-        longLabel X. tropicalis/xenTro10/xenTro10 (Nov. 2019) Chained Alignments
+        longLabel X. tropicalis/xenTro10/xenTro10_UCB_Xtro_10.0 (Nov. 2019) Chained Alignments
         type bigChain xenTro10
         bigDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainLiftOverXenTro10.bb
         linkDataUrl bbi/GCF_017654675.1_Xenopus_laevis_v10.1.chainLiftOverXenTro10Link.bb

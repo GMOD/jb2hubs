@@ -119,8 +119,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002285.5_Dog10K_Boxer_Tasha.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.ncbiRefSeq.bb
@@ -137,8 +137,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002285.5_Dog10K_Boxer_Tasha.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -154,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002285.5_Dog10K_Boxer_Tasha.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -313,27 +313,6 @@ html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
     parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
     spectrum on
 
-    track GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
-    spectrum on
-
-    track GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
-    spectrum on
-
-    track GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
-    spectrum on
-
         track chainGCA_905319855.2
         parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
@@ -342,42 +321,6 @@ html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         type bigChain GCA_905319855.2
         bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainGCA_905319855.2.bb
         linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainGCA_905319855.2Link.bb
-        otherDb GCA_905319855.2
-        html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
-        priority 1.267
-
-        track chainSynGCA_905319855.2
-        parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel gray wolf synChain
-        longLabel gray wolf/GCA_905319855.2_mCanLor1.2 (2021-03-26) Chained Alignments
-        type bigChain GCA_905319855.2
-        bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainSynGCA_905319855.2.bb
-        linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainSynGCA_905319855.2Link.bb
-        otherDb GCA_905319855.2
-        html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
-        priority 1.267
-
-        track chainRBestGCA_905319855.2
-        parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel gray wolf rbChain
-        longLabel gray wolf/GCA_905319855.2_mCanLor1.2 (2021-03-26) Chained Alignments
-        type bigChain GCA_905319855.2
-        bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainRBestGCA_905319855.2.bb
-        linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainRBestGCA_905319855.2Link.bb
-        otherDb GCA_905319855.2
-        html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
-        priority 1.267
-
-        track chainLiftOverGCA_905319855.2
-        parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel gray wolf loChain
-        longLabel gray wolf/GCA_905319855.2_mCanLor1.2 (2021-03-26) Chained Alignments
-        type bigChain GCA_905319855.2
-        bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainLiftOverGCA_905319855.2.bb
-        linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainLiftOverGCA_905319855.2Link.bb
         otherDb GCA_905319855.2
         html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         priority 1.267
@@ -394,11 +337,30 @@ html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         priority 68.025
 
+    track GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
+    spectrum on
+
+        track chainSynGCA_905319855.2
+        parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel gray wolf synChain
+        longLabel gray wolf/GCA_905319855.2_mCanLor1.2 (2021-03-26) Chained Alignments
+        type bigChain GCA_905319855.2
+        bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainSynGCA_905319855.2.bb
+        linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainSynGCA_905319855.2Link.bb
+        otherDb GCA_905319855.2
+        html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
+        priority 1.267
+
         track chainSynRn7
         parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
         shortLabel Rat/rn7 synChain
-        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
+        longLabel Rat/rn7/rn7_mCanLor1.2 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainSynRn7.bb
         linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainSynRn7Link.bb
@@ -406,11 +368,30 @@ html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         priority 68.025
 
+    track GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
+    spectrum on
+
+        track chainRBestGCA_905319855.2
+        parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel gray wolf rbChain
+        longLabel gray wolf/GCA_905319855.2_mCanLor1.2 (2021-03-26) Chained Alignments
+        type bigChain GCA_905319855.2
+        bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainRBestGCA_905319855.2.bb
+        linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainRBestGCA_905319855.2Link.bb
+        otherDb GCA_905319855.2
+        html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
+        priority 1.267
+
         track chainRBestRn7
         parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
         shortLabel Rat/rn7 rbChain
-        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
+        longLabel Rat/rn7/rn7_mCanLor1.2 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainRBestRn7.bb
         linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainRBestRn7Link.bb
@@ -418,11 +399,30 @@ html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
         priority 68.025
 
+    track GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000002285.5_Dog10K_Boxer_TashaChainNet
+    spectrum on
+
+        track chainLiftOverGCA_905319855.2
+        parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel gray wolf loChain
+        longLabel gray wolf/GCA_905319855.2_mCanLor1.2 (2021-03-26) Chained Alignments
+        type bigChain GCA_905319855.2
+        bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainLiftOverGCA_905319855.2.bb
+        linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainLiftOverGCA_905319855.2Link.bb
+        otherDb GCA_905319855.2
+        html html/GCF_000002285.5_Dog10K_Boxer_Tasha.chainNet
+        priority 1.267
+
         track chainLiftOverRn7
         parent GCF_000002285.5_Dog10K_Boxer_TashaChainNetViewLiftOver off
         subGroups view=liftover species=s001 chainType=c03
         shortLabel Rat/rn7 loChain
-        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
+        longLabel Rat/rn7/rn7_mCanLor1.2 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainLiftOverRn7.bb
         linkDataUrl bbi/GCF_000002285.5_Dog10K_Boxer_Tasha.chainLiftOverRn7Link.bb

@@ -21,6 +21,7 @@ htmlPath html/GCF_009873245.2_mBalMus1.pri.v3.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/009/873/245/GCF_009873245.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/009/873/245/GCF_009873245.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/009/873/245/GCF_009873245.2
+liftOver.hg38 liftOver/GCF_009873245.2ToHg38.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -135,8 +136,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_009873245.2_mBalMus1.pri.v3.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.ncbiRefSeq.bb
@@ -153,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_009873245.2_mBalMus1.pri.v3.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -284,6 +285,115 @@ baseColorUseCds given
 baseColorDefault genomicCodons
 labelSeparator " "
 html html/GCF_009873245.2_mBalMus1.pri.v3.ensGene
+
+##############################################################################
+# hg38 - Human - Homo sapiens - taxId: 9606
+##############################################################################
+track chainNetHg38
+compositeTrack on
+shortLabel Human Chain/Net
+longLabel Human (Dec. 2013 (GRCh38/hg38)), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainMinScore 3000
+chainLinearGap medium
+matrixHeader A, C, G, T
+otherDb hg38
+html html/GCF_009873245.2_mBalMus1.pri.v3.chainNet
+
+    track chainNetHg38Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetHg38
+    spectrum on
+
+        track chainHg38
+        parent chainNetHg38Viewchain
+        subGroups view=chain
+        shortLabel Human Chain
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainHg38.bb
+        linkDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainHg38Link.bb
+        priority 1
+
+        track chainSynHg38
+        parent chainNetHg38Viewchain
+        subGroups view=chain
+        shortLabel Human synChain
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Syntenic Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainSynHg38.bb
+        linkDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainSynHg38Link.bb
+        priority 2
+
+        track chainRBestHg38
+        parent chainNetHg38Viewchain
+        subGroups view=chain
+        shortLabel Human rbChain
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Reciprocal Best Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainRBestHg38.bb
+        linkDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainRBestHg38Link.bb
+        priority 3
+
+        track chainLiftOverHg38
+        parent chainNetHg38Viewchain
+        subGroups view=chain
+        shortLabel Human loChain
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Lift Over Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.chainLiftOverHg38Link.bb
+        priority 4
+
+    track mafNetHg38Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetHg38
+
+        track netHg38
+        parent mafNetHg38Viewnet
+        subGroups view=net
+        shortLabel Human net
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.hg38.net.bb
+        summary bbi/GCF_009873245.2_mBalMus1.pri.v3.hg38.net.summary.bb
+        speciesOrder hg38
+        priority 5
+
+        track synNetHg38
+        parent mafNetHg38Viewnet
+        subGroups view=net
+        shortLabel Human synNet
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.hg38.synNet.bb
+        summary bbi/GCF_009873245.2_mBalMus1.pri.v3.hg38.synNet.summary.bb
+        speciesOrder hg38
+        priority 6
+
+        track rbestNetHg38
+        parent mafNetHg38Viewnet
+        subGroups view=net
+        shortLabel Human rbestNet
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_009873245.2_mBalMus1.pri.v3.hg38.rbestNet.bb
+        summary bbi/GCF_009873245.2_mBalMus1.pri.v3.hg38.rbestNet.summary.bb
+        speciesOrder hg38
+        priority 7
 
 track HLTOGAannotvHg38v1
 bigDataUrl bbi/HLTOGAannotVsHg38v1.bb
