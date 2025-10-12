@@ -28,7 +28,7 @@ interface TreeNode {
 }
 
 interface FlatNodeData {
-  id: string
+  id: string | number // Must match TreeNode.id type from the library
   name?: string
   accession?: string
   branchLength?: number
@@ -208,6 +208,14 @@ export default function PhylogeneticTreeVirtualized({
     setExpanded(new Set())
   }
 
+  // Expand all nodes by default when tree loads
+  React.useEffect(() => {
+    if (rootId && Object.keys(tree).length > 0) {
+      const allIds = Object.keys(tree).filter(id => tree[id].children)
+      setExpanded(new Set(allIds))
+    }
+  }, [rootId, tree])
+
   // Get children for StickyTree
   const getChildren = (parentNode: any) => {
     console.log('getChildren called, parentNode:', parentNode)
@@ -247,7 +255,13 @@ export default function PhylogeneticTreeVirtualized({
   }
 
   // Render row for StickyTree
-  const rowRenderer = ({ node, style }: { node: FlatNodeData; style: React.CSSProperties }) => {
+  const rowRenderer = ({
+    node,
+    style,
+  }: {
+    node: FlatNodeData
+    style: React.CSSProperties
+  }) => {
     if (!node) return null
 
     const hasChildren = node.children && node.children.length > 0
@@ -255,7 +269,9 @@ export default function PhylogeneticTreeVirtualized({
     const indent = node.depth * 20
 
     // Get species metadata if this is a leaf node with an accession
-    const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefined
+    const speciesInfo = node.accession
+      ? speciesDataMap.get(node.accession)
+      : undefined
 
     return (
       <div
@@ -267,8 +283,7 @@ export default function PhylogeneticTreeVirtualized({
           backgroundColor: node.depth % 2 === 0 ? '#ffffff' : '#f9fafb',
           borderBottom: '1px solid #e5e7eb',
           cursor: hasChildren ? 'pointer' : 'default',
-          fontFamily: 'monospace',
-          fontSize: '13px',
+          // fontSize: '13px',
         }}
         onClick={() => hasChildren && toggleExpand(node.id)}
       >
@@ -294,14 +309,20 @@ export default function PhylogeneticTreeVirtualized({
         >
           <span
             style={{
-              fontWeight: node.isLeaf ? 'normal' : '500',
+              // fontWeight: node.isLeaf ? 'normal' : '500',
               color: node.isLeaf ? '#374151' : '#1f2937',
             }}
           >
             {node.name || 'Unnamed'}
           </span>
           {speciesInfo?.commonName && (
-            <span style={{ color: '#6b7280', fontSize: '12px', fontStyle: 'italic' }}>
+            <span
+              style={{
+                color: '#6b7280',
+                // fontSize: '12px',
+                // fontStyle: 'italic',
+              }}
+            >
               ({speciesInfo.commonName})
             </span>
           )}
@@ -311,7 +332,7 @@ export default function PhylogeneticTreeVirtualized({
                 href={`/accession/${node.accession}`}
                 style={{
                   color: '#2563eb',
-                  fontSize: '12px',
+                  // fontSize: '12px',
                   textDecoration: 'underline',
                 }}
                 onClick={e => e.stopPropagation()}
@@ -321,7 +342,7 @@ export default function PhylogeneticTreeVirtualized({
               <span
                 style={{
                   color: '#2563eb',
-                  fontSize: '12px',
+                  // fontSize: '12px',
                   backgroundColor: '#eff6ff',
                   padding: '2px 6px',
                   borderRadius: '4px',
@@ -356,8 +377,13 @@ export default function PhylogeneticTreeVirtualized({
               />
             </span>
           )}
-          {node.branchLength !== undefined && (
-            <span style={{ color: '#6b7280', fontSize: '11px' }}>
+          {node.branchLength !== undefined && node.branchLength !== 1.0 && (
+            <span
+              style={{
+                color: '#6b7280',
+                // fontSize: '11px',
+              }}
+            >
               [{node.branchLength.toFixed(4)}]
             </span>
           )}
@@ -376,7 +402,9 @@ export default function PhylogeneticTreeVirtualized({
           borderRadius: '4px',
         }}
       >
-        <h3 style={{ color: '#991b1b', fontWeight: '600', marginBottom: '8px' }}>
+        <h3
+          style={{ color: '#991b1b', fontWeight: '600', marginBottom: '8px' }}
+        >
           Error loading phylogenetic tree
         </h3>
         <p style={{ color: '#dc2626' }}>{error}</p>
@@ -462,10 +490,16 @@ export default function PhylogeneticTreeVirtualized({
       </div>
       <div style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
         <p>
-          Click nodes to expand/collapse • Click (info) to view details • Click accessions to copy
-          • <Star fill="orange" strokeWidth={0} size={12} style={{ display: 'inline' }} />{' '}
-          Designated reference • <X stroke="red" size={12} style={{ display: 'inline' }} />{' '}
-          Suppressed
+          Click nodes to expand/collapse • Click (info) to view details • Click
+          accessions to copy •{' '}
+          <Star
+            fill="orange"
+            strokeWidth={0}
+            size={12}
+            style={{ display: 'inline' }}
+          />{' '}
+          Designated reference •{' '}
+          <X stroke="red" size={12} style={{ display: 'inline' }} /> Suppressed
         </p>
       </div>
     </div>
