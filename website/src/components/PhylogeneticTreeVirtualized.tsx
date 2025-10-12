@@ -1,10 +1,20 @@
 'use client'
 import React, { useState, useMemo } from 'react'
 import { StickyTree } from 'react-virtualized-sticky-tree'
-import { ChevronRight, ChevronDown } from 'lucide-react'
+import { ChevronRight, ChevronDown, Star, X } from 'lucide-react'
+
+interface SpeciesData {
+  accession: string
+  commonName?: string
+  scientificName?: string
+  ncbiRefSeqCategory?: string
+  suppressed?: boolean
+  [key: string]: any
+}
 
 interface PhylogeneticTreeProps {
   newickData: string
+  speciesData?: SpeciesData[]
   width?: number
   height?: number
 }
@@ -144,11 +154,21 @@ function convertToFlatTree(node: TreeNode): { tree: FlatTree; rootId: string } {
 
 export default function PhylogeneticTreeVirtualized({
   newickData,
+  speciesData = [],
   width = 800,
   height = 600,
 }: PhylogeneticTreeProps) {
   const [error, setError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['node_0']))
+
+  // Create a lookup map for species data by accession
+  const speciesDataMap = useMemo(() => {
+    const map = new Map<string, SpeciesData>()
+    speciesData.forEach(species => {
+      map.set(species.accession, species)
+    })
+    return map
+  }, [speciesData])
 
   // Parse and convert tree
   const { tree, rootId } = useMemo(() => {
@@ -234,6 +254,9 @@ export default function PhylogeneticTreeVirtualized({
     const isExpanded = expanded.has(node.id)
     const indent = node.depth * 20
 
+    // Get species metadata if this is a leaf node with an accession
+    const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefined
+
     return (
       <div
         style={{
@@ -277,22 +300,60 @@ export default function PhylogeneticTreeVirtualized({
           >
             {node.name || 'Unnamed'}
           </span>
+          {speciesInfo?.commonName && (
+            <span style={{ color: '#6b7280', fontSize: '12px', fontStyle: 'italic' }}>
+              ({speciesInfo.commonName})
+            </span>
+          )}
           {node.accession && (
-            <span
-              style={{
-                color: '#2563eb',
-                fontSize: '12px',
-                backgroundColor: '#eff6ff',
-                padding: '2px 6px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-              onClick={e => {
-                e.stopPropagation()
-                navigator.clipboard.writeText(node.accession!)
-              }}
-            >
-              {node.accession}
+            <>
+              <a
+                href={`/accession/${node.accession}`}
+                style={{
+                  color: '#2563eb',
+                  fontSize: '12px',
+                  textDecoration: 'underline',
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                (info)
+              </a>
+              <span
+                style={{
+                  color: '#2563eb',
+                  fontSize: '12px',
+                  backgroundColor: '#eff6ff',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                }}
+                onClick={e => {
+                  e.stopPropagation()
+                  navigator.clipboard.writeText(node.accession!)
+                }}
+                title="Click to copy accession"
+              >
+                {node.accession}
+              </span>
+            </>
+          )}
+          {speciesInfo?.ncbiRefSeqCategory === 'reference genome' && (
+            <span title="NCBI designated reference">
+              <Star
+                fill="orange"
+                strokeWidth={0}
+                size={14}
+                style={{ display: 'inline-block', verticalAlign: 'middle' }}
+              />
+            </span>
+          )}
+          {speciesInfo?.suppressed && (
+            <span title="NCBI RefSeq suppressed">
+              <X
+                stroke="red"
+                size={14}
+                style={{ display: 'inline-block', verticalAlign: 'middle' }}
+              />
             </span>
           )}
           {node.branchLength !== undefined && (
@@ -400,7 +461,12 @@ export default function PhylogeneticTreeVirtualized({
         />
       </div>
       <div style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
-        <p>Click nodes to expand/collapse • Click accessions to copy to clipboard</p>
+        <p>
+          Click nodes to expand/collapse • Click (info) to view details • Click accessions to copy
+          • <Star fill="orange" strokeWidth={0} size={12} style={{ display: 'inline' }} />{' '}
+          Designated reference • <X stroke="red" size={12} style={{ display: 'inline' }} />{' '}
+          Suppressed
+        </p>
       </div>
     </div>
   )

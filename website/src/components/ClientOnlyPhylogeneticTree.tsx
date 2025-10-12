@@ -2,12 +2,23 @@
 import React, { useEffect, useState } from 'react'
 import PhylogeneticTreeVirtualized from './PhylogeneticTreeVirtualized'
 
+interface SpeciesData {
+  accession: string
+  commonName?: string
+  scientificName?: string
+  ncbiRefSeqCategory?: string
+  suppressed?: boolean
+  [key: string]: any
+}
+
 interface ClientOnlyPhylogeneticTreeProps {
   category?: string
+  speciesData?: SpeciesData[]
 }
 
 export default function ClientOnlyPhylogeneticTree({
   category = 'all',
+  speciesData = [],
 }: ClientOnlyPhylogeneticTreeProps) {
   const [newickData, setNewickData] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -62,6 +73,11 @@ export default function ClientOnlyPhylogeneticTree({
   }
 
   return (
-    <PhylogeneticTreeVirtualized newickData={newickData} width={1200} height={800} />
+    <PhylogeneticTreeVirtualized
+      newickData={newickData}
+      speciesData={speciesData}
+      width={1200}
+      height={800}
+    />
   )
 }

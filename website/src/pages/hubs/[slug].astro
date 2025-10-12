@@ -30,7 +30,7 @@ const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 <Layout title={`GenArk hubs - ${title}`}>
   <Container2>
     <h1>GenArk hubs - {title}</h1>
-    <ClientOnlyPhylogeneticTree client:load />
+    <ClientOnlyPhylogeneticTree category={slug} speciesData={rows} client:load />
     <ClientOnlyDataTable rows={rows} client:load />
   </Container2>
 </Layout>

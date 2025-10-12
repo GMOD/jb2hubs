@@ -5,7 +5,8 @@
   "version": "0.0.1",
   "scripts": {
     "clean": "rm -rf dist",
-    "prebuild": "yarn clean",
+    "generate-phylogenies": "cd taxonomyBuilder && ./generate_all_phylogenies.sh",
+    "prebuild": "yarn clean && yarn generate-phylogenies",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
