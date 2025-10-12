@@ -55,16 +55,16 @@ export default function ClientOnlyPhylogeneticTree({
 
   if (!showTree) {
     return (
-      <button onClick={() => setShowTree(true)}>
-        Show phylogenetic tree
-      </button>
+      <button onClick={() => setShowTree(true)}>Show phylogenetic tree</button>
     )
   }
 
   if (error) {
     return (
       <div className="p-4 border border-red-300 bg-red-50 rounded">
-        <h3 className="text-red-800 font-semibold">Error loading phylogenetic tree</h3>
+        <h3 className="text-red-800 font-semibold">
+          Error loading phylogenetic tree
+        </h3>
         <p className="text-red-600">{error}</p>
       </div>
     )
@@ -78,14 +78,18 @@ export default function ClientOnlyPhylogeneticTree({
     )
   }
 
-  const header = title && hubsLink ? (
-    <>
-      <h1 style={{ margin: 0 }}>GenArk phylogeny - {title}</h1>
-      <a href={hubsLink} style={{ color: '#2563eb', textDecoration: 'underline' }}>
-        View data table for {title}
-      </a>
-    </>
-  ) : undefined
+  const header =
+    title && hubsLink ? (
+      <>
+        <h1 style={{ margin: 0 }}>GenArk phylogeny - {title}</h1>
+        <a
+          href={hubsLink}
+          style={{ color: '#2563eb', textDecoration: 'underline' }}
+        >
+          View list of species as table for {title}
+        </a>
+      </>
+    ) : undefined
 
   return (
     <PhylogeneticTreeVirtualized

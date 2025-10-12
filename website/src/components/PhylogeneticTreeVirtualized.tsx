@@ -228,15 +228,6 @@ export default function PhylogeneticTreeVirtualized({
     setExpanded(newExpanded)
   }
 
-  const expandAll = () => {
-    const allIds = Object.keys(tree).filter(id => tree[id].children)
-    setExpanded(new Set(allIds))
-  }
-
-  const collapseAll = () => {
-    setExpanded(new Set())
-  }
-
   // Expand all nodes by default when tree loads
   React.useEffect(() => {
     if (rootId && Object.keys(tree).length > 0) {
@@ -371,7 +362,7 @@ export default function PhylogeneticTreeVirtualized({
           </span>
           {node.name && (
             <a
-              href={`https://www.google.com/search?q=${encodeURIComponent(node.name)}`}
+              href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodeURIComponent(node.name)}&searchMode=complete+name&lock=1&unlock=1&command=search`}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -513,8 +504,6 @@ export default function PhylogeneticTreeVirtualized({
             flexWrap: 'wrap',
           }}
         >
-          <button onClick={expandAll}>Expand all</button>
-          <button onClick={collapseAll}>Collapse all</button>
           <label
             style={{
               display: 'flex',
@@ -580,7 +569,7 @@ export default function PhylogeneticTreeVirtualized({
             zIndex: stickyEnabled ? 100 : undefined, // Root has highest z-index
           }}
           width={width || containerWidth}
-          height={height}
+          height={height + (stickyEnabled ? 32 * maxStickyLevels : 0)}
           getChildren={getChildren}
           rowRenderer={rowRenderer}
           renderRoot={true}

@@ -47,6 +47,11 @@ echo "Fetching wiki images"
 echo "Calculate gff file hashes"
 ./getFileListing.sh
 
+echo "Generating phylogenies for website..."
+cd ../website/taxonomyBuilder
+./generate_all_phylogenies.sh
+cd ../../genark2jbrowse
+
 sleep 1 # Small pause
 
 echo "Formatting codebase..."
