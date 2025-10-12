@@ -76,7 +76,6 @@ export default function ClientOnlyPhylogeneticTree({
     <PhylogeneticTreeVirtualized
       newickData={newickData}
       speciesData={speciesData}
-      width={1200}
       height={800}
     />
   )

@@ -128,6 +128,29 @@ function convertToFlatTree(node: TreeNode): { tree: FlatTree; rootId: string } {
     const id = `node_${nodeCounter++}`
     const childIds: string[] = []
 
+    // Check if this node should be collapsed:
+    // If it has exactly one child that is a leaf with the same name, skip the intermediate node
+    if (
+      n.children &&
+      n.children.length === 1 &&
+      (!n.children[0].children || n.children[0].children.length === 0) && // child is a leaf
+      n.name === n.children[0].name && // names match
+      n.children[0].accession // child has an accession
+    ) {
+      // Collapse: use the child's accession but keep the parent's position in tree
+      tree[id] = {
+        id,
+        name: n.name,
+        accession: n.children[0].accession, // Promote child's accession
+        branchLength: n.children[0].branchLength,
+        children: undefined,
+        depth,
+        isLeaf: true,
+      }
+      return id
+    }
+
+    // Normal case: process children
     if (n.children && n.children.length > 0) {
       for (const child of n.children) {
         const childId = traverse(child, depth + 1)
@@ -155,11 +178,13 @@ function convertToFlatTree(node: TreeNode): { tree: FlatTree; rootId: string } {
 export default function PhylogeneticTreeVirtualized({
   newickData,
   speciesData = [],
-  width = 800,
+  width,
   height = 600,
 }: PhylogeneticTreeProps) {
   const [error, setError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['node_0']))
+  const containerRef = React.useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = React.useState(800)
 
   // Create a lookup map for species data by accession
   const speciesDataMap = useMemo(() => {
@@ -216,6 +241,19 @@ export default function PhylogeneticTreeVirtualized({
     }
   }, [rootId, tree])
 
+  // Measure container width to make tree responsive
+  React.useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth)
+      }
+    }
+
+    updateWidth()
+    window.addEventListener('resize', updateWidth)
+    return () => window.removeEventListener('resize', updateWidth)
+  }, [])
+
   // Get children for StickyTree
   const getChildren = (parentNode: any) => {
     console.log('getChildren called, parentNode:', parentNode)
@@ -244,10 +282,13 @@ export default function PhylogeneticTreeVirtualized({
       if (!childNode) {
         console.warn('  child not found:', childId)
       }
+      // Only make nodes with children sticky (internal nodes)
+      const hasChildren = childNode.children && childNode.children.length > 0
       return {
         node: childNode,
         height: 32,
-        isSticky: true,
+        isSticky: hasChildren,
+        stickyTop: 0,
       }
     })
     console.log('  returning', children.length, 'children')
@@ -280,9 +321,12 @@ export default function PhylogeneticTreeVirtualized({
           display: 'flex',
           alignItems: 'center',
           paddingLeft: `${indent}px`,
+          paddingRight: '16px',
           backgroundColor: node.depth % 2 === 0 ? '#ffffff' : '#f9fafb',
           borderBottom: '1px solid #e5e7eb',
           cursor: hasChildren ? 'pointer' : 'default',
+          width: '100%',
+          boxSizing: 'border-box',
           // fontSize: '13px',
         }}
         onClick={() => hasChildren && toggleExpand(node.id)}
@@ -346,13 +390,7 @@ export default function PhylogeneticTreeVirtualized({
                   backgroundColor: '#eff6ff',
                   padding: '2px 6px',
                   borderRadius: '4px',
-                  cursor: 'pointer',
                 }}
-                onClick={e => {
-                  e.stopPropagation()
-                  navigator.clipboard.writeText(node.accession!)
-                }}
-                title="Click to copy accession"
               >
                 {node.accession}
               </span>
@@ -441,37 +479,14 @@ export default function PhylogeneticTreeVirtualized({
           flexWrap: 'wrap',
         }}
       >
-        <button
-          onClick={expandAll}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#f3f4f6',
-            border: '1px solid #d1d5db',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '14px',
-          }}
-        >
-          Expand All
-        </button>
-        <button
-          onClick={collapseAll}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#f3f4f6',
-            border: '1px solid #d1d5db',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '14px',
-          }}
-        >
-          Collapse All
-        </button>
-        <div style={{ fontSize: '14px', color: '#6b7280', marginLeft: 'auto' }}>
-          {leafCount} leaves • {accessionCount} accessions
+        <button onClick={expandAll}>Expand all</button>
+        <button onClick={collapseAll}>Collapse all</button>
+        <div style={{ color: '#6b7280', marginLeft: 'auto' }}>
+          {accessionCount} accessions
         </div>
       </div>
       <div
+        ref={containerRef}
         style={{
           border: '1px solid #d1d5db',
           borderRadius: '4px',
@@ -480,7 +495,7 @@ export default function PhylogeneticTreeVirtualized({
       >
         <StickyTree
           root={{ node: tree[rootId], height: 32 }}
-          width={width}
+          width={width || containerWidth}
           height={height}
           getChildren={getChildren}
           rowRenderer={rowRenderer}
