@@ -128,6 +128,7 @@ function calculateLayout(
   width: number,
   height: number,
   verticalZoom: number = 1,
+  scrollOffset: number = 0,
 ) {
   if (!root) return
 
@@ -164,8 +165,10 @@ function calculateLayout(
 
   for (const node of allNodes) {
     node.x = node.x! * xFactor + 50
-    node.y = node.y! * actualSpacing + 20
+    node.y = node.y! * actualSpacing + 20 - scrollOffset
   }
+
+  return leafIndex
 }
 
 const memoizedGetTotalLeaves = (() => {
@@ -257,7 +260,10 @@ export default function PhylogeneticTree({
   const [isCircular, setIsCircular] = useState(false)
   const [verticalZoom, setVerticalZoom] = useState(1)
   const [showNonLeafText, setShowNonLeafText] = useState(false)
+  const [scrollOffset, setScrollOffset] = useState(0)
+  const [isDraggingScrollbar, setIsDraggingScrollbar] = useState(false)
   const animationFrameId = useRef<number | null>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Tooltip state
   const [hoveredNode, setHoveredNode] = useState<TreeNode | null>(null)
@@ -322,7 +328,7 @@ export default function PhylogeneticTree({
         if (isCircular) {
           calculateCircularLayout(parsedTree, width, height)
         } else {
-          calculateLayout(parsedTree, width, height, verticalZoom)
+          calculateLayout(parsedTree, width, height, verticalZoom, scrollOffset)
         }
         setTree(parsedTree)
         setError(null)
@@ -333,7 +339,7 @@ export default function PhylogeneticTree({
       setError(`Error parsing tree: ${err}`)
       console.error('Tree parsing error:', err)
     }
-  }, [newickData, width, height, isCircular, verticalZoom])
+  }, [newickData, width, height, isCircular, verticalZoom, scrollOffset])
 
   useEffect(() => {
     if (!tree || !canvasRef.current) return
@@ -618,41 +624,107 @@ export default function PhylogeneticTree({
     setVerticalZoom(1)
   }
 
+  // Scrollbar handlers
+  const handleScrollbarMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!tree || isCircular) return
+    event.preventDefault()
+    setIsDraggingScrollbar(true)
+
+    const scrollbarElement = event.currentTarget
+    const rect = scrollbarElement.getBoundingClientRect()
+    const y = event.clientY - rect.top
+
+    const maxScroll = getMaxScrollOffset()
+    const scrollbarHeight = height - 20
+    const thumbHeight = Math.max(30, (height / (height + maxScroll)) * scrollbarHeight)
+    const maxThumbTop = scrollbarHeight - thumbHeight
+
+    // Calculate where the click was relative to the thumb
+    const thumbTop = (scrollOffset / maxScroll) * maxThumbTop
+    const clickOffsetInThumb = y - thumbTop
+
+    // Store this offset for dragging
+    ;(scrollbarElement as any)._clickOffset = clickOffsetInThumb
+  }
+
+  const handleScrollbarMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDraggingScrollbar || !tree || isCircular) return
+    event.preventDefault()
+
+    const scrollbarElement = event.currentTarget
+    const rect = scrollbarElement.getBoundingClientRect()
+    const y = event.clientY - rect.top
+
+    const maxScroll = getMaxScrollOffset()
+    const scrollbarHeight = height - 20
+    const thumbHeight = Math.max(30, (height / (height + maxScroll)) * scrollbarHeight)
+    const maxThumbTop = scrollbarHeight - thumbHeight
+
+    const clickOffset = (scrollbarElement as any)._clickOffset || thumbHeight / 2
+    const thumbTop = y - clickOffset
+    const clampedThumbTop = Math.max(0, Math.min(thumbTop, maxThumbTop))
+
+    const newScrollOffset = (clampedThumbTop / maxThumbTop) * maxScroll
+    setScrollOffset(Math.max(0, Math.min(newScrollOffset, maxScroll)))
+  }
+
+  const handleScrollbarMouseUp = () => {
+    setIsDraggingScrollbar(false)
+  }
+
+  // Add global mouse up listener for scrollbar dragging
+  useEffect(() => {
+    if (isDraggingScrollbar) {
+      const handleGlobalMouseUp = () => setIsDraggingScrollbar(false)
+      window.addEventListener('mouseup', handleGlobalMouseUp)
+      return () => window.removeEventListener('mouseup', handleGlobalMouseUp)
+    }
+  }, [isDraggingScrollbar])
+
+  // Calculate max scroll offset based on tree height
+  const getMaxScrollOffset = () => {
+    if (!tree) return 0
+    const allNodes = collectNodes(tree)
+    const leafCount = allNodes.filter(n => !n.children || n.children.length === 0).length
+    const totalHeight = leafCount * 20 * verticalZoom
+    return Math.max(0, totalHeight - height + 40)
+  }
+
   // Native wheel event handler for better preventDefault/stopPropagation control
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const handleWheelZoom = (event: WheelEvent) => {
+    const handleWheel = (event: WheelEvent) => {
       event.preventDefault()
       event.stopPropagation()
 
       const delta = event.deltaY
-      const zoomFactor = 1.1
 
-      if (delta < 0) {
-        // Scroll up = zoom in
-        setVerticalZoom(prev => {
-          const newZoom = Math.min(prev * zoomFactor, 1.5)
-          console.log('Zoom in:', prev, '->', newZoom)
-          return newZoom
-        })
+      if (isCircular) {
+        // In circular mode, use wheel for zoom
+        const zoomFactor = 1.1
+        if (delta < 0) {
+          setVerticalZoom(prev => Math.min(prev * zoomFactor, 1.5))
+        } else {
+          setVerticalZoom(prev => Math.max(prev / zoomFactor, 0.1))
+        }
       } else {
-        // Scroll down = zoom out
-        setVerticalZoom(prev => {
-          const newZoom = Math.max(prev / zoomFactor, 0.1)
-          console.log('Zoom out:', prev, '->', newZoom)
-          return newZoom
+        // In rectangular mode, use wheel for scrolling
+        setScrollOffset(prev => {
+          const maxScroll = getMaxScrollOffset()
+          const newOffset = prev + delta
+          return Math.max(0, Math.min(newOffset, maxScroll))
         })
       }
     }
 
-    canvas.addEventListener('wheel', handleWheelZoom, { passive: false })
+    canvas.addEventListener('wheel', handleWheel, { passive: false })
 
     return () => {
-      canvas.removeEventListener('wheel', handleWheelZoom)
+      canvas.removeEventListener('wheel', handleWheel)
     }
-  }, [tree])
+  }, [tree, isCircular, verticalZoom, height])
 
   if (error) {
     return (
@@ -787,24 +859,76 @@ export default function PhylogeneticTree({
           </div>
         </div>
       )}
-      <canvas
-        ref={canvasRef}
-        width={width}
-        height={height}
-        onClick={handleCanvasClick}
-        onMouseMove={handleCanvasMouseMove}
-        onMouseLeave={handleCanvasMouseLeave}
-        style={{
-          cursor: clickableNodes.length > 0 ? 'pointer' : 'default',
-          border: '1px solid #d1d5db',
-        }}
-      />
+      <div style={{ display: 'flex', position: 'relative' }}>
+        <canvas
+          ref={canvasRef}
+          width={width}
+          height={height}
+          onClick={handleCanvasClick}
+          onMouseMove={handleCanvasMouseMove}
+          onMouseLeave={handleCanvasMouseLeave}
+          style={{
+            cursor: clickableNodes.length > 0 ? 'pointer' : 'default',
+            border: '1px solid #d1d5db',
+          }}
+        />
+        {!isCircular && (() => {
+          const maxScroll = getMaxScrollOffset()
+          if (maxScroll <= 0) return null
+
+          const scrollbarHeight = height - 20
+          const thumbHeight = Math.max(30, (height / (height + maxScroll)) * scrollbarHeight)
+          const maxThumbTop = scrollbarHeight - thumbHeight
+          const thumbTop = maxScroll > 0 ? (scrollOffset / maxScroll) * maxThumbTop : 0
+
+          return (
+            <div
+              onMouseDown={handleScrollbarMouseDown}
+              onMouseMove={handleScrollbarMouseMove}
+              onMouseUp={handleScrollbarMouseUp}
+              style={{
+                width: '16px',
+                height: `${height}px`,
+                backgroundColor: '#f3f4f6',
+                border: '1px solid #d1d5db',
+                borderLeft: 'none',
+                position: 'relative',
+                cursor: isDraggingScrollbar ? 'grabbing' : 'pointer',
+                userSelect: 'none',
+              }}
+            >
+              <div
+                style={{
+                  position: 'absolute',
+                  top: `${10 + thumbTop}px`,
+                  left: '2px',
+                  width: '12px',
+                  height: `${thumbHeight}px`,
+                  backgroundColor: isDraggingScrollbar ? '#9ca3af' : '#d1d5db',
+                  borderRadius: '6px',
+                  cursor: isDraggingScrollbar ? 'grabbing' : 'grab',
+                  transition: isDraggingScrollbar ? 'none' : 'background-color 0.2s',
+                }}
+                onMouseEnter={e => {
+                  if (!isDraggingScrollbar) {
+                    e.currentTarget.style.backgroundColor = '#9ca3af'
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (!isDraggingScrollbar) {
+                    e.currentTarget.style.backgroundColor = '#d1d5db'
+                  }
+                }}
+              />
+            </div>
+          )
+        })()}
+      </div>
 
       <FloatingPortal>
         {tooltipOpen && hoveredNode && (
           <div
             ref={tooltipRefs.setFloating}
-            style={tooltipStyles}
             {...getTooltipFloatingProps()}
             style={{
               ...tooltipStyles,
@@ -838,7 +962,6 @@ export default function PhylogeneticTree({
         {contextMenuOpen && contextMenuNode && (
           <div
             ref={contextRefs.setFloating}
-            style={contextStyles}
             {...getContextFloatingProps()}
             style={{
               ...contextStyles,
@@ -989,8 +1112,8 @@ export default function PhylogeneticTree({
 
       <div style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
         <p>
-          Hover over nodes for details • Click nodes for context menu • Mouse
-          wheel to zoom vertically
+          Hover over nodes for details • Click nodes for context menu •{' '}
+          {isCircular ? 'Mouse wheel to zoom' : 'Mouse wheel to scroll • Use scrollbar to navigate'}
         </p>
         <p>
           Tree contains {allNodes.filter(n => n.accession).length} accessions

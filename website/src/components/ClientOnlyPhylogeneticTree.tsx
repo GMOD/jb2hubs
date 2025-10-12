@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import PhylogeneticTree from './PhylogeneticTree'
+import PhylogeneticTreeVirtualized from './PhylogeneticTreeVirtualized'
 
 export default function ClientOnlyPhylogeneticTree() {
   const [newickData, setNewickData] = useState<string | null>(null)
@@ -54,5 +54,7 @@ export default function ClientOnlyPhylogeneticTree() {
     )
   }
 
-  return <PhylogeneticTree newickData={newickData} width={1200} height={800} />
+  return (
+    <PhylogeneticTreeVirtualized newickData={newickData} width={1200} height={800} />
+  )
 }
