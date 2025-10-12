@@ -17,6 +17,7 @@ interface PhylogeneticTreeProps {
   speciesData?: SpeciesData[]
   width?: number
   height?: number
+  header?: React.ReactNode
 }
 
 interface TreeNode {
@@ -180,10 +181,11 @@ export default function PhylogeneticTreeVirtualized({
   speciesData = [],
   width,
   height = 600,
+  header,
 }: PhylogeneticTreeProps) {
   const [error, setError] = useState<string | null>(null)
   const [expanded, setExpanded] = useState<Set<string>>(new Set(['node_0']))
-  const [stickyEnabled, setStickyEnabled] = useState(true)
+  const [stickyEnabled, setStickyEnabled] = useState(false)
   const [maxStickyLevels, setMaxStickyLevels] = useState(8)
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [containerWidth, setContainerWidth] = React.useState(800)
@@ -497,59 +499,68 @@ export default function PhylogeneticTreeVirtualized({
           marginBottom: '16px',
           display: 'flex',
           gap: '8px',
-          alignItems: 'center',
+          alignItems: 'baseline',
           flexWrap: 'wrap',
         }}
       >
-        <button onClick={expandAll}>Expand all</button>
-        <button onClick={collapseAll}>Collapse all</button>
-        <label
+        {header}
+        <div
           style={{
+            marginLeft: header ? 'auto' : '0',
             display: 'flex',
+            gap: '8px',
             alignItems: 'center',
-            gap: '4px',
-            cursor: 'pointer',
+            flexWrap: 'wrap',
           }}
         >
-          <input
-            type="checkbox"
-            checked={stickyEnabled}
-            onChange={e => setStickyEnabled(e.target.checked)}
-            style={{ cursor: 'pointer' }}
-          />
-          <span>Sticky headers</span>
-        </label>
-        {stickyEnabled && (
+          <button onClick={expandAll}>Expand all</button>
+          <button onClick={collapseAll}>Collapse all</button>
           <label
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
+              cursor: 'pointer',
             }}
           >
-            <span>Max levels:</span>
             <input
-              type="number"
-              min="1"
-              max="20"
-              value={maxStickyLevels}
-              onChange={e => {
-                const val = parseInt(e.target.value, 10)
-                if (!isNaN(val) && val > 0) {
-                  setMaxStickyLevels(val)
-                }
-              }}
-              style={{
-                width: '60px',
-                padding: '4px 8px',
-                border: '1px solid #d1d5db',
-                borderRadius: '4px',
-              }}
+              type="checkbox"
+              checked={stickyEnabled}
+              onChange={e => setStickyEnabled(e.target.checked)}
+              style={{ cursor: 'pointer' }}
             />
+            <span>Sticky headers</span>
           </label>
-        )}
-        <div style={{ color: '#6b7280', marginLeft: 'auto' }}>
-          {accessionCount} accessions
+          {stickyEnabled && (
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              <span>Max levels:</span>
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={maxStickyLevels}
+                onChange={e => {
+                  const val = parseInt(e.target.value, 10)
+                  if (!isNaN(val) && val > 0) {
+                    setMaxStickyLevels(val)
+                  }
+                }}
+                style={{
+                  width: '60px',
+                  padding: '4px 8px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '4px',
+                }}
+              />
+            </label>
+          )}
+          <div style={{ color: '#6b7280' }}>{accessionCount} accessions</div>
         </div>
       </div>
       <div

@@ -15,12 +15,16 @@ interface ClientOnlyPhylogeneticTreeProps {
   category?: string
   speciesData?: SpeciesData[]
   autoShow?: boolean
+  title?: string
+  hubsLink?: string
 }
 
 export default function ClientOnlyPhylogeneticTree({
   category = 'all',
   speciesData = [],
   autoShow = false,
+  title,
+  hubsLink,
 }: ClientOnlyPhylogeneticTreeProps) {
   const [newickData, setNewickData] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -74,11 +78,21 @@ export default function ClientOnlyPhylogeneticTree({
     )
   }
 
+  const header = title && hubsLink ? (
+    <>
+      <h1 style={{ margin: 0 }}>GenArk phylogeny - {title}</h1>
+      <a href={hubsLink} style={{ color: '#2563eb', textDecoration: 'underline' }}>
+        View data table for {title}
+      </a>
+    </>
+  ) : undefined
+
   return (
     <PhylogeneticTreeVirtualized
       newickData={newickData}
       speciesData={speciesData}
       height={800}
+      header={header}
     />
   )
 }
