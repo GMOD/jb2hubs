@@ -2,7 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import PhylogeneticTreeVirtualized from './PhylogeneticTreeVirtualized'
 
-export default function ClientOnlyPhylogeneticTree() {
+interface ClientOnlyPhylogeneticTreeProps {
+  category?: string
+}
+
+export default function ClientOnlyPhylogeneticTree({
+  category = 'all',
+}: ClientOnlyPhylogeneticTreeProps) {
   const [newickData, setNewickData] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showTree, setShowTree] = useState(false)
@@ -11,7 +17,8 @@ export default function ClientOnlyPhylogeneticTree() {
     if (!showTree) return
     async function fetchData() {
       try {
-        const response = await fetch('/phylogeny.newick')
+        const phylogenyPath = `/phylogeny/${category}.newick`
+        const response = await fetch(phylogenyPath)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -27,7 +34,7 @@ export default function ClientOnlyPhylogeneticTree() {
     }
 
     fetchData()
-  }, [showTree])
+  }, [showTree, category])
 
   if (!showTree) {
     return (

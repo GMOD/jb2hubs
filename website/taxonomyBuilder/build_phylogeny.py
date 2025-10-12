@@ -1,17 +1,9 @@
-import io
+import argparse
 import json
 import os
 import sys
 import urllib.request
 import zipfile
-
-from Bio import Entrez, Phylo
-from Bio.Phylo.Newick import Clade, Tree
-
-# IMPORTANT: Set your email for Entrez. This is required by NCBI for using their E-utilities.
-# This email is still needed for any potential fallback Entrez calls or if you decide to
-# use Entrez for other purposes, but it won't be used for lineage fetching if dump files are provided.
-Entrez.email = "colin.diesh@gmail.com"
 
 
 def download_and_extract_taxonomy_dump(download_dir="."):
@@ -182,12 +174,33 @@ def get_lineage_from_dump(tax_id, tax_nodes, tax_names):
     return lineage[::-1]
 
 
+class SimpleTreeNode:
+    """Simple tree node class to replace BioPython Clade"""
+
+    def __init__(self, name=None, branch_length=1.0):
+        self.name = name
+        self.branch_length = branch_length
+        self.children = []
+
+    def to_newick(self):
+        """Convert this node and its subtree to Newick format"""
+        if not self.children:
+            # Leaf node
+            name_str = self.name if self.name else ""
+            return f"{name_str}:{self.branch_length}"
+        else:
+            # Internal node with children
+            children_str = ",".join(child.to_newick() for child in self.children)
+            name_str = self.name if self.name else ""
+            return f"({children_str}){name_str}:{self.branch_length}"
+
+
 def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
     """
     Builds a phylogenetic tree from a list of (taxonId, accession) pairs using pre-loaded dump data.
     The tree is rooted at the lowest common ancestor (LCA) of the input taxon IDs.
     Leaf nodes will be labeled with species name and accession.
-    Returns a Bio.Phylo.Newick.Tree object.
+    Returns a Newick format string.
     """
     if not taxon_accession_pairs:
         print("No taxon-accession pairs provided.", file=sys.stderr)
@@ -224,41 +237,41 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
         )
         return None
 
-    # Step 1: Collect all unique (tax_id, name) pairs and create Clade objects
-    clades_by_id = {}
-    leaf_clades = {}  # Store leaf clades with accession info
+    # Step 1: Collect all unique (tax_id, name) pairs and create node objects
+    nodes_by_id = {}
+    leaf_nodes = {}  # Store leaf nodes with accession info
 
     for key, lineage in all_lineages.items():
         taxon_id = key.split("_")[0]  # Extract taxon_id from key
         accession = key.split("_", 1)[1]  # Extract accession from key
 
         for i, (node_id, node_name) in enumerate(lineage):
-            if node_id not in clades_by_id:
-                clade = Clade(name=node_name, branch_length=1.0)
-                clades_by_id[node_id] = clade
+            if node_id not in nodes_by_id:
+                node = SimpleTreeNode(name=node_name, branch_length=1.0)
+                nodes_by_id[node_id] = node
 
             # If this is the leaf node (last in lineage), create accession-specific leaf
             if i == len(lineage) - 1:  # This is the leaf node
                 leaf_key = f"{node_id}_{accession}"
-                if leaf_key not in leaf_clades:
-                    leaf_clade = Clade(
+                if leaf_key not in leaf_nodes:
+                    leaf_node = SimpleTreeNode(
                         name=f"{node_name}[{accession}]", branch_length=1.0
                     )
-                    leaf_clades[leaf_key] = leaf_clade
-                    clades_by_id[node_id].clades.append(leaf_clade)
+                    leaf_nodes[leaf_key] = leaf_node
+                    nodes_by_id[node_id].children.append(leaf_node)
 
-    # Step 2: Link parent-child relationships within the collected clades
+    # Step 2: Link parent-child relationships within the collected nodes
     for lineage in all_lineages.values():
         for i in range(len(lineage) - 1):
             parent_id, _ = lineage[i]
             child_id, _ = lineage[i + 1]
 
-            if parent_id in clades_by_id and child_id in clades_by_id:
-                parent_clade = clades_by_id[parent_id]
-                child_clade = clades_by_id[child_id]
+            if parent_id in nodes_by_id and child_id in nodes_by_id:
+                parent_node = nodes_by_id[parent_id]
+                child_node = nodes_by_id[child_id]
 
-                if child_clade not in parent_clade.clades:
-                    parent_clade.clades.append(child_clade)
+                if child_node not in parent_node.children:
+                    parent_node.children.append(child_node)
 
     # Step 3: Determine the root of the tree
     all_lineage_ids_sets = [
@@ -297,21 +310,21 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
         )
         return None
 
-    root_clade = clades_by_id.get(lca_id)
-    if not root_clade:
+    root_node = nodes_by_id.get(lca_id)
+    if not root_node:
         print(
-            f"Error: LCA clade with ID {lca_id} not found in collected clades.",
+            f"Error: LCA node with ID {lca_id} not found in collected nodes.",
             file=sys.stderr,
         )
         return None
 
-    tree = Tree(root=root_clade)
-    return tree
+    return root_node
 
 
 def load_taxon_accession_data(json_file_path):
     """
-    Loads taxonId and accession pairs from processedHubJson/all.json file.
+    Loads taxonId and accession pairs from JSON file.
+    Supports both 'taxonId' and 'taxId' field names.
     Returns a list of (taxonId, accession) tuples.
     """
     try:
@@ -321,9 +334,11 @@ def load_taxon_accession_data(json_file_path):
         taxon_accession_pairs = []
 
         for entry in data:
-            if "taxonId" in entry and "accession" in entry:
-                taxon_id = entry["taxonId"]
-                accession = entry["accession"]
+            # Support both 'taxonId' and 'taxId' field names
+            taxon_id = entry.get("taxonId") or entry.get("taxId")
+            accession = entry.get("accession")
+
+            if taxon_id and accession:
                 taxon_accession_pairs.append((taxon_id, accession))
 
         print(
@@ -344,12 +359,35 @@ def load_taxon_accession_data(json_file_path):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Build phylogenetic tree from NCBI taxonomy data"
+    )
+    parser.add_argument(
+        "--input",
+        "-i",
+        required=True,
+        help="Path to input JSON file containing taxon-accession pairs",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        help="Path to output Newick file (default: stdout)",
+    )
+    parser.add_argument(
+        "--taxonomy-dir",
+        "-t",
+        default=".",
+        help="Directory containing taxonomy dump files (default: current directory)",
+    )
+
+    args = parser.parse_args()
+
     # Define paths to NCBI Taxonomy dump files
-    nodes_dmp_path = "nodes.dmp"
-    names_dmp_path = "names.dmp"
+    nodes_dmp_path = os.path.join(args.taxonomy_dir, "nodes.dmp")
+    names_dmp_path = os.path.join(args.taxonomy_dir, "names.dmp")
 
     # Download and extract taxonomy dump files if needed
-    if not download_and_extract_taxonomy_dump("."):
+    if not download_and_extract_taxonomy_dump(args.taxonomy_dir):
         print(
             "Failed to download or extract taxonomy dump files. Exiting.",
             file=sys.stderr,
@@ -363,9 +401,8 @@ if __name__ == "__main__":
         print("Exiting due to failure to load taxonomy dump files.", file=sys.stderr)
         sys.exit(1)
 
-    # Load taxon-accession pairs from processedHubJson/all.json (relative to parent directory)
-    json_file_path = "../processedHubJson/all.json"
-    taxon_accession_pairs = load_taxon_accession_data(json_file_path)
+    # Load taxon-accession pairs from input JSON file
+    taxon_accession_pairs = load_taxon_accession_data(args.input)
 
     if taxon_accession_pairs is None or len(taxon_accession_pairs) == 0:
         print("No valid taxon-accession pairs found. Exiting.", file=sys.stderr)
@@ -376,19 +413,24 @@ if __name__ == "__main__":
         file=sys.stderr,
     )
 
-    phylogenetic_tree = build_phylogenetic_tree(
+    root_node = build_phylogenetic_tree(
         taxon_accession_pairs, tax_nodes_data, tax_names_data
     )
 
-    if phylogenetic_tree:
-        output_buffer = io.StringIO()
-        Phylo.write(phylogenetic_tree, output_buffer, "newick")
-        newick_string = output_buffer.getvalue()
-        print(newick_string)
+    if root_node:
+        # Convert tree to Newick format
+        newick_string = root_node.to_newick() + ";\n"
 
-        # You can also save it to a file:
-        # with open("phylogenetic_tree.newick", "w") as f:
-        #     Phylo.write(phylogenetic_tree, f, "newick")
-        # print("\nTree saved to phylogenetic_tree.newick")
+        # Write to output file or stdout
+        if args.output:
+            output_dir = os.path.dirname(args.output)
+            if output_dir:  # Only create dir if path includes a directory
+                os.makedirs(output_dir, exist_ok=True)
+            with open(args.output, "w") as f:
+                f.write(newick_string)
+            print(f"\nTree saved to {args.output}", file=sys.stderr)
+        else:
+            print(newick_string)
     else:
         print("\nFailed to generate phylogenetic tree.", file=sys.stderr)
+        sys.exit(1)
