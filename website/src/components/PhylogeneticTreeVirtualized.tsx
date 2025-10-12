@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { StickyTree } from 'react-virtualized-sticky-tree'
 import { ChevronRight, ChevronDown } from 'lucide-react'
 
@@ -9,39 +9,137 @@ interface PhylogeneticTreeProps {
   height?: number
 }
 
-// Demo tree data matching the library's expected format
-const demoTree: { [id: string]: any } = {
-  root: {
-    name: 'Root Node',
-    children: ['child1', 'child2', 'child3'],
-    depth: 0,
-  },
-  child1: {
-    name: 'Child 1',
-    children: ['child4', 'child5'],
-    depth: 1,
-  },
-  child2: {
-    name: 'Child 2',
-    depth: 1,
-  },
-  child3: {
-    name: 'Child 3',
-    children: ['child6'],
-    depth: 1,
-  },
-  child4: {
-    name: 'Child 4',
-    depth: 2,
-  },
-  child5: {
-    name: 'Child 5',
-    depth: 2,
-  },
-  child6: {
-    name: 'Child 6',
-    depth: 2,
-  },
+interface TreeNode {
+  name?: string
+  accession?: string
+  children?: TreeNode[]
+  branchLength?: number
+  parent?: TreeNode
+}
+
+interface FlatNodeData {
+  id: string
+  name?: string
+  accession?: string
+  branchLength?: number
+  children?: string[]
+  depth: number
+  isLeaf: boolean
+}
+
+interface FlatTree {
+  [id: string]: FlatNodeData
+}
+
+// Simple Newick parser
+function parseNewick(newick: string): TreeNode | null {
+  const cleanNewick = newick.trim().replace(/;$/, '')
+  if (!cleanNewick) return null
+
+  let index = 0
+
+  function parseNode(): TreeNode {
+    const node: TreeNode = { children: [] }
+
+    if (cleanNewick[index] === '(') {
+      index++ // skip '('
+      do {
+        const child = parseNode()
+        child.parent = node
+        node.children!.push(child)
+        if (cleanNewick[index] === ',') {
+          index++ // skip ','
+        }
+      } while (
+        cleanNewick[index] === ',' ||
+        (cleanNewick[index] !== ')' && index < cleanNewick.length)
+      )
+      if (cleanNewick[index] === ')') {
+        index++ // skip ')'
+      }
+    }
+
+    // Parse node name
+    let name = ''
+    while (
+      index < cleanNewick.length &&
+      cleanNewick[index] !== ',' &&
+      cleanNewick[index] !== ')' &&
+      cleanNewick[index] !== '(' &&
+      cleanNewick[index] !== ':'
+    ) {
+      name += cleanNewick[index]
+      index++
+    }
+
+    if (name) {
+      const accessionMatch = name.match(/^(.+?)\[([^\]]+)\]$/)
+      if (accessionMatch) {
+        node.name = accessionMatch[1]
+        node.accession = accessionMatch[2]
+      } else {
+        node.name = name
+      }
+    }
+
+    // Parse branch length
+    if (cleanNewick[index] === ':') {
+      index++ // skip ':'
+      let lengthStr = ''
+      while (
+        index < cleanNewick.length &&
+        cleanNewick[index] !== ',' &&
+        cleanNewick[index] !== ')' &&
+        cleanNewick[index] !== '('
+      ) {
+        lengthStr += cleanNewick[index]
+        index++
+      }
+      node.branchLength = parseFloat(lengthStr) || 0
+    }
+
+    return node
+  }
+
+  try {
+    return parseNode()
+  } catch (error) {
+    console.error('Error parsing Newick string:', error)
+    return null
+  }
+}
+
+// Convert TreeNode to flat map structure
+function convertToFlatTree(node: TreeNode): { tree: FlatTree; rootId: string } {
+  const tree: FlatTree = {}
+  let nodeCounter = 0
+
+  function traverse(n: TreeNode, depth: number): string {
+    const id = `node_${nodeCounter++}`
+    const childIds: string[] = []
+
+    if (n.children && n.children.length > 0) {
+      for (const child of n.children) {
+        const childId = traverse(child, depth + 1)
+        childIds.push(childId)
+      }
+    }
+
+    tree[id] = {
+      id,
+      name: n.name,
+      accession: n.accession,
+      branchLength: n.branchLength,
+      children: childIds.length > 0 ? childIds : undefined,
+      depth,
+      isLeaf: !n.children || n.children.length === 0,
+    }
+
+    return id
+  }
+
+  const rootId = traverse(node, 0)
+  return { tree, rootId }
 }
 
 export default function PhylogeneticTreeVirtualized({
@@ -49,7 +147,27 @@ export default function PhylogeneticTreeVirtualized({
   width = 800,
   height = 600,
 }: PhylogeneticTreeProps) {
-  const [expanded, setExpanded] = useState<Set<string>>(new Set(['root', 'child1', 'child3']))
+  const [error, setError] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<Set<string>>(new Set(['node_0']))
+
+  // Parse and convert tree
+  const { tree, rootId } = useMemo(() => {
+    try {
+      const parsedTree = parseNewick(newickData)
+      if (!parsedTree) {
+        setError('Failed to parse Newick data')
+        return { tree: {}, rootId: '' }
+      }
+      const result = convertToFlatTree(parsedTree)
+      console.log('Tree converted:', Object.keys(result.tree).length, 'nodes')
+      setError(null)
+      return result
+    } catch (err) {
+      setError(`Error parsing tree: ${err}`)
+      console.error('Tree parsing error:', err)
+      return { tree: {}, rootId: '' }
+    }
+  }, [newickData])
 
   const toggleExpand = (id: string) => {
     const newExpanded = new Set(expanded)
@@ -62,7 +180,7 @@ export default function PhylogeneticTreeVirtualized({
   }
 
   const expandAll = () => {
-    const allIds = Object.keys(demoTree).filter(id => demoTree[id].children)
+    const allIds = Object.keys(tree).filter(id => tree[id].children)
     setExpanded(new Set(allIds))
   }
 
@@ -72,32 +190,49 @@ export default function PhylogeneticTreeVirtualized({
 
   // Get children for StickyTree
   const getChildren = (parentNode: any) => {
-    console.log('getChildren called with:', parentNode)
+    console.log('getChildren called, parentNode:', parentNode)
     const id = parentNode.id
-    const node = demoTree[id]
-    if (!node || !node.children || !expanded.has(id)) {
-      console.log('  returning undefined')
+    console.log('  id:', id)
+    const node = tree[id]
+    console.log('  node:', node)
+
+    if (!node) {
+      console.warn('  node not found for id:', id)
       return undefined
     }
-    const children = node.children.map((childId: string) => ({
-      node: { id: childId, ...demoTree[childId] },
-      height: 32,
-      isSticky: true,
-    }))
-    console.log('  returning children:', children)
+
+    if (!node.children) {
+      console.log('  no children')
+      return undefined
+    }
+
+    if (!expanded.has(id)) {
+      console.log('  not expanded')
+      return undefined
+    }
+
+    const children = node.children.map((childId: string) => {
+      const childNode = tree[childId]
+      if (!childNode) {
+        console.warn('  child not found:', childId)
+      }
+      return {
+        node: childNode,
+        height: 32,
+        isSticky: true,
+      }
+    })
+    console.log('  returning', children.length, 'children')
     return children
   }
 
   // Render row for StickyTree
-  const rowRenderer = ({ node, style }: { node: any; style: React.CSSProperties }) => {
-    console.log('rowRenderer called with node:', node)
-    const id = node.id
-    const nodeData = demoTree[id]
-    if (!nodeData) return null
+  const rowRenderer = ({ node, style }: { node: FlatNodeData; style: React.CSSProperties }) => {
+    if (!node) return null
 
-    const hasChildren = nodeData.children && nodeData.children.length > 0
-    const isExpanded = expanded.has(id)
-    const indent = nodeData.depth * 20
+    const hasChildren = node.children && node.children.length > 0
+    const isExpanded = expanded.has(node.id)
+    const indent = node.depth * 20
 
     return (
       <div
@@ -110,9 +245,9 @@ export default function PhylogeneticTreeVirtualized({
           borderBottom: '1px solid #e5e7eb',
           cursor: hasChildren ? 'pointer' : 'default',
           fontFamily: 'monospace',
-          fontSize: '14px',
+          fontSize: '13px',
         }}
-        onClick={() => hasChildren && toggleExpand(id)}
+        onClick={() => hasChildren && toggleExpand(node.id)}
       >
         <div style={{ width: '20px', display: 'flex', alignItems: 'center' }}>
           {hasChildren ? (
@@ -134,16 +269,77 @@ export default function PhylogeneticTreeVirtualized({
             overflow: 'hidden',
           }}
         >
-          <span style={{ fontWeight: hasChildren ? '500' : 'normal' }}>
-            {nodeData.name}
+          <span
+            style={{
+              fontWeight: node.isLeaf ? 'normal' : '500',
+              color: node.isLeaf ? '#374151' : '#1f2937',
+            }}
+          >
+            {node.name || 'Unnamed'}
           </span>
-          <span style={{ color: '#6b7280', fontSize: '12px' }}>
-            [id: {id}]
-          </span>
+          {node.accession && (
+            <span
+              style={{
+                color: '#2563eb',
+                fontSize: '12px',
+                backgroundColor: '#eff6ff',
+                padding: '2px 6px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+              onClick={e => {
+                e.stopPropagation()
+                navigator.clipboard.writeText(node.accession!)
+              }}
+            >
+              {node.accession}
+            </span>
+          )}
+          {node.branchLength !== undefined && (
+            <span style={{ color: '#6b7280', fontSize: '11px' }}>
+              [{node.branchLength.toFixed(4)}]
+            </span>
+          )}
         </div>
       </div>
     )
   }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          padding: '16px',
+          border: '1px solid #fca5a5',
+          backgroundColor: '#fef2f2',
+          borderRadius: '4px',
+        }}
+      >
+        <h3 style={{ color: '#991b1b', fontWeight: '600', marginBottom: '8px' }}>
+          Error loading phylogenetic tree
+        </h3>
+        <p style={{ color: '#dc2626' }}>{error}</p>
+      </div>
+    )
+  }
+
+  if (!rootId) {
+    return (
+      <div
+        style={{
+          padding: '16px',
+          border: '1px solid #d1d5db',
+          backgroundColor: '#f9fafb',
+          borderRadius: '4px',
+        }}
+      >
+        <p>Loading phylogenetic tree...</p>
+      </div>
+    )
+  }
+
+  const leafCount = Object.values(tree).filter(n => n.isLeaf).length
+  const accessionCount = Object.values(tree).filter(n => n.accession).length
 
   return (
     <div style={{ padding: '16px' }}>
@@ -156,17 +352,6 @@ export default function PhylogeneticTreeVirtualized({
           flexWrap: 'wrap',
         }}
       >
-        <div
-          style={{
-            padding: '8px',
-            backgroundColor: '#fef3c7',
-            border: '1px solid #f59e0b',
-            borderRadius: '4px',
-            fontSize: '14px',
-          }}
-        >
-          ⚠️ Demo mode - showing sample tree data
-        </div>
         <button
           onClick={expandAll}
           style={{
@@ -193,6 +378,9 @@ export default function PhylogeneticTreeVirtualized({
         >
           Collapse All
         </button>
+        <div style={{ fontSize: '14px', color: '#6b7280', marginLeft: 'auto' }}>
+          {leafCount} leaves • {accessionCount} accessions
+        </div>
       </div>
       <div
         style={{
@@ -202,7 +390,7 @@ export default function PhylogeneticTreeVirtualized({
         }}
       >
         <StickyTree
-          root={{ node: { id: 'root', ...demoTree.root }, height: 32 }}
+          root={{ node: tree[rootId], height: 32 }}
           width={width}
           height={height}
           getChildren={getChildren}
@@ -212,8 +400,7 @@ export default function PhylogeneticTreeVirtualized({
         />
       </div>
       <div style={{ marginTop: '8px', fontSize: '14px', color: '#6b7280' }}>
-        <p>Demo tree with {Object.keys(demoTree).length} nodes</p>
-        <p>Click nodes to expand/collapse</p>
+        <p>Click nodes to expand/collapse • Click accessions to copy to clipboard</p>
       </div>
     </div>
   )
