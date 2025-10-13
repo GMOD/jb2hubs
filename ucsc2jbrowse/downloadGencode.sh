@@ -8,8 +8,14 @@ process_gff_file() {
   local url=$2
   local track_name=$3
 
-  # Define the output directory using the assembly name
-  local output_dir="${UCSC_RESULT_DIR:-/ucscResults}/$assembly_name"
+  # Define directories
+  local gencode_dir="${GENCODE_DIR:-/mnt/sdb/cdiesh/gencode}"
+  local gencode_processed_dir="${GENCODE_PROCESSED_DIR:-/mnt/sdb/cdiesh/gencode_processed}"
+  local output_dir="${UCSC_RESULT_DIR:-~/ucscResults}/$assembly_name"
+
+  # Create all necessary directories
+  mkdir -p "$gencode_dir"
+  mkdir -p "$gencode_processed_dir"
   mkdir -p "$output_dir"
 
   echo "Processing GFF file for assembly: $assembly_name"
@@ -20,23 +26,34 @@ process_gff_file() {
   local sorted_gff_file="${gff_file%.gff3}.sorted.gff3"
 
   # Define full paths for the files
-  local output_gff_file="$output_dir/$gff_file"
-  local output_sorted_gff_file="$output_dir/$sorted_gff_file"
+  local downloaded_gz_file="$gencode_dir/$filename"
+  local downloaded_gff_file="$gencode_dir/$gff_file"
+  local output_sorted_gff_file="$gencode_processed_dir/$sorted_gff_file"
 
-  # Download the file
-  echo "Downloading $url..."
-  wget -qO- "$url" | gunzip -c >"$output_gff_file"
+  # Download the file to GENCODE_DIR (only if changed)
+  echo "Checking for updates: $url"
+  cd "$gencode_dir"
+  wget -N "$url"
+  cd - >/dev/null
 
-  # Sort the GFF file
+  # Gunzip the downloaded file if the .gz exists
+  if [ -f "$downloaded_gz_file" ]; then
+    echo "Extracting $filename..."
+    gunzip -f "$downloaded_gz_file"
+  elif [ ! -f "$downloaded_gff_file" ]; then
+    echo "Error: Neither $downloaded_gz_file nor $downloaded_gff_file found"
+    return 1
+  else
+    echo "Using existing extracted file: $downloaded_gff_file"
+  fi
+
+  # Sort the GFF file to GENCODE_PROCESSED_DIR
   echo "Sorting $gff_file..."
-  jbrowse sort-gff "$output_gff_file" >"$output_sorted_gff_file"
+  jbrowse sort-gff "$downloaded_gff_file" >"$output_sorted_gff_file"
 
   # Add the track to JBrowse
   echo "Adding track for $sorted_gff_file..."
   jbrowse add-track "$output_sorted_gff_file" --out "$output_dir" --load copy --name "$track_name" --category "Genes and Gene Predictions"
-
-  # Clean up the unsorted file
-  rm "$output_gff_file"
 
   echo "Finished processing GFF file for assembly: $assembly_name"
 }
