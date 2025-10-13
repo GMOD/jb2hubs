@@ -625,7 +625,9 @@ export default function PhylogeneticTree({
   }
 
   // Scrollbar handlers
-  const handleScrollbarMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleScrollbarMouseDown = (
+    event: React.MouseEvent<HTMLDivElement>,
+  ) => {
     if (!tree || isCircular) return
     event.preventDefault()
     setIsDraggingScrollbar(true)
@@ -636,7 +638,10 @@ export default function PhylogeneticTree({
 
     const maxScroll = getMaxScrollOffset()
     const scrollbarHeight = height - 20
-    const thumbHeight = Math.max(30, (height / (height + maxScroll)) * scrollbarHeight)
+    const thumbHeight = Math.max(
+      30,
+      (height / (height + maxScroll)) * scrollbarHeight,
+    )
     const maxThumbTop = scrollbarHeight - thumbHeight
 
     // Calculate where the click was relative to the thumb
@@ -647,7 +652,9 @@ export default function PhylogeneticTree({
     ;(scrollbarElement as any)._clickOffset = clickOffsetInThumb
   }
 
-  const handleScrollbarMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleScrollbarMouseMove = (
+    event: React.MouseEvent<HTMLDivElement>,
+  ) => {
     if (!isDraggingScrollbar || !tree || isCircular) return
     event.preventDefault()
 
@@ -657,10 +664,14 @@ export default function PhylogeneticTree({
 
     const maxScroll = getMaxScrollOffset()
     const scrollbarHeight = height - 20
-    const thumbHeight = Math.max(30, (height / (height + maxScroll)) * scrollbarHeight)
+    const thumbHeight = Math.max(
+      30,
+      (height / (height + maxScroll)) * scrollbarHeight,
+    )
     const maxThumbTop = scrollbarHeight - thumbHeight
 
-    const clickOffset = (scrollbarElement as any)._clickOffset || thumbHeight / 2
+    const clickOffset =
+      (scrollbarElement as any)._clickOffset || thumbHeight / 2
     const thumbTop = y - clickOffset
     const clampedThumbTop = Math.max(0, Math.min(thumbTop, maxThumbTop))
 
@@ -685,7 +696,9 @@ export default function PhylogeneticTree({
   const getMaxScrollOffset = () => {
     if (!tree) return 0
     const allNodes = collectNodes(tree)
-    const leafCount = allNodes.filter(n => !n.children || n.children.length === 0).length
+    const leafCount = allNodes.filter(
+      n => !n.children || n.children.length === 0,
+    ).length
     const totalHeight = leafCount * 20 * verticalZoom
     return Math.max(0, totalHeight - height + 40)
   }
@@ -872,57 +885,66 @@ export default function PhylogeneticTree({
             border: '1px solid #d1d5db',
           }}
         />
-        {!isCircular && (() => {
-          const maxScroll = getMaxScrollOffset()
-          if (maxScroll <= 0) return null
+        {!isCircular &&
+          (() => {
+            const maxScroll = getMaxScrollOffset()
+            if (maxScroll <= 0) return null
 
-          const scrollbarHeight = height - 20
-          const thumbHeight = Math.max(30, (height / (height + maxScroll)) * scrollbarHeight)
-          const maxThumbTop = scrollbarHeight - thumbHeight
-          const thumbTop = maxScroll > 0 ? (scrollOffset / maxScroll) * maxThumbTop : 0
+            const scrollbarHeight = height - 20
+            const thumbHeight = Math.max(
+              30,
+              (height / (height + maxScroll)) * scrollbarHeight,
+            )
+            const maxThumbTop = scrollbarHeight - thumbHeight
+            const thumbTop =
+              maxScroll > 0 ? (scrollOffset / maxScroll) * maxThumbTop : 0
 
-          return (
-            <div
-              onMouseDown={handleScrollbarMouseDown}
-              onMouseMove={handleScrollbarMouseMove}
-              onMouseUp={handleScrollbarMouseUp}
-              style={{
-                width: '16px',
-                height: `${height}px`,
-                backgroundColor: '#f3f4f6',
-                border: '1px solid #d1d5db',
-                borderLeft: 'none',
-                position: 'relative',
-                cursor: isDraggingScrollbar ? 'grabbing' : 'pointer',
-                userSelect: 'none',
-              }}
-            >
+            return (
               <div
+                onMouseDown={handleScrollbarMouseDown}
+                onMouseMove={handleScrollbarMouseMove}
+                onMouseUp={handleScrollbarMouseUp}
                 style={{
-                  position: 'absolute',
-                  top: `${10 + thumbTop}px`,
-                  left: '2px',
-                  width: '12px',
-                  height: `${thumbHeight}px`,
-                  backgroundColor: isDraggingScrollbar ? '#9ca3af' : '#d1d5db',
-                  borderRadius: '6px',
-                  cursor: isDraggingScrollbar ? 'grabbing' : 'grab',
-                  transition: isDraggingScrollbar ? 'none' : 'background-color 0.2s',
+                  width: '16px',
+                  height: `${height}px`,
+                  backgroundColor: '#f3f4f6',
+                  border: '1px solid #d1d5db',
+                  borderLeft: 'none',
+                  position: 'relative',
+                  cursor: isDraggingScrollbar ? 'grabbing' : 'pointer',
+                  userSelect: 'none',
                 }}
-                onMouseEnter={e => {
-                  if (!isDraggingScrollbar) {
-                    e.currentTarget.style.backgroundColor = '#9ca3af'
-                  }
-                }}
-                onMouseLeave={e => {
-                  if (!isDraggingScrollbar) {
-                    e.currentTarget.style.backgroundColor = '#d1d5db'
-                  }
-                }}
-              />
-            </div>
-          )
-        })()}
+              >
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: `${10 + thumbTop}px`,
+                    left: '2px',
+                    width: '12px',
+                    height: `${thumbHeight}px`,
+                    backgroundColor: isDraggingScrollbar
+                      ? '#9ca3af'
+                      : '#d1d5db',
+                    borderRadius: '6px',
+                    cursor: isDraggingScrollbar ? 'grabbing' : 'grab',
+                    transition: isDraggingScrollbar
+                      ? 'none'
+                      : 'background-color 0.2s',
+                  }}
+                  onMouseEnter={e => {
+                    if (!isDraggingScrollbar) {
+                      e.currentTarget.style.backgroundColor = '#9ca3af'
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!isDraggingScrollbar) {
+                      e.currentTarget.style.backgroundColor = '#d1d5db'
+                    }
+                  }}
+                />
+              </div>
+            )
+          })()}
       </div>
 
       <FloatingPortal>
@@ -1113,7 +1135,9 @@ export default function PhylogeneticTree({
       <div style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
         <p>
           Hover over nodes for details • Click nodes for context menu •{' '}
-          {isCircular ? 'Mouse wheel to zoom' : 'Mouse wheel to scroll • Use scrollbar to navigate'}
+          {isCircular
+            ? 'Mouse wheel to zoom'
+            : 'Mouse wheel to scroll • Use scrollbar to navigate'}
         </p>
         <p>
           Tree contains {allNodes.filter(n => n.accession).length} accessions
