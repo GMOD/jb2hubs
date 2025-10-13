@@ -110,7 +110,7 @@ MM39_NAMES=(
 # Process hg38 files
 for i in "${!HG38_URLS[@]}"; do
     process_gff_file "hg38" "${HG38_URLS[$i]}" "${HG38_NAMES[$i]}"
-_done
+done
 
 # Process hg19 files
 for i in "${!HG19_URLS[@]}"; do
