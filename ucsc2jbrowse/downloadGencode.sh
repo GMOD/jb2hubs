@@ -33,7 +33,7 @@ process_gff_file() {
 
     # Add the track to JBrowse
     echo "Adding track for $sorted_gff_file..."
-    jbrowse add-track "$output_sorted_gff_file" --out "$output_dir" --load copy --name "$track_name"
+    jbrowse add-track "$output_sorted_gff_file" --out "$output_dir" --load copy --name "$track_name" --category "Genes and Gene Predictions"
 
     # Clean up the unsorted file
     rm "$output_gff_file"
@@ -56,17 +56,17 @@ HG38_URLS=(
     "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.promoter_windows.gff3.gz"
 )
 HG38_NAMES=(
-    "Comprehensive gene annotation"
-    "Comprehensive gene annotation"
-    "Comprehensive gene annotation"
-    "Basic gene annotation"
-    "Basic gene annotation"
-    "Basic gene annotation"
-    "Long non-coding RNA gene annotation"
-    "PolyA feature annotation"
-    "Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-    "Predicted tRNA genes"
-    "Promoter Windows"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Long non-coding RNA gene annotation"
+    "GENCODE - PolyA feature annotation"
+    "GENCODE - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
+    "GENCODE - Predicted tRNA genes"
+    "GENCODE - Promoter Windows"
 )
 
 # hg19 URLs and track names
@@ -76,9 +76,9 @@ HG19_URLS=(
     "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.long_noncoding_RNAs.gff3.gz"
 )
 HG19_NAMES=(
-    "Comprehensive gene annotation"
-    "Basic gene annotation"
-    "Long non-coding RNA gene annotation"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Long non-coding RNA gene annotation"
 )
 
 # mm39 URLs and track names
@@ -95,16 +95,16 @@ MM39_URLS=(
     "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.tRNAs.gff3.gz"
 )
 MM39_NAMES=(
-    "Comprehensive gene annotation"
-    "Comprehensive gene annotation"
-    "Comprehensive gene annotation"
-    "Basic gene annotation"
-    "Basic gene annotation"
-    "Basic gene annotation"
-    "Long non-coding RNA gene annotation"
-    "PolyA feature annotation"
-    "Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-    "Predicted tRNA genes"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Comprehensive gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Basic gene annotation"
+    "GENCODE - Long non-coding RNA gene annotation"
+    "GENCODE - PolyA feature annotation"
+    "GENCODE - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
+    "GENCODE - Predicted tRNA genes"
 )
 
 # Process hg38 files

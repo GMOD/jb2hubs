@@ -108,6 +108,9 @@ node src/rewriteUcscTrackNames.ts "$UCSC_RESULTS_DIR"
 log "Enhancing configs with plugins and hierarchical configuration..."
 ./enhanceConfigs.sh
 
+log "Download and add GENCODE tracks"
+./downloadGencode.sh
+
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'
 
