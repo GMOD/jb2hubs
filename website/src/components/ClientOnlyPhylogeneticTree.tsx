@@ -34,8 +34,8 @@ export default function ClientOnlyPhylogeneticTree({
     if (!showTree) return
     async function fetchData() {
       try {
-        const phylogenyPath = `/phylogeny/${category}.newick`
-        const response = await fetch(phylogenyPath)
+        const taxonomyPath = `/taxonomy/${category}.newick`
+        const response = await fetch(taxonomyPath)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -54,17 +54,13 @@ export default function ClientOnlyPhylogeneticTree({
   }, [showTree, category])
 
   if (!showTree) {
-    return (
-      <button onClick={() => setShowTree(true)}>Show phylogenetic tree</button>
-    )
+    return <button onClick={() => setShowTree(true)}>Show taxonomy</button>
   }
 
   if (error) {
     return (
       <div className="p-4 border border-red-300 bg-red-50 rounded">
-        <h3 className="text-red-800 font-semibold">
-          Error loading phylogenetic tree
-        </h3>
+        <h3 className="text-red-800 font-semibold">Error loading taxonomy</h3>
         <p className="text-red-600">{error}</p>
       </div>
     )
@@ -73,7 +69,7 @@ export default function ClientOnlyPhylogeneticTree({
   if (!newickData) {
     return (
       <div className="p-4 border border-gray-300 bg-gray-50 rounded">
-        <p>Loading phylogenetic tree...</p>
+        <p>Loading taxonomy...</p>
       </div>
     )
   }
@@ -81,7 +77,7 @@ export default function ClientOnlyPhylogeneticTree({
   const header =
     title && hubsLink ? (
       <>
-        <h1 style={{ margin: 0 }}>GenArk phylogeny - {title}</h1>
+        <h1 style={{ margin: 0 }}>GenArk taxonomy - {title}</h1>
         <a
           href={hubsLink}
           style={{ color: '#2563eb', textDecoration: 'underline' }}
