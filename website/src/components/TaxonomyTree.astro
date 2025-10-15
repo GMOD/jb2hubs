@@ -104,6 +104,7 @@ function parseNewick(newick: string): TreeNode | null {
     }
 
     if (name) {
+      // First check for leaf node format: Name[accession|taxonId]
       const accessionMatch = name.match(/^(.+?)\[([^\]]+)\]$/)
       if (accessionMatch) {
         node.name = accessionMatch[1]
@@ -117,7 +118,14 @@ function parseNewick(newick: string): TreeNode | null {
           node.accession = bracketContent
         }
       } else {
-        node.name = name
+        // Check for internal node format: Name{taxonId}
+        const internalMatch = name.match(/^(.+?)\{([^\}]+)\}$/)
+        if (internalMatch) {
+          node.name = internalMatch[1]
+          node.taxonId = internalMatch[2]
+        } else {
+          node.name = name
+        }
       }
     }
 
@@ -252,6 +260,29 @@ function extractSubtreeByTaxonId(node: FlatNodeData | null, targetTaxonId: strin
   return null
 }
 
+// Extract lineage (path from root to target node)
+function extractLineageByTaxonId(node: FlatNodeData | null, targetTaxonId: string): FlatNodeData[] {
+  if (!node) return []
+
+  // Check if current node matches the taxonId
+  if (node.taxonId === targetTaxonId) {
+    return [node]
+  }
+
+  // Check if any child's lineage contains the target
+  if (node.children) {
+    for (const child of node.children) {
+      const childLineage = extractLineageByTaxonId(child, targetTaxonId)
+      if (childLineage.length > 0) {
+        // Found it! Prepend current node to the lineage
+        return [node, ...childLineage]
+      }
+    }
+  }
+
+  return []
+}
+
 // Create a lookup map for species data by accession
 const speciesDataMap = new Map<string, SpeciesData>()
 speciesData.forEach(species => {
@@ -260,6 +291,7 @@ speciesData.forEach(species => {
 
 // Parse and convert tree
 let tree: FlatNodeData | null = null
+let lineage: FlatNodeData[] = []
 let parseError: string | null = null
 
 if (!fileError && newickData) {
@@ -270,8 +302,12 @@ if (!fileError && newickData) {
     } else {
       tree = convertToHierarchicalTree(parsedTree)
 
-      // If filterTaxonId is provided, extract the subtree for that taxonId
+      // If filterTaxonId is provided, extract the lineage and subtree for that taxonId
       if (filterTaxonId && tree) {
+        // Extract lineage first (before extracting subtree)
+        lineage = extractLineageByTaxonId(tree, filterTaxonId)
+
+        // Then extract the subtree
         tree = extractSubtreeByTaxonId(tree, filterTaxonId)
         if (!tree) {
           parseError = `No subtree found for taxonomy ID: ${filterTaxonId}`
@@ -319,7 +355,45 @@ const error = fileError || parseError
             <div style="color: #6b7280;">{accessionCount} accessions</div>
           </div>
         </div>
-        
+
+        {lineage.length > 0 && (
+          <div class="lineage-container">
+            <div class="lineage-label">Taxonomy:</div>
+            <div class="lineage-breadcrumbs">
+              {lineage.slice(0, -1).map((node, index) => (
+                <>
+                  <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
+                    {node.name || 'Unnamed'}
+                  </a>
+                  <span class="lineage-separator">›</span>
+                </>
+              ))}
+              <span class="lineage-current">
+                {lineage[lineage.length - 1]?.name || 'Unnamed'}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {filterTaxonId && (
+          <div class="taxonomy-info-container">
+            <div class="taxonomy-info-label">Taxonomy information:</div>
+            <a
+              href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${filterTaxonId}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="taxonomy-info-link"
+            >
+              View on NCBI (taxonomy ID: {filterTaxonId})
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-left: 4px;">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+        )}
+
         {tree && <TreeNode node={tree} speciesDataMap={speciesDataMap} />}
       </div>
     )}
@@ -354,6 +428,85 @@ const error = fileError || parseError
 
   .show-tree-btn:hover {
     background-color: #1d4ed8;
+  }
+
+  .lineage-container {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .lineage-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+  }
+
+  .lineage-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .lineage-link {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .lineage-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .lineage-separator {
+    color: #9ca3af;
+    user-select: none;
+  }
+
+  .lineage-current {
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  .taxonomy-info-container {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .taxonomy-info-label {
+    font-weight: 600;
+    color: #1e40af;
+    font-size: 14px;
+  }
+
+  .taxonomy-info-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .taxonomy-info-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
   }
 
   /* Pure CSS tree styles */

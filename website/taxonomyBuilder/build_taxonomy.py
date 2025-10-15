@@ -177,21 +177,25 @@ def get_lineage_from_dump(tax_id, tax_nodes, tax_names):
 class SimpleTreeNode:
     """Simple tree node class to replace BioPython Clade"""
 
-    def __init__(self, name=None, branch_length=1.0):
+    def __init__(self, name=None, branch_length=1.0, taxon_id=None):
         self.name = name
         self.branch_length = branch_length
+        self.taxon_id = taxon_id
         self.children = []
 
     def to_newick(self):
         """Convert this node and its subtree to Newick format"""
         if not self.children:
-            # Leaf node
+            # Leaf node - name already includes [accession|taxonId]
             name_str = self.name if self.name else ""
             return f"{name_str}:{self.branch_length}"
         else:
             # Internal node with children
             children_str = ",".join(child.to_newick() for child in self.children)
             name_str = self.name if self.name else ""
+            # Add taxonId to internal nodes using {taxonId} format
+            if self.taxon_id:
+                name_str = f"{name_str}{{{self.taxon_id}}}"
             return f"({children_str}){name_str}:{self.branch_length}"
 
 
@@ -247,7 +251,7 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
 
         for i, (node_id, node_name) in enumerate(lineage):
             if node_id not in nodes_by_id:
-                node = SimpleTreeNode(name=node_name, branch_length=1.0)
+                node = SimpleTreeNode(name=node_name, branch_length=1.0, taxon_id=node_id)
                 nodes_by_id[node_id] = node
 
             # If this is the leaf node (last in lineage), create accession-specific leaf
@@ -255,7 +259,7 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
                 leaf_key = f"{node_id}_{accession}"
                 if leaf_key not in leaf_nodes:
                     leaf_node = SimpleTreeNode(
-                        name=f"{node_name}[{accession}|{taxon_id}]", branch_length=1.0
+                        name=f"{node_name}[{accession}|{taxon_id}]", branch_length=1.0, taxon_id=node_id
                     )
                     leaf_nodes[leaf_key] = leaf_node
                     nodes_by_id[node_id].children.append(leaf_node)

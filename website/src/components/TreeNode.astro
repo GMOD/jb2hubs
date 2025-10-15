@@ -12,6 +12,7 @@ interface FlatNodeData {
   id: string
   name?: string
   accession?: string
+  taxonId?: string
   branchLength?: number
   children?: FlatNodeData[]
   depth: number
@@ -33,9 +34,15 @@ const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefi
   <details class="tree-node" open style={`padding-left: ${indent}px;`}>
     <summary class="tree-summary" style={`background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}>
       <div class="tree-content">
-        <span style="color: #1f2937;">
-          {node.name || 'Unnamed'}
-        </span>
+        {node.taxonId ? (
+          <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+            {node.name || 'Unnamed'}
+          </a>
+        ) : (
+          <span style="color: #1f2937;">
+            {node.name || 'Unnamed'}
+          </span>
+        )}
         {node.name && (
           <a
             href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodeURIComponent(node.name)}&searchMode=complete+name&lock=1&unlock=1&command=search`}
@@ -89,9 +96,15 @@ const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefi
   <div class="tree-leaf" style={`padding-left: ${indent}px; background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}>
     <div class="tree-content">
       <span style="margin-right: 8px;">•</span>
-      <span style="color: #374151;">
-        {node.name || 'Unnamed'}
-      </span>
+      {node.taxonId ? (
+        <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+          {node.name || 'Unnamed'}
+        </a>
+      ) : (
+        <span style="color: #374151;">
+          {node.name || 'Unnamed'}
+        </span>
+      )}
       {node.name && (
         <a
           href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodeURIComponent(node.name)}&searchMode=complete+name&lock=1&unlock=1&command=search`}
@@ -194,6 +207,17 @@ const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefi
   }
 
   .tree-link-underline {
+    text-decoration: underline;
+  }
+
+  .tree-node-link {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tree-node-link:hover {
+    color: #2563eb;
     text-decoration: underline;
   }
 

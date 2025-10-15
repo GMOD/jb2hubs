@@ -32,11 +32,20 @@ export async function getStaticPaths() {
     const allJson = await import('../../../processedHubJson/all.json')
 
     // Extract all unique taxonIds from the newick data using regex
-    const taxonIdPattern = /\[([^\|]+)\|(\d+)\]/g
+    // Match both leaf nodes [accession|taxonId] and internal nodes {taxonId}
+    const leafPattern = /\[([^\|]+)\|(\d+)\]/g
+    const internalPattern = /\{(\d+)\}/g
     const taxonIds = new Set<string>()
+
+    // Extract from leaf nodes
     let match
-    while ((match = taxonIdPattern.exec(newickData)) !== null) {
+    while ((match = leafPattern.exec(newickData)) !== null) {
       taxonIds.add(match[2]) // match[2] is the taxonId
+    }
+
+    // Extract from internal nodes
+    while ((match = internalPattern.exec(newickData)) !== null) {
+      taxonIds.add(match[1]) // match[1] is the taxonId
     }
 
     // Generate a path for each taxonId
