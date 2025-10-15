@@ -430,18 +430,19 @@ const error = fileError || parseError
   </div>
 </div>
 
-{
-  !autoShow && (
-    <script>
-      const showBtn = document.getElementById('show-taxonomy-btn') const content
-      = document.getElementById('taxonomy-tree-content') if (showBtn && content){' '}
-      {showBtn.addEventListener('click', () => {
+{!autoShow ? (
+  <script>
+    const showBtn = document.getElementById('show-taxonomy-btn')
+    const content = document.getElementById('taxonomy-tree-content')
+
+    if (showBtn && content) {
+      showBtn.addEventListener('click', () => {
         content.style.display = 'block'
         showBtn.style.display = 'none'
-      })}
-    </script>
-  )
-}
+      })
+    }
+  </script>
+) : null}
 
 <style>
   .show-tree-btn {

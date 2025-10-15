@@ -218,10 +218,10 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
 
     print("Reconstructing lineages from local taxonomy dump...", file=sys.stderr)
     for taxon_id, accession in taxon_accession_pairs:
-        print(
-            f"  Reconstructing lineage for Tax ID: {taxon_id} (accession: {accession})",
-            file=sys.stderr,
-        )
+        # print(
+        #     f"  Reconstructing lineage for Tax ID: {taxon_id} (accession: {accession})",
+        #     file=sys.stderr,
+        # )
         lineage = get_lineage_from_dump(taxon_id, tax_nodes, tax_names)
         if lineage:
             # Use a unique key that includes both taxon_id and accession
@@ -251,7 +251,9 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
 
         for i, (node_id, node_name) in enumerate(lineage):
             if node_id not in nodes_by_id:
-                node = SimpleTreeNode(name=node_name, branch_length=1.0, taxon_id=node_id)
+                node = SimpleTreeNode(
+                    name=node_name, branch_length=1.0, taxon_id=node_id
+                )
                 nodes_by_id[node_id] = node
 
             # If this is the leaf node (last in lineage), create accession-specific leaf
@@ -259,7 +261,9 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
                 leaf_key = f"{node_id}_{accession}"
                 if leaf_key not in leaf_nodes:
                     leaf_node = SimpleTreeNode(
-                        name=f"{node_name}[{accession}|{taxon_id}]", branch_length=1.0, taxon_id=node_id
+                        name=f"{node_name}[{accession}|{taxon_id}]",
+                        branch_length=1.0,
+                        taxon_id=node_id,
                     )
                     leaf_nodes[leaf_key] = leaf_node
                     nodes_by_id[node_id].children.append(leaf_node)
