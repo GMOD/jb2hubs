@@ -1,6 +1,7 @@
 ---
 import fs from 'fs'
 import path from 'path'
+import TreeNode from './TreeNode.astro'
 
 interface SpeciesData {
   accession: string
@@ -185,178 +186,6 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
   return traverse(node, 0)
 }
 
-// Render tree node recursively
-function renderTreeNode(node: FlatNodeData, speciesDataMap: Map<string, SpeciesData>): string {
-  const hasChildren = node.children && node.children.length > 0
-  const indent = node.depth * 20
-  const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefined
-
-  if (hasChildren) {
-    // Use <details> for expandable nodes
-    let html = `
-      <details class="tree-node" open style="padding-left: ${indent}px;">
-        <summary class="tree-summary" style="background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};">
-          <div class="tree-content">
-            <span style="color: #1f2937;">
-              ${node.name || 'Unnamed'}
-            </span>
-    `
-
-    if (node.name) {
-      const encodedName = encodeURIComponent(node.name)
-      html += `
-            <a
-              href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodedName}&searchMode=complete+name&lock=1&unlock=1&command=search"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="tree-link"
-            >
-              [?]
-            </a>
-      `
-    }
-
-    if (speciesInfo?.commonName) {
-      html += `
-            <span style="color: #6b7280;">
-              (${speciesInfo.commonName})
-            </span>
-      `
-    }
-
-    if (node.accession) {
-      html += `
-            <a href="/accession/${node.accession}" class="tree-link tree-link-underline">
-              (info)
-            </a>
-            <span class="accession-badge">
-              ${node.accession}
-            </span>
-      `
-    }
-
-    if (speciesInfo?.ncbiRefSeqCategory === 'reference genome') {
-      html += `
-            <span title="NCBI designated reference">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="orange" stroke="orange" stroke-width="0" style="display: inline-block; vertical-align: middle;">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-              </svg>
-            </span>
-      `
-    }
-
-    if (speciesInfo?.suppressed) {
-      html += `
-            <span title="NCBI RefSeq suppressed">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" style="display: inline-block; vertical-align: middle;">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-            </span>
-      `
-    }
-
-    if (node.branchLength !== undefined && node.branchLength !== 1.0) {
-      html += `
-            <span style="color: #6b7280;">
-              [${node.branchLength.toFixed(4)}]
-            </span>
-      `
-    }
-
-    html += `
-          </div>
-        </summary>
-    `
-
-    // Render children
-    for (const child of node.children) {
-      html += renderTreeNode(child, speciesDataMap)
-    }
-
-    html += `</details>`
-    return html
-  } else {
-    // Leaf node - no details element needed
-    let html = `
-      <div class="tree-leaf" style="padding-left: ${indent}px; background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};">
-        <div class="tree-content">
-          <span style="margin-right: 8px;">•</span>
-          <span style="color: #374151;">
-            ${node.name || 'Unnamed'}
-          </span>
-    `
-
-    if (node.name) {
-      const encodedName = encodeURIComponent(node.name)
-      html += `
-          <a
-            href="https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodedName}&searchMode=complete+name&lock=1&unlock=1&command=search"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="tree-link"
-          >
-            [?]
-          </a>
-      `
-    }
-
-    if (speciesInfo?.commonName) {
-      html += `
-          <span style="color: #6b7280;">
-            (${speciesInfo.commonName})
-          </span>
-      `
-    }
-
-    if (node.accession) {
-      html += `
-          <a href="/accession/${node.accession}" class="tree-link tree-link-underline">
-            (info)
-          </a>
-          <span class="accession-badge">
-            ${node.accession}
-          </span>
-      `
-    }
-
-    if (speciesInfo?.ncbiRefSeqCategory === 'reference genome') {
-      html += `
-          <span title="NCBI designated reference">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="orange" stroke="orange" stroke-width="0" style="display: inline-block; vertical-align: middle;">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
-          </span>
-      `
-    }
-
-    if (speciesInfo?.suppressed) {
-      html += `
-          <span title="NCBI RefSeq suppressed">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" style="display: inline-block; vertical-align: middle;">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </span>
-      `
-    }
-
-    if (node.branchLength !== undefined && node.branchLength !== 1.0) {
-      html += `
-          <span style="color: #6b7280;">
-            [${node.branchLength.toFixed(4)}]
-          </span>
-      `
-    }
-
-    html += `
-        </div>
-      </div>
-    `
-    return html
-  }
-}
-
 // Count accessions
 function countAccessions(node: FlatNodeData | null): number {
   if (!node) return 0
@@ -394,19 +223,6 @@ if (!fileError && newickData) {
 }
 
 const accessionCount = tree ? countAccessions(tree) : 0
-const treeHtml = tree ? renderTreeNode(tree, speciesDataMap) : ''
-
-// Create header HTML if title and hubsLink are provided
-let headerHtml = ''
-if (title && hubsLink) {
-  headerHtml = `
-    <h1 style="margin: 0;">GenArk taxonomy - ${title}</h1>
-    <a href="${hubsLink}" style="color: #2563eb; text-decoration: underline;">
-      View list of species as table for ${title}
-    </a>
-  `
-}
-
 const error = fileError || parseError
 ---
 
@@ -429,16 +245,20 @@ const error = fileError || parseError
     ) : (
       <div style="padding: 16px;">
         <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
-          {headerHtml && <div set:html={headerHtml} />}
-          <div style={`${headerHtml ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}>
+          {title && hubsLink && (
+            <>
+              <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
+              <a href={hubsLink} style="color: #2563eb; text-decoration: underline;">
+                View list of species as table for {title}
+              </a>
+            </>
+          )}
+          <div style={`${title && hubsLink ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}>
             <div style="color: #6b7280;">{accessionCount} accessions</div>
           </div>
         </div>
-        <div
-          id="taxonomy-tree"
-          style="border: 1px solid #d1d5db; border-radius: 4px; overflow-y: auto; max-height: 600px;"
-          set:html={treeHtml}
-        />
+        
+        {tree && <TreeNode node={tree} speciesDataMap={speciesDataMap} />}
       </div>
     )}
   </div>
@@ -539,7 +359,7 @@ const error = fileError || parseError
 
   /* Add chevron indicator using CSS */
   .tree-summary::before {
-    content: '▶';
+    content: 'X';
     display: inline-block;
     margin-right: 8px;
     transition: transform 0.2s;
