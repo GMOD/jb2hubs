@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container2 from '../../components/Container2.astro'
-import ClientOnlyPhylogeneticTree from '../../components/ClientOnlyPhylogeneticTree.tsx'
+import TaxonomyTreeAsync from '../../components/TaxonomyTreeAsync.astro'
 
 export async function getStaticPaths() {
   const modules = import.meta.glob('../../../processedHubJson/*.json')
@@ -28,13 +28,12 @@ const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 
 <Layout title={`GenArk taxonomy - ${title}`}>
   <Container2>
-    <ClientOnlyPhylogeneticTree
+    <TaxonomyTreeAsync
       category={slug}
       speciesData={rows}
       autoShow={true}
       title={title}
       hubsLink={`/hubs/${slug}`}
-      client:load
     />
   </Container2>
 </Layout>
