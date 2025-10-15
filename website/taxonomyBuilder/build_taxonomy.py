@@ -255,7 +255,7 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
                 leaf_key = f"{node_id}_{accession}"
                 if leaf_key not in leaf_nodes:
                     leaf_node = SimpleTreeNode(
-                        name=f"{node_name}[{accession}]", branch_length=1.0
+                        name=f"{node_name}[{accession}|{taxon_id}]", branch_length=1.0
                     )
                     leaf_nodes[leaf_key] = leaf_node
                     nodes_by_id[node_id].children.append(leaf_node)

@@ -2,38 +2,73 @@
 import Layout from '../../layouts/Layout.astro'
 import Container2 from '../../components/Container2.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
+import fs from 'fs'
+import path from 'path'
 
 export async function getStaticPaths() {
+  const paths: any[] = []
+
+  // Generate paths for category-based taxonomy pages (existing functionality)
   const modules = import.meta.glob('../../../processedHubJson/*.json')
-  const paths = await Promise.all(
+  const categoryPaths = await Promise.all(
     Object.entries(modules).map(async ([filepath, resolver]) => {
       const { default: data } = await resolver()
-      const slug = filepath.split('/').pop().replace('.json', '')
+      const slug = filepath.split('/').pop()!.replace('.json', '')
       return slug !== 'all'
         ? {
             params: { slug },
-            props: { rows: data },
+            props: { rows: data, isCategory: true },
           }
         : undefined
     }),
   )
-  return paths.filter(f => !!f)
+  paths.push(...categoryPaths.filter(f => !!f))
+
+  // Generate paths for taxonomy ID pages
+  // Read all.newick and enumerate taxonIds
+  const newickPath = path.join(process.cwd(), 'public', 'taxonomy', 'all.newick')
+  try {
+    const newickData = fs.readFileSync(newickPath, 'utf-8')
+    const allJson = await import('../../../processedHubJson/all.json')
+
+    // Extract all unique taxonIds from the newick data using regex
+    const taxonIdPattern = /\[([^\|]+)\|(\d+)\]/g
+    const taxonIds = new Set<string>()
+    let match
+    while ((match = taxonIdPattern.exec(newickData)) !== null) {
+      taxonIds.add(match[2]) // match[2] is the taxonId
+    }
+
+    // Generate a path for each taxonId
+    for (const taxonId of taxonIds) {
+      paths.push({
+        params: { slug: taxonId },
+        props: { rows: allJson.default, isCategory: false, taxonId },
+      })
+    }
+  } catch (err) {
+    console.error('Failed to read taxonomy file for generating paths:', err)
+  }
+
+  return paths
 }
 
 const { slug } = Astro.params
-const { rows } = Astro.props
+const { rows, isCategory, taxonId } = Astro.props
 
-const title = slug.charAt(0).toUpperCase() + slug.slice(1)
+const title = isCategory ? slug.charAt(0).toUpperCase() + slug.slice(1) : `Taxonomy ID: ${taxonId}`
+const category = isCategory ? slug : 'all'
 ---
 
 <Layout title={`GenArk taxonomy - ${title}`}>
   <Container2>
     <TaxonomyTree
-      category={slug}
+      category={category}
       speciesData={rows}
       autoShow={true}
       title={title}
-      hubsLink={`/hubs/${slug}`}
+      hubsLink={isCategory ? `/hubs/${slug}` : undefined}
+      filterTaxonId={isCategory ? undefined : taxonId}
     />
   </Container2>
 </Layout>

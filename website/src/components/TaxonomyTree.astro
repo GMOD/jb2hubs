@@ -18,11 +18,13 @@ interface Props {
   autoShow?: boolean
   title?: string
   hubsLink?: string
+  filterTaxonId?: string
 }
 
 interface TreeNode {
   name?: string
   accession?: string
+  taxonId?: string
   children?: TreeNode[]
   branchLength?: number
   parent?: TreeNode
@@ -32,6 +34,7 @@ interface FlatNodeData {
   id: string
   name?: string
   accession?: string
+  taxonId?: string
   branchLength?: number
   children?: FlatNodeData[]
   depth: number
@@ -44,6 +47,7 @@ const {
   autoShow = false,
   title,
   hubsLink,
+  filterTaxonId,
 } = Astro.props
 
 // Read the newick file at build time
@@ -103,7 +107,15 @@ function parseNewick(newick: string): TreeNode | null {
       const accessionMatch = name.match(/^(.+?)\[([^\]]+)\]$/)
       if (accessionMatch) {
         node.name = accessionMatch[1]
-        node.accession = accessionMatch[2]
+        const bracketContent = accessionMatch[2]
+        // Check if bracket content contains taxonId (format: accession|taxonId)
+        if (bracketContent.includes('|')) {
+          const [accession, taxonId] = bracketContent.split('|')
+          node.accession = accession
+          node.taxonId = taxonId
+        } else {
+          node.accession = bracketContent
+        }
       } else {
         node.name = name
       }
@@ -157,6 +169,7 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
         id,
         name: n.name,
         accession: n.children[0].accession, // Promote child's accession
+        taxonId: n.children[0].taxonId, // Promote child's taxonId
         branchLength: n.children[0].branchLength,
         children: undefined,
         depth,
@@ -176,6 +189,7 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
       id,
       name: n.name,
       accession: n.accession,
+      taxonId: n.taxonId,
       branchLength: n.branchLength,
       children: childNodes.length > 0 ? childNodes : undefined,
       depth,
@@ -198,6 +212,46 @@ function countAccessions(node: FlatNodeData | null): number {
   return count
 }
 
+// Enumerate all unique taxonIds from the tree
+function enumerateTaxonIds(node: FlatNodeData | null): Set<string> {
+  const taxonIds = new Set<string>()
+
+  function traverse(n: FlatNodeData | null) {
+    if (!n) return
+    if (n.taxonId) {
+      taxonIds.add(n.taxonId)
+    }
+    if (n.children) {
+      for (const child of n.children) {
+        traverse(child)
+      }
+    }
+  }
+
+  traverse(node)
+  return taxonIds
+}
+
+// Extract subtree for a specific taxonId
+function extractSubtreeByTaxonId(node: FlatNodeData | null, targetTaxonId: string): FlatNodeData | null {
+  if (!node) return null
+
+  // Check if current node matches the taxonId
+  if (node.taxonId === targetTaxonId) {
+    return node
+  }
+
+  // Check if any child matches
+  if (node.children) {
+    for (const child of node.children) {
+      const result = extractSubtreeByTaxonId(child, targetTaxonId)
+      if (result) return result
+    }
+  }
+
+  return null
+}
+
 // Create a lookup map for species data by accession
 const speciesDataMap = new Map<string, SpeciesData>()
 speciesData.forEach(species => {
@@ -215,6 +269,14 @@ if (!fileError && newickData) {
       parseError = 'Failed to parse Newick data'
     } else {
       tree = convertToHierarchicalTree(parsedTree)
+
+      // If filterTaxonId is provided, extract the subtree for that taxonId
+      if (filterTaxonId && tree) {
+        tree = extractSubtreeByTaxonId(tree, filterTaxonId)
+        if (!tree) {
+          parseError = `No subtree found for taxonomy ID: ${filterTaxonId}`
+        }
+      }
     }
   } catch (err) {
     parseError = `Error parsing tree: ${err}`
