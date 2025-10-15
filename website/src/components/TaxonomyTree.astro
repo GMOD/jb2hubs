@@ -1,0 +1,315 @@
+---
+import TreeNode from './TreeNode.astro'
+import {
+  getCachedTree,
+  extractSubtreeByTaxonId,
+  extractLineageByTaxonId,
+  countAccessions,
+  type FlatNodeData,
+} from '../utils/taxonomyCache'
+
+interface SpeciesData {
+  accession: string
+  commonName?: string
+  scientificName?: string
+  ncbiRefSeqCategory?: string
+  suppressed?: boolean
+  [key: string]: any
+}
+
+interface Props {
+  category?: string
+  speciesData?: SpeciesData[]
+  title?: string
+  hubsLink?: string
+  filterTaxonId?: string
+}
+
+const {
+  category = 'all',
+  speciesData = [],
+  title,
+  hubsLink,
+  filterTaxonId,
+} = Astro.props
+
+// Create a lookup map for species data by accession
+const speciesDataMap = new Map<string, SpeciesData>()
+speciesData.forEach(species => {
+  speciesDataMap.set(species.accession, species)
+})
+
+// Get cached tree
+let tree: FlatNodeData | null = null
+let lineage: FlatNodeData[] = []
+let error: string | null = null
+
+try {
+  tree = getCachedTree(category)
+
+  if (!tree) {
+    error = `Failed to load taxonomy tree for category: ${category}`
+  } else if (filterTaxonId) {
+    // If filterTaxonId is provided, extract the lineage and subtree for that taxonId
+    // Extract lineage first (before extracting subtree)
+    lineage = extractLineageByTaxonId(tree, filterTaxonId)
+
+    // Then extract the subtree
+    tree = extractSubtreeByTaxonId(tree, filterTaxonId)
+    if (!tree) {
+      error = `No subtree found for taxonomy ID: ${filterTaxonId}`
+    }
+  }
+} catch (err) {
+  error = `Error loading tree: ${err}`
+  console.error('Tree loading error:', err)
+}
+
+const accessionCount = tree ? countAccessions(tree) : 0
+---
+
+<div id="taxonomy-tree-container">
+  <div id="taxonomy-tree-content">
+    {
+      error ? (
+        <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
+          <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+            Error loading taxonomy
+          </h3>
+          <p style="color: #dc2626;">{error}</p>
+        </div>
+      ) : !tree ? (
+        <div style="padding: 16px; border: 1px solid #d1d5db; background-color: #f9fafb; border-radius: 4px;">
+          <p>Loading taxonomy...</p>
+        </div>
+      ) : (
+        <div style="padding: 16px;">
+          <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
+            {title && hubsLink ? (
+              <>
+                <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
+                <a
+                  href={hubsLink}
+                  style="color: #2563eb; text-decoration: underline;"
+                >
+                  View list of species as table for {title}
+                </a>
+              </>
+            ) : null}
+            <div
+              style={`${title && hubsLink ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}
+            >
+              <div style="color: #6b7280;">{accessionCount} accessions</div>
+            </div>
+          </div>
+
+          {lineage.length > 0 ? (
+            <div class="lineage-container">
+              <div class="lineage-label">Taxonomy:</div>
+              <div class="lineage-breadcrumbs">
+                {lineage.slice(0, -1).map((node, index) => (
+                  <>
+                    <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
+                      {node.name || 'Unnamed'}
+                    </a>
+                    <span class="lineage-separator">›</span>
+                  </>
+                ))}
+                <span class="lineage-current">
+                  {lineage[lineage.length - 1]?.name || 'Unnamed'}
+                </span>
+              </div>
+            </div>
+          ) : null}
+
+          {filterTaxonId ? (
+            <div class="taxonomy-info-container">
+              <div class="taxonomy-info-label">Taxonomy information:</div>
+              <a
+                href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${filterTaxonId}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="taxonomy-info-link"
+              >
+                View on NCBI (taxonomy ID: {filterTaxonId})
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="display: inline-block; vertical-align: middle; margin-left: 4px;"
+                >
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
+            </div>
+          ) : null}
+
+          {tree ? (
+            <TreeNode node={tree} speciesDataMap={speciesDataMap} />
+          ) : null}
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .lineage-container {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .lineage-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+  }
+
+  .lineage-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .lineage-link {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .lineage-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .lineage-separator {
+    color: #9ca3af;
+    user-select: none;
+  }
+
+  .lineage-current {
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  .taxonomy-info-container {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .taxonomy-info-label {
+    font-weight: 600;
+    color: #1e40af;
+    font-size: 14px;
+  }
+
+  .taxonomy-info-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .taxonomy-info-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  /* Pure CSS tree styles */
+  .tree-node {
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .tree-summary {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .tree-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tree-summary::marker {
+    display: none;
+  }
+
+  .tree-summary:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  .tree-content {
+    display: inline;
+  }
+
+  .tree-content > * {
+    display: inline;
+    margin-right: 8px;
+  }
+
+  .tree-leaf {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tree-leaf:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  .tree-link {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .tree-link-underline {
+    text-decoration: underline;
+  }
+
+  .accession-badge {
+    color: #2563eb;
+    background-color: #eff6ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Add chevron indicator using CSS */
+  .tree-summary::before {
+    content: 'X';
+    display: inline-block;
+    margin-right: 8px;
+    transition: transform 0.2s;
+  }
+
+  details[open] > .tree-summary::before {
+    transform: rotate(90deg);
+  }
+</style>

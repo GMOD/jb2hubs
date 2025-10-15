@@ -1,0 +1,257 @@
+---
+interface SpeciesData {
+  accession: string
+  commonName?: string
+  scientificName?: string
+  ncbiRefSeqCategory?: string
+  suppressed?: boolean
+  [key: string]: any
+}
+
+interface FlatNodeData {
+  id: string
+  name?: string
+  accession?: string
+  taxonId?: string
+  branchLength?: number
+  children?: FlatNodeData[]
+  depth: number
+  isLeaf: boolean
+}
+
+interface Props {
+  node: FlatNodeData
+  speciesDataMap: Map<string, SpeciesData>
+}
+
+const { node, speciesDataMap } = Astro.props
+const hasChildren = node.children && node.children.length > 0
+const indent = 20
+const speciesInfo = node.accession
+  ? speciesDataMap.get(node.accession)
+  : undefined
+---
+
+{
+  hasChildren ? (
+    <details class="tree-node" open style={`padding-left: ${indent}px;`}>
+      <summary
+        class="tree-summary"
+        style={`background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
+      >
+        <div class="tree-content">
+          {node.taxonId ? (
+            <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+              {node.name || 'Unnamed'}
+            </a>
+          ) : (
+            <span style="color: #1f2937;">{node.name || 'Unnamed'}</span>
+          )}
+
+          {speciesInfo?.commonName ? (
+            <span style="color: #6b7280;">({speciesInfo.commonName})</span>
+          ) : null}
+          {node.accession ? (
+            <>
+              <a
+                href={`/accession/${node.accession}`}
+                class="tree-link tree-link-underline"
+              >
+                (info)
+              </a>{' '}
+              <span class="accession-badge">{node.accession}</span>
+            </>
+          ) : null}
+          {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
+            <span title="NCBI designated reference">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="orange"
+                stroke="orange"
+                stroke-width="0"
+                style="display: inline-block; vertical-align: middle;"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </span>
+          ) : null}
+          {speciesInfo?.suppressed ? (
+            <span title="NCBI RefSeq suppressed">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="red"
+                stroke-width="2"
+                style="display: inline-block; vertical-align: middle;"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </span>
+          ) : null}
+          {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
+            <span style="color: #6b7280;">
+              [{node.branchLength.toFixed(4)}]
+            </span>
+          ) : null}
+        </div>
+      </summary>
+      {node.children!.map(child => (
+        <Astro.self node={child} speciesDataMap={speciesDataMap} />
+      ))}
+    </details>
+  ) : (
+    <div
+      class="tree-leaf"
+      style={`padding-left: ${indent}px; background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
+    >
+      <div class="tree-content">
+        <span style="margin-right: 8px;">•</span>
+        {node.taxonId ? (
+          <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+            {node.name || 'Unnamed'}
+          </a>
+        ) : (
+          <span style="color: #374151;">{node.name || 'Unnamed'}</span>
+        )}
+
+        {speciesInfo?.commonName ? (
+          <span style="color: #6b7280;">({speciesInfo.commonName})</span>
+        ) : null}
+        {node.accession ? (
+          <>
+            {/* prettier-ignore */}
+            <a href={`/accession/${node.accession}`} class="tree-link tree-link-underline">(info)</a>
+            <span class="accession-badge">{node.accession}</span>
+          </>
+        ) : null}
+        {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
+          <span title="NCBI designated reference">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="orange"
+              stroke="orange"
+              stroke-width="0"
+              style="display: inline-block; vertical-align: middle;"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </span>
+        ) : null}
+        {speciesInfo?.suppressed ? (
+          <span title="NCBI RefSeq suppressed">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="red"
+              stroke-width="2"
+              style="display: inline-block; vertical-align: middle;"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </span>
+        ) : null}
+        {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
+          <span style="color: #6b7280;">[{node.branchLength.toFixed(4)}]</span>
+        ) : null}
+      </div>
+    </div>
+  )
+}
+
+<style>
+  .tree-node {
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .tree-summary {
+    display: flex;
+    align-items: center;
+    padding: 2px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .tree-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tree-summary::marker {
+    display: none;
+  }
+
+  .tree-summary:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  .tree-content {
+    display: inline;
+  }
+
+  .tree-content > * {
+    display: inline;
+    margin-right: 8px;
+  }
+
+  .tree-leaf {
+    display: flex;
+    align-items: center;
+    padding: 2px 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tree-leaf:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  .tree-link {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .tree-link-underline {
+    text-decoration: underline;
+  }
+
+  .tree-node-link {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tree-node-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+
+  .accession-badge {
+    color: #2563eb;
+    background-color: #eff6ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Add chevron indicator using CSS */
+  .tree-summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 10px;
+    transition: transform 0.2s;
+  }
+
+  details[open] > .tree-summary::before {
+    transform: rotate(90deg);
+  }
+</style>
