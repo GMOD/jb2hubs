@@ -25,7 +25,7 @@ interface Props {
 
 const { node, speciesDataMap } = Astro.props
 const hasChildren = node.children && node.children.length > 0
-const indent = node.depth * 20
+const indent = 20
 const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefined
 ---
 
@@ -140,3 +140,80 @@ const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefi
     </div>
   </div>
 )}
+
+<style>
+  .tree-node {
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .tree-summary {
+    display: flex;
+    align-items: center;
+    padding: 2px 16px;
+    border-bottom: 1px solid #e5e7eb;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .tree-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .tree-summary::marker {
+    display: none;
+  }
+
+  .tree-summary:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  .tree-content {
+    display: inline;
+  }
+
+  .tree-content > * {
+    display: inline;
+    margin-right: 8px;
+  }
+
+  .tree-leaf {
+    display: flex;
+    align-items: center;
+    padding: 2px 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .tree-leaf:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  .tree-link {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .tree-link-underline {
+    text-decoration: underline;
+  }
+
+  .accession-badge {
+    color: #2563eb;
+    background-color: #eff6ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* Add chevron indicator using CSS */
+  .tree-summary::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 10px;
+    transition: transform 0.2s;
+  }
+
+  details[open] > .tree-summary::before {
+    transform: rotate(90deg);
+  }
+</style>
