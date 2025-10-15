@@ -1,4 +1,7 @@
 ---
+import fs from 'fs'
+import path from 'path'
+
 interface SpeciesData {
   accession: string
   commonName?: string
@@ -9,9 +12,11 @@ interface SpeciesData {
 }
 
 interface Props {
-  newickData: string
+  category?: string
   speciesData?: SpeciesData[]
-  header?: string
+  autoShow?: boolean
+  title?: string
+  hubsLink?: string
 }
 
 interface TreeNode {
@@ -30,6 +35,26 @@ interface FlatNodeData {
   children?: FlatNodeData[]
   depth: number
   isLeaf: boolean
+}
+
+const {
+  category = 'all',
+  speciesData = [],
+  autoShow = false,
+  title,
+  hubsLink,
+} = Astro.props
+
+// Read the newick file at build time
+const newickPath = path.join(process.cwd(), 'public', 'taxonomy', `${category}.newick`)
+let newickData = ''
+let fileError: string | null = null
+
+try {
+  newickData = fs.readFileSync(newickPath, 'utf-8')
+} catch (err) {
+  fileError = `Failed to read taxonomy file: ${err}`
+  console.error(fileError)
 }
 
 // Simple Newick parser
@@ -332,30 +357,6 @@ function renderTreeNode(node: FlatNodeData, speciesDataMap: Map<string, SpeciesD
   }
 }
 
-const { newickData, speciesData = [], header } = Astro.props
-
-// Create a lookup map for species data by accession
-const speciesDataMap = new Map<string, SpeciesData>()
-speciesData.forEach(species => {
-  speciesDataMap.set(species.accession, species)
-})
-
-// Parse and convert tree
-let tree: FlatNodeData | null = null
-let error: string | null = null
-
-try {
-  const parsedTree = parseNewick(newickData)
-  if (!parsedTree) {
-    error = 'Failed to parse Newick data'
-  } else {
-    tree = convertToHierarchicalTree(parsedTree)
-  }
-} catch (err) {
-  error = `Error parsing tree: ${err}`
-  console.error('Tree parsing error:', err)
-}
-
 // Count accessions
 function countAccessions(node: FlatNodeData | null): number {
   if (!node) return 0
@@ -368,39 +369,111 @@ function countAccessions(node: FlatNodeData | null): number {
   return count
 }
 
+// Create a lookup map for species data by accession
+const speciesDataMap = new Map<string, SpeciesData>()
+speciesData.forEach(species => {
+  speciesDataMap.set(species.accession, species)
+})
+
+// Parse and convert tree
+let tree: FlatNodeData | null = null
+let parseError: string | null = null
+
+if (!fileError && newickData) {
+  try {
+    const parsedTree = parseNewick(newickData)
+    if (!parsedTree) {
+      parseError = 'Failed to parse Newick data'
+    } else {
+      tree = convertToHierarchicalTree(parsedTree)
+    }
+  } catch (err) {
+    parseError = `Error parsing tree: ${err}`
+    console.error('Tree parsing error:', err)
+  }
+}
+
 const accessionCount = tree ? countAccessions(tree) : 0
 const treeHtml = tree ? renderTreeNode(tree, speciesDataMap) : ''
+
+// Create header HTML if title and hubsLink are provided
+let headerHtml = ''
+if (title && hubsLink) {
+  headerHtml = `
+    <h1 style="margin: 0;">GenArk taxonomy - ${title}</h1>
+    <a href="${hubsLink}" style="color: #2563eb; text-decoration: underline;">
+      View list of species as table for ${title}
+    </a>
+  `
+}
+
+const error = fileError || parseError
 ---
 
-{error ? (
-  <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
-    <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
-      Error loading phylogenetic tree
-    </h3>
-    <p style="color: #dc2626;">{error}</p>
-  </div>
-) : !tree ? (
-  <div style="padding: 16px; border: 1px solid #d1d5db; background-color: #f9fafb; border-radius: 4px;">
-    <p>Loading phylogenetic tree...</p>
-  </div>
-) : (
-  <div style="padding: 16px;">
-    <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
-      {header && <div set:html={header} />}
-      <div style={`${header ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}>
-        <div style="color: #6b7280;">{accessionCount} accessions</div>
+<div id="taxonomy-tree-container">
+  {!autoShow && (
+    <button id="show-taxonomy-btn" class="show-tree-btn">Show taxonomy</button>
+  )}
+  <div id="taxonomy-tree-content" style={autoShow ? '' : 'display: none;'}>
+    {error ? (
+      <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
+        <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+          Error loading taxonomy
+        </h3>
+        <p style="color: #dc2626;">{error}</p>
       </div>
-    </div>
-    <div
-      id="taxonomy-tree"
-      style="border: 1px solid #d1d5db; border-radius: 4px; overflow-y: auto; max-height: 600px;"
-      set:html={treeHtml}
-    />
+    ) : !tree ? (
+      <div style="padding: 16px; border: 1px solid #d1d5db; background-color: #f9fafb; border-radius: 4px;">
+        <p>Loading taxonomy...</p>
+      </div>
+    ) : (
+      <div style="padding: 16px;">
+        <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
+          {headerHtml && <div set:html={headerHtml} />}
+          <div style={`${headerHtml ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}>
+            <div style="color: #6b7280;">{accessionCount} accessions</div>
+          </div>
+        </div>
+        <div
+          id="taxonomy-tree"
+          style="border: 1px solid #d1d5db; border-radius: 4px; overflow-y: auto; max-height: 600px;"
+          set:html={treeHtml}
+        />
+      </div>
+    )}
   </div>
+</div>
+
+{!autoShow && (
+  <script>
+    const showBtn = document.getElementById('show-taxonomy-btn')
+    const content = document.getElementById('taxonomy-tree-content')
+
+    if (showBtn && content) {
+      showBtn.addEventListener('click', () => {
+        content.style.display = 'block'
+        showBtn.style.display = 'none'
+      })
+    }
+  </script>
 )}
 
 
 <style>
+  .show-tree-btn {
+    padding: 8px 16px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .show-tree-btn:hover {
+    background-color: #1d4ed8;
+  }
+
   /* Pure CSS tree styles */
   .tree-node {
     margin: 0;
@@ -429,10 +502,12 @@ const treeHtml = tree ? renderTreeNode(tree, speciesDataMap) : ''
   }
 
   .tree-content {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
+    display: inline;
+  }
+
+  .tree-content > * {
+    display: inline;
+    margin-right: 8px;
   }
 
   .tree-leaf {
