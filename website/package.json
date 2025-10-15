@@ -14,7 +14,8 @@
     "sync": "aws s3 sync dist s3://genomes.jbrowse.org/ --size-only",
     "deploy": "yarn sync",
     "postdeploy": "AWS_PAGER=\"\" aws cloudfront  create-invalidation --distribution-id E12EBG02P68TDO --paths \"/*\"",
-    "predeploy": "yarn build"
+    "predeploy": "yarn build",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",

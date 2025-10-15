@@ -26,7 +26,12 @@ export async function getStaticPaths() {
 
   // Generate paths for taxonomy ID pages
   // Read all.newick and enumerate taxonIds
-  const newickPath = path.join(process.cwd(), 'public', 'taxonomy', 'all.newick')
+  const newickPath = path.join(
+    process.cwd(),
+    'public',
+    'taxonomy',
+    'all.newick',
+  )
   try {
     const newickData = fs.readFileSync(newickPath, 'utf-8')
     const allJson = await import('../../../processedHubJson/all.json')
@@ -65,7 +70,9 @@ export async function getStaticPaths() {
 const { slug } = Astro.params
 const { rows, isCategory, taxonId } = Astro.props
 
-const title = isCategory ? slug.charAt(0).toUpperCase() + slug.slice(1) : `Taxonomy ID: ${taxonId}`
+const title = isCategory
+  ? slug.charAt(0).toUpperCase() + slug.slice(1)
+  : `Taxonomy ID: ${taxonId}`
 const category = isCategory ? slug : 'all'
 ---
 

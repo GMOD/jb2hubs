@@ -51,7 +51,12 @@ const {
 } = Astro.props
 
 // Read the newick file at build time
-const newickPath = path.join(process.cwd(), 'public', 'taxonomy', `${category}.newick`)
+const newickPath = path.join(
+  process.cwd(),
+  'public',
+  'taxonomy',
+  `${category}.newick`,
+)
 let newickData = ''
 let fileError: string | null = null
 
@@ -241,7 +246,10 @@ function enumerateTaxonIds(node: FlatNodeData | null): Set<string> {
 }
 
 // Extract subtree for a specific taxonId
-function extractSubtreeByTaxonId(node: FlatNodeData | null, targetTaxonId: string): FlatNodeData | null {
+function extractSubtreeByTaxonId(
+  node: FlatNodeData | null,
+  targetTaxonId: string,
+): FlatNodeData | null {
   if (!node) return null
 
   // Check if current node matches the taxonId
@@ -261,7 +269,10 @@ function extractSubtreeByTaxonId(node: FlatNodeData | null, targetTaxonId: strin
 }
 
 // Extract lineage (path from root to target node)
-function extractLineageByTaxonId(node: FlatNodeData | null, targetTaxonId: string): FlatNodeData[] {
+function extractLineageByTaxonId(
+  node: FlatNodeData | null,
+  targetTaxonId: string,
+): FlatNodeData[] {
   if (!node) return []
 
   // Check if current node matches the taxonId
@@ -325,95 +336,112 @@ const error = fileError || parseError
 ---
 
 <div id="taxonomy-tree-container">
-  {!autoShow && (
-    <button id="show-taxonomy-btn" class="show-tree-btn">Show taxonomy</button>
-  )}
+  {
+    !autoShow && (
+      <button id="show-taxonomy-btn" class="show-tree-btn">
+        Show taxonomy
+      </button>
+    )
+  }
   <div id="taxonomy-tree-content" style={autoShow ? '' : 'display: none;'}>
-    {error ? (
-      <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
-        <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
-          Error loading taxonomy
-        </h3>
-        <p style="color: #dc2626;">{error}</p>
-      </div>
-    ) : !tree ? (
-      <div style="padding: 16px; border: 1px solid #d1d5db; background-color: #f9fafb; border-radius: 4px;">
-        <p>Loading taxonomy...</p>
-      </div>
-    ) : (
-      <div style="padding: 16px;">
-        <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
-          {title && hubsLink && (
-            <>
-              <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
-              <a href={hubsLink} style="color: #2563eb; text-decoration: underline;">
-                View list of species as table for {title}
-              </a>
-            </>
-          )}
-          <div style={`${title && hubsLink ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}>
-            <div style="color: #6b7280;">{accessionCount} accessions</div>
-          </div>
+    {
+      error ? (
+        <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
+          <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+            Error loading taxonomy
+          </h3>
+          <p style="color: #dc2626;">{error}</p>
         </div>
-
-        {lineage.length > 0 && (
-          <div class="lineage-container">
-            <div class="lineage-label">Taxonomy:</div>
-            <div class="lineage-breadcrumbs">
-              {lineage.slice(0, -1).map((node, index) => (
-                <>
-                  <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
-                    {node.name || 'Unnamed'}
-                  </a>
-                  <span class="lineage-separator">›</span>
-                </>
-              ))}
-              <span class="lineage-current">
-                {lineage[lineage.length - 1]?.name || 'Unnamed'}
-              </span>
+      ) : !tree ? (
+        <div style="padding: 16px; border: 1px solid #d1d5db; background-color: #f9fafb; border-radius: 4px;">
+          <p>Loading taxonomy...</p>
+        </div>
+      ) : (
+        <div style="padding: 16px;">
+          <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
+            {title && hubsLink && (
+              <>
+                <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
+                <a
+                  href={hubsLink}
+                  style="color: #2563eb; text-decoration: underline;"
+                >
+                  View list of species as table for {title}
+                </a>
+              </>
+            )}
+            <div
+              style={`${title && hubsLink ? 'margin-left: auto;' : ''} display: flex; gap: 8px; align-items: center; flex-wrap: wrap;`}
+            >
+              <div style="color: #6b7280;">{accessionCount} accessions</div>
             </div>
           </div>
-        )}
 
-        {filterTaxonId && (
-          <div class="taxonomy-info-container">
-            <div class="taxonomy-info-label">Taxonomy information:</div>
-            <a
-              href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${filterTaxonId}/`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="taxonomy-info-link"
-            >
-              View on NCBI (taxonomy ID: {filterTaxonId})
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle; margin-left: 4px;">
-                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                <polyline points="15 3 21 3 21 9"></polyline>
-                <line x1="10" y1="14" x2="21" y2="3"></line>
-              </svg>
-            </a>
-          </div>
-        )}
+          {lineage.length > 0 && (
+            <div class="lineage-container">
+              <div class="lineage-label">Taxonomy:</div>
+              <div class="lineage-breadcrumbs">
+                {lineage.slice(0, -1).map((node, index) => (
+                  <>
+                    <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
+                      {node.name || 'Unnamed'}
+                    </a>
+                    <span class="lineage-separator">›</span>
+                  </>
+                ))}
+                <span class="lineage-current">
+                  {lineage[lineage.length - 1]?.name || 'Unnamed'}
+                </span>
+              </div>
+            </div>
+          )}
 
-        {tree && <TreeNode node={tree} speciesDataMap={speciesDataMap} />}
-      </div>
-    )}
+          {filterTaxonId && (
+            <div class="taxonomy-info-container">
+              <div class="taxonomy-info-label">Taxonomy information:</div>
+              <a
+                href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${filterTaxonId}/`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="taxonomy-info-link"
+              >
+                View on NCBI (taxonomy ID: {filterTaxonId})
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  style="display: inline-block; vertical-align: middle; margin-left: 4px;"
+                >
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
+            </div>
+          )}
+
+          {tree && <TreeNode node={tree} speciesDataMap={speciesDataMap} />}
+        </div>
+      )
+    }
   </div>
 </div>
 
-{!autoShow && (
-  <script>
-    const showBtn = document.getElementById('show-taxonomy-btn')
-    const content = document.getElementById('taxonomy-tree-content')
-
-    if (showBtn && content) {
-      showBtn.addEventListener('click', () => {
+{
+  !autoShow && (
+    <script>
+      const showBtn = document.getElementById('show-taxonomy-btn') const content
+      = document.getElementById('taxonomy-tree-content') if (showBtn && content){' '}
+      {showBtn.addEventListener('click', () => {
         content.style.display = 'block'
         showBtn.style.display = 'none'
-      })
-    }
-  </script>
-)}
-
+      })}
+    </script>
+  )
+}
 
 <style>
   .show-tree-btn {

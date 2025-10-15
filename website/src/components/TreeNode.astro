@@ -27,132 +27,146 @@ interface Props {
 const { node, speciesDataMap } = Astro.props
 const hasChildren = node.children && node.children.length > 0
 const indent = 20
-const speciesInfo = node.accession ? speciesDataMap.get(node.accession) : undefined
+const speciesInfo = node.accession
+  ? speciesDataMap.get(node.accession)
+  : undefined
 ---
 
-{hasChildren ? (
-  <details class="tree-node" open style={`padding-left: ${indent}px;`}>
-    <summary class="tree-summary" style={`background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}>
+{
+  hasChildren ? (
+    <details class="tree-node" open style={`padding-left: ${indent}px;`}>
+      <summary
+        class="tree-summary"
+        style={`background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
+      >
+        <div class="tree-content">
+          {node.taxonId ? (
+            <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+              {node.name || 'Unnamed'}
+            </a>
+          ) : (
+            <span style="color: #1f2937;">{node.name || 'Unnamed'}</span>
+          )}
+
+          {speciesInfo?.commonName ? (
+            <span style="color: #6b7280;">({speciesInfo.commonName})</span>
+          ) : null}
+          {node.accession ? (
+            <>
+              <a
+                href={`/accession/${node.accession}`}
+                class="tree-link tree-link-underline"
+              >
+                (info)
+              </a>{' '}
+              <span class="accession-badge">{node.accession}</span>
+            </>
+          ) : null}
+          {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
+            <span title="NCBI designated reference">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="orange"
+                stroke="orange"
+                stroke-width="0"
+                style="display: inline-block; vertical-align: middle;"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </span>
+          ) : null}
+          {speciesInfo?.suppressed ? (
+            <span title="NCBI RefSeq suppressed">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="red"
+                stroke-width="2"
+                style="display: inline-block; vertical-align: middle;"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </span>
+          ) : null}
+          {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
+            <span style="color: #6b7280;">
+              [{node.branchLength.toFixed(4)}]
+            </span>
+          ) : null}
+        </div>
+      </summary>
+      {node.children!.map(child => (
+        <Astro.self node={child} speciesDataMap={speciesDataMap} />
+      ))}
+    </details>
+  ) : (
+    <div
+      class="tree-leaf"
+      style={`padding-left: ${indent}px; background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
+    >
       <div class="tree-content">
+        <span style="margin-right: 8px;">•</span>
         {node.taxonId ? (
           <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
             {node.name || 'Unnamed'}
           </a>
         ) : (
-          <span style="color: #1f2937;">
-            {node.name || 'Unnamed'}
-          </span>
+          <span style="color: #374151;">{node.name || 'Unnamed'}</span>
         )}
-        {node.name && (
-          <a
-            href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodeURIComponent(node.name)}&searchMode=complete+name&lock=1&unlock=1&command=search`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="tree-link"
-          >
-            [?]
-          </a>
-        )}
-        {speciesInfo?.commonName && (
-          <span style="color: #6b7280;">
-            ({speciesInfo.commonName})
-          </span>
-        )}
-        {node.accession && (
+        
+        {speciesInfo?.commonName ? (
+          <span style="color: #6b7280;">({speciesInfo.commonName})</span>
+        ) : null}
+        {node.accession ? (
           <>
-            <a href={`/accession/${node.accession}`} class="tree-link tree-link-underline">
-              (info)
-            </a>
-            <span class="accession-badge">
-              {node.accession}
-            </span>
+            {/* prettier-ignore */}
+            <a href={`/accession/${node.accession}`} class="tree-link tree-link-underline">(info)</a>
+            <span class="accession-badge">{node.accession}</span>
           </>
-        )}
-        {speciesInfo?.ncbiRefSeqCategory === 'reference genome' && (
+        ) : null}
+        {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
           <span title="NCBI designated reference">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="orange" stroke="orange" stroke-width="0" style="display: inline-block; vertical-align: middle;">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="orange"
+              stroke="orange"
+              stroke-width="0"
+              style="display: inline-block; vertical-align: middle;"
+            >
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
           </span>
-        )}
-        {speciesInfo?.suppressed && (
+        ) : null}
+        {speciesInfo?.suppressed ? (
           <span title="NCBI RefSeq suppressed">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" style="display: inline-block; vertical-align: middle;">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="red"
+              stroke-width="2"
+              style="display: inline-block; vertical-align: middle;"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </span>
-        )}
-        {node.branchLength !== undefined && node.branchLength !== 1.0 && (
-          <span style="color: #6b7280;">
-            [{node.branchLength.toFixed(4)}]
-          </span>
-        )}
+        ) : null}
+        {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
+          <span style="color: #6b7280;">[{node.branchLength.toFixed(4)}]</span>
+        ) : null}
       </div>
-    </summary>
-    {node.children!.map(child => <Astro.self node={child} speciesDataMap={speciesDataMap} />)}
-  </details>
-) : (
-  <div class="tree-leaf" style={`padding-left: ${indent}px; background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}>
-    <div class="tree-content">
-      <span style="margin-right: 8px;">•</span>
-      {node.taxonId ? (
-        <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
-          {node.name || 'Unnamed'}
-        </a>
-      ) : (
-        <span style="color: #374151;">
-          {node.name || 'Unnamed'}
-        </span>
-      )}
-      {node.name && (
-        <a
-          href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?searchTerm=${encodeURIComponent(node.name)}&searchMode=complete+name&lock=1&unlock=1&command=search`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="tree-link"
-        >
-          [?]
-        </a>
-      )}
-      {speciesInfo?.commonName && (
-        <span style="color: #6b7280;">
-          ({speciesInfo.commonName})
-        </span>
-      )}
-      {node.accession && (
-        <>
-          <a href={`/accession/${node.accession}`} class="tree-link tree-link-underline">
-            (info)
-          </a>
-          <span class="accession-badge">
-            {node.accession}
-          </span>
-        </>
-      )}
-      {speciesInfo?.ncbiRefSeqCategory === 'reference genome' && (
-        <span title="NCBI designated reference">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="orange" stroke="orange" stroke-width="0" style="display: inline-block; vertical-align: middle;">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-        </span>
-      )}
-      {speciesInfo?.suppressed && (
-        <span title="NCBI RefSeq suppressed">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" style="display: inline-block; vertical-align: middle;">
-            <line x1="18" y1="6" x2="6" y2="18"></line>
-            <line x1="6" y1="6" x2="18" y2="18"></line>
-          </svg>
-        </span>
-      )}
-      {node.branchLength !== undefined && node.branchLength !== 1.0 && (
-        <span style="color: #6b7280;">
-          [{node.branchLength.toFixed(4)}]
-        </span>
-      )}
     </div>
-  </div>
-)}
+  )
+}
 
 <style>
   .tree-node {
