@@ -30,6 +30,13 @@ export function createTrackConfiguration({
   const { data } = track
   const { group, html } = data
 
+  // Get parent tracks to extract both group and shortLabel information
+  const parentTracks = extractParentTracks(trackName, trackDb)
+
+  // Find group from current track or first parent that has one
+  const effectiveGroup =
+    group || parentTracks.find(p => p.data.group)?.data.group
+
   return conf
     ? {
         metadata: {
@@ -41,16 +48,19 @@ export function createTrackConfiguration({
             : {}),
         },
         category: [
-          group,
-          ...extractParentTracks(trackName, trackDb).map(
-            p => trackDb.data[p.name!]?.data.shortLabel,
-          ),
+          effectiveGroup,
+          // ,
         ]
           .filter(f => !!f)
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           .map(f => categoryMap[f as keyof typeof categoryMap] ?? f),
         ...conf,
-        name: [conf.name].join(' - '),
+        name: [
+          ...new Set([
+            ...parentTracks.map(p => trackDb.data[p.name!]?.data.shortLabel),
+            conf.name,
+          ]),
+        ].join(' - '),
       }
     : undefined
 }

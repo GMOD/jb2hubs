@@ -85,13 +85,26 @@ export async function getStaticPaths() {
 const { slug } = Astro.params
 const { rows, isCategory, taxonId } = Astro.props
 
-const title = isCategory
-  ? slug.charAt(0).toUpperCase() + slug.slice(1)
-  : `Taxonomy ID: ${taxonId}`
+let title: string
+let description: string
 const category = isCategory ? slug : 'all'
+
+if (isCategory) {
+  title = slug.charAt(0).toUpperCase() + slug.slice(1)
+  description = `Browse ${title} genome assemblies from the GenArk collection`
+} else {
+  // For taxonomy pages, get the taxon name from the tree
+  const { getCachedTree, extractSubtreeByTaxonId } = await import(
+    '../utils/taxonomyCache'
+  )
+  const tree = getCachedTree('all')
+  const subtree = tree ? extractSubtreeByTaxonId(tree, taxonId) : null
+  title = subtree?.name || `Taxonomy ID: ${taxonId}`
+  description = `Browse genome assemblies for ${title} (NCBI Taxonomy ID: ${taxonId})`
+}
 ---
 
-<Layout title={`GenArk taxonomy - ${title}`}>
+<Layout title={`Taxonomy - ${title}`} description={description}>
   <Container2>
     <TaxonomyTree
       category={category}

@@ -6,7 +6,7 @@ import type { Props } from '@astrojs/starlight/props'
 import Header from '../components/Header.astro'
 import '../styles/global.css'
 
-const { frontmatter } = Astro.props
+const { frontmatter, title, description } = Astro.props
 ---
 
 <!doctype html>
@@ -28,8 +28,10 @@ const { frontmatter } = Astro.props
       gtag('config', 'G-D9CD3J2V31')
     </script>
     <SEO
-      title={frontmatter?.title ?? 'JBrowse 2 genome browser hubs'}
-      description={frontmatter?.description ?? 'JBrowse 2 genome browser hubs'}
+      title={title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'}
+      description={description ??
+        frontmatter?.description ??
+        'JBrowse 2 genome browser hubs'}
     />
   </head>
   <body>

@@ -28,7 +28,7 @@ add_track_and_text_index() {
 
   local hub_dir="hubs/$prefix/$first_part/$second_part/$third_part/$accession/"
 
-  jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId ncbiGff --name "RefSeq All - GFF" --category "Genes and Gene Predictions"
+  jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId ncbiGff --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions"
   # Check if trix folder exists
   if [ -d "$hub_dir/trix" ] && [ -z "$REDOWNLOAD" ] && [ -z "$REPROCESS" ] && [ -z "$REPROCESS_TRIX" ]; then
     # Add JSON snippet to config.json using jq

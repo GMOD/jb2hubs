@@ -128,22 +128,25 @@ function createTrackConfiguration({
   })
   const { data } = track
   const { group, html } = data
+  const parentTracks = extractParentTracks(trackName, trackDb)
+  const effectiveGroup =
+    group || parentTracks.find(p => p.data.group)?.data.group
   return conf
     ? {
         metadata: {
           ...data,
           ...(html ? { html: createHtmlLink(html, trackDbUrl) } : {}),
         },
-        category: [
-          group,
-          ...extractParentTracks(trackName, trackDb).map(
-            p => trackDb.data[p.name]?.data.shortLabel,
-          ),
-        ]
+        category: [effectiveGroup]
           .filter(f => !!f)
           .map(f => categoryMap[f] ?? f),
         ...conf,
-        name: [conf.name].join(' - '),
+        name: [
+          ...new Set([
+            ...parentTracks.map(p => trackDb.data[p.name]?.data.shortLabel),
+            conf.name,
+          ]),
+        ].join(' - '),
       }
     : void 0
 }
