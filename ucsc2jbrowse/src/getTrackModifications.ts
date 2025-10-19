@@ -20,7 +20,7 @@ const specializedParents = new Set([
 
 const specializedTypes = new Set(['pgSnp', 'bigPsl'])
 
-const specializedGroups = new Set(['denisova', 'neandertal'])
+// const specializedGroups = new Set(['denisova', 'neandertal'])
 
 const specializedTrackIds = new Set([
   'gtexGene',
@@ -40,52 +40,41 @@ function _getTrackModifications<
     metadata?: Record<string, unknown>
     category?: string[]
     assemblyNames: string[]
+    name: string
   },
 >(track: T): T | undefined {
   // Delete tracks with "Primate Chain/Net" as the first category
-  const { assemblyNames, metadata, category } = track
+  const { name, assemblyNames, metadata } = track
   if (assemblyNames[0] === 'hs1') {
-    const cat0 = category?.[0]
-    if (cat0 === 'Primate Chain/Net' || cat0 === 'Human liftOver') {
+    const cat0 = name
+    if (
+      cat0?.startsWith('Primate Chain/Net') ||
+      cat0?.startsWith('Human liftOver')
+    ) {
       return undefined
-    } else if (cat0 === 'NCBI RefSeq') {
-      return {
-        ...track,
-        category: ['Genes and Gene Predictions'],
-      }
     } else if (
       cat0?.startsWith('CHM13') ||
       cat0?.startsWith('SGDP') ||
-      cat0 === 'Long-read Variants' ||
-      cat0 === 'T2T Encode'
+      // cat0?.startsWith('Long-read Variants') ||
+      cat0?.startsWith('T2T Encode')
     ) {
-      return {
-        ...track,
-        category: ['Uncommon or Specialized tracks', ...(category ?? [])],
-      }
+      return undefined
     } else {
       return track
     }
   } else if (metadata) {
     const trackType = `${metadata.type}`.split(' ')[0]!
     const trackParent = `${metadata.parent}`.split(' ')[0]!
-    const trackGroup = `${metadata.group}`.split(' ')[0]!
     const trackId = `${metadata.track}`
     const flag =
       specializedTypes.has(trackType) ||
       specializedParents.has(trackParent) ||
-      specializedGroups.has(trackGroup) ||
       specializedTrackIds.has(trackId) ||
       !!metadata.barChartBars ||
       !!metadata.barChartCategoryUrl
 
     if (flag) {
-      return {
-        ...track,
-        category: ['Uncommon or Specialized tracks'].concat(
-          track.category ?? [],
-        ),
-      }
+      return undefined
     }
   }
   return track
@@ -93,8 +82,7 @@ function _getTrackModifications<
 
 /**
  * Modifies a track's configuration based on its metadata.
- * If the track should be categorized as 'Uncommon or Specialized tracks',
- * adds that category to the track's category array.
+ * Deletes tracks that would have been categorized as 'Uncommon or Specialized tracks'.
  * @param track The track object to modify.
  * @returns The modified track object, or undefined if the track should be deleted.
  */

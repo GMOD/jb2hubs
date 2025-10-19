@@ -557,40 +557,6 @@
       "category": ["uniprot"]
     },
     {
-      "trackId": "wuhCor1-unipCov2AliSwissprot",
-      "name": "Protein Alignments",
-      "type": "FeatureTrack",
-      "assemblyNames": ["wuhCor1"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipAliSwissprotCov2.bb"
-      },
-      "metadata": {
-        "baseColorTickColor": "contrastingColor",
-        "bigDataUrl": "/gbdb/wuhCor1/uniprot/unipAliSwissprotCov2.bb",
-        "color": "2,12,120",
-        "dataVersion": "/gbdb/$D/uniprot/version.txt",
-        "exonNumbers": "off",
-        "group": "uniprot",
-        "indelDoubleInsert": "on",
-        "indelQueryInsert": "on",
-        "itemRgb": "off",
-        "labelFields": "protShortNames,geneName,uniprotName,acc,hgncSym,refSeq,refSeqProt,ensProt,uniprotName",
-        "longLabel": "UCSC alignment of full-length SwissProt proteins to genome",
-        "mouseOverField": "protFullNames",
-        "priority": "1",
-        "searchIndex": "name,acc",
-        "shortLabel": "Protein Alignments",
-        "track": "unipCov2AliSwissprot",
-        "type": "bigPsl",
-        "urls": "acc=\"http://www.uniprot.org/uniprot/$$\" hgncId=\"https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\"",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\nThis track shows protein sequence annotations from the <a\nhref=\"https://www.uniprot.org/\" target=\"_blank\">UniProt/SwissProt</A> database,\nmapped to genomic coordinates. It shows how the protein sequences in this database \nmap to the genome. This mapping was used to \"lift\" the UniProt protein\nannotations to the SARS-CoV-2 genome.  The protein annotation themselves have been\ncurated from scientific publications by the UniProt/SwissProt staff.\n</p> \n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nGenomic locations of UniProt/SwissProt annotations are labeled with a short name for\nthe type of annotation (e.g. &quot;glyco&quot;, &quot;disulf bond&quot;, &quot;Signal peptide&quot;\netc.). A click on them shows the full annotation and provides a link to the UniProt/SwissProt\nrecord for more details. \n</p>\n\n<p>\nMouse-over a feature to see the full UniProt annotation comment. For variants, the mouse-over will\nshow the full name of the UniProt disease acronym.\n</p>\n\n<h2>Methods</h2>\n\n<p>\nUniProt sequences were aligned to UCSC/Gencode transcript sequences first with\nBLAT, filtered with pslReps (93% query coverage, within top 1% score), lifted\nto genome positions with pslMap and filtered again.  UniProt annotations were\nobtained from the UniProt XML file.  The annotations were then mapped to the\ngenome through the alignment using the pslMap program.  This mapping approach\ndraws heavily on the <A HREF=\"https://modbase.compbio.ucsf.edu/LS-SNP/\"\nTARGET=\"_BLANK\">LS-SNP</A> pipeline by Mark Diekhans. For human and mouse, the\nalignments were filtered by retaining only proteins annotated with\na given transcript in the Genome Browser table kgXref. Like all Genome Browser\nsource code, the main script used to build this track can be found on \n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/utils/otto/uniprot/doUniprot\">GitHub</a>.\n</p>\n\n<h2>Data Access</h2>\n\n<p>\nThe raw data can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\nFor automated analysis, the genome annotation is stored in a bigBed file that \ncan be downloaded from the\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/\" target=\"_blank\">download server</a>.\nThe exact filenames can be found in the \n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/trackDb/trackDb.uniprot.ra\">track configuration file</a>. \nAnnotations can be converted to ASCII text by our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, for example:\n<br><br> \n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipAliSwissprotCov2.bb -chrom=NC_045512v2 -start=0 -end=29903 stdout</tt> \n<br><br>\n<!--\nThis track is updated every month. The MySQL table hgFixed.trackVersion\ncontains the name of the currently available data on the website. Older\nversions of the data files can be downloaded from the <a\nhref=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/wuhCor1\">archive\nfolder</a> of our downloads server.<br><br>\n--!>\nPlease refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our\n<a href=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a>\nfor more information. \n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was created by Maximilian Haeussler at UCSC, with help from Chris\nLee, Mark Diekhans and Brian Raney, feedback from the UniProt staff and Alejo\nMujica, Regeneron Pharmaceuticals.  Thanks to UniProt for making all data\navailable for download.</p>\n\n<h2>References</h2>\n\n<p>\nUniProt Consortium.\n<a href=\"https://academic.oup.com/nar/article/40/D1/D71/2903687/Reorganizing-the-protein-space-at-\nthe-Universal\" target=\"_blank\">\nReorganizing the protein space at the Universal Protein Resource (UniProt)</a>.\n<em>Nucleic Acids Res</em>. 2012 Jan;40(Database issue):D71-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/22102590\" target=\"_blank\">22102590</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3245120/\" target=\"_blank\">PMC3245120</a>\n</p>\n\n<p>\nYip YL, Scheib H, Diemand AV, Gattiker A, Famiglietti LM, Gasteiger E, Bairoch A.\n<a href=\"https://onlinelibrary.wiley.com/doi/abs/10.1002/humu.20021\" target=\"_blank\">\nThe Swiss-Prot variant page and the ModSNP database: a resource for sequence and structure\ninformation on human protein variants</a>.\n<em>Hum Mutat</em>. 2004 May;23(5):464-70.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15108278\" target=\"_blank\">15108278</a>\n</p>\n"
-      },
-      "description": "UCSC alignment of full-length SwissProt proteins to genome",
-      "category": ["Uncommon or Specialized tracks", "uniprot"]
-    },
-    {
       "trackId": "wuhCor1-SHAPE",
       "name": "SHAPE Struct Pyle - SHAPE Reactivity",
       "type": "QuantitativeTrack",
@@ -1443,39 +1409,6 @@
       },
       "description": "Nanopore coverage of in-vitro-transcribed RNA seq + PCR, Kim et al 2020",
       "category": ["Mapping and Sequencing"]
-    },
-    {
-      "trackId": "wuhCor1-kimRnaMod",
-      "name": "Subgenomic RNA Modif.",
-      "type": "FeatureTrack",
-      "assemblyNames": ["wuhCor1"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/kim2020/kim-scv2-drs-modifications.bb"
-      },
-      "metadata": {
-        "barChartBars": "gRNA S ORF3a E M ORF6 ORF7a ORF7b ORF8 N",
-        "barChartMetric": "median",
-        "barChartSizeWindows": "500 8000",
-        "barChartUnit": "frac",
-        "bedNameLabel": "Position on genome",
-        "bigDataUrl": "/gbdb/wuhCor1/bbi/kim2020/kim-scv2-drs-modifications.bb",
-        "color": "224,49,49",
-        "group": "genes",
-        "longLabel": "Subgenomic RNA Modifications from Kim et al. 2020: gRNA S 3a E M 6 7a 7b 8 N",
-        "maxLimit": "1",
-        "priority": "3.95",
-        "shortLabel": "Subgenomic RNA Modif.",
-        "track": "kimRnaMod",
-        "type": "bigBarChart",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n<p>\nThis track shows the locations of RNA-modifications as determined by Nanopore sequencing \n<a href=\"https://www.cell.com/pb-assets/products/coronavirus/CELL_CELL-D-20-00765.pdf\" target=\"_blank\">\n    Kim et al, Cell 2020</a>.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nVery small tickmarks indicate the position of the RNA modifications on the\ngenome. One has to zoom in to basepair level detail to see their exact extent. A\nsmall barchart over the tick indicates the fraction of transcripts that are modified\nrelative to the un-modified transcripts. E.g. frac=0.3 means that 30% of the transcripts\nwere modified. There is one barchart per transcript.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\">Table Browser</a>, or combined with other datasets in the\n<a href=\"hgIntegrator\">Data Integrator</a> tool.\nFor automated analysis, the genome annotation is stored in\na bigBed file that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/kim2020\">the download server</a>.</p>\n\n<p>\nAnnotations can\nbe converted from binary to ASCII text by our command-line tool bigBedToBed.\nInstructions for downloading this command can be found on our\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">utilities page</a>.\nThe tool can also be used to obtain features within a given range without downloading the file,\nfor example:</p>\n<code>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/kim2020.bb -chrom=NC_045512v2 -start=0 -end=29902 stdout</code>\n\n<p>\nPlease refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our\n<a href=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a>\nfor more information.</p>\n\n\n\n<h2>Credits</h2>\n<p>\nThanks to Hyeshik Chang for preparing and sharing custom tracks.\n<p>\n\n<h2>References</h2>\n\n<p>\n<a href=\"https://www.cell.com/pb-assets/products/coronavirus/CELL_CELL-D-20-00765.pdf\" target=\"_blank\">\nThe architecture of SARS-CoV-2 transcriptome</a>.\n<em>Cell 2020</em>. pre-proof\n<!-- PMID: <a href=\"\" target=\"_blank\">pending</a> -->\n</p>\n\n"
-      },
-      "description": "Subgenomic RNA Modifications from Kim et al. 2020: gRNA S 3a E M 6 7a 7b 8 N",
-      "category": [
-        "Uncommon or Specialized tracks",
-        "Genes and Gene Predictions"
-      ]
     },
     {
       "trackId": "wuhCor1-variantNucMutsV2_B_1_351",
@@ -12003,38 +11936,6 @@
       },
       "description": "Spike protein mutations from community annotation (Feb 2021)",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "wuhCor1-vaccines",
-      "name": "Vaccines",
-      "type": "FeatureTrack",
-      "assemblyNames": ["wuhCor1"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/wuhCor1.vaccines.bb"
-      },
-      "metadata": {
-        "baseColorDefault": "diffCodons",
-        "baseColorUseCds": "table given",
-        "baseColorUseSequence": "lfExtra",
-        "bigDataUrl": "/gbdb/wuhCor1/bbi/wuhCor1.vaccines.bb",
-        "color": "0,0,0",
-        "group": "immu",
-        "html": "<h2>Description</h2>\n<p>\nThis track shows the alignment of three different mRNA vaccine sequences\nto the SARS-CoV-2 genome:\n<ol>\n<li>The BioNTech/Pfizer BNT-162b2 sequence as published by the World Health Organization\n<li>The reconstructed BioNTech/Pfizer BNT-162b2 RNA as sequenced by the\n    <a href=\"https://firelab.sites.stanford.edu\"\ntarget=_blank>Andrew Fire lab</a>, Stanford University School of Medicine\n<li>The Moderna mRNA-1273 sequence as sequenced by the\n    <a href=\"https://firelab.sites.stanford.edu\"\ntarget=_blank>Andrew Fire lab</a>, Stanford University School of Medicine\n</ol>\n</p>\n<p>Note that the actual vaccines are synthesized with N1-methyl-pseudouridine \n(&#936;) in place of uridine. See paper by Hubert in References for\na discussion.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nThe psl output from <em>blat</em> was converted to a <em>bigPsl</em>\nformat file for display in this track.  Depending upon the size of the\nsection of the genome in display, the track will draw black where\nnucleotides are identical between vaccine sequence and the SARS-CoV-2\nsequence.  Red lines indicate differences in nucleotides.  At viewpoints\nwith smaller sections of the genome in view, setting the\n<em>Color track by codons or bases:</em> to <em>different mRNA bases</em>\nwill show the nucleotides in the vaccine that are different than the\nSARS-CoV-2 sequence.\n</p>\n<h2>Methods</h2>\n<p>\nThe mRNA sequences were obtained from the <em>MS WORD</em> documents as\nmentioned in the <em>references</em> below.  And the\n<a href=\"https://firelab.sites.stanford.edu\"\ntarget=_blank>Andrew Fire lab</a>\n<a href=\"https://github.com/NAalytics/Assemblies-of-putative-SARS-CoV2-spike-encoding-mRNA-sequences-for-vaccines-BNT-162b2-and-mRNA-1273\"\ntarget=_blank>github</a> supplied the\n<a href=\"https://raw.githubusercontent.com/NAalytics/Assemblies-of-putative-SARS-CoV2-spike-encoding-mRNA-sequences-for-vaccines-BNT-162b2-and-mRNA-1273/main/Figure1Figure2_032321.fasta\" target=_blank>fasta</a> sequencing result for\nthe BioNTech/Pfizer BNT-162b2 and Moderna mRNA-1273 samples.\n</p>\n<p>\nThe PSL alignment file was obtained via the UCSC genome browser\nblat service with parameters <em>-t=dnax -q=rnax</em> and filtered\nto allow only scores above 1000 to filter out the polyA match:\n<pre>\n  gfClient -maxIntron=10 -t=dnax -q=rnax &lt;host&gt; &lt;port&gt;   \n     /gbdb/wuhCor1 threeVaccines.fa stdout   \n        | pslFilter -minScore=1000 stdin wuhCor1.vaccines.psl\n\n  pslScore wuhCor1.vaccines.psl\n\n  #tName          tStart  tEnd    qName:qStart-qEnd       score   percentIdent\n  NC_045512v2     21559   25384   ModernaMrna1273:54-3879  1419    68.60\n  NC_045512v2     21559   25384   ReconstructedBNT162b2:51-3876 1701    72.30\n  NC_045512v2     21559   25384   WHO_BNT162b2:51-3876     1701    72.30\n\n  faCount threeVaccines.fa | tawk '{print &#36;1,\"1..\"&#36;2+1}'   \n     | head -4 | tail -3 &gt; threeVaccines.cds\n  pslToBigPsl -cds=threeVaccines.cds -fa=threeVaccines.fa wuhCor1.vaccines.psl stdout   \n     | sort -k1,1 -k2,2n &gt; wuhCor1.vaccines.bigPsl\n\n  bedToBigBed -type=bed12+13 -tab -as=HOME/kent/src/hg/lib/bigPsl.as   \n    wuhCor1.vaccines.bigPsl wuhCor1.chrom.sizes wuhCor1.vaccines.bb\n</pre>\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe <em>fasta</em> file sequences and <em>psl</em> alignment file can be obtained from\nour download server at:\n<a href=\"https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/vaccines/\"\ntarget=\"blank\">https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/vaccines/</a>.\n</p>\n\n<p>\nThe bigPsl alignment file used for the display of this track\nin the genome browser can be accessed from\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/wuhCor1.vaccines.bb\"\ntarget=\"blank\">https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/wuhCor1.vaccines.bb</a>.\nThe <em>kent</em> command line access tool <tt>bigBedToBed</tt>,\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and\nbinaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>. \n</p>\n\n<p>\nThe protein encoded by the three sequences has two AA substitutions\ncompared to the SARS-CoV-2 S glycoprotein.  Variations: S:K986P and S:V987P\nin the vaccine sequence.  See also:\n<a href=\"https://cen.acs.org/pharmaceuticals/vaccines/tiny-tweak-behind-COVID-19/98/i38\"\ntarget=_blank>The tiny tweak behind COVID-19 vaccines</a>.\n<pre>\n&gt;BNT162b2\nMFVFLVLLPLVSSQCVNLTTRTQLPPAYTNSFTRGVYYPDKVFRSSVLHSTQDLFLPFFSNVTWFHAIHVSGTNGTKRFD\nNPVLPFNDGVYFASTEKSNIIRGWIFGTTLDSKTQSLLIVNNATNVVIKVCEFQFCNDPFLGVYYHKNNKSWMESEFRVY\nSSANNCTFEYVSQPFLMDLEGKQGNFKNLREFVFKNIDGYFKIYSKHTPINLVRDLPQGFSALEPLVDLPIGINITRFQT\nLLALHRSYLTPGDSSSGWTAGAAAYYVGYLQPRTFLLKYNENGTITDAVDCALDPLSETKCTLKSFTVEKGIYQTSNFRV\nQPTESIVRFPNITNLCPFGEVFNATRFASVYAWNRKRISNCVADYSVLYNSASFSTFKCYGVSPTKLNDLCFTNVYADSF\nVIRGDEVRQIAPGQTGKIADYNYKLPDDFTGCVIAWNSNNLDSKVGGNYNYLYRLFRKSNLKPFERDISTEIYQAGSTPC\nNGVEGFNCYFPLQSYGFQPTNGVGYQPYRVVVLSFELLHAPATVCGPKKSTNLVKNKCVNFNFNGLTGTGVLTESNKKFL\nPFQQFGRDIADTTDAVRDPQTLEILDITPCSFGGVSVITPGTNTSNQVAVLYQDVNCTEVPVAIHADQLTPTWRVYSTGS\nNVFQTRAGCLIGAEHVNNSYECDIPIGAGICASYQTQTNSPRRARSVASQSIIAYTMSLGAENSVAYSNNSIAIPTNFTI\nSVTTEILPVSMTKTSVDCTMYICGDSTECSNLLLQYGSFCTQLNRALTGIAVEQDKNTQEVFAQVKQIYKTPPIKDFGGF\nNFSQILPDPSKPSKRSFIEDLLFNKVTLADAGFIKQYGDCLGDIAARDLICAQKFNGLTVLPPLLTDEMIAQYTSALLAG\nTITSGWTFGAGAALQIPFAMQMAYRFNGIGVTQNVLYENQKLIANQFNSAIGKIQDSLSSTASALGKLQDVVNQNAQALN\nTLVKQLSSNFGAISSVLNDILSRLD<b><span style=\"color: #ff0000\">PP</span></b>EAEVQIDRLITGRLQSLQTYVTQQLIRAAEIRASANLAATKMSECVLGQSKRV\nDFCGKGYHLMSFPQSAPHGVVFLHVTYVPAQEKNFTTAPAICHDGKAHFPREGVFVSNGTHWFVTQRNFYEPQIITTDNT\nFVSGNCDVVIGIVNNTVYDPLQPELDSFKEELDKYFKNHTSPDVDLGDISGINASVVNIQKEIDRLNEVAKNLNESLIDL\nQELGKYEQYIKWPWYIWLGFIAGLIAIVMVTIMLCCMTSCCSCLKGCCSCGSCCKFDEDDSEPVLKGVKLHYTZZ\n</pre>\n</p>\n\n<h2>References</h2>\n<p>\nDae Eun Jeong, Matthew McCoy, Karen Artiles, Orkan Ilbay, Andrew Fire, Kari Nadeau, Helen Park, Brooke Betts, Scott Boyd, Ramona Hoh, and Massa Shoura\n<a href=\"https://github.com/NAalytics/Assemblies-of-putative-SARS-CoV2-spike-encoding-mRNA-sequences-for-vaccines-BNT-162b2-and-mRNA-1273/blob/main/Assemblies%20of%20putative%20SARS-CoV2-spike-encoding%20mRNA%20sequences%20for%20vaccines%20BNT-162b2%20and%20mRNA-1273.docx.pdf\"\ntarget=_blank>Assemblies of putative SARS-CoV2-spike-encoding mRNA sequences for vaccines BNT-162b2 and mRNA-1273</a>\nobtained from <a href=\"https://github.com/NAalytics/Assemblies-of-putative-SARS-CoV2-spike-encoding-mRNA-sequences-for-vaccines-BNT-162b2-and-mRNA-1273\"\ntarget=_blank>github</a>\n</p>\n\n<p>\nBert Hubert\n<a href=\"https://berthub.eu/articles/posts/reverse-engineering-source-code-of-the-biontech-pfizer-vaccine/\"\ntarget=_blank>Reverse Engineering the source code of the BioNTech/Pfizer SARS-CoV-2 Vaccine</a>\n25 Dec 2020\n</p>\n\n<p>\nWikiPedia\n<a href=\"https://en.wikipedia.org/wiki/Pfizer%E2%80%93BioNTech_COVID-19_vaccine\"\ntarget=_blank>Pfizer-BioNTech COVID-19 vaccine</a>\n</p>\n\n<p>\nWorld Health Organization MedNet\n<a href=\"https://berthub.eu/articles/11889.doc\"\ntarget=_blank>Messenger RNA encoding the full-length SARS-CoV-2 spike glycoprotein</a> Sept. 2020 document 11889\n</p>\n\n<p>\nCyril Le Nou&euml;n, Peter L. Collins, and Ursula J. Buchholz\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6558635/\"\ntarget=_blank>Attenuation of Human Respiratory Viruses by Synonymous Genome Recoding</a> <em>Frontiers in Immunology</em> 2019; 10: 1250. <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31231383\"\ntarget=_blank>PMID: 31231383</a>\n</p>\n\n<p>\nRyan Cross\n<a href=\"https://cen.acs.org/pharmaceuticals/vaccines/tiny-tweak-behind-COVID-19/98/i38\"\ntarget=_blank>The tiny tweak behind COVID-19 vaccines</a>,\n<em>Chemical &amp; Engineering News</em> 29 September 2020 Vol 98, issue 38\n</p>\n\n<h2>Credits</h2>\n<p>\nThank you to the <a href=\"https://firelab.sites.stanford.edu\"\ntarget=_blank>Andrew Fire lab</a>, Stanford University School of Medicine\nfor providing the sequencing data of these vaccines.\n</p>\n\n\n<p> The presentation of this track was prepared by Hiram Clawson (<a href=\"mailto:&#104;&#99;la&#119;&#115;&#111;&#110;&#64;&#117;&#99;s&#99;.e&#100;&#117;\">&#104;&#99;la&#119;&#115;&#111;&#110;&#64;&#117;&#99;s&#99;.e&#100;&#117;</a>).\n</p>\n",
-        "indelDoubleInsert": "on",
-        "indelQueryInsert": "on",
-        "longLabel": "COVID Vaccines BioNTech/Pfizer BNT-162b2 and Moderna mRNA-1273",
-        "pslSequence": "no",
-        "shortLabel": "Vaccines",
-        "showCdsAllScales": ".",
-        "showCdsMaxZoom": "30000.0",
-        "showDiffBasesAllScales": ".",
-        "showDiffBasesMaxZoom": "30000.0",
-        "track": "vaccines",
-        "type": "bigPsl"
-      },
-      "description": "COVID Vaccines BioNTech/Pfizer BNT-162b2 and Moderna mRNA-1273",
-      "category": ["Uncommon or Specialized tracks", "immu"]
     },
     {
       "trackId": "wuhCor1-iedb",

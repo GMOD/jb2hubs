@@ -44,26 +44,33 @@ process_gff_file() {
     return 1
   fi
 
-  # Extract to temp file in GENCODE_PROCESSED_DIR using zcat
-  echo "Extracting $filename to processing directory..."
-  zcat "$downloaded_gz_file" >"$temp_gff_file"
-
-  # Sort the GFF file to GENCODE_PROCESSED_DIR
-  echo "Sorting $gff_file..."
-  jbrowse sort-gff "$temp_gff_file" >"$output_sorted_gff_file"
-
-  # Remove the temporary uncompressed file
-  rm "$temp_gff_file"
-
-  # Bgzip the sorted GFF file
-  echo "Compressing $sorted_gff_file with bgzip..."
-  bgzip -f -@8 "$output_sorted_gff_file"
+  # Define the output file paths
   local output_sorted_gff_gz="$output_sorted_gff_file.gz"
-
-  # Create tabix index with CSI format
-  echo "Indexing $sorted_gff_file.gz with tabix..."
-  tabix -C -p gff "$output_sorted_gff_gz"
   local output_sorted_gff_csi="$output_sorted_gff_gz.csi"
+
+  # Check if either the .gff.gz or .gff.gz.csi files are missing from gencode_processed_dir
+  if [ ! -f "$output_sorted_gff_gz" ] || [ ! -f "$output_sorted_gff_csi" ]; then
+    # Extract to temp file in GENCODE_PROCESSED_DIR using zcat
+    echo "Extracting $filename to processing directory..."
+    zcat "$downloaded_gz_file" >"$temp_gff_file"
+
+    # Sort the GFF file to GENCODE_PROCESSED_DIR
+    echo "Sorting $gff_file..."
+    jbrowse sort-gff "$temp_gff_file" >"$output_sorted_gff_file"
+
+    # Remove the temporary uncompressed file
+    rm "$temp_gff_file"
+
+    # Bgzip the sorted GFF file
+    echo "Compressing $sorted_gff_file with bgzip..."
+    bgzip -f -@8 "$output_sorted_gff_file"
+
+    # Create tabix index with CSI format
+    echo "Indexing $sorted_gff_file.gz with tabix..."
+    tabix -C -p gff "$output_sorted_gff_gz"
+  else
+    echo "Processed files already exist in $gencode_processed_dir, skipping sort/bgzip/tabix for $filename"
+  fi
 
   # Add the track to JBrowse
   echo "Adding track for $sorted_gff_file.gz..."
