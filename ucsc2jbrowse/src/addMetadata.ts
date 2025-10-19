@@ -59,8 +59,10 @@ function addMetadata(configPath: string, tracksDbPath: string) {
             ...track,
             metadata: {
               ...track.metadata,
-              ...trackMetadata,
-              html: replaceLink(html),
+              ucsc: {
+                ...trackMetadata,
+                html: replaceLink(html),
+              },
             },
             name: isAddedByJBrowseTeam
               ? track.name

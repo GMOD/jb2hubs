@@ -18,7 +18,9 @@ function makeUcscExtensions(targetDir: string) {
     // Ensure directory structure exists for the target config file
     const dir = path.dirname(configFilePath)
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
+      fs.mkdirSync(dir, {
+        recursive: true,
+      })
     }
 
     let existingConfig: JBrowseConfig

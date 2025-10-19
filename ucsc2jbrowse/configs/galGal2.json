@@ -48,16 +48,18 @@
         }
       },
       "metadata": {
-        "altColor": "80,80,80",
-        "color": "0,0,0",
-        "exonArrows": "off",
-        "group": "map",
-        "longLabel": "BAC End Pairs",
-        "shortLabel": "BAC End Pairs",
-        "track": "bacEndPairs",
-        "type": "bed 6 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nBacterial artificial chromosomes (BACs) are a key part of many \nlarge-scale sequencing projects.  A BAC typically consists of 50 - 300 kb of\nDNA.  During the early phase of a sequencing project, it is common\nto sequence a single read (approximately 500 bases) off each end of\na large number of BACs.  Later on in the project, these BAC end reads\ncan be mapped to the genome sequence. </P>\n<P>\nThis track shows these mappings\nin cases where both ends could be mapped.  These BAC end pairs can\nbe useful for validating the assembly over relatively long ranges.  In some\ncases, the BACs are useful biological reagents.  This track can also be\nused for determining which BAC contains a given gene, useful information\nfor certain wet lab experiments.</P>\n<P>\nA valid pair of BAC end sequences must be\nat least 50 kb but no more than 600 kb away from each other. \nThe orientation of the first BAC end sequence must be &quot;+&quot; and\nthe orientation of the second BAC end sequence must be &quot;-&quot;.</P>\n<P>\nThe scoring scheme used for this annotation assigns 1000 to an alignment \nwhen the BAC end pair aligns to only one location in the genome (after \nfiltering).  When a BAC end pair or clone aligns to multiple locations, the \nscore is calculated as 1500/(number of alignments).</P>\n\n<H2>Methods</H2>\n<P>\nBAC end sequences are placed on the assembled sequence using Jim Kent's \n<A HREF=\"https://genome.cshlp.org/content/12/4/656.abstract\"\nTARGET=_blank>blat</A> program.</P>\n\n<H2>Credits</H2>\n<P>\nAdditional information about the clone, including how it\ncan be obtained, may be found at the \n<A HREF=\"https://ncbiinsights.ncbi.nlm.nih.gov/2019/05/01/clone-db-retirement/\" \nTARGET=_blank>NCBI Clone Registry</A>. To view the registry entry for a \nspecific clone, open the details page for the clone and click on its name at \nthe top of the page.  </P>\n"
+        "ucsc": {
+          "altColor": "80,80,80",
+          "color": "0,0,0",
+          "exonArrows": "off",
+          "group": "map",
+          "longLabel": "BAC End Pairs",
+          "shortLabel": "BAC End Pairs",
+          "track": "bacEndPairs",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nBacterial artificial chromosomes (BACs) are a key part of many \nlarge-scale sequencing projects.  A BAC typically consists of 50 - 300 kb of\nDNA.  During the early phase of a sequencing project, it is common\nto sequence a single read (approximately 500 bases) off each end of\na large number of BACs.  Later on in the project, these BAC end reads\ncan be mapped to the genome sequence. </P>\n<P>\nThis track shows these mappings\nin cases where both ends could be mapped.  These BAC end pairs can\nbe useful for validating the assembly over relatively long ranges.  In some\ncases, the BACs are useful biological reagents.  This track can also be\nused for determining which BAC contains a given gene, useful information\nfor certain wet lab experiments.</P>\n<P>\nA valid pair of BAC end sequences must be\nat least 50 kb but no more than 600 kb away from each other. \nThe orientation of the first BAC end sequence must be &quot;+&quot; and\nthe orientation of the second BAC end sequence must be &quot;-&quot;.</P>\n<P>\nThe scoring scheme used for this annotation assigns 1000 to an alignment \nwhen the BAC end pair aligns to only one location in the genome (after \nfiltering).  When a BAC end pair or clone aligns to multiple locations, the \nscore is calculated as 1500/(number of alignments).</P>\n\n<H2>Methods</H2>\n<P>\nBAC end sequences are placed on the assembled sequence using Jim Kent's \n<A HREF=\"https://genome.cshlp.org/content/12/4/656.abstract\"\nTARGET=_blank>blat</A> program.</P>\n\n<H2>Credits</H2>\n<P>\nAdditional information about the clone, including how it\ncan be obtained, may be found at the \n<A HREF=\"https://ncbiinsights.ncbi.nlm.nih.gov/2019/05/01/clone-db-retirement/\" \nTARGET=_blank>NCBI Clone Registry</A>. To view the registry entry for a \nspecific clone, open the details page for the clone and click on its name at \nthe top of the page.  </P>\n"
+        }
       },
       "description": "BAC End Pairs",
       "category": ["Mapping and Sequencing"]
@@ -80,15 +82,17 @@
         }
       },
       "metadata": {
-        "color": "50,50,50",
-        "group": "varRep",
-        "longLabel": "Regions Covered by Beijing Genomics Institute SNP Reads",
-        "priority": "21",
-        "shortLabel": "BGI Coverage",
-        "track": "bgiCov",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows areas of coverage for genomic regions of 3 alternate \nstrains of chicken sequenced by the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> (BGI): Broiler, Layer, and Silkie.  \nSingle reads from those three strains were mapped to the \nreference assembly for the Red Jungle Fowl (RJF).  \n</P>\n<P>\nCoverage area names are of the format \n[<em>strain</em>].[<em>chrom</em>].[<em>start</em>].[<em>end</em>]:\n</P>\n<UL>\n<LI><B><em>strain</em></B>: Strain from which read was taken (Broiler, Layer or Silkie)</LI>\n<LI><B><em>chrom</em></B>: Chromosome in the RJF reference assembly to which read was mapped</LI>\n<LI><B><em>start</em></B>: First base in <em>chrom</em> of mapped read</LI>\n<LI><B><em>end</em></B>: Last base in <em>chrom</em> of mapped read</LI>\n</UL>\n\n<H2>Credits</H2>\n<P>\nThanks to the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> for providing these data.\n</P>\n\n<H2>Terms of Use</H2>\n<OL>\n<LI>\nUsers are free to use these data in scientific papers analyzing\nparticular genes, if the Beijing Genomics Institute (BGI) is\nacknowledged.\n</LI>\n<LI>\nBGI and its collaborators reserve the right to publish the initial\nanalyses of these data, including but not restricted to the large-scale\nidentification of functional polymorphisms, evolutionary patterns and\nsigns of selection, correlations with known QTLs, utility of data for\ngenetic mapping purposes, etc.\n</LI>\n<LI>\nAny redistribution of these data should carry this notice.\n</LI>\n</OL>\n\n"
+        "ucsc": {
+          "color": "50,50,50",
+          "group": "varRep",
+          "longLabel": "Regions Covered by Beijing Genomics Institute SNP Reads",
+          "priority": "21",
+          "shortLabel": "BGI Coverage",
+          "track": "bgiCov",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows areas of coverage for genomic regions of 3 alternate \nstrains of chicken sequenced by the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> (BGI): Broiler, Layer, and Silkie.  \nSingle reads from those three strains were mapped to the \nreference assembly for the Red Jungle Fowl (RJF).  \n</P>\n<P>\nCoverage area names are of the format \n[<em>strain</em>].[<em>chrom</em>].[<em>start</em>].[<em>end</em>]:\n</P>\n<UL>\n<LI><B><em>strain</em></B>: Strain from which read was taken (Broiler, Layer or Silkie)</LI>\n<LI><B><em>chrom</em></B>: Chromosome in the RJF reference assembly to which read was mapped</LI>\n<LI><B><em>start</em></B>: First base in <em>chrom</em> of mapped read</LI>\n<LI><B><em>end</em></B>: Last base in <em>chrom</em> of mapped read</LI>\n</UL>\n\n<H2>Credits</H2>\n<P>\nThanks to the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> for providing these data.\n</P>\n\n<H2>Terms of Use</H2>\n<OL>\n<LI>\nUsers are free to use these data in scientific papers analyzing\nparticular genes, if the Beijing Genomics Institute (BGI) is\nacknowledged.\n</LI>\n<LI>\nBGI and its collaborators reserve the right to publish the initial\nanalyses of these data, including but not restricted to the large-scale\nidentification of functional polymorphisms, evolutionary patterns and\nsigns of selection, correlations with known QTLs, utility of data for\ngenetic mapping purposes, etc.\n</LI>\n<LI>\nAny redistribution of these data should carry this notice.\n</LI>\n</OL>\n\n"
+        }
       },
       "description": "Regions Covered by Beijing Genomics Institute SNP Reads",
       "category": ["Variation and Repeats"]
@@ -111,15 +115,17 @@
         }
       },
       "metadata": {
-        "color": "170,20,20",
-        "group": "varRep",
-        "longLabel": "SNPs from Beijing Genomics Institute",
-        "priority": "20",
-        "shortLabel": "BGI SNPs",
-        "track": "bgiSnp",
-        "type": "bed 4 +",
-        "visibility": "dense",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows the single nucleotide polymorphisms (SNPs) and/or\ninsertions/deletions (indels) determined by the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> (BGI).  \nGenomic sequence reads from 3 alternate strains of chicken (Broiler,\nLayer and Silkie) were used to determine the SNPs relative to the\nreference assembly for Red Jungle Fowl (RJF). SNPs and indels are\nassociated with genes (annotations by BGI until Ensembl annotations\nare ready). Information on the association can be displayed along\nwith a link to the details page for the gene.\n</P>\n<P>\nSNP names are of the format \nsnp.[<em>supercontig</em>].[<em>contig</em>].[<em>position</em>].[<em>type</em>].[<em>strain</em>]:\n</P>\n<UL>\n<LI><B><em>supercontig</em></B>: Supercontig number from assembly</LI>\n<LI><B><em>contig</em></B>: Contig number (within supercontig) from assembly</LI>\n<LI><B><em>position</em></B>: Starting offset within Contig.[<em>supercontig</em>].[<em>contig</em>]</LI>\n<LI><B><em>type</em></B>: S=Substitution, I=Insertion or D=Deletion</LI>\n<LI><B><em>strain</em></B>: 1=Broiler, 2=Layer, 3=Silkie</LI>\n</UL>\n\n<H2>Methods</H2>\n<P>\nSequence reads from the Broiler, Layer and Silkie strains were mapped\nto the reference chicken assembly with blast. Then, cross_match was\nused for the detailed base-by-base comparison.  The Phred quality\nscores (-10 * log <SUB> 10</SUB> estimated error probability) are given for the \nSNP base(s) in the assembly and the (single read) SNP read.  \n</P>\n\n<H2>Credits</H2>\n<P>Thanks to the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> for providing these data.\n</P>\n\n<H2>Terms of Use</H2>\n<OL>\n<LI>\nUsers are free to use these data in scientific papers analyzing\nparticular genes, if the Beijing Genomics Institute (BGI) is\nacknowledged.\n</LI>\n<LI>\nBGI and its collaborators reserve the right to publish the initial\nanalyses of these data, including but not restricted to the large-scale\nidentification of functional polymorphisms, evolutionary patterns and\nsigns of selection, correlations with known QTLs, utility of data for\ngenetic mapping purposes, etc.\n</LI>\n<LI>\nAny redistribution of these data should carry this notice.\n</LI>\n</OL>\n\n"
+        "ucsc": {
+          "color": "170,20,20",
+          "group": "varRep",
+          "longLabel": "SNPs from Beijing Genomics Institute",
+          "priority": "20",
+          "shortLabel": "BGI SNPs",
+          "track": "bgiSnp",
+          "type": "bed 4 +",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the single nucleotide polymorphisms (SNPs) and/or\ninsertions/deletions (indels) determined by the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> (BGI).  \nGenomic sequence reads from 3 alternate strains of chicken (Broiler,\nLayer and Silkie) were used to determine the SNPs relative to the\nreference assembly for Red Jungle Fowl (RJF). SNPs and indels are\nassociated with genes (annotations by BGI until Ensembl annotations\nare ready). Information on the association can be displayed along\nwith a link to the details page for the gene.\n</P>\n<P>\nSNP names are of the format \nsnp.[<em>supercontig</em>].[<em>contig</em>].[<em>position</em>].[<em>type</em>].[<em>strain</em>]:\n</P>\n<UL>\n<LI><B><em>supercontig</em></B>: Supercontig number from assembly</LI>\n<LI><B><em>contig</em></B>: Contig number (within supercontig) from assembly</LI>\n<LI><B><em>position</em></B>: Starting offset within Contig.[<em>supercontig</em>].[<em>contig</em>]</LI>\n<LI><B><em>type</em></B>: S=Substitution, I=Insertion or D=Deletion</LI>\n<LI><B><em>strain</em></B>: 1=Broiler, 2=Layer, 3=Silkie</LI>\n</UL>\n\n<H2>Methods</H2>\n<P>\nSequence reads from the Broiler, Layer and Silkie strains were mapped\nto the reference chicken assembly with blast. Then, cross_match was\nused for the detailed base-by-base comparison.  The Phred quality\nscores (-10 * log <SUB> 10</SUB> estimated error probability) are given for the \nSNP base(s) in the assembly and the (single read) SNP read.  \n</P>\n\n<H2>Credits</H2>\n<P>Thanks to the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> for providing these data.\n</P>\n\n<H2>Terms of Use</H2>\n<OL>\n<LI>\nUsers are free to use these data in scientific papers analyzing\nparticular genes, if the Beijing Genomics Institute (BGI) is\nacknowledged.\n</LI>\n<LI>\nBGI and its collaborators reserve the right to publish the initial\nanalyses of these data, including but not restricted to the large-scale\nidentification of functional polymorphisms, evolutionary patterns and\nsigns of selection, correlations with known QTLs, utility of data for\ngenetic mapping purposes, etc.\n</LI>\n<LI>\nAny redistribution of these data should carry this notice.\n</LI>\n</OL>\n\n"
+        }
       },
       "description": "SNPs from Beijing Genomics Institute",
       "category": ["Variation and Repeats"]
@@ -142,15 +148,17 @@
         }
       },
       "metadata": {
-        "color": "170,0,50",
-        "group": "map",
-        "longLabel": "Locations of Maize/E.coli/vector contamination",
-        "priority": "25",
-        "shortLabel": "Contamination",
-        "track": "contamination",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows locations of likely contamination in the assembly, \ne.g. high-scoring alignments of <em>E.coli</em>, vector and maize mitochondrion \nsequence.  The name of each feature indicates the type of contamination \nfound there.  \n</P>\n<P>\nThe maize mitochondrion contamination (&quot;MAIZE_MITO&quot;) locations \nrepresent the entire whole genome shotgun (WGS) contig found to be contaminated.  \nThe <em>E.coli</em> and vector locations show only the contaminated portion of \nthe affected WGS contig.  \n</P>\n\n<H2>Credits</H2>\n<P>\nThanks to NCBI and the Genome Sequencing Center at Washington University in St. \nLouis School of Medicine for providing these data.  \n</P>\n"
+        "ucsc": {
+          "color": "170,0,50",
+          "group": "map",
+          "longLabel": "Locations of Maize/E.coli/vector contamination",
+          "priority": "25",
+          "shortLabel": "Contamination",
+          "track": "contamination",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows locations of likely contamination in the assembly, \ne.g. high-scoring alignments of <em>E.coli</em>, vector and maize mitochondrion \nsequence.  The name of each feature indicates the type of contamination \nfound there.  \n</P>\n<P>\nThe maize mitochondrion contamination (&quot;MAIZE_MITO&quot;) locations \nrepresent the entire whole genome shotgun (WGS) contig found to be contaminated.  \nThe <em>E.coli</em> and vector locations show only the contaminated portion of \nthe affected WGS contig.  \n</P>\n\n<H2>Credits</H2>\n<P>\nThanks to NCBI and the Genome Sequencing Center at Washington University in St. \nLouis School of Medicine for providing these data.  \n</P>\n"
+        }
       },
       "description": "Locations of Maize/E.coli/vector contamination",
       "category": ["Mapping and Sequencing"]
@@ -173,15 +181,17 @@
         }
       },
       "metadata": {
-        "altColor": "128,228,128",
-        "color": "0,100,0",
-        "group": "regulation",
-        "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
-        "shortLabel": "CpG Islands",
-        "track": "cpgIslandGgfAndy",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nCpG islands are associated with genes, particularly housekeeping\ngenes, in vertebrates.  CpG islands are typically common near\ntranscription start sites, and may be associated with promoter\nregions.  Normally a C (cytosine) base followed immediately by a \nG (guanine) base (a CpG) is rare in\nvertebrate DNA because the Cs in such an arrangement tend to be\nmethylated.  This methylation helps distinguish the newly synthesized\nDNA strand from the parent strand, which aids in the final stages of\nDNA proofreading after duplication.  However, over evolutionary time\nmethylated Cs tend to turn into Ts because of spontaneous\ndeamination.  The result is that CpGs are relatively rare unless\nthere is selective pressure to keep them or a region is not methylated\nfor some reason, perhaps having to do with the regulation of gene\nexpression.  CpG islands are regions where CpGs are present at\nsignificantly higher levels than is typical for the genome as a whole.\n</P>\n<P>\nThe CpG count is the number of CG dinucleotides in the island.  \nThe Percentage CpG is the ratio of CpG nucleotide bases\n(twice the CpG count) to the length.\n</P>\n\n<H2>Methods</H2>\n<P>\nA sliding-window search was performed on the set of CpG locations in \nthe genome to find the longest spans that met the criteria given in \nGardiner-Garden, M. and Frommer, M. (1987) in the References section below:\n<UL>\n<LI>length of 200 bp or more\n<LI>GC content of 50% or greater \n<LI>ratio of observed to expected CpGs of 0.6 or greater \n</UL>\nThe ratio of observed to expect CpGs is calculated as follows:\n<BR>\n<PRE><TT>\nObs/Exp CpG = Number of CpG * N / (Number of C * Number of G)\n</PRE></TT>\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was generated using a program written by Andy Law (Roslin \nInstitute) with minor modifications by Angie Hinrichs (UCSC). </P>\n\n<H2>References </H2>\n<p>\nGardiner-Garden M, Frommer M.\n<a href=\"https://www.sciencedirect.com/science/article/pii/0022283687906899\" target=\"_blank\">\nCpG islands in vertebrate genomes</a>.\n<em>J Mol Biol</em>. 1987 Jul 20;196(2):261-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/3656447\" target=\"_blank\">3656447</a>\n</p>\n"
+        "ucsc": {
+          "altColor": "128,228,128",
+          "color": "0,100,0",
+          "group": "regulation",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "shortLabel": "CpG Islands",
+          "track": "cpgIslandGgfAndy",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nCpG islands are associated with genes, particularly housekeeping\ngenes, in vertebrates.  CpG islands are typically common near\ntranscription start sites, and may be associated with promoter\nregions.  Normally a C (cytosine) base followed immediately by a \nG (guanine) base (a CpG) is rare in\nvertebrate DNA because the Cs in such an arrangement tend to be\nmethylated.  This methylation helps distinguish the newly synthesized\nDNA strand from the parent strand, which aids in the final stages of\nDNA proofreading after duplication.  However, over evolutionary time\nmethylated Cs tend to turn into Ts because of spontaneous\ndeamination.  The result is that CpGs are relatively rare unless\nthere is selective pressure to keep them or a region is not methylated\nfor some reason, perhaps having to do with the regulation of gene\nexpression.  CpG islands are regions where CpGs are present at\nsignificantly higher levels than is typical for the genome as a whole.\n</P>\n<P>\nThe CpG count is the number of CG dinucleotides in the island.  \nThe Percentage CpG is the ratio of CpG nucleotide bases\n(twice the CpG count) to the length.\n</P>\n\n<H2>Methods</H2>\n<P>\nA sliding-window search was performed on the set of CpG locations in \nthe genome to find the longest spans that met the criteria given in \nGardiner-Garden, M. and Frommer, M. (1987) in the References section below:\n<UL>\n<LI>length of 200 bp or more\n<LI>GC content of 50% or greater \n<LI>ratio of observed to expected CpGs of 0.6 or greater \n</UL>\nThe ratio of observed to expect CpGs is calculated as follows:\n<BR>\n<PRE><TT>\nObs/Exp CpG = Number of CpG * N / (Number of C * Number of G)\n</PRE></TT>\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was generated using a program written by Andy Law (Roslin \nInstitute) with minor modifications by Angie Hinrichs (UCSC). </P>\n\n<H2>References </H2>\n<p>\nGardiner-Garden M, Frommer M.\n<a href=\"https://www.sciencedirect.com/science/article/pii/0022283687906899\" target=\"_blank\">\nCpG islands in vertebrate genomes</a>.\n<em>J Mol Biol</em>. 1987 Jul 20;196(2):261-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/3656447\" target=\"_blank\">3656447</a>\n</p>\n"
+        }
       },
       "description": "CpG Islands (Islands < 300 Bases are Light Green)",
       "category": ["Regulation"]
@@ -204,17 +214,19 @@
         }
       },
       "metadata": {
-        "altColor": "200,220,255",
-        "color": "0,60,120",
-        "group": "compGeno",
-        "longLabel": "Tetraodon (Feb. 2004 (Genoscope 7/tetNig1)) Evolutionary Conserved Regions",
-        "otherDb": "tetNig1",
-        "priority": "149.9",
-        "shortLabel": "Tetraodon Ecores",
-        "track": "ecoresTetraodon",
-        "type": "bed 12 .",
-        "visibility": "hide",
-        "html": "<H3> Description </H3>\nThis track shows Evolutionary Conserved Regions computed by the <A\nHREF=\"https://www.nature.com/articles/ng0600_235\"\nTARGET=_BLANK>Exofish</A> program at <A HREF=\"https://jacob.cea.fr/drf/ifrancoisjacob/english/Pages/Departments/Genoscope.aspx\"\nTARGET=_BLANK>Genoscope</A>. Each singleton block corresponds to an \"ecore\";\ntwo blocks connected by a thin line correspond to an \"ecotig\", a set of\ncolinear ecores in a syntenic region.  \n\n<H3> Methods </H3>\nGenome-wide sequence comparisons were done at the protein-coding level between\nthe genome sequences of chicken, <I>Gallus gallus</I>, and Tetraodon,\n<I>Tetraodon nigroviridis</I>, to detect evolutionarily conserved regions\n(ECORES).\nThe sequence versions used in the comparison were Chicken (February 2004) and\nTetraodon (March 2004).  \n\n<H3> Credits </H3>\n\nThanks to Olivier Jaillon at Genoscope for contributing the data.  \n\n<H3> References </H3>\n\n<p>\nRoest Crollius H, Jaillon O, Bernot A, Dasilva C, Bouneau L, Fischer C, Fizames C, Wincker P,\nBrottier P, Qu&#233;tier F <em>et al</em>.\n<a href=\"https://www.nature.com/articles/ng0600_235\" target=\"_blank\">\nEstimate of human gene number provided by genome-wide analysis using <em>Tetraodon nigroviridis</em> DNA\nsequence</a>.\n<em>Nat Genet</em>. 2000 Jun;25(2):235-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10835645\" target=\"_blank\">10835645</a>\n</p>\n"
+        "ucsc": {
+          "altColor": "200,220,255",
+          "color": "0,60,120",
+          "group": "compGeno",
+          "longLabel": "Tetraodon (Feb. 2004 (Genoscope 7/tetNig1)) Evolutionary Conserved Regions",
+          "otherDb": "tetNig1",
+          "priority": "149.9",
+          "shortLabel": "Tetraodon Ecores",
+          "track": "ecoresTetraodon",
+          "type": "bed 12 .",
+          "visibility": "hide",
+          "html": "<H3> Description </H3>\nThis track shows Evolutionary Conserved Regions computed by the <A\nHREF=\"https://www.nature.com/articles/ng0600_235\"\nTARGET=_BLANK>Exofish</A> program at <A HREF=\"https://jacob.cea.fr/drf/ifrancoisjacob/english/Pages/Departments/Genoscope.aspx\"\nTARGET=_BLANK>Genoscope</A>. Each singleton block corresponds to an \"ecore\";\ntwo blocks connected by a thin line correspond to an \"ecotig\", a set of\ncolinear ecores in a syntenic region.  \n\n<H3> Methods </H3>\nGenome-wide sequence comparisons were done at the protein-coding level between\nthe genome sequences of chicken, <I>Gallus gallus</I>, and Tetraodon,\n<I>Tetraodon nigroviridis</I>, to detect evolutionarily conserved regions\n(ECORES).\nThe sequence versions used in the comparison were Chicken (February 2004) and\nTetraodon (March 2004).  \n\n<H3> Credits </H3>\n\nThanks to Olivier Jaillon at Genoscope for contributing the data.  \n\n<H3> References </H3>\n\n<p>\nRoest Crollius H, Jaillon O, Bernot A, Dasilva C, Bouneau L, Fischer C, Fizames C, Wincker P,\nBrottier P, Qu&#233;tier F <em>et al</em>.\n<a href=\"https://www.nature.com/articles/ng0600_235\" target=\"_blank\">\nEstimate of human gene number provided by genome-wide analysis using <em>Tetraodon nigroviridis</em> DNA\nsequence</a>.\n<em>Nat Genet</em>. 2000 Jun;25(2):235-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10835645\" target=\"_blank\">10835645</a>\n</p>\n"
+        }
       },
       "description": "Tetraodon (Feb. 2004 (Genoscope 7/tetNig1)) Evolutionary Conserved Regions",
       "category": ["Comparative Genomics"]
@@ -237,14 +249,16 @@
         }
       },
       "metadata": {
-        "group": "varRep",
-        "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
-        "noScoreFilter": ".",
-        "shortLabel": "Segmental Dups",
-        "track": "genomicSuperDups",
-        "type": "bed 6 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows regions detected as putative genomic duplications within the\ngolden path. The following display conventions are used to distinguish\nlevels of similarity:\n<UL>\n<LI>\nLight to dark gray: 90 - 98% similarity\n<LI>\nLight to dark yellow: 98 - 99% similarity\n<LI>\nLight to dark orange: greater than 99% similarity \n<LI>\nRed: duplications of greater than 98% similarity that lack sufficient \nSegmental Duplication Database evidence (most likely missed overlaps) \n</UL>\nFor a region to be included in the track, at least 1 Kb of the total \nsequence (containing at least 500 bp of non-RepeatMasked sequence) had to \nalign and a sequence identity of at least 90% was required.</P>\n\n<H2>Methods</H2>\n<P>\nSegmental duplications play an important role in both genomic disease \nand gene evolution.  This track displays an analysis of the global \norganization of these long-range segments of identity in genomic sequence.\n</P>\n\n<P>Large recent duplications (&gt;= 1 kb and &gt;= 90% identity) were detected\nby identifying high-copy repeats, removing these repeats from the genomic \nsequence (&quot;fuguization&quot;) and searching all sequence for similarity. The\nrepeats were then reinserted into the pairwise alignments, the ends of \nalignments trimmed, and global alignments were generated.\nFor a full description of the &quot;fuguization&quot; detection method, see Bailey\n<em>et al.</em>, 2001. This method has become\nknown as WGAC (whole-genome assembly comparison); for example, see Bailey \n<em>et al.</em>, 2002.\n\n<H2>Credits</H2>\n<P>\nThese data were provided by Ginger Cheng, Xinwei She,\n<A HREF=\"mailto:&#97;r&#97;&#106;&#97;&#64;&#117;&#119;.ed&#117;\">Archana Raja</A>,\n<A HREF=\"mailto:&#116;&#105;&#110;l&#111;&#117;&#105;&#101;&#64;&#117;.\n&#119;a&#115;&#104;&#105;&#110;&#103;&#116;&#111;&#110;.\ned&#117;\">Tin Louie</A> and\n<A HREF=\"mailto:&#101;&#101;e&#64;&#103;s.&#119;&#97;&#115;&#104;&#105;&#110;&#103;&#116;&#111;n.&#101;&#100;&#117;\">Evan Eichler</A> \nat the <A HREF=\"http://eichlerlab.gs.washington.edu/\" \nTARGET=_BLANK>University of Washington</A>. </P>\n\n<H2>References</H2>\n<P>\nBailey JA, Gu Z, Clark RA, Reinert K, Samonte RV, Schwartz S, Adams MD, \nMyers EW, Li PW, Eichler EE.\n<A HREF=\"https://science.sciencemag.org/content/297/5583/1003\"\nTARGET=_BLANK>Recent segmental duplications in the human genome</A>.\n<em>Science</em>. 2002 Aug 9;297(5583):1003-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12169732\" target=\"_blank\">12169732</a>\n</p>\n\n<P>\nBailey JA, Yavor AM, Massa HF, Trask BJ, Eichler EE.\n<A HREF=\"https://genome.cshlp.org/content/11/6/1005.long\"\nTARGET=_blank>Segmental duplications: organization and impact within the \ncurrent human genome project assembly</A>.\n<em>Genome Res</em>. 2001 Jun;11(6):1005-17.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11381028\" target=\"_blank\">11381028</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC311093/\" target=\"_blank\">PMC311093</a>\n</p>\n"
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
+          "noScoreFilter": ".",
+          "shortLabel": "Segmental Dups",
+          "track": "genomicSuperDups",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows regions detected as putative genomic duplications within the\ngolden path. The following display conventions are used to distinguish\nlevels of similarity:\n<UL>\n<LI>\nLight to dark gray: 90 - 98% similarity\n<LI>\nLight to dark yellow: 98 - 99% similarity\n<LI>\nLight to dark orange: greater than 99% similarity \n<LI>\nRed: duplications of greater than 98% similarity that lack sufficient \nSegmental Duplication Database evidence (most likely missed overlaps) \n</UL>\nFor a region to be included in the track, at least 1 Kb of the total \nsequence (containing at least 500 bp of non-RepeatMasked sequence) had to \nalign and a sequence identity of at least 90% was required.</P>\n\n<H2>Methods</H2>\n<P>\nSegmental duplications play an important role in both genomic disease \nand gene evolution.  This track displays an analysis of the global \norganization of these long-range segments of identity in genomic sequence.\n</P>\n\n<P>Large recent duplications (&gt;= 1 kb and &gt;= 90% identity) were detected\nby identifying high-copy repeats, removing these repeats from the genomic \nsequence (&quot;fuguization&quot;) and searching all sequence for similarity. The\nrepeats were then reinserted into the pairwise alignments, the ends of \nalignments trimmed, and global alignments were generated.\nFor a full description of the &quot;fuguization&quot; detection method, see Bailey\n<em>et al.</em>, 2001. This method has become\nknown as WGAC (whole-genome assembly comparison); for example, see Bailey \n<em>et al.</em>, 2002.\n\n<H2>Credits</H2>\n<P>\nThese data were provided by Ginger Cheng, Xinwei She,\n<A HREF=\"mailto:&#97;r&#97;&#106;&#97;&#64;&#117;&#119;.ed&#117;\">Archana Raja</A>,\n<A HREF=\"mailto:&#116;&#105;&#110;l&#111;&#117;&#105;&#101;&#64;&#117;.\n&#119;a&#115;&#104;&#105;&#110;&#103;&#116;&#111;&#110;.\ned&#117;\">Tin Louie</A> and\n<A HREF=\"mailto:&#101;&#101;e&#64;&#103;s.&#119;&#97;&#115;&#104;&#105;&#110;&#103;&#116;&#111;n.&#101;&#100;&#117;\">Evan Eichler</A> \nat the <A HREF=\"http://eichlerlab.gs.washington.edu/\" \nTARGET=_BLANK>University of Washington</A>. </P>\n\n<H2>References</H2>\n<P>\nBailey JA, Gu Z, Clark RA, Reinert K, Samonte RV, Schwartz S, Adams MD, \nMyers EW, Li PW, Eichler EE.\n<A HREF=\"https://science.sciencemag.org/content/297/5583/1003\"\nTARGET=_BLANK>Recent segmental duplications in the human genome</A>.\n<em>Science</em>. 2002 Aug 9;297(5583):1003-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12169732\" target=\"_blank\">12169732</a>\n</p>\n\n<P>\nBailey JA, Yavor AM, Massa HF, Trask BJ, Eichler EE.\n<A HREF=\"https://genome.cshlp.org/content/11/6/1005.long\"\nTARGET=_blank>Segmental duplications: organization and impact within the \ncurrent human genome project assembly</A>.\n<em>Genome Res</em>. 2001 Jun;11(6):1005-17.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11381028\" target=\"_blank\">11381028</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC311093/\" target=\"_blank\">PMC311093</a>\n</p>\n"
+        }
       },
       "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence",
       "category": ["Variation and Repeats"]
@@ -267,16 +281,18 @@
         }
       },
       "metadata": {
-        "color": "0,0,255",
-        "group": "map",
-        "longLabel": "Isochores from PSU",
-        "priority": "23.6",
-        "shortLabel": "Isochores",
-        "track": "isochore",
-        "type": "bed 5 .",
-        "useScore": "1",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows the locations of isochores (regions of homogeneous GC \ncontent) in the chicken assembly.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nIsochores are represented by rectangular blocks. Features with higher scores\nare more darkly shaded.</P>\n<P>\nTo display only those items that exceed a specific unnormalized score, enter\na minimum score between 0 and 1000 in the text box at the top of the track \ndescription page.\n</P>\n\n<H2>Methods</H2>\n<P>\nFor a description of the methods used to generate these data, see \nNekrutenko, <em>et al.</em>, 2000, in the References section below.</P>\n\n<H2>Credits</H2>\n<P>\nThanks to Jianbin He at Penn State University for providing these data.</P>\n\n<H2>References</H2>\n<p>\nNekrutenko A, Li WH.\n<a href=\"https://genome.cshlp.org/content/10/12/1986.full\" target=\"_blank\">\nAssessment of compositional heterogeneity within and between eukaryotic genomes</a>.\n<em>Genome Res</em>. 2000 Dec;10(12):1986-95.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11116093\" target=\"_blank\">11116093</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC313050/\" target=\"_blank\">PMC313050</a>\n</p>\n"
+        "ucsc": {
+          "color": "0,0,255",
+          "group": "map",
+          "longLabel": "Isochores from PSU",
+          "priority": "23.6",
+          "shortLabel": "Isochores",
+          "track": "isochore",
+          "type": "bed 5 .",
+          "useScore": "1",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the locations of isochores (regions of homogeneous GC \ncontent) in the chicken assembly.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nIsochores are represented by rectangular blocks. Features with higher scores\nare more darkly shaded.</P>\n<P>\nTo display only those items that exceed a specific unnormalized score, enter\na minimum score between 0 and 1000 in the text box at the top of the track \ndescription page.\n</P>\n\n<H2>Methods</H2>\n<P>\nFor a description of the methods used to generate these data, see \nNekrutenko, <em>et al.</em>, 2000, in the References section below.</P>\n\n<H2>Credits</H2>\n<P>\nThanks to Jianbin He at Penn State University for providing these data.</P>\n\n<H2>References</H2>\n<p>\nNekrutenko A, Li WH.\n<a href=\"https://genome.cshlp.org/content/10/12/1986.full\" target=\"_blank\">\nAssessment of compositional heterogeneity within and between eukaryotic genomes</a>.\n<em>Genome Res</em>. 2000 Dec;10(12):1986-95.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11116093\" target=\"_blank\">11116093</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC313050/\" target=\"_blank\">PMC313050</a>\n</p>\n"
+        }
       },
       "description": "Isochores from PSU",
       "category": ["Mapping and Sequencing"]
@@ -299,13 +315,15 @@
         }
       },
       "metadata": {
-        "group": "varRep",
-        "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-        "shortLabel": "Microsatellite",
-        "track": "microsat",
-        "type": "bed 4",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track displays regions that are likely to be useful as microsatellite\nmarkers. These are sequences of at least 15 perfect di-nucleotide and \ntri-nucleotide repeats and tend to be highly polymorphic in the\npopulation.\n</P>\n\n<H2>Methods</H2>\n<P>\nThe data shown in this track are a subset of the Simple Repeats track, \nselecting only those \nrepeats of period 2 and 3, with 100% identity and no indels and with\nat least 15 copies of the repeat.  The Simple Repeats track is\ncreated using the <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" TARGET=_blank>\nTandem Repeats Finder</A>.  For more information about this \nprogram, see Benson (1999).</P>\n\n<H2>Credits</H2>\n<P>\nTandem Repeats Finder was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track displays regions that are likely to be useful as microsatellite\nmarkers. These are sequences of at least 15 perfect di-nucleotide and \ntri-nucleotide repeats and tend to be highly polymorphic in the\npopulation.\n</P>\n\n<H2>Methods</H2>\n<P>\nThe data shown in this track are a subset of the Simple Repeats track, \nselecting only those \nrepeats of period 2 and 3, with 100% identity and no indels and with\nat least 15 copies of the repeat.  The Simple Repeats track is\ncreated using the <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" TARGET=_blank>\nTandem Repeats Finder</A>.  For more information about this \nprogram, see Benson (1999).</P>\n\n<H2>Credits</H2>\n<P>\nTandem Repeats Finder was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        }
       },
       "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
       "category": ["Variation and Repeats"]
@@ -328,16 +346,18 @@
         }
       },
       "metadata": {
-        "color": "110,10,40",
-        "html": "<H2>Description</H2> \n<P>\nThis track shows predictions of conserved elements produced by the phastCons\nprogram.  PhastCons is part of the PHAST (PHylogenetic Analysis with\nSpace/Time models) package.  The predictions are based on a phylogenetic hidden\nMarkov model (phylo-HMM), a type of probabilistic model that describes both\nthe process of DNA substitution at each site in a genome and the way this\nprocess changes from one site to the next. </P>\n\n<H2>Methods</H2>\n<P>\nBest-in-genome pairwise alignments were generated for\neach species using blastz, followed by chaining and netting.  A multiple\nalignment was then constructed from these pairwise alignments using multiz.\nPredictions of conserved elements were then obtained by running phastCons\non the multiple alignments with the --most-conserved option.</P>\n<P>\nPhastCons constructs a two-state phylo-HMM with a state for conserved\nregions and a state for non-conserved regions.  The two states share a\nsingle phylogenetic model, except that the branch lengths of the tree\nassociated with the conserved state are multiplied by a constant scaling\nfactor <em>rho</em> (0 &lt;= <em>rho</em> &lt;= 1).  The free parameters of the\nphylo-HMM, including the scaling factor <em>rho</em>, are estimated from\nthe data by maximum likelihood using an EM algorithm.  This procedure is\nsubject to certain constraints on the \"coverage\" of the genome by conserved\nelements and the \"smoothness\" of the conservation scores.  Details can be\nfound in Siepel et al. (2005).</P>\n<P>\nThe predicted conserved elements are segments of the alignment that are\nlikely to have been \"generated\" by the conserved state of the phylo-HMM.\nEach element is assigned a log-odds score equal to its log probability\nunder the conserved model minus its log probability under the non-conserved\nmodel.  The \"score\" field associated with this track contains transformed\nlog-odds scores, taking values between 0 and 1000.  (The scores are\ntransformed using a monotonic function of the form a * log(x) + b.)  The\nraw log odds scores are retained in the \"name\" field and can be seen on the\ndetails page or in the browser when the track's display mode is set to\n\"pack\" or \"full\".</P>\n\n<H2>Credits</H2>\n<P>\nThis track was created at UCSC using the following programs:\n<UL>\n<LI>\nBlastz and multiz by Minmei Hou, Scott Schwartz and Webb Miller of the \n<A HREF=\"http://www.ccbb.psu.edu/\" TARGET=_blank>Penn State Bioinformatics \nGroup</A>. \n<LI>\nAxtBest, axtChain, chainNet, netSyntenic, and netClass\nby Jim Kent at UCSC. \n<LI>PhastCons by Adam Siepel at Cornell University. \n</UL>\n</P>\n\n<H2>References</H2>\n\n<h3>PhastCons:</h3>\n<p>\nSiepel A, Bejerano G, Pedersen JS, Hinrichs AS, Hou M, Rosenbloom K,\nClawson H, Spieth J, Hillier LW, Richards S, <em>et al.</em>\n<a href=\"https://genome.cshlp.org/content/15/8/1034\"\ntarget=\"_blank\">Evolutionarily conserved elements in vertebrate, insect, worm,\nand yeast genomes</a>.\n<em>Genome Res</em>. 2005 Aug;15(8):1034-50.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/16024819\" target=\"_blank\">16024819</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1182216/\" target=\"_blank\">PMC1182216</a>\n</p>\n\n<h3>Chain/Net:</h3>\n<p>\nKent WJ, Baertsch R, Hinrichs A, Miller W, Haussler D.\n<a href=\"https://www.pnas.org/content/100/20/11484\"\ntarget=\"_blank\">Evolution's cauldron:\nduplication, deletion, and rearrangement in the mouse and human genomes</a>.\n<em>Proc Natl Acad Sci U S A</em>. 2003 Sep 30;100(20):11484-9.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14500911\" target=\"_blank\">14500911</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC208784/\" target=\"_blank\">PMC208784</a>\n</p>\n\n<h3>Multiz:</h3>\n<p>\nBlanchette M, Kent WJ, Riemer C, Elnitski L, Smit AF, Roskin KM,\nBaertsch R, Rosenbloom K, Clawson H, Green ED, <em>et al.</em>\n<a href=\"https://genome.cshlp.org/content/14/4/708.abstract\"\ntarget=\"_blank\">Aligning multiple genomic sequences with the threaded blockset aligner</a>.\n<em>Genome Res</em>. 2004 Apr;14(4):708-15.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15060014\" target=\"_blank\">15060014</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC383317/\" target=\"_blank\">PMC383317</a>\n</p>\n\n<h3>Blastz:</h3>\n<p>\nChiaromonte F, Yap VB, Miller W.\n<a href=\"http://psb.stanford.edu/psb-online/proceedings/psb02/chiaromonte.pdf\"\ntarget=\"_blank\">Scoring pairwise genomic sequence alignments</a>.\n<em>Pac Symp Biocomput</em>. 2002:115-26.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11928468\" target=\"_blank\">11928468</a>\n</p>\n\n<p>\nSchwartz S, Kent WJ, Smit A, Zhang Z, Baertsch R, Hardison RC,\nHaussler D, Miller W.\n<a href=\"https://genome.cshlp.org/content/13/1/103.abstract\"\ntarget=\"_blank\">Human-mouse alignments with BLASTZ</a>.\n<em>Genome Res</em>. 2003 Jan;13(1):103-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12529312\" target=\"_blank\">12529312</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC430961/\" target=\"_blank\">PMC430961</a>\n</p>\n",
-        "longLabel": "7 Species Conserved Elements",
-        "noInherit": "on",
-        "parent": "cons7wayViewelements on",
-        "priority": "23",
-        "shortLabel": "7 Species El",
-        "subGroups": "view=elements",
-        "track": "phastConsElements7way",
-        "type": "bed 5 ."
+        "ucsc": {
+          "color": "110,10,40",
+          "html": "<H2>Description</H2> \n<P>\nThis track shows predictions of conserved elements produced by the phastCons\nprogram.  PhastCons is part of the PHAST (PHylogenetic Analysis with\nSpace/Time models) package.  The predictions are based on a phylogenetic hidden\nMarkov model (phylo-HMM), a type of probabilistic model that describes both\nthe process of DNA substitution at each site in a genome and the way this\nprocess changes from one site to the next. </P>\n\n<H2>Methods</H2>\n<P>\nBest-in-genome pairwise alignments were generated for\neach species using blastz, followed by chaining and netting.  A multiple\nalignment was then constructed from these pairwise alignments using multiz.\nPredictions of conserved elements were then obtained by running phastCons\non the multiple alignments with the --most-conserved option.</P>\n<P>\nPhastCons constructs a two-state phylo-HMM with a state for conserved\nregions and a state for non-conserved regions.  The two states share a\nsingle phylogenetic model, except that the branch lengths of the tree\nassociated with the conserved state are multiplied by a constant scaling\nfactor <em>rho</em> (0 &lt;= <em>rho</em> &lt;= 1).  The free parameters of the\nphylo-HMM, including the scaling factor <em>rho</em>, are estimated from\nthe data by maximum likelihood using an EM algorithm.  This procedure is\nsubject to certain constraints on the \"coverage\" of the genome by conserved\nelements and the \"smoothness\" of the conservation scores.  Details can be\nfound in Siepel et al. (2005).</P>\n<P>\nThe predicted conserved elements are segments of the alignment that are\nlikely to have been \"generated\" by the conserved state of the phylo-HMM.\nEach element is assigned a log-odds score equal to its log probability\nunder the conserved model minus its log probability under the non-conserved\nmodel.  The \"score\" field associated with this track contains transformed\nlog-odds scores, taking values between 0 and 1000.  (The scores are\ntransformed using a monotonic function of the form a * log(x) + b.)  The\nraw log odds scores are retained in the \"name\" field and can be seen on the\ndetails page or in the browser when the track's display mode is set to\n\"pack\" or \"full\".</P>\n\n<H2>Credits</H2>\n<P>\nThis track was created at UCSC using the following programs:\n<UL>\n<LI>\nBlastz and multiz by Minmei Hou, Scott Schwartz and Webb Miller of the \n<A HREF=\"http://www.ccbb.psu.edu/\" TARGET=_blank>Penn State Bioinformatics \nGroup</A>. \n<LI>\nAxtBest, axtChain, chainNet, netSyntenic, and netClass\nby Jim Kent at UCSC. \n<LI>PhastCons by Adam Siepel at Cornell University. \n</UL>\n</P>\n\n<H2>References</H2>\n\n<h3>PhastCons:</h3>\n<p>\nSiepel A, Bejerano G, Pedersen JS, Hinrichs AS, Hou M, Rosenbloom K,\nClawson H, Spieth J, Hillier LW, Richards S, <em>et al.</em>\n<a href=\"https://genome.cshlp.org/content/15/8/1034\"\ntarget=\"_blank\">Evolutionarily conserved elements in vertebrate, insect, worm,\nand yeast genomes</a>.\n<em>Genome Res</em>. 2005 Aug;15(8):1034-50.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/16024819\" target=\"_blank\">16024819</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1182216/\" target=\"_blank\">PMC1182216</a>\n</p>\n\n<h3>Chain/Net:</h3>\n<p>\nKent WJ, Baertsch R, Hinrichs A, Miller W, Haussler D.\n<a href=\"https://www.pnas.org/content/100/20/11484\"\ntarget=\"_blank\">Evolution's cauldron:\nduplication, deletion, and rearrangement in the mouse and human genomes</a>.\n<em>Proc Natl Acad Sci U S A</em>. 2003 Sep 30;100(20):11484-9.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14500911\" target=\"_blank\">14500911</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC208784/\" target=\"_blank\">PMC208784</a>\n</p>\n\n<h3>Multiz:</h3>\n<p>\nBlanchette M, Kent WJ, Riemer C, Elnitski L, Smit AF, Roskin KM,\nBaertsch R, Rosenbloom K, Clawson H, Green ED, <em>et al.</em>\n<a href=\"https://genome.cshlp.org/content/14/4/708.abstract\"\ntarget=\"_blank\">Aligning multiple genomic sequences with the threaded blockset aligner</a>.\n<em>Genome Res</em>. 2004 Apr;14(4):708-15.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15060014\" target=\"_blank\">15060014</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC383317/\" target=\"_blank\">PMC383317</a>\n</p>\n\n<h3>Blastz:</h3>\n<p>\nChiaromonte F, Yap VB, Miller W.\n<a href=\"http://psb.stanford.edu/psb-online/proceedings/psb02/chiaromonte.pdf\"\ntarget=\"_blank\">Scoring pairwise genomic sequence alignments</a>.\n<em>Pac Symp Biocomput</em>. 2002:115-26.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11928468\" target=\"_blank\">11928468</a>\n</p>\n\n<p>\nSchwartz S, Kent WJ, Smit A, Zhang Z, Baertsch R, Hardison RC,\nHaussler D, Miller W.\n<a href=\"https://genome.cshlp.org/content/13/1/103.abstract\"\ntarget=\"_blank\">Human-mouse alignments with BLASTZ</a>.\n<em>Genome Res</em>. 2003 Jan;13(1):103-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12529312\" target=\"_blank\">12529312</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC430961/\" target=\"_blank\">PMC430961</a>\n</p>\n",
+          "longLabel": "7 Species Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons7wayViewelements on",
+          "priority": "23",
+          "shortLabel": "7 Species El",
+          "subGroups": "view=elements",
+          "track": "phastConsElements7way",
+          "type": "bed 5 ."
+        }
       },
       "description": "7 Species Conserved Elements",
       "category": ["Comparative Genomics"]
@@ -360,15 +380,17 @@
         }
       },
       "metadata": {
-        "altColor": "230,180,130",
-        "color": "170,80,0",
-        "group": "genes",
-        "longLabel": "Non-Coding RNA Genes",
-        "shortLabel": "RNA Genes",
-        "track": "rnaGene",
-        "type": "bed 6 +",
-        "visibility": "hide",
-        "html": "<H2> Description </H2>\n<P>\nThis track shows the location of non-protein-coding RNA genes and\npseudogenes.  \n<P>\nFeature types include:\n<UL>\n<LI>  tRNA:         Transfer RNA </LI>\n<LI>  rRNA:         Ribosomal RNA </LI>\n<LI>  scRNA:        Small cytoplasmic RNA </LI>\n<LI>  snRNA:        Small nuclear RNA </LI>\n<LI>  snoRNA:       Small nucleolar RNA </LI>\n<LI>  miRNA:        MicroRNA     </LI>\n<LI>  misc_RNA:     Miscellaneous other RNA, such as RNaseP_nuc </LI>\n<LI>  Intron:       Group II self-splicing intron (probable contamination)</LI>\n<LI>  UTR_element:  cis-regulatory elements in UTRs of protein coding genes\n                    </LI>\n</UL></P>\n<P>\n\n<H2> Methods </H2>\n\n<P>\n<B>tRNAscan-SE: </B><BR>\n       <A HREF=\"http://eddylab.org\" TARGET=_BLANK>\n       tRNAscan-SE</A> 1.23.\n       Score field contains tRNAscan-SE bit score; &gt;20 is good, &gt;50 is great.\n</P>\n<P>    \n<B>Rfam5.0: </B><BR>\n       <A HREF=\"http://rfam.xfam.org/\" TARGET=_BLANK>\n       Rfam</A> 5.0 covariance models and the INFERNAL 0.55 software using Rfam\n       family specific cutoffs.  The score field contains the INFERNAL bit\n       score.\n</P>\n<P>    \n<B>miRNA_Registry: </B><BR>\nWU-BLASTN matches to human, mouse and rat miRNAs from the miRNA\nRegistry 3.0.  Candidate chicken miRNAs match a precursor miRNA with\ne-value &lt; 1e-4, form a predicted hairpin structure with free energy of\nfolding &lt; -20 kJ.mol-1, and match the mature ~22 nt miRNA with 2 or\nfewer mismatches.\n</P>\n<P>  \n</P>\n\n<H2>Credits</H2>\n<P>\nThese data were kindly provided by Sam Griffiths-Jones at \nthe <A HREF=\"https://www.sanger.ac.uk/\" TARGET=_BLANK>Sanger Institute</A>.\n</P>\n\n<p>\nGriffiths-Jones S.\n<a href=\"https://academic.oup.com/nar/article/32/suppl_1/D109/2505171\" target=\"_blank\">\nThe microRNA Registry</a>.\n<em>Nucleic Acids Res</em>. 2004 Jan 1;32(Database issue):D109-11.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14681370\" target=\"_blank\">14681370</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC308757/\" target=\"_blank\">PMC308757</a>\n</p>\n\n<p>\nGriffiths-Jones S, Bateman A, Marshall M, Khanna A, Eddy SR.\n<a href=\"https://academic.oup.com/nar/article/31/1/439/2401159\" target=\"_blank\">\nRfam: an RNA family database</a>.\n<em>Nucleic Acids Res</em>. 2003 Jan 1;31(1):439-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12520045\" target=\"_blank\">12520045</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC165453/\" target=\"_blank\">PMC165453</a>\n</p>\n\n<p>\nLowe TM, Eddy SR.\n<a href=\"https://academic.oup.com/nar/article/25/5/995/2359832\" target=\"_blank\">\ntRNAscan-SE: a program for improved detection of transfer RNA genes in genomic sequence</a>.\n<em>Nucleic Acids Res</em>. 1997 Mar 1;25(5):955-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9023104\" target=\"_blank\">9023104</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC146525/\" target=\"_blank\">PMC146525</a>\n</p>\n"
+        "ucsc": {
+          "altColor": "230,180,130",
+          "color": "170,80,0",
+          "group": "genes",
+          "longLabel": "Non-Coding RNA Genes",
+          "shortLabel": "RNA Genes",
+          "track": "rnaGene",
+          "type": "bed 6 +",
+          "visibility": "hide",
+          "html": "<H2> Description </H2>\n<P>\nThis track shows the location of non-protein-coding RNA genes and\npseudogenes.  \n<P>\nFeature types include:\n<UL>\n<LI>  tRNA:         Transfer RNA </LI>\n<LI>  rRNA:         Ribosomal RNA </LI>\n<LI>  scRNA:        Small cytoplasmic RNA </LI>\n<LI>  snRNA:        Small nuclear RNA </LI>\n<LI>  snoRNA:       Small nucleolar RNA </LI>\n<LI>  miRNA:        MicroRNA     </LI>\n<LI>  misc_RNA:     Miscellaneous other RNA, such as RNaseP_nuc </LI>\n<LI>  Intron:       Group II self-splicing intron (probable contamination)</LI>\n<LI>  UTR_element:  cis-regulatory elements in UTRs of protein coding genes\n                    </LI>\n</UL></P>\n<P>\n\n<H2> Methods </H2>\n\n<P>\n<B>tRNAscan-SE: </B><BR>\n       <A HREF=\"http://eddylab.org\" TARGET=_BLANK>\n       tRNAscan-SE</A> 1.23.\n       Score field contains tRNAscan-SE bit score; &gt;20 is good, &gt;50 is great.\n</P>\n<P>    \n<B>Rfam5.0: </B><BR>\n       <A HREF=\"http://rfam.xfam.org/\" TARGET=_BLANK>\n       Rfam</A> 5.0 covariance models and the INFERNAL 0.55 software using Rfam\n       family specific cutoffs.  The score field contains the INFERNAL bit\n       score.\n</P>\n<P>    \n<B>miRNA_Registry: </B><BR>\nWU-BLASTN matches to human, mouse and rat miRNAs from the miRNA\nRegistry 3.0.  Candidate chicken miRNAs match a precursor miRNA with\ne-value &lt; 1e-4, form a predicted hairpin structure with free energy of\nfolding &lt; -20 kJ.mol-1, and match the mature ~22 nt miRNA with 2 or\nfewer mismatches.\n</P>\n<P>  \n</P>\n\n<H2>Credits</H2>\n<P>\nThese data were kindly provided by Sam Griffiths-Jones at \nthe <A HREF=\"https://www.sanger.ac.uk/\" TARGET=_BLANK>Sanger Institute</A>.\n</P>\n\n<p>\nGriffiths-Jones S.\n<a href=\"https://academic.oup.com/nar/article/32/suppl_1/D109/2505171\" target=\"_blank\">\nThe microRNA Registry</a>.\n<em>Nucleic Acids Res</em>. 2004 Jan 1;32(Database issue):D109-11.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14681370\" target=\"_blank\">14681370</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC308757/\" target=\"_blank\">PMC308757</a>\n</p>\n\n<p>\nGriffiths-Jones S, Bateman A, Marshall M, Khanna A, Eddy SR.\n<a href=\"https://academic.oup.com/nar/article/31/1/439/2401159\" target=\"_blank\">\nRfam: an RNA family database</a>.\n<em>Nucleic Acids Res</em>. 2003 Jan 1;31(1):439-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12520045\" target=\"_blank\">12520045</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC165453/\" target=\"_blank\">PMC165453</a>\n</p>\n\n<p>\nLowe TM, Eddy SR.\n<a href=\"https://academic.oup.com/nar/article/25/5/995/2359832\" target=\"_blank\">\ntRNAscan-SE: a program for improved detection of transfer RNA genes in genomic sequence</a>.\n<em>Nucleic Acids Res</em>. 1997 Mar 1;25(5):955-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9023104\" target=\"_blank\">9023104</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC146525/\" target=\"_blank\">PMC146525</a>\n</p>\n"
+        }
       },
       "description": "Non-Coding RNA Genes",
       "category": ["Genes and Gene Predictions"]
@@ -391,13 +413,15 @@
         }
       },
       "metadata": {
-        "group": "varRep",
-        "longLabel": "Simple Tandem Repeats by TRF",
-        "shortLabel": "Simple Repeats",
-        "track": "simpleRepeat",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track displays simple tandem repeats (possibly imperfect repeats) located\nby <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" \nTARGET=_blank>Tandem Repeats\nFinder</A> (TRF) which is specialized for this purpose. These repeats can\noccur within coding regions of genes and may be quite\npolymorphic. Repeat expansions are sometimes associated with specific\ndiseases.</P>\n\n<H2>Methods</H2>\n<P>\nFor more information about the TRF program, see Benson (1999).\n</P>\n\n<H2>Credits</H2>\n<P>\nTRF was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track displays simple tandem repeats (possibly imperfect repeats) located\nby <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" \nTARGET=_blank>Tandem Repeats\nFinder</A> (TRF) which is specialized for this purpose. These repeats can\noccur within coding regions of genes and may be quite\npolymorphic. Repeat expansions are sometimes associated with specific\ndiseases.</P>\n\n<H2>Methods</H2>\n<P>\nFor more information about the TRF program, see Benson (1999).\n</P>\n\n<H2>Credits</H2>\n<P>\nTRF was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        }
       },
       "description": "Simple Tandem Repeats by TRF",
       "category": ["Variation and Repeats"]
@@ -420,15 +444,17 @@
         }
       },
       "metadata": {
-        "color": "150,0,0",
-        "group": "map",
-        "longLabel": "Supercontigs from Whole Genome Shotgun Assembly",
-        "priority": "9",
-        "shortLabel": "Supercontigs",
-        "track": "supercontig",
-        "type": "bed 6 .",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows the locations of supercontigs from the Whole Genome Shotgun \nassembly.  Supercontigs are composed of contigs separated by fragment gaps.  \nThe naming pattern for contigs is <tt>Contig<em>N</em>.<em>M</em></tt>, \nwhere <em>N</em> is the supercontig number (shared by all contigs in the \nsame supercontig), and <em>M</em> is the number of the contig, i.e. its \norder within the supercontig.  \n</P>\n<P>\nA single feature in this track denotes a series of contigs with the same \nsupercontig number <em>N</em>.  \nThe range of contig numbers (<em>M</em>) is shown in parentheses after the \nsupercontig base name <tt>Contig<em>N</em></tt>.  &nbsp;\nThe Assembly track shows the locations of individual contigs.  \n</P>\n<P>\nThis track was generated at UCSC from the assembly AGP files.  \n</P>\n\n"
+        "ucsc": {
+          "color": "150,0,0",
+          "group": "map",
+          "longLabel": "Supercontigs from Whole Genome Shotgun Assembly",
+          "priority": "9",
+          "shortLabel": "Supercontigs",
+          "track": "supercontig",
+          "type": "bed 6 .",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the locations of supercontigs from the Whole Genome Shotgun \nassembly.  Supercontigs are composed of contigs separated by fragment gaps.  \nThe naming pattern for contigs is <tt>Contig<em>N</em>.<em>M</em></tt>, \nwhere <em>N</em> is the supercontig number (shared by all contigs in the \nsame supercontig), and <em>M</em> is the number of the contig, i.e. its \norder within the supercontig.  \n</P>\n<P>\nA single feature in this track denotes a series of contigs with the same \nsupercontig number <em>N</em>.  \nThe range of contig numbers (<em>M</em>) is shown in parentheses after the \nsupercontig base name <tt>Contig<em>N</em></tt>.  &nbsp;\nThe Assembly track shows the locations of individual contigs.  \n</P>\n<P>\nThis track was generated at UCSC from the assembly AGP files.  \n</P>\n\n"
+        }
       },
       "description": "Supercontigs from Whole Genome Shotgun Assembly",
       "category": ["Mapping and Sequencing"]
@@ -451,16 +477,18 @@
         }
       },
       "metadata": {
-        "baseColorDefault": "genomicCodons",
-        "baseColorUseCds": "given",
-        "color": "12,105,0",
-        "group": "genes",
-        "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-        "shortLabel": "AUGUSTUS",
-        "track": "augustusGene",
-        "type": "genePred",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\n  This track shows <i>ab initio</i> predictions from the program\n  <a href=\"http://bioinf.uni-greifswald.de/augustus/\" target=\"_blank\">AUGUSTUS</a> (version 3.1).\n  The predictions are based on the genome sequence alone.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nStatistical signal models were built for splice sites, branch-point\npatterns, translation start sites, and the poly-A signal.\nFurthermore, models were built for the sequence content of\nprotein-coding and non-coding regions as well as for the length distributions\nof different exon and intron types. Detailed descriptions of most of these different models\ncan be found in Mario Stanke's\n<a href=\"https://ediss.uni-goettingen.de/handle/11858/00-1735-0000-0006-B3F8-4\" target=\"_blank\">dissertation</a>.\nThis track shows the most likely gene structure according to a\nSemi-Markov Conditional Random Field model.\nAlternative splicing transcripts were obtained with\na sampling algorithm (<tt>--alternatives-from-sampling=true --sample=100 --minexonintronprob=0.2\n--minmeanexonintronprob=0.5 --maxtracks=3 --temperature=2</tt>).\n</p>\n\n<p>\nThe different models used by Augustus were trained on a number of different species-specific\ngene sets, which included 1000-2000 training gene structures. The <tt>--species</tt> option allows\none to choose the species used for training the models. Different training species were used\nfor the <tt>--species</tt> option when generating these predictions for different groups of\nassemblies.\n<table class=\"stdTbl\">\n <tr>\n  <td align=center><b>Assembly Group</b></td>\n  <td align=center><b>Training Species</b></td>\n </tr>\n <tr>\n  <td align=center>Fish</td>\n  <td align=center><tt>zebrafish</tt>\n </tr>\n <tr>\n  <td align=center>Birds</td>\n  <td align=center><tt>chicken</tt>\n </tr>\n <tr>\n  <td align=center>Human and all other vertebrates</td>\n  <td align=center><tt>human</tt>\n </tr>\n <tr>\n  <td align=center>Nematodes</td>\n  <td align=center><tt>caenorhabditis</tt></td>\n </tr>\n <tr>\n  <td align=center>Drosophila</td>\n  <td align=center><tt>fly</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. mellifera</em></td>\n  <td align=center><tt>honeybee1</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. gambiae</em></td>\n  <td align=center><tt>culex</tt></td>\n </tr>\n <tr>\n  <td align=center><em>S. cerevisiae</em></td>\n  <td align=center><tt>saccharomyces</tt></td>\n </tr>\n</table>\n<p>\nThis table describes which training species was used for a particular group of assemblies.\nWhen available, the closest related training species was used.\n</p>\n\n<h2>Credits</h2>\n\nThanks to the\n<a href=\"https://math-inf.uni-greifswald.de/en/department/about-us/employees/prof-dr-mario-stanke-english/\"\ntarget=\"_blank\">Stanke lab</a>\nfor providing the AUGUSTUS program.  The training for the <tt>chicken</tt> version was\ndone by Stefanie K&ouml;nig and the training for the\n<tt>human</tt> and <tt>zebrafish</tt> versions was done by Mario Stanke.\n\n<h2>References</h2>\n\n<p>\nStanke M, Diekhans M, Baertsch R, Haussler D.\n<a href=\"https://academic.oup.com/bioinformatics/article/24/5/637/202844/Using-native-and-syntenically-mapped-cDNA\"\ntarget=\"_blank\">\nUsing native and syntenically mapped cDNA alignments to improve de novo gene finding</a>.\n<em>Bioinformatics</em>. 2008 Mar 1;24(5):637-44.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18218656\" target=\"_blank\">18218656</a>\n</p>\n\n<p>\nStanke M, Waack S.\n<a href=\"https://academic.oup.com/bioinformatics/article/19/suppl_2/ii215/180603/Gene-prediction-with-a-hidden-Markov-model-and-a\"\ntarget=\"_blank\">\nGene prediction with a hidden Markov model and a new intron submodel</a>.\n<em>Bioinformatics</em>. 2003 Oct;19 Suppl 2:ii215-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14534192\" target=\"_blank\">14534192</a>\n</p>\n"
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\n  This track shows <i>ab initio</i> predictions from the program\n  <a href=\"http://bioinf.uni-greifswald.de/augustus/\" target=\"_blank\">AUGUSTUS</a> (version 3.1).\n  The predictions are based on the genome sequence alone.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nStatistical signal models were built for splice sites, branch-point\npatterns, translation start sites, and the poly-A signal.\nFurthermore, models were built for the sequence content of\nprotein-coding and non-coding regions as well as for the length distributions\nof different exon and intron types. Detailed descriptions of most of these different models\ncan be found in Mario Stanke's\n<a href=\"https://ediss.uni-goettingen.de/handle/11858/00-1735-0000-0006-B3F8-4\" target=\"_blank\">dissertation</a>.\nThis track shows the most likely gene structure according to a\nSemi-Markov Conditional Random Field model.\nAlternative splicing transcripts were obtained with\na sampling algorithm (<tt>--alternatives-from-sampling=true --sample=100 --minexonintronprob=0.2\n--minmeanexonintronprob=0.5 --maxtracks=3 --temperature=2</tt>).\n</p>\n\n<p>\nThe different models used by Augustus were trained on a number of different species-specific\ngene sets, which included 1000-2000 training gene structures. The <tt>--species</tt> option allows\none to choose the species used for training the models. Different training species were used\nfor the <tt>--species</tt> option when generating these predictions for different groups of\nassemblies.\n<table class=\"stdTbl\">\n <tr>\n  <td align=center><b>Assembly Group</b></td>\n  <td align=center><b>Training Species</b></td>\n </tr>\n <tr>\n  <td align=center>Fish</td>\n  <td align=center><tt>zebrafish</tt>\n </tr>\n <tr>\n  <td align=center>Birds</td>\n  <td align=center><tt>chicken</tt>\n </tr>\n <tr>\n  <td align=center>Human and all other vertebrates</td>\n  <td align=center><tt>human</tt>\n </tr>\n <tr>\n  <td align=center>Nematodes</td>\n  <td align=center><tt>caenorhabditis</tt></td>\n </tr>\n <tr>\n  <td align=center>Drosophila</td>\n  <td align=center><tt>fly</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. mellifera</em></td>\n  <td align=center><tt>honeybee1</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. gambiae</em></td>\n  <td align=center><tt>culex</tt></td>\n </tr>\n <tr>\n  <td align=center><em>S. cerevisiae</em></td>\n  <td align=center><tt>saccharomyces</tt></td>\n </tr>\n</table>\n<p>\nThis table describes which training species was used for a particular group of assemblies.\nWhen available, the closest related training species was used.\n</p>\n\n<h2>Credits</h2>\n\nThanks to the\n<a href=\"https://math-inf.uni-greifswald.de/en/department/about-us/employees/prof-dr-mario-stanke-english/\"\ntarget=\"_blank\">Stanke lab</a>\nfor providing the AUGUSTUS program.  The training for the <tt>chicken</tt> version was\ndone by Stefanie K&ouml;nig and the training for the\n<tt>human</tt> and <tt>zebrafish</tt> versions was done by Mario Stanke.\n\n<h2>References</h2>\n\n<p>\nStanke M, Diekhans M, Baertsch R, Haussler D.\n<a href=\"https://academic.oup.com/bioinformatics/article/24/5/637/202844/Using-native-and-syntenically-mapped-cDNA\"\ntarget=\"_blank\">\nUsing native and syntenically mapped cDNA alignments to improve de novo gene finding</a>.\n<em>Bioinformatics</em>. 2008 Mar 1;24(5):637-44.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18218656\" target=\"_blank\">18218656</a>\n</p>\n\n<p>\nStanke M, Waack S.\n<a href=\"https://academic.oup.com/bioinformatics/article/19/suppl_2/ii215/180603/Gene-prediction-with-a-hidden-Markov-model-and-a\"\ntarget=\"_blank\">\nGene prediction with a hidden Markov model and a new intron submodel</a>.\n<em>Bioinformatics</em>. 2003 Oct;19 Suppl 2:ii215-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14534192\" target=\"_blank\">14534192</a>\n</p>\n"
+        }
       },
       "description": "AUGUSTUS ab initio gene predictions v3.1",
       "category": ["Genes and Gene Predictions"]
@@ -483,15 +511,17 @@
         }
       },
       "metadata": {
-        "color": "20,20,170",
-        "group": "genes",
-        "longLabel": "Gene Annotations from Beijing Genomics Institute",
-        "priority": "41",
-        "shortLabel": "BGI Genes",
-        "track": "bgiGene",
-        "type": "genePred",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n\n<P>\nThis track shows protein-coding genes annotated by the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> (BGI).  When Single Nucleotide Polymorphisms (SNPs)\nand/or insertions/deletions from BGI have been associated \nwith a gene, those SNPs are listed with links to their details pages.  \n</P>\n\n<H2>Methods</H2>\n<P>\nGene annotations were collected from several different sources:\n</P>\n<UL>\n<LI>Hans_Cheng</LI>\n<LI>Leif_Andersson</LI>\n<LI>Martien_Groenen</LI>\n<LI>GenBank_complete</LI>\n<LI>GenBank_partial</LI>\n<LI>HumanDiseaseGene</LI>\n<LI>IMS-GSF</LI>\n<LI>UMIST (orf less than 300)</LI>\n<LI>UMIST (orf more than 300)</LI>\n</UL>\n\n<H2>Credits</H2>\n<P>\nThanks to the Beijing Genomics Institute for providing these data.\n</P>\n\n<H2>Terms of Use</H2>\n<OL>\n<LI>\nUsers are free to use this data in scientific papers analyzing\nparticular genes, if the Beijing Genomics Institute (BGI) is\nacknowledged.\n</LI>\n<LI>\nBGI and its collaborators reserve the right to publish the initial\nanalyses of this data, including but not restricted to the large-scale\nidentification of functional polymorphisms, evolutionary patterns and\nsigns of selection, correlations with known QTLs, utility of data for\ngenetic mapping purposes, etc.\n</LI>\n<LI>\nAny redistribution of this data should carry this notice.\n</LI>\n</OL>\n\n"
+        "ucsc": {
+          "color": "20,20,170",
+          "group": "genes",
+          "longLabel": "Gene Annotations from Beijing Genomics Institute",
+          "priority": "41",
+          "shortLabel": "BGI Genes",
+          "track": "bgiGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n\n<P>\nThis track shows protein-coding genes annotated by the \n<A HREF=\"https://en.genomics.cn/\" TARGET=_BLANK>\nBeijing Genomics Institute</A> (BGI).  When Single Nucleotide Polymorphisms (SNPs)\nand/or insertions/deletions from BGI have been associated \nwith a gene, those SNPs are listed with links to their details pages.  \n</P>\n\n<H2>Methods</H2>\n<P>\nGene annotations were collected from several different sources:\n</P>\n<UL>\n<LI>Hans_Cheng</LI>\n<LI>Leif_Andersson</LI>\n<LI>Martien_Groenen</LI>\n<LI>GenBank_complete</LI>\n<LI>GenBank_partial</LI>\n<LI>HumanDiseaseGene</LI>\n<LI>IMS-GSF</LI>\n<LI>UMIST (orf less than 300)</LI>\n<LI>UMIST (orf more than 300)</LI>\n</UL>\n\n<H2>Credits</H2>\n<P>\nThanks to the Beijing Genomics Institute for providing these data.\n</P>\n\n<H2>Terms of Use</H2>\n<OL>\n<LI>\nUsers are free to use this data in scientific papers analyzing\nparticular genes, if the Beijing Genomics Institute (BGI) is\nacknowledged.\n</LI>\n<LI>\nBGI and its collaborators reserve the right to publish the initial\nanalyses of this data, including but not restricted to the large-scale\nidentification of functional polymorphisms, evolutionary patterns and\nsigns of selection, correlations with known QTLs, utility of data for\ngenetic mapping purposes, etc.\n</LI>\n<LI>\nAny redistribution of this data should carry this notice.\n</LI>\n</OL>\n\n"
+        }
       },
       "description": "Gene Annotations from Beijing Genomics Institute",
       "category": ["Genes and Gene Predictions"]
@@ -514,15 +544,17 @@
         }
       },
       "metadata": {
-        "color": "150,0,0",
-        "exonNumbers": "on",
-        "group": "genes",
-        "longLabel": "Ensembl Genes",
-        "shortLabel": "Ensembl Genes",
-        "track": "ensGene",
-        "type": "genePred ensPep",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"http://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for galGal2 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/galGal2/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/galGal2/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/galGal2/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://uswest.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"http://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for galGal2 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/galGal2/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/galGal2/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/galGal2/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://uswest.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
+        }
       },
       "description": "Ensembl Genes",
       "category": ["Genes and Gene Predictions"]
@@ -545,14 +577,16 @@
         }
       },
       "metadata": {
-        "color": "0,90,100",
-        "group": "genes",
-        "longLabel": "Geneid Gene Predictions",
-        "shortLabel": "Geneid Genes",
-        "track": "geneid",
-        "type": "genePred geneidPep",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\nThis track shows gene predictions from the\n<a href=\"https://genome.crg.cat/software/geneid/index.html\"\ntarget=\"_blank\">geneid</a> program developed by\n<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Roderic Guig&oacute;'s Computational Biology of RNA Processing</a>\ngroup which is part of the\n<a href=\"https://www.crg.eu/\" target=\"_blank\">Centre de Regulaci&oacute; Gen&ograve;mica</a>\n(CRG) in Barcelona, Catalunya, Spain.\n</p>\n\n<h2>Methods</h2>\n\n<p>\nGeneid is a program to predict genes in anonymous genomic sequences designed\nwith a hierarchical structure. In the first step, splice sites, start and stop\ncodons are predicted and scored along the sequence using Position Weight Arrays\n(PWAs). Next, exons are built from the sites. Exons are scored as the sum of the\nscores of the defining sites, plus the the log-likelihood ratio of a\nMarkov Model for coding DNA. Finally, from the set of predicted exons, the gene\nstructure is assembled, maximizing the sum of the scores of the assembled exons.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to <a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"blank\">Computational Biology of RNA Processing</a>\nfor providing these data.\n\n</p>\n\n<h2>References</h2>\n<p>\nBlanco E, Parra G, Guig&#243; R.\n<a href=\"https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi0403s18\"\ntarget=\"_blank\">Using geneid to identify genes</a>.\n<em>Curr Protoc Bioinformatics</em>. 2007 Jun;Chapter 4:Unit 4.3.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18428791\" target=\"_blank\">18428791</a>\n</p>\n\n\n<p>\nParra G, Blanco E, Guig&#243; R.\n<a href=\"https://genome.cshlp.org/content/10/4/511.long\" target=\"_blank\">\nGeneID in Drosophila</a>.\n<em>Genome Res</em>. 2000 Apr;10(4):511-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10779490\" target=\"_blank\">10779490</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310871/\" target=\"_blank\">PMC310871</a>\n</p>\n"
+        "ucsc": {
+          "color": "0,90,100",
+          "group": "genes",
+          "longLabel": "Geneid Gene Predictions",
+          "shortLabel": "Geneid Genes",
+          "track": "geneid",
+          "type": "genePred geneidPep",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows gene predictions from the\n<a href=\"https://genome.crg.cat/software/geneid/index.html\"\ntarget=\"_blank\">geneid</a> program developed by\n<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Roderic Guig&oacute;'s Computational Biology of RNA Processing</a>\ngroup which is part of the\n<a href=\"https://www.crg.eu/\" target=\"_blank\">Centre de Regulaci&oacute; Gen&ograve;mica</a>\n(CRG) in Barcelona, Catalunya, Spain.\n</p>\n\n<h2>Methods</h2>\n\n<p>\nGeneid is a program to predict genes in anonymous genomic sequences designed\nwith a hierarchical structure. In the first step, splice sites, start and stop\ncodons are predicted and scored along the sequence using Position Weight Arrays\n(PWAs). Next, exons are built from the sites. Exons are scored as the sum of the\nscores of the defining sites, plus the the log-likelihood ratio of a\nMarkov Model for coding DNA. Finally, from the set of predicted exons, the gene\nstructure is assembled, maximizing the sum of the scores of the assembled exons.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to <a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"blank\">Computational Biology of RNA Processing</a>\nfor providing these data.\n\n</p>\n\n<h2>References</h2>\n<p>\nBlanco E, Parra G, Guig&#243; R.\n<a href=\"https://currentprotocols.onlinelibrary.wiley.com/doi/abs/10.1002/0471250953.bi0403s18\"\ntarget=\"_blank\">Using geneid to identify genes</a>.\n<em>Curr Protoc Bioinformatics</em>. 2007 Jun;Chapter 4:Unit 4.3.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18428791\" target=\"_blank\">18428791</a>\n</p>\n\n\n<p>\nParra G, Blanco E, Guig&#243; R.\n<a href=\"https://genome.cshlp.org/content/10/4/511.long\" target=\"_blank\">\nGeneID in Drosophila</a>.\n<em>Genome Res</em>. 2000 Apr;10(4):511-5.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10779490\" target=\"_blank\">10779490</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC310871/\" target=\"_blank\">PMC310871</a>\n</p>\n"
+        }
       },
       "description": "Geneid Gene Predictions",
       "category": ["Genes and Gene Predictions"]
@@ -575,14 +609,16 @@
         }
       },
       "metadata": {
-        "color": "170,100,0",
-        "group": "genes",
-        "longLabel": "Genscan Gene Predictions",
-        "shortLabel": "Genscan Genes",
-        "track": "genscan",
-        "type": "genePred genscanPep",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\nThis track shows predictions from the\n<a href=\"http://hollywood.mit.edu/GENSCAN.html\" target=\"_blank\">Genscan</a> program\nwritten by <a href=\"https://www.genes.mit.edu/chris\" target=\"_blank\">Chris Burge</a>.\nThe predictions are based on transcriptional, translational and donor/acceptor\nsplicing signals as well as the length and compositional distributions of exons,\nintrons and intergenic regions.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThis track follows the display conventions for\n<a href=\"/goldenPath/help/hgTracksHelp.html#GeneDisplay\" target=\"_blank\">gene prediction\ntracks</a>.\n</p>\n\n<p>\nThe track description page offers the following filter and configuration\noptions:\n<ul>\n<li><b>Color track by codons:</b> Select the <em>genomic codons</em> option\nto color and label each codon in a zoomed-in display to facilitate validation\nand comparison of gene predictions. Go to the\n<a HREF=\"/goldenPath/help/hgCodonColoring.html\" target=\"_blank\">\nColoring Gene Predictions and Annotations by Codon</a> page for more\ninformation about this feature.</li>\n</ul>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the Genscan program and the model that underlies it,\nrefer to Burge and Karlin (1997) in the References section below.\nThe splice site models used are described in more detail in Burge (1998)\nbelow.\n</p>\n\n<h2>Credits</h2>\n\nThanks to Chris Burge for providing the Genscan program.\n\n<h2>References</h2>\n\n<p>\nBurge C.\nModeling Dependencies in Pre-mRNA Splicing Signals.\nIn: Salzberg S, Searls D, Kasif S, editors.\n<a href=\"https://www.elsevier.com/books/computational-methods-in-molecular-biology/salzberg/978-0-444-82875-0\"\ntarget=\"_blank\">Computational Methods in Molecular Biology</a>.\nAmsterdam: Elsevier Science; 1998. p. 127-163.\n</p>\n\n<p>\nBurge C, Karlin S.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0022283697909517\" target=\"_blank\">\nPrediction of complete gene structures in human genomic DNA</a>.\n<em>J. Mol. Biol.</em> 1997 Apr 25;268(1):78-94.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9149143\" target=\"_blank\">9149143</a>\n</p>\n"
+        "ucsc": {
+          "color": "170,100,0",
+          "group": "genes",
+          "longLabel": "Genscan Gene Predictions",
+          "shortLabel": "Genscan Genes",
+          "track": "genscan",
+          "type": "genePred genscanPep",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows predictions from the\n<a href=\"http://hollywood.mit.edu/GENSCAN.html\" target=\"_blank\">Genscan</a> program\nwritten by <a href=\"https://www.genes.mit.edu/chris\" target=\"_blank\">Chris Burge</a>.\nThe predictions are based on transcriptional, translational and donor/acceptor\nsplicing signals as well as the length and compositional distributions of exons,\nintrons and intergenic regions.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThis track follows the display conventions for\n<a href=\"/goldenPath/help/hgTracksHelp.html#GeneDisplay\" target=\"_blank\">gene prediction\ntracks</a>.\n</p>\n\n<p>\nThe track description page offers the following filter and configuration\noptions:\n<ul>\n<li><b>Color track by codons:</b> Select the <em>genomic codons</em> option\nto color and label each codon in a zoomed-in display to facilitate validation\nand comparison of gene predictions. Go to the\n<a HREF=\"/goldenPath/help/hgCodonColoring.html\" target=\"_blank\">\nColoring Gene Predictions and Annotations by Codon</a> page for more\ninformation about this feature.</li>\n</ul>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the Genscan program and the model that underlies it,\nrefer to Burge and Karlin (1997) in the References section below.\nThe splice site models used are described in more detail in Burge (1998)\nbelow.\n</p>\n\n<h2>Credits</h2>\n\nThanks to Chris Burge for providing the Genscan program.\n\n<h2>References</h2>\n\n<p>\nBurge C.\nModeling Dependencies in Pre-mRNA Splicing Signals.\nIn: Salzberg S, Searls D, Kasif S, editors.\n<a href=\"https://www.elsevier.com/books/computational-methods-in-molecular-biology/salzberg/978-0-444-82875-0\"\ntarget=\"_blank\">Computational Methods in Molecular Biology</a>.\nAmsterdam: Elsevier Science; 1998. p. 127-163.\n</p>\n\n<p>\nBurge C, Karlin S.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0022283697909517\" target=\"_blank\">\nPrediction of complete gene structures in human genomic DNA</a>.\n<em>J. Mol. Biol.</em> 1997 Apr 25;268(1):78-94.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9149143\" target=\"_blank\">9149143</a>\n</p>\n"
+        }
       },
       "description": "Genscan Gene Predictions",
       "category": ["Genes and Gene Predictions"]
@@ -605,17 +641,19 @@
         }
       },
       "metadata": {
-        "baseColorUseCds": "given",
-        "color": "12,12,120",
-        "group": "genes",
-        "idXref": "hgFixed.refLink mrnaAcc name",
-        "longLabel": "RefSeq Genes",
-        "priority": "1",
-        "shortLabel": "RefSeq Genes",
-        "track": "refGene",
-        "type": "genePred refPep refMrna",
-        "visibility": "dense",
-        "html": "<h2>Description</h2>\n\n<p>\nThe RefSeq Genes track shows known chicken protein-coding and\nnon-protein-coding genes taken from the NCBI RNA reference sequences\ncollection (RefSeq). The data underlying this track are updated weekly.</p>\n\n<p>\nPlease visit the <a href=\"https://www.ncbi.nlm.nih.gov/projects/RefSeq/update.cgi\"\ntarget=\"_blank\">Feedback for Gene and Reference Sequences (RefSeq)</a> page to\nmake suggestions, submit additions and corrections, or ask for help concerning\nRefSeq records.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThis track follows the display conventions for\n<a href=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\" target=\"_blank\">\ngene prediction tracks</a>.\nThe color shading indicates the level of review the RefSeq record has\nundergone: predicted (light), provisional (medium), reviewed (dark).\n</p>\n\n<p>\nThe item labels and display colors of features within this track can be\nconfigured through the controls at the top of the track description page.\n<ul>\n<li><b>Label:</b> By default, items are labeled by gene name. Click the\nappropriate Label option to display the accession name instead of the gene\nname, show both the gene and accession names, or turn off the label\ncompletely.</li>\n<li><b>Codon coloring:</b> This track contains an optional codon coloring\nfeature that allows users to quickly validate and compare gene predictions.\nTo display codon colors, select the <em>genomic codons</em> option from the\n<em>Color track by codons</em> pull-down menu. For more information about this\nfeature, go to the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\" TARGET=\"_blank\">\nColoring Gene Predictions and Annotations by Codon</a> page.</li>\n<li><b>Hide non-coding genes:</b> By default, both the protein-coding and\nnon-protein-coding genes are displayed.  If you wish to see only the coding\ngenes, click this box.</li>\n</ul>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nRefSeq RNAs were aligned against the chicken genome using BLAT.  Those\nwith an alignment of less than 15% were discarded. When a single RNA\naligned in multiple places, the alignment having the highest base identity\nwas identified.  Only alignments having a base identity level within 0.1% of\nthe best and at least 96% base identity with the genomic sequence were kept.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThis track was produced at UCSC from RNA sequence data generated by scientists\nworldwide and curated by the NCBI\n<a href=\"https://www.ncbi.nlm.nih.gov/refseq/\" target=\"_blank\">RefSeq project</a>.\n</p>\n\n<h2>References</h2>\n\n<p>\nKent WJ.\n<a href=\"https://genome.cshlp.org/content/12/4/656.full\" target=\"_blank\">\nBLAT - the BLAST-like alignment tool</a>.\n<em>Genome Res.</em> 2002 Apr;12(4):656-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11932250\" target=\"_blank\">11932250</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC187518/\" target=\"_blank\">PMC187518</a>\n</p>\n\n<p>\nPruitt KD, Brown GR, Hiatt SM, Thibaud-Nissen F, Astashyn A, Ermolaeva O, Farrell CM, Hart J,\nLandrum MJ, McGarvey KM <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/42/D1/D756/1051112/RefSeq-an-update-on-mammalian-reference-sequences\" target=\"_blank\">\nRefSeq: an update on mammalian reference sequences</a>.\n<em>Nucleic Acids Res</em>. 2014 Jan;42(Database issue):D756-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24259432\" target=\"_blank\">24259432</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965018/\" target=\"_blank\">PMC3965018</a>\n</p>\n\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-RefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins</a>.\n<em>Nucleic Acids Res.</em> 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+        "ucsc": {
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "idXref": "hgFixed.refLink mrnaAcc name",
+          "longLabel": "RefSeq Genes",
+          "priority": "1",
+          "shortLabel": "RefSeq Genes",
+          "track": "refGene",
+          "type": "genePred refPep refMrna",
+          "visibility": "dense",
+          "html": "<h2>Description</h2>\n\n<p>\nThe RefSeq Genes track shows known chicken protein-coding and\nnon-protein-coding genes taken from the NCBI RNA reference sequences\ncollection (RefSeq). The data underlying this track are updated weekly.</p>\n\n<p>\nPlease visit the <a href=\"https://www.ncbi.nlm.nih.gov/projects/RefSeq/update.cgi\"\ntarget=\"_blank\">Feedback for Gene and Reference Sequences (RefSeq)</a> page to\nmake suggestions, submit additions and corrections, or ask for help concerning\nRefSeq records.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThis track follows the display conventions for\n<a href=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\" target=\"_blank\">\ngene prediction tracks</a>.\nThe color shading indicates the level of review the RefSeq record has\nundergone: predicted (light), provisional (medium), reviewed (dark).\n</p>\n\n<p>\nThe item labels and display colors of features within this track can be\nconfigured through the controls at the top of the track description page.\n<ul>\n<li><b>Label:</b> By default, items are labeled by gene name. Click the\nappropriate Label option to display the accession name instead of the gene\nname, show both the gene and accession names, or turn off the label\ncompletely.</li>\n<li><b>Codon coloring:</b> This track contains an optional codon coloring\nfeature that allows users to quickly validate and compare gene predictions.\nTo display codon colors, select the <em>genomic codons</em> option from the\n<em>Color track by codons</em> pull-down menu. For more information about this\nfeature, go to the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\" TARGET=\"_blank\">\nColoring Gene Predictions and Annotations by Codon</a> page.</li>\n<li><b>Hide non-coding genes:</b> By default, both the protein-coding and\nnon-protein-coding genes are displayed.  If you wish to see only the coding\ngenes, click this box.</li>\n</ul>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nRefSeq RNAs were aligned against the chicken genome using BLAT.  Those\nwith an alignment of less than 15% were discarded. When a single RNA\naligned in multiple places, the alignment having the highest base identity\nwas identified.  Only alignments having a base identity level within 0.1% of\nthe best and at least 96% base identity with the genomic sequence were kept.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThis track was produced at UCSC from RNA sequence data generated by scientists\nworldwide and curated by the NCBI\n<a href=\"https://www.ncbi.nlm.nih.gov/refseq/\" target=\"_blank\">RefSeq project</a>.\n</p>\n\n<h2>References</h2>\n\n<p>\nKent WJ.\n<a href=\"https://genome.cshlp.org/content/12/4/656.full\" target=\"_blank\">\nBLAT - the BLAST-like alignment tool</a>.\n<em>Genome Res.</em> 2002 Apr;12(4):656-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11932250\" target=\"_blank\">11932250</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC187518/\" target=\"_blank\">PMC187518</a>\n</p>\n\n<p>\nPruitt KD, Brown GR, Hiatt SM, Thibaud-Nissen F, Astashyn A, Ermolaeva O, Farrell CM, Hart J,\nLandrum MJ, McGarvey KM <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/42/D1/D756/1051112/RefSeq-an-update-on-mammalian-reference-sequences\" target=\"_blank\">\nRefSeq: an update on mammalian reference sequences</a>.\n<em>Nucleic Acids Res</em>. 2014 Jan;42(Database issue):D756-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24259432\" target=\"_blank\">24259432</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965018/\" target=\"_blank\">PMC3965018</a>\n</p>\n\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-RefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins</a>.\n<em>Nucleic Acids Res.</em> 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+        }
       },
       "description": "RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
@@ -638,14 +676,16 @@
         }
       },
       "metadata": {
-        "color": "0,90,100",
-        "group": "genes",
-        "longLabel": "SGP Gene Predictions Using Chicken/Human/Cow Homology",
-        "shortLabel": "SGP Genes",
-        "track": "sgpGene",
-        "type": "genePred sgpPep",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\nThis track shows gene predictions from the\n<a href=\"https://genome.crg.cat/services/sgp2/\" target=\"_blank\">SGP2</a>\nhomology-based gene prediction program developed by Roderic Guig&oacute;'s\n&quot;<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Computational Biology of RNA Processing</a>&quot;\ngroup, which is part of the <a href=\"https://www.crg.eu/\"\ntarget=\"_blank\">Centre de Regulaci&oacute; Gen&ograve;mica</a>\n(CRG) in Barcelona, Catalunya, Spain. To predict\ngenes in a genomic query, SGP2 combines geneid predictions with tblastx\ncomparisons of the genome of the target species against genomic sequences\nof other species (reference genomes) deemed to be at an appropriate\nevolutionary distance from the target.\n\n<h2>Credits</h2>\n\nThanks to the\n&quot;<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Computational Biology of RNA Processing</a>&quot;\ngroup for providing these data.\n"
+        "ucsc": {
+          "color": "0,90,100",
+          "group": "genes",
+          "longLabel": "SGP Gene Predictions Using Chicken/Human/Cow Homology",
+          "shortLabel": "SGP Genes",
+          "track": "sgpGene",
+          "type": "genePred sgpPep",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\nThis track shows gene predictions from the\n<a href=\"https://genome.crg.cat/services/sgp2/\" target=\"_blank\">SGP2</a>\nhomology-based gene prediction program developed by Roderic Guig&oacute;'s\n&quot;<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Computational Biology of RNA Processing</a>&quot;\ngroup, which is part of the <a href=\"https://www.crg.eu/\"\ntarget=\"_blank\">Centre de Regulaci&oacute; Gen&ograve;mica</a>\n(CRG) in Barcelona, Catalunya, Spain. To predict\ngenes in a genomic query, SGP2 combines geneid predictions with tblastx\ncomparisons of the genome of the target species against genomic sequences\nof other species (reference genomes) deemed to be at an appropriate\nevolutionary distance from the target.\n\n<h2>Credits</h2>\n\nThanks to the\n&quot;<a href=\"https://www.crg.eu/roderic_guigo\"\ntarget=\"_blank\">Computational Biology of RNA Processing</a>&quot;\ngroup for providing these data.\n"
+        }
       },
       "description": "SGP Gene Predictions Using Chicken/Human/Cow Homology",
       "category": ["Genes and Gene Predictions"]
@@ -668,14 +708,16 @@
         }
       },
       "metadata": {
-        "color": "0,100,100",
-        "group": "genes",
-        "longLabel": "Twinscan Gene Predictions Using Mouse/Human Homology",
-        "shortLabel": "Twinscan",
-        "track": "twinscan",
-        "type": "genePred twinscanPep",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThe Twinscan program predicts genes in a manner similar to Genscan, except \nthat Twinscan takes advantage of genome comparisons to improve gene prediction\naccuracy. More information and a web server can be found at\n<A HREF=\"https://mblab.wustl.edu/\" \nTARGET=_blank>http://mblab.wustl.edu/</A>.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nThis track follows the display conventions for \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\">gene prediction \ntracks</A>. </P>\n<P>\nThe track description page offers the following filter and configuration\noptions:\n<UL>\n<LI><B>Color track by codons:</B> Select the <em>genomic codons</em> option\nto color and label each codon in a zoomed-in display to facilitate validation \nand comparison of gene predictions. Click the \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\">Help on codon coloring</A>\nlink on the track description page for more information about this feature.\n</UL></P>\n\n<H2>Methods</H2>\n<P>\nThe Twinscan algorithm is described in Korf, I. <em>et al.</em> (2001) in the\nReferences section below.</P>\n\n<H2>Credits</H2>\n<P>\nThanks to <A HREF=\"https://mblab.wustl.edu/\" \nTARGET=_blank>Michael Brent's Computational Genomics Group</A> at Washington \nUniversity St. Louis for providing these data.</P>\n\n<H2>References</H2>\n<P>\nKorf I, Flicek P, Duan D, Brent MR.\n<A HREF=\"https://academic.oup.com/bioinformatics/article/17/suppl_1/S140/261903/Integrating-genomic-homology-into-gene-structure\"\nTARGET=_blank>Integrating genomic homology into gene structure prediction</A>.\n<em>Bioinformatics</em>. 2001;17 Suppl 1:S140-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11473003\" target=\"_blank\">11473003</a>\n</p>\n"
+        "ucsc": {
+          "color": "0,100,100",
+          "group": "genes",
+          "longLabel": "Twinscan Gene Predictions Using Mouse/Human Homology",
+          "shortLabel": "Twinscan",
+          "track": "twinscan",
+          "type": "genePred twinscanPep",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThe Twinscan program predicts genes in a manner similar to Genscan, except \nthat Twinscan takes advantage of genome comparisons to improve gene prediction\naccuracy. More information and a web server can be found at\n<A HREF=\"https://mblab.wustl.edu/\" \nTARGET=_blank>http://mblab.wustl.edu/</A>.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nThis track follows the display conventions for \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\">gene prediction \ntracks</A>. </P>\n<P>\nThe track description page offers the following filter and configuration\noptions:\n<UL>\n<LI><B>Color track by codons:</B> Select the <em>genomic codons</em> option\nto color and label each codon in a zoomed-in display to facilitate validation \nand comparison of gene predictions. Click the \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\">Help on codon coloring</A>\nlink on the track description page for more information about this feature.\n</UL></P>\n\n<H2>Methods</H2>\n<P>\nThe Twinscan algorithm is described in Korf, I. <em>et al.</em> (2001) in the\nReferences section below.</P>\n\n<H2>Credits</H2>\n<P>\nThanks to <A HREF=\"https://mblab.wustl.edu/\" \nTARGET=_blank>Michael Brent's Computational Genomics Group</A> at Washington \nUniversity St. Louis for providing these data.</P>\n\n<H2>References</H2>\n<P>\nKorf I, Flicek P, Duan D, Brent MR.\n<A HREF=\"https://academic.oup.com/bioinformatics/article/17/suppl_1/S140/261903/Integrating-genomic-homology-into-gene-structure\"\nTARGET=_blank>Integrating genomic homology into gene structure prediction</A>.\n<em>Bioinformatics</em>. 2001;17 Suppl 1:S140-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11473003\" target=\"_blank\">11473003</a>\n</p>\n"
+        }
       },
       "description": "Twinscan Gene Predictions Using Mouse/Human Homology",
       "category": ["Genes and Gene Predictions"]
@@ -698,14 +740,16 @@
         }
       },
       "metadata": {
-        "color": "12,12,120",
-        "group": "genes",
-        "longLabel": "Non-Chicken RefSeq Genes",
-        "shortLabel": "Other RefSeq",
-        "track": "xenoRefGene",
-        "type": "genePred xenoRefPep xenoRefMrna",
-        "visibility": "dense",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows known protein-coding and non-protein-coding genes \nfor organisms other than chicken, taken from the NCBI RNA reference \nsequences collection (RefSeq). The data underlying this track are \nupdated weekly.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nThis track follows the display conventions for \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\" TARGET=_blank>gene prediction \ntracks</A>.\nThe color shading indicates the level of review the RefSeq record has \nundergone: predicted (light), provisional (medium), reviewed (dark).</P>\n<P>\nThe item labels and display colors of features within this track can be\nconfigured through the controls at the top of the track description page. \n<UL>\n<LI><B>Label:</B> By default, items are labeled by gene name. Click the \nappropriate Label option to display the accession name instead of the gene\nname, show both the gene and accession names, or turn off the label \ncompletely.\n<LI><B>Codon coloring:</B> This track contains an optional codon coloring \nfeature that allows users to quickly validate and compare gene predictions.\nTo display codon colors, select the <em>genomic codons</em> option from the\n<em>Color track by codons</em> pull-down menu. For more information about\nthis feature, go to the\n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\" TARGET=_blank>\nColoring Gene Predictions and Annotations by Codon</A> page.\n<LI><B>Hide non-coding genes:</B> By default, both the protein-coding and\nnon-protein-coding genes are displayed.  If you wish to see only the coding\ngenes, click this box.\n</UL></P>\n\n<H2>Methods</H2>\n<P>\nThe RNAs were aligned against the chicken genome using blat; those\nwith an alignment of less than 15% were discarded. When a single RNA aligned \nin multiple places, the alignment having the highest base identity was \nidentified.  Only alignments having a base identity level within 0.5% of \nthe best and at least 25% base identity with the genomic sequence were kept.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC from RNA sequence data\ngenerated by scientists worldwide and curated by the \nNCBI <A HREF=\"https://www.ncbi.nlm.nih.gov/refseq/\" \nTARGET=_blank>RefSeq project</A>.  </P>\n\n<H2>References</H2>\n<p>\nKent WJ.\n<a href=\"https://genome.cshlp.org/content/12/4/656.full\" target=\"_blank\">\nBLAT--the BLAST-like alignment tool</a>.\n<em>Genome Res</em>. 2002 Apr;12(4):656-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11932250\" target=\"_blank\">11932250</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC187518/\" target=\"_blank\">PMC187518</a>\n</p>\n\n<p>\nPruitt KD, Brown GR, Hiatt SM, Thibaud-Nissen F, Astashyn A, Ermolaeva O, Farrell CM, Hart J,\nLandrum MJ, McGarvey KM <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/42/D1/D756/1051112/RefSeq-an-update-on-mammalian-reference-sequences\" target=\"_blank\">\nRefSeq: an update on mammalian reference sequences</a>.\n<em>Nucleic Acids Res</em>. 2014 Jan;42(Database issue):D756-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24259432\" target=\"_blank\">24259432</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965018/\" target=\"_blank\">PMC3965018</a>\n</p>\n\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-RefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins</a>.\n<em>Nucleic Acids Res.</em> 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-Chicken RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows known protein-coding and non-protein-coding genes \nfor organisms other than chicken, taken from the NCBI RNA reference \nsequences collection (RefSeq). The data underlying this track are \nupdated weekly.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nThis track follows the display conventions for \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\" TARGET=_blank>gene prediction \ntracks</A>.\nThe color shading indicates the level of review the RefSeq record has \nundergone: predicted (light), provisional (medium), reviewed (dark).</P>\n<P>\nThe item labels and display colors of features within this track can be\nconfigured through the controls at the top of the track description page. \n<UL>\n<LI><B>Label:</B> By default, items are labeled by gene name. Click the \nappropriate Label option to display the accession name instead of the gene\nname, show both the gene and accession names, or turn off the label \ncompletely.\n<LI><B>Codon coloring:</B> This track contains an optional codon coloring \nfeature that allows users to quickly validate and compare gene predictions.\nTo display codon colors, select the <em>genomic codons</em> option from the\n<em>Color track by codons</em> pull-down menu. For more information about\nthis feature, go to the\n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\" TARGET=_blank>\nColoring Gene Predictions and Annotations by Codon</A> page.\n<LI><B>Hide non-coding genes:</B> By default, both the protein-coding and\nnon-protein-coding genes are displayed.  If you wish to see only the coding\ngenes, click this box.\n</UL></P>\n\n<H2>Methods</H2>\n<P>\nThe RNAs were aligned against the chicken genome using blat; those\nwith an alignment of less than 15% were discarded. When a single RNA aligned \nin multiple places, the alignment having the highest base identity was \nidentified.  Only alignments having a base identity level within 0.5% of \nthe best and at least 25% base identity with the genomic sequence were kept.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC from RNA sequence data\ngenerated by scientists worldwide and curated by the \nNCBI <A HREF=\"https://www.ncbi.nlm.nih.gov/refseq/\" \nTARGET=_blank>RefSeq project</A>.  </P>\n\n<H2>References</H2>\n<p>\nKent WJ.\n<a href=\"https://genome.cshlp.org/content/12/4/656.full\" target=\"_blank\">\nBLAT--the BLAST-like alignment tool</a>.\n<em>Genome Res</em>. 2002 Apr;12(4):656-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11932250\" target=\"_blank\">11932250</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC187518/\" target=\"_blank\">PMC187518</a>\n</p>\n\n<p>\nPruitt KD, Brown GR, Hiatt SM, Thibaud-Nissen F, Astashyn A, Ermolaeva O, Farrell CM, Hart J,\nLandrum MJ, McGarvey KM <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/42/D1/D756/1051112/RefSeq-an-update-on-mammalian-reference-sequences\" target=\"_blank\">\nRefSeq: an update on mammalian reference sequences</a>.\n<em>Nucleic Acids Res</em>. 2014 Jan;42(Database issue):D756-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24259432\" target=\"_blank\">24259432</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965018/\" target=\"_blank\">PMC3965018</a>\n</p>\n\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-RefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins</a>.\n<em>Nucleic Acids Res.</em> 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+        }
       },
       "description": "Non-Chicken RefSeq Genes",
       "category": ["Genes and Gene Predictions"]

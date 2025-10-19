@@ -37,7 +37,10 @@ const specializedTrackIds = new Set([
 
 function _getTrackModifications<
   T extends {
-    metadata?: Record<string, unknown>
+    metadata?: {
+      ucsc?: Record<string, unknown>
+      addedByJBrowseTeam?: boolean
+    }
     category?: string[]
     assemblyNames: string[]
     name: string
@@ -45,6 +48,7 @@ function _getTrackModifications<
 >(track: T): T | undefined {
   // Delete tracks with "Primate Chain/Net" as the first category
   const { name, assemblyNames, metadata } = track
+  const { ucsc } = metadata || {}
   if (assemblyNames[0] === 'hs1') {
     const cat0 = name
     if (
@@ -62,16 +66,16 @@ function _getTrackModifications<
     } else {
       return track
     }
-  } else if (metadata) {
-    const trackType = `${metadata.type}`.split(' ')[0]!
-    const trackParent = `${metadata.parent}`.split(' ')[0]!
-    const trackId = `${metadata.track}`
+  } else if (ucsc) {
+    const trackType = `${ucsc.type}`.split(' ')[0]!
+    const trackParent = `${ucsc.parent}`.split(' ')[0]!
+    const trackId = `${ucsc.track}`
     const flag =
       specializedTypes.has(trackType) ||
       specializedParents.has(trackParent) ||
       specializedTrackIds.has(trackId) ||
-      !!metadata.barChartBars ||
-      !!metadata.barChartCategoryUrl
+      !!ucsc.barChartBars ||
+      !!ucsc.barChartCategoryUrl
 
     if (flag) {
       return undefined
@@ -88,14 +92,22 @@ function _getTrackModifications<
  */
 export function getTrackModifications<
   T extends {
-    metadata?: Record<string, unknown>
+    metadata?: {
+      ucsc?: Record<string, unknown>
+      addedByJBrowseTeam?: boolean
+    }
+    name: string
     category?: string[]
     assemblyNames: string[]
   },
 >(track: T): T | undefined {
   const modifiedTrack = _getTrackModifications(track)
   if (modifiedTrack?.category) {
-    return { ...modifiedTrack, category: [...new Set(modifiedTrack.category)] }
+    return {
+      ...modifiedTrack,
+      category: [...new Set(modifiedTrack.category)],
+    }
+  } else {
+    return modifiedTrack
   }
-  return modifiedTrack
 }

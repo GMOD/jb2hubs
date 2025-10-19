@@ -4,7 +4,10 @@ export interface JBrowseConfig {
     category?: string[]
     assemblyNames: string[]
     name: string
-    metadata?: Record<string, unknown>
+    metadata?: {
+      addedByJBrowseTeam?: boolean
+      ucsc?: Record<string, unknown>
+    }
     trackId: string
     adapter: Record<string, unknown>
     // Add other common track properties if needed

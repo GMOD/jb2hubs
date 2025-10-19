@@ -46,25 +46,27 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/evaSnp6.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/bbi/evaSnp6.bb",
-        "filterLabel.itemRgb": "General variant types by color grouping",
-        "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-        "filterLabel.varClass": "Variant class from EVA SO term",
-        "filterType.ucscClass": "multipleListOnlyOr",
-        "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-        "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-        "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-        "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the S. cerevisiae sacCer3 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID\nseparated by spaces describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not then \nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is a deletion of an A\n       maybe be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is an insertion of a T may \n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style\nand the variants passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism the NCBI RefSeq curated models were used when available, \nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11 the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp7.txt\">\nEVA Release 7 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>,\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g. <tt>evaSnp7.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt> which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/evaSnp7.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq as well as ensembl gene models. \n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
-        "itemRgb": "on",
-        "longLabel": "Short Genetic Variants from European Variant Archive Release 6",
-        "maxItems": "1000000",
-        "maxWindowCoverage": "250000",
-        "mouseOver": "$ref>$alt $ucscClass $aaChange",
-        "parent": "evaSnpContainer off",
-        "shortLabel": "EVA SNP Release 6",
-        "track": "evaSnp6",
-        "type": "bigBed 9 +",
-        "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$"
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/bbi/evaSnp6.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the S. cerevisiae sacCer3 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID\nseparated by spaces describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not then \nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is a deletion of an A\n       maybe be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is an insertion of a T may \n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style\nand the variants passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism the NCBI RefSeq curated models were used when available, \nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11 the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp7.txt\">\nEVA Release 7 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>,\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g. <tt>evaSnp7.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt> which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/evaSnp7.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq as well as ensembl gene models. \n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 6",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "$ref>$alt $ucscClass $aaChange",
+          "parent": "evaSnpContainer off",
+          "shortLabel": "EVA SNP Release 6",
+          "track": "evaSnp6",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$"
+        }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
       "category": ["Variation and Repeats"]
@@ -79,26 +81,28 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/evaSnp7.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/bbi/evaSnp7.bb",
-        "filterLabel.itemRgb": "General variant types by color grouping",
-        "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
-        "filterLabel.varClass": "Variant class from EVA SO term",
-        "filterType.ucscClass": "multipleListOnlyOr",
-        "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
-        "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
-        "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-        "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the S. cerevisiae sacCer3 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID\nseparated by spaces describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not then \nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is a deletion of an A\n       maybe be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is an insertion of a T may \n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style\nand the variants passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism the NCBI RefSeq curated models were used when available, \nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11 the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp7.txt\">\nEVA Release 7 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>,\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g. <tt>evaSnp7.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt> which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/evaSnp7.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq as well as ensembl gene models. \n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
-        "itemRgb": "on",
-        "longLabel": "Short Genetic Variants from European Variant Archive Release 7",
-        "maxItems": "1000000",
-        "maxWindowCoverage": "250000",
-        "mouseOver": "$ref>$alt $ucscClass $aaChange",
-        "parent": "evaSnpContainer on",
-        "shortLabel": "EVA SNP Release 7",
-        "track": "evaSnp7",
-        "type": "bigBed 9 +",
-        "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
-        "visibility": "dense"
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/bbi/evaSnp7.bb",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
+          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the S. cerevisiae sacCer3 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID\nseparated by spaces describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not then \nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is a deletion of an A\n       maybe be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g. a variant that is an insertion of a T may \n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style\nand the variants passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism the NCBI RefSeq curated models were used when available, \nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11 the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp7.txt\">\nEVA Release 7 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>,\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g. <tt>evaSnp7.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt> which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/bbi/evaSnp7.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq as well as ensembl gene models. \n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
+          "itemRgb": "on",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 7",
+          "maxItems": "1000000",
+          "maxWindowCoverage": "250000",
+          "mouseOver": "$ref>$alt $ucscClass $aaChange",
+          "parent": "evaSnpContainer on",
+          "shortLabel": "EVA SNP Release 7",
+          "track": "evaSnp7",
+          "type": "bigBed 9 +",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "visibility": "dense"
+        }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
       "category": ["Variation and Repeats"]
@@ -113,18 +117,20 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipLocSignal.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocSignal.bb",
-        "color": "255,0,150",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "itemRgb": "off",
-        "longLabel": "UniProt Signal Peptides",
-        "parent": "uniprot",
-        "priority": "3",
-        "shortLabel": "Signal Peptide",
-        "track": "unipLocSignal",
-        "type": "bigBed 12 +",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocSignal.bb",
+          "color": "255,0,150",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Signal Peptides",
+          "parent": "uniprot",
+          "priority": "3",
+          "shortLabel": "Signal Peptide",
+          "track": "unipLocSignal",
+          "type": "bigBed 12 +",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Signal Peptides",
       "category": ["Genes and Gene Predictions"]
@@ -139,18 +145,20 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipLocExtra.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocExtra.bb",
-        "color": "0,150,255",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "itemRgb": "off",
-        "longLabel": "UniProt Extracellular Domain",
-        "parent": "uniprot",
-        "priority": "4",
-        "shortLabel": "Extracellular",
-        "track": "unipLocExtra",
-        "type": "bigBed 12 +",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocExtra.bb",
+          "color": "0,150,255",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Extracellular Domain",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Extracellular",
+          "track": "unipLocExtra",
+          "type": "bigBed 12 +",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Extracellular Domain",
       "category": ["Genes and Gene Predictions"]
@@ -165,17 +173,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipInterest.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipInterest.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "itemRgb": "off",
-        "longLabel": "UniProt Regions of Interest",
-        "parent": "uniprot",
-        "priority": "4",
-        "shortLabel": "Interest",
-        "track": "unipInterest",
-        "type": "bigBed 12 +",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipInterest.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Regions of Interest",
+          "parent": "uniprot",
+          "priority": "4",
+          "shortLabel": "Interest",
+          "track": "unipInterest",
+          "type": "bigBed 12 +",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Regions of Interest",
       "category": ["Genes and Gene Predictions"]
@@ -190,20 +200,22 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqOther.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqOther.bb",
-        "color": "32,32,32",
-        "labelFields": "gene",
-        "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-        "parent": "refSeqComposite off",
-        "priority": "4",
-        "searchIndex": "name",
-        "searchTrix": "/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqOther.ix",
-        "shortLabel": "RefSeq Other",
-        "skipEmptyFields": "on",
-        "track": "ncbiRefSeqOther",
-        "type": "bigBed 12 +",
-        "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
+          "html": ""
+        }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
       "category": ["Genes and Gene Predictions"]
@@ -218,18 +230,20 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipLocTransMemb.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocTransMemb.bb",
-        "color": "0,150,0",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "itemRgb": "off",
-        "longLabel": "UniProt Transmembrane Domains",
-        "parent": "uniprot",
-        "priority": "5",
-        "shortLabel": "Transmembrane",
-        "track": "unipLocTransMemb",
-        "type": "bigBed 12 +",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocTransMemb.bb",
+          "color": "0,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Transmembrane Domains",
+          "parent": "uniprot",
+          "priority": "5",
+          "shortLabel": "Transmembrane",
+          "track": "unipLocTransMemb",
+          "type": "bigBed 12 +",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Transmembrane Domains",
       "category": ["Genes and Gene Predictions"]
@@ -244,18 +258,20 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipLocCytopl.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocCytopl.bb",
-        "color": "255,150,0",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "itemRgb": "off",
-        "longLabel": "UniProt Cytoplasmic Domains",
-        "parent": "uniprot",
-        "priority": "6",
-        "shortLabel": "Cytoplasmic",
-        "track": "unipLocCytopl",
-        "type": "bigBed 12 +",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipLocCytopl.bb",
+          "color": "255,150,0",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "itemRgb": "off",
+          "longLabel": "UniProt Cytoplasmic Domains",
+          "parent": "uniprot",
+          "priority": "6",
+          "shortLabel": "Cytoplasmic",
+          "track": "unipLocCytopl",
+          "type": "bigBed 12 +",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Cytoplasmic Domains",
       "category": ["Genes and Gene Predictions"]
@@ -270,16 +286,18 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
-        "itemRgb": "on",
-        "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-        "parent": "refSeqComposite off",
-        "priority": "6",
-        "shortLabel": "RefSeq Diffs",
-        "skipEmptyFields": "on",
-        "track": "ncbiRefSeqGenomicDiff",
-        "type": "bigBed 9 +",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "refSeqComposite off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +",
+          "html": ""
+        }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
       "category": ["Genes and Gene Predictions"]
@@ -294,17 +312,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipChain.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipChain.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
-        "parent": "uniprot",
-        "priority": "7",
-        "shortLabel": "Chains",
-        "track": "unipChain",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#ptm_processing\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipChain.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "parent": "uniprot",
+          "priority": "7",
+          "shortLabel": "Chains",
+          "track": "unipChain",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#ptm_processing\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
       "category": ["Genes and Gene Predictions"]
@@ -319,16 +339,18 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipDisulfBond.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipDisulfBond.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Disulfide Bonds",
-        "parent": "uniprot",
-        "priority": "8",
-        "shortLabel": "Disulf. Bonds",
-        "track": "unipDisulfBond",
-        "type": "bigBed 12 +",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipDisulfBond.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Disulfide Bonds",
+          "parent": "uniprot",
+          "priority": "8",
+          "shortLabel": "Disulf. Bonds",
+          "track": "unipDisulfBond",
+          "type": "bigBed 12 +",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Disulfide Bonds",
       "category": ["Genes and Gene Predictions"]
@@ -343,17 +365,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipDomain.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipDomain.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Domains",
-        "parent": "uniprot",
-        "priority": "8",
-        "shortLabel": "Domains",
-        "track": "unipDomain",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipDomain.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Domains",
+          "parent": "uniprot",
+          "priority": "8",
+          "shortLabel": "Domains",
+          "track": "unipDomain",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Domains",
       "category": ["Genes and Gene Predictions"]
@@ -368,17 +392,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipModif.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipModif.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Amino Acid Modifications",
-        "parent": "uniprot",
-        "priority": "9",
-        "shortLabel": "AA Modifications",
-        "track": "unipModif",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipModif.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Amino Acid Modifications",
+          "parent": "uniprot",
+          "priority": "9",
+          "shortLabel": "AA Modifications",
+          "track": "unipModif",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#aaMod_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Amino Acid Modifications",
       "category": ["Genes and Gene Predictions"]
@@ -393,16 +419,18 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipMut.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipMut.bb",
-        "longLabel": "UniProt Amino Acid Mutations",
-        "parent": "uniprot",
-        "priority": "10",
-        "shortLabel": "Mutations",
-        "track": "unipMut",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#pathology_and_biotech\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\" variationId=\"http://www.uniprot.org/uniprot/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipMut.bb",
+          "longLabel": "UniProt Amino Acid Mutations",
+          "parent": "uniprot",
+          "priority": "10",
+          "shortLabel": "Mutations",
+          "track": "unipMut",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#pathology_and_biotech\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\" variationId=\"http://www.uniprot.org/uniprot/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Amino Acid Mutations",
       "category": ["Genes and Gene Predictions"]
@@ -417,17 +445,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipOther.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipOther.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Other Annotations",
-        "parent": "uniprot",
-        "priority": "11",
-        "shortLabel": "Other Annot.",
-        "track": "unipOther",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipOther.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Other Annotations",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Other Annot.",
+          "track": "unipOther",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Other Annotations",
       "category": ["Genes and Gene Predictions"]
@@ -442,18 +472,20 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipStruct.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipStruct.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "group": "genes",
-        "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
-        "parent": "uniprot",
-        "priority": "11",
-        "shortLabel": "Structure",
-        "track": "unipStruct",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "hide",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipStruct.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "group": "genes",
+          "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "parent": "uniprot",
+          "priority": "11",
+          "shortLabel": "Structure",
+          "track": "unipStruct",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#structure\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "hide",
+          "html": ""
+        }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
       "category": ["Genes and Gene Predictions"]
@@ -468,17 +500,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipRepeat.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipRepeat.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Repeats",
-        "parent": "uniprot",
-        "priority": "12",
-        "shortLabel": "Repeats",
-        "track": "unipRepeat",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipRepeat.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Repeats",
+          "parent": "uniprot",
+          "priority": "12",
+          "shortLabel": "Repeats",
+          "track": "unipRepeat",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#family_and_domains\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Repeats",
       "category": ["Genes and Gene Predictions"]
@@ -493,17 +527,19 @@
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer3/uniprot/unipConflict.bb"
       },
       "metadata": {
-        "bigDataUrl": "/gbdb/sacCer3/uniprot/unipConflict.bb",
-        "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
-        "longLabel": "UniProt Sequence Conflicts",
-        "parent": "uniprot off",
-        "priority": "13",
-        "shortLabel": "Seq. Conflicts",
-        "track": "unipConflict",
-        "type": "bigBed 12 +",
-        "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
-        "visibility": "dense",
-        "html": ""
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer3/uniprot/unipConflict.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Sequence Conflicts",
+          "parent": "uniprot off",
+          "priority": "13",
+          "shortLabel": "Seq. Conflicts",
+          "track": "unipConflict",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#Sequence_conflict_section\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
       },
       "description": "UniProt Sequence Conflicts",
       "category": ["Genes and Gene Predictions"]
@@ -526,14 +562,16 @@
         }
       },
       "metadata": {
-        "color": "110,110,110",
-        "html": "<h2>Description</h2>\n\n<p>\nThis track shows regions of the genome within 200 bp of transcribed regions and\nDNA sequences targetable by CRISPR RNA guides using the Cas9 enzyme\nfrom <em>S. pyogenes</em> (PAM: NGG).\nCRISPR target sites were annotated with predicted specificity\n(off-target effects) and predicted efficiency (on-target cleavage) by various\nalgorithms through the tool <a href=\"http://crispor.gi.ucsc.edu/\"\ntarget=\"_blank\">CRISPOR</a>.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThe track &quot;CRISPR Regions&quot; shows the regions of the genome where target\nsites were analyzed, i.e. within 200 bp of transcribed regions as annotated by\nEnsembl transcript models.</p>\n\n<p>\nThe track &quot;CRISPR Targets&quot; shows the target sites in these regions.\nThe target sequence of the guide is shown with a thick (exon) bar. The PAM\nmotif match (NGG) is shown with a thinner bar. Guides\nare colored to reflect both predicted specificity and efficiency. Specificity\nreflects the &quot;uniqueness&quot; of a 20mer sequence in the genome; the less unique a\nsequence is, the more likely it is to cleave other locations of the genome\n(off-target effects). Efficiency is the frequency of cleavage at the target\nsite (on-target efficiency).</p>\n\n<p>Shades of gray stand for sites that are hard to target specifically, as the\n20mer is not very unique in the genome:</p>\n<table class=\"stdTbl\" style=\"width:100%\">\n<tr><td style=\"width:50px; background-color:#969696\"></td><td>impossible to target: target site has at least one identical copy in the genome and was not scored</td></tr>\n<tr><td style=\"width:50px; background-color:#787878\"></td><td>hard to target: many similar sequences in the genome that alignment stopped, repeat?</td></tr>\n<tr><td style=\"width:50px; background-color:#505050\"></td><td>hard to target: target site was aligned but results in a low specificity score &lt;= 50 (see below)</td></tr>\n</table>\n\n<p>Colors highlight targets that are specific in the genome (MIT specificity &gt; 50) but have different predicted efficiencies:</p>\n<table class=\"stdTbl\" style=\"width:100%\">\n<tr><td style=\"width:50px; background-color:#000064\"></td><td>unable to calculate Doench/Fusi 2016 efficiency score</td></tr>\n<tr><td style=\"width:50px; background-color:#FF7070\"></td><td>low predicted cleavage: Doench/Fusi 2016 Efficiency percentile &lt;= 30</td></tr>\n<tr><td style=\"width:50px; background-color:#FFFF00\"></td><td>medium predicted cleavage: Doench/Fusi 2016 Efficiency percentile &gt; 30 and &lt; 55</td></tr>\n<tr><td style=\"width:50px; background-color:#00b300\"></td><td>high predicted cleavage: Doench/Fusi 2016 Efficiency &gt; 55</td></tr>\n</table><BR>\n\n<p>\nMouse-over a target site to show predicted specificity and efficiency scores:<br>\n<ol>\n<li>The MIT Specificity score summarizes all off-targets into a single number from\n0-100. The higher the number, the fewer off-target effects are expected. We\nrecommend guides with an MIT specificity &gt; 50.</li>\n<li>The efficiency score tries to predict if a guide leads to rather strong or\nweak cleavage. According to <a href=\"#References\">(Haeussler et al. 2016)</a>, the <a\nhref=\"https://portals.broadinstitute.org/gpp/public/analysis-tools/sgrna-design\">Doench\n2016 Efficiency score</a> should be used to select the guide with the highest\ncleavage efficiency when expressing guides from RNA PolIII Promoters such as\nU6. Scores are given as percentiles, e.g. &quot;70%&quot; means that 70% of mammalian\nguides have a score equal or lower than this guide. The raw score number is\nalso shown in parentheses after the percentile.</li>\n<li>The <a\nhref=\"https://www.crisprscan.org/\">Moreno-Mateos 2015 Efficiency\nscore</a> should be used instead of the Doench 2016 score when transcribing the\nguide in vitro with a T7 promoter, e.g. for injections in mouse, zebrafish or\nXenopus embryos. The Moreno-Mateos score is given in percentiles and the raw value in parentheses, see the note above.</li> </ol>\n</p>\n\n<p>Click onto features to show all scores and predicted off-targets with up to\nfour mismatches. The Out-of-Frame score by <a href=\"#References\">Bae et al. 2014</a>\nis correlated with\nthe probability that mutations induced by the guide RNA will disrupt the open\nreading frame. The authors recommend out-of-frame scores &gt; 66 to create\nknock-outs with a single guide efficiently.<p>\n\n<p>Off-target sites are sorted by the CFD (Cutting Frequency Determination) \nscore (<a href=\"https://www.nature.com/articles/nbt.3437\"\ntarget=\"_blank\">Doench et al. 2016</a>). \nThe higher the CFD score, the more likely there is off-target cleavage at that site. \nOff-targets with a CFD score &lt; 0.023 are not shown on this page, but are availble  when \nfollowing the link to the external CRISPOR tool. \nWhen compared against experimentally validated off-targets by \n<a href=\"#References\">Haeussler et al. 2016</a>, the large majority of predicted\noff-targets with CFD scores &lt; 0.023 were false-positives.</p>\n\n<h2>Methods</h2>\n\n<h3>Relationship between predictions and experimental data</h3>\n\n<p>\nLike most algorithms, the MIT specificity score is not always a perfect\npredictor of off-target effects. Despite low scores, many tested guides \ncaused few and/or weak off-target cleavage when tested with whole-genome assays\n(Figure 2 from <a href=\"#References\">Haeussler\net al. 2016</a>), as shown below, and the published data contains few data points\nwith high specificity scores. Overall though, the assays showed that the higher\nthe specificity score, the lower the off-target effects.</p>\n\n<img src=\"https://genome.ucsc.edu/images/crisprFig_mitScore.png\">\n\n<p>Similarly, efficiency scoring is not very accurate: guides with low\nscores can be efficient and vice versa. As a general rule, however, the higher\nthe score, the less likely that a guide is very inefficient. The\nfollowing histograms illustrate, for each type of score, how the share of\ninefficient guides drops with increasing efficiency scores:\n</p>\n\n<img src=\"https://genome.ucsc.edu/images/crisprFig_effScores.png\">\n\n<p>When reading this plot, keep in mind that both scores were evaluated on\ntheir own training data. Especially for the Moreno-Mateos score, the\nresults are too optimistic, due to overfitting. When evaluated on independent\ndatasets, the correlation of the prediction with other assays was around 25%\nlower, see <a href=\"#References\">Haeussler et al. 2016</a>. At the time of\nwriting, there is no independent dataset available yet to determine the\nMoreno-Mateos accuracy for each score percentile range.</p>\n\n<h3>Track methods</h3>\n<p>\nExons as predicted by Ensembl Gene models were used, extended by 200 basepairs\non each side, searched for the -NGG motif. Flanking 20mer guide sequences were\naligned to the genome with BWA and scored with MIT Specificity scores using the\ncommand-line version of crispor.org.  Non-unique guide sequences were skipped.\nFlanking sequences were extracted from the genome and input for Crispor\nefficiency scoring, available from the <a\nhref=\"http://crispor.gi.ucsc.edu/downloads/\">Crispor downloads page</a>, which\nincludes the Doench 2016, Moreno-Mateos 2015 and Bae\n2014 algorithms, among others.\n</p>\n\n<H2>Data Access</H2>\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>.\nFor automated analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/sacCer3/crisprRanges/\" target=\"_blank\">our download server</a>.\nThe files for this track are called <tt>crispr.bb</tt> and <tt>crisprDetails.tab</tt> and are located in the <a href=\"http://hgdownload.soe.ucsc.edu/gbdb/sacCer3/crispr/\">/gbdb/sacCer3/crispr</a> directory of our downloads server. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>,\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>. The tool\ncan also be used to obtain only features within a given range, e.g. <tt>bigBedToBed\nhttp://hgdownload.soe.ucsc.edu/gbdb/hg19/crisprRanges/crispr.bb -chrom=chr21\n-start=0 -end=10000000 stdout</tt> </p>\n\n<p>\nThe file crisprDetails.tab includes the details of the off-targets. The last\ncolumn of the bigBed file is the offset of the respective line in\ncrisprDetails.tab.  E.g. if the last column is 14227033723, then the following\ncommand will extract the line with the corresponding off-target details:\n<tt>curl -s -r 14227033723-14227043723 http://hgdownload.soe.ucsc.edu/gbdb/hg19/crispr/crisprDetails.tab | head -n1</tt>. The off-target details can currently not be joined with the table\nbrowser.</p>\n\n<p>\nThe file crisprDetails.tab is a tab-separated text file with two fields. The\nfirst field contains the numbers of off-targets for each mismatch, e.g. \"0,0,1,3,49\" \nmeans 0 off-targets at zero mismatches, 1 at two mismatches, 3 at three and 49\noff-targets at four mismatches. The second field is a pipe-separated list of\nsemicolon-separated tuples with the genome coordinates and the CFD score. E.g.\n\"chr10;123376795+;42|chr5;148353274-;39\" describes two off-targets, with the\nfirst at chr1:123376795 on the positive strand and a CFD score 0.42</p>\n\n<h2>Credits</h2>\n\n<p>\nTrack created by Maximilian Haeussler and Hiram Clawson, with helpful input from Jean-Paul Concordet (MNHN Paris) and Alberto Stolfi (NYU).\n</p>\n<a name=\"References\"></a>\n<h2>References</h2>\n\n<p>\nHaeussler M, Sch&#246;nig K, Eckert H, Eschstruth A, Miann&#233; J, Renaud JB, Schneider-Maunoury S,\nShkumatava A, Teboul L, Kent J <em>et al</em>.\n<a href=\"https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1012-2\"\ntarget=\"_blank\">Evaluation of off-target and on-target scoring algorithms and integration into the\nguide RNA selection tool CRISPOR</a>.\n<em>Genome Biol</em>. 2016 Jul 5;17(1):148.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27380939\" target=\"_blank\">27380939</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4934014/\" target=\"_blank\">PMC4934014</a>\n</p>\n\n<p>\nBae S, Kweon J, Kim HS, Kim JS.\n<a href=\"https://www.nature.com/nmeth/journal/v11/n7/full/nmeth.3015.html\" target=\"_blank\">\nMicrohomology-based choice of Cas9 nuclease target sites</a>.\n<em>Nat Methods</em>. 2014 Jul;11(7):705-6.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24972169\" target=\"_blank\">24972169</a>\n</p>\n\n<p>\nDoench JG, Fusi N, Sullender M, Hegde M, Vaimberg EW, Donovan KF, Smith I, Tothova Z, Wilen C,\nOrchard R <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nbt.3437\" target=\"_blank\">\nOptimized sgRNA design to maximize activity and minimize off-target effects of CRISPR-Cas9</a>.\n<em>Nat Biotechnol</em>. 2016 Feb;34(2):184-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26780180\" target=\"_blank\">26780180</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4744125/\" target=\"_blank\">PMC4744125</a>\n</p>\n\n<p>\nHsu PD, Scott DA, Weinstein JA, Ran FA, Konermann S, Agarwala V, Li Y, Fine EJ, Wu X, Shalem O\n<em>et al</em>.\n<a href=\"https://www.nature.com/nbt/journal/v31/n9/full/nbt.2647.html\" target=\"_blank\">\nDNA targeting specificity of RNA-guided Cas9 nucleases</a>.\n<em>Nat Biotechnol</em>. 2013 Sep;31(9):827-32.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/23873081\" target=\"_blank\">23873081</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3969858/\" target=\"_blank\">PMC3969858</a>\n</p>\n\n<p>\nMoreno-Mateos MA, Vejnar CE, Beaudoin JD, Fernandez JP, Mis EK, Khokha MK, Giraldez AJ.\n<a href=\"https://www.nature.com/nmeth/journal/v12/n10/full/nmeth.3543.html\" target=\"_blank\">\nCRISPRscan: designing highly efficient sgRNAs for CRISPR-Cas9 targeting in vivo</a>.\n<em>Nat Methods</em>. 2015 Oct;12(10):982-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26322839\" target=\"_blank\">26322839</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4589495/\" target=\"_blank\">PMC4589495</a>\n</p>\n",
-        "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
-        "parent": "crispr",
-        "shortLabel": "CRISPR Regions",
-        "track": "crisprRanges",
-        "type": "bed 3",
-        "visibility": "dense"
+        "ucsc": {
+          "color": "110,110,110",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows regions of the genome within 200 bp of transcribed regions and\nDNA sequences targetable by CRISPR RNA guides using the Cas9 enzyme\nfrom <em>S. pyogenes</em> (PAM: NGG).\nCRISPR target sites were annotated with predicted specificity\n(off-target effects) and predicted efficiency (on-target cleavage) by various\nalgorithms through the tool <a href=\"http://crispor.gi.ucsc.edu/\"\ntarget=\"_blank\">CRISPOR</a>.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThe track &quot;CRISPR Regions&quot; shows the regions of the genome where target\nsites were analyzed, i.e. within 200 bp of transcribed regions as annotated by\nEnsembl transcript models.</p>\n\n<p>\nThe track &quot;CRISPR Targets&quot; shows the target sites in these regions.\nThe target sequence of the guide is shown with a thick (exon) bar. The PAM\nmotif match (NGG) is shown with a thinner bar. Guides\nare colored to reflect both predicted specificity and efficiency. Specificity\nreflects the &quot;uniqueness&quot; of a 20mer sequence in the genome; the less unique a\nsequence is, the more likely it is to cleave other locations of the genome\n(off-target effects). Efficiency is the frequency of cleavage at the target\nsite (on-target efficiency).</p>\n\n<p>Shades of gray stand for sites that are hard to target specifically, as the\n20mer is not very unique in the genome:</p>\n<table class=\"stdTbl\" style=\"width:100%\">\n<tr><td style=\"width:50px; background-color:#969696\"></td><td>impossible to target: target site has at least one identical copy in the genome and was not scored</td></tr>\n<tr><td style=\"width:50px; background-color:#787878\"></td><td>hard to target: many similar sequences in the genome that alignment stopped, repeat?</td></tr>\n<tr><td style=\"width:50px; background-color:#505050\"></td><td>hard to target: target site was aligned but results in a low specificity score &lt;= 50 (see below)</td></tr>\n</table>\n\n<p>Colors highlight targets that are specific in the genome (MIT specificity &gt; 50) but have different predicted efficiencies:</p>\n<table class=\"stdTbl\" style=\"width:100%\">\n<tr><td style=\"width:50px; background-color:#000064\"></td><td>unable to calculate Doench/Fusi 2016 efficiency score</td></tr>\n<tr><td style=\"width:50px; background-color:#FF7070\"></td><td>low predicted cleavage: Doench/Fusi 2016 Efficiency percentile &lt;= 30</td></tr>\n<tr><td style=\"width:50px; background-color:#FFFF00\"></td><td>medium predicted cleavage: Doench/Fusi 2016 Efficiency percentile &gt; 30 and &lt; 55</td></tr>\n<tr><td style=\"width:50px; background-color:#00b300\"></td><td>high predicted cleavage: Doench/Fusi 2016 Efficiency &gt; 55</td></tr>\n</table><BR>\n\n<p>\nMouse-over a target site to show predicted specificity and efficiency scores:<br>\n<ol>\n<li>The MIT Specificity score summarizes all off-targets into a single number from\n0-100. The higher the number, the fewer off-target effects are expected. We\nrecommend guides with an MIT specificity &gt; 50.</li>\n<li>The efficiency score tries to predict if a guide leads to rather strong or\nweak cleavage. According to <a href=\"#References\">(Haeussler et al. 2016)</a>, the <a\nhref=\"https://portals.broadinstitute.org/gpp/public/analysis-tools/sgrna-design\">Doench\n2016 Efficiency score</a> should be used to select the guide with the highest\ncleavage efficiency when expressing guides from RNA PolIII Promoters such as\nU6. Scores are given as percentiles, e.g. &quot;70%&quot; means that 70% of mammalian\nguides have a score equal or lower than this guide. The raw score number is\nalso shown in parentheses after the percentile.</li>\n<li>The <a\nhref=\"https://www.crisprscan.org/\">Moreno-Mateos 2015 Efficiency\nscore</a> should be used instead of the Doench 2016 score when transcribing the\nguide in vitro with a T7 promoter, e.g. for injections in mouse, zebrafish or\nXenopus embryos. The Moreno-Mateos score is given in percentiles and the raw value in parentheses, see the note above.</li> </ol>\n</p>\n\n<p>Click onto features to show all scores and predicted off-targets with up to\nfour mismatches. The Out-of-Frame score by <a href=\"#References\">Bae et al. 2014</a>\nis correlated with\nthe probability that mutations induced by the guide RNA will disrupt the open\nreading frame. The authors recommend out-of-frame scores &gt; 66 to create\nknock-outs with a single guide efficiently.<p>\n\n<p>Off-target sites are sorted by the CFD (Cutting Frequency Determination) \nscore (<a href=\"https://www.nature.com/articles/nbt.3437\"\ntarget=\"_blank\">Doench et al. 2016</a>). \nThe higher the CFD score, the more likely there is off-target cleavage at that site. \nOff-targets with a CFD score &lt; 0.023 are not shown on this page, but are availble  when \nfollowing the link to the external CRISPOR tool. \nWhen compared against experimentally validated off-targets by \n<a href=\"#References\">Haeussler et al. 2016</a>, the large majority of predicted\noff-targets with CFD scores &lt; 0.023 were false-positives.</p>\n\n<h2>Methods</h2>\n\n<h3>Relationship between predictions and experimental data</h3>\n\n<p>\nLike most algorithms, the MIT specificity score is not always a perfect\npredictor of off-target effects. Despite low scores, many tested guides \ncaused few and/or weak off-target cleavage when tested with whole-genome assays\n(Figure 2 from <a href=\"#References\">Haeussler\net al. 2016</a>), as shown below, and the published data contains few data points\nwith high specificity scores. Overall though, the assays showed that the higher\nthe specificity score, the lower the off-target effects.</p>\n\n<img src=\"https://genome.ucsc.edu/images/crisprFig_mitScore.png\">\n\n<p>Similarly, efficiency scoring is not very accurate: guides with low\nscores can be efficient and vice versa. As a general rule, however, the higher\nthe score, the less likely that a guide is very inefficient. The\nfollowing histograms illustrate, for each type of score, how the share of\ninefficient guides drops with increasing efficiency scores:\n</p>\n\n<img src=\"https://genome.ucsc.edu/images/crisprFig_effScores.png\">\n\n<p>When reading this plot, keep in mind that both scores were evaluated on\ntheir own training data. Especially for the Moreno-Mateos score, the\nresults are too optimistic, due to overfitting. When evaluated on independent\ndatasets, the correlation of the prediction with other assays was around 25%\nlower, see <a href=\"#References\">Haeussler et al. 2016</a>. At the time of\nwriting, there is no independent dataset available yet to determine the\nMoreno-Mateos accuracy for each score percentile range.</p>\n\n<h3>Track methods</h3>\n<p>\nExons as predicted by Ensembl Gene models were used, extended by 200 basepairs\non each side, searched for the -NGG motif. Flanking 20mer guide sequences were\naligned to the genome with BWA and scored with MIT Specificity scores using the\ncommand-line version of crispor.org.  Non-unique guide sequences were skipped.\nFlanking sequences were extracted from the genome and input for Crispor\nefficiency scoring, available from the <a\nhref=\"http://crispor.gi.ucsc.edu/downloads/\">Crispor downloads page</a>, which\nincludes the Doench 2016, Moreno-Mateos 2015 and Bae\n2014 algorithms, among others.\n</p>\n\n<H2>Data Access</H2>\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>.\nFor automated analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/sacCer3/crisprRanges/\" target=\"_blank\">our download server</a>.\nThe files for this track are called <tt>crispr.bb</tt> and <tt>crisprDetails.tab</tt> and are located in the <a href=\"http://hgdownload.soe.ucsc.edu/gbdb/sacCer3/crispr/\">/gbdb/sacCer3/crispr</a> directory of our downloads server. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>,\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>. The tool\ncan also be used to obtain only features within a given range, e.g. <tt>bigBedToBed\nhttp://hgdownload.soe.ucsc.edu/gbdb/hg19/crisprRanges/crispr.bb -chrom=chr21\n-start=0 -end=10000000 stdout</tt> </p>\n\n<p>\nThe file crisprDetails.tab includes the details of the off-targets. The last\ncolumn of the bigBed file is the offset of the respective line in\ncrisprDetails.tab.  E.g. if the last column is 14227033723, then the following\ncommand will extract the line with the corresponding off-target details:\n<tt>curl -s -r 14227033723-14227043723 http://hgdownload.soe.ucsc.edu/gbdb/hg19/crispr/crisprDetails.tab | head -n1</tt>. The off-target details can currently not be joined with the table\nbrowser.</p>\n\n<p>\nThe file crisprDetails.tab is a tab-separated text file with two fields. The\nfirst field contains the numbers of off-targets for each mismatch, e.g. \"0,0,1,3,49\" \nmeans 0 off-targets at zero mismatches, 1 at two mismatches, 3 at three and 49\noff-targets at four mismatches. The second field is a pipe-separated list of\nsemicolon-separated tuples with the genome coordinates and the CFD score. E.g.\n\"chr10;123376795+;42|chr5;148353274-;39\" describes two off-targets, with the\nfirst at chr1:123376795 on the positive strand and a CFD score 0.42</p>\n\n<h2>Credits</h2>\n\n<p>\nTrack created by Maximilian Haeussler and Hiram Clawson, with helpful input from Jean-Paul Concordet (MNHN Paris) and Alberto Stolfi (NYU).\n</p>\n<a name=\"References\"></a>\n<h2>References</h2>\n\n<p>\nHaeussler M, Sch&#246;nig K, Eckert H, Eschstruth A, Miann&#233; J, Renaud JB, Schneider-Maunoury S,\nShkumatava A, Teboul L, Kent J <em>et al</em>.\n<a href=\"https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1012-2\"\ntarget=\"_blank\">Evaluation of off-target and on-target scoring algorithms and integration into the\nguide RNA selection tool CRISPOR</a>.\n<em>Genome Biol</em>. 2016 Jul 5;17(1):148.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27380939\" target=\"_blank\">27380939</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4934014/\" target=\"_blank\">PMC4934014</a>\n</p>\n\n<p>\nBae S, Kweon J, Kim HS, Kim JS.\n<a href=\"https://www.nature.com/nmeth/journal/v11/n7/full/nmeth.3015.html\" target=\"_blank\">\nMicrohomology-based choice of Cas9 nuclease target sites</a>.\n<em>Nat Methods</em>. 2014 Jul;11(7):705-6.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24972169\" target=\"_blank\">24972169</a>\n</p>\n\n<p>\nDoench JG, Fusi N, Sullender M, Hegde M, Vaimberg EW, Donovan KF, Smith I, Tothova Z, Wilen C,\nOrchard R <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nbt.3437\" target=\"_blank\">\nOptimized sgRNA design to maximize activity and minimize off-target effects of CRISPR-Cas9</a>.\n<em>Nat Biotechnol</em>. 2016 Feb;34(2):184-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26780180\" target=\"_blank\">26780180</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4744125/\" target=\"_blank\">PMC4744125</a>\n</p>\n\n<p>\nHsu PD, Scott DA, Weinstein JA, Ran FA, Konermann S, Agarwala V, Li Y, Fine EJ, Wu X, Shalem O\n<em>et al</em>.\n<a href=\"https://www.nature.com/nbt/journal/v31/n9/full/nbt.2647.html\" target=\"_blank\">\nDNA targeting specificity of RNA-guided Cas9 nucleases</a>.\n<em>Nat Biotechnol</em>. 2013 Sep;31(9):827-32.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/23873081\" target=\"_blank\">23873081</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3969858/\" target=\"_blank\">PMC3969858</a>\n</p>\n\n<p>\nMoreno-Mateos MA, Vejnar CE, Beaudoin JD, Fernandez JP, Mis EK, Khokha MK, Giraldez AJ.\n<a href=\"https://www.nature.com/nmeth/journal/v12/n10/full/nmeth.3543.html\" target=\"_blank\">\nCRISPRscan: designing highly efficient sgRNAs for CRISPR-Cas9 targeting in vivo</a>.\n<em>Nat Methods</em>. 2015 Oct;12(10):982-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26322839\" target=\"_blank\">26322839</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4589495/\" target=\"_blank\">PMC4589495</a>\n</p>\n",
+          "longLabel": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
+          "parent": "crispr",
+          "shortLabel": "CRISPR Regions",
+          "track": "crisprRanges",
+          "type": "bed 3",
+          "visibility": "dense"
+        }
       },
       "description": "Genome regions processed to find CRISPR/Cas9 target sites (exons +/- 200 bp)",
       "category": ["Genes and Gene Predictions"]
@@ -556,16 +594,18 @@
         }
       },
       "metadata": {
-        "exonArrows": "off",
-        "group": "regulation",
-        "longLabel": "Eran Segal Regulatory Module",
-        "noScoreFilter": ".",
-        "shortLabel": "Reg. Module",
-        "spectrum": "on",
-        "track": "esRegGeneToMotif",
-        "type": "bed 6 +",
-        "visibility": "dense",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows predicted transcription factor binding sites \nbased on sequence similarities upstream of coordinately expressed genes.\n<P>\nIn dense display mode the gold areas indicate the extent of the area\nsearched for binding sites; black boxes indicate the actual\nbinding sites. In other modes the gold areas disappear and only\nthe binding sites are displayed. Clicking on a particular predicted binding \nsite displays a page that shows the sequence motif associated with the \npredicted transcription factor and the sequence at the predicted binding site.\nWhere known motifs have been identified by this method, they are named;\notherwise, they are assigned a motif number.\n\n<H2>Methods</H2>\n<P>\nThis analysis was performed according to \n<A HREF=\"https://academic.oup.com/bioinformatics/article/19/suppl_1/i273/228167\"\nTARGET=_blank>Genome-wide discovery of transcriptional modules from DNA \nsequence and gene expression</A> on various pre-existing microarray datasets.\nA regulatory module is comprised of a set of genes predicted to be regulated \nby the same combination of DNA sequence motifs. The predictions are based on \nthe co-expression of the set of genes in the module and on the appearance of\ncommon combinations of motifs in the upstream regions of genes assigned to\nthe same module. \n\n<H2>Credits</H2>\n<P>\nThanks to <A HREF=\"https://www.wisdom.weizmann.ac.il/~eran/\"\nTARGET=_blank>Eran Segal</A> for providing the data analysis that forms the \nbasis for this track.  The display was programmed by \n<A HREF=\"http://users.soe.ucsc.edu/~kent/\" TARGET=_blank>Jim Kent</A>.\n\n<H2>References</H2>\n<p>\nSegal E, Yelensky R, Koller D.\n<a href=\"https://academic.oup.com/bioinformatics/article/19/suppl_1/i273/228167\ntarget=\"_blank\">\nGenome-wide discovery of transcriptional modules from DNA sequence and gene expression</a>.\n<em>Bioinformatics</em>. 2003;19 Suppl 1:i273-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12855470\" target=\"_blank\">12855470</a>\n</p>\n"
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "regulation",
+          "longLabel": "Eran Segal Regulatory Module",
+          "noScoreFilter": ".",
+          "shortLabel": "Reg. Module",
+          "spectrum": "on",
+          "track": "esRegGeneToMotif",
+          "type": "bed 6 +",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows predicted transcription factor binding sites \nbased on sequence similarities upstream of coordinately expressed genes.\n<P>\nIn dense display mode the gold areas indicate the extent of the area\nsearched for binding sites; black boxes indicate the actual\nbinding sites. In other modes the gold areas disappear and only\nthe binding sites are displayed. Clicking on a particular predicted binding \nsite displays a page that shows the sequence motif associated with the \npredicted transcription factor and the sequence at the predicted binding site.\nWhere known motifs have been identified by this method, they are named;\notherwise, they are assigned a motif number.\n\n<H2>Methods</H2>\n<P>\nThis analysis was performed according to \n<A HREF=\"https://academic.oup.com/bioinformatics/article/19/suppl_1/i273/228167\"\nTARGET=_blank>Genome-wide discovery of transcriptional modules from DNA \nsequence and gene expression</A> on various pre-existing microarray datasets.\nA regulatory module is comprised of a set of genes predicted to be regulated \nby the same combination of DNA sequence motifs. The predictions are based on \nthe co-expression of the set of genes in the module and on the appearance of\ncommon combinations of motifs in the upstream regions of genes assigned to\nthe same module. \n\n<H2>Credits</H2>\n<P>\nThanks to <A HREF=\"https://www.wisdom.weizmann.ac.il/~eran/\"\nTARGET=_blank>Eran Segal</A> for providing the data analysis that forms the \nbasis for this track.  The display was programmed by \n<A HREF=\"http://users.soe.ucsc.edu/~kent/\" TARGET=_blank>Jim Kent</A>.\n\n<H2>References</H2>\n<p>\nSegal E, Yelensky R, Koller D.\n<a href=\"https://academic.oup.com/bioinformatics/article/19/suppl_1/i273/228167\ntarget=\"_blank\">\nGenome-wide discovery of transcriptional modules from DNA sequence and gene expression</a>.\n<em>Bioinformatics</em>. 2003;19 Suppl 1:i273-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12855470\" target=\"_blank\">12855470</a>\n</p>\n"
+        }
       },
       "description": "Eran Segal Regulatory Module",
       "category": ["Regulation"]
@@ -588,14 +628,16 @@
         }
       },
       "metadata": {
-        "chromosomes": "none",
-        "group": "map",
-        "html": "<H2>Description</H2>\n<P>\nThere are no gaps in the <em>S. cerevisiae</em> assembly. \n</P>\n\n<H2>Credits</H2>\n<P>\nThe April 2011 <I>Saccharomyces cerevisiae</I> genome assembly \nis based on sequence from the:\n<A HREF=\"ftp://ftp.ncbi.nlm.nih.gov/genbank/genomes/Eukaryotes/fungi/Saccharomyces_cerevisiae/R64-1-1/\"\nTARGET=_blank>NCBI genbank/genomes/Eukaryotes/fungi/Saccharomyces_cerevisiae/R64-1-1/</A> download directory.</P>\n",
-        "longLabel": "Gap Locations",
-        "shortLabel": "Gap",
-        "track": "gap",
-        "type": "bed 3 +",
-        "visibility": "hide"
+        "ucsc": {
+          "chromosomes": "none",
+          "group": "map",
+          "html": "<H2>Description</H2>\n<P>\nThere are no gaps in the <em>S. cerevisiae</em> assembly. \n</P>\n\n<H2>Credits</H2>\n<P>\nThe April 2011 <I>Saccharomyces cerevisiae</I> genome assembly \nis based on sequence from the:\n<A HREF=\"ftp://ftp.ncbi.nlm.nih.gov/genbank/genomes/Eukaryotes/fungi/Saccharomyces_cerevisiae/R64-1-1/\"\nTARGET=_blank>NCBI genbank/genomes/Eukaryotes/fungi/Saccharomyces_cerevisiae/R64-1-1/</A> download directory.</P>\n",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide"
+        }
       },
       "description": "Gap Locations",
       "category": ["Mapping and Sequencing"]
@@ -618,15 +660,17 @@
         }
       },
       "metadata": {
-        "altColor": "230,170,40",
-        "color": "150,100,30",
-        "group": "map",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows the final assembly of the\n<EM>Saccharomyces cerevisiae</EM> S288c assembly (GCA_000146045.2) as of April 2011.\nof the <EM>S. cerevisiae</EM> genome.  Please note the sequencing status at:\n<A HREF=\"https://www.yeastgenome.org/cache/chromosomes.shtml\" TARGET=_blank>SGD</A>&#8482;.\n</P>\n\n<P>\nChromosomes available in this assembly: chrI, chrII, chrIII, chrIV ...\netc ... chrXVI, and chrM.\nSee also: <A HREF=\"https://www.yeastgenome.org/genomesnapshot\"\nTARGET=_blank>SGD&#8482; Genome Snapshot/Overview</A>.\n</P>\n\n<H2>Credits</H2>\n<P>\nThe April 2011 <EM>Saccharomyces cerevisiae</EM> genome assembly \nis based on sequence from the\n<A HREF=\"ftp://ftp.ncbi.nlm.nih.gov/genbank/genomes/Eukaryotes/fungi/Saccharomyces_cerevisiae/R64-1-1/\"\nTARGET=_blank>NCBI R64-1-1 download directory</A>.</P>\n",
-        "longLabel": "Assembly from Fragments",
-        "shortLabel": "Assembly",
-        "track": "gold",
-        "type": "bed 3 +",
-        "visibility": "hide"
+        "ucsc": {
+          "altColor": "230,170,40",
+          "color": "150,100,30",
+          "group": "map",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the final assembly of the\n<EM>Saccharomyces cerevisiae</EM> S288c assembly (GCA_000146045.2) as of April 2011.\nof the <EM>S. cerevisiae</EM> genome.  Please note the sequencing status at:\n<A HREF=\"https://www.yeastgenome.org/cache/chromosomes.shtml\" TARGET=_blank>SGD</A>&#8482;.\n</P>\n\n<P>\nChromosomes available in this assembly: chrI, chrII, chrIII, chrIV ...\netc ... chrXVI, and chrM.\nSee also: <A HREF=\"https://www.yeastgenome.org/genomesnapshot\"\nTARGET=_blank>SGD&#8482; Genome Snapshot/Overview</A>.\n</P>\n\n<H2>Credits</H2>\n<P>\nThe April 2011 <EM>Saccharomyces cerevisiae</EM> genome assembly \nis based on sequence from the\n<A HREF=\"ftp://ftp.ncbi.nlm.nih.gov/genbank/genomes/Eukaryotes/fungi/Saccharomyces_cerevisiae/R64-1-1/\"\nTARGET=_blank>NCBI R64-1-1 download directory</A>.</P>\n",
+          "longLabel": "Assembly from Fragments",
+          "shortLabel": "Assembly",
+          "track": "gold",
+          "type": "bed 3 +",
+          "visibility": "hide"
+        }
       },
       "description": "Assembly from Fragments",
       "category": ["Mapping and Sequencing"]
@@ -649,13 +693,15 @@
         }
       },
       "metadata": {
-        "group": "varRep",
-        "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
-        "shortLabel": "Microsatellite",
-        "track": "microsat",
-        "type": "bed 4",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track displays regions that are likely to be useful as microsatellite\nmarkers. These are sequences of at least 15 perfect di-nucleotide and \ntri-nucleotide repeats and tend to be highly polymorphic in the\npopulation.\n</P>\n\n<H2>Methods</H2>\n<P>\nThe data shown in this track are a subset of the Simple Repeats track, \nselecting only those \nrepeats of period 2 and 3, with 100% identity and no indels and with\nat least 15 copies of the repeat.  The Simple Repeats track is\ncreated using the <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" TARGET=_blank>\nTandem Repeats Finder</A>.  For more information about this \nprogram, see Benson (1999).</P>\n\n<H2>Credits</H2>\n<P>\nTandem Repeats Finder was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
+          "shortLabel": "Microsatellite",
+          "track": "microsat",
+          "type": "bed 4",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track displays regions that are likely to be useful as microsatellite\nmarkers. These are sequences of at least 15 perfect di-nucleotide and \ntri-nucleotide repeats and tend to be highly polymorphic in the\npopulation.\n</P>\n\n<H2>Methods</H2>\n<P>\nThe data shown in this track are a subset of the Simple Repeats track, \nselecting only those \nrepeats of period 2 and 3, with 100% identity and no indels and with\nat least 15 copies of the repeat.  The Simple Repeats track is\ncreated using the <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" TARGET=_blank>\nTandem Repeats Finder</A>.  For more information about this \nprogram, see Benson (1999).</P>\n\n<H2>Credits</H2>\n<P>\nTandem Repeats Finder was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        }
       },
       "description": "Microsatellites - Di-nucleotide and Tri-nucleotide Repeats",
       "category": ["Variation and Repeats"]
@@ -678,15 +724,17 @@
         }
       },
       "metadata": {
-        "color": "102,102,0",
-        "group": "regulation",
-        "longLabel": "Regulatory elements from ORegAnno",
-        "pennantIcon": "1.jpg ../goldenPath/help/liftOver.html \"lifted from sacCer1\"",
-        "shortLabel": "ORegAnno",
-        "track": "oreganno",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track displays literature-curated regulatory regions, transcription\nfactor binding sites, and regulatory polymorphisms from\n<a href=\"http://www.oreganno.org/\"\ntarget=\"_blank\">ORegAnno</a> (Open Regulatory Annotation). For more detailed\ninformation on a particular regulatory element, follow the link to ORegAnno\nfrom the details page. \n<!--\n<b><font color=\"666600\">O</font><font color=\"CC0033\">Reg</font><font color=\"BBBB55\">Anno</font></b> (Open Regulatory Annotation).\n-->\n</P>\n\n<H2>Display Conventions and Configuration</H2>\n\n<p>The display may be filtered to show only selected region types, such as:</p>\n\n<ul style=\"background-color: #fff; padding: 10px 15px 10px 30px; display: inline; display: inline-block; -webkit-border-radius: 3px;\n-moz-border-radius: 3px; border-radius: 3px; border: 1px solid #c4c4c4;\">\n<li style=\"color: #56B4E9;\">regulatory regions (shown in light blue)</li>\n<li style=\"color: #0072B2;\">regulatory polymorphisms (shown in dark blue)</li>\n<li style=\"color: #E69F00;\">transcription factor binding sites (shown in orange)</li>\n<li style=\"color: #D55E00;\">regulatory haplotypes (shown in red)</li>\n<li style=\"color: #009E73;\">miRNA binding sites (shown in blue-green)</li>\n</ul>\n\n<p>To exclude a region type, uncheck the appropriate box in the list at the top of \nthe Track Settings page. </p>\n\n<H2>Methods</H2>\n<P>\nAn ORegAnno record describes an experimentally proven and published regulatory\nregion (promoter, enhancer, etc.), transcription factor binding site, or\nregulatory polymorphism.  Each annotation must have the following attributes:\n<ul>\n<li>A stable ORegAnno identifier.\n<li>A valid taxonomy ID from the NCBI taxonomy database.\n<li>A valid PubMed reference.  \n<li>A target gene that is either user-defined, in Entrez Gene or in EnsEMBL.\n<li>A sequence with at least 40 flanking bases (preferably more) to allow the\nsite to be mapped to any release of an associated genome.\n<li>At least one piece of specific experimental evidence, including the\nbiological technique used to discover the regulatory sequence. (Currently\nonly the evidence subtypes are supplied with the UCSC track.)\n<li>A positive, neutral or negative outcome based on the experimental results\nfrom the primary reference. (Only records with a positive outcome are currently\nincluded in the UCSC track.)\n</ul>\nThe following attributes are optionally included:\n<ul>\n<li>A transcription factor that is either user-defined, in Entrez Gene\nor in EnsEMBL.\n<li>A specific cell type for each piece of experimental evidence, using the\neVOC cell type ontology.\n<li>A specific dataset identifier (e.g. the REDfly dataset) that allows\nexternal curators to manage particular annotation sets using ORegAnno's\ncuration tools.\n<li>A &quot;search space&quot; sequence that specifies the region that was\nassayed, not just the regulatory sequence.  \n<li>A dbSNP identifier and type of variant (germline, somatic or artificial)\nfor regulatory polymorphisms.\n</ul>\nMapping to genome coordinates is performed periodically to current genome\nbuilds by BLAST sequence alignment.  \nThe information provided in this track represents an abbreviated summary of the \ndetails for each ORegAnno record. Please visit the official ORegAnno entry\n(by clicking on the ORegAnno link on the details page of a specific regulatory\nelement) for complete details such as evidence descriptions, comments,\nvalidation score history, etc.\n</P>\n\n<H2>Credits</H2>\n<P>\nORegAnno core team and principal contacts: Stephen Montgomery, Obi Griffith, \nand Steven Jones from <A HREF=\"https://www.bcgsc.ca/\"\nTARGET=_blank>Canada's Michael Smith Genome Sciences Centre</A>, Vancouver, \nBritish Columbia, Canada.</P>\n<P>\nThe ORegAnno community (please see individual citations for various\nfeatures): <A HREF=\"http://www.oreganno.org/\"\nTARGET=\"_blank\">ORegAnno Citation</A>.\n\n<H2>References</H2>\n<p>\nLesurf R, Cotto KC, Wang G, Griffith M, Kasaian K, Jones SJ, Montgomery SB, Griffith OL, Open\nRegulatory Annotation Consortium..\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkv1203\" target=\"_blank\">\nORegAnno 3.0: a community-driven resource for curated regulatory annotation</a>.\n<em>Nucleic Acids Res</em>. 2016 Jan 4;44(D1):D126-32.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26578589\" target=\"_blank\">26578589</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4702855/\" target=\"_blank\">PMC4702855</a>\n</p>\n\n<p>\nGriffith OL, Montgomery SB, Bernier B, Chu B, Kasaian K, Aerts S, Mahony S, Sleumer MC, Bilenky M,\nHaeussler M <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/36/suppl_1/D107/2508119/ORegAnno-an-open-access-\ncommunity-driven-resource\" target=\"_blank\">\nORegAnno: an open-access community-driven resource for regulatory annotation</a>.\n<em>Nucleic Acids Res</em>. 2008 Jan;36(Database issue):D107-13.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18006570\" target=\"_blank\">18006570</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2239002/\" target=\"_blank\">PMC2239002</a>\n</p>\n\n<P>\nMontgomery SB, Griffith OL, Sleumer MC, Bergman CM, Bilenky M, Pleasance ED, \nPrychyna Y, Zhang X, Jones SJ. \n<A HREF=\"https://academic.oup.com/bioinformatics/article/22/5/637/206022/ORegAnno-an-open-access-\ndatabase-and-curation\" TARGET=\"_blank\">ORegAnno: an open access database and curation system for \nliterature-derived promoters, transcription factor binding sites and regulatory variation</A>.\n<em>Bioinformatics</em>. 2006 Mar 1;22(5):637-40.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/16397004\" target=\"_blank\">16397004</a>\n</p>\n\n"
+        "ucsc": {
+          "color": "102,102,0",
+          "group": "regulation",
+          "longLabel": "Regulatory elements from ORegAnno",
+          "pennantIcon": "1.jpg ../goldenPath/help/liftOver.html \"lifted from sacCer1\"",
+          "shortLabel": "ORegAnno",
+          "track": "oreganno",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track displays literature-curated regulatory regions, transcription\nfactor binding sites, and regulatory polymorphisms from\n<a href=\"http://www.oreganno.org/\"\ntarget=\"_blank\">ORegAnno</a> (Open Regulatory Annotation). For more detailed\ninformation on a particular regulatory element, follow the link to ORegAnno\nfrom the details page. \n<!--\n<b><font color=\"666600\">O</font><font color=\"CC0033\">Reg</font><font color=\"BBBB55\">Anno</font></b> (Open Regulatory Annotation).\n-->\n</P>\n\n<H2>Display Conventions and Configuration</H2>\n\n<p>The display may be filtered to show only selected region types, such as:</p>\n\n<ul style=\"background-color: #fff; padding: 10px 15px 10px 30px; display: inline; display: inline-block; -webkit-border-radius: 3px;\n-moz-border-radius: 3px; border-radius: 3px; border: 1px solid #c4c4c4;\">\n<li style=\"color: #56B4E9;\">regulatory regions (shown in light blue)</li>\n<li style=\"color: #0072B2;\">regulatory polymorphisms (shown in dark blue)</li>\n<li style=\"color: #E69F00;\">transcription factor binding sites (shown in orange)</li>\n<li style=\"color: #D55E00;\">regulatory haplotypes (shown in red)</li>\n<li style=\"color: #009E73;\">miRNA binding sites (shown in blue-green)</li>\n</ul>\n\n<p>To exclude a region type, uncheck the appropriate box in the list at the top of \nthe Track Settings page. </p>\n\n<H2>Methods</H2>\n<P>\nAn ORegAnno record describes an experimentally proven and published regulatory\nregion (promoter, enhancer, etc.), transcription factor binding site, or\nregulatory polymorphism.  Each annotation must have the following attributes:\n<ul>\n<li>A stable ORegAnno identifier.\n<li>A valid taxonomy ID from the NCBI taxonomy database.\n<li>A valid PubMed reference.  \n<li>A target gene that is either user-defined, in Entrez Gene or in EnsEMBL.\n<li>A sequence with at least 40 flanking bases (preferably more) to allow the\nsite to be mapped to any release of an associated genome.\n<li>At least one piece of specific experimental evidence, including the\nbiological technique used to discover the regulatory sequence. (Currently\nonly the evidence subtypes are supplied with the UCSC track.)\n<li>A positive, neutral or negative outcome based on the experimental results\nfrom the primary reference. (Only records with a positive outcome are currently\nincluded in the UCSC track.)\n</ul>\nThe following attributes are optionally included:\n<ul>\n<li>A transcription factor that is either user-defined, in Entrez Gene\nor in EnsEMBL.\n<li>A specific cell type for each piece of experimental evidence, using the\neVOC cell type ontology.\n<li>A specific dataset identifier (e.g. the REDfly dataset) that allows\nexternal curators to manage particular annotation sets using ORegAnno's\ncuration tools.\n<li>A &quot;search space&quot; sequence that specifies the region that was\nassayed, not just the regulatory sequence.  \n<li>A dbSNP identifier and type of variant (germline, somatic or artificial)\nfor regulatory polymorphisms.\n</ul>\nMapping to genome coordinates is performed periodically to current genome\nbuilds by BLAST sequence alignment.  \nThe information provided in this track represents an abbreviated summary of the \ndetails for each ORegAnno record. Please visit the official ORegAnno entry\n(by clicking on the ORegAnno link on the details page of a specific regulatory\nelement) for complete details such as evidence descriptions, comments,\nvalidation score history, etc.\n</P>\n\n<H2>Credits</H2>\n<P>\nORegAnno core team and principal contacts: Stephen Montgomery, Obi Griffith, \nand Steven Jones from <A HREF=\"https://www.bcgsc.ca/\"\nTARGET=_blank>Canada's Michael Smith Genome Sciences Centre</A>, Vancouver, \nBritish Columbia, Canada.</P>\n<P>\nThe ORegAnno community (please see individual citations for various\nfeatures): <A HREF=\"http://www.oreganno.org/\"\nTARGET=\"_blank\">ORegAnno Citation</A>.\n\n<H2>References</H2>\n<p>\nLesurf R, Cotto KC, Wang G, Griffith M, Kasaian K, Jones SJ, Montgomery SB, Griffith OL, Open\nRegulatory Annotation Consortium..\n<a href=\"https://academic.oup.com/nar/article-lookup/doi/10.1093/nar/gkv1203\" target=\"_blank\">\nORegAnno 3.0: a community-driven resource for curated regulatory annotation</a>.\n<em>Nucleic Acids Res</em>. 2016 Jan 4;44(D1):D126-32.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26578589\" target=\"_blank\">26578589</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4702855/\" target=\"_blank\">PMC4702855</a>\n</p>\n\n<p>\nGriffith OL, Montgomery SB, Bernier B, Chu B, Kasaian K, Aerts S, Mahony S, Sleumer MC, Bilenky M,\nHaeussler M <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/36/suppl_1/D107/2508119/ORegAnno-an-open-access-\ncommunity-driven-resource\" target=\"_blank\">\nORegAnno: an open-access community-driven resource for regulatory annotation</a>.\n<em>Nucleic Acids Res</em>. 2008 Jan;36(Database issue):D107-13.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18006570\" target=\"_blank\">18006570</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2239002/\" target=\"_blank\">PMC2239002</a>\n</p>\n\n<P>\nMontgomery SB, Griffith OL, Sleumer MC, Bergman CM, Bilenky M, Pleasance ED, \nPrychyna Y, Zhang X, Jones SJ. \n<A HREF=\"https://academic.oup.com/bioinformatics/article/22/5/637/206022/ORegAnno-an-open-access-\ndatabase-and-curation\" TARGET=\"_blank\">ORegAnno: an open access database and curation system for \nliterature-derived promoters, transcription factor binding sites and regulatory variation</A>.\n<em>Bioinformatics</em>. 2006 Mar 1;22(5):637-40.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/16397004\" target=\"_blank\">16397004</a>\n</p>\n\n"
+        }
       },
       "description": "Regulatory elements from ORegAnno",
       "category": ["Regulation"]
@@ -709,16 +757,18 @@
         }
       },
       "metadata": {
-        "color": "110,10,40",
-        "longLabel": "7 Yeasts Conserved Elements",
-        "noInherit": "on",
-        "parent": "cons7wayViewelements on",
-        "priority": "23",
-        "shortLabel": "Elements",
-        "subGroups": "view=elements",
-        "track": "phastConsElements7way",
-        "type": "bed 5 .",
-        "html": ""
+        "ucsc": {
+          "color": "110,10,40",
+          "longLabel": "7 Yeasts Conserved Elements",
+          "noInherit": "on",
+          "parent": "cons7wayViewelements on",
+          "priority": "23",
+          "shortLabel": "Elements",
+          "subGroups": "view=elements",
+          "track": "phastConsElements7way",
+          "type": "bed 5 .",
+          "html": ""
+        }
       },
       "description": "7 Yeasts Conserved Elements",
       "category": ["Comparative Genomics"]
@@ -741,15 +791,17 @@
         }
       },
       "metadata": {
-        "altColor": "180,180,180",
-        "group": "map",
-        "longLabel": "Washington University Clones",
-        "priority": "14",
-        "shortLabel": "WashU Clones",
-        "track": "sgdClone",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2> \n<P>\nThis track displays the location of clones (mostly lambda and cosmid clones) \nfrom Washington University in\nSt. Louis using the names assigned by that group. This information was \ndownloaded from the Saccharomyces Genome Database (SGD) from the file<BR>\n<A HREF=\"https://downloads.yeastgenome.org/curation/chromosomal_feature/clone.tab\" \nTARGET=_blank>https://downloads.yeastgenome.org/curation/chromosomal_feature/clone.tab</A>.\n\n<H2>Credits</H2>\n<P>\nThanks to <A HREF=\"https://www.genome.wustl.edu/\" TARGET=_blank>Washington University \nin St. Louis</A> and the <A HREF=\"https://www.yeastgenome.org/\" TARGET=_blank>SGD</A>\nfor the data used in this track.\n\n"
+        "ucsc": {
+          "altColor": "180,180,180",
+          "group": "map",
+          "longLabel": "Washington University Clones",
+          "priority": "14",
+          "shortLabel": "WashU Clones",
+          "track": "sgdClone",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2> \n<P>\nThis track displays the location of clones (mostly lambda and cosmid clones) \nfrom Washington University in\nSt. Louis using the names assigned by that group. This information was \ndownloaded from the Saccharomyces Genome Database (SGD) from the file<BR>\n<A HREF=\"https://downloads.yeastgenome.org/curation/chromosomal_feature/clone.tab\" \nTARGET=_blank>https://downloads.yeastgenome.org/curation/chromosomal_feature/clone.tab</A>.\n\n<H2>Credits</H2>\n<P>\nThanks to <A HREF=\"https://www.genome.wustl.edu/\" TARGET=_blank>Washington University \nin St. Louis</A> and the <A HREF=\"https://www.yeastgenome.org/\" TARGET=_blank>SGD</A>\nfor the data used in this track.\n\n"
+        }
       },
       "description": "Washington University Clones",
       "category": ["Mapping and Sequencing"]
@@ -772,17 +824,19 @@
         }
       },
       "metadata": {
-        "color": "30,130,210",
-        "exonArrows": "on",
-        "group": "genes",
-        "longLabel": "Other Features from Saccharomyces Genome Database",
-        "noScoreFilter": ".",
-        "priority": "39.1",
-        "shortLabel": "SGD Other",
-        "track": "sgdOther",
-        "type": "bed 6 +",
-        "visibility": "pack",
-        "html": "<H2>Description</H2> \n\n<p>This track shows a variety of features in the \n<I>Saccharomyces cerevisiae</I> genome, including tRNAs, transposons,\ncentromeres, and open reading frames (ORFs) classified as dubious.</p>\n\n<p>Click on an item in this track to display details about it.</p>\n\n\n<p>The data were downloaded from the\nSaccharomyces Genome Database (SGD):  \n<A HREF=\"https://downloads.yeastgenome.org/curation/chromosomal_feature/saccharomyces_cerevisiae.gff\"\nTARGET=\"_blank\">saccharomyces_cerevisiae.gff</A> (accessed 29 Aug. 2011).</p>\n\n\n<H2>Credits</H2> \nThanks to the <A HREF=\"https://www.yeastgenome.org/\" TARGET=_blank>SGD</A>\nfor providing the data used in this annotation.\n"
+        "ucsc": {
+          "color": "30,130,210",
+          "exonArrows": "on",
+          "group": "genes",
+          "longLabel": "Other Features from Saccharomyces Genome Database",
+          "noScoreFilter": ".",
+          "priority": "39.1",
+          "shortLabel": "SGD Other",
+          "track": "sgdOther",
+          "type": "bed 6 +",
+          "visibility": "pack",
+          "html": "<H2>Description</H2> \n\n<p>This track shows a variety of features in the \n<I>Saccharomyces cerevisiae</I> genome, including tRNAs, transposons,\ncentromeres, and open reading frames (ORFs) classified as dubious.</p>\n\n<p>Click on an item in this track to display details about it.</p>\n\n\n<p>The data were downloaded from the\nSaccharomyces Genome Database (SGD):  \n<A HREF=\"https://downloads.yeastgenome.org/curation/chromosomal_feature/saccharomyces_cerevisiae.gff\"\nTARGET=\"_blank\">saccharomyces_cerevisiae.gff</A> (accessed 29 Aug. 2011).</p>\n\n\n<H2>Credits</H2> \nThanks to the <A HREF=\"https://www.yeastgenome.org/\" TARGET=_blank>SGD</A>\nfor providing the data used in this annotation.\n"
+        }
       },
       "description": "Other Features from Saccharomyces Genome Database",
       "category": ["Genes and Gene Predictions"]
@@ -805,13 +859,15 @@
         }
       },
       "metadata": {
-        "group": "varRep",
-        "longLabel": "Simple Tandem Repeats by TRF",
-        "shortLabel": "Simple Repeats",
-        "track": "simpleRepeat",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2>\n<P>\nThis track displays simple tandem repeats (possibly imperfect repeats) located\nby <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" \nTARGET=_blank>Tandem Repeats\nFinder</A> (TRF) which is specialized for this purpose. These repeats can\noccur within coding regions of genes and may be quite\npolymorphic. Repeat expansions are sometimes associated with specific\ndiseases.</P>\n\n<H2>Methods</H2>\n<P>\nFor more information about the TRF program, see Benson (1999).\n</P>\n\n<H2>Credits</H2>\n<P>\nTRF was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        "ucsc": {
+          "group": "varRep",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "shortLabel": "Simple Repeats",
+          "track": "simpleRepeat",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track displays simple tandem repeats (possibly imperfect repeats) located\nby <A HREF=\"https://tandem.bu.edu/trf/trf.submit.options.html\" \nTARGET=_blank>Tandem Repeats\nFinder</A> (TRF) which is specialized for this purpose. These repeats can\noccur within coding regions of genes and may be quite\npolymorphic. Repeat expansions are sometimes associated with specific\ndiseases.</P>\n\n<H2>Methods</H2>\n<P>\nFor more information about the TRF program, see Benson (1999).\n</P>\n\n<H2>Credits</H2>\n<P>\nTRF was written by \n<A HREF=\"https://tandem.bu.edu/benson.html\" TARGET=_blank>Gary Benson</A>.</P>\n\n<H2>References</H2>\n\n<p>\nBenson G.\n<a href=\"https://academic.oup.com/nar/article/27/2/573/1061099/Tandem-repeats-finder-a-program-to-analyze-DNA\" target=\"_blank\">\nTandem repeats finder: a program to analyze DNA sequences</a>.\n<em>Nucleic Acids Res</em>. 1999 Jan 15;27(2):573-80.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/9862982\" target=\"_blank\">9862982</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC148217/\" target=\"_blank\">PMC148217</a>\n</p>\n"
+        }
       },
       "description": "Simple Tandem Repeats by TRF",
       "category": ["Variation and Repeats"]
@@ -834,18 +890,20 @@
         }
       },
       "metadata": {
-        "exonArrows": "off",
-        "group": "regulation",
-        "longLabel": "Transcriptional Regulatory Code from Harbison Gordon et al.",
-        "priority": "92.5",
-        "scoreFilter": "500",
-        "scoreFilterLimits": "200:1000",
-        "shortLabel": "Regulatory Code",
-        "spectrum": "on",
-        "track": "transRegCode",
-        "type": "bed 5 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2> \n\n<P>This track shows putative regulatory elements in <I>Saccharomyces\ncerevisiae</I> that are supported by cross-species evidence (Harbison,\nGordon, <EM>et al</EM>., 2004).  Harbison, Gordon, <EM>et al</EM>. performed a genome-wide\nlocation analysis with 203 known DNA-binding transcriptional regulators\n(some under multiple environmental conditions) and identified 11,000\nhigh-confidence interactions between regulators and promoter regions.  They\nthen compiled a compendium of motifs for 102 transcriptional regulators\nbased on a combination of their experimental results, cross-species\nconservation data for four species of yeast and motifs from the\nliterature.  Finally, they mapped these motifs to the\n<I>S. cerevisiae</I> genome.  This track shows positions at which these\nmotifs matched the genome with high confidence and at which the\nmatching sequence was well conserved across yeast species. </P>\n\n<P>The details page for each putative binding site shows the sequence at\nthat site compared to the position-specific probability matrix for the\nassociated transcriptional regulator (shown as both a table and a graphical\nlogo).  It also indicates whether the binding site is supported by\nexperimental (ChIP-chip) results and the number of other yeast species in\nwhich it is conserved.</P>\n\n<P>See also the \"Reg. ChIP-chip\" track for additional related information.</P>\n\n<H2>Display Conventions</H2> \n\n<P>The scoring ranges from 200 to 1000 and is based on the number of lines of \nevidence that support the motif being active.  Each of the two <I>sensu \nstricto</I> species in which the motif was conserved counts as a line of \nevidence.  If the ChIP-chip data showed good (P &le; 0.001) evidence of binding \nto the transcription factor associated with the motif, that counts as two \nlines of evidence.  If the ChIP-chip data showed weaker (P &le; 0.005) evidence \nof binding, that counts as just one line of evidence.  The following table \nshows the relationship between lines of evidence and score:<P>\n\n<BLOCKQUOTE>\n<TABLE BGCOLOR=\"#888888\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"1\"><TR><TD>\n<TABLE BORDER=\"1\" BGCOLOR=\"#FFFEE8\" CELLSPACING=\"0\">\n<BLOCKQUOTE>\n  <TR><TH>Evidence</TH><TH>Score</TH></TR>\n  <TR><TD>4</TD><TD>1000</TD></TR>\n  <TR><TD>3</TD><TD>500</TD></TR>\n  <TR><TD>2</TD><TD>333</TD></TR>\n  <TR><TD>1</TD><TD>250</TD></TR>\n  \n  <TR><TD>0</TD><TD>200</TD></TR>\n  </BLOCKQUOTE>\n  </TABLE>\n  </TD></TR></TABLE>\n</BLOCKQUOTE>\n\n<H2>Credits</H2> \n\nThe data for this track was provided by the Young and Fraenkel labs at\nMIT/Whitehead/Broad.  The track was created by Jim Kent.\n\n<H2>References</H2>\n\nHarbison CT, Gordon DB, Lee TI, Rinaldi NJ, MacIsaac KD, Danford TW, Hannett NM, Tagne JB, Reynolds DB, Yoo J <EM>et al</EM>.  \n<a href=\"https://www.nature.com/articles/nature02800\"\ntarget=_BLANK>Transcriptional regulatory code of a eukaryotic genome</a>. \n<em>Nature</em>. 2004 Sep 2;431(7004):99-104.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15343339\" target=\"_blank\">15343339</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3006441/\" target=\"_blank\">PMC3006441</a>\n</p>\n\nSupplementary data at <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://younglab.wi.mit.edu/regulatory_code/</a> and\n <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://fraenkel.mit.edu/Harbison/</a>.\n<BR>\n"
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "regulation",
+          "longLabel": "Transcriptional Regulatory Code from Harbison Gordon et al.",
+          "priority": "92.5",
+          "scoreFilter": "500",
+          "scoreFilterLimits": "200:1000",
+          "shortLabel": "Regulatory Code",
+          "spectrum": "on",
+          "track": "transRegCode",
+          "type": "bed 5 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2> \n\n<P>This track shows putative regulatory elements in <I>Saccharomyces\ncerevisiae</I> that are supported by cross-species evidence (Harbison,\nGordon, <EM>et al</EM>., 2004).  Harbison, Gordon, <EM>et al</EM>. performed a genome-wide\nlocation analysis with 203 known DNA-binding transcriptional regulators\n(some under multiple environmental conditions) and identified 11,000\nhigh-confidence interactions between regulators and promoter regions.  They\nthen compiled a compendium of motifs for 102 transcriptional regulators\nbased on a combination of their experimental results, cross-species\nconservation data for four species of yeast and motifs from the\nliterature.  Finally, they mapped these motifs to the\n<I>S. cerevisiae</I> genome.  This track shows positions at which these\nmotifs matched the genome with high confidence and at which the\nmatching sequence was well conserved across yeast species. </P>\n\n<P>The details page for each putative binding site shows the sequence at\nthat site compared to the position-specific probability matrix for the\nassociated transcriptional regulator (shown as both a table and a graphical\nlogo).  It also indicates whether the binding site is supported by\nexperimental (ChIP-chip) results and the number of other yeast species in\nwhich it is conserved.</P>\n\n<P>See also the \"Reg. ChIP-chip\" track for additional related information.</P>\n\n<H2>Display Conventions</H2> \n\n<P>The scoring ranges from 200 to 1000 and is based on the number of lines of \nevidence that support the motif being active.  Each of the two <I>sensu \nstricto</I> species in which the motif was conserved counts as a line of \nevidence.  If the ChIP-chip data showed good (P &le; 0.001) evidence of binding \nto the transcription factor associated with the motif, that counts as two \nlines of evidence.  If the ChIP-chip data showed weaker (P &le; 0.005) evidence \nof binding, that counts as just one line of evidence.  The following table \nshows the relationship between lines of evidence and score:<P>\n\n<BLOCKQUOTE>\n<TABLE BGCOLOR=\"#888888\" BORDER=\"0\" CELLSPACING=\"0\" CELLPADDING=\"1\"><TR><TD>\n<TABLE BORDER=\"1\" BGCOLOR=\"#FFFEE8\" CELLSPACING=\"0\">\n<BLOCKQUOTE>\n  <TR><TH>Evidence</TH><TH>Score</TH></TR>\n  <TR><TD>4</TD><TD>1000</TD></TR>\n  <TR><TD>3</TD><TD>500</TD></TR>\n  <TR><TD>2</TD><TD>333</TD></TR>\n  <TR><TD>1</TD><TD>250</TD></TR>\n  \n  <TR><TD>0</TD><TD>200</TD></TR>\n  </BLOCKQUOTE>\n  </TABLE>\n  </TD></TR></TABLE>\n</BLOCKQUOTE>\n\n<H2>Credits</H2> \n\nThe data for this track was provided by the Young and Fraenkel labs at\nMIT/Whitehead/Broad.  The track was created by Jim Kent.\n\n<H2>References</H2>\n\nHarbison CT, Gordon DB, Lee TI, Rinaldi NJ, MacIsaac KD, Danford TW, Hannett NM, Tagne JB, Reynolds DB, Yoo J <EM>et al</EM>.  \n<a href=\"https://www.nature.com/articles/nature02800\"\ntarget=_BLANK>Transcriptional regulatory code of a eukaryotic genome</a>. \n<em>Nature</em>. 2004 Sep 2;431(7004):99-104.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15343339\" target=\"_blank\">15343339</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3006441/\" target=\"_blank\">PMC3006441</a>\n</p>\n\nSupplementary data at <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://younglab.wi.mit.edu/regulatory_code/</a> and\n <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://fraenkel.mit.edu/Harbison/</a>.\n<BR>\n"
+        }
       },
       "description": "Transcriptional Regulatory Code from Harbison Gordon et al.",
       "category": ["Regulation"]
@@ -868,15 +926,17 @@
         }
       },
       "metadata": {
-        "exonArrows": "off",
-        "group": "regulation",
-        "longLabel": "ChIP-chip Results from Harbison Gordon et al.",
-        "priority": "92.6",
-        "shortLabel": "Reg. ChIP-chip",
-        "track": "transRegCodeProbe",
-        "type": "bed 4 +",
-        "visibility": "hide",
-        "html": "<H2>Description</H2> \n\n<P>This track shows the location of the probes spotted on a slide in\nthe chromatin immunoprecipitation/microarray hybridization (ChIP-chip)\nexperiments described in Harbison, Gordon <EM>et al</EM>. below.\nClick on an item in this track to display a page showing which\ntranscription factors pulled down DNA that is enriched for this probe\nsequence, which transcription factor binding site motifs are present in\nthe probe and whether these motifs are conserved in related yeast species.\nSee also the \"Regulatory Code\" track for the position of the individual\nmotifs.\n\n<H2>Credits</H2> \n\nThe data for this track was provided by the Young and Fraenkel labs at\nMIT/Whitehead/Broad.  The track was created by Jim Kent.\n\n<H2>References</H2>\n\nHarbison CT, Gordon DB, Lee TI, Rinaldi NJ, MacIsaac KD, Danford TW, Hannett NM, Tagne JB, Reynolds DB, Yoo J <EM>et al</EM>.\n<a href=\"https://www.nature.com/articles/nature02800\"\ntarget=_BLANK>Transcriptional regulatory code of a eukaryotic genome</a>. \n<em>Nature</em>. 2004 Sep 2;431(7004):99-104.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15343339\" target=\"_blank\">15343339</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3006441/\" target=\"_blank\">PMC3006441</a>\n</p>\n\nSupplementary data at <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://younglab.wi.mit.edu/regulatory_code/</a> and\n <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://fraenkel.mit.edu/Harbison/</a>.\n"
+        "ucsc": {
+          "exonArrows": "off",
+          "group": "regulation",
+          "longLabel": "ChIP-chip Results from Harbison Gordon et al.",
+          "priority": "92.6",
+          "shortLabel": "Reg. ChIP-chip",
+          "track": "transRegCodeProbe",
+          "type": "bed 4 +",
+          "visibility": "hide",
+          "html": "<H2>Description</H2> \n\n<P>This track shows the location of the probes spotted on a slide in\nthe chromatin immunoprecipitation/microarray hybridization (ChIP-chip)\nexperiments described in Harbison, Gordon <EM>et al</EM>. below.\nClick on an item in this track to display a page showing which\ntranscription factors pulled down DNA that is enriched for this probe\nsequence, which transcription factor binding site motifs are present in\nthe probe and whether these motifs are conserved in related yeast species.\nSee also the \"Regulatory Code\" track for the position of the individual\nmotifs.\n\n<H2>Credits</H2> \n\nThe data for this track was provided by the Young and Fraenkel labs at\nMIT/Whitehead/Broad.  The track was created by Jim Kent.\n\n<H2>References</H2>\n\nHarbison CT, Gordon DB, Lee TI, Rinaldi NJ, MacIsaac KD, Danford TW, Hannett NM, Tagne JB, Reynolds DB, Yoo J <EM>et al</EM>.\n<a href=\"https://www.nature.com/articles/nature02800\"\ntarget=_BLANK>Transcriptional regulatory code of a eukaryotic genome</a>. \n<em>Nature</em>. 2004 Sep 2;431(7004):99-104.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15343339\" target=\"_blank\">15343339</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3006441/\" target=\"_blank\">PMC3006441</a>\n</p>\n\nSupplementary data at <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://younglab.wi.mit.edu/regulatory_code/</a> and\n <a href=\"http://younglab.wi.mit.edu/regulatory_code/\"\n target=_BLANK>http://fraenkel.mit.edu/Harbison/</a>.\n"
+        }
       },
       "description": "ChIP-chip Results from Harbison Gordon et al.",
       "category": ["Regulation"]
@@ -899,16 +959,18 @@
         }
       },
       "metadata": {
-        "baseColorDefault": "genomicCodons",
-        "baseColorUseCds": "given",
-        "color": "12,105,0",
-        "group": "genes",
-        "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
-        "shortLabel": "AUGUSTUS",
-        "track": "augustusGene",
-        "type": "genePred",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\n  This track shows <i>ab initio</i> predictions from the program\n  <a href=\"http://bioinf.uni-greifswald.de/augustus/\" target=\"_blank\">AUGUSTUS</a> (version 3.1).\n  The predictions are based on the genome sequence alone.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nStatistical signal models were built for splice sites, branch-point\npatterns, translation start sites, and the poly-A signal.\nFurthermore, models were built for the sequence content of\nprotein-coding and non-coding regions as well as for the length distributions\nof different exon and intron types. Detailed descriptions of most of these different models\ncan be found in Mario Stanke's\n<a href=\"https://ediss.uni-goettingen.de/handle/11858/00-1735-0000-0006-B3F8-4\" target=\"_blank\">dissertation</a>.\nThis track shows the most likely gene structure according to a\nSemi-Markov Conditional Random Field model.\nAlternative splicing transcripts were obtained with\na sampling algorithm (<tt>--alternatives-from-sampling=true --sample=100 --minexonintronprob=0.2\n--minmeanexonintronprob=0.5 --maxtracks=3 --temperature=2</tt>).\n</p>\n\n<p>\nThe different models used by Augustus were trained on a number of different species-specific\ngene sets, which included 1000-2000 training gene structures. The <tt>--species</tt> option allows\none to choose the species used for training the models. Different training species were used\nfor the <tt>--species</tt> option when generating these predictions for different groups of\nassemblies.\n<table class=\"stdTbl\">\n <tr>\n  <td align=center><b>Assembly Group</b></td>\n  <td align=center><b>Training Species</b></td>\n </tr>\n <tr>\n  <td align=center>Fish</td>\n  <td align=center><tt>zebrafish</tt>\n </tr>\n <tr>\n  <td align=center>Birds</td>\n  <td align=center><tt>chicken</tt>\n </tr>\n <tr>\n  <td align=center>Human and all other vertebrates</td>\n  <td align=center><tt>human</tt>\n </tr>\n <tr>\n  <td align=center>Nematodes</td>\n  <td align=center><tt>caenorhabditis</tt></td>\n </tr>\n <tr>\n  <td align=center>Drosophila</td>\n  <td align=center><tt>fly</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. mellifera</em></td>\n  <td align=center><tt>honeybee1</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. gambiae</em></td>\n  <td align=center><tt>culex</tt></td>\n </tr>\n <tr>\n  <td align=center><em>S. cerevisiae</em></td>\n  <td align=center><tt>saccharomyces</tt></td>\n </tr>\n</table>\n<p>\nThis table describes which training species was used for a particular group of assemblies.\nWhen available, the closest related training species was used.\n</p>\n\n<h2>Credits</h2>\n\nThanks to the\n<a href=\"https://math-inf.uni-greifswald.de/en/department/about-us/employees/prof-dr-mario-stanke-english/\"\ntarget=\"_blank\">Stanke lab</a>\nfor providing the AUGUSTUS program.  The training for the <tt>chicken</tt> version was\ndone by Stefanie K&ouml;nig and the training for the\n<tt>human</tt> and <tt>zebrafish</tt> versions was done by Mario Stanke.\n\n<h2>References</h2>\n\n<p>\nStanke M, Diekhans M, Baertsch R, Haussler D.\n<a href=\"https://academic.oup.com/bioinformatics/article/24/5/637/202844/Using-native-and-syntenically-mapped-cDNA\"\ntarget=\"_blank\">\nUsing native and syntenically mapped cDNA alignments to improve de novo gene finding</a>.\n<em>Bioinformatics</em>. 2008 Mar 1;24(5):637-44.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18218656\" target=\"_blank\">18218656</a>\n</p>\n\n<p>\nStanke M, Waack S.\n<a href=\"https://academic.oup.com/bioinformatics/article/19/suppl_2/ii215/180603/Gene-prediction-with-a-hidden-Markov-model-and-a\"\ntarget=\"_blank\">\nGene prediction with a hidden Markov model and a new intron submodel</a>.\n<em>Bioinformatics</em>. 2003 Oct;19 Suppl 2:ii215-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14534192\" target=\"_blank\">14534192</a>\n</p>\n"
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,105,0",
+          "group": "genes",
+          "longLabel": "AUGUSTUS ab initio gene predictions v3.1",
+          "shortLabel": "AUGUSTUS",
+          "track": "augustusGene",
+          "type": "genePred",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\n  This track shows <i>ab initio</i> predictions from the program\n  <a href=\"http://bioinf.uni-greifswald.de/augustus/\" target=\"_blank\">AUGUSTUS</a> (version 3.1).\n  The predictions are based on the genome sequence alone.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nStatistical signal models were built for splice sites, branch-point\npatterns, translation start sites, and the poly-A signal.\nFurthermore, models were built for the sequence content of\nprotein-coding and non-coding regions as well as for the length distributions\nof different exon and intron types. Detailed descriptions of most of these different models\ncan be found in Mario Stanke's\n<a href=\"https://ediss.uni-goettingen.de/handle/11858/00-1735-0000-0006-B3F8-4\" target=\"_blank\">dissertation</a>.\nThis track shows the most likely gene structure according to a\nSemi-Markov Conditional Random Field model.\nAlternative splicing transcripts were obtained with\na sampling algorithm (<tt>--alternatives-from-sampling=true --sample=100 --minexonintronprob=0.2\n--minmeanexonintronprob=0.5 --maxtracks=3 --temperature=2</tt>).\n</p>\n\n<p>\nThe different models used by Augustus were trained on a number of different species-specific\ngene sets, which included 1000-2000 training gene structures. The <tt>--species</tt> option allows\none to choose the species used for training the models. Different training species were used\nfor the <tt>--species</tt> option when generating these predictions for different groups of\nassemblies.\n<table class=\"stdTbl\">\n <tr>\n  <td align=center><b>Assembly Group</b></td>\n  <td align=center><b>Training Species</b></td>\n </tr>\n <tr>\n  <td align=center>Fish</td>\n  <td align=center><tt>zebrafish</tt>\n </tr>\n <tr>\n  <td align=center>Birds</td>\n  <td align=center><tt>chicken</tt>\n </tr>\n <tr>\n  <td align=center>Human and all other vertebrates</td>\n  <td align=center><tt>human</tt>\n </tr>\n <tr>\n  <td align=center>Nematodes</td>\n  <td align=center><tt>caenorhabditis</tt></td>\n </tr>\n <tr>\n  <td align=center>Drosophila</td>\n  <td align=center><tt>fly</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. mellifera</em></td>\n  <td align=center><tt>honeybee1</tt></td>\n </tr>\n <tr>\n  <td align=center><em>A. gambiae</em></td>\n  <td align=center><tt>culex</tt></td>\n </tr>\n <tr>\n  <td align=center><em>S. cerevisiae</em></td>\n  <td align=center><tt>saccharomyces</tt></td>\n </tr>\n</table>\n<p>\nThis table describes which training species was used for a particular group of assemblies.\nWhen available, the closest related training species was used.\n</p>\n\n<h2>Credits</h2>\n\nThanks to the\n<a href=\"https://math-inf.uni-greifswald.de/en/department/about-us/employees/prof-dr-mario-stanke-english/\"\ntarget=\"_blank\">Stanke lab</a>\nfor providing the AUGUSTUS program.  The training for the <tt>chicken</tt> version was\ndone by Stefanie K&ouml;nig and the training for the\n<tt>human</tt> and <tt>zebrafish</tt> versions was done by Mario Stanke.\n\n<h2>References</h2>\n\n<p>\nStanke M, Diekhans M, Baertsch R, Haussler D.\n<a href=\"https://academic.oup.com/bioinformatics/article/24/5/637/202844/Using-native-and-syntenically-mapped-cDNA\"\ntarget=\"_blank\">\nUsing native and syntenically mapped cDNA alignments to improve de novo gene finding</a>.\n<em>Bioinformatics</em>. 2008 Mar 1;24(5):637-44.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/18218656\" target=\"_blank\">18218656</a>\n</p>\n\n<p>\nStanke M, Waack S.\n<a href=\"https://academic.oup.com/bioinformatics/article/19/suppl_2/ii215/180603/Gene-prediction-with-a-hidden-Markov-model-and-a\"\ntarget=\"_blank\">\nGene prediction with a hidden Markov model and a new intron submodel</a>.\n<em>Bioinformatics</em>. 2003 Oct;19 Suppl 2:ii215-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/14534192\" target=\"_blank\">14534192</a>\n</p>\n"
+        }
       },
       "description": "AUGUSTUS ab initio gene predictions v3.1",
       "category": ["Genes and Gene Predictions"]
@@ -931,15 +993,17 @@
         }
       },
       "metadata": {
-        "color": "150,0,0",
-        "exonNumbers": "on",
-        "group": "genes",
-        "longLabel": "Ensembl Genes",
-        "shortLabel": "Ensembl Genes",
-        "track": "ensGene",
-        "type": "genePred ensPep",
-        "visibility": "hide",
-        "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"http://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for sacCer3 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/sacCer3/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://uswest.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
+        "ucsc": {
+          "color": "150,0,0",
+          "exonNumbers": "on",
+          "group": "genes",
+          "longLabel": "Ensembl Genes",
+          "shortLabel": "Ensembl Genes",
+          "track": "ensGene",
+          "type": "genePred ensPep",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"http://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for sacCer3 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/sacCer3/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://uswest.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
+        }
       },
       "description": "Ensembl Genes",
       "category": ["Genes and Gene Predictions"]
@@ -962,16 +1026,18 @@
         }
       },
       "metadata": {
-        "baseColorDefault": "genomicCodons",
-        "baseColorUseCds": "given",
-        "color": "12,12,120",
-        "idXref": "ncbiRefSeqLink mrnaAcc name",
-        "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-        "parent": "refSeqComposite on",
-        "priority": "1",
-        "shortLabel": "RefSeq All",
-        "track": "ncbiRefSeq",
-        "html": ""
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
+          "track": "ncbiRefSeq",
+          "html": ""
+        }
       },
       "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
       "category": ["Genes and Gene Predictions"]
@@ -994,16 +1060,18 @@
         }
       },
       "metadata": {
-        "baseColorDefault": "genomicCodons",
-        "baseColorUseCds": "given",
-        "color": "12,12,120",
-        "idXref": "ncbiRefSeqLink mrnaAcc name",
-        "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-        "parent": "refSeqComposite on",
-        "priority": "2",
-        "shortLabel": "RefSeq Curated",
-        "track": "ncbiRefSeqCurated",
-        "html": ""
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "2",
+          "shortLabel": "RefSeq Curated",
+          "track": "ncbiRefSeqCurated",
+          "html": ""
+        }
       },
       "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
       "category": ["Genes and Gene Predictions"]
@@ -1026,19 +1094,21 @@
         }
       },
       "metadata": {
-        "color": "0,100,180",
-        "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
-        "exonArrows": "on",
-        "group": "genes",
-        "hgGene": "on",
-        "hgsid": "on",
-        "longLabel": "Protein-Coding Genes from Saccharomyces Genome Database",
-        "priority": "39",
-        "shortLabel": "SGD Genes",
-        "track": "sgdGene",
-        "type": "genePred sgdPep",
-        "visibility": "pack",
-        "html": "<H2>Description</H2>\n \n<p>This track shows annotated genes and open reading frames (ORFs) of <I>Saccharomyces \ncerevisiae</I> obtained from the Saccharomyces Genome Database (SGD).</p>\n\n<p>Clicking on an item in this track brings up a display that synthesizes \navailable data on the gene from a wide variety of sources.</p>\n\n<p>The data were downloaded from the SGD:\n<A HREF=\"https://downloads.yeastgenome.org/curation/chromosomal_feature/saccharomyces_cerevisiae.gff\"\nTARGET=_blank>saccharomyces_cerevisiae.gff</A> \n(accessed 29 Aug. 2011)</p>\n\n<p>This track excludes the ORFs classified as dubious by SGD.</p>\n\n<H2>Credits</H2> \n\n<p>Thanks to the <A HREF=\"https://www.yeastgenome.org/\" TARGET=\"_blank\">SGD</A>\nfor providing the data used in this annotation.</p>\n"
+        "ucsc": {
+          "color": "0,100,180",
+          "directUrl": "/cgi-bin/hgGene?hgg_gene=%s&hgg_chrom=%s&hgg_start=%d&hgg_end=%d&hgg_type=%s&db=%s",
+          "exonArrows": "on",
+          "group": "genes",
+          "hgGene": "on",
+          "hgsid": "on",
+          "longLabel": "Protein-Coding Genes from Saccharomyces Genome Database",
+          "priority": "39",
+          "shortLabel": "SGD Genes",
+          "track": "sgdGene",
+          "type": "genePred sgdPep",
+          "visibility": "pack",
+          "html": "<H2>Description</H2>\n \n<p>This track shows annotated genes and open reading frames (ORFs) of <I>Saccharomyces \ncerevisiae</I> obtained from the Saccharomyces Genome Database (SGD).</p>\n\n<p>Clicking on an item in this track brings up a display that synthesizes \navailable data on the gene from a wide variety of sources.</p>\n\n<p>The data were downloaded from the SGD:\n<A HREF=\"https://downloads.yeastgenome.org/curation/chromosomal_feature/saccharomyces_cerevisiae.gff\"\nTARGET=_blank>saccharomyces_cerevisiae.gff</A> \n(accessed 29 Aug. 2011)</p>\n\n<p>This track excludes the ORFs classified as dubious by SGD.</p>\n\n<H2>Credits</H2> \n\n<p>Thanks to the <A HREF=\"https://www.yeastgenome.org/\" TARGET=\"_blank\">SGD</A>\nfor providing the data used in this annotation.</p>\n"
+        }
       },
       "description": "Protein-Coding Genes from Saccharomyces Genome Database",
       "category": ["Genes and Gene Predictions"]
@@ -1061,14 +1131,16 @@
         }
       },
       "metadata": {
-        "color": "12,12,120",
-        "group": "genes",
-        "longLabel": "Non-S. cerevisiae RefSeq Genes",
-        "shortLabel": "Other RefSeq",
-        "track": "xenoRefGene",
-        "type": "genePred xenoRefPep xenoRefMrna",
-        "visibility": "dense",
-        "html": "<H2>Description</H2>\n<P>\nThis track shows known protein-coding and non-protein-coding genes \nfor organisms other than S. cerevisiae, taken from the NCBI RNA reference \nsequences collection (RefSeq). The data underlying this track are \nupdated weekly.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nThis track follows the display conventions for \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\" TARGET=_blank>gene prediction \ntracks</A>.\nThe color shading indicates the level of review the RefSeq record has \nundergone: predicted (light), provisional (medium), reviewed (dark).</P>\n<P>\nThe item labels and display colors of features within this track can be\nconfigured through the controls at the top of the track description page. \n<UL>\n<LI><B>Label:</B> By default, items are labeled by gene name. Click the \nappropriate Label option to display the accession name instead of the gene\nname, show both the gene and accession names, or turn off the label \ncompletely.\n<LI><B>Codon coloring:</B> This track contains an optional codon coloring \nfeature that allows users to quickly validate and compare gene predictions.\nTo display codon colors, select the <em>genomic codons</em> option from the\n<em>Color track by codons</em> pull-down menu. For more information about\nthis feature, go to the\n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\" TARGET=_blank>\nColoring Gene Predictions and Annotations by Codon</A> page.\n<LI><B>Hide non-coding genes:</B> By default, both the protein-coding and\nnon-protein-coding genes are displayed.  If you wish to see only the coding\ngenes, click this box.\n</UL></P>\n\n<H2>Methods</H2>\n<P>\nThe RNAs were aligned against the S. cerevisiae genome using blat; those\nwith an alignment of less than 15% were discarded. When a single RNA aligned \nin multiple places, the alignment having the highest base identity was \nidentified.  Only alignments having a base identity level within 0.5% of \nthe best and at least 25% base identity with the genomic sequence were kept.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC from RNA sequence data\ngenerated by scientists worldwide and curated by the \nNCBI <A HREF=\"https://www.ncbi.nlm.nih.gov/refseq/\" \nTARGET=_blank>RefSeq project</A>.  </P>\n\n<H2>References</H2>\n<p>\nKent WJ.\n<a href=\"https://genome.cshlp.org/content/12/4/656.full\" target=\"_blank\">\nBLAT--the BLAST-like alignment tool</a>.\n<em>Genome Res</em>. 2002 Apr;12(4):656-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11932250\" target=\"_blank\">11932250</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC187518/\" target=\"_blank\">PMC187518</a>\n</p>\n\n<p>\nPruitt KD, Brown GR, Hiatt SM, Thibaud-Nissen F, Astashyn A, Ermolaeva O, Farrell CM, Hart J,\nLandrum MJ, McGarvey KM <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/42/D1/D756/1051112/RefSeq-an-update-on-mammalian-reference-sequences\" target=\"_blank\">\nRefSeq: an update on mammalian reference sequences</a>.\n<em>Nucleic Acids Res</em>. 2014 Jan;42(Database issue):D756-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24259432\" target=\"_blank\">24259432</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965018/\" target=\"_blank\">PMC3965018</a>\n</p>\n\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-RefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins</a>.\n<em>Nucleic Acids Res.</em> 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+        "ucsc": {
+          "color": "12,12,120",
+          "group": "genes",
+          "longLabel": "Non-S. cerevisiae RefSeq Genes",
+          "shortLabel": "Other RefSeq",
+          "track": "xenoRefGene",
+          "type": "genePred xenoRefPep xenoRefMrna",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows known protein-coding and non-protein-coding genes \nfor organisms other than S. cerevisiae, taken from the NCBI RNA reference \nsequences collection (RefSeq). The data underlying this track are \nupdated weekly.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nThis track follows the display conventions for \n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgTracksHelp.html#GeneDisplay\" TARGET=_blank>gene prediction \ntracks</A>.\nThe color shading indicates the level of review the RefSeq record has \nundergone: predicted (light), provisional (medium), reviewed (dark).</P>\n<P>\nThe item labels and display colors of features within this track can be\nconfigured through the controls at the top of the track description page. \n<UL>\n<LI><B>Label:</B> By default, items are labeled by gene name. Click the \nappropriate Label option to display the accession name instead of the gene\nname, show both the gene and accession names, or turn off the label \ncompletely.\n<LI><B>Codon coloring:</B> This track contains an optional codon coloring \nfeature that allows users to quickly validate and compare gene predictions.\nTo display codon colors, select the <em>genomic codons</em> option from the\n<em>Color track by codons</em> pull-down menu. For more information about\nthis feature, go to the\n<A HREF=\"https://genome.ucsc.edu/goldenPath/help/hgCodonColoring.html\" TARGET=_blank>\nColoring Gene Predictions and Annotations by Codon</A> page.\n<LI><B>Hide non-coding genes:</B> By default, both the protein-coding and\nnon-protein-coding genes are displayed.  If you wish to see only the coding\ngenes, click this box.\n</UL></P>\n\n<H2>Methods</H2>\n<P>\nThe RNAs were aligned against the S. cerevisiae genome using blat; those\nwith an alignment of less than 15% were discarded. When a single RNA aligned \nin multiple places, the alignment having the highest base identity was \nidentified.  Only alignments having a base identity level within 0.5% of \nthe best and at least 25% base identity with the genomic sequence were kept.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC from RNA sequence data\ngenerated by scientists worldwide and curated by the \nNCBI <A HREF=\"https://www.ncbi.nlm.nih.gov/refseq/\" \nTARGET=_blank>RefSeq project</A>.  </P>\n\n<H2>References</H2>\n<p>\nKent WJ.\n<a href=\"https://genome.cshlp.org/content/12/4/656.full\" target=\"_blank\">\nBLAT--the BLAST-like alignment tool</a>.\n<em>Genome Res</em>. 2002 Apr;12(4):656-64.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11932250\" target=\"_blank\">11932250</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC187518/\" target=\"_blank\">PMC187518</a>\n</p>\n\n<p>\nPruitt KD, Brown GR, Hiatt SM, Thibaud-Nissen F, Astashyn A, Ermolaeva O, Farrell CM, Hart J,\nLandrum MJ, McGarvey KM <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/42/D1/D756/1051112/RefSeq-an-update-on-mammalian-reference-sequences\" target=\"_blank\">\nRefSeq: an update on mammalian reference sequences</a>.\n<em>Nucleic Acids Res</em>. 2014 Jan;42(Database issue):D756-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24259432\" target=\"_blank\">24259432</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3965018/\" target=\"_blank\">PMC3965018</a>\n</p>\n\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-RefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts and proteins</a>.\n<em>Nucleic Acids Res.</em> 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+        }
       },
       "description": "Non-S. cerevisiae RefSeq Genes",
       "category": ["Genes and Gene Predictions"]

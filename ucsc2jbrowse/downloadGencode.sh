@@ -90,13 +90,13 @@ HG38_URLS=(
   "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.promoter_windows.gff3.gz"
 )
 HG38_NAMES=(
-  "GENCODE - Comprehensive gene annotation"
-  "GENCODE - Basic gene annotation"
-  "GENCODE - lncRNA gene annotation"
-  "GENCODE - PolyA feature annotation"
-  "GENCODE - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-  "GENCODE - Predicted tRNA genes"
-  "GENCODE - Promoter Windows"
+  "GENCODE V49 - Comprehensive gene annotation"
+  "GENCODE V49 - Basic gene annotation"
+  "GENCODE V49 - lncRNA gene annotation"
+  "GENCODE V49 - PolyA feature annotation"
+  "GENCODE V49 - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
+  "GENCODE V49 - Predicted tRNA genes"
+  "GENCODE V49 - Promoter Windows"
 )
 HG38_TRACK_IDS=(
   "hg38-gencodeComp"
@@ -115,9 +115,9 @@ HG19_URLS=(
   "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.long_noncoding_RNAs.gff3.gz"
 )
 HG19_NAMES=(
-  "GENCODE - Comprehensive gene annotation"
-  "GENCODE - Basic gene annotation"
-  "GENCODE - lncRNA gene annotation"
+  "GENCODE V49 - Comprehensive gene annotation"
+  "GENCODE V49 - Basic gene annotation"
+  "GENCODE V49 - lncRNA gene annotation"
 )
 HG19_TRACK_IDS=(
   "hg19-gencodeComp"
@@ -135,12 +135,12 @@ MM39_URLS=(
   "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.tRNAs.gff3.gz"
 )
 MM39_NAMES=(
-  "GENCODE - Comprehensive gene annotation"
-  "GENCODE - Basic gene annotation"
-  "GENCODE - lncRNA gene annotation"
-  "GENCODE - PolyA feature annotation"
-  "GENCODE - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-  "GENCODE - Predicted tRNA genes"
+  "GENCODE V49 - Comprehensive gene annotation"
+  "GENCODE V49 - Basic gene annotation"
+  "GENCODE V49 - lncRNA gene annotation"
+  "GENCODE V49 - PolyA feature annotation"
+  "GENCODE V49 - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
+  "GENCODE V49 - Predicted tRNA genes"
 )
 MM39_TRACK_IDS=(
   "mm39-gencodeComp"
