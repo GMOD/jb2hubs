@@ -95,7 +95,7 @@ if (isCategory) {
 } else {
   // For taxonomy pages, get the taxon name from the tree
   const { getCachedTree, extractSubtreeByTaxonId } = await import(
-    '../utils/taxonomyCache'
+    '../../utils/taxonomyCache'
   )
   const tree = getCachedTree('all')
   const subtree = tree ? extractSubtreeByTaxonId(tree, taxonId) : null
