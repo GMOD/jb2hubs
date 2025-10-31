@@ -28,7 +28,7 @@ fi
 cd ..
 
 echo "Adding hs1 GFF track to JBrowse..."
-jbrowse add-track gff/hs1.gff.gz --force --trackId hs1-ncbiRefSeqGff --name "RefSeq All (GFF)" --category "NCBI RefSeq" --out "$UCSC_RESULTS_DIR/hs1/" --load copy --indexFile gff/hs1.gff.gz.csi
+jbrowse add-track gff/hs1.gff.gz --force --trackId hs1-ncbiRefSeqGff --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" --out "$UCSC_RESULTS_DIR/hs1/" --load copy --indexFile gff/hs1.gff.gz.csi
 
 echo "Indexing hs1 GFF track..."
 jbrowse text-index --force --out "$UCSC_RESULTS_DIR/hs1" --tracks hs1-ncbiRefSeqGff
