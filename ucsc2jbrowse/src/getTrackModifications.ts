@@ -48,19 +48,18 @@ function _getTrackModifications<
 >(track: T): T | undefined {
   // Delete tracks with "Primate Chain/Net" as the first category
   const { name, assemblyNames, metadata } = track
-  const { ucsc } = metadata || {}
+  const { ucsc } = metadata ?? {}
   if (assemblyNames[0] === 'hs1') {
     const cat0 = name
     if (
-      cat0?.startsWith('Primate Chain/Net') ||
-      cat0?.startsWith('Human liftOver')
+      cat0.startsWith('Primate Chain/Net') ||
+      cat0.startsWith('Human liftOver')
     ) {
       return undefined
     } else if (
-      cat0?.startsWith('CHM13') ||
-      cat0?.startsWith('SGDP') ||
-      // cat0?.startsWith('Long-read Variants') ||
-      cat0?.startsWith('T2T Encode')
+      cat0.startsWith('CHM13') ||
+      cat0.startsWith('SGDP') ||
+      cat0.startsWith('T2T Encode')
     ) {
       return undefined
     } else {

@@ -27,7 +27,9 @@ const treeCache = new Map<string, FlatNodeData>()
 // Simple Newick parser
 function parseNewick(newick: string): TreeNode | null {
   const cleanNewick = newick.trim().replace(/;$/, '')
-  if (!cleanNewick) return null
+  if (!cleanNewick) {
+    return null
+  }
 
   let index = 0
 
@@ -67,7 +69,7 @@ function parseNewick(newick: string): TreeNode | null {
 
     if (name) {
       // First check for leaf node format: Name[accession|taxonId]
-      const accessionMatch = name.match(/^(.+?)\[([^\]]+)\]$/)
+      const accessionMatch = /^(.+?)\[([^\]]+)\]$/.exec(name)
       if (accessionMatch) {
         node.name = accessionMatch[1]
         const bracketContent = accessionMatch[2]
@@ -81,7 +83,8 @@ function parseNewick(newick: string): TreeNode | null {
         }
       } else {
         // Check for internal node format: Name{taxonId}
-        const internalMatch = name.match(/^(.+?)\{([^\}]+)\}$/)
+        // eslint-disable-next-line no-useless-escape
+        const internalMatch = /^(.+?)\{([^}]+)\}$/.exec(name)
         if (internalMatch) {
           node.name = internalMatch[1]
           node.taxonId = internalMatch[2]
@@ -128,8 +131,7 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
     // Check if this node should be collapsed:
     // If it has exactly one child that is a leaf with the same name, skip the intermediate node
     if (
-      n.children &&
-      n.children.length === 1 &&
+      n.children?.length === 1 &&
       (!n.children[0].children || n.children[0].children.length === 0) && // child is a leaf
       n.name === n.children[0].name && // names match
       n.children[0].accession // child has an accession
@@ -217,7 +219,9 @@ export function extractSubtreeByTaxonId(
   node: FlatNodeData | null,
   targetTaxonId: string,
 ): FlatNodeData | null {
-  if (!node) return null
+  if (!node) {
+    return null
+  }
 
   // Check if current node matches the taxonId
   if (node.taxonId === targetTaxonId) {
@@ -228,7 +232,9 @@ export function extractSubtreeByTaxonId(
   if (node.children) {
     for (const child of node.children) {
       const result = extractSubtreeByTaxonId(child, targetTaxonId)
-      if (result) return result
+      if (result) {
+        return result
+      }
     }
   }
 
@@ -242,7 +248,9 @@ export function extractLineageByTaxonId(
   node: FlatNodeData | null,
   targetTaxonId: string,
 ): FlatNodeData[] {
-  if (!node) return []
+  if (!node) {
+    return []
+  }
 
   // Check if current node matches the taxonId
   if (node.taxonId === targetTaxonId) {
@@ -267,7 +275,9 @@ export function extractLineageByTaxonId(
  * Count accessions in a tree
  */
 export function countAccessions(node: FlatNodeData | null): number {
-  if (!node) return 0
+  if (!node) {
+    return 0
+  }
   let count = node.accession ? 1 : 0
   if (node.children) {
     for (const child of node.children) {

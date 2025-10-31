@@ -35,7 +35,7 @@ export function createTrackConfiguration({
 
   // Find group from current track or first parent that has one
   const effectiveGroup =
-    group || parentTracks.find(p => p.data.group)?.data.group
+    group ?? parentTracks.find(p => p.data.group)?.data.group
 
   return conf
     ? {

@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync } from 'fs'
 const configPath = process.argv[2]!
 
 interface JBrowseConfig {
-  plugins?: Array<{ name: string; url: string }>
+  plugins?: { name: string; url: string }[]
   assemblies?: unknown[]
   tracks?: unknown[]
   configuration?: {
@@ -24,9 +24,7 @@ interface JBrowseConfig {
 const config: JBrowseConfig = JSON.parse(readFileSync(configPath, 'utf8'))
 
 // Add plugins if not already present
-if (!config.plugins) {
-  config.plugins = []
-}
+config.plugins ??= []
 
 const pluginsToAdd = [
   {
@@ -55,9 +53,7 @@ for (const plugin of pluginsToAdd) {
 }
 
 // Add or update hierarchical configuration
-if (!config.configuration) {
-  config.configuration = {}
-}
+config.configuration ??= {}
 
 config.configuration.hierarchical = {
   sort: {
