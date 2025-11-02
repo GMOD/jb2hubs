@@ -130,7 +130,7 @@ function createTrackConfiguration({
   const { group, html } = data
   const parentTracks = extractParentTracks(trackName, trackDb)
   const effectiveGroup =
-    group || parentTracks.find(p => p.data.group)?.data.group
+    group ?? parentTracks.find(p => p.data.group)?.data.group
   return conf
     ? {
         metadata: {
