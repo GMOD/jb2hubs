@@ -20,8 +20,6 @@ const specializedParents = new Set([
 
 const specializedTypes = new Set(['pgSnp', 'bigPsl'])
 
-// const specializedGroups = new Set(['denisova', 'neandertal'])
-
 const specializedTrackIds = new Set([
   'gtexGene',
   'gtexGeneV8',
@@ -73,6 +71,7 @@ function _getTrackModifications<
       specializedTypes.has(trackType) ||
       specializedParents.has(trackParent) ||
       specializedTrackIds.has(trackId) ||
+      trackId.startsWith('encode3') ||
       !!ucsc.barChartBars ||
       !!ucsc.barChartCategoryUrl
 
