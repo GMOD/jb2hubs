@@ -1,5 +1,6 @@
 export const categoryMap = {
   map: 'Mapping and Sequencing',
+  pub: 'Literature',
   genes: 'Genes and Gene Predictions',
   phenDis: 'Phenotypes, Variants, and Literature',
   rep: 'Repeats',

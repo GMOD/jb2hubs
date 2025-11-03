@@ -3,6 +3,7 @@ import { TrackDbFile } from '@gmod/ucsc-hub'
 //#region src/const.d.ts
 declare const categoryMap: {
   map: string
+  pub: string
   genes: string
   phenDis: string
   rep: string
