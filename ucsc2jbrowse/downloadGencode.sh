@@ -20,8 +20,6 @@ process_gff_file() {
   mkdir -p "$gencode_processed_dir"
   mkdir -p "$output_dir"
 
-  echo "Processing GFF file for assembly: $assembly_name"
-
   # Get the filename from the URL
   local filename=$(basename "$url")
   local gff_file="${filename%.gz}"
@@ -73,10 +71,7 @@ process_gff_file() {
   fi
 
   # Add the track to JBrowse
-  echo "Adding track for $sorted_gff_file.gz..."
   jbrowse add-track "$output_sorted_gff_gz" --indexFile "$output_sorted_gff_csi" --out "$output_dir" --load copy --name "$track_name" --trackId "$track_id" --category "Genes and Gene Predictions" --force
-
-  echo "Finished processing GFF file for assembly: $assembly_name"
 }
 
 # hg38 URLs and track names

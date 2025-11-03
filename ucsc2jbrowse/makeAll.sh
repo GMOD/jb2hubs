@@ -52,8 +52,8 @@ log "Starting the UCSC to JBrowse data processing pipeline."
 ensure_dir "$UCSC_RESULTS_DIR"
 ensure_dir "configs"
 
-# Clear the old blocked files text format. Keep blockedFiles.json to preserve timestamps.
-rm -f blockedFiles.txt
+# Clear the old blocked files text format. Keep blockedFiles/ directory to preserve timestamps.
+rm -f blockedFiles.txt blockedFiles.json
 
 log "Fetching latest UCSC genome list..."
 curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_RESULTS_DIR/list.json"
@@ -116,6 +116,9 @@ fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLE
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts
+
+log "Merging blocked files caches..."
+node src/mergeBlockedFiles.ts
 
 echo "Formatting codebase..."
 cd ..

@@ -7,47 +7,73 @@ interface BlockedFileCache {
   }
 }
 
-const BLOCKED_FILES_CACHE = 'blockedFiles.json'
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 
-let cachedBlockedFiles: BlockedFileCache | null = null
+// Cache per assembly to avoid contention between parallel processes
+const cacheByAssembly: Map<string, BlockedFileCache> = new Map()
 
 /**
- * Loads the blocked files cache from disk.
+ * Extracts the assembly name from a URL.
  */
-function loadBlockedFilesCache(): BlockedFileCache {
-  if (cachedBlockedFiles) {
-    return cachedBlockedFiles
+function getAssemblyFromUrl(url: string): string | null {
+  // Match assembly names like hg19, hg38, mm39, mm10, etc.
+  const match = url.match(
+    /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//,
+  )
+  return match ? match[1] : null
+}
+
+/**
+ * Gets the cache filename for a specific assembly.
+ */
+function getCacheFilename(assembly: string): string {
+  // Ensure blockedFiles directory exists
+  const dir = 'blockedFiles'
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
   }
+  return `${dir}/${assembly}.json`
+}
+
+/**
+ * Loads the blocked files cache for a specific assembly from disk.
+ */
+function loadBlockedFilesCache(assembly: string): BlockedFileCache {
+  if (cacheByAssembly.has(assembly)) {
+    return cacheByAssembly.get(assembly)!
+  }
+
+  const cacheFile = getCacheFilename(assembly)
+  let cache: BlockedFileCache = {}
 
   try {
-    if (fs.existsSync(BLOCKED_FILES_CACHE)) {
-      const data = fs.readFileSync(BLOCKED_FILES_CACHE, 'utf-8')
-      cachedBlockedFiles = JSON.parse(data)
-      return cachedBlockedFiles!
+    if (fs.existsSync(cacheFile)) {
+      const data = fs.readFileSync(cacheFile, 'utf-8')
+      cache = JSON.parse(data)
     }
   } catch (error) {
-    console.error(`Error loading blocked files cache: ${error}`)
+    console.error(`Error loading blocked files cache for ${assembly}: ${error}`)
   }
 
-  cachedBlockedFiles = {}
-  return cachedBlockedFiles
+  cacheByAssembly.set(assembly, cache)
+  return cache
 }
 
 /**
  * Saves a blocked file to the cache with a timestamp.
  */
-function saveBlockedFile(url: string, blocked: boolean) {
-  const cache = loadBlockedFilesCache()
+function saveBlockedFile(assembly: string, url: string, blocked: boolean) {
+  const cache = loadBlockedFilesCache(assembly)
   cache[url] = {
     lastChecked: Date.now(),
     blocked,
   }
 
   try {
-    fs.writeFileSync(BLOCKED_FILES_CACHE, JSON.stringify(cache, null, 2))
+    const cacheFile = getCacheFilename(assembly)
+    fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2))
   } catch (error) {
-    console.error(`Error saving blocked files cache: ${error}`)
+    console.error(`Error saving blocked files cache for ${assembly}: ${error}`)
   }
 }
 
@@ -61,8 +87,15 @@ function saveBlockedFile(url: string, blocked: boolean) {
 export async function checkIfFileAccessible({ url }: { url: string }) {
   // Only perform HEAD request for UCSC-related URLs
   if (process.env.CHECK_404) {
-    // Check if we have a cached result
-    const cache = loadBlockedFilesCache()
+    // Extract assembly from URL to use assembly-specific cache
+    const assembly = getAssemblyFromUrl(url)
+    if (!assembly) {
+      // Can't determine assembly, skip caching
+      return true
+    }
+
+    // Check if we have a cached result for this assembly
+    const cache = loadBlockedFilesCache(assembly)
     const cachedEntry = cache[url]
 
     if (cachedEntry) {
@@ -85,15 +118,15 @@ export async function checkIfFileAccessible({ url }: { url: string }) {
         console.error(
           `File not accessible (status: ${response.status}): ${url}`,
         )
-        saveBlockedFile(url, true)
+        saveBlockedFile(assembly, url, true)
         return false
       }
       // File is accessible, update cache to mark as not blocked
-      saveBlockedFile(url, false)
+      saveBlockedFile(assembly, url, false)
       return true
     } catch (error) {
       console.error(`Error checking file accessibility for ${url}: ${error}`)
-      saveBlockedFile(url, true)
+      saveBlockedFile(assembly, url, true)
       return false
     }
   }
