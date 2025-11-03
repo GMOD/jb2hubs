@@ -16,6 +16,8 @@ const specializedParents = new Set([
   'per_expr_models_view',
   'sample_models_view',
   'per_expr_reads_view',
+  'TabulaMurisFacsCoverage',
+  'TabulaMurisFacsJunctions',
 ])
 
 const specializedTypes = new Set(['pgSnp', 'bigPsl'])
