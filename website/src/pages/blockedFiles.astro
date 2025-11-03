@@ -25,6 +25,22 @@ try {
   console.error('Error reading blocked files:', error)
 }
 
+// Read removedTracks.json from project root
+const removedTracksPath = join(process.cwd(), 'removedTracks.json')
+let removedTracks: Array<{
+  trackId: string
+  name: string
+  reason: string
+  assembly: string
+}> = []
+
+try {
+  const content = await readFile(removedTracksPath, 'utf-8')
+  removedTracks = JSON.parse(content)
+} catch (error) {
+  console.error('Error reading removed tracks:', error)
+}
+
 // Format timestamp for display
 function formatDate(timestamp: number): string {
   return new Date(timestamp).toLocaleDateString('en-US', {
@@ -68,6 +84,44 @@ function formatDate(timestamp: number): string {
               <td>{index + 1}</td>
               <td>{file.url}</td>
               <td>{formatDate(file.lastChecked)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h3 style="margin-top: 3rem;">Removed tracks</h3>
+    <p>
+      These tracks were intentionally excluded from JBrowse because they are
+      either too verbose, laborious to configure correctly, or require
+      specialized handling that is not yet implemented. If you would like to see
+      any of these tracks added, please{' '}
+      <a href="https://github.com/GMOD/jbrowse-components/issues">
+        contact us on GitHub
+      </a>{' '}
+      or reach out via our{' '}
+      <a href="https://gitter.im/GMOD/jbrowse2">community chat</a>.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Assembly</th>
+          <th>Track ID</th>
+          <th>Track Name</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          removedTracks.map((track, index) => (
+            <tr key={index}>
+              <td>{index + 1}</td>
+              <td>{track.assembly}</td>
+              <td>{track.trackId}</td>
+              <td>{track.name}</td>
+              <td>{track.reason}</td>
             </tr>
           ))
         }

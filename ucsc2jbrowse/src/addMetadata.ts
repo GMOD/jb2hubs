@@ -1,6 +1,10 @@
 import { categoryMap } from 'hubtools'
+import path from 'path'
 
-import { getTrackModifications } from './getTrackModifications.ts'
+import {
+  getTrackModifications,
+  writeRemovedTracks,
+} from './getTrackModifications.ts'
 import {
   readConfig,
   readJSON,
@@ -26,6 +30,9 @@ function addMetadata(configPath: string, tracksDbPath: string) {
   } catch (e) {
     console.error(`no tracksDb for ${configPath}`)
   }
+
+  // Extract assembly name from config path
+  const assembly = path.basename(path.dirname(configPath))
 
   writeJSON(configPath, {
     ...config,
@@ -94,6 +101,9 @@ function addMetadata(configPath: string, tracksDbPath: string) {
         (track): track is NonNullable<typeof track> => track !== undefined,
       ),
   })
+
+  // Write removed tracks for this assembly
+  writeRemovedTracks(assembly)
 }
 
 if (process.argv.length !== 4) {

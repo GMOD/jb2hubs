@@ -31,7 +31,6 @@ process_gff_file() {
   local output_sorted_gff_file="$gencode_processed_dir/$sorted_gff_file"
 
   # Download the file to GENCODE_DIR (only if changed)
-  echo "Checking for updates: $url"
   cd "$gencode_dir"
   wget -q -N "$url"
   cd - >/dev/null

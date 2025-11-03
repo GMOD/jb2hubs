@@ -53,7 +53,8 @@ ensure_dir "$UCSC_RESULTS_DIR"
 ensure_dir "configs"
 
 # Clear the old blocked files text format. Keep blockedFiles/ directory to preserve timestamps.
-rm -f blockedFiles.txt blockedFiles.json
+# Clear old merged files (they will be regenerated)
+rm -f blockedFiles.txt blockedFiles.json removedTracks.json
 
 log "Fetching latest UCSC genome list..."
 curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_RESULTS_DIR/list.json"
@@ -119,6 +120,9 @@ node src/mergeAll.ts
 
 log "Merging blocked files caches..."
 node src/mergeBlockedFiles.ts
+
+log "Merging removed tracks..."
+node src/mergeRemovedTracks.ts
 
 echo "Formatting codebase..."
 cd ..
