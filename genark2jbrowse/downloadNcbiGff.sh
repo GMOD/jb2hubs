@@ -62,7 +62,8 @@ download_ncbi_gff() {
 export -f download_ncbi_gff
 
 # Process the queue serially to avoid overwhelming FTP servers
-cat "$QUEUE_FILE" | parallel -j1 $PARALLEL_OPTS download_ncbi_gff {}
+# Use :::: to read from file for better --bar support
+parallel -j1 $PARALLEL_OPTS download_ncbi_gff :::: "$QUEUE_FILE"
 
 # Clean up
 rm "$QUEUE_FILE"

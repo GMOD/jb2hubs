@@ -1,12 +1,11 @@
 #!/bin/bash
 
 export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
-# Script to process Wikipedia images for all species in parallel using GNU parallel
 
 # Configuration
 INPUT_FILE="processedHubJson/all.json"
-SCRIPT_PATH="src/getWikiImage.ts"
-# Extract scientific names from JSON using jq and process in parallel
+
+# Script to process Wikipedia images for all species in parallel using GNU parallel
 process_wiki_image() {
   local scientific_name="$1"
   local accession="$2"
@@ -24,7 +23,7 @@ process_wiki_image() {
   local hub_dir="hubs/$prefix/$first_part/$second_part/$third_part/$accession/"
 
   if [[ ! -f "$hub_dir/image.json" && ! -f "$hub_dir/image.json.notfound" && "$scientific_name" != "null" ]]; then
-    # echo "Fetching: $scientific_name $accession"
+    echo "Fetching: $scientific_name ($accession)"
     node src/getWikiImage.ts "$scientific_name" "$accession"
     sleep 0.1
   fi
@@ -33,10 +32,10 @@ process_wiki_image() {
 export -f process_wiki_image
 
 if [ -t 1 ]; then
-  PARALLEL_OPTS=""
-else
   PARALLEL_OPTS="--bar"
+else
+  PARALLEL_OPTS=""
 fi
 
-jq -r '.[] | select(. != null) | "\(.scientificName)\t\(.accession)"' "$INPUT_FILE" |
+jq -r '.[] | select(. != null) | select(.accession != null) | select(.scientificName != null) | "\(.scientificName)\t\(.accession)"' "$INPUT_FILE" |
   parallel $PARALLEL_OPTS -j 1 --colsep $'\t' "process_wiki_image {1} {2}"

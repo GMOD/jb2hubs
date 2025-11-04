@@ -184,12 +184,34 @@ export function getTrackModifications<
   },
 >(track: T): T | undefined {
   const modifiedTrack = _getTrackModifications(track)
-  if (modifiedTrack?.category) {
+  if (!modifiedTrack) {
+    return undefined
+  }
+
+  // Prepend "gnomAD " to track name if trackId starts with gnomadGenomes or gnomadExomes
+  let modifiedName = modifiedTrack.name
+  const trackId = modifiedTrack.metadata?.ucsc?.track
+  if (trackId && typeof trackId === 'string') {
+    if (
+      trackId.startsWith('gnomadGenomes') ||
+      trackId.startsWith('gnomadExomes')
+    ) {
+      if (!modifiedName.startsWith('gnomAD ')) {
+        modifiedName = `gnomAD ${modifiedName}`
+      }
+    }
+  }
+
+  if (modifiedTrack.category) {
     return {
       ...modifiedTrack,
+      name: modifiedName,
       category: [...new Set(modifiedTrack.category)],
     }
   } else {
-    return modifiedTrack
+    return {
+      ...modifiedTrack,
+      name: modifiedName,
+    }
   }
 }

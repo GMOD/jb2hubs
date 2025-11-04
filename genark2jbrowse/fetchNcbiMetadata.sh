@@ -63,7 +63,8 @@ fetch_ncbi_data() {
 export -f fetch_ncbi_data
 
 # Process the queue serially with rate limiting
-cat "$QUEUE_FILE" | parallel -j1 $PARALLEL_OPTS fetch_ncbi_data {}
+# Use :::: to read from file for better --bar support
+parallel -j1 $PARALLEL_OPTS fetch_ncbi_data :::: "$QUEUE_FILE"
 
 # Clean up
 rm "$QUEUE_FILE"
