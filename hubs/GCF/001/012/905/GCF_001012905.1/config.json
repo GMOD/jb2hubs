@@ -255,6 +255,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/012/905/GCF_001012905.1/bbi/GCF_001012905.1_Desmodus_rotundus_endogenous_retrovirus_DrERV_consensus_sequence.windowMasker.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_001012905.1_Desmodus_rotundus_endogenous_retrovirus_DrERV_consensus_sequence_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_001012905.1_Desmodus_rotundus_endogenous_retrovirus_DrERV_consensus_sequence_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_001012905.1"]
     }
   ],
   "defaultSession": {
@@ -279,5 +300,24 @@
         }
       }
     ]
-  }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_001012905.1-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_001012905.1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_001012905.1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_001012905.1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_001012905.1"]
+    }
+  ]
 }

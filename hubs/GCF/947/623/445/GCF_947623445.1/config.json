@@ -465,6 +465,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/623/445/GCF_947623445.1/bbi/GCF_947623445.1_kaClaLepa1.1.xenoRefGene.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_947623445.1_kaClaLepa1.1_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_947623445.1_kaClaLepa1.1_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_947623445.1"]
     }
   ],
   "defaultSession": {
@@ -489,5 +510,24 @@
         }
       }
     ]
-  }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_947623445.1-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_947623445.1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_947623445.1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_947623445.1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_947623445.1"]
+    }
+  ]
 }

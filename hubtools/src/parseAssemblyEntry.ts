@@ -41,6 +41,10 @@ export function parseAssemblyEntry({
   const ncbiRefSeqCategory = r2.refseq_category
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
   const stats = ncbiData ? extractStats(r2.meta) : undefined
+
+  // Construct ncbiGff URL
+  const ncbiGffUrl = `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`
+
   return {
     stats,
     buscoStats,
@@ -58,7 +62,7 @@ export function parseAssemblyEntry({
     assemblyStatus,
     jbrowseLink: `https://jbrowse.org/code/jb2/main/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
     jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
-    ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
+    ncbiGff: ncbiGffUrl,
     ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
     ucscDataLink: ucscBase,
     ucscBrowserLink: ucscBrowser,

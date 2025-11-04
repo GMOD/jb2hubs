@@ -486,7 +486,21 @@ function parseAssemblyEntry({ entry }) {
   const [base, rest] = accession.split('_')
   const [b1, b2, b3] = rest.match(/.{1,3}/g)
   let ncbiData
+  if (accession === 'GCF_011762505.2') {
+    console.log(`[DEBUG GCF_011762505.2] Entry data:`)
+    console.log(`  taxId: ${taxId}`)
+    console.log(`  asmId: ${asmId}`)
+    console.log(`  genBank: ${genBank}`)
+    console.log(`  refSeq: ${refSeq}`)
+    console.log(`  sciName: ${sciName}`)
+    console.log(`  comName: ${comName}`)
+    console.log(`  ucscBrowser: ${ucscBrowser}`)
+    console.log(`  accession: ${accession}`)
+    console.log(`  base: ${base}, b1: ${b1}, b2: ${b2}, b3: ${b3}`)
+  }
   const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
+  if (accession === 'GCF_011762505.2')
+    console.log(`[DEBUG GCF_011762505.2] Looking for ncbi.json at: ${fn}`)
   try {
     ncbiData = readJSON(fn)
   } catch {
@@ -496,7 +510,16 @@ function parseAssemblyEntry({ entry }) {
   }
   const r = ncbiData?.result.uids[0]
   const r2 = r ? ncbiData?.result[r] : void 0
-  if (!r2) return
+  if (!r2) {
+    if (accession === 'GCF_011762505.2') {
+      console.log(
+        `[DEBUG GCF_011762505.2] No NCBI data found (r2 is undefined)`,
+      )
+      console.log(`  ncbiData:`, ncbiData)
+      console.log(`  r:`, r)
+    }
+    return
+  }
   const assemblyStatus = r2.assemblystatus
   const ncbiAssemblyName = r2.assemblyname
   const seqReleaseDate = r2.seqreleasedate
@@ -505,8 +528,19 @@ function parseAssemblyEntry({ entry }) {
   const buscoStats = r2.busco
   const ncbiRefSeqCategory = r2.refseq_category
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
+  const stats = ncbiData ? extractStats(r2.meta) : void 0
+  const ncbiGffUrl = `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`
+  if (accession === 'GCF_011762505.2') {
+    console.log(`[DEBUG GCF_011762505.2] NCBI data loaded successfully`)
+    console.log(`  r2.assemblyname: ${ncbiAssemblyName}`)
+    console.log(`  asmId (from entry): ${asmId}`)
+    console.log(`  Constructed ncbiGff URL: ${ncbiGffUrl}`)
+    console.log(
+      `  Expected URL: https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/011/762/505/GCF_011762505.2_mArvNil1.pat.X/GCF_011762505.2_mArvNil1.pat.X_genomic.gff.gz`,
+    )
+  }
   return {
-    stats: ncbiData ? extractStats(r2.meta) : void 0,
+    stats,
     buscoStats,
     seqReleaseDate,
     submitterOrg,
@@ -522,7 +556,7 @@ function parseAssemblyEntry({ entry }) {
     assemblyStatus,
     jbrowseLink: `https://jbrowse.org/code/jb2/main/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
     jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
-    ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
+    ncbiGff: ncbiGffUrl,
     ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
     ucscDataLink: ucscBase,
     ucscBrowserLink: ucscBrowser,
