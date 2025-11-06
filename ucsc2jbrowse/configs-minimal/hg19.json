@@ -49,147 +49,6 @@
   ],
   "tracks": [
     {
-      "trackId": "hg19-clinvarMain",
-      "name": "ClinVar Variants - ClinVar SNVs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/clinvar/clinvarMain.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarMain.bb",
-          "decorator.default.bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarMainDecor.bb",
-          "decorator.default.blockMode": "hide",
-          "decorator.default.glyphMode": "hide",
-          "filter._varLen": "0",
-          "filterByRange._varLen": "on",
-          "filterLabel._originCode": "Alelle Origin",
-          "filterLimits._varLen": "0:49",
-          "filterType._allTypeCode": "multiple",
-          "filterType._clinSignCode": "multiple",
-          "filterType._originCode": "multiple",
-          "filterValues._allTypeCode": "SUBST|single nucleotide variant - SUBST,STRUCT|translocation and fusion - STRUCT,LOSS|deletion and copy loss - LOSS,GAIN|duplication and copy gain - GAIN,INS|indel and insertion - INS,INV|inversion - INV,SEQALT|undetermined - SEQALT,SEQLEN|repeat change - SEQLEN",
-          "filterValues._clinSignCode": "BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,RF|risk factor,OT|other,VUS|vus",
-          "filterValues._originCode": "GERM|germline,SOM|somatic,GERMSOM|germline/somatic,UNK|unknown",
-          "filterValues.molConseq": "genic downstream transcript variant|genic downstream transcript variant,no sequence alteration|no sequence alteration,inframe indel|inframe indel,stop lost|stop lost,genic upstream transcript variant|genic upstream transcript variant,initiatior codon variant|initiatior codon variant,inframe insertion|inframe insertion,inframe deletion|inframe deletion,splice acceptor variant|splice acceptor variant,splice donor variant|splice donor variant,5 prime UTR variant|5 prime UTR variant,nonsense|nonsense,non-coding transcript variant|non-coding transcript variant,3 prime UTR variant|3 prime UTR variant,frameshift variant|frameshift variant,intron variant|intron variant,synonymous variant|synonymous variant,missense variant|missense variant,|unknown,initiator codon variant|initiator codon variant",
-          "group": "phenDis",
-          "itemRgb": "on",
-          "labelFields": "_label",
-          "longLabel": "ClinVar Short Nucleotide Variants < 50bp",
-          "maxWindowCoverage": "10000000",
-          "mouseOverField": "_mouseOver",
-          "noScoreFilter": "on",
-          "parent": "clinvar",
-          "priority": "1",
-          "searchIndex": "_dbVarSsvId,snpId,vcvId",
-          "shortLabel": "ClinVar SNVs",
-          "showCfg": "on",
-          "track": "clinvarMain",
-          "type": "bigBed 12 +",
-          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "visibility": "hide",
-          "html": ""
-        }
-      },
-      "description": "ClinVar Short Nucleotide Variants < 50bp",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg19-clinvarCnv",
-      "name": "ClinVar Variants - ClinVar CNVs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/clinvar/clinvarCnv.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/bbi/clinvar/clinvarCnv.bb",
-          "filter._varLen": "50:999999999",
-          "filterByRange._varLen": "on",
-          "filterLabel._originCode": "Alelle Origin",
-          "filterLimits._varLen": "50:999999999",
-          "filterType._allTypeCode": "multiple",
-          "filterType._clinSignCode": "multiple",
-          "filterType._originCode": "multiple",
-          "filterValues._allTypeCode": "SUBST|single nucleotide variant - SUBST,STRUCT|translocation and fusion - STRUCT,LOSS|deletion and copy loss - LOSS,GAIN|duplication and copy gain - GAIN,INS|indel and insertion - INS,INV|inversion - INV,SEQALT|undetermined - SEQALT,SEQLEN|repeat change - SEQLEN",
-          "filterValues._clinSignCode": "BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,UC|uncertain,OT|other",
-          "filterValues._originCode": "GERM|germline,SOM|somatic,GERMSOM|germline/somatic,NOVO|de novo,UNK|unknown",
-          "group": "phenDis",
-          "itemRgb": "on",
-          "longLabel": "ClinVar Copy Number Variants >= 50bp",
-          "mergeSpannedItems": "on",
-          "mouseOverField": "_mouseOver",
-          "noScoreFilter": "on",
-          "parent": "clinvar",
-          "priority": "2",
-          "searchIndex": "_dbVarSsvId,snpId,vcvId",
-          "shortLabel": "ClinVar CNVs",
-          "skipFields": "rcvAcc",
-          "track": "clinvarCnv",
-          "type": "bigBed 12 +",
-          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "visibility": "hide",
-          "html": ""
-        }
-      },
-      "description": "ClinVar Copy Number Variants >= 50bp",
-      "category": ["Phenotypes, Variants, and Literature"]
-    },
-    {
-      "trackId": "hg19-dbSnp155ClinVar",
-      "name": "Variants - ClinVar dbSNP(155)",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/snp/dbSnp155ClinVar.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/snp/dbSnp155ClinVar.bb",
-          "defaultGeneTracks": "knownGene",
-          "longLabel": "Short Genetic Variants from dbSNP Release 155 Included in ClinVar",
-          "parent": "dbSnp155ViewVariants off",
-          "priority": "2",
-          "shortLabel": "ClinVar dbSNP(155)",
-          "subGroups": "view=variants",
-          "track": "dbSnp155ClinVar",
-          "html": ""
-        }
-      },
-      "description": "Short Genetic Variants from dbSNP Release 155 Included in ClinVar",
-      "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "hg19-dbSnp153ClinVar",
-      "name": "Variants - dbSNP(153) in ClinVar",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/snp/dbSnp153ClinVar.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/snp/dbSnp153ClinVar.bb",
-          "defaultGeneTracks": "knownGene",
-          "longLabel": "Short Genetic Variants from dbSNP Release 153 Included in ClinVar",
-          "parent": "dbSnp153ViewVariants off",
-          "priority": "2",
-          "shortLabel": "dbSNP(153) in ClinVar",
-          "subGroups": "view=variants",
-          "track": "dbSnp153ClinVar",
-          "html": ""
-        }
-      },
-      "description": "Short Genetic Variants from dbSNP Release 153 Included in ClinVar",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg19-ncbiRefSeqOther",
       "name": "NCBI RefSeq - RefSeq Other",
       "type": "FeatureTrack",
@@ -216,8 +75,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
     },
     {
       "trackId": "hg19-ncbiRefSeqGenomicDiff",
@@ -242,51 +100,7 @@
           "html": ""
         }
       },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "trackId": "hg19-clinvarSubLolly",
-      "name": "ClinVar Variants - ClinVar interp",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/clinvarSubLolly/clinvarSubLolly.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg19/clinvarSubLolly/clinvarSubLolly.bb",
-          "configurable": "off",
-          "filterLabel.score": "Filter by variant classification",
-          "filterType.score": "multiple",
-          "filterValues.score": "5|Pathogenic,4|Likely Pathogenic,3|Variant of Unknown Significance,2|Likely Benign,1|Benign,0|Others",
-          "group": "phenDis",
-          "lollyMaxSize": "10",
-          "lollyNoStems": "on",
-          "lollySizeField": "10",
-          "longLabel": "ClinVar SNVs submitted interpretations and evidence",
-          "mouseOverField": "_mouseOver",
-          "parent": "clinvar",
-          "shortLabel": "ClinVar interp",
-          "skipFields": "reviewStatus",
-          "track": "clinvarSubLolly",
-          "type": "bigLolly",
-          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
-          "viewLimits": "0:5",
-          "xrefDataUrl": "/gbdb/hg19/clinvarSubLolly/clinvarSub.bb",
-          "yAxisLabel.0": "0 on 150,150,150 OTH",
-          "yAxisLabel.1": "1 on 150,150,150 B",
-          "yAxisLabel.2": "2 on 150,150,150 LB",
-          "yAxisLabel.3": "3 on 150,150,150 VUS",
-          "yAxisLabel.4": "4 on 150,150,150 LP",
-          "yAxisLabel.5": "5 on 150,150,150 P",
-          "yAxisNumLabels": "off",
-          "html": ""
-        }
-      },
-      "description": "ClinVar SNVs submitted interpretations and evidence",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome"
     },
     {
       "type": "FeatureTrack",
@@ -319,8 +133,7 @@
           "html": "<H2>Description</H2>\n<P>\nThis track displays genomic mappings for human LongSAGE tags from the\n<A HREF=\"https://cgap.nci.nih.gov/\" TARGET=_blank>The Cancer Genome Anatomy\nProject</A>. SAGE (Serial Analysis of Gene Expression) [Velculescu 1995] is a\nquantitative technique for measuring gene expression. For a brief overview\nof SAGE, see the <a href=\"https://cgap.nci.nih.gov/SAGE/SAGEInformation\"\nTARGET=_blank>CGAP SAGE information page</A>.\n</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nGenomic mappings of 17-base LongSAGE tags are displayed.  Tag counts are\nnormalized to tags per million (TPM) in each tissue or library.  Tags with higher TPM are\nmore darkly shaded.  The <TT>CATG</TT> restriction site before the start of the\ntag is rendered as a thick line; the 17 bases of the tag are drawn as a thinner\nline.  Thus the thin end of the tag points in the direction of transcription.\n\nThe track display modes are:\n<UL>\n<LI> <B>dense</B> - Draws locations of mapped tags on a single line.\n<LI> <B>squish</B> - Draws one item per tag per library without labels.\n<LI> <B>pack</B> - Draws one item per tag per tissue with labels. The label\nincludes the number of libraries of each tissue type containing the tag.\nClicking on an item lists the libraries containing the tag, with the libraries\nfrom the selected tissue in bold.  Clicking on a library in the list\ndisplays detailed information about that library. \n<LI> <B>full</B> - Draws one item per tag per library.\nClicking on an item displays information about the library, along with other\nlibraries containing the tag.\n</UL>\n</P>\n<P>\nThe track can be configured to display only tags from a selected tissue.\n</P>\n\n<H2>Methods</H2>\n<P>\nTag and library data, along with genomic mappers, were obtained\nfrom <A HREF=\"https://cgap.nci.nih.gov/\"\nTARGET=_blank>The Cancer Genome Anatomy Project</A>.\n</P>\n<P>\nInformation about the various SAGE libraries, data downloads and other tools\nfor exploring and analyzing these data is available from the \n<A HREF=\"https://cgap.nci.nih.gov/SAGE\" TARGET=_blank>CGAP SAGE Genie</A> web\nsite.\n</P>\n\n<H4>Mapping SAGE tags to the human genome</H4>\n<P>\nThe goal of the SAGE tag mapping is to identify the genomic\nloci of the associated mRNAs. Since it is impossible to disambiguate tags\nthat map to multiple loci, only unique genomic mappings are kept. To compensate\nfor polypmorphisms between the reference genome and the mRNA libraries, \nSNPs are considered by the mapping algorithm.\n</P>\n<P>\nFor each position in the genome on both strands, all\npossible 21-mers, given all combinations of SNPs, were considered.  The 21-mers\nbeginning with <TT>CATG</TT> were generated for use in mapping. Only 21-mers\nthat were unique across the genome were used in placing SAGE tags.\n</P>\n<P>\nOnly SNPs from <a href=\"https://www.ncbi.nlm.nih.gov/SNP/index.html\"\ntarget=_blank>dbSNP</a> with the following characteristics were used:\n<UL>\n<LI>single-base\n<LI>maps to a single genomic location\n<LI>reference allele matches reference genome\n<LI>does not occur in a tandem repeat\n</UL>\n</P>\n<H4>Human embryonic stem cell (ESC) library construction</H4>\n<P>\nDetailed information regarding the human ESC lines used in this study can be\nfound at <A HREF=\"https://stemcells.nih.gov/\"\nTARGET=_blank>https://stemcells.nih.gov</A> and in Hirst <em>et al.</em> 2007.\nThe ESC tags were generated from RNA purified from human ESCs maintained under\nconditions that promote their maintenance in an undifferentiated state.\n</P>\n\n<P>\nA complete set of embryonic stem cell LongSAGE tags is available through the\n<A HREF=\"https://cgap.nci.nih.gov/SAGE\" TARGET=_blank>CGAP web portal</A>.\n</P>\n\n<H2>Credits</H2>\n<P>\nMany thanks to Martin Hirst of <A HREF=\"https://www.bcgsc.ca/\"\nTARGET=_blank>Canada's Michael Smith Genome Sciences Centre</A> for his\nassistance in developing this track.\n</P>\n\n<P>\nThe LongSAGE data and genomic mappings were provided by the \n<A HREF=\"https://cgap.nci.nih.gov/\" TARGET=_blank>The Cancer Genome Anatomy\nProject</A> of the <A HREF=\"https://www.cancer.gov/\" TARGET=_blank>National\nCancer Institute</A>, <A HREF=\"https://www.nih.gov/\" TARGET=_blank>U.S. National\nInstitutes of Health</A>.\n</P>\n\n<P>The human embryonic stem cell library was supported by funds from the\nNational Cancer Institute, National Institutes of Health, under Contract\nNo. N01-C0-12400 and by grants from Genome Canada, Genome British Columbia and\nthe Canadian Stem Cell Network.\n</P>\n\n<H2>References</H2>\n<p>\nBoon K, Osorio EC, Greenhut SF, Schaefer CF, Shoemaker J, Polyak K, Morin PJ, Buetow KH, Strausberg\nRL, De Souza SJ <em>et al</em>.\n<a href=\"https://www.pnas.org/content/99/17/11287\" target=\"_blank\">\nAn anatomy of normal and malignant gene expression</a>.\n<em>Proc Natl Acad Sci U S A</em>. 2002 Aug 20;99(17):11287-92.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12119410\" target=\"_blank\">12119410</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC123249/\" target=\"_blank\">PMC123249</a>\n</p>\n\n<p>\nHirst M, Delaney A, Rogers SA, Schnerch A, Persaud DR, O'Connor MD, Zeng T, Moksa M, Fichter K, Mah\nD <em>et al</em>.\n<a href=\"https://genomebiology.biomedcentral.com/articles/10.1186/gb-2007-8-6-r113\" target=\"_blank\">\nLongSAGE profiling of nine human embryonic stem cell lines</a>.\n<em>Genome Biol</em>. 2007;8(6):R113.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/17570852\" target=\"_blank\">17570852</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394759/\" target=\"_blank\">PMC2394759</a>\n</p>\n\n<p>\nKhattra J, Delaney AD, Zhao Y, Siddiqui A, Asano J, McDonald H, Pandoh P, Dhalla N, Prabhu AL, Ma K\n<em>et al</em>.\n<a href=\"https://genome.cshlp.org/content/17/1/108.abstract\" target=\"_blank\">\nLarge-scale production of SAGE libraries from microdissected tissues, flow-sorted cells, and cell\nlines</a>.\n<em>Genome Res</em>. 2007 Jan;17(1):108-16.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/17135571\" target=\"_blank\">17135571</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1716260/\" target=\"_blank\">PMC1716260</a>\n</p>\n\n<p>\nLal A, Lash AE, Altschul SF, Velculescu V, Zhang L, McLendon RE, Marra MA, Prange C, Morin PJ,\nPolyak K <em>et al</em>.\n<a href=\"https://cancerres.aacrjournals.org/content/59/21/5403\" target=\"_blank\">\nA public database for gene expression in human cancers</a>.\n<em>Cancer Res</em>. 1999 Nov 1;59(21):5403-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10554005\" target=\"_blank\">10554005</a>\n</p>\n\n<p>\nLiang P.\n<a href=\"https://www.pnas.org/content/99/18/11547\" target=\"_blank\">\nSAGE Genie: a suite with panoramic view of gene expression</a>.\n<em>Proc Natl Acad Sci U S A</em>. 2002 Sep 3;99(18):11547-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/12195021\" target=\"_blank\">12195021</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC129301/\" target=\"_blank\">PMC129301</a>\n</p>\n\n<p>\nRiggins GJ, Strausberg RL.\n<a href=\"https://academic.oup.com/hmg/article/10/7/663/558540\" target=\"_blank\">\nGenome and genetic resources from the Cancer Genome Anatomy Project</a>.\n<em>Hum Mol Genet</em>. 2001 Apr;10(7):663-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11257097\" target=\"_blank\">11257097</a>\n</p>\n\n<p>\nSaha S, Sparks AB, Rago C, Akmaev V, Wang CJ, Vogelstein B, Kinzler KW, Velculescu VE.\n<a href=\"https://www.nature.com/articles/nbt0502-508\" target=\"_blank\">\nUsing the transcriptome to annotate the genome</a>.\n<em>Nat Biotechnol</em>. 2002 May;20(5):508-12.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11981567\" target=\"_blank\">11981567</a>\n</p>\n\n<p>\nSiddiqui AS, Khattra J, Delaney AD, Zhao Y, Astell C, Asano J, Babakaiff R, Barber S, Beland J,\nBohacec S <em>et al</em>.\n<a href=\"https://www.pnas.org/content/102/51/18485\" target=\"_blank\">\nA mouse atlas of gene expression: large-scale digital gene-expression profiles from precisely\ndefined developing C57BL/6J mouse tissues and cells</a>.\n<em>Proc Natl Acad Sci U S A</em>. 2005 Dec 20;102(51):18485-90.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/16352711\" target=\"_blank\">16352711</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1311911/\" target=\"_blank\">PMC1311911</a>\n</p>\n\n<p>\nVelculescu VE, Zhang L, Vogelstein B, Kinzler KW.\n<a href=\"https://science.sciencemag.org/content/270/5235/484\" target=\"_blank\">\nSerial analysis of gene expression</a>.\n<em>Science</em>. 1995 Oct 20;270(5235):484-7.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/7570003\" target=\"_blank\">7570003</a>\n</p>\n"
         }
       },
-      "description": "CGAP Long SAGE",
-      "category": ["mRNA and EST"]
+      "description": "CGAP Long SAGE"
     },
     {
       "type": "FeatureTrack",
@@ -350,8 +163,7 @@
           "html": "<H2>Description</H2>\n<P>\nThis track depicts gaps in the assembly.  These gaps &mdash; with the\nexception of intractable heterochromatic gaps &mdash; will be closed during the\nfinishing process. </P>\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is known, it is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap.</P>\n<P>\nThis assembly contains the following principal types of gaps:\n<UL>\n<LI><B>Clone</B>  &mdash; gaps between clones in the same map contig.  These\nmay be bridged or not.\n<LI><B>Contig</B>  &mdash; non-bridged gaps between map contigs.\n<LI><B>Centromere</B>  &mdash; non-bridged gaps from centromeres.\n<LI><B>Telomere</B>  &mdash; non-bridged gaps from telomeres.\n<LI><B>Heterochromatin</B>  &mdash;  non-bridged gaps from large blocks of heterochromatin.\n<LI><B>Short Arm</B>  &mdash; non-bridged long gaps on the short arm of the chromosome.\n</UL></P>\n\n<H2>See also</H2>\n<P>\nNCBI discussion of genome\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/basics/\" TARGET=\"_blank\">\nassembly procedures</A>.\n</P>\n\n<H2>Credits</H2>\n<P>\nThe Feb. 2009 human reference sequence (GRCh37) was produced by the\n<A HREF=\"https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/\" TARGET=\"_blank\">\nGenome Reference Consortium</A>.\n</P>\n"
         }
       },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
+      "description": "Gap Locations"
     },
     {
       "type": "FeatureTrack",
@@ -385,8 +197,7 @@
           "html": "<h2>Description</h2>\n\n<p>\nThis track was created by using Arian Smit's\n<a href=\"https://www.repeatmasker.org/\" target=\"_blank\">RepeatMasker</a>\nprogram, which screens DNA sequences\nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\ntarget=_blank>Downloads</a> page). RepeatMasker uses the\n<a href=\"https://www.girinst.org/repbase/update/index.html\"\ntarget=_blank>Repbase Update</a> library of repeats from the\n<a href=\"https://www.girinst.org/\" target=_blank>Genetic \nInformation Research Institute</a> (GIRI).\nRepbase Update is described in Jurka (2000) in the References section below.\nSome newer assemblies have been made with Dfam, not Repbase. You can\nfind the details for how we make our database data here in our &quot;makeDb/doc/&quot;\n<a href=\"https://genome-source.gi.ucsc.edu/gitlist/kent.git/tree/master/src/hg/makeDb/doc/\"\ntarget=\"_blank\">directory</a>.</p>\n\n<p>\nWhen analyzing the data tables of this track, keep in mind that Repbase is not the same \nas the Repeatmasker sequence database and that the repeat names in the\nRepeatmasker output are not the same as the sequence names in the Repeatmasker\ndatabase.  Concretely, you can find a name such as \"L1PA4\" in the Repeatmasker\noutput and this track, but there is not necessarily a single sequence \"L1PA4\"\nin the Repeatmasker database. This is because Repeatmasker creates annotations\nby joining matches to partial pieces of the database together so there is no\n1:1 relationship between its sequence database and the annotations. To learn\nmore, you can read the Repeatmasker paper, its source code or reach out to the\nRepeatmasker authors, your local expert on transposable elements or us.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nIn full display mode, this track displays up to ten different classes of repeats:\n<ul>\n<li>Short interspersed nuclear elements (SINE), which include ALUs</li>\n<li>Long interspersed nuclear elements (LINE)</li>\n<li>Long terminal repeat elements (LTR), which include retroposons</li>\n<li>DNA repeat elements (DNA)</li>\n<li>Simple repeats (micro-satellites)</li>\n<li>Low complexity repeats</li>\n<li>Satellite repeats</li>\n<li>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA, srpRNA)</li>\n<li>Other repeats, which includes class RC (Rolling Circle)</li>\n<li>Unknown</li>\n</ul>\n</p>\n\n<p>\nThe level of color shading in the graphical display reflects the amount of\nbase mismatch, base deletion, and base insertion associated with a repeat\nelement. The higher the combined number of these, the lighter the shading.\n</p>\n\n<p>\nA &quot;?&quot; at the end of the &quot;Family&quot; or &quot;Class&quot; (for example, DNA?) signifies that\nthe curator was unsure of the classification. At some point in the future,\neither the &quot;?&quot; will be removed or the classification will be changed.</p>\n\n<h2>Methods</h2>\n\n<p>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may\nextend through repeats, but are not permitted to initiate in them.\nSee the <a href=\"/FAQ/FAQdownloads#download16\" target=\"_blank\">FAQ</a> for more information.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to Arian Smit, Robert Hubley and GIRI for providing the tools and\nrepeat libraries used to generate this track.\n</p>\n\n<h2>References</h2>\n\n<p>\nSmit AFA, Hubley R, Green P. <em>RepeatMasker Open-3.0</em>.\n<a href=\"https://www.repeatmasker.org/\" target=\"_blank\">\nhttps://www.repeatmasker.org/</a>. 1996-2010.\n</p>\n\n<p>\nRepbase Update is described in:\n</p>\n\n<p>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\" target=\"_blank\">\nRepbase Update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-420.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n\n<p>\nFor a discussion of repeats in mammalian genomes, see:\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X99000313\" target=\"_blank\">\nInterspersed repeats and other mementos of transposable elements in mammalian genomes</a>.\n<em>Curr Opin Genet Dev</em>. 1999 Dec;9(6):657-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10607616\" target=\"_blank\">10607616</a>\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X9680030X\" target=\"_blank\">\nThe origin of interspersed repeats in the human genome</a>.\n<em>Curr Opin Genet Dev</em>. 1996 Dec;6(6):743-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/8994846\" target=\"_blank\">8994846</a>\n</p>\n"
         }
       },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Repeats"]
+      "description": "Repeating Elements by RepeatMasker"
     },
     {
       "type": "FeatureTrack",
@@ -419,8 +230,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)"
     },
     {
       "type": "FeatureTrack",
@@ -453,8 +263,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)"
     },
     {
       "type": "FeatureTrack",
@@ -489,8 +298,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq HGMD subset: transcripts with clinical variants in HGMD",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq HGMD subset: transcripts with clinical variants in HGMD"
     },
     {
       "type": "FeatureTrack",
@@ -525,8 +333,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Select and MANE subset: A single representative transcript",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq Select and MANE subset: A single representative transcript"
     },
     {
       "type": "FeatureTrack",
@@ -556,8 +363,7 @@
           "track": "vegaPseudoGene"
         }
       },
-      "description": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Vega Annotated Pseudogenes and Immunoglobulin Segments"
     },
     {
       "type": "FeatureTrack",
@@ -577,7 +383,6 @@
           "indexType": "CSI"
         }
       },
-      "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg19"]
     },
     {
@@ -598,7 +403,6 @@
           "indexType": "CSI"
         }
       },
-      "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg19"]
     },
     {
@@ -619,7 +423,6 @@
           "indexType": "CSI"
         }
       },
-      "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg19"]
     }
   ],

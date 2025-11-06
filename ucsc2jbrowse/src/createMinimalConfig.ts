@@ -11,7 +11,6 @@ const MINIMAL_TRACK_PATTERNS = [
   'ncbirefseq', // NCBI RefSeq tracks
   'gencode', // GENCODE tracks
   'rmsk', // RepeatMasker tracks
-  'clinvar', // ClinVar tracks
   'gap', // Gap tracks (gap, allGaps, gapOverlap)
 ]
 
@@ -35,9 +34,9 @@ function createMinimalConfig(
   const config = readConfig(inputPath)
 
   const originalTrackCount = config.tracks.length
-  config.tracks = config.tracks.filter(track =>
-    shouldIncludeTrack(track.trackId),
-  )
+  config.tracks = config.tracks
+    .filter(track => shouldIncludeTrack(track.trackId))
+    .map(({ category, ...rest }) => rest)
   const newTrackCount = config.tracks.length
 
   writeJSON(outputPath, config)

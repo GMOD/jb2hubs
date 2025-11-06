@@ -1,0 +1,806 @@
+> I am starting to consider the database option. I have tried to avoid database because I really
+like being able to see updates as git diffs. However, it is slow to iterate over all the files in
+the file system, and I don't really know what is updated at what point in time. But if a database
+could help speed it up i might be ok with it
+
+● I think a database could really help here! Let me brainstorm database-oriented solutions that
+  could speed things up while potentially preserving some git diff visibility:
+
+  Database Options & Hybrid Approaches
+
+  Option 1: SQLite for State Tracking (Recommended)
+
+  Keep all data files for git diffs, but use SQLite to track processing state
+
+  genark2jbrowse/state.db
+  Tables:
+  - hubs: accession, last_processed, status
+  - file_hashes: accession, file_type, hash, last_checked
+  - processing_steps: accession, step_name, completed_at, status
+
+  Benefits:
+  - Fast queries: "SELECT accession WHERE step='config' AND status='pending'"
+  - No filesystem iteration needed
+  - Still generates config.json files for git diffs
+  - Single file database, easy to backup/version
+
+  How it speeds things up:
+  - Instead of fd meta.json hubs | parallel, query DB for hubs needing processing
+  - Track which step each hub completed, skip completed ones
+  - Index on accession for instant lookups
+
+  Option 2: Hybrid - SQLite + Keep Important Files for Git
+
+  Use DB for everything, but export key files for git tracking
+
+  - Store all metadata in SQLite
+  - After processing, export summary files for git:
+    - summaries/GCA_000001405.1.json (key info only)
+    - Keep full config.json in hubs/ for JBrowse
+  - Git diffs on summary files show what changed
+
+  Option 3: DuckDB for Analytics + State
+
+  Better for querying, analyzing patterns
+  - Fast analytical queries: "show me all hubs processed in last 24h"
+  - Can import/export CSV for git tracking
+  - Great for generating reports
+
+  Option 4: Simple JSON State File (Lightweight DB)
+
+  Structure like a DB but git-diffable
+
+  {
+    "hubs": {
+      "GCA_000001405.1": {
+        "lastProcessed": "2025-11-06T...",
+        "steps": {"config": "done", "gff": "done", "trix": "pending"},
+        "hashes": {"hub.txt": "abc123", "ncbi.json": "def456"}
+      }
+    }
+  }
+
+  Pros: Git diffable, no DB dependency
+  Cons: Slower to query, needs to load entire file
+
+  Concrete Implementation Plan (SQLite Recommended)
+
+  Speed Improvements with SQLite:
+
+  Current bottleneck:
+  fd meta.json hubs | parallel node src/generateConfigs.ts {}
+  Iterates ~600+ hubs checking file modification times.
+
+  With SQLite:
+  node src/queryNeedsProcessing.ts config | parallel node src/generateConfigs.ts {}
+  Query returns only hubs needing processing in milliseconds.
+
+  Schema Design:
+
+  CREATE TABLE hub_state (
+    accession TEXT PRIMARY KEY,
+    hub_txt_hash TEXT,
+    ncbi_json_hash TEXT,
+    config_generated_at DATETIME,
+    gff_processed_at DATETIME,
+    trix_indexed_at DATETIME,
+    last_error TEXT,
+    updated_at DATETIME
+  );
+
+  CREATE INDEX idx_config ON hub_state(config_generated_at);
+  CREATE INDEX idx_updated ON hub_state(updated_at);
+
+  Usage Pattern:
+
+  1. Start of pipeline: Check DB to find what needs processing
+  2. During processing: Update DB when step completes
+  3. End of pipeline: Generate git-diff friendly report of changes
+  4. Benefit: Skip filesystem iteration entirely
+
+  Git Diff Preservation Options:
+
+  Option A: Generate changelog from DB
+  node src/generateChangelog.ts > CHANGES.md
+  Shows what was updated in human-readable format for git
+
+  Option B: Keep config.json files, use DB only for orchestration
+  - Config.json still generated and git-tracked
+  - DB just tracks "needs regeneration" state
+  - You still see diffs in config.json files
+
+  Option C: Export DB state snapshots
+  sqlite3 state.db ".dump" > state_snapshot.sql
+  Git track the SQL dump, see diffs there
+
+  Questions for You:
+
+  1. What specifically do you look at in git diffs? (config.json changes? metadata changes? helps
+  me design the hybrid approach)
+  2. How important is the ability to rollback via git? (affects whether we keep data files vs.
+  DB-only)
+  3. What's your priority ranking?
+    - Speed (process only changed hubs)
+    - Debugging (know what failed where)
+    - Git visibility (see what changed)
+  4. Would you be OK with: SQLite for state + keep generating config.json files for git diffs?
+
+  This hybrid approach seems like it would give you the speed benefits while keeping the files you
+   care about visible in git.
+
+> to be clear, there are now 50,000 hubs in the hubs directory, so it is quite large. the most
+important things are (a) the system should be able to bootstrap itself from an empty system. it
+downloads data from other servers, and then keeps caches locally. every time we update, we
+re-query the remote servers to try to get updates. the git diffs help me understand if anything is
+ unexpected regarding config.json and metadata changes primarily. We do not need to keep data
+files in the git repo or database, just references to them. I would say git visibility may be one
+of the highest priorities, followed by speed and then debugging. sqlite is fine
+
+● Perfect! With 50,000 hubs, this makes total sense. Here's a design that prioritizes git
+  visibility while dramatically improving speed:
+
+  Proposed Architecture: SQLite for Orchestration, Git for Visibility
+
+  Core Principle
+
+  SQLite tracks state and orchestrates processing, but all important files (config.json, metadata)
+   are still written to disk and git-tracked.
+
+  What Goes Where:
+
+  Git-tracked files (for visibility):
+  - ✅ hubs/GCA/.../config.json - Your main diff target
+  - ✅ hubs/GCA/.../meta.json - Metadata changes
+  - ✅ hubs/GCA/.../ncbi.json - NCBI metadata
+  - ❌ hubs/GCA/.../hub.txt - Downloaded cache (could .gitignore)
+  - ❌ GFF files, FASTA, indexes - Definitely not in git
+  - ✅ genark2jbrowse/state.db - SQLite state (actually git-tracked for debugging)
+
+  SQLite tracks (for speed):
+  - Remote resource checksums/ETags
+  - Last successful fetch timestamps
+  - Which processing steps completed
+  - Error states
+
+  Schema Design:
+
+  -- Tracks which hubs exist and when we last checked them
+  CREATE TABLE hubs (
+    accession TEXT PRIMARY KEY,
+    scientific_name TEXT,
+    common_name TEXT,
+    discovered_at DATETIME,
+    last_checked_at DATETIME  -- Last time we checked UCSC for updates
+  );
+
+  -- Tracks remote resources and whether they changed
+  CREATE TABLE remote_resources (
+    accession TEXT,
+    resource_type TEXT,  -- 'hub.txt', 'ncbi_gff', 'ncbi_metadata'
+    url TEXT,
+    last_etag TEXT,      -- HTTP ETag or content hash
+    last_modified TEXT,  -- HTTP Last-Modified header
+    last_fetched_at DATETIME,
+    UNIQUE(accession, resource_type)
+  );
+
+  -- Tracks which processing steps completed successfully
+  CREATE TABLE processing_status (
+    accession TEXT,
+    step_name TEXT,  -- 'config_generated', 'gff_downloaded', 'gff_processed', 'trix_indexed',
+  'config_enhanced'
+    completed_at DATETIME,
+    input_hash TEXT,  -- Hash of inputs when this step ran
+    PRIMARY KEY (accession, step_name)
+  );
+
+  -- Queue of hubs needing processing (cleared at end of successful run)
+  CREATE TABLE processing_queue (
+    accession TEXT PRIMARY KEY,
+    reason TEXT,  -- 'new_hub', 'hub_txt_changed', 'ncbi_metadata_updated', etc.
+    added_at DATETIME
+  );
+
+  How It Speeds Things Up:
+
+  Current (slow):
+  fd meta.json hubs | parallel node src/generateConfigs.ts {}
+  # Iterates 50,000 directories!
+
+  With SQLite (fast):
+  node src/getProcessingQueue.ts config_generated | parallel node src/generateConfigs.ts {}
+  # Query returns only hubs where hub.txt changed - might be 10, might be 100
+
+  Workflow Changes:
+
+  1. downloadHubs.ts - Enhanced with change detection
+
+  // For each hub from UCSC API:
+  const hubUrl = `https://hgdownload.soe.ucsc.edu/.../hub.txt`
+  const response = await fetch(hubUrl, { method: 'HEAD' })
+  const remoteEtag = response.headers.get('etag')
+
+  // Check SQLite: did hub.txt change?
+  const cached = db.get('SELECT last_etag FROM remote_resources WHERE accession=? AND
+  resource_type=?',
+                         [accession, 'hub.txt'])
+
+  if (!cached || cached.last_etag !== remoteEtag) {
+    // Download and save to disk (for git diff)
+    await downloadHubTxt(hubUrl, `hubs/${accession}/hub.txt`)
+
+    // Mark as needing reprocessing
+    db.run('INSERT INTO processing_queue VALUES (?, ?, ?)',
+           [accession, 'hub_txt_changed', new Date()])
+
+    // Update cache state
+    db.run('INSERT OR REPLACE INTO remote_resources VALUES (?, ?, ?, ?, ?, ?)',
+           [accession, 'hub.txt', hubUrl, remoteEtag, null, new Date()])
+  }
+
+  2. generateConfigs.ts - Modified to work with queue
+
+  # Old way: process all hubs
+  fd meta.json hubs | parallel node src/generateConfigs.ts {}
+
+  # New way: only process hubs in queue
+  node src/getProcessingQueue.ts config_generated | \
+    parallel node src/generateConfigs.ts {}
+
+  Where getProcessingQueue.ts does:
+  const hubs = db.all(`
+    SELECT DISTINCT accession
+    FROM processing_queue
+    WHERE reason IN ('hub_txt_changed', 'new_hub')
+  `)
+  hubs.forEach(h => console.log(h.accession))
+
+  3. After each step - Update processing status
+
+  // In generateConfigs.ts, after writing config.json:
+  const inputHash = xxhash(hubTxtContent)
+  db.run('INSERT OR REPLACE INTO processing_status VALUES (?, ?, ?, ?)',
+         [accession, 'config_generated', new Date(), inputHash])
+
+  // Remove from queue for this step
+  db.run('DELETE FROM processing_queue WHERE accession=? AND reason=?',
+         [accession, 'config_generated_needed'])
+
+  Bootstrap from Empty System:
+
+  # Start with empty state.db
+  rm state.db
+
+  # Step 1: Download hub list (discovers all 50,000 hubs)
+  node src/downloadHubList.ts
+  # Populates 'hubs' table with all 50,000 accessions
+
+  # Step 2: Download hubs (smart about what's cached)
+  node src/downloadHubs.ts
+  # Since state.db is empty, marks all 50,000 as needing download
+  # But subsequent runs only download changed ones
+
+  # Step 3+: Rest of pipeline uses queue
+  ./makeAll.sh
+  # Each step processes only what's in the queue
+
+  Benefits of This Design:
+
+  1. Git diffs preserved ✅
+    - config.json still written to disk
+    - meta.json still visible
+    - You review changes exactly as before
+  2. Massive speed improvement 🚀
+    - No filesystem iteration over 50,000 directories
+    - Only process hubs that actually changed
+    - Typical run might process 10-100 hubs instead of 50,000
+  3. Bootstrap-able ✅
+    - Empty state.db = process everything
+    - System rebuilds state from scratch
+  4. Debugging 🔍
+    - SELECT * FROM processing_queue shows what needs work
+    - SELECT * FROM processing_status WHERE step_name='trix_indexed' shows completion
+    - Error tracking possible
+  5. Network efficiency 🌐
+    - Use HTTP ETags to avoid re-downloading unchanged files
+    - NCBI rate limiting only for changed resources
+
+  Migration Path:
+
+  Phase 1: Add SQLite alongside existing code
+  - Scripts still work with fd meta.json hubs
+  - Also populate SQLite state
+  - No behavioral change yet
+
+  Phase 2: Switch to queue-based processing
+  - Modify scripts to query SQLite first
+  - Fall back to filesystem if queue empty (compatibility)
+
+  Phase 3: Optimize remote fetching
+  - Add ETag checking
+  - Skip downloads when remote hasn't changed
+
+  Questions:
+
+  1. Should state.db be git-tracked?
+    - Pros: Can see processing history, debug issues
+    - Cons: Binary file (though SQLite diffs reasonably well)
+    - Alternative: Export state to JSON for git
+  2. What about the existing 50,000 hubs?
+    - One-time migration: scan filesystem to populate initial state.db
+    - Or start fresh: empty state.db treats all as "new"
+  3. Should we track hub.txt in git or .gitignore it?
+    - It's just a cached copy from UCSC
+    - Probably .gitignore but keep on disk for caching
+
+  Does this approach align with your vision? The key insight is SQLite doesn't replace git
+  visibility - it just makes the system smart about what to process.
+
+> I am envisioning that we keep the existing 50,000 hubs on the filesystem for now, and even make
+a workflow to 'export' the db to the filesystem so we can see git diffs. this will help at least
+during initial migration. we may want the db to be git tracked also
+
+● Excellent approach! This gives you a safe migration path with maximum visibility. Let me design
+  this:
+
+  Hybrid Design: Filesystem as Source of Truth + DB for Speed
+
+  Architecture Principles:
+
+  1. Filesystem remains authoritative - All important data still lives in hubs/
+  2. DB is a derived index - Speeds up queries, tracks state
+  3. Export workflow - Writes DB state to git-trackable files
+  4. DB is git-tracked - Can see binary changes + exported diffs
+
+  Directory Structure:
+
+  genark2jbrowse/
+  ├── state.db                          # Git tracked
+  ├── state_export/                     # Git tracked (exported from DB)
+  │   ├── processing_status.json        # Which steps completed for each hub
+  │   ├── processing_queue.txt          # Current queue
+  │   ├── remote_checksums.json         # ETags/hashes of remote resources
+  │   └── summary.json                  # High-level stats
+  ├── hubs/                             # Git tracked (50,000 hubs)
+  │   └── GCA/.../GCA_000001405.1/
+  │       ├── config.json               # Main diff target
+  │       ├── meta.json                 # Metadata
+  │       ├── ncbi.json                 # NCBI data
+  │       └── hub.txt                   # Cached from UCSC
+
+  Schema (Same as before):
+
+  CREATE TABLE hubs (
+    accession TEXT PRIMARY KEY,
+    scientific_name TEXT,
+    common_name TEXT,
+    discovered_at DATETIME,
+    last_checked_at DATETIME
+  );
+
+  CREATE TABLE remote_resources (
+    accession TEXT,
+    resource_type TEXT,
+    url TEXT,
+    last_etag TEXT,
+    last_modified TEXT,
+    last_fetched_at DATETIME,
+    file_size INTEGER,
+    UNIQUE(accession, resource_type)
+  );
+
+  CREATE TABLE processing_status (
+    accession TEXT,
+    step_name TEXT,
+    completed_at DATETIME,
+    input_hash TEXT,
+    duration_ms INTEGER,
+    PRIMARY KEY (accession, step_name)
+  );
+
+  CREATE TABLE processing_queue (
+    accession TEXT PRIMARY KEY,
+    reason TEXT,
+    added_at DATETIME,
+    priority INTEGER DEFAULT 0
+  );
+
+  -- Stats for monitoring
+  CREATE TABLE run_stats (
+    run_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    started_at DATETIME,
+    completed_at DATETIME,
+    hubs_processed INTEGER,
+    errors_count INTEGER
+  );
+
+  New Export Workflow:
+
+  Script: src/exportDbState.ts
+
+  import Database from 'better-sqlite3'
+  import * as fs from 'fs'
+
+  const db = new Database('state.db')
+
+  // Export processing status
+  const status = db.prepare(`
+    SELECT accession, step_name, completed_at, input_hash
+    FROM processing_status
+    ORDER BY accession, step_name
+  `).all()
+
+  fs.writeFileSync(
+    'state_export/processing_status.json',
+    JSON.stringify(status, null, 2)
+  )
+
+  // Export current queue (for visibility)
+  const queue = db.prepare(`
+    SELECT accession, reason, added_at
+    FROM processing_queue
+    ORDER BY priority DESC, added_at
+  `).all()
+
+  fs.writeFileSync(
+    'state_export/processing_queue.txt',
+    queue.map(q => `${q.accession}\t${q.reason}\t${q.added_at}`).join('\n')
+  )
+
+  // Export remote resource checksums (grouped by type)
+  const resources = db.prepare(`
+    SELECT resource_type, accession, last_etag, last_fetched_at
+    FROM remote_resources
+    ORDER BY resource_type, accession
+  `).all()
+
+  const grouped = {}
+  for (const r of resources) {
+    if (!grouped[r.resource_type]) grouped[r.resource_type] = []
+    grouped[r.resource_type].push({
+      accession: r.accession,
+      etag: r.last_etag,
+      fetched: r.last_fetched_at
+    })
+  }
+
+  fs.writeFileSync(
+    'state_export/remote_checksums.json',
+    JSON.stringify(grouped, null, 2)
+  )
+
+  // Export summary stats
+  const summary = {
+    total_hubs: db.prepare('SELECT COUNT(*) as count FROM hubs').get().count,
+    queue_size: db.prepare('SELECT COUNT(*) as count FROM processing_queue').get().count,
+    last_export: new Date().toISOString(),
+    steps_completed: db.prepare(`
+      SELECT step_name, COUNT(*) as count
+      FROM processing_status
+      GROUP BY step_name
+    `).all()
+  }
+
+  fs.writeFileSync(
+    'state_export/summary.json',
+    JSON.stringify(summary, null, 2)
+  )
+
+  console.log('DB state exported to state_export/')
+
+  Modified makeAll.sh:
+
+  #!/bin/bash
+
+  export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
+
+  if [ -t 1 ]; then
+    PARALLEL_OPTS="--bar"
+  else
+    PARALLEL_OPTS=""
+  fi
+  export PARALLEL_OPTS
+
+  # Initialize DB if it doesn't exist
+  if [ ! -f "state.db" ]; then
+    echo "Initializing state database..."
+    node src/initializeDb.ts
+  fi
+
+  # Export DB state before run (see "before" state in git)
+  echo "Exporting DB state (before)..."
+  node src/exportDbState.ts
+
+  echo "Downloading list of hubs..."
+  node src/downloadHubList.ts
+
+  echo "Downloading actual hub.txt files..."
+  node src/downloadHubs.ts
+  # This populates processing_queue with changed hubs
+
+  echo "Fetching NCBI metadata..."
+  ./fetchNcbiMetadata.sh
+  # Uses queue to only fetch for changed hubs
+
+  echo "Processing hub JSON data..."
+  node src/processHubJson.ts
+
+  echo "Processing UCSC list data..."
+  node src/processUcscList.ts
+
+  echo "Generating JBrowse 2 config.json for hubs that need it..."
+  # OLD: fd meta.json hubs | parallel $PARALLEL_OPTS node src/generateConfigs.ts {}
+  # NEW: Only process hubs in queue
+  node src/getProcessingQueue.ts config_needed | parallel $PARALLEL_OPTS node
+  src/generateConfigs.ts {}
+
+  echo "Downloading NCBI GFF files..."
+  ./downloadNcbiGff.sh
+
+  echo "Processing NCBI GFF files..."
+  ./processGffFiles.sh
+
+  echo "Loading and text indexing NCBI GFF tracks..."
+  ./addTracksAndTextIndex.sh
+
+  echo "Adding GenArk extensions (special tracks)..."
+  node src/makeGenArkExtensions.ts
+
+  echo "Enhancing configs with plugins and hierarchical configuration..."
+  ./enhanceConfigs.sh
+
+  echo "Fetching wiki images"
+  ./getWikiImages.sh
+
+  echo "Calculate gff file hashes"
+  ./getFileListing.sh
+
+  # Export DB state after run (see "after" state in git)
+  echo "Exporting DB state (after)..."
+  node src/exportDbState.ts
+
+  # Clear queue after successful run
+  echo "Clearing processing queue..."
+  node src/clearQueue.ts
+
+  sleep 1
+
+  echo "Formatting codebase..."
+  cd ..
+  yarn format
+  cd -
+
+  Initial Migration Script:
+
+  Script: src/initializeDb.ts
+
+  import Database from 'better-sqlite3'
+  import * as fs from 'fs'
+  import * as path from 'path'
+  import { execSync } from 'child_process'
+
+  const db = new Database('state.db')
+
+  // Create schema
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS hubs (
+      accession TEXT PRIMARY KEY,
+      scientific_name TEXT,
+      common_name TEXT,
+      discovered_at DATETIME,
+      last_checked_at DATETIME
+    );
+
+    CREATE TABLE IF NOT EXISTS remote_resources (
+      accession TEXT,
+      resource_type TEXT,
+      url TEXT,
+      last_etag TEXT,
+      last_modified TEXT,
+      last_fetched_at DATETIME,
+      file_size INTEGER,
+      UNIQUE(accession, resource_type)
+    );
+
+    CREATE TABLE IF NOT EXISTS processing_status (
+      accession TEXT,
+      step_name TEXT,
+      completed_at DATETIME,
+      input_hash TEXT,
+      duration_ms INTEGER,
+      PRIMARY KEY (accession, step_name)
+    );
+
+    CREATE TABLE IF NOT EXISTS processing_queue (
+      accession TEXT PRIMARY KEY,
+      reason TEXT,
+      added_at DATETIME,
+      priority INTEGER DEFAULT 0
+    );
+
+    CREATE TABLE IF NOT EXISTS run_stats (
+      run_id INTEGER PRIMARY KEY AUTOINCREMENT,
+      started_at DATETIME,
+      completed_at DATETIME,
+      hubs_processed INTEGER,
+      errors_count INTEGER
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_queue_priority ON processing_queue(priority DESC, added_at);
+    CREATE INDEX IF NOT EXISTS idx_status_step ON processing_status(step_name, completed_at);
+  `)
+
+  console.log('Database schema created')
+
+  // Optionally: scan existing filesystem to populate DB
+  if (process.argv.includes('--scan-filesystem')) {
+    console.log('Scanning existing filesystem to populate DB...')
+
+    // Find all existing hubs
+    const metaFiles = execSync('fd meta.json hubs', { encoding: 'utf8' })
+      .trim()
+      .split('\n')
+      .filter(Boolean)
+
+    const insertHub = db.prepare(`
+      INSERT OR IGNORE INTO hubs (accession, discovered_at, last_checked_at)
+      VALUES (?, ?, ?)
+    `)
+
+    const insertStatus = db.prepare(`
+      INSERT OR IGNORE INTO processing_status (accession, step_name, completed_at)
+      VALUES (?, ?, ?)
+    `)
+
+    let count = 0
+    for (const metaFile of metaFiles) {
+      const accession = path.basename(path.dirname(metaFile))
+      const now = new Date().toISOString()
+
+      insertHub.run(accession, now, now)
+
+      // Mark existing files as already processed
+      const hubDir = path.dirname(metaFile)
+      if (fs.existsSync(`${hubDir}/config.json`)) {
+        insertStatus.run(accession, 'config_generated', now)
+      }
+      if (fs.existsSync(`${hubDir}/trix`)) {
+        insertStatus.run(accession, 'trix_indexed', now)
+      }
+
+      count++
+      if (count % 1000 === 0) {
+        console.log(`Scanned ${count} hubs...`)
+      }
+    }
+
+    console.log(`Initialized DB with ${count} existing hubs`)
+  }
+
+  db.close()
+
+  Helper Script: Get Processing Queue
+
+  Script: src/getProcessingQueue.ts
+
+  import Database from 'better-sqlite3'
+
+  const db = new Database('state.db', { readonly: true })
+  const filter = process.argv[2] // e.g., 'config_needed'
+
+  let query = 'SELECT DISTINCT accession FROM processing_queue'
+
+  if (filter === 'config_needed') {
+    query = `
+      SELECT DISTINCT pq.accession
+      FROM processing_queue pq
+      WHERE pq.reason IN ('hub_txt_changed', 'new_hub', 'force_reprocess')
+    `
+  }
+
+  const results = db.prepare(query).all()
+  results.forEach(r => console.log(r.accession))
+
+  db.close()
+
+  Modified downloadHubs.ts (with DB integration):
+
+  // At the top, add DB connection
+  import Database from 'better-sqlite3'
+  const db = new Database('state.db')
+
+  async function processHubEntry({ entry, idx, totalEntries }) {
+    // ... existing code ...
+
+    const hubFileDownloadLocation = `https://hgdownload.soe.ucsc.edu/hubs/${basePrefix}/${part1}/$
+  {part2}/${part3}/${accession}/hub.txt`
+
+    // Check if we need to download (check DB first, then filesystem)
+    const cached = db.prepare(`
+      SELECT last_etag FROM remote_resources
+      WHERE accession = ? AND resource_type = 'hub.txt'
+    `).get(accession)
+
+    let needsDownload = !fs.existsSync(hubFilePath) || process.env.REPROCESS
+
+    if (!needsDownload && cached) {
+      // Quick HEAD request to check if changed
+      try {
+        const response = await fetch(hubFileDownloadLocation, { method: 'HEAD' })
+        const remoteEtag = response.headers.get('etag')
+        needsDownload = remoteEtag !== cached.last_etag
+      } catch (e) {
+        needsDownload = true // If HEAD fails, download to be safe
+      }
+    }
+
+    if (needsDownload) {
+      console.log(`Processing ${idx + 1}/${totalEntries}: ${sciName} (${accession})`)
+
+      // Download hub.txt
+      const hubContent = await myfetchtext(hubFileDownloadLocation)
+      fs.writeFileSync(hubFilePath, hubContent)
+
+      // Update DB
+      db.prepare(`
+        INSERT OR REPLACE INTO remote_resources
+        (accession, resource_type, url, last_etag, last_fetched_at)
+        VALUES (?, ?, ?, ?, ?)
+      `).run(accession, 'hub.txt', hubFileDownloadLocation, null, new Date().toISOString())
+
+      // Add to processing queue
+      db.prepare(`
+        INSERT OR IGNORE INTO processing_queue (accession, reason, added_at)
+        VALUES (?, ?, ?)
+      `).run(accession, 'hub_txt_changed', new Date().toISOString())
+
+      // Write meta.json as before
+      fs.writeFileSync(metaFilePath, JSON.stringify({ ... }))
+    }
+  }
+
+  Git Workflow:
+
+  After running makeAll.sh, you'd see in git:
+
+  git status
+
+  # Shows:
+  modified:   state.db
+  modified:   state_export/processing_queue.txt
+  modified:   state_export/summary.json
+  modified:   hubs/GCA/000/001/405/GCA_000001405.1/config.json
+  modified:   hubs/GCA/000/002/315/GCA_000002315.6/config.json
+
+  The state_export/ changes show you what the DB did, while hubs/ changes show actual data
+  changes.
+
+  Benefits During Migration:
+
+  1. Safe rollback - Filesystem still works standalone
+  2. Verify DB correctness - Compare DB exports to filesystem
+  3. Git visibility - See both DB state and file changes
+  4. Gradual migration - Add DB queries incrementally
+
+  Migration Steps:
+
+  Week 1: Add DB infrastructure
+  - Create schema, export workflow
+  - Populate DB from filesystem scan
+  - No behavioral changes yet
+
+  Week 2: Add queue-based processing
+  - Modify scripts to check queue first
+  - Fall back to filesystem if queue empty
+  - Verify results match
+
+  Week 3: Add remote change detection
+  - ETag checking for UCSC resources
+  - Skip downloads when unchanged
+
+  Week 4: Full migration
+  - All scripts use DB
+  - Export workflow ensures git visibility
+
+  Does this design give you the safety and visibility you need during migration?
+

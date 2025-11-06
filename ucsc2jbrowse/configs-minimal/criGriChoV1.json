@@ -69,8 +69,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
     },
     {
       "trackId": "criGriChoV1-ncbiRefSeqGenomicDiff",
@@ -95,8 +94,7 @@
           "html": ""
         }
       },
-      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
-      "category": ["Genes and Gene Predictions"]
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome"
     },
     {
       "type": "FeatureTrack",
@@ -126,8 +124,7 @@
           "visibility": "dense"
         }
       },
-      "description": "Gap Locations",
-      "category": ["Mapping and Sequencing"]
+      "description": "Gap Locations"
     },
     {
       "type": "FeatureTrack",
@@ -155,8 +152,7 @@
           "html": "<h2>Description</h2>\n<p>\nThis track indicates any pair of exactly identical sequence\non each side of gaps.  Where gaps are any run of N's, including\na single N.  The end of an upstream sequence before the gap\nis duplicated exactly at the beginning of the downstream sequence\nfollowing the gap in the assembly.\n</p>\n<h2>Methods</h2>\n<p>\nThese duplicate sequences were found by taking 1,000 bases before and\nafter each gap and aligned with the blat command:\n<pre>\n  blat -q=dna -minIdentity=95 -repMatch=10 upstreamContig.fa downstreamContig.fa\n</pre>\nFiltering the PSL output for a perfect match, no mis-matches,\nand therefore of equal size matching sequence,\nwhere the alignment ends exactly at the end of the upstream sequence,\nand begins exactly at the start of the downstream sequence.\n</p>\n<h2>Credits</h2>\n<p>\nThank you to Joel Armstrong and Benedict Paten of the\n<a href=\"https://cgl.genomics.ucsc.edu/\" target=_blank>\nComputational Genomics Lab</a>\nat the\n<a href=\"https://ucscgenomics.soe.ucsc.edu/\" target=_blank>\nU.C. Santa Cruz Genomics Institute</a>\nfor identifying this characteristic of genome assemblies.\n<p>\n\n<p> The data and presentation of this track were prepared by\n<a href=\"mailto:&#104;&#105;&#114;a&#109;&#64;&#115;&#111;&#101;\n.&#117;&#99;&#115;&#99;.&#101;&#100;u\">Hiram Clawson</a>,\n<a href=\"https://ucscgenomics.soe.ucsc.edu/\" target=_blank>\nU.C. Santa Cruz Genomics Institute</a>\n</p>\n"
         }
       },
-      "description": "Paired exactly identical sequence on each side of a gap",
-      "category": ["Mapping and Sequencing"]
+      "description": "Paired exactly identical sequence on each side of a gap"
     },
     {
       "type": "FeatureTrack",
@@ -190,8 +186,7 @@
           "html": "<h2>Description</h2>\n\n<p>\nThis track was created by using Arian Smit's\n<a href=\"http://www.repeatmasker.org/\" target=\"_blank\">RepeatMasker</a>\nprogram, which screens DNA sequences\nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\ntarget=_blank>Downloads</a> page). RepeatMasker uses the\n<a href=\"https://www.girinst.org/repbase/update/index.html\"\ntarget=_blank>Repbase Update</a> library of repeats from the\n<a href=\"https://www.girinst.org/\" target=_blank>Genetic \nInformation Research Institute</a> (GIRI).\nRepbase Update is described in Jurka (2000) in the References section below.\nSome newer assemblies have been made with Dfam, not Repbase. You can\nfind the details for how we make our database data here in our &quot;makeDb/doc/&quot;\n<a href=\"https://genome-source.gi.ucsc.edu/gitlist/kent.git/tree/master/src/hg/makeDb/doc/\"\ntarget=\"_blank\">directory</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nIn full display mode, this track displays up to ten different classes of repeats:\n<ul>\n<li>Short interspersed nuclear elements (SINE), which include ALUs</li>\n<li>Long interspersed nuclear elements (LINE)</li>\n<li>Long terminal repeat elements (LTR), which include retroposons</li>\n<li>DNA repeat elements (DNA)</li>\n<li>Simple repeats (micro-satellites)</li>\n<li>Low complexity repeats</li>\n<li>Satellite repeats</li>\n<li>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA, srpRNA)</li>\n<li>Other repeats, which includes class RC (Rolling Circle)</li>\n<li>Unknown</li>\n</ul>\n</p>\n\n<p>\nThe level of color shading in the graphical display reflects the amount of\nbase mismatch, base deletion, and base insertion associated with a repeat\nelement. The higher the combined number of these, the lighter the shading.\n</p>\n\n<p>\nA &quot;?&quot; at the end of the &quot;Family&quot; or &quot;Class&quot; (for example, DNA?) signifies that\nthe curator was unsure of the classification. At some point in the future,\neither the &quot;?&quot; will be removed or the classification will be changed.</p>\n\n<h2>Methods</h2>\n\n<p>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may\nextend through repeats, but are not permitted to initiate in them.\nSee the <a href=\"/FAQ/FAQdownloads#download16\" target=\"_blank\">FAQ</a> for more information.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to Arian Smit, Robert Hubley and GIRI for providing the tools and\nrepeat libraries used to generate this track.\n</p>\n\n<h2>References</h2>\n\n<p>\nSmit AFA, Hubley R, Green P. <em>RepeatMasker Open-3.0</em>.\n<a href=\"http://www.repeatmasker.org\" target=\"_blank\">\nhttp://www.repeatmasker.org</a>. 1996-2010.\n</p>\n\n<p>\nRepbase Update is described in:\n</p>\n\n<p>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\" target=\"_blank\">\nRepbase Update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-420.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n\n<p>\nFor a discussion of repeats in mammalian genomes, see:\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X99000313\" target=\"_blank\">\nInterspersed repeats and other mementos of transposable elements in mammalian genomes</a>.\n<em>Curr Opin Genet Dev</em>. 1999 Dec;9(6):657-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10607616\" target=\"_blank\">10607616</a>\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X9680030X\" target=\"_blank\">\nThe origin of interspersed repeats in the human genome</a>.\n<em>Curr Opin Genet Dev</em>. 1996 Dec;6(6):743-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/8994846\" target=\"_blank\">8994846</a>\n</p>\n"
         }
       },
-      "description": "Repeating Elements by RepeatMasker",
-      "category": ["Variation and Repeats"]
+      "description": "Repeating Elements by RepeatMasker"
     },
     {
       "type": "FeatureTrack",
@@ -224,8 +219,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)"
     },
     {
       "type": "FeatureTrack",
@@ -258,8 +252,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)"
     },
     {
       "type": "FeatureTrack",
@@ -292,8 +285,7 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
-      "category": ["Genes and Gene Predictions"]
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
   "aggregateTextSearchAdapters": [
