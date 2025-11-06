@@ -1,0 +1,259 @@
+{
+  "assemblies": [
+    {
+      "name": "droPer1",
+      "displayName": "D. persimilis (droPer1)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "droPer1-refseq",
+        "metadata": {
+          "description": "Oct. 2005 (Broad/droPer1)",
+          "nibPath": "/gbdb/droPer1",
+          "organism": "D. persimilis",
+          "defaultPos": "super_1:7109001-7125000",
+          "active": 1,
+          "orderKey": 4085,
+          "genome": "D. persimilis",
+          "scientificName": "Drosophila persimilis",
+          "htmlPath": "/gbdb/droPer1/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "Broad 28 Oct. 2005",
+          "taxId": 7234
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/droPer1/bigZips/droPer1.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/droPer1/bigZips/droPer1.chrom.sizes"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/droPer1/bigZips/droPer1.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "trackId": "droPer1-ncbiRefSeqOther",
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["droPer1"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/droPer1/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/droPer1/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/droPer1/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"http://www.informatics.jax.org/marker/$$\"",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "droPer1-ncbiRefSeqGenomicDiff",
+      "name": "NCBI RefSeq - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["droPer1"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/droPer1/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/droPer1/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "refSeqComposite off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +",
+          "html": ""
+        }
+      },
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "droPer1-gap",
+      "name": "Gap",
+      "assemblyNames": ["droPer1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\n<P>\nThis track depicts gaps &mdash; represented by black boxes &mdash; in the <em>D. persimilis</em>\ngenome sequence. An assembly region is designated as a gap if the sequence\ncontains a series of <em>N</em>s.  All gaps for droPer1 are of type \n<em>fragment</em>.  \n</P>\n\n"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "droPer1-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["droPer1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "priority": "149.1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\n<P>\nThis track was created by using Arian Smit's <A\nHREF=\"http://www.repeatmasker.org/\"\nTARGET=_blank>RepeatMasker</A> program, which screens DNA sequences \nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<A HREF=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\nTARGET=_BLANK>Downloads</A> page). RepeatMasker uses \nthe <A HREF=\"https://www.girinst.org/repbase/update/\"\nTARGET=_blank>Repbase Update</A> library of repeats from the \n<A HREF=\"https://www.girinst.org/\" TARGET=_blank>Genetic \nInformation Research Institute</A> (GIRI).  \nRepbase Update is described in Jurka, J. (2000) in the References section below.</P>\n\n<H2>Display Conventions and Configuration</H2>\n<P>\nIn full display mode, this track displays up to ten different classes of repeats:\n<UL>\n<LI>Short interspersed nuclear elements (SINE), which include ALUs\n<LI>Long interspersed nuclear elements (LINE)\n<LI>Long terminal repeat elements (LTR), which include retroposons\n<LI>DNA repeat elements (DNA)\n<LI>Simple repeats (micro-satellites)\n<LI>Low complexity repeats\n<LI>Satellite repeats\n<LI>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA)\n<LI>Other repeats, which includes class RC (Rolling Circle)\n<LI>Unknown\n</UL></P>\n<P>\nThe level of color shading in the graphical display reflects the amount of \nbase mismatch, base deletion, and base insertion associated with a repeat \nelement. The higher the combined number of these, the lighter the shading.</P>\n\n<H2>Methods</H2>\n<P>\nUCSC has used the most current versions of the RepeatMasker software \nand repeat libraries available to generate these data. Note that these \nversions may be newer than those that are publicly available on the Internet. \n</P>\n<P>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may \nextend through repeats, but are not permitted to initiate in them. \nSee the \n<A HREF=\"https://genome.ucsc.edu/FAQ/FAQdownloads#download16\">FAQ</A> for \nmore information. </P>\n\n<H2>Credits</H2>\n<P>\nThanks to Arian Smit and GIRI\nfor providing the tools and repeat libraries used to generate this track.</P>\n\n<H2>References</H2>\n<P>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\"\ntarget=\"_blank\">Repbase update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-20.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "droPer1-ncbiRefSeq",
+      "name": "NCBI RefSeq - RefSeq All",
+      "assemblyNames": ["droPer1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeq.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeq.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
+          "track": "ncbiRefSeq",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "droPer1-ncbiRefSeqPredicted",
+      "name": "NCBI RefSeq - RefSeq Predicted",
+      "assemblyNames": ["droPer1"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqPredicted.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "parent": "refSeqComposite off",
+          "priority": "3",
+          "shortLabel": "RefSeq Predicted",
+          "track": "ncbiRefSeqPredicted",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "category": ["Genes and Gene Predictions"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

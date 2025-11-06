@@ -1,0 +1,341 @@
+{
+  "assemblies": [
+    {
+      "name": "susScr11",
+      "displayName": "Pig (susScr11)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "susScr11-refseq",
+        "metadata": {
+          "description": "Feb. 2017 (Sscrofa11.1/susScr11)",
+          "nibPath": "/gbdb/susScr11",
+          "organism": "Pig",
+          "defaultPos": "chr18:19836295-19840119",
+          "active": 1,
+          "orderKey": 16312,
+          "genome": "Pig",
+          "scientificName": "Sus scrofa",
+          "htmlPath": "/gbdb/susScr11/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "The Swine Genome Sequencing Consortium (SGSC)",
+          "taxId": 9823
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/susScr11/bigZips/susScr11.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/susScr11/bigZips/susScr11.chrom.sizes"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/susScr11/bigZips/susScr11.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "trackId": "susScr11-ncbiRefSeqOther",
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/susScr11/ncbiRefSeq/ncbiRefSeqOther.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/susScr11/ncbiRefSeq/ncbiRefSeqOther.bb",
+          "color": "32,32,32",
+          "labelFields": "gene",
+          "longLabel": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite off",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "/gbdb/susScr11/ncbiRefSeq/ncbiRefSeqOther.ix",
+          "shortLabel": "RefSeq Other",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqOther",
+          "type": "bigBed 12 +",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "susScr11-ncbiRefSeqGenomicDiff",
+      "name": "NCBI RefSeq - RefSeq Diffs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/susScr11/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/susScr11/ncbiRefSeq/ncbiRefSeqGenomicDiff.bb",
+          "itemRgb": "on",
+          "longLabel": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+          "parent": "refSeqComposite off",
+          "priority": "6",
+          "shortLabel": "RefSeq Diffs",
+          "skipEmptyFields": "on",
+          "track": "ncbiRefSeqGenomicDiff",
+          "type": "bigBed 9 +",
+          "html": ""
+        }
+      },
+      "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "susScr11-clinvarLift",
+      "name": "ClinVar Lift",
+      "type": "FeatureTrack",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/susScr11/bbi/clinvarLift.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/susScr11/bbi/clinvarLift.bb",
+          "group": "compGeno",
+          "itemRgb": "on",
+          "longLabel": "Human ClinVar variants lifted to Pig",
+          "mouseOverField": "_mouseOver",
+          "scoreLabel": "ClinVar Star-Rating (0-4)",
+          "shortLabel": "ClinVar Lift",
+          "track": "clinvarLift",
+          "type": "bigBed 12 +",
+          "urls": "origPos=\"/cgi-bin/hgTracks?position=$$\" rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows human clinically relevant variants from the \n<a href=\"https://www.ncbi.nlm.nih.gov/clinvar/\" target=\"_blank\">ClinVar database</a>,\nmapped from hg38 to the susScr11 genome. The mapping uses UCSC's whole-genome alignments and the \ntool <a href=\"https://genome.ucsc.edu/cgi-bin/hgLiftOver\" target=_blank>LiftOver</a>. \nThe annotations are somewhat speculative, \nas LiftOver is not meant to be used for cross-organism mapping. Among others, \nLiftOver has no notion of phylogenetic trees or protein orthology, so the \nexact protein to which they are mapped may not be the annotated ortholog.\nIn areas with protein repeats it may have been mapped to the wrong exon. When the \ngenome nucleotide in susScr11 is different from hg38, the corresponding position \ncould be several basepairs away. Generally, the more different the gene, the harder the\nmapping. Before planning assays on these data, a manual alignment and annotation \nof the human and susScr11 nucleotide or amino acid sequences is recommended.\n\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nGenomic locations of ClinVar variants are labeled with the human ClinVar variant\ndescriptions. For example, the label \"C&gt;G\" usually means that in human, the cDNA \nnucleotide change is from C&gt;T. On a transcript on the reverse strand, the human\ngenome nucleotide on the forward strand would be G. In susScr11, the genome may not\nbe G at this position. Zoom in to see the nucleotide in susScr11, or click the\nvariant to show the human position and nucleotide and the susScr11 nucleotide.</p>\n\n<p>All ClinVar information related to each is variant is shown on that\nvariant's details page.  Hold the mouse over a feature\nto show the clinical significance of a variant in humans.\n</p>\n\n<p>Only short variants with a length &lt; 10 bp on the human genome were\nlifted. A few variants that after lifting result in susScr11 annotations longer than\n30bp were filtered out, too. This can happen in repetitive regions that are\nhard to align.</p>\n\n<p>\nAnnotations are shaded by clinical annotation:\n<b><font color=\"red\">red for pathogenic</font></b>,\n<B><font color=\"#888\">dark grey for uncertain significance or not provided</font></b> and\n<B><font color=\"green\">green for benign</font></b>.\n</p>\n\n<p>\nThe score of the variants is the number of \"stars\" in ClinVar. On the track configuration \npage (above), you can filter the track to show only variants with more than a certain \nnumber of stars. For more information on the star rating, see the \n<a href=\"https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/\"\ntarget=\"_blank\">ClinVar documentation</a>.\n</p>\n\n<h2>Data updates</h2>\nClinVar is updated every month, but these mappings are not updated yet on a regular schedule.\nPlease contact us if you are interested in regular updates.\n</p>\n\n<H2>Data access</H2>\n<p>\nThe raw data can be explored interactively with the \n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n\n<p>\nFor automated download and analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/susScr11/bbi/\" target=\"_blank\">our download server</a>.\nThe files for this track are called <tt>clinvarLift.bb</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g. \n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/susScr11/bbi/clinvarLift.bb -chrom=chr1 -start=0 -end=100000000 stdout</tt></p>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nThe hg38 ClinvarMain track was annotated with nucleotides and positions, lifted to susScr11,\nfiltered again for variants &lt; 30bp\nand annotated with nucleotides again. The output was converted to the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/bigBed.html\">bigBed</a> format.\nThe program that performs the mapping is available on\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/utils/doClinvarLift\"\ntarget=\"_blank\">Github</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to NCBI for making the ClinVar data available on their FTP site as a tab-separated file.\n</p>\n\n<h2>References</h2>\n<p>\nLandrum MJ, Lee JM, Benson M, Brown G, Chao C, Chitipiralla S, Gu B, Hart J, Hoffman D, Hoover J\n<em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/44/D1/D862/2502702/ClinVar-public-archive-of-interpretations-of\" target=\"_blank\">\nClinVar: public archive of interpretations of clinically relevant variants</a>.\n<em>Nucleic Acids Res</em>. 2016 Jan 4;44(D1):D862-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26582918\" target=\"_blank\">26582918</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4702865/\" target=\"_blank\">PMC4702865</a>\n</p>\n"
+        }
+      },
+      "description": "Human ClinVar variants lifted to Pig",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr11-gap",
+      "name": "Gap",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the gaps in the Feb. 2017 pig genome assembly.\n</P>\n<P>\nGenome assembly procedures are covered in the NCBI\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/basics/\"\nTARGET=_blank>assembly documentation</A>.<BR>\nNCBI also provides\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/1004191\"\nTARGET=\"_blank\">specific information about this assembly</A>.\n</P>\n<P>\nThe definition of the gaps in this assembly is from the\n<A HREF=\"ftp://hgdownload.soe.ucsc.edu/goldenPath/susScr11/bigZips/susScr11.agp.gz\"\nTARGET=_blank>AGP file</A> delivered with the sequence.  The NCBI document\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/agp/AGP_Specification/\"\nTARGET=_blank>AGP Specification</A> describes the format of the AGP file.\n</P>\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n<LI><B>repeat</B> - an unresolvable repeat (count: 2; all of size 5,000 bases)</LI>\n<LI><B>contig</B> - gaps between contigs in scaffolds (count: 93; size range: 50,000 - 100,000 bases)</LI>\n<LI><B>scaffold</B> - gaps between scaffolds in chromosome assemblies (count: 233; size range: 100 - 14,000,000 bases)</LI>\n</UL></P>\n",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr11-rmsk",
+      "name": "RepeatMasker",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "rmsk.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "rmsk.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "canPack": "off",
+          "group": "varRep",
+          "longLabel": "Repeating Elements by RepeatMasker",
+          "maxWindowToDraw": "10000000",
+          "priority": "1",
+          "shortLabel": "RepeatMasker",
+          "spectrum": "on",
+          "track": "rmsk",
+          "type": "rmsk",
+          "visibility": "dense",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track was created by using Arian Smit's\n<a href=\"https://www.repeatmasker.org/\" target=\"_blank\">RepeatMasker</a>\nprogram, which screens DNA sequences\nfor interspersed repeats and low complexity DNA sequences. The program\noutputs a detailed annotation of the repeats that are present in the\nquery sequence (represented by this track), as well as a modified version\nof the query sequence in which all the annotated repeats have been masked\n(generally available on the\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html\"\ntarget=_blank>Downloads</a> page). RepeatMasker uses the\n<a href=\"https://www.girinst.org/repbase/update/index.html\"\ntarget=_blank>Repbase Update</a> library of repeats from the\n<a href=\"https://www.girinst.org/\" target=_blank>Genetic \nInformation Research Institute</a> (GIRI).\nRepbase Update is described in Jurka (2000) in the References section below.\nSome newer assemblies have been made with Dfam, not Repbase. You can\nfind the details for how we make our database data here in our &quot;makeDb/doc/&quot;\n<a href=\"https://genome-source.gi.ucsc.edu/gitlist/kent.git/tree/master/src/hg/makeDb/doc/\"\ntarget=\"_blank\">directory</a>.</p>\n\n<p>\nWhen analyzing the data tables of this track, keep in mind that Repbase is not the same \nas the Repeatmasker sequence database and that the repeat names in the\nRepeatmasker output are not the same as the sequence names in the Repeatmasker\ndatabase.  Concretely, you can find a name such as \"L1PA4\" in the Repeatmasker\noutput and this track, but there is not necessarily a single sequence \"L1PA4\"\nin the Repeatmasker database. This is because Repeatmasker creates annotations\nby joining matches to partial pieces of the database together so there is no\n1:1 relationship between its sequence database and the annotations. To learn\nmore, you can read the Repeatmasker paper, its source code or reach out to the\nRepeatmasker authors, your local expert on transposable elements or us.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nIn full display mode, this track displays up to ten different classes of repeats:\n<ul>\n<li>Short interspersed nuclear elements (SINE), which include ALUs</li>\n<li>Long interspersed nuclear elements (LINE)</li>\n<li>Long terminal repeat elements (LTR), which include retroposons</li>\n<li>DNA repeat elements (DNA)</li>\n<li>Simple repeats (micro-satellites)</li>\n<li>Low complexity repeats</li>\n<li>Satellite repeats</li>\n<li>RNA repeats (including RNA, tRNA, rRNA, snRNA, scRNA, srpRNA)</li>\n<li>Other repeats, which includes class RC (Rolling Circle)</li>\n<li>Unknown</li>\n</ul>\n</p>\n\n<p>\nThe level of color shading in the graphical display reflects the amount of\nbase mismatch, base deletion, and base insertion associated with a repeat\nelement. The higher the combined number of these, the lighter the shading.\n</p>\n\n<p>\nA &quot;?&quot; at the end of the &quot;Family&quot; or &quot;Class&quot; (for example, DNA?) signifies that\nthe curator was unsure of the classification. At some point in the future,\neither the &quot;?&quot; will be removed or the classification will be changed.</p>\n\n<h2>Methods</h2>\n\n<p>\nData are generated using the RepeatMasker <em>-s</em> flag. Additional flags\nmay be used for certain organisms.  Repeats are soft-masked. Alignments may\nextend through repeats, but are not permitted to initiate in them.\nSee the <a href=\"/FAQ/FAQdownloads#download16\" target=\"_blank\">FAQ</a> for more information.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nThanks to Arian Smit, Robert Hubley and GIRI for providing the tools and\nrepeat libraries used to generate this track.\n</p>\n\n<h2>References</h2>\n\n<p>\nSmit AFA, Hubley R, Green P. <em>RepeatMasker Open-3.0</em>.\n<a href=\"https://www.repeatmasker.org/\" target=\"_blank\">\nhttps://www.repeatmasker.org/</a>. 1996-2010.\n</p>\n\n<p>\nRepbase Update is described in:\n</p>\n\n<p>\nJurka J.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S016895250002093X\" target=\"_blank\">\nRepbase Update: a database and an electronic journal of repetitive elements</a>.\n<em>Trends Genet</em>. 2000 Sep;16(9):418-420.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10973072\" target=\"_blank\">10973072</a>\n</p>\n\n<p>\nFor a discussion of repeats in mammalian genomes, see:\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X99000313\" target=\"_blank\">\nInterspersed repeats and other mementos of transposable elements in mammalian genomes</a>.\n<em>Curr Opin Genet Dev</em>. 1999 Dec;9(6):657-63.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/10607616\" target=\"_blank\">10607616</a>\n</p>\n\n<p>\nSmit AF.\n<a href=\"https://www.sciencedirect.com/science/article/pii/S0959437X9680030X\" target=\"_blank\">\nThe origin of interspersed repeats in the human genome</a>.\n<em>Curr Opin Genet Dev</em>. 1996 Dec;6(6):743-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/8994846\" target=\"_blank\">8994846</a>\n</p>\n"
+        }
+      },
+      "description": "Repeating Elements by RepeatMasker",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr11-ncbiRefSeq",
+      "name": "NCBI RefSeq - RefSeq All",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeq.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeq.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "1",
+          "shortLabel": "RefSeq All",
+          "track": "ncbiRefSeq",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq genes, curated and predicted (NM_*, XM_*, NR_*, XR_*, NP_*, YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr11-ncbiRefSeqCurated",
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqCurated.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqCurated.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "parent": "refSeqComposite on",
+          "priority": "2",
+          "shortLabel": "RefSeq Curated",
+          "track": "ncbiRefSeqCurated",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "susScr11-ncbiRefSeqPredicted",
+      "name": "NCBI RefSeq - RefSeq Predicted",
+      "assemblyNames": ["susScr11"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiRefSeqPredicted.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiRefSeqPredicted.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "parent": "refSeqComposite off",
+          "priority": "3",
+          "shortLabel": "RefSeq Predicted",
+          "track": "ncbiRefSeqPredicted",
+          "html": ""
+        }
+      },
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "category": ["Genes and Gene Predictions"]
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "susScr11-index",
+      "ixFilePath": {
+        "uri": "trix/susScr11.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/susScr11.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/susScr11_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["susScr11"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

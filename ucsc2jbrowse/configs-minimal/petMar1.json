@@ -1,0 +1,95 @@
+{
+  "assemblies": [
+    {
+      "name": "petMar1",
+      "displayName": "Lamprey (petMar1)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "petMar1-refseq",
+        "metadata": {
+          "description": "Mar. 2007 (WUGSC 3.0/petMar1)",
+          "nibPath": "/gbdb/petMar1",
+          "organism": "Lamprey",
+          "defaultPos": "Contig11034:8429-10197",
+          "active": 1,
+          "orderKey": 12020,
+          "genome": "Lamprey",
+          "scientificName": "Petromyzon marinus",
+          "htmlPath": "/gbdb/petMar1/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "WUSTL v.3.0 (March 2007)",
+          "taxId": 7757
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/petMar1/bigZips/petMar1.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/petMar1/bigZips/petMar1.chrom.sizes"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "petMar1-gap",
+      "name": "Gap",
+      "assemblyNames": ["petMar1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\nThis track depicts gaps in the assembly.\n\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal type of gap:\n<UL>\n\n<LI><B>Fragment</B> - gaps between the Whole Genome Shotgun contigs of a \nsupercontig.  (In this context, a contig is a set of overlapping sequence reads.  \nA supercontig is a set of contigs ordered and oriented during the \nWhole Genome Shotgun process using paired-end reads.)\nThese are represented by varying numbers of <em>N</em>s  in the assembly.  \nFragment gap sizes are usually taken from read pair data.  \n\n</LI>\n\n\n</UL></P>\n"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

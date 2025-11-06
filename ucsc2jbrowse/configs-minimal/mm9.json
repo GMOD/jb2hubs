@@ -1,0 +1,101 @@
+{
+  "assemblies": [
+    {
+      "name": "mm9",
+      "displayName": "Mouse (mm9)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "mm9-refseq",
+        "metadata": {
+          "description": "July 2007 (NCBI37/mm9)",
+          "nibPath": "/gbdb/mm9",
+          "organism": "Mouse",
+          "defaultPos": "chr12:57795963-57815592",
+          "active": 1,
+          "orderKey": 287,
+          "genome": "Mouse",
+          "scientificName": "Mus musculus",
+          "htmlPath": "/gbdb/mm9/html/description.html",
+          "hgNearOk": 1,
+          "hgPbOk": 0,
+          "sourceName": "NCBI Build 37",
+          "taxId": 10090
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm9/bigZips/mm9.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/mm9/bigZips/mm9.chrom.sizes"
+        }
+      },
+      "cytobands": {
+        "adapter": {
+          "type": "CytobandAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm9/database/cytoBand.txt.gz"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm9-vegaPseudoGene",
+      "name": "Vega Genes - Vega Pseudogenes",
+      "assemblyNames": ["mm9"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "vegaPseudoGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "vegaPseudoGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "30,130,210",
+          "longLabel": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
+          "parent": "vegaGeneComposite",
+          "priority": "2",
+          "shortLabel": "Vega Pseudogenes",
+          "track": "vegaPseudoGene",
+          "html": ""
+        }
+      },
+      "description": "Vega Annotated Pseudogenes and Immunoglobulin Segments",
+      "category": ["Genes and Gene Predictions"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

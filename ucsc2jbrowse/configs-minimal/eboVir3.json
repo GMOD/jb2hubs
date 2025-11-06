@@ -1,0 +1,101 @@
+{
+  "assemblies": [
+    {
+      "name": "eboVir3",
+      "displayName": "Ebola virus (eboVir3)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "eboVir3-refseq",
+        "metadata": {
+          "description": "Sierra Leone 2014 (G3683/KM034562.1/eboVir3)",
+          "nibPath": "/gbdb/eboVir3",
+          "organism": "Ebola virus",
+          "defaultPos": "KM034562v1:1-18957",
+          "active": 1,
+          "orderKey": 5058,
+          "genome": "Ebola virus",
+          "scientificName": "Filoviridae ebolavirus",
+          "htmlPath": "/gbdb/eboVir3/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "West Africa 01 June 2014 EBOV/G3683/KM034562.1",
+          "taxId": 186538
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/eboVir3/bigZips/eboVir3.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/eboVir3/bigZips/eboVir3.chrom.sizes"
+        }
+      },
+      "cytobands": {
+        "adapter": {
+          "type": "CytobandAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/eboVir3/database/cytoBandIdeo.txt.gz"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-gap",
+      "name": "Gap",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the gaps in the Jun. 2014 ebola virus genome assembly.\n</P>\n<P>\nGenome assembly procedures are covered in the NCBI\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/basics/\"\nTARGET=_blank>assembly documentation</A>.<BR>\nNCBI also provides\n<A HREF=\"https://www.ncbi.nlm.nih.gov/nuccore/KM034562\"\nTARGET=\"_blank\">specific information about this assembly</A>.\n</P>\n<P>\nThe definition of the gaps in this assembly is from the\n<A HREF=\"ftp://hgdownload.soe.ucsc.edu/goldenPath/eboVir3/bigZips/eboVir3.agp.gz\"\nTARGET=_blank>AGP file</A> delivered with the sequence.  The NCBI document\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/agp/AGP_Specification/\"\nTARGET=_blank>AGP Specification</A> describes the format of the AGP file.\n</P>\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<!--\n<P>This assembly contains the following principal types of gaps:\n<UL>\n</UL></P>\n-->\n",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "assemblies": [
+    {
+      "name": "dm2",
+      "displayName": "D. melanogaster (dm2)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "dm2-refseq",
+        "metadata": {
+          "description": "Apr. 2004 (BDGP R4/dm2)",
+          "nibPath": "/gbdb/dm2/nib",
+          "organism": "D. melanogaster",
+          "defaultPos": "chr2L:825964-851061",
+          "active": 1,
+          "orderKey": 4069,
+          "genome": "D. melanogaster",
+          "scientificName": "Drosophila melanogaster",
+          "htmlPath": "/gbdb/dm2/html/description.html",
+          "hgNearOk": 1,
+          "hgPbOk": 0,
+          "sourceName": "BDGP v. 4 / DHGP v. 3.2",
+          "taxId": 7227
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/dm2/bigZips/dm2.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/dm2/bigZips/dm2.chrom.sizes"
+        }
+      },
+      "cytobands": {
+        "adapter": {
+          "type": "CytobandAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/dm2/database/cytoBand.txt.gz"
+        }
+      }
+    }
+  ],
+  "tracks": [],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

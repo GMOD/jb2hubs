@@ -1,0 +1,107 @@
+{
+  "assemblies": [
+    {
+      "name": "tetNig2",
+      "displayName": "Tetraodon (tetNig2)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "tetNig2-refseq",
+        "metadata": {
+          "description": "Mar. 2007 (Genoscope 8.0/tetNig2)",
+          "nibPath": "/gbdb/tetNig2",
+          "organism": "Tetraodon",
+          "defaultPos": "chr10:2797091-2804214",
+          "active": 1,
+          "orderKey": 20184,
+          "genome": "Tetraodon",
+          "scientificName": "Tetraodon nigroviridis",
+          "htmlPath": "/gbdb/tetNig2/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "Genoscope Tetraodon v8.0 (NCBI project 12350, CAAE01000000)",
+          "taxId": 99883
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/tetNig2/bigZips/tetNig2.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/tetNig2/bigZips/tetNig2.chrom.sizes"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/tetNig2/bigZips/tetNig2.chromAlias.txt"
+        }
+      },
+      "cytobands": {
+        "adapter": {
+          "type": "CytobandAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/tetNig2/database/cytoBandIdeo.txt.gz"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "tetNig2-gap",
+      "name": "Gap",
+      "assemblyNames": ["tetNig2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "html": "<H2>Description</H2>\nThis track depicts gaps in the assembly.\n\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n\n<LI><B>contig</B> - gaps between the Whole Genome Shotgun contigs of a \nscaffold.  (In this context, a contig is a set of overlapping sequence reads.  \nA scaffold is a set of contigs ordered and oriented during the \nWhole Genome Shotgun process using paired-end reads.)\nThese are represented by varying numbers of <em>N</em>s  in the assembly.  \nFragment gap sizes are usually taken from read pair data.  \n<LI><B>scaffold</B> - gaps between scaffolds linked by the fingerprint map.  \nIn general, these are represented by 500 <em>N</em>s  in the assembly.\n<LI><B>centromere</B> - gaps for centromeres were included when they could be \nreasonably localized.  These are represented by 500,000 <em>N</em>s  in the \nassembly.\n<LI><B>other</B> - unknown bases marked 'N' in the sequence that were not\n in the assembly AGP file definition of gaps.\n</UL></P>\n\n",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

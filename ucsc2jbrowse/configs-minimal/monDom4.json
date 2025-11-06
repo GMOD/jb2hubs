@@ -1,0 +1,95 @@
+{
+  "assemblies": [
+    {
+      "name": "monDom4",
+      "displayName": "Opossum (monDom4)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "monDom4-refseq",
+        "metadata": {
+          "description": "Jan. 2006 (Broad/monDom4)",
+          "nibPath": "/gbdb/monDom4",
+          "organism": "Opossum",
+          "defaultPos": "chr8:293325654-293362847",
+          "active": 1,
+          "orderKey": 15623,
+          "genome": "Opossum",
+          "scientificName": "Monodelphis domestica",
+          "htmlPath": "/gbdb/monDom4/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "Broad Inst. monDom4 Jan06",
+          "taxId": 13616
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/monDom4/bigZips/monDom4.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/monDom4/bigZips/monDom4.chrom.sizes"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "monDom4-gap",
+      "name": "Gap",
+      "assemblyNames": ["monDom4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\nThis track depicts gaps in the assembly.  These gaps - with the\nexception of intractable heterochromatic gaps - will be closed during the\nfinishing process. \n</P><P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is known, it is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n<LI><B>Clone</B> - gaps not spanned by a scaffold\n<LI><B>Fragment</B> - gaps between contigs that are bridged by a scaffold.\n(In this context, a contig is a set of overlapping sequence reads.)\n</UL></P>\n"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

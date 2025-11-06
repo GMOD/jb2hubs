@@ -112,6 +112,9 @@ log "Enhancing configs with plugins and hierarchical configuration..."
 log "Download and add GENCODE tracks"
 ./downloadGencode.sh
 
+log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
+./createMinimalConfigs.sh "$UCSC_RESULTS_DIR"
+
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'
 

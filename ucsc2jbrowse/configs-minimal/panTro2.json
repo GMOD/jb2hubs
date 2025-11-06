@@ -1,0 +1,96 @@
+{
+  "assemblies": [
+    {
+      "name": "panTro2",
+      "displayName": "Chimp (panTro2)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "panTro2-refseq",
+        "metadata": {
+          "description": "Mar. 2006 (CGSC 2.1/panTro2)",
+          "nibPath": "/gbdb/panTro2",
+          "organism": "Chimp",
+          "defaultPos": "chr6:12177375-12405661",
+          "active": 1,
+          "orderKey": 3329,
+          "genome": "Chimp",
+          "scientificName": "Pan troglodytes",
+          "htmlPath": "/gbdb/panTro2/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "Washington University Build 2 Version 1",
+          "taxId": 9598
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/panTro2/bigZips/panTro2.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/panTro2/bigZips/panTro2.chrom.sizes"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "panTro2-gap",
+      "name": "Gap",
+      "assemblyNames": ["panTro2"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "html": "<H2>Description</H2>\n<P>\nThis track depicts gaps in the assembly.  These gaps -- with the\nexception of intractable heterochromatic gaps -- will be closed during the\nfinishing process. \n</P><P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is known, it is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n<LI><B>Fragment</B> - gaps between the contigs of a draft clone.\n(In this context, a contig is a set of overlapping sequence reads.)\nThese may or may not be bridged.\n<LI><B>Clone</B> - bridged gaps between clones in the same map contig.\n<LI><B>Contig</B> - non-bridged gaps between map contigs.\n<LI><B>Centromere</B> - non-bridged gaps from centromeres.\n<LI><B>Telomere</B> - non-bridged gaps from telomeres.\n<LI><B>Heterochromatin</B> - non-bridged gaps from large blocks of \nheterochromatin.\n<LI><B>Short Arm</B> - non-bridged long gaps on the short arm of the chromosome. \n</UL></P>\n",
+          "longLabel": "Gap Locations",
+          "priority": "1",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

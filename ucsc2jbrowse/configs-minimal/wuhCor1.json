@@ -1,0 +1,101 @@
+{
+  "assemblies": [
+    {
+      "name": "wuhCor1",
+      "displayName": "SARS-CoV-2 (wuhCor1)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "wuhCor1-refseq",
+        "metadata": {
+          "description": "Jan. 2020 (NC_045512.2)",
+          "nibPath": "/gbdb/wuhCor1",
+          "organism": "SARS-CoV-2",
+          "defaultPos": "NC_045512v2:1-29903",
+          "active": 1,
+          "orderKey": 22324,
+          "genome": "SARS-CoV-2",
+          "scientificName": "SARS-CoV-2",
+          "htmlPath": "/gbdb/wuhCor1/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 1,
+          "sourceName": "SARS-CoV-2",
+          "taxId": 2697049
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.chrom.sizes"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "wuhCor1-gap",
+      "name": "Gap",
+      "assemblyNames": ["wuhCor1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the gaps in the Jan. 2020 sars-cov-2 genome assembly.\n</P>\n<P>\nGenome assembly procedures are covered in the NCBI\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/basics/\"\nTARGET=_blank>assembly documentation</A>.<BR>\nNCBI also provides\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/15851418\"\nTARGET=\"_blank\">specific information about this assembly</A>.\n</P>\n<P>\nThe definition of the gaps in this assembly is from the\n<A HREF=\"ftp://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.agp.gz\"\nTARGET=_blank>AGP file</A> delivered with the sequence.  The NCBI document\n<A HREF=\"https://www.ncbi.nlm.nih.gov/assembly/agp/AGP_Specification/\"\nTARGET=_blank>AGP Specification</A> describes the format of the AGP file.\n</P>\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data,\nit is a <em>bridged</em> gap and a white line is drawn\nthrough the black box representing the gap.\n</P>\n<P>This assembly has no annotated gaps.\n</P>\n",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "hide"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

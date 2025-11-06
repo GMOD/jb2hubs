@@ -1,0 +1,101 @@
+{
+  "assemblies": [
+    {
+      "name": "gasAcu1",
+      "displayName": "Stickleback (gasAcu1)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "gasAcu1-refseq",
+        "metadata": {
+          "description": "Feb. 2006 (Broad/gasAcu1)",
+          "nibPath": "/gbdb/gasAcu1",
+          "organism": "Stickleback",
+          "defaultPos": "chrI:14092957-14102956",
+          "active": 1,
+          "orderKey": 19820,
+          "genome": "Stickleback",
+          "scientificName": "Gasterosteus aculeatus",
+          "htmlPath": "/gbdb/gasAcu1/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "Broad Institute gasAcu1 (1.0) (NCBI project 13579, AANH01000000)",
+          "taxId": 69293
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/gasAcu1/bigZips/gasAcu1.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/gasAcu1/bigZips/gasAcu1.chrom.sizes"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/gasAcu1/bigZips/gasAcu1.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "gasAcu1-gap",
+      "name": "Gap",
+      "assemblyNames": ["gasAcu1"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "bedGzLocation": {
+          "uri": "gap.bed.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "gap.bed.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "Gap Locations",
+          "shortLabel": "Gap",
+          "track": "gap",
+          "type": "bed 3 +",
+          "visibility": "dense",
+          "html": "<H2>Description</H2>\nThis track depicts gaps in the assembly.\nMany of these gaps &mdash; with the\nexception of intractable heterochromatic gaps &mdash; may be closed during the\nfinishing process.\n\n<P>\nGaps are represented as black boxes in this track.\nIf the relative order and orientation of the contigs on either side\nof the gap is supported by read pair data, \nit is a <em>bridged</em> gap and a white line is drawn \nthrough the black box representing the gap. \n</P>\n<P>This assembly contains the following principal types of gaps:\n<UL>\n<LI><B>Fragment</B> - gaps between the Whole Genome Shotgun contigs of a \nscaffold. These are represented by varying numbers of <em>N</em>s in the \nassembly. In this context, a contig is a set of overlapping sequence reads and \na scaffold is a set of contigs ordered and oriented during the \nWhole Genome Shotgun process using paired-end reads. Fragment gap sizes \nare usually taken from read pair data.  \n</LI>\n<LI><B>Clone</B> - gaps between scaffolds linked by the physical map.  \nIn general, these are represented by 1,000 <em>N</em>s  in the assembly.  \n</LI>\n</UL></P>\n\n\n"
+        }
+      },
+      "description": "Gap Locations",
+      "category": ["Mapping and Sequencing"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

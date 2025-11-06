@@ -1,0 +1,95 @@
+{
+  "assemblies": [
+    {
+      "name": "danRer4",
+      "displayName": "Zebrafish (danRer4)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "danRer4-refseq",
+        "metadata": {
+          "description": "Mar. 2006 (Zv6/danRer4)",
+          "nibPath": "/gbdb/danRer4",
+          "organism": "Zebrafish",
+          "defaultPos": "chr13:16,747,248-16,763,118",
+          "active": 1,
+          "orderKey": 26177,
+          "genome": "Zebrafish",
+          "scientificName": "Danio rerio",
+          "htmlPath": "/gbdb/danRer4/html/description.html",
+          "hgNearOk": 0,
+          "hgPbOk": 0,
+          "sourceName": "Sanger Centre, Danio rerio Sequencing Project Zv6",
+          "taxId": 7955
+        },
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/danRer4/bigZips/danRer4.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/danRer4/bigZips/danRer4.chrom.sizes"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "type": "FeatureTrack",
+      "trackId": "danRer4-vegaPseudoGene",
+      "name": "Vega Genes - Vega Pseudogenes",
+      "assemblyNames": ["danRer4"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "vegaPseudoGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "vegaPseudoGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "155,0,125",
+          "longLabel": "Vega Annotated Pseudogenes",
+          "parent": "vegaGeneZfish",
+          "priority": "2",
+          "shortLabel": "Vega Pseudogenes",
+          "track": "vegaPseudoGene",
+          "html": ""
+        }
+      },
+      "description": "Vega Annotated Pseudogenes",
+      "category": ["Genes and Gene Predictions"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}
