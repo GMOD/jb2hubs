@@ -57,8 +57,12 @@ ensure_dir "configs"
 rm -f blockedFiles.txt blockedFiles.json removedTracks.json
 
 log "Fetching latest UCSC genome list..."
-curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_RESULTS_DIR/list.json"
-# Create a copy for the website.
+curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_RESULTS_DIR/list.json.raw"
+
+log "Transforming genome list to array format..."
+node src/transformGenomeList.ts "$UCSC_RESULTS_DIR/list.json.raw" "$UCSC_RESULTS_DIR/list.json"
+
+log "Creating a copy for the website..."
 cp "$UCSC_RESULTS_DIR/list.json" ../website/src/list.json
 
 log "Creating initial assembly configurations..."

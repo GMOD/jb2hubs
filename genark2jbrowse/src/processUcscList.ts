@@ -33,6 +33,7 @@ try {
       accession: key,
       commonName: value.organism,
       jbrowseConfig: `https://jbrowse.org/ucsc/${key}/config.json`,
+      jbrowseMinimalConfig: `https://jbrowse.org/ucsc/${key}/minimal.json`,
     }),
   )
 
