@@ -88,9 +88,7 @@ export function useTableColumns({
       columnHelper.accessor('taxonId', {
         header: 'Taxonomy ID',
         cell: info => (
-          <a
-            href={`https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Info&id=${info.getValue()}&lvl=3&p=nuccore&lin=f&keep=1&srchmode=1&unlock`}
-          >
+          <a href={`https://genomes.jbrowse.org/taxonomy/${info.getValue()}/`}>
             {info.getValue()}
           </a>
         ),
