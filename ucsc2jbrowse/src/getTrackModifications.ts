@@ -103,7 +103,7 @@ function _getTrackModifications<
   // Delete tracks with "Primate Chain/Net" as the first category
   const { name, assemblyNames, metadata } = track
   const { ucsc } = metadata ?? {}
-  const assembly = assemblyNames[0]
+  const assembly = assemblyNames[0]!
 
   if (assembly === 'hs1') {
     const cat0 = name
@@ -150,8 +150,8 @@ function _getTrackModifications<
       reason = `Parent starts with pgSnp: ${trackParent}`
     } else if (specializedTrackIds.has(trackId)) {
       reason = `Specialized track ID: ${trackId}`
-    } else if (trackId.startsWith('encode3')) {
-      reason = `Track ID starts with encode3`
+    } else if (trackId.startsWith('encode')) {
+      reason = `Track ID starts with encode`
     } else if (ucsc.barChartBars) {
       reason = 'Track has barChartBars'
     } else if (ucsc.barChartCategoryUrl) {
@@ -159,7 +159,7 @@ function _getTrackModifications<
     }
 
     if (reason) {
-      logRemovedTrack(assembly, trackId, name, reason)
+      logRemovedTrack(assembly!, trackId, name, reason)
       return undefined
     }
   }

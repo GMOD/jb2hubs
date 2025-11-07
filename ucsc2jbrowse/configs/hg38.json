@@ -978,42 +978,6 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "trackId": "hg38-encodeCcreCombined",
-      "name": "ENCODE cCREs",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bedNameLabel": "ENCODE Accession",
-          "bigDataUrl": "/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb",
-          "darkerLabels": "on",
-          "defaultLabelFields": "accessionLabel,ucscLabel",
-          "filterLabel.ucscLabel": "cCRE classification",
-          "filterValues.ucscLabel": "prom|promoter-like signature (PLS/prom),enhP|proximal enhancer-like signature (pELS/enhP),enhD|distal enhancer-like signature (dELS/enhD),CTCF|CTCF only (CTCF/CTCF-only),K4m3|DNase-H3K4me3 (DNase-H3K4me3/k4m3)",
-          "group": "regulation",
-          "itemRgb": "On",
-          "labelFields": "accessionLabel,ucscLabel,encodeLabel",
-          "longLabel": "ENCODE Candidate Cis-Regulatory Elements (cCREs) combined from all cell types",
-          "mouseOver": "<b>Accession</b>: $name<br> <b>Classification</b>: $ccre<br>",
-          "priority": "1",
-          "shortLabel": "ENCODE cCREs",
-          "skipFields": "encodeLabel,ucscLabel,accessionLabel,description",
-          "track": "encodeCcreCombined",
-          "type": "bigBed 9 +",
-          "url": "https://screen-v2.wenglab.org/search/?q=$$&assembly=GRCh38",
-          "urlLabel": "cCRE details at ENCODE SCREEN:",
-          "visibility": "dense",
-          "html": "<h2>Description</h2>\n<p>\nThis track displays the <em>ENCODE Registry of candidate cis-Regulatory Elements</em> (cCREs) \nin the human genome, a total of 926,535 elements identified and classified by the ENCODE Data \nAnalysis Center according to biochemical signatures.\ncCREs are the subset of representative DNase hypersensitive sites across ENCODE and\nRoadmap Epigenomics samples that are supported \nby either histone modifications (H3K4me3 and H3K27ac) or CTCF-binding data.\nThe Registry of cCREs is one of the core components of the integrative level of the\nENCODE Encyclopedia of DNA Elements.</p>\n\n<p>\nAdditional exploration of the cCRE's and underlying raw ENCODE data is provided by the\n<a target=\"_blank\" href=\"https://screen-v2.wenglab.org/\">\nSCREEN</a>\n(Search Candidate cis-Regulatory Elements) web tool,\ndesigned specifically for the Registry, accessible by linkouts from the track details page.\nThe cCREs identified in the mouse genome are available in a companion track, \n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=mm10&g=encodeCcreCombined\">here</a>.</p>\n\n<!--\n<p>\nThe related cCREs by Biosample composite track presents ccREs \nand associated epigenetic signal in all individual biosamples in a large matrix.\nAdditional views of the data are provided by the <a>ENCODE Integrative Megahub</a>.\n</p>\n-->\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nCCREs are colored and labeled according to classification by regulatory signature:\n<p>\n<table cellpadding='2'>\n  \n  <tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\"></th>\n    <th style=\"border-bottom: 2px solid;\">UCSC label</th>\n    <th style=\"border-bottom: 2px solid;\">ENCODE classification</th>\n    <th style=\"border-bottom: 2px solid;\">ENCODE label</th>\n  </tr>\n  </thead>\n\n<tr><td style='background-color: #FF0000;'></td><td>red</td>\n        <td>prom</td>\n        <td>promoter-like signature</td>\n        <td>PLS</td></tr>\n<tr><td style='background-color: #FFA700;'></td><td>orange</td>\n        <td>enhP</td>\n        <td>proximal enhancer-like signature</td>\n        <td>pELS</td></tr>\n<tr><td style='background-color: #FFCD00;'></td><td>yellow</td>\n        <td>enhD</td>\n        <td>distal enhancer-like signature</td>\n        <td>dELS</td></tr>\n<tr><td style='background-color: #FFAAAA;'></td><td>pink</td>\n        <td>K4m3</td>\n        <td>DNase-H3K4me3</td>\n        <td>DNase-H3K4me3</td></tr>\n<tr><td style='background-color: #00B0F0;'</td><td>blue</td>\n        <td>CTCF</td>\n        <td>CTCF-only</td>\n        <td>CTCF-only</td></tr>\n</table>\n</p>\n<p>\nThe DNase-H3K4me3 elements are those with promoter-like biochemical signature that\nare not within 200bp of an annotated TSS.\n</p>\n\n<h2>Methods</h2>\n<p>\nAll individual DNase hypsersensitive sites (DHSs) identified from 706 DNase-seq experiments\nin humans (a total of 93 million sites from 706 experiments) were iteratively clustered\nand filtered for the highest signal across all experiments, producing \nrepresentative DHSs (rDHSs), with a total of  2.2 million such sites in human.\nThe highest signal elements from this set that were also supported by high H3K4me3, H3K27ac \nand/or CTCF ChIP-seq signals were designated cCRE's (a total of 926,535 in human).\n</p>\n<p>\nClassification of cCRE's was performed based on the following criteria:\n<ol>\n  <li>cCREs with promoter-like signatures (cCRE-PLS) fall within 200 bp of an annotated GENCODE TSS\n      and have high DNase and H3K4me3 signals.</li>\n  <li>cCREs with enhancer-like signatures (cCRE-ELS) have high DNase and H3K27ac with low H3K4me3\n      max-Z score if they are within 200 bp of an annotated TSS. The subset of cCREs-ELS within 2 kb\n      of a TSS is denoted proximal (cCRE-pELS), while the remaining subset is denoted distal\n      (cCRE-dELS).</li>\n  <li>DNase-H3K4me3 cCREs have high H3K4me3 max-Z scores but low H3K27ac max-Z scores and do not\n      fall within 200 bp of a TSS.</li>\n  <li>CTCF-only cCREs have high DNase and CTCF and low H3K4me3 and H3K27ac.</li>\n</ol>\n\n<img style='margin-left: 40px;' height=229 width=371 src=\"https://genome.ucsc.edu/images/cCREgroups.png\">\n\n<p>\nThe GENCODE V24 (Ensembl 33) basic gene annotation set was used in this analysis.\nFor further detail about the identification and classification of ENCODE cCREs see \nthe <i>About</i> page of the\n<a target=\"_blank\" href=\"https://screen-v2.wenglab.org\">SCREEN</a> web tool.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe ENCODE accession numbers of the constituent datasets at the\n<a target=\"_blank\" href=\"https://encodeproject.org\">ENCODE Portal</a>\nare available from the cCRE details page.\n</p>\n<p>\nThe data in this track can be interactively explored with the \n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the \n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. \nThe data can be accessed from scripts through our \n<a href=\"https://api.genome.ucsc.edu\">API</a>, the track name is \"encodeCcreCombined\".\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/\" target=\"_blank\">our download server</a>.\nThe file for this track is called <tt>encodeCcreCombined.bb</tt>. \nIndividual regions or the whole genome annotation can be obtained using our tool \n<tt>bigBedToBed</tt> which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. \nInstructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.<br><br> \n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/encode3/ccre/encodeCcreCombined.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt></p>\n\n<h2>Release Notes</h2>\n<p>\nThis annotation is based on ENCODE data released on or before September 14, 2018.</p>\n<p>\nData from the Common fund supported\n<a href=\"http://www.roadmapepigenomics.org/\" target=\"_blank\">Roadmap Epigenomics Mapping Consortium\n(REMC)</a> were included for building the ENCODE cCREs. Please see the 2015 paper on their analysis\nof reference human genomes for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThis dataset was produced by the\n<a target=\"_blank\" href=\"https://www.umassmed.edu/zlab/\">ENCODE Data Analysis Center\n(ZLab at UMass Medical Center)</a>.  Please check the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgHubConnect?hubSearchTerms=ZLab\">ZLab ENCODE Public Hubs</a>\nfor the most updated data.\nThanks to Henry Pratt, Jill Moore, Michael Purcaro, and Zhiping Weng, PI for providing\nthis data.\nThanks also to the ENCODE Consortium, the ENCODE production laboratories, \nand the ENCODE Data Coordination Center for generating and processing the datasets used here.\n</p>\n\n<h2>References</h2>\n<p>\nENCODE Project Consortium.\n<a href=\"https://doi.org/10.1038/s41586-020-2493-4\" target=\"_blank\">\nExpanded Encyclopedias of DNA Elements in the Human and Mouse Genomes</a>.\n<em>Nature</em>. 2020 July 30;583(7818):699-710</p>\n\n<p>\nENCODE Project Consortium.\n<a href=\"https://doi.org/10.1038/nature11247\" target=\"_blank\">\nAn integrated encyclopedia of DNA elements in the human genome</a>.\n<em>Nature</em>. 2012 Sep 6;489(7414):57-74.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/22955616\" target=\"_blank\">22955616</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3439153/\" target=\"_blank\">PMC3439153</a>\n</p>\n\nENCODE Project Consortium.\n<a href=\"https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001046\" target=\"_blank\">\nA user's guide to the encyclopedia of DNA elements (ENCODE)</a>.\n<em>PLoS Biol</em>. 2011 Apr;9(4):e1001046.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/21526222\" target=\"_blank\">21526222</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3079585/\" target=\"_blank\">PMC3079585</a>\n</p>\n\n"
-        }
-      },
-      "description": "ENCODE Candidate Cis-Regulatory Elements (cCREs) combined from all cell types",
-      "category": ["Regulation"]
-    },
-    {
       "trackId": "hg38-epdNewPromoter",
       "name": "EPDnew Promoters - EPDnew v6",
       "type": "FeatureTrack",
@@ -8523,38 +8487,6 @@
       },
       "description": "Database of Genomic Variants: Gold Standard Variants",
       "category": ["Variation and Repeats"]
-    },
-    {
-      "trackId": "hg38-encode4LongRnaTranscripts",
-      "name": "ENCODE4 Transcripts",
-      "type": "FeatureTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/encode4/encode4LongRnaTranscripts.bb"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/encode4/encode4LongRnaTranscripts.bb",
-          "defaultLabelFields": "transcript_name",
-          "filter.maxScore": "0:93180.9",
-          "filterByRange.maxScore": "on",
-          "filterLabel.maxScore": "Filter by counts per million",
-          "filterLimits.maxScore": "0:93180.9",
-          "html": "<!DOCTYPE html>\n<html>\n<head>\n</head>\n\n<body>\n<h2>Description</h2>\n<p>\nThe ENCODE4 long-read RNA-seq collection annotates trancripts using numerical triplets representing \nthe identity of the start site, exon junction chain, and transcript end site of each transcript. \nThis method reveals how promoter selection, splice pattern, and 3’ processing are deployed across \nhuman tissues.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nTranscript names include a triplet annotation that represents transcript start site, exon junction \nchain, and transcript end site. For example, if transcript A has the label [1,2,3] and transcript B\nis labeled [1,1,3], then those transcripts share start and end sites but have a different combination\nof exons. Here is an exmaple drawn from hg38 at the INSIG1 locus:</p>\n\n<img src=\"https://genome.ucsc.edu/images/encode4LongReadTranscriptsHelp.png\">\n\n<p>\nIn this example, the first two transcripts marked by arrows have the same start\nsite (\"1\") and the same set of exons (\"8\"), but they have different end sites\n(\"2\" vs \"1\"). Similarly, the second two marked transcripts have the same start\nsite (\"1\"), but a different set of exons (\"8\" vs \"9\") and a different end site\n(\"1\" vs \"2\").\n</p>\n\n\n<p>\nGENCODE V29 and V40 were used as reference data; any transcript not present in either of these is\ncolored <font color=0000FF>blue</font>.</p>\n<p>\nMouseover on transcripts shows their ENCODE gene ID and the tissue or cell line where it’s most highly\nexpressed and its TPM in that sample.\n</p>\n\n<h2>Data Access</h2>\nThe raw data can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\nFor automated analysis, the data may be queried from our\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\">REST API</a>.</p>\n\n<p>\nThe data underlying this track is available in the file\n<a href=\"https://hgdownload.gi.ucsc.edu/gbdb/hg38/encode4/encode4LongRnaTranscripts.bb\">encode4LongRna.bb</a>.\nIndividual regions or the whole genome annotation can be obtained using our\ntool <tt>bigBedToBed</tt>, which is available on our\n<a href=\"http://hgdownload.gi.ucsc.edu/downloads.html#utilities_downloads\">download server</a>.\nFor example, to extract only annotations in a given region, you could use the following command:\n</p>\n\n<pre>\nbigBedToBed -chrom=chr1 -start=100000 -end=100500 https://hgdownload.gi.ucsc.edu/gbdb/hg38/encode4LongRna.bb stdout\n</pre>\n\n<p>\nPlease refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions, or our\n<a href=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#downloads36\">Data Access FAQ</a>\nfor more information.\n</p>\n\n<h2>Methods</h2>\n<p>\nData were retrieved from <a\nhref=\"https://zenodo.org/records/15116042\">https://zenodo.org/records/15116042</a>.\nThe <tt>human_ucsc_transcripts.gtf</tt> was converted to BED format, and expression and CDS data\nadded from the relevant files using a custom script.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Fairlie Reese for providing data access and for helpful feedback.\n</p>\n\n<h2>References</h2>\n<p>\nReese F, Williams B, Balderrama-Gutierrez G, Wyman D, &#199;elik MH, Rebboah E, Rezaie N, Trout D,\nRazavi-Mohseni M, Jiang Y <em>et al</em>.\n<a href=\"https://doi.org/10.1101/2023.05.15.540865\" target=\"_blank\">\nThe ENCODE4 long-read RNA-seq collection reveals distinct classes of transcript structure\ndiversity</a>.\n<em>bioRxiv</em>. 2023 May 16;.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37292896\" target=\"_blank\">37292896</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10245583/\" target=\"_blank\">PMC10245583</a>\n</p>\n",
-          "itemRgb": "on",
-          "labelFields": "name,transcript_name",
-          "longLabel": "ENCODE4 Long Read Transcripts",
-          "mouseOver": "$name <br> $gene_name <br> ${maxScoreHtml}",
-          "shortLabel": "ENCODE4 Transcripts",
-          "superTrack": "long_read_transcripts",
-          "track": "encode4LongRnaTranscripts",
-          "type": "bigBed 12 +",
-          "visibility": "pack"
-        }
-      },
-      "description": "ENCODE4 Long Read Transcripts",
-      "category": ["mRNA and EST"]
     },
     {
       "trackId": "hg38-varChat",
@@ -20262,7 +20194,7 @@
     }
   ],
   "defaultSession": {
-    "name": "undefined Dec. 2013 (GRCh38/hg38)",
+    "name": "hg38 Dec. 2013 (GRCh38/hg38)",
     "views": [
       {
         "id": "main",

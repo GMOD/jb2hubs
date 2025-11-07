@@ -66,7 +66,7 @@ function generateDefaultSession(genome: UcscGenome): DefaultSession {
   const trackId = HARDCODED_TRACKS[assemblyId] || `${assemblyId}-ncbiRefSeq`
 
   return {
-    name: `${genome.key} ${genome.description}`,
+    name: `${assemblyId} ${genome.description}`,
     views: [
       {
         id: 'main',
