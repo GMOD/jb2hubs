@@ -59,9 +59,6 @@ rm -f blockedFiles.txt blockedFiles.json removedTracks.json
 log "Fetching latest UCSC genome list..."
 curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_RESULTS_DIR/list.json.raw"
 
-log "Transforming genome list to array format..."
-node src/transformGenomeList.ts "$UCSC_RESULTS_DIR/list.json.raw" "$UCSC_RESULTS_DIR/list.json"
-
 log "Creating a copy for the website..."
 cp "$UCSC_RESULTS_DIR/list.json" ../website/src/list.json
 
@@ -118,6 +115,9 @@ log "Download and add GENCODE tracks"
 
 log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
 ./createMinimalConfigs.sh "$UCSC_RESULTS_DIR"
+
+log "Generating default sessions for all assemblies..."
+./generateDefaultSessions.sh
 
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_RESULTS_DIR"/ | grep -v "meta.json" | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'

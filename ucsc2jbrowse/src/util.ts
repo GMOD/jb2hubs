@@ -57,11 +57,7 @@ export function replaceLink(htmlContent: string): string {
  * @throws Error if the config file cannot be read or parsed.
  */
 export function readConfig(configPath: string): JBrowseConfig {
-  try {
-    return readJSON<JBrowseConfig>(configPath)
-  } catch (e) {
-    throw new Error(`Error reading config: ${configPath}`, { cause: e })
-  }
+  return readJSON<JBrowseConfig>(configPath)
 }
 
 /**
