@@ -4,6 +4,7 @@ interface BlockedFileCache {
   [url: string]: {
     lastChecked: number
     blocked: boolean
+    trackName?: string
   }
 }
 
@@ -62,11 +63,12 @@ function loadBlockedFilesCache(assembly: string): BlockedFileCache {
 /**
  * Saves a blocked file to the cache with a timestamp.
  */
-function saveBlockedFile(assembly: string, url: string, blocked: boolean) {
+function saveBlockedFile(assembly: string, url: string, blocked: boolean, trackName?: string) {
   const cache = loadBlockedFilesCache(assembly)
   cache[url] = {
     lastChecked: Date.now(),
     blocked,
+    ...(trackName && { trackName }),
   }
 
   try {
@@ -82,9 +84,10 @@ function saveBlockedFile(assembly: string, url: string, blocked: boolean) {
  * If the URL is not accessible and contains 'hg19', 'hg38', 'mm39', or 'mm10', it logs the URL to cache.
  * URLs that were blocked within the last 3 months will not be re-checked.
  * @param url The URL to check.
+ * @param trackName Optional track name to store with the file entry.
  * @returns A promise that resolves to true if the file is accessible, false otherwise.
  */
-export async function checkIfFileAccessible({ url }: { url: string }) {
+export async function checkIfFileAccessible({ url, trackName }: { url: string; trackName?: string }) {
   // Only perform HEAD request for UCSC-related URLs
   if (process.env.CHECK_404) {
     // Extract assembly from URL to use assembly-specific cache
@@ -118,15 +121,15 @@ export async function checkIfFileAccessible({ url }: { url: string }) {
         console.error(
           `File not accessible (status: ${response.status}): ${url}`,
         )
-        saveBlockedFile(assembly, url, true)
+        saveBlockedFile(assembly, url, true, trackName)
         return false
       }
       // File is accessible, update cache to mark as not blocked
-      saveBlockedFile(assembly, url, false)
+      saveBlockedFile(assembly, url, false, trackName)
       return true
     } catch (error) {
       console.error(`Error checking file accessibility for ${url}: ${error}`)
-      saveBlockedFile(assembly, url, true)
+      saveBlockedFile(assembly, url, true, trackName)
       return false
     }
   }

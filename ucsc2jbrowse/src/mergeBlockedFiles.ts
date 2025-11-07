@@ -5,6 +5,7 @@ interface BlockedFileCache {
   [url: string]: {
     lastChecked: number
     blocked: boolean
+    trackName?: string
   }
 }
 
