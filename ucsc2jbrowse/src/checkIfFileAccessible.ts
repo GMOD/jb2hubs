@@ -63,7 +63,12 @@ function loadBlockedFilesCache(assembly: string): BlockedFileCache {
 /**
  * Saves a blocked file to the cache with a timestamp.
  */
-function saveBlockedFile(assembly: string, url: string, blocked: boolean, trackName?: string) {
+function saveBlockedFile(
+  assembly: string,
+  url: string,
+  blocked: boolean,
+  trackName?: string,
+) {
   const cache = loadBlockedFilesCache(assembly)
   cache[url] = {
     lastChecked: Date.now(),
@@ -87,7 +92,13 @@ function saveBlockedFile(assembly: string, url: string, blocked: boolean, trackN
  * @param trackName Optional track name to store with the file entry.
  * @returns A promise that resolves to true if the file is accessible, false otherwise.
  */
-export async function checkIfFileAccessible({ url, trackName }: { url: string; trackName?: string }) {
+export async function checkIfFileAccessible({
+  url,
+  trackName,
+}: {
+  url: string
+  trackName?: string
+}) {
   // Only perform HEAD request for UCSC-related URLs
   if (process.env.CHECK_404) {
     // Extract assembly from URL to use assembly-specific cache
