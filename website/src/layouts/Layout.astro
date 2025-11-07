@@ -15,7 +15,6 @@ const { frontmatter, title, description } = Astro.props
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
     ></script>
     <script>
@@ -29,9 +28,7 @@ const { frontmatter, title, description } = Astro.props
     </script>
     <SEO
       title={title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'}
-      description={description ??
-        frontmatter?.description ??
-        'JBrowse 2 genome browser hubs'}
+      description={description ?? frontmatter?.description}
     />
   </head>
   <body>

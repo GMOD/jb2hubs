@@ -61,13 +61,50 @@ export async function getStaticPaths() {
       taxonIds.add(match[1]) // match[1] is the taxonId
     }
 
+    // Load and parse the tree once for all taxonomy pages
+    const {
+      getCachedTree,
+      extractSubtreeByTaxonId,
+      extractLineageByTaxonId,
+      collectAccessions,
+    } = await import('../../utils/taxonomyCache')
+    const fullTree = getCachedTree('all')
+
+    // Create a map of all species data for fast lookup
+    const allSpeciesMap = new Map(
+      allJson.default.map((species: any) => [species.accession, species]),
+    )
+
     // Generate a path for each taxonId (skip if already used by categories)
     for (const taxonId of taxonIds) {
       if (!seenSlugs.has(taxonId)) {
         seenSlugs.add(taxonId)
+
+        // Pre-compute subtree and lineage for this taxonId
+        const subtree = fullTree
+          ? extractSubtreeByTaxonId(fullTree, taxonId)
+          : null
+        const lineage = fullTree
+          ? extractLineageByTaxonId(fullTree, taxonId)
+          : []
+
+        // Collect accessions from the subtree
+        const relevantAccessions = subtree ? collectAccessions(subtree) : []
+
+        // Filter species data to only include species in this subtree
+        const filteredSpecies = relevantAccessions
+          .map(acc => allSpeciesMap.get(acc))
+          .filter(Boolean)
+
         paths.push({
           params: { slug: taxonId },
-          props: { rows: allJson.default, isCategory: false, taxonId },
+          props: {
+            rows: filteredSpecies,
+            isCategory: false,
+            taxonId,
+            precomputedSubtree: subtree,
+            precomputedLineage: lineage,
+          },
         })
       } else {
         console.warn(
@@ -83,7 +120,8 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params
-const { rows, isCategory, taxonId } = Astro.props
+const { rows, isCategory, taxonId, precomputedSubtree, precomputedLineage } =
+  Astro.props
 
 let title: string
 let description: string
@@ -93,13 +131,8 @@ if (isCategory) {
   title = slug.charAt(0).toUpperCase() + slug.slice(1)
   description = `Browse ${title} genome assemblies from the GenArk collection`
 } else {
-  // For taxonomy pages, get the taxon name from the tree
-  const { getCachedTree, extractSubtreeByTaxonId } = await import(
-    '../../utils/taxonomyCache'
-  )
-  const tree = getCachedTree('all')
-  const subtree = tree ? extractSubtreeByTaxonId(tree, taxonId) : null
-  title = subtree?.name || `Taxonomy ID: ${taxonId}`
+  // For taxonomy pages, use precomputed subtree data
+  title = precomputedSubtree?.name || `Taxonomy ID: ${taxonId}`
   description = `Browse genome assemblies for ${title} (NCBI Taxonomy ID: ${taxonId})`
 }
 ---
@@ -112,6 +145,8 @@ if (isCategory) {
       title={title}
       hubsLink={isCategory ? `/hubs/${slug}` : undefined}
       filterTaxonId={isCategory ? undefined : taxonId}
+      precomputedSubtree={precomputedSubtree}
+      precomputedLineage={precomputedLineage}
     />
   </Container2>
 </Layout>

@@ -7,7 +7,6 @@ interface TreeNode {
   taxonId?: string
   children?: TreeNode[]
   branchLength?: number
-  parent?: TreeNode
 }
 
 interface FlatNodeData {
@@ -40,7 +39,6 @@ function parseNewick(newick: string): TreeNode | null {
       index++ // skip '('
       do {
         const child = parseNode()
-        child.parent = node
         node.children!.push(child)
         if (cleanNewick[index] === ',') {
           index++ // skip ','
@@ -285,6 +283,30 @@ export function countAccessions(node: FlatNodeData | null): number {
     }
   }
   return count
+}
+
+/**
+ * Collect all accessions from a subtree
+ */
+export function collectAccessions(node: FlatNodeData | null): string[] {
+  if (!node) {
+    return []
+  }
+  const accessions: string[] = []
+
+  function traverse(n: FlatNodeData) {
+    if (n.accession) {
+      accessions.push(n.accession)
+    }
+    if (n.children) {
+      for (const child of n.children) {
+        traverse(child)
+      }
+    }
+  }
+
+  traverse(node)
+  return accessions
 }
 
 export type { FlatNodeData }

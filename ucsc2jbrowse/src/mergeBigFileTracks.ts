@@ -12,6 +12,7 @@ interface BigDataTrack {
   settings: {
     bigDataUrl?: string
     type?: string
+    longLabel?: string
     speciesLabels?: string
   }
 }
@@ -125,7 +126,7 @@ async function addBigDataTracks(
                 ) {
                   const fileAccessible = await checkIfFileAccessible({
                     url: bigDataUrl,
-                    trackName: tableName,
+                    trackName: settings?.longLabel || tableName,
                   })
                   if (!fileAccessible) {
                     return undefined
