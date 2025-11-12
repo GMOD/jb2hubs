@@ -47,7 +47,9 @@ declare function generateHubTracks({
       description: string | undefined
       assemblyNames: string[]
       metadata: {
-        html?: string | undefined
+        ucsc: {
+          html?: string | undefined
+        }
       }
       category: string[]
     }
@@ -65,7 +67,9 @@ declare function generateHubTracks({
       description: string | undefined
       assemblyNames: string[]
       metadata: {
-        html?: string | undefined
+        ucsc: {
+          html?: string | undefined
+        }
       }
       category: string[]
     }
@@ -117,7 +121,9 @@ declare function generateJBrowseConfigForAssemblyHub({
     sequence: {
       type: string
       metadata: {
-        htmlPath?: string | undefined
+        ucsc: {
+          htmlPath?: string | undefined
+        }
       }
       trackId: string
       adapter: {
@@ -140,7 +146,9 @@ declare function generateJBrowseConfigForAssemblyHub({
         description: string | undefined
         assemblyNames: string[]
         metadata: {
-          html?: string | undefined
+          ucsc: {
+            html?: string | undefined
+          }
         }
         category: string[]
       }
@@ -158,7 +166,9 @@ declare function generateJBrowseConfigForAssemblyHub({
         description: string | undefined
         assemblyNames: string[]
         metadata: {
-          html?: string | undefined
+          ucsc: {
+            html?: string | undefined
+          }
         }
         category: string[]
       }

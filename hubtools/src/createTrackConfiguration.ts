@@ -40,12 +40,14 @@ export function createTrackConfiguration({
   return conf
     ? {
         metadata: {
-          ...data,
-          ...(html
-            ? {
-                html: createHtmlLink(html, trackDbUrl),
-              }
-            : {}),
+          ucsc: {
+            ...data,
+            ...(html
+              ? {
+                  html: createHtmlLink(html, trackDbUrl),
+                }
+              : {}),
+          },
         },
         category: [
           effectiveGroup,

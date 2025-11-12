@@ -48,12 +48,14 @@ export async function generateJBrowseConfigForAssemblyHub({
       sequence: {
         type: 'ReferenceSequenceTrack',
         metadata: {
-          ...data,
-          ...(htmlPath
-            ? {
-                htmlPath: `<a href="${resolve(htmlPath, trackDbUrl)}">${htmlPath}</a>`,
-              }
-            : {}),
+          ucsc: {
+            ...data,
+            ...(htmlPath
+              ? {
+                  htmlPath: `<a href="${resolve(htmlPath, trackDbUrl)}">${htmlPath}</a>`,
+                }
+              : {}),
+          },
         },
         trackId: `${genomeName}-ReferenceSequenceTrack`,
         adapter: sequenceAdapter,

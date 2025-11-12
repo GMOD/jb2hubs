@@ -41,12 +41,18 @@ function applyGenArkExtensions() {
         path.join(extensionsDir, item),
       ) as JBrowseConfig
 
+      // Add assembly prefix to extension track IDs
+      const extensionTracksWithPrefix = extensionConfig.tracks.map(track => ({
+        ...track,
+        trackId: `${accession}-${track.trackId}`,
+      }))
+
       // Merge the configurations. Extension tracks take precedence and are deduplicated.
       const mergedConfig = {
         ...existingConfig,
         ...extensionConfig,
         tracks: dedupe(
-          [...extensionConfig.tracks, ...existingConfig.tracks],
+          [...extensionTracksWithPrefix, ...existingConfig.tracks],
           t => t.trackId,
         ),
       }

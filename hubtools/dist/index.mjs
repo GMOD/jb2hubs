@@ -135,8 +135,10 @@ function createTrackConfiguration({
   return conf
     ? {
         metadata: {
-          ...data,
-          ...(html ? { html: createHtmlLink(html, trackDbUrl) } : {}),
+          ucsc: {
+            ...data,
+            ...(html ? { html: createHtmlLink(html, trackDbUrl) } : {}),
+          },
         },
         category: [effectiveGroup]
           .filter(f => !!f)
@@ -309,12 +311,14 @@ async function generateJBrowseConfigForAssemblyHub({
       sequence: {
         type: 'ReferenceSequenceTrack',
         metadata: {
-          ...data,
-          ...(htmlPath
-            ? {
-                htmlPath: `<a href="${resolve(htmlPath, trackDbUrl)}">${htmlPath}</a>`,
-              }
-            : {}),
+          ucsc: {
+            ...data,
+            ...(htmlPath
+              ? {
+                  htmlPath: `<a href="${resolve(htmlPath, trackDbUrl)}">${htmlPath}</a>`,
+                }
+              : {}),
+          },
         },
         trackId: `${genomeName}-ReferenceSequenceTrack`,
         adapter: sequenceAdapter,

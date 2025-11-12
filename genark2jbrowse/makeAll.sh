@@ -36,7 +36,7 @@ echo "Processing NCBI GFF files..."
 ./processGffFiles.sh
 
 echo "Loading and text indexing NCBI GFF tracks..."
-./addTracksAndTextIndex.sh
+./addNcbiGffAndTextIndex.sh
 
 echo "Adding GenArk extensions (special tracks)..."
 node src/makeGenArkExtensions.ts
