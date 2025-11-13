@@ -526,7 +526,7 @@ function parseAssemblyEntry({ entry }) {
     commonName: comName || '',
     taxonId: taxId || '',
     assemblyStatus,
-    jbrowseLink: `https://jbrowse.org/code/jb2/main/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
+    jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
     jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
     ncbiGff: ncbiGffUrl,
     ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
