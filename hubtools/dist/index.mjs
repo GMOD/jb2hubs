@@ -498,8 +498,18 @@ function parseAssemblyEntry({ entry }) {
       `NCBI data not found for ${accession} (${comName}): ${fn} does not exist`,
     )
   }
-  const r = ncbiData?.result.uids[0]
-  const r2 = r ? ncbiData?.result[r] : void 0
+  let r2
+  if (ncbiData?.result.uids) {
+    for (const uid of ncbiData.result.uids) {
+      const candidate = ncbiData.result[uid]
+      if (candidate?.assemblyaccession === accession) {
+        r2 = candidate
+        break
+      }
+    }
+    if (!r2 && ncbiData.result.uids[0])
+      r2 = ncbiData.result[ncbiData.result.uids[0]]
+  }
   if (!r2) return
   const assemblyStatus = r2.assemblystatus
   const ncbiAssemblyName = r2.assemblyname
