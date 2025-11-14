@@ -31,7 +31,11 @@ export function parseAssemblyEntry({
   if (ncbiData?.result.uids) {
     for (const uid of ncbiData.result.uids) {
       const candidate = ncbiData.result[uid]
-      if (candidate?.assemblyaccession === accession) {
+      if (
+        candidate?.assemblyaccession === accession ||
+        candidate?.synonyms?.genbank === accession ||
+        candidate?.synonyms?.refseq === accession
+      ) {
         r2 = candidate
         break
       }

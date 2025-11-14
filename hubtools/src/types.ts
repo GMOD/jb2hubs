@@ -20,6 +20,7 @@ export interface NCBIAssemblyEntry {
   propertylist: string[]
   refseq_category: string
   busco: unknown
+  synonyms?: { refseq: string; genbank: string }
   meta: string
 }
 export interface NCBIData {
