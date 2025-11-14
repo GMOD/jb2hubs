@@ -197,6 +197,7 @@ interface UCSCGenArkAssemblyEntry {
   ucscBrowser: string
 }
 interface NCBIAssemblyEntry {
+  assemblyaccession: string
   assemblystatus: string
   assemblyname: string
   assemblydate: string

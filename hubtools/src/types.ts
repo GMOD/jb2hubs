@@ -10,6 +10,7 @@ export interface UCSCGenArkAssemblyEntry {
 }
 
 export interface NCBIAssemblyEntry {
+  assemblyaccession: string
   assemblystatus: string
   assemblyname: string
   assemblydate: string
