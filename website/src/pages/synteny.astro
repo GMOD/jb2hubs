@@ -100,9 +100,8 @@ const sortedAssemblies = Array.from(allAssemblies)
         map genomic coordinates from one species to another.
       </p>
       <p>
-        We have <strong>{syntenyTracks.length}</strong> synteny comparisons
-        available across <strong>{allAssemblies.size}</strong> different species
-        assemblies.
+        We have <strong>{syntenyTracks.length}</strong> synteny comparisons available
+        across <strong>{allAssemblies.size}</strong> different species assemblies.
       </p>
     </div>
   </Container>
@@ -207,7 +206,13 @@ const sortedAssemblies = Array.from(allAssemblies)
   }
 </style>
 
-<script define:vars={{ syntenyTracks, assemblyPairs: Object.fromEntries(assemblyPairs), assemblyInfo: Object.fromEntries(assemblyInfo) }}>
+<script
+  define:vars={{
+    syntenyTracks,
+    assemblyPairs: Object.fromEntries(assemblyPairs),
+    assemblyInfo: Object.fromEntries(assemblyInfo),
+  }}
+>
   const species1Select = document.getElementById('species1')
   const species2Select = document.getElementById('species2')
   const launchButton = document.getElementById('launchButton')
@@ -223,14 +228,15 @@ const sortedAssemblies = Array.from(allAssemblies)
     pairs[key] = Array.isArray(value) ? value : Array.from(value)
   }
 
-  species1Select.addEventListener('change', (e) => {
+  species1Select.addEventListener('change', e => {
     selectedSpecies1 = e.target.value
     selectedSpecies2 = ''
 
     if (selectedSpecies1) {
       // Enable and populate species2 select
       species2Select.disabled = false
-      species2Select.innerHTML = '<option value="">-- Select a species --</option>'
+      species2Select.innerHTML =
+        '<option value="">-- Select a species --</option>'
 
       const availableSpecies = pairs[selectedSpecies1] || []
       const sortedOptions = availableSpecies
@@ -260,7 +266,7 @@ const sortedAssemblies = Array.from(allAssemblies)
     launchButton.disabled = true
   })
 
-  species2Select.addEventListener('change', (e) => {
+  species2Select.addEventListener('change', e => {
     selectedSpecies2 = e.target.value
 
     if (selectedSpecies1 && selectedSpecies2) {
@@ -268,7 +274,7 @@ const sortedAssemblies = Array.from(allAssemblies)
 
       // Find and display track information
       const matchingTracks = syntenyTracks.filter(
-        (track) =>
+        track =>
           track.assemblyNames.includes(selectedSpecies1) &&
           track.assemblyNames.includes(selectedSpecies2),
       )
@@ -297,5 +303,3 @@ const sortedAssemblies = Array.from(allAssemblies)
     }
   })
 </script>
-
-

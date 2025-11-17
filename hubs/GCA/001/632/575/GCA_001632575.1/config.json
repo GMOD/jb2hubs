@@ -428,156 +428,24 @@
       }
     },
     {
-      "metadata": {
-        "ucsc": {
-          "track": "chainMm10",
-          "parent": "chainNetMm10Viewchain",
-          "subGroups": "view=chain",
-          "shortLabel": "Mouse Chain",
-          "longLabel": "Mouse (Dec. 2011 (GRCm38/mm10)) Chained Alignments",
-          "type": "bigChain mm10",
-          "bigDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.chainMm10.bb",
-          "linkDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.chainMm10Link.bb",
-          "priority": "1"
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_001632575.1-chainMm10",
-      "description": "Mouse (Dec. 2011 (GRCm38/mm10)) Chained Alignments",
-      "assemblyNames": ["GCA_001632575.1"],
-      "name": "Mouse Chain/Net - Chain - Mouse Chain",
-      "type": "FeatureTrack",
+      "type": "SyntenyTrack",
+      "trackId": "GCA_001632575.1_to_mm10_liftOver",
+      "name": "GCA_001632575.1 (house mouse (C3H_HeJ v1 2016)) to Mouse (mm10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_001632575.1", "mm10"],
       "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/001/632/575/GCA_001632575.1/bbi/GCA_001632575.1_C3H_HeJ_v1.chainMm10.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "chainSynMm10",
-          "parent": "chainNetMm10Viewchain",
-          "subGroups": "view=chain",
-          "shortLabel": "Mouse synChain",
-          "longLabel": "Mouse (Dec. 2011 (GRCm38/mm10)) Syntenic Chained Alignments",
-          "type": "bigChain mm10",
-          "bigDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.chainSynMm10.bb",
-          "linkDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.chainSynMm10Link.bb",
-          "priority": "2"
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_001632575.1",
+        "queryAssembly": "mm10",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_001632575.1ToMm10.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_001632575.1ToMm10.pif.gz.csi"
+          },
+          "indexType": "CSI"
         }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_001632575.1-chainSynMm10",
-      "description": "Mouse (Dec. 2011 (GRCm38/mm10)) Syntenic Chained Alignments",
-      "assemblyNames": ["GCA_001632575.1"],
-      "name": "Mouse Chain/Net - Chain - Mouse synChain",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/001/632/575/GCA_001632575.1/bbi/GCA_001632575.1_C3H_HeJ_v1.chainSynMm10.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "chainRBestMm10",
-          "parent": "chainNetMm10Viewchain",
-          "subGroups": "view=chain",
-          "shortLabel": "Mouse rbChain",
-          "longLabel": "Mouse (Dec. 2011 (GRCm38/mm10)) Reciprocal Best Chained Alignments",
-          "type": "bigChain mm10",
-          "bigDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.chainRBestMm10.bb",
-          "linkDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.chainRBestMm10Link.bb",
-          "priority": "3"
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_001632575.1-chainRBestMm10",
-      "description": "Mouse (Dec. 2011 (GRCm38/mm10)) Reciprocal Best Chained Alignments",
-      "assemblyNames": ["GCA_001632575.1"],
-      "name": "Mouse Chain/Net - Chain - Mouse rbChain",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/001/632/575/GCA_001632575.1/bbi/GCA_001632575.1_C3H_HeJ_v1.chainRBestMm10.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "netMm10",
-          "parent": "mafNetMm10Viewnet",
-          "subGroups": "view=net",
-          "shortLabel": "Mouse net",
-          "longLabel": "Mouse (Dec. 2011 (GRCm38/mm10)) Net Alignment",
-          "type": "bigMaf",
-          "bigDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.net.bb",
-          "summary": "bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.net.summary.bb",
-          "speciesOrder": "mm10",
-          "priority": "4"
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_001632575.1-netMm10",
-      "description": "Mouse (Dec. 2011 (GRCm38/mm10)) Net Alignment",
-      "assemblyNames": ["GCA_001632575.1"],
-      "name": "Mouse Chain/Net - Net - Mouse net",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/001/632/575/GCA_001632575.1/bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.net.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "synNetMm10",
-          "parent": "mafNetMm10Viewnet",
-          "subGroups": "view=net",
-          "shortLabel": "Mouse synNet",
-          "longLabel": "Mouse (Dec. 2011 (GRCm38/mm10)) Syntenic Net Alignment",
-          "type": "bigMaf",
-          "bigDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.synNet.bb",
-          "summary": "bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.synNet.summary.bb",
-          "speciesOrder": "mm10",
-          "priority": "5"
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_001632575.1-synNetMm10",
-      "description": "Mouse (Dec. 2011 (GRCm38/mm10)) Syntenic Net Alignment",
-      "assemblyNames": ["GCA_001632575.1"],
-      "name": "Mouse Chain/Net - Net - Mouse synNet",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/001/632/575/GCA_001632575.1/bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.synNet.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "rbestNetMm10",
-          "parent": "mafNetMm10Viewnet",
-          "subGroups": "view=net",
-          "shortLabel": "Mouse rbestNet",
-          "longLabel": "Mouse (Dec. 2011 (GRCm38/mm10)) Reciprocal Best Net Alignment",
-          "type": "bigMaf",
-          "bigDataUrl": "bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.rbestNet.bb",
-          "summary": "bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.rbestNet.summary.bb",
-          "speciesOrder": "mm10",
-          "priority": "6"
-        }
-      },
-      "category": ["Comparative Genomics"],
-      "trackId": "GCA_001632575.1-rbestNetMm10",
-      "description": "Mouse (Dec. 2011 (GRCm38/mm10)) Reciprocal Best Net Alignment",
-      "assemblyNames": ["GCA_001632575.1"],
-      "name": "Mouse Chain/Net - Net - Mouse rbestNet",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/001/632/575/GCA_001632575.1/bbi/GCA_001632575.1_C3H_HeJ_v1.mm10.rbestNet.bb"
       }
     }
   ],

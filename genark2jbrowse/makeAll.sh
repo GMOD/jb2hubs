@@ -41,6 +41,12 @@ echo "Loading and text indexing NCBI GFF tracks..."
 echo "Adding GenArk extensions (special tracks)..."
 node src/makeGenArkExtensions.ts
 
+echo "Processing liftOver chain files and creating PIFs..."
+fd meta.json hubs | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
+
+echo "Adding chain tracks to configs..."
+fd meta.json hubs | parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}'
+
 echo "Enhancing configs with plugins and hierarchical configuration..."
 ./enhanceConfigs.sh
 
