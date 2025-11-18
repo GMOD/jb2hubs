@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import uFuzzy from '@leeoniya/ufuzzy'
+import { useQueryState } from 'nuqs'
 
 import type { RowData } from './useTableColumns.tsx'
 
@@ -33,33 +34,12 @@ const getSearchableText = (row: RowData): string => {
 }
 
 export function useSearchFilter(rows: RowData[]) {
-  const [searchQuery, setSearchQuery] = useState('')
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    setSearchQuery(params.get('search') ?? '')
-  }, [])
-
-  // Local state for immediate UI responsiveness
-  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
-
-  // Debounce search query updates
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (localSearchQuery !== searchQuery) {
-        setSearchQuery(localSearchQuery)
-      }
-    }, 300)
-
-    return () => {
-      clearTimeout(timeoutId)
-    }
-  }, [localSearchQuery, searchQuery, setSearchQuery])
-
-  // Update local state when URL changes
-  useEffect(() => {
-    setLocalSearchQuery(searchQuery)
-  }, [searchQuery])
+  // Use nuqs to manage search query in URL
+  const [searchQuery, setSearchQuery] = useQueryState('search', {
+    defaultValue: '',
+    history: 'push',
+    throttleMs: 300, // Debounce URL updates
+  })
 
   // Memoize processed rows and search haystack for better performance
   const { processedRows, searchHaystack } = useMemo(() => {
@@ -75,7 +55,7 @@ export function useSearchFilter(rows: RowData[]) {
 
   const filteredRows = useMemo(() => {
     // If no search query, return all rows
-    const query = searchQuery.trim()
+    const query = (searchQuery || '').trim()
     if (!query) {
       return rows
     }
@@ -97,12 +77,15 @@ export function useSearchFilter(rows: RowData[]) {
     )
   }, [rows, processedRows, searchHaystack, searchQuery])
 
-  const handleSearchChange = useCallback((value: string) => {
-    setLocalSearchQuery(value)
-  }, [])
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      void setSearchQuery(value || null)
+    },
+    [setSearchQuery],
+  )
 
   return {
-    searchQuery: localSearchQuery,
+    searchQuery: searchQuery || '',
     setSearchQuery: handleSearchChange,
     filteredRows,
   }
