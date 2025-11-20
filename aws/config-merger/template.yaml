@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: JBrowse Config Merger Lambda Function
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+
+Resources:
+  ConfigMergerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: jbrowse-config-merger
+      CodeUri: dist/
+      Handler: index.handler
+      Description: Merges multiple JBrowse config files
+      Environment:
+        Variables:
+          NODE_ENV: production
+      Events:
+        MergeConfigs:
+          Type: Api
+          Properties:
+            Path: /merge
+            Method: POST
+        OptionsRequest:
+          Type: Api
+          Properties:
+            Path: /merge
+            Method: OPTIONS
+
+  ConfigMergerFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${ConfigMergerFunction}
+      RetentionInDays: 7
+
+Outputs:
+  ConfigMergerApi:
+    Description: API Gateway endpoint URL for Config Merger function
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/merge
+  ConfigMergerFunction:
+    Description: Config Merger Lambda Function ARN
+    Value: !GetAtt ConfigMergerFunction.Arn
+  ConfigMergerFunctionIamRole:
+    Description: Implicit IAM Role created for Config Merger function
+    Value: !GetAtt ConfigMergerFunctionRole.Arn
