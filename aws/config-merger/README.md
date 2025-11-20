@@ -13,50 +13,24 @@ AWS Lambda function that merges multiple JBrowse 2 configuration files into a si
 
 ## API Usage
 
-### Endpoint
+### GET /merge
+
+Simple GET endpoint with query parameters - perfect for direct JBrowse integration:
 
 ```
-POST /merge
+GET /merge?configUrls=url1,url2&sessionType=synteny
 ```
 
-### Request Body
+**Query Parameters:**
+- `configUrls` (required): Comma-separated list of config URLs
+- `includeSyntenyTracks` (optional): `true` or `false` (default: `false`)
+- `createDefaultSession` (optional): `true` or `false` (default: `true`)
+- `sessionType` (optional): `linear` or `synteny` (default: `synteny`)
 
-```json
-{
-  "configUrls": [
-    "https://genomes.jbrowse.org/ucsc/GCF_950023065.1/config.json",
-    "https://genomes.jbrowse.org/ucsc/GCF_950005125.1/config.json"
-  ],
-  "options": {
-    "includeSyntenyTracks": true,
-    "syntenyTracks": [...],
-    "createDefaultSession": true,
-    "sessionType": "synteny"
-  }
-}
+**Example:**
 ```
-
-Or provide configs directly:
-
-```json
-{
-  "configs": [
-    { "assemblies": [...], "tracks": [...] },
-    { "assemblies": [...], "tracks": [...] }
-  ],
-  "options": {
-    "createDefaultSession": true,
-    "sessionType": "linear"
-  }
-}
+https://your-api.amazonaws.com/Prod/merge?configUrls=https://genomes.jbrowse.org/ucsc/GCF_950023065.1/config.json,https://genomes.jbrowse.org/ucsc/GCF_950005125.1/config.json&sessionType=synteny
 ```
-
-### Options
-
-- `includeSyntenyTracks` (boolean): Include synteny tracks in the merged config
-- `syntenyTracks` (array): Array of synteny track definitions to include
-- `createDefaultSession` (boolean): Create a default session in the merged config
-- `sessionType` ('linear' | 'synteny'): Type of session to create
 
 ### Response
 
@@ -85,6 +59,8 @@ yarn install
 yarn build
 ```
 
+This uses esbuild to bundle all TypeScript files into a single `dist/index.mjs` file (~6.6KB) as an ES module for Lambda deployment.
+
 ### Run Tests
 
 ```bash
@@ -99,6 +75,22 @@ Tests are written using Vitest.
 
 - AWS CLI configured with appropriate credentials
 - AWS SAM CLI installed
+
+### Resource Names
+
+The deployment creates clean, predictable resource names:
+
+- **Lambda Function**: `jbrowse-config-merger`
+- **API Gateway**: `jbrowse-config-merger-api`
+- **CloudWatch Log Group**: `/aws/lambda/jbrowse-config-merger`
+- **CloudFormation Stack**: `jbrowse-config-merger` (you choose)
+
+The API Gateway will have a random ID in its URL (e.g., `abc123xyz.execute-api...`), but this is:
+- Set once during deployment
+- Stable (doesn't change)
+- The AWS standard approach
+
+See `DEPLOYMENT_OPTIONS.md` for alternatives if you need even more control.
 
 ### Deploy
 
@@ -142,54 +134,44 @@ Then make requests to `http://localhost:3000/merge`
 
 ## Example Usage
 
-### From Browser
+### Direct JBrowse Integration (Simplest)
+
+Just pass the Lambda URL directly to JBrowse:
 
 ```javascript
-const response = await fetch('https://your-api-gateway-url/merge', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({
-    configUrls: [
-      'https://genomes.jbrowse.org/ucsc/GCF_950023065.1/config.json',
-      'https://genomes.jbrowse.org/ucsc/GCF_950005125.1/config.json'
-    ],
-    options: {
-      createDefaultSession: true,
-      sessionType: 'synteny'
-    }
-  })
-})
+const lambdaUrl = 'https://your-api.amazonaws.com/Prod/merge'
+const config1 = 'https://genomes.jbrowse.org/ucsc/GCF_950023065.1/config.json'
+const config2 = 'https://genomes.jbrowse.org/ucsc/GCF_950005125.1/config.json'
 
-const mergedConfig = await response.json()
+const mergedConfigUrl = `${lambdaUrl}?configUrls=${encodeURIComponent(config1)},${encodeURIComponent(config2)}&sessionType=synteny`
+
+const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(mergedConfigUrl)}`
+
+window.open(jbrowseUrl, '_blank')
 ```
+
+**Result URL:**
+```
+https://jbrowse.org/code/jb2/latest/?config=https%3A%2F%2Fyour-api.amazonaws.com%2FProd%2Fmerge%3FconfigUrls%3D...
+```
+
+JBrowse fetches the merged config directly from your Lambda!
 
 ### Integration with Synteny Page
 
 ```javascript
 // In synteny.astro
-const configUrl1 = `https://genomes.jbrowse.org/ucsc/${selectedSpecies1}/config.json`
-const configUrl2 = `https://genomes.jbrowse.org/ucsc/${selectedSpecies2}/config.json`
+launchButton.addEventListener('click', () => {
+  const lambdaUrl = 'https://your-api.amazonaws.com/Prod/merge'
+  const config1 = `https://genomes.jbrowse.org/ucsc/${selectedSpecies1}/config.json`
+  const config2 = `https://genomes.jbrowse.org/ucsc/${selectedSpecies2}/config.json`
 
-const response = await fetch('https://your-api-gateway-url/merge', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    configUrls: [configUrl1, configUrl2],
-    options: {
-      includeSyntenyTracks: true,
-      syntenyTracks: relevantSyntenyTracks,
-      createDefaultSession: true,
-      sessionType: 'synteny'
-    }
-  })
+  const mergedConfigUrl = `${lambdaUrl}?configUrls=${encodeURIComponent(config1)},${encodeURIComponent(config2)}&sessionType=synteny`
+
+  const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(mergedConfigUrl)}`
+
+  window.open(jbrowseUrl, '_blank')
 })
-
-const mergedConfig = await response.json()
-const configBlob = new Blob([JSON.stringify(mergedConfig)], { type: 'application/json' })
-const configUrl = URL.createObjectURL(configBlob)
-const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(configUrl)}`
 ```
 
 ## License

@@ -1,197 +1,110 @@
 # Integration with Synteny Page
 
-## Current Flow (Before Config Merger)
+## Simplified Architecture
 
 ```
 User selects species 1 & 2
          ↓
 Launch button clicked
          ↓
-Opens: https://jbrowse.org/code/jb2/latest/?config=https://genomes.jbrowse.org/ucsc/GCF_123.json
+Build Lambda URL with query params
          ↓
-JBrowse loads only species 1
+Pass Lambda URL directly to JBrowse
          ↓
-❌ No synteny view
-❌ Species 2 not loaded
+JBrowse fetches config from Lambda
+         ↓
+Lambda merges configs on-the-fly
+         ↓
+✅ Both species loaded in synteny view!
 ```
 
-## New Flow (With Config Merger)
+## Key Advantage
 
-```
-User selects species 1 & 2
-         ↓
-Launch button clicked
-         ↓
-JavaScript calls mergeConfigs()
-         ↓
-    ┌─────────────────────┐
-    │ Environment check   │
-    └──────────┬──────────┘
-               │
-       ┌───────┴────────┐
-       │                │
-       ▼                ▼
-[Lambda URL set]  [No Lambda URL]
-       │                │
-       ▼                ▼
-  Call Lambda     Client-side merge
-       │                │
-       └────────┬───────┘
-                ▼
-    Merged config received
-    {
-      assemblies: [species1, species2],
-      tracks: [...all tracks...],
-      syntenyTracks: [species1↔species2]
-    }
-                ↓
-    Create Blob URL
-                ↓
-    Open JBrowse with merged config
-                ↓
-    ✅ Both species loaded
-    ✅ Synteny view ready
-    ✅ All tracks available
-```
+**No intermediate steps!** JBrowse fetches the merged config directly from your Lambda URL.
 
 ## Implementation in synteny.astro
 
-### Update the Script Section
+### Simple Implementation
 
 ```typescript
-// Add import at top of script
-import { mergeConfigs } from '../lib/configMerger'
+<script define:vars={{ /* ... */ }}>
+  const LAMBDA_URL = 'https://your-api.amazonaws.com/Prod/merge'
 
-// Replace the existing launch button handler
-launchButton.addEventListener('click', async () => {
-  if (selectedSpecies1 && selectedSpecies2) {
-    launchButton.disabled = true
-    statusDiv.textContent = 'Preparing synteny view...'
+  launchButton.addEventListener('click', () => {
+    if (selectedSpecies1 && selectedSpecies2) {
+      // Build config URLs
+      const config1 = `https://hgdownload.soe.ucsc.edu/hubs/${getPath(selectedSpecies1)}/config.json`
+      const config2 = `https://hgdownload.soe.ucsc.edu/hubs/${getPath(selectedSpecies2)}/config.json`
 
-    try {
-      // Get config URLs
-      const configUrl1 = `https://genomes.jbrowse.org/ucsc/${selectedSpecies1}/config.json`
-      const configUrl2 = `https://genomes.jbrowse.org/ucsc/${selectedSpecies2}/config.json`
+      // Build Lambda URL with query params
+      const mergedConfigUrl =
+        `${LAMBDA_URL}?` +
+        `configUrls=${encodeURIComponent(config1)},${encodeURIComponent(config2)}` +
+        `&sessionType=synteny` +
+        `&createDefaultSession=true`
 
-      // Find relevant synteny tracks
-      const matchingTracks = syntenyTracks.filter(
-        track =>
-          track.assemblyNames.includes(selectedSpecies1) &&
-          track.assemblyNames.includes(selectedSpecies2)
-      )
+      // Pass Lambda URL to JBrowse
+      const jbrowseUrl =
+        `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(mergedConfigUrl)}`
 
-      // Merge configs
-      const mergedConfig = await mergeConfigs(
-        [configUrl1, configUrl2],
-        {
-          includeSyntenyTracks: true,
-          syntenyTracks: matchingTracks,
-          createDefaultSession: true,
-          sessionType: 'synteny'
-        }
-      )
-
-      // Create blob URL for merged config
-      const configBlob = new Blob(
-        [JSON.stringify(mergedConfig)],
-        { type: 'application/json' }
-      )
-      const configBlobUrl = URL.createObjectURL(configBlob)
-
-      // Open JBrowse with merged config
-      const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(configBlobUrl)}`
-
-      statusDiv.textContent = 'Opening JBrowse...'
       window.open(jbrowseUrl, '_blank')
-
-      // Cleanup
-      setTimeout(() => {
-        URL.revokeObjectURL(configBlobUrl)
-        statusDiv.textContent = ''
-        launchButton.disabled = false
-      }, 1000)
-
-    } catch (error) {
-      console.error('Error launching synteny view:', error)
-      statusDiv.textContent = `Error: ${error.message}`
-      launchButton.disabled = false
     }
+  })
+
+  // Helper to build hub path from assembly name
+  function getPath(assembly) {
+    // e.g., GCF_950023065.1 -> GCF/950/023/065/GCF_950023065.1
+    if (assembly.startsWith('GCF_') || assembly.startsWith('GCA_')) {
+      const parts = assembly.split('_')
+      const prefix = parts[0]
+      const nums = parts[1].split('.')
+      const num = nums[0]
+      return `${prefix}/${num.substring(0,3)}/${num.substring(3,6)}/${num.substring(6,9)}/${assembly}`
+    }
+    return assembly
   }
+</script>
+```
+
+## What Happens
+
+1. **User clicks "Launch Synteny View"**
+2. **JavaScript builds URL:**
+   ```
+   https://your-api.amazonaws.com/Prod/merge?configUrls=https://...config1.json,https://...config2.json&sessionType=synteny
+   ```
+3. **Opens JBrowse:**
+   ```
+   https://jbrowse.org/code/jb2/latest/?config=https://your-api...
+   ```
+4. **JBrowse fetches from Lambda**
+5. **Lambda merges and returns config**
+6. **JBrowse displays synteny view**
+
+## Configuration
+
+No environment variables needed! Just hardcode your Lambda URL in the script:
+
+```javascript
+const LAMBDA_URL = 'https://abc123.execute-api.us-east-1.amazonaws.com/Prod/merge'
+```
+
+## Query Parameters You Can Use
+
+```javascript
+const params = new URLSearchParams({
+  configUrls: `${config1},${config2}`,           // Required: comma-separated
+  sessionType: 'synteny',                         // Optional: 'linear' or 'synteny'
+  createDefaultSession: 'true',                   // Optional: default true
+  includeSyntenyTracks: 'false',                  // Optional: default false
 })
+
+const mergedConfigUrl = `${LAMBDA_URL}?${params}`
 ```
 
-## Benefits of This Approach
+## Testing
 
-### 1. True Synteny View
-- Both assemblies loaded simultaneously
-- Synteny tracks automatically included
-- Default synteny view session created
-
-### 2. Flexibility
-- Works with or without Lambda
-- Client-side fallback for development
-- Production-ready Lambda for scale
-
-### 3. Better UX
-- Single click launches complete view
-- No manual track configuration needed
-- Proper error handling and feedback
-
-### 4. Maintainable
-- Centralized config merging logic
-- Tested and documented
-- Type-safe TypeScript
-
-## Configuration Options
-
-### For Development (No Lambda)
-
-Just use it - no setup required!
-
-```typescript
-// .env file not needed
-// Merging happens client-side automatically
-```
-
-### For Production (With Lambda)
-
-```bash
-# website/.env
-PUBLIC_CONFIG_MERGER_API_URL=https://xyz.execute-api.us-east-1.amazonaws.com/Prod/merge
-```
-
-### For Custom Behavior
-
-```typescript
-const mergedConfig = await mergeConfigs(
-  [configUrl1, configUrl2],
-  {
-    // Include synteny tracks
-    includeSyntenyTracks: true,
-    syntenyTracks: myCustomTracks,
-
-    // Create default session
-    createDefaultSession: true,
-
-    // Choose session type
-    sessionType: 'synteny', // or 'linear'
-  }
-)
-```
-
-## Testing the Integration
-
-### 1. Test Client-Side (No Deployment)
-
-```bash
-cd website
-# Don't set PUBLIC_CONFIG_MERGER_API_URL
-yarn dev
-```
-
-Navigate to `/synteny`, select species, click launch.
-
-### 2. Test Lambda Locally
+### Local Testing
 
 ```bash
 # Terminal 1: Start Lambda
@@ -200,78 +113,108 @@ yarn build
 sam build
 sam local start-api
 
-# Terminal 2: Run website
+# Terminal 2: Update synteny.astro
+const LAMBDA_URL = 'http://localhost:3000/merge'
+
+# Start website
 cd website
-echo "PUBLIC_CONFIG_MERGER_API_URL=http://localhost:3000/merge" > .env
 yarn dev
 ```
 
-Navigate to `/synteny`, select species, click launch.
-
-### 3. Test Production Lambda
+### Production Testing
 
 ```bash
+# Deploy Lambda
 cd aws/config-merger
 ./deploy.sh
 
 # Copy the API URL from output
-cd ../website
-echo "PUBLIC_CONFIG_MERGER_API_URL=https://your-api-url/Prod/merge" > .env
-yarn dev
+# Update synteny.astro with your API URL
+const LAMBDA_URL = 'https://abc123.execute-api.us-east-1.amazonaws.com/Prod/merge'
 ```
+
+## Full Example
+
+```html
+<script>
+  const LAMBDA_URL = 'https://abc123.execute-api.us-east-1.amazonaws.com/Prod/merge'
+
+  launchButton.addEventListener('click', () => {
+    if (!selectedSpecies1 || !selectedSpecies2) {
+      statusDiv.textContent = 'Please select both species'
+      return
+    }
+
+    statusDiv.textContent = 'Opening JBrowse...'
+
+    try {
+      // Build config URLs
+      const baseUrl = 'https://hgdownload.soe.ucsc.edu/hubs'
+      const config1 = `${baseUrl}/${getHubPath(selectedSpecies1)}/config.json`
+      const config2 = `${baseUrl}/${getHubPath(selectedSpecies2)}/config.json`
+
+      // Build merged config URL
+      const mergedConfigUrl =
+        `${LAMBDA_URL}?configUrls=${encodeURIComponent(config1)},${encodeURIComponent(config2)}&sessionType=synteny`
+
+      // Open JBrowse
+      const jbrowseUrl =
+        `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(mergedConfigUrl)}`
+
+      window.open(jbrowseUrl, '_blank')
+
+      statusDiv.textContent = ''
+    } catch (error) {
+      statusDiv.textContent = `Error: ${error.message}`
+    }
+  })
+
+  function getHubPath(assembly) {
+    // Convert GCF_950023065.1 to GCF/950/023/065/GCF_950023065.1
+    if (assembly.startsWith('GCF_') || assembly.startsWith('GCA_')) {
+      const [prefix, rest] = assembly.split('_')
+      const [num] = rest.split('.')
+      return `${prefix}/${num.slice(0,3)}/${num.slice(3,6)}/${num.slice(6,9)}/${assembly}`
+    }
+    return assembly
+  }
+</script>
+```
+
+## Benefits
+
+1. **Simple**: Just build a URL, no API calls needed
+2. **Fast**: JBrowse fetches directly from Lambda
+3. **No CORS issues**: Lambda handles CORS
+4. **Cacheable**: JBrowse can cache the merged config
+5. **Clean**: No blob URLs or intermediate steps
+6. **Shareable**: Users can bookmark the JBrowse URL
+
+## URL Example
+
+The final JBrowse URL looks like:
+
+```
+https://jbrowse.org/code/jb2/latest/?config=https%3A%2F%2Fabc123.execute-api.us-east-1.amazonaws.com%2FProd%2Fmerge%3FconfigUrls%3Dhttps%253A%252F%252Fhgdownload.soe.ucsc.edu%252Fhubs%252FGCF%252F950%252F023%252F065%252FGCF_950023065.1%252Fconfig.json%252Chttps%253A%252F%252Fhgdownload.soe.ucsc.edu%252Fhubs%252FGCF%252F950%252F005%252F125%252FGCF_950005125.1%252Fconfig.json%26sessionType%3Dsynteny
+```
+
+Users can bookmark this URL to return to the exact synteny view!
 
 ## Troubleshooting
 
-### Config Blob URL Issues
+### Lambda URL not working
 
-If JBrowse can't load the config:
-
-```typescript
-// Try this alternative approach
-const configStr = JSON.stringify(mergedConfig)
-const configBase64 = btoa(configStr)
-const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=data:application/json;base64,${configBase64}`
+Test it directly:
+```bash
+curl "https://your-lambda-url/merge?configUrls=https://hgdownload.soe.ucsc.edu/hubs/GCF/950/023/065/GCF_950023065.1/config.json,https://hgdownload.soe.ucsc.edu/hubs/GCF/950/005/125/GCF_950005125.1/config.json&sessionType=synteny"
 ```
 
-### CORS Issues with Lambda
+Should return a JSON config.
 
-Make sure your Lambda has CORS headers (already configured in template.yaml):
+### JBrowse shows error
 
-```yaml
-# In template.yaml
-Events:
-  MergeConfigs:
-    Type: Api
-    Properties:
-      Path: /merge
-      Method: POST
-  OptionsRequest:  # Important for CORS
-    Type: Api
-    Properties:
-      Path: /merge
-      Method: OPTIONS
-```
+Check browser console for CORS issues. Lambda should return proper CORS headers (already configured).
 
-### Synteny Tracks Not Showing
+### Config URLs wrong
 
-Make sure the synteny tracks have the correct format:
-
-```typescript
-const syntenyTrack = {
-  trackId: "unique-id",
-  name: "Display Name",
-  assemblyNames: [selectedSpecies1, selectedSpecies2], // Must match exactly
-  adapter: {
-    type: "PairwiseIndexedPAFAdapter",
-    // ... adapter config
-  }
-}
-```
-
-## Next Steps
-
-1. Update `synteny.astro` with the new code
-2. Test in development
-3. Deploy Lambda when ready
-4. Update production environment variables
-5. Monitor usage in CloudWatch
+Double-check the path format. It should match your hub structure on hgdownload.soe.ucsc.edu.

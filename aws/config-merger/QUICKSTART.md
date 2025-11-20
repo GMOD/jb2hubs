@@ -15,6 +15,8 @@ yarn install
 yarn build
 ```
 
+This bundles everything into a single `dist/index.mjs` ES module file using esbuild.
+
 ### 3. Test It Works
 
 ```bash

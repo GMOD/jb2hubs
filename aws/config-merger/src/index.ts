@@ -2,61 +2,60 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { ConfigMerger } from './merger'
 import { JBrowseConfig, MergeOptions } from './types'
 
-interface MergeRequest {
-  configUrls?: string[]
-  configs?: JBrowseConfig[]
-  options?: MergeOptions
-}
-
 export const handler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  }
+
   try {
-    if (!event.body) {
+    if (event.httpMethod === 'OPTIONS') {
       return {
-        statusCode: 400,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type',
-          'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        },
-        body: JSON.stringify({ error: 'Request body is required' }),
+        statusCode: 200,
+        headers: corsHeaders,
+        body: '',
       }
     }
 
-    const request: MergeRequest = JSON.parse(event.body)
+    if (event.httpMethod !== 'GET') {
+      return {
+        statusCode: 405,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ error: 'Method not allowed. Use GET' }),
+      }
+    }
 
-    let configs: JBrowseConfig[] = []
+    const params = event.queryStringParameters || {}
 
-    if (request.configs) {
-      configs = request.configs
-    } else if (request.configUrls) {
-      configs = await fetchConfigs(request.configUrls)
-    } else {
+    if (!params.configUrls) {
       return {
         statusCode: 400,
-        headers: {
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-        },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          error: 'Either configs or configUrls must be provided',
+          error: 'configUrls query parameter is required',
+          example: '?configUrls=https://example.com/config1.json,https://example.com/config2.json',
         }),
       }
     }
 
+    const configUrls = params.configUrls.split(',').map(url => url.trim())
+
+    const options: MergeOptions = {
+      includeSyntenyTracks: params.includeSyntenyTracks === 'true',
+      createDefaultSession: params.createDefaultSession !== 'false',
+      sessionType: (params.sessionType as 'linear' | 'synteny') || 'synteny',
+    }
+
+    const configs = await fetchConfigs(configUrls)
     const merger = new ConfigMerger()
-    const mergedConfig = merger.mergeConfigs(configs, request.options || {})
+    const mergedConfig = merger.mergeConfigs(configs, options)
 
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify(mergedConfig),
     }
   } catch (error) {
@@ -64,10 +63,7 @@ export const handler = async (
 
     return {
       statusCode: 500,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-      },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         error: 'Failed to merge configs',
         message: error instanceof Error ? error.message : 'Unknown error',

@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: JBrowse Config Merger Lambda Function
 
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    Description: API Gateway stage name
+
 Globals:
   Function:
     Timeout: 30
@@ -26,26 +32,44 @@ Resources:
           Type: Api
           Properties:
             Path: /merge
-            Method: POST
+            Method: GET
+            RestApiId: !Ref ConfigMergerApi
         OptionsRequest:
           Type: Api
           Properties:
             Path: /merge
             Method: OPTIONS
+            RestApiId: !Ref ConfigMergerApi
+
+  ConfigMergerApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: jbrowse-config-merger-api
+      StageName: !Ref Stage
+      Cors:
+        AllowMethods: "'GET, OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
 
   ConfigMergerFunctionLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/lambda/${ConfigMergerFunction}
+      LogGroupName: /aws/lambda/jbrowse-config-merger
       RetentionInDays: 7
 
 Outputs:
-  ConfigMergerApi:
+  ConfigMergerApiUrl:
     Description: API Gateway endpoint URL for Config Merger function
-    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/merge
-  ConfigMergerFunction:
+    Value: !Sub https://${ConfigMergerApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/merge
+    Export:
+      Name: JBrowseConfigMergerApiUrl
+  ConfigMergerFunctionArn:
     Description: Config Merger Lambda Function ARN
     Value: !GetAtt ConfigMergerFunction.Arn
-  ConfigMergerFunctionIamRole:
-    Description: Implicit IAM Role created for Config Merger function
-    Value: !GetAtt ConfigMergerFunctionRole.Arn
+    Export:
+      Name: JBrowseConfigMergerFunctionArn
+  ConfigMergerApiId:
+    Description: API Gateway ID
+    Value: !Ref ConfigMergerApi
+    Export:
+      Name: JBrowseConfigMergerApiId
