@@ -5,31 +5,24 @@
 
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SRC_DIR="$SCRIPT_DIR/src"
-
-# Set default for UCSC_RESULTS_DIR if not already set
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/common.sh"
 
 # Use provided argument or default to UCSC_RESULTS_DIR
 RESULTS_DIR="${1:-$UCSC_RESULTS_DIR}"
 
 # Check if results directory exists
 if [ ! -d "$RESULTS_DIR" ]; then
-    echo "Error: Results directory does not exist: $RESULTS_DIR"
+    log "Error: Results directory does not exist: $RESULTS_DIR"
     exit 1
 fi
 
-echo "Creating minimal configs in assembly directories..."
-echo "Results directory: $RESULTS_DIR"
-echo "Output: <assembly>/minimal.json"
-echo
+log "Creating minimal configs in assembly directories..."
+log "Results directory: $RESULTS_DIR"
 
-# Run the TypeScript script using Node's built-in TypeScript support
-node --experimental-strip-types "$SRC_DIR/createMinimalConfig.ts" "$RESULTS_DIR"
+node "$SCRIPT_DIR/src/createMinimalConfig.ts" "$RESULTS_DIR"
 
-echo
-echo "Copying minimal configs to configs-minimal directory..."
+log "Copying minimal configs to configs-minimal directory..."
 
 # Create configs-minimal directory if it doesn't exist
 MINIMAL_DIR="$SCRIPT_DIR/configs-minimal"
@@ -41,7 +34,4 @@ find "$RESULTS_DIR" -mindepth 2 -maxdepth 2 -name "minimal.json" | while read -r
     cp "$minimal_file" "$MINIMAL_DIR/${assembly_name}.json"
 done
 
-echo
-echo "Done! Minimal configs created:"
-echo "  - In each assembly directory as minimal.json"
-echo "  - In configs-minimal/ as <assembly>.json"
+log "Done! Minimal configs created in each assembly directory and configs-minimal/"

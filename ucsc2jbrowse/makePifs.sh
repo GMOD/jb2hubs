@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# Set the root directory for UCSC data and results.
-# Can be overridden by setting the environment variable.
-: ${UCSC_DATA_DIR:=~/ucsc}
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
-export UCSC_RESULTS_DIR
+source "$(dirname "$0")/common.sh"
 
 find "$UCSC_DATA_DIR" -maxdepth 1 -mindepth 1 -type d | parallel -j+0 $PARALLEL_OPTS '
   assembly=$(basename "{}")

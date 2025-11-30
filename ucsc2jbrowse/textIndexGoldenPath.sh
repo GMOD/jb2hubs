@@ -8,12 +8,7 @@
 
 set -euo pipefail
 
-# --- Configuration ---
-
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
-
-export LC_ALL=C
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
+source "$(dirname "$0")/common.sh"
 
 # --- Functions ---
 

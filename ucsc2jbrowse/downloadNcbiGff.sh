@@ -8,27 +8,24 @@
 
 set -euo pipefail
 
-# --- Configuration ---
-
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/common.sh"
 
 # --- Main Script ---
 
-mkdir -p gff
-cd gff
+GFF_DIR="$SCRIPT_DIR/gff"
+mkdir -p "$GFF_DIR"
 
-if [ ! -f hs1.gff.gz.csi ]; then
-  echo "Downloading and processing hs1 GFF..."
-  datasets download genome accession GCF_009914755.1 --include gff3,seq-report
-  unzip ncbi_dataset.zip
-  jbrowse sort-gff ncbi_dataset/data/GCF_009914755.1/genomic.gff | bgzip -@2 >hs1.gff.gz
-  tabix -C hs1.gff.gz
+if [ ! -f "$GFF_DIR/hs1.gff.gz.csi" ]; then
+  log "Downloading and processing hs1 GFF..."
+  datasets download genome accession GCF_009914755.1 --include gff3,seq-report -f --filename "$GFF_DIR/ncbi_dataset.zip"
+  unzip -o "$GFF_DIR/ncbi_dataset.zip" -d "$GFF_DIR"
+  jbrowse sort-gff "$GFF_DIR/ncbi_dataset/data/GCF_009914755.1/genomic.gff" | bgzip -@2 >"$GFF_DIR/hs1.gff.gz"
+  tabix -C "$GFF_DIR/hs1.gff.gz"
 fi
 
-cd ..
+log "Adding hs1 GFF track to JBrowse..."
+jbrowse add-track "$GFF_DIR/hs1.gff.gz" --force --trackId hs1-ncbiRefSeqGff --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" --out "$UCSC_RESULTS_DIR/hs1/" --load copy --indexFile "$GFF_DIR/hs1.gff.gz.csi"
 
-echo "Adding hs1 GFF track to JBrowse..."
-jbrowse add-track gff/hs1.gff.gz --force --trackId hs1-ncbiRefSeqGff --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" --out "$UCSC_RESULTS_DIR/hs1/" --load copy --indexFile gff/hs1.gff.gz.csi
-
-echo "Indexing hs1 GFF track..."
+log "Indexing hs1 GFF track..."
 jbrowse text-index --force --out "$UCSC_RESULTS_DIR/hs1" --tracks hs1-ncbiRefSeqGff

@@ -8,41 +8,16 @@
 
 # set -euo pipefail
 
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/common.sh"
+
 # --- Configuration ---
 
-# Set the root directory for UCSC data and results.
-# Can be overridden by setting the environment variable.
-: ${UCSC_DATA_DIR:=~/ucsc}
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
-export UCSC_RESULTS_DIR
 export CHECK_404=true
-export TMPDIR=/mnt/sdb/cdiesh/tmp
+export TMPDIR="${TMPDIR:-/mnt/sdb/cdiesh/tmp}"
 
 # Ensure the script's path is in the PATH for tool access.
-export PATH=$(pwd):$PATH
-
-# Suppress Node.js experimental warnings.
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
-
-if [ -t 1 ]; then
-  PARALLEL_OPTS="--bar"
-else
-  PARALLEL_OPTS=""
-fi
-export PARALLEL_OPTS
-
-# --- Functions ---
-
-# Logs a message with a timestamp.
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
-}
-
-# Creates a directory if it doesn't exist.
-# $1: Directory path
-ensure_dir() {
-  mkdir -p "$1"
-}
+export PATH="$SCRIPT_DIR:$PATH"
 
 # --- Main Script ---
 
@@ -63,7 +38,7 @@ log "Transforming genome list to array format..."
 node src/transformGenomeList.ts "$UCSC_RESULTS_DIR/list.json.raw" "$UCSC_RESULTS_DIR/list.json"
 
 log "Creating a copy for the website..."
-cp "$UCSC_RESULTS_DIR/list.json" ../website/src/list.json
+cp "$UCSC_RESULTS_DIR/list.json" "$SCRIPT_DIR/../website/src/list.json"
 
 log "Creating initial assembly configurations..."
 ./createAssemblies.sh "$UCSC_DATA_DIR"/*
@@ -135,9 +110,7 @@ log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts
 
 echo "Formatting codebase..."
-cd ..
-yarn format
-cd -
+yarn --cwd "$SCRIPT_DIR/.." format
 
 log "Hashing all output files for integrity checking..."
 find "$UCSC_RESULTS_DIR"/ -type f ! -name "*meta.json" ! -name "*.xxh" ! -name "*.hash" | parallel $PARALLEL_OPTS ./hash_if_needed.sh {} | sort -k2,2 >fileListing.txt

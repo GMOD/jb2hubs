@@ -8,14 +8,7 @@
 
 # set -euo pipefail
 
-# --- Configuration ---
-
-# Set the root directory for results.
-# Can be overridden by setting the environment variable.
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
-
-export LC_ALL=C
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
+source "$(dirname "$0")/common.sh"
 
 # --- Functions ---
 

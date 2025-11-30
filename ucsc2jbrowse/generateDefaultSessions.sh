@@ -6,11 +6,8 @@
 # Generates defaultSession JSON files for all assemblies in list.json
 #
 
-# Set the root directory for UCSC results
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
-export UCSC_RESULTS_DIR
+source "$(dirname "$0")/common.sh"
 
-echo "Using UCSC_RESULTS_DIR: $UCSC_RESULTS_DIR"
+log "Using UCSC_RESULTS_DIR: $UCSC_RESULTS_DIR"
 
-# Run the TypeScript script
 node src/generateDefaultSessions.ts

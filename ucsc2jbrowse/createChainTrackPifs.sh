@@ -13,6 +13,11 @@
 
 set -euo pipefail
 
+# --- Configuration ---
+# These can be overridden via environment variables
+UCSC_CHAINS_DIR="${UCSC_CHAINS_DIR:-/mnt/sdb/cdiesh/chains}"
+UCSC_PIFS_DIR="${UCSC_PIFS_DIR:-/mnt/sdb/cdiesh/pifs}"
+
 # --- Global Variables ---
 declare -g CHAINS_DIR PIFS_DIR CONFIG_DIR SOURCE ASSEMBLY OUTDIR LIFTOVER_BASE_URL
 
@@ -57,8 +62,8 @@ setup_config() {
   fi
 
   # Define directories
-  CHAINS_DIR="/mnt/sdb/cdiesh/chains"
-  PIFS_DIR="/mnt/sdb/cdiesh/pifs"
+  CHAINS_DIR="$UCSC_CHAINS_DIR"
+  PIFS_DIR="$UCSC_PIFS_DIR"
   CONFIG_DIR="$OUTDIR/$ASSEMBLY"
 
   # log_info "Setting up directories for $SOURCE processing of $ASSEMBLY"
@@ -71,7 +76,7 @@ setup_config() {
 extract_file_urls() {
   local url="$1"
   local pattern="$2"
-  wget -q -O - "$url" | grep -o 'href="[^"]*"' | sed 's/href="//' | sed 's/"//' | grep "$pattern"
+  wget -q -O - "$url" | grep -oP 'href="\K[^"]+' | grep "$pattern"
 }
 
 # Generates file paths for processing

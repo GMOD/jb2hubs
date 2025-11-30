@@ -14,6 +14,12 @@ else
 fi
 export PARALLEL_OPTS
 
+# Logs a message with a timestamp.
+log() {
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
+}
+export -f log
+
 # Converts an accession (e.g., GCF_000896435.1) to its hub directory path
 # Usage: hub_dir=$(accession_to_hub_dir "GCF_000896435.1")
 # Returns: hubs/GCF/000/896/435/GCF_000896435.1

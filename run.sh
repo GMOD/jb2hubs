@@ -1,8 +1,11 @@
 #!/bin/bash
 set -e
 export NODE_OPTIONS="--experimental-strip-types"
-mkdir -p logs
-LOG_FILE="logs/run_$(date +%Y-%m-%d_%H-%M-%S).log"
+
+SCRIPT_DIR="$(dirname "$0")"
+
+mkdir -p "$SCRIPT_DIR/logs"
+LOG_FILE="$SCRIPT_DIR/logs/run_$(date +%Y-%m-%d_%H-%M-%S).log"
 echo "Logging to $LOG_FILE"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -18,16 +21,18 @@ trap 'echo "Script interrupted by SIGINT (Ctrl+C) at $(date)"; exit 130' INT
 trap 'echo "Script terminated by SIGTERM at $(date)"; exit 143' TERM
 
 echo "Running genark2jbrowse/makeAll.sh..."
-(cd genark2jbrowse && ./makeAll.sh && ./uploadAll.sh)
+"$SCRIPT_DIR/genark2jbrowse/makeAll.sh"
+"$SCRIPT_DIR/genark2jbrowse/uploadAll.sh"
 
 echo "Running ucsc2jbrowse/doAll.sh..."
-(cd ucsc2jbrowse && ./doAll.sh && ./uploadAll.sh)
+"$SCRIPT_DIR/ucsc2jbrowse/doAll.sh"
+"$SCRIPT_DIR/ucsc2jbrowse/uploadAll.sh"
 
 echo "Extracting SyntenyTrack datasets..."
-node extractSyntenyTracks.ts
+node "$SCRIPT_DIR/extractSyntenyTracks.ts"
 
 echo "Running website deploy..."
-(cd website && yarn deploy)
+yarn --cwd "$SCRIPT_DIR/website" deploy
 
 git add .
 git commit -m "Updates"

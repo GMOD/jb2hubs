@@ -8,32 +8,12 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/common.sh"
+
 # --- Configuration ---
 
-# Set the root directory for UCSC data and results.
-# Can be overridden by setting the environment variable.
-: ${UCSC_DATA_DIR:=~/ucsc}
 : ${UCSC_ALT_DATA_DIR:=~/ucscAlt}
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
-
-# Suppress Node.js experimental warnings.
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
-
-# Ensure the script's path is in the PATH for tool access.
-export PATH=$(pwd):$PATH
-
-# --- Functions ---
-
-# Logs a message with a timestamp.
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
-}
-
-# Creates a directory if it doesn't exist.
-# $1: Directory path
-ensure_dir() {
-  mkdir -p "$1"
-}
 
 # --- Main Script ---
 

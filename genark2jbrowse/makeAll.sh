@@ -3,47 +3,47 @@
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/common.sh"
 
-echo "Downloading list of hubs..."
+log "Downloading list of hubs..."
 node src/downloadHubList.ts
 
-echo "Downloading actual hub.txt files..."
+log "Downloading actual hub.txt files..."
 node src/downloadHubs.ts
 
-echo "Fetching NCBI metadata..."
+log "Fetching NCBI metadata..."
 ./fetchNcbiMetadata.sh
 
-echo "Processing hub JSON data..."
+log "Processing hub JSON data..."
 node src/processHubJson.ts
 
-echo "Processing UCSC list data..."
+log "Processing UCSC list data..."
 node src/processUcscList.ts
 
-echo "Generating JBrowse 2 config.json for each hub..."
+log "Generating JBrowse 2 config.json for each hub..."
 fd meta.json hubs | parallel $PARALLEL_OPTS node src/generateConfigs.ts {}
 
-echo "Downloading NCBI GFF files..."
+log "Downloading NCBI GFF files..."
 ./downloadNcbiGff.sh
 
-echo "Processing NCBI GFF files..."
+log "Processing NCBI GFF files..."
 ./processGffFiles.sh
 
-echo "Loading and text indexing NCBI GFF tracks..."
+log "Loading and text indexing NCBI GFF tracks..."
 ./addNcbiGffAndTextIndex.sh
 
-echo "Adding GenArk extensions (special tracks)..."
+log "Adding GenArk extensions (special tracks)..."
 node src/makeGenArkExtensions.ts
 
-echo "Processing liftOver chain files and creating PIFs..."
+log "Processing liftOver chain files and creating PIFs..."
 fd meta.json hubs | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
 
-echo "Adding chain tracks to configs..."
+log "Adding chain tracks to configs..."
 fd meta.json hubs | parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}'
 
-echo "Fetching wiki images"
+log "Fetching wiki images..."
 ./getWikiImages.sh
 
-echo "Calculate gff file hashes"
+log "Calculating gff file hashes..."
 ./getFileListing.sh
 
-echo "Formatting codebase..."
+log "Formatting codebase..."
 yarn --cwd "$SCRIPT_DIR/.." format

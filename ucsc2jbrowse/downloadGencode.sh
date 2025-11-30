@@ -2,22 +2,22 @@
 
 set -e
 
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
+source "$(dirname "$0")/common.sh"
+# Configuration - can be overridden via environment variables
+GENCODE_DIR="${GENCODE_DIR:-/mnt/sdb/cdiesh/gencode}"
+GENCODE_PROCESSED_DIR="${GENCODE_PROCESSED_DIR:-/mnt/sdb/cdiesh/gencode_processed}"
+
 # Function to process a single GFF file
 process_gff_file() {
   local assembly_name=$1
   local url=$2
   local track_name=$3
   local track_id=$4
-
-  # Define directories
-  local gencode_dir="${GENCODE_DIR:-/mnt/sdb/cdiesh/gencode}"
-  local gencode_processed_dir="${GENCODE_PROCESSED_DIR:-/mnt/sdb/cdiesh/gencode_processed}"
   local output_dir="${UCSC_RESULTS_DIR}/$assembly_name"
 
   # Create all necessary directories
-  mkdir -p "$gencode_dir"
-  mkdir -p "$gencode_processed_dir"
+  mkdir -p "$GENCODE_DIR"
+  mkdir -p "$GENCODE_PROCESSED_DIR"
   mkdir -p "$output_dir"
 
   # Get the filename from the URL
@@ -26,14 +26,12 @@ process_gff_file() {
   local sorted_gff_file="${gff_file%.gff3}.sorted.gff3"
 
   # Define full paths for the files
-  local downloaded_gz_file="$gencode_dir/$filename"
-  local temp_gff_file="$gencode_processed_dir/$gff_file"
-  local output_sorted_gff_file="$gencode_processed_dir/$sorted_gff_file"
+  local downloaded_gz_file="$GENCODE_DIR/$filename"
+  local temp_gff_file="$GENCODE_PROCESSED_DIR/$gff_file"
+  local output_sorted_gff_file="$GENCODE_PROCESSED_DIR/$sorted_gff_file"
 
   # Download the file to GENCODE_DIR (only if changed)
-  cd "$gencode_dir"
-  wget -q -N "$url"
-  cd - >/dev/null
+  wget -q -N "$url" -P "$GENCODE_DIR"
 
   # Check if the downloaded file exists
   if [ ! -f "$downloaded_gz_file" ]; then
@@ -45,28 +43,28 @@ process_gff_file() {
   local output_sorted_gff_gz="$output_sorted_gff_file.gz"
   local output_sorted_gff_csi="$output_sorted_gff_gz.csi"
 
-  # Check if either the .gff.gz or .gff.gz.csi files are missing from gencode_processed_dir
+  # Check if either the .gff.gz or .gff.gz.csi files are missing from GENCODE_PROCESSED_DIR
   if [ ! -f "$output_sorted_gff_gz" ] || [ ! -f "$output_sorted_gff_csi" ]; then
-    # Extract to temp file in GENCODE_PROCESSED_DIR using zcat
-    echo "Extracting $filename to processing directory..."
+    # Extract to temp file using zcat
+    log "Extracting $filename to processing directory..."
     zcat "$downloaded_gz_file" >"$temp_gff_file"
 
-    # Sort the GFF file to GENCODE_PROCESSED_DIR
-    echo "Sorting $gff_file..."
+    # Sort the GFF file
+    log "Sorting $gff_file..."
     jbrowse sort-gff "$temp_gff_file" >"$output_sorted_gff_file"
 
     # Remove the temporary uncompressed file
     rm "$temp_gff_file"
 
     # Bgzip the sorted GFF file
-    echo "Compressing $sorted_gff_file with bgzip..."
+    log "Compressing $sorted_gff_file with bgzip..."
     bgzip -f -@8 "$output_sorted_gff_file"
 
     # Create tabix index with CSI format
-    echo "Indexing $sorted_gff_file.gz with tabix..."
+    log "Indexing $sorted_gff_file.gz with tabix..."
     tabix -C -p gff "$output_sorted_gff_gz"
   else
-    echo "Processed files already exist in $gencode_processed_dir, skipping sort/bgzip/tabix for $filename"
+    log "Processed files already exist in $GENCODE_PROCESSED_DIR, skipping sort/bgzip/tabix for $filename"
   fi
 
   # Add the track to JBrowse
@@ -160,4 +158,4 @@ for i in "${!MM39_URLS[@]}"; do
   process_gff_file "mm39" "${MM39_URLS[$i]}" "${MM39_NAMES[$i]}" "${MM39_TRACK_IDS[$i]}"
 done
 
-echo "All files processed."
+log "All GENCODE files processed."

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# uploadAll.sh
+# uploadAllExceptPifGffBed.sh
 #
 # Uploads the JBrowse data to AWS S3 and invalidates the CloudFront cache.
 # This script doesn't check the large .pif.gz files, use uploadAll for that
@@ -9,9 +9,7 @@
 
 set -euo pipefail
 
-# --- Configuration ---
-
-: ${UCSC_RESULTS_DIR:=~/ucscResults}
+source "$(dirname "$0")/common.sh"
 
 # --- Main Script ---
 
