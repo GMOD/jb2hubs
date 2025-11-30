@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
+source "$(dirname "$0")/common.sh"
 
 # Configuration
 INPUT_FILE="processedHubJson/all.json"
@@ -30,12 +30,6 @@ process_wiki_image() {
 }
 
 export -f process_wiki_image
-
-if [ -t 1 ]; then
-  PARALLEL_OPTS="--bar"
-else
-  PARALLEL_OPTS=""
-fi
 
 jq -r '.[] | select(. != null) | select(.accession != null) | select(.scientificName != null) | "\(.scientificName)\t\(.accession)"' "$INPUT_FILE" |
   parallel $PARALLEL_OPTS -j 1 --colsep $'\t' "process_wiki_image {1} {2}"

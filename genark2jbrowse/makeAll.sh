@@ -1,15 +1,7 @@
 #!/bin/bash
 # set -e
 
-# Set NODE_OPTIONS to suppress experimental warnings
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
-
-if [ -t 1 ]; then
-  PARALLEL_OPTS="--bar"
-else
-  PARALLEL_OPTS=""
-fi
-export PARALLEL_OPTS
+source "$(dirname "$0")/common.sh"
 
 echo "Downloading list of hubs..."
 node src/downloadHubList.ts
@@ -46,9 +38,6 @@ fd meta.json hubs | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
 
 echo "Adding chain tracks to configs..."
 fd meta.json hubs | parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}'
-
-echo "Enhancing configs with plugins and hierarchical configuration..."
-./enhanceConfigs.sh
 
 echo "Fetching wiki images"
 ./getWikiImages.sh

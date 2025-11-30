@@ -1,14 +1,6 @@
 #!/bin/bash
 
-# Set NODE_OPTIONS to suppress experimental warnings
-export NODE_OPTIONS="--no-warnings=ExperimentalWarning"
-
-if [ -t 1 ]; then
-  PARALLEL_OPTS="--bar"
-else
-  PARALLEL_OPTS=""
-fi
-export PARALLEL_OPTS
+source "$(dirname "$0")/common.sh"
 
 # Define function to add a GFF track to a JBrowse 2 assembly and create a text index.
 add_track_and_text_index() {
