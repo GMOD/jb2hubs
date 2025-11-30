@@ -10,6 +10,11 @@
 
 set -euo pipefail
 
+# --- Configuration ---
+# These can be overridden via environment variables
+GENARK_CHAINS_BASE="${GENARK_CHAINS_BASE:-/mnt/sdb/cdiesh/genark_chains}"
+GENARK_PIFS_DIR="${GENARK_PIFS_DIR:-/mnt/sdb/cdiesh/genark_pifs}"
+
 # --- Global Variables ---
 declare -g CHAINS_DIR PIFS_DIR META_PATH ACCESSION HUB_URL CONFIG_DIR
 
@@ -60,8 +65,8 @@ setup_config() {
   fi
 
   # Define directories
-  CHAINS_DIR="/mnt/sdb/cdiesh/genark_chains/$ACCESSION"
-  PIFS_DIR="/mnt/sdb/cdiesh/genark_pifs"
+  CHAINS_DIR="$GENARK_CHAINS_BASE/$ACCESSION"
+  PIFS_DIR="$GENARK_PIFS_DIR"
   CONFIG_DIR=$(dirname "$META_PATH")
 
   # Create directories if they don't exist
@@ -74,7 +79,7 @@ setup_config() {
 extract_file_urls() {
   local url="$1"
   local pattern="$2"
-  wget -q -O - "$url" 2>/dev/null | grep -o 'href="[^"]*"' | sed 's/href="//' | sed 's/"//' | grep "$pattern" || true
+  wget -q -O - "$url" 2>/dev/null | grep -oP 'href="\K[^"]+' | grep "$pattern" || true
 }
 
 # Generates file paths for processing

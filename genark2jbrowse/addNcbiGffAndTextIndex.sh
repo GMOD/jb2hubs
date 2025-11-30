@@ -7,18 +7,7 @@ add_track_and_text_index() {
   local gff_file_path="$1"
   local filename=$(basename "$gff_file_path")
   local accession=$(echo "$filename" | cut -d'_' -f1,2) # e.g., GCF_000896435.1
-
-  # Construct the target hub directory path based on accession
-  # Example: hubs/GCF/000/896/435/GCF_000896435.1/
-  local prefix=${accession%%_*}
-  local number=${accession#*_}
-  local base_number=${number%%.*}
-
-  local first_part=${base_number:0:3}
-  local second_part=${base_number:3:3}
-  local third_part=${base_number:6:3}
-
-  local hub_dir="hubs/$prefix/$first_part/$second_part/$third_part/$accession/"
+  local hub_dir="$(accession_to_hub_dir "$accession")/"
 
   jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions"
   # Check if trix folder exists

@@ -1,7 +1,7 @@
 #!/bin/bash
-# set -e
 
-source "$(dirname "$0")/common.sh"
+SCRIPT_DIR="$(dirname "$0")"
+source "$SCRIPT_DIR/common.sh"
 
 echo "Downloading list of hubs..."
 node src/downloadHubList.ts
@@ -45,9 +45,5 @@ echo "Fetching wiki images"
 echo "Calculate gff file hashes"
 ./getFileListing.sh
 
-sleep 1 # Small pause
-
 echo "Formatting codebase..."
-cd ..
-yarn format
-cd -
+yarn --cwd "$SCRIPT_DIR/.." format
