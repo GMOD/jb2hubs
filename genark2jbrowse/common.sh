@@ -6,6 +6,9 @@
 # Source this file at the top of other scripts: source "$(dirname "$0")/common.sh"
 #
 
+# Suppress Node.js experimental warnings
+export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
+
 # Show progress bar only when running interactively
 if [ -t 1 ]; then
   PARALLEL_OPTS="--bar"

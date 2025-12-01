@@ -6,6 +6,9 @@
 # Source this file at the top of other scripts: source "$(dirname "$0")/common.sh"
 #
 
+# Suppress Node.js experimental warnings
+export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
+
 # Set the root directories for UCSC data and results.
 # Can be overridden by setting environment variables.
 : ${UCSC_DATA_DIR:=~/ucsc}

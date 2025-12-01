@@ -10,6 +10,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/common.sh"
+cd "$SCRIPT_DIR"
 
 # --- Configuration ---
 

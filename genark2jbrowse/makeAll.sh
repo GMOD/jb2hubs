@@ -2,6 +2,7 @@
 
 SCRIPT_DIR="$(dirname "$0")"
 source "$SCRIPT_DIR/common.sh"
+cd "$SCRIPT_DIR"
 
 log "Downloading list of hubs..."
 node src/downloadHubList.ts
@@ -44,6 +45,3 @@ log "Fetching wiki images..."
 
 log "Calculating gff file hashes..."
 ./getFileListing.sh
-
-log "Formatting codebase..."
-yarn --cwd "$SCRIPT_DIR/.." format
