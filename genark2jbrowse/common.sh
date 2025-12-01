@@ -6,22 +6,8 @@
 # Source this file at the top of other scripts: source "$(dirname "$0")/common.sh"
 #
 
-# Suppress Node.js experimental warnings
-export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
-
-# Show progress bar only when running interactively
-if [ -t 1 ]; then
-  PARALLEL_OPTS="--bar"
-else
-  PARALLEL_OPTS=""
-fi
-export PARALLEL_OPTS
-
-# Logs a message with a timestamp.
-log() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
-}
-export -f log
+# Source the root common.sh for shared utilities
+source "$(dirname "$0")/../common.sh"
 
 # Converts an accession (e.g., GCF_000896435.1) to its hub directory path
 # Usage: hub_dir=$(accession_to_hub_dir "GCF_000896435.1")

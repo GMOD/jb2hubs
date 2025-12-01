@@ -9,6 +9,9 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(dirname "$0")"
+cd "$SCRIPT_DIR"
+
 echo "=== Syncing GenArk JBrowse data to S3 ==="
 echo ""
 
