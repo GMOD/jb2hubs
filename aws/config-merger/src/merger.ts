@@ -7,6 +7,24 @@ import {
   MergeOptions,
 } from './types'
 
+function dedupeByKey<T>(items: T[], getKey: (item: T) => string): T[] {
+  const seen = new Set<string>()
+  return items.filter(item => {
+    const key = getKey(item)
+    if (seen.has(key)) {
+      return false
+    }
+    seen.add(key)
+    return true
+  })
+}
+
+function parseRegion(pos: string, assemblyName: string) {
+  const [refName, range = '0-10000'] = pos.split(':')
+  const [start, end] = range.split('-').map(Number)
+  return { assemblyName, refName, start, end }
+}
+
 export class ConfigMerger {
   mergeConfigs(configs: JBrowseConfig[], options: MergeOptions = {}): JBrowseConfig {
     if (configs.length === 0) {
@@ -14,19 +32,26 @@ export class ConfigMerger {
     }
 
     if (configs.length === 1 && !options.includeSyntenyTracks) {
-      return configs[0]
+      return configs[0]!
+    }
+
+    const assemblies = this.mergeAssemblies(configs)
+    const tracks = this.mergeTracks(configs)
+
+    if (options.includeSyntenyTracks && options.syntenyTracks) {
+      tracks.push(...this.buildSyntenyTracks(assemblies, options.syntenyTracks))
     }
 
     const mergedConfig: JBrowseConfig = {
-      assemblies: this.mergeAssemblies(configs),
-      tracks: this.mergeTracks(configs, options),
+      assemblies,
+      tracks,
       aggregateTextSearchAdapters: this.mergeTextSearchAdapters(configs),
     }
 
     if (options.createDefaultSession) {
       mergedConfig.defaultSession = this.createDefaultSession(
-        mergedConfig.assemblies || [],
-        options.sessionType || 'linear'
+        assemblies,
+        options.sessionType || 'linear',
       )
     }
 
@@ -34,84 +59,51 @@ export class ConfigMerger {
   }
 
   private mergeAssemblies(configs: JBrowseConfig[]): Assembly[] {
-    const assemblyMap = new Map<string, Assembly>()
-
-    for (const config of configs) {
-      if (!config.assemblies) continue
-
-      for (const assembly of config.assemblies) {
-        if (!assemblyMap.has(assembly.name)) {
-          assemblyMap.set(assembly.name, assembly)
-        }
-      }
-    }
-
-    return Array.from(assemblyMap.values())
+    return dedupeByKey(
+      configs.flatMap(c => c.assemblies ?? []),
+      a => a.name,
+    )
   }
 
-  private mergeTracks(configs: JBrowseConfig[], options: MergeOptions): Track[] {
-    const trackMap = new Map<string, Track>()
-
-    for (const config of configs) {
-      if (!config.tracks) continue
-
-      for (const track of config.tracks) {
-        if (!trackMap.has(track.trackId)) {
-          trackMap.set(track.trackId, track)
-        }
-      }
-    }
-
-    const tracks = Array.from(trackMap.values())
-
-    if (options.includeSyntenyTracks && options.syntenyTracks) {
-      const assemblies = this.mergeAssemblies(configs)
-      const assemblyNames = new Set(assemblies.map(a => a.name))
-
-      const relevantSyntenyTracks = options.syntenyTracks.filter(track => {
-        return (
-          track.assemblyNames.length === 2 &&
-          track.assemblyNames.every(name => assemblyNames.has(name))
-        )
-      })
-
-      for (const syntenyTrack of relevantSyntenyTracks) {
-        const track: Track = {
-          type: 'SyntenyTrack',
-          trackId: syntenyTrack.trackId,
-          name: syntenyTrack.name,
-          assemblyNames: syntenyTrack.assemblyNames,
-          adapter: syntenyTrack.adapter,
-        }
-
-        if (syntenyTrack.metadata) {
-          track.metadata = syntenyTrack.metadata
-        }
-
-        tracks.push(track)
-      }
-    }
-
-    return tracks
+  private mergeTracks(configs: JBrowseConfig[]): Track[] {
+    return dedupeByKey(
+      configs.flatMap(c => c.tracks ?? []),
+      t => t.trackId,
+    )
   }
 
-  private mergeTextSearchAdapters(configs: JBrowseConfig[]): AggregateTextSearchAdapter[] {
-    const adapterMap = new Map<string, AggregateTextSearchAdapter>()
-
-    for (const config of configs) {
-      if (!config.aggregateTextSearchAdapters) continue
-
-      for (const adapter of config.aggregateTextSearchAdapters) {
-        if (!adapterMap.has(adapter.textSearchAdapterId)) {
-          adapterMap.set(adapter.textSearchAdapterId, adapter)
-        }
-      }
-    }
-
-    return Array.from(adapterMap.values())
+  private mergeTextSearchAdapters(
+    configs: JBrowseConfig[],
+  ): AggregateTextSearchAdapter[] {
+    return dedupeByKey(
+      configs.flatMap(c => c.aggregateTextSearchAdapters ?? []),
+      a => a.textSearchAdapterId,
+    )
   }
 
-  private createDefaultSession(assemblies: Assembly[], sessionType: 'linear' | 'synteny') {
+  private buildSyntenyTracks(
+    assemblies: Assembly[],
+    syntenyTracks: SyntenyTrack[],
+  ): Track[] {
+    const assemblyNames = new Set(assemblies.map(a => a.name))
+
+    return syntenyTracks
+      .filter(
+        st =>
+          st.assemblyNames.length === 2 &&
+          st.assemblyNames.every(name => assemblyNames.has(name)),
+      )
+      .map(st => ({
+        type: 'SyntenyTrack',
+        trackId: st.trackId,
+        name: st.name,
+        assemblyNames: st.assemblyNames,
+        adapter: st.adapter,
+        metadata: st.metadata,
+      }))
+  }
+
+  private createDefaultSession(assemblies: Assembly[], sessionType: string) {
     if (sessionType === 'synteny' && assemblies.length >= 2) {
       return {
         name: `Synteny - ${assemblies.map(a => a.name).join(' vs ')}`,
@@ -131,16 +123,8 @@ export class ConfigMerger {
       }
     }
 
-    const firstAssembly = assemblies[0]
-    const defaultPos =
-      firstAssembly?.sequence?.metadata &&
-      typeof firstAssembly.sequence.metadata === 'object' &&
-      'ucsc' in firstAssembly.sequence.metadata &&
-      firstAssembly.sequence.metadata.ucsc &&
-      typeof firstAssembly.sequence.metadata.ucsc === 'object' &&
-      'defaultPos' in firstAssembly.sequence.metadata.ucsc
-        ? String(firstAssembly.sequence.metadata.ucsc.defaultPos)
-        : undefined
+    const first = assemblies[0]
+    const defaultPos = (first?.sequence?.metadata as { ucsc?: { defaultPos?: string } })?.ucsc?.defaultPos
 
     return {
       name: assemblies.map(a => a.name).join(', '),
@@ -148,18 +132,9 @@ export class ConfigMerger {
         {
           type: 'LinearGenomeView',
           id: 'initialView',
-          ...(firstAssembly && {
-            displayName: firstAssembly.displayName || firstAssembly.name,
-          }),
+          ...(first && { displayName: first.displayName || first.name }),
           ...(defaultPos && {
-            displayedRegions: [
-              {
-                assemblyName: firstAssembly.name,
-                refName: defaultPos.split(':')[0],
-                start: parseInt(defaultPos.split(':')[1]?.split('-')[0] || '0'),
-                end: parseInt(defaultPos.split(':')[1]?.split('-')[1] || '10000'),
-              },
-            ],
+            displayedRegions: [parseRegion(defaultPos, first!.name)],
           }),
         },
       ],
