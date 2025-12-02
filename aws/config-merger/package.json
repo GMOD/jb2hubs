@@ -4,6 +4,8 @@
   "description": "AWS Lambda function to merge multiple JBrowse config files",
   "main": "index.js",
   "scripts": {
+    "prebuild": "yarn clean",
+    "clean": "rimraf dist",
     "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs --external:@aws-sdk/*",
     "test": "vitest",
     "lint": "eslint src --ext .ts"
@@ -13,6 +15,7 @@
     "@types/aws-lambda": "^8.10.145",
     "@types/node": "^24.10.1",
     "esbuild": "^0.27.0",
+    "rimraf": "^6.1.2",
     "typescript": "^5.3.3",
     "vitest": "^4.0.15"
   }

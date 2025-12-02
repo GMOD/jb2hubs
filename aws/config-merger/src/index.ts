@@ -1,10 +1,13 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { ConfigMerger } from './merger'
+import {
+  APIGatewayProxyEventV2,
+  APIGatewayProxyResultV2,
+} from 'aws-lambda'
+import { mergeConfigs } from './merger'
 import { JBrowseConfig, MergeOptions } from './types'
 
 export const handler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
+  event: APIGatewayProxyEventV2,
+): Promise<APIGatewayProxyResultV2> => {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -12,7 +15,9 @@ export const handler = async (
   }
 
   try {
-    if (event.httpMethod === 'OPTIONS') {
+    const method = event.requestContext?.http?.method
+
+    if (method === 'OPTIONS') {
       return {
         statusCode: 200,
         headers: corsHeaders,
@@ -20,7 +25,7 @@ export const handler = async (
       }
     }
 
-    if (event.httpMethod !== 'GET') {
+    if (method !== 'GET') {
       return {
         statusCode: 405,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -36,7 +41,8 @@ export const handler = async (
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           error: 'configUrls query parameter is required',
-          example: '?configUrls=https://example.com/config1.json,https://example.com/config2.json',
+          example:
+            '?configUrls=https://example.com/config1.json,https://example.com/config2.json',
         }),
       }
     }
@@ -50,8 +56,7 @@ export const handler = async (
     }
 
     const configs = await fetchConfigs(configUrls)
-    const merger = new ConfigMerger()
-    const mergedConfig = merger.mergeConfigs(configs, options)
+    const mergedConfig = mergeConfigs(configs, options)
 
     return {
       statusCode: 200,
@@ -73,16 +78,18 @@ export const handler = async (
 }
 
 async function fetchConfigs(urls: string[]): Promise<JBrowseConfig[]> {
-  const fetchPromises = urls.map(async url => {
-    const response = await fetch(url)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch config from ${url}: ${response.statusText}`)
-    }
-    return response.json() as Promise<JBrowseConfig>
-  })
-
-  return Promise.all(fetchPromises)
+  return Promise.all(
+    urls.map(async url => {
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch config from ${url}: ${response.statusText}`,
+        )
+      }
+      return response.json() as Promise<JBrowseConfig>
+    }),
+  )
 }
 
-export { ConfigMerger } from './merger'
+export { mergeConfigs } from './merger'
 export * from './types'
