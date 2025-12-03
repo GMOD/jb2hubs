@@ -293,12 +293,38 @@ const sortedAssemblies = Array.from(allAssemblies)
 
   launchButton.addEventListener('click', () => {
     if (selectedSpecies1 && selectedSpecies2) {
-      // For now, just launch the config for the first species
-      // Later this will be updated to load a combined config
-      const configUrl = `https://genomes.jbrowse.org/ucsc/${selectedSpecies1}/config.json`
-      const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(configUrl)}`
+      const matchingTracks = syntenyTracks.filter(
+        track =>
+          track.assemblyNames.includes(selectedSpecies1) &&
+          track.assemblyNames.includes(selectedSpecies2),
+      )
 
-      statusDiv.textContent = 'Launching JBrowse...'
+      if (matchingTracks.length === 0) {
+        statusDiv.textContent = 'No synteny tracks found for this pair'
+        return
+      }
+
+      const track = matchingTracks[0]
+      const trackId = track.trackId
+
+      const mergeApiUrl = `https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge/?hubIds=${selectedSpecies1},${selectedSpecies2}`
+
+      const sessionSpec = {
+        views: [
+          {
+            type: 'LinearSyntenyView',
+            tracks: [trackId],
+            views: [
+              { assembly: selectedSpecies1 },
+              { assembly: selectedSpecies2 },
+            ],
+          },
+        ],
+      }
+
+      const jbrowseUrl = `https://jbrowse.org/code/jb2/latest/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
+
+      statusDiv.textContent = 'Launching JBrowse Linear Synteny View...'
       window.open(jbrowseUrl, '_blank')
     }
   })
