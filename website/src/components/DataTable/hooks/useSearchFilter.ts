@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import uFuzzy from '@leeoniya/ufuzzy'
-import { useQueryState } from 'nuqs'
 
 import type { RowData } from './useTableColumns.tsx'
 
@@ -33,13 +32,13 @@ const getSearchableText = (row: RowData): string => {
   return `${commonName} ${scientificName} ${ncbiAssemblyName} ${accession} ${submitterOrg}`
 }
 
+function getSearchFromURL() {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('search') ?? ''
+}
+
 export function useSearchFilter(rows: RowData[]) {
-  // Use nuqs to manage search query in URL
-  const [searchQuery, setSearchQuery] = useQueryState('search', {
-    defaultValue: '',
-    history: 'push',
-    throttleMs: 300, // Debounce URL updates
-  })
+  const [searchQuery, setSearchQueryState] = useState(getSearchFromURL)
 
   // Memoize processed rows and search haystack for better performance
   const { processedRows, searchHaystack } = useMemo(() => {
@@ -77,15 +76,27 @@ export function useSearchFilter(rows: RowData[]) {
     )
   }, [rows, processedRows, searchHaystack, searchQuery])
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      void setSearchQuery(value || null)
-    },
-    [setSearchQuery],
-  )
+  const handleSearchChange = useCallback((value: string) => {
+    setSearchQueryState(value)
+    const url = new URL(window.location.href)
+    if (value) {
+      url.searchParams.set('search', value)
+    } else {
+      url.searchParams.delete('search')
+    }
+    window.history.pushState({}, '', url.toString())
+  }, [])
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setSearchQueryState(getSearchFromURL())
+    }
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
 
   return {
-    searchQuery: searchQuery || '',
+    searchQuery,
     setSearchQuery: handleSearchChange,
     filteredRows,
   }
