@@ -1,10 +1,10 @@
 import {
-  JBrowseConfig,
-  Assembly,
-  Track,
-  SyntenyTrack,
   AggregateTextSearchAdapter,
+  Assembly,
+  JBrowseConfig,
   MergeOptions,
+  SyntenyTrack,
+  Track,
 } from './types'
 
 function dedupeByKey<T>(items: T[], getKey: (item: T) => string): T[] {
@@ -101,7 +101,7 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
         id: 'initialView',
         ...(first && { displayName: first.displayName || first.name }),
         ...(defaultPos && {
-          displayedRegions: [parseRegion(defaultPos, first!.name)],
+          displayedRegions: [parseRegion(defaultPos, first.name)],
         }),
       },
     ],
@@ -117,7 +117,7 @@ export function mergeConfigs(
   }
 
   if (configs.length === 1 && !options.includeSyntenyTracks && !options.createDefaultSession) {
-    return configs[0]!
+    return configs[0]
   }
 
   const assemblies = mergeAssemblies(configs)

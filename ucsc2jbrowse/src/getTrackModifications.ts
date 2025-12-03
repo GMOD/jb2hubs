@@ -45,7 +45,7 @@ interface RemovedTrack {
 }
 
 // Cache of removed tracks per assembly
-const removedTracksByAssembly: Map<string, RemovedTrack[]> = new Map()
+const removedTracksByAssembly = new Map<string, RemovedTrack[]>()
 
 /**
  * Logs a removed track to the assembly-specific cache
@@ -159,7 +159,7 @@ function _getTrackModifications<
     }
 
     if (reason) {
-      logRemovedTrack(assembly!, trackId, name, reason)
+      logRemovedTrack(assembly, trackId, name, reason)
       return undefined
     }
   }

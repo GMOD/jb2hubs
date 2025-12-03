@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readdir, readFile, writeFile } from 'node:fs/promises'
+/* eslint-disable no-console */
+import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 interface SyntenyTrack {
@@ -13,14 +14,14 @@ interface SyntenyTrack {
 }
 
 interface Config {
-  tracks?: Array<{
+  tracks?: {
     type?: string
     trackId?: string
     name?: string
     assemblyNames?: string[]
     adapter?: unknown
     metadata?: unknown
-  }>
+  }[]
 }
 
 interface SyntenyDataset {

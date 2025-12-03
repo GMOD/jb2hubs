@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs'
 
 import { generateJBrowseConfigForAssemblyHub, myfetchtext } from 'hubtools'

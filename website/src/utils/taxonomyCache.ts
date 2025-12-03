@@ -81,7 +81,7 @@ function parseNewick(newick: string): TreeNode | null {
         }
       } else {
         // Check for internal node format: Name{taxonId}
-        // eslint-disable-next-line no-useless-escape
+         
         const internalMatch = /^(.+?)\{([^}]+)\}$/.exec(name)
         if (internalMatch) {
           node.name = internalMatch[1]

@@ -1,13 +1,12 @@
+/* eslint-disable no-console */
 import fs from 'fs'
 import path from 'path'
 
-interface BlockedFileCache {
-  [url: string]: {
+type BlockedFileCache = Record<string, {
     lastChecked: number
     blocked: boolean
     trackName?: string
-  }
-}
+  }>;
 
 /**
  * Merges all assembly-specific blocked files JSON into a single blockedFiles.json

@@ -61,12 +61,12 @@ export default tseslint.config(
       'no-underscore-dangle': 0,
       curly: 'error',
       'no-empty': 'off',
-      // 'no-console': [
-      //   'error',
-      //   {
-      //     allow: ['error', 'warn'],
-      //   },
-      // ],
+      'no-console': [
+        'error',
+        {
+          allow: ['error', 'warn'],
+        },
+      ],
       semi: ['error', 'never'],
 
       '@typescript-eslint/restrict-template-expressions': 'off',

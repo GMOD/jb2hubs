@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
 /**
  * generateDefaultSessions.ts
@@ -19,14 +20,12 @@ interface UcscGenome {
 }
 
 interface ListJson {
-  ucscGenomes: {
-    [assemblyId: string]: UcscGenome
-  }
+  ucscGenomes: Record<string, UcscGenome>
 }
 
 interface DefaultSession {
   name: string
-  views: Array<{
+  views: {
     id: string
     type: string
     init: {
@@ -34,7 +33,7 @@ interface DefaultSession {
       assembly: string
       tracks: string[]
     }
-  }>
+  }[]
   widgets: {
     hierarchicalTrackSelector: {
       id: string
@@ -55,7 +54,7 @@ interface Config {
 }
 
 // Hardcoded track mappings for specific assemblies
-const HARDCODED_TRACKS: { [key: string]: string } = {
+const HARDCODED_TRACKS: Record<string, string> = {
   hg19: 'hg19-ncbiRefSeq',
   hg38: 'hg38-ncbiRefSeq',
   hs1: 'hs1-ncbiRefSeq',

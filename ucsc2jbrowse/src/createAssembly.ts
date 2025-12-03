@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { inflate } from 'pako'
 
 import { readJSON } from './util.ts'

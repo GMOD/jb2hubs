@@ -33,7 +33,6 @@ export function useCategoryFilter(rows: RowData[]) {
 
   const filteredRows = useMemo(() => {
     const validRows = rows.filter(notEmpty).filter(f => f.accession)
-    console.log({ validRows, filterOption })
 
     switch (filterOption) {
       case 'all': {

@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest'
-import { mergeConfigs } from '../src/merger'
+import { describe, expect, it } from 'vitest'
+
 import { idToConfigUrl } from '../src/index'
-import { JBrowseConfig, Assembly, SyntenyTrack } from '../src/types'
+import { mergeConfigs } from '../src/merger'
+import { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types'
 
 function makeAssembly(name: string, displayName?: string): Assembly {
   return {

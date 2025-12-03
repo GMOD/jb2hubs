@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import * as fs from 'fs'
 
 import { hubCategories, myfetchtext } from 'hubtools'

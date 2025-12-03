@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { exec } from 'child_process'
 import path from 'path'
 import { promisify } from 'util'

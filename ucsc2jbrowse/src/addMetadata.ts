@@ -1,5 +1,6 @@
-import { categoryMap } from 'hubtools'
 import path from 'path'
+
+import { categoryMap } from 'hubtools'
 
 import {
   getTrackModifications,

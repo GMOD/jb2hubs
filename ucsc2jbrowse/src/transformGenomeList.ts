@@ -1,5 +1,4 @@
 import fs from 'fs'
-import path from 'path'
 
 interface GenomeEntry {
   organism: string
@@ -8,15 +7,6 @@ interface GenomeEntry {
 
 interface MainGenomesData {
   ucscGenomes: Record<string, GenomeEntry>
-}
-
-interface TransformedEntry extends GenomeEntry {
-  id: string
-  name: string
-  accession: string
-  commonName: string
-  jbrowseConfig: string
-  jbrowseMinimalConfig: string
 }
 
 /**

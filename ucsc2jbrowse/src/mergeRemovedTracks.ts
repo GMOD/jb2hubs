@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from 'fs'
 import path from 'path'
 
@@ -45,12 +46,12 @@ function mergeRemovedTracks() {
   }
 
   // Group by reason for statistics
-  const byReason = allTracks.reduce(
+  const byReason = allTracks.reduce<Record<string, number>>(
     (acc, track) => {
       acc[track.reason] = (acc[track.reason] || 0) + 1
       return acc
     },
-    {} as Record<string, number>,
+    {},
   )
 
   console.log(`Merged ${allTracks.length} removed tracks`)

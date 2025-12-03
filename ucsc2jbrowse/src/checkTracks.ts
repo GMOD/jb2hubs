@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { readConfig, readJSON } from './util.ts'
 
 interface TrackEntry {

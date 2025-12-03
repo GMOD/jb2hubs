@@ -1,26 +1,22 @@
 import fs from 'fs'
 
-interface BlockedFileCache {
-  [url: string]: {
+type BlockedFileCache = Record<string, {
     lastChecked: number
     blocked: boolean
     trackName?: string
-  }
-}
+  }>;
 
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 
 // Cache per assembly to avoid contention between parallel processes
-const cacheByAssembly: Map<string, BlockedFileCache> = new Map()
+const cacheByAssembly = new Map<string, BlockedFileCache>()
 
 /**
  * Extracts the assembly name from a URL.
  */
 function getAssemblyFromUrl(url: string): string | null {
   // Match assembly names like hg19, hg38, mm39, mm10, etc.
-  const match = url.match(
-    /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//,
-  )
+  const match = /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//.exec(url)
   return match ? match[1] : null
 }
 

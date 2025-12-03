@@ -2,6 +2,7 @@ import {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
 } from 'aws-lambda'
+
 import { mergeConfigs } from './merger'
 import { JBrowseConfig, MergeOptions } from './types'
 
@@ -9,7 +10,7 @@ function idToConfigUrl(id: string) {
   if (id.startsWith('GCA') || id.startsWith('GCF')) {
     // e.g. GCF_000298275.1 -> GCF/000/298/275/GCF_000298275.1
     const prefix = id.slice(0, 3)
-    const numericPart = id.slice(4).split('.')[0]!
+    const numericPart = id.slice(4).split('.')[0]
     const chunks = [
       numericPart.slice(0, 3),
       numericPart.slice(3, 6),
