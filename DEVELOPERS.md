@@ -91,11 +91,17 @@ type = hasher
 remote = /home/cdiesh/src/jb2hubs/genark2jbrowse/hubs
 hashes = md5
 max_age = off
+
+[website-hashed]
+type = hasher
+remote = /home/cdiesh/src/jb2hubs/website/dist
+hashes = md5
+max_age = off
 ```
 
 ### About the hasher backend
 
-The `ucsc-results-hashed` and `genark-hubs-hashed` remotes use rclone's
+The `ucsc-results-hashed`, `genark-hubs-hashed`, and `website-hashed` remotes use rclone's
 [hasher backend](https://rclone.org/hasher/) to cache MD5 computations for local
 files. This dramatically speeds up syncing large .pif.gz files.
 
@@ -115,5 +121,5 @@ files. This dramatically speeds up syncing large .pif.gz files.
 - Safe because files are generated programmatically with correct mtimes
 - Cache stored in `~/.cache/rclone/kv/BaseRemote~hasher.bolt`
 
-**Note:** Update the paths in `ucsc-results-hashed` and `genark-hubs-hashed` to
-match your local environment.
+**Note:** Update the paths in `ucsc-results-hashed`, `genark-hubs-hashed`, and
+`website-hashed` to match your local environment.

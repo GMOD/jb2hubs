@@ -12,7 +12,7 @@
     "buildonly": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "sync": "aws s3 sync dist s3://genomes.jbrowse.org/ --size-only",
+    "sync": "rclone sync -c -v website-hashed: jbrowse-data:genomes.jbrowse.org --s3-storage-class INTELLIGENT_TIERING --checkers 20",
     "deploy": "yarn sync",
     "postdeploy": "AWS_PAGER=\"\" aws cloudfront  create-invalidation --distribution-id E12EBG02P68TDO --paths \"/*\"",
     "predeploy": "yarn build",
@@ -32,7 +32,6 @@
     "node-sql-parser": "^5.2.0",
     "prettier": "^3.6.2",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "react-virtualized-sticky-tree": "^3.0.0-beta18"
+    "react-dom": "^19.2.0"
   }
 }
