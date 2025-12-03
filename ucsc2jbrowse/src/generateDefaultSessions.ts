@@ -62,7 +62,7 @@ const HARDCODED_TRACKS: Record<string, string> = {
 
 function generateDefaultSession(genome: UcscGenome): DefaultSession {
   const assemblyId = genome.id
-  const trackId = HARDCODED_TRACKS[assemblyId] || `${assemblyId}-ncbiRefSeq`
+  const trackId = HARDCODED_TRACKS[assemblyId] ?? `${assemblyId}-ncbiRefSeq`
 
   return {
     name: `${assemblyId} ${genome.description}`,

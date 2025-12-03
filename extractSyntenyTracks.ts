@@ -140,7 +140,7 @@ async function main() {
   for (const track of allTracks) {
     if (track.assemblyNames.length === 2) {
       const pair = track.assemblyNames.slice().sort().join(' <-> ')
-      assemblyPairs.set(pair, (assemblyPairs.get(pair) || 0) + 1)
+      assemblyPairs.set(pair, (assemblyPairs.get(pair) ?? 0) + 1)
     }
   }
 

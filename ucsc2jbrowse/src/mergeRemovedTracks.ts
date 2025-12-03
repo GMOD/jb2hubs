@@ -48,7 +48,7 @@ function mergeRemovedTracks() {
   // Group by reason for statistics
   const byReason = allTracks.reduce<Record<string, number>>(
     (acc, track) => {
-      acc[track.reason] = (acc[track.reason] || 0) + 1
+      acc[track.reason] = (acc[track.reason] ?? 0) + 1
       return acc
     },
     {},

@@ -34,8 +34,8 @@ interface MetaJson {
  * @param filePath The path to the JSON file.
  * @returns The parsed JSON object.
  */
-function readJSON<T>(filePath: string): T {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T
+function readJSON(filePath: string): unknown {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
 
 /**
@@ -230,9 +230,9 @@ function main() {
   }
 
   // Read meta.json to get source assembly info
-  const meta = readJSON<MetaJson>(metaPath)
+  const meta = readJSON(metaPath) as MetaJson
   const sourceAccession = meta.accession
-  const sourceCommonName = meta.commonName || meta.scientificName
+  const sourceCommonName = meta.commonName ?? meta.scientificName
 
   const chainTracks: ChainTrack[] = []
 
@@ -251,7 +251,7 @@ function main() {
     return
   }
 
-  const config = readJSON<JBrowseConfig>(configFile)
+  const config = readJSON(configFile) as JBrowseConfig
 
   // Deduplicate tracks by trackId to avoid adding duplicates if script is run
   // multiple times

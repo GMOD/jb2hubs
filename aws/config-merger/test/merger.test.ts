@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { idToConfigUrl } from '../src/index'
-import { mergeConfigs } from '../src/merger'
-import { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types'
+import { idToConfigUrl } from '../src/index.ts'
+import { mergeConfigs } from '../src/merger.ts'
+import { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types.ts'
 
 function makeAssembly(name: string, displayName?: string): Assembly {
   return {
@@ -311,8 +311,8 @@ describe('mergeConfigs', () => {
           }[]
         }[]
       }
-      expect(session.views[0]?.displayedRegions?.[0]?.start).toBe(0)
-      expect(session.views[0]?.displayedRegions?.[0]?.end).toBe(10000)
+      expect(session.views[0]?.displayedRegions[0]?.start).toBe(0)
+      expect(session.views[0]?.displayedRegions[0]?.end).toBe(10000)
     })
 
     it('does not create default session when createDefaultSession is false', () => {

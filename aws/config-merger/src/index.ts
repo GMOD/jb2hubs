@@ -3,8 +3,8 @@ import {
   APIGatewayProxyResultV2,
 } from 'aws-lambda'
 
-import { mergeConfigs } from './merger'
-import { JBrowseConfig, MergeOptions } from './types'
+import { mergeConfigs } from './merger.ts'
+import { MergeOptions } from './types.ts'
 
 function idToConfigUrl(id: string) {
   if (id.startsWith('GCA') || id.startsWith('GCF')) {
@@ -31,7 +31,7 @@ export const handler = async (
   }
 
   try {
-    const method = event.requestContext?.http?.method
+    const method = event.requestContext.http.method
 
     if (method === 'OPTIONS') {
       return {
@@ -49,7 +49,7 @@ export const handler = async (
       }
     }
 
-    const params = event.queryStringParameters || {}
+    const params = event.queryStringParameters ?? {}
 
     if (!params.hubIds) {
       return {
@@ -68,7 +68,7 @@ export const handler = async (
     const options: MergeOptions = {
       includeSyntenyTracks: params.includeSyntenyTracks === 'true',
       createDefaultSession: params.createDefaultSession !== 'false',
-      sessionType: (params.sessionType as 'linear' | 'synteny') || 'synteny',
+      sessionType: (params.sessionType as 'linear' | 'synteny') ?? 'synteny',
     }
 
     const configs = await fetchConfigs(configUrls)
@@ -107,6 +107,6 @@ async function fetchConfigs(urls: string[]): Promise<JBrowseConfig[]> {
   )
 }
 
-export { mergeConfigs } from './merger'
+export { mergeConfigs } from './merger.ts'
 export { idToConfigUrl }
-export * from './types'
+export * from './types.ts'

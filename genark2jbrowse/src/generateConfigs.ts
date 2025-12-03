@@ -62,7 +62,7 @@ const newConfig = await generateJBrowseConfigForAssemblyHub({
 
 // Remove Chain/Net tracks (legacy UCSC chain/net tracks)
 // These are replaced by our new synteny tracks using PIF format
-if (newConfig.tracks) {
+if (newConfig.tracks && newConfig.tracks.length > 0) {
   const originalTrackCount = newConfig.tracks.length
   newConfig.tracks = newConfig.tracks.filter(
     (track: any) => !track.name?.includes('Chain/Net'),

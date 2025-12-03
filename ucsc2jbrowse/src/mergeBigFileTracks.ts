@@ -126,7 +126,7 @@ async function addBigDataTracks(
                 ) {
                   const fileAccessible = await checkIfFileAccessible({
                     url: bigDataUrl,
-                    trackName: settings?.longLabel || tableName,
+                    trackName: settings.longLabel ?? tableName,
                   })
                   if (!fileAccessible) {
                     return undefined

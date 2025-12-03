@@ -5,7 +5,7 @@ import {
   MergeOptions,
   SyntenyTrack,
   Track,
-} from './types'
+} from './types.ts'
 
 function dedupeByKey<T>(items: T[], getKey: (item: T) => string): T[] {
   const seen = new Set<string>()
@@ -20,8 +20,8 @@ function dedupeByKey<T>(items: T[], getKey: (item: T) => string): T[] {
 }
 
 function parseRegion(pos: string, assemblyName: string) {
-  const [refName, range = '0-10000'] = pos.split(':')
-  const [start, end] = range.split('-').map(Number)
+  const [refName, range] = pos.split(':')
+  const [start, end] = (range ?? '0-10000').split('-').map(Number)
   return { assemblyName, refName, start, end }
 }
 
@@ -91,7 +91,7 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
   }
 
   const first = assemblies[0]
-  const defaultPos = (first?.sequence?.metadata as { ucsc?: { defaultPos?: string } })?.ucsc?.defaultPos
+  const defaultPos = (first?.sequence?.metadata as { ucsc?: { defaultPos?: string } } | undefined)?.ucsc?.defaultPos
 
   return {
     name: assemblies.map(a => a.name).join(', '),
@@ -117,7 +117,7 @@ export function mergeConfigs(
   }
 
   if (configs.length === 1 && !options.includeSyntenyTracks && !options.createDefaultSession) {
-    return configs[0]
+    return configs[0]!
   }
 
   const assemblies = mergeAssemblies(configs)
@@ -136,7 +136,7 @@ export function mergeConfigs(
   if (options.createDefaultSession) {
     mergedConfig.defaultSession = createDefaultSession(
       assemblies,
-      options.sessionType || 'linear',
+      options.sessionType ?? 'linear',
     )
   }
 
