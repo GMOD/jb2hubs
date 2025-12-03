@@ -1,7 +1,4 @@
-import {
-  APIGatewayProxyEventV2,
-  APIGatewayProxyResultV2,
-} from 'aws-lambda'
+import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
 import { mergeConfigs } from './merger.ts'
 import { MergeOptions } from './types.ts'
@@ -16,9 +13,9 @@ function idToConfigUrl(id: string) {
       numericPart.slice(3, 6),
       numericPart.slice(6, 9),
     ]
-    return `https://jbrowse.org/genomes/genark/${prefix}/${chunks.join('/')}/${id}/config.json`
+    return `https://jbrowse.org/hubs/genark/${prefix}/${chunks.join('/')}/${id}/config.json`
   }
-  return `https://jbrowse.org/genomes/ucsc/${id}/config.json`
+  return `https://jbrowse.org/ucsc/${id}/config.json`
 }
 
 export const handler = async (
