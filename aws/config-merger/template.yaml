@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: JBrowse Config Merger Lambda Function
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    Description: API Gateway stage name
+
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 512
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+
+Resources:
+  ConfigMergerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: jbrowse-config-merger
+      CodeUri: dist/
+      Handler: index.handler
+      Description: Merges multiple JBrowse config files
+      Environment:
+        Variables:
+          NODE_ENV: production
+      Events:
+        MergeConfigs:
+          Type: Api
+          Properties:
+            Path: /merge
+            Method: GET
+            RestApiId: !Ref ConfigMergerApi
+        OptionsRequest:
+          Type: Api
+          Properties:
+            Path: /merge
+            Method: OPTIONS
+            RestApiId: !Ref ConfigMergerApi
+
+  ConfigMergerApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: jbrowse-config-merger-api
+      StageName: !Ref Stage
+      Cors:
+        AllowMethods: "'GET, OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+
+  ConfigMergerFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/jbrowse-config-merger
+      RetentionInDays: 7
+
+Outputs:
+  ConfigMergerApiUrl:
+    Description: API Gateway endpoint URL for Config Merger function
+    Value: !Sub https://${ConfigMergerApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}/merge
+    Export:
+      Name: JBrowseConfigMergerApiUrl
+  ConfigMergerFunctionArn:
+    Description: Config Merger Lambda Function ARN
+    Value: !GetAtt ConfigMergerFunction.Arn
+    Export:
+      Name: JBrowseConfigMergerFunctionArn
+  ConfigMergerApiId:
+    Description: API Gateway ID
+    Value: !Ref ConfigMergerApi
+    Export:
+      Name: JBrowseConfigMergerApiId
