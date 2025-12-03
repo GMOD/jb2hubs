@@ -7,6 +7,7 @@ import '../styles/global.css'
 const { frontmatter, title, description } = Astro.props
 const pageTitle = title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'
 const pageDescription = description ?? frontmatter?.description
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 ---
 
 <!doctype html>
@@ -15,8 +16,6 @@ const pageDescription = description ?? frontmatter?.description
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <title>{pageTitle}</title>
-    {pageDescription && <meta name="description" content={pageDescription} />}
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
     ></script>
     <script>
@@ -28,6 +27,10 @@ const pageDescription = description ?? frontmatter?.description
 
       gtag('config', 'G-D9CD3J2V31')
     </script>
+    <title>{pageTitle}</title>
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content="index, follow" />
+    {pageDescription && <meta name="description" content={pageDescription} />}
   </head>
   <body>
     <Header />
