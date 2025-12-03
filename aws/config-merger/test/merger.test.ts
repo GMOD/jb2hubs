@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { idToConfigUrl } from '../src/index.ts'
+import { addRelativeUris, idToConfigUrl } from '../src/index.ts'
 import { mergeConfigs } from '../src/merger.ts'
 import { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types.ts'
 
@@ -25,7 +25,12 @@ describe('mergeConfigs', () => {
     const config: JBrowseConfig = {
       assemblies: [makeAssembly('hg38')],
       tracks: [
-        { trackId: 'genes', name: 'Genes', type: 'FeatureTrack', assemblyNames: ['hg38'] },
+        {
+          trackId: 'genes',
+          name: 'Genes',
+          type: 'FeatureTrack',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
     const result = mergeConfigs([config])
@@ -59,12 +64,22 @@ describe('mergeConfigs', () => {
   it('merges tracks from multiple configs', () => {
     const config1: JBrowseConfig = {
       tracks: [
-        { trackId: 'genes', name: 'Genes', type: 'FeatureTrack', assemblyNames: ['hg38'] },
+        {
+          trackId: 'genes',
+          name: 'Genes',
+          type: 'FeatureTrack',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
     const config2: JBrowseConfig = {
       tracks: [
-        { trackId: 'variants', name: 'Variants', type: 'VariantTrack', assemblyNames: ['hg38'] },
+        {
+          trackId: 'variants',
+          name: 'Variants',
+          type: 'VariantTrack',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
 
@@ -77,12 +92,22 @@ describe('mergeConfigs', () => {
   it('deduplicates tracks by trackId', () => {
     const config1: JBrowseConfig = {
       tracks: [
-        { trackId: 'genes', name: 'Genes v1', type: 'FeatureTrack', assemblyNames: ['hg38'] },
+        {
+          trackId: 'genes',
+          name: 'Genes v1',
+          type: 'FeatureTrack',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
     const config2: JBrowseConfig = {
       tracks: [
-        { trackId: 'genes', name: 'Genes v2', type: 'FeatureTrack', assemblyNames: ['hg38'] },
+        {
+          trackId: 'genes',
+          name: 'Genes v2',
+          type: 'FeatureTrack',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
 
@@ -95,12 +120,20 @@ describe('mergeConfigs', () => {
   it('merges aggregateTextSearchAdapters', () => {
     const config1: JBrowseConfig = {
       aggregateTextSearchAdapters: [
-        { type: 'TrixTextSearchAdapter', textSearchAdapterId: 'search1', assemblyNames: ['hg38'] },
+        {
+          type: 'TrixTextSearchAdapter',
+          textSearchAdapterId: 'search1',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
     const config2: JBrowseConfig = {
       aggregateTextSearchAdapters: [
-        { type: 'TrixTextSearchAdapter', textSearchAdapterId: 'search2', assemblyNames: ['mm10'] },
+        {
+          type: 'TrixTextSearchAdapter',
+          textSearchAdapterId: 'search2',
+          assemblyNames: ['mm10'],
+        },
       ],
     }
 
@@ -112,12 +145,20 @@ describe('mergeConfigs', () => {
   it('deduplicates text search adapters', () => {
     const config1: JBrowseConfig = {
       aggregateTextSearchAdapters: [
-        { type: 'TrixTextSearchAdapter', textSearchAdapterId: 'search1', assemblyNames: ['hg38'] },
+        {
+          type: 'TrixTextSearchAdapter',
+          textSearchAdapterId: 'search1',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
     const config2: JBrowseConfig = {
       aggregateTextSearchAdapters: [
-        { type: 'TrixTextSearchAdapter', textSearchAdapterId: 'search1', assemblyNames: ['hg38'] },
+        {
+          type: 'TrixTextSearchAdapter',
+          textSearchAdapterId: 'search1',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
 
@@ -130,7 +171,12 @@ describe('mergeConfigs', () => {
     const config1: JBrowseConfig = { assemblies: [makeAssembly('hg38')] }
     const config2: JBrowseConfig = {
       tracks: [
-        { trackId: 'genes', name: 'Genes', type: 'FeatureTrack', assemblyNames: ['hg38'] },
+        {
+          trackId: 'genes',
+          name: 'Genes',
+          type: 'FeatureTrack',
+          assemblyNames: ['hg38'],
+        },
       ],
     }
 
@@ -139,6 +185,47 @@ describe('mergeConfigs', () => {
     expect(result.assemblies).toHaveLength(1)
     expect(result.tracks).toHaveLength(1)
     expect(result.aggregateTextSearchAdapters).toHaveLength(0)
+  })
+
+  it('merges plugins from multiple configs', () => {
+    const config1: JBrowseConfig = {
+      assemblies: [makeAssembly('hg38')],
+      plugins: [{ name: 'PluginA', url: 'https://example.com/pluginA.js' }],
+    }
+    const config2: JBrowseConfig = {
+      assemblies: [makeAssembly('mm10')],
+      plugins: [{ name: 'PluginB', url: 'https://example.com/pluginB.js' }],
+    }
+
+    const result = mergeConfigs([config1, config2])
+
+    expect(result.plugins).toHaveLength(2)
+    expect(result.plugins?.map(p => p.name)).toEqual(['PluginA', 'PluginB'])
+  })
+
+  it('deduplicates plugins by name', () => {
+    const config1: JBrowseConfig = {
+      assemblies: [makeAssembly('hg38')],
+      plugins: [{ name: 'PluginA', url: 'https://example.com/pluginA-v1.js' }],
+    }
+    const config2: JBrowseConfig = {
+      assemblies: [makeAssembly('mm10')],
+      plugins: [{ name: 'PluginA', url: 'https://example.com/pluginA-v2.js' }],
+    }
+
+    const result = mergeConfigs([config1, config2])
+
+    expect(result.plugins).toHaveLength(1)
+    expect(result.plugins?.[0]?.url).toBe('https://example.com/pluginA-v1.js')
+  })
+
+  it('omits plugins key when no plugins present', () => {
+    const config1: JBrowseConfig = { assemblies: [makeAssembly('hg38')] }
+    const config2: JBrowseConfig = { assemblies: [makeAssembly('mm10')] }
+
+    const result = mergeConfigs([config1, config2])
+
+    expect(result.plugins).toBeUndefined()
   })
 
   describe('synteny tracks', () => {
@@ -329,25 +416,79 @@ describe('mergeConfigs', () => {
 describe('idToConfigUrl', () => {
   it('converts GCF accession to genark URL', () => {
     expect(idToConfigUrl('GCF_000298275.1')).toBe(
-      'https://jbrowse.org/genomes/genark/GCF/000/298/275/GCF_000298275.1/config.json',
+      'https://jbrowse.org/hubs/genark/GCF/000/298/275/GCF_000298275.1/config.json',
     )
   })
 
   it('converts GCA accession to genark URL', () => {
     expect(idToConfigUrl('GCA_000001405.29')).toBe(
-      'https://jbrowse.org/genomes/genark/GCA/000/001/405/GCA_000001405.29/config.json',
+      'https://jbrowse.org/hubs/genark/GCA/000/001/405/GCA_000001405.29/config.json',
     )
   })
 
   it('converts UCSC ID to ucsc URL', () => {
     expect(idToConfigUrl('hg38')).toBe(
-      'https://jbrowse.org/genomes/ucsc/hg38/config.json',
+      'https://jbrowse.org/ucsc/hg38/config.json',
     )
   })
 
   it('converts other UCSC IDs to ucsc URL', () => {
     expect(idToConfigUrl('mm10')).toBe(
-      'https://jbrowse.org/genomes/ucsc/mm10/config.json',
+      'https://jbrowse.org/ucsc/mm10/config.json',
+    )
+  })
+})
+
+describe('addRelativeUris', () => {
+  it('adds baseUri to objects with uri property', () => {
+    const config = {
+      adapter: {
+        type: 'IndexedFastaAdapter',
+        uri: 'genome.fa',
+      },
+    }
+    addRelativeUris(config, 'https://example.com/data/')
+    expect(config.adapter.baseUri).toBe('https://example.com/data/')
+  })
+
+  it('adds baseUri to nested objects', () => {
+    const config = {
+      sequence: {
+        adapter: {
+          fastaLocation: { uri: 'genome.fa' },
+          faiLocation: { uri: 'genome.fa.fai' },
+        },
+      },
+    }
+    addRelativeUris(config, 'https://example.com/data/')
+    expect(
+      (config.sequence.adapter.fastaLocation as { baseUri: string }).baseUri,
+    ).toBe('https://example.com/data/')
+    expect(
+      (config.sequence.adapter.faiLocation as { baseUri: string }).baseUri,
+    ).toBe('https://example.com/data/')
+  })
+
+  it('does not overwrite existing baseUri', () => {
+    const config = {
+      adapter: {
+        uri: 'genome.fa',
+        baseUri: 'https://other.com/',
+      },
+    }
+    addRelativeUris(config, 'https://example.com/data/')
+    expect(config.adapter.baseUri).toBe('https://other.com/')
+  })
+
+  it('handles null and undefined values', () => {
+    const config = {
+      foo: null,
+      bar: undefined,
+      adapter: { uri: 'test.fa' },
+    }
+    addRelativeUris(config, 'https://example.com/')
+    expect((config.adapter as { baseUri: string }).baseUri).toBe(
+      'https://example.com/',
     )
   })
 })

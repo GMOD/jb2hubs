@@ -1,7 +1,20 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
 
 import { mergeConfigs } from './merger.ts'
-import { MergeOptions } from './types.ts'
+import { JBrowseConfig, MergeOptions } from './types.ts'
+
+function addRelativeUris(config: unknown, baseUri: string) {
+  if (typeof config === 'object' && config !== null) {
+    const obj = config as Record<string, unknown>
+    for (const key of Object.keys(obj)) {
+      if (typeof obj[key] === 'object') {
+        addRelativeUris(obj[key], baseUri)
+      } else if (key === 'uri' && !obj.baseUri) {
+        obj.baseUri = baseUri
+      }
+    }
+  }
+}
 
 function idToConfigUrl(id: string) {
   if (id.startsWith('GCA') || id.startsWith('GCF')) {
@@ -99,11 +112,14 @@ async function fetchConfigs(urls: string[]): Promise<JBrowseConfig[]> {
           `Failed to fetch config from ${url}: ${response.statusText}`,
         )
       }
-      return response.json() as Promise<JBrowseConfig>
+      const config = (await response.json()) as JBrowseConfig
+      const baseUri = url.slice(0, url.lastIndexOf('/') + 1)
+      addRelativeUris(config, baseUri)
+      return config
     }),
   )
 }
 
 export { mergeConfigs } from './merger.ts'
-export { idToConfigUrl }
+export { addRelativeUris, idToConfigUrl }
 export * from './types.ts'

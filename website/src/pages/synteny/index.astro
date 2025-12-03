@@ -1,0 +1,224 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import SyntenySelector from '../../components/SyntenySelector.tsx'
+import syntenyData from '../../syntenyTracks.json'
+import '../../styles/common-table.css'
+---
+
+<Layout title="Synteny Browser">
+  <Container>
+    <h1>Synteny Comparison Browser</h1>
+    <p>
+      Compare synteny (conserved genomic regions) between two species using
+      JBrowse 2.
+    </p>
+
+    <SyntenySelector
+      client:load
+      syntenyTracks={syntenyData.tracks}
+      assemblyInfo={syntenyData.assemblyInfo}
+    />
+
+    <p><a href="/synteny/info">About synteny tracks &rarr;</a></p>
+  </Container>
+</Layout>
+
+<style is:global>
+  .synteny-selector {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+  }
+
+  .source-legend {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .legend-item input[type='checkbox'] {
+    cursor: pointer;
+  }
+
+  .source-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+  }
+
+  .autocomplete {
+    position: relative;
+  }
+
+  .autocomplete-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: white;
+  }
+
+  .autocomplete-input-wrapper:focus-within {
+    border-color: #888;
+  }
+
+  .autocomplete-input-wrapper.disabled {
+    background: #f5f5f5;
+  }
+
+  .autocomplete-input {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 8px;
+    font-size: 14px;
+    border: none;
+    background: transparent;
+    outline: none;
+  }
+
+  .autocomplete-input:disabled {
+    color: #999;
+  }
+
+  .autocomplete-clear {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0 8px;
+    cursor: pointer;
+    color: #999;
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+  }
+
+  .autocomplete-clear:hover {
+    color: #666;
+  }
+
+  .autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    z-index: 100;
+  }
+
+  .autocomplete-option {
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  .autocomplete-option.highlighted {
+    background: #f0f0f0;
+  }
+
+  .autocomplete-option.selected {
+    font-weight: 500;
+  }
+
+  .autocomplete-no-results {
+    padding: 6px 8px;
+    color: #999;
+    font-size: 13px;
+  }
+
+  .species-selection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .species-group {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .species-group label {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #333;
+  }
+
+  .species-group select {
+    padding: 6px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: white;
+    width: 100%;
+  }
+
+  .species-group select:disabled {
+    background: #f5f5f5;
+    color: #999;
+  }
+
+  .status-text {
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .track-selector {
+    margin-bottom: 1rem;
+  }
+
+  .button-group {
+    margin-top: 1rem;
+  }
+
+  .synteny-selector button,
+  .synteny-selector .launch-link {
+    display: inline-block;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #0066cc;
+    background: white;
+    border: 1px solid #0066cc;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .synteny-selector button:hover:not(:disabled),
+  .synteny-selector .launch-link:hover {
+    background: #f0f7ff;
+  }
+
+  .synteny-selector button:disabled {
+    color: #999;
+    border-color: #ccc;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 768px) {
+    .species-selection {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

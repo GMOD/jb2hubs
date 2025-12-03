@@ -101,9 +101,10 @@ max_age = off
 
 ### About the hasher backend
 
-The `ucsc-results-hashed`, `genark-hubs-hashed`, and `website-hashed` remotes use rclone's
-[hasher backend](https://rclone.org/hasher/) to cache MD5 computations for local
-files. This dramatically speeds up syncing large .pif.gz files.
+The `ucsc-results-hashed`, `genark-hubs-hashed`, and `website-hashed` remotes
+use rclone's [hasher backend](https://rclone.org/hasher/) to cache MD5
+computations for local files. This dramatically speeds up syncing large .pif.gz
+files.
 
 **How it works:**
 

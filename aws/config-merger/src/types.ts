@@ -1,6 +1,16 @@
+export interface Plugin {
+  name: string
+  url?: string
+  umdUrl?: string
+  esmUrl?: string
+  cjsUrl?: string
+  [key: string]: unknown
+}
+
 export interface JBrowseConfig {
   assemblies?: Assembly[]
   tracks?: Track[]
+  plugins?: Plugin[]
   defaultSession?: DefaultSession
   aggregateTextSearchAdapters?: AggregateTextSearchAdapter[]
   [key: string]: unknown

@@ -2,11 +2,14 @@
 import fs from 'fs'
 import path from 'path'
 
-type BlockedFileCache = Record<string, {
+type BlockedFileCache = Record<
+  string,
+  {
     lastChecked: number
     blocked: boolean
     trackName?: string
-  }>;
+  }
+>
 
 /**
  * Merges all assembly-specific blocked files JSON into a single blockedFiles.json

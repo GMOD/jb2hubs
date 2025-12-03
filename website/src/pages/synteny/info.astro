@@ -1,0 +1,34 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import syntenyData from '../../syntenyTracks.json'
+
+const allAssemblies = new Set<string>()
+for (const track of syntenyData.tracks) {
+  for (const assembly of track.assemblyNames) {
+    allAssemblies.add(assembly)
+  }
+}
+---
+
+<Layout title="About Synteny Tracks">
+  <Container>
+    <h1>About Synteny Tracks</h1>
+    <p>
+      Synteny tracks show regions of conserved gene order between different
+      species. These comparisons are based on UCSC liftOver chain files that map
+      genomic coordinates from one species to another.
+    </p>
+    <p>
+      Please note that UCSC liftOver chain files are for non-commercial use
+      only, following the UCSC licensing.
+    </p>
+    <p>
+      We have <strong>{syntenyData.tracks.length}</strong> synteny comparisons available
+      across <strong>{allAssemblies.size}</strong> different species assemblies.
+    </p>
+    <p>
+      <a href="/synteny">&larr; Back to Synteny Browser</a>
+    </p>
+  </Container>
+</Layout>

@@ -1,10 +1,13 @@
 import fs from 'fs'
 
-type BlockedFileCache = Record<string, {
+type BlockedFileCache = Record<
+  string,
+  {
     lastChecked: number
     blocked: boolean
     trackName?: string
-  }>;
+  }
+>
 
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 
@@ -16,7 +19,9 @@ const cacheByAssembly = new Map<string, BlockedFileCache>()
  */
 function getAssemblyFromUrl(url: string): string | null {
   // Match assembly names like hg19, hg38, mm39, mm10, etc.
-  const match = /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//.exec(url)
+  const match = /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//.exec(
+    url,
+  )
   return match ? match[1] : null
 }
 

@@ -3,6 +3,7 @@ import {
   Assembly,
   JBrowseConfig,
   MergeOptions,
+  Plugin,
   SyntenyTrack,
   Track,
 } from './types.ts'
@@ -45,6 +46,13 @@ function mergeTextSearchAdapters(
   return dedupeByKey(
     configs.flatMap(c => c.aggregateTextSearchAdapters ?? []),
     a => a.textSearchAdapterId,
+  )
+}
+
+function mergePlugins(configs: JBrowseConfig[]): Plugin[] {
+  return dedupeByKey(
+    configs.flatMap(c => c.plugins ?? []),
+    p => p.name,
   )
 }
 
@@ -91,7 +99,9 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
   }
 
   const first = assemblies[0]
-  const defaultPos = (first?.sequence?.metadata as { ucsc?: { defaultPos?: string } } | undefined)?.ucsc?.defaultPos
+  const defaultPos = (
+    first?.sequence?.metadata as { ucsc?: { defaultPos?: string } } | undefined
+  )?.ucsc?.defaultPos
 
   return {
     name: assemblies.map(a => a.name).join(', '),
@@ -116,8 +126,12 @@ export function mergeConfigs(
     throw new Error('At least one config is required')
   }
 
-  if (configs.length === 1 && !options.includeSyntenyTracks && !options.createDefaultSession) {
-    return configs[0]!
+  if (
+    configs.length === 1 &&
+    !options.includeSyntenyTracks &&
+    !options.createDefaultSession
+  ) {
+    return configs[0]
   }
 
   const assemblies = mergeAssemblies(configs)
@@ -127,10 +141,13 @@ export function mergeConfigs(
     tracks.push(...buildSyntenyTracks(assemblies, options.syntenyTracks))
   }
 
+  const plugins = mergePlugins(configs)
+
   const mergedConfig: JBrowseConfig = {
     assemblies,
     tracks,
     aggregateTextSearchAdapters: mergeTextSearchAdapters(configs),
+    ...(plugins.length > 0 && { plugins }),
   }
 
   if (options.createDefaultSession) {
