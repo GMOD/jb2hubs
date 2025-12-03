@@ -1,6 +1,7 @@
 {
   "name": "jbrowse-config-merger",
   "version": "1.0.0",
+  "license": "MIT",
   "description": "AWS Lambda function to merge multiple JBrowse config files",
   "main": "index.js",
   "scripts": {
@@ -8,7 +9,9 @@
     "clean": "rimraf dist",
     "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs --external:@aws-sdk/*",
     "test": "vitest",
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "precopy": "yarn build",
+    "copy": "cat dist/index.mjs"
   },
   "dependencies": {},
   "devDependencies": {
