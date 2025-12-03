@@ -5,6 +5,21 @@ import {
 import { mergeConfigs } from './merger'
 import { JBrowseConfig, MergeOptions } from './types'
 
+function idToConfigUrl(id: string) {
+  if (id.startsWith('GCA') || id.startsWith('GCF')) {
+    // e.g. GCF_000298275.1 -> GCF/000/298/275/GCF_000298275.1
+    const prefix = id.slice(0, 3)
+    const numericPart = id.slice(4).split('.')[0]!
+    const chunks = [
+      numericPart.slice(0, 3),
+      numericPart.slice(3, 6),
+      numericPart.slice(6, 9),
+    ]
+    return `https://jbrowse.org/genomes/genark/${prefix}/${chunks.join('/')}/${id}/config.json`
+  }
+  return `https://jbrowse.org/genomes/ucsc/${id}/config.json`
+}
+
 export const handler = async (
   event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyResultV2> => {
@@ -35,19 +50,19 @@ export const handler = async (
 
     const params = event.queryStringParameters || {}
 
-    if (!params.configUrls) {
+    if (!params.hubIds) {
       return {
         statusCode: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          error: 'configUrls query parameter is required',
-          example:
-            '?configUrls=https://example.com/config1.json,https://example.com/config2.json',
+          error: 'hubIds query parameter is required',
+          example: '?hubIds=hg38,GCF_000298275.1',
         }),
       }
     }
 
-    const configUrls = params.configUrls.split(',').map(url => url.trim())
+    const hubIds = params.hubIds.split(',').map(id => id.trim())
+    const configUrls = hubIds.map(idToConfigUrl)
 
     const options: MergeOptions = {
       includeSyntenyTracks: params.includeSyntenyTracks === 'true',
@@ -92,4 +107,5 @@ async function fetchConfigs(urls: string[]): Promise<JBrowseConfig[]> {
 }
 
 export { mergeConfigs } from './merger'
+export { idToConfigUrl }
 export * from './types'

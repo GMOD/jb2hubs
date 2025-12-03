@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mergeConfigs } from '../src/merger'
+import { idToConfigUrl } from '../src/index'
 import { JBrowseConfig, Assembly, SyntenyTrack } from '../src/types'
 
 function makeAssembly(name: string, displayName?: string): Assembly {
@@ -321,5 +322,31 @@ describe('mergeConfigs', () => {
 
       expect(result.defaultSession).toBeUndefined()
     })
+  })
+})
+
+describe('idToConfigUrl', () => {
+  it('converts GCF accession to genark URL', () => {
+    expect(idToConfigUrl('GCF_000298275.1')).toBe(
+      'https://jbrowse.org/genomes/genark/GCF/000/298/275/GCF_000298275.1/config.json',
+    )
+  })
+
+  it('converts GCA accession to genark URL', () => {
+    expect(idToConfigUrl('GCA_000001405.29')).toBe(
+      'https://jbrowse.org/genomes/genark/GCA/000/001/405/GCA_000001405.29/config.json',
+    )
+  })
+
+  it('converts UCSC ID to ucsc URL', () => {
+    expect(idToConfigUrl('hg38')).toBe(
+      'https://jbrowse.org/genomes/ucsc/hg38/config.json',
+    )
+  })
+
+  it('converts other UCSC IDs to ucsc URL', () => {
+    expect(idToConfigUrl('mm10')).toBe(
+      'https://jbrowse.org/genomes/ucsc/mm10/config.json',
+    )
   })
 })
