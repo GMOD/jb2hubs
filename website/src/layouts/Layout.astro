@@ -1,12 +1,12 @@
 ---
-import { SEO } from 'astro-seo'
-
 import type { Props } from '@astrojs/starlight/props'
 
 import Header from '../components/Header.astro'
 import '../styles/global.css'
 
 const { frontmatter, title, description } = Astro.props
+const pageTitle = title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'
+const pageDescription = description ?? frontmatter?.description
 ---
 
 <!doctype html>
@@ -15,6 +15,8 @@ const { frontmatter, title, description } = Astro.props
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <title>{pageTitle}</title>
+    {pageDescription && <meta name="description" content={pageDescription} />}
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
     ></script>
     <script>
@@ -26,10 +28,6 @@ const { frontmatter, title, description } = Astro.props
 
       gtag('config', 'G-D9CD3J2V31')
     </script>
-    <SEO
-      title={title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'}
-      description={description ?? frontmatter?.description}
-    />
   </head>
   <body>
     <Header />
