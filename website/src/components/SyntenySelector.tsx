@@ -178,7 +178,7 @@ export default function SyntenySelector({
       ],
     }
 
-    return `https://jbrowse.org/code/jb2/no_loc_showall/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
+    return `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
   }, [species1, species2, selectedTrack])
 
   const formatOption = (asm: {

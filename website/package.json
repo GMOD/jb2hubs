@@ -12,10 +12,9 @@
     "buildonly": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "sync": "rclone sync -c -v website-hashed: jbrowse-data:genomes.jbrowse.org --s3-storage-class INTELLIGENT_TIERING --checkers 20",
     "deploy": "yarn sync",
-    "postdeploy": "AWS_PAGER=\"\" aws cloudfront  create-invalidation --distribution-id E12EBG02P68TDO --paths \"/*\"",
     "predeploy": "yarn build",
+    "sync": "tar czf - -C dist . | ssh myserver \"rm -rf /var/www/html/* && tar xzf - -C /var/www/html\"",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -26,8 +25,8 @@
     "@tanstack/react-table": "^8.21.3",
     "@types/node": "^24.7.1",
     "@types/react": "^19.2.2",
-    "astro": "5.16.3",
-    "lucide-react": "^0.553.0",
+    "astro": "5.16.4",
+    "lucide-react": "^0.555.0",
     "node-sql-parser": "^5.2.0",
     "prettier": "^3.6.2",
     "react": "^19.2.0",
