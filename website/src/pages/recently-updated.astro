@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Container2 from '../components/Container2.astro'
+import '../styles/common-table.css'
+import { formatDistanceToNow, format } from 'date-fns'
+
+// Import the recently updated data
+import recentlyUpdated from '../recentlyUpdated.json'
+
+interface HubEntry {
+  accession: string
+  modifiedDate: string
+  createdDate: string
+  modifiedTimestamp: number
+  createdTimestamp: number
+  scientificName: string
+  commonName: string
+  source: string
+  jbrowseLink: string
+  ncbiLink: string
+  ucscBrowserLink: string
+}
+
+const data = recentlyUpdated as HubEntry[]
+
+// Get top 500 most recently created
+const recentlyCreated = [...data]
+  .sort((a, b) => b.createdTimestamp - a.createdTimestamp)
+  .slice(0, 500)
+
+function formatDate(isoString: string): string {
+  return format(new Date(isoString), 'MMM d, yyyy')
+}
+
+function timeAgo(isoString: string): string {
+  return formatDistanceToNow(new Date(isoString), { addSuffix: true })
+}
+---
+
+<Layout title="Recently Added Genomes">
+  <Container2>
+    <h1>Recently Added Genomes</h1>
+    <p>
+      This page shows the most recently added genome assemblies
+      in our collection. Last scan: {formatDate(new Date().toISOString())}
+    </p>
+
+    <div>
+      <h2>Recently Added ({recentlyCreated.length} genomes)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Accession</th>
+            <th>Common Name</th>
+            <th>Scientific Name</th>
+            <th>Added</th>
+            <th>Source</th>
+            <th>Links</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentlyCreated.map((hub) => (
+            <tr>
+              <td>
+                <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
+              </td>
+              <td>{hub.commonName}</td>
+              <td><em>{hub.scientificName}</em></td>
+              <td title={formatDate(hub.createdDate)}>{timeAgo(hub.createdDate)}</td>
+              <td>{hub.source}</td>
+              <td>
+                {hub.jbrowseLink && (
+                  <a href={hub.jbrowseLink} target="_blank" rel="noopener">
+                    JBrowse
+                  </a>
+                )}
+                {hub.jbrowseLink && hub.ucscBrowserLink && ' | '}
+                {hub.ucscBrowserLink && (
+                  <a href={hub.ucscBrowserLink} target="_blank" rel="noopener">
+                    UCSC
+                  </a>
+                )}
+                {(hub.jbrowseLink || hub.ucscBrowserLink) && hub.ncbiLink && ' | '}
+                {hub.ncbiLink && (
+                  <a href={hub.ncbiLink} target="_blank" rel="noopener">
+                    NCBI
+                  </a>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Container2>
+</Layout>
+
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background: #f5f5f5;
+    font-weight: 600;
+  }
+
+  tr:hover {
+    background: #f9f9f9;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
