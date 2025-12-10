@@ -33,7 +33,15 @@ function formatDate(isoString: string): string {
 }
 
 function timeAgo(isoString: string): string {
-  return formatDistanceToNow(new Date(isoString), { addSuffix: true })
+  const date = new Date(isoString)
+  const now = Date.now()
+  const diff = now - date.getTime()
+  const oneWeek = 7 * 24 * 60 * 60 * 1000
+
+  if (diff < oneWeek) {
+    return formatDistanceToNow(date, { addSuffix: true })
+  }
+  return format(date, 'MMM d, yyyy')
 }
 ---
 
@@ -41,8 +49,8 @@ function timeAgo(isoString: string): string {
   <Container2>
     <h1>Recently Added Genomes</h1>
     <p>
-      This page shows the most recently added genome assemblies
-      in our collection. Last scan: {formatDate(new Date().toISOString())}
+      This page shows the most recently added UCSC GenArk assemblies.
+      Last scan: {formatDate(new Date().toISOString())}
     </p>
 
     <div>
@@ -97,7 +105,7 @@ function timeAgo(isoString: string): string {
 
 <style>
   table {
-    width: 100%;
+    width: 80%;
     border-collapse: collapse;
     font-size: 14px;
     white-space: nowrap;
