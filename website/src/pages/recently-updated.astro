@@ -28,6 +28,9 @@ const recentlyCreated = [...data]
   .sort((a, b) => b.createdTimestamp - a.createdTimestamp)
   .slice(0, 500)
 
+// Get unique sources for filter dropdown
+const sources = [...new Set(recentlyCreated.map(h => h.source))].sort()
+
 function formatDate(isoString: string): string {
   return format(new Date(isoString), 'MMM d, yyyy')
 }
@@ -54,8 +57,17 @@ function timeAgo(isoString: string): string {
     </p>
 
     <div>
-      <h2>Recently Added ({recentlyCreated.length} genomes)</h2>
-      <table>
+      <div class="filter-row">
+        <label for="source-filter">Filter by source:</label>
+        <select id="source-filter">
+          <option value="">All sources</option>
+          {sources.map(source => (
+            <option value={source}>{source}</option>
+          ))}
+        </select>
+        <span id="count-display">Showing {recentlyCreated.length} genomes</span>
+      </div>
+      <table id="genomes-table">
         <thead>
           <tr>
             <th>Accession</th>
@@ -68,13 +80,13 @@ function timeAgo(isoString: string): string {
         </thead>
         <tbody>
           {recentlyCreated.map((hub) => (
-            <tr>
+            <tr data-source={hub.source}>
               <td>
                 <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
               </td>
               <td>{hub.commonName}</td>
               <td><em>{hub.scientificName}</em></td>
-              <td title={formatDate(hub.createdDate)}>{timeAgo(hub.createdDate)}</td>
+              <td>{timeAgo(hub.createdDate)}</td>
               <td>{hub.source}</td>
               <td>
                 {hub.jbrowseLink && (
@@ -104,6 +116,25 @@ function timeAgo(isoString: string): string {
 </Layout>
 
 <style>
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .filter-row select {
+    padding: 6px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  #count-display {
+    color: #666;
+    font-size: 14px;
+  }
+
   table {
     width: 80%;
     border-collapse: collapse;
@@ -135,3 +166,29 @@ function timeAgo(isoString: string): string {
     text-decoration: underline;
   }
 </style>
+
+<script>
+  const select = document.getElementById('source-filter') as HTMLSelectElement
+  const table = document.getElementById('genomes-table')
+  const countDisplay = document.getElementById('count-display')
+  const rows = table?.querySelectorAll('tbody tr')
+
+  select?.addEventListener('change', () => {
+    const selectedSource = select.value
+    let visibleCount = 0
+
+    rows?.forEach(row => {
+      const rowSource = row.getAttribute('data-source')
+      if (!selectedSource || rowSource === selectedSource) {
+        ;(row as HTMLElement).style.display = ''
+        visibleCount++
+      } else {
+        ;(row as HTMLElement).style.display = 'none'
+      }
+    })
+
+    if (countDisplay) {
+      countDisplay.textContent = `Showing ${visibleCount} genomes`
+    }
+  })
+</script>
