@@ -23,13 +23,22 @@ interface HubEntry {
 
 const data = recentlyUpdated as HubEntry[]
 
-// Get top 500 most recently created
-const recentlyCreated = [...data]
-  .sort((a, b) => b.createdTimestamp - a.createdTimestamp)
-  .slice(0, 500)
+// Sort all data by created date
+const sortedData = [...data].sort((a, b) => b.createdTimestamp - a.createdTimestamp)
 
-// Get unique sources for filter dropdown
-const sources = [...new Set(recentlyCreated.map(h => h.source))].sort()
+// Get unique sources
+const sources = [...new Set(sortedData.map(h => h.source))].sort()
+
+// Get top 500 for "All" view
+const allRecent = sortedData.slice(0, 500)
+
+// Pre-compute top 500 for each source
+const dataBySource: Record<string, HubEntry[]> = {
+  '': allRecent, // Empty string = "All"
+}
+for (const source of sources) {
+  dataBySource[source] = sortedData.filter(h => h.source === source).slice(0, 500)
+}
 
 function formatDate(isoString: string): string {
   return format(new Date(isoString), 'MMM d, yyyy')
@@ -65,7 +74,7 @@ function timeAgo(isoString: string): string {
             <option value={source}>{source}</option>
           ))}
         </select>
-        <span id="count-display">Showing {recentlyCreated.length} genomes</span>
+        <span id="count-display">Showing {allRecent.length} genomes</span>
       </div>
       <table id="genomes-table">
         <thead>
@@ -78,9 +87,9 @@ function timeAgo(isoString: string): string {
             <th>Links</th>
           </tr>
         </thead>
-        <tbody>
-          {recentlyCreated.map((hub) => (
-            <tr data-source={hub.source}>
+        <tbody id="table-body">
+          {allRecent.map((hub) => (
+            <tr>
               <td>
                 <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
               </td>
@@ -111,6 +120,9 @@ function timeAgo(isoString: string): string {
           ))}
         </tbody>
       </table>
+      <script define:vars={{ dataBySource }}>
+        window.__DATA_BY_SOURCE__ = dataBySource
+      </script>
     </div>
   </Container2>
 </Layout>
@@ -168,27 +180,59 @@ function timeAgo(isoString: string): string {
 </style>
 
 <script>
+  import { formatDistanceToNow, format } from 'date-fns'
+
+  function timeAgo(isoString: string): string {
+    const date = new Date(isoString)
+    const now = Date.now()
+    const diff = now - date.getTime()
+    const oneWeek = 7 * 24 * 60 * 60 * 1000
+    if (diff < oneWeek) {
+      return formatDistanceToNow(date, { addSuffix: true })
+    }
+    return format(date, 'MMM d, yyyy')
+  }
+
+  function buildLinks(hub: any): string {
+    const links: string[] = []
+    if (hub.jbrowseLink) {
+      links.push(`<a href="${hub.jbrowseLink}" target="_blank" rel="noopener">JBrowse</a>`)
+    }
+    if (hub.ucscBrowserLink) {
+      links.push(`<a href="${hub.ucscBrowserLink}" target="_blank" rel="noopener">UCSC</a>`)
+    }
+    if (hub.ncbiLink) {
+      links.push(`<a href="${hub.ncbiLink}" target="_blank" rel="noopener">NCBI</a>`)
+    }
+    return links.join(' | ')
+  }
+
+  function renderTable(data: any[]) {
+    const tbody = document.getElementById('table-body')
+    if (!tbody) return
+
+    tbody.innerHTML = data.map(hub => `
+      <tr>
+        <td><a href="/accession/${hub.accession}">${hub.accession}</a></td>
+        <td>${hub.commonName}</td>
+        <td><em>${hub.scientificName}</em></td>
+        <td>${timeAgo(hub.createdDate)}</td>
+        <td>${hub.source}</td>
+        <td>${buildLinks(hub)}</td>
+      </tr>
+    `).join('')
+  }
+
   const select = document.getElementById('source-filter') as HTMLSelectElement
-  const table = document.getElementById('genomes-table')
   const countDisplay = document.getElementById('count-display')
-  const rows = table?.querySelectorAll('tbody tr')
+  const dataBySource = (window as any).__DATA_BY_SOURCE__
 
   select?.addEventListener('change', () => {
     const selectedSource = select.value
-    let visibleCount = 0
-
-    rows?.forEach(row => {
-      const rowSource = row.getAttribute('data-source')
-      if (!selectedSource || rowSource === selectedSource) {
-        ;(row as HTMLElement).style.display = ''
-        visibleCount++
-      } else {
-        ;(row as HTMLElement).style.display = 'none'
-      }
-    })
-
+    const data = dataBySource[selectedSource] || []
+    renderTable(data)
     if (countDisplay) {
-      countDisplay.textContent = `Showing ${visibleCount} genomes`
+      countDisplay.textContent = `Showing ${data.length} genomes`
     }
   })
 </script>
