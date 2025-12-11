@@ -24,7 +24,9 @@ interface HubEntry {
 const data = recentlyUpdated as HubEntry[]
 
 // Sort all data by created date
-const sortedData = [...data].sort((a, b) => b.createdTimestamp - a.createdTimestamp)
+const sortedData = [...data].sort(
+  (a, b) => b.createdTimestamp - a.createdTimestamp,
+)
 
 // Get unique sources
 const sources = [...new Set(sortedData.map(h => h.source))].sort()
@@ -37,7 +39,9 @@ const dataBySource: Record<string, HubEntry[]> = {
   '': allRecent, // Empty string = "All"
 }
 for (const source of sources) {
-  dataBySource[source] = sortedData.filter(h => h.source === source).slice(0, 500)
+  dataBySource[source] = sortedData
+    .filter(h => h.source === source)
+    .slice(0, 500)
 }
 
 function formatDate(isoString: string): string {
@@ -61,8 +65,9 @@ function timeAgo(isoString: string): string {
   <Container2>
     <h1>Recently Added Genomes</h1>
     <p>
-      This page shows the most recently added UCSC GenArk assemblies.
-      Last scan: {formatDate(new Date().toISOString())}
+      This page shows the most recently added UCSC GenArk assemblies. Last scan: {
+        formatDate(new Date().toISOString())
+      }
     </p>
 
     <div>
@@ -70,9 +75,7 @@ function timeAgo(isoString: string): string {
         <label for="source-filter">Filter by category:</label>
         <select id="source-filter">
           <option value="">All categories</option>
-          {sources.map(source => (
-            <option value={source}>{source}</option>
-          ))}
+          {sources.map(source => <option value={source}>{source}</option>)}
         </select>
         <span id="count-display">Showing {allRecent.length} genomes</span>
       </div>
@@ -88,36 +91,46 @@ function timeAgo(isoString: string): string {
           </tr>
         </thead>
         <tbody id="table-body">
-          {allRecent.map((hub) => (
-            <tr>
-              <td>
-                <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
-              </td>
-              <td>{hub.commonName}</td>
-              <td><em>{hub.scientificName}</em></td>
-              <td>{timeAgo(hub.createdDate)}</td>
-              <td>{hub.source}</td>
-              <td>
-                {hub.jbrowseLink && (
-                  <a href={hub.jbrowseLink} target="_blank" rel="noopener">
-                    JBrowse
-                  </a>
-                )}
-                {hub.jbrowseLink && hub.ucscBrowserLink && ' | '}
-                {hub.ucscBrowserLink && (
-                  <a href={hub.ucscBrowserLink} target="_blank" rel="noopener">
-                    UCSC
-                  </a>
-                )}
-                {(hub.jbrowseLink || hub.ucscBrowserLink) && hub.ncbiLink && ' | '}
-                {hub.ncbiLink && (
-                  <a href={hub.ncbiLink} target="_blank" rel="noopener">
-                    NCBI
-                  </a>
-                )}
-              </td>
-            </tr>
-          ))}
+          {
+            allRecent.map(hub => (
+              <tr>
+                <td>
+                  <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
+                </td>
+                <td>{hub.commonName}</td>
+                <td>
+                  <em>{hub.scientificName}</em>
+                </td>
+                <td>{timeAgo(hub.createdDate)}</td>
+                <td>{hub.source}</td>
+                <td>
+                  {hub.jbrowseLink && (
+                    <a href={hub.jbrowseLink} target="_blank" rel="noopener">
+                      JBrowse
+                    </a>
+                  )}
+                  {hub.jbrowseLink && hub.ucscBrowserLink && ' | '}
+                  {hub.ucscBrowserLink && (
+                    <a
+                      href={hub.ucscBrowserLink}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      UCSC
+                    </a>
+                  )}
+                  {(hub.jbrowseLink || hub.ucscBrowserLink) &&
+                    hub.ncbiLink &&
+                    ' | '}
+                  {hub.ncbiLink && (
+                    <a href={hub.ncbiLink} target="_blank" rel="noopener">
+                      NCBI
+                    </a>
+                  )}
+                </td>
+              </tr>
+            ))
+          }
         </tbody>
       </table>
       <script define:vars={{ dataBySource }}>
@@ -154,7 +167,8 @@ function timeAgo(isoString: string): string {
     white-space: nowrap;
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -196,13 +210,19 @@ function timeAgo(isoString: string): string {
   function buildLinks(hub: any): string {
     const links: string[] = []
     if (hub.jbrowseLink) {
-      links.push(`<a href="${hub.jbrowseLink}" target="_blank" rel="noopener">JBrowse</a>`)
+      links.push(
+        `<a href="${hub.jbrowseLink}" target="_blank" rel="noopener">JBrowse</a>`,
+      )
     }
     if (hub.ucscBrowserLink) {
-      links.push(`<a href="${hub.ucscBrowserLink}" target="_blank" rel="noopener">UCSC</a>`)
+      links.push(
+        `<a href="${hub.ucscBrowserLink}" target="_blank" rel="noopener">UCSC</a>`,
+      )
     }
     if (hub.ncbiLink) {
-      links.push(`<a href="${hub.ncbiLink}" target="_blank" rel="noopener">NCBI</a>`)
+      links.push(
+        `<a href="${hub.ncbiLink}" target="_blank" rel="noopener">NCBI</a>`,
+      )
     }
     return links.join(' | ')
   }
@@ -211,7 +231,9 @@ function timeAgo(isoString: string): string {
     const tbody = document.getElementById('table-body')
     if (!tbody) return
 
-    tbody.innerHTML = data.map(hub => `
+    tbody.innerHTML = data
+      .map(
+        hub => `
       <tr>
         <td><a href="/accession/${hub.accession}">${hub.accession}</a></td>
         <td>${hub.commonName}</td>
@@ -220,7 +242,9 @@ function timeAgo(isoString: string): string {
         <td>${hub.source}</td>
         <td>${buildLinks(hub)}</td>
       </tr>
-    `).join('')
+    `,
+      )
+      .join('')
   }
 
   const select = document.getElementById('source-filter') as HTMLSelectElement

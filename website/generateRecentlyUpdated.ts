@@ -98,7 +98,9 @@ function main() {
 
   // Enrich with metadata from all.json
   const enrichedData = hubDateInfos.map(hub => {
-    const metadata = hubMetadataMap.get(hub.accession) as Record<string, unknown> | undefined
+    const metadata = hubMetadataMap.get(hub.accession) as
+      | Record<string, unknown>
+      | undefined
     return {
       ...hub,
       scientificName: metadata?.scientificName ?? 'Unknown',
@@ -117,7 +119,9 @@ function main() {
   // Also output top 10 for quick reference
   console.log('\nTop 10 most recently updated:')
   enrichedData.slice(0, 10).forEach((hub, i) => {
-    console.log(`${i + 1}. ${hub.accession} - ${hub.commonName} (${new Date(hub.modifiedDate).toLocaleDateString()})`)
+    console.log(
+      `${i + 1}. ${hub.accession} - ${hub.commonName} (${new Date(hub.modifiedDate).toLocaleDateString()})`,
+    )
   })
 }
 

@@ -100,7 +100,9 @@ async function processHubJsonFiles() {
     'processedHubJson/all.json',
     JSON.stringify(allProcessedEntries, null, 2),
   )
-  console.log(`Generated processedHubJson/all.json with ${allProcessedEntries.length} unique entries`)
+  console.log(
+    `Generated processedHubJson/all.json with ${allProcessedEntries.length} unique entries`,
+  )
 }
 
 processHubJsonFiles().catch(console.error)
