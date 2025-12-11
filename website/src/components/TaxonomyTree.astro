@@ -25,6 +25,7 @@ interface Props {
   filterTaxonId?: string
   precomputedSubtree?: FlatNodeData | null
   precomputedLineage?: FlatNodeData[]
+  containerId?: string
 }
 
 const {
@@ -35,6 +36,7 @@ const {
   filterTaxonId,
   precomputedSubtree,
   precomputedLineage,
+  containerId = 'taxonomy-tree-container',
 } = Astro.props
 
 // Create a lookup map for species data by accession
@@ -84,7 +86,7 @@ try {
 const accessionCount = tree ? countAccessions(tree) : 0
 ---
 
-<div id="taxonomy-tree-container">
+<div id={containerId}>
   <div id="taxonomy-tree-content">
     {
       error ? (

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container2 from '../../components/Container2.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
+import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
 import fs from 'fs'
 import path from 'path'
 
@@ -139,6 +140,11 @@ if (isCategory) {
 
 <Layout title={`Taxonomy - ${title}`} description={description}>
   <Container2>
+    <TaxonomyViewToggle
+      rows={rows}
+      treeContainerId="taxonomy-tree-container"
+      client:load
+    />
     <TaxonomyTree
       category={category}
       speciesData={rows}
@@ -147,6 +153,7 @@ if (isCategory) {
       filterTaxonId={isCategory ? undefined : taxonId}
       precomputedSubtree={precomputedSubtree}
       precomputedLineage={precomputedLineage}
+      containerId="taxonomy-tree-container"
     />
   </Container2>
 </Layout>
