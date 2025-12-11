@@ -7,17 +7,4 @@ cd "$SCRIPT_DIR"
 # Run the dry run (build everything, no uploads)
 ./dryRun.sh
 
-echo "Uploading genark data..."
-./genark2jbrowse/uploadAll.sh
-
-echo "Uploading ucsc data..."
-./ucsc2jbrowse/uploadAll.sh
-
-echo "Running website deploy..."
-yarn --cwd website deploy
-
-git add .
-git commit -m "Updates"
-git push
-
-echo "Done!"
+./uploadDryRun.sh
