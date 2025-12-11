@@ -7,9 +7,14 @@ import type { RowData } from './DataTable/hooks/useTableColumns.tsx'
 interface Props {
   rows: RowData[]
   treeContainerId: string
+  accessionCount: number
 }
 
-export default function TaxonomyViewToggle({ rows, treeContainerId }: Props) {
+export default function TaxonomyViewToggle({
+  rows,
+  treeContainerId,
+  accessionCount,
+}: Props) {
   const [view, setView] = useState<'tree' | 'table'>('tree')
   const [isClient, setIsClient] = useState(false)
 
@@ -54,29 +59,40 @@ export default function TaxonomyViewToggle({ rows, treeContainerId }: Props) {
 
   return (
     <div style={{ marginBottom: '16px' }}>
-      <div style={{ marginBottom: '8px' }}>
-        <label style={{ marginRight: '15px' }}>
-          <input
-            type="radio"
-            name="taxonomyView"
-            checked={view === 'tree'}
-            onChange={() => {
-              setView('tree')
-            }}
-          />
-          Tree view
-        </label>
-        <label style={{ marginRight: '15px' }}>
-          <input
-            type="radio"
-            name="taxonomyView"
-            checked={view === 'table'}
-            onChange={() => {
-              setView('table')
-            }}
-          />
-          Table view
-        </label>
+      <div
+        style={{
+          marginBottom: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'wrap',
+        }}
+      >
+        <div>
+          <label style={{ marginRight: '15px' }}>
+            <input
+              type="radio"
+              name="taxonomyView"
+              checked={view === 'tree'}
+              onChange={() => {
+                setView('tree')
+              }}
+            />
+            Tree view
+          </label>
+          <label style={{ marginRight: '15px' }}>
+            <input
+              type="radio"
+              name="taxonomyView"
+              checked={view === 'table'}
+              onChange={() => {
+                setView('table')
+              }}
+            />
+            Table view
+          </label>
+        </div>
+        <div style={{ color: '#6b7280' }}>{accessionCount} accessions</div>
       </div>
 
       {view === 'table' ? <ClientOnlyDataTable rows={rows} /> : null}
