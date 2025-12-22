@@ -105,6 +105,7 @@ function main() {
       ...hub,
       scientificName: metadata?.scientificName ?? 'Unknown',
       commonName: metadata?.commonName ?? 'Unknown',
+      ncbiAssemblyName: metadata?.ncbiAssemblyName ?? 'Unknown',
       source: metadata?.source ?? 'Unknown',
       jbrowseLink: metadata?.jbrowseLink ?? '',
       ncbiLink: metadata?.ncbiLink ?? '',

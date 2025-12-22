@@ -13,6 +13,7 @@ interface HubEntry {
   createdTimestamp: number
   scientificName: string
   commonName: string
+  ncbiAssemblyName: string
   source: string
   jbrowseLink: string
   ncbiLink: string
@@ -81,6 +82,7 @@ function timeAgo(isoString: string): string {
         <thead>
           <tr>
             <th>Accession</th>
+            <th>Assembly Name</th>
             <th>Common Name</th>
             <th>Scientific Name</th>
             <th>Added</th>
@@ -95,6 +97,7 @@ function timeAgo(isoString: string): string {
                 <td>
                   <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
                 </td>
+                <td>{hub.ncbiAssemblyName}</td>
                 <td>{hub.commonName}</td>
                 <td>
                   <em>{hub.scientificName}</em>
@@ -234,6 +237,7 @@ function timeAgo(isoString: string): string {
         hub => `
       <tr>
         <td><a href="/accession/${hub.accession}">${hub.accession}</a></td>
+        <td>${hub.ncbiAssemblyName}</td>
         <td>${hub.commonName}</td>
         <td><em>${hub.scientificName}</em></td>
         <td>${timeAgo(hub.createdDate)}</td>
