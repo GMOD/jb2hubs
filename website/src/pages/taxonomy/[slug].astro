@@ -140,6 +140,64 @@ if (isCategory) {
 
 <Layout title={`Taxonomy - ${title}`} description={description}>
   <Container2>
+    {isCategory && (
+      <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
+        <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
+        <a
+          href={`/hubs/${slug}`}
+          style="color: #2563eb; text-decoration: underline;"
+        >
+          View list of species as table for {title}
+        </a>
+      </div>
+    )}
+
+    {precomputedLineage && precomputedLineage.length > 0 && (
+      <div class="lineage-container">
+        <div class="lineage-label">Taxonomy:</div>
+        <div class="lineage-breadcrumbs">
+          {precomputedLineage.slice(0, -1).map((node: any) => (
+            <>
+              <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
+                {node.name || 'Unnamed'}
+              </a>
+              <span class="lineage-separator">›</span>
+            </>
+          ))}
+          <span class="lineage-current">
+            {precomputedLineage[precomputedLineage.length - 1]?.name || 'Unnamed'}
+          </span>
+        </div>
+      </div>
+    )}
+
+    {taxonId && (
+      <div class="taxonomy-info-container">
+        <div class="taxonomy-info-label">Taxonomy information:</div>
+        <a
+          href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="taxonomy-info-link"
+        >
+          View on NCBI (taxonomy ID: {taxonId})
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="display: inline-block; vertical-align: middle; margin-left: 4px;"
+          >
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </a>
+      </div>
+    )}
+
     <TaxonomyViewToggle
       rows={rows}
       treeContainerId="taxonomy-tree-container"
@@ -149,12 +207,90 @@ if (isCategory) {
     <TaxonomyTree
       category={category}
       speciesData={rows}
-      title={title}
-      hubsLink={isCategory ? `/hubs/${slug}` : undefined}
       filterTaxonId={isCategory ? undefined : taxonId}
       precomputedSubtree={precomputedSubtree}
-      precomputedLineage={precomputedLineage}
       containerId="taxonomy-tree-container"
     />
   </Container2>
 </Layout>
+
+<style>
+  .lineage-container {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .lineage-label {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+  }
+
+  .lineage-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  .lineage-link {
+    color: #2563eb;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .lineage-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .lineage-separator {
+    color: #9ca3af;
+    user-select: none;
+  }
+
+  .lineage-current {
+    color: #1f2937;
+    font-weight: 600;
+  }
+
+  .taxonomy-info-container {
+    background-color: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .taxonomy-info-label {
+    font-weight: 600;
+    color: #1e40af;
+    font-size: 14px;
+  }
+
+  .taxonomy-info-link {
+    color: #2563eb;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .taxonomy-info-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+</style>

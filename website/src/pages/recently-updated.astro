@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import Container2 from '../components/Container2.astro'
 import '../styles/common-table.css'
-import { formatDistanceToNow, format } from 'date-fns'
+import { format } from 'date-fns'
 
 // Import the recently updated data
 import recentlyUpdated from '../recentlyUpdated.json'
@@ -44,18 +44,6 @@ for (const source of sources) {
 
 function formatDate(isoString: string): string {
   return format(new Date(isoString), 'MMM d, yyyy')
-}
-
-function timeAgo(isoString: string): string {
-  const date = new Date(isoString)
-  const now = Date.now()
-  const diff = now - date.getTime()
-  const oneWeek = 7 * 24 * 60 * 60 * 1000
-
-  if (diff < oneWeek) {
-    return formatDistanceToNow(date, { addSuffix: true })
-  }
-  return format(date, 'MMM d, yyyy')
 }
 ---
 
@@ -99,7 +87,7 @@ function timeAgo(isoString: string): string {
                 <td>
                   <em>{hub.scientificName}</em>
                 </td>
-                <td>{timeAgo(hub.createdDate)}</td>
+                <td>{formatDate(hub.createdDate)}</td>
                 <td>{hub.source}</td>
                 <td>
                   {hub.jbrowseLink && (
@@ -192,17 +180,10 @@ function timeAgo(isoString: string): string {
 </style>
 
 <script>
-  import { formatDistanceToNow, format } from 'date-fns'
+  import { format } from 'date-fns'
 
-  function timeAgo(isoString: string): string {
-    const date = new Date(isoString)
-    const now = Date.now()
-    const diff = now - date.getTime()
-    const oneWeek = 7 * 24 * 60 * 60 * 1000
-    if (diff < oneWeek) {
-      return formatDistanceToNow(date, { addSuffix: true })
-    }
-    return format(date, 'MMM d, yyyy')
+  function formatDate(isoString: string): string {
+    return format(new Date(isoString), 'MMM d, yyyy')
   }
 
   function buildLinks(hub: any): string {
@@ -236,7 +217,7 @@ function timeAgo(isoString: string): string {
         <td><a href="/accession/${hub.accession}">${hub.accession}</a></td>
         <td>${hub.commonName}</td>
         <td><em>${hub.scientificName}</em></td>
-        <td>${timeAgo(hub.createdDate)}</td>
+        <td>${formatDate(hub.createdDate)}</td>
         <td>${hub.source}</td>
         <td>${buildLinks(hub)}</td>
       </tr>
