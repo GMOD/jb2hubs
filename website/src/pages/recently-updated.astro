@@ -226,16 +226,46 @@ function formatDate(isoString: string): string {
       .join('')
   }
 
-  const select = document.getElementById('source-filter') as HTMLSelectElement
-  const countDisplay = document.getElementById('count-display')
-  const dataBySource = (window as any).__DATA_BY_SOURCE__
+  function updateURL(category: string) {
+    const params = new URLSearchParams(window.location.search)
+    if (category) {
+      params.set('category', category)
+    } else {
+      params.delete('category')
+    }
+    const newUrl =
+      params.toString() !== ''
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname
+    window.history.replaceState({}, '', newUrl)
+  }
 
-  select?.addEventListener('change', () => {
-    const selectedSource = select.value
-    const data = dataBySource[selectedSource] || []
+  function applyFilter(category: string) {
+    const data = dataBySource[category] || []
     renderTable(data)
     if (countDisplay) {
       countDisplay.textContent = `Showing ${data.length} genomes`
     }
+  }
+
+  const select = document.getElementById('source-filter') as HTMLSelectElement
+  const countDisplay = document.getElementById('count-display')
+  const dataBySource = (window as any).__DATA_BY_SOURCE__
+
+  // Initialize from URL on page load
+  const params = new URLSearchParams(window.location.search)
+  const initialCategory = params.get('category') || ''
+  if (initialCategory && select) {
+    // Check if the category exists in the data
+    if (dataBySource[initialCategory]) {
+      select.value = initialCategory
+      applyFilter(initialCategory)
+    }
+  }
+
+  select?.addEventListener('change', () => {
+    const selectedSource = select.value
+    applyFilter(selectedSource)
+    updateURL(selectedSource)
   })
 </script>
