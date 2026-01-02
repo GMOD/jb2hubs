@@ -140,63 +140,70 @@ if (isCategory) {
 
 <Layout title={`Taxonomy - ${title}`} description={description}>
   <Container2>
-    {isCategory && (
-      <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
-        <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
-        <a
-          href={`/hubs/${slug}`}
-          style="color: #2563eb; text-decoration: underline;"
-        >
-          View list of species as table for {title}
-        </a>
-      </div>
-    )}
-
-    {precomputedLineage && precomputedLineage.length > 0 && (
-      <div class="lineage-container">
-        <div class="lineage-label">Taxonomy:</div>
-        <div class="lineage-breadcrumbs">
-          {precomputedLineage.slice(0, -1).map((node: any) => (
-            <>
-              <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
-                {node.name || 'Unnamed'}
-              </a>
-              <span class="lineage-separator">›</span>
-            </>
-          ))}
-          <span class="lineage-current">
-            {precomputedLineage[precomputedLineage.length - 1]?.name || 'Unnamed'}
-          </span>
-        </div>
-      </div>
-    )}
-
-    {taxonId && (
-      <div class="taxonomy-info-container">
-        <div class="taxonomy-info-label">Taxonomy information:</div>
-        <a
-          href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="taxonomy-info-link"
-        >
-          View on NCBI (taxonomy ID: {taxonId})
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            style="display: inline-block; vertical-align: middle; margin-left: 4px;"
+    {
+      isCategory && (
+        <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
+          <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
+          <a
+            href={`/hubs/${slug}`}
+            style="color: #2563eb; text-decoration: underline;"
           >
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-            <polyline points="15 3 21 3 21 9" />
-            <line x1="10" y1="14" x2="21" y2="3" />
-          </svg>
-        </a>
-      </div>
-    )}
+            View list of species as table for {title}
+          </a>
+        </div>
+      )
+    }
+
+    {
+      precomputedLineage && precomputedLineage.length > 0 && (
+        <div class="lineage-container">
+          <div class="lineage-label">Taxonomy:</div>
+          <div class="lineage-breadcrumbs">
+            {precomputedLineage.slice(0, -1).map((node: any) => (
+              <>
+                <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
+                  {node.name || 'Unnamed'}
+                </a>
+                <span class="lineage-separator">›</span>
+              </>
+            ))}
+            <span class="lineage-current">
+              {precomputedLineage[precomputedLineage.length - 1]?.name ||
+                'Unnamed'}
+            </span>
+          </div>
+        </div>
+      )
+    }
+
+    {
+      taxonId && (
+        <div class="taxonomy-info-container">
+          <div class="taxonomy-info-label">Taxonomy information:</div>
+          <a
+            href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="taxonomy-info-link"
+          >
+            View on NCBI (taxonomy ID: {taxonId})
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              style="display: inline-block; vertical-align: middle; margin-left: 4px;"
+            >
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+              <polyline points="15 3 21 3 21 9" />
+              <line x1="10" y1="14" x2="21" y2="3" />
+            </svg>
+          </a>
+        </div>
+      )
+    }
 
     <TaxonomyViewToggle
       rows={rows}
