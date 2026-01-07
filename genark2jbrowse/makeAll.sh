@@ -45,3 +45,6 @@ log "Fetching wiki images..."
 
 log "Calculating gff file hashes..."
 ./getFileListing.sh
+
+log "Enhancing configs with plugins and hierarchical settings..."
+./enhanceConfigs.sh
