@@ -30,9 +30,6 @@ echo "Running ucsc2jbrowse/doAll.sh..."
 echo "Extracting SyntenyTrack datasets..."
 node extractSyntenyTracks.ts
 
-echo "Generating recently updated data..."
-node website/generateRecentlyUpdated.ts
-
 echo "Formatting codebase..."
 yarn format
 
