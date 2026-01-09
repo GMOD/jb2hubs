@@ -26,8 +26,8 @@ const navItems = [
             </a>
           ))
         }
-        <a href="https://jbrowse.org/jb2" style="margin-left: 20px;">
-          Looking for the JBrowse 2 homepage?<svg
+        <a href="https://jbrowse.org/jb2" class="externalLink"
+          >Looking for the JBrowse 2 homepage?<svg
             xmlns="http://www.w3.org/2000/svg"
             width="1em"
             height="1em"
@@ -37,14 +37,14 @@ const navItems = [
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            style="margin-left: 10px; display: inline;"
+            class="externalIcon"
           >
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
             ></path>
             <polyline points="15 3 21 3 21 9"></polyline>
             <line x1="10" x2="21" y1="14" y2="3"></line>
-          </svg>
-        </a>
+          </svg></a
+        >
         <a href="https://github.com/GMOD/jbrowse-components" class="socialLink">
           <svg class="icon" fill="currentColor" viewBox="0 0 24 24">
             <path
@@ -161,9 +161,33 @@ const navItems = [
     align-items: center;
   }
 
+  .externalLink {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 20px;
+    text-decoration: none;
+    color: #333;
+    transition: color 0.2s ease;
+  }
+
+  .externalLink:hover {
+    color: #0066cc;
+  }
+
+  .externalIcon {
+    margin-left: 10px;
+  }
+
   .socialLink {
+    display: inline-flex;
+    align-items: center;
     margin-left: 1rem;
     color: #333;
+    transition: color 0.2s ease;
+  }
+
+  .socialLink:hover {
+    color: #0066cc;
   }
 
   .icon {
