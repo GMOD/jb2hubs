@@ -1,11 +1,16 @@
 ---
 import Breadcrumbs from './Breadcrumbs.astro'
 
-const { className } = Astro.props
+interface Props {
+  className?: string
+  wide?: boolean
+}
+
+const { className, wide = false } = Astro.props
 ---
 
-<div class="container">
-  <div class={`content ${className}`}>
+<div class:list={['container', { wide }]}>
+  <div class:list={['content', className, { wide }]}>
     <Breadcrumbs />
     <slot />
   </div>
@@ -16,14 +21,22 @@ const { className } = Astro.props
     padding: 1rem;
   }
 
+  .container.wide {
+    padding: 0;
+  }
+
   .content {
     max-width: 100%; /* Default for mobile */
     margin: 0 auto;
   }
 
+  .content.wide {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
   @media (min-width: 768px) {
-    /* Adjust breakpoint as needed */
-    .content {
+    .content:not(.wide) {
       max-width: 50%;
     }
   }

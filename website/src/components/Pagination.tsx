@@ -16,6 +16,7 @@ export default function Pagination({ table }: PaginationProps) {
           table.setPageIndex(0)
         }}
         disabled={!table.getCanPreviousPage()}
+        aria-label="First page"
       >
         {'<<'}
       </button>
@@ -25,6 +26,7 @@ export default function Pagination({ table }: PaginationProps) {
           table.previousPage()
         }}
         disabled={!table.getCanPreviousPage()}
+        aria-label="Previous page"
       >
         {'<'}
       </button>
@@ -40,6 +42,7 @@ export default function Pagination({ table }: PaginationProps) {
           table.nextPage()
         }}
         disabled={!table.getCanNextPage()}
+        aria-label="Next page"
       >
         {'>'}
       </button>
@@ -49,6 +52,7 @@ export default function Pagination({ table }: PaginationProps) {
           table.setPageIndex(table.getPageCount() - 1)
         }}
         disabled={!table.getCanNextPage()}
+        aria-label="Last page"
       >
         {'>>'}
       </button>

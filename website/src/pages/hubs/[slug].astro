@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro'
-import Container2 from '../../components/Container2.astro'
+import Container from '../../components/Container.astro'
 import ClientOnlyDataTable from '../../components/ClientOnlyDataTable.tsx'
 
 export async function getStaticPaths() {
@@ -27,18 +27,31 @@ const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 ---
 
 <Layout title={`GenArk hubs - ${title}`}>
-  <Container2>
-    <div
-      style="margin-bottom: 16px; display: flex; align-items: baseline; gap: 16px;"
-    >
-      <h1 style="margin: 0;">GenArk hubs - {title}</h1>
-      <a
-        href={`/taxonomy/${slug}`}
-        style="color: #2563eb; text-decoration: underline;"
-      >
+  <Container wide>
+    <div class="page-header">
+      <h1 class="page-title">GenArk hubs - {title}</h1>
+      <a href={`/taxonomy/${slug}`} class="taxonomy-link">
         View taxonomy tree for GenArk {title}
       </a>
     </div>
     <ClientOnlyDataTable rows={rows} client:load />
-  </Container2>
+  </Container>
 </Layout>
+
+<style>
+  .page-header {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .page-title {
+    margin: 0;
+  }
+
+  .taxonomy-link {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+</style>

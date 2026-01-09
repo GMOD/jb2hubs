@@ -7,12 +7,13 @@ import Container from '../../components/Container.astro'
   <Container>
     <h1>Demos</h1>
     <div>
-      <figure style={{ margin: 0 }}>
+      <figure class="demo-figure">
         <img
-          style={{ width: '100%', height: 'auto' }}
+          class="demo-image"
           width={1526}
           height={625}
           src="/1.png"
+          alt="Alignment between Human hg38 and T2T hs1 genomes"
         />
         <figcaption>
           This figure shows the alignment between the Human 'hg38' and T2T 'hs1'
@@ -31,3 +32,14 @@ import Container from '../../components/Container.astro'
     </div>
   </Container>
 </Layout>
+
+<style>
+  .demo-figure {
+    margin: 0;
+  }
+
+  .demo-image {
+    width: 100%;
+    height: auto;
+  }
+</style>

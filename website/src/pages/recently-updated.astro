@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro'
-import Container2 from '../components/Container2.astro'
+import Container from '../components/Container.astro'
 import '../styles/common-table.css'
 import { format } from 'date-fns'
 
@@ -48,7 +48,7 @@ function formatDate(isoString: string): string {
 ---
 
 <Layout title="Recently Added Genomes">
-  <Container2>
+  <Container wide>
     <h1>Recently Added Genomes</h1>
     <p>
       This page shows the most recently added UCSC GenArk assemblies. Last scan: {
@@ -91,7 +91,7 @@ function formatDate(isoString: string): string {
                 <td>{hub.source}</td>
                 <td>
                   {hub.jbrowseLink && (
-                    <a href={hub.jbrowseLink} target="_blank" rel="noopener">
+                    <a href={hub.jbrowseLink} target="_blank" rel="noopener noreferrer">
                       JBrowse
                     </a>
                   )}
@@ -100,7 +100,7 @@ function formatDate(isoString: string): string {
                     <a
                       href={hub.ucscBrowserLink}
                       target="_blank"
-                      rel="noopener"
+                      rel="noopener noreferrer"
                     >
                       UCSC
                     </a>
@@ -109,7 +109,7 @@ function formatDate(isoString: string): string {
                     hub.ncbiLink &&
                     ' | '}
                   {hub.ncbiLink && (
-                    <a href={hub.ncbiLink} target="_blank" rel="noopener">
+                    <a href={hub.ncbiLink} target="_blank" rel="noopener noreferrer">
                       NCBI
                     </a>
                   )}
@@ -123,7 +123,7 @@ function formatDate(isoString: string): string {
         window.__DATA_BY_SOURCE__ = dataBySource
       </script>
     </div>
-  </Container2>
+  </Container>
 </Layout>
 
 <style>
@@ -190,17 +190,17 @@ function formatDate(isoString: string): string {
     const links: string[] = []
     if (hub.jbrowseLink) {
       links.push(
-        `<a href="${hub.jbrowseLink}" target="_blank" rel="noopener">JBrowse</a>`,
+        `<a href="${hub.jbrowseLink}" target="_blank" rel="noopener noreferrer">JBrowse</a>`,
       )
     }
     if (hub.ucscBrowserLink) {
       links.push(
-        `<a href="${hub.ucscBrowserLink}" target="_blank" rel="noopener">UCSC</a>`,
+        `<a href="${hub.ucscBrowserLink}" target="_blank" rel="noopener noreferrer">UCSC</a>`,
       )
     }
     if (hub.ncbiLink) {
       links.push(
-        `<a href="${hub.ncbiLink}" target="_blank" rel="noopener">NCBI</a>`,
+        `<a href="${hub.ncbiLink}" target="_blank" rel="noopener noreferrer">NCBI</a>`,
       )
     }
     return links.join(' | ')

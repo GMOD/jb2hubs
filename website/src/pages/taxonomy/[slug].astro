@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro'
-import Container2 from '../../components/Container2.astro'
+import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
 import fs from 'fs'
@@ -139,15 +139,12 @@ if (isCategory) {
 ---
 
 <Layout title={`Taxonomy - ${title}`} description={description}>
-  <Container2>
+  <Container wide>
     {
       isCategory && (
-        <div style="margin-bottom: 16px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;">
-          <h1 style="margin: 0;">GenArk taxonomy - {title}</h1>
-          <a
-            href={`/hubs/${slug}`}
-            style="color: #2563eb; text-decoration: underline;"
-          >
+        <div class="page-header">
+          <h1 class="page-title">GenArk taxonomy - {title}</h1>
+          <a href={`/hubs/${slug}`} class="hubs-link">
             View list of species as table for {title}
           </a>
         </div>
@@ -218,7 +215,7 @@ if (isCategory) {
       precomputedSubtree={precomputedSubtree}
       containerId="taxonomy-tree-container"
     />
-  </Container2>
+  </Container>
 </Layout>
 
 <style>
@@ -298,6 +295,23 @@ if (isCategory) {
 
   .taxonomy-info-link:hover {
     color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .page-header {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .page-title {
+    margin: 0;
+  }
+
+  .hubs-link {
+    color: #2563eb;
     text-decoration: underline;
   }
 </style>
