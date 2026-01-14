@@ -147,11 +147,20 @@ async function processSpeciesImage(scientificName: string, accession: string) {
   }
 }
 
+if (process.argv.length !== 4) {
+  console.error('Usage: node getWikiImage.ts <scientificName> <accession>')
+  process.exit(1)
+}
+
 const scientificName = process.argv[2]!
 const accession = process.argv[3]!
 
-if (accession && accession !== 'null') {
-  await processSpeciesImage(scientificName, accession)
-} else {
-  console.error('No accession?', { accession, scientificName })
+if (!accession || accession === 'null') {
+  console.error('Error: Invalid accession provided', {
+    accession,
+    scientificName,
+  })
+  process.exit(1)
 }
+
+await processSpeciesImage(scientificName, accession)

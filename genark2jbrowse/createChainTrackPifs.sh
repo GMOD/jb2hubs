@@ -164,7 +164,7 @@ process_chain_file() {
   pif_filename=$(basename "$pif_path")
 
   if [[ -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]]; then
-    # log_info "PIF file $pif_filename and its index already exist in destination, skipping"
+    log_info "PIF file $pif_filename already exists, skipping"
     return
   fi
 
@@ -183,7 +183,7 @@ process_liftover() {
 
   # Get chain file URLs, excluding md5sum files
   local urls
-  urls=$(extract_file_urls "$base_url" '\.over\.chain\.gz$' | grep -v md5sum | sed "s|^|$base_url|")
+  urls=$(extract_file_urls "$base_url" '\.over\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|")
 
   if [[ -z "$urls" ]]; then
     # No liftOver files found, which is normal for many assemblies

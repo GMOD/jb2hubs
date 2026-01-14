@@ -1,10 +1,15 @@
 /* eslint-disable no-console */
 import { inflate } from 'pako'
 
-import { readJSON } from './util.ts'
+import { readJSON, requireArg } from './util.ts'
 
-const assemblyName = process.argv[2]!
-const list = process.argv[3]!
+if (process.argv.length !== 4) {
+  console.error('Usage: node createAssembly.ts <assemblyName> <listJsonPath>')
+  process.exit(1)
+}
+
+const assemblyName = requireArg(process.argv[2], 'assemblyName is required')
+const list = requireArg(process.argv[3], 'listJsonPath is required')
 
 const getBigDataLink = (j: string) =>
   `https://hgdownload.soe.ucsc.edu/goldenPath/${assemblyName}/bigZips/${j}`

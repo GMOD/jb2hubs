@@ -31,3 +31,10 @@ export function isMetaTrack(obj: RaStanza) {
 
   return Object.keys(obj.data).some(key => parentTrackKeys.has(key))
 }
+
+// Chain/Net tracks are legacy UCSC chain/net tracks that we replace with
+// our own synteny tracks using PIF format
+export function isChainNetTrack(obj: RaStanza) {
+  const { shortLabel, longLabel } = obj.data
+  return shortLabel?.includes('Chain/Net') || longLabel?.includes('Chain/Net')
+}

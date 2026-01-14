@@ -1,6 +1,6 @@
 import { createTrackConfiguration } from './createTrackConfiguration.ts'
 import { notEmpty } from './notEmpty.ts'
-import { isMetaTrack } from './trackUtils.ts'
+import { isChainNetTrack, isMetaTrack } from './trackUtils.ts'
 
 import type { TrackDbFile } from '@gmod/ucsc-hub'
 
@@ -19,7 +19,7 @@ export function generateHubTracks({
 }) {
   return Object.entries(trackDb.data)
     .map(([trackName, track]) =>
-      isMetaTrack(track)
+      isMetaTrack(track) || isChainNetTrack(track)
         ? undefined
         : createTrackConfiguration({
             track,

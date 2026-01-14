@@ -21,6 +21,7 @@ rclone sync -c -v \
   --exclude "*.hash" \
   --exclude "*.xxh" \
   --exclude "*_meta.json" \
+  --exclude "*/vs/*" \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
   --s3-storage-class INTELLIGENT_TIERING \
   --checkers 20

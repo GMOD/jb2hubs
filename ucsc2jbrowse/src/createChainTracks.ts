@@ -154,6 +154,11 @@ function main() {
   const outDir: string = options.output
   const srcDir: string = options.source
 
+  // Skip non-assembly directories
+  if (sourceAssembly === 'trix') {
+    return
+  }
+
   const configDir = path.join(outDir, sourceAssembly)
   const configFile = path.join(configDir, 'config.json')
 

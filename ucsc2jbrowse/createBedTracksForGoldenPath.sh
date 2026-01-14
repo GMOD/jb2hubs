@@ -50,7 +50,7 @@ process_assembly() {
           local result
           result=$(node src/bedLike.ts "${infile}.sql" 2>&1)
           local header
-          header=$(echo "$result" | grep -v "^no_bin$")
+          header=$(echo "$result" | { grep -v "^no_bin$" || true; })
 
           if echo "$result" | grep -q "no_bin"; then
             (echo "$header" && pigz -dc "${infile}.txt.gz") >"${outfile}.tmp"

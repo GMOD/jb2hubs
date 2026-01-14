@@ -10,16 +10,19 @@
 
 ## Do everything
 
-Run ./run.sh in root of repo
-
-It will update and deploy genark2jbrowse, ucsc2jbrowse, and website
+```bash
+./run.sh           # Full pipeline: build + upload + deploy (default)
+./run.sh --dry-run # Build only, no upload or deploy
+```
 
 ## Preparing GenArk hubs
 
 ```bash
 cd genark2jbrowse
 yarn
-./makeAll.sh
+./make.sh              # Process only new hubs (default, fastest)
+./make.sh --all        # Process all hubs
+./make.sh --reprocess-all  # Re-download and reprocess everything
 # optionally review git diff
 ./uploadAll.sh
 ```
@@ -29,7 +32,9 @@ yarn
 ```bash
 cd ucsc2jbrowse
 yarn
-./doAll.sh
+./make.sh                  # Download + process (default)
+./make.sh --skip-download  # Skip download, just process existing data
+./make.sh --reprocess-all  # Force reprocess everything
 # optionally review git diff
 ./uploadAll.sh
 ```
@@ -41,6 +46,28 @@ cd website
 yarn
 yarn deploy
 ```
+
+## Nginx configuration
+
+The website includes a custom 404 page (`src/pages/404.astro`) that gets built to
+`dist/404.html`. To enable it in nginx, add the following to your server block:
+
+```nginx
+server {
+    # ... existing config ...
+
+    root /var/www/html;
+
+    error_page 404 /404.html;
+
+    location = /404.html {
+        internal;
+    }
+}
+```
+
+The `internal` directive ensures the 404 page can only be accessed via internal
+redirects (not directly by URL).
 
 ## Why Astro
 

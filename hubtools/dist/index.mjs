@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { readFile } from 'fs/promises'
 import { SingleFileHub } from '@gmod/ucsc-hub'
 import path from 'path'
 
@@ -71,16 +72,131 @@ function makeLoc2(first, alt) {
         locationType: 'UriLocation',
       }
 }
-function readJSON(f) {
-  return JSON.parse(fs.readFileSync(f, 'utf8'))
+/**
+ * Reads a JSON file synchronously and parses its content.
+ * @param filePath The path to the JSON file.
+ * @returns The parsed JSON object.
+ */
+function readJSON(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
-function writeJSON(f, d) {
-  fs.writeFileSync(f, JSON.stringify(d, void 0, 2))
+/**
+ * Reads a JSON file asynchronously and parses its content.
+ * @param filePath The path to the JSON file.
+ * @returns A promise that resolves to the parsed JSON object.
+ */
+async function readJSONAsync(filePath) {
+  return JSON.parse(await readFile(filePath, 'utf8'))
+}
+/**
+ * Writes a JavaScript object to a JSON file.
+ * @param filePath The path to the output JSON file.
+ * @param data The data to write.
+ */
+function writeJSON(filePath, data) {
+  fs.writeFileSync(filePath, JSON.stringify(data, void 0, 2))
 }
 async function myjsonfetch(url) {
   const res = await fetch(url)
   if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`)
   return res.json()
+}
+/**
+ * Splits a string on the first occurrence of a separator.
+ * @param str The string to split.
+ * @param sep The separator string.
+ * @returns A tuple containing the part before the separator and the part after.
+ *          If the separator is not found, the second element will be an empty string.
+ */
+function splitOnFirst(str, sep) {
+  const index = str.indexOf(sep)
+  return index < 0
+    ? [str, '']
+    : [str.slice(0, index), str.slice(index + sep.length)]
+}
+/**
+ * Replaces specific relative links in a string with absolute UCSC genome links.
+ * This is typically used for HTML content from UCSC track databases.
+ * @param htmlContent The string containing HTML content.
+ * @returns The string with replaced links.
+ */
+function replaceLink(htmlContent) {
+  return htmlContent
+    .replaceAll('\\', ' ')
+    .replaceAll('../../', 'https://genome.ucsc.edu/')
+    .replaceAll('../', 'https://genome.ucsc.edu/')
+    .replaceAll('"/cgi-bin', '"https://genome.ucsc.edu/cgi-bin')
+}
+/**
+ * Decodes a URI component, gracefully handling malformed URIs.
+ * @param uri The URI component to decode.
+ * @returns The decoded URI component, or the original URI if decoding fails.
+ */
+function decodeURIComponentNoThrow(uri) {
+  try {
+    return decodeURIComponent(uri)
+  } catch (_e) {
+    return uri
+  }
+}
+/**
+ * Validates that a required CLI argument is provided.
+ * Exits with code 1 if the argument is missing.
+ * @param arg The argument value to check.
+ * @param usage The usage message to display if validation fails.
+ * @returns The validated argument (non-null).
+ */
+function requireArg(arg, usage) {
+  if (!arg) {
+    console.error(usage)
+    process.exit(1)
+  }
+  return arg
+}
+
+//#endregion
+//#region src/enhanceConfig.ts
+const defaultPlugins = [
+  {
+    name: 'MafViewer',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
+  },
+  {
+    name: 'Hubs',
+    url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js',
+  },
+  {
+    name: 'Protein3d',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js',
+  },
+  {
+    name: 'MsaView',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js',
+  },
+]
+/**
+ * Enhances a JBrowse configuration file with standard plugins and hierarchical settings.
+ * @param configPath Path to the config.json file to enhance.
+ * @param plugins Optional array of plugins to add. Defaults to standard JBrowse plugins.
+ */
+function enhanceConfig(configPath, plugins = defaultPlugins) {
+  const config = readJSON(configPath)
+  config.plugins ??= []
+  for (const plugin of plugins)
+    if (!config.plugins.some(p => p.name === plugin.name))
+      config.plugins.push(plugin)
+  config.configuration ??= {}
+  config.configuration.hierarchical = {
+    sort: {
+      trackNames: true,
+      categories: true,
+    },
+    defaultCollapsed: {
+      topLevelCategories: true,
+      subCategories: true,
+    },
+  }
+  writeJSON(configPath, config)
 }
 
 //#endregion
@@ -108,6 +224,10 @@ function isMetaTrack(obj) {
     'view',
   ])
   return Object.keys(obj.data).some(key => parentTrackKeys.has(key))
+}
+function isChainNetTrack(obj) {
+  const { shortLabel, longLabel } = obj.data
+  return shortLabel?.includes('Chain/Net') || longLabel?.includes('Chain/Net')
 }
 
 //#endregion
@@ -263,7 +383,7 @@ function generateHubTracks({
 }) {
   return Object.entries(trackDb.data)
     .map(([trackName, track]) =>
-      isMetaTrack(track)
+      isMetaTrack(track) || isChainNetTrack(track)
         ? void 0
         : createTrackConfiguration({
             track,
@@ -280,12 +400,12 @@ function generateHubTracks({
 //#endregion
 //#region src/generateJBrowseConfigForAssemblyHub.ts
 async function hasAliases(url) {
-  let hasAliases$1 = false
+  let hasAliases = false
   try {
     if (!(await fetch(url)).ok) throw new Error('Error fetching chromAlias')
-    hasAliases$1 = true
+    hasAliases = true
   } catch (_e) {}
-  return hasAliases$1
+  return hasAliases
 }
 async function generateJBrowseConfigForAssemblyHub({
   hubFileText,
@@ -555,7 +675,9 @@ function parseAssemblyEntry({ entry }) {
 //#endregion
 export {
   categoryMap,
+  decodeURIComponentNoThrow,
   dedupe,
+  enhanceConfig,
   generateHubTracks,
   generateJBrowseConfigForAssemblyHub,
   hubCategories,
@@ -569,6 +691,10 @@ export {
   notEmpty,
   parseAssemblyEntry,
   readJSON,
+  readJSONAsync,
+  replaceLink,
+  requireArg,
   resolve,
+  splitOnFirst,
   writeJSON,
 }

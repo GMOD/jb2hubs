@@ -60,6 +60,11 @@ function processAssemblyDirs(resultsDir: string) {
   let processedCount = 0
 
   for (const dir of assemblyDirs) {
+    // Skip non-assembly directories
+    if (dir.name === 'trix') {
+      continue
+    }
+
     const assemblyPath = path.join(resultsDir, dir.name)
     const configPath = path.join(assemblyPath, 'config.json')
     const minimalPath = path.join(assemblyPath, 'minimal.json')

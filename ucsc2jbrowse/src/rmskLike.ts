@@ -69,4 +69,9 @@ export async function genBed12(sql: string, txtGz: string) {
   }
 }
 
+if (process.argv.length !== 4) {
+  console.error('Usage: node rmskLike.ts <sqlFile> <txtGzFile>')
+  process.exit(1)
+}
+
 await genBed12(process.argv[2]!, process.argv[3]!)

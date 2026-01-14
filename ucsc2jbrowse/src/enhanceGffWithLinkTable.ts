@@ -92,6 +92,13 @@ export async function enhanceGffWithLinkTable(
   }
 }
 
+if (process.argv.length !== 5) {
+  console.error(
+    'Usage: node enhanceGffWithLinkTable.ts <inputGff> <linkTableFile> <outputGff>',
+  )
+  process.exit(1)
+}
+
 await enhanceGffWithLinkTable(
   process.argv[2]!,
   process.argv[3]!,

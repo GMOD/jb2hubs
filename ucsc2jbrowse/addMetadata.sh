@@ -18,6 +18,12 @@ process_assembly() {
   local assembly_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_dir")
+
+  # Skip non-assembly directories
+  if [[ "$assembly_name" == "trix" ]]; then
+    return 0
+  fi
+
   local config_file="$assembly_dir/config.json"
   local tracks_file="$assembly_dir/tracks.json"
   local temp_config_file="$assembly_dir/tmp.json"
@@ -37,5 +43,5 @@ if [ $# -ne 1 ]; then
 fi
 
 # Run the process_assembly function in parallel for each input directory.
-find "$1" -mindepth 1 -maxdepth 1 -type d | parallel $PARALLEL_OPTS --will-cite process_assembly {}
+find "$1" -mindepth 1 -maxdepth 1 -type d ! -name "trix" | parallel $PARALLEL_OPTS --will-cite process_assembly {}
 

@@ -8,7 +8,8 @@
 
 set -euo pipefail
 
-source "$(dirname "$0")/common.sh"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
 # --- Functions ---
 
@@ -19,8 +20,21 @@ process_assembly() {
   local assembly_name
   assembly_name=$(basename "$assembly_results_dir")
 
+  # Skip non-assembly directories
+  if [[ "$assembly_name" == "trix" ]]; then
+    return 0
+  fi
+
+  # Check if the ncbiRefSeq track exists in config.json
+  if ! grep -q "\"${assembly_name}-ncbiRefSeq\"" "$assembly_results_dir/config.json" 2>/dev/null; then
+    echo "Skipping text index for $assembly_name (no ncbiRefSeq track)"
+    return 0
+  fi
+
   echo "Creating text index for $assembly_name..."
-  jbrowse text-index --out "$assembly_results_dir" --force --tracks "$assembly_name-ncbiRefSeq" --attributes ID,Name,gene_synonym
+  if ! jbrowse text-index --out "$assembly_results_dir" --force --tracks "$assembly_name-ncbiRefSeq" --attributes ID,Name,gene_synonym; then
+    echo "Warning: text-index failed for $assembly_name" >&2
+  fi
 }
 
 export -f process_assembly
@@ -34,4 +48,5 @@ if [ $# -eq 0 ]; then
 fi
 
 # Run the process_assembly function in parallel for each input directory.
-parallel -j8 $PARALLEL_OPTS --will-cite process_assembly ::: "$@"
+# Use || true to prevent parallel job failures from stopping the pipeline
+parallel -j8 $PARALLEL_OPTS --will-cite process_assembly ::: "$@" || true

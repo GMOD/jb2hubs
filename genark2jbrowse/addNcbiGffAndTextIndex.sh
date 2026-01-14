@@ -9,7 +9,7 @@ add_track_and_text_index() {
   local accession=$(echo "$filename" | cut -d'_' -f1,2) # e.g., GCF_000896435.1
   local hub_dir="$(accession_to_hub_dir "$accession")/"
 
-  jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions"
+  jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" >/dev/null
   # Check if trix folder exists
   if [ -d "$hub_dir/trix" ] && [ -z "$REDOWNLOAD" ] && [ -z "$REPROCESS" ] && [ -z "$REPROCESS_TRIX" ]; then
     # Add JSON snippet to config.json using jq
@@ -40,7 +40,7 @@ add_track_and_text_index() {
   else
     echo "Trix folder does not exist for $accession, running jbrowse text-index"
 
-    jbrowse text-index --force --out "$hub_dir" --tracks "${accession}-ncbiGff" --attributes Name,ID,Note
+    jbrowse text-index --force --out "$hub_dir" --tracks "${accession}-ncbiGff" --attributes Name,ID,Note || echo "Warning: text-index failed for $accession" >&2
   fi
 }
 

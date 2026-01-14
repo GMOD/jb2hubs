@@ -18,6 +18,12 @@ process_assembly() {
   local assembly_results_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_results_dir")
+
+  # Skip non-assembly directories
+  if [[ "$assembly_name" == "trix" ]]; then
+    return 0
+  fi
+
   local config_path="$assembly_results_dir/config.json"
 
   if [ ! -f "$config_path" ]; then

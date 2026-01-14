@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "generate-taxonomy": "cd taxonomyBuilder && ./generate_taxonomy.sh",
-    "prebuild": "yarn clean && yarn generate-taxonomy",
+    "generate-recently-updated": "node generateRecentlyUpdated.ts",
+    "prebuild": "yarn clean && yarn generate-taxonomy && yarn generate-recently-updated",
     "dev": "astro dev",
     "build": "astro build",
     "buildonly": "astro build",
@@ -25,13 +26,13 @@
     "@fontsource/roboto": "^5.2.8",
     "@leeoniya/ufuzzy": "^1.0.18",
     "@tanstack/react-table": "^8.21.3",
-    "@types/react": "^19.2.2",
-    "astro": "5.16.5",
+    "@types/react": "^19.2.8",
+    "astro": "5.16.11",
     "date-fns": "^4.1.0",
-    "lucide-react": "^0.559.0",
-    "node-sql-parser": "^5.2.0",
-    "prettier": "^3.6.2",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "lucide-react": "^0.562.0",
+    "node-sql-parser": "^5.4.0",
+    "prettier": "^3.8.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   }
 }

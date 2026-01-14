@@ -9,6 +9,9 @@ import {
   readJSON,
 } from 'hubtools'
 
+// Helper to log to stderr (keeps stdout clean for piping)
+const log = (msg: string) => console.error(msg)
+
 // Read all hub JSON files and deduplicate entries based on ucscBrowser field
 const allHubEntries = dedupe(
   fs
@@ -60,9 +63,7 @@ async function processHubEntry({
     : refSeq || genBank
 
   if (!accession) {
-    console.warn(
-      `Skipping entry ${sciName} due to missing accession identifier.`,
-    )
+    log(`Skipping entry ${sciName} due to missing accession identifier.`)
     return
   }
 
@@ -76,9 +77,7 @@ async function processHubEntry({
 
   // Only process if hub.txt doesn't exist or if REPROCESS environment variable is set
   if (!fs.existsSync(hubFilePath) || process.env.REPROCESS) {
-    console.log(
-      `Processing ${idx + 1}/${totalEntries}: ${sciName} (${accession})`,
-    )
+    log(`Processing ${idx + 1}/${totalEntries}: ${sciName} (${accession})`)
 
     // Add a small delay to avoid overwhelming the server
     await new Promise(resolve => setTimeout(resolve, 100))
@@ -111,10 +110,10 @@ async function processHubEntry({
           2,
         ),
       )
+      // Output new hub path to stdout for piping to downstream commands
+      console.log(metaFilePath)
     } catch (error) {
-      console.error(
-        `Failed to download or write hub files for ${accession}: ${error}`,
-      )
+      log(`Failed to download or write hub files for ${accession}: ${error}`)
     }
   }
 }
@@ -129,6 +128,6 @@ for (const [idx, entry] of allHubEntries.entries()) {
     })
   } catch (e) {
     // Log errors for individual entries but continue processing others
-    console.error(`Error processing entry: ${e}`)
+    log(`Error processing entry: ${e}`)
   }
 }
