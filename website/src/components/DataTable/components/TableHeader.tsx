@@ -64,7 +64,10 @@ export default function TableHeader<TData>({
                     : undefined
                 }
               >
-                {flexRender(header.column.columnDef.header, header.getContext())}{' '}
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext(),
+                )}{' '}
                 {canSort
                   ? sortState === header.id
                     ? sortDirectionPre === 'asc'
