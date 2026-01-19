@@ -74,6 +74,11 @@ export async function generateJBrowseConfigForAssemblyHub({
             },
           }
         : {}),
+      sequenceSearch: {
+        blat: { db: genomeName },
+        transBlat: { db: genomeName },
+        isPcr: { db: genomeName },
+      },
     }
 
     return {

@@ -99,6 +99,11 @@ console.log(
                 },
               }
             : {}),
+          sequenceSearch: {
+            blat: { db: assemblyName },
+            transBlat: { db: assemblyName },
+            isPcr: { db: assemblyName },
+          },
         },
       ],
       tracks: [],
