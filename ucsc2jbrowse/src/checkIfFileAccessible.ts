@@ -22,7 +22,7 @@ function getAssemblyFromUrl(url: string): string | null {
   const match = /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//.exec(
     url,
   )
-  return match ? match[1] : null
+  return match ? match[1]! : null
 }
 
 /**

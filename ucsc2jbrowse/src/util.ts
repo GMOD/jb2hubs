@@ -8,6 +8,7 @@ export {
   decodeURIComponentNoThrow,
   requireArg,
 } from 'hubtools'
+import fs from 'fs'
 
 import type { JBrowseConfig } from './types'
 
@@ -18,19 +19,5 @@ import type { JBrowseConfig } from './types'
  * @throws Error if the config file cannot be read or parsed.
  */
 export function readConfig(configPath: string): JBrowseConfig {
-  return readJSON<JBrowseConfig>(configPath)
-}
-
-/**
- * Decodes a URI component, gracefully handling malformed URIs.
- * @param uri The URI component to decode.
- * @returns The decoded URI component, or the original URI if decoding fails.
- */
-export function decodeURIComponentNoThrow(uri: string): string {
-  try {
-    return decodeURIComponent(uri)
-  } catch (_e) {
-    // Avoid throwing exception on a failure to decode URI component
-    return uri
-  }
+  return JSON.parse(fs.readFileSync(configPath, 'utf8'))
 }

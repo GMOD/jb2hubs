@@ -49,8 +49,9 @@ yarn deploy
 
 ## Nginx configuration
 
-The website includes a custom 404 page (`src/pages/404.astro`) that gets built to
-`dist/404.html`. To enable it in nginx, add the following to your server block:
+The website includes a custom 404 page (`src/pages/404.astro`) that gets built
+to `dist/404.html`. To enable it in nginx, add the following to your server
+block:
 
 ```nginx
 server {

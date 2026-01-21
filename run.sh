@@ -113,7 +113,7 @@ if [ "$DRY_RUN" = false ]; then
   ./ucsc2jbrowse/uploadAll.sh
 
   echo "Committing hub changes before generating recently updated..."
-  git add hubs/ website/processedHubJson/ website/hubJson/
+  git add hubs/
   git commit -m "Update hubs" || echo "No hub changes to commit"
 
   echo "Running website deploy..."
