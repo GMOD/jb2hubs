@@ -43,7 +43,7 @@ export default function UCSCTable() {
         scientificName: val.scientificName,
         organism: val.organism,
         description: val.description,
-        jbrowseLink: `https://jbrowse.org/code/jb2/frozen_tracks4/?config=/ucsc/${key}/config.json`,
+        jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/ucsc/${key}/config.json`,
         ucscLink2: `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`,
         orderKey: val.orderKey,
       }),
@@ -109,7 +109,7 @@ export default function UCSCTable() {
           UCSC genome browser, converted into a format that JBrowse 2 can load
         </p>
         <p>
-          <StyledLink href="https://jbrowse.org/code/jb2/frozen_tracks4/?config=/ucsc/all.json">
+          <StyledLink href="https://jbrowse.org/code/jb2/latest/?config=/ucsc/all.json">
             Click here
           </StyledLink>{' '}
           for single JBrowse 2 instance containing ALL the species
