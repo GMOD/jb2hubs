@@ -34781,6 +34781,26 @@
       }
     },
     {
+      "trackId": "hg38_to_hg18_liftOver",
+      "name": "hg38 to Human (hg18) liftOver",
+      "assemblyNames": ["hg38", "hg18"],
+      "configFile": "ucsc2jbrowse/configs/hg38.json",
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "hg18",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToHg18.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToHg18.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
       "trackId": "hg38_to_hg19_liftOver",
       "name": "hg38 to Human (hg19) liftOver",
       "assemblyNames": ["hg38", "hg19"],
@@ -188312,6 +188332,10 @@
     },
     "GCA_021018645.1": {
       "commonName": "pronghorn (PH2016 2021)",
+      "source": "genark"
+    },
+    "GCA_006410515.1": {
+      "commonName": "Przewalski's gazelle (PLG-pushi 2019)",
       "source": "genark"
     },
     "GCF_000696695.1": {

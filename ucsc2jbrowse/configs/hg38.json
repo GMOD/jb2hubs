@@ -39090,6 +39090,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "hg38_to_hg18_liftOver",
+      "name": "hg38 to Human (hg18) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "hg18"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "hg18",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToHg18.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToHg18.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "hg38_to_hg19_liftOver",
       "name": "hg38 to Human (hg19) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
