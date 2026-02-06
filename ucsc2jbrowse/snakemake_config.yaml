@@ -1,0 +1,27 @@
+# Snakemake configuration for ucsc2jbrowse pipeline
+#
+# These settings control the behavior of the workflow.
+# Override any setting with:
+#   snakemake --config key=value
+#
+# Example:
+#   snakemake --config skip_download=true cores=8
+#
+
+# Skip the download phase (use existing UCSC data)
+skip_download: false
+
+# Force reprocessing of all data (ignore cache)
+reprocess: false
+
+# Parallel download limit (to avoid overwhelming UCSC servers)
+max_parallel_downloads: 2
+
+# Number of CPU cores to use for parallel processing
+cores: 4
+
+# Directories for data and results
+# Can be overridden with environment variables: UCSC_DATA_DIR, UCSC_RESULTS_DIR, UCSC_ALT_DATA_DIR
+ucsc_data_dir: "~/ucsc"
+ucsc_results_dir: "~/ucscResults"
+ucsc_alt_data_dir: "~/ucscAlt"

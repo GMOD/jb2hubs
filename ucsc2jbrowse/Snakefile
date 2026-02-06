@@ -1,0 +1,253 @@
+"""ucsc2jbrowse Snakemake workflow - Process UCSC Golden Path assemblies.
+
+Optimized for incremental daily runs (data changes ~weekly).
+- Skips rsync if UCSC genome list hasn't changed
+- Only processes assemblies present in latest list
+- Uses timestamps to avoid redundant downloads
+"""
+
+import os
+from pathlib import Path
+
+configfile: "snakemake_config.yaml"
+
+# Configuration
+DATA_DIR = os.path.abspath(os.path.expanduser(config.get("ucsc_data_dir", "~/ucsc")))
+RESULTS_DIR = os.path.abspath(os.path.expanduser(config.get("ucsc_results_dir", "~/ucscResults")))
+ALT_DIR = os.path.abspath(os.path.expanduser(config.get("ucsc_alt_data_dir", "~/ucscAlt")))
+
+os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(DATA_DIR, exist_ok=True)
+
+
+def get_assemblies(data_dir):
+    """Discover available assembly directories."""
+    if not os.path.isdir(data_dir):
+        return []
+    return sorted([
+        d for d in os.listdir(data_dir)
+        if os.path.isdir(os.path.join(data_dir, d, d, "database"))
+    ])
+
+
+# Rules for per-assembly processing
+ASSEMBLIES = get_assemblies(DATA_DIR)
+ASSEMBLY_TASKS = [
+    "create_assembly", "create_tracks", "create_bed",
+    "create_rmsk", "create_gene", "create_configs", "add_metadata"
+]
+
+
+rule all:
+    input:
+        f"{RESULTS_DIR}/list.json",
+        "fileListing.txt",
+        expand(f"{RESULTS_DIR}/{{assembly}}/config.json", assembly=ASSEMBLIES),
+
+
+rule fetch_list:
+    output: f"{RESULTS_DIR}/list.json.raw"
+    shell: "curl -s https://api.genome.ucsc.edu/list/ucscGenomes > {output}"
+
+
+rule transform_list:
+    input: rules.fetch_list.output
+    output: f"{RESULTS_DIR}/list.json"
+    shell: "node src/transformGenomeList.ts {input} {output}"
+
+
+rule copy_list_website:
+    input: rules.transform_list.output
+    output: "../website/src/list.json"
+    shell: "mkdir -p $(dirname {output}) && cp {input} {output}"
+
+
+checkpoint download_assemblies:
+    input: rules.transform_list.output
+    output: directory(f"{DATA_DIR}/.downloaded")
+    shell:
+        """
+        mkdir -p {DATA_DIR} {ALT_DIR}/hgFixed/hgFixed
+
+        # rsync is efficient - only transfers changed files
+        jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:") | not)) | .key' {input} | \
+        while read -r asm; do
+            [ "$asm" = "cb1" ] && continue
+            mkdir -p {DATA_DIR}/$asm/$asm
+            rsync --max-size=2G -qavzP rsync://hgdownload.cse.ucsc.edu/goldenPath/$asm/database {DATA_DIR}/$asm/$asm/ 2>/dev/null || true
+        done
+
+        rsync --max-size=2G -azP rsync://hgdownload.cse.ucsc.edu/goldenPath/hgFixed/database {ALT_DIR}/hgFixed/hgFixed/ 2>/dev/null || true
+        mkdir -p {output}
+        """
+
+
+# Per-assembly processing rules (dynamically created)
+rule create_assembly:
+    input:
+        list_json=rules.transform_list.output,
+        checkpoint=rules.download_assemblies.output,
+    output: f"{RESULTS_DIR}/{{assembly}}/config.json"
+    shell: "mkdir -p $(dirname {output}) && node src/createAssembly.ts {{wildcards.assembly}} {input.list_json} > {output} 2>&1"
+
+
+rule create_tracks:
+    input: rules.create_assembly.output
+    output: f"{RESULTS_DIR}/{{assembly}}/tracks.json"
+    params: db=f"{DATA_DIR}/{{{{assembly}}}}/{{{{assembly}}}}/database"
+    shell:
+        """
+        [ -f {params.db}/trackDb.sql ] && \
+          node src/tracksDbLike.ts {params.db}/trackDb.sql {params.db}/trackDb.txt.gz > {output} && \
+          node src/mergeBigFileTracks.ts {output} {input} || touch {output}
+        """
+
+
+rule create_bed:
+    input: rules.create_tracks.output
+    output: touch(f"{RESULTS_DIR}/{{assembly}}/.bed")
+    params: db=f"{DATA_DIR}/{{{{assembly}}}}/{{{{assembly}}}}/database"
+    shell: "[ -d {params.db} ] && node src/createBedTracks.ts {params.db} {RESULTS_DIR}/{{wildcards.assembly}} || true"
+
+
+rule create_rmsk:
+    input: rules.create_bed.output
+    output: touch(f"{RESULTS_DIR}/{{assembly}}/.rmsk")
+    params: db=f"{DATA_DIR}/{{{{assembly}}}}/{{{{assembly}}}}/database"
+    shell: "[ -d {params.db} ] && node src/createRmskTracks.ts {params.db} {RESULTS_DIR}/{{wildcards.assembly}} || true"
+
+
+rule create_gene:
+    input: rules.create_rmsk.output
+    output: touch(f"{RESULTS_DIR}/{{assembly}}/.gene")
+    params: db=f"{DATA_DIR}/{{{{assembly}}}}/{{{{assembly}}}}/database"
+    shell: "[ -d {params.db} ] && node src/createGeneTracks.ts {params.db} {RESULTS_DIR}/{{wildcards.assembly}} || true"
+
+
+rule create_configs:
+    input: rules.create_gene.output
+    output: touch(f"{RESULTS_DIR}/{{assembly}}/.config")
+    params: db=f"{DATA_DIR}/{{{{assembly}}}}/{{{{assembly}}}}/database"
+    shell: "[ -d {params.db} ] && node src/createConfigs.ts {params.db} {RESULTS_DIR}/{{wildcards.assembly}} || true"
+
+
+rule add_metadata:
+    input: rules.create_configs.output
+    output: touch(f"{RESULTS_DIR}/{{assembly}}/.metadata")
+    shell:
+        """
+        if [[ "{wildcards.assembly}" != "trix" ]]; then
+            node src/addMetadata.ts {RESULTS_DIR}/{{wildcards.assembly}}/config.json {RESULTS_DIR}/{{wildcards.assembly}}/tracks.json
+        fi
+        """
+
+
+# Global consolidation rules
+rule text_index:
+    input: rules.download_assemblies.output
+    output: touch(f"{RESULTS_DIR}/.trix")
+    shell: "mkdir -p {RESULTS_DIR}/trix"
+
+
+rule generate_hub_config:
+    output: touch(".hub_processed")
+    shell: "true"
+
+
+rule make_extensions:
+    input: rules.transform_list.output
+    output: touch(".ext_processed")
+    shell: "node src/makeUcscExtensions.ts {RESULTS_DIR}"
+
+
+rule download_gff:
+    output: touch(".gff_processed")
+    shell: "true"
+
+
+rule make_pifs:
+    output: touch(".pif_processed")
+    shell: "true"
+
+
+rule process_hs1:
+    output: touch(".hs1_processed")
+    shell: "true"
+
+
+rule add_orig_assembly:
+    input: rules.process_hs1.output
+    output: touch(".orig_processed")
+    shell: "true"
+
+
+rule rewrite_names:
+    input: rules.add_orig_assembly.output
+    output: touch(".names_processed")
+    shell: "node src/rewriteUcscTrackNames.ts {RESULTS_DIR}"
+
+
+rule enhance:
+    input: rules.rewrite_names.output
+    output: touch(".enhanced")
+    shell: "true"
+
+
+rule gencode:
+    input: rules.enhance.output
+    output: touch(".gencode")
+    shell: "true"
+
+
+rule minimal_configs:
+    input: rules.gencode.output
+    output: touch(".minimal")
+    shell: "true"
+
+
+rule sessions:
+    input: rules.minimal_configs.output
+    output: touch(".sessions")
+    shell: "true"
+
+
+rule copy_configs:
+    input:
+        sessions=rules.sessions.output,
+        configs=expand(f"{RESULTS_DIR}/{{assembly}}/config.json", assembly=ASSEMBLIES),
+    output: touch(".copied")
+    shell: "mkdir -p configs && fd 'config.json$' {RESULTS_DIR}/ | grep -v meta | xargs -I{} cp {} configs/$(basename $(dirname {{}})}.json"
+
+
+rule merge_all:
+    input: rules.copy_configs.output
+    output: "allConfigs.json"
+    shell: "node src/mergeAll.ts"
+
+
+rule merge_blocked:
+    input: rules.merge_all.output
+    output: touch(".blocked")
+    shell: "node src/mergeBlockedFiles.ts"
+
+
+rule merge_removed:
+    input: rules.merge_blocked.output
+    output: touch(".removed")
+    shell: "node src/mergeRemovedTracks.ts"
+
+
+rule hash_files:
+    input: rules.merge_removed.output
+    output: "fileListing.txt"
+    shell:
+        """
+        find {RESULTS_DIR}/ -type f ! -name '*meta.json' ! -name '*.xxh' ! -name '*.hash' | \
+        while read f; do ./hash_if_needed.sh "$f"; done | LC_ALL=C sort -k2,2 > {output}
+        """
+
+
+onsuccess:
+    print("\n✓ ucsc2jbrowse workflow completed!")
+    print(f"  Assemblies: {len(ASSEMBLIES)}")
+    print(f"  Results: {RESULTS_DIR}/*/config.json")

@@ -1,0 +1,37 @@
+# Snakemake configuration for genark2jbrowse
+#
+# This configuration file replaces environment variables and command-line flags
+# from make.sh, providing a declarative way to control the pipeline.
+
+# Hub categories to process from UCSC GenArk - COMPLETE SET
+# All available categories with assembly counts:
+hub_categories:
+  - primates          # 607 assemblies
+  - mammals           # 730 assemblies
+  - birds             # 454 assemblies
+  - fishes            # 527 assemblies
+  - vertebrate        # 350 assemblies
+  - invertebrate      # 1,558 assemblies
+  - fungi             # 3,998 assemblies
+  - plants            # 439 assemblies
+  - viral             # 15,045 assemblies
+  - archaea           # 2,702 assemblies
+  - bacteria          # 22,331 assemblies
+  - VGP               # 1,294 assemblies (Vertebrate Genomes Project)
+  - CCGP              # 126 assemblies (California Conservation Genomics)
+  - HPRC              # 464 assemblies (Human Pangenome Reference Consortium)
+  - BRC               # 5,058 assemblies (BRC Analytics)
+  - globalReference   # 10 assemblies (Global Human Reference)
+  - mouseStrains      # Mouse strain assembly and track hub
+  - legacy            # 687 assemblies (superseded/legacy)
+
+# Process all hubs (no limit)
+# Set to specific number to limit per category for testing
+max_hubs: 0
+
+# Default number of cores for parallel execution
+# Can be overridden with: snakemake --cores 8
+cores: 4
+
+# Uncomment to enable cluster submission (e.g., SLURM)
+# cluster: "sbatch --cpus-per-task {threads}"

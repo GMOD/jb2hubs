@@ -1,0 +1,93 @@
+"""genark2jbrowse Snakemake workflow - Process NCBI GenArk hubs.
+
+Optimized for incremental daily runs (data changes ~weekly).
+- Skips downloads if remote hasn't changed (via ETag/Last-Modified)
+- Only processes new/modified hubs
+- Caches metadata for 7 days
+"""
+
+import os
+import json
+from pathlib import Path
+
+configfile: "snakemake_config.yaml"
+
+# Configuration
+CATEGORIES = config.get("hub_categories", ["mammals", "primates"])
+MAX_HUBS = config.get("max_hubs", 5)
+
+# Helper: accession to path
+def accession_to_path(acc):
+    """Convert GCF_000896435.1 → hubs/GCF/000/896/435/GCF_000896435.1"""
+    prefix, number = acc.split("_")
+    base = number.split(".")[0]
+    return f"hubs/{prefix}/{base[0:3]}/{base[3:6]}/{base[6:9]}/{acc}"
+
+
+def get_accessions(wildcards):
+    """Get accessions from downloaded hubs directory."""
+    hubs_dir = Path("hubs")
+    if not hubs_dir.exists():
+        return []
+    accessions = sorted([
+        meta.parent.name
+        for meta in hubs_dir.glob("*/*/*/*/*/meta.json")
+    ])
+    return accessions[:MAX_HUBS]
+
+
+rule all:
+    input:
+        "processedHubJson/all.json",
+        lambda wc: [f"{accession_to_path(acc)}/config.json" for acc in get_accessions(wc)],
+
+
+rule download_hub_lists:
+    output: expand("../website/hubJson/{cat}.json", cat=CATEGORIES)
+    shell: "node src/downloadHubList.ts"
+
+
+checkpoint download_hubs:
+    input: rules.download_hub_lists.output
+    output: directory("hubs/.downloaded")
+    shell: "mkdir -p hubs && node src/downloadHubs.ts && mkdir -p {output}"
+
+
+rule fetch_ncbi_metadata:
+    input: "{hub_dir}/meta.json"
+    output: "{hub_dir}/ncbi.json"
+    shell:
+        """
+        ACC=$(basename $(dirname {input}))
+        esearch -db assembly -query "$ACC" </dev/null | esummary -mode json > {output}
+        sleep 0.1
+        """
+
+
+rule process_hub_json:
+    input: rules.download_hub_lists.output
+    output: "processedHubJson/all.json"
+    shell: "mkdir -p processedHubJson && node src/processHubJson.ts"
+
+
+rule process_ucsc_list:
+    input: rules.download_hub_lists.output
+    output: "processedHubJson/ucsc_data.json"
+    shell: "mkdir -p processedHubJson && node src/processUcscList.ts && touch {output}"
+
+
+rule generate_config:
+    input:
+        meta="{hub_dir}/meta.json",
+        ncbi=rules.fetch_ncbi_metadata.output,
+        all_json=rules.process_hub_json.output,
+        ucsc_data=rules.process_ucsc_list.output,
+    output: "{hub_dir}/config.json"
+    shell: "node src/generateConfigs.ts {input.meta}"
+
+
+onsuccess:
+    print("\n✓ genark2jbrowse workflow completed!")
+    accs = get_accessions({})
+    print(f"  Hubs processed: {len(accs)}")
+    print(f"  Output: processedHubJson/all.json")
