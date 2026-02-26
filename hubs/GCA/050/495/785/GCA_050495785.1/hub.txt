@@ -1,0 +1,179 @@
+hub GCA_050495785.1 genome assembly
+shortLabel ascomycetes B.bassiana (CB 2025)
+longLabel ascomycetes B.bassiana (CB 2025)/Beauveria bassiana/GCA_050495785.1_Bbas_CB genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_050495785.1_Bbas_CB.description.html
+
+genome GCA_050495785.1
+taxId 176275
+groups groups.txt
+description ascomycetes B.bassiana (CB 2025)
+twoBitPath GCA_050495785.1.2bit
+twoBitBptUrl GCA_050495785.1.2bit.bpt
+chromSizes GCA_050495785.1.chrom.sizes.txt
+chromAliasBb GCA_050495785.1.chromAlias.bb
+organism Bbas_CB May 2025
+defaultPos JAHBMQ010000001.1:1740592-1750592
+scientificName Beauveria bassiana
+htmlPath html/GCA_050495785.1_Bbas_CB.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/495/785/GCA_050495785.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/495/785/GCA_050495785.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/495/785/GCA_050495785.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.assembly.bb
+type bigBed 6
+html html/GCA_050495785.1_Bbas_CB.assembly
+searchIndex name
+searchTrix ixIxx/GCA_050495785.1_Bbas_CB.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track gap
+longLabel AGP gap
+shortLabel Gap (AGP defined)
+visibility hide
+color 0,0,0
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.gap.bb
+type bigBed 4
+group map
+html html/GCA_050495785.1_Bbas_CB.gap
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.gc5Base.bw
+html html/GCA_050495785.1_Bbas_CB.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_050495785.1_Bbas_CB.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_050495785.1_Bbas_CB.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.rmsk.bb
+xrefDataUrl bbi/GCA_050495785.1_Bbas_CB.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_050495785.1_Bbas_CB.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.simpleRepeat.bb
+html html/GCA_050495785.1_Bbas_CB.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_050495785.1_Bbas_CB.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_050495785.1_Bbas_CB.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_050495785.1_Bbas_CB.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.windowMasker.bb
+html html/GCA_050495785.1_Bbas_CB.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.allGaps.bb
+html html/GCA_050495785.1_Bbas_CB.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.augustus.bb
+html html/GCA_050495785.1_Bbas_CB.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_050495785.1_Bbas_CB.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_050495785.1_Bbas_CB.xenoRefGene.ix
+html html/GCA_050495785.1_Bbas_CB.xenoRefGene
+
