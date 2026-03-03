@@ -155,11 +155,15 @@ function makeTrackConfigSub({
       },
     }
   } else if (baseTrackType.startsWith('big')) {
+    const trackName = data.track ?? ''
+    const disableGeneHeuristic =
+      trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
     return {
       type: 'FeatureTrack',
       adapter: {
         type: 'BigBedAdapter',
         uri: bigDataUrl,
+        ...(disableGeneHeuristic ? { disableGeneHeuristic: true } : {}),
       },
     }
   } else if (baseTrackType === 'vcfTabix') {
