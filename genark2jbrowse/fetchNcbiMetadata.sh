@@ -12,7 +12,6 @@ check_and_queue() {
   local ncbi_file="$dir/ncbi.json"
 
   if [ ! -f "$ncbi_file" ] || [ ! -s "$ncbi_file" ] || [ -n "$REPROCESS" ]; then
-    # Output: dir|id|common_name
     local common_name=$(jq -r '.commonName // "Unknown"' "$file" 2>/dev/null || echo "Unknown")
     echo "$dir|$id|$common_name"
   fi
@@ -33,32 +32,58 @@ if [ "$TOTAL" -eq 0 ]; then
   exit 0
 fi
 
-echo "Phase 2: Fetching NCBI metadata for $TOTAL assemblies (rate-limited)..."
+echo "Phase 2: Fetching NCBI metadata for $TOTAL assemblies using datasets CLI..."
 
-# Define function to fetch NCBI data (called serially with rate limiting)
-fetch_ncbi_data() {
-  local line="$1"
-  local dir=$(echo "$line" | cut -d'|' -f1)
-  local id=$(echo "$line" | cut -d'|' -f2)
-  local common_name=$(echo "$line" | cut -d'|' -f3)
-  local ncbi_file="$dir/ncbi.json"
+# Extract accessions and build a lookup from accession -> dir
+ACCESSION_FILE=$(mktemp)
+cut -d'|' -f2 "$QUEUE_FILE" > "$ACCESSION_FILE"
 
-  echo "Fetching NCBI data for $id ($common_name)"
+# Create a temp dir for per-accession results
+RESULT_DIR=$(mktemp -d)
 
-  # Use esearch and esummary to get assembly metadata and save as ncbi.json
-  (esearch -db assembly -query "$id" </dev/null | esummary -mode json) >"$ncbi_file"
+# Fetch in batches of 200 accessions
+BATCH_SIZE=200
+split -l "$BATCH_SIZE" -d "$ACCESSION_FILE" "${ACCESSION_FILE}_batch_"
 
-  # Small delay to avoid overwhelming the NCBI E-utilities
-  sleep 0.1
-}
+for batch_file in "${ACCESSION_FILE}_batch_"*; do
+  batch_count=$(wc -l < "$batch_file")
+  echo "Fetching batch: $batch_count accessions..."
 
-export -f fetch_ncbi_data
+  batch_result=$(mktemp)
+  datasets summary genome accession --inputfile "$batch_file" > "$batch_result" 2>/dev/null
 
-# Process the queue serially with rate limiting
-# Use :::: to read from file for better --bar support
-parallel -j1 $PARALLEL_OPTS fetch_ncbi_data :::: "$QUEUE_FILE"
+  # Split the batch result into per-accession files
+  jq -c '.reports[]' "$batch_result" | while read -r report; do
+    acc=$(echo "$report" | jq -r '.accession')
+    paired=$(echo "$report" | jq -r '.paired_accession // empty')
+    current=$(echo "$report" | jq -r '.current_accession // empty')
+    wrapped=$(echo "$report" | jq -c '{reports: [.], total_count: 1}')
+
+    echo "$wrapped" > "$RESULT_DIR/$acc.json"
+    if [ -n "$paired" ] && [ "$paired" != "$acc" ]; then
+      echo "$wrapped" > "$RESULT_DIR/$paired.json"
+    fi
+    if [ -n "$current" ] && [ "$current" != "$acc" ] && [ "$current" != "$paired" ]; then
+      echo "$wrapped" > "$RESULT_DIR/$current.json"
+    fi
+  done
+
+  rm "$batch_file" "$batch_result"
+done
+
+# Copy results to the correct hub directories
+while IFS='|' read -r dir id common_name; do
+  ncbi_file="$dir/ncbi.json"
+  if [ -f "$RESULT_DIR/$id.json" ]; then
+    cp "$RESULT_DIR/$id.json" "$ncbi_file"
+    echo "Saved NCBI data for $id ($common_name)"
+  else
+    echo "Warning: No datasets result for $id ($common_name)"
+  fi
+done < "$QUEUE_FILE"
 
 # Clean up
-rm "$QUEUE_FILE"
+rm -f "$QUEUE_FILE" "$ACCESSION_FILE"
+rm -rf "$RESULT_DIR"
 
 echo "NCBI metadata fetching complete"

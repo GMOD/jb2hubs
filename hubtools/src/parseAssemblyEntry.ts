@@ -1,9 +1,8 @@
 import path from 'path'
 
-import { extractStats } from './extractStats.ts'
 import { readJSON } from './util.ts'
 
-import type { NCBIData, UCSCGenArkAssemblyEntry } from './types.ts'
+import type { NCBIDatasetsReport, UCSCGenArkAssemblyEntry } from './types.ts'
 
 export function parseAssemblyEntry({
   entry,
@@ -15,61 +14,68 @@ export function parseAssemblyEntry({
   const accession = ucscAcc.startsWith('GC') ? ucscAcc : refSeq || genBank
   const [base, rest] = accession.split('_')
   const [b1, b2, b3] = rest!.match(/.{1,3}/g)!
-  let ncbiData
 
+  // Read ncbi.json (now in NCBI Datasets API format)
   const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
+  let report: NCBIDatasetsReport | undefined
   try {
-    ncbiData = readJSON(fn) as {
-      result: NCBIData
+    const ncbiData = readJSON(fn) as { reports: NCBIDatasetsReport[] }
+    report = ncbiData.reports?.find(
+      r =>
+        r.accession === accession ||
+        r.paired_accession === accession ||
+        r.current_accession === accession,
+    )
+    // Fallback to first report
+    if (!report && ncbiData.reports?.[0]) {
+      report = ncbiData.reports[0]
     }
   } catch {
     console.error(
       `NCBI data not found for ${accession} (${comName}): ${fn} does not exist`,
     )
   }
-  let r2
-  if (ncbiData?.result.uids) {
-    for (const uid of ncbiData.result.uids) {
-      const candidate = ncbiData.result[uid]
-      if (
-        candidate?.assemblyaccession === accession ||
-        candidate?.synonyms?.genbank === accession ||
-        candidate?.synonyms?.refseq === accession
-      ) {
-        r2 = candidate
-        break
-      }
-    }
-    // Fallback to first uid if no match found
-    if (!r2 && ncbiData.result.uids[0]) {
-      r2 = ncbiData.result[ncbiData.result.uids[0]]
-    }
-  }
-  if (!r2) {
+
+  if (!report) {
     return undefined
   }
-  const assemblyStatus = r2.assemblystatus
-  const ncbiAssemblyName = r2.assemblyname
-  const seqReleaseDate = r2.seqreleasedate
-  const ncbiOrganism = r2.organism
-  const submitterOrg = r2.submitterorganization
-  const buscoStats = r2.busco
-  const ncbiRefSeqCategory = r2.refseq_category
+
+  const { assembly_info, assembly_stats, organism } = report
+  const assemblyStatus = assembly_info.assembly_level
+  const ncbiAssemblyName = assembly_info.assembly_name
+  const seqReleaseDate = assembly_info.release_date
+  const ncbiOrganism = organism.common_name
+    ? `${organism.organism_name} (${organism.common_name})`
+    : organism.organism_name
+  const submitterOrg = assembly_info.submitter
+  const ncbiRefSeqCategory = assembly_info.refseq_category
+  const suppressed = assembly_info.assembly_status === 'suppressed'
+
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
-  const stats = ncbiData ? extractStats(r2.meta) : undefined
+
+  const stats: Record<string, unknown> = {
+    contig_count: assembly_stats.number_of_contigs,
+    contig_l50: assembly_stats.contig_l50,
+    contig_n50: assembly_stats.contig_n50,
+    scaffold_count: assembly_stats.number_of_scaffolds,
+    scaffold_l50: assembly_stats.scaffold_l50,
+    scaffold_n50: assembly_stats.scaffold_n50,
+    chromosome_count: assembly_stats.total_number_of_chromosomes,
+    total_length: assembly_stats.total_sequence_length,
+    ungapped_length: assembly_stats.total_ungapped_length,
+  }
 
   // Construct ncbiGff URL
   const ncbiGffUrl = `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`
 
   return {
     stats,
-    buscoStats,
     seqReleaseDate,
     submitterOrg,
     ncbiOrganism,
     ncbiAssemblyName,
     ncbiRefSeqCategory,
-    suppressed: r2.propertylist.includes('suppressed_refseq'),
+    suppressed,
     accession: accession || '',
     assembly: asmId || '',
     scientificName: sciName || '',

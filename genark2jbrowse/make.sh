@@ -88,20 +88,46 @@ fi
 
 log "Fetching NCBI metadata..."
 if [ "$MODE" = "new" ]; then
-  # Fetch only for new hubs
-  fetch_ncbi_for_hub() {
-    local meta_file="$1"
-    local dir="${meta_file%/meta.json}"
-    local id="${dir##*/}"
-    local ncbi_file="$dir/ncbi.json"
-    local common_name=$(jq -r '.commonName // "Unknown"' "$meta_file" 2>/dev/null || echo "Unknown")
+  # Fetch only for new hubs using datasets CLI (bulk)
+  NCBI_ACCESSION_FILE=$(mktemp)
+  NCBI_RESULT_DIR=$(mktemp -d)
 
-    echo "Fetching NCBI data for $id ($common_name)"
-    (esearch -db assembly -query "$id" </dev/null | esummary -mode json) >"$ncbi_file"
-    sleep 0.1
-  }
-  export -f fetch_ncbi_for_hub
-  parallel -j1 $PARALLEL_OPTS fetch_ncbi_for_hub {} < "$NEW_HUBS_FILE"
+  # Extract accessions from new hubs
+  while read -r meta_file; do
+    dir="${meta_file%/meta.json}"
+    echo "${dir##*/}"
+  done < "$NEW_HUBS_FILE" > "$NCBI_ACCESSION_FILE"
+
+  new_count=$(wc -l < "$NCBI_ACCESSION_FILE")
+  echo "Fetching NCBI data for $new_count new assemblies..."
+  batch_result=$(mktemp)
+  datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" > "$batch_result" 2>/dev/null
+
+  # Split into per-accession files
+  jq -c '.reports[]' "$batch_result" | while read -r report; do
+    acc=$(echo "$report" | jq -r '.accession')
+    paired=$(echo "$report" | jq -r '.paired_accession // empty')
+    wrapped=$(echo "$report" | jq -c '{reports: [.], total_count: 1}')
+    echo "$wrapped" > "$NCBI_RESULT_DIR/$acc.json"
+    if [ -n "$paired" ] && [ "$paired" != "$acc" ]; then
+      echo "$wrapped" > "$NCBI_RESULT_DIR/$paired.json"
+    fi
+  done
+
+  # Copy to hub directories
+  while read -r meta_file; do
+    dir="${meta_file%/meta.json}"
+    id="${dir##*/}"
+    if [ -f "$NCBI_RESULT_DIR/$id.json" ]; then
+      cp "$NCBI_RESULT_DIR/$id.json" "$dir/ncbi.json"
+      echo "Saved NCBI data for $id"
+    else
+      echo "Warning: No datasets result for $id"
+    fi
+  done < "$NEW_HUBS_FILE"
+
+  rm -f "$NCBI_ACCESSION_FILE" "$batch_result"
+  rm -rf "$NCBI_RESULT_DIR"
 else
   ./fetchNcbiMetadata.sh
 fi
