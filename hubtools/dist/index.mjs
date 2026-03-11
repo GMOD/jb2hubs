@@ -2,7 +2,6 @@ import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { SingleFileHub } from '@gmod/ucsc-hub'
 import path from 'path'
-
 //#region src/const.ts
 const categoryMap = {
   map: 'Mapping and Sequencing',
@@ -20,7 +19,6 @@ const categoryMap = {
   singleCell: 'Single cell',
   hprc: 'Human Pangenome',
 }
-
 //#endregion
 //#region src/dedupe.ts
 function dedupe(list, hasher = JSON.stringify) {
@@ -35,7 +33,6 @@ function dedupe(list, hasher = JSON.stringify) {
   }
   return clone
 }
-
 //#endregion
 //#region src/util.ts
 function resolve(uri, baseUri) {
@@ -153,7 +150,6 @@ function requireArg(arg, usage) {
   }
   return arg
 }
-
 //#endregion
 //#region src/enhanceConfig.ts
 const defaultPlugins = [
@@ -198,7 +194,6 @@ function enhanceConfig(configPath, plugins = defaultPlugins) {
   }
   writeJSON(configPath, config)
 }
-
 //#endregion
 //#region src/trackUtils.ts
 function createHtmlLink(html, trackDbUrl) {
@@ -229,7 +224,6 @@ function isChainNetTrack(obj) {
   const { shortLabel, longLabel } = obj.data
   return shortLabel?.includes('Chain/Net') || longLabel?.includes('Chain/Net')
 }
-
 //#endregion
 //#region src/createTrackConfiguration.ts
 function createTrackConfiguration({
@@ -370,13 +364,11 @@ function makeTrackConfigSub({ track, trackDbUrl, trackDb, sequenceAdapter }) {
     return
   }
 }
-
 //#endregion
 //#region src/notEmpty.ts
 function notEmpty(value) {
   return value !== null && value !== void 0
 }
-
 //#endregion
 //#region src/generateHubTracks.ts
 function generateHubTracks({
@@ -400,7 +392,6 @@ function generateHubTracks({
     )
     .filter(f => notEmpty(f))
 }
-
 //#endregion
 //#region src/generateJBrowseConfigForAssemblyHub.ts
 async function hasAliases(url) {
@@ -501,7 +492,6 @@ async function generateJBrowseConfigForAssemblyHub({
   }
   throw new Error('not a single file hub')
 }
-
 //#endregion
 //#region src/hubCategories.ts
 const hubCategories = [
@@ -592,7 +582,6 @@ const hubCategories = [
     tag: 'other',
   },
 ]
-
 //#endregion
 //#region src/parseAssemblyEntry.ts
 function parseAssemblyEntry({ entry }) {
@@ -666,7 +655,6 @@ function parseAssemblyEntry({ entry }) {
     ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
   }
 }
-
 //#endregion
 export {
   categoryMap,
