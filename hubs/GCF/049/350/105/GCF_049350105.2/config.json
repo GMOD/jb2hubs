@@ -147,7 +147,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/350/105/GCF_049350105.2/bbi/GCF_049350105.2_T2T-MMU8v2.0.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/350/105/GCF_049350105.2/bbi/GCF_049350105.2_T2T-MMU8v2.0.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -506,6 +507,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_049350105.2"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_049350105.2_to_hg18_liftOver",
+      "name": "GCF_049350105.2 (Rhesus monkey (v2 MMU2019108-1 2025 refseq)) to Human (hg18) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_049350105.2", "hg18"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_049350105.2",
+        "queryAssembly": "hg18",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_049350105.2ToHg18.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_049350105.2ToHg18.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

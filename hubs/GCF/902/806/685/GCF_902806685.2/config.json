@@ -147,7 +147,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/806/685/GCF_902806685.2/bbi/GCF_902806685.2_iAphHyp1.2.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/806/685/GCF_902806685.2/bbi/GCF_902806685.2_iAphHyp1.2.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -169,7 +170,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/806/685/GCF_902806685.2/bbi/GCF_902806685.2_iAphHyp1.2.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/806/685/GCF_902806685.2/bbi/GCF_902806685.2_iAphHyp1.2.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -552,6 +554,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_902806685.2"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_902806685.2_to_GCF_902806685.1_liftOver",
+      "name": "GCF_902806685.2 (ringlet (primary hap 2024)) to ringlet liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_902806685.2", "GCF_902806685.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_902806685.2",
+        "queryAssembly": "GCF_902806685.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_902806685.2ToGCF_902806685.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_902806685.2ToGCF_902806685.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

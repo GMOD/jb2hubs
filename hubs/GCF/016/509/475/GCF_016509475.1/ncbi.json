@@ -1,98 +1,155 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["10600071"],
-    "10600071": {
-      "uid": "10600071",
-      "rsuid": "28628198",
-      "gbuid": "28100568",
-      "assemblyaccession": "GCF_016509475.1",
-      "lastmajorreleaseaccession": "GCF_016509475.1",
-      "latestaccession": "",
-      "chainid": "16509475",
-      "assemblyname": "Fcat_Pben_1.1_paternal_pri",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "37029",
-      "organism": "Prionailurus bengalensis (leopard cat)",
-      "speciestaxid": "37029",
-      "speciesname": "Prionailurus bengalensis",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "JADZGN01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA682572", "bioprojectid": 682572 }
+  "reports": [
+    {
+      "accession": "GCF_016509475.1",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "KP202257.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_028301.1",
+          "submitter": "Department of Veterinary Integrative Biosciences, TAMU"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA756971", "bioprojectid": 756971 }
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "carnivora_odb10",
+          "busco_ver": "4.1.4",
+          "complete": 0.9899324,
+          "duplicated": 0.007447249,
+          "fragmented": 0.002482416,
+          "missing": 0.007585161,
+          "single_copy": 0.9824852,
+          "total_count": "14502"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Prionailurus bengalensis Annotation Release 100",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2021-08-30",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Prionailurus_bengalensis/100",
+        "software_version": "9.0",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 6864,
+            "other": 129,
+            "protein_coding": 20003,
+            "pseudogene": 3731,
+            "total": 30727
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "NextDenovo v. 2.2-beta.0",
+        "assembly_name": "Fcat_Pben_1.1_paternal_pri",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA682572",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA682572",
+                "parent_accessions": ["PRJNA741979"],
+                "title": "Prionailurus bengalensis - paternal haplotype of Felis catus x Prionailurus bengalensis hybrid (LxD-97)"
+              },
+              {
+                "accession": "PRJNA741979",
+                "title": "Felis catus x Prionailurus bengalensis isolate:LxD-97 Genome sequencing and assembly"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN16486448",
+          "attributes": [
+            { "name": "dev_stage", "value": "Adult" },
+            { "name": "sex", "value": "male" },
+            { "name": "cell_type", "value": "Fibroblast" },
+            { "name": "isolate", "value": "Pbe53" },
+            { "name": "note", "value": "Asian Leopard Cat" },
+            { "name": "tissue", "value": "Fibroblast" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA682572" }],
+          "description": {
+            "comment": "Sire of Amber",
+            "organism": {
+              "organism_name": "Prionailurus bengalensis",
+              "tax_id": 37029
+            },
+            "title": "Asian Leopard Cat"
+          },
+          "dev_stage": "Adult",
+          "isolate": "Pbe53",
+          "last_updated": "2021-07-28T16:11:29.397",
+          "models": ["Model organism or animal"],
+          "owner": { "contacts": [{}], "name": "Texas A&M University" },
+          "package": "Model.organism.animal.1.0",
+          "publication_date": "2021-03-05T00:00:00.000",
+          "sample_ids": [
+            { "label": "Sample name", "value": "Pbe53" },
+            { "db": "SRA", "value": "SRS7597274" }
+          ],
+          "sex": "male",
+          "status": { "status": "live", "when": "2021-03-05T11:11:19.929" },
+          "submission_date": "2020-10-20T14:56:28.383",
+          "tissue": "Fibroblast"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_016509475.1",
+        "comments": "Assembly name: Fcat_Pben_1.1_paternal_pri\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the Texas A&M University on 2021/01/06. The original whole-genome shotgun project has the accession JADZGN000000000.1.\nThis is the paternal pseudohaplotype assembly created from the genome sequence of the F1 female progeny (isolate LxD-97; BioSample SAMN16486446) of a cross between a female Felis catus (isolate Fca508; BioSample SAMN16486447) and male Prionailurus bengalensis (isolate Pbe53; BioSample SAMN16486448).",
+        "paired_assembly": {
+          "accession": "GCA_016509475.2",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "refseq_category": "reference genome",
+        "release_date": "2021-01-06",
+        "sequencing_tech": "PacBio",
+        "submitter": "Texas A&M University"
+      },
+      "assembly_stats": {
+        "atgc_count": "2435689660",
+        "contig_l50": 11,
+        "contig_n50": 82622880,
+        "gc_count": "1018014577",
+        "gc_percent": 42,
+        "genome_coverage": "40",
+        "number_of_component_sequences": 122,
+        "number_of_contigs": 139,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 83,
+        "scaffold_l50": 7,
+        "scaffold_n50": 148587958,
+        "total_number_of_chromosomes": 19,
+        "total_sequence_length": "2435702060",
+        "total_ungapped_length": "2435689660"
+      },
+      "current_accession": "GCF_016509475.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Texas A&M University",
+          "total_seq_length": "16701"
+        }
       ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN16486448",
-      "biosampleid": "16486448",
-      "biosource": {
-        "infraspecieslist": [],
-        "sex": "male",
-        "isolate": "Pbe53"
+      "organism": {
+        "common_name": "leopard cat",
+        "infraspecific_names": { "isolate": "Pbe53", "sex": "male" },
+        "organism_name": "Prionailurus bengalensis",
+        "tax_id": 37029
       },
-      "coverage": "40",
-      "partialgenomerepresentation": "false",
-      "primary": "28545908",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2021/07/29 00:00",
-      "asmreleasedate_refseq": "2021/08/30 00:00",
-      "seqreleasedate": "2021/01/06 00:00",
-      "asmupdatedate": "2021/09/10 00:00",
-      "submissiondate": "2021/01/06 00:00",
-      "lastupdatedate": "2021/09/10 00:00",
-      "submitterorganization": "Texas A&M University",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "reference-guided",
-        "refseq_has_annotation",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_016509475.2",
-        "refseq": "GCF_016509475.1",
-        "similarity": "different"
-      },
-      "contign50": 82622880,
-      "scaffoldn50": 148587958,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Prionailurus_bengalensis/100",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/509/475/GCA_016509475.2_Fcat_Pben_1.1_paternal_pri",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/509/475/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/509/475/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/509/475/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "100",
-        "buscolineage": "carnivora_odb10",
-        "buscover": "4.1.4",
-        "complete": "0.989932",
-        "singlecopy": "0.982485",
-        "duplicated": "0.00744725",
-        "fragmented": "0.00248242",
-        "missing": "0.00758516",
-        "totalcount": 14502
-      },
-      "sortorder": "1C3XB1B19173771190165094759798",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">19</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">140</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">11</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">82622880</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">20</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">84</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">20</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">63</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">7</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">148587958</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2435718761</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2435706361</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/509/475/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/016/509/475/GCA_016509475.2_Fcat_Pben_1.1_paternal_pri</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/509/475/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/509/475/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri/GCF_016509475.1_Fcat_Pben_1.1_paternal_pri_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>Texas A&amp;M University</submitter-organization>    "
+      "paired_accession": "GCA_016509475.2",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JADZGN000000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JADZGN01",
+        "wgs_project_accession": "JADZGN01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

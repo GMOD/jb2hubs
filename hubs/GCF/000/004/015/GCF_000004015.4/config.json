@@ -171,7 +171,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/004/015/GCF_000004015.4/bbi/GCF_000004015.4_AaegL3.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/004/015/GCF_000004015.4/bbi/GCF_000004015.4_AaegL3.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -193,7 +194,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/004/015/GCF_000004015.4/bbi/GCF_000004015.4_AaegL3.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/004/015/GCF_000004015.4/bbi/GCF_000004015.4_AaegL3.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -554,6 +556,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/004/015/GCF_000004015.4/bbi/GCF_000004015.4_AaegL3.xenoRefGene.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "GCF_000004015.4-ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_000004015.4_AaegL3_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_000004015.4_AaegL3_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_000004015.4"]
     }
   ],
   "defaultSession": {
@@ -579,6 +602,25 @@
       }
     ]
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_000004015.4-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_000004015.4.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_000004015.4.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_000004015.4_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_000004015.4"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",

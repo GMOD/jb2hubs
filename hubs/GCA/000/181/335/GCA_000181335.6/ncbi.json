@@ -1,93 +1,96 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["16259311"],
-    "16259311": {
-      "uid": "16259311",
-      "rsuid": "",
-      "gbuid": "41697868",
-      "assemblyaccession": "GCA_000181335.6",
-      "lastmajorreleaseaccession": "GCA_000181335.5",
-      "latestaccession": "",
-      "chainid": "181335",
-      "assemblyname": "felCat9.2_X",
-      "ucscname": "felCat9",
-      "ensemblname": "",
-      "taxid": "9685",
-      "organism": "Felis catus (domestic cat)",
-      "speciestaxid": "9685",
-      "speciesname": "Felis catus",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "AANG04",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA16726", "bioprojectid": 16726 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02953640",
-      "biosampleid": "2953640",
-      "biosource": {
-        "infraspecieslist": [
-          { "sub_type": "breed", "sub_value": "Abyssinian" }
+  "reports": [
+    {
+      "accession": "GCA_000181335.6",
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "Celera Assembler v. 8.3rc2; Canu v. 1.6; Pilon v. 1.23",
+        "assembly_name": "felCat9.2_X",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA16726",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA16726",
+                "title": "Felis catus Genome sequencing and assembly"
+              }
+            ]
+          }
         ],
-        "sex": "female",
-        "isolate": "Cinnamon"
+        "biosample": {
+          "accession": "SAMN02953640",
+          "attributes": [
+            { "name": "sex", "value": "female" },
+            { "name": "isolate", "value": "Cinnamon" },
+            { "name": "breed", "value": "Abyssinian" },
+            { "name": "dev_stage", "value": "adult" },
+            { "name": "tissue", "value": "Fibroblast cell culture" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA16726" }],
+          "breed": "Abyssinian",
+          "description": {
+            "organism": { "organism_name": "Felis catus", "tax_id": 9685 },
+            "title": "Sample from Felis catus"
+          },
+          "dev_stage": "adult",
+          "isolate": "Cinnamon",
+          "last_updated": "2021-09-09T14:40:51.776",
+          "models": ["Generic"],
+          "owner": {},
+          "package": "Generic.1.0",
+          "publication_date": "2014-08-06T00:00:00.000",
+          "sample_ids": [
+            { "db": "SRA", "value": "SRS2790712" },
+            { "db": "GenBank", "value": "gb|AANG00000000.2" }
+          ],
+          "sex": "female",
+          "status": { "status": "live", "when": "2014-08-06T15:36:02.397" },
+          "submission_date": "2014-08-06T15:36:02.396",
+          "tissue": "Fibroblast cell culture"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_000181335.6",
+        "comments": "Assembly Release Notes for domestic cat assembly, version Felis catus 9.0:\nA female Abyssinian cat named Cinnamon kept by Dr. Kristina Narfstrom at the University of Missouri was used as the DNA source for all sequencing reads. High molecular weight DNA was extracted from an early passage fibroblast cell line that was expanded in culture. From this source we at the McDonnell Genome Institute at Washington University School of Medicine, St Louis, MO, and the Texas A&M Agrilife Genomics core facility have generated approx. 72x sequence coverage on the RSII and Sequel platforms. All sequence reads were assembled using the WTDBG software to create our initial contig assembly, followed by scaffolding of all possible contigs with a de novo Bionano map created from the same DNA source.\nTo create a chromosomal version of the 9.0 assembly we used Chromonomer (http://catchenlab.life.illinois.edu/chromonomer/) and marker sequences associated with a high-density SNP array-based genetic linkage map (Li et al., 2016) to order and orient all possible scaffolds. In addition, the assembled cat genome was aligned against the previous cat release (Felis catus 8.0).The assembled cat genome (version 9.0) was broken into 1kb segments and then aligned against the Felis catus 8.0 using BLAT (Kent 2002) to identify uniquely aligning segments of the cat genome to aid in identifying breakpoints. BLAT alignments with the Felis catus 8.0 genome were then used to refine the order and orientation information as well as to insert additional scaffolds into the conditional scaffold framework provided by the initial alignments and marker assignments. Finished BAC clones were also integrated into the assembly after this step. Finally, satellite sequences were identified in the genome, and centromeres were placed along each chromosome using the localization data inferred from radiation hybrid (Davis et al. 2009) and genetic linkage maps (Li et al. 2016) in combination with the localization of cat satellite sequences.\nThere are 2.46Gb bases (including Ns in gaps) on ordered/oriented chromosomes, 15Mb on the chr*_random, and 46Mb on chromosome Un. The scaffold N50 length is 147Mb (count=7) and the contig N50 length is 42 Mb (count=18). The chromosomal agp contains the ordered/oriented bases for each chromosome (named after the respective linkage group). This draft assembly is referred to as Felis_catus_9.0.\nCredits:\nFunding sources: Nestle Purina, St Louis, MO gift to WCW; Winn Feline Foundation grants MT14-009 and W15-008 to WJM, WCW and LAL, and Morris Animal Foundation grant D16FE-011 to WJM.\nDNA source - Dr. Kristina Narfstrom, University of Missouri, Columbia, MO.\nSequencing - Wesley Warren, McDonnell Genome Institute at Washington University School of Medicine, St Louis, MO; Bill Murphy, Texas A&M University, College Station, TX; Nestle Purina, St Louis, MO.\nBAC sequencing - McDonnell Genome Institute at Washington University School of Medicine, St Louis, MO\nSequence assembly and data integration for creation of chromosomal AGP files - McDonnell Genome Institute at Washington University School of Medicine, St Louis, MO\nCat RH and linkage maps - Bill Murphy and Gang Li, Texas A&M University, College Station, TX; Lesie Lyons, University of Missouri, Columbia, MO.\n\nIn version 9.1 the submitter was able to assemble the X chromosome into a single contiguous sequence. Since only the X chromosome was updated the genome version was not changed and will remain version 4. The contigs (AANG04000277, AANG04000391, AANG04000471, AANG04000480, AANG04000501, AANG04000511, AANG04000558, AANG04000778, AANG04000879, AANG04001034, AANG04001118, AANG04001236, AANG04001271, AANG04001293, AANG04001347, AANG04001348, AANG04001507, AANG04001513, AANG04001690, AANG04001722, AANG04001755, AANG04001840, AANG04001886, AANG04002019, AANG04002054, AANG04002097, AANG04002111, AANG04002134, AANG04002159, AANG04002273, AANG04002273, AANG04002462, AANG04002514, AANG04002641, AANG04002829, AANG04002836, AANG04002924, AANG04002986, AANG04003038, AANG04003470, AANG04003539, AANG04003579, AANG04003829, AANG04003847, AANG04004011, AANG04004069, AANG04004234, AANG04004236, AANG04004266, AANG04004274, AANG04004335, AANG04004376, AANG04004407, AANG04004457) and Scaffolds (KZ451880, KZ451881) which make up the previous version of the X chromosome have been removed from the assembly. The new X chromosome sequence (AANG04004909) was added to the end of the existing assembly and the corresponding chromosome record (CM001396.4) has been updated",
+        "release_date": "2021-10-01",
+        "sequencing_tech": "PacBio; Illumina",
+        "submitter": "Genome Sequencing Center (GSC) at Washington University (WashU) School of Medicine",
+        "synonym": "felCat9"
       },
-      "coverage": "",
-      "partialgenomerepresentation": "false",
-      "primary": "41697858",
-      "assemblydescription": "",
-      "releaselevel": "Minor",
-      "releasetype": "Minor",
-      "asmreleasedate_genbank": "2023/03/27 00:00",
-      "asmreleasedate_refseq": "1/01/01 00:00",
-      "seqreleasedate": "2021/10/01 00:00",
-      "asmupdatedate": "2023/03/29 00:00",
-      "submissiondate": "2021/10/01 00:00",
-      "lastupdatedate": "2023/03/29 00:00",
-      "submitterorganization": "Genome Sequencing Center (GSC) at Washington University (WashU) School of Medicine",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has-synonym",
-        "latest",
-        "latest_genbank",
-        "reference-guided",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000181335.6",
-        "refseq": "",
-        "similarity": ""
+      "assembly_stats": {
+        "atgc_count": "2448883721",
+        "contig_l50": 19,
+        "contig_n50": 41915695,
+        "gaps_between_scaffolds_count": 18,
+        "gc_count": "1022529595",
+        "gc_percent": 42,
+        "number_of_component_sequences": 1181,
+        "number_of_contigs": 1138,
+        "number_of_scaffolds": 767,
+        "scaffold_l50": 11,
+        "scaffold_n50": 88880063,
+        "total_number_of_chromosomes": 19,
+        "total_sequence_length": "2480971174",
+        "total_ungapped_length": "2435773257"
       },
-      "contign50": 41915695,
-      "scaffoldn50": 88880063,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/181/335/GCA_000181335.6_felCat9.2_X",
-      "ftppath_refseq": "",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/181/335/GCA_000181335.6_felCat9.2_X/GCA_000181335.6_felCat9.2_X_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/181/335/GCA_000181335.6_felCat9.2_X/GCA_000181335.6_felCat9.2_X_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
+      "current_accession": "GCA_000181335.6",
+      "organism": {
+        "common_name": "domestic cat",
+        "infraspecific_names": {
+          "breed": "Abyssinian",
+          "isolate": "Cinnamon",
+          "sex": "female"
+        },
+        "organism_name": "Felis catus",
+        "tax_id": 9685
       },
-      "sortorder": "5C3X60609580843040001813359300",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">19</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">1138</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">19</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">41915695</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">19</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">767</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">35</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">338</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">394</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">11</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">88880063</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2480971174</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2435773257</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/181/335/GCA_000181335.6_felCat9.2_X/GCA_000181335.6_felCat9.2_X_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/181/335/GCA_000181335.6_felCat9.2_X</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/181/335/GCA_000181335.6_felCat9.2_X/GCA_000181335.6_felCat9.2_X_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>na</representative-status> <submitter-organization>Genome Sequencing Center (GSC) at Washington University (WashU) School of Medicine</submitter-organization>    "
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/AANG00000000.4",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/AANG04",
+        "wgs_project_accession": "AANG04"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

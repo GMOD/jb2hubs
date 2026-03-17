@@ -101,18 +101,23 @@ if [ "$MODE" = "new" ]; then
   new_count=$(wc -l < "$NCBI_ACCESSION_FILE")
   echo "Fetching NCBI data for $new_count new assemblies..."
   batch_result=$(mktemp)
-  datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" > "$batch_result" 2>/dev/null
-
-  # Split into per-accession files
-  jq -c '.reports[]' "$batch_result" | while read -r report; do
-    acc=$(echo "$report" | jq -r '.accession')
-    paired=$(echo "$report" | jq -r '.paired_accession // empty')
-    wrapped=$(echo "$report" | jq -c '{reports: [.], total_count: 1}')
-    echo "$wrapped" > "$NCBI_RESULT_DIR/$acc.json"
-    if [ -n "$paired" ] && [ "$paired" != "$acc" ]; then
-      echo "$wrapped" > "$NCBI_RESULT_DIR/$paired.json"
+  if datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" > "$batch_result" 2>/tmp/datasets_err; then
+    # Split into per-accession files
+    if jq -e '.reports' "$batch_result" > /dev/null 2>&1; then
+      jq -r '.reports[] |
+        {reports: [.], total_count: 1} as $wrapped |
+        .accession as $acc |
+        (.paired_accession // "") as $paired |
+        (.current_accession // "") as $current |
+        ($wrapped | tostring) as $json |
+        "\($acc)\n\($json)",
+        (if $paired != "" and $paired != $acc then "\($paired)\n\($json)" else empty end),
+        (if $current != "" and $current != $acc and $current != $paired then "\($current)\n\($json)" else empty end)
+      ' "$batch_result" | awk -v dir="$NCBI_RESULT_DIR" 'NR%2==1 {filename=$0; next} {print > (dir "/" filename ".json")}'
     fi
-  done
+  else
+    echo "Warning: datasets CLI failed: $(grep -v 'New version' /tmp/datasets_err 2>/dev/null)"
+  fi
 
   # Copy to hub directories
   while read -r meta_file; do

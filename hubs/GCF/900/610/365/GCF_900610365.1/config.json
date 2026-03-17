@@ -170,7 +170,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/610/365/GCF_900610365.1/bbi/GCF_900610365.1_603019-18.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/610/365/GCF_900610365.1/bbi/GCF_900610365.1_603019-18.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -323,6 +324,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/610/365/GCF_900610365.1/bbi/GCF_900610365.1_603019-18.allGaps.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "GCF_900610365.1-ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_900610365.1_603019-18_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_900610365.1_603019-18_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_900610365.1"]
     }
   ],
   "defaultSession": {
@@ -348,6 +370,25 @@
       }
     ]
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_900610365.1-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_900610365.1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_900610365.1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_900610365.1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_900610365.1"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",

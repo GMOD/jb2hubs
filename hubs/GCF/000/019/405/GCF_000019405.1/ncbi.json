@@ -1,93 +1,130 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["40448"],
-    "40448": {
-      "uid": "40448",
-      "rsuid": "40448",
-      "gbuid": "20208",
-      "assemblyaccession": "GCF_000019405.1",
-      "lastmajorreleaseaccession": "GCF_000019405.1",
-      "latestaccession": "",
-      "chainid": "19405",
-      "assemblyname": "ASM1940v1",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "228400",
-      "organism": "Histophilus somni 2336 (g-proteobacteria)",
-      "speciestaxid": "731",
-      "speciesname": "Histophilus somni",
-      "assemblytype": "haploid",
-      "assemblystatus": "Complete Genome",
-      "assemblystatussort": 1,
-      "wgs": "",
-      "gb_bioprojects": [{ "bioprojectaccn": "PRJNA388", "bioprojectid": 388 }],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA224116", "bioprojectid": 224116 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02598524",
-      "biosampleid": "2598524",
-      "biosource": {
-        "infraspecieslist": [{ "sub_type": "strain", "sub_value": "2336" }],
-        "sex": "",
-        "isolate": ""
+  "reports": [
+    {
+      "accession": "GCF_000019405.1",
+      "annotation_info": {
+        "method": "Best-placed reference protein set; GeneMarkS-2+",
+        "name": "GCF_000019405.1-RS_2025_12_10",
+        "pipeline": "NCBI Prokaryotic Genome Annotation Pipeline (PGAP)",
+        "provider": "NCBI RefSeq",
+        "release_date": "2025-12-10",
+        "software_version": "6.10",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 68,
+            "protein_coding": 2023,
+            "pseudogene": 47,
+            "total": 2138
+          }
+        }
       },
-      "coverage": "",
-      "partialgenomerepresentation": "false",
-      "primary": "40438",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2010/05/12 00:00",
-      "asmreleasedate_refseq": "2010/05/13 00:00",
-      "seqreleasedate": "2008/02/26 00:00",
-      "asmupdatedate": "2022/11/14 00:00",
-      "submissiondate": "2008/02/26 00:00",
-      "lastupdatedate": "2022/11/14 00:00",
-      "submitterorganization": "US DOE Joint Genome Institute",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "genbank_has_annotation",
-        "has-chromosome",
-        "has_annotation",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "refseq_has_annotation"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000019405.1",
-        "refseq": "GCF_000019405.1",
-        "similarity": "identical"
+      "assembly_info": {
+        "assembly_level": "Complete Genome",
+        "assembly_name": "ASM1940v1",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA388",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA388",
+                "title": "Causes pneumonia, arthritis, myocarditis, and reproductive problems"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN02598524",
+          "attributes": [{ "name": "strain", "value": "2336" }],
+          "bioprojects": [{ "accession": "PRJNA388" }],
+          "description": {
+            "organism": {
+              "organism_name": "Histophilus somni 2336",
+              "tax_id": 228400
+            },
+            "title": "Sample from Histophilus somni 2336"
+          },
+          "last_updated": "2022-06-03T15:59:18.580",
+          "models": ["Generic"],
+          "owner": { "name": "NCBI" },
+          "package": "Generic.1.0",
+          "publication_date": "2014-01-28T00:00:00.000",
+          "sample_ids": [
+            { "label": "Sample name", "value": "CP000947" },
+            { "db": "SRA", "value": "SRS13293523" }
+          ],
+          "status": { "status": "live", "when": "2014-01-28T10:41:19.183" },
+          "strain": "2336",
+          "submission_date": "2014-01-28T10:41:19.183"
+        },
+        "comments": "The annotation was added by the NCBI Prokaryotic Genome Annotation Pipeline (PGAP). Information about PGAP can be found here: https://www.ncbi.nlm.nih.gov/genome/annotation_prok/\nURL -- http://www.jgi.doe.gov\nJGI Project ID: 4042873\nSource DNA and bacteria available from Tom Inzana (tinzana@vt.edu)\nContacts: Tom Inzana (tinzana@vt.edu)\nPaul Richardson (microbes@cuba.jgi-psf.org)\nQuality assurance done by JGI-Stanford\nAnnotation done by JGI-ORNL and JGI-LANL\nDraft sequencing was performed at the Oklahoma University Health Sciences Center (OUHSC) http://microgen.ouhsc.edu/h_somnus/h_somnus_home.htm) and initial gap closure was done at Virginia Tech. The finishing was achieved at the Joint Genome Institute's Los Alamos National Laboratory (LANL). During final finishing at LANL, reads were assembled with parallel phrap (High Performance Software, LLC). Possible mis-assemblies were corrected with Dupfinisher (unpublished, C. Han) or transposon bomb of bridging clones (EZ-Tn5 <P6Kyori/KAN-2> Tnp Transposome kit, Epicentre Biotechnologies). Gaps between contigs were closed by editing, custom primer walking, or PCR amplification. The completed genome sequence of H. somnus strain 2336 contains 26472 reads, achieving an average of 9.7-fold sequence coverage per base with an error rate less than 1 in 100,000.\nThe JGI and collaborators endorse the principles for the distribution and use of large scale sequencing data adopted by the larger genome sequencing community and urge users of this data to follow them. it is our intention to publish the work of this project in a timely fashion and we welcome collaborative interaction on the project and analysis.\n(http://www.genome.gov/page.cfmpageID=10506376)",
+        "paired_assembly": {
+          "accession": "GCA_000019405.1",
+          "annotation_name": "Annotation submitted by US DOE Joint Genome Institute",
+          "status": "current"
+        },
+        "refseq_category": "reference genome",
+        "release_date": "2008-02-26",
+        "submitter": "US DOE Joint Genome Institute"
       },
-      "contign50": 2263857,
-      "scaffoldn50": 2263857,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/019/405/GCA_000019405.1_ASM1940v1",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/019/405/GCF_000019405.1_ASM1940v1",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/019/405/GCF_000019405.1_ASM1940v1/GCF_000019405.1_ASM1940v1_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/019/405/GCF_000019405.1_ASM1940v1/GCF_000019405.1_ASM1940v1_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
+      "assembly_stats": {
+        "atgc_count": "2263857",
+        "contig_l50": 1,
+        "contig_n50": 2263857,
+        "gc_count": "846186",
+        "gc_percent": 37.5,
+        "number_of_component_sequences": 1,
+        "number_of_contigs": 1,
+        "number_of_scaffolds": 1,
+        "scaffold_l50": 1,
+        "scaffold_n50": 2263857,
+        "total_number_of_chromosomes": 1,
+        "total_sequence_length": "2263857",
+        "total_ungapped_length": "2263857"
       },
-      "sortorder": "1C1XADB49977361420000194059898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">1</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">2263857</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">0</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">2263857</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2263857</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2263857</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/019/405/GCF_000019405.1_ASM1940v1/GCF_000019405.1_ASM1940v1_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/019/405/GCA_000019405.1_ASM1940v1</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/019/405/GCF_000019405.1_ASM1940v1</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/019/405/GCF_000019405.1_ASM1940v1/GCF_000019405.1_ASM1940v1_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>90</assembly-level> <assembly-status>Complete Genome</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>US DOE Joint Genome Institute</submitter-organization> <taxonomy-check-status>OK</taxonomy-check-status>    "
+      "average_nucleotide_identity": {
+        "best_ani_match": {
+          "ani": 98.4,
+          "assembly": "GCA_014202395.1",
+          "assembly_coverage": 83.4,
+          "category": "type",
+          "organism_name": "Histophilus somni",
+          "type_assembly_coverage": 91.33
+        },
+        "category": "category_na",
+        "comment": "na",
+        "match_status": "species_match",
+        "submitted_ani_match": {
+          "ani": 98.4,
+          "assembly": "GCA_014202395.1",
+          "assembly_coverage": 83.4,
+          "category": "type",
+          "organism_name": "Histophilus somni",
+          "type_assembly_coverage": 91.33
+        },
+        "submitted_organism": "Histophilus somni 2336",
+        "submitted_species": "Histophilus somni",
+        "taxonomy_check_status": "OK"
+      },
+      "checkm_info": {
+        "checkm_marker_set": "Histophilus somni",
+        "checkm_marker_set_rank": "species",
+        "checkm_species_tax_id": 731,
+        "checkm_version": "v1.2.4",
+        "completeness": 99.81,
+        "completeness_percentile": 98.4375,
+        "contamination": 3.49
+      },
+      "current_accession": "GCF_000019405.1",
+      "organism": {
+        "infraspecific_names": { "strain": "2336" },
+        "organism_name": "Histophilus somni 2336",
+        "tax_id": 228400
+      },
+      "paired_accession": "GCA_000019405.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ"
     }
-  }
+  ],
+  "total_count": 1
 }

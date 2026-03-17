@@ -1,96 +1,164 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["2345021"],
-    "2345021": {
-      "uid": "2345021",
-      "rsuid": "16435298",
-      "gbuid": "8740508",
-      "assemblyaccession": "GCF_004348235.1",
-      "lastmajorreleaseaccession": "GCF_004348235.1",
-      "latestaccession": "",
-      "chainid": "4348235",
-      "assemblyname": "GSC_HSeal_1.0",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "9720",
-      "organism": "Phoca vitulina (harbor seal)",
-      "speciestaxid": "9720",
-      "speciesname": "Phoca vitulina",
-      "assemblytype": "haploid",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "RXNX01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA494181", "bioprojectid": 494181 }
+  "reports": [
+    {
+      "accession": "GCF_004348235.1",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "X63726.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_001325.1",
+          "submitter": "U. Arnason, Dept of Mol Genetics, Univ of Lund, Box 7031, S-220 07 Lund, SWEDEN"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA605348", "bioprojectid": 605348 }
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "carnivora_odb10",
+          "busco_ver": "4.0.2",
+          "complete": 0.9804165,
+          "duplicated": 0.024134602,
+          "fragmented": 0.0056543923,
+          "missing": 0.013929113,
+          "single_copy": 0.9562819,
+          "total_count": "14502"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Phoca vitulina Annotation Release 100",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2020-02-07",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Phoca_vitulina/100",
+        "software_version": "8.3",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 3697,
+            "other": 53,
+            "protein_coding": 19993,
+            "pseudogene": 4400,
+            "total": 28143
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "Supernova v. 2.1.1",
+        "assembly_name": "GSC_HSeal_1.0",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA494181",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA494181",
+                "parent_accessions": ["PRJNA706690"],
+                "title": "Harbor seal (Phoca vitulina) genome sequencing and assembly"
+              },
+              {
+                "accession": "PRJNA706690",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "CanSeq150 Project: Genome Data and Assemblies"
+              },
+              {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN10150265",
+          "attributes": [
+            { "name": "isolate", "value": "PV1807" },
+            { "name": "dev_stage", "value": "Pup" },
+            { "name": "sex", "value": "female" },
+            { "name": "tissue", "value": "blood" },
+            {
+              "name": "biomaterial_provider",
+              "value": "Marine Mammal Rescue Centre, Vancouver, British Columbia"
+            },
+            {
+              "name": "geo_loc_name",
+              "value": "Canada: Boundary Bay, Tsawwassen, British Columbia"
+            }
+          ],
+          "biomaterial_provider": "Marine Mammal Rescue Centre, Vancouver, British Columbia",
+          "bioprojects": [{ "accession": "PRJNA494181" }],
+          "description": {
+            "organism": { "organism_name": "Phoca vitulina", "tax_id": 9720 },
+            "title": "Blood sample from a Harbour seal (Phoca vitulina)"
+          },
+          "dev_stage": "Pup",
+          "geo_loc_name": "Canada: Boundary Bay, Tsawwassen, British Columbia",
+          "isolate": "PV1807",
+          "last_updated": "2018-10-16T20:55:03.107",
+          "models": ["Model organism or animal"],
+          "owner": { "contacts": [{}], "name": "BC Cancer" },
+          "package": "Model.organism.animal.1.0",
+          "publication_date": "2018-10-01T00:00:00.000",
+          "sample_ids": [
+            { "label": "Sample name", "value": "SJ_85" },
+            { "db": "SRA", "value": "SRS3942484" }
+          ],
+          "sex": "female",
+          "status": { "status": "live", "when": "2018-10-01T15:24:03.932" },
+          "submission_date": "2018-10-01T15:24:03.933",
+          "tissue": "blood"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_004348235.1",
+        "comments": "Assembly name: GSC_HSeal_1.0\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the Canada's Genome Enterprise (CGEN) on 2019/02/11. The original whole-genome shotgun project has the accession RXNX00000000.1.",
+        "paired_assembly": {
+          "accession": "GCA_004348235.1",
+          "differences": "Removed 2 unlocalized scaffolds on chromosome MT; Added chromosome MT",
+          "only_genbank": "2 unlocalized scaffolds on chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "refseq_category": "reference genome",
+        "release_date": "2019-02-11",
+        "sequencing_tech": "Illumina HiSeq",
+        "submitter": "Canada's Genome Enterprise (CGEN)"
+      },
+      "assembly_stats": {
+        "atgc_count": "2342134813",
+        "contig_l50": 2463,
+        "contig_n50": 283887,
+        "gc_count": "969095063",
+        "gc_percent": 41.5,
+        "genome_coverage": "45",
+        "number_of_component_sequences": 21601,
+        "number_of_contigs": 21601,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 5540,
+        "scaffold_l50": 18,
+        "scaffold_n50": 41024070,
+        "total_sequence_length": "2363579318",
+        "total_ungapped_length": "2342135378"
+      },
+      "current_accession": "GCF_004348235.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Canada's Genome Enterprise (CGEN)",
+          "total_seq_length": "16826"
+        }
       ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN10150265",
-      "biosampleid": "10150265",
-      "biosource": {
-        "infraspecieslist": [],
-        "sex": "female",
-        "isolate": "PV1807"
+      "organism": {
+        "common_name": "harbor seal",
+        "infraspecific_names": { "isolate": "PV1807", "sex": "female" },
+        "organism_name": "Phoca vitulina",
+        "tax_id": 9720
       },
-      "coverage": "45",
-      "partialgenomerepresentation": "false",
-      "primary": "16433888",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2019/03/13 00:00",
-      "asmreleasedate_refseq": "2020/02/07 00:00",
-      "seqreleasedate": "2019/02/11 00:00",
-      "asmupdatedate": "2020/02/11 00:00",
-      "submissiondate": "2019/02/11 00:00",
-      "lastupdatedate": "2020/02/11 00:00",
-      "submitterorganization": "Canada's Genome Enterprise (CGEN)",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "refseq_has_annotation",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_004348235.1",
-        "refseq": "GCF_004348235.1",
-        "similarity": "different"
-      },
-      "contign50": 283887,
-      "scaffoldn50": 41024070,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Phoca_vitulina/100",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/004/348/235/GCA_004348235.1_GSC_HSeal_1.0",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/348/235/GCF_004348235.1_GSC_HSeal_1.0",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/348/235/GCF_004348235.1_GSC_HSeal_1.0/GCF_004348235.1_GSC_HSeal_1.0_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/348/235/GCF_004348235.1_GSC_HSeal_1.0/GCF_004348235.1_GSC_HSeal_1.0_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "100",
-        "buscolineage": "carnivora_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.980416",
-        "singlecopy": "0.956282",
-        "duplicated": "0.0241346",
-        "fragmented": "0.00565439",
-        "missing": "0.0139291",
-        "totalcount": 14502
-      },
-      "sortorder": "1C6XB5B29997161120043482359898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">21602</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">2463</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">283887</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">5541</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">5540</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">18</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">41024070</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2363596144</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2342152204</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/348/235/GCF_004348235.1_GSC_HSeal_1.0/GCF_004348235.1_GSC_HSeal_1.0_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/004/348/235/GCA_004348235.1_GSC_HSeal_1.0</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/348/235/GCF_004348235.1_GSC_HSeal_1.0</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/004/348/235/GCF_004348235.1_GSC_HSeal_1.0/GCF_004348235.1_GSC_HSeal_1.0_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>2</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>Canada&apos;s Genome Enterprise (CGEN)</submitter-organization>    "
+      "paired_accession": "GCA_004348235.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/RXNX00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/RXNX01",
+        "wgs_project_accession": "RXNX01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

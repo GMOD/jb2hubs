@@ -1,84 +1,91 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["178401"],
-    "178401": {
-      "uid": "178401",
-      "rsuid": "",
-      "gbuid": "1069198",
-      "assemblyaccession": "GCA_000671735.1",
-      "lastmajorreleaseaccession": "GCA_000671735.1",
-      "latestaccession": "",
-      "chainid": "671735",
-      "assemblyname": "Glossina_fuscipes-3.0.2",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "201502",
-      "organism": "Glossina fuscipes fuscipes (tsetse fly)",
-      "speciestaxid": "7396",
-      "speciesname": "Glossina fuscipes",
-      "assemblytype": "haploid",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "JFJR01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA172853", "bioprojectid": 172853 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02742630",
-      "biosampleid": "2742630",
-      "biosource": { "infraspecieslist": [], "sex": "female", "isolate": "" },
-      "coverage": "120",
-      "partialgenomerepresentation": "false",
-      "primary": "1049378",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2014/05/13 00:00",
-      "asmreleasedate_refseq": "1/01/01 00:00",
-      "seqreleasedate": "2014/05/08 00:00",
-      "asmupdatedate": "2022/12/10 00:00",
-      "submissiondate": "2014/05/08 00:00",
-      "lastupdatedate": "2022/12/10 00:00",
-      "submitterorganization": "Glossina Genomes Consortium",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "latest",
-        "latest_genbank",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000671735.1",
-        "refseq": "",
-        "similarity": ""
+  "reports": [
+    {
+      "accession": "GCA_000671735.1",
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "ALLPATHS-LG v. September 2013",
+        "assembly_name": "Glossina_fuscipes-3.0.2",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA172853",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA172853",
+                "parent_accessions": ["PRJNA167910"],
+                "title": "Glossina fuscipes fuscipes Genome sequencing and assembly"
+              },
+              {
+                "accession": "PRJNA167910",
+                "title": "NHGRI Large Scale Sequencing Program for Organismal Sequencing"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN02742630",
+          "attributes": [
+            { "name": "sex", "value": "female" },
+            { "name": "sub_species", "value": "fuscipes" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA172853" }],
+          "description": {
+            "comment": "This sample group is the combination of 25 individual BioSamples: SAMN01780151, SAMN01780152, SAMN01780153, SAMN01780154, SAMN01780155, SAMN01780156, SAMN01780157, SAMN01780159, SAMN01780160, SAMN01780161, SAMN01780162, SAMN01780163, SAMN01780164, SAMN01780165, SAMN01780166, SAMN01780167, SAMN01889187, SAMN01889188, SAMN01889189, SAMN01889190, SAMN01889191, SAMN01889192, SAMN02680100, SAMN02646210, SAMN02646211.",
+            "organism": {
+              "organism_name": "Glossina fuscipes fuscipes",
+              "tax_id": 201502
+            },
+            "title": "Sample from Glossina fuscipes fuscipes"
+          },
+          "last_updated": "2014-05-09T15:24:26.310",
+          "models": ["Generic"],
+          "owner": {
+            "name": "Washington University School of Medicine, The Genome Institute"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2014-05-06T06:49:19.990",
+          "sample_ids": [{ "db": "GenBank", "value": "JFJR" }],
+          "sex": "female",
+          "status": { "status": "live", "when": "2014-05-06T06:49:19.990" },
+          "sub_species": "fuscipes",
+          "submission_date": "2014-05-02T10:56:14.073"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_000671735.1",
+        "comments": "Background: A total of 6 female individual DNA isolates were provided in TE buffer for tsetse fly Glossina fuscipes courtesy of Dr. Serap Aksoy, Yale University. The sequencing plan followed the recommendations provided in the ALLPATHS-LG assembler manual. This model requires 45x sequence coverage each of fragments (overlapping paired reads approximately 180bp length) and 3kb paired end (PE) reads as well as 5x coverage of 8kb PE reads. For fragments we used DNA samples pooled from mother and offspring named M1 and M1-2 and for all jumping libraries (3 and 8kb) we used a pool of these DNA samples MD7, MD7-2, MD8 and MD8-1. Various assembly metrics are summarized below. Total assembled sequence coverage of Illumina instrument reads was 120X (overlapping reads 72x, 3.5kb PE 41x, 4.0kb PE 7x) using a genome size estimate of 400Mb using the ALLPATHS-LG software (Broad Institute). This first working draft assembly was referred to as G.fuscipes 3.0. In the G.fuscipes 3.0 assembly small scaffold gaps were closed with Illumina read mapping and local assembly. Contaminating contigs, trimmed vector in the form of X's and ambiguous bases as N's in the sequence were removed. NCBI requires that all contigs 200bp and smaller be removed. Removing these contigs was the final step in preparation for submitting the 3.0.2 assembly. The G. fuscipes 3.0.2 assembly is made up of a total of 2395 scaffolds with an N50 scaffold length of over 555kb (N50 contig length was 64kb). The total contigs assembly spans 365Mb.\nFor questions regarding this G. fuscipes assembly please contact Dr. Wesley Warren, Washington University School of Medicine (wwarren@genome.wustl.edu) or Dr. Serap Aksoy, Yale University (serap.aksoy@yale.edu). Downloads of the sequence data are available via the NCBI SRA database. Funding for the sequence characterization of the Glossina fuscipes was provided by the National Human Genome Research Institute (NHGRI), National Institutes of Health (NIH).\nDNA samples can be obtained from: Dr. Serap Aksoy, Department of Epidemiology of Microbial Diseases, Yale School of Public Health, 60 College St., 626 LEPH, New Haven, CT 06510\nCredits:\nThis work was supported by NIH-NHGRI grant 5U54HG00307907 to RKW, Director of The Genome Institute at Washington University.\nDNA source - Dr. Serap Aksoy, Yale University, Hartford, CT.\nSequencing - The Genome Institute, Washington University School of Medicine, St Louis, MO.\nSequence assembly - The Genome Institute, Washington University School of Medicine, St Louis, MO.\nCitation upon use of this assembly in a manuscript:\n\nIt is requested that users of this Glossina fuscipes sequence assembly acknowledge Dr. Serap Aksoy and The Genome Institute, Washington University School of Medicine in any publications that result from use of this sequence assembly.\nAssembly stats:\n*** Contiguity: Contig *** Total contig number: 13568 Total contig bases: 361276677 bp Average contig length: 26627 bp Maximum contig length: 1242950 bp N50 contig length: 64354 bp N50 contig number: 1534\n\n*** Contiguity: Supercontig *** Total supercontig number: 2395 Average supercontig length: 150846 bp Maximum supercontig length: 3216142 bp N50 supercontig length: 555539 bp N50 supercontig number: 174\n*** Scaffold Distribution *** Scaffolds > 1M: 66 Scaffold 250K--1M: 375 Scaffold 100K--250K: 335 Scaffold 10--100K: 469 Scaffold 5--10K: 124 Scaffold 2--5K: 323 Scaffold 0--2K: 703",
+        "release_date": "2014-05-08",
+        "sequencing_tech": "Illumina",
+        "submitter": "Glossina Genomes Consortium"
       },
-      "contign50": 64354,
-      "scaffoldn50": 561190,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/671/735/GCA_000671735.1_Glossina_fuscipes-3.0.2",
-      "ftppath_refseq": "",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/671/735/GCA_000671735.1_Glossina_fuscipes-3.0.2/GCA_000671735.1_Glossina_fuscipes-3.0.2_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/671/735/GCA_000671735.1_Glossina_fuscipes-3.0.2/GCA_000671735.1_Glossina_fuscipes-3.0.2_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
+      "assembly_stats": {
+        "atgc_count": "361274315",
+        "contig_l50": 1535,
+        "contig_n50": 64354,
+        "gc_count": "121373524",
+        "gc_percent": 33.5,
+        "genome_coverage": "120",
+        "number_of_component_sequences": 13568,
+        "number_of_contigs": 13568,
+        "number_of_scaffolds": 2395,
+        "scaffold_l50": 179,
+        "scaffold_n50": 561190,
+        "total_sequence_length": "374774708",
+        "total_ungapped_length": "361276677"
       },
-      "sortorder": "5C6XB6AF9999356450006717359800",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">13568</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">1535</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">64354</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">2395</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">2395</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">179</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">561190</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">374774708</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">361276677</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/671/735/GCA_000671735.1_Glossina_fuscipes-3.0.2/GCA_000671735.1_Glossina_fuscipes-3.0.2_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/671/735/GCA_000671735.1_Glossina_fuscipes-3.0.2</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/671/735/GCA_000671735.1_Glossina_fuscipes-3.0.2/GCA_000671735.1_Glossina_fuscipes-3.0.2_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>2</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>Glossina Genomes Consortium</submitter-organization>    "
+      "current_accession": "GCA_000671735.1",
+      "organism": {
+        "infraspecific_names": { "sex": "female" },
+        "organism_name": "Glossina fuscipes fuscipes",
+        "tax_id": 201502
+      },
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JFJR00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JFJR01",
+        "wgs_project_accession": "JFJR01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

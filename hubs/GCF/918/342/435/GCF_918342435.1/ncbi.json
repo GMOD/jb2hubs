@@ -1,94 +1,150 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["13133321"],
-    "13133321": {
-      "uid": "13133321",
-      "rsuid": "34568898",
-      "gbuid": "34363758",
-      "assemblyaccession": "GCF_918342435.1",
-      "lastmajorreleaseaccession": "GCF_918342435.1",
-      "latestaccession": "",
-      "chainid": "918342435",
-      "assemblyname": "Wolbachia_endosymbiont_of_CSFBv1",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "2883236",
-      "organism": "Wolbachia endosymbiont of Psylliodes chrysocephala (a-proteobacteria)",
-      "speciestaxid": "2883236",
-      "speciesname": "Wolbachia endosymbiont of Psylliodes chrysocephala",
-      "assemblytype": "haploid",
-      "assemblystatus": "Complete Genome",
-      "assemblystatussort": 1,
-      "wgs": "",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJEB47896", "bioprojectid": 849094 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA224116", "bioprojectid": 224116 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMEA10422655",
-      "biosampleid": "29091939",
-      "biosource": {
-        "infraspecieslist": [],
-        "sex": "",
-        "isolate": "Wolbachia_endosymbiont_of_Psylliodes chrysocephala_genome"
+  "reports": [
+    {
+      "accession": "GCF_918342435.1",
+      "annotation_info": {
+        "method": "Best-placed reference protein set; GeneMarkS-2+",
+        "name": "GCF_918342435.1-RS_2026_01_08",
+        "pipeline": "NCBI Prokaryotic Genome Annotation Pipeline (PGAP)",
+        "provider": "NCBI RefSeq",
+        "release_date": "2026-01-08",
+        "software_version": "6.10",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 40,
+            "protein_coding": 1247,
+            "pseudogene": 168,
+            "total": 1455
+          }
+        }
       },
-      "coverage": "100",
-      "partialgenomerepresentation": "false",
-      "primary": "34568888",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2022/06/30 00:00",
-      "asmreleasedate_refseq": "2022/07/07 00:00",
-      "seqreleasedate": "2022/06/24 00:00",
-      "asmupdatedate": "2022/07/07 00:00",
-      "submissiondate": "2022/06/24 00:00",
-      "lastupdatedate": "2022/07/07 00:00",
-      "submitterorganization": "ROTHAMSTED RESEARCH",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has_annotation",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "refseq_has_annotation"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_918342435.1",
-        "refseq": "GCF_918342435.1",
-        "similarity": "identical"
+      "assembly_info": {
+        "assembly_level": "Complete Genome",
+        "assembly_method": "hifiasm",
+        "assembly_name": "Wolbachia_endosymbiont_of_CSFBv1",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJEB47896",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJEB47896",
+                "title": "Psylliodes chrysocephala genome and annotation from the Pest Genomics Initiative."
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMEA10422655",
+          "attributes": [
+            { "name": "ENA first public", "value": "2022-06-14" },
+            { "name": "ENA last update", "value": "2022-06-14" },
+            { "name": "ENA-CHECKLIST", "value": "ERC000011" },
+            { "name": "External Id", "value": "SAMEA10422655" },
+            { "name": "INSDC center alias", "value": "ROTHAMSTED RESEARCH" },
+            { "name": "INSDC center name", "value": "ROTHAMSTED RESEARCH" },
+            { "name": "INSDC first public", "value": "2022-06-14T00:18:14Z" },
+            { "name": "INSDC last update", "value": "2022-06-14T00:18:14Z" },
+            { "name": "INSDC status", "value": "public" },
+            {
+              "name": "Submitter Id",
+              "value": "Wolbachia_endosymbiont_of_Psylliodes chrysocephala_genome"
+            },
+            { "name": "collection_date", "value": "2017" },
+            { "name": "common name", "value": "Wolbachia" },
+            { "name": "geo_loc_name", "value": "United Kingdom" },
+            {
+              "name": "sample_name",
+              "value": "Wolbachia_endosymbiont_of_Psylliodes chrysocephala_genome"
+            }
+          ],
+          "collection_date": "2017",
+          "description": {
+            "comment": "Wolbachia endosymbiont of Psylliodes chrysocephala genome assembly. The resulting individual used for HiFi and multi-individual used for Hi-C has a parasitic wasp present (10% genome size) so I had very good coverage of the wasp and got a good assembly of that. This went to the PhD PGI linked project. However the beetle coverage was then reduced to x12 so the assembly was not as continuous as it could have been. But despite that the assembly is reasonably good, chromosome level. Freebayes route used for error correction. I suggest to improve would be to repeat using non-infected individual HiFi. Included in the data set is 10X illumina library data of non-infected individual and male and female Illumina genome resequencing too. Manual curation and Hi-C to bring to chromosome level. Single primary sequence assembly, not haplotype assembled. Maker annotation pipeline used with both transcriptome transfer and de novo gene prediction as inputs to Evigene to pick best gene models. Curation of P450, ABC, UGT, IRAC gene models where RNA-seq evidence was present. Unknown sex individual used for 10X and then male 10X and female 10X samples. Single individual with parastoid wasp taken for PacBio HiFi. Single adult beetle from field sample collected at Rothamsted farm on 28 July 2017. GPS 51.8093, -0.3548",
+            "organism": {
+              "organism_name": "Wolbachia endosymbiont of Psylliodes chrysocephala",
+              "tax_id": 2883236
+            },
+            "title": "Wolbachia endosymbiont of Psylliodes chrysocephala from the Pest Genomics Initiative."
+          },
+          "geo_loc_name": "United Kingdom",
+          "last_updated": "2022-06-15T19:34:10.000",
+          "models": ["Generic"],
+          "owner": { "name": "EBI" },
+          "package": "Generic.1.0",
+          "publication_date": "2022-06-14T00:00:00.000",
+          "sample_ids": [{ "db": "SRA", "value": "ERS8075493" }],
+          "sample_name": "Wolbachia_endosymbiont_of_Psylliodes chrysocephala_genome",
+          "status": { "status": "live", "when": "2022-06-16T12:44:16.810" },
+          "submission_date": "2022-06-15T11:00:58.376"
+        },
+        "comments": "The annotation was added by the NCBI Prokaryotic Genome Annotation Pipeline (PGAP). Information about PGAP can be found here: https://www.ncbi.nlm.nih.gov/genome/annotation_prok/",
+        "paired_assembly": {
+          "accession": "GCA_918342435.1",
+          "status": "current"
+        },
+        "refseq_category": "reference genome",
+        "release_date": "2022-06-24",
+        "sequencing_tech": "PACBIO_SMRT",
+        "submitter": "ROTHAMSTED RESEARCH"
       },
-      "contign50": 1438854,
-      "scaffoldn50": 1438854,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/918/342/435/GCA_918342435.1_Wolbachia_endosymbiont_of_CSFBv1",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/918/342/435/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/918/342/435/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/918/342/435/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
+      "assembly_stats": {
+        "atgc_count": "1438854",
+        "contig_l50": 1,
+        "contig_n50": 1438854,
+        "gc_count": "504729",
+        "gc_percent": 35,
+        "genome_coverage": "100",
+        "number_of_component_sequences": 1,
+        "number_of_contigs": 1,
+        "number_of_scaffolds": 1,
+        "scaffold_l50": 1,
+        "scaffold_n50": 1438854,
+        "total_number_of_chromosomes": 1,
+        "total_sequence_length": "1438854",
+        "total_ungapped_length": "1438854"
       },
-      "sortorder": "1C1XFFFF9985611459183424359898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">1</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">1438854</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">0</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">1438854</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">1438854</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">1438854</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/918/342/435/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/918/342/435/GCA_918342435.1_Wolbachia_endosymbiont_of_CSFBv1</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/918/342/435/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/918/342/435/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1/GCF_918342435.1_Wolbachia_endosymbiont_of_CSFBv1_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>90</assembly-level> <assembly-status>Complete Genome</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>ROTHAMSTED RESEARCH</submitter-organization> <taxonomy-check-status>Inconclusive</taxonomy-check-status>    "
+      "average_nucleotide_identity": {
+        "best_ani_match": {
+          "ani": 80.81,
+          "assembly": "GCA_002050515.1",
+          "assembly_coverage": 0.07,
+          "category": "type",
+          "organism_name": "Clostridium thermobutyricum",
+          "type_assembly_coverage": 0.03
+        },
+        "category": "category_na",
+        "comment": "na",
+        "match_status": "low_coverage",
+        "submitted_ani_match": {
+          "assembly": "no-type",
+          "category": "no_type",
+          "organism_name": "na"
+        },
+        "submitted_organism": "Wolbachia endosymbiont of Psylliodes chrysocephala",
+        "submitted_species": "Wolbachia endosymbiont of Psylliodes chrysocephala",
+        "taxonomy_check_status": "Inconclusive"
+      },
+      "checkm_info": {
+        "checkm_marker_set": "Wolbachia",
+        "checkm_marker_set_rank": "genus",
+        "checkm_species_tax_id": 2883236,
+        "checkm_version": "v1.2.4",
+        "completeness": 86.91,
+        "contamination": 0.36
+      },
+      "current_accession": "GCF_918342435.1",
+      "organism": {
+        "infraspecific_names": {
+          "isolate": "Wolbachia_endosymbiont_of_Psylliodes chrysocephala_genome"
+        },
+        "organism_name": "Wolbachia endosymbiont of Psylliodes chrysocephala",
+        "tax_id": 2883236
+      },
+      "paired_accession": "GCA_918342435.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ"
     }
-  }
+  ],
+  "total_count": 1
 }

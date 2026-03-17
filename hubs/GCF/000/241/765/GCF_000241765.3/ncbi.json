@@ -1,96 +1,143 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["138171"],
-    "138171": {
-      "uid": "138171",
-      "rsuid": "1073638",
-      "gbuid": "986518",
-      "assemblyaccession": "GCF_000241765.3",
-      "lastmajorreleaseaccession": "GCF_000241765.3",
-      "latestaccession": "GCA_000241765.5",
-      "chainid": "241765",
-      "assemblyname": "Chrysemys_picta_bellii-3.0.3",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "8478",
-      "organism": "Chrysemys picta bellii (western painted turtle)",
-      "speciestaxid": "8479",
-      "speciesname": "Chrysemys picta",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "AHGY02",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA78657", "bioprojectid": 78657 }
+  "reports": [
+    {
+      "accession": "GCF_000241765.3",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "KF874616.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_023890.1",
+          "submitter": "Plant Germplasm and Genomics Center, Germplasm Bank of Wild Species, Kunming Institute of Botany, The Chinese Academy of Sciences"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA210179", "bioprojectid": 210179 }
+      "annotation_info": {
+        "name": "Annotation submitted by NCBI RefSeq",
+        "provider": "NCBI RefSeq",
+        "release_date": "2014-06-04",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Chrysemys_picta/102",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 3532,
+            "other": 253,
+            "protein_coding": 21090,
+            "pseudogene": 876,
+            "total": 25751
+          }
+        }
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "Newbler v. 2.6",
+        "assembly_name": "Chrysemys_picta_bellii-3.0.3",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA78657",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA78657",
+                "parent_accessions": ["PRJNA176378"],
+                "title": "Chrysemys picta bellii Genome sequencing and assembly"
+              },
+              {
+                "accession": "PRJNA176378",
+                "title": "Evolution of the human proteome: Completing the Chordate Nodes"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN02713681",
+          "attributes": [
+            { "name": "sex", "value": "female" },
+            { "name": "geo_loc_name", "value": "USA: Grant Co., WA" },
+            {
+              "name": "isolation_source",
+              "value": "small lake 1.3 miles south of Potholes Reservoir"
+            },
+            { "name": "isolate", "value": "RCT428" },
+            { "name": "sub_species", "value": "bellii" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA78657" }],
+          "description": {
+            "comment": "This sample group is the combination of 27 individual BioSamples: SAMN02230628, SAMN02230629, SAMN01057017, SAMN01057018, SAMN01057019, SAMN01057020, SAMN01057021, SAMN01057022, SAMN01885560, SAMN01885561, SAMN01885562, SAMN01885563, SAMN01885564, SAMN01885565, SAMN01885566, SAMN01885567, SAMN01885568, SAMN01885569, SAMN01885570, SAMN01885571, SAMN01885572, SAMN01885573, SAMN01885574, SAMN01885575, SAMN01885576, SAMN01885577, SAMN01085307.",
+            "organism": {
+              "organism_name": "Chrysemys picta bellii",
+              "tax_id": 8478
+            },
+            "title": "Sample group: combined samples of Chrysemys picta bellii"
+          },
+          "geo_loc_name": "USA: Grant Co., WA",
+          "isolate": "RCT428",
+          "isolation_source": "small lake 1.3 miles south of Potholes Reservoir",
+          "last_updated": "2014-04-03T13:40:10.457",
+          "models": ["Generic"],
+          "owner": {
+            "name": "The Genome Institute, Washington University School of Medicine"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2014-04-02T12:39:45.340",
+          "sample_ids": [{ "db": "GenBank", "value": "AHGY" }],
+          "sex": "female",
+          "status": { "status": "live", "when": "2014-04-03T13:20:16" },
+          "sub_species": "bellii",
+          "submission_date": "2014-04-01T13:50:09.687"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000241765.3",
+        "comments": "Release Notes - Release 3.0.3\nThe Chrysemys picta bellii, the painted turtle, whole genome shotgun library from primary donor-derived reads (Field number: RCT428 Locality: WA: Grant Co: small lake 1.3 miles south of Potholes Reservoir) were assembled using Newbler (version 2.6) using stringent parameters. After the assembly was complete, 15X of paired end sequencing data were generated on the Illumina platform and used for error correction in the reference assembly (see below). All scaffolds larger than 500 bases (81,642 scaffolds with a total size of 2618Mb, N50 scaffold size of 3.01Mb (N50 number is 248)) were retained for submission to the public databases.\nFor error correction, the Illumina data were aligned against the assembly using bwa and processed using samtools and bcftools. Based on the paired end mapping data, all duplicately mapped reads were removed. One and two basepair indels were introduced into the reference for all cases where there were >=3 and <200 reads aligned (mapping quality >=40 and the indel was >=10 bases from the end of the alignment), and where all reads disagreed with the reference and agreed with one another. There were a total of 27,296 indels introduced into 24,712 contigs.\n\nWe processed this submitted assembly using an unpublished program designed to close gaps, a program that functions the same as Image (Tsai, 2010), but has been modified to scale up for large genome gap closing. As Image, this program aligns Illumina reads at contig ends, performs local assembly of reads into new contigs, extends or merges reference contigs, and runs multiple iterations of the whole process to extend and merge more contigs. We performed three iterations of gap closing for the Chrysemys assembly. We aligned the gap closed assembly version 3.0.3 to the NCBI publicly available Pelodiscus sinensis and Chelonia mydas assemblies using NUCmer, part of the MUMmer 3.0 package (Kurtz 2004). In both cases we used Chrysemys as the query assembly and the other turtle as the reference. We obtained best one to one reciprocal matches by using the -r and -q options. This is a list of all NUCmer options used: minInd=40; c=400; l=10; g=500; rearrange=\" -r -q -o 1 \"\nWhen scaffolds were identically ordered/oriented by alignments to P. sinensis and to C. mydas scaffolds the order/orientation provided by the alignments was introduced into the C. picta assembly. When scaffolds were ordered/oriented by a C. mydas or P. sinensis alignment and had the support of at least one BAC end sequence pair or by alignment to the chicken genome (galGal4), lizard (anoCar2), or alligator (allMis1) they were also introduced into the assembly. Similarly when a scaffold merge was suggested by alignment to the chicken, lizard or alligator genome and supported by at least a single BAC end pair, the scaffolds were joined into a single ultrascaffold. Finally alignments to finished BAC clones were used to identify additional ordered/oriented scaffolds. Using these data, we created 100 new ultra-scaffolds containing 259 scaffolds spanning almost 941Mb of sequence. The final assembly had a scaffold N50 of 6.6Mb with an N50 scaffold count of 102 (contig N50 size of 21.3kb and N50 contig count of 29,025). The resulting assembly was labeled as release 3.0.4.\n\nBACs were mapped to the C. picta chromosomes by Nicole Valenzuela. The resulting maps provided only order for the BACs and did not provide orientation information unless there were BAC end pairs providing connectivity between neighboring scaffolds. Chromosomal AGPs were created and centromeres were positioned using the Valenzuela BAC maps that localized 461Mb to 18 chromosomes.\nBackground information on the Chrysemys picta bellii genome sequencing project and the initial news release about the Chrysemys picta bellii assembly can be found on the Washington University School of Medicine website.\nBulk downloads of the sequence and annotation data are available via GenBank, Ensembl, DDBJ and the UCSC Genome Browser. The complete set of sequence reads is available at the NCBI trace archive.\n\nCredits: Genome Sequence - Washington University School of Medicine Sequence Assembly and Chromosomal Sequence/AGP Construction - Washington University School of Medicine BAC Mapping - Nicole Valenzuela - Iowa State University\nDNA sources: WGS library; UC-Davis Shaffer lab; Female; Chrysemys picta bellii ; Field number: RCT428 (This will later have an MVZ number assigned) ; Locality: WA: Grant Co: small lake 1.3 miles south of potholes reservoir BAC Library VMRC CHY3; J. Froula JGI (from C. Amemiya Lab) Female; Strain MVZ #238119; Locality: WA: Grant Co: small lake 1.3 miles south of potholes reservoir\nRead Types: 11.3X 454 fragments 6.5X 454 3 Kb inserts 1.3X 454 8 Kb inserts 0.06X Sanger BAC-end sequences\nFunding for the sequence characterization of the Chrysemys picta bellii genome is being provided by the National Human Genome Research Institute (NHGRI), National In",
+        "paired_assembly": {
+          "accession": "GCA_000241765.2",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "previous"
+        },
+        "release_date": "2014-03-31",
+        "sequencing_tech": "Sanger; 454; Illumina",
+        "submitter": "Painted turtle genome sequencing consortium"
+      },
+      "assembly_stats": {
+        "atgc_count": "2173187223",
+        "contig_l50": 29024,
+        "contig_n50": 21349,
+        "gaps_between_scaffolds_count": 56,
+        "gc_count": "960375072",
+        "gc_percent": 44,
+        "genome_coverage": "15",
+        "number_of_component_sequences": 262325,
+        "number_of_contigs": 262325,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 78630,
+        "scaffold_l50": 102,
+        "scaffold_n50": 6605846,
+        "total_number_of_chromosomes": 18,
+        "total_sequence_length": "2365749696",
+        "total_ungapped_length": "2173187223"
+      },
+      "current_accession": "GCF_000241765.3",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Painted turtle genome sequencing consortium",
+          "total_seq_length": "16875"
+        }
       ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02713681",
-      "biosampleid": "2713681",
-      "biosource": {
-        "infraspecieslist": [],
-        "sex": "female",
-        "isolate": "RCT428"
+      "organism": {
+        "common_name": "western painted turtle",
+        "infraspecific_names": { "isolate": "RCT428", "sex": "female" },
+        "organism_name": "Chrysemys picta bellii",
+        "tax_id": 8478
       },
-      "coverage": "15",
-      "partialgenomerepresentation": "false",
-      "primary": "1070878",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2014/03/31 00:00",
-      "asmreleasedate_refseq": "2014/05/20 00:00",
-      "seqreleasedate": "2014/03/31 00:00",
-      "asmupdatedate": "2014/07/07 00:00",
-      "submissiondate": "2014/03/31 00:00",
-      "lastupdatedate": "2014/07/07 00:00",
-      "submitterorganization": "Painted turtle genome sequencing consortium",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "refseq_has_annotation",
-        "replaced",
-        "replaced_genbank",
-        "suppressed_refseq",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000241765.2",
-        "refseq": "GCF_000241765.3",
-        "similarity": "different"
-      },
-      "contign50": 21349,
-      "scaffoldn50": 6605846,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Chrysemys_picta/102",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/241/765/GCA_000241765.2_Chrysemys_picta_bellii-3.0.3",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/241/765/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/241/765/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/241/765/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "102",
-        "buscolineage": "sauropsida_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.984225",
-        "singlecopy": "0.977139",
-        "duplicated": "0.00708556",
-        "fragmented": "0.00882353",
-        "missing": "0.00695187",
-        "totalcount": 7480
-      },
-      "sortorder": "5C3XAFAE9999786500002417659796",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">18</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">262326</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">29024</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">21349</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">19</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">78631</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">55</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">78576</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">102</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">6605846</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2365766571</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2173204098</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/241/765/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/241/765/GCA_000241765.2_Chrysemys_picta_bellii-3.0.3</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/241/765/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/241/765/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3/GCF_000241765.3_Chrysemys_picta_bellii-3.0.3_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>na</representative-status> <submitter-organization>Painted turtle genome sequencing consortium</submitter-organization>    "
+      "paired_accession": "GCA_000241765.2",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/AHGY00000000.2",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/AHGY02",
+        "wgs_project_accession": "AHGY02"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

@@ -1,173 +1,119 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["4121011", "4119451"],
-    "4121011": {
-      "uid": "4121011",
-      "rsuid": "",
-      "gbuid": "12701458",
-      "assemblyaccession": "GCA_902167395.1",
-      "lastmajorreleaseaccession": "GCA_902167395.1",
-      "latestaccession": "",
-      "chainid": "902167395",
-      "assemblyname": "gadMor3.0 alternate haplotype",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "8049",
-      "organism": "Gadus morhua (Atlantic cod)",
-      "speciestaxid": "8049",
-      "speciesname": "Gadus morhua",
-      "assemblytype": "alternate-pseudohaplotype (alternate pseudohaplotype of diploid)",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "CABHMB01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJEB33454", "bioprojectid": 554059 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [],
-      "rs_projects": [],
-      "biosampleaccn": "SAMEA5574046",
-      "biosampleid": "11106068",
-      "biosource": { "infraspecieslist": [], "sex": "", "isolate": "" },
-      "coverage": "83",
-      "partialgenomerepresentation": "false",
-      "primary": "12701408",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2019/07/29 00:00",
-      "asmreleasedate_refseq": "1/01/01 00:00",
-      "seqreleasedate": "2019/07/16 00:00",
-      "asmupdatedate": "2023/01/12 00:00",
-      "submissiondate": "2019/07/16 00:00",
-      "lastupdatedate": "2023/01/12 00:00",
-      "submitterorganization": "SC",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has_linked_assembly",
-        "latest",
-        "latest_genbank",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_902167395.1",
-        "refseq": "",
-        "similarity": ""
+  "reports": [
+    {
+      "accession": "GCA_902167395.1",
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "various",
+        "assembly_name": "gadMor3.0 alternate haplotype",
+        "assembly_status": "current",
+        "assembly_type": "alternate-pseudohaplotype",
+        "bioproject_accession": "PRJEB33454",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJEB33454",
+                "parent_accessions": ["PRJEB33456"],
+                "title": "Gadus morhua (Atlantic cod) genome assembly, fGadMor1, alternate haplotype"
+              },
+              {
+                "accession": "PRJEB33456",
+                "parent_accessions": ["PRJNA489243", "PRJEB43745"],
+                "title": "Gadus morhua (Atlantic cod)"
+              },
+              {
+                "accession": "PRJNA489243",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "Vertebrate Genomes Project"
+              },
+              {
+                "accession": "PRJEB43745",
+                "title": "Sanger Institute Tree of Life Programme: Data and Assemblies"
+              },
+              {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMEA5574046",
+          "attributes": [
+            { "name": "common name", "value": "Atlantic cod" },
+            { "name": "date received", "value": "2019-02-06" },
+            { "name": "family", "value": "Gadidae" },
+            { "name": "env_medium", "value": "individual" },
+            { "name": "order", "value": "Gadiformes" },
+            { "name": "project", "value": "VGP" },
+            { "name": "provider", "value": "Kjetill Sigurd Jakobsen" },
+            { "name": "sample_name", "value": "fGadMor1" },
+            {
+              "name": "submission description",
+              "value": "The Vertebrate Genomes Project aims to build reference quality genome assemblies for hundreds to thousands of vertebrate species."
+            },
+            { "name": "submission identifier", "value": "GSB-2754" },
+            {
+              "name": "submission title",
+              "value": "VGP - Vertebrate Genomes Project"
+            }
+          ],
+          "description": {
+            "organism": { "organism_name": "Gadus morhua", "tax_id": 8049 },
+            "title": "Sample from Gadus morhua"
+          },
+          "last_updated": "2023-10-28T21:35:26.000",
+          "models": ["Generic"],
+          "owner": { "name": "Wellcome Trust Sanger Institute" },
+          "package": "Generic.1.0",
+          "publication_date": "2017-01-30T00:00:00.000",
+          "sample_ids": [{ "db": "SRA", "value": "ERS3734118" }],
+          "sample_name": "fGadMor1",
+          "status": { "status": "live", "when": "2019-03-12T11:51:32.376" },
+          "submission_date": "2019-03-12T11:51:32.373"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_902167395.1",
+        "comments": "The assembly gadMor3.0 of individual fGadMor1 (SAMEA5574046) is based on 83x PacBio data generated at the Wellcome Sanger Institute and the Jakobsen lab at the University of Olso in Norway, 59x 10X Genomics Chromium data and BioNano data generated at the Wellcome Sanger Institute, as well as 76x Arima Hi-C data generated at the Jakobsen lab. The assembly process included the following sequence of steps: initial PacBio assembly generation with Falcon-unzip, retained haplotig identification with purge_dups, 10X based scaffolding with scaff10x, BioNano hybrid-scaffolding, Hi-C based scaffolding with SALSA2, Arrow polishing, and two rounds of FreeBayes polishing. Finally, the assembly was analysed and manually improved using gEVAL. Chromosome-scale scaffolds were named based on a genetic map provided by the Jakobsen lab.",
+        "diploid_role": "alternate_pseudohaplotype_of_diploid",
+        "linked_assemblies": [
+          {
+            "assembly_type": "principal_pseudohaplotype_of_diploid",
+            "linked_assembly": "GCA_902167405.1"
+          }
+        ],
+        "release_date": "2019-07-16",
+        "sequencing_tech": "PacBio,Illumina,BioNano,Arima",
+        "submitter": "SC"
       },
-      "contign50": 278226,
-      "scaffoldn50": 278683,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/395/GCA_902167395.1_gadMor3.0_alternate_haplotype",
-      "ftppath_refseq": "",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/395/GCA_902167395.1_gadMor3.0_alternate_haplotype/GCA_902167395.1_gadMor3.0_alternate_haplotype_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/395/GCA_902167395.1_gadMor3.0_alternate_haplotype/GCA_902167395.1_gadMor3.0_alternate_haplotype_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
+      "assembly_stats": {
+        "atgc_count": "584119071",
+        "contig_l50": 622,
+        "contig_n50": 278226,
+        "gc_count": "266080369",
+        "gc_percent": 45.5,
+        "genome_coverage": "83",
+        "number_of_component_sequences": 3592,
+        "number_of_contigs": 3595,
+        "number_of_scaffolds": 3592,
+        "scaffold_l50": 621,
+        "scaffold_n50": 278683,
+        "total_sequence_length": "584119146",
+        "total_ungapped_length": "584119071"
       },
-      "sortorder": "5C6X98959997217739021673959800",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">3595</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">622</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">278226</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">3592</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">3592</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">621</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">278683</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">584119146</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">584119071</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/395/GCA_902167395.1_gadMor3.0_alternate_haplotype/GCA_902167395.1_gadMor3.0_alternate_haplotype_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/395/GCA_902167395.1_gadMor3.0_alternate_haplotype</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/395/GCA_902167395.1_gadMor3.0_alternate_haplotype/GCA_902167395.1_gadMor3.0_alternate_haplotype_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>8</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>SC</submitter-organization>    "
-    },
-    "4119451": {
-      "uid": "4119451",
-      "rsuid": "12973628",
-      "gbuid": "12698358",
-      "assemblyaccession": "GCF_902167405.1",
-      "lastmajorreleaseaccession": "GCF_902167405.1",
-      "latestaccession": "",
-      "chainid": "902167405",
-      "assemblyname": "gadMor3.0",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "8049",
-      "organism": "Gadus morhua (Atlantic cod)",
-      "speciestaxid": "8049",
-      "speciesname": "Gadus morhua",
-      "assemblytype": "haploid (principal pseudohaplotype of diploid)",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "CABHMC01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJEB33455", "bioprojectid": 554060 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA557709", "bioprojectid": 557709 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMEA5574046",
-      "biosampleid": "11106068",
-      "biosource": { "infraspecieslist": [], "sex": "", "isolate": "" },
-      "coverage": "83",
-      "partialgenomerepresentation": "false",
-      "primary": "12909938",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2019/07/29 00:00",
-      "asmreleasedate_refseq": "2019/08/01 00:00",
-      "seqreleasedate": "2019/07/16 00:00",
-      "asmupdatedate": "2025/07/09 00:00",
-      "submissiondate": "2019/07/16 00:00",
-      "lastupdatedate": "2025/07/09 00:00",
-      "submitterorganization": "SC",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "has_linked_assembly",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "refseq_has_annotation",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_902167405.1",
-        "refseq": "GCF_902167405.1",
-        "similarity": "different"
+      "current_accession": "GCA_902167395.1",
+      "organism": {
+        "common_name": "Atlantic cod",
+        "organism_name": "Gadus morhua",
+        "tax_id": 8049
       },
-      "contign50": 1015663,
-      "scaffoldn50": 28732775,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Gadus_morhua/GCF_902167405.1-RS_2025_07.html",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/405/GCA_902167405.1_gadMor3.0",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/902/167/405/GCF_902167405.1_gadMor3.0",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/902/167/405/GCF_902167405.1_gadMor3.0/GCF_902167405.1_gadMor3.0_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/902/167/405/GCF_902167405.1_gadMor3.0/GCF_902167405.1_gadMor3.0_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "RS_2025_07",
-        "buscolineage": "actinopterygii_odb10",
-        "buscover": "5.7.1",
-        "complete": "0.962363",
-        "singlecopy": "0.943956",
-        "duplicated": "0.0184066",
-        "fragmented": "0.00961538",
-        "missing": "0.028022",
-        "totalcount": 3640
-      },
-      "sortorder": "1C3X98959989843369021674059898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">23</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">1442</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">169</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">1015663</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">24</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">227</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">24</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">203</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">11</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">28732775</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">669966409</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">646392667</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/902/167/405/GCF_902167405.1_gadMor3.0/GCF_902167405.1_gadMor3.0_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/167/405/GCA_902167405.1_gadMor3.0</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/902/167/405/GCF_902167405.1_gadMor3.0</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/902/167/405/GCF_902167405.1_gadMor3.0/GCF_902167405.1_gadMor3.0_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>12</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>SC</submitter-organization>    "
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/CABHMB000000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/CABHMB01",
+        "wgs_project_accession": "CABHMB01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

@@ -1,99 +1,146 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["2315511"],
-    "2315511": {
-      "uid": "2315511",
-      "rsuid": "8636728",
-      "gbuid": "6347868",
-      "assemblyaccession": "GCF_000002315.6",
-      "lastmajorreleaseaccession": "GCF_000002315.5",
-      "latestaccession": "",
-      "chainid": "2315",
-      "assemblyname": "GRCg6a",
-      "ucscname": "galGal6",
-      "ensemblname": "",
-      "taxid": "9031",
-      "organism": "Gallus gallus (chicken)",
-      "speciestaxid": "9031",
-      "speciesname": "Gallus gallus",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "AADN05",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA13342", "bioprojectid": 13342 }
+  "reports": [
+    {
+      "accession": "GCF_000002315.6",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "GU261716.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_040902.1",
+          "submitter": "Laboratory for Conservation and Utilization of Bio-resource, Yunnan University"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA10808", "bioprojectid": 10808 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02981218",
-      "biosampleid": "2981218",
-      "biosource": {
-        "infraspecieslist": [
-          { "sub_type": "breed", "sub_value": "Red Jungle Fowl" }
+      "annotation_info": {
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Gallus gallus Annotation Release 104",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2018-04-13",
+        "software_version": "8.0",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 6558,
+            "other": 100,
+            "protein_coding": 17477,
+            "pseudogene": 262,
+            "total": 24397
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "FALCON-integrate v. 1.7.5",
+        "assembly_name": "GRCg6a",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA13342",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA13342",
+                "parent_accessions": ["PRJNA167910"],
+                "title": "The Chicken Genome Project, currently maintained by the Genome Reference Consortium (GRC)"
+              },
+              {
+                "accession": "PRJNA167910",
+                "title": "NHGRI Large Scale Sequencing Program for Organismal Sequencing"
+              }
+            ]
+          }
         ],
-        "sex": "female",
-        "isolate": "RJF #256"
+        "biosample": {
+          "accession": "SAMN02981218",
+          "attributes": [
+            { "name": "sex", "value": "female" },
+            { "name": "isolate", "value": "RJF #256" },
+            { "name": "breed", "value": "Red Jungle fowl, inbred line UCD001" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA13342" }],
+          "breed": "Red Jungle fowl, inbred line UCD001",
+          "description": {
+            "organism": { "organism_name": "Gallus gallus", "tax_id": 9031 },
+            "title": "Sample from Gallus gallus"
+          },
+          "isolate": "RJF #256",
+          "last_updated": "2015-12-16T07:55:36.780",
+          "models": ["Generic"],
+          "owner": {
+            "name": "The Genome Institute, Washington University School of Medicine"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2014-08-11T11:15:50.240",
+          "sample_ids": [
+            { "db": "SRA", "value": "SRS926532" },
+            { "db": "GenBank", "value": "gb|AADN00000000.3" }
+          ],
+          "sex": "female",
+          "status": { "status": "live", "when": "2014-08-11T11:15:50.240" },
+          "submission_date": "2014-08-11T11:15:50.240"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000002315.6",
+        "comments": "The current red jungle fowl (Gallus gallus) genome assembly, GRCg6a, was sequenced and assembled with single molecule real time (SMRT) sequencing technology to a depth of approximately 80x. The same DNA reference source, a female known as \"RJF #256\" from an inbred line (UCD 001), was sequenced on the Pacific Biosciences RSII instrument (a relatively equal split of P6 and P5 chemistry reads) and all reads were assembled with the FALCON assembler. In recognition of the need for improvement in assembly contiguity and representation of chromosomes we generated a high chromatin proximity map to aid in the order and orientation of assembled sequences. The creation of the improved chromosomal sequences proceeded in a way similar to that described for the Gallus_gallus-5.0 release. To avoid loss of sequence in the transition from Gallus_gallus-5.0 to GRCg6a, finished RJF BAC clones found in the former assembly were incorporated into the final chromosomal sequences, replacing underlying WGS contigs where appropriate. For more information see: https://www.ncbi.nlm.nih.gov/grc/chicken. Funding for the sequence characterization of the chicken genome was provided by the USDA, National Human Genome Research Institute (NHGRI), National Institutes of Health (NIH) and Cobb Vantress.\nGRCg6a differs from the earlier GRCg6 version only in the elimination of four redundant unlocalized scaffolds.",
+        "description": "Genome Reference Consortium Chicken Build 6a",
+        "genome_notes": ["superseded by newer assembly for species"],
+        "paired_assembly": {
+          "accession": "GCA_000002315.5",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "release_date": "2018-03-27",
+        "sequencing_tech": "Pacific Biosciences RSII (P6-C4 and P5-C3 chemistry)",
+        "submitter": "Genome Reference Consortium",
+        "suppression_reason": "This RefSeq record was removed as a result of standard genome annotation processing. Contact info@ncbi.nlm.nih.gov for further information.",
+        "synonym": "galGal6"
       },
-      "coverage": "82",
-      "partialgenomerepresentation": "false",
-      "primary": "6362708",
-      "assemblydescription": "Genome Reference Consortium Chicken Build 6a",
-      "releaselevel": "Minor",
-      "releasetype": "Minor",
-      "asmreleasedate_genbank": "2018/04/06 00:00",
-      "asmreleasedate_refseq": "2019/02/22 00:00",
-      "seqreleasedate": "2018/03/27 00:00",
-      "asmupdatedate": "2021/04/12 00:00",
-      "submissiondate": "2018/03/27 00:00",
-      "lastupdatedate": "2021/04/12 00:00",
-      "submitterorganization": "Genome Reference Consortium",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": ["superseded by newer assembly for species"],
-      "propertylist": [
-        "excluded-from-refseq",
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has-synonym",
-        "has_annotation",
-        "latest",
-        "latest_genbank",
-        "refseq_has_annotation",
-        "suppressed_refseq",
-        "wgs"
+      "assembly_stats": {
+        "atgc_count": "1136266516",
+        "contig_l50": 19,
+        "contig_n50": 17655422,
+        "gaps_between_scaffolds_count": 68,
+        "gc_count": "479131083",
+        "gc_percent": 42,
+        "genome_coverage": "82",
+        "number_of_component_sequences": 2243,
+        "number_of_contigs": 1402,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 524,
+        "scaffold_l50": 12,
+        "scaffold_n50": 20785086,
+        "total_number_of_chromosomes": 34,
+        "total_sequence_length": "1065348650",
+        "total_ungapped_length": "1055564190"
+      },
+      "current_accession": "GCF_000002315.6",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Genome Reference Consortium",
+          "total_seq_length": "16784"
+        }
       ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000002315.5",
-        "refseq": "GCF_000002315.6",
-        "similarity": "different"
+      "organism": {
+        "common_name": "chicken",
+        "infraspecific_names": {
+          "breed": "Red Jungle Fowl",
+          "isolate": "RJF #256",
+          "sex": "female"
+        },
+        "organism_name": "Gallus gallus",
+        "tax_id": 9031
       },
-      "contign50": 17655422,
-      "scaffoldn50": 20785086,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/002/315/GCA_000002315.5_GRCg6a",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/315/GCF_000002315.6_GRCg6a",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/315/GCF_000002315.6_GRCg6a/GCF_000002315.6_GRCg6a_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/315/GCF_000002315.6_GRCg6a/GCF_000002315.6_GRCg6a_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
-      },
-      "sortorder": "9C3X11109823445770000023159493",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">34</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">1403</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">19</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">17655422</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">35</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">525</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">96</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">89</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">340</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">12</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">20785086</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">1065365434</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">1055580974</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/315/GCF_000002315.6_GRCg6a/GCF_000002315.6_GRCg6a_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/002/315/GCA_000002315.5_GRCg6a</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/315/GCF_000002315.6_GRCg6a</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/002/315/GCF_000002315.6_GRCg6a/GCF_000002315.6_GRCg6a_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>na</representative-status> <submitter-organization>Genome Reference Consortium</submitter-organization>    "
+      "paired_accession": "GCA_000002315.5",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/AADN00000000.5",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/AADN05",
+        "wgs_project_accession": "AADN05"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

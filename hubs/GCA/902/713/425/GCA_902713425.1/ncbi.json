@@ -1,84 +1,116 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["5437571"],
-    "5437571": {
-      "uid": "5437571",
-      "rsuid": "",
-      "gbuid": "15742478",
-      "assemblyaccession": "GCA_902713425.1",
-      "lastmajorreleaseaccession": "GCA_902713425.1",
-      "latestaccession": "GCA_902713425.2",
-      "chainid": "902713425",
-      "assemblyname": "fAciRut3.1 maternal haplotype",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "7906",
-      "organism": "Acipenser ruthenus (sterlet)",
-      "speciestaxid": "7906",
-      "speciesname": "Acipenser ruthenus",
-      "assemblytype": "haploid",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "CACTIG01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJEB35912", "bioprojectid": 596973 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [],
-      "rs_projects": [],
-      "biosampleaccn": "SAMEA5572864",
-      "biosampleid": "10952890",
-      "biosource": { "infraspecieslist": [], "sex": "", "isolate": "" },
-      "coverage": "149",
-      "partialgenomerepresentation": "false",
-      "primary": "15742468",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2020/01/09 00:00",
-      "asmreleasedate_refseq": "1/01/01 00:00",
-      "seqreleasedate": "2020/01/08 00:00",
-      "asmupdatedate": "2023/08/08 00:00",
-      "submissiondate": "2020/01/08 00:00",
-      "lastupdatedate": "2023/08/08 00:00",
-      "submitterorganization": "SC",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "replaced",
-        "replaced_genbank",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_902713425.1",
-        "refseq": "",
-        "similarity": ""
+  "reports": [
+    {
+      "accession": "GCA_902713425.1",
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "various",
+        "assembly_name": "fAciRut3.1 maternal haplotype",
+        "assembly_status": "previous",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJEB35912",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJEB35912",
+                "parent_accessions": ["PRJEB35914"],
+                "title": "Acipenser ruthenus (sterlet) genome assembly, fAciRut3 maternal haplotype"
+              },
+              {
+                "accession": "PRJEB35914",
+                "parent_accessions": ["PRJNA489243", "PRJEB43745"],
+                "title": "Acipenser ruthenus (sterlet)"
+              },
+              {
+                "accession": "PRJNA489243",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "Vertebrate Genomes Project"
+              },
+              {
+                "accession": "PRJEB43745",
+                "title": "Sanger Institute Tree of Life Programme: Data and Assemblies"
+              },
+              {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMEA5572864",
+          "attributes": [
+            { "name": "env_medium", "value": "individual" },
+            { "name": "sample_name", "value": "fAciRut3" },
+            {
+              "name": "Submission description",
+              "value": "The Vertebrate Genomes Project aims to build reference quality genome assemblies for hundreds to thousands of vertebrate species."
+            },
+            { "name": "Submission identifier", "value": "GSB-2754" },
+            {
+              "name": "Submission title",
+              "value": "VGP - Vertebrate Genomes Project"
+            },
+            { "name": "common name", "value": "sterlet" },
+            { "name": "date received", "value": "2018-06-19" },
+            { "name": "family", "value": "Acipenseridae" },
+            { "name": "order", "value": "Acipenseriformes" },
+            { "name": "project", "value": "VGP" },
+            { "name": "provider", "value": "C. Baker/M. Psenicka" },
+            { "name": "tissue storage", "value": "flash_frozen" }
+          ],
+          "description": {
+            "organism": {
+              "organism_name": "Acipenser ruthenus",
+              "tax_id": 7906
+            },
+            "title": "Sample from Acipenser ruthenus"
+          },
+          "last_updated": "2019-12-20T15:06:17.343",
+          "models": ["Generic"],
+          "owner": { "name": "EBI" },
+          "package": "Generic.1.0",
+          "publication_date": "2017-01-30T00:00:00.000",
+          "sample_ids": [{ "db": "SRA", "value": "ERS4354975" }],
+          "sample_name": "fAciRut3",
+          "status": { "status": "live", "when": "2019-02-15T10:22:00.363" },
+          "submission_date": "2019-02-15T10:22:00.363"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_902713425.1",
+        "comments": "The assembly fAciRut3.1 is based on 149x PacBio Sequel II data, 64x 10X Genomics Chromium data, BioNano data and 72x Dovetail Hi-C data generated at the Wellcome Sanger Institute. The assembly process included the following sequence of steps: segregation of PacBio reads representing the two haplotypes using trioCanu and k-mers from the Illumina-sequenced parents (maternal: SAMEA5572860, and paternal: SAMEA5572861), separate assembly of each haplotype using Falcon, polishing with Arrow from the binned reads, retained duplication removal with purge_dups, 10X based scaffolding with scaff10x, BioNano hybrid-scaffolding, further Arrow polishing, and two rounds of FreeBayes Illumina polishing. Finally, the assembly was analysed and manually improved using gEVAL. Due to the partial tetraploid and duplicated nature of this genome, the assignment of scaffolds to chromosome level was ambiguous and therefore omitted. Future updates will address this.",
+        "release_date": "2020-01-08",
+        "sequencing_tech": "PacBio,Illumina,BioNano,Dovetail",
+        "submitter": "SC"
       },
-      "contign50": 10828506,
-      "scaffoldn50": 43124428,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/713/425/GCA_902713425.1_fAciRut3.1_maternal_haplotype",
-      "ftppath_refseq": "",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/713/425/GCA_902713425.1_fAciRut3.1_maternal_haplotype/GCA_902713425.1_fAciRut3.1_maternal_haplotype_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/713/425/GCA_902713425.1_fAciRut3.1_maternal_haplotype/GCA_902713425.1_fAciRut3.1_maternal_haplotype_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
+      "assembly_stats": {
+        "atgc_count": "1638655329",
+        "contig_l50": 48,
+        "contig_n50": 10828506,
+        "gc_count": "648206136",
+        "gc_percent": 39.5,
+        "genome_coverage": "149",
+        "number_of_component_sequences": 245,
+        "number_of_contigs": 645,
+        "number_of_scaffolds": 245,
+        "scaffold_l50": 11,
+        "scaffold_n50": 43124428,
+        "total_sequence_length": "1638742712",
+        "total_ungapped_length": "1638655336"
       },
-      "sortorder": "5C6XB2AF9891714939027134259800",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">645</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">48</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">10828506</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">245</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">245</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">11</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">43124428</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">1638742712</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">1638655336</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/713/425/GCA_902713425.1_fAciRut3.1_maternal_haplotype/GCA_902713425.1_fAciRut3.1_maternal_haplotype_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/713/425/GCA_902713425.1_fAciRut3.1_maternal_haplotype</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/902/713/425/GCA_902713425.1_fAciRut3.1_maternal_haplotype/GCA_902713425.1_fAciRut3.1_maternal_haplotype_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>8</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>SC</submitter-organization>    "
+      "current_accession": "GCA_902713425.2",
+      "organism": {
+        "common_name": "sterlet",
+        "organism_name": "Acipenser ruthenus",
+        "tax_id": 7906
+      },
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/CACTIG000000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/CACTIG01",
+        "wgs_project_accession": "CACTIG01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

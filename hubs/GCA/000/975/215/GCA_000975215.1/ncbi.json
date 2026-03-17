@@ -1,91 +1,111 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["338541"],
-    "338541": {
-      "uid": "338541",
-      "rsuid": "",
-      "gbuid": "1770628",
-      "assemblyaccession": "GCA_000975215.1",
-      "lastmajorreleaseaccession": "GCA_000975215.1",
-      "latestaccession": "",
-      "chainid": "975215",
-      "assemblyname": "Cael_CB4856_1.0",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "6239",
-      "organism": "Caenorhabditis elegans (nematodes)",
-      "speciestaxid": "6239",
-      "speciesname": "Caenorhabditis elegans",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "JZEW01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA275000", "bioprojectid": 275000 }
+  "reports": [
+    {
+      "accession": "GCA_000975215.1",
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "RecursiveHomologyBasedAssemblyPlusJRAssembler v. 2014-07-01",
+        "assembly_name": "Cael_CB4856_1.0",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA275000",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA275000",
+                "title": "Caenorhabditis elegans Hawaiian Strain CB4856 Genome Assembly"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN03334911",
+          "attributes": [
+            { "name": "strain", "value": "CB4856" },
+            { "name": "collection_date", "value": "not collected" },
+            { "name": "depth", "value": "missing" },
+            { "name": "elev", "value": "missing" },
+            { "name": "env_broad_scale", "value": "field" },
+            { "name": "env_local_scale", "value": "pineapple field" },
+            { "name": "env_medium", "value": "soil" },
+            { "name": "estimated_size", "value": "97Mb" },
+            { "name": "geo_loc_name", "value": "USA: Hawaii, Maui" },
+            { "name": "isol_growth_condt", "value": "not applicable" },
+            { "name": "lat_lon", "value": "missing" },
+            { "name": "num_replicons", "value": "not applicable" },
+            { "name": "ploidy", "value": "diploid" },
+            { "name": "propagation", "value": "sexual" }
+          ],
+          "collection_date": "not collected",
+          "description": {
+            "comment": "Keywords: GSC:MIxS;MIGS:6.0",
+            "organism": {
+              "organism_name": "Caenorhabditis elegans",
+              "tax_id": 6239
+            },
+            "title": "MIGS Eukaryotic sample from Caenorhabditis elegans Hawaiian Strain CB4856"
+          },
+          "geo_loc_name": "USA: Hawaii, Maui",
+          "last_updated": "2015-03-04T10:48:43.840",
+          "lat_lon": "missing",
+          "models": ["MIGS.eu", "MIGS/MIMS/MIMARKS.soil"],
+          "owner": { "contacts": [{}], "name": "University of Washington" },
+          "package": "MIGS.eu.soil.6.0",
+          "publication_date": "2015-02-09T16:40:19.467",
+          "sample_ids": [
+            {
+              "label": "Sample name",
+              "value": "Caenorhabditis elegans Hawaiian Strain CB4856 "
+            }
+          ],
+          "status": { "status": "live", "when": "2015-02-09T16:40:19.467" },
+          "strain": "CB4856",
+          "submission_date": "2015-02-09T16:40:19.467"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_000975215.1",
+        "comments": "C. elegans Hawaiian strain CB4856 genome sequence 1.0\n\nWe have undertaken the construction of a C. elegans Hawaiian strain CB4856 reference genome sequence. The Hawaiian strain, CB4856, was isolated in 1972 by Linda Holden from a pineapple field on the Hawaiian island of Maui (under the name HA8). To complete our reference genome we took advantage of several very deep coverage MPS datasets for the Hawaiian genome, a new de novo assembly program (Chu et al. 2013), end sequences from a fosmid library for the Hawaiian genome (Perkins, J. D., 2010 Comparison of fosmid libraires made from two geographic isolates of Caenorhabditis elegans, University of British Columbia), recently released RNA-seq data and low coverage genome sequence data from 49 recombinant inbred lines (RILs) (Li et al. 2006) and 60 introgression lines (ILs) (Doroszuk et al. 2009) Exploiting these resources and using a variety of software tools, we have modified the C. elegans N2 reference genome to generate a draft reference sequence for the Hawaiian genome.\n\nUsing a strategy similar to that employed in the analysis of different Arabidopsis accessions (Gan et al. 2011; Schneeberger et al. 2011), we first aligned the random genomic reads (69.5X coverage composed of 34.7M paired end sequences (104 base sequences) from clones with an insert size of 321 bp with a total of 7220M bases) to the N2 reference genome, identified SNVs and indels, modified the N2 reference accordingly and realigned the reads, repeating the process 19 times to create a first version of the Hawaiian genome (20 cycles total). This process allowed extension of sequence into regions of high divergence, closed large deletions and built sequence into insertions. We used the JR-Assembler v1.0.4 (Chu et al., 2013) to create de novo assemblies of the same sequence reads, assessed their quality using the program REAPR (Hunt et al. 2013), breaking contigs as needed and aligned the resultant contigs to Hawaiian genome. To identify deletions previously missed, we scanned the genome for regions devoid of coverage, merging adjacent regions if they were only separated by short segments of either very low coverage or repeated sequences. For regions flanked by adjacent segments of the de novo assembled contigs, we used the contig to close the gap. To confirm that such segments were properly placed in the genome, we used the RIL data to establish their chromosomal location. The result is an initial draft reference Hawaiian genome with a total length of 97Mb. Regions of excess coverage (>99x) suggest that we have failed to represent some duplicated segments, which total some 0.5 Mb in length. Also, the de novo assembly generated 22 contigs of 16kb total length that we were unable to locate in the reference. We included only the 9 that were at least 500 bases in length. Just as the N2 reference has been improved through continuous community input, we would expect users will provide improvements here.\n\nCredits:\n\nIllumina Production sequencing - Leonid Kruglyak/Erik C. Andersen, Princeton University, Princeton, NJ USA.\n\nFosmid sequencing - Don Moerman, University of British Columbia, Canada.\n\nSequence assembly and data integration for creation of chromosomal files - Owen A. Thompson and Robert H. Waterston, Department of Genome Sciences at University of Washington School of Medicine, Seattle, WA USA",
+        "release_date": "2015-04-21",
+        "sequencing_tech": "Illumina",
+        "submitter": "University of Washington"
+      },
+      "assembly_stats": {
+        "atgc_count": "98284421",
+        "contig_l50": 3,
+        "contig_n50": 14890789,
+        "gc_count": "34817602",
+        "gc_percent": 35.5,
+        "genome_coverage": "69",
+        "number_of_component_sequences": 15,
+        "number_of_contigs": 16,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 15,
+        "scaffold_l50": 3,
+        "scaffold_n50": 17183857,
+        "total_number_of_chromosomes": 6,
+        "total_sequence_length": "98289014",
+        "total_ungapped_length": "98284421"
+      },
+      "current_accession": "GCA_000975215.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "University of Washington",
+          "total_seq_length": "13793"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN03334911",
-      "biosampleid": "3334911",
-      "biosource": {
-        "infraspecieslist": [{ "sub_type": "strain", "sub_value": "CB4856" }],
-        "sex": "",
-        "isolate": ""
+      "organism": {
+        "infraspecific_names": { "strain": "CB4856" },
+        "organism_name": "Caenorhabditis elegans",
+        "tax_id": 6239
       },
-      "coverage": "69",
-      "partialgenomerepresentation": "false",
-      "primary": "1731348",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2015/05/08 00:00",
-      "asmreleasedate_refseq": "1/01/01 00:00",
-      "seqreleasedate": "2015/04/21 00:00",
-      "asmupdatedate": "2022/12/14 00:00",
-      "submissiondate": "2015/04/21 00:00",
-      "lastupdatedate": "2022/12/14 00:00",
-      "submitterorganization": "University of Washington",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "latest",
-        "latest_genbank",
-        "reference-guided",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000975215.1",
-        "refseq": "",
-        "similarity": ""
-      },
-      "contign50": 14890789,
-      "scaffoldn50": 17183857,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/975/215/GCA_000975215.1_Cael_CB4856_1.0",
-      "ftppath_refseq": "",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/975/215/GCA_000975215.1_Cael_CB4856_1.0/GCA_000975215.1_Cael_CB4856_1.0_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/975/215/GCA_000975215.1_Cael_CB4856_1.0/GCA_000975215.1_Cael_CB4856_1.0_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
-      },
-      "sortorder": "5C3X0C099851092100009752159800",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">6</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">17</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">3</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">14890789</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">7</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">16</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">7</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">9</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">3</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">17183857</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">98302807</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">98298214</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/975/215/GCA_000975215.1_Cael_CB4856_1.0/GCA_000975215.1_Cael_CB4856_1.0_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/975/215/GCA_000975215.1_Cael_CB4856_1.0</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/975/215/GCA_000975215.1_Cael_CB4856_1.0/GCA_000975215.1_Cael_CB4856_1.0_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>na</representative-status> <submitter-organization>University of Washington</submitter-organization>    "
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JZEW00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JZEW01",
+        "wgs_project_accession": "JZEW01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

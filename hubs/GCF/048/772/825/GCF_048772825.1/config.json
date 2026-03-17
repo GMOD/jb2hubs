@@ -147,7 +147,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/048/772/825/GCF_048772825.1/bbi/GCF_048772825.1_mCalLat2.hap2.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/048/772/825/GCF_048772825.1/bbi/GCF_048772825.1_mCalLat2.hap2.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -169,7 +170,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/048/772/825/GCF_048772825.1/bbi/GCF_048772825.1_mCalLat2.hap2.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/048/772/825/GCF_048772825.1/bbi/GCF_048772825.1_mCalLat2.hap2.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -552,6 +554,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_048772825.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_048772825.1_to_GCF_048772815.1_liftOver",
+      "name": "GCF_048772825.1 (golden-mantled ground squirrel (hap2 2025 refseq)) to golden-mantled ground squirrel (hap1 2025 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_048772825.1", "GCF_048772815.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_048772825.1",
+        "queryAssembly": "GCF_048772815.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_048772825.1ToGCF_048772815.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_048772825.1ToGCF_048772815.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

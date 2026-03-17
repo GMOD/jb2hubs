@@ -147,7 +147,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/827/115/GCF_902827115.1/bbi/GCF_902827115.1_fPseGeo1.1.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/827/115/GCF_902827115.1/bbi/GCF_902827115.1_fPseGeo1.1.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -169,7 +170,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/827/115/GCF_902827115.1/bbi/GCF_902827115.1_fPseGeo1.1.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/827/115/GCF_902827115.1/bbi/GCF_902827115.1_fPseGeo1.1.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -646,6 +648,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_902827115.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_902827115.1_to_GCF_902827115.2_liftOver",
+      "name": "GCF_902827115.1 (South Georgia icefish (v1 primary hap 2020)) to South Georgia icefish (v2 primary hap 2022) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_902827115.1", "GCF_902827115.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_902827115.1",
+        "queryAssembly": "GCF_902827115.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_902827115.1ToGCF_902827115.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_902827115.1ToGCF_902827115.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

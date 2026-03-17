@@ -1,98 +1,148 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["132581"],
-    "132581": {
-      "uid": "132581",
-      "rsuid": "1024848",
-      "gbuid": "975068",
-      "assemblyaccession": "GCF_000409795.2",
-      "lastmajorreleaseaccession": "GCF_000409795.2",
-      "latestaccession": "",
-      "chainid": "409795",
-      "assemblyname": "Chlorocebus_sabeus 1.1",
-      "ucscname": "chlSab2",
-      "ensemblname": "",
-      "taxid": "60711",
-      "organism": "Chlorocebus sabaeus (green monkey)",
-      "speciestaxid": "60711",
-      "speciesname": "Chlorocebus sabaeus",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "AQIB01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA168621", "bioprojectid": 168621 }
+  "reports": [
+    {
+      "accession": "GCF_000409795.2",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "DQ069713.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_008066.1",
+          "submitter": "School of Biological Sciences, University of Sydney"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA215854", "bioprojectid": 215854 }
+      "annotation_info": {
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Chlorocebus sabaeus Annotation Release 100",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2014-04-29",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Chlorocebus_sabaeus/100",
+        "software_version": "6.0",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 8520,
+            "other": 150,
+            "protein_coding": 20991,
+            "pseudogene": 5282,
+            "total": 34943
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "ALLPATHS and Newbler v. 13-Feb-2013",
+        "assembly_name": "Chlorocebus_sabeus 1.1",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA168621",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA168621",
+                "parent_accessions": ["PRJNA176010"],
+                "title": "Chlorocebus sabaeus Genome sequencing and assembly"
+              },
+              {
+                "accession": "PRJNA176010",
+                "parent_accessions": ["PRJNA167910"],
+                "title": "Vervet Subspecies Phylogeny Project"
+              },
+              {
+                "accession": "PRJNA167910",
+                "title": "NHGRI Large Scale Sequencing Program for Organismal Sequencing"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN01760484",
+          "attributes": [
+            { "name": "sample_id", "value": "2859885439" },
+            {
+              "name": "sample_name",
+              "value": "CASA-100712_draw2_1994021_gDNA_Tube1"
+            },
+            { "name": "sample_type", "value": "genomic dna" },
+            { "name": "BioSampleModel", "value": "Generic" }
+          ],
+          "description": {
+            "organism": {
+              "organism_name": "Chlorocebus sabaeus",
+              "tax_id": 60711
+            },
+            "title": "Generic sample from Chlorocebus aethiops"
+          },
+          "last_updated": "2017-11-17T08:21:08.324",
+          "models": ["Generic"],
+          "owner": {
+            "contacts": [{}],
+            "name": "Washington University, Genome Sequencing Center"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2012-10-09T00:00:00.000",
+          "sample_ids": [
+            { "db": "WUGSC", "label": "Sample name", "value": "145380" },
+            { "db": "SRA", "value": "SRS367536" }
+          ],
+          "sample_name": "CASA-100712_draw2_1994021_gDNA_Tube1",
+          "status": { "status": "live", "when": "2014-11-08T01:05:15" },
+          "submission_date": "2012-10-09T15:05:54.243"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000409795.2",
+        "comments": "Chlorocebus aethiops sabeus (vervet) Sequence Assembly Release Notes\nThe vervet DNA for shotgun sequencing, and for BAC libraries, is derived from an adult male vervet monkey (Chlorocebus aethiops sabeus; animal id 1994-021) within the vervet research colony housed a the Wake Forest Primate Facility to create the BAC library CHORI-252. A total of 362,969 BAC end sequences have been generated from this library. A total of 143 CHORI-252 BACs (approx. 18Mb) have been finished and submitted to Genbank. Of these 29 were finished and submitted for the MHC region. Whole genome sequences were generated on the Roche 454 Titanium instrument at these coverage levels (vervet genome size of approx 2.9Gb): fragment- 10X, 3kbp- 8X, and 8kbp- 1X. Total sequence genome coverage on the Illumina HiSeq instrument was 95x (45x fragments, 45x 3kb and 5x 8kb).\nTwo independent assemblies were built with the appropriate sequence data, using the ALLPATHS (Broad Institute) and Newbler (Roche) assemblers. Based on superior contig and scaffold contiguity the ALLPATHS assembly was chosen as the reference. The unique sequences from the Newbler assembly were then merged into the ALLPATHS assembly using graph accordance methods (Yao et. al. 2011. Oct. 23 Bioinformatics).\nPost assembly we integrated 170 finished BACs. These 170 BACs (including the MHC region) were merged into the 1.0 assembly. The top scaffold that each BAC mapped to was identified by MEGABLAST (-e 1e-20 --W 200 --p 98). Contigs of the top scaffold that the BAC mapped to were identified by BLASTN (-W150 --F F). A Perl script was used to create a new contig for each BAC, extend the contig if the 5' and 3' overlapping contigs were longer than the BAC and adjust flanking gaps accordingly. We then sorted scaffolds by decreasing length, assigned new sequence identifiers to contigs and scaffolds, and extended 20-bp and 50-bp gaps to 100-bp as per NCBI's guideline.\nIn the final assembly, referred to as Chlorocebus_sabeus 6.0.3, there were 162,907 contigs with an N50 contig length of 88 kb. There were 2205 supercontigs with the N50 supercontig length of 45 Mb. A total of 2.73 Gb of sequence was assembled in contigs. Including estimated gap sizes, over 2.74Gb were ordered and oriented along chromosomes, 27.6Mb along the CAE*_random chromosomes, with only 18.34 Mb remaining unlocalized. After organizing Chlorocebus_sabeus 6.0.3 into chromosomal AGP files, we labeled this first vervet release as 1.0.\n*******************************************\nChlorocebus aethiops sabeus Sequence and Assembly Credits\n\nDNA source - Dr. Jay Kaplan, Wake Forest Primate Facility, Wake Forest, NC. Genome Sequence - The Genome Institute, Washington University School of Medicine, St Louis, MO and Department of Human Genetics, McGill University, Montreal, Canada. Sequence Assembly - The Genome Institute, Washington University School of Medicine, St Louis, MO. BAC library - Dr. Pieter DeJong, CHORI, Oakland,CA. Assembly curation - Jessica Wasserscheid, Nikoleta Juretic, Dr. Ken Dewar, McGill University, Montreal, QC Canada. LaDeana Hillier, The Genome Institute, Washington University School of Medicine, St Louis, MO. FISH Mapping Data - Mariano Rocchi, Department of Biology, University of Bari, Bari, Italy. cDNA data - RNA sources was Dr. Nelson Freimer, Semel Institute for Neuroscience and Human Behavior, University of California Los Angeles, CA, USA\nFunding for the sequence characterization of the vervet genome is being provided by NHGRI.\nAuthor List: Nelson Freimer, George Weinstock, Richard K. Wilson, Wesley C. Warren\n*******************************************\nChromosome Lengths:\ncolumn 1 = chromosome column 2 = chromosome length (including estimated gap sizes)\nCAE1 126035930 CAE2 90373283 CAE3 92142175 CAE4 91010382 CAE5 75399963 CAE6 50890351 CAE7 135778131 CAE8 139301422 CAE9 125710982 CAE10 128595539 CAE11 128539186 CAE12 108555830 CAE13 98384682 CAE14 107702431 CAE15 91754291 CAE16 75148670 CAE17 71996105 CAE18 72318688 CAE19 33263144 CAE20 130588469 CAE21 127223203 CAE22 101219884 CAE23 82825804 CAE24 84932903 CAE25 85787240 CAE26 58131712 CAE27 48547382 CAE28 21531802 CAE29 24206276 CAEX 130038232 CAEY 6181219\n*******************************************\nChlorocebus_sabeus 6.0.3 assembly statistics:\n*** Contiguity: Contig *** Total contig number: 162907 Total contig bases: 2734267806 bp Average contig length: 16784 bp Maximum contig length: 1051246 bp N50 contig length: 88741 bp N50 contig number: 7870\n*** Contiguity: Supercontig *** Total supercontig number: 2205 Average supercontig length: 1240031 bp Maximum supercontig length: 126332868 bp N50 supercontig length: 45002363 bp N50 supercontig number: 19\nScaffolds > 1M: 147 Scaffold 250K--1M: 47 Scaffold 100K--250K: 34 Scaffold 10--100K: 473 Scaffold 5--10K: 235 Scaffold 2--5K: 434 Scaffold 0--2K: 835\n\n",
+        "genome_notes": ["superseded by newer assembly for species"],
+        "paired_assembly": {
+          "accession": "GCA_000409795.2",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "release_date": "2014-03-25",
+        "sequencing_tech": "454 Titanium; Illumina HiSeq; ABI",
+        "submitter": "Vervet Genomics Consortium",
+        "suppression_reason": "This record was removed as a result of standard genome annotation processing. Please see www.ncbi.nlm.nih.gov/genome/annotation_euk/process/ for more information."
+      },
+      "assembly_stats": {
+        "contig_l50": 7735,
+        "contig_n50": 90449,
+        "gaps_between_scaffolds_count": 29,
+        "genome_coverage": "95",
+        "number_of_component_sequences": 163017,
+        "number_of_contigs": 162723,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 2021,
+        "scaffold_l50": 14,
+        "scaffold_n50": 81825804,
+        "total_number_of_chromosomes": 31,
+        "total_sequence_length": "2789639778",
+        "total_ungapped_length": "2752002658"
+      },
+      "current_accession": "GCF_000409795.2",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Vervet Genomics Consortium",
+          "total_seq_length": "16550"
+        }
       ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN01760484",
-      "biosampleid": "1760484",
-      "biosource": {
-        "infraspecieslist": [],
-        "sex": "male",
-        "isolate": "1994-021"
+      "organism": {
+        "common_name": "green monkey",
+        "infraspecific_names": { "isolate": "1994-021", "sex": "male" },
+        "organism_name": "Chlorocebus sabaeus",
+        "tax_id": 60711
       },
-      "coverage": "95",
-      "partialgenomerepresentation": "false",
-      "primary": "1024838",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2014/03/25 00:00",
-      "asmreleasedate_refseq": "2014/04/28 00:00",
-      "seqreleasedate": "2014/03/25 00:00",
-      "asmupdatedate": "2022/12/09 00:00",
-      "submissiondate": "2014/03/25 00:00",
-      "lastupdatedate": "2022/12/09 00:00",
-      "submitterorganization": "Vervet Genomics Consortium",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": ["superseded by newer assembly for species"],
-      "propertylist": [
-        "excluded-from-refseq",
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has-synonym",
-        "has_annotation",
-        "has_egap_annotation",
-        "latest",
-        "latest_genbank",
-        "refseq_has_annotation",
-        "suppressed_refseq",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000409795.2",
-        "refseq": "GCF_000409795.2",
-        "similarity": "different"
-      },
-      "contign50": 90449,
-      "scaffoldn50": 81825804,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Chlorocebus_sabaeus/100",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/409/795/GCA_000409795.2_Chlorocebus_sabeus_1.1",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/409/795/GCF_000409795.2_Chlorocebus_sabeus_1.1",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/409/795/GCF_000409795.2_Chlorocebus_sabeus_1.1/GCF_000409795.2_Chlorocebus_sabeus_1.1_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/409/795/GCF_000409795.2_Chlorocebus_sabeus_1.1/GCF_000409795.2_Chlorocebus_sabeus_1.1_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
-      },
-      "sortorder": "9C3X7A779999095500004097959797",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">31</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">162724</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">7735</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">90449</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">32</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">2022</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">50</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">540</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">1432</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">14</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">81825804</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2789656328</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2752019208</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/409/795/GCF_000409795.2_Chlorocebus_sabeus_1.1/GCF_000409795.2_Chlorocebus_sabeus_1.1_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/409/795/GCA_000409795.2_Chlorocebus_sabeus_1.1</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/409/795/GCF_000409795.2_Chlorocebus_sabeus_1.1</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/409/795/GCF_000409795.2_Chlorocebus_sabeus_1.1/GCF_000409795.2_Chlorocebus_sabeus_1.1_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>na</representative-status> <submitter-organization>Vervet Genomics Consortium</submitter-organization>    "
+      "paired_accession": "GCA_000409795.2",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/AQIB00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/AQIB01",
+        "wgs_project_accession": "AQIB01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

@@ -55,7 +55,9 @@ declare function generateHubTracks({
       adapter: {
         type: string
         uri: URL
-        sequenceAdapter?: undefined
+        sequenceAdapter: {
+          [x: string]: unknown
+        }
       }
       trackId: string
       description: string | undefined
@@ -71,11 +73,10 @@ declare function generateHubTracks({
       name: string
       type: string
       adapter: {
+        disableGeneHeuristic?: boolean | undefined
         type: string
         uri: URL
-        sequenceAdapter: {
-          [x: string]: unknown
-        }
+        sequenceAdapter?: undefined
       }
       trackId: string
       description: string | undefined
@@ -154,7 +155,9 @@ declare function generateJBrowseConfigForAssemblyHub({
         adapter: {
           type: string
           uri: URL
-          sequenceAdapter?: undefined
+          sequenceAdapter: {
+            [x: string]: unknown
+          }
         }
         trackId: string
         description: string | undefined
@@ -170,11 +173,10 @@ declare function generateJBrowseConfigForAssemblyHub({
         name: string
         type: string
         adapter: {
+          disableGeneHeuristic?: boolean | undefined
           type: string
           uri: URL
-          sequenceAdapter: {
-            [x: string]: unknown
-          }
+          sequenceAdapter?: undefined
         }
         trackId: string
         description: string | undefined
@@ -210,26 +212,47 @@ interface UCSCGenArkAssemblyEntry {
   comName: string
   ucscBrowser: string
 }
-interface NCBIAssemblyEntry {
-  assemblyaccession: string
-  assemblystatus: string
-  assemblyname: string
-  assemblydate: string
-  submitterorganization: string
-  seqreleasedate: string
-  organism: string
-  propertylist: string[]
-  refseq_category: string
-  busco: unknown
-  synonyms?: {
-    refseq: string
-    genbank: string
+interface NCBIDatasetsReport {
+  accession: string
+  current_accession: string
+  paired_accession?: string
+  organism: {
+    organism_name: string
+    common_name?: string
+    tax_id: number
   }
-  meta: string
+  assembly_info: {
+    assembly_level: string
+    assembly_name: string
+    assembly_status: string
+    assembly_type: string
+    refseq_category?: string
+    release_date: string
+    submitter: string
+    paired_assembly?: {
+      accession: string
+      status: string
+    }
+  }
+  assembly_stats: {
+    contig_l50: number
+    contig_n50: number
+    scaffold_l50: number
+    scaffold_n50: number
+    number_of_contigs: number
+    number_of_scaffolds: number
+    total_number_of_chromosomes: number
+    total_sequence_length: string
+    total_ungapped_length: string
+    gc_count?: string
+    gc_percent?: number
+    genome_coverage?: string
+    number_of_component_sequences?: number
+  }
 }
-interface NCBIData {
-  uids: string[]
-  [key: string]: NCBIAssemblyEntry
+interface NCBIDatasetsResponse {
+  reports: NCBIDatasetsReport[]
+  total_count: number
 }
 //#endregion
 //#region src/parseAssemblyEntry.d.ts
@@ -239,13 +262,12 @@ declare function parseAssemblyEntry({
   entry: UCSCGenArkAssemblyEntry
 }):
   | {
-      stats: Record<string, unknown> | undefined
-      buscoStats: unknown
+      stats: Record<string, unknown>
       seqReleaseDate: string
       submitterOrg: string
       ncbiOrganism: string
       ncbiAssemblyName: string
-      ncbiRefSeqCategory: string
+      ncbiRefSeqCategory: string | undefined
       suppressed: boolean
       accession: string
       assembly: string
@@ -347,8 +369,8 @@ declare function decodeURIComponentNoThrow(uri: string): string
 declare function requireArg(arg: string | undefined, usage: string): string
 //#endregion
 export {
-  NCBIAssemblyEntry,
-  NCBIData,
+  NCBIDatasetsReport,
+  NCBIDatasetsResponse,
   UCSCGenArkAssemblyEntry,
   categoryMap,
   decodeURIComponentNoThrow,

@@ -1,173 +1,113 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["8245011", "8244991"],
-    "8245011": {
-      "uid": "8245011",
-      "rsuid": "22692388",
-      "gbuid": "22519528",
-      "assemblyaccession": "GCF_904848185.1",
-      "lastmajorreleaseaccession": "GCF_904848185.1",
-      "latestaccession": "",
-      "chainid": "904848185",
-      "assemblyname": "fAcaLat1.1",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "8177",
-      "organism": "Acanthopagrus latus (yellowfin seabream)",
-      "speciestaxid": "8177",
-      "speciesname": "Acanthopagrus latus",
-      "assemblytype": "haploid (principal pseudohaplotype of diploid)",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "CAJHBW01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJEB40700", "bioprojectid": 668512 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA672841", "bioprojectid": 672841 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN16236878",
-      "biosampleid": "16236878",
-      "biosource": { "infraspecieslist": [], "sex": "", "isolate": "v.2019" },
-      "coverage": "60",
-      "partialgenomerepresentation": "false",
-      "primary": "22691418",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2020/10/13 00:00",
-      "asmreleasedate_refseq": "2020/10/28 00:00",
-      "seqreleasedate": "2020/10/12 00:00",
-      "asmupdatedate": "2020/11/01 00:00",
-      "submissiondate": "2020/10/12 00:00",
-      "lastupdatedate": "2020/11/01 00:00",
-      "submitterorganization": "SC",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "has_linked_assembly",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "refseq_has_annotation",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_904848185.1",
-        "refseq": "GCF_904848185.1",
-        "similarity": "different"
+  "reports": [
+    {
+      "accession": "GCA_904848175.1",
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "various",
+        "assembly_name": "fAcaLat1.1 alternate haplotype",
+        "assembly_status": "current",
+        "assembly_type": "alternate-pseudohaplotype",
+        "bioproject_accession": "PRJEB40701",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJEB40701",
+                "parent_accessions": ["PRJEB40702"],
+                "title": "Acanthopagrus latus (yellowfin sea bream) genome assembly, fAcaLat1, alternate haplotype"
+              },
+              {
+                "accession": "PRJEB40702",
+                "parent_accessions": ["PRJNA489243"],
+                "title": "Acanthopagrus latus (yellowfin sea bream)"
+              },
+              {
+                "accession": "PRJNA489243",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "Vertebrate Genomes Project"
+              },
+              {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN16236878",
+          "attributes": [
+            { "name": "isolate", "value": "v.2019" },
+            { "name": "dev_stage", "value": "functional female" },
+            { "name": "sex", "value": "female" },
+            { "name": "tissue", "value": "muscle2" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA665308" }],
+          "description": {
+            "organism": {
+              "organism_name": "Acanthopagrus latus",
+              "tax_id": 8177
+            },
+            "title": "Model organism or animal sample from Acanthopagrus latus"
+          },
+          "dev_stage": "functional female",
+          "isolate": "v.2019",
+          "last_updated": "2020-10-09T12:11:15.120",
+          "models": ["Model organism or animal"],
+          "owner": { "contacts": [{}], "name": "Sun Yat-sen University" },
+          "package": "Model.organism.animal.1.0",
+          "publication_date": "2020-09-24T00:00:00.000",
+          "sample_ids": [
+            { "label": "Sample name", "value": "A.latus_PacBio_data" },
+            { "db": "SRA", "value": "ERS5300396" }
+          ],
+          "sex": "female",
+          "status": { "status": "live", "when": "2020-09-24T15:09:40.838" },
+          "submission_date": "2020-09-22T03:45:07.330",
+          "tissue": "muscle2"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_904848175.1",
+        "comments": "The assembly fAcaLat1.1 is based on 60x Illumina genome survey data, 106x Illumina Hi-C data, 282x PacBio data, and 100x Illumina transcriptome data generated at Nextomics Biosciences. The assembly process included the following sequence of steps: initial PacBio assembly generation with Falcon-unzip, retained haplotig separation with purge_dups, Hi-C based scaffolding with SALSA2, Arrow polishing, and two rounds of FreeBayes polishing. Finally, the assembly was analysed and manually improved using gEVAL. Chromosome-scale scaffolds are named by synteny to the GCA_900880675.1 assembly of Sparus aurata.",
+        "diploid_role": "alternate_pseudohaplotype_of_diploid",
+        "linked_assemblies": [
+          {
+            "assembly_type": "principal_pseudohaplotype_of_diploid",
+            "linked_assembly": "GCA_904848185.1"
+          }
+        ],
+        "release_date": "2020-10-12",
+        "sequencing_tech": "PacBio,Illumina,BioNano,HiC",
+        "submitter": "SC"
       },
-      "contign50": 14880455,
-      "scaffoldn50": 30717905,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Acanthopagrus_latus/100",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/185/GCA_904848185.1_fAcaLat1.1",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/904/848/185/GCF_904848185.1_fAcaLat1.1",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/904/848/185/GCF_904848185.1_fAcaLat1.1/GCF_904848185.1_fAcaLat1.1_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/904/848/185/GCF_904848185.1_fAcaLat1.1/GCF_904848185.1_fAcaLat1.1_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "100",
-        "buscolineage": "actinopterygii_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.996429",
-        "singlecopy": "0.991209",
-        "duplicated": "0.00521978",
-        "fragmented": "0.0010989",
-        "missing": "0.00247253",
-        "totalcount": 3640
+      "assembly_stats": {
+        "atgc_count": "47978553",
+        "contig_l50": 69,
+        "contig_n50": 195684,
+        "gc_count": "20324829",
+        "gc_percent": 42.5,
+        "genome_coverage": "60",
+        "number_of_component_sequences": 349,
+        "number_of_contigs": 429,
+        "number_of_scaffolds": 349,
+        "scaffold_l50": 65,
+        "scaffold_n50": 208235,
+        "total_sequence_length": "47986553",
+        "total_ungapped_length": "47978553"
       },
-      "sortorder": "1C3XB0AD9851195449048481859898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">24</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">215</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">18</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">14880455</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">25</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">66</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">25</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">41</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">11</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">30717905</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">685144197</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">685129297</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/904/848/185/GCF_904848185.1_fAcaLat1.1/GCF_904848185.1_fAcaLat1.1_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/185/GCA_904848185.1_fAcaLat1.1</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/904/848/185/GCF_904848185.1_fAcaLat1.1</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/904/848/185/GCF_904848185.1_fAcaLat1.1/GCF_904848185.1_fAcaLat1.1_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>SC</submitter-organization>    "
-    },
-    "8244991": {
-      "uid": "8244991",
-      "rsuid": "",
-      "gbuid": "22519508",
-      "assemblyaccession": "GCA_904848175.1",
-      "lastmajorreleaseaccession": "GCA_904848175.1",
-      "latestaccession": "",
-      "chainid": "904848175",
-      "assemblyname": "fAcaLat1.1 alternate haplotype",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "8177",
-      "organism": "Acanthopagrus latus (yellowfin seabream)",
-      "speciestaxid": "8177",
-      "speciesname": "Acanthopagrus latus",
-      "assemblytype": "alternate-pseudohaplotype (alternate pseudohaplotype of diploid)",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "CAJHBV01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJEB40701", "bioprojectid": 668513 }
-      ],
-      "gb_projects": [],
-      "rs_bioprojects": [],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN16236878",
-      "biosampleid": "16236878",
-      "biosource": { "infraspecieslist": [], "sex": "", "isolate": "v.2019" },
-      "coverage": "60",
-      "partialgenomerepresentation": "false",
-      "primary": "22519498",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2020/10/13 00:00",
-      "asmreleasedate_refseq": "1/01/01 00:00",
-      "seqreleasedate": "2020/10/12 00:00",
-      "asmupdatedate": "2020/10/13 00:00",
-      "submissiondate": "2020/10/12 00:00",
-      "lastupdatedate": "2020/10/13 00:00",
-      "submitterorganization": "SC",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has_linked_assembly",
-        "latest",
-        "latest_genbank",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_904848175.1",
-        "refseq": "",
-        "similarity": ""
+      "current_accession": "GCA_904848175.1",
+      "organism": {
+        "common_name": "yellowfin seabream",
+        "infraspecific_names": { "isolate": "v.2019" },
+        "organism_name": "Acanthopagrus latus",
+        "tax_id": 8177
       },
-      "contign50": 195684,
-      "scaffoldn50": 208235,
-      "annotrpturl": "",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/175/GCA_904848175.1_fAcaLat1.1_alternate_haplotype",
-      "ftppath_refseq": "",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/175/GCA_904848175.1_fAcaLat1.1_alternate_haplotype/GCA_904848175.1_fAcaLat1.1_alternate_haplotype_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/175/GCA_904848175.1_fAcaLat1.1_alternate_haplotype/GCA_904848175.1_fAcaLat1.1_alternate_haplotype_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "",
-        "buscolineage": "",
-        "buscover": "",
-        "complete": "",
-        "singlecopy": "",
-        "duplicated": "",
-        "fragmented": "",
-        "missing": "",
-        "totalcount": ""
-      },
-      "sortorder": "5C6XB0AD9998043159048481759800",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">429</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">69</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">195684</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">349</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">349</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">65</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">208235</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">47986553</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">47978553</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/175/GCA_904848175.1_fAcaLat1.1_alternate_haplotype/GCA_904848175.1_fAcaLat1.1_alternate_haplotype_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/175/GCA_904848175.1_fAcaLat1.1_alternate_haplotype</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/904/848/175/GCA_904848175.1_fAcaLat1.1_alternate_haplotype/GCA_904848175.1_fAcaLat1.1_alternate_haplotype_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>8</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>SC</submitter-organization>    "
+      "source_database": "SOURCE_DATABASE_GENBANK",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/CAJHBV000000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/CAJHBV01",
+        "wgs_project_accession": "CAJHBV01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

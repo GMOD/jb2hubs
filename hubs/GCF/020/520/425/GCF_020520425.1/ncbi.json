@@ -1,100 +1,158 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["11254751"],
-    "11254751": {
-      "uid": "11254751",
-      "rsuid": "42882238",
-      "gbuid": "29669208",
-      "assemblyaccession": "GCF_020520425.1",
-      "lastmajorreleaseaccession": "GCF_020520425.1",
-      "latestaccession": "",
-      "chainid": "20520425",
-      "assemblyname": "BTI_SOV_V1",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "3562",
-      "organism": "Spinacia oleracea (spinach)",
-      "speciestaxid": "3562",
-      "speciesname": "Spinacia oleracea",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "WWFT01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA598728", "bioprojectid": 598728 }
+  "reports": [
+    {
+      "accession": "GCF_020520425.1",
+      "additional_submitters": [
+        {
+          "chr_name": "Pltd",
+          "genbank_accession": "AJ400848.1",
+          "molecule_type": "Chloroplast",
+          "refseq_accession": "NC_002202.1",
+          "submitter": "Schmitz-Linneweber C., Ludwig Maximillians Universitaet, Botanisches Institut, Menzinger Str. 68, Muenchen, Bavaria, 80638, GERMANY"
+        },
+        {
+          "chr_name": "MT",
+          "genbank_accession": "KY768855.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_035618.1",
+          "submitter": "Boyce Thompson Institute"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA976336", "bioprojectid": 976336 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN13714978",
-      "biosampleid": "13714978",
-      "biosource": {
-        "infraspecieslist": [
-          { "sub_type": "cultivar", "sub_value": "Varoflay" }
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "eudicots_odb10",
+          "busco_ver": "5.7.1",
+          "complete": 0.9733448,
+          "duplicated": 0.03439381,
+          "fragmented": 0.005159071,
+          "missing": 0.02149613,
+          "single_copy": 0.938951,
+          "total_count": "2326"
+        },
+        "method": "Best-placed RefSeq; Gnomon; cmsearch; tRNAscan-SE",
+        "name": "GCF_020520425.1-RS_2025_04",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2025-04-11",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Spinacia_oleracea/GCF_020520425.1-RS_2025_04.html",
+        "software_version": "10.3",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 9543,
+            "protein_coding": 28771,
+            "pseudogene": 1405,
+            "total": 39719
+          }
+        },
+        "status": "Updated annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "Canu v. 1.7.1",
+        "assembly_name": "BTI_SOV_V1",
+        "assembly_status": "current",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA598728",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA598728",
+                "title": "Spinacia oleracea cultivar:Varoflay Genome sequencing and assembly"
+              }
+            ]
+          }
         ],
-        "sex": "",
-        "isolate": ""
+        "biosample": {
+          "accession": "SAMN13714978",
+          "attributes": [
+            { "name": "cultivar", "value": "Varoflay" },
+            { "name": "dev_stage", "value": "seedling" },
+            { "name": "geo_loc_name", "value": "NA" },
+            { "name": "tissue", "value": "leaf" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA598728" }],
+          "cultivar": "Varoflay",
+          "description": {
+            "organism": {
+              "organism_name": "Spinacia oleracea",
+              "tax_id": 3562
+            },
+            "title": "Plant sample from Spinacia oleracea Varoflay"
+          },
+          "dev_stage": "seedling",
+          "geo_loc_name": "NA",
+          "last_updated": "2021-10-15T11:11:01.796",
+          "models": ["Plant"],
+          "owner": { "contacts": [{}], "name": "Cornell University" },
+          "package": "Plant.1.0",
+          "publication_date": "2021-10-15T00:00:00.000",
+          "sample_ids": [
+            { "label": "Sample name", "value": "Spinacia oleracea Varoflay" },
+            { "db": "SRA", "value": "SRS9660149" }
+          ],
+          "status": { "status": "live", "when": "2021-10-15T11:11:01.796" },
+          "submission_date": "2020-01-02T18:22:03.680",
+          "tissue": "leaf"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_020520425.1",
+        "comments": "Assembly name: BTI_SOV_V1\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the Cornell University on 2021/10/20. The original whole-genome shotgun project has the accession WWFT00000000.1.",
+        "paired_assembly": {
+          "accession": "GCA_020520425.1",
+          "differences": "Added chromosomes MT and Pltd",
+          "only_refseq": "chromosomes MT and Pltd",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "refseq_category": "reference genome",
+        "release_date": "2021-10-20",
+        "sequencing_tech": "PacBio Sequel",
+        "submitter": "Cornell University"
       },
-      "coverage": "109",
-      "partialgenomerepresentation": "false",
-      "primary": "42882228",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2021/10/20 00:00",
-      "asmreleasedate_refseq": "2023/05/25 00:00",
-      "seqreleasedate": "2021/10/20 00:00",
-      "asmupdatedate": "2025/04/16 00:00",
-      "submissiondate": "2021/10/20 00:00",
-      "lastupdatedate": "2025/04/16 00:00",
-      "submitterorganization": "Cornell University",
-      "refseq_category": "reference genome",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "has-chloroplast",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "latest",
-        "latest_genbank",
-        "latest_refseq",
-        "reference",
-        "refseq_has_annotation",
-        "wgs"
+      "assembly_stats": {
+        "atgc_count": "894250018",
+        "contig_l50": 12,
+        "contig_n50": 23783150,
+        "gc_count": "338856826",
+        "gc_percent": 38,
+        "genome_coverage": "109",
+        "number_of_component_sequences": 244,
+        "number_of_contigs": 307,
+        "number_of_organelles": 2,
+        "number_of_scaffolds": 244,
+        "scaffold_l50": 3,
+        "scaffold_n50": 151450279,
+        "total_number_of_chromosomes": 6,
+        "total_sequence_length": "894256318",
+        "total_ungapped_length": "894250018"
+      },
+      "current_accession": "GCF_020520425.1",
+      "organelle_info": [
+        {
+          "description": "Chloroplast",
+          "submitter": "Cornell University",
+          "total_seq_length": "150725"
+        },
+        {
+          "description": "Mitochondrion",
+          "submitter": "Cornell University",
+          "total_seq_length": "329613"
+        }
       ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_020520425.1",
-        "refseq": "GCF_020520425.1",
-        "similarity": "different"
+      "organism": {
+        "common_name": "spinach",
+        "infraspecific_names": { "cultivar": "Varoflay" },
+        "organism_name": "Spinacia oleracea",
+        "tax_id": 3562
       },
-      "contign50": 23783150,
-      "scaffoldn50": 151450279,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Spinacia_oleracea/GCF_020520425.1-RS_2025_04.html",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/020/520/425/GCA_020520425.1_BTI_SOV_V1",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/520/425/GCF_020520425.1_BTI_SOV_V1",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/520/425/GCF_020520425.1_BTI_SOV_V1/GCF_020520425.1_BTI_SOV_V1_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/520/425/GCF_020520425.1_BTI_SOV_V1/GCF_020520425.1_BTI_SOV_V1_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "RS_2025_04",
-        "buscolineage": "eudicots_odb10",
-        "buscover": "5.7.1",
-        "complete": "0.973345",
-        "singlecopy": "0.938951",
-        "duplicated": "0.0343938",
-        "fragmented": "0.00515907",
-        "missing": "0.0214961",
-        "totalcount": 2326
-      },
-      "sortorder": "1C3X9F9D9762168490205204259898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">6</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">309</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">12</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">23783150</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">2</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">8</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">246</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">8</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">238</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">3</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">151450279</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">894736656</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">894730356</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/520/425/GCF_020520425.1_BTI_SOV_V1/GCF_020520425.1_BTI_SOV_V1_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/020/520/425/GCA_020520425.1_BTI_SOV_V1</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/520/425/GCF_020520425.1_BTI_SOV_V1</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/020/520/425/GCF_020520425.1_BTI_SOV_V1/GCF_020520425.1_BTI_SOV_V1_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>reference genome</representative-status> <submitter-organization>Cornell University</submitter-organization>    "
+      "paired_accession": "GCA_020520425.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/WWFT00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/WWFT01",
+        "wgs_project_accession": "WWFT01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

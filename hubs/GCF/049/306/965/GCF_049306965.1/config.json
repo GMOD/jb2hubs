@@ -148,7 +148,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -170,7 +171,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/306/965/GCF_049306965.1/bbi/GCF_049306965.1_GRCz12tu.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -569,6 +571,27 @@
         "index": {
           "location": {
             "uri": "liftOver/GCF_049306965.1ToDanRer11.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_049306965.1_to_GCA_944039275.1_liftOver",
+      "name": "GCF_049306965.1 (zebrafish (GRCz12tu Tuebingen 2025)) to zebrafish (WGS:CALUEM01 primary hap 2022) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_049306965.1", "GCA_944039275.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_049306965.1",
+        "queryAssembly": "GCA_944039275.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_049306965.1ToGCA_944039275.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_049306965.1ToGCA_944039275.1.pif.gz.csi"
           },
           "indexType": "CSI"
         }

@@ -149,7 +149,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/858/775/GCF_028858775.2/bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/858/775/GCF_028858775.2/bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -586,6 +587,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_028858775.2"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_028858775.2_to_hg18_liftOver",
+      "name": "GCF_028858775.2 (chimpanzee (v2 AG18354 primary hap 2024 refseq)) to Human (hg18) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_028858775.2", "hg18"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_028858775.2",
+        "queryAssembly": "hg18",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_028858775.2ToHg18.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_028858775.2ToHg18.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",

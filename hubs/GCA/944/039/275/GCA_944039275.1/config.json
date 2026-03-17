@@ -147,7 +147,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/944/039/275/GCA_944039275.1/bbi/GCA_944039275.1_fDanRer4.1.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/944/039/275/GCA_944039275.1/bbi/GCA_944039275.1_fDanRer4.1.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -169,7 +170,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/944/039/275/GCA_944039275.1/bbi/GCA_944039275.1_fDanRer4.1.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/944/039/275/GCA_944039275.1/bbi/GCA_944039275.1_fDanRer4.1.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -396,6 +398,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/944/039/275/GCA_944039275.1/bbi/GCA_944039275.1_fDanRer4.1.xenoRefGene.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_944039275.1_to_GCF_049306965.1_liftOver",
+      "name": "GCA_944039275.1 (zebrafish (WGS:CALUEM01 primary hap 2022)) to zebrafish (GRCz12tu Tuebingen 2025) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_944039275.1", "GCF_049306965.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_944039275.1",
+        "queryAssembly": "GCF_049306965.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_944039275.1ToGCF_049306965.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_944039275.1ToGCF_049306965.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

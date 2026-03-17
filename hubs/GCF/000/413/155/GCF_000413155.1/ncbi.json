@@ -1,97 +1,152 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["709858"],
-    "709858": {
-      "uid": "709858",
-      "rsuid": "1183388",
-      "gbuid": "709858",
-      "assemblyaccession": "GCF_000413155.1",
-      "lastmajorreleaseaccession": "GCF_000413155.1",
-      "latestaccession": "",
-      "chainid": "413155",
-      "assemblyname": "DPV01",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "42345",
-      "organism": "Phoenix dactylifera (date palm)",
-      "speciestaxid": "42345",
-      "speciesname": "Phoenix dactylifera",
-      "assemblytype": "haploid",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "ATBV01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA83433", "bioprojectid": 83433 }
+  "reports": [
+    {
+      "accession": "GCF_000413155.1",
+      "additional_submitters": [
+        {
+          "chr_name": "Pltd",
+          "genbank_accession": "GU811709.2",
+          "molecule_type": "Chloroplast",
+          "refseq_accession": "NC_013991.2",
+          "submitter": "Date Palm Genome Project Consortium, King Abdulaziz City for Science and Technology"
+        },
+        {
+          "chr_name": "MT",
+          "genbank_accession": "JN375330.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_016740.1",
+          "submitter": "King Abdulaziz City for Science and Technology (KACST)"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA249070", "bioprojectid": 249070 }
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "liliopsida_odb10",
+          "busco_ver": "4.0.2",
+          "complete": 0.9051298,
+          "duplicated": 0.11619283,
+          "fragmented": 0.059950557,
+          "missing": 0.034919653,
+          "single_copy": 0.788937,
+          "total_count": "3236"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Phoenix dactylifera Annotation Release 102",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2018-10-11",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Phoenix_dactylifera/102",
+        "software_version": "8.1",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 3538,
+            "protein_coding": 25836,
+            "pseudogene": 1207,
+            "total": 30581
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "Newbler v. 2.5.3; HAPS v. 0.1.200",
+        "assembly_name": "DPV01",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA83433",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA83433",
+                "title": "Phoenix dactylifera cultivar:Khalas Genome sequencing and assembly"
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN02981540",
+          "attributes": [
+            { "name": "sex", "value": "female" },
+            { "name": "tissue", "value": "bud" },
+            { "name": "cultivar", "value": "Khalas" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA83433" }],
+          "cultivar": "Khalas",
+          "description": {
+            "organism": {
+              "organism_name": "Phoenix dactylifera",
+              "tax_id": 42345
+            },
+            "title": "Sample from Phoenix dactylifera"
+          },
+          "last_updated": "2014-08-11T11:34:22.363",
+          "models": ["Generic"],
+          "owner": {
+            "name": "King Abdulaziz City for Science and Technology (KACST) and Chinese Academy of Sciences (CAS), Joint Center for Genomics Research (JCGR)"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2014-08-11T11:34:22.363",
+          "sample_ids": [{ "db": "GenBank", "value": "gb|ATBV00000000.1" }],
+          "sex": "female",
+          "status": { "status": "live", "when": "2014-08-11T11:34:22.363" },
+          "submission_date": "2014-08-11T11:34:22.363",
+          "tissue": "bud"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000413155.1",
+        "comments": "Reads were assembled into contigs using Newbler. Mate-pair reads produced by SOLiD sequencer were mapped to the contigs using BioScope (v1.3). The paired reads were used to link the Newbler contigs into super contigs. Gaps inside the super-contigs were filled and extended by Newbler contigs. Some other methods were used to merge the adjacent contigs. Finally, BAC-end sequences were aligned to the contigs to construct scaffolds using a Perl script.",
+        "genome_notes": ["superseded by newer assembly for species"],
+        "paired_assembly": {
+          "accession": "GCA_000413155.1",
+          "differences": "Added chromosomes MT and Pltd",
+          "only_refseq": "chromosomes MT and Pltd",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "release_date": "2013-06-24",
+        "sequencing_tech": "454; SOLiD; ABI3730",
+        "submitter": "Joint Center for Genomics Research",
+        "suppression_reason": "This record was removed as a result of standard genome annotation processing. Please see www.ncbi.nlm.nih.gov/genome/annotation_euk/process/ for more information."
+      },
+      "assembly_stats": {
+        "contig_l50": 12267,
+        "contig_n50": 10909,
+        "genome_coverage": "139",
+        "number_of_component_sequences": 143380,
+        "number_of_contigs": 143380,
+        "number_of_organelles": 2,
+        "number_of_scaffolds": 80315,
+        "scaffold_l50": 325,
+        "scaffold_n50": 334083,
+        "total_sequence_length": "555607186",
+        "total_ungapped_length": "506670903"
+      },
+      "current_accession": "GCF_000413155.1",
+      "organelle_info": [
+        {
+          "description": "Chloroplast",
+          "submitter": "King Abdulaziz City for Science and Technology",
+          "total_seq_length": "158462"
+        },
+        {
+          "description": "Mitochondrion",
+          "submitter": "King Abdulaziz City for Science and Technology",
+          "total_seq_length": "715001"
+        }
       ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02981540",
-      "biosampleid": "2981540",
-      "biosource": {
-        "infraspecieslist": [{ "sub_type": "cultivar", "sub_value": "Khalas" }],
-        "sex": "female",
-        "isolate": ""
+      "organism": {
+        "common_name": "date palm",
+        "infraspecific_names": { "cultivar": "Khalas", "sex": "female" },
+        "organism_name": "Phoenix dactylifera",
+        "tax_id": 42345
       },
-      "coverage": "139",
-      "partialgenomerepresentation": "false",
-      "primary": "1183378",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2013/06/25 00:00",
-      "asmreleasedate_refseq": "2014/08/04 00:00",
-      "seqreleasedate": "2013/06/24 00:00",
-      "asmupdatedate": "2021/01/27 00:00",
-      "submissiondate": "2013/06/24 00:00",
-      "lastupdatedate": "2021/01/27 00:00",
-      "submitterorganization": "Joint Center for Genomics Research",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": ["superseded by newer assembly for species"],
-      "propertylist": [
-        "excluded-from-refseq",
-        "full-genome-representation",
-        "has-chloroplast",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "latest",
-        "latest_genbank",
-        "refseq_has_annotation",
-        "suppressed_refseq",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000413155.1",
-        "refseq": "GCF_000413155.1",
-        "similarity": "different"
-      },
-      "contign50": 10909,
-      "scaffoldn50": 334083,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Phoenix_dactylifera/102",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/413/155/GCA_000413155.1_DPV01",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/413/155/GCF_000413155.1_DPV01",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/413/155/GCF_000413155.1_DPV01/GCF_000413155.1_DPV01_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/413/155/GCF_000413155.1_DPV01/GCF_000413155.1_DPV01_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "102",
-        "buscolineage": "liliopsida_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.90513",
-        "singlecopy": "0.788937",
-        "duplicated": "0.116193",
-        "fragmented": "0.0599506",
-        "missing": "0.0349197",
-        "totalcount": 3236
-      },
-      "sortorder": "9C6XA19E9999890900004131559898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">143382</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">12267</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">10909</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">2</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">2</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">80317</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">2</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">80315</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">325</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">334083</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">556480649</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">507544366</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/413/155/GCF_000413155.1_DPV01/GCF_000413155.1_DPV01_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/413/155/GCA_000413155.1_DPV01</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/413/155/GCF_000413155.1_DPV01</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/413/155/GCF_000413155.1_DPV01/GCF_000413155.1_DPV01_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>2</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>Joint Center for Genomics Research</submitter-organization>    "
+      "paired_accession": "GCA_000413155.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/ATBV00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/ATBV01",
+        "wgs_project_accession": "ATBV01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

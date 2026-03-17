@@ -1,99 +1,149 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["237221"],
-    "237221": {
-      "uid": "237221",
-      "rsuid": "1506428",
-      "gbuid": "1428458",
-      "assemblyaccession": "GCF_000806345.1",
-      "lastmajorreleaseaccession": "GCF_000806345.1",
-      "latestaccession": "GCA_000806345.2",
-      "chainid": "806345",
-      "assemblyname": "ASM80634v1",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "28588",
-      "organism": "Zeugodacus cucurbitae (melon fly)",
-      "speciestaxid": "28588",
-      "speciesname": "Zeugodacus cucurbitae",
-      "assemblytype": "haploid",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "JRNW01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA259565", "bioprojectid": 259565 }
+  "reports": [
+    {
+      "accession": "GCF_000806345.1",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "JN635562.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_016056.1",
+          "submitter": "Forestry College, Southwest Forestry University"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA273817", "bioprojectid": 273817 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN03083541",
-      "biosampleid": "3083541",
-      "biosource": {
-        "infraspecieslist": [
-          { "sub_type": "strain", "sub_value": "USDA-PBARC White Pupae T1" }
+      "annotation_info": {
+        "name": "Annotation submitted by NCBI RefSeq",
+        "provider": "NCBI RefSeq",
+        "release_date": "2015-01-29",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Zeugodacus_cucurbitae/101",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 1515,
+            "protein_coding": 12984,
+            "pseudogene": 164,
+            "total": 14663
+          }
+        }
+      },
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "AllPaths v. 49856",
+        "assembly_name": "ASM80634v1",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "atypical": { "is_atypical": true, "warnings": ["contaminated"] },
+        "bioproject_accession": "PRJNA259565",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA259565",
+                "parent_accessions": ["PRJNA163993"],
+                "title": "Zeugodacus cucurbitae strain:USDA-PBARC White Pupae T1 Genome sequencing and assembly"
+              },
+              {
+                "accession": "PRJNA163993",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "i5k initiative"
+              },
+              {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              }
+            ]
+          }
         ],
-        "sex": "male",
-        "isolate": ""
+        "biosample": {
+          "accession": "SAMN03083541",
+          "attributes": [
+            { "name": "sex", "value": "male" },
+            {
+              "name": "isolation_source",
+              "value": "library from a single individual (USDA ID 2M2-2), library from a single individual that is a full sibling of the first individual (USDA ID 2M1-4), library from a pool of individuals from the T1 colony (T1 Pool)"
+            },
+            { "name": "tissue", "value": "whole organism" },
+            { "name": "dev_stage", "value": "adult male" },
+            { "name": "strain", "value": "USDA-PBARC White Pupae T1" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA259565" }],
+          "description": {
+            "comment": "This sample group is the combination of the 3 individual BioSamples: SAMN03010452, SAMN03010453, SAMN03010454.",
+            "organism": {
+              "organism_name": "Zeugodacus cucurbitae",
+              "tax_id": 28588
+            },
+            "title": "Sample group: combined sample of melon fly whole organism genome sequencing data"
+          },
+          "dev_stage": "adult male",
+          "isolation_source": "library from a single individual (USDA ID 2M2-2), library from a single individual that is a full sibling of the first individual (USDA ID 2M1-4), library from a pool of individuals from the T1 colony (T1 Pool)",
+          "last_updated": "2017-05-15T21:00:22.198",
+          "models": ["Generic"],
+          "owner": { "name": "USDA ARS, DKI PBARC" },
+          "package": "Generic.1.0",
+          "publication_date": "2014-09-29T00:00:00.000",
+          "sample_ids": [{ "db": "GenBank", "value": "JRNW" }],
+          "sex": "male",
+          "status": { "status": "live", "when": "2014-09-29T10:01:04" },
+          "strain": "USDA-PBARC White Pupae T1",
+          "submission_date": "2014-09-29T09:41:06.243",
+          "tissue": "whole organism"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000806345.1",
+        "comments": "A short insert library was constructed from a single melon fly (USDA ID 2M2-2). A 3 kb mate-paired library was constructed from a single melon fly that is a full sibling of the first melon fly (USDA ID 2M1-4). An 8 kb mate-paired library was constructed from a pool of individuals from the T1 colony (T1 pool). Sequencing and DNA extractions were done separately for each library then the reads from the three libraries were pooled to generate the assembly.\nIn July 2022 46 sequences were suppressed because they were found to be contaminants.",
+        "genome_notes": ["contaminated"],
+        "paired_assembly": {
+          "accession": "GCA_000806345.1",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "previous"
+        },
+        "release_date": "2014-12-23",
+        "sequencing_tech": "Illumina HiSeq",
+        "submitter": "USDA ARS",
+        "suppression_reason": "This record was removed because the sequence was determined to be contaminated. Please contact info@ncbi.nlm.nih.gov for further details."
       },
-      "coverage": "66.2",
-      "partialgenomerepresentation": "false",
-      "primary": "1506158",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2014/12/23 00:00",
-      "asmreleasedate_refseq": "2015/01/28 00:00",
-      "seqreleasedate": "2014/12/23 00:00",
-      "asmupdatedate": "2015/01/29 00:00",
-      "submissiondate": "2014/12/23 00:00",
-      "lastupdatedate": "2015/01/29 00:00",
-      "submitterorganization": "USDA ARS",
-      "refseq_category": "na",
-      "anomalouslist": [{ "property": "contaminated", "pubmed": "" }],
-      "exclfromrefseq": ["contaminated"],
-      "propertylist": [
-        "anomalous",
-        "excluded-from-refseq",
-        "full-genome-representation",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "refseq_has_annotation",
-        "replaced",
-        "replaced_genbank",
-        "suppressed_refseq",
-        "wgs"
+      "assembly_stats": {
+        "atgc_count": "316265640",
+        "contig_l50": 4488,
+        "contig_n50": 17360,
+        "gc_count": "111178355",
+        "gc_percent": 35,
+        "genome_coverage": "66.2",
+        "number_of_component_sequences": 43001,
+        "number_of_contigs": 43001,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 5571,
+        "scaffold_l50": 66,
+        "scaffold_n50": 1399015,
+        "total_sequence_length": "374804520",
+        "total_ungapped_length": "316265640"
+      },
+      "current_accession": "GCF_000806345.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "USDA ARS",
+          "total_seq_length": "15825"
+        }
       ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000806345.1",
-        "refseq": "GCF_000806345.1",
-        "similarity": "different"
+      "organism": {
+        "common_name": "melon fly",
+        "infraspecific_names": {
+          "sex": "male",
+          "strain": "USDA-PBARC White Pupae T1"
+        },
+        "organism_name": "Zeugodacus cucurbitae",
+        "tax_id": 28588
       },
-      "contign50": 17360,
-      "scaffoldn50": 1399015,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Zeugodacus_cucurbitae/101",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/806/345/GCA_000806345.1_ASM80634v1",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/806/345/GCF_000806345.1_ASM80634v1",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/806/345/GCF_000806345.1_ASM80634v1/GCF_000806345.1_ASM80634v1_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/806/345/GCF_000806345.1_ASM80634v1/GCF_000806345.1_ASM80634v1_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "101",
-        "buscolineage": "diptera_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.994216",
-        "singlecopy": "0.98965",
-        "duplicated": "0.00456621",
-        "fragmented": "0.00182648",
-        "missing": "0.00395738",
-        "totalcount": 3285
-      },
-      "sortorder": "9C6XA9A69999826390008063459898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">43002</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">4488</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">17360</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">5572</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">5571</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">66</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">1399015</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">374820345</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">316281465</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/806/345/GCF_000806345.1_ASM80634v1/GCF_000806345.1_ASM80634v1_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/806/345/GCA_000806345.1_ASM80634v1</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/806/345/GCF_000806345.1_ASM80634v1</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/806/345/GCF_000806345.1_ASM80634v1/GCF_000806345.1_ASM80634v1_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>2</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>USDA ARS</submitter-organization>    "
+      "paired_accession": "GCA_000806345.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JRNW00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JRNW01",
+        "wgs_project_accession": "JRNW01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

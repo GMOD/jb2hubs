@@ -20,6 +20,10 @@ const specializedParents = new Set([
   'per_expr_reads_view',
   'TabulaMurisFacsCoverage',
   'TabulaMurisFacsJunctions',
+  // Human Methylation Atlas: ~247 tracks, too many to load by default.
+  // TODO: allow loading these via a connection in the future.
+  'humanMethylationAtlasSummary',
+  'humanMethylationAtlasSignals',
 ])
 
 const specializedTypes = new Set(['pgSnp', 'bigPsl'])

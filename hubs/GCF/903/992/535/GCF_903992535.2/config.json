@@ -147,7 +147,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.gapOverlap.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.gapOverlap.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -169,7 +170,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -608,6 +610,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_903992535.2"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_903992535.2_to_GCF_903992535.1_liftOver",
+      "name": "GCF_903992535.2 (Eurasian water vole (v2 2021)) to Eurasian water vole (v1 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_903992535.2", "GCF_903992535.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_903992535.2",
+        "queryAssembly": "GCF_903992535.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_903992535.2ToGCF_903992535.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_903992535.2ToGCF_903992535.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

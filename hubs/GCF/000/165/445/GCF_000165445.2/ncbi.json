@@ -1,97 +1,153 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["998221"],
-    "998221": {
-      "uid": "998221",
-      "rsuid": "4121788",
-      "gbuid": "4096748",
-      "assemblyaccession": "GCF_000165445.2",
-      "lastmajorreleaseaccession": "GCF_000165445.2",
-      "latestaccession": "",
-      "chainid": "165445",
-      "assemblyname": "Mmur_3.0",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "30608",
-      "organism": "Microcebus murinus (gray mouse lemur)",
-      "speciestaxid": "30608",
-      "speciesname": "Microcebus murinus",
-      "assemblytype": "haploid",
-      "assemblystatus": "Chromosome",
-      "assemblystatussort": 3,
-      "wgs": "ABDC03",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA19967", "bioprojectid": 19967 }
+  "reports": [
+    {
+      "accession": "GCF_000165445.2",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "KR911908.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_028718.1",
+          "submitter": "Laboratoire Evolution & Diversite Biologique, University Toulouse 3"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA285159", "bioprojectid": 285159 }
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "primates_odb10",
+          "busco_ver": "4.0.2",
+          "complete": 0.9776488,
+          "duplicated": 0.0137880985,
+          "fragmented": 0.0092162555,
+          "missing": 0.013134978,
+          "single_copy": 0.9638607,
+          "total_count": "13780"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Microcebus murinus Annotation Release 101",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2017-02-15",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Microcebus_murinus/101",
+        "software_version": "7.3",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 7166,
+            "other": 162,
+            "protein_coding": 20522,
+            "pseudogene": 4114,
+            "total": 31964
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Chromosome",
+        "assembly_method": "AllPathsLG v. 41070; Atlas Link v. 1.0; Atlas GapFill v. 2.0; PBJelly2 v. 14.9.9; Lachesis v. shendurelab-LACHESIS-2151de9; BioNano IrysSolve v. 2.1",
+        "assembly_name": "Mmur_3.0",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA19967",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA19967",
+                "title": "Mouse lemur reference genome and diversity panel."
+              }
+            ]
+          }
+        ],
+        "biosample": {
+          "accession": "SAMN06275470",
+          "attributes": [
+            { "name": "sex", "value": "pooled male and female" },
+            { "name": "tissue", "value": "liver; kidney" },
+            { "name": "isolate", "value": "mixed" },
+            {
+              "name": "subsrc_note",
+              "value": "three separate animals were used in this assembly: #8(Reference animal), 1886F (Citronella), 7006M (Rosehip)"
+            }
+          ],
+          "bioprojects": [{ "accession": "PRJNA19967" }],
+          "description": {
+            "comment": "This sample group is the combination of the 3 individual BioSamples: SAMN03121888, SAMN03463713, SAMN03463714.",
+            "organism": {
+              "organism_name": "Microcebus murinus",
+              "tax_id": 30608
+            },
+            "title": "Sample from Microcebus murinus"
+          },
+          "isolate": "mixed",
+          "last_updated": "2017-01-26T16:34:06.630",
+          "models": ["Generic"],
+          "owner": {
+            "name": "Baylor College of Medicine, Human Genome Sequencing Center, Department of Molecular and Human Genetics"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2017-01-26T00:00:00.000",
+          "sample_ids": [{ "db": "GenBank", "value": "ABDC" }],
+          "sex": "pooled male and female",
+          "status": { "status": "live", "when": "2017-01-26T16:05:04.502" },
+          "submission_date": "2017-01-26T16:05:04.500",
+          "tissue": "liver; kidney"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000165445.2",
+        "comments": "Illumina reads were obtained from isolate #8 (BioSample SAMN03121888) and used to generate the previous version of this genome, GCA_000165445.2 (Mmur_2.0). PacBio data from biosamples SAMN03463713 and SAMN03463714 were used to fill gaps in Mmur_2.0 with PBJelly, creating this improved assembly Mmur_3.0. (PacBio data was not used for scaffolding or verifying scaffolds.)",
+        "genome_notes": ["superseded by newer assembly for species"],
+        "paired_assembly": {
+          "accession": "GCA_000165445.3",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "current"
+        },
+        "release_date": "2017-02-06",
+        "sequencing_tech": "Illumina; PacBio RS; PacBio RSII",
+        "submitter": "Baylor College of Medicine",
+        "suppression_reason": "This record was removed as a result of standard genome annotation processing. Please see www.ncbi.nlm.nih.gov/genome/annotation_euk/process/ for more information."
+      },
+      "assembly_stats": {
+        "atgc_count": "2386304803",
+        "contig_l50": 2987,
+        "contig_n50": 210702,
+        "gc_count": "977977134",
+        "gc_percent": 41,
+        "genome_coverage": "221.6",
+        "number_of_component_sequences": 50982,
+        "number_of_contigs": 50982,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 7677,
+        "scaffold_l50": 10,
+        "scaffold_n50": 108171978,
+        "total_number_of_chromosomes": 33,
+        "total_sequence_length": "2487392024",
+        "total_ungapped_length": "2386304861"
+      },
+      "current_accession": "GCF_000165445.2",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Broad Institute",
+          "total_seq_length": "17114"
+        }
       ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN06275470",
-      "biosampleid": "6275470",
-      "biosource": {
-        "infraspecieslist": [],
-        "sex": "pooled male and female",
-        "isolate": "mixed"
+      "organism": {
+        "common_name": "gray mouse lemur",
+        "infraspecific_names": {
+          "isolate": "mixed",
+          "sex": "pooled male and female"
+        },
+        "organism_name": "Microcebus murinus",
+        "tax_id": 30608
       },
-      "coverage": "221.6",
-      "partialgenomerepresentation": "false",
-      "primary": "4121768",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2017/02/06 00:00",
-      "asmreleasedate_refseq": "2017/02/13 00:00",
-      "seqreleasedate": "2017/02/06 00:00",
-      "asmupdatedate": "2025/08/08 00:00",
-      "submissiondate": "2017/02/06 00:00",
-      "lastupdatedate": "2025/08/08 00:00",
-      "submitterorganization": "Baylor College of Medicine",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": ["superseded by newer assembly for species"],
-      "propertylist": [
-        "excluded-from-refseq",
-        "full-genome-representation",
-        "has-chromosome",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "latest",
-        "latest_genbank",
-        "refseq_has_annotation",
-        "suppressed_refseq",
-        "wgs"
-      ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000165445.3",
-        "refseq": "GCF_000165445.2",
-        "similarity": "different"
-      },
-      "contign50": 210702,
-      "scaffoldn50": 108171978,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Microcebus_murinus/101",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/165/445/GCA_000165445.3_Mmur_3.0",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/165/445/GCF_000165445.2_Mmur_3.0",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/165/445/GCF_000165445.2_Mmur_3.0/GCF_000165445.2_Mmur_3.0_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/165/445/GCF_000165445.2_Mmur_3.0/GCF_000165445.2_Mmur_3.0_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "101",
-        "buscolineage": "primates_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.977649",
-        "singlecopy": "0.963861",
-        "duplicated": "0.0137881",
-        "fragmented": "0.00921626",
-        "missing": "0.013135",
-        "totalcount": 13780
-      },
-      "sortorder": "9C3XB3B09997892970001654459697",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">33</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">50984</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">2987</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">210702</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">34</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">7678</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">34</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">4731</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">2913</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">10</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">108171978</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">2487409138</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">2386321955</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/165/445/GCF_000165445.2_Mmur_3.0/GCF_000165445.2_Mmur_3.0_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/165/445/GCA_000165445.3_Mmur_3.0</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/165/445/GCF_000165445.2_Mmur_3.0</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/165/445/GCF_000165445.2_Mmur_3.0/GCF_000165445.2_Mmur_3.0_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>3</assembly-level> <assembly-status>Chromosome</assembly-status> <representative-status>na</representative-status> <submitter-organization>Baylor College of Medicine</submitter-organization>    "
+      "paired_accession": "GCA_000165445.3",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/ABDC00000000.3",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/ABDC03",
+        "wgs_project_accession": "ABDC03"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

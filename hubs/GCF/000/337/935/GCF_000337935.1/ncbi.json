@@ -1,98 +1,148 @@
 {
-  "header": { "type": "esummary", "version": "0.3" },
-  "result": {
-    "uids": ["539798"],
-    "539798": {
-      "uid": "539798",
-      "rsuid": "772978",
-      "gbuid": "539798",
-      "assemblyaccession": "GCF_000337935.1",
-      "lastmajorreleaseaccession": "GCF_000337935.1",
-      "latestaccession": "GCA_000337935.2",
-      "chainid": "337935",
-      "assemblyname": "Cliv_1.0",
-      "ucscname": "",
-      "ensemblname": "",
-      "taxid": "8932",
-      "organism": "Columba livia (rock pigeon)",
-      "speciestaxid": "8932",
-      "speciesname": "Columba livia",
-      "assemblytype": "haploid",
-      "assemblystatus": "Scaffold",
-      "assemblystatussort": 6,
-      "wgs": "AKCR01",
-      "gb_bioprojects": [
-        { "bioprojectaccn": "PRJNA167554", "bioprojectid": 167554 }
+  "reports": [
+    {
+      "accession": "GCF_000337935.1",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "GU908131.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_013978.1",
+          "submitter": "College of Life Sciences, Anhui Normal University"
+        }
       ],
-      "gb_projects": [],
-      "rs_bioprojects": [
-        { "bioprojectaccn": "PRJNA217047", "bioprojectid": 217047 }
-      ],
-      "rs_projects": [],
-      "biosampleaccn": "SAMN02981415",
-      "biosampleid": "2981415",
-      "biosource": {
-        "infraspecieslist": [
-          { "sub_type": "breed", "sub_value": "Danish Tumbler" }
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "aves_odb10",
+          "busco_ver": "4.0.2",
+          "complete": 0.9824898,
+          "duplicated": 0.0017989925,
+          "fragmented": 0.008755097,
+          "missing": 0.008755097,
+          "single_copy": 0.98069084,
+          "total_count": "8338"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Columba livia Annotation Release 102",
+        "pipeline": "NCBI eukaryotic genome annotation pipeline",
+        "provider": "NCBI RefSeq",
+        "release_date": "2017-05-22",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Columba_livia/102",
+        "software_version": "7.4",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 10965,
+            "other": 26,
+            "protein_coding": 15575,
+            "pseudogene": 135,
+            "total": 26701
+          }
+        },
+        "status": "Full annotation"
+      },
+      "assembly_info": {
+        "assembly_level": "Scaffold",
+        "assembly_method": "SOAPdenovo v. 2.0",
+        "assembly_name": "Cliv_1.0",
+        "assembly_status": "suppressed",
+        "assembly_type": "haploid",
+        "bioproject_accession": "PRJNA167554",
+        "bioproject_lineage": [
+          {
+            "bioprojects": [
+              {
+                "accession": "PRJNA167554",
+                "title": "Columba livia Genome sequencing and assembly"
+              }
+            ]
+          }
         ],
-        "sex": "male",
-        "isolate": ""
+        "biosample": {
+          "accession": "SAMN02981415",
+          "attributes": [
+            { "name": "sex", "value": "male" },
+            { "name": "tissue", "value": "blood" },
+            { "name": "geo_loc_name", "value": "Denmark: Vordingborg" },
+            { "name": "collection_date", "value": "2010-06-13" },
+            {
+              "name": "subsrc_note",
+              "value": "bred by Anders Christiansen, Hans Ove Christiansen, and certified by Danmarks Racedueforeninger"
+            },
+            { "name": "breed", "value": "Danish Tumbler" }
+          ],
+          "bioprojects": [{ "accession": "PRJNA167554" }],
+          "breed": "Danish Tumbler",
+          "collection_date": "2010-06-13",
+          "description": {
+            "organism": { "organism_name": "Columba livia", "tax_id": 8932 },
+            "title": "Sample from Columba livia"
+          },
+          "geo_loc_name": "Denmark: Vordingborg",
+          "last_updated": "2021-02-28T02:25:17.321",
+          "models": ["Generic"],
+          "owner": {
+            "name": "Beijing Genomics Institute, Shenzhen, Bioinformatics"
+          },
+          "package": "Generic.1.0",
+          "publication_date": "2014-08-11T00:00:00.000",
+          "sample_ids": [{ "db": "GenBank", "value": "gb|AKCR00000000.1" }],
+          "sex": "male",
+          "status": { "status": "live", "when": "2014-08-11T11:27:50.560" },
+          "submission_date": "2014-08-11T11:27:50.560",
+          "tissue": "blood"
+        },
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_000337935.1",
+        "comments": "For Illumina DNA sequencing (HiSeq 2000), seven paired-end sequencing libraries were constructed with insert sizes of about 170bp, 500 bp, 800bp, 2 kb, 5 kb, 10 kb and 20kb, and the raw data was about 127.17G (98X).After correcting the short insert size data and removing the small peak of the large insert size data, we got about 81.56G (62.74X) high quality data. Then we begin to assemble with SOAPdenovo (version2.0). The Columba livia assembly version 1.0 has a sequencing depth of 60X and more than 87% of the assembly has 20-fold raw sequence coverage.",
+        "paired_assembly": {
+          "accession": "GCA_000337935.1",
+          "annotation_name": "Annotation submitted by BGI",
+          "differences": "Added chromosome MT",
+          "only_refseq": "chromosome MT",
+          "refseq_genbank_are_different": true,
+          "status": "previous"
+        },
+        "release_date": "2013-02-11",
+        "sequencing_tech": "Illumina HiSeq 2000",
+        "submitter": "BGI"
       },
-      "coverage": "60",
-      "partialgenomerepresentation": "false",
-      "primary": "772968",
-      "assemblydescription": "",
-      "releaselevel": "Major",
-      "releasetype": "Major",
-      "asmreleasedate_genbank": "2013/02/12 00:00",
-      "asmreleasedate_refseq": "2013/08/29 00:00",
-      "seqreleasedate": "2013/02/11 00:00",
-      "asmupdatedate": "2024/06/06 00:00",
-      "submissiondate": "2013/02/11 00:00",
-      "lastupdatedate": "2024/06/06 00:00",
-      "submitterorganization": "BGI",
-      "refseq_category": "na",
-      "anomalouslist": [],
-      "exclfromrefseq": [],
-      "propertylist": [
-        "full-genome-representation",
-        "genbank_has_annotation",
-        "has-mitochondrion",
-        "has_annotation",
-        "has_egap_annotation",
-        "refseq_has_annotation",
-        "replaced",
-        "replaced_genbank",
-        "suppressed_refseq",
-        "wgs"
+      "assembly_stats": {
+        "atgc_count": "1086908646",
+        "contig_l50": 12140,
+        "contig_n50": 26580,
+        "gc_count": "450762069",
+        "gc_percent": 41.5,
+        "genome_coverage": "60",
+        "number_of_component_sequences": 100098,
+        "number_of_contigs": 100098,
+        "number_of_organelles": 1,
+        "number_of_scaffolds": 14922,
+        "scaffold_l50": 82,
+        "scaffold_n50": 3148738,
+        "total_sequence_length": "1107971856",
+        "total_ungapped_length": "1086908646"
+      },
+      "current_accession": "GCF_000337935.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "BGI",
+          "total_seq_length": "17229"
+        }
       ],
-      "fromtype": "",
-      "synonym": {
-        "genbank": "GCA_000337935.1",
-        "refseq": "GCF_000337935.1",
-        "similarity": "different"
+      "organism": {
+        "common_name": "rock pigeon",
+        "infraspecific_names": { "breed": "Danish Tumbler", "sex": "male" },
+        "organism_name": "Columba livia",
+        "tax_id": 8932
       },
-      "contign50": 26580,
-      "scaffoldn50": 3148738,
-      "annotrpturl": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Columba_livia/102",
-      "ftppath_genbank": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/337/935/GCA_000337935.1_Cliv_1.0",
-      "ftppath_refseq": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/337/935/GCF_000337935.1_Cliv_1.0",
-      "ftppath_assembly_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/337/935/GCF_000337935.1_Cliv_1.0/GCF_000337935.1_Cliv_1.0_assembly_report.txt",
-      "ftppath_stats_rpt": "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/337/935/GCF_000337935.1_Cliv_1.0/GCF_000337935.1_Cliv_1.0_assembly_stats.txt",
-      "ftppath_regions_rpt": "",
-      "busco": {
-        "refseqannotationrelease": "102",
-        "buscolineage": "aves_odb10",
-        "buscover": "4.0.2",
-        "complete": "0.98249",
-        "singlecopy": "0.980691",
-        "duplicated": "0.00179899",
-        "fragmented": "0.0087551",
-        "missing": "0.0087551",
-        "totalcount": 8338
-      },
-      "sortorder": "5C6XA29F9999734190003379359898",
-      "meta": " <Stats> <Stat category=\"alt_loci_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"chromosome_count\" sequence_tag=\"all\">0</Stat> <Stat category=\"contig_count\" sequence_tag=\"all\">100099</Stat> <Stat category=\"contig_l50\" sequence_tag=\"all\">12140</Stat> <Stat category=\"contig_n50\" sequence_tag=\"all\">26580</Stat> <Stat category=\"non_chromosome_replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"replicon_count\" sequence_tag=\"all\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"all\">14923</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"placed\">1</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unlocalized\">0</Stat> <Stat category=\"scaffold_count\" sequence_tag=\"unplaced\">14922</Stat> <Stat category=\"scaffold_l50\" sequence_tag=\"all\">82</Stat> <Stat category=\"scaffold_n50\" sequence_tag=\"all\">3148738</Stat> <Stat category=\"total_length\" sequence_tag=\"all\">1107989085</Stat> <Stat category=\"ungapped_length\" sequence_tag=\"all\">1086925875</Stat> </Stats> <FtpSites>   <FtpPath type=\"Assembly_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/337/935/GCF_000337935.1_Cliv_1.0/GCF_000337935.1_Cliv_1.0_assembly_report.txt</FtpPath>   <FtpPath type=\"GenBank\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/337/935/GCA_000337935.1_Cliv_1.0</FtpPath>   <FtpPath type=\"RefSeq\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/337/935/GCF_000337935.1_Cliv_1.0</FtpPath>   <FtpPath type=\"Stats_rpt\">ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/337/935/GCF_000337935.1_Cliv_1.0/GCF_000337935.1_Cliv_1.0_assembly_stats.txt</FtpPath> </FtpSites> <assembly-level>2</assembly-level> <assembly-status>Scaffold</assembly-status> <representative-status>na</representative-status> <submitter-organization>BGI</submitter-organization>    "
+      "paired_accession": "GCA_000337935.1",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "wgs_info": {
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/AKCR00000000.1",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/AKCR01",
+        "wgs_project_accession": "AKCR01"
+      }
     }
-  }
+  ],
+  "total_count": 1
 }

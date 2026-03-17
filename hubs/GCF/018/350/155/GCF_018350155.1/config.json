@@ -172,7 +172,8 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/018/350/155/GCF_018350155.1/bbi/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0.tandemDups.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/018/350/155/GCF_018350155.1/bbi/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0.tandemDups.bb",
+        "disableGeneHeuristic": true
       }
     },
     {
@@ -617,6 +618,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_018350155.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_018350155.1_to_GCF_018350175.1_liftOver",
+      "name": "GCF_018350155.1 (Geoffroy's cat) to domestic cat (Fca126 2021 Texas A&M U) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_018350155.1", "GCF_018350175.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_018350155.1",
+        "queryAssembly": "GCF_018350175.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_018350155.1ToGCF_018350175.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_018350155.1ToGCF_018350175.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {
