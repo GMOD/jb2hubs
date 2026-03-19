@@ -276,31 +276,11 @@ fi
 
 # --- Phase 6: Wiki images and finishing ---
 
-log "Fetching wiki images..."
-if [ "$MODE" = "new" ]; then
-  fetch_wiki_image() {
-    local accession="$1"
-    local hub_dir="$(accession_to_hub_dir "$accession")/"
-    local meta_file="$hub_dir/meta.json"
+log "Fetching taxon-level images (Wikidata + Wikipedia)..."
+node src/getTaxonImages.ts
 
-    if [[ -f "$hub_dir/image.json" || -f "$hub_dir/image.json.notfound" ]]; then
-      return
-    fi
-
-    local scientific_name=$(jq -r '.scientificName // empty' "$meta_file" 2>/dev/null)
-    if [ -z "$scientific_name" ] || [ "$scientific_name" = "null" ]; then
-      return
-    fi
-
-    echo "Fetching wiki image: $scientific_name ($accession)"
-    node src/getWikiImage.ts "$scientific_name" "$accession"
-    sleep 0.1
-  }
-  export -f fetch_wiki_image
-  parallel -j1 $PARALLEL_OPTS fetch_wiki_image {} < "$NEW_ACCESSIONS_FILE"
-else
-  ./getWikiImages.sh
-fi
+log "Copying taxon images to accession directories..."
+node src/copyTaxonImages.ts
 
 log "Calculating gff file hashes..."
 ./getFileListing.sh
