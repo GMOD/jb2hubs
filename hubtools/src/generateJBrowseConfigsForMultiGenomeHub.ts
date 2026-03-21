@@ -3,19 +3,7 @@ import { GenomesFile, HubFile, TrackDbFile } from '@gmod/ucsc-hub'
 import { generateHubTracks } from './generateHubTracks.ts'
 import { myfetchtext, resolve } from './util.ts'
 
-/**
- * Generates JBrowse 2 configs for all assemblies in a traditional multi-genome
- * UCSC hub (hub.txt with genomesFile pointing to genomes.txt).
- *
- * Skips genome stanzas that don't have a twoBitPath (e.g. hosted UCSC
- * reference assemblies like mm10 or rn6).
- *
- * @param hubUrl - URL to the hub.txt file
- * @returns Array of { genomeName, config } for each genome with a twoBitPath
- */
-export async function generateJBrowseConfigsForMultiGenomeHub(
-  hubUrl: string,
-): Promise<Array<{ genomeName: string; config: Record<string, unknown> }>> {
+export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
   const hubFileText = await myfetchtext(hubUrl)
   const hub = new HubFile(hubFileText)
 
@@ -26,14 +14,9 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
 
   const genomesFileUrl = resolve(genomesFileRelUrl, hubUrl)
   const genomesFileText = await myfetchtext(genomesFileUrl)
-  const genomesFile = new GenomesFile(genomesFileText, {
-    skipValidation: true,
-  })
+  const genomesFile = new GenomesFile(genomesFileText)
 
-  const configs: Array<{
-    genomeName: string
-    config: Record<string, unknown>
-  }> = []
+  const configs = []
 
   for (const [genomeName, genomeStanza] of Object.entries(genomesFile.data)) {
     const { twoBitPath, trackDb, defaultPos, description, organism, htmlPath } =
@@ -46,7 +29,6 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
     }
 
     const twoBitUrl = resolve(twoBitPath, genomesFileUrl)
-    // Derive chromSizes from the 2bit file path
     const chromSizesUrl = twoBitUrl.replace(/\.2bit$/, '.chrom.sizes')
     const trackDbUrl = resolve(trackDb, genomesFileUrl)
 
@@ -65,9 +47,11 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
       chromSizes: chromSizesUrl,
     }
 
+    const displayName = description || organism || genomeName
+
     const asm = {
       name: genomeName,
-      displayName: description || organism || genomeName,
+      displayName,
       sequence: {
         type: 'ReferenceSequenceTrack',
         metadata: {
@@ -92,7 +76,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
       sequenceAdapter,
     })
 
-    const config: Record<string, unknown> = {
+    const config = {
       assemblies: [asm],
       tracks,
       ...(defaultPos
@@ -124,7 +108,13 @@ export async function generateJBrowseConfigsForMultiGenomeHub(
         : {}),
     }
 
-    configs.push({ genomeName, config })
+    configs.push({
+      genomeName,
+      displayName,
+      organism: organism ?? '',
+      defaultPos: defaultPos ?? '',
+      config,
+    })
   }
 
   return configs

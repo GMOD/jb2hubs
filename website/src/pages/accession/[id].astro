@@ -73,6 +73,19 @@ const hubBasePath = `../hubs/${basePrefix}/${part1}/${part2}/${part3}/${accessio
 
 const { imageUrl, pageUrl } =
   (await tryAndReadJSON(path.join(process.cwd(), hubBasePath))) || {}
+
+const statsParts = [
+  stats?.total_length
+    ? `${Number(stats.total_length).toLocaleString()} bp total`
+    : null,
+  stats?.chromosome_count ? `${stats.chromosome_count} chromosomes` : null,
+  stats?.scaffold_n50
+    ? `scaffold N50: ${Number(stats.scaffold_n50).toLocaleString()}`
+    : null,
+  stats?.contig_n50
+    ? `contig N50: ${Number(stats.contig_n50).toLocaleString()}`
+    : null,
+].filter(Boolean)
 ---
 
 <Layout frontmatter={{ title: scientificName }}>
@@ -123,16 +136,14 @@ const { imageUrl, pageUrl } =
           <div>
             <b>NCBI assembly status:</b> RefSeq Suppressed <RedX client:load />
             {suppressionReason ? (
-              <div class={styles.note}>{suppressionReason}</div>
+              <div>
+                <b>Reason:</b> {suppressionReason}
+              </div>
             ) : null}
           </div>
         ) : null
       }
-      {
-        genomeNotes?.length ? (
-          <div class={styles.note}>{genomeNotes.join('; ')}</div>
-        ) : null
-      }
+      {genomeNotes?.length ? <div>{genomeNotes.join('; ')}</div> : null}
       {
         infraspecificNames && Object.keys(infraspecificNames).length ? (
           <div>
@@ -151,7 +162,7 @@ const { imageUrl, pageUrl } =
               <span
                 class={tooltipStyles.tooltip}
                 data-tooltip="Same assembly submitted to both GenBank and RefSeq"
-                style="cursor:help;font-size:0.75em;color:#888;font-weight:normal"
+                style="cursor:help;font-size:0.75em"
               >
                 {' '}
                 ?
@@ -174,43 +185,33 @@ const { imageUrl, pageUrl } =
 
       {
         submitterOrg ||
-        stats ||
+        statsParts.length ||
         comments ||
         gcPercent !== undefined ||
         genomeCoverage ||
         sequencingTech ||
         bioprojectAccession ||
         annotationInfo ? (
-          <details class={styles.details}>
-            <summary class={styles.summary}>More details</summary>
-            <div class={styles.detailsContent}>
+          <details>
+            <summary>More details</summary>
+            <div>
               {submitterOrg ? (
                 <div>
                   <b>Submitter:</b> {submitterOrg}
                 </div>
               ) : null}
-              {stats ? (
+              {statsParts.length ? (
                 <div>
                   <b>Assembly stats:</b>
-                  <div class={styles.geneCounts}>
-                    {stats.total_length
-                      ? `${Number(stats.total_length).toLocaleString()} bp total`
-                      : null}
-                    {stats.chromosome_count
-                      ? ` — ${stats.chromosome_count} chromosomes`
-                      : null}
-                    {stats.scaffold_n50
-                      ? ` — scaffold N50: ${Number(stats.scaffold_n50).toLocaleString()}`
-                      : null}
-                    {stats.contig_n50
-                      ? ` — contig N50: ${Number(stats.contig_n50).toLocaleString()}`
-                      : null}
-                  </div>
+                  <ul>
+                    {statsParts.map(p => <li>{p}</li>)}
+                  </ul>
                 </div>
               ) : null}
               {comments ? (
                 <div>
-                  <b>Comments:</b> {comments}
+                  <b>Comments:</b>
+                  <div class={styles.comments}>{comments}</div>
                 </div>
               ) : null}
               {gcPercent !== undefined ? (
@@ -248,7 +249,7 @@ const { imageUrl, pageUrl } =
                     ? `, ${annotationInfo.release_date}`
                     : null}
                   {annotationInfo.stats?.gene_counts ? (
-                    <div class={styles.geneCounts}>
+                    <div>
                       {annotationInfo.stats.gene_counts.total?.toLocaleString()}{' '}
                       genes —{' '}
                       {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
@@ -272,15 +273,11 @@ const { imageUrl, pageUrl } =
             <figure class={styles.figure}>
               <img src={imageUrl} class={styles.image} />
               <figcaption>
-                {pageUrl ? <a href={pageUrl}>(source)</a> : 'no link'}
+                {pageUrl ? <a href={pageUrl}>(source)</a> : null}
               </figcaption>
             </figure>
           </div>
-        ) : (
-          <div class={styles.imageContainer}>
-            <div class={styles.placeholder}>No image</div>
-          </div>
-        )
+        ) : null
       }
     </div>
     <div>
@@ -293,7 +290,7 @@ const { imageUrl, pageUrl } =
           <a href={igvBrowserLink}>IGV.js</a>
         </li>
         <li>
-          <a href={ncbiBrowserLink}> NCBI browser (GDV) </a>
+          <a href={ncbiBrowserLink}>NCBI browser (GDV)</a>
         </li>
         <li>
           <a href={ucscBrowserLink}>UCSC browser</a>

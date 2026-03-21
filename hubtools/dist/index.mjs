@@ -509,16 +509,6 @@ async function generateJBrowseConfigForAssemblyHub({
 
 //#endregion
 //#region src/generateJBrowseConfigsForMultiGenomeHub.ts
-/**
- * Generates JBrowse 2 configs for all assemblies in a traditional multi-genome
- * UCSC hub (hub.txt with genomesFile pointing to genomes.txt).
- *
- * Skips genome stanzas that don't have a twoBitPath (e.g. hosted UCSC
- * reference assemblies like mm10 or rn6).
- *
- * @param hubUrl - URL to the hub.txt file
- * @returns Array of { genomeName, config } for each genome with a twoBitPath
- */
 async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
   const genomesFileRelUrl = new HubFile(await myfetchtext(hubUrl)).data[
     'genomesFile'
@@ -526,9 +516,7 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
   if (!genomesFileRelUrl)
     throw new Error('Hub file does not have a genomesFile field')
   const genomesFileUrl = resolve(genomesFileRelUrl, hubUrl)
-  const genomesFile = new GenomesFile(await myfetchtext(genomesFileUrl), {
-    skipValidation: true,
-  })
+  const genomesFile = new GenomesFile(await myfetchtext(genomesFileUrl))
   const configs = []
   for (const [genomeName, genomeStanza] of Object.entries(genomesFile.data)) {
     const { twoBitPath, trackDb, defaultPos, description, organism, htmlPath } =
@@ -549,9 +537,10 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
       uri: twoBitUrl,
       chromSizes: chromSizesUrl,
     }
+    const displayName = description || organism || genomeName
     const asm = {
       name: genomeName,
-      displayName: description || organism || genomeName,
+      displayName,
       sequence: {
         type: 'ReferenceSequenceTrack',
         metadata: {
@@ -607,6 +596,9 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
     }
     configs.push({
       genomeName,
+      displayName,
+      organism: organism ?? '',
+      defaultPos: defaultPos ?? '',
       config,
     })
   }
@@ -729,7 +721,7 @@ function parseAssemblyEntry({ entry }) {
     )
   }
   if (!report) return
-  const { assembly_info, assembly_stats, organism } = report
+  const { assembly_info, assembly_stats, organism, annotation_info } = report
   const assemblyStatus = assembly_info.assembly_level
   const ncbiAssemblyName = assembly_info.assembly_name
   const seqReleaseDate = assembly_info.release_date
@@ -739,8 +731,19 @@ function parseAssemblyEntry({ entry }) {
   const submitterOrg = assembly_info.submitter
   const ncbiRefSeqCategory = assembly_info.refseq_category
   const suppressed = assembly_info.assembly_status === 'suppressed'
+  const assemblyType = assembly_info.assembly_type
   const pairedAccession =
     report.paired_accession ?? assembly_info.paired_assembly?.accession
+  const pairedAssemblyStatus = assembly_info.paired_assembly?.status
+  const pairedAssemblyDifferences = assembly_info.paired_assembly?.differences
+  const genomeNotes = assembly_info.genome_notes
+  const suppressionReason = assembly_info.suppression_reason
+  const infraspecificNames = organism.infraspecific_names
+  const comments = assembly_info.comments
+  const gcPercent = assembly_stats.gc_percent
+  const genomeCoverage = assembly_stats.genome_coverage
+  const sequencingTech = assembly_info.sequencing_tech
+  const bioprojectAccession = assembly_info.bioproject_accession
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
   const stats = {
     contig_count: assembly_stats.number_of_contigs,
@@ -762,6 +765,7 @@ function parseAssemblyEntry({ entry }) {
     ncbiAssemblyName,
     ncbiRefSeqCategory,
     suppressed,
+    assemblyType,
     accession: accession || '',
     assembly: asmId || '',
     scientificName: sciName || '',
@@ -778,6 +782,17 @@ function parseAssemblyEntry({ entry }) {
     ncbiName: asmId,
     ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
     pairedAccession,
+    pairedAssemblyStatus,
+    pairedAssemblyDifferences,
+    genomeNotes,
+    suppressionReason,
+    infraspecificNames,
+    comments,
+    gcPercent,
+    genomeCoverage,
+    sequencingTech,
+    bioprojectAccession,
+    annotationInfo: annotation_info,
   }
 }
 

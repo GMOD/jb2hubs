@@ -192,23 +192,99 @@ declare function generateJBrowseConfigForAssemblyHub({
 }>
 //#endregion
 //#region src/generateJBrowseConfigsForMultiGenomeHub.d.ts
-/**
- * Generates JBrowse 2 configs for all assemblies in a traditional multi-genome
- * UCSC hub (hub.txt with genomesFile pointing to genomes.txt).
- *
- * Skips genome stanzas that don't have a twoBitPath (e.g. hosted UCSC
- * reference assemblies like mm10 or rn6).
- *
- * @param hubUrl - URL to the hub.txt file
- * @returns Array of { genomeName, config } for each genome with a twoBitPath
- */
 declare function generateJBrowseConfigsForMultiGenomeHub(
   hubUrl: string,
 ): Promise<
-  Array<{
+  {
     genomeName: string
-    config: Record<string, unknown>
-  }>
+    displayName: string
+    organism: string
+    defaultPos: string
+    config: {
+      defaultSession?:
+        | {
+            name: string
+            widgets: {
+              hierarchicalTrackSelector: {
+                id: string
+                type: string
+                view: string
+              }
+            }
+            activeWidgets: {
+              hierarchicalTrackSelector: string
+            }
+            views: {
+              type: string
+              id: string
+              init: {
+                assembly: string
+                loc: string
+              }
+            }[]
+          }
+        | undefined
+      assemblies: {
+        name: string
+        displayName: string
+        sequence: {
+          type: string
+          metadata: {
+            ucsc: {
+              htmlPath?: string | undefined
+            }
+          }
+          trackId: string
+          adapter: {
+            type: string
+            uri: string
+            chromSizes: string
+          }
+        }
+      }[]
+      tracks: (
+        | {
+            name: string
+            type: string
+            adapter: {
+              type: string
+              uri: URL
+              sequenceAdapter: {
+                [x: string]: unknown
+              }
+            }
+            trackId: string
+            description: string | undefined
+            assemblyNames: string[]
+            metadata: {
+              ucsc: {
+                html?: string | undefined
+              }
+            }
+            category: string[]
+          }
+        | {
+            name: string
+            type: string
+            adapter: {
+              disableGeneHeuristic?: boolean | undefined
+              type: string
+              uri: URL
+              sequenceAdapter?: undefined
+            }
+            trackId: string
+            description: string | undefined
+            assemblyNames: string[]
+            metadata: {
+              ucsc: {
+                html?: string | undefined
+              }
+            }
+            category: string[]
+          }
+      )[]
+    }
+  }[]
 >
 //#endregion
 //#region src/hubCategories.d.ts
@@ -240,6 +316,7 @@ interface NCBIDatasetsReport {
     organism_name: string
     common_name?: string
     tax_id: number
+    infraspecific_names?: Record<string, string>
   }
   assembly_info: {
     assembly_level: string
@@ -249,9 +326,15 @@ interface NCBIDatasetsReport {
     refseq_category?: string
     release_date: string
     submitter: string
+    bioproject_accession?: string
+    comments?: string
+    genome_notes?: string[]
+    sequencing_tech?: string
+    suppression_reason?: string
     paired_assembly?: {
       accession: string
       status: string
+      differences?: string
     }
   }
   assembly_stats: {
@@ -268,6 +351,19 @@ interface NCBIDatasetsReport {
     gc_percent?: number
     genome_coverage?: string
     number_of_component_sequences?: number
+  }
+  annotation_info?: {
+    name?: string
+    provider?: string
+    release_date?: string
+    stats?: {
+      gene_counts?: {
+        protein_coding?: number
+        non_coding?: number
+        pseudogene?: number
+        total?: number
+      }
+    }
   }
 }
 interface NCBIDatasetsResponse {
@@ -289,6 +385,7 @@ declare function parseAssemblyEntry({
       ncbiAssemblyName: string
       ncbiRefSeqCategory: string | undefined
       suppressed: boolean
+      assemblyType: string
       accession: string
       assembly: string
       scientificName: string
@@ -305,6 +402,31 @@ declare function parseAssemblyEntry({
       ncbiName: string
       ncbiBrowserLink: string
       pairedAccession: string | undefined
+      pairedAssemblyStatus: string | undefined
+      pairedAssemblyDifferences: string | undefined
+      genomeNotes: string[] | undefined
+      suppressionReason: string | undefined
+      infraspecificNames: Record<string, string> | undefined
+      comments: string | undefined
+      gcPercent: number | undefined
+      genomeCoverage: string | undefined
+      sequencingTech: string | undefined
+      bioprojectAccession: string | undefined
+      annotationInfo:
+        | {
+            name?: string
+            provider?: string
+            release_date?: string
+            stats?: {
+              gene_counts?: {
+                protein_coding?: number
+                non_coding?: number
+                pseudogene?: number
+                total?: number
+              }
+            }
+          }
+        | undefined
     }
   | undefined
 //#endregion
