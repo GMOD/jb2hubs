@@ -18,6 +18,7 @@ export interface NCBIDatasetsReport {
     organism_name: string
     common_name?: string
     tax_id: number
+    infraspecific_names?: Record<string, string>
   }
   assembly_info: {
     assembly_level: string
@@ -27,9 +28,15 @@ export interface NCBIDatasetsReport {
     refseq_category?: string
     release_date: string
     submitter: string
+    bioproject_accession?: string
+    comments?: string
+    genome_notes?: string[]
+    sequencing_tech?: string
+    suppression_reason?: string
     paired_assembly?: {
       accession: string
       status: string
+      differences?: string
     }
   }
   assembly_stats: {
@@ -46,6 +53,19 @@ export interface NCBIDatasetsReport {
     gc_percent?: number
     genome_coverage?: string
     number_of_component_sequences?: number
+  }
+  annotation_info?: {
+    name?: string
+    provider?: string
+    release_date?: string
+    stats?: {
+      gene_counts?: {
+        protein_coding?: number
+        non_coding?: number
+        pseudogene?: number
+        total?: number
+      }
+    }
   }
 }
 

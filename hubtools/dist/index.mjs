@@ -1,7 +1,13 @@
 import fs from 'fs'
 import { readFile } from 'fs/promises'
-import { SingleFileHub } from '@gmod/ucsc-hub'
+import {
+  GenomesFile,
+  HubFile,
+  SingleFileHub,
+  TrackDbFile,
+} from '@gmod/ucsc-hub'
 import path from 'path'
+
 //#region src/const.ts
 const categoryMap = {
   map: 'Mapping and Sequencing',
@@ -19,6 +25,7 @@ const categoryMap = {
   singleCell: 'Single cell',
   hprc: 'Human Pangenome',
 }
+
 //#endregion
 //#region src/dedupe.ts
 function dedupe(list, hasher = JSON.stringify) {
@@ -33,6 +40,7 @@ function dedupe(list, hasher = JSON.stringify) {
   }
   return clone
 }
+
 //#endregion
 //#region src/util.ts
 function resolve(uri, baseUri) {
@@ -150,6 +158,7 @@ function requireArg(arg, usage) {
   }
   return arg
 }
+
 //#endregion
 //#region src/enhanceConfig.ts
 const defaultPlugins = [
@@ -194,6 +203,7 @@ function enhanceConfig(configPath, plugins = defaultPlugins) {
   }
   writeJSON(configPath, config)
 }
+
 //#endregion
 //#region src/trackUtils.ts
 function createHtmlLink(html, trackDbUrl) {
@@ -224,6 +234,7 @@ function isChainNetTrack(obj) {
   const { shortLabel, longLabel } = obj.data
   return shortLabel?.includes('Chain/Net') || longLabel?.includes('Chain/Net')
 }
+
 //#endregion
 //#region src/createTrackConfiguration.ts
 function createTrackConfiguration({
@@ -364,11 +375,13 @@ function makeTrackConfigSub({ track, trackDbUrl, trackDb, sequenceAdapter }) {
     return
   }
 }
+
 //#endregion
 //#region src/notEmpty.ts
 function notEmpty(value) {
   return value !== null && value !== void 0
 }
+
 //#endregion
 //#region src/generateHubTracks.ts
 function generateHubTracks({
@@ -392,6 +405,7 @@ function generateHubTracks({
     )
     .filter(f => notEmpty(f))
 }
+
 //#endregion
 //#region src/generateJBrowseConfigForAssemblyHub.ts
 async function hasAliases(url) {
@@ -492,6 +506,113 @@ async function generateJBrowseConfigForAssemblyHub({
   }
   throw new Error('not a single file hub')
 }
+
+//#endregion
+//#region src/generateJBrowseConfigsForMultiGenomeHub.ts
+/**
+ * Generates JBrowse 2 configs for all assemblies in a traditional multi-genome
+ * UCSC hub (hub.txt with genomesFile pointing to genomes.txt).
+ *
+ * Skips genome stanzas that don't have a twoBitPath (e.g. hosted UCSC
+ * reference assemblies like mm10 or rn6).
+ *
+ * @param hubUrl - URL to the hub.txt file
+ * @returns Array of { genomeName, config } for each genome with a twoBitPath
+ */
+async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
+  const genomesFileRelUrl = new HubFile(await myfetchtext(hubUrl)).data[
+    'genomesFile'
+  ]
+  if (!genomesFileRelUrl)
+    throw new Error('Hub file does not have a genomesFile field')
+  const genomesFileUrl = resolve(genomesFileRelUrl, hubUrl)
+  const genomesFile = new GenomesFile(await myfetchtext(genomesFileUrl), {
+    skipValidation: true,
+  })
+  const configs = []
+  for (const [genomeName, genomeStanza] of Object.entries(genomesFile.data)) {
+    const { twoBitPath, trackDb, defaultPos, description, organism, htmlPath } =
+      genomeStanza.data
+    if (!twoBitPath || !trackDb) continue
+    const twoBitUrl = resolve(twoBitPath, genomesFileUrl)
+    const chromSizesUrl = twoBitUrl.replace(/\.2bit$/, '.chrom.sizes')
+    const trackDbUrl = resolve(trackDb, genomesFileUrl)
+    let trackDbFile
+    try {
+      trackDbFile = new TrackDbFile(await myfetchtext(trackDbUrl))
+    } catch (e) {
+      console.warn(`Failed to load trackDb for ${genomeName}: ${e}`)
+      continue
+    }
+    const sequenceAdapter = {
+      type: 'TwoBitAdapter',
+      uri: twoBitUrl,
+      chromSizes: chromSizesUrl,
+    }
+    const asm = {
+      name: genomeName,
+      displayName: description || organism || genomeName,
+      sequence: {
+        type: 'ReferenceSequenceTrack',
+        metadata: {
+          ucsc: {
+            ...genomeStanza.data,
+            ...(htmlPath
+              ? {
+                  htmlPath: `<a href="${resolve(htmlPath, genomesFileUrl)}">${htmlPath}</a>`,
+                }
+              : {}),
+          },
+        },
+        trackId: `${genomeName}-ReferenceSequenceTrack`,
+        adapter: sequenceAdapter,
+      },
+    }
+    const tracks = generateHubTracks({
+      trackDb: trackDbFile,
+      trackDbUrl,
+      assemblyName: genomeName,
+      sequenceAdapter,
+    })
+    const config = {
+      assemblies: [asm],
+      tracks,
+      ...(defaultPos
+        ? {
+            defaultSession: {
+              name: genomeName,
+              widgets: {
+                hierarchicalTrackSelector: {
+                  id: 'hierarchicalTrackSelector',
+                  type: 'HierarchicalTrackSelectorWidget',
+                  view: 'initialView',
+                },
+              },
+              activeWidgets: {
+                hierarchicalTrackSelector: 'hierarchicalTrackSelector',
+              },
+              views: [
+                {
+                  type: 'LinearGenomeView',
+                  id: 'initialView',
+                  init: {
+                    assembly: genomeName,
+                    loc: defaultPos,
+                  },
+                },
+              ],
+            },
+          }
+        : {}),
+    }
+    configs.push({
+      genomeName,
+      config,
+    })
+  }
+  return configs
+}
+
 //#endregion
 //#region src/hubCategories.ts
 const hubCategories = [
@@ -582,6 +703,7 @@ const hubCategories = [
     tag: 'other',
   },
 ]
+
 //#endregion
 //#region src/parseAssemblyEntry.ts
 function parseAssemblyEntry({ entry }) {
@@ -617,6 +739,8 @@ function parseAssemblyEntry({ entry }) {
   const submitterOrg = assembly_info.submitter
   const ncbiRefSeqCategory = assembly_info.refseq_category
   const suppressed = assembly_info.assembly_status === 'suppressed'
+  const pairedAccession =
+    report.paired_accession ?? assembly_info.paired_assembly?.accession
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
   const stats = {
     contig_count: assembly_stats.number_of_contigs,
@@ -653,8 +777,10 @@ function parseAssemblyEntry({ entry }) {
     igvBrowserLink: `https://igv.org/app/?hubURL=${ucscBase}/hub.txt`,
     ncbiName: asmId,
     ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
+    pairedAccession,
   }
 }
+
 //#endregion
 export {
   categoryMap,
@@ -663,6 +789,7 @@ export {
   enhanceConfig,
   generateHubTracks,
   generateJBrowseConfigForAssemblyHub,
+  generateJBrowseConfigsForMultiGenomeHub,
   hubCategories,
   makeLoc,
   makeLoc2,

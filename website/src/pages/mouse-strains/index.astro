@@ -1,0 +1,47 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import mouseStrains from '../../mouseStrains.json'
+import '../../styles/common-table.css'
+---
+
+<Layout title="Mouse Strain Assemblies">
+  <Container>
+    <h1>Mouse Strain Assemblies</h1>
+    <p>
+      JBrowse 2 instances for 16 inbred mouse strain assemblies from the <a
+        href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
+        >UCSC Mouse Strains Hub</a
+      >. Each strain has its own genome assembly with annotation tracks
+      including genes, repeats, and RNA-seq data.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Strain</th>
+          <th>Organism</th>
+          <th>Assembly</th>
+          <th>Default position</th>
+          <th>JBrowse</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          mouseStrains.map(strain => (
+            <tr>
+              <td>{strain.genomeName}</td>
+              <td>{strain.organism}</td>
+              <td>{strain.displayName}</td>
+              <td>
+                <code>{strain.defaultPos}</code>
+              </td>
+              <td>
+                <a href={strain.jbrowseLink}>JBrowse</a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </Container>
+</Layout>

@@ -191,6 +191,26 @@ declare function generateJBrowseConfigForAssemblyHub({
   )[]
 }>
 //#endregion
+//#region src/generateJBrowseConfigsForMultiGenomeHub.d.ts
+/**
+ * Generates JBrowse 2 configs for all assemblies in a traditional multi-genome
+ * UCSC hub (hub.txt with genomesFile pointing to genomes.txt).
+ *
+ * Skips genome stanzas that don't have a twoBitPath (e.g. hosted UCSC
+ * reference assemblies like mm10 or rn6).
+ *
+ * @param hubUrl - URL to the hub.txt file
+ * @returns Array of { genomeName, config } for each genome with a twoBitPath
+ */
+declare function generateJBrowseConfigsForMultiGenomeHub(
+  hubUrl: string,
+): Promise<
+  Array<{
+    genomeName: string
+    config: Record<string, unknown>
+  }>
+>
+//#endregion
 //#region src/hubCategories.d.ts
 declare const hubCategories: {
   id: string
@@ -284,6 +304,7 @@ declare function parseAssemblyEntry({
       igvBrowserLink: string
       ncbiName: string
       ncbiBrowserLink: string
+      pairedAccession: string | undefined
     }
   | undefined
 //#endregion
@@ -378,6 +399,7 @@ export {
   enhanceConfig,
   generateHubTracks,
   generateJBrowseConfigForAssemblyHub,
+  generateJBrowseConfigsForMultiGenomeHub,
   hubCategories,
   makeLoc,
   makeLoc2,

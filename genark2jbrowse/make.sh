@@ -292,6 +292,11 @@ else
   ./enhanceConfigs.sh
 fi
 
+# --- Phase 7: Mouse strain assemblies ---
+
+log "Processing UCSC mouse strain assemblies..."
+node src/processMouseStrainsHub.ts
+
 # --- Done ---
 
 if [ "$MODE" = "new" ]; then

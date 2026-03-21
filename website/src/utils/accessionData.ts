@@ -30,6 +30,37 @@ export interface AssemblyData {
   ucscDataLink: string
   ncbiLink: string
   taxonId: number
+  seqReleaseDate?: string
+  assemblyStatus?: string
+  assemblyType?: string
+  submitterOrg?: string
+  suppressed?: boolean
+  ncbiRefSeqCategory?: string
+  stats?: Record<string, unknown>
+  pairedAccession?: string
+  pairedAssemblyStatus?: string
+  pairedAssemblyDifferences?: string
+  genomeNotes?: string[]
+  suppressionReason?: string
+  infraspecificNames?: Record<string, string>
+  comments?: string
+  gcPercent?: number
+  genomeCoverage?: string
+  sequencingTech?: string
+  bioprojectAccession?: string
+  annotationInfo?: {
+    name?: string
+    provider?: string
+    release_date?: string
+    stats?: {
+      gene_counts?: {
+        protein_coding?: number
+        non_coding?: number
+        pseudogene?: number
+        total?: number
+      }
+    }
+  }
   [key: string]: any // Allow other properties
 }
 

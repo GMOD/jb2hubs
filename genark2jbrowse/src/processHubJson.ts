@@ -62,10 +62,13 @@ async function processHubJsonFiles() {
       )
 
       // Process each entry and add the source category
-      const processedCategoryEntries = rawHubData.data.map(entry => ({
-        ...parseAssemblyEntry({ entry }),
-        source: sourceCategory,
-      }))
+      const processedCategoryEntries = rawHubData.data
+        .map(entry => parseAssemblyEntry({ entry }))
+        .filter(
+          (e): e is NonNullable<ReturnType<typeof parseAssemblyEntry>> =>
+            e != null,
+        )
+        .map(e => ({ ...e, source: sourceCategory }))
 
       // Write the processed JSON for the current category
       fs.writeFileSync(

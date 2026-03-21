@@ -40,7 +40,7 @@ export function parseAssemblyEntry({
     return undefined
   }
 
-  const { assembly_info, assembly_stats, organism } = report
+  const { assembly_info, assembly_stats, organism, annotation_info } = report
   const assemblyStatus = assembly_info.assembly_level
   const ncbiAssemblyName = assembly_info.assembly_name
   const seqReleaseDate = assembly_info.release_date
@@ -50,6 +50,19 @@ export function parseAssemblyEntry({
   const submitterOrg = assembly_info.submitter
   const ncbiRefSeqCategory = assembly_info.refseq_category
   const suppressed = assembly_info.assembly_status === 'suppressed'
+  const assemblyType = assembly_info.assembly_type
+  const pairedAccession =
+    report.paired_accession ?? assembly_info.paired_assembly?.accession
+  const pairedAssemblyStatus = assembly_info.paired_assembly?.status
+  const pairedAssemblyDifferences = assembly_info.paired_assembly?.differences
+  const genomeNotes = assembly_info.genome_notes
+  const suppressionReason = assembly_info.suppression_reason
+  const infraspecificNames = organism.infraspecific_names
+  const comments = assembly_info.comments
+  const gcPercent = assembly_stats.gc_percent
+  const genomeCoverage = assembly_stats.genome_coverage
+  const sequencingTech = assembly_info.sequencing_tech
+  const bioprojectAccession = assembly_info.bioproject_accession
 
   const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
 
@@ -76,6 +89,7 @@ export function parseAssemblyEntry({
     ncbiAssemblyName,
     ncbiRefSeqCategory,
     suppressed,
+    assemblyType,
     accession: accession || '',
     assembly: asmId || '',
     scientificName: sciName || '',
@@ -91,5 +105,17 @@ export function parseAssemblyEntry({
     igvBrowserLink: `https://igv.org/app/?hubURL=${ucscBase}/hub.txt`,
     ncbiName: asmId,
     ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
+    pairedAccession,
+    pairedAssemblyStatus,
+    pairedAssemblyDifferences,
+    genomeNotes,
+    suppressionReason,
+    infraspecificNames,
+    comments,
+    gcPercent,
+    genomeCoverage,
+    sequencingTech,
+    bioprojectAccession,
+    annotationInfo: annotation_info,
   }
 }
