@@ -18,14 +18,14 @@ process_assembly() {
   local assembly_data_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_data_dir")
-  local assembly_results_dir="$UCSC_RESULTS_DIR/$assembly_name"
+  local assembly_results_dir="$UCSC_BUILT_DIR/$assembly_name"
 
   mkdir -p "$assembly_results_dir"
-  node src/createAssembly.ts "$assembly_name" "$UCSC_RESULTS_DIR/list.json" >"$assembly_results_dir/config.json"
+  node src/createAssembly.ts "$assembly_name" "$UCSC_BUILT_DIR/list.json" >"$assembly_results_dir/config.json"
 }
 
 export -f process_assembly
-export UCSC_RESULTS_DIR
+export UCSC_BUILT_DIR
 
 # --- Main Script ---
 

@@ -8,8 +8,8 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
-# Use provided argument or default to UCSC_RESULTS_DIR
-RESULTS_DIR="${1:-$UCSC_RESULTS_DIR}"
+# Use provided argument or default to UCSC_BUILT_DIR
+RESULTS_DIR="${1:-$UCSC_BUILT_DIR}"
 
 # Check if results directory exists
 if [ ! -d "$RESULTS_DIR" ]; then

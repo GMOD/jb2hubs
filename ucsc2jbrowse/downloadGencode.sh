@@ -13,7 +13,7 @@ process_gff_file() {
   local url=$2
   local track_name=$3
   local track_id=$4
-  local output_dir="${UCSC_RESULTS_DIR}/$assembly_name"
+  local output_dir="${UCSC_BUILT_DIR}/$assembly_name"
 
   # Create all necessary directories
   mkdir -p "$GENCODE_DIR"

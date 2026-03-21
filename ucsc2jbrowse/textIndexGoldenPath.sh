@@ -38,7 +38,7 @@ process_assembly() {
 }
 
 export -f process_assembly
-export UCSC_RESULTS_DIR
+export UCSC_BUILT_DIR
 
 # --- Main Script ---
 

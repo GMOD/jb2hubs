@@ -8,6 +8,6 @@
 
 source "$(dirname "$0")/common.sh"
 
-log "Using UCSC_RESULTS_DIR: $UCSC_RESULTS_DIR"
+log "Using UCSC_BUILT_DIR: $UCSC_BUILT_DIR"
 
 node src/generateDefaultSessions.ts

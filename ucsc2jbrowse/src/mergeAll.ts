@@ -75,9 +75,9 @@ function mergeAllConfigs() {
     plugins: [...mergedPlugins.values()],
   }
 
-  const ucscResultsDir = process.env.UCSC_RESULTS_DIR
+  const ucscResultsDir = process.env.UCSC_BUILT_DIR
   if (!ucscResultsDir) {
-    throw new Error('No UCSC_RESULTS_DIR env defined')
+    throw new Error('No UCSC_BUILT_DIR env defined')
   }
   writeJSON(path.join(ucscResultsDir, 'all.json'), mergedConfig)
   console.log(`All configurations merged into ${ucscResultsDir}/all.json`)

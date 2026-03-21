@@ -18,7 +18,7 @@ process_assembly() {
   local assembly_data_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_data_dir")
-  local assembly_results_dir="$UCSC_RESULTS_DIR/$assembly_name"
+  local assembly_results_dir="$UCSC_BUILT_DIR/$assembly_name"
 
   for i in "$assembly_results_dir"/*.bed.gz; do
     node src/addBedTabixTrackToConfig.ts "$assembly_results_dir/config.json" "$i"
@@ -33,7 +33,7 @@ process_assembly() {
 }
 
 export -f process_assembly
-export UCSC_RESULTS_DIR
+export UCSC_BUILT_DIR
 
 # --- Main Script ---
 

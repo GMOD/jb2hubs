@@ -91,9 +91,9 @@ function generateDefaultSession(genome: UcscGenome): DefaultSession {
 }
 
 function main() {
-  const resultsDir = process.env.UCSC_RESULTS_DIR
+  const resultsDir = process.env.UCSC_BUILT_DIR
   if (!resultsDir) {
-    console.error('Error: UCSC_RESULTS_DIR environment variable is not set')
+    console.error('Error: UCSC_BUILT_DIR environment variable is not set')
     process.exit(1)
   }
 

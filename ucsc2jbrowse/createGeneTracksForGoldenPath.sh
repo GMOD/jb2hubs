@@ -76,7 +76,7 @@ process_assembly() {
   local assembly_data_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_data_dir")
-  local assembly_results_dir="$UCSC_RESULTS_DIR/$assembly_name"
+  local assembly_results_dir="$UCSC_BUILT_DIR/$assembly_name"
   local db_dir="$assembly_data_dir/$assembly_name/database"
 
   mkdir -p "$assembly_results_dir"
@@ -85,7 +85,7 @@ process_assembly() {
 
 export -f process_assembly
 export -f process_gene_tracks
-export UCSC_RESULTS_DIR
+export UCSC_BUILT_DIR
 
 # --- Main Script ---
 

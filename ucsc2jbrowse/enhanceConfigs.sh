@@ -35,9 +35,9 @@ process_assembly() {
 }
 
 export -f process_assembly
-export UCSC_RESULTS_DIR
+export UCSC_BUILT_DIR
 
 # --- Main Script ---
 
-# Run the process_assembly function in parallel for each directory in UCSC_RESULTS_DIR.
-parallel $PARALLEL_OPTS process_assembly ::: "$UCSC_RESULTS_DIR"/*
+# Run the process_assembly function in parallel for each directory in UCSC_BUILT_DIR.
+parallel $PARALLEL_OPTS process_assembly ::: "$UCSC_BUILT_DIR"/*

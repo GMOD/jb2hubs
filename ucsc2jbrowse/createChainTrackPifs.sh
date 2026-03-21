@@ -8,7 +8,7 @@
 # Usage: ./createChainTrackPifs.sh <source> <assembly> [outdir] [liftover_base_url]
 #   source:            'liftOver' or 'vs'. This determines the URL and directory structure.
 #   assembly:          The assembly name (e.g., hg38).
-#   outdir:            The root output directory for all assemblies. Defaults to UCSC_RESULTS_DIR or ~/ucscResults.
+#   outdir:            The root output directory for all assemblies. Defaults to UCSC_BUILT_DIR.
 #   liftover_base_url: Optional. Custom base URL for liftOver files. Overrides the default goldenPath URL.
 
 set -euo pipefail
@@ -41,7 +41,7 @@ usage() {
   echo "Usage: $0 <source> <assembly> [outdir] [liftover_base_url]"
   echo "  source:            'liftOver' or 'vs'"
   echo "  assembly:          The assembly name (e.g., hg38)"
-  echo "  outdir:            Root output directory. Defaults to UCSC_RESULTS_DIR or ~/ucscResults"
+  echo "  outdir:            Root output directory. Defaults to UCSC_BUILT_DIR"
   echo "  liftover_base_url: Optional. Custom base URL for liftOver files."
   exit 1
 }
@@ -50,7 +50,7 @@ usage() {
 setup_config() {
   SOURCE=${1:-}
   ASSEMBLY=${2:-}
-  OUTDIR=${3:-"${UCSC_RESULTS_DIR:-~/ucscResults}"}
+  OUTDIR=${3:-"${UCSC_BUILT_DIR}"}
   LIFTOVER_BASE_URL=${4:-}
 
   if [[ -z "$SOURCE" || -z "$ASSEMBLY" ]]; then

@@ -88,9 +88,9 @@ function createChainTrackConfig({
   } else {
     // Try to get common name from ucscResults/list.json for typical UCSC assemblies
     try {
-      const ucscResultsDir = process.env.UCSC_RESULTS_DIR
+      const ucscResultsDir = process.env.UCSC_BUILT_DIR
       if (!ucscResultsDir) {
-        throw new Error('No UCSC_RESULTS_DIR env defined')
+        throw new Error('No UCSC_BUILT_DIR env defined')
       }
       const listJson = readJSON<any>(path.join(ucscResultsDir, 'list.json'))
       commonName = listJson.ucscGenomes?.[targetAssembly]?.organism ?? ''
@@ -145,7 +145,7 @@ function main() {
     .option(
       '-o, --output <dir>',
       'Output directory',
-      process.env.UCSC_RESULTS_DIR,
+      process.env.UCSC_BUILT_DIR,
     )
     .parse(process.argv)
 
