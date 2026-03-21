@@ -3,7 +3,11 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
-import { loadAccessionMap, tryAndReadJSON } from '../../utils/accessionData.ts'
+import {
+  loadAccessionMap,
+  loadNcbiDetails,
+  tryAndReadJSON,
+} from '../../utils/accessionData.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
 import path from 'path'
@@ -41,10 +45,13 @@ const {
   assemblyStatus,
   assemblyType,
   submitterOrg,
-  stats,
   ncbiRefSeqCategory,
   suppressed,
   pairedAccession,
+} = ret
+
+const {
+  stats,
   pairedAssemblyStatus,
   pairedAssemblyDifferences,
   genomeNotes,
@@ -56,7 +63,8 @@ const {
   sequencingTech,
   bioprojectAccession,
   annotationInfo,
-} = ret
+  ncbiDownloadedAt,
+} = loadNcbiDetails(accession)
 
 const pairedAssemblyData = pairedAccession
   ? loadAccessionMap().get(pairedAccession)
@@ -184,86 +192,86 @@ const statsParts = [
       }
 
       {
-        submitterOrg ||
-        statsParts.length ||
-        comments ||
-        gcPercent !== undefined ||
-        genomeCoverage ||
-        sequencingTech ||
-        bioprojectAccession ||
+        submitterOrg ? (
+          <div>
+            <b>Submitter:</b> {submitterOrg}
+          </div>
+        ) : null
+      }
+      {
+        statsParts.length ? (
+          <div>
+            <b>Assembly stats:</b>
+            <ul>
+              {statsParts.map(p => (
+                <li>{p}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null
+      }
+      {
+        gcPercent !== undefined ? (
+          <div>
+            <b>GC content:</b> {gcPercent}%
+          </div>
+        ) : null
+      }
+      {
+        genomeCoverage ? (
+          <div>
+            <b>Coverage:</b> {genomeCoverage}x
+          </div>
+        ) : null
+      }
+      {
+        sequencingTech ? (
+          <div>
+            <b>Sequencing:</b> {sequencingTech}
+          </div>
+        ) : null
+      }
+      {
+        bioprojectAccession ? (
+          <div>
+            <b>BioProject:</b>{' '}
+            <a
+              href={`https://www.ncbi.nlm.nih.gov/bioproject/${bioprojectAccession}`}
+            >
+              {bioprojectAccession}
+            </a>
+          </div>
+        ) : null
+      }
+      {
         annotationInfo ? (
-          <details>
-            <summary>More details</summary>
-            <div>
-              {submitterOrg ? (
-                <div>
-                  <b>Submitter:</b> {submitterOrg}
-                </div>
-              ) : null}
-              {statsParts.length ? (
-                <div>
-                  <b>Assembly stats:</b>
-                  <ul>
-                    {statsParts.map(p => <li>{p}</li>)}
-                  </ul>
-                </div>
-              ) : null}
-              {comments ? (
-                <div>
-                  <b>Comments:</b>
-                  <div class={styles.comments}>{comments}</div>
-                </div>
-              ) : null}
-              {gcPercent !== undefined ? (
-                <div>
-                  <b>GC content:</b> {gcPercent}%
-                </div>
-              ) : null}
-              {genomeCoverage ? (
-                <div>
-                  <b>Coverage:</b> {genomeCoverage}x
-                </div>
-              ) : null}
-              {sequencingTech ? (
-                <div>
-                  <b>Sequencing:</b> {sequencingTech}
-                </div>
-              ) : null}
-              {bioprojectAccession ? (
-                <div>
-                  <b>BioProject:</b>{' '}
-                  <a
-                    href={`https://www.ncbi.nlm.nih.gov/bioproject/${bioprojectAccession}`}
-                  >
-                    {bioprojectAccession}
-                  </a>
-                </div>
-              ) : null}
-              {annotationInfo ? (
-                <div>
-                  <b>Annotation:</b> {annotationInfo.name}
-                  {annotationInfo.provider
-                    ? ` (${annotationInfo.provider})`
-                    : null}
-                  {annotationInfo.release_date
-                    ? `, ${annotationInfo.release_date}`
-                    : null}
-                  {annotationInfo.stats?.gene_counts ? (
-                    <div>
-                      {annotationInfo.stats.gene_counts.total?.toLocaleString()}{' '}
-                      genes —{' '}
-                      {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
-                      protein-coding,{' '}
-                      {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
-                      non-coding,{' '}
-                      {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
-                      pseudogenes
-                    </div>
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          </details>
+          <div>
+            <b>Annotation:</b> {annotationInfo.name}
+            {annotationInfo.provider ? ` (${annotationInfo.provider})` : null}
+            {annotationInfo.release_date
+              ? `, ${annotationInfo.release_date}`
+              : null}
+            {annotationInfo.stats?.gene_counts ? (
+              <div>
+                {annotationInfo.stats.gene_counts.total?.toLocaleString()} genes
+                —{' '}
+                {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
+                protein-coding,{' '}
+                {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
+                non-coding,{' '}
+                {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
+                pseudogenes
+              </div>
+            ) : null}
+          </div>
+        ) : null
+      }
+      {
+        comments ? (
+          <div>
+            <b>Comments:</b>
+            <div class={styles.comments}>{comments}</div>
+          </div>
         ) : null
       }
 
@@ -328,6 +336,18 @@ const statsParts = [
           </a>
         </li>
       </ul>
+    </div>
+    <div>
+      <small>
+        Assembly data from{' '}
+        <a href={ncbiLink}>NCBI</a> and{' '}
+        <a href={ucscDataLink}>UCSC GenArk</a>.
+        {
+          ncbiDownloadedAt
+            ? ` NCBI data retrieved ${new Date(ncbiDownloadedAt * 1000).toLocaleDateString()}.`
+            : null
+        }
+      </small>
     </div>
   </Container>
 </Layout>

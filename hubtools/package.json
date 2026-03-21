@@ -13,6 +13,7 @@
     "clean": "rimraf dist",
     "prebuild": "yarn clean",
     "build": "tsdown --dts src/index.ts",
+    "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test src/*.test.ts",
     "preversion": "yarn build",
     "postversion": "git push --follow-tags"
   },

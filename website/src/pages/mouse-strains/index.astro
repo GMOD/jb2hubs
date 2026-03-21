@@ -2,18 +2,21 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import mouseStrains from '../../mouseStrains.json'
+import ensemblMouseStrains from '../../ensemblMouseStrains.json'
 import '../../styles/common-table.css'
 ---
 
 <Layout title="Mouse Strain Assemblies">
   <Container>
     <h1>Mouse Strain Assemblies</h1>
+
+    <h2>UCSC Mouse Strains Hub</h2>
     <p>
-      JBrowse 2 instances for 16 inbred mouse strain assemblies from the <a
+      16 inbred mouse strain assemblies from the <a
         href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
         >UCSC Mouse Strains Hub</a
-      >. Each strain has its own genome assembly with annotation tracks
-      including genes, repeats, and RNA-seq data.
+      >, aligned to mm10 via Cactus with RNA-seq and cross-strain alignment
+      tracks.
     </p>
     <table>
       <thead>
@@ -21,7 +24,6 @@ import '../../styles/common-table.css'
           <th>Strain</th>
           <th>Organism</th>
           <th>Assembly</th>
-          <th>Default position</th>
           <th>JBrowse</th>
         </tr>
       </thead>
@@ -33,7 +35,47 @@ import '../../styles/common-table.css'
               <td>{strain.organism}</td>
               <td>{strain.displayName}</td>
               <td>
-                <code>{strain.defaultPos}</code>
+                <a href={strain.jbrowseLink}>JBrowse</a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h2>Ensembl Mouse Genomes Project</h2>
+    <p>
+      18 inbred mouse strain assemblies from the <a
+        href="https://projects.ensembl.org/mouse_genomes/"
+        >Ensembl Mouse Genomes Project</a
+      >, including two T2T assemblies, with GENCODE M30 annotation. These are
+      newer assemblies on different coordinate systems than the UCSC hub above.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Strain</th>
+          <th>Scientific name</th>
+          <th>Assembly</th>
+          <th>Accession</th>
+          <th>JBrowse</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          ensemblMouseStrains.map(strain => (
+            <tr>
+              <td>{strain.strain}</td>
+              <td>
+                <i>{strain.scientificName}</i>
+              </td>
+              <td>{strain.assemblyName}</td>
+              <td>
+                <a
+                  href={`https://www.ncbi.nlm.nih.gov/assembly/${strain.accession}`}
+                >
+                  {strain.accession}
+                </a>
               </td>
               <td>
                 <a href={strain.jbrowseLink}>JBrowse</a>

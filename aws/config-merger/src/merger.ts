@@ -111,7 +111,7 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
         id: 'initialView',
         ...(first && { displayName: first.displayName || first.name }),
         ...(defaultPos && {
-          displayedRegions: [parseRegion(defaultPos, first.name)],
+          displayedRegions: [parseRegion(defaultPos, first!.name)],
         }),
       },
     ],
@@ -131,7 +131,7 @@ export function mergeConfigs(
     !options.includeSyntenyTracks &&
     !options.createDefaultSession
   ) {
-    return configs[0]
+    return configs[0]!
   }
 
   const assemblies = mergeAssemblies(configs)

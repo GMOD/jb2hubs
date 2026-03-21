@@ -70,10 +70,13 @@ function parseNewick(newick: string): TreeNode | null {
       const accessionMatch = /^(.+?)\[([^\]]+)\]$/.exec(name)
       if (accessionMatch) {
         node.name = accessionMatch[1]
-        const bracketContent = accessionMatch[2]
+        const bracketContent = accessionMatch[2]!
         // Check if bracket content contains taxonId (format: accession|taxonId)
         if (bracketContent.includes('|')) {
-          const [accession, taxonId] = bracketContent.split('|')
+          const [accession, taxonId] = bracketContent.split('|') as [
+            string,
+            string,
+          ]
           node.accession = accession
           node.taxonId = taxonId
         } else {
@@ -128,22 +131,23 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
 
     // Check if this node should be collapsed:
     // If it has exactly one child that is a leaf with the same name, skip the intermediate node
-    if (
-      n.children?.length === 1 &&
-      (!n.children[0].children || n.children[0].children.length === 0) && // child is a leaf
-      n.name === n.children[0].name && // names match
-      n.children[0].accession // child has an accession
-    ) {
-      // Collapse: use the child's accession but keep the parent's position in tree
-      return {
-        id,
-        name: n.name,
-        accession: n.children[0].accession, // Promote child's accession
-        taxonId: n.children[0].taxonId, // Promote child's taxonId
-        branchLength: n.children[0].branchLength,
-        children: undefined,
-        depth,
-        isLeaf: true,
+    if (n.children?.length === 1) {
+      const firstChild = n.children[0]!
+      if (
+        (!firstChild.children || firstChild.children.length === 0) &&
+        n.name === firstChild.name &&
+        firstChild.accession
+      ) {
+        return {
+          id,
+          name: n.name,
+          accession: firstChild.accession,
+          taxonId: firstChild.taxonId,
+          branchLength: firstChild.branchLength,
+          children: undefined,
+          depth,
+          isLeaf: true,
+        }
       }
     }
 

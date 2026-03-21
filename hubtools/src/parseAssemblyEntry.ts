@@ -18,8 +18,13 @@ export function parseAssemblyEntry({
   // Read ncbi.json (now in NCBI Datasets API format)
   const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
   let report: NCBIDatasetsReport | undefined
+  let ncbiDownloadedAt: number | undefined
   try {
-    const ncbiData = readJSON(fn) as { reports: NCBIDatasetsReport[] }
+    const ncbiData = readJSON(fn) as {
+      reports: NCBIDatasetsReport[]
+      downloaded_at?: number
+    }
+    ncbiDownloadedAt = ncbiData.downloaded_at
     report = ncbiData.reports?.find(
       r =>
         r.accession === accession ||
@@ -117,5 +122,6 @@ export function parseAssemblyEntry({
     sequencingTech,
     bioprojectAccession,
     annotationInfo: annotation_info,
+    ncbiDownloadedAt,
   }
 }

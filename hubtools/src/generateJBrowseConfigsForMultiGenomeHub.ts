@@ -3,6 +3,27 @@ import { GenomesFile, HubFile, TrackDbFile } from '@gmod/ucsc-hub'
 import { generateHubTracks } from './generateHubTracks.ts'
 import { myfetchtext, resolve } from './util.ts'
 
+// Fetches a trackDb file and recursively resolves `include` directives,
+// returning the concatenated text of all included files.
+async function fetchTrackDbWithIncludes(trackDbUrl: string): Promise<string> {
+  const text = await myfetchtext(trackDbUrl)
+  const includes = [...text.matchAll(/^include\s+(\S+)/gm)]
+  if (!includes.length) {
+    return text
+  }
+  const parts = await Promise.all(
+    includes.map(async ([, path]) => {
+      try {
+        return await fetchTrackDbWithIncludes(resolve(path!, trackDbUrl))
+      } catch (e) {
+        console.warn(`Failed to fetch included trackDb ${path}: ${e}`)
+        return ''
+      }
+    }),
+  )
+  return [text, ...parts].join('\n\n')
+}
+
 export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
   const hubFileText = await myfetchtext(hubUrl)
   const hub = new HubFile(hubFileText)
@@ -34,8 +55,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
 
     let trackDbFile: TrackDbFile
     try {
-      const trackDbText = await myfetchtext(trackDbUrl)
-      trackDbFile = new TrackDbFile(trackDbText)
+      trackDbFile = new TrackDbFile(await fetchTrackDbWithIncludes(trackDbUrl))
     } catch (e) {
       console.warn(`Failed to load trackDb for ${genomeName}: ${e}`)
       continue

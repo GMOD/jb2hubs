@@ -154,6 +154,18 @@ function makeTrackConfigSub({
         uri: bigDataUrl,
       },
     }
+  } else if (baseTrackType === 'bigMaf') {
+    const summaryUrl = data.summary
+      ? new URL(data.summary, trackDbUrl)
+      : undefined
+    return {
+      type: 'MafTrack',
+      adapter: {
+        type: 'BigMafAdapter',
+        bigMafLocation: { uri: bigDataUrl },
+        ...(summaryUrl ? { summaryLocation: { uri: summaryUrl } } : {}),
+      },
+    }
   } else if (baseTrackType.startsWith('big')) {
     const trackName = data.track ?? ''
     const disableGeneHeuristic =

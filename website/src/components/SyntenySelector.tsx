@@ -83,7 +83,7 @@ export default function SyntenySelector({
         allAssemblies.add(assembly)
       }
       if (track.assemblyNames.length === 2) {
-        const [first, second] = track.assemblyNames
+        const [first, second] = track.assemblyNames as [string, string]
         if (!pairs.has(first)) {
           pairs.set(first, new Set())
         }

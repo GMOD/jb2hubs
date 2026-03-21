@@ -3,6 +3,7 @@ import * as fs from 'fs'
 
 import deepEqual from 'fast-deep-equal'
 import {
+  enhanceConfig,
   generateJBrowseConfigsForMultiGenomeHub,
   readJSON,
   writeJSON,
@@ -36,6 +37,7 @@ const metadata = configs.map(
       console.log(`Config for ${genomeName} is unchanged. Skipping write.`)
     } else {
       writeJSON(configPath, config)
+      enhanceConfig(configPath)
       console.log(`Generated config for ${genomeName} → ${configPath}`)
     }
 

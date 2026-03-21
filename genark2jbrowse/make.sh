@@ -124,7 +124,7 @@ if [ "$MODE" = "new" ]; then
     dir="${meta_file%/meta.json}"
     id="${dir##*/}"
     if [ -f "$NCBI_RESULT_DIR/$id.json" ]; then
-      cp "$NCBI_RESULT_DIR/$id.json" "$dir/ncbi.json"
+      jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$NCBI_RESULT_DIR/$id.json" > "$dir/ncbi.json"
       echo "Saved NCBI data for $id"
     else
       echo "Warning: No datasets result for $id"
@@ -296,6 +296,12 @@ fi
 
 log "Processing UCSC mouse strain assemblies..."
 node src/processMouseStrainsHub.ts
+
+log "Adding mm10 synteny tracks to mouse strain configs..."
+node src/createMouseStrainsChainTracks.ts
+
+log "Generating Ensembl mouse strains portal..."
+node src/processEnsemblMouseStrainsPortal.ts
 
 # --- Done ---
 

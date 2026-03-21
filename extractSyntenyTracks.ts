@@ -86,7 +86,7 @@ async function extractSyntenyTracksFromFile(
     const content = await readFile(filePath, 'utf-8')
     const config: Config = JSON.parse(content)
 
-    const assemblyInfo: Record<string, AssemblyInfo> = {}
+    const assemblyInfo: Record<string, Omit<AssemblyInfo, 'source'>> = {}
 
     if (config.assemblies && Array.isArray(config.assemblies)) {
       for (const asm of config.assemblies) {

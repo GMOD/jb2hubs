@@ -73,6 +73,32 @@ declare function generateHubTracks({
       name: string
       type: string
       adapter: {
+        summaryLocation?:
+          | {
+              uri: URL
+            }
+          | undefined
+        type: string
+        bigMafLocation: {
+          uri: URL
+        }
+        uri?: undefined
+        sequenceAdapter?: undefined
+      }
+      trackId: string
+      description: string | undefined
+      assemblyNames: string[]
+      metadata: {
+        ucsc: {
+          html?: string | undefined
+        }
+      }
+      category: string[]
+    }
+  | {
+      name: string
+      type: string
+      adapter: {
         disableGeneHeuristic?: boolean | undefined
         type: string
         uri: URL
@@ -173,6 +199,32 @@ declare function generateJBrowseConfigForAssemblyHub({
         name: string
         type: string
         adapter: {
+          summaryLocation?:
+            | {
+                uri: URL
+              }
+            | undefined
+          type: string
+          bigMafLocation: {
+            uri: URL
+          }
+          uri?: undefined
+          sequenceAdapter?: undefined
+        }
+        trackId: string
+        description: string | undefined
+        assemblyNames: string[]
+        metadata: {
+          ucsc: {
+            html?: string | undefined
+          }
+        }
+        category: string[]
+      }
+    | {
+        name: string
+        type: string
+        adapter: {
           disableGeneHeuristic?: boolean | undefined
           type: string
           uri: URL
@@ -252,6 +304,32 @@ declare function generateJBrowseConfigsForMultiGenomeHub(
               sequenceAdapter: {
                 [x: string]: unknown
               }
+            }
+            trackId: string
+            description: string | undefined
+            assemblyNames: string[]
+            metadata: {
+              ucsc: {
+                html?: string | undefined
+              }
+            }
+            category: string[]
+          }
+        | {
+            name: string
+            type: string
+            adapter: {
+              summaryLocation?:
+                | {
+                    uri: URL
+                  }
+                | undefined
+              type: string
+              bigMafLocation: {
+                uri: URL
+              }
+              uri?: undefined
+              sequenceAdapter?: undefined
             }
             trackId: string
             description: string | undefined
@@ -427,6 +505,7 @@ declare function parseAssemblyEntry({
             }
           }
         | undefined
+      ncbiDownloadedAt: number | undefined
     }
   | undefined
 //#endregion

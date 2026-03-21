@@ -151,7 +151,7 @@ not_found=0
 while IFS='|' read -r dir id common_name; do
   ncbi_file="$dir/ncbi.json"
   if [ -f "$RESULT_DIR/$id.json" ]; then
-    cp "$RESULT_DIR/$id.json" "$ncbi_file"
+    jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$RESULT_DIR/$id.json" > "$ncbi_file"
     # Remove any previous notfound sentinel
     rm -f "$dir/ncbi.json.notfound"
     found=$((found + 1))

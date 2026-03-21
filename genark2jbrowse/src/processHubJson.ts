@@ -8,6 +8,23 @@ import { readJSON } from './util.ts'
 
 import type { UCSCGenArkAssemblyEntry } from 'hubtools'
 
+type ParsedEntry = Omit<
+  NonNullable<ReturnType<typeof parseAssemblyEntry>>,
+  | 'stats'
+  | 'annotationInfo'
+  | 'infraspecificNames'
+  | 'comments'
+  | 'gcPercent'
+  | 'genomeCoverage'
+  | 'sequencingTech'
+  | 'bioprojectAccession'
+  | 'pairedAssemblyStatus'
+  | 'pairedAssemblyDifferences'
+  | 'genomeNotes'
+  | 'suppressionReason'
+  | 'ncbiDownloadedAt'
+> & { source: string }
+
 // Get main category IDs for determining primary source
 const mainCategories = new Set(
   hubCategories.filter(c => c.tag === 'main').map(c => c.id),
@@ -19,7 +36,7 @@ const mainCategories = new Set(
  */
 async function processHubJsonFiles() {
   // Map to deduplicate by accession, preferring main category sources
-  const accessionMap = new Map<string, UCSCGenArkAssemblyEntry>()
+  const accessionMap = new Map<string, ParsedEntry>()
 
   // Read all files in the 'hubJson' directory
   const hubJsonFiles = fs
@@ -68,7 +85,27 @@ async function processHubJsonFiles() {
           (e): e is NonNullable<ReturnType<typeof parseAssemblyEntry>> =>
             e != null,
         )
-        .map(e => ({ ...e, source: sourceCategory }))
+        .map(e => {
+          // Strip detail-only fields that are only needed on individual accession
+          // pages and can be read directly from ncbi.json at page-build time.
+          const {
+            stats: _stats,
+            annotationInfo: _annotationInfo,
+            infraspecificNames: _infraspecificNames,
+            comments: _comments,
+            gcPercent: _gcPercent,
+            genomeCoverage: _genomeCoverage,
+            sequencingTech: _sequencingTech,
+            bioprojectAccession: _bioprojectAccession,
+            pairedAssemblyStatus: _pairedAssemblyStatus,
+            pairedAssemblyDifferences: _pairedAssemblyDifferences,
+            genomeNotes: _genomeNotes,
+            suppressionReason: _suppressionReason,
+            ncbiDownloadedAt: _ncbiDownloadedAt,
+            ...summary
+          } = e
+          return { ...summary, source: sourceCategory }
+        })
 
       // Write the processed JSON for the current category
       fs.writeFileSync(
@@ -85,10 +122,10 @@ async function processHubJsonFiles() {
           accessionMap.set(entry.accession, {
             ...entry,
             source: isMainCategory ? sourceCategory : 'uncategorized',
-          } as UCSCGenArkAssemblyEntry)
+          })
         } else if (isMainCategory && !mainCategories.has(existing.source)) {
           // Replace non-main source with main source
-          accessionMap.set(entry.accession, entry as UCSCGenArkAssemblyEntry)
+          accessionMap.set(entry.accession, entry)
         }
         // Otherwise keep existing (it's already a main category or we already have it)
       }

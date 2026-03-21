@@ -342,7 +342,17 @@ function makeTrackConfigSub({ track, trackDbUrl, trackDb, sequenceAdapter }) {
         uri: bigDataUrl,
       },
     }
-  else if (baseTrackType.startsWith('big')) {
+  else if (baseTrackType === 'bigMaf') {
+    const summaryUrl = data.summary ? new URL(data.summary, trackDbUrl) : void 0
+    return {
+      type: 'MafTrack',
+      adapter: {
+        type: 'BigMafAdapter',
+        bigMafLocation: { uri: bigDataUrl },
+        ...(summaryUrl ? { summaryLocation: { uri: summaryUrl } } : {}),
+      },
+    }
+  } else if (baseTrackType.startsWith('big')) {
     const trackName = data.track ?? ''
     return {
       type: 'FeatureTrack',
@@ -509,6 +519,24 @@ async function generateJBrowseConfigForAssemblyHub({
 
 //#endregion
 //#region src/generateJBrowseConfigsForMultiGenomeHub.ts
+async function fetchTrackDbWithIncludes(trackDbUrl) {
+  const text = await myfetchtext(trackDbUrl)
+  const includes = [...text.matchAll(/^include\s+(\S+)/gm)]
+  if (!includes.length) return text
+  return [
+    text,
+    ...(await Promise.all(
+      includes.map(async ([, path$1]) => {
+        try {
+          return await fetchTrackDbWithIncludes(resolve(path$1, trackDbUrl))
+        } catch (e) {
+          console.warn(`Failed to fetch included trackDb ${path$1}: ${e}`)
+          return ''
+        }
+      }),
+    )),
+  ].join('\n\n')
+}
 async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
   const genomesFileRelUrl = new HubFile(await myfetchtext(hubUrl)).data[
     'genomesFile'
@@ -527,7 +555,7 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
     const trackDbUrl = resolve(trackDb, genomesFileUrl)
     let trackDbFile
     try {
-      trackDbFile = new TrackDbFile(await myfetchtext(trackDbUrl))
+      trackDbFile = new TrackDbFile(await fetchTrackDbWithIncludes(trackDbUrl))
     } catch (e) {
       console.warn(`Failed to load trackDb for ${genomeName}: ${e}`)
       continue
@@ -706,8 +734,10 @@ function parseAssemblyEntry({ entry }) {
   const [b1, b2, b3] = rest.match(/.{1,3}/g)
   const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
   let report
+  let ncbiDownloadedAt
   try {
     const ncbiData = readJSON(fn)
+    ncbiDownloadedAt = ncbiData.downloaded_at
     report = ncbiData.reports?.find(
       r =>
         r.accession === accession ||
@@ -793,6 +823,7 @@ function parseAssemblyEntry({ entry }) {
     sequencingTech,
     bioprojectAccession,
     annotationInfo: annotation_info,
+    ncbiDownloadedAt,
   }
 }
 
