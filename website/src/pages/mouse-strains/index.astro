@@ -10,7 +10,47 @@ import '../../styles/common-table.css'
   <Container>
     <h1>Mouse Strain Assemblies</h1>
 
-    <h2>UCSC Mouse Strains Hub</h2>
+    <h2>Ensembl Mouse Genomes Project</h2>
+    <p>
+      18 inbred mouse strain assemblies from the <a
+        href="https://projects.ensembl.org/mouse_genomes/"
+        >Ensembl Mouse Genomes Project</a
+      >, including two T2T assemblies, with GENCODE M30 annotation.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Strain</th>
+          <th>Year</th>
+          <th>Accession</th>
+          <th>JAX</th>
+          <th>JBrowse</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          ensemblMouseStrains.map(strain => (
+            <tr>
+              <td>{strain.strain}</td>
+              <td>{strain.assemblyYear}</td>
+              <td>
+                <a href={`https://genomes.jbrowse.org/accession/${strain.accession}/`}>
+                  {strain.accession}
+                </a>
+              </td>
+              <td>
+                {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
+              </td>
+              <td>
+                <a href={strain.jbrowseLink}>JBrowse</a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <h2>UCSC Mouse Strains Hub (2016)</h2>
     <p>
       16 inbred mouse strain assemblies from the <a
         href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
@@ -22,8 +62,9 @@ import '../../styles/common-table.css'
       <thead>
         <tr>
           <th>Strain</th>
+          <th>Year</th>
           <th>Organism</th>
-          <th>Assembly</th>
+          <th>JAX</th>
           <th>JBrowse</th>
         </tr>
       </thead>
@@ -31,51 +72,11 @@ import '../../styles/common-table.css'
         {
           mouseStrains.map(strain => (
             <tr>
-              <td>{strain.genomeName}</td>
+              <td>{strain.genomeName.replaceAll('_', '/')}</td>
+              <td>{strain.assemblyYear}</td>
               <td>{strain.organism}</td>
-              <td>{strain.displayName}</td>
               <td>
-                <a href={strain.jbrowseLink}>JBrowse</a>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-
-    <h2>Ensembl Mouse Genomes Project</h2>
-    <p>
-      18 inbred mouse strain assemblies from the <a
-        href="https://projects.ensembl.org/mouse_genomes/"
-        >Ensembl Mouse Genomes Project</a
-      >, including two T2T assemblies, with GENCODE M30 annotation. These are
-      newer assemblies on different coordinate systems than the UCSC hub above.
-    </p>
-    <table>
-      <thead>
-        <tr>
-          <th>Strain</th>
-          <th>Scientific name</th>
-          <th>Assembly</th>
-          <th>Accession</th>
-          <th>JBrowse</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          ensemblMouseStrains.map(strain => (
-            <tr>
-              <td>{strain.strain}</td>
-              <td>
-                <i>{strain.scientificName}</i>
-              </td>
-              <td>{strain.assemblyName}</td>
-              <td>
-                <a
-                  href={`https://www.ncbi.nlm.nih.gov/assembly/${strain.accession}`}
-                >
-                  {strain.accession}
-                </a>
+                {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
               </td>
               <td>
                 <a href={strain.jbrowseLink}>JBrowse</a>

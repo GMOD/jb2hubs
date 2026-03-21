@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 import fs from 'fs'
 
+import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
+
 // Ensembl Mouse Genomes Project assemblies with their GCA accessions and strain names
 // https://projects.ensembl.org/mouse_genomes/
 const ENSEMBL_MOUSE_STRAINS = [
@@ -42,13 +44,16 @@ const metadata = ENSEMBL_MOUSE_STRAINS.map(({ accession, strain }) => {
     console.warn(`Warning: ${accession} not found in all.json`)
     return null
   }
+  // Strip T2T suffix to look up base strain (e.g. "CAST/EiJ (T2T)" → "CAST/EiJ")
+  const baseName = strain.replace(/ \(T2T\)$/, '')
+  const jaxId = JAX_STRAIN_IDS[baseName]
+  const yearMatch = /(\d{4})/.exec(entry.commonName)
   return {
     accession,
     strain,
-    commonName: entry.commonName,
-    scientificName: entry.scientificName,
-    assemblyName: entry.ncbiAssemblyName,
+    assemblyYear: yearMatch ? yearMatch[1] : null,
     jbrowseLink: entry.jbrowseLink,
+    jaxUrl: jaxId ? jaxUrl(jaxId) : null,
   }
 }).filter(e => e !== null)
 

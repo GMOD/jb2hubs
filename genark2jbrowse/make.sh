@@ -303,6 +303,9 @@ node src/createMouseStrainsChainTracks.ts
 log "Generating Ensembl mouse strains portal..."
 node src/processEnsemblMouseStrainsPortal.ts
 
+log "Adding mm39 synteny/MAF/VCF tracks to Ensembl mouse strain configs..."
+node src/createEnsemblMouseChainTracks.ts
+
 # --- Done ---
 
 if [ "$MODE" = "new" ]; then

@@ -9,6 +9,8 @@ import {
   writeJSON,
 } from 'hubtools'
 
+import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
+
 const MOUSE_STRAINS_HUB_URL =
   'https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hub.txt'
 
@@ -26,27 +28,32 @@ const metadata = configs.map(
     fs.mkdirSync(outDir, { recursive: true })
 
     const configPath = `${outDir}/config.json`
-    let oldConfig: Record<string, unknown> = {}
+    const rawPath = `${outDir}/config.raw.json`
+    let oldRaw: Record<string, unknown> = {}
     try {
-      oldConfig = readJSON(configPath) as Record<string, unknown>
+      oldRaw = readJSON(rawPath) as Record<string, unknown>
     } catch {
       // Normal on first run
     }
 
-    if (deepEqual(config, oldConfig)) {
+    if (deepEqual(config, oldRaw)) {
       console.log(`Config for ${genomeName} is unchanged. Skipping write.`)
     } else {
+      writeJSON(rawPath, config)
       writeJSON(configPath, config)
       enhanceConfig(configPath)
       console.log(`Generated config for ${genomeName} → ${configPath}`)
     }
 
+    const strainSlash = genomeName.replaceAll('_', '/')
+    const jaxId = JAX_STRAIN_IDS[strainSlash]
+    const yearMatch = /(\d{4})/.exec(displayName)
     return {
       genomeName,
-      displayName,
       organism,
-      defaultPos,
+      assemblyYear: yearMatch ? yearMatch[1] : null,
       jbrowseLink: `${JBROWSE_BASE}${CONFIG_BASE}/${genomeName}/config.json`,
+      jaxUrl: jaxId ? jaxUrl(jaxId) : null,
     }
   },
 )
