@@ -1,0 +1,187 @@
+hub GCA_900246225.6 genome assembly
+shortLabel eastern happy (2025)
+longLabel eastern happy (2025)/Astatotilapia calliptera/GCA_900246225.6_fAstCal1.5 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_900246225.6_fAstCal1.5.description.html
+
+genome GCA_900246225.6
+taxId 8154
+groups groups.txt
+description eastern happy (2025)
+twoBitPath GCA_900246225.6.2bit
+twoBitBptUrl GCA_900246225.6.2bit.bpt
+chromSizes GCA_900246225.6.chrom.sizes.txt
+chromAliasBb GCA_900246225.6.chromAlias.bb
+chromAuthority ucsc
+organism fAstCal1.5 Nov. 2025
+defaultPos LS420025.3:22799292-22809292
+scientificName Astatotilapia calliptera
+htmlPath html/GCA_900246225.6_fAstCal1.5.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/900/246/225/GCA_900246225.6
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/900/246/225/GCA_900246225.6
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/900/246/225/GCA_900246225.6
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.assembly.bb
+type bigBed 6
+html html/GCA_900246225.6_fAstCal1.5.assembly
+searchIndex name
+searchTrix ixIxx/GCA_900246225.6_fAstCal1.5.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track gap
+longLabel AGP gap
+shortLabel Gap (AGP defined)
+visibility hide
+color 0,0,0
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.gap.bb
+type bigBed 4
+group map
+html html/GCA_900246225.6_fAstCal1.5.gap
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.gc5Base.bw
+html html/GCA_900246225.6_fAstCal1.5.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_900246225.6_fAstCal1.5.tanDups
+
+    track gapOverlap
+    parent tanDups on
+    shortLabel Gap Overlaps
+    longLabel Paired exactly identical sequence on each side of a gap
+    bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.gapOverlap.bb
+    type bigBed 12
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.rmsk.bb
+xrefDataUrl bbi/GCA_900246225.6_fAstCal1.5.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_900246225.6_fAstCal1.5.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.simpleRepeat.bb
+html html/GCA_900246225.6_fAstCal1.5.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_900246225.6_fAstCal1.5.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.windowMasker.bb
+html html/GCA_900246225.6_fAstCal1.5.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.allGaps.bb
+html html/GCA_900246225.6_fAstCal1.5.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.augustus.bb
+html html/GCA_900246225.6_fAstCal1.5.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_900246225.6_fAstCal1.5.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_900246225.6_fAstCal1.5.xenoRefGene.ix
+html html/GCA_900246225.6_fAstCal1.5.xenoRefGene
+
