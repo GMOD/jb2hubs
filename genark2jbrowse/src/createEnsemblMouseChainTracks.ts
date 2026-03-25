@@ -136,7 +136,10 @@ for (const [acc, strainName] of Object.entries(STRAIN_NAMES)) {
 
   // Add pangenome VCF once per strain if not already present
   const vcfTrackId = `${acc}_pangenome_sv`
-  if (!existingIds.has(vcfTrackId) && fs.existsSync(`${PANGENOME_OUT_DIR}/mousePangenome.vcf.gz`)) {
+  if (
+    !existingIds.has(vcfTrackId) &&
+    fs.existsSync(`${PANGENOME_OUT_DIR}/mousePangenome.vcf.gz`)
+  ) {
     config.tracks.push({
       type: 'VariantTrack',
       trackId: vcfTrackId,

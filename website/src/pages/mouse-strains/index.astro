@@ -34,13 +34,13 @@ import '../../styles/common-table.css'
               <td>{strain.strain}</td>
               <td>{strain.assemblyYear}</td>
               <td>
-                <a href={`https://genomes.jbrowse.org/accession/${strain.accession}/`}>
+                <a
+                  href={`https://genomes.jbrowse.org/accession/${strain.accession}/`}
+                >
                   {strain.accession}
                 </a>
               </td>
-              <td>
-                {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
-              </td>
+              <td>{strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}</td>
               <td>
                 <a href={strain.jbrowseLink}>JBrowse</a>
               </td>
@@ -75,9 +75,7 @@ import '../../styles/common-table.css'
               <td>{strain.genomeName.replaceAll('_', '/')}</td>
               <td>{strain.assemblyYear}</td>
               <td>{strain.organism}</td>
-              <td>
-                {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
-              </td>
+              <td>{strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}</td>
               <td>
                 <a href={strain.jbrowseLink}>JBrowse</a>
               </td>
