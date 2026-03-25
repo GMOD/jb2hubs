@@ -1,0 +1,160 @@
+hub GCA_036851165.1 genome assembly
+shortLabel lesser sac-winged bat (alternate hap 2024)
+longLabel lesser sac-winged bat (alternate hap 2024)/Saccopteryx leptura/GCA_036851165.1_mSacLep1_altContigs_phased genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_036851165.1_mSacLep1_altContigs_phased.description.html
+
+genome GCA_036851165.1
+taxId 249018
+groups groups.txt
+description lesser sac-winged bat (alternate hap 2024)
+twoBitPath GCA_036851165.1.2bit
+twoBitBptUrl GCA_036851165.1.2bit.bpt
+chromSizes GCA_036851165.1.chrom.sizes.txt
+chromAliasBb GCA_036851165.1.chromAlias.bb
+organism mSacLep1_altContigs_phased Feb. 2024
+defaultPos JAVMPE010002156.1:7016900-7026900
+scientificName Saccopteryx leptura
+htmlPath html/GCA_036851165.1_mSacLep1_altContigs_phased.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/036/851/165/GCA_036851165.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/036/851/165/GCA_036851165.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/036/851/165/GCA_036851165.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.assembly.bb
+type bigBed 6
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.assembly
+searchIndex name
+searchTrix ixIxx/GCA_036851165.1_mSacLep1_altContigs_phased.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.gc5Base.bw
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.rmsk.bb
+xrefDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.simpleRepeat.bb
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.windowMasker.bb
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.windowMasker
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.augustus.bb
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_036851165.1_mSacLep1_altContigs_phased.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_036851165.1_mSacLep1_altContigs_phased.xenoRefGene.ix
+html html/GCA_036851165.1_mSacLep1_altContigs_phased.xenoRefGene
+
