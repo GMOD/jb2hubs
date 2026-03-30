@@ -93,51 +93,38 @@ export function writeRemovedTracks(assembly: string) {
   }
 }
 
-function _getTrackModifications<
+export function getTrackModifications<
   T extends {
     metadata?: {
       ucsc?: Record<string, unknown>
       addedByJBrowseTeam?: boolean
     }
+    name: string
     category?: string[]
     assemblyNames: string[]
-    name: string
   },
 >(track: T): T | undefined {
-  // Delete tracks with "Primate Chain/Net" as the first category
   const { name, assemblyNames, metadata } = track
   const { ucsc } = metadata ?? {}
   const assembly = assemblyNames[0]!
 
   if (assembly === 'hs1') {
-    const cat0 = name
+    let reason: string | null = null
     if (
-      cat0.startsWith('Primate Chain/Net') ||
-      cat0.startsWith('Human liftOver')
+      name.startsWith('Primate Chain/Net') ||
+      name.startsWith('Human liftOver')
     ) {
-      const trackId = ucsc ? `${ucsc.track}` : name
-      logRemovedTrack(
-        assembly,
-        trackId,
-        name,
-        'Primate Chain/Net or Human liftOver track',
-      )
-      return undefined
+      reason = 'Primate Chain/Net or Human liftOver track'
     } else if (
-      cat0.startsWith('CHM13') ||
-      cat0.startsWith('SGDP') ||
-      cat0.startsWith('T2T Encode')
+      name.startsWith('CHM13') ||
+      name.startsWith('SGDP') ||
+      name.startsWith('T2T Encode')
     ) {
-      const trackId = ucsc ? `${ucsc.track}` : name
-      logRemovedTrack(
-        assembly,
-        trackId,
-        name,
-        'CHM13, SGDP, or T2T Encode track',
-      )
+      reason = 'CHM13, SGDP, or T2T Encode track'
+    }
+    if (reason) {
+      logRemovedTrack(assembly, ucsc ? `${ucsc.track}` : name, name, reason)
       return undefined
-    } else {
-      return track
     }
   } else if (ucsc) {
     const trackType = `${ucsc.type}`.split(' ')[0]!
@@ -154,8 +141,13 @@ function _getTrackModifications<
       reason = `Parent starts with pgSnp: ${trackParent}`
     } else if (specializedTrackIds.has(trackId)) {
       reason = `Specialized track ID: ${trackId}`
-    } else if (trackId.startsWith('encode')) {
-      reason = `Track ID starts with encode`
+    } else if (trackId.startsWith('encode') || trackId.startsWith('wgEncode')) {
+      reason = `Track ID starts with encode or wgEncode`
+    } else if (
+      typeof ucsc.bigDataUrl === 'string' &&
+      ucsc.bigDataUrl.includes('fantom')
+    ) {
+      reason = 'bigDataUrl includes fantom'
     } else if (ucsc.barChartBars) {
       reason = 'Track has barChartBars'
     } else if (ucsc.barChartCategoryUrl) {
@@ -167,55 +159,21 @@ function _getTrackModifications<
       return undefined
     }
   }
-  return track
-}
 
-/**
- * Modifies a track's configuration based on its metadata.
- * Deletes tracks that would have been categorized as 'Uncommon or Specialized tracks'.
- * @param track The track object to modify.
- * @returns The modified track object, or undefined if the track should be deleted.
- */
-export function getTrackModifications<
-  T extends {
-    metadata?: {
-      ucsc?: Record<string, unknown>
-      addedByJBrowseTeam?: boolean
-    }
-    name: string
-    category?: string[]
-    assemblyNames: string[]
-  },
->(track: T): T | undefined {
-  const modifiedTrack = _getTrackModifications(track)
-  if (!modifiedTrack) {
-    return undefined
+  let modifiedName = name
+  const ucscTrackId = ucsc?.track
+  if (
+    typeof ucscTrackId === 'string' &&
+    (ucscTrackId.startsWith('gnomadGenomes') ||
+      ucscTrackId.startsWith('gnomadExomes')) &&
+    !modifiedName.startsWith('gnomAD ')
+  ) {
+    modifiedName = `gnomAD ${modifiedName}`
   }
 
-  // Prepend "gnomAD " to track name if trackId starts with gnomadGenomes or gnomadExomes
-  let modifiedName = modifiedTrack.name
-  const trackId = modifiedTrack.metadata?.ucsc?.track
-  if (trackId && typeof trackId === 'string') {
-    if (
-      trackId.startsWith('gnomadGenomes') ||
-      trackId.startsWith('gnomadExomes')
-    ) {
-      if (!modifiedName.startsWith('gnomAD ')) {
-        modifiedName = `gnomAD ${modifiedName}`
-      }
-    }
-  }
-
-  if (modifiedTrack.category) {
-    return {
-      ...modifiedTrack,
-      name: modifiedName,
-      category: [...new Set(modifiedTrack.category)],
-    }
-  } else {
-    return {
-      ...modifiedTrack,
-      name: modifiedName,
-    }
+  return {
+    ...track,
+    name: modifiedName,
+    category: track.category ? [...new Set(track.category)] : track.category,
   }
 }

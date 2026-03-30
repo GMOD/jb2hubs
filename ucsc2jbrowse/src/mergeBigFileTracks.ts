@@ -111,7 +111,7 @@ async function addBigDataTracks(
                 const { type, speciesLabels, bigDataUrl } = settings
                 const trackId = `${assemblyName}-${tableName}`
 
-                if (!bigDataUrl || bigDataUrl.includes('fantom')) {
+                if (!bigDataUrl) {
                   return undefined
                 }
 
