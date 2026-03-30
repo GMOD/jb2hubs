@@ -24,6 +24,11 @@ const specializedParents = new Set([
   // TODO: allow loading these via a connection in the future.
   'humanMethylationAtlasSummary',
   'humanMethylationAtlasSignals',
+  'cCREs_view',
+  'CTCF_view',
+  'DNase_view',
+  'H3K27ac_view',
+  'H3K4me3_view',
 ])
 
 const specializedTypes = new Set(['pgSnp', 'bigPsl'])
