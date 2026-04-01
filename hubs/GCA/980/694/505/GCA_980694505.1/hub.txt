@@ -1,0 +1,186 @@
+hub GCA_980694505.1 genome assembly
+shortLabel Puerto Rican parrot (2026)
+longLabel Puerto Rican parrot (2026)/Amazona vittata/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.description.html
+
+genome GCA_980694505.1
+taxId 241585
+groups groups.txt
+description Puerto Rican parrot (2026)
+twoBitPath GCA_980694505.1.2bit
+twoBitBptUrl GCA_980694505.1.2bit.bpt
+chromSizes GCA_980694505.1.chrom.sizes.txt
+chromAliasBb GCA_980694505.1.chromAlias.bb
+organism bAmaVit1.2.curated_20260112_allscaffolds.masked Feb. 2026
+defaultPos OZ413491.1:46395333-46405333
+scientificName Amazona vittata
+htmlPath html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/980/694/505/GCA_980694505.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/980/694/505/GCA_980694505.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/980/694/505/GCA_980694505.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.assembly.bb
+type bigBed 6
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.assembly
+searchIndex name
+searchTrix ixIxx/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track gap
+longLabel AGP gap
+shortLabel Gap (AGP defined)
+visibility hide
+color 0,0,0
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.gap.bb
+type bigBed 4
+group map
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.gap
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.gc5Base.bw
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.tanDups
+
+    track gapOverlap
+    parent tanDups on
+    shortLabel Gap Overlaps
+    longLabel Paired exactly identical sequence on each side of a gap
+    bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.gapOverlap.bb
+    type bigBed 12
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.rmsk.bb
+xrefDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.simpleRepeat.bb
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.windowMasker.bb
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.allGaps.bb
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.augustus.bb
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.xenoRefGene.ix
+html html/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.xenoRefGene
+
