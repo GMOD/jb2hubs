@@ -1,85 +1,62 @@
-import { flexRender } from '@tanstack/react-table'
-
 import styles from './TableHeader.module.css'
 
-import type { HeaderGroup, SortDirection } from '@tanstack/react-table'
+import type { ColumnDef } from '../hooks/useTableColumns.tsx'
 import type { KeyboardEvent } from 'react'
 
-interface TableHeaderProps<TData> {
-  headerGroups: HeaderGroup<TData>[]
+interface TableHeaderProps {
+  columns: ColumnDef[]
   handleSort: (id: string) => void
-  sortState: string
-  sortDirectionPre: SortDirection | false | '' // Allow empty string
+  sortId: string
+  sortDesc: boolean
 }
 
 function getAriaSortValue(
-  headerId: string,
-  sortState: string,
-  sortDirectionPre: SortDirection | false | '',
+  colId: string,
+  sortId: string,
+  sortDesc: boolean,
 ): 'ascending' | 'descending' | 'none' {
-  if (sortState !== headerId) return 'none'
-  if (sortDirectionPre === 'asc') return 'ascending'
-  if (sortDirectionPre === 'desc') return 'descending'
-  return 'none'
+  if (sortId !== colId) return 'none'
+  return sortDesc ? 'descending' : 'ascending'
 }
 
-export default function TableHeader<TData>({
-  headerGroups,
+export default function TableHeader({
+  columns,
   handleSort,
-  sortState,
-  sortDirectionPre,
-}: TableHeaderProps<TData>) {
-  const handleKeyDown = (e: KeyboardEvent, headerId: string) => {
+  sortId,
+  sortDesc,
+}: TableHeaderProps) {
+  const handleKeyDown = (e: KeyboardEvent, colId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
-      handleSort(headerId)
+      handleSort(colId)
     }
   }
 
   return (
     <thead>
-      {headerGroups.map(headerGroup => (
-        <tr key={headerGroup.id}>
-          {headerGroup.headers.map(header => {
-            const canSort = header.column.getCanSort()
-            return (
-              <th
-                key={header.id}
-                className={canSort ? styles.cursorPointer : ''}
-                onClick={
-                  canSort
-                    ? () => {
-                        handleSort(header.id)
-                      }
-                    : undefined
-                }
-                onKeyDown={
-                  canSort ? e => handleKeyDown(e, header.id) : undefined
-                }
-                tabIndex={canSort ? 0 : undefined}
-                role={canSort ? 'button' : undefined}
-                aria-sort={
-                  canSort
-                    ? getAriaSortValue(header.id, sortState, sortDirectionPre)
-                    : undefined
-                }
-              >
-                {flexRender(
-                  header.column.columnDef.header,
-                  header.getContext(),
-                )}{' '}
-                {canSort
-                  ? sortState === header.id
-                    ? sortDirectionPre === 'asc'
-                      ? '↑'
-                      : '↓'
-                    : ''
-                  : ''}
-              </th>
-            )
-          })}
-        </tr>
-      ))}
+      <tr>
+        {columns.map(col => {
+          const canSort = col.enableSorting !== false
+          return (
+            <th
+              key={col.id}
+              className={canSort ? styles.cursorPointer : ''}
+              onClick={canSort ? () => handleSort(col.id) : undefined}
+              onKeyDown={
+                canSort ? e => handleKeyDown(e, col.id) : undefined
+              }
+              tabIndex={canSort ? 0 : undefined}
+              role={canSort ? 'button' : undefined}
+              aria-sort={
+                canSort ? getAriaSortValue(col.id, sortId, sortDesc) : undefined
+              }
+            >
+              {col.header}{' '}
+              {canSort && sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}
+            </th>
+          )
+        })}
+      </tr>
     </thead>
   )
 }

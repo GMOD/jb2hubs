@@ -1,31 +1,38 @@
 import styles from './DataTable.module.css'
 
-import type { RowData } from './DataTable/hooks/useTableColumns.tsx'
-import type { Table } from '@tanstack/react-table'
-
 interface PaginationProps {
-  table: Table<RowData>
+  pageIndex: number
+  pageSize: number
+  pageCount: number
+  totalRows: number
+  rowsOnPage: number
+  onPageChange: (index: number) => void
+  onPageSizeChange: (size: number) => void
 }
 
-export default function Pagination({ table }: PaginationProps) {
+export default function Pagination({
+  pageIndex,
+  pageSize,
+  pageCount,
+  totalRows,
+  rowsOnPage,
+  onPageChange,
+  onPageSizeChange,
+}: PaginationProps) {
   return (
     <div className={styles.paginationContainer}>
       <button
         className={styles.paginationButton}
-        onClick={() => {
-          table.setPageIndex(0)
-        }}
-        disabled={!table.getCanPreviousPage()}
+        onClick={() => onPageChange(0)}
+        disabled={pageIndex === 0}
         aria-label="First page"
       >
         {'<<'}
       </button>
       <button
         className={styles.paginationButton}
-        onClick={() => {
-          table.previousPage()
-        }}
-        disabled={!table.getCanPreviousPage()}
+        onClick={() => onPageChange(pageIndex - 1)}
+        disabled={pageIndex === 0}
         aria-label="Previous page"
       >
         {'<'}
@@ -33,25 +40,21 @@ export default function Pagination({ table }: PaginationProps) {
       <span className={styles.pageInfo}>
         Page{' '}
         <strong>
-          {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          {pageIndex + 1} of {pageCount}
         </strong>
       </span>
       <button
         className={styles.paginationButton}
-        onClick={() => {
-          table.nextPage()
-        }}
-        disabled={!table.getCanNextPage()}
+        onClick={() => onPageChange(pageIndex + 1)}
+        disabled={pageIndex >= pageCount - 1}
         aria-label="Next page"
       >
         {'>'}
       </button>
       <button
         className={styles.paginationButton}
-        onClick={() => {
-          table.setPageIndex(table.getPageCount() - 1)
-        }}
-        disabled={!table.getCanNextPage()}
+        onClick={() => onPageChange(pageCount - 1)}
+        disabled={pageIndex >= pageCount - 1}
         aria-label="Last page"
       >
         {'>>'}
@@ -60,11 +63,8 @@ export default function Pagination({ table }: PaginationProps) {
         <label htmlFor="pageSize">Show:</label>
         <select
           id="pageSize"
-          value={table.getState().pagination.pageSize}
-          onChange={e => {
-            const newSize = Number(e.target.value)
-            table.setPageSize(newSize)
-          }}
+          value={pageSize}
+          onChange={e => onPageSizeChange(Number(e.target.value))}
           className={styles.pageSizeSelect}
         >
           <option value={100}>100</option>
@@ -76,8 +76,7 @@ export default function Pagination({ table }: PaginationProps) {
         <span>rows</span>
       </div>
       <span className={styles.rowCount}>
-        Showing {table.getRowModel().rows.length} of{' '}
-        {table.getFilteredRowModel().rows.length} rows
+        Showing {rowsOnPage} of {totalRows} rows
       </span>
     </div>
   )

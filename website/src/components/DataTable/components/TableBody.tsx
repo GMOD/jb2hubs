@@ -1,20 +1,17 @@
-import { flexRender } from '@tanstack/react-table'
+import type { ColumnDef, RowData } from '../hooks/useTableColumns.tsx'
 
-import type { Row } from '@tanstack/react-table'
-
-interface TableBodyProps<TData> {
-  rows: Row<TData>[]
+interface TableBodyProps {
+  columns: ColumnDef[]
+  rows: RowData[]
 }
 
-export default function TableBody<TData>({ rows }: TableBodyProps<TData>) {
+export default function TableBody({ columns, rows }: TableBodyProps) {
   return (
     <tbody>
       {rows.map(row => (
-        <tr key={row.id}>
-          {row.getVisibleCells().map(cell => (
-            <td key={cell.id}>
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </td>
+        <tr key={row.accession}>
+          {columns.map(col => (
+            <td key={col.id}>{col.cell(row)}</td>
           ))}
         </tr>
       ))}

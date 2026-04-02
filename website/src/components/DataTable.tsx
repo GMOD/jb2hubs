@@ -1,9 +1,4 @@
-import {
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
+import { useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
 
 import TableBody from './DataTable/components/TableBody.tsx'
@@ -26,36 +21,48 @@ export interface TableProps {
 }
 
 export default function DataTable({ rows }: TableProps) {
-  // Apply category filter first
+  const [pageIndex, setPageIndex] = useState(0)
+  const [pageSize, setPageSize] = useState(200)
+
   const {
     filterOption,
     setFilterOption,
     filteredRows: categoryFilteredRows,
   } = useCategoryFilter(rows)
 
-  // Then apply search filter to the category-filtered results
   const { searchQuery, setSearchQuery, filteredRows } =
     useSearchFilter(categoryFilteredRows)
-  const { sorting, onSortingChange, handleSort, sortState, sortDirectionPre } =
-    useTableSort()
+  const { sortId, sortDesc, handleSort } = useTableSort()
   const { showAllColumns, setShowAllColumns } = useColumnVisibility()
   const { columns } = useTableColumns({ searchQuery, showAllColumns })
-  const table = useReactTable({
-    data: filteredRows,
-    columns,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 200,
-      },
-    },
-    onSortingChange,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  })
+
+  const sortedRows = useMemo(() => {
+    if (!sortId) {
+      return filteredRows
+    }
+    const col = columns.find(c => c.id === sortId)
+    if (!col?.sortValue) {
+      return filteredRows
+    }
+    return [...filteredRows].sort((a, b) => {
+      const aVal = col.sortValue!(a)
+      const bVal = col.sortValue!(b)
+      if (aVal < bVal) {
+        return sortDesc ? 1 : -1
+      }
+      if (aVal > bVal) {
+        return sortDesc ? -1 : 1
+      }
+      return 0
+    })
+  }, [filteredRows, sortId, sortDesc, columns])
+
+  const pageCount = Math.max(1, Math.ceil(sortedRows.length / pageSize))
+  const clampedPageIndex = Math.min(pageIndex, pageCount - 1)
+  const pagedRows = sortedRows.slice(
+    clampedPageIndex * pageSize,
+    (clampedPageIndex + 1) * pageSize,
+  )
 
   return (
     <>
@@ -96,16 +103,27 @@ export default function DataTable({ rows }: TableProps) {
       <div>
         <table>
           <TableHeader
-            headerGroups={table.getHeaderGroups()}
-            handleSort={handleSort} // Use handleSort from useTableSort
-            sortState={sortState} // Use sortState from useTableSort
-            sortDirectionPre={sortDirectionPre} // Use sortDirectionPre from useTableSort
+            columns={columns}
+            handleSort={handleSort}
+            sortId={sortId}
+            sortDesc={sortDesc}
           />
-          <TableBody rows={table.getRowModel().rows} />
+          <TableBody columns={columns} rows={pagedRows} />
         </table>
       </div>
 
-      <Pagination table={table} />
+      <Pagination
+        pageIndex={clampedPageIndex}
+        pageSize={pageSize}
+        pageCount={pageCount}
+        totalRows={sortedRows.length}
+        rowsOnPage={pagedRows.length}
+        onPageChange={setPageIndex}
+        onPageSizeChange={size => {
+          setPageSize(size)
+          setPageIndex(0)
+        }}
+      />
     </>
   )
 }

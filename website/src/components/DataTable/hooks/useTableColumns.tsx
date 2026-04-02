@@ -1,14 +1,11 @@
 import { useMemo } from 'react'
 
-import { createColumnHelper } from '@tanstack/react-table'
-
 import styles from './useTableColumns.module.css'
 import OrangeStar from '../../OrangeStar.tsx'
 import RedX from '../../RedX.tsx'
 import { highlightText } from '../utils/highlightText.tsx'
 import { statusOrder } from '../utils.ts'
 
-// Define the shape of the row data
 export interface RowData {
   commonName: string
   accession: string
@@ -21,7 +18,16 @@ export interface RowData {
   ncbiAssemblyName: string
   taxonId: string
   submitterOrg: string
-  _searchText?: string // Add _searchText
+  _searchText?: string
+}
+
+export interface ColumnDef {
+  id: string
+  header: string
+  cell: (row: RowData) => React.ReactNode
+  enableSorting?: boolean
+  sortValue?: (row: RowData) => string | number
+  meta?: { extra?: boolean }
 }
 
 export function useTableColumns({
@@ -31,81 +37,93 @@ export function useTableColumns({
   searchQuery?: string
   showAllColumns: boolean
 }) {
-  const columnHelper = createColumnHelper<RowData>()
-
-  const columns = useMemo(() => {
-    const allColumns = [
-      columnHelper.accessor('commonName', {
+  const columns = useMemo<ColumnDef[]>(() => {
+    const allColumns: ColumnDef[] = [
+      {
+        id: 'commonName',
         header: 'Common Name',
-        cell: info => (
+        enableSorting: true,
+        sortValue: row => row.commonName,
+        cell: row => (
           <>
-            {highlightText(info.getValue() || '', searchQuery)}{' '}
-            <a href={`/accession/${info.row.original.accession}`}>(info)</a>{' '}
-            {info.row.original.ncbiRefSeqCategory === 'reference genome' ? (
+            {highlightText(row.commonName || '', searchQuery)}{' '}
+            <a href={`/accession/${row.accession}`}>(info)</a>{' '}
+            {row.ncbiRefSeqCategory === 'reference genome' ? (
               <OrangeStar />
             ) : null}
-            {info.row.original.suppressed ? <RedX /> : null}
+            {row.suppressed ? <RedX /> : null}
           </>
         ),
-        enableSorting: true,
-      }),
-      columnHelper.accessor('jbrowseLink', {
+      },
+      {
+        id: 'jbrowseLink',
         header: 'JBrowse',
-        cell: info => <a href={info.getValue()}>JBrowse</a>,
         enableSorting: false,
-      }),
-      columnHelper.accessor('assemblyStatus', {
+        cell: row => <a href={row.jbrowseLink}>JBrowse</a>,
+      },
+      {
+        id: 'assemblyStatus',
         header: 'Assembly status',
         enableSorting: true,
-        cell: info => (
-          <div className={styles.whitespaceNowrap}>{info.getValue()}</div>
+        sortValue: row => statusOrder[row.assemblyStatus] ?? 999,
+        cell: row => (
+          <div className={styles.whitespaceNowrap}>{row.assemblyStatus}</div>
         ),
-        sortingFn: (rowA, rowB) => {
-          const a = statusOrder[rowA.original.assemblyStatus] || 999
-          const b = statusOrder[rowB.original.assemblyStatus] || 999
-          return a - b
-        },
-      }),
-      columnHelper.accessor('seqReleaseDate', {
+      },
+      {
+        id: 'seqReleaseDate',
         header: 'Release date',
-        cell: info => info.getValue().replace('00:00', ''),
         enableSorting: true,
-      }),
-      columnHelper.accessor('scientificName', {
+        sortValue: row => row.seqReleaseDate,
+        cell: row => row.seqReleaseDate.replace('00:00', ''),
+      },
+      {
+        id: 'scientificName',
         header: 'Scientific name',
-        cell: info => highlightText(info.getValue() || '', searchQuery),
         enableSorting: true,
-      }),
-      columnHelper.accessor('ncbiAssemblyName', {
+        sortValue: row => row.scientificName,
+        cell: row => highlightText(row.scientificName || '', searchQuery),
+      },
+      {
+        id: 'ncbiAssemblyName',
         header: 'NCBI assembly name',
-        cell: info => highlightText(info.getValue() || '', searchQuery),
         enableSorting: true,
-      }),
-      columnHelper.accessor('accession', {
+        sortValue: row => row.ncbiAssemblyName,
+        cell: row => highlightText(row.ncbiAssemblyName || '', searchQuery),
+      },
+      {
+        id: 'accession',
         header: 'Accession',
         enableSorting: true,
-      }),
-      columnHelper.accessor('taxonId', {
+        sortValue: row => row.accession,
+        cell: row => row.accession,
+      },
+      {
+        id: 'taxonId',
         header: 'Taxonomy ID',
-        cell: info => (
-          <a href={`https://genomes.jbrowse.org/taxonomy/${info.getValue()}/`}>
-            {info.getValue()}
+        enableSorting: true,
+        sortValue: row => row.taxonId,
+        meta: { extra: true },
+        cell: row => (
+          <a href={`https://genomes.jbrowse.org/taxonomy/${row.taxonId}/`}>
+            {row.taxonId}
           </a>
         ),
-        enableSorting: true,
-        meta: { extra: true },
-      }),
-      columnHelper.accessor('submitterOrg', {
+      },
+      {
+        id: 'submitterOrg',
         header: 'Submitter',
         enableSorting: true,
+        sortValue: row => row.submitterOrg,
         meta: { extra: true },
-      }),
+        cell: row => row.submitterOrg,
+      },
     ]
     if (showAllColumns) {
       return allColumns
     }
-    return allColumns.filter(col => !(col as any).meta?.extra)
-  }, [columnHelper, searchQuery, showAllColumns])
+    return allColumns.filter(col => !col.meta?.extra)
+  }, [searchQuery, showAllColumns])
 
   return { columns }
 }
