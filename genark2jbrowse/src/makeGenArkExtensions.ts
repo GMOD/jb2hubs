@@ -5,9 +5,8 @@ import * as path from 'path'
 import { dedupe, readJSON } from 'hubtools'
 
 interface JBrowseConfig {
-  tracks: {
-    trackId: string
-  }[]
+  tracks: { trackId: string; [key: string]: unknown }[]
+  [key: string]: unknown
 }
 
 /**
@@ -37,10 +36,10 @@ function applyGenArkExtensions() {
       fs.copyFileSync(configFilePath, backupFilePath)
       console.log(`Created backup: ${backupFilePath}`)
 
-      const existingConfig = readJSON(configFilePath) as JBrowseConfig
-      const extensionConfig = readJSON(
+      const existingConfig = readJSON<JBrowseConfig>(configFilePath)
+      const extensionConfig = readJSON<JBrowseConfig>(
         path.join(extensionsDir, item),
-      ) as JBrowseConfig
+      )
 
       // Add assembly prefix to extension track IDs
       const extensionTracksWithPrefix = extensionConfig.tracks.map(track => ({

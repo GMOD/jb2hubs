@@ -78,7 +78,7 @@ export const handler = async (
     const options: MergeOptions = {
       includeSyntenyTracks: params.includeSyntenyTracks === 'true',
       createDefaultSession: params.createDefaultSession !== 'false',
-      sessionType: (params.sessionType as 'linear' | 'synteny') ?? 'synteny',
+      sessionType: (params.sessionType ?? 'synteny') as 'linear' | 'synteny',
     }
 
     const configs = await fetchConfigs(configUrls)

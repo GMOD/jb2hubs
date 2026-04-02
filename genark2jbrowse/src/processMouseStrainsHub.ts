@@ -23,7 +23,7 @@ const configs = await generateJBrowseConfigsForMultiGenomeHub(
 )
 
 const metadata = configs.map(
-  ({ genomeName, displayName, organism, defaultPos, config }) => {
+  ({ genomeName, displayName, organism, defaultPos: _defaultPos, config }) => {
     const outDir = `hubs/mouseStrains/${genomeName}`
     fs.mkdirSync(outDir, { recursive: true })
 
@@ -31,7 +31,7 @@ const metadata = configs.map(
     const rawPath = `${outDir}/config.raw.json`
     let oldRaw: Record<string, unknown> = {}
     try {
-      oldRaw = readJSON(rawPath) as Record<string, unknown>
+      oldRaw = readJSON(rawPath)
     } catch {
       // Normal on first run
     }

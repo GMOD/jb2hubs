@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 import * as fs from 'fs'
 import * as path from 'path'
+
+import { processSpeciesName } from './util.ts'
 // Centralized taxon-level image fetcher.
 //
 // Images are a property of a taxon, not an individual assembly accession.
@@ -83,7 +85,7 @@ async function fetchWikidataImages(): Promise<WikidataSpecies[]> {
     console.log(`  Resuming from ${offset} (partial cache)`)
   }
 
-  while (true) {
+  for (;;) {
     const query = `
 SELECT ?taxId ?scientificName ?image WHERE {
   ?item wdt:P685 ?taxId .
@@ -130,29 +132,6 @@ LIMIT ${SPARQL_BATCH_SIZE} OFFSET ${offset}
 // Wikipedia helpers
 // ---------------------------------------------------------------------------
 
-function processSpeciesName(speciesName: string): string {
-  return speciesName
-    .replace(/\s+=\s.*$/, '')
-    .replace(/^Candidatus\s+/i, '')
-    .replace(/\s+-\s.*$/, '')
-    .replace(/\s+\d+\s*$/, '')
-    .replace(/\s+(str\.|strain).*$/i, '')
-    .replace(/\s+var\..*$/i, '')
-    .replace(/\s+sp\..*$/i, '')
-    .replace(/\s+bv\..*$/i, '')
-    .replace(/\s+subsp\..*$/i, '')
-    .replace(/\s+serovar.*$/i, '')
-    .replace(/\s+biovar.*$/i, '')
-    .replace(/\s+cf.*$/i, '')
-    .replace(/\s+f\..*$/i, '')
-    .replace(/\s+type.*$/i, '')
-    .replace(/\s+ATCC.*$/i, '')
-    .replace(/\s+GI\/.*$/i, '')
-    .replace(/\s+HU\/.*$/i, '')
-    .replace(/\s+\S*:.*$/, '')
-    .replace(/\s+[A-Z0-9\-.]+$/, '')
-    .trim()
-}
 
 async function getWikipediaMainImage(
   pageTitle: string,
@@ -197,6 +176,7 @@ async function getWikipediaMainImage(
 async function fetchWikipediaImage(
   scientificName: string,
 ): Promise<{ imageUrl: string; pageUrl: string } | undefined> {
+  // Applied twice: removing one suffix can expose another (e.g. "sp. ATCC 123" → "sp." → "")
   const processed = processSpeciesName(processSpeciesName(scientificName))
 
   const result = await getWikipediaMainImage(processed)
@@ -288,7 +268,7 @@ async function main() {
         if (img.imageUrl) {
           saveTaxonImage(taxonId, {
             imageUrl: img.imageUrl,
-            pageUrl: img.pageUrl || '',
+            pageUrl: img.pageUrl ?? '',
           })
           imported++
         }
@@ -376,7 +356,7 @@ async function main() {
   console.log(`  Total with images:           ${imported + wpFound + wdFound}`)
 }
 
-main().catch(err => {
+main().catch((err: unknown) => {
   console.error(err)
   process.exit(1)
 })

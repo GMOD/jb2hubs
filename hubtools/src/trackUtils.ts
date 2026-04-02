@@ -6,19 +6,18 @@ export function createHtmlLink(html: string, trackDbUrl: string): string {
   return `<a href="${resolve(html, trackDbUrl)}">${html}</a>`
 }
 
-export function extractParentTracks(trackName: string, trackDb: TrackDbFile) {
-  const parentTracks = []
-  let currentTrackName = trackName
-
-  do {
-    currentTrackName = trackDb.data[currentTrackName]?.data.parent ?? ''
-    if (currentTrackName) {
-      currentTrackName = currentTrackName.split(' ')[0]!
-      parentTracks.push(trackDb.data[currentTrackName]!)
-    }
-  } while (currentTrackName)
-
-  return parentTracks.reverse()
+export function extractParentTracks(
+  trackName: string,
+  trackDb: TrackDbFile,
+): RaStanza[] {
+  const parentName =
+    (trackDb.data[trackName]?.data.parent ?? '').split(' ')[0] ?? ''
+  return parentName
+    ? [
+        ...extractParentTracks(parentName, trackDb),
+        trackDb.data[parentName]!,
+      ]
+    : []
 }
 
 export function isMetaTrack(obj: RaStanza) {
@@ -36,5 +35,8 @@ export function isMetaTrack(obj: RaStanza) {
 // our own synteny tracks using PIF format
 export function isChainNetTrack(obj: RaStanza) {
   const { shortLabel, longLabel } = obj.data
-  return shortLabel?.includes('Chain/Net') || longLabel?.includes('Chain/Net')
+  return (
+    (shortLabel?.includes('Chain/Net') ?? false) ||
+    (longLabel?.includes('Chain/Net') ?? false)
+  )
 }

@@ -232,7 +232,7 @@ function main() {
   // Read meta.json to get source assembly info
   const meta = readJSON(metaPath) as MetaJson
   const sourceAccession = meta.accession
-  const sourceCommonName = meta.commonName ?? meta.scientificName
+  const sourceCommonName = meta.commonName || meta.scientificName
 
   const chainTracks: ChainTrack[] = []
 

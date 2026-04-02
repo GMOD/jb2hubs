@@ -72,4 +72,5 @@ export interface NCBIDatasetsReport {
 export interface NCBIDatasetsResponse {
   reports: NCBIDatasetsReport[]
   total_count: number
+  downloaded_at?: number
 }

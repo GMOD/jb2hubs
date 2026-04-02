@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import assert from 'node:assert/strict'
 import { before, describe, it } from 'node:test'
 
@@ -46,7 +47,7 @@ describe('generateJBrowseConfigsForMultiGenomeHub', { timeout: 60_000 }, () => {
   it('each config has BAM alignment tracks from the RNA-seq include', () => {
     for (const { genomeName, config } of configs) {
       const tracks = config.tracks as { adapter: { type: string } }[]
-      const bamTracks = tracks.filter(t => t.adapter?.type === 'BamAdapter')
+      const bamTracks = tracks.filter(t => t.adapter.type === 'BamAdapter')
       assert.ok(bamTracks.length > 0, `${genomeName} has no BAM tracks`)
     }
   })

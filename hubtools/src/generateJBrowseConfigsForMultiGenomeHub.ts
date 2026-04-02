@@ -28,7 +28,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
   const hubFileText = await myfetchtext(hubUrl)
   const hub = new HubFile(hubFileText)
 
-  const genomesFileRelUrl = hub.data['genomesFile']
+  const genomesFileRelUrl = hub.data.genomesFile
   if (!genomesFileRelUrl) {
     throw new Error('Hub file does not have a genomesFile field')
   }
@@ -67,7 +67,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
       chromSizes: chromSizesUrl,
     }
 
-    const displayName = description || organism || genomeName
+    const displayName = description ?? organism ?? genomeName
 
     const asm = {
       name: genomeName,

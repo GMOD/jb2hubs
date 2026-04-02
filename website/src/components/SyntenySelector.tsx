@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
-import Autocomplete from './Autocomplete'
+import Autocomplete from './Autocomplete.tsx'
 
 interface SyntenyTrack {
   trackId: string
@@ -8,7 +8,7 @@ interface SyntenyTrack {
   assemblyNames: string[]
 }
 
-interface AssemblyInfo {
+export interface AssemblyInfo {
   commonName?: string
   scientificName?: string
   source: 'ucsc' | 'genark' | 'legacy'
@@ -60,7 +60,7 @@ export default function SyntenySelector({
     return syntenyTracks.filter(track =>
       track.assemblyNames.every(name => {
         const info = assemblyInfo[name]
-        if (!info || info.source === 'legacy') {
+        if (info.source === 'legacy') {
           return false
         }
         if (info.source === 'ucsc' && !showUcsc) {
@@ -100,9 +100,9 @@ export default function SyntenySelector({
         const info = assemblyInfo[id]
         return {
           id,
-          displayName: info?.commonName || id,
-          scientificName: info?.scientificName || '',
-          source: info?.source || 'legacy',
+          displayName: info.commonName ?? id,
+          scientificName: info.scientificName ?? '',
+          source: info.source,
         }
       })
       .sort((a, b) => a.displayName.localeCompare(b.displayName))
@@ -114,15 +114,15 @@ export default function SyntenySelector({
     if (!species1) {
       return []
     }
-    const available = assemblyPairs.get(species1) || new Set()
+    const available = assemblyPairs.get(species1) ?? new Set()
     return Array.from(available)
       .map(id => {
         const info = assemblyInfo[id]
         return {
           id,
-          displayName: info?.commonName || id,
-          scientificName: info?.scientificName || '',
-          source: info?.source || 'legacy',
+          displayName: info.commonName ?? id,
+          scientificName: info.scientificName ?? '',
+          source: info.source,
         }
       })
       .sort((a, b) => a.displayName.localeCompare(b.displayName))
@@ -158,7 +158,7 @@ export default function SyntenySelector({
     if (!selectedTrackId) {
       return null
     }
-    return matchingTracks.find(t => t.trackId === selectedTrackId) || null
+    return matchingTracks.find(t => t.trackId === selectedTrackId) ?? null
   }, [selectedTrackId, matchingTracks])
 
   const launchUrl = useMemo(() => {

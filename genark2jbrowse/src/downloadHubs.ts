@@ -9,8 +9,10 @@ import {
   readJSON,
 } from 'hubtools'
 
+import { getHubBasePath } from './util.ts'
+
 // Helper to log to stderr (keeps stdout clean for piping)
-const log = (msg: string) => console.error(msg)
+const log = (msg: string) => { console.error(msg) }
 
 // Read all hub JSON files and deduplicate entries based on ucscBrowser field
 const allHubEntries = dedupe(
@@ -20,9 +22,7 @@ const allHubEntries = dedupe(
     .flatMap(
       f =>
         (
-          readJSON(`hubJson/${f}`) as {
-            data: UCSCGenArkAssemblyEntry[]
-          }
+          readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(`hubJson/${f}`)
         ).data,
     ),
   d => d.ucscBrowser,
@@ -67,30 +67,20 @@ async function processHubEntry({
     return
   }
 
-  // Construct the base path for the hub files (e.g., hubs/GCF/000/001/735/GCF_000001735.4)
-  const [basePrefix, restOfAccession] = accession.split('_')
-  const [part1, part2, part3] = restOfAccession!.match(/.{1,3}/g)!
-
-  const hubBasePath = `hubs/${basePrefix}/${part1}/${part2}/${part3}/${accession}`
+  const hubBasePath = getHubBasePath(accession)
   const metaFilePath = `${hubBasePath}/meta.json`
   const hubFilePath = `${hubBasePath}/hub.txt`
 
-  // Only process if hub.txt doesn't exist or if REPROCESS environment variable is set
   if (!fs.existsSync(hubFilePath) || process.env.REPROCESS) {
     log(`Processing ${idx + 1}/${totalEntries}: ${sciName} (${accession})`)
 
-    // Add a small delay to avoid overwhelming the server
     await new Promise(resolve => setTimeout(resolve, 100))
 
-    const hubFileDownloadLocation = `https://hgdownload.soe.ucsc.edu/hubs/${basePrefix}/${part1}/${part2}/${part3}/${accession}/hub.txt`
+    const hubFileDownloadLocation = `https://hgdownload.soe.ucsc.edu/${hubBasePath}/hub.txt`
 
-    // Create directory recursively if it doesn't exist
-    fs.mkdirSync(hubBasePath, {
-      recursive: true,
-    })
+    fs.mkdirSync(hubBasePath, { recursive: true })
 
     try {
-      // Download hub.txt and write meta.json
       fs.writeFileSync(hubFilePath, await myfetchtext(hubFileDownloadLocation))
       fs.writeFileSync(
         metaFilePath,

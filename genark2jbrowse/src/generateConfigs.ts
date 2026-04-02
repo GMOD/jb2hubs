@@ -28,7 +28,7 @@ const configPath = metaPath.replace('meta.json', 'config.json')
 
 let hubMeta: { hubFileLocation: string }
 try {
-  hubMeta = readJSON(metaPath) as { hubFileLocation: string }
+  hubMeta = readJSON(metaPath)
 } catch (error) {
   console.error(error)
   process.exit(1)
@@ -36,7 +36,7 @@ try {
 
 let oldConfig: Record<string, unknown> = {}
 try {
-  oldConfig = readJSON(configPath) as Record<string, unknown>
+  oldConfig = readJSON(configPath)
 } catch (error) {
   // It's normal for config.json not to exist on the first run
   console.warn(
@@ -62,15 +62,13 @@ const newConfig = await generateJBrowseConfigForAssemblyHub({
 
 // Remove Chain/Net tracks (legacy UCSC chain/net tracks)
 // These are replaced by our new synteny tracks using PIF format
-if (newConfig.tracks) {
-  const originalTrackCount = newConfig.tracks.length
-  newConfig.tracks = newConfig.tracks.filter(
-    (track: any) => !track.name?.includes('Chain/Net'),
-  )
-  const removedCount = originalTrackCount - newConfig.tracks.length
-  if (removedCount > 0) {
-    console.log(`Removed ${removedCount} Chain/Net tracks from ${metaPath}`)
-  }
+const originalTrackCount = newConfig.tracks.length
+newConfig.tracks = newConfig.tracks.filter(
+  (track: any) => !track.name?.includes('Chain/Net'),
+)
+const removedCount = originalTrackCount - newConfig.tracks.length
+if (removedCount > 0) {
+  console.log(`Removed ${removedCount} Chain/Net tracks from ${metaPath}`)
 }
 
 // Compare new and old configurations. If they are identical, skip writing to avoid

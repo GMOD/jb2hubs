@@ -21,8 +21,8 @@ function dedupeByKey<T>(items: T[], getKey: (item: T) => string): T[] {
 }
 
 function parseRegion(pos: string, assemblyName: string) {
-  const [refName, range] = pos.split(':')
-  const [start, end] = (range ?? '0-10000').split('-').map(Number)
+  const [refName, range = '0-10000'] = pos.split(':')
+  const [start, end] = range.split('-').map(Number)
   return { assemblyName, refName, start, end }
 }
 
@@ -90,7 +90,7 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
           views: assemblies.map((assembly, idx) => ({
             type: 'LinearGenomeView',
             id: `view-${idx}`,
-            displayName: assembly.displayName || assembly.name,
+            displayName: assembly.displayName ?? assembly.name,
             tracks: [],
           })),
         },
@@ -100,7 +100,7 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
 
   const first = assemblies[0]
   const defaultPos = (
-    first?.sequence?.metadata as { ucsc?: { defaultPos?: string } } | undefined
+    first.sequence.metadata as { ucsc?: { defaultPos?: string } } | undefined
   )?.ucsc?.defaultPos
 
   return {
@@ -109,9 +109,9 @@ function createDefaultSession(assemblies: Assembly[], sessionType: string) {
       {
         type: 'LinearGenomeView',
         id: 'initialView',
-        ...(first && { displayName: first.displayName || first.name }),
+        displayName: first.displayName ?? first.name,
         ...(defaultPos && {
-          displayedRegions: [parseRegion(defaultPos, first!.name)],
+          displayedRegions: [parseRegion(defaultPos, first.name)],
         }),
       },
     ],
@@ -131,7 +131,7 @@ export function mergeConfigs(
     !options.includeSyntenyTracks &&
     !options.createDefaultSession
   ) {
-    return configs[0]!
+    return configs[0]
   }
 
   const assemblies = mergeAssemblies(configs)

@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
+import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { execSync } from 'child_process'
 import { fileURLToPath } from 'url'
 
 interface HubDateInfo {
@@ -54,7 +55,7 @@ function getGitDatesForHubs(): Map<string, { modified: Date; created: Date }> {
       currentDate = new Date(dateStr)
     } else if (line && currentDate) {
       // Extract accession from file path like "hubs/GCF/022/846/515/GCF_022846515.1/config.json"
-      const match = line.match(accessionRegex)
+      const match = accessionRegex.exec(line)
       if (match) {
         const accession = match[0]
         // First encounter = most recent modification
@@ -98,9 +99,7 @@ function main() {
 
   // Enrich with metadata from all.json
   const enrichedData = hubDateInfos.map(hub => {
-    const metadata = hubMetadataMap.get(hub.accession) as
-      | Record<string, unknown>
-      | undefined
+    const metadata = hubMetadataMap.get(hub.accession)
     return {
       ...hub,
       scientificName: metadata?.scientificName ?? 'Unknown',

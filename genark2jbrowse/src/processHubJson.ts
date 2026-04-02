@@ -2,7 +2,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { parseAssemblyEntry, hubCategories } from 'hubtools'
+import { hubCategories, parseAssemblyEntry } from 'hubtools'
 
 import { readJSON } from './util.ts'
 
@@ -34,7 +34,7 @@ const mainCategories = new Set(
  * Processes raw hub JSON files, parses each assembly entry, and writes
  * processed JSON files for individual categories and a combined 'all.json'.
  */
-async function processHubJsonFiles() {
+function processHubJsonFiles() {
   // Map to deduplicate by accession, preferring main category sources
   const accessionMap = new Map<string, ParsedEntry>()
 
@@ -74,9 +74,7 @@ async function processHubJsonFiles() {
 
     try {
       // Read the raw hub JSON data for the current category
-      const rawHubData = await readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(
-        file,
-      )
+      const rawHubData = readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(file)
 
       // Process each entry and add the source category
       const processedCategoryEntries = rawHubData.data
@@ -145,4 +143,4 @@ async function processHubJsonFiles() {
   )
 }
 
-processHubJsonFiles().catch(console.error)
+processHubJsonFiles()

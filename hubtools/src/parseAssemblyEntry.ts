@@ -2,7 +2,11 @@ import path from 'path'
 
 import { readJSON } from './util.ts'
 
-import type { NCBIDatasetsReport, UCSCGenArkAssemblyEntry } from './types.ts'
+import type {
+  NCBIDatasetsReport,
+  NCBIDatasetsResponse,
+  UCSCGenArkAssemblyEntry,
+} from './types.ts'
 
 export function parseAssemblyEntry({
   entry,
@@ -13,28 +17,27 @@ export function parseAssemblyEntry({
   const ucscAcc = path.basename(ucscBrowser)
   const accession = ucscAcc.startsWith('GC') ? ucscAcc : refSeq || genBank
   const [base, rest] = accession.split('_')
-  const [b1, b2, b3] = rest!.match(/.{1,3}/g)!
+  const matches = rest?.match(/.{1,3}/g)
+  if (!matches || matches.length < 3) {
+    console.error(`Unexpected accession format: ${accession}`)
+    return undefined
+  }
+  const [b1, b2, b3] = matches
 
   // Read ncbi.json (now in NCBI Datasets API format)
   const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
   let report: NCBIDatasetsReport | undefined
   let ncbiDownloadedAt: number | undefined
   try {
-    const ncbiData = readJSON(fn) as {
-      reports: NCBIDatasetsReport[]
-      downloaded_at?: number
-    }
+    const ncbiData = readJSON<NCBIDatasetsResponse>(fn)
     ncbiDownloadedAt = ncbiData.downloaded_at
-    report = ncbiData.reports?.find(
+    report = ncbiData.reports.find(
       r =>
         r.accession === accession ||
         r.paired_accession === accession ||
         r.current_accession === accession,
     )
-    // Fallback to first report
-    if (!report && ncbiData.reports?.[0]) {
-      report = ncbiData.reports[0]
-    }
+    report ??= ncbiData.reports[0]
   } catch {
     console.error(
       `NCBI data not found for ${accession} (${comName}): ${fn} does not exist`,

@@ -67,10 +67,8 @@ export default function Autocomplete({
 
   useEffect(() => {
     if (isOpen && listRef.current) {
-      const highlighted = listRef.current.children[
-        highlightedIndex
-      ] as HTMLElement
-      if (highlighted) {
+      const highlighted = listRef.current.children.item(highlightedIndex)
+      if (highlighted instanceof HTMLElement) {
         highlighted.scrollIntoView({ block: 'nearest' })
       }
     }
@@ -102,7 +100,7 @@ export default function Autocomplete({
       setHighlightedIndex(i => Math.max(i - 1, 0))
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      const opt = filteredOptions[highlightedIndex]
+      const opt = filteredOptions.at(highlightedIndex)
       if (isOpen && opt) {
         handleSelect(opt.value)
       }
@@ -132,7 +130,7 @@ export default function Autocomplete({
           ref={inputRef}
           id={id}
           type="text"
-          value={isOpen ? inputValue : selectedOption?.label || ''}
+          value={isOpen ? inputValue : selectedOption?.label ?? ''}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}

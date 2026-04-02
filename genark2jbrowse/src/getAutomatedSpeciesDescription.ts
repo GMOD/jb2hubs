@@ -18,11 +18,11 @@ interface SpeciesEntry {
  * Descriptions are stored in `speciesDescriptions/<scientificName>.json`
  * and also copied to the hub-specific `description.json`.
  */
-async function generateSpeciesDescriptions() {
+function generateSpeciesDescriptions() {
   fs.mkdirSync('speciesDescriptions', { recursive: true })
 
-  const allProcessedEntries = (
-    await readJSON<(SpeciesEntry | null)[]>('processedHubJson/all.json')
+  const allProcessedEntries = readJSON<(SpeciesEntry | null)[]>(
+    'processedHubJson/all.json',
   ).filter((entry): entry is SpeciesEntry => !!entry)
 
   let processedCount = 0
@@ -85,4 +85,4 @@ async function generateSpeciesDescriptions() {
   }
 }
 
-generateSpeciesDescriptions().catch(console.error)
+generateSpeciesDescriptions()
