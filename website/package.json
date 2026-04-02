@@ -8,6 +8,7 @@
     "generate-taxonomy": "cd taxonomyBuilder && ./generate_taxonomy.sh",
     "generate-recently-updated": "node generateRecentlyUpdated.ts",
     "prebuild": "yarn clean && yarn generate-taxonomy && yarn generate-recently-updated",
+    "predev": "aws s3 sync s3://jbrowse.org/processedHubJson/ processedHubJson/",
     "dev": "astro dev",
     "build": "astro build",
     "buildonly": "astro build",
