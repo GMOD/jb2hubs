@@ -2,18 +2,14 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import { getHubBasePath } from './util.ts'
+
 // Copies taxon-level images from `taxon_images/{taxonId}.json` into each
 // accession's hub directory as `image.json`.  This ensures every assembly
 // for a given species gets the same image without redundant API calls.
 
 const TAXON_IMAGES_DIR = 'taxon_images'
 const INPUT_FILE = 'processedHubJson/all.json'
-
-function getHubBasePath(accession: string): string {
-  const [basePrefix, restOfAccession] = accession.split('_')
-  const [b1, b2, b3] = restOfAccession!.match(/.{1,3}/g)!
-  return `hubs/${basePrefix}/${b1}/${b2}/${b3}/${accession}`
-}
 
 function main() {
   const allData = JSON.parse(fs.readFileSync(INPUT_FILE, 'utf8')) as {

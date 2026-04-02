@@ -10,7 +10,6 @@ export interface JBrowseConfig {
     }
     trackId: string
     adapter: Record<string, unknown>
-    // Add other common track properties if needed
   }[]
   assemblies: {
     name: string
@@ -24,6 +23,15 @@ export interface JBrowseConfig {
   plugins?: unknown[]
   aggregateTextSearchAdapters?: Record<string, unknown>[]
 }
+
+export type BlockedFileCache = Record<
+  string,
+  {
+    lastChecked: number
+    blocked: boolean
+    trackName?: string
+  }
+>
 
 export interface TrackDbEntry {
   tableName: string

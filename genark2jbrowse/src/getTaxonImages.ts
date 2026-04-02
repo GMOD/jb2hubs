@@ -132,7 +132,6 @@ LIMIT ${SPARQL_BATCH_SIZE} OFFSET ${offset}
 // Wikipedia helpers
 // ---------------------------------------------------------------------------
 
-
 async function getWikipediaMainImage(
   pageTitle: string,
   lang = 'en',

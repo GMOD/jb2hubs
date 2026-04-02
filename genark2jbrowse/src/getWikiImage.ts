@@ -2,55 +2,18 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-function getHubBasePath(accession: string): string {
-  try {
-    const [basePrefix, restOfAccession] = accession.split('_')
-    const [part1, part2, part3] = restOfAccession!.match(/.{1,3}/g)!
-    return `hubs/${basePrefix}/${part1}/${part2}/${part3}/${accession}`
-  } catch (e) {
-    console.error(e, { accession })
-    throw e
-  }
-}
-
-function processSpeciesName(speciesName: string): string {
-  return speciesName
-    .replace(/\s+=\s.*$/, '') // Remove anything after " = "
-    .replace(/^Candidatus\s+/i, '') // Remove "Candidatus" at the beginning
-    .replace(/\s+-\s.*$/, '') // Remove anything after " - "
-    .replace(/\s+\d+\s*$/, '') // Remove trailing numbers
-    .replace(/\s+(str\.|strain).*$/i, '') // Remove anything after "str." or "strain"
-    .replace(/\s+var\..*$/i, '') // Remove anything after "var."
-    .replace(/\s+sp\..*$/i, '') // Remove anything after "sp."
-    .replace(/\s+bv\..*$/i, '') // Remove anything after "bv."
-    .replace(/\s+subsp\..*$/i, '') // Remove anything after "sp."
-    .replace(/\s+serovar.*$/i, '') // Remove anything after "serovar"
-    .replace(/\s+biovar.*$/i, '') // Remove anything after "biovar"
-    .replace(/\s+cf.*$/i, '') // Remove anything after "cf"
-    .replace(/\s+f\..*$/i, '') // Remove anything after "f."
-    .replace(/\s+type.*$/i, '') // Remove anything after "type"
-    .replace(/\s+ATCC.*$/i, '') // Remove anything after "ATCC"
-    .replace(/\s+GI\/.*$/i, '') // Remove anything after "GI/"
-    .replace(/\s+HU\/.*$/i, '') // Remove anything after "GI/"
-    .replace(/\s+\S*:.*$/, '') // Remove last word if it contains a colon
-    .replace(/\s+[A-Z0-9\-.]+$/, '') // Remove last word if it's all capital letters, numbers, dashes, or dots
-    .trim()
-}
+import { getHubBasePath, processSpeciesName } from './util.ts'
 
 async function getWikipediaMainImage(pageTitle: string, lang = 'en') {
   const apiUrl = `https://${lang}.wikipedia.org/w/api.php`
-
-  // API parameters to get page information and images
   const params = {
     action: 'query',
     titles: pageTitle,
     prop: 'pageimages',
-    pithumbsize: '500', // Set the desired thumbnail size
+    pithumbsize: '500',
     format: 'json',
-    redirects: '1', // Automatically follow redirects
+    redirects: '1',
   }
-
-  // Construct the URL with query parameters
   const queryString = new URLSearchParams(params as any).toString()
   const url = `${apiUrl}?${queryString}`
 
@@ -66,24 +29,22 @@ async function getWikipediaMainImage(pageTitle: string, lang = 'en') {
     throw new Error(`Could not find pages in the API response for ${url}`)
   }
 
-  // The API returns page IDs as keys, so we need to get the first one
   const pageId = Object.keys(pages)[0]!
   const page = pages[pageId]
 
-  // Check if the page exists and has a thumbnail
   if (pageId === '-1' || !page.thumbnail) {
     throw new Error(
       `Page "${pageTitle}" not found or no thumbnail image available.`,
     )
   }
 
-  // The 'thumbnail' object contains the image URL
   return page.thumbnail.source
 }
 
 async function processSpeciesImage(scientificName: string, accession: string) {
   const hubBasePath = getHubBasePath(accession)
   const filePath = path.join(hubBasePath, `image.json`)
+  // Applied twice: removing one suffix can expose another (e.g. "sp. ATCC 123" → "sp." → "")
   const processedName = processSpeciesName(processSpeciesName(scientificName))
 
   try {
@@ -102,7 +63,6 @@ async function processSpeciesImage(scientificName: string, accession: string) {
         2,
       ),
     )
-
     console.log(
       `Found image for: "${scientificName}" (used string "${processedName}")`,
     )
@@ -130,15 +90,8 @@ async function processSpeciesImage(scientificName: string, accession: string) {
             )
             return
           }
-        } catch (retryError) {
-          // If retry fails, continue with original error handling
-        }
+        } catch (_retryError) {}
       }
-    }
-    if (scientificName !== processedName) {
-      // console.log(`${e}`, { scientificName, processedName })
-    } else {
-      // console.log(`${e}`)
     }
     console.log(
       `Image not found for: "${scientificName}" (used string "${processedName}")`,

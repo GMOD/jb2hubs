@@ -48,19 +48,15 @@ export function enhanceConfig(
 ): void {
   const config = readJSON<JBrowseConfig>(configPath)
 
-  // Add plugins if not already present
   config.plugins ??= []
 
-  // Add plugins that aren't already in the config
   for (const plugin of plugins) {
     if (!config.plugins.some(p => p.name === plugin.name)) {
       config.plugins.push(plugin)
     }
   }
 
-  // Add or update hierarchical configuration
   config.configuration ??= {}
-
   config.configuration.hierarchical = {
     sort: {
       trackNames: true,
@@ -72,6 +68,5 @@ export function enhanceConfig(
     },
   }
 
-  // Write enhanced config back to file
   writeJSON(configPath, config)
 }

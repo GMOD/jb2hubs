@@ -3,7 +3,58 @@ import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
 
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
 
-type Adapter = Record<string, unknown>
+type Adapter = Record<string, unknown> & { type: string }
+
+function makeAdapterConf(
+  baseTrackType: string,
+  uri: string,
+  sequenceAdapter: Adapter,
+  data: RaStanza['data'],
+  trackDbUrl: string,
+) {
+  if (baseTrackType === 'bam') {
+    return { type: 'AlignmentsTrack', adapter: { type: 'BamAdapter', uri } }
+  } else if (baseTrackType === 'cram') {
+    return {
+      type: 'AlignmentsTrack',
+      adapter: { type: 'CramAdapter', uri, sequenceAdapter },
+    }
+  } else if (baseTrackType === 'bigWig') {
+    return {
+      type: 'QuantitativeTrack',
+      adapter: { type: 'BigWigAdapter', uri },
+    }
+  } else if (baseTrackType === 'bigMaf') {
+    const summaryUri = data.summary
+      ? new URL(data.summary, trackDbUrl).href
+      : undefined
+    return {
+      type: 'MafTrack',
+      adapter: {
+        type: 'BigMafAdapter',
+        bigMafLocation: { uri },
+        ...(summaryUri ? { summaryLocation: { uri: summaryUri } } : {}),
+      },
+    }
+  } else if (baseTrackType.startsWith('big')) {
+    const trackName = data.track ?? ''
+    const disableGeneHeuristic =
+      trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
+    return {
+      type: 'FeatureTrack',
+      adapter: {
+        type: 'BigBedAdapter',
+        uri,
+        ...(disableGeneHeuristic ? { disableGeneHeuristic: true } : {}),
+      },
+    }
+  } else if (baseTrackType === 'vcfTabix') {
+    return { type: 'VariantTrack', adapter: { type: 'VcfTabixAdapter', uri } }
+  } else if (baseTrackType === 'hic') {
+    return { type: 'HicTrack', adapter: { type: 'HicAdapter', uri } }
+  }
+  return undefined
+}
 
 export function createTrackConfiguration({
   track,
@@ -29,11 +80,7 @@ export function createTrackConfiguration({
   })
   const { data } = track
   const { group, html } = data
-
-  // Get parent tracks to extract both group and shortLabel information
   const parentTracks = extractParentTracks(trackName, trackDb)
-
-  // Find group from current track or first parent that has one
   const effectiveGroup =
     group ?? parentTracks.find(p => p.data.group)?.data.group
 
@@ -42,17 +89,10 @@ export function createTrackConfiguration({
         metadata: {
           ucsc: {
             ...data,
-            ...(html
-              ? {
-                  html: createHtmlLink(html, trackDbUrl),
-                }
-              : {}),
+            ...(html ? { html: createHtmlLink(html, trackDbUrl) } : {}),
           },
         },
-        category: [
-          effectiveGroup,
-          // ,
-        ]
+        category: [effectiveGroup]
           .filter(f => !!f)
           // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           .map(f => categoryMap[f as keyof typeof categoryMap] ?? f),
@@ -81,135 +121,37 @@ function makeTrackConfig({
   assemblyName: string
 }) {
   const { data } = track
-  const bigDataUrlPre = data.bigDataUrl ?? ''
-  const name =
-    (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
-  const conf = makeTrackConfigSub({
-    track,
-    trackDbUrl,
-    trackDb,
-    sequenceAdapter,
-  })
-  return conf
-    ? {
-        trackId: `${assemblyName}-${data.track}`,
-        description: data.longLabel,
-        assemblyNames: [assemblyName],
-        name,
-        ...conf,
-      }
-    : undefined
-}
-
-function makeTrackConfigSub({
-  track,
-  trackDbUrl,
-  trackDb,
-  sequenceAdapter,
-}: {
-  track: RaStanza
-  trackDbUrl: string
-  trackDb: TrackDbFile
-  sequenceAdapter: Adapter
-}) {
-  const { data } = track
   const parent = data.parent ?? ''
   const bigDataUrlPre = data.bigDataUrl ?? ''
   const bigDataIdx = data.bigDataIndex ?? ''
   if (bigDataIdx) {
     throw new Error("Don't yet support bigDataIdx")
   }
-  const trackType = data.type ?? trackDb.data[parent]!.data.type ?? ''
   const name =
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
-
+  const trackType = data.type ?? trackDb.data[parent]!.data.type ?? ''
   let baseTrackType = trackType.split(' ')[0] ?? ''
   if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('cram')) {
     baseTrackType = 'cram'
   }
-  const bigDataUrl = new URL(bigDataUrlPre, trackDbUrl)
-
-  if (baseTrackType === 'bam') {
-    return {
-      type: 'AlignmentsTrack',
-      adapter: {
-        type: 'BamAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  } else if (baseTrackType === 'cram') {
-    return {
-      type: 'AlignmentsTrack',
-      adapter: {
-        type: 'CramAdapter',
-        uri: bigDataUrl,
-        sequenceAdapter,
-      },
-    }
-  } else if (baseTrackType === 'bigWig') {
-    return {
-      type: 'QuantitativeTrack',
-      adapter: {
-        type: 'BigWigAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  } else if (baseTrackType === 'bigMaf') {
-    const summaryUrl = data.summary
-      ? new URL(data.summary, trackDbUrl)
-      : undefined
-    return {
-      type: 'MafTrack',
-      adapter: {
-        type: 'BigMafAdapter',
-        bigMafLocation: { uri: bigDataUrl },
-        ...(summaryUrl ? { summaryLocation: { uri: summaryUrl } } : {}),
-      },
-    }
-  } else if (baseTrackType.startsWith('big')) {
-    const trackName = data.track ?? ''
-    const disableGeneHeuristic =
-      trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
-    return {
-      type: 'FeatureTrack',
-      adapter: {
-        type: 'BigBedAdapter',
-        uri: bigDataUrl,
-        ...(disableGeneHeuristic ? { disableGeneHeuristic: true } : {}),
-      },
-    }
-  } else if (baseTrackType === 'vcfTabix') {
-    return {
-      type: 'VariantTrack',
-      adapter: {
-        type: 'VcfTabixAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  } else if (baseTrackType === 'hic') {
-    return {
-      type: 'HicTrack',
-      adapter: {
-        type: 'HicAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  } else {
-    // unsupported types
-    //     case 'peptideMapping':
-    //     case 'gvf':
-    //     case 'ld2':
-    //     case 'narrowPeak':
-    //     case 'wig':
-    //     case 'wigMaf':
-    //     case 'halSnake':
-    //     case 'bed':
-    //     case 'bed5FloatScore':
-    //     case 'bedGraph':
-    //     case 'bedRnaElements':
-    //     case 'broadPeak':
-    //     case 'coloredExon':
+  const uri = new URL(bigDataUrlPre, trackDbUrl).href
+  const adapterConf = makeAdapterConf(
+    baseTrackType,
+    uri,
+    sequenceAdapter,
+    data,
+    trackDbUrl,
+  )
+  if (!adapterConf) {
     console.error('Unknown track:', name, baseTrackType)
-    return undefined
   }
+  return adapterConf
+    ? {
+        trackId: `${assemblyName}-${data.track}`,
+        description: data.longLabel,
+        assemblyNames: [assemblyName],
+        name,
+        ...adapterConf,
+      }
+    : undefined
 }

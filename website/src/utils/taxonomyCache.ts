@@ -69,7 +69,7 @@ function parseNewick(newick: string): TreeNode | null {
       // First check for leaf node format: Name[accession|taxonId]
       const accessionMatch = /^(.+?)\[([^\]]+)\]$/.exec(name)
       if (accessionMatch) {
-        node.name = accessionMatch[1]
+        node.name = accessionMatch[1]!
         const bracketContent = accessionMatch[2]!
         // Check if bracket content contains taxonId (format: accession|taxonId)
         if (bracketContent.includes('|')) {
@@ -87,8 +87,8 @@ function parseNewick(newick: string): TreeNode | null {
 
         const internalMatch = /^(.+?)\{([^}]+)\}$/.exec(name)
         if (internalMatch) {
-          node.name = internalMatch[1]
-          node.taxonId = internalMatch[2]
+          node.name = internalMatch[1]!
+          node.taxonId = internalMatch[2]!
         } else {
           node.name = name
         }
@@ -130,7 +130,8 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
     const id = `node_${nodeCounter++}`
 
     // Check if this node should be collapsed:
-    // If it has exactly one child that is a leaf with the same name, skip the intermediate node
+    // If it has exactly one child that is a leaf with the same name, skip the
+    // intermediate node
     if (n.children?.length === 1) {
       const firstChild = n.children[0]!
       if (

@@ -13,10 +13,7 @@ export function extractParentTracks(
   const parentName =
     (trackDb.data[trackName]?.data.parent ?? '').split(' ')[0] ?? ''
   return parentName
-    ? [
-        ...extractParentTracks(parentName, trackDb),
-        trackDb.data[parentName]!,
-      ]
+    ? [...extractParentTracks(parentName, trackDb), trackDb.data[parentName]!]
     : []
 }
 

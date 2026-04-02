@@ -31,7 +31,7 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
             Object.entries(list.ucscGenomes)
               .filter(([key]) => s.has(key))
               .map(([key, val]) => (
-                <tr key={key}>
+                <tr>
                   <td>
                     {key} (<a href={`/ucsc/${key}`}>info</a>)
                   </td>

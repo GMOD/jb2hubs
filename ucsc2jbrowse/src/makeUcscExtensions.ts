@@ -2,7 +2,8 @@
 import fs from 'fs'
 import path from 'path'
 
-import { dedupe } from './dedupe.ts'
+import { dedupe } from 'hubtools'
+
 import { readConfig, writeJSON } from './util.ts'
 
 import type { JBrowseConfig } from './types.ts'

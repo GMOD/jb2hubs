@@ -3,16 +3,12 @@ import { SingleFileHub } from '@gmod/ucsc-hub'
 import { generateHubTracks } from './generateHubTracks.ts'
 import { resolve } from './util.ts'
 
-async function hasAliases(url: string) {
-  let hasAliases = false
+async function isUrlAccessible(url: string) {
   try {
-    const res = await fetch(url)
-    if (!res.ok) {
-      throw new Error('Error fetching chromAlias')
-    }
-    hasAliases = true
-  } catch (_e) {}
-  return hasAliases
+    return (await fetch(url)).ok
+  } catch (_e) {
+    return false
+  }
 }
 
 export async function generateJBrowseConfigForAssemblyHub({
@@ -61,7 +57,7 @@ export async function generateJBrowseConfigForAssemblyHub({
         adapter: sequenceAdapter,
       },
       ...(chromAliasBb &&
-      (await hasAliases(
+      (await isUrlAccessible(
         resolve(chromAliasBb.replace('.bb', '.txt'), trackDbUrl),
       ))
         ? {

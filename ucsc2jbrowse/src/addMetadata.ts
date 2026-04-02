@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { categoryMap } from 'hubtools'
+import { categoryMap, notEmpty } from 'hubtools'
 
 import {
   getTrackModifications,
@@ -18,11 +18,6 @@ import type { TrackDbEntry } from './types'
 
 type TracksDb = Record<string, TrackDbEntry>
 
-/**
- * Adds metadata from a trackDb.json file to a JBrowse configuration's tracks.
- * @param configPath The path to the JBrowse configuration file.
- * @param tracksDbPath The path to the tracksDb.json file.
- */
 function addMetadata(configPath: string, tracksDbPath: string) {
   const config = readConfig(configPath)
   let tracksDb: TracksDb | undefined
@@ -32,7 +27,6 @@ function addMetadata(configPath: string, tracksDbPath: string) {
     console.error(`no tracksDb for ${configPath}`)
   }
 
-  // Extract assembly name from config path
   const assembly = path.basename(path.dirname(configPath))
 
   writeJSON(configPath, {
@@ -76,7 +70,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
               ? track.name
               : [
                   ...new Set(
-                    [parentTrack?.shortLabel, shortLabel].filter(f => !!f),
+                    [parentTrack?.shortLabel, shortLabel].filter(Boolean),
                   ),
                 ].join(' - '),
             description: longLabel,
@@ -88,7 +82,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
                     ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                       [categoryMap[grp as keyof typeof categoryMap] ?? grp]
                     : []),
-                ].filter(f => !!f),
+                ].filter(Boolean),
               ),
             ],
           }
@@ -98,12 +92,9 @@ function addMetadata(configPath: string, tracksDbPath: string) {
         }
       })
       .map(track => getTrackModifications(track))
-      .filter(
-        (track): track is NonNullable<typeof track> => track !== undefined,
-      ),
+      .filter(notEmpty),
   })
 
-  // Write removed tracks for this assembly
   writeRemovedTracks(assembly)
 }
 

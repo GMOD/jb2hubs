@@ -1,6 +1,4 @@
 ---
-import Breadcrumbs from './Breadcrumbs.astro'
-
 interface Props {
   className?: string
   wide?: boolean
@@ -11,7 +9,6 @@ const { className, wide = false } = Astro.props
 
 <div class:list={['container', { wide }]}>
   <div class:list={['content', className, { wide }]}>
-    <Breadcrumbs />
     <slot />
   </div>
 </div>

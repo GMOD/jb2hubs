@@ -2,13 +2,14 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import ClientOnlyDataTable from '../../components/ClientOnlyDataTable.tsx'
+import type { RowData } from '../../components/DataTable/hooks/useTableColumns.tsx'
 
 export async function getStaticPaths() {
   const modules = import.meta.glob('../../../processedHubJson/*.json')
   const paths = await Promise.all(
     Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = await resolver()
-      const slug = filepath.split('/').pop().replace('.json', '')
+      const { default: data } = (await resolver()) as { default: RowData[] }
+      const slug = filepath.split('/').pop()!.replace('.json', '')
       return slug !== 'all'
         ? {
             params: { slug },

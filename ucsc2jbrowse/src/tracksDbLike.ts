@@ -18,16 +18,16 @@ const rl = readline.createInterface({
 })
 
 const ret = {} as Record<string, unknown>
-let l = ''
+let currentLine = ''
 for await (const line of rl) {
   if (line.endsWith('\\')) {
     // the extra space is needed here to avoid the tabs in the html checker in
     // parseTableLine
-    l += line.slice(0, -1) + '\n'
-  } else if (l) {
-    const r = parseTableLine(l, cols.colNames)
+    currentLine += line.slice(0, -1) + '\n'
+  } else if (currentLine) {
+    const r = parseTableLine(currentLine, cols.colNames)
     ret[r.tableName!] = r
-    l = ''
+    currentLine = ''
   }
 }
 console.log(JSON.stringify(ret, null, 2))

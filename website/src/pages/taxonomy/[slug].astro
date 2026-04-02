@@ -3,18 +3,32 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
+import type { FlatNodeData } from '../../utils/taxonomyCache'
+import type { RowData } from '../../components/DataTable/hooks/useTableColumns.tsx'
+import { notEmpty } from '../../components/DataTable/utils.ts'
 import fs from 'fs'
 import path from 'path'
 
+interface Props {
+  rows: RowData[]
+  isCategory: boolean
+  taxonId?: string
+  precomputedSubtree?: FlatNodeData | null
+  precomputedLineage?: FlatNodeData[]
+}
+
 export async function getStaticPaths() {
-  const paths: any[] = []
+  const paths: {
+    params: { slug: string }
+    props: Props
+  }[] = []
   const seenSlugs = new Set<string>()
 
   // Generate paths for category-based taxonomy pages (existing functionality)
   const modules = import.meta.glob('../../../processedHubJson/*.json')
   const categoryPaths = await Promise.all(
     Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = await resolver()
+      const { default: data } = (await resolver()) as { default: Props['rows'] }
       const slug = filepath.split('/').pop()!.replace('.json', '')
       return slug !== 'all'
         ? {
@@ -43,7 +57,9 @@ export async function getStaticPaths() {
   )
   try {
     const newickData = fs.readFileSync(newickPath, 'utf-8')
-    const allJson = await import('../../../processedHubJson/all.json')
+    const allJson = (await import('../../../processedHubJson/all.json')) as {
+      default: RowData[]
+    }
 
     // Extract all unique taxonIds from the newick data using regex
     // Match both leaf nodes [accession|taxonId] and internal nodes {taxonId}
@@ -72,8 +88,8 @@ export async function getStaticPaths() {
     const fullTree = getCachedTree('all')
 
     // Create a map of all species data for fast lookup
-    const allSpeciesMap = new Map(
-      allJson.default.map((species: any) => [species.accession, species]),
+    const allSpeciesMap = new Map<string, RowData>(
+      allJson.default.map(species => [species.accession, species]),
     )
 
     // Generate a path for each taxonId (skip if already used by categories)
@@ -95,7 +111,7 @@ export async function getStaticPaths() {
         // Filter species data to only include species in this subtree
         const filteredSpecies = relevantAccessions
           .map(acc => allSpeciesMap.get(acc))
-          .filter(Boolean)
+          .filter(notEmpty)
 
         paths.push({
           params: { slug: taxonId },
@@ -156,7 +172,7 @@ if (isCategory) {
         <div class="lineage-container">
           <div class="lineage-label">Taxonomy:</div>
           <div class="lineage-breadcrumbs">
-            {precomputedLineage.slice(0, -1).map((node: any) => (
+            {precomputedLineage.slice(0, -1).map(node => (
               <>
                 <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
                   {node.name || 'Unnamed'}

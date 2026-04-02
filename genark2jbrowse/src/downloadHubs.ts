@@ -12,7 +12,9 @@ import {
 import { getHubBasePath } from './util.ts'
 
 // Helper to log to stderr (keeps stdout clean for piping)
-const log = (msg: string) => { console.error(msg) }
+const log = (msg: string) => {
+  console.error(msg)
+}
 
 // Read all hub JSON files and deduplicate entries based on ucscBrowser field
 const allHubEntries = dedupe(
@@ -20,10 +22,7 @@ const allHubEntries = dedupe(
     .readdirSync('hubJson')
     .filter(f => f.endsWith('.json'))
     .flatMap(
-      f =>
-        (
-          readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(`hubJson/${f}`)
-        ).data,
+      f => readJSON<{ data: UCSCGenArkAssemblyEntry[] }>(`hubJson/${f}`).data,
     ),
   d => d.ucscBrowser,
 )

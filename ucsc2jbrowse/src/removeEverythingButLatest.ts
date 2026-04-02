@@ -1,16 +1,9 @@
 import { readConfig, writeJSON } from './util.ts'
 
-import type { JBrowseConfig } from './types.ts'
-
-/**
- * Removes older versions of specific tracks from a JBrowse configuration.
- * This is useful for keeping only the latest version of tracks like Gencode or dbSNP.
- * @param configPath The path to the JBrowse configuration file.
- */
 function removeEverythingButLatest(configPath: string) {
   const config = readConfig(configPath)
 
-  const trackPrefixesToRemoveOldVersions = [
+  const prefixes = [
     'wgEncodeGencodePolyaV',
     'wgEncodeGencodePseudoGeneV',
     'wgEncodeGencodeCompV',
@@ -19,35 +12,19 @@ function removeEverythingButLatest(configPath: string) {
     'cloneEndABC',
   ]
 
-  let updatedTracks = [...config.tracks]
+  const toRemove = new Set(
+    prefixes.flatMap(prefix => {
+      const matching = config.tracks
+        .filter(t => t.trackId.startsWith(prefix))
+        .sort((a, b) => a.trackId.localeCompare(b.trackId))
+      return matching.slice(0, -1).map(t => t.trackId)
+    }),
+  )
 
-  for (const prefix of trackPrefixesToRemoveOldVersions) {
-    // Filter tracks that match the current prefix
-    const tracksWithPrefix = updatedTracks.filter(track =>
-      track.trackId.startsWith(prefix),
-    )
-
-    // Sort them to easily identify the latest (assuming lexicographical sort works for versions)
-    tracksWithPrefix.sort((a, b) => a.trackId.localeCompare(b.trackId))
-
-    // Keep only the last (latest) track, mark others for removal
-    const trackIdsToRemove = new Set<string>()
-    for (let i = 0; i < tracksWithPrefix.length - 1; i++) {
-      trackIdsToRemove.add(tracksWithPrefix[i]!.trackId)
-    }
-
-    // Filter out the tracks marked for removal
-    updatedTracks = updatedTracks.filter(
-      track => !trackIdsToRemove.has(track.trackId),
-    )
-  }
-
-  const updatedConfig: JBrowseConfig = {
+  writeJSON(configPath, {
     ...config,
-    tracks: updatedTracks,
-  }
-
-  writeJSON(configPath, updatedConfig)
+    tracks: config.tracks.filter(t => !toRemove.has(t.trackId)),
+  })
 }
 
 if (process.argv.length !== 3) {

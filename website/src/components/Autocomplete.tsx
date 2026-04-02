@@ -130,7 +130,7 @@ export default function Autocomplete({
           ref={inputRef}
           id={id}
           type="text"
-          value={isOpen ? inputValue : selectedOption?.label ?? ''}
+          value={isOpen ? inputValue : (selectedOption?.label ?? '')}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}

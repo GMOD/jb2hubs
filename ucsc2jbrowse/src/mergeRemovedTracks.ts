@@ -9,9 +9,6 @@ interface RemovedTrack {
   assembly: string
 }
 
-/**
- * Merges all assembly-specific removed tracks JSON into a single removedTracks.json
- */
 function mergeRemovedTracks() {
   const removedTracksDir = 'removedTracks'
   const outputFile = 'removedTracks.json'
@@ -45,7 +42,6 @@ function mergeRemovedTracks() {
     }
   }
 
-  // Group by reason for statistics
   const byReason = allTracks.reduce<Record<string, number>>((acc, track) => {
     acc[track.reason] = (acc[track.reason] ?? 0) + 1
     return acc

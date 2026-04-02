@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 
 const PANGENOME_OUT_DIR =
-  process.env['PANGENOME_OUT_DIR'] ?? '/mnt/sdb/cdiesh/mousePangenome/out'
+  process.env.PANGENOME_OUT_DIR ?? '/mnt/sdb/cdiesh/mousePangenome/out'
 
 // VCF produced by cactus-pangenome, served relative to config location
 const PANGENOME_VCF_URI =
@@ -86,7 +86,7 @@ for (const [acc, strainName] of Object.entries(STRAIN_NAMES)) {
 
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8')) as {
     assemblies: { name: string }[]
-    tracks: { trackId: string }[]
+    tracks: { trackId: string; [key: string]: unknown }[]
     [key: string]: unknown
   }
 

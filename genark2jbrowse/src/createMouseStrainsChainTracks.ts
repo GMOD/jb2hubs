@@ -53,7 +53,7 @@ for (const strainDir of fs.readdirSync(MOUSE_STRAINS_DIR)) {
 
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8')) as {
     assemblies: { name: string }[]
-    tracks: { trackId: string }[]
+    tracks: { trackId: string; [key: string]: unknown }[]
     [key: string]: unknown
   }
 

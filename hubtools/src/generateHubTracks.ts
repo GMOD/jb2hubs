@@ -4,7 +4,7 @@ import { isChainNetTrack, isMetaTrack } from './trackUtils.ts'
 
 import type { TrackDbFile } from '@gmod/ucsc-hub'
 
-type Adapter = Record<string, unknown>
+type Adapter = Record<string, unknown> & { type: string }
 
 export function generateHubTracks({
   trackDb,
@@ -30,5 +30,5 @@ export function generateHubTracks({
             assemblyName,
           }),
     )
-    .filter(f => notEmpty(f))
+    .filter(notEmpty)
 }

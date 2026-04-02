@@ -7,18 +7,22 @@ import '../styles/common-table.css'
 
 // Read blockedFiles.json from project root
 const blockedFilesPath = join(process.cwd(), 'blockedFiles.json')
-const blockedData = JSON.parse(await readFile(blockedFilesPath, 'utf-8'))
+const blockedData = JSON.parse(
+  await readFile(blockedFilesPath, 'utf-8'),
+) as Record<
+  string,
+  { blocked: boolean; lastChecked: number; trackName?: string }
+>
 
 // Filter only blocked files and include timestamp and trackName
-const files: Array<{ url: string; lastChecked: number; trackName?: string }> =
-  Object.entries(blockedData)
-    .filter(([_, value]: [string, any]) => value.blocked)
-    .map(([url, value]: [string, any]) => ({
-      url,
-      lastChecked: value.lastChecked,
-      trackName: value.trackName,
-    }))
-    .sort((a, b) => b.lastChecked - a.lastChecked) // Sort by most recent first
+const files = Object.entries(blockedData)
+  .filter(([_, value]) => value.blocked)
+  .map(([url, value]) => ({
+    url,
+    lastChecked: value.lastChecked,
+    trackName: value.trackName,
+  }))
+  .sort((a, b) => b.lastChecked - a.lastChecked)
 
 // Read removedTracks.json from project root
 const removedTracksPath = join(process.cwd(), 'removedTracks.json')
@@ -67,7 +71,7 @@ function formatDate(timestamp: number): string {
       <tbody>
         {
           files.map((file, index) => (
-            <tr key={index}>
+            <tr>
               <td>{index + 1}</td>
               <td>{file.url}</td>
               <td>{file.trackName ?? '-'}</td>
@@ -101,7 +105,7 @@ function formatDate(timestamp: number): string {
       <tbody>
         {
           removedTracks.map((track, index) => (
-            <tr key={index}>
+            <tr>
               <td>{index + 1}</td>
               <td>{track.assembly}</td>
               <td>{track.trackId}</td>

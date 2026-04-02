@@ -1,13 +1,6 @@
 import fs from 'fs'
 
-type BlockedFileCache = Record<
-  string,
-  {
-    lastChecked: number
-    blocked: boolean
-    trackName?: string
-  }
->
+import type { BlockedFileCache } from './types.ts'
 
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 

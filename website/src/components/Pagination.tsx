@@ -23,7 +23,9 @@ export default function Pagination({
     <div className={styles.paginationContainer}>
       <button
         className={styles.paginationButton}
-        onClick={() => onPageChange(0)}
+        onClick={() => {
+          onPageChange(0)
+        }}
         disabled={pageIndex === 0}
         aria-label="First page"
       >
@@ -31,7 +33,9 @@ export default function Pagination({
       </button>
       <button
         className={styles.paginationButton}
-        onClick={() => onPageChange(pageIndex - 1)}
+        onClick={() => {
+          onPageChange(pageIndex - 1)
+        }}
         disabled={pageIndex === 0}
         aria-label="Previous page"
       >
@@ -45,7 +49,9 @@ export default function Pagination({
       </span>
       <button
         className={styles.paginationButton}
-        onClick={() => onPageChange(pageIndex + 1)}
+        onClick={() => {
+          onPageChange(pageIndex + 1)
+        }}
         disabled={pageIndex >= pageCount - 1}
         aria-label="Next page"
       >
@@ -53,7 +59,9 @@ export default function Pagination({
       </button>
       <button
         className={styles.paginationButton}
-        onClick={() => onPageChange(pageCount - 1)}
+        onClick={() => {
+          onPageChange(pageCount - 1)
+        }}
         disabled={pageIndex >= pageCount - 1}
         aria-label="Last page"
       >
@@ -64,7 +72,9 @@ export default function Pagination({
         <select
           id="pageSize"
           value={pageSize}
-          onChange={e => onPageSizeChange(Number(e.target.value))}
+          onChange={e => {
+            onPageSizeChange(Number(e.target.value))
+          }}
           className={styles.pageSizeSelect}
         >
           <option value={100}>100</option>

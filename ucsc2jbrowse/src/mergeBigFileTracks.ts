@@ -1,8 +1,8 @@
 import deepmerge from 'deepmerge'
+import { dedupe } from 'hubtools'
 import pLimit from 'p-limit'
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
-import { dedupe } from './dedupe.ts'
 import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
 
 import type { TrackDbEntry } from './types.ts'

@@ -105,10 +105,11 @@ export default function UCSCTable() {
               <th
                 key={col.id}
                 className="cursor-pointer"
-                onClick={() => handleSort(col.id)}
+                onClick={() => {
+                  handleSort(col.id)
+                }}
               >
-                {col.header}{' '}
-                {sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}
+                {col.header} {sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}
               </th>
             ))}
           </tr>

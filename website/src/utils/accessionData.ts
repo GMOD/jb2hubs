@@ -82,19 +82,13 @@ export function loadAccessionMap(): Map<string, AssemblyData> {
 }
 
 export function loadNcbiDetails(accession: string): NcbiDetails {
-  const [base, rest] = accession.split('_')
-  const [b1, b2, b3] = rest!.match(/.{1,3}/g)!
-  const ncbiPath = path.join(
-    'hubs',
-    base!,
-    b1!,
-    b2!,
-    b3!,
-    accession,
-    'ncbi.json',
-  )
+  const parts = accession.split('_')
+  const base = parts[0]!
+  const rest = parts[1]!
+  const chunks = rest.match(/.{1,3}/g)!
+  const ncbiPath = path.join('hubs', base, chunks[0]!, chunks[1]!, chunks[2]!, accession, 'ncbi.json')
   const raw = tryAndReadJSON<{
-    reports?: Array<{
+    reports?: {
       assembly_info?: {
         paired_assembly?: { status?: string; differences?: string }
         genome_notes?: string[]
@@ -118,7 +112,7 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
       }
       organism?: { infraspecific_names?: Record<string, string> }
       annotation_info?: AnnotationInfo
-    }>
+    }[]
     downloaded_at?: number
   }>(ncbiPath)
   if (!raw?.reports?.[0]) {

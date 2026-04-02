@@ -4,19 +4,13 @@ import zlib from 'zlib'
 import { getColNames } from './utils/getColNames.ts'
 import { parseTableLine } from './utils/parseTableLine.ts'
 
-/**
- * Parses a buffer line by line and applies a callback function.
- * Handles multi-line entries that are split by a backslash.
- * @param buffer The Uint8Array buffer to parse.
- * @param cb The callback function to apply to each line.
- */
 function parseLineByLine(buffer: Uint8Array, cb: (line: string) => void) {
   let blockStart = 0
   const decoder = new TextDecoder('utf8')
   let currentLine = ''
 
   while (blockStart < buffer.length) {
-    const newlineIndex = buffer.indexOf(10, blockStart) // Find newline character (LF)
+    const newlineIndex = buffer.indexOf(10, blockStart) // newline (LF)
     const lineEnd = newlineIndex === -1 ? buffer.length : newlineIndex
     const lineBuffer = buffer.slice(blockStart, lineEnd)
     blockStart = lineEnd + 1
@@ -24,25 +18,19 @@ function parseLineByLine(buffer: Uint8Array, cb: (line: string) => void) {
     const decodedLine = decoder.decode(lineBuffer).trim()
 
     if (decodedLine.endsWith('\\')) {
-      // If line ends with a backslash, it's a continuation
-      currentLine += decodedLine.slice(0, -1) + ' ' // Remove backslash and add space
+      // continuation line
+      currentLine += decodedLine.slice(0, -1) + ' '
     } else {
-      // Process the complete line
       cb((currentLine + decodedLine).replace(/\r/g, '\\r'))
-      currentLine = '' // Reset for next line
+      currentLine = ''
     }
   }
-  // Process any remaining content in currentLine after loop finishes
+  // Process any remaining content after loop finishes
   if (currentLine) {
     cb(currentLine.replace(/\r/g, '\\r'))
   }
 }
 
-/**
- * Generates a BED12-like output from a SQL schema file and a gzipped text file.
- * @param sqlFilePath The path to the SQL schema file.
- * @param txtGzFilePath The path to the gzipped text file.
- */
 function generateBed12(sqlFilePath: string, txtGzFilePath: string) {
   const cols = getColNames(fs.readFileSync(sqlFilePath, 'utf8'))
   const gzippedContent = fs.readFileSync(txtGzFilePath)
@@ -65,20 +53,15 @@ function generateBed12(sqlFilePath: string, txtGzFilePath: string) {
 
     const starts = exonStarts
       ?.split(',')
-      .filter(f => !!f)
+      .filter(Boolean)
       .map(r => +r - +txStart!)
 
     const ends = exonEnds
       ?.split(',')
-      .filter(f => !!f)
+      .filter(Boolean)
       .map(r => +r - +txStart!)
 
-    const sizes: number[] = []
-    if (starts && ends) {
-      for (let i = 0; i < starts.length; i++) {
-        sizes.push(ends[i]! - starts[i]!)
-      }
-    }
+    const sizes = starts && ends ? starts.map((s, i) => ends[i]! - s) : []
 
     process.stdout.write(
       [

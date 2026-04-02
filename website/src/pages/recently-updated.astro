@@ -4,7 +4,7 @@ import Container from '../components/Container.astro'
 import '../styles/common-table.css'
 import { format } from 'date-fns'
 
-// Import the recently updated data
+// Import the recently updated data (generated at build time)
 import recentlyUpdated from '../recentlyUpdated.json'
 
 interface HubEntry {
@@ -190,11 +190,22 @@ function formatDate(isoString: string): string {
 <script>
   import { format } from 'date-fns'
 
+  interface HubEntry {
+    accession: string
+    createdDate: string
+    scientificName: string
+    commonName: string
+    source: string
+    jbrowseLink: string
+    ncbiLink: string
+    ucscBrowserLink: string
+  }
+
   function formatDate(isoString: string): string {
     return format(new Date(isoString), 'MMM d, yyyy')
   }
 
-  function buildLinks(hub: any): string {
+  function buildLinks(hub: HubEntry): string {
     const links: string[] = []
     if (hub.jbrowseLink) {
       links.push(
@@ -214,7 +225,7 @@ function formatDate(isoString: string): string {
     return links.join(' | ')
   }
 
-  function renderTable(data: any[]) {
+  function renderTable(data: HubEntry[]) {
     const tbody = document.getElementById('table-body')
     if (!tbody) return
 
@@ -258,7 +269,9 @@ function formatDate(isoString: string): string {
 
   const select = document.getElementById('source-filter') as HTMLSelectElement
   const countDisplay = document.getElementById('count-display')
-  const dataBySource = (window as any).__DATA_BY_SOURCE__
+  const dataBySource = (
+    window as unknown as { __DATA_BY_SOURCE__: Record<string, HubEntry[]> }
+  ).__DATA_BY_SOURCE__
 
   // Initialize from URL on page load
   const params = new URLSearchParams(window.location.search)

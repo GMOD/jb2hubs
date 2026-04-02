@@ -5,12 +5,6 @@ import zlib from 'zlib'
 import { getColNames } from './utils/getColNames.ts'
 import { parseTableLine } from './utils/parseTableLine.ts'
 
-/**
- * Processes a SQL schema file and a gzipped text file to generate a BED-like output
- * for VCF-like data (specifically gene prediction tracks with exon information).
- * @param sqlFilePath The path to the SQL schema file.
- * @param txtGzFilePath The path to the gzipped text file containing VCF-like data.
- */
 async function processVcfLikeData(sqlFilePath: string, txtGzFilePath: string) {
   const sqlContent = fs.readFileSync(sqlFilePath, 'utf8')
   const { colNames } = getColNames(sqlContent)
@@ -33,21 +27,16 @@ async function processVcfLikeData(sqlFilePath: string, txtGzFilePath: string) {
       exonEnds,
     } = parseTableLine(line, colNames)
 
-    const sizes: number[] = []
     const starts = exonStarts
       ?.split(',')
-      .filter(f => !!f)
+      .filter(Boolean)
       .map(r => +r - +txStart!)
     const ends = exonEnds
       ?.split(',')
-      .filter(f => !!f)
+      .filter(Boolean)
       .map(r => +r - +txStart!)
 
-    if (starts && ends) {
-      for (let i = 0; i < starts.length; i++) {
-        sizes.push(ends[i]! - starts[i]!)
-      }
-    }
+    const sizes = starts && ends ? starts.map((s, i) => ends[i]! - s) : []
 
     process.stdout.write(
       [

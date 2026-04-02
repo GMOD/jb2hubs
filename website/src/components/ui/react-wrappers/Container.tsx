@@ -1,9 +1,7 @@
 import React from 'react'
 
-interface ContainerProps {
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
-  className?: string
-  [key: string]: any // To allow for ...props
 }
 
 export default function Container({

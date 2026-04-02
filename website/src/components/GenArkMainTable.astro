@@ -1,6 +1,5 @@
 ---
 import { hubCategories } from 'hubtools'
-import a from './ui/a.astro'
 ---
 
 <table>
@@ -15,7 +14,7 @@ import a from './ui/a.astro'
       hubCategories
         .filter(f => f.tag === 'main')
         .map(elt => (
-          <tr key={elt.id}>
+          <tr>
             <td>
               <a href={`/hubs/${elt.id}`}>{elt.id}</a>
             </td>

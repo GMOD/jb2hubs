@@ -1,9 +1,8 @@
 import React from 'react'
 
-interface StyledLinkProps {
+interface StyledLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string
   children: React.ReactNode
-  [key: string]: any // To allow for ...props
 }
 
 export default function StyledLink({

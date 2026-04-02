@@ -60,7 +60,7 @@ export default function SyntenySelector({
     return syntenyTracks.filter(track =>
       track.assemblyNames.every(name => {
         const info = assemblyInfo[name]
-        if (info.source === 'legacy') {
+        if (!info || info.source === 'legacy') {
           return false
         }
         if (info.source === 'ucsc' && !showUcsc) {
@@ -100,9 +100,9 @@ export default function SyntenySelector({
         const info = assemblyInfo[id]
         return {
           id,
-          displayName: info.commonName ?? id,
-          scientificName: info.scientificName ?? '',
-          source: info.source,
+          displayName: info?.commonName ?? id,
+          scientificName: info?.scientificName ?? '',
+          source: info?.source ?? 'legacy',
         }
       })
       .sort((a, b) => a.displayName.localeCompare(b.displayName))
@@ -120,9 +120,9 @@ export default function SyntenySelector({
         const info = assemblyInfo[id]
         return {
           id,
-          displayName: info.commonName ?? id,
-          scientificName: info.scientificName ?? '',
-          source: info.source,
+          displayName: info?.commonName ?? id,
+          scientificName: info?.scientificName ?? '',
+          source: info?.source ?? 'legacy',
         }
       })
       .sort((a, b) => a.displayName.localeCompare(b.displayName))

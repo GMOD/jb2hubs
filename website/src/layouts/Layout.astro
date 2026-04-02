@@ -1,8 +1,12 @@
 ---
-import type { Props } from '@astrojs/starlight/props'
-
 import Header from '../components/Header.astro'
 import '../styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+  frontmatter?: { title?: string; description?: string }
+}
 
 const { frontmatter, title, description } = Astro.props
 const pageTitle = title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'
@@ -18,7 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
     ></script>
-    <script>
+    <script is:inline>
       window.dataLayer = window.dataLayer || []
       function gtag() {
         dataLayer.push(arguments)

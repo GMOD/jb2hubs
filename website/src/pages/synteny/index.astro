@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import SyntenySelector from '../../components/SyntenySelector.tsx'
+import type { AssemblyInfo } from '../../components/SyntenySelector.tsx'
 import syntenyData from '../../syntenyTracks.json'
 import '../../styles/common-table.css'
 ---
@@ -17,7 +18,7 @@ import '../../styles/common-table.css'
     <SyntenySelector
       client:load
       syntenyTracks={syntenyData.tracks}
-      assemblyInfo={syntenyData.assemblyInfo}
+      assemblyInfo={syntenyData.assemblyInfo as Record<string, AssemblyInfo>}
     />
 
     <p><a href="/synteny/info">About synteny tracks &rarr;</a></p>
