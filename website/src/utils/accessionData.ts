@@ -86,7 +86,15 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
   const base = parts[0]!
   const rest = parts[1]!
   const chunks = rest.match(/.{1,3}/g)!
-  const ncbiPath = path.join('hubs', base, chunks[0]!, chunks[1]!, chunks[2]!, accession, 'ncbi.json')
+  const ncbiPath = path.join(
+    'hubs',
+    base,
+    chunks[0]!,
+    chunks[1]!,
+    chunks[2]!,
+    accession,
+    'ncbi.json',
+  )
   const raw = tryAndReadJSON<{
     reports?: {
       assembly_info?: {

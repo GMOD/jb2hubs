@@ -34,14 +34,14 @@ process_assembly() {
 
       if [ -f "${infile}.sql" ]; then
         local hash_file="${outfile}.hash"
-        local current_hash
-        current_hash=$(xxh128sum "${infile}.txt.gz" | awk '{print $1}')
+        local current_stat
+        current_stat=$(stat -c "%Y %s" "${infile}.txt.gz")
 
         local need_processing=true
         if [ -f "${outfile}.bed.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS}" ]; then
-          local stored_hash
-          stored_hash=$(cat "$hash_file")
-          if [ "$current_hash" = "$stored_hash" ]; then
+          local stored_stat
+          stored_stat=$(cat "$hash_file")
+          if [ "$current_stat" = "$stored_stat" ]; then
             need_processing=false
           fi
         fi
@@ -59,7 +59,7 @@ process_assembly() {
           fi
           ./sortIfNeeded.sh "${outfile}.tmp" | bgzip -@2 >"${outfile}.bed.gz"
           tabix -p bed -C "${outfile}.bed.gz"
-          echo "$current_hash" >"$hash_file"
+          echo "$current_stat" >"$hash_file"
           rm -f "${outfile}.tmp"
         fi
       fi
