@@ -59,9 +59,9 @@ for (const entry of fs.readdirSync(resultsDir, { withFileTypes: true })) {
 
   writeJSON(configPath, config)
   fixed++
-  console.log(`Fixed: ${assemblyName}`)
+  console.warn(`Fixed: ${assemblyName}`)
 }
 
-console.log(
+console.warn(
   `\nEnsured text search adapters: ${fixed} fixed, ${skipped} skipped`,
 )

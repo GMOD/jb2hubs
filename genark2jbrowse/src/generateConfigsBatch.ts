@@ -10,7 +10,7 @@ import {
 
 const CONCURRENCY = 16
 
-async function processOne(metaPath: string) {
+function processOne(metaPath: string) {
   const configPath = metaPath.replace('meta.json', 'config.json')
 
   let hubMeta: { hubFileLocation: string }
@@ -70,11 +70,11 @@ console.error(
 let completed = 0
 const total = paths.length
 
-async function worker(queue: string[]) {
+function worker(queue: string[]) {
   while (queue.length > 0) {
     const metaPath = queue.pop()!
     try {
-      await processOne(metaPath)
+      processOne(metaPath)
     } catch (error) {
       console.error(`Failed: ${metaPath}: ${error}`)
     }
@@ -86,6 +86,6 @@ async function worker(queue: string[]) {
 }
 
 const queue = [...paths]
-await Promise.all(Array.from({ length: CONCURRENCY }, () => worker(queue)))
+Array.from({ length: CONCURRENCY }, () => { worker(queue) })
 
 console.error(`Done: ${completed} configs processed`)

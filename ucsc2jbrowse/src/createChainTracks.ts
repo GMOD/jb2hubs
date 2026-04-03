@@ -15,7 +15,7 @@ try {
     '../genark2jbrowse/processedHubJson/all.json',
   )
   for (const entry of allJson) {
-    if (entry?.accession && entry?.commonName) {
+    if (entry.accession && entry.commonName) {
       allJsonIndex.set(entry.accession, entry.commonName)
     }
   }
@@ -30,7 +30,7 @@ try {
     const listJson = readJSON<{
       ucscGenomes: Record<string, { organism?: string }>
     }>(path.join(ucscResultsDir, 'list.json'))
-    Object.assign(ucscListJson, listJson.ucscGenomes ?? {})
+    Object.assign(ucscListJson, listJson.ucscGenomes)
   }
 } catch {
   console.warn('Warning: could not load ucsc list.json')

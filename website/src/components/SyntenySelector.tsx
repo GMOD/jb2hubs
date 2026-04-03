@@ -43,7 +43,7 @@ function SourceIcon({ source }: { source: string }) {
       <img src={favicon} alt={sourceLabels[source]} className="source-icon" />
     )
   }
-  return <span>{sourceTextIcons[source] || ''}</span>
+  return <span>{sourceTextIcons[source] ?? ''}</span>
 }
 
 export default function SyntenySelector({

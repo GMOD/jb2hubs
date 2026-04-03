@@ -111,7 +111,7 @@ function processOne(metaPath: string) {
     scientificName?: string
   }>(metaPath)
   const sourceAccession = meta.accession
-  const sourceCommonName = meta.commonName || meta.scientificName || ''
+  const sourceCommonName = meta.commonName ?? meta.scientificName ?? ''
 
   const chainTracks: ChainTrack[] = []
   for (const pifFile of pifFiles) {

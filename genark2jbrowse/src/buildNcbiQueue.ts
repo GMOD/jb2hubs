@@ -40,7 +40,7 @@ for await (const line of rl) {
     // ignore
   }
 
-  console.log(`${dir}|${id}|${commonName}`)
+  process.stdout.write(`${dir}|${id}|${commonName}\n`)
   queued++
 }
 
