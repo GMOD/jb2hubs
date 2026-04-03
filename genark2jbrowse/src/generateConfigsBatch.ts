@@ -86,6 +86,8 @@ function worker(queue: string[]) {
 }
 
 const queue = [...paths]
-Array.from({ length: CONCURRENCY }, () => { worker(queue) })
+Array.from({ length: CONCURRENCY }, () => {
+  worker(queue)
+})
 
 console.error(`Done: ${completed} configs processed`)
