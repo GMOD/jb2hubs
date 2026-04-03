@@ -260,25 +260,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "ailMel1-index",
-      "ixFilePath": {
-        "uri": "trix/ailMel1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/ailMel1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/ailMel1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["ailMel1"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -308,5 +289,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "ailMel1 Dec. 2009 (BGI-Shenzhen 1.0/ailMel1)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "GL192818.1:558576-566855",
+          "assembly": "ailMel1",
+          "tracks": ["ailMel1-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "ailMel1-index",
+      "ixFilePath": {
+        "uri": "trix/ailMel1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/ailMel1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/ailMel1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["ailMel1"]
+    }
+  ]
 }

@@ -261,5 +261,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "dm6 Aug. 2014 (BDGP Release 6 + ISO1 MT/dm6)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr2L:826,001-851,000",
+          "assembly": "dm6",
+          "tracks": ["dm6-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "dm6-index",
+      "ixFilePath": {
+        "uri": "trix/dm6.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/dm6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/dm6_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["dm6"]
+    }
+  ]
 }

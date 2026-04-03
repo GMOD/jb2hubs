@@ -260,25 +260,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "speTri2-index",
-      "ixFilePath": {
-        "uri": "trix/speTri2.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/speTri2.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/speTri2_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["speTri2"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -308,5 +289,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "speTri2 Nov. 2011 (Broad/speTri2)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "JH393412:896020-902549",
+          "assembly": "speTri2",
+          "tracks": ["speTri2-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "speTri2-index",
+      "ixFilePath": {
+        "uri": "trix/speTri2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/speTri2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/speTri2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["speTri2"]
+    }
+  ]
 }

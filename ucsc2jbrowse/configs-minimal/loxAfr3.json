@@ -260,25 +260,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "loxAfr3-index",
-      "ixFilePath": {
-        "uri": "trix/loxAfr3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/loxAfr3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/loxAfr3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["loxAfr3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -308,5 +289,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "loxAfr3 Jul. 2009 (Broad/loxAfr3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "scaffold_0:64882726-64892725",
+          "assembly": "loxAfr3",
+          "tracks": ["loxAfr3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "loxAfr3-index",
+      "ixFilePath": {
+        "uri": "trix/loxAfr3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/loxAfr3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/loxAfr3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["loxAfr3"]
+    }
+  ]
 }

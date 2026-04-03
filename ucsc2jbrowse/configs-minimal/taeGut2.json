@@ -266,25 +266,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "taeGut2-index",
-      "ixFilePath": {
-        "uri": "trix/taeGut2.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/taeGut2.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/taeGut2_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["taeGut2"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -314,5 +295,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "taeGut2 Feb. 2013 (WashU taeGut324/taeGut2)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chrZ:56283356-56343168",
+          "assembly": "taeGut2",
+          "tracks": ["taeGut2-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "taeGut2-index",
+      "ixFilePath": {
+        "uri": "trix/taeGut2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/taeGut2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/taeGut2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["taeGut2"]
+    }
+  ]
 }

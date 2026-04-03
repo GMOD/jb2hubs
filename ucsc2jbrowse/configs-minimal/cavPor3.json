@@ -260,25 +260,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "cavPor3-index",
-      "ixFilePath": {
-        "uri": "trix/cavPor3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/cavPor3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/cavPor3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["cavPor3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -308,5 +289,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "cavPor3 Feb. 2008 (Broad/cavPor3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "scaffold_15:19047434-19048046",
+          "assembly": "cavPor3",
+          "tracks": ["cavPor3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "cavPor3-index",
+      "ixFilePath": {
+        "uri": "trix/cavPor3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/cavPor3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/cavPor3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["cavPor3"]
+    }
+  ]
 }

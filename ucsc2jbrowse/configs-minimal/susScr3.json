@@ -260,25 +260,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "susScr3-index",
-      "ixFilePath": {
-        "uri": "trix/susScr3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/susScr3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/susScr3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["susScr3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -308,5 +289,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "susScr3 Aug. 2011 (SGSC Sscrofa10.2/susScr3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr18:20905375-20909537",
+          "assembly": "susScr3",
+          "tracks": ["susScr3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "susScr3-index",
+      "ixFilePath": {
+        "uri": "trix/susScr3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/susScr3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/susScr3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["susScr3"]
+    }
+  ]
 }

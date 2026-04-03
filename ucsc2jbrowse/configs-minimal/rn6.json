@@ -267,25 +267,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "rn6-index",
-      "ixFilePath": {
-        "uri": "trix/rn6.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/rn6.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/rn6_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["rn6"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -315,5 +296,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "rn6 Jul. 2014 (RGSC 6.0/rn6)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr1:80608553-80639261",
+          "assembly": "rn6",
+          "tracks": ["rn6-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "rn6-index",
+      "ixFilePath": {
+        "uri": "trix/rn6.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/rn6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/rn6_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["rn6"]
+    }
+  ]
 }

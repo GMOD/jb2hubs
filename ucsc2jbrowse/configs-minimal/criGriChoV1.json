@@ -288,25 +288,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "criGriChoV1-index",
-      "ixFilePath": {
-        "uri": "trix/criGriChoV1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/criGriChoV1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/criGriChoV1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["criGriChoV1"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -336,5 +317,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "criGriChoV1 Aug. 2011 (CHO K1 cell line/criGriChoV1)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "NW_003613923v1:714339-726966",
+          "assembly": "criGriChoV1",
+          "tracks": ["criGriChoV1-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "criGriChoV1-index",
+      "ixFilePath": {
+        "uri": "trix/criGriChoV1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/criGriChoV1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/criGriChoV1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["criGriChoV1"]
+    }
+  ]
 }

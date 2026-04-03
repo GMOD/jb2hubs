@@ -227,25 +227,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "rhiRox1-index",
-      "ixFilePath": {
-        "uri": "trix/rhiRox1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/rhiRox1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/rhiRox1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["rhiRox1"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -275,5 +256,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "rhiRox1 Oct. 2014 (Rrox_v1/rhiRox1)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "KN296311v1:4,926,665-4,968,516",
+          "assembly": "rhiRox1",
+          "tracks": ["rhiRox1-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "rhiRox1-index",
+      "ixFilePath": {
+        "uri": "trix/rhiRox1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/rhiRox1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/rhiRox1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["rhiRox1"]
+    }
+  ]
 }

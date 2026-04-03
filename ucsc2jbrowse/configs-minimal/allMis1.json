@@ -227,25 +227,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "allMis1-index",
-      "ixFilePath": {
-        "uri": "trix/allMis1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/allMis1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/allMis1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["allMis1"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -275,5 +256,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "allMis1 Aug. 2012 (allMis0.2/allMis1)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "JH731472:504271-884586",
+          "assembly": "allMis1",
+          "tracks": ["allMis1-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "allMis1-index",
+      "ixFilePath": {
+        "uri": "trix/allMis1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/allMis1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/allMis1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["allMis1"]
+    }
+  ]
 }

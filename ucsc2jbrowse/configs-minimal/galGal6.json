@@ -269,25 +269,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* and XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "galGal6-index",
-      "ixFilePath": {
-        "uri": "trix/galGal6.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/galGal6.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/galGal6_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["galGal6"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -317,5 +298,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "galGal6 Mar. 2018 (GRCg6a/galGal6)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr4:45667317-45670831",
+          "assembly": "galGal6",
+          "tracks": ["galGal6-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "galGal6-index",
+      "ixFilePath": {
+        "uri": "trix/galGal6.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/galGal6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/galGal6_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["galGal6"]
+    }
+  ]
 }

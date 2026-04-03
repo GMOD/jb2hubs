@@ -236,25 +236,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "canFam6-index",
-      "ixFilePath": {
-        "uri": "trix/canFam6.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/canFam6.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/canFam6_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["canFam6"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -284,5 +265,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "canFam6 Oct. 2020 (Dog10K_Boxer_Tasha/canFam6)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr14:7802540-7807848",
+          "assembly": "canFam6",
+          "tracks": ["canFam6-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "canFam6-index",
+      "ixFilePath": {
+        "uri": "trix/canFam6.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/canFam6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/canFam6_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["canFam6"]
+    }
+  ]
 }

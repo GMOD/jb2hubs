@@ -267,25 +267,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "panTro6-index",
-      "ixFilePath": {
-        "uri": "trix/panTro6.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/panTro6.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/panTro6_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["panTro6"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -315,5 +296,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "panTro6 Jan. 2018 (Clint_PTRv2/panTro6)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr7:111311998-111585728",
+          "assembly": "panTro6",
+          "tracks": ["panTro6-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "panTro6-index",
+      "ixFilePath": {
+        "uri": "trix/panTro6.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/panTro6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/panTro6_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["panTro6"]
+    }
+  ]
 }

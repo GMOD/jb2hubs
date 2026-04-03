@@ -194,25 +194,6 @@
       "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "sacCer3-index",
-      "ixFilePath": {
-        "uri": "trix/sacCer3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/sacCer3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/sacCer3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["sacCer3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -242,5 +223,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "sacCer3 Apr. 2011 (SacCer_Apr2011/sacCer3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chrIV:765966-775965",
+          "assembly": "sacCer3",
+          "tracks": ["sacCer3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "sacCer3-index",
+      "ixFilePath": {
+        "uri": "trix/sacCer3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/sacCer3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/sacCer3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["sacCer3"]
+    }
+  ]
 }

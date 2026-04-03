@@ -227,25 +227,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "micMur2-index",
-      "ixFilePath": {
-        "uri": "trix/micMur2.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/micMur2.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/micMur2_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["micMur2"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -275,5 +256,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "micMur2 May 2015 (Mouse lemur/micMur2)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "KQ058561v1:1733963-1789196",
+          "assembly": "micMur2",
+          "tracks": ["micMur2-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "micMur2-index",
+      "ixFilePath": {
+        "uri": "trix/micMur2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/micMur2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/micMur2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["micMur2"]
+    }
+  ]
 }

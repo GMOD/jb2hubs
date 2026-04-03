@@ -266,25 +266,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "felCat8-index",
-      "ixFilePath": {
-        "uri": "trix/felCat8.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/felCat8.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/felCat8_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["felCat8"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -314,5 +295,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "felCat8 Nov. 2014 (ICGSC Felis_catus_8.0/felCat8)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chrA2:53484451-53597660",
+          "assembly": "felCat8",
+          "tracks": ["felCat8-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "felCat8-index",
+      "ixFilePath": {
+        "uri": "trix/felCat8.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/felCat8.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/felCat8_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["felCat8"]
+    }
+  ]
 }

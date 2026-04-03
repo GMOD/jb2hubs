@@ -227,25 +227,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "thaSir1-index",
-      "ixFilePath": {
-        "uri": "trix/thaSir1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/thaSir1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/thaSir1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["thaSir1"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -275,5 +256,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "thaSir1 Jun. 2015 (Thamnophis_sirtalis-6.0/thaSir1)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "NW_013657986v1:596051-618240",
+          "assembly": "thaSir1",
+          "tracks": ["thaSir1-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "thaSir1-index",
+      "ixFilePath": {
+        "uri": "trix/thaSir1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/thaSir1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/thaSir1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["thaSir1"]
+    }
+  ]
 }

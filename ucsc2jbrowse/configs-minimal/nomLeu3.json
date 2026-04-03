@@ -267,25 +267,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "nomLeu3-index",
-      "ixFilePath": {
-        "uri": "trix/nomLeu3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/nomLeu3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/nomLeu3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["nomLeu3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -315,5 +296,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "nomLeu3 Oct. 2012 (GGSC Nleu3.0/nomLeu3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr21:52408339-52415715",
+          "assembly": "nomLeu3",
+          "tracks": ["nomLeu3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "nomLeu3-index",
+      "ixFilePath": {
+        "uri": "trix/nomLeu3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/nomLeu3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/nomLeu3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["nomLeu3"]
+    }
+  ]
 }

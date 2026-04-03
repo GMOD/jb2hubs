@@ -261,25 +261,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "papAnu2-index",
-      "ixFilePath": {
-        "uri": "trix/papAnu2.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/papAnu2.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/papAnu2_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["papAnu2"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -309,5 +290,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "papAnu2 Mar. 2012 (Baylor Panu_2.0/papAnu2)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr1:110,189,333-110,199,332",
+          "assembly": "papAnu2",
+          "tracks": ["papAnu2-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "papAnu2-index",
+      "ixFilePath": {
+        "uri": "trix/papAnu2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/papAnu2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/papAnu2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["papAnu2"]
+    }
+  ]
 }

@@ -261,25 +261,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "saiBol1-index",
-      "ixFilePath": {
-        "uri": "trix/saiBol1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/saiBol1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/saiBol1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["saiBol1"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -309,5 +290,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "saiBol1 Oct. 2011 (Broad/saiBol1)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "JH378122:1872708-1880068",
+          "assembly": "saiBol1",
+          "tracks": ["saiBol1-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "saiBol1-index",
+      "ixFilePath": {
+        "uri": "trix/saiBol1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/saiBol1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/saiBol1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["saiBol1"]
+    }
+  ]
 }

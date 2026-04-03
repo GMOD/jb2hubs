@@ -226,25 +226,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "ponAbe3-index",
-      "ixFilePath": {
-        "uri": "trix/ponAbe3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/ponAbe3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/ponAbe3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["ponAbe3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -274,5 +255,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "ponAbe3 Jan. 2018 (Susie_PABv2/ponAbe3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chrX:43955314-44095683",
+          "assembly": "ponAbe3",
+          "tracks": ["ponAbe3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "ponAbe3-index",
+      "ixFilePath": {
+        "uri": "trix/ponAbe3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/ponAbe3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/ponAbe3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["ponAbe3"]
+    }
+  ]
 }

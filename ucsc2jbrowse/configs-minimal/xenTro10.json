@@ -261,25 +261,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "xenTro10-index",
-      "ixFilePath": {
-        "uri": "trix/xenTro10.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/xenTro10.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/xenTro10_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["xenTro10"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -309,5 +290,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "xenTro10 Nov. 2019 (UCB_Xtro_10.0/xenTro10)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr9:21842126-21855658",
+          "assembly": "xenTro10",
+          "tracks": ["xenTro10-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "xenTro10-index",
+      "ixFilePath": {
+        "uri": "trix/xenTro10.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/xenTro10.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/xenTro10_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["xenTro10"]
+    }
+  ]
 }

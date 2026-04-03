@@ -235,25 +235,6 @@
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "panPan3-index",
-      "ixFilePath": {
-        "uri": "trix/panPan3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/panPan3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/panPan3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["panPan3"]
-    }
-  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -283,5 +264,48 @@
         "subCategories": true
       }
     }
-  }
+  },
+  "defaultSession": {
+    "name": "panPan3 May 2020 (Mhudiblu_PPA_v0/panPan3)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "chr7:106336524-106733879",
+          "assembly": "panPan3",
+          "tracks": ["panPan3-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "panPan3-index",
+      "ixFilePath": {
+        "uri": "trix/panPan3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/panPan3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/panPan3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["panPan3"]
+    }
+  ]
 }
