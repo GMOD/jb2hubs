@@ -9,7 +9,7 @@ INPUT_FILE="processedHubJson/all.json"
 process_wiki_image() {
   local scientific_name="$1"
   local accession="$2"
-  local hub_dir="$(accession_to_hub_dir "$accession")/"
+  local hub_dir="$(accession_to_hub_dir "$accession")"
 
   if [[ ! -f "$hub_dir/image.json" && ! -f "$hub_dir/image.json.notfound" && "$scientific_name" != "null" ]]; then
     echo "Fetching: $scientific_name ($accession)"

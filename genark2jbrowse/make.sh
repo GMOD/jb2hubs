@@ -224,7 +224,7 @@ if [ "$MODE" = "new" ]; then
       return
     fi
 
-    local hub_dir="$(accession_to_hub_dir "$accession")/"
+    local hub_dir="$(accession_to_hub_dir "$accession")"
 
     if ! jbrowse add-track --force "$gff_file" --out "$hub_dir" --load copy --indexFile "${gff_file}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" >/dev/null; then
       echo "Warning: add-track failed for $accession" >&2

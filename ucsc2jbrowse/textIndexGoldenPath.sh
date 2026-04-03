@@ -31,12 +31,6 @@ process_assembly() {
     return 0
   fi
 
-  # Skip if trix index already exists (and not forcing reprocess)
-  if [ -z "${REPROCESS:-}" ] && find "$assembly_results_dir/trix" -name "*.ix" -maxdepth 1 2>/dev/null | grep -q .; then
-    echo "Skipping text index for $assembly_name (trix already exists)"
-    return 0
-  fi
-
   echo "Creating text index for $assembly_name..."
   if ! jbrowse text-index --out "$assembly_results_dir" --force --tracks "$assembly_name-ncbiRefSeq" --attributes ID,Name,gene_synonym; then
     echo "Warning: text-index failed for $assembly_name" >&2

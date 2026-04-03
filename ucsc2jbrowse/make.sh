@@ -270,6 +270,9 @@ fi
 log "Download and add GENCODE tracks"
 ./downloadGencode.sh
 
+log "Ensuring text search adapters are present for all assemblies with trix files..."
+node src/ensureTextSearchAdapters.ts "$UCSC_BUILT_DIR"
+
 log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
 ./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
 
@@ -303,5 +306,3 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOW
 fi
 
 log "Pipeline finished successfully!"
-
-aws s3 cp defaultFavs.json s3://jbrowse.org/hubs/defaultFavs.json

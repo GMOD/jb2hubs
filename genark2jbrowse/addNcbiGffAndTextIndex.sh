@@ -7,13 +7,17 @@ add_track_and_text_index() {
   local gff_file_path="$1"
   local filename=$(basename "$gff_file_path")
   local accession=$(echo "$filename" | cut -d'_' -f1,2) # e.g., GCF_000896435.1
-  local hub_dir="$(accession_to_hub_dir "$accession")/"
+  local hub_dir="$(accession_to_hub_dir "$accession")"
+  local config_file="$hub_dir/config.json"
+
+  if [ ! -f "$config_file" ]; then
+    echo "Skipping $accession: no config.json at $hub_dir"
+    return 0
+  fi
 
   jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" >/dev/null
   # Check if trix folder exists
   if [ -d "$hub_dir/trix" ] && [ -z "$REDOWNLOAD" ] && [ -z "$REPROCESS" ] && [ -z "$REPROCESS_TRIX" ]; then
-    # Add JSON snippet to config.json using jq
-    local config_file="$hub_dir/config.json"
     local temp_file=$(mktemp)
 
     jq --arg accession "$accession" '. + {
