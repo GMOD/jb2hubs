@@ -4,32 +4,9 @@ source "$(dirname "$0")/common.sh"
 
 echo "Phase 1: Building queue of assemblies that need NCBI metadata..."
 
-# Define function to check if an assembly needs fetching and add to queue
-check_and_queue() {
-  local file="$1"
-  local dir="${file%/meta.json}"
-  local id="${dir##*/}"
-  local ncbi_file="$dir/ncbi.json"
-
-  # Skip if we already have data (unless reprocessing)
-  if [ -f "$ncbi_file" ] && [ -s "$ncbi_file" ] && [ -z "$REPROCESS" ]; then
-    return
-  fi
-
-  # Skip if previously confirmed not found (unless reprocessing)
-  if [ -f "$dir/ncbi.json.notfound" ] && [ -z "$REPROCESS" ]; then
-    return
-  fi
-
-  local common_name=$(jq -r '.commonName // "Unknown"' "$file" 2>/dev/null || echo "Unknown")
-  echo "$dir|$id|$common_name"
-}
-
-export -f check_and_queue
-
-# Build the queue in parallel (fast I/O operations)
+# Build the queue in a single Node process (avoids 50k+ shell/jq spawns)
 QUEUE_FILE=$(mktemp)
-fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS check_and_queue {} > "$QUEUE_FILE"
+fd '^meta\.json$' hubs | node src/buildNcbiQueue.ts > "$QUEUE_FILE"
 
 # Count how many assemblies need fetching
 TOTAL=$(wc -l < "$QUEUE_FILE")
