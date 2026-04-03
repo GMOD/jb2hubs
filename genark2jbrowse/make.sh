@@ -53,7 +53,7 @@ NEW_ACCESSIONS_FILE=$(mktemp)
 NEW_HUB_DATA=$(mktemp)
 
 cleanup() {
-  rm -f "$NEW_HUBS_FILE" "$NEW_ACCESSIONS_FILE" "$NEW_HUB_DATA" 2>/dev/null || true
+  rm -f "$NEW_HUBS_FILE" "$NEW_ACCESSIONS_FILE" "$NEW_HUB_DATA" "${ALL_META_FILE:-}" 2>/dev/null || true
 }
 trap cleanup EXIT
 
@@ -145,11 +145,18 @@ node src/processUcscList.ts
 
 # --- Phase 3: Generate configs ---
 
+# Cache fd results for "all" mode to avoid repeated directory traversals
+if [ "$MODE" != "new" ]; then
+  ALL_META_FILE=$(mktemp)
+  fd '^meta\.json$' hubs > "$ALL_META_FILE"
+  log "Found $(wc -l < "$ALL_META_FILE") hub assemblies"
+fi
+
 log "Generating JBrowse 2 config.json..."
 if [ "$MODE" = "new" ]; then
   node src/generateConfigsBatch.ts < "$NEW_HUBS_FILE"
 else
-  fd '^meta\.json$' hubs | node src/generateConfigsBatch.ts
+  node src/generateConfigsBatch.ts < "$ALL_META_FILE"
 fi
 
 # --- Phase 4: Download and process GFF files ---
@@ -264,14 +271,14 @@ log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
   parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$NEW_HUBS_FILE"
 else
-  fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
+  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$ALL_META_FILE"
 fi
 
 log "Adding chain tracks to configs..."
 if [ "$MODE" = "new" ]; then
   node src/createChainTracksBatch.ts < "$NEW_HUBS_FILE"
 else
-  fd '^meta\.json$' hubs | node src/createChainTracksBatch.ts
+  node src/createChainTracksBatch.ts < "$ALL_META_FILE"
 fi
 
 # --- Phase 6: Wiki images and finishing ---
@@ -289,7 +296,7 @@ log "Enhancing configs with plugins and hierarchical settings..."
 if [ "$MODE" = "new" ]; then
   sed 's/meta.json/config.json/' "$NEW_HUBS_FILE" | node src/enhanceConfigsBatch.ts
 else
-  ./enhanceConfigs.sh
+  sed 's/meta.json/config.json/' "$ALL_META_FILE" | node src/enhanceConfigsBatch.ts
 fi
 
 # --- Phase 7: Mouse strain assemblies ---

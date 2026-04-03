@@ -54,7 +54,6 @@ process_gene_tracks() {
         node src/fixupIsoforms.ts "${outfile}.isoforms.txt"
         ~/bed2gff -t1 --bed "${outfile}.bed" --output "${outfile}.gff" --isoforms "${outfile}.isoforms.txt"
         if [ -f "${infile}Link.sql" ]; then
-          echo node src/enhanceGffWithLinkTable.ts "${outfile}.gff" "${infile}Link.txt.gz" "${infile}Link.sql" >"${outfile}.enhanced.gff"
           node src/enhanceGffWithLinkTable.ts "${outfile}.gff" "${infile}Link.txt.gz" "${infile}Link.sql" >"${outfile}.enhanced.gff"
           jbrowse sort-gff "${outfile}.enhanced.gff" | bgzip >"${outfile}.gff.gz"
         else

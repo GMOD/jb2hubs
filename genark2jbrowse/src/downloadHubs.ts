@@ -107,16 +107,24 @@ async function processHubEntry({
   }
 }
 
-// Iterate over all hub entries and process them
-for (const [idx, entry] of allHubEntries.entries()) {
-  try {
-    await processHubEntry({
-      entry,
-      idx,
-      totalEntries: allHubEntries.length,
-    })
-  } catch (e) {
-    // Log errors for individual entries but continue processing others
-    log(`Error processing entry: ${e}`)
+// Process hub entries with concurrency to avoid sequential 100ms delays
+const CONCURRENCY = 10
+const totalEntries = allHubEntries.length
+const queue = allHubEntries.map((entry, idx) => ({ entry, idx }))
+
+async function worker() {
+  while (queue.length > 0) {
+    const item = queue.pop()!
+    try {
+      await processHubEntry({
+        entry: item.entry,
+        idx: item.idx,
+        totalEntries,
+      })
+    } catch (e) {
+      log(`Error processing entry: ${e}`)
+    }
   }
 }
+
+await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()))
