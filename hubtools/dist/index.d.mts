@@ -37,7 +37,9 @@ declare function enhanceConfig(
 ): void
 //#endregion
 //#region src/generateHubTracks.d.ts
-type Adapter = Record<string, unknown>
+type Adapter = Record<string, unknown> & {
+  type: string
+}
 declare function generateHubTracks({
   trackDb,
   trackDbUrl,
@@ -54,9 +56,9 @@ declare function generateHubTracks({
       type: string
       adapter: {
         type: string
-        uri: URL
-        sequenceAdapter: {
-          [x: string]: unknown
+        uri: string
+        sequenceAdapter: Record<string, unknown> & {
+          type: string
         }
       }
       trackId: string
@@ -75,12 +77,12 @@ declare function generateHubTracks({
       adapter: {
         summaryLocation?:
           | {
-              uri: URL
+              uri: string
             }
           | undefined
         type: string
         bigMafLocation: {
-          uri: URL
+          uri: string
         }
         uri?: undefined
         sequenceAdapter?: undefined
@@ -101,7 +103,7 @@ declare function generateHubTracks({
       adapter: {
         disableGeneHeuristic?: boolean | undefined
         type: string
-        uri: URL
+        uri: string
         sequenceAdapter?: undefined
       }
       trackId: string
@@ -180,9 +182,9 @@ declare function generateJBrowseConfigForAssemblyHub({
         type: string
         adapter: {
           type: string
-          uri: URL
-          sequenceAdapter: {
-            [x: string]: unknown
+          uri: string
+          sequenceAdapter: Record<string, unknown> & {
+            type: string
           }
         }
         trackId: string
@@ -201,12 +203,12 @@ declare function generateJBrowseConfigForAssemblyHub({
         adapter: {
           summaryLocation?:
             | {
-                uri: URL
+                uri: string
               }
             | undefined
           type: string
           bigMafLocation: {
-            uri: URL
+            uri: string
           }
           uri?: undefined
           sequenceAdapter?: undefined
@@ -227,7 +229,7 @@ declare function generateJBrowseConfigForAssemblyHub({
         adapter: {
           disableGeneHeuristic?: boolean | undefined
           type: string
-          uri: URL
+          uri: string
           sequenceAdapter?: undefined
         }
         trackId: string
@@ -300,9 +302,9 @@ declare function generateJBrowseConfigsForMultiGenomeHub(
             type: string
             adapter: {
               type: string
-              uri: URL
-              sequenceAdapter: {
-                [x: string]: unknown
+              uri: string
+              sequenceAdapter: Record<string, unknown> & {
+                type: string
               }
             }
             trackId: string
@@ -321,12 +323,12 @@ declare function generateJBrowseConfigsForMultiGenomeHub(
             adapter: {
               summaryLocation?:
                 | {
-                    uri: URL
+                    uri: string
                   }
                 | undefined
               type: string
               bigMafLocation: {
-                uri: URL
+                uri: string
               }
               uri?: undefined
               sequenceAdapter?: undefined
@@ -347,7 +349,7 @@ declare function generateJBrowseConfigsForMultiGenomeHub(
             adapter: {
               disableGeneHeuristic?: boolean | undefined
               type: string
-              uri: URL
+              uri: string
               sequenceAdapter?: undefined
             }
             trackId: string
@@ -447,6 +449,7 @@ interface NCBIDatasetsReport {
 interface NCBIDatasetsResponse {
   reports: NCBIDatasetsReport[]
   total_count: number
+  downloaded_at?: number
 }
 //#endregion
 //#region src/parseAssemblyEntry.d.ts
@@ -541,32 +544,9 @@ declare function makeLoc2(
   uri: string | undefined
   locationType: string
 }
-/**
- * Reads a JSON file synchronously and parses its content.
- * @param filePath The path to the JSON file.
- * @returns The parsed JSON object.
- */
 declare function readJSON<T = unknown>(filePath: string): T
-/**
- * Reads a JSON file asynchronously and parses its content.
- * @param filePath The path to the JSON file.
- * @returns A promise that resolves to the parsed JSON object.
- */
 declare function readJSONAsync<T = unknown>(filePath: string): Promise<T>
-/**
- * Writes a JavaScript object to a JSON file.
- * @param filePath The path to the output JSON file.
- * @param data The data to write.
- */
 declare function writeJSON(filePath: string, data: unknown): void
-declare function myjsonfetch(url: string): Promise<unknown>
-/**
- * Splits a string on the first occurrence of a separator.
- * @param str The string to split.
- * @param sep The separator string.
- * @returns A tuple containing the part before the separator and the part after.
- *          If the separator is not found, the second element will be an empty string.
- */
 declare function splitOnFirst(str: string, sep: string): [string, string]
 /**
  * Replaces specific relative links in a string with absolute UCSC genome links.
@@ -581,13 +561,6 @@ declare function replaceLink(htmlContent: string): string
  * @returns The decoded URI component, or the original URI if decoding fails.
  */
 declare function decodeURIComponentNoThrow(uri: string): string
-/**
- * Validates that a required CLI argument is provided.
- * Exits with code 1 if the argument is missing.
- * @param arg The argument value to check.
- * @param usage The usage message to display if validation fails.
- * @returns The validated argument (non-null).
- */
 declare function requireArg(arg: string | undefined, usage: string): string
 //#endregion
 export {
@@ -608,7 +581,6 @@ export {
   myfetch,
   myfetchjson,
   myfetchtext,
-  myjsonfetch,
   notEmpty,
   parseAssemblyEntry,
   readJSON,

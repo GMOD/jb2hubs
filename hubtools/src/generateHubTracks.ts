@@ -1,6 +1,10 @@
 import { createTrackConfiguration } from './createTrackConfiguration.ts'
 import { notEmpty } from './notEmpty.ts'
-import { isChainNetTrack, isMetaTrack } from './trackUtils.ts'
+import {
+  extractParentTracks,
+  isChainNetTrack,
+  isMetaTrack,
+} from './trackUtils.ts'
 
 import type { TrackDbFile } from '@gmod/ucsc-hub'
 
@@ -18,17 +22,22 @@ export function generateHubTracks({
   sequenceAdapter: Adapter
 }) {
   return Object.entries(trackDb.data)
-    .map(([trackName, track]) =>
-      isMetaTrack(track) || isChainNetTrack(track)
-        ? undefined
-        : createTrackConfiguration({
-            track,
-            trackName,
-            trackDb,
-            trackDbUrl,
-            sequenceAdapter,
-            assemblyName,
-          }),
-    )
+    .map(([trackName, track]) => {
+      if (isMetaTrack(track) || isChainNetTrack(track)) {
+        return undefined
+      }
+      const parents = extractParentTracks(trackName, trackDb)
+      if (parents.some(p => isChainNetTrack(p))) {
+        return undefined
+      }
+      return createTrackConfiguration({
+        track,
+        trackName,
+        trackDb,
+        trackDbUrl,
+        sequenceAdapter,
+        assemblyName,
+      })
+    })
     .filter(notEmpty)
 }

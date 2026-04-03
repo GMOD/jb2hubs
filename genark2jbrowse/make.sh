@@ -149,7 +149,7 @@ log "Generating JBrowse 2 config.json..."
 if [ "$MODE" = "new" ]; then
   parallel $PARALLEL_OPTS node src/generateConfigs.ts {} < "$NEW_HUBS_FILE"
 else
-  fd meta.json hubs | parallel $PARALLEL_OPTS node src/generateConfigs.ts {}
+  fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS node src/generateConfigs.ts {}
 fi
 
 # --- Phase 4: Download and process GFF files ---
@@ -264,14 +264,14 @@ log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
   parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$NEW_HUBS_FILE"
 else
-  fd meta.json hubs | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
+  fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
 fi
 
 log "Adding chain tracks to configs..."
 if [ "$MODE" = "new" ]; then
   parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}' < "$NEW_HUBS_FILE"
 else
-  fd meta.json hubs | parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}'
+  fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}'
 fi
 
 # --- Phase 6: Wiki images and finishing ---

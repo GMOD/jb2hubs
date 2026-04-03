@@ -1,0 +1,158 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import hprcSamples from '../../hprcSamples.json'
+import '../../styles/common-table.css'
+
+const pangenomeGraphs = [
+  {
+    name: 'Minigraph-Cactus v1.1',
+    description:
+      'Base-level pangenome graph (recommended). Covers non-centromeric regions. Suitable for short- and long-read mapping.',
+    refs: [
+      {
+        ref: 'GRCh38',
+        vcf: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.vcfbub.a100k.wave.vcf.gz',
+        gbz: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.gbz',
+      },
+      {
+        ref: 'CHM13',
+        vcf: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-chm13/hprc-v1.1-mc-chm13.vcfbub.a100k.wave.vcf.gz',
+        gbz: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-chm13/hprc-v1.1-mc-chm13.gbz',
+      },
+    ],
+  },
+  {
+    name: 'Minigraph v1.0',
+    description:
+      'Reference-based graph capturing structural variants >50nt. Fastest for long-read mapping.',
+    refs: [
+      {
+        ref: 'GRCh38',
+        vcf: null,
+        gbz: null,
+        gfa: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph/hprc-v1.0-minigraph-grch38.gfa.gz',
+      },
+      {
+        ref: 'CHM13',
+        vcf: null,
+        gbz: null,
+        gfa: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph/hprc-v1.0-minigraph-chm13.gfa.gz',
+      },
+    ],
+  },
+  {
+    name: 'PGGB v1.0',
+    description:
+      'All-vs-all symmetric graph including centromeric and mitochondrial regions. Most comprehensive coverage.',
+    refs: [
+      {
+        ref: 'GRCh38',
+        vcf: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/pggb/vcfs/hprc-v1.0-pggb.grch38.vcfbub.a100k.wave.vcf.gz',
+        gbz: null,
+        gfa: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/pggb/hprc-v1.0-pggb.gfa.gz',
+      },
+    ],
+  },
+]
+---
+
+<Layout title="HPRC Assemblies">
+  <Container>
+    <h1>Human Pangenome Reference Consortium</h1>
+    <p>
+      The <a href="https://humanpangenome.org/"
+        >Human Pangenome Reference Consortium (HPRC)</a
+      > released a draft human pangenome reference built from 47 diploid assemblies
+      representing diverse human populations. See the
+      <a href="https://www.nature.com/articles/s41586-023-05896-x"
+        >Nature 2023 paper</a
+      > and the <a
+        href="https://github.com/human-pangenomics/hpp_pangenome_resources"
+        >pangenome resources repository</a
+      > for full details.
+    </p>
+    <p>
+      This portal lists the 232 individual sample assemblies (464 haplotypes
+      total) available in JBrowse. See <a href="/hubs/HPRC"
+        >the full GenArk HPRC listing</a
+      > for a searchable table of all assemblies.
+    </p>
+
+    <h2>Pangenome Graphs</h2>
+    <p>
+      Three pangenome graph strategies were applied to the Year 1 assemblies.
+      The graphs are available as GFA, GBZ, and decomposed VCF files hosted on
+      AWS S3 (<a
+        href="https://github.com/human-pangenomics/hpp_pangenome_resources"
+        >full file listing</a
+      >).
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Graph</th>
+          <th>Reference</th>
+          <th>VCF</th>
+          <th>GBZ</th>
+          <th>GFA</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          pangenomeGraphs.flatMap(g =>
+            g.refs.map(r => (
+              <tr>
+                <td>{g.name}</td>
+                <td>{r.ref}</td>
+                <td>{r.vcf ? <a href={r.vcf}>VCF</a> : '—'}</td>
+                <td>{'gbz' in r && r.gbz ? <a href={r.gbz}>GBZ</a> : '—'}</td>
+                <td>{'gfa' in r && r.gfa ? <a href={r.gfa}>GFA</a> : '—'}</td>
+              </tr>
+            )),
+          )
+        }
+      </tbody>
+    </table>
+
+    <h2>Individual Sample Assemblies</h2>
+    <p>
+      232 samples with phased diploid assemblies (haplotype 1 and haplotype 2).
+      Assemblies are from the UCSC Genomics Institute via the UCSC GenArk hub.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Sample</th>
+          <th>Year</th>
+          <th>Haplotype 1</th>
+          <th>Haplotype 2</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          hprcSamples.map(s => (
+            <tr>
+              <td>{s.sampleId}</td>
+              <td>{s.hap1?.year ?? s.hap2?.year ?? ''}</td>
+              <td>
+                {s.hap1 ? (
+                  <a href={s.hap1.jbrowseLink}>{s.hap1.accession}</a>
+                ) : (
+                  '—'
+                )}
+              </td>
+              <td>
+                {s.hap2 ? (
+                  <a href={s.hap2.jbrowseLink}>{s.hap2.accession}</a>
+                ) : (
+                  '—'
+                )}
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </Container>
+</Layout>

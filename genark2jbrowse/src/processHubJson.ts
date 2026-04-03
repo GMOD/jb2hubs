@@ -44,21 +44,6 @@ function processHubJsonFiles() {
     .filter(f => f.endsWith('.json'))
     .map(f => path.join('hubJson', f))
 
-  // Sort files to process main categories first
-  hubJsonFiles.sort((a, b) => {
-    const catA = path.basename(a, '.json')
-    const catB = path.basename(b, '.json')
-    const aIsMain = mainCategories.has(catA)
-    const bIsMain = mainCategories.has(catB)
-    if (aIsMain && !bIsMain) {
-      return -1
-    }
-    if (!aIsMain && bIsMain) {
-      return 1
-    }
-    return 0
-  })
-
   // Ensure the output directory exists
   fs.mkdirSync('processedHubJson', { recursive: true })
 

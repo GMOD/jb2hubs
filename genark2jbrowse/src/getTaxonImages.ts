@@ -2,7 +2,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { processSpeciesName } from './util.ts'
+import { fetchWikipediaImage } from './util.ts'
 // Centralized taxon-level image fetcher.
 //
 // Images are a property of a taxon, not an individual assembly accession.
@@ -126,76 +126,6 @@ LIMIT ${SPARQL_BATCH_SIZE} OFFSET ${offset}
   }
   console.log(`Cached ${allResults.length} species to ${WIKIDATA_CACHE_PATH}`)
   return allResults
-}
-
-// ---------------------------------------------------------------------------
-// Wikipedia helpers
-// ---------------------------------------------------------------------------
-
-async function getWikipediaMainImage(
-  pageTitle: string,
-  lang = 'en',
-): Promise<{ imageUrl: string; pageUrl: string } | undefined> {
-  const apiUrl = `https://${lang}.wikipedia.org/w/api.php`
-  const params = {
-    action: 'query',
-    titles: pageTitle,
-    prop: 'pageimages',
-    pithumbsize: '500',
-    format: 'json',
-    redirects: '1',
-  }
-  const queryString = new URLSearchParams(params as any).toString()
-  const url = `${apiUrl}?${queryString}`
-
-  const response = await fetch(url)
-  if (!response.ok) {
-    return undefined
-  }
-
-  const data = await response.json()
-  const pages = data.query?.pages
-  if (!pages) {
-    return undefined
-  }
-
-  const pageId = Object.keys(pages)[0]!
-  const page = pages[pageId]
-
-  if (pageId === '-1' || !page.thumbnail) {
-    return undefined
-  }
-
-  return {
-    imageUrl: page.thumbnail.source,
-    pageUrl: `https://wikipedia.org/wiki/${pageTitle}`,
-  }
-}
-
-async function fetchWikipediaImage(
-  scientificName: string,
-): Promise<{ imageUrl: string; pageUrl: string } | undefined> {
-  // Applied twice: removing one suffix can expose another (e.g. "sp. ATCC 123" → "sp." → "")
-  const processed = processSpeciesName(processSpeciesName(scientificName))
-
-  const result = await getWikipediaMainImage(processed)
-  if (result) {
-    return result
-  }
-
-  // Fallback: deduplicate trailing word (e.g. "Homo Homo" -> "Homo")
-  if (processed.split(' ').length > 2) {
-    const words = processed.split(' ')
-    if (
-      words.length >= 2 &&
-      words[words.length - 1] === words[words.length - 2]
-    ) {
-      const dedup = words.slice(0, -1).join(' ')
-      return getWikipediaMainImage(dedup)
-    }
-  }
-
-  return undefined
 }
 
 // ---------------------------------------------------------------------------

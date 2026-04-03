@@ -36,7 +36,7 @@ process_gene_tracks() {
 
       local hash_file="${outfile}.hash"
       local current_stat
-      current_stat=$(stat -c "%Y %s" "${infile}.txt.gz")
+      current_stat=$(stat -c "%s" "${infile}.txt.gz")
 
       local need_processing=true
       if [ -f "${outfile}.gff.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS}" ]; then
@@ -94,4 +94,4 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-parallel -j 24 $PARALLEL_OPTS --will-cite process_assembly ::: "$@"
+parallel $PARALLEL_OPTS --will-cite process_assembly ::: "$@"

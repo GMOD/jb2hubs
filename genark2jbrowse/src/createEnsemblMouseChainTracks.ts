@@ -107,8 +107,8 @@ for (const [acc, strainName] of Object.entries(STRAIN_NAMES)) {
       assemblyNames: [acc, 'mm39'],
       adapter: {
         type: 'PairwiseIndexedPAFAdapter',
-        queryAssembly: acc,
-        targetAssembly: 'mm39',
+        targetAssembly: acc,
+        queryAssembly: 'mm39',
         pifGzLocation: { uri: `liftOver/${pifFile}` },
         index: {
           location: { uri: `liftOver/${pifFile}.csi` },

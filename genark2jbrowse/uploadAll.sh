@@ -20,7 +20,6 @@ echo ""
 echo "[1/3] Syncing hubs (using cached MD5 hashes via rclone hasher)..."
 rclone sync -c -v \
   --exclude "*.hash" \
-  --exclude "*.xxh" \
   --exclude "*meta.json" \
   --exclude "*ncbi.json" \
   --exclude "*.notfound" \

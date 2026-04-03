@@ -7,7 +7,6 @@ import {
   TrackDbFile,
 } from '@gmod/ucsc-hub'
 import path from 'path'
-
 //#region src/const.ts
 const categoryMap = {
   map: 'Mapping and Sequencing',
@@ -25,7 +24,6 @@ const categoryMap = {
   singleCell: 'Single cell',
   hprc: 'Human Pangenome',
 }
-
 //#endregion
 //#region src/dedupe.ts
 function dedupe(list, hasher = JSON.stringify) {
@@ -40,7 +38,6 @@ function dedupe(list, hasher = JSON.stringify) {
   }
   return clone
 }
-
 //#endregion
 //#region src/util.ts
 function resolve(uri, baseUri) {
@@ -77,42 +74,15 @@ function makeLoc2(first, alt) {
         locationType: 'UriLocation',
       }
 }
-/**
- * Reads a JSON file synchronously and parses its content.
- * @param filePath The path to the JSON file.
- * @returns The parsed JSON object.
- */
 function readJSON(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
-/**
- * Reads a JSON file asynchronously and parses its content.
- * @param filePath The path to the JSON file.
- * @returns A promise that resolves to the parsed JSON object.
- */
 async function readJSONAsync(filePath) {
   return JSON.parse(await readFile(filePath, 'utf8'))
 }
-/**
- * Writes a JavaScript object to a JSON file.
- * @param filePath The path to the output JSON file.
- * @param data The data to write.
- */
 function writeJSON(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, void 0, 2))
 }
-async function myjsonfetch(url) {
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`)
-  return res.json()
-}
-/**
- * Splits a string on the first occurrence of a separator.
- * @param str The string to split.
- * @param sep The separator string.
- * @returns A tuple containing the part before the separator and the part after.
- *          If the separator is not found, the second element will be an empty string.
- */
 function splitOnFirst(str, sep) {
   const index = str.indexOf(sep)
   return index < 0
@@ -144,13 +114,6 @@ function decodeURIComponentNoThrow(uri) {
     return uri
   }
 }
-/**
- * Validates that a required CLI argument is provided.
- * Exits with code 1 if the argument is missing.
- * @param arg The argument value to check.
- * @param usage The usage message to display if validation fails.
- * @returns The validated argument (non-null).
- */
 function requireArg(arg, usage) {
   if (!arg) {
     console.error(usage)
@@ -158,7 +121,6 @@ function requireArg(arg, usage) {
   }
   return arg
 }
-
 //#endregion
 //#region src/enhanceConfig.ts
 const defaultPlugins = [
@@ -203,23 +165,17 @@ function enhanceConfig(configPath, plugins = defaultPlugins) {
   }
   writeJSON(configPath, config)
 }
-
 //#endregion
 //#region src/trackUtils.ts
 function createHtmlLink(html, trackDbUrl) {
   return `<a href="${resolve(html, trackDbUrl)}">${html}</a>`
 }
 function extractParentTracks(trackName, trackDb) {
-  const parentTracks = []
-  let currentTrackName = trackName
-  do {
-    currentTrackName = trackDb.data[currentTrackName]?.data.parent ?? ''
-    if (currentTrackName) {
-      currentTrackName = currentTrackName.split(' ')[0]
-      parentTracks.push(trackDb.data[currentTrackName])
-    }
-  } while (currentTrackName)
-  return parentTracks.reverse()
+  const parentName =
+    (trackDb.data[trackName]?.data.parent ?? '').split(' ')[0] ?? ''
+  return parentName
+    ? [...extractParentTracks(parentName, trackDb), trackDb.data[parentName]]
+    : []
 }
 function isMetaTrack(obj) {
   const parentTrackKeys = new Set([
@@ -231,12 +187,88 @@ function isMetaTrack(obj) {
   return Object.keys(obj.data).some(key => parentTrackKeys.has(key))
 }
 function isChainNetTrack(obj) {
-  const { shortLabel, longLabel } = obj.data
-  return shortLabel?.includes('Chain/Net') || longLabel?.includes('Chain/Net')
+  const { shortLabel, longLabel, type } = obj.data
+  return (
+    (shortLabel?.includes('Chain/Net') ?? false) ||
+    (longLabel?.includes('Chain/Net') ?? false) ||
+    (type?.startsWith('bigChain') ?? false)
+  )
 }
-
 //#endregion
 //#region src/createTrackConfiguration.ts
+function makeAdapterConf(
+  baseTrackType,
+  uri,
+  sequenceAdapter,
+  data,
+  trackDbUrl,
+) {
+  if (baseTrackType === 'bam')
+    return {
+      type: 'AlignmentsTrack',
+      adapter: {
+        type: 'BamAdapter',
+        uri,
+      },
+    }
+  else if (baseTrackType === 'cram')
+    return {
+      type: 'AlignmentsTrack',
+      adapter: {
+        type: 'CramAdapter',
+        uri,
+        sequenceAdapter,
+      },
+    }
+  else if (baseTrackType === 'bigWig')
+    return {
+      type: 'QuantitativeTrack',
+      adapter: {
+        type: 'BigWigAdapter',
+        uri,
+      },
+    }
+  else if (baseTrackType === 'bigMaf') {
+    const summaryUri = data.summary
+      ? new URL(data.summary, trackDbUrl).href
+      : void 0
+    return {
+      type: 'MafTrack',
+      adapter: {
+        type: 'BigMafAdapter',
+        bigMafLocation: { uri },
+        ...(summaryUri ? { summaryLocation: { uri: summaryUri } } : {}),
+      },
+    }
+  } else if (baseTrackType.startsWith('big')) {
+    const trackName = data.track ?? ''
+    return {
+      type: 'FeatureTrack',
+      adapter: {
+        type: 'BigBedAdapter',
+        uri,
+        ...(trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
+          ? { disableGeneHeuristic: true }
+          : {}),
+      },
+    }
+  } else if (baseTrackType === 'vcfTabix')
+    return {
+      type: 'VariantTrack',
+      adapter: {
+        type: 'VcfTabixAdapter',
+        uri,
+      },
+    }
+  else if (baseTrackType === 'hic')
+    return {
+      type: 'HicTrack',
+      adapter: {
+        type: 'HicAdapter',
+        uri,
+      },
+    }
+}
 function createTrackConfiguration({
   track,
   trackName,
@@ -271,7 +303,9 @@ function createTrackConfiguration({
         ...conf,
         name: [
           ...new Set([
-            ...parentTracks.map(p => trackDb.data[p.name]?.data.shortLabel),
+            ...parentTracks
+              .map(p => trackDb.data[p.name]?.data.shortLabel)
+              .filter(s => s !== void 0),
             conf.name,
           ]),
         ].join(' - '),
@@ -286,112 +320,39 @@ function makeTrackConfig({
   assemblyName,
 }) {
   const { data } = track
+  const parent = data.parent ?? ''
   const bigDataUrlPre = data.bigDataUrl ?? ''
+  if (data.bigDataIndex ?? '') throw new Error("Don't yet support bigDataIdx")
   const name =
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
-  const conf = makeTrackConfigSub({
-    track,
-    trackDbUrl,
-    trackDb,
+  let baseTrackType =
+    (data.type ?? trackDb.data[parent].data.type ?? '').split(' ')[0] ?? ''
+  if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('cram'))
+    baseTrackType = 'cram'
+  const uri = new URL(bigDataUrlPre, trackDbUrl).href
+  const adapterConf = makeAdapterConf(
+    baseTrackType,
+    uri,
     sequenceAdapter,
-  })
-  return conf
+    data,
+    trackDbUrl,
+  )
+  if (!adapterConf) console.error('Unknown track:', name, baseTrackType)
+  return adapterConf
     ? {
         trackId: `${assemblyName}-${data.track}`,
         description: data.longLabel,
         assemblyNames: [assemblyName],
         name,
-        ...conf,
+        ...adapterConf,
       }
     : void 0
 }
-function makeTrackConfigSub({ track, trackDbUrl, trackDb, sequenceAdapter }) {
-  const { data } = track
-  const parent = data.parent ?? ''
-  const bigDataUrlPre = data.bigDataUrl ?? ''
-  if (data.bigDataIndex ?? '') throw new Error("Don't yet support bigDataIdx")
-  const trackType = data.type ?? trackDb.data[parent].data.type ?? ''
-  const name =
-    (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
-  let baseTrackType = trackType.split(' ')[0] ?? ''
-  if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('cram'))
-    baseTrackType = 'cram'
-  const bigDataUrl = new URL(bigDataUrlPre, trackDbUrl)
-  if (baseTrackType === 'bam')
-    return {
-      type: 'AlignmentsTrack',
-      adapter: {
-        type: 'BamAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  else if (baseTrackType === 'cram')
-    return {
-      type: 'AlignmentsTrack',
-      adapter: {
-        type: 'CramAdapter',
-        uri: bigDataUrl,
-        sequenceAdapter,
-      },
-    }
-  else if (baseTrackType === 'bigWig')
-    return {
-      type: 'QuantitativeTrack',
-      adapter: {
-        type: 'BigWigAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  else if (baseTrackType === 'bigMaf') {
-    const summaryUrl = data.summary ? new URL(data.summary, trackDbUrl) : void 0
-    return {
-      type: 'MafTrack',
-      adapter: {
-        type: 'BigMafAdapter',
-        bigMafLocation: { uri: bigDataUrl },
-        ...(summaryUrl ? { summaryLocation: { uri: summaryUrl } } : {}),
-      },
-    }
-  } else if (baseTrackType.startsWith('big')) {
-    const trackName = data.track ?? ''
-    return {
-      type: 'FeatureTrack',
-      adapter: {
-        type: 'BigBedAdapter',
-        uri: bigDataUrl,
-        ...(trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
-          ? { disableGeneHeuristic: true }
-          : {}),
-      },
-    }
-  } else if (baseTrackType === 'vcfTabix')
-    return {
-      type: 'VariantTrack',
-      adapter: {
-        type: 'VcfTabixAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  else if (baseTrackType === 'hic')
-    return {
-      type: 'HicTrack',
-      adapter: {
-        type: 'HicAdapter',
-        uri: bigDataUrl,
-      },
-    }
-  else {
-    console.error('Unknown track:', name, baseTrackType)
-    return
-  }
-}
-
 //#endregion
 //#region src/notEmpty.ts
 function notEmpty(value) {
   return value !== null && value !== void 0
 }
-
 //#endregion
 //#region src/generateHubTracks.ts
 function generateHubTracks({
@@ -401,30 +362,29 @@ function generateHubTracks({
   sequenceAdapter,
 }) {
   return Object.entries(trackDb.data)
-    .map(([trackName, track]) =>
-      isMetaTrack(track) || isChainNetTrack(track)
-        ? void 0
-        : createTrackConfiguration({
-            track,
-            trackName,
-            trackDb,
-            trackDbUrl,
-            sequenceAdapter,
-            assemblyName,
-          }),
-    )
-    .filter(f => notEmpty(f))
+    .map(([trackName, track]) => {
+      if (isMetaTrack(track) || isChainNetTrack(track)) return
+      if (extractParentTracks(trackName, trackDb).some(p => isChainNetTrack(p)))
+        return
+      return createTrackConfiguration({
+        track,
+        trackName,
+        trackDb,
+        trackDbUrl,
+        sequenceAdapter,
+        assemblyName,
+      })
+    })
+    .filter(notEmpty)
 }
-
 //#endregion
 //#region src/generateJBrowseConfigForAssemblyHub.ts
-async function hasAliases(url) {
-  let hasAliases = false
+async function isUrlAccessible(url) {
   try {
-    if (!(await fetch(url)).ok) throw new Error('Error fetching chromAlias')
-    hasAliases = true
-  } catch (_e) {}
-  return hasAliases
+    return (await fetch(url)).ok
+  } catch (_e) {
+    return false
+  }
 }
 async function generateJBrowseConfigForAssemblyHub({
   hubFileText,
@@ -463,7 +423,7 @@ async function generateJBrowseConfigForAssemblyHub({
         adapter: sequenceAdapter,
       },
       ...(chromAliasBb &&
-      (await hasAliases(
+      (await isUrlAccessible(
         resolve(chromAliasBb.replace('.bb', '.txt'), trackDbUrl),
       ))
         ? {
@@ -516,7 +476,6 @@ async function generateJBrowseConfigForAssemblyHub({
   }
   throw new Error('not a single file hub')
 }
-
 //#endregion
 //#region src/generateJBrowseConfigsForMultiGenomeHub.ts
 async function fetchTrackDbWithIncludes(trackDbUrl) {
@@ -526,11 +485,11 @@ async function fetchTrackDbWithIncludes(trackDbUrl) {
   return [
     text,
     ...(await Promise.all(
-      includes.map(async ([, path$1]) => {
+      includes.map(async ([, path]) => {
         try {
-          return await fetchTrackDbWithIncludes(resolve(path$1, trackDbUrl))
+          return await fetchTrackDbWithIncludes(resolve(path, trackDbUrl))
         } catch (e) {
-          console.warn(`Failed to fetch included trackDb ${path$1}: ${e}`)
+          console.warn(`Failed to fetch included trackDb ${path}: ${e}`)
           return ''
         }
       }),
@@ -538,9 +497,8 @@ async function fetchTrackDbWithIncludes(trackDbUrl) {
   ].join('\n\n')
 }
 async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
-  const genomesFileRelUrl = new HubFile(await myfetchtext(hubUrl)).data[
-    'genomesFile'
-  ]
+  const genomesFileRelUrl = new HubFile(await myfetchtext(hubUrl)).data
+    .genomesFile
   if (!genomesFileRelUrl)
     throw new Error('Hub file does not have a genomesFile field')
   const genomesFileUrl = resolve(genomesFileRelUrl, hubUrl)
@@ -565,7 +523,7 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
       uri: twoBitUrl,
       chromSizes: chromSizesUrl,
     }
-    const displayName = description || organism || genomeName
+    const displayName = description ?? organism ?? genomeName
     const asm = {
       name: genomeName,
       displayName,
@@ -632,7 +590,6 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
   }
   return configs
 }
-
 //#endregion
 //#region src/hubCategories.ts
 const hubCategories = [
@@ -723,7 +680,6 @@ const hubCategories = [
     tag: 'other',
   },
 ]
-
 //#endregion
 //#region src/parseAssemblyEntry.ts
 function parseAssemblyEntry({ entry }) {
@@ -731,20 +687,25 @@ function parseAssemblyEntry({ entry }) {
   const ucscAcc = path.basename(ucscBrowser)
   const accession = ucscAcc.startsWith('GC') ? ucscAcc : refSeq || genBank
   const [base, rest] = accession.split('_')
-  const [b1, b2, b3] = rest.match(/.{1,3}/g)
+  const matches = rest?.match(/.{1,3}/g)
+  if (!matches || matches.length < 3) {
+    console.error(`Unexpected accession format: ${accession}`)
+    return
+  }
+  const [b1, b2, b3] = matches
   const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
   let report
   let ncbiDownloadedAt
   try {
     const ncbiData = readJSON(fn)
     ncbiDownloadedAt = ncbiData.downloaded_at
-    report = ncbiData.reports?.find(
+    report = ncbiData.reports.find(
       r =>
         r.accession === accession ||
         r.paired_accession === accession ||
         r.current_accession === accession,
     )
-    if (!report && ncbiData.reports?.[0]) report = ncbiData.reports[0]
+    report ??= ncbiData.reports[0]
   } catch {
     console.error(
       `NCBI data not found for ${accession} (${comName}): ${fn} does not exist`,
@@ -826,7 +787,6 @@ function parseAssemblyEntry({ entry }) {
     ncbiDownloadedAt,
   }
 }
-
 //#endregion
 export {
   categoryMap,
@@ -843,7 +803,6 @@ export {
   myfetch,
   myfetchjson,
   myfetchtext,
-  myjsonfetch,
   notEmpty,
   parseAssemblyEntry,
   readJSON,

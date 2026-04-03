@@ -15,7 +15,7 @@
     "astro": "astro",
     "deploy": "yarn sync",
     "predeploy": "yarn build",
-    "sync": "aws s3 sync dist/ s3://genomes.jbrowse.org --size-only --delete",
+    "sync": "rclone sync -c --progress --exclude '*.xxh' website-hashed: genomes-jbrowse-org:genomes.jbrowse.org",
     "invalidate-all": "AWS_PAGER=\"\" yarn invalidate \"/*\"",
     "invalidate": "aws cloudfront  create-invalidation --distribution-id E12EBG02P68TDO --paths",
     "format": "prettier --write ."

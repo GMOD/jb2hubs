@@ -80,8 +80,8 @@ for (const strainDir of fs.readdirSync(MOUSE_STRAINS_DIR)) {
       assemblyNames: [strainDir, 'mm10'],
       adapter: {
         type: 'PairwiseIndexedPAFAdapter',
-        queryAssembly: strainDir,
-        targetAssembly: 'mm10',
+        targetAssembly: strainDir,
+        queryAssembly: 'mm10',
         pifGzLocation: { uri: `liftOver/${pifFile}` },
         index: {
           location: { uri: `liftOver/${pifFile}.csi` },

@@ -29,7 +29,7 @@ export -f check_and_queue
 
 # Build the queue in parallel (fast I/O operations)
 QUEUE_FILE=$(mktemp)
-fd meta.json hubs | parallel $PARALLEL_OPTS check_and_queue {} > "$QUEUE_FILE"
+fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS check_and_queue {} > "$QUEUE_FILE"
 
 # Count how many assemblies need fetching
 TOTAL=$(wc -l < "$QUEUE_FILE")

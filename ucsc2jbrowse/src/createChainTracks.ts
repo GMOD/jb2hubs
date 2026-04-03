@@ -53,7 +53,14 @@ function createChainTrackConfig({
     }
   }
 
-  const targetAssemblyOrig = match[2]
+  // .chainBridge is a method qualifier in UCSC filenames, not part of the
+  // assembly name. Strip it but preserve it in the track ID/name suffix so
+  // chainBridge tracks remain distinct from regular liftOver tracks for the
+  // same assembly pair.
+  const isChainBridge = match[2]!.endsWith('.chainBridge')
+  const targetAssemblyOrig = isChainBridge
+    ? match[2]!.slice(0, -'.chainBridge'.length)
+    : match[2]!
   let targetAssembly: string
 
   // Handle cases like GCF_... or GCA_... accessions
@@ -67,6 +74,8 @@ function createChainTrackConfig({
     targetAssembly =
       targetAssemblyOrig.charAt(0).toLowerCase() + targetAssemblyOrig.slice(1)
   }
+
+  const trackSrcDir = isChainBridge ? `${srcDir}_chainBridge` : srcDir
 
   let commonName = ''
   // Try to get common name from processedHubJson/all.json for GCF/GCA accessions
@@ -101,10 +110,10 @@ function createChainTrackConfig({
     }
   }
 
-  const trackId = `${sourceAssembly}_to_${targetAssembly}_${srcDir}`
+  const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`
   const trackName = commonName
-    ? `${sourceAssembly} to ${commonName} (${targetAssembly}) ${srcDir}`
-    : `${sourceAssembly} to ${targetAssembly} ${srcDir}`
+    ? `${sourceAssembly} to ${commonName} (${targetAssembly}) ${trackSrcDir}`
+    : `${sourceAssembly} to ${targetAssembly} ${trackSrcDir}`
 
   return {
     type: 'SyntenyTrack',

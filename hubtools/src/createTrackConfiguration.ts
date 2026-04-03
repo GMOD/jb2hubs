@@ -99,7 +99,9 @@ export function createTrackConfiguration({
         ...conf,
         name: [
           ...new Set([
-            ...parentTracks.map(p => trackDb.data[p.name!]?.data.shortLabel),
+            ...parentTracks
+              .map(p => trackDb.data[p.name!]?.data.shortLabel)
+              .filter(s => s !== undefined),
             conf.name,
           ]),
         ].join(' - '),

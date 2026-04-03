@@ -60,17 +60,6 @@ const newConfig = await generateJBrowseConfigForAssemblyHub({
   trackDbUrl: hubMeta.hubFileLocation,
 })
 
-// Remove Chain/Net tracks (legacy UCSC chain/net tracks)
-// These are replaced by our new synteny tracks using PIF format
-const originalTrackCount = newConfig.tracks.length
-newConfig.tracks = newConfig.tracks.filter(
-  (track: any) => !track.name?.includes('Chain/Net'),
-)
-const removedCount = originalTrackCount - newConfig.tracks.length
-if (removedCount > 0) {
-  console.log(`Removed ${removedCount} Chain/Net tracks from ${metaPath}`)
-}
-
 // Compare new and old configurations. If they are identical, skip writing to avoid
 // unnecessary file writes and subsequent text indexing.
 if (deepEqual(newConfig, oldConfig)) {

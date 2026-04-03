@@ -182,7 +182,7 @@ log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts
 
 log "Hashing all output files for integrity checking..."
-find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.xxh" ! -name "*.hash" | parallel $PARALLEL_OPTS ./hash_if_needed.sh {} | LC_ALL=C sort -k2,2 >fileListing.txt
+find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.hash" | parallel $PARALLEL_OPTS 'stat -c "%s %n" {}' | LC_ALL=C sort -k2,2 >fileListing.txt
 
 log "Pipeline finished successfully!"
 

@@ -31,12 +31,9 @@ function applyGenArkExtensions() {
     }
 
     try {
-      // Create a backup of the existing config file before modification
-      const backupFilePath = `${configFilePath}.bak`
-      fs.copyFileSync(configFilePath, backupFilePath)
-      console.log(`Created backup: ${backupFilePath}`)
-
-      const existingConfig = readJSON<JBrowseConfig>(configFilePath)
+      const existingConfig = fs.existsSync(configFilePath)
+        ? readJSON<JBrowseConfig>(configFilePath)
+        : ({ tracks: [] } as JBrowseConfig)
       const extensionConfig = readJSON<JBrowseConfig>(
         path.join(extensionsDir, item),
       )

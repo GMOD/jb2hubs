@@ -34,7 +34,7 @@ process_assembly() {
       if [ -f "${infile}.sql" ]; then
         local hash_file="${outfile}.hash"
         local current_stat
-        current_stat=$(stat -c "%Y %s" "${infile}.txt.gz")
+        current_stat=$(stat -c "%s" "${infile}.txt.gz")
 
         local need_processing=true
         if [ -f "${outfile}.bed.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS}" ]; then

@@ -256,19 +256,14 @@ function main() {
   // Deduplicate tracks by trackId to avoid adding duplicates if script is run
   // multiple times
   const existingTrackIds = new Set(config.tracks.map(t => t.trackId))
+  const newTracks = chainTracks.filter(t => !existingTrackIds.has(t.trackId))
 
-  writeJSON(configFile, {
-    ...config,
-    tracks: [
-      ...config.tracks,
-      ...chainTracks.filter(t => !existingTrackIds.has(t.trackId)),
-    ],
-  })
-
-  if (chainTracks.filter(t => !existingTrackIds.has(t.trackId)).length > 0) {
-    console.log(
-      `Added ${chainTracks.filter(t => !existingTrackIds.has(t.trackId)).length} chain tracks to ${configFile}`,
-    )
+  if (newTracks.length > 0) {
+    writeJSON(configFile, {
+      ...config,
+      tracks: [...config.tracks, ...newTracks],
+    })
+    console.log(`Added ${newTracks.length} chain tracks to ${configFile}`)
   }
 }
 
