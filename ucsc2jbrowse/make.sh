@@ -289,7 +289,7 @@ log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts
 
 log "Hashing all output files for integrity checking..."
-find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp" | parallel $PARALLEL_OPTS 'stat -c "%s %n" {}' | LC_ALL=C sort -k2,2 >fileListing.txt
+find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp" -exec stat -c "%s %n" {} + | LC_ALL=C sort -k2,2 >fileListing.txt
 
 # Write updated hashes for assemblies we just processed
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ]; then
