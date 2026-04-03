@@ -49,19 +49,30 @@ function makeUcscExtensions(targetDir: string) {
           ...(extensionConfig.assemblies[0] ?? {}),
         },
       ],
-      tracks: dedupe(
-        [
-          ...extensionConfig.tracks.map(t => ({
+      tracks: (() => {
+        const existingByTrackId = new Map(
+          existingConfig.tracks.map(t => [t.trackId, t]),
+        )
+        const extensionTracks = extensionConfig.tracks.map(t => {
+          const existing = existingByTrackId.get(t.trackId)
+          return {
+            ...existing,
             ...t,
             metadata: {
+              ...existing?.metadata,
               ...t.metadata,
               addedByJBrowseTeam: true,
             },
-          })),
-          ...existingConfig.tracks,
-        ],
-        track => track.trackId,
-      ),
+            ...(t.description || existing?.description
+              ? { description: t.description ?? existing?.description }
+              : {}),
+          }
+        })
+        return dedupe(
+          [...extensionTracks, ...existingConfig.tracks],
+          track => track.trackId,
+        )
+      })(),
       // Merge plugins if they exist
       plugins: dedupe(
         [...(extensionConfig.plugins ?? []), ...(existingConfig.plugins ?? [])],
