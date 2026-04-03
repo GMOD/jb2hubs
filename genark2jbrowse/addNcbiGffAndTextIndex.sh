@@ -11,36 +11,22 @@ add_track_and_text_index() {
   local config_file="$hub_dir/config.json"
 
   if [ ! -f "$config_file" ]; then
-    echo "Skipping $accession: no config.json at $hub_dir"
+    local reason="unknown"
+    if [ ! -f "$hub_dir/meta.json" ]; then
+      reason="meta.json missing"
+    elif [ ! -f "$hub_dir/hub.txt" ]; then
+      reason="hub.txt missing"
+    else
+      reason="config generation may have failed"
+    fi
+    echo "Skipping $accession: no config.json at $hub_dir ($reason)"
     return 0
   fi
 
   jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" >/dev/null
   # Check if trix folder exists
   if [ -d "$hub_dir/trix" ] && [ -z "$REDOWNLOAD" ] && [ -z "$REPROCESS" ] && [ -z "$REPROCESS_TRIX" ]; then
-    local temp_file=$(mktemp)
-
-    jq --arg accession "$accession" '. + {
-      "aggregateTextSearchAdapters": [
-        {
-          "type": "TrixTextSearchAdapter",
-          "textSearchAdapterId": ($accession + "-index"),
-          "ixFilePath": {
-            "uri": ("trix/" + $accession + ".ix"),
-            "locationType": "UriLocation"
-          },
-          "ixxFilePath": {
-            "uri": ("trix/" + $accession + ".ixx"),
-            "locationType": "UriLocation"
-          },
-          "metaFilePath": {
-            "uri": ("trix/" + $accession + "_meta.json"),
-            "locationType": "UriLocation"
-          },
-          "assemblyNames": [$accession]
-        }
-      ]
-    }' "$config_file" >"$temp_file" && mv "$temp_file" "$config_file"
+    add_trix_adapter "$accession" "$config_file"
   else
     echo "Trix folder does not exist for $accession, running jbrowse text-index"
 

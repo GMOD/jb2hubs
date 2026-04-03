@@ -22,7 +22,7 @@ interface ChainTrack {
 // Cache lookups that were repeated per-invocation
 const allJsonPath = path.join(
   process.cwd(),
-  '../website/processedHubJson/all.json',
+  'processedHubJson/all.json',
 )
 const allJsonIndex = new Map<string, string>()
 try {
@@ -108,7 +108,11 @@ function processOne(metaPath: string) {
     return
   }
 
-  const meta = readJSON<{ accession: string; commonName?: string; scientificName?: string }>(metaPath)
+  const meta = readJSON<{
+    accession: string
+    commonName?: string
+    scientificName?: string
+  }>(metaPath)
   const sourceAccession = meta.accession
   const sourceCommonName = meta.commonName || meta.scientificName || ''
 
@@ -120,7 +124,8 @@ function processOne(metaPath: string) {
       continue
     }
     const target = normalizeAssemblyName(targetOrig)
-    const isGenArk = targetOrig.startsWith('GCF') || targetOrig.startsWith('GCA')
+    const isGenArk =
+      targetOrig.startsWith('GCF') || targetOrig.startsWith('GCA')
     const targetCommon = getTargetCommonName(target, isGenArk)
 
     const trackId = `${sourceAccession}_to_${target}_liftOver`

@@ -195,9 +195,9 @@ mkdir -p bgz
 if [ "$MODE" = "new" ]; then
   process_gff_for_hub() {
     local accession="$1"
-    local input_file=$(find gff -name "${accession}*.gz" 2>/dev/null | head -1)
-
-    if [ -z "$input_file" ]; then
+    local input_file
+    input_file=$(echo gff/${accession}_*.gz)
+    if [ ! -f "$input_file" ]; then
       return
     fi
 
@@ -225,9 +225,9 @@ log "Loading and text indexing NCBI GFF tracks..."
 if [ "$MODE" = "new" ]; then
   add_track_for_hub() {
     local accession="$1"
-    local gff_file=$(find bgz -name "${accession}*.gz" ! -name "*.csi" 2>/dev/null | head -1)
-
-    if [ -z "$gff_file" ]; then
+    local gff_file
+    gff_file=$(echo bgz/${accession}_*.gff.gz)
+    if [ ! -f "$gff_file" ]; then
       return
     fi
 
@@ -239,18 +239,7 @@ if [ "$MODE" = "new" ]; then
     fi
 
     if [ -d "$hub_dir/trix" ]; then
-      local config_file="$hub_dir/config.json"
-      local temp_file=$(mktemp)
-      jq --arg accession "$accession" '. + {
-        "aggregateTextSearchAdapters": [{
-          "type": "TrixTextSearchAdapter",
-          "textSearchAdapterId": ($accession + "-index"),
-          "ixFilePath": {"uri": ("trix/" + $accession + ".ix"), "locationType": "UriLocation"},
-          "ixxFilePath": {"uri": ("trix/" + $accession + ".ixx"), "locationType": "UriLocation"},
-          "metaFilePath": {"uri": ("trix/" + $accession + "_meta.json"), "locationType": "UriLocation"},
-          "assemblyNames": [$accession]
-        }]
-      }' "$config_file" >"$temp_file" && mv "$temp_file" "$config_file"
+      add_trix_adapter "$accession" "$hub_dir/config.json"
     else
       echo "Running jbrowse text-index for $accession"
       jbrowse text-index --force --out "$hub_dir" --tracks "${accession}-ncbiGff" --attributes Name,ID,Note || echo "Warning: text-index failed for $accession" >&2

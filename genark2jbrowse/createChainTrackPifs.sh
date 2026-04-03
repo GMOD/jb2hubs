@@ -53,8 +53,10 @@ setup_config() {
   fi
 
   # Extract accession and hub URL from meta.json
-  ACCESSION=$(jq -r '.accession' "$META_PATH")
-  HUB_URL=$(jq -r '.hubFileLocation' "$META_PATH" | sed 's|/hub.txt$||')
+  local meta_fields
+  meta_fields=$(jq -r '[.accession, .hubFileLocation] | @tsv' "$META_PATH")
+  ACCESSION=$(echo "$meta_fields" | cut -f1)
+  HUB_URL=$(echo "$meta_fields" | cut -f2 | sed 's|/hub.txt$||')
 
   if [[ -z "$ACCESSION" || "$ACCESSION" == "null" ]]; then
     log_error "Could not extract accession from $META_PATH"

@@ -23,3 +23,23 @@ accession_to_hub_dir() {
   echo "hubs/$prefix/$first_part/$second_part/$third_part/$accession"
 }
 export -f accession_to_hub_dir
+
+# Adds the trix text search adapter entry to config.json via jq
+# Usage: add_trix_adapter <accession> <config_file>
+add_trix_adapter() {
+  local accession="$1"
+  local config_file="$2"
+  local temp_file
+  temp_file=$(mktemp)
+  jq --arg accession "$accession" '. + {
+    "aggregateTextSearchAdapters": [{
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": ($accession + "-index"),
+      "ixFilePath": {"uri": ("trix/" + $accession + ".ix"), "locationType": "UriLocation"},
+      "ixxFilePath": {"uri": ("trix/" + $accession + ".ixx"), "locationType": "UriLocation"},
+      "metaFilePath": {"uri": ("trix/" + $accession + "_meta.json"), "locationType": "UriLocation"},
+      "assemblyNames": [$accession]
+    }]
+  }' "$config_file" >"$temp_file" && mv "$temp_file" "$config_file"
+}
+export -f add_trix_adapter

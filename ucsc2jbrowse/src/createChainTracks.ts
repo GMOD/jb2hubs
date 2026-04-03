@@ -8,6 +8,34 @@ import { readJSON, writeJSON } from './util.ts'
 
 import type { JBrowseConfig } from './types.ts'
 
+// Pre-load lookup tables once instead of re-reading per PIF file
+const allJsonIndex = new Map<string, string>()
+try {
+  const allJson = readJSON<{ accession: string; commonName?: string }[]>(
+    '../genark2jbrowse/processedHubJson/all.json',
+  )
+  for (const entry of allJson) {
+    if (entry?.accession && entry?.commonName) {
+      allJsonIndex.set(entry.accession, entry.commonName)
+    }
+  }
+} catch {
+  console.warn('Warning: could not load genark processedHubJson/all.json')
+}
+
+const ucscListJson: Record<string, { organism?: string }> = {}
+try {
+  const ucscResultsDir = process.env.UCSC_BUILT_DIR
+  if (ucscResultsDir) {
+    const listJson = readJSON<{
+      ucscGenomes: Record<string, { organism?: string }>
+    }>(path.join(ucscResultsDir, 'list.json'))
+    Object.assign(ucscListJson, listJson.ucscGenomes ?? {})
+  }
+} catch {
+  console.warn('Warning: could not load ucsc list.json')
+}
+
 interface ChainTrack {
   type: string
   trackId: string
@@ -78,36 +106,13 @@ function createChainTrackConfig({
   const trackSrcDir = isChainBridge ? `${srcDir}_chainBridge` : srcDir
 
   let commonName = ''
-  // Try to get common name from processedHubJson/all.json for GCF/GCA accessions
   if (
     targetAssemblyOrig.startsWith('GCF') ||
     targetAssemblyOrig.startsWith('GCA')
   ) {
-    try {
-      const allJson = readJSON<any>('../website/processedHubJson/all.json')
-      const assembly = allJson.find(
-        (a: any) => a?.accession === targetAssemblyOrig,
-      )
-      commonName = assembly?.commonName ?? ''
-    } catch (error) {
-      console.warn(
-        `Warning: Could not read assembly information for ${targetAssemblyOrig}: ${error}`,
-      )
-    }
+    commonName = allJsonIndex.get(targetAssemblyOrig) ?? ''
   } else {
-    // Try to get common name from ucscResults/list.json for typical UCSC assemblies
-    try {
-      const ucscResultsDir = process.env.UCSC_BUILT_DIR
-      if (!ucscResultsDir) {
-        throw new Error('No UCSC_BUILT_DIR env defined')
-      }
-      const listJson = readJSON<any>(path.join(ucscResultsDir, 'list.json'))
-      commonName = listJson.ucscGenomes?.[targetAssembly]?.organism ?? ''
-    } catch (error) {
-      console.warn(
-        `Warning: Could not read organism information for ${targetAssembly}`,
-      )
-    }
+    commonName = ucscListJson[targetAssembly]?.organism ?? ''
   }
 
   const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`

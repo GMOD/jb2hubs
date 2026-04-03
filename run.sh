@@ -119,8 +119,6 @@ if [ "$DRY_RUN" = false ]; then
   echo "Running website deploy..."
   yarn --cwd website deploy
 
-  echo "Invalidating CloudFront cache..."
-  yarn --cwd website invalidate-all
 
   git add .
   git commit -m "Updates" || echo "No additional changes to commit"

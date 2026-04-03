@@ -125,7 +125,7 @@ declare function generateJBrowseConfigForAssemblyHub({
 }: {
   hubFileText: string
   trackDbUrl: string
-}): Promise<{
+}): {
   defaultSession?:
     | {
         name: string
@@ -243,7 +243,7 @@ declare function generateJBrowseConfigForAssemblyHub({
         category: string[]
       }
   )[]
-}>
+}
 //#endregion
 //#region src/generateJBrowseConfigsForMultiGenomeHub.d.ts
 declare function generateJBrowseConfigsForMultiGenomeHub(

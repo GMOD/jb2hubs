@@ -379,17 +379,7 @@ function generateHubTracks({
 }
 //#endregion
 //#region src/generateJBrowseConfigForAssemblyHub.ts
-async function isUrlAccessible(url) {
-  try {
-    return (await fetch(url)).ok
-  } catch (_e) {
-    return false
-  }
-}
-async function generateJBrowseConfigForAssemblyHub({
-  hubFileText,
-  trackDbUrl,
-}) {
+function generateJBrowseConfigForAssemblyHub({ hubFileText, trackDbUrl }) {
   if (hubFileText.includes('useOneFile on')) {
     const { genome, tracks } = new SingleFileHub(hubFileText)
     const { data } = genome
@@ -422,10 +412,7 @@ async function generateJBrowseConfigForAssemblyHub({
         trackId: `${genomeName}-ReferenceSequenceTrack`,
         adapter: sequenceAdapter,
       },
-      ...(chromAliasBb &&
-      (await isUrlAccessible(
-        resolve(chromAliasBb.replace('.bb', '.txt'), trackDbUrl),
-      ))
+      ...(chromAliasBb
         ? {
             refNameAliases: {
               adapter: {
