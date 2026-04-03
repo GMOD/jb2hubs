@@ -269,9 +269,9 @@ fi
 
 log "Adding chain tracks to configs..."
 if [ "$MODE" = "new" ]; then
-  parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}' < "$NEW_HUBS_FILE"
+  node src/createChainTracksBatch.ts < "$NEW_HUBS_FILE"
 else
-  fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS 'node src/createChainTracks.ts {}'
+  fd '^meta\.json$' hubs | node src/createChainTracksBatch.ts
 fi
 
 # --- Phase 6: Wiki images and finishing ---
@@ -287,7 +287,7 @@ log "Calculating gff file hashes..."
 
 log "Enhancing configs with plugins and hierarchical settings..."
 if [ "$MODE" = "new" ]; then
-  sed 's/meta.json/config.json/' "$NEW_HUBS_FILE" | parallel $PARALLEL_OPTS 'node src/enhanceConfig.ts {}'
+  sed 's/meta.json/config.json/' "$NEW_HUBS_FILE" | node src/enhanceConfigsBatch.ts
 else
   ./enhanceConfigs.sh
 fi

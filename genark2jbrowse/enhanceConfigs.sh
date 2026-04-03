@@ -14,4 +14,4 @@ cd "$(dirname "$0")"
 # --- Main Script ---
 
 # Find all config.json files in the hubs directory and enhance them
-fd '^config\.json$' hubs | parallel $PARALLEL_OPTS node src/enhanceConfig.ts {}
+fd '^config\.json$' hubs | node src/enhanceConfigsBatch.ts
