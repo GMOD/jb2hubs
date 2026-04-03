@@ -147,9 +147,9 @@ node src/processUcscList.ts
 
 log "Generating JBrowse 2 config.json..."
 if [ "$MODE" = "new" ]; then
-  parallel $PARALLEL_OPTS node src/generateConfigs.ts {} < "$NEW_HUBS_FILE"
+  node src/generateConfigsBatch.ts < "$NEW_HUBS_FILE"
 else
-  fd '^meta\.json$' hubs | parallel $PARALLEL_OPTS node src/generateConfigs.ts {}
+  fd '^meta\.json$' hubs | node src/generateConfigsBatch.ts
 fi
 
 # --- Phase 4: Download and process GFF files ---
