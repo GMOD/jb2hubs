@@ -17,7 +17,6 @@ function makeUcscExtensions(targetDir: string) {
     const accession = item.replace('.json', '')
     const configFilePath = path.join(targetDir, accession, 'config.json')
 
-    // Ensure directory structure exists for the target config file
     const dir = path.dirname(configFilePath)
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, {
@@ -37,7 +36,6 @@ function makeUcscExtensions(targetDir: string) {
 
     const extensionConfig = readConfig(path.join(BASE_EXTENSION_DIR, item))
 
-    // Merge existing and extension configurations
     const mergedConfig: JBrowseConfig = {
       ...existingConfig,
       ...extensionConfig,
@@ -73,19 +71,16 @@ function makeUcscExtensions(targetDir: string) {
           track => track.trackId,
         )
       })(),
-      // Merge plugins if they exist
       plugins: dedupe(
         [...(extensionConfig.plugins ?? []), ...(existingConfig.plugins ?? [])],
-        plugin => (plugin as { name: string }).name, // Assuming plugins have a 'name' property
+        plugin => plugin.name,
       ),
-      // Merge aggregateTextSearchAdapters if they exist
       aggregateTextSearchAdapters: dedupe(
         [
           ...(extensionConfig.aggregateTextSearchAdapters ?? []),
           ...(existingConfig.aggregateTextSearchAdapters ?? []),
         ],
-        adapter =>
-          (adapter as { textSearchAdapterId: string }).textSearchAdapterId, // Assuming adapters have a 'textSearchAdapterId' property
+        adapter => adapter.textSearchAdapterId,
       ),
     }
 

@@ -55,7 +55,7 @@ function mergeAllConfigs() {
     return config
   })
 
-  const mergedPlugins = new Map<string, unknown>()
+  const mergedPlugins = new Map<string, { name: string }>()
   for (const config of allConfigs) {
     if (config.plugins) {
       for (const plugin of config.plugins) {

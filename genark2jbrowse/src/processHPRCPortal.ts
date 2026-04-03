@@ -40,8 +40,8 @@ for (const entry of hprcJson) {
   const unlabeled = /^human \((\S+) \d{4}\)$/.exec(name)
 
   if (labeled) {
-    const sampleId = labeled[1]
-    const label = labeled[2]
+    const sampleId = labeled[1]!
+    const label = labeled[2]!
     if (!sampleMap.has(sampleId)) {
       sampleMap.set(sampleId, { extras: [] })
     }
@@ -52,7 +52,7 @@ for (const entry of hprcJson) {
       sample.hap2 = hapInfo
     }
   } else if (unlabeled) {
-    const sampleId = unlabeled[1]
+    const sampleId = unlabeled[1]!
     if (!sampleMap.has(sampleId)) {
       sampleMap.set(sampleId, { extras: [] })
     }

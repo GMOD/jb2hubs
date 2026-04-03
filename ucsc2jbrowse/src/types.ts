@@ -9,6 +9,7 @@ export interface JBrowseConfig {
       ucsc?: Record<string, unknown>
     }
     trackId: string
+    description?: string
     adapter: Record<string, unknown>
   }[]
   assemblies: {
@@ -20,8 +21,8 @@ export interface JBrowseConfig {
       adapter: Record<string, unknown> // This is the sequence adapter
     }
   }[]
-  plugins?: unknown[]
-  aggregateTextSearchAdapters?: Record<string, unknown>[]
+  plugins?: { name: string }[]
+  aggregateTextSearchAdapters?: ({ textSearchAdapterId: string } & Record<string, unknown>)[]
 }
 
 export type BlockedFileCache = Record<
