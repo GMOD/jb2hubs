@@ -55,7 +55,7 @@ try {
   process.exit(1)
 }
 
-const newConfig = await generateJBrowseConfigForAssemblyHub({
+const newConfig = generateJBrowseConfigForAssemblyHub({
   hubFileText,
   trackDbUrl: hubMeta.hubFileLocation,
 })

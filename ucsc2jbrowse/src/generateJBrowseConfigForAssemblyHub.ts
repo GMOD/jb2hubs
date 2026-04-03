@@ -11,7 +11,7 @@ import { generateJBrowseConfigForAssemblyHub, myfetchtext } from 'hubtools'
 async function parseTrackHub(trackDbUrl: string, outputFilePath: string) {
   try {
     const hubFileText = await myfetchtext(trackDbUrl)
-    const jbrowseConfig = await generateJBrowseConfigForAssemblyHub({
+    const jbrowseConfig = generateJBrowseConfigForAssemblyHub({
       hubFileText,
       trackDbUrl,
     })

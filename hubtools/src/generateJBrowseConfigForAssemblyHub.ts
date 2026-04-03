@@ -3,15 +3,7 @@ import { SingleFileHub } from '@gmod/ucsc-hub'
 import { generateHubTracks } from './generateHubTracks.ts'
 import { resolve } from './util.ts'
 
-async function isUrlAccessible(url: string) {
-  try {
-    return (await fetch(url)).ok
-  } catch (_e) {
-    return false
-  }
-}
-
-export async function generateJBrowseConfigForAssemblyHub({
+export function generateJBrowseConfigForAssemblyHub({
   hubFileText,
   trackDbUrl,
 }: {
@@ -56,10 +48,7 @@ export async function generateJBrowseConfigForAssemblyHub({
         trackId: `${genomeName}-ReferenceSequenceTrack`,
         adapter: sequenceAdapter,
       },
-      ...(chromAliasBb &&
-      (await isUrlAccessible(
-        resolve(chromAliasBb.replace('.bb', '.txt'), trackDbUrl),
-      ))
+      ...(chromAliasBb
         ? {
             refNameAliases: {
               adapter: {

@@ -39,7 +39,7 @@ async function processOne(metaPath: string) {
     return
   }
 
-  const newConfig = await generateJBrowseConfigForAssemblyHub({
+  const newConfig = generateJBrowseConfigForAssemblyHub({
     hubFileText,
     trackDbUrl: hubMeta.hubFileLocation,
   })
@@ -63,7 +63,9 @@ if (process.argv[2]) {
   }
 }
 
-console.error(`Processing ${paths.length} configs (concurrency: ${CONCURRENCY})...`)
+console.error(
+  `Processing ${paths.length} configs (concurrency: ${CONCURRENCY})...`,
+)
 
 let completed = 0
 const total = paths.length
@@ -84,8 +86,6 @@ async function worker(queue: string[]) {
 }
 
 const queue = [...paths]
-await Promise.all(
-  Array.from({ length: CONCURRENCY }, () => worker(queue)),
-)
+await Promise.all(Array.from({ length: CONCURRENCY }, () => worker(queue)))
 
 console.error(`Done: ${completed} configs processed`)
