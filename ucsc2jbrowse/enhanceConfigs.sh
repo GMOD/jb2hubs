@@ -39,5 +39,9 @@ export UCSC_BUILT_DIR
 
 # --- Main Script ---
 
-# Run the process_assembly function in parallel for each directory in UCSC_BUILT_DIR.
-parallel $PARALLEL_OPTS process_assembly ::: "$UCSC_BUILT_DIR"/*
+# If specific dirs are provided as args, process those; otherwise process all.
+if [ $# -gt 0 ]; then
+  parallel $PARALLEL_OPTS process_assembly ::: "$@"
+else
+  parallel $PARALLEL_OPTS process_assembly ::: "$UCSC_BUILT_DIR"/*
+fi

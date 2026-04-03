@@ -67,8 +67,10 @@ process_gff_file() {
     log "Processed files already exist in $GENCODE_PROCESSED_DIR, skipping sort/bgzip/tabix for $filename"
   fi
 
-  # Add the track to JBrowse
-  jbrowse add-track "$output_sorted_gff_gz" --indexFile "$output_sorted_gff_csi" --out "$output_dir" --load copy --name "$track_name" --trackId "$track_id" --category "Genes and Gene Predictions" --force
+  # Add the track to JBrowse (skip if already present in config)
+  if ! grep -q "\"$track_id\"" "$output_dir/config.json" 2>/dev/null; then
+    jbrowse add-track "$output_sorted_gff_gz" --indexFile "$output_sorted_gff_csi" --out "$output_dir" --load copy --name "$track_name" --trackId "$track_id" --category "Genes and Gene Predictions" --force
+  fi
 }
 
 # hg38 URLs and track names

@@ -293,18 +293,36 @@ else
 fi
 
 # --- Phase 7: Mouse strain assemblies ---
+# Mouse strain hubs change very rarely; skip unless the stamp is older than 30 days.
 
-log "Processing UCSC mouse strain assemblies..."
-node src/processMouseStrainsHub.ts
+MOUSE_STRAIN_STAMP=".mouse_strain_stamp"
+MOUSE_STRAIN_MAX_AGE_DAYS=30
+run_mouse_strains=true
 
-log "Adding mm10 synteny tracks to mouse strain configs..."
-node src/createMouseStrainsChainTracks.ts
+if [ -z "${REPROCESS:-}" ] && [ -f "$MOUSE_STRAIN_STAMP" ]; then
+  age_seconds=$(( $(date +%s) - $(stat -c %Y "$MOUSE_STRAIN_STAMP") ))
+  age_days=$(( age_seconds / 86400 ))
+  if [ "$age_days" -lt "$MOUSE_STRAIN_MAX_AGE_DAYS" ]; then
+    log "Skipping mouse strain processing (last run ${age_days} day(s) ago, threshold: ${MOUSE_STRAIN_MAX_AGE_DAYS} days)"
+    run_mouse_strains=false
+  fi
+fi
 
-log "Generating Ensembl mouse strains portal..."
-node src/processEnsemblMouseStrainsPortal.ts
+if [ "$run_mouse_strains" = true ]; then
+  log "Processing UCSC mouse strain assemblies..."
+  node src/processMouseStrainsHub.ts
 
-log "Adding mm39 synteny/MAF/VCF tracks to Ensembl mouse strain configs..."
-node src/createEnsemblMouseChainTracks.ts
+  log "Adding mm10 synteny tracks to mouse strain configs..."
+  node src/createMouseStrainsChainTracks.ts
+
+  log "Generating Ensembl mouse strains portal..."
+  node src/processEnsemblMouseStrainsPortal.ts
+
+  log "Adding mm39 synteny/MAF/VCF tracks to Ensembl mouse strain configs..."
+  node src/createEnsemblMouseChainTracks.ts
+
+  touch "$MOUSE_STRAIN_STAMP"
+fi
 
 # --- Done ---
 

@@ -24,8 +24,12 @@ if [ ! -f "$GFF_DIR/hs1.gff.gz.csi" ]; then
   tabix -C "$GFF_DIR/hs1.gff.gz"
 fi
 
-log "Adding hs1 GFF track to JBrowse..."
-jbrowse add-track "$GFF_DIR/hs1.gff.gz" --force --trackId hs1-ncbiRefSeqGff --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" --out "$UCSC_BUILT_DIR/hs1/" --load copy --indexFile "$GFF_DIR/hs1.gff.gz.csi"
+if ! grep -q '"hs1-ncbiRefSeqGff"' "$UCSC_BUILT_DIR/hs1/config.json" 2>/dev/null; then
+  log "Adding hs1 GFF track to JBrowse..."
+  jbrowse add-track "$GFF_DIR/hs1.gff.gz" --force --trackId hs1-ncbiRefSeqGff --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" --out "$UCSC_BUILT_DIR/hs1/" --load copy --indexFile "$GFF_DIR/hs1.gff.gz.csi"
 
-log "Indexing hs1 GFF track..."
-jbrowse text-index --force --out "$UCSC_BUILT_DIR/hs1" --tracks hs1-ncbiRefSeqGff
+  log "Indexing hs1 GFF track..."
+  jbrowse text-index --force --out "$UCSC_BUILT_DIR/hs1" --tracks hs1-ncbiRefSeqGff
+else
+  log "hs1 GFF track already present, skipping."
+fi
