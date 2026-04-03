@@ -711,7 +711,46 @@ function parseAssemblyEntry({ entry }) {
       `NCBI data not found for ${accession} (${comName}): ${fn} does not exist`,
     )
   }
-  if (!report) return
+  if (!report)
+    return {
+      stats: void 0,
+      seqReleaseDate: void 0,
+      submitterOrg: void 0,
+      ncbiOrganism: void 0,
+      ncbiAssemblyName: void 0,
+      ncbiRefSeqCategory: void 0,
+      suppressed: false,
+      assemblyType: void 0,
+      accession: accession || '',
+      assembly: asmId || '',
+      scientificName: sciName || '',
+      commonName: comName || '',
+      taxonId: taxId || '',
+      assemblyStatus: void 0,
+      jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
+      jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
+      ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
+      ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
+      ucscDataLink: `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`,
+      ucscBrowserLink: ucscBrowser,
+      igvBrowserLink: `https://igv.org/app/?hubURL=https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}/hub.txt`,
+      ncbiName: asmId,
+      ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
+      pairedAccession: void 0,
+      pairedAssemblyStatus: void 0,
+      pairedAssemblyDifferences: void 0,
+      genomeNotes: void 0,
+      suppressionReason: void 0,
+      infraspecificNames: void 0,
+      comments: void 0,
+      gcPercent: void 0,
+      genomeCoverage: void 0,
+      sequencingTech: void 0,
+      bioprojectAccession: void 0,
+      annotationInfo: void 0,
+      ncbiDownloadedAt: void 0,
+      ncbiMissing: true,
+    }
   const { assembly_info, assembly_stats, organism, annotation_info } = report
   const assemblyStatus = assembly_info.assembly_level
   const ncbiAssemblyName = assembly_info.assembly_name
@@ -785,6 +824,7 @@ function parseAssemblyEntry({ entry }) {
     bioprojectAccession,
     annotationInfo: annotation_info,
     ncbiDownloadedAt,
+    ncbiMissing: false,
   }
 }
 //#endregion

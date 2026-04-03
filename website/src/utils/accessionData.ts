@@ -40,6 +40,7 @@ export interface AssemblyData {
   ncbiRefSeqCategory?: string
   ncbiOrganism?: string
   pairedAccession?: string
+  ncbiMissing?: boolean
   [key: string]: unknown
 }
 

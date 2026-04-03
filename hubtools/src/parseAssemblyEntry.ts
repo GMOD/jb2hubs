@@ -45,7 +45,45 @@ export function parseAssemblyEntry({
   }
 
   if (!report) {
-    return undefined
+    return {
+      stats: undefined,
+      seqReleaseDate: undefined,
+      submitterOrg: undefined,
+      ncbiOrganism: undefined,
+      ncbiAssemblyName: undefined,
+      ncbiRefSeqCategory: undefined,
+      suppressed: false,
+      assemblyType: undefined,
+      accession: accession || '',
+      assembly: asmId || '',
+      scientificName: sciName || '',
+      commonName: comName || '',
+      taxonId: taxId || '',
+      assemblyStatus: undefined,
+      jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
+      jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
+      ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
+      ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
+      ucscDataLink: `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`,
+      ucscBrowserLink: ucscBrowser,
+      igvBrowserLink: `https://igv.org/app/?hubURL=https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}/hub.txt`,
+      ncbiName: asmId,
+      ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
+      pairedAccession: undefined,
+      pairedAssemblyStatus: undefined,
+      pairedAssemblyDifferences: undefined,
+      genomeNotes: undefined,
+      suppressionReason: undefined,
+      infraspecificNames: undefined,
+      comments: undefined,
+      gcPercent: undefined,
+      genomeCoverage: undefined,
+      sequencingTech: undefined,
+      bioprojectAccession: undefined,
+      annotationInfo: undefined,
+      ncbiDownloadedAt: undefined,
+      ncbiMissing: true,
+    }
   }
 
   const { assembly_info, assembly_stats, organism, annotation_info } = report
@@ -126,5 +164,6 @@ export function parseAssemblyEntry({
     bioprojectAccession,
     annotationInfo: annotation_info,
     ncbiDownloadedAt,
+    ncbiMissing: false,
   }
 }

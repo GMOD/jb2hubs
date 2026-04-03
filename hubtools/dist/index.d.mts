@@ -459,6 +459,45 @@ declare function parseAssemblyEntry({
   entry: UCSCGenArkAssemblyEntry
 }):
   | {
+      stats: undefined
+      seqReleaseDate: undefined
+      submitterOrg: undefined
+      ncbiOrganism: undefined
+      ncbiAssemblyName: undefined
+      ncbiRefSeqCategory: undefined
+      suppressed: boolean
+      assemblyType: undefined
+      accession: string
+      assembly: string
+      scientificName: string
+      commonName: string
+      taxonId: string | number
+      assemblyStatus: undefined
+      jbrowseLink: string
+      jbrowseConfig: string
+      ncbiGff: string
+      ncbiLink: string
+      ucscDataLink: string
+      ucscBrowserLink: string
+      igvBrowserLink: string
+      ncbiName: string
+      ncbiBrowserLink: string
+      pairedAccession: undefined
+      pairedAssemblyStatus: undefined
+      pairedAssemblyDifferences: undefined
+      genomeNotes: undefined
+      suppressionReason: undefined
+      infraspecificNames: undefined
+      comments: undefined
+      gcPercent: undefined
+      genomeCoverage: undefined
+      sequencingTech: undefined
+      bioprojectAccession: undefined
+      annotationInfo: undefined
+      ncbiDownloadedAt: undefined
+      ncbiMissing: boolean
+    }
+  | {
       stats: Record<string, unknown>
       seqReleaseDate: string
       submitterOrg: string
@@ -509,6 +548,7 @@ declare function parseAssemblyEntry({
           }
         | undefined
       ncbiDownloadedAt: number | undefined
+      ncbiMissing: boolean
     }
   | undefined
 //#endregion

@@ -48,6 +48,7 @@ const {
   ncbiRefSeqCategory,
   suppressed,
   pairedAccession,
+  ncbiMissing,
 } = ret
 
 const {
@@ -103,6 +104,16 @@ const statsParts = [
   <Container>
     <div>
       <h1>{scientificName}</h1>
+      {
+        ncbiMissing ? (
+          <p>
+            <em>
+              NCBI metadata not yet available for this assembly. Some details
+              may be missing.
+            </em>
+          </p>
+        ) : null
+      }
       <div>
         <b>Accession:</b>
         {accession}
