@@ -22,7 +22,10 @@ export interface JBrowseConfig {
     }
   }[]
   plugins?: { name: string }[]
-  aggregateTextSearchAdapters?: ({ textSearchAdapterId: string } & Record<string, unknown>)[]
+  aggregateTextSearchAdapters?: ({ textSearchAdapterId: string } & Record<
+    string,
+    unknown
+  >)[]
 }
 
 export type BlockedFileCache = Record<

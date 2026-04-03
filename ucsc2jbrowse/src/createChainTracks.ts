@@ -85,10 +85,10 @@ function createChainTrackConfig({
   // assembly name. Strip it but preserve it in the track ID/name suffix so
   // chainBridge tracks remain distinct from regular liftOver tracks for the
   // same assembly pair.
-  const isChainBridge = match[2]!.endsWith('.chainBridge')
+  const isChainBridge = match[2].endsWith('.chainBridge')
   const targetAssemblyOrig = isChainBridge
-    ? match[2]!.slice(0, -'.chainBridge'.length)
-    : match[2]!
+    ? match[2].slice(0, -'.chainBridge'.length)
+    : match[2]
   let targetAssembly: string
 
   // Handle cases like GCF_... or GCA_... accessions

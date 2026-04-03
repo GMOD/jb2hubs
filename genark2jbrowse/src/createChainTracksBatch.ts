@@ -20,10 +20,7 @@ interface ChainTrack {
 }
 
 // Cache lookups that were repeated per-invocation
-const allJsonPath = path.join(
-  process.cwd(),
-  'processedHubJson/all.json',
-)
+const allJsonPath = path.join(process.cwd(), 'processedHubJson/all.json')
 const allJsonIndex = new Map<string, string>()
 try {
   const allJson = JSON.parse(fs.readFileSync(allJsonPath, 'utf8'))

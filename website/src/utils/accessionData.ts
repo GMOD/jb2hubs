@@ -90,7 +90,7 @@ export function loadNcbiDetails(accession: string): NcbiDetails {
   const ncbiPath = path.join(
     'hubs',
     base,
-    chunks[0]!,
+    chunks[0],
     chunks[1]!,
     chunks[2]!,
     accession,
