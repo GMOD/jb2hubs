@@ -89,7 +89,7 @@ extract_file_urls() {
 generate_file_paths() {
   local filename="$1"
   local filename_no_ext
-  filename_no_ext=$(echo "$filename" | sed 's/\.over\.chain\.gz$//')
+  filename_no_ext="${filename%.over.chain.gz}"
 
   echo "$CHAINS_DIR/$filename"             # chain_path
   echo "$PIFS_DIR/$filename_no_ext.pif.gz" # pif_path
@@ -106,6 +106,7 @@ download_file() {
     # Add a small delay to avoid overwhelming the server
     sleep 0.5
     # Use a temporary file to ensure atomic downloads
+    # shellcheck disable=SC2015
     wget -q -O "$output_path.tmp" "$url" && mv "$output_path.tmp" "$output_path" || {
       rm -f "$output_path.tmp"
       log_error "Failed to download $url"
@@ -181,7 +182,6 @@ process_liftover() {
   mkdir -p "$liftover_dir"
 
   local base_url="$HUB_URL/liftOver/"
-  # log_info "Processing liftOver chains for $ACCESSION from $base_url"
 
   # Get chain file URLs, excluding md5sum files
   local urls
@@ -189,7 +189,6 @@ process_liftover() {
 
   if [[ -z "$urls" ]]; then
     # No liftOver files found, which is normal for many assemblies
-    # log_info "No liftOver chain files found at $base_url"
     return 0
   fi
 

@@ -280,7 +280,7 @@ log "Generating default sessions for all assemblies..."
 ./generateDefaultSessions.sh
 
 log "Copying generated config files to the local 'configs' directory..."
-fd "config.json$" "$UCSC_BUILT_DIR"/ | { grep -v "meta.json" || true; } | parallel $PARALLEL_OPTS -I {} 'cp {} configs/$(basename $(dirname {})).json'
+fd "config.json$" "$UCSC_BUILT_DIR"/ | { grep -v "meta.json" || true; } | parallel "$PARALLEL_OPTS" -I {} "cp {} configs/\$(basename \$(dirname {})).json"
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts

@@ -7,7 +7,8 @@ echo "Phase 1: Building queue of GFF files to process..."
 # Define function to check if a GFF file needs processing
 check_and_queue() {
   local input_file="$1"
-  local filename=$(basename "$input_file")
+  local filename
+  filename=$(basename "$input_file")
   local output_bgz_file="bgz/$filename"
 
   if [ ! -f "$output_bgz_file" ] || [ -n "$REPROCESS" ]; then
@@ -36,7 +37,8 @@ echo "Phase 2: Processing $TOTAL GFF files..."
 # end, sorts, bgzips, and tabix indexes the GFF.
 process_gff_file() {
   local input_file="$1"
-  local filename=$(basename "$input_file")
+  local filename
+  filename=$(basename "$input_file")
   local output_bgz_file="bgz/$filename"
   local unzipped_file="${input_file%.gz}"
 

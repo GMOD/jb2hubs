@@ -170,14 +170,17 @@ if [ "$MODE" = "new" ]; then
 
   download_gff_for_hub() {
     local line="$1"
-    local url=$(echo "$line" | cut -d'|' -f1)
-    local common_name=$(echo "$line" | cut -d'|' -f2)
+    local url
+    url=$(echo "$line" | cut -d'|' -f1)
+    local common_name
+    common_name=$(echo "$line" | cut -d'|' -f2)
 
     if [ -z "$url" ] || [ "$url" = "null" ]; then
       return
     fi
 
-    local filename=$(basename "$url")
+    local filename
+    filename=$(basename "$url")
     if [ ! -f "gff/$filename" ]; then
       echo "Downloading GFF file for $common_name: $url"
       wget -nc -q "$url" -P gff || echo "Failed to download $url" >&2
@@ -196,12 +199,13 @@ if [ "$MODE" = "new" ]; then
   process_gff_for_hub() {
     local accession="$1"
     local input_file
-    input_file=$(echo gff/${accession}_*.gz)
+    input_file="gff/${accession}_*.gz"
     if [ ! -f "$input_file" ]; then
       return
     fi
 
-    local filename=$(basename "$input_file")
+    local filename
+    filename=$(basename "$input_file")
     local output_bgz_file="bgz/$filename"
 
     if [ -f "$output_bgz_file" ]; then
@@ -226,12 +230,13 @@ if [ "$MODE" = "new" ]; then
   add_track_for_hub() {
     local accession="$1"
     local gff_file
-    gff_file=$(echo bgz/${accession}_*.gff.gz)
+    gff_file="bgz/${accession}_*.gff.gz"
     if [ ! -f "$gff_file" ]; then
       return
     fi
 
-    local hub_dir="$(accession_to_hub_dir "$accession")"
+    local hub_dir
+    hub_dir=$(accession_to_hub_dir "$accession")
 
     if ! jbrowse add-track --force "$gff_file" --out "$hub_dir" --load copy --indexFile "${gff_file}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" >/dev/null; then
       echo "Warning: add-track failed for $accession" >&2

@@ -21,7 +21,8 @@ process_gff_file() {
   mkdir -p "$output_dir"
 
   # Get the filename from the URL
-  local filename=$(basename "$url")
+  local filename
+  filename=$(basename "$url")
   local gff_file="${filename%.gz}"
   local sorted_gff_file="${gff_file%.gff3}.sorted.gff3"
 

@@ -26,7 +26,6 @@ process_assembly() {
 
   local config_file="$assembly_dir/config.json"
   local tracks_file="$assembly_dir/tracks.json"
-  local temp_config_file="$assembly_dir/tmp.json"
 
   # Add metadata from the tracksDb.sql to the config.json
   node src/addMetadata.ts "$config_file" "$tracks_file"

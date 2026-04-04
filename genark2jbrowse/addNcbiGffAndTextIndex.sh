@@ -5,9 +5,12 @@ source "$(dirname "$0")/common.sh"
 # Define function to add a GFF track to a JBrowse 2 assembly and create a text index.
 add_track_and_text_index() {
   local gff_file_path="$1"
-  local filename=$(basename "$gff_file_path")
-  local accession=$(echo "$filename" | cut -d'_' -f1,2) # e.g., GCF_000896435.1
-  local hub_dir="$(accession_to_hub_dir "$accession")"
+  local filename
+  filename=$(basename "$gff_file_path")
+  local accession
+  accession=$(echo "$filename" | cut -d'_' -f1,2) # e.g., GCF_000896435.1
+  local hub_dir
+  hub_dir=$(accession_to_hub_dir "$accession")
   local config_file="$hub_dir/config.json"
 
   if [ ! -f "$config_file" ]; then

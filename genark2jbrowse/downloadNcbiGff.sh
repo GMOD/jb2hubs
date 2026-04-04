@@ -7,9 +7,12 @@ echo "Phase 1: Building queue of GFF files to download..."
 # Define function to check if a GFF file needs downloading
 check_and_queue() {
   local line="$1"
-  local url=$(echo "$line" | cut -f1)
-  local common_name=$(echo "$line" | cut -f2)
-  local filename=$(basename "$url")
+  local url
+  url=$(echo "$line" | cut -f1)
+  local common_name
+  common_name=$(echo "$line" | cut -f2)
+  local filename
+  filename=$(basename "$url")
 
   if [ ! -f "gff/$filename" ]; then
     # Output: url|common_name|filename
@@ -39,9 +42,12 @@ echo "Phase 2: Downloading $TOTAL GFF files (rate-limited)..."
 # Define function to download a single NCBI GFF file
 download_ncbi_gff() {
   local line="$1"
-  local url=$(echo "$line" | cut -d'|' -f1)
-  local common_name=$(echo "$line" | cut -d'|' -f2)
-  local filename=$(echo "$line" | cut -d'|' -f3)
+  local url
+  url=$(echo "$line" | cut -d'|' -f1)
+  local common_name
+  common_name=$(echo "$line" | cut -d'|' -f2)
+  local filename
+  filename=$(echo "$line" | cut -d'|' -f3)
 
   echo "Downloading GFF file for $common_name: $url"
   if wget -nc -q "$url" -P gff; then

@@ -86,7 +86,7 @@ generate_file_paths() {
   local filename="$1"
   local ext_to_remove="$2"
   local filename_no_ext
-  filename_no_ext=$(echo "$filename" | sed "s/$ext_to_remove//")
+  filename_no_ext="${filename%"$ext_to_remove"}"
 
   echo "$CHAINS_DIR/$filename"             # chain_path
   echo "$PIFS_DIR/$filename_no_ext.pif.gz" # pif_path
@@ -101,6 +101,7 @@ download_file() {
   if [ ! -f "$output_path" ]; then
     log_info "Downloading $(basename "$output_path")..."
     # Use a temporary file to ensure atomic downloads
+    # shellcheck disable=SC2015
     wget -q -O "$output_path.tmp" "$url" && mv "$output_path.tmp" "$output_path" || {
       rm -f "$output_path.tmp"
       log_error "Failed to download $url"
@@ -185,7 +186,6 @@ process_liftover() {
   else
     base_url="https://hgdownload.soe.ucsc.edu/goldenPath/$ASSEMBLY/liftOver/"
   fi
-  # log_info "Processing liftOver chains for $ASSEMBLY from $base_url"
 
   # Get chain file URLs, excluding md5sum files
   local urls

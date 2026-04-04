@@ -46,7 +46,8 @@ process_batch_result() {
 # Try a batch request with retries. Returns 0 on success, 1 on failure.
 fetch_batch() {
   local batch_file="$1"
-  local batch_result=$(mktemp)
+  local batch_result
+  batch_result=$(mktemp)
   local max_attempts=3
 
   for attempt in $(seq 1 $max_attempts); do
@@ -77,7 +78,7 @@ FAILED_FILE=$(mktemp)
 split -l "$BATCH_SIZE" -d "$ACCESSION_FILE" "${ACCESSION_FILE}_batch_"
 
 batch_num=0
-total_batches=$(ls "${ACCESSION_FILE}_batch_"* 2>/dev/null | wc -l)
+total_batches=$(find . -maxdepth 1 -name "${ACCESSION_FILE}_batch_*" -type f | wc -l)
 
 for batch_file in "${ACCESSION_FILE}_batch_"*; do
   batch_num=$((batch_num + 1))
@@ -104,7 +105,6 @@ if [ -s "$FAILED_FILE" ]; then
   echo ""
   echo "Phase 2b: Retrying $failed_count accessions from failed batches in smaller groups..."
 
-  RETRY_FILE=$(mktemp)
   split -l 500 -d "$FAILED_FILE" "${FAILED_FILE}_retry_"
 
   for retry_batch in "${FAILED_FILE}_retry_"*; do
