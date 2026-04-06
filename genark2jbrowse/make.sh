@@ -199,7 +199,7 @@ if [ "$MODE" = "new" ]; then
   process_gff_for_hub() {
     local accession="$1"
     local input_file
-    input_file="gff/${accession}_*.gz"
+    input_file=$(echo gff/"${accession}"_*.gz)
     if [ ! -f "$input_file" ]; then
       return
     fi
@@ -230,7 +230,7 @@ if [ "$MODE" = "new" ]; then
   add_track_for_hub() {
     local accession="$1"
     local gff_file
-    gff_file="bgz/${accession}_*.gff.gz"
+    gff_file=$(echo bgz/"${accession}"_*.gff.gz)
     if [ ! -f "$gff_file" ]; then
       return
     fi

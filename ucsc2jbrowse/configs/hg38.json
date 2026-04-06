@@ -17412,6 +17412,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg38"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg38_to_over.chain.gz_liftOver",
+      "name": "hg38 to over.chain.gz liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "over.chain.gz"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "over.chain.gz",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToAilMel1.over.chain.gz.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToAilMel1.over.chain.gz.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "aggregateTextSearchAdapters": [

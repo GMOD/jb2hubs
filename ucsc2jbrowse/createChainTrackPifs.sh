@@ -198,7 +198,7 @@ process_liftover() {
   echo "$urls" | while read -r url; do
     local filename
     filename=$(basename "$url")
-    process_chain_file "$url" "$filename" '\.chain\.gz' "$liftover_dir"
+    process_chain_file "$url" "$filename" '.chain.gz' "$liftover_dir"
   done
 }
 
@@ -229,7 +229,7 @@ process_vs() {
     echo "$files" | while read -r file; do
       [[ -n "$file" ]] || continue
       local file_url="$subdir_url/$file"
-      process_chain_file "$file_url" "$file" '\.all\.chain\.gz' "$vs_dir"
+      process_chain_file "$file_url" "$file" '.all.chain.gz' "$vs_dir"
     done
   done
 }
