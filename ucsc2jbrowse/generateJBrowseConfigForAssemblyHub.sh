@@ -20,7 +20,7 @@ if [ ! -f "$UCSC_BUILT_DIR/list.json" ]; then
 fi
 
 # Process hub-like entries
-cat "$UCSC_BUILT_DIR/list.json" | jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:"))) | .key' | while read -r assembly; do
+jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:"))) | .key' < "$UCSC_BUILT_DIR/list.json" | while read -r assembly; do
   echo "Processing track hub for $assembly..."
   outdir="$UCSC_BUILT_DIR/$assembly"
   mkdir -p "$outdir"
