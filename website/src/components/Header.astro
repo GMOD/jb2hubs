@@ -2,7 +2,8 @@
 import Logo from '../logo.astro'
 
 const navItems = [
-  { name: 'Genomes', href: '/' },
+  { name: 'Search', href: '/search' },
+  { name: 'Blog', href: '/blog' },
   { name: 'Demos', href: '/demos' },
   { name: 'About', href: '/about' },
 ]
@@ -22,6 +23,12 @@ const navItems = [
         {
           navItems.map(item => (
             <a href={item.href} class="navLink">
+              {item.name === 'Search' && (
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="searchNavIcon">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" x2="16.65" y1="21" y2="16.65" />
+                </svg>
+              )}
               {item.name}
             </a>
           ))
@@ -211,6 +218,11 @@ const navItems = [
   .icon {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .searchNavIcon {
+    vertical-align: -2px;
+    margin-right: 2px;
   }
 
   .mobile-nav {

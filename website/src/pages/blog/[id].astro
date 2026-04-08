@@ -1,0 +1,46 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import { getAllPosts } from '../../lib/blog.ts'
+
+export function getStaticPaths() {
+  const posts = getAllPosts()
+  return posts.map(post => ({
+    params: { id: post.id },
+  }))
+}
+
+const { id } = Astro.params
+const posts = getAllPosts()
+const post = posts.find(p => p.id === id)!
+
+const postModules = import.meta.glob<{ default: unknown }>('/src/_posts/*.md', {
+  eager: true,
+})
+const { default: Content } = postModules[`/src/_posts/${id}.md`] as { default: any }
+---
+
+<Layout title={post.title}>
+  <Container>
+    <article>
+      <h1>{post.title}</h1>
+      <time datetime={post.date}>{post.date}</time>
+      <div class="post-content">
+        <Content />
+      </div>
+      <p><a href="/blog">&larr; All posts</a></p>
+    </article>
+  </Container>
+</Layout>
+
+<style>
+  time {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .post-content {
+    margin: 2rem 0;
+    line-height: 1.6;
+  }
+</style>

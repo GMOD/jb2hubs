@@ -5,6 +5,7 @@ import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
 import {
   loadAccessionMap,
+  buildUcscMapping,
   loadNcbiDetails,
   tryAndReadJSON,
 } from '../../utils/accessionData.ts'
@@ -12,15 +13,17 @@ import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
 import path from 'path'
 
+const allAccessions = loadAccessionMap()
+const allUcscMappings = buildUcscMapping(allAccessions)
+
 export async function getStaticPaths() {
-  const accessions = loadAccessionMap()
-  return [...accessions.keys()]
+  return [...allAccessions.keys()]
     .filter(r => !!r)
     .map(r => ({ params: { id: r } }))
 }
 
 const { id } = Astro.params
-const ret = loadAccessionMap().get(id as string)
+const ret = allAccessions.get(id as string)
 
 if (!ret) {
   throw new Error(`Accession not found: ${id}`)
@@ -65,8 +68,10 @@ const {
 } = loadNcbiDetails(accession)
 
 const pairedAssemblyData = pairedAccession
-  ? loadAccessionMap().get(pairedAccession)
+  ? allAccessions.get(pairedAccession)
   : undefined
+
+const ucscDbName = allUcscMappings.get(accession)
 
 // GCA = GenBank, GCF = RefSeq
 const pairedLabel = pairedAccession?.startsWith('GCF')
@@ -204,11 +209,11 @@ const hasAssemblyStats =
             {pairedAssemblyData ? (
               <a href={`/accession/${pairedAccession}`}>{pairedAccession}</a>
             ) : (
-              <a
-                href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
-              >
-                {pairedAccession}
-              </a>
+              <>
+                {pairedAccession} (<a
+                  href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
+                >NCBI</a>)
+              </>
             )}
             {pairedAssemblyStatus === 'suppressed' ? (
               <>
@@ -400,9 +405,17 @@ const hasAssemblyStats =
     </div>
     <div>
       <h2>Genome browsers</h2>
+      {ucscDbName && (
+        <p>
+          See <a href={`/ucsc/${ucscDbName}`}><b>{ucscDbName}</b></a> for
+          our full JBrowse instance of this assembly.
+        </p>
+      )}
       <ul>
         <li>
-          <a href={jbrowseLink}>JBrowse</a>
+          <a href={ucscDbName
+            ? `https://jbrowse.org/code/jb2/latest/?config=/ucsc/${ucscDbName}/config.json`
+            : jbrowseLink}>JBrowse</a>
         </li>
         <li>
           <a href={igvBrowserLink}>IGV.js</a>

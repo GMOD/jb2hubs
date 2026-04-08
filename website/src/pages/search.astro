@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Container from '../components/Container.astro'
+import SearchPage from '../components/SearchPage.tsx'
+import '../styles/common-table.css'
+---
+
+<Layout title="Search all genomes">
+  <Container wide>
+    <h1>Search all genomes</h1>
+    <SearchPage client:only="react" />
+  </Container>
+</Layout>

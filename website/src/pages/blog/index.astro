@@ -1,0 +1,57 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import { getAllPosts } from '../../lib/blog.ts'
+
+const posts = getAllPosts()
+
+const postModules = import.meta.glob<{ default: unknown }>('/src/_posts/*.md', {
+  eager: true,
+})
+---
+
+<Layout title="Blog - JBrowse 2 Genome Hubs">
+  <Container>
+    <h1>Blog</h1>
+    <p>Recent updates and changes to the JBrowse 2 genome hubs database.</p>
+
+    {posts.map((post, i) => {
+      const mod = postModules[`/src/_posts/${post.id}.md`]
+      const Content = mod?.default as any
+      return (
+        <>
+          {i > 0 && <hr />}
+          <article>
+            <h2><a href={`/blog/${post.id}`}>{post.title}</a></h2>
+            <time datetime={post.date}>{post.date}</time>
+            <div class="post-content">
+              <Content />
+            </div>
+          </article>
+        </>
+      )
+    })}
+  </Container>
+</Layout>
+
+<style>
+  article {
+    margin-bottom: 2rem;
+  }
+
+  time {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 2rem 0;
+  }
+
+  .post-content {
+    margin-top: 1rem;
+    line-height: 1.6;
+  }
+</style>

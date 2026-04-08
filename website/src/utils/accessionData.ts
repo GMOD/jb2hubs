@@ -71,17 +71,48 @@ export function tryAndReadJSON<T>(filePath: string): T | null {
   }
 }
 
-let accessionMap: Map<string, AssemblyData> | null = null
-
-export function loadAccessionMap(): Map<string, AssemblyData> {
-  accessionMap ??= new Map(
-    JSON.parse(
-      fs.readFileSync(path.join('processedHubJson', 'all.json'), 'utf-8'),
+export function loadAccessionMap() {
+  return new Map<string, AssemblyData>(
+    (
+      JSON.parse(
+        fs.readFileSync(path.join('processedHubJson', 'all.json'), 'utf-8'),
+      ) as AssemblyData[]
     )
-      .filter((f: AssemblyData) => f.accession)
-      .map((f: AssemblyData) => [f.accession, f]),
+      .filter(f => f.accession)
+      .map(f => [f.accession, f]),
   )
-  return accessionMap
+}
+
+export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
+  const list = JSON.parse(
+    fs.readFileSync(path.join('src', 'list.json'), 'utf-8'),
+  )
+
+  const baseToUcsc = new Map<string, string>()
+  for (const [id, genome] of Object.entries(
+    list.ucscGenomes as Record<string, { sourceName?: string }>,
+  )) {
+    const match = genome.sourceName?.match(/GC[AF]_\d+/)
+    if (match) {
+      baseToUcsc.set(match[0], id)
+    }
+  }
+
+  const mapping = new Map<string, string>()
+  for (const [accession, data] of accessions) {
+    const base = accession.replace(/\.\d+$/, '')
+    const ucscId = baseToUcsc.get(base)
+    if (ucscId) {
+      mapping.set(accession, ucscId)
+    } else if (data.pairedAccession) {
+      const pairedBase = data.pairedAccession.replace(/\.\d+$/, '')
+      const pairedUcscId = baseToUcsc.get(pairedBase)
+      if (pairedUcscId) {
+        mapping.set(accession, pairedUcscId)
+      }
+    }
+  }
+  return mapping
 }
 
 export function loadNcbiDetails(accession: string): NcbiDetails {
