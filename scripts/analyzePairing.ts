@@ -45,17 +45,19 @@ for (const file of files) {
 
   counts.total++
 
-  const report = data.reports.find(
-    r =>
-      r.accession === hubAccession ||
-      r.paired_accession === hubAccession ||
-      r.current_accession === hubAccession,
-  ) ?? data.reports[0]!
+  const report =
+    data.reports.find(
+      r =>
+        r.accession === hubAccession ||
+        r.paired_accession === hubAccession ||
+        r.current_accession === hubAccession,
+    ) ?? data.reports[0]!
 
   const pairedAccession =
     report.paired_accession === hubAccession
       ? report.accession
-      : (report.paired_accession ?? report.assembly_info?.paired_assembly?.accession)
+      : (report.paired_accession ??
+        report.assembly_info?.paired_assembly?.accession)
 
   if (!pairedAccession) {
     counts.noPairedAccession++
@@ -79,9 +81,7 @@ for (const file of files) {
     counts.gcfToGca++
   } else {
     counts.unexpectedPairing++
-    issues.push(
-      `UNEXPECTED: hub=${hubAccession} paired=${pairedAccession}`,
-    )
+    issues.push(`UNEXPECTED: hub=${hubAccession} paired=${pairedAccession}`)
   }
 }
 

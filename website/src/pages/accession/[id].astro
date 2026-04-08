@@ -348,7 +348,9 @@ const hasAssemblyStats =
                 <dt>BUSCO completeness</dt>
                 <dd>
                   {`${(annotationInfo.busco.complete * 100).toFixed(1)}% complete`}
-                  {buscoBreakdown.length ? ` (${buscoBreakdown.join(', ')})` : null}
+                  {buscoBreakdown.length
+                    ? ` (${buscoBreakdown.join(', ')})`
+                    : null}
                   {annotationInfo.busco.busco_lineage
                     ? ` — ${annotationInfo.busco.busco_lineage}`
                     : null}
