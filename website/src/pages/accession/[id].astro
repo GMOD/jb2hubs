@@ -13,17 +13,17 @@ import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
 import path from 'path'
 
-const allAccessions = loadAccessionMap()
-const allUcscMappings = buildUcscMapping(allAccessions)
-
 export async function getStaticPaths() {
-  return [...allAccessions.keys()]
+  const accessions = loadAccessionMap()
+  return [...accessions.keys()]
     .filter(r => !!r)
     .map(r => ({ params: { id: r } }))
 }
 
 const { id } = Astro.params
-const ret = allAccessions.get(id as string)
+const accessions = loadAccessionMap()
+const ucscMappings = buildUcscMapping(accessions)
+const ret = accessions.get(id as string)
 
 if (!ret) {
   throw new Error(`Accession not found: ${id}`)
@@ -68,10 +68,10 @@ const {
 } = loadNcbiDetails(accession)
 
 const pairedAssemblyData = pairedAccession
-  ? allAccessions.get(pairedAccession)
+  ? accessions.get(pairedAccession)
   : undefined
 
-const ucscDbName = allUcscMappings.get(accession)
+const ucscDbName = ucscMappings.get(accession)
 
 // GCA = GenBank, GCF = RefSeq
 const pairedLabel = pairedAccession?.startsWith('GCF')
