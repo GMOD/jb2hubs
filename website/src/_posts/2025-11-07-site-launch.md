@@ -1,6 +1,6 @@
 ---
 title: Site launch
-date: "2025-11-07"
+date: '2025-11-07'
 ---
 
 We launched [genomes.jbrowse.org](https://genomes.jbrowse.org) alongside the

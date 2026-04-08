@@ -15,22 +15,26 @@ const postModules = import.meta.glob<{ default: unknown }>('/src/_posts/*.md', {
     <h1>Blog</h1>
     <p>Recent updates and changes to the JBrowse 2 genome hubs database.</p>
 
-    {posts.map((post, i) => {
-      const mod = postModules[`/src/_posts/${post.id}.md`]
-      const Content = mod?.default as any
-      return (
-        <>
-          {i > 0 && <hr />}
-          <article>
-            <h2><a href={`/blog/${post.id}`}>{post.title}</a></h2>
-            <time datetime={post.date}>{post.date}</time>
-            <div class="post-content">
-              <Content />
-            </div>
-          </article>
-        </>
-      )
-    })}
+    {
+      posts.map((post, i) => {
+        const mod = postModules[`/src/_posts/${post.id}.md`]
+        const Content = mod?.default as any
+        return (
+          <>
+            {i > 0 && <hr />}
+            <article>
+              <h2>
+                <a href={`/blog/${post.id}`}>{post.title}</a>
+              </h2>
+              <time datetime={post.date}>{post.date}</time>
+              <div class="post-content">
+                <Content />
+              </div>
+            </article>
+          </>
+        )
+      })
+    }
   </Container>
 </Layout>
 

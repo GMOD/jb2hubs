@@ -1,7 +1,10 @@
-import { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from 'aws-lambda'
-
 import { mergeConfigs } from './merger.ts'
-import { JBrowseConfig, MergeOptions } from './types.ts'
+
+import type { JBrowseConfig, MergeOptions } from './types.ts'
+import type {
+  APIGatewayProxyEventV2,
+  APIGatewayProxyResultV2,
+} from 'aws-lambda'
 
 function addRelativeUris(config: unknown, baseUri: string) {
   if (typeof config === 'object' && config !== null) {

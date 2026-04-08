@@ -1,6 +1,6 @@
 ---
 title: NCBI metadata on accession pages
-date: "2026-03-17"
+date: '2026-03-17'
 ---
 
 We switched from the legacy E-utilities to the NCBI Datasets API and now display

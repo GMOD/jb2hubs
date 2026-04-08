@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import { addRelativeUris, idToConfigUrl } from '../src/index.ts'
 import { mergeConfigs } from '../src/merger.ts'
-import { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types.ts'
+
+import type { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types.ts'
 
 function makeAssembly(name: string, displayName?: string): Assembly {
   return {

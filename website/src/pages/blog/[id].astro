@@ -17,7 +17,9 @@ const post = posts.find(p => p.id === id)!
 const postModules = import.meta.glob<{ default: unknown }>('/src/_posts/*.md', {
   eager: true,
 })
-const { default: Content } = postModules[`/src/_posts/${id}.md`] as { default: any }
+const { default: Content } = postModules[`/src/_posts/${id}.md`] as {
+  default: any
+}
 ---
 
 <Layout title={post.title}>

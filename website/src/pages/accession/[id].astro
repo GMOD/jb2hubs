@@ -207,9 +207,13 @@ const hasAssemblyStats =
               <a href={`/accession/${pairedAccession}`}>{pairedAccession}</a>
             ) : (
               <>
-                {pairedAccession} (<a
+                {pairedAccession} (
+                <a
                   href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
-                >NCBI</a>)
+                >
+                  NCBI
+                </a>
+                )
               </>
             )}
             {pairedAssemblyStatus === 'suppressed' ? (
@@ -402,17 +406,24 @@ const hasAssemblyStats =
     </div>
     <div>
       <h2>Genome browsers</h2>
-      {ucscDbName && (
-        <p>
-          See <a href={`/ucsc/${ucscDbName}`}><b>{ucscDbName}</b></a> for
-          our full JBrowse instance of this assembly.
-        </p>
-      )}
+      {
+        ucscDbName && (
+          <p>
+            See{' '}
+            <a href={`/ucsc/${ucscDbName}`}>
+              <b>{ucscDbName}</b>
+            </a>{' '}
+            for our full JBrowse instance of this assembly.
+          </p>
+        )
+      }
       <ul>
         <li>
-          <a href={ucscDbName
-            ? `https://jbrowse.org/code/jb2/latest/?config=/ucsc/${ucscDbName}/config.json`
-            : jbrowseLink}>JBrowse</a>
+          <a
+            href={ucscDbName
+              ? `https://jbrowse.org/code/jb2/latest/?config=/ucsc/${ucscDbName}/config.json`
+              : jbrowseLink}>JBrowse</a
+          >
         </li>
         <li>
           <a href={igvBrowserLink}>IGV.js</a>
