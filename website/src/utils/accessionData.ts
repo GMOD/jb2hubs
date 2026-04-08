@@ -1,19 +1,8 @@
 import fs from 'fs'
 import path from 'path'
+import type { AnnotationInfo } from 'hubtools'
 
-export interface AnnotationInfo {
-  name?: string
-  provider?: string
-  release_date?: string
-  stats?: {
-    gene_counts?: {
-      protein_coding?: number
-      non_coding?: number
-      pseudogene?: number
-      total?: number
-    }
-  }
-}
+export type { AnnotationInfo }
 
 export interface AssemblyData {
   accession: string

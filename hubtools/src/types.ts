@@ -9,6 +9,30 @@ export interface UCSCGenArkAssemblyEntry {
   ucscBrowser: string
 }
 
+export interface AnnotationInfo {
+  name?: string
+  provider?: string
+  release_date?: string
+  busco?: {
+    busco_lineage?: string
+    busco_ver?: string
+    complete?: number
+    single_copy?: number
+    duplicated?: number
+    fragmented?: number
+    missing?: number
+    total_count?: string
+  }
+  stats?: {
+    gene_counts?: {
+      protein_coding?: number
+      non_coding?: number
+      pseudogene?: number
+      total?: number
+    }
+  }
+}
+
 // NCBI Datasets API format (from `datasets summary genome accession`)
 export interface NCBIDatasetsReport {
   accession: string
@@ -54,19 +78,7 @@ export interface NCBIDatasetsReport {
     genome_coverage?: string
     number_of_component_sequences?: number
   }
-  annotation_info?: {
-    name?: string
-    provider?: string
-    release_date?: string
-    stats?: {
-      gene_counts?: {
-        protein_coding?: number
-        non_coding?: number
-        pseudogene?: number
-        total?: number
-      }
-    }
-  }
+  annotation_info?: AnnotationInfo
 }
 
 export interface NCBIDatasetsResponse {

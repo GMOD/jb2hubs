@@ -97,8 +97,13 @@ export function parseAssemblyEntry({
   const ncbiRefSeqCategory = assembly_info.refseq_category
   const suppressed = assembly_info.assembly_status === 'suppressed'
   const assemblyType = assembly_info.assembly_type
+  // When the report was matched via r.paired_accession === accession, the
+  // report describes the other assembly (e.g. GCA report for a GCF hub), so
+  // the paired accession is report.accession, not report.paired_accession.
   const pairedAccession =
-    report.paired_accession ?? assembly_info.paired_assembly?.accession
+    report.paired_accession === accession
+      ? report.accession
+      : (report.paired_accession ?? assembly_info.paired_assembly?.accession)
   const pairedAssemblyStatus = assembly_info.paired_assembly?.status
   const pairedAssemblyDifferences = assembly_info.paired_assembly?.differences
   const genomeNotes = assembly_info.genome_notes

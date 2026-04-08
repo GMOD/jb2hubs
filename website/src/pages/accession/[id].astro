@@ -23,9 +23,6 @@ const { id } = Astro.params
 const ret = loadAccessionMap().get(id as string)
 
 if (!ret) {
-  // Astro handles 404s for paths not returned by getStaticPaths
-  // For direct access, you might want a custom 404 page or redirect
-  // For now, we'll just show a message.
   throw new Error(`Accession not found: ${id}`)
 }
 
@@ -86,18 +83,31 @@ const imageData = tryAndReadJSON<{ imageUrl?: string; pageUrl?: string }>(
 const imageUrl = imageData?.imageUrl
 const pageUrl = imageData?.pageUrl
 
-const statsParts = [
-  stats?.total_length
-    ? `${Number(stats.total_length).toLocaleString()} bp total`
-    : null,
-  stats?.chromosome_count ? `${stats.chromosome_count} chromosomes` : null,
-  stats?.scaffold_n50
-    ? `scaffold N50: ${Number(stats.scaffold_n50).toLocaleString()}`
-    : null,
-  stats?.contig_n50
-    ? `contig N50: ${Number(stats.contig_n50).toLocaleString()}`
-    : null,
-].filter(Boolean)
+const buscoBreakdown = annotationInfo?.busco
+  ? [
+      annotationInfo.busco.single_copy !== undefined
+        ? `${(annotationInfo.busco.single_copy * 100).toFixed(1)}% single-copy`
+        : null,
+      annotationInfo.busco.duplicated !== undefined
+        ? `${(annotationInfo.busco.duplicated * 100).toFixed(1)}% duplicated`
+        : null,
+      annotationInfo.busco.fragmented !== undefined
+        ? `${(annotationInfo.busco.fragmented * 100).toFixed(1)}% fragmented`
+        : null,
+      annotationInfo.busco.missing !== undefined
+        ? `${(annotationInfo.busco.missing * 100).toFixed(1)}% missing`
+        : null,
+    ].filter(Boolean)
+  : []
+
+const hasAssemblyStats =
+  stats?.total_length ||
+  stats?.chromosome_count ||
+  stats?.scaffold_count ||
+  stats?.contig_count ||
+  gcPercent !== undefined ||
+  genomeCoverage ||
+  sequencingTech
 ---
 
 <Layout frontmatter={{ title: scientificName }}>
@@ -177,7 +187,7 @@ const statsParts = [
         ) : null
       }
       {
-        pairedAccession && pairedAssemblyData ? (
+        pairedAccession ? (
           <div>
             <b>
               {pairedLabel}
@@ -191,7 +201,15 @@ const statsParts = [
               </span>
               :
             </b>{' '}
-            <a href={`/accession/${pairedAccession}`}>{pairedAccession}</a>
+            {pairedAssemblyData ? (
+              <a href={`/accession/${pairedAccession}`}>{pairedAccession}</a>
+            ) : (
+              <a
+                href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
+              >
+                {pairedAccession}
+              </a>
+            )}
             {pairedAssemblyStatus === 'suppressed' ? (
               <>
                 {' '}
@@ -213,39 +231,6 @@ const statsParts = [
         ) : null
       }
       {
-        statsParts.length ? (
-          <div>
-            <b>Assembly stats:</b>
-            <ul>
-              {statsParts.map(p => (
-                <li>{p}</li>
-              ))}
-            </ul>
-          </div>
-        ) : null
-      }
-      {
-        gcPercent !== undefined ? (
-          <div>
-            <b>GC content:</b> {gcPercent}%
-          </div>
-        ) : null
-      }
-      {
-        genomeCoverage ? (
-          <div>
-            <b>Coverage:</b> {genomeCoverage}x
-          </div>
-        ) : null
-      }
-      {
-        sequencingTech ? (
-          <div>
-            <b>Sequencing:</b> {sequencingTech}
-          </div>
-        ) : null
-      }
-      {
         bioprojectAccession ? (
           <div>
             <b>BioProject:</b>{' '}
@@ -257,29 +242,139 @@ const statsParts = [
           </div>
         ) : null
       }
-      {
-        annotationInfo ? (
-          <div>
-            <b>Annotation:</b> {annotationInfo.name}
-            {annotationInfo.provider ? ` (${annotationInfo.provider})` : null}
-            {annotationInfo.release_date
-              ? `, ${annotationInfo.release_date}`
-              : null}
-            {annotationInfo.stats?.gene_counts ? (
-              <div>
-                {annotationInfo.stats.gene_counts.total?.toLocaleString()} genes
-                —{' '}
-                {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
-                protein-coding,{' '}
-                {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
-                non-coding,{' '}
-                {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
-                pseudogenes
-              </div>
+    </div>
+    {
+      hasAssemblyStats ? (
+        <div>
+          <h2>Assembly statistics</h2>
+          <dl class={styles.statsTable}>
+            {stats?.total_length ? (
+              <>
+                <dt>Total length</dt>
+                <dd>{Number(stats.total_length).toLocaleString()} bp</dd>
+              </>
             ) : null}
-          </div>
-        ) : null
-      }
+            {stats?.ungapped_length ? (
+              <>
+                <dt>Ungapped length</dt>
+                <dd>{Number(stats.ungapped_length).toLocaleString()} bp</dd>
+              </>
+            ) : null}
+            {stats?.chromosome_count ? (
+              <>
+                <dt>Chromosomes</dt>
+                <dd>{stats.chromosome_count}</dd>
+              </>
+            ) : null}
+            {stats?.scaffold_count ? (
+              <>
+                <dt>Scaffolds</dt>
+                <dd>{stats.scaffold_count}</dd>
+              </>
+            ) : null}
+            {stats?.scaffold_n50 ? (
+              <>
+                <dt>Scaffold N50</dt>
+                <dd>{Number(stats.scaffold_n50).toLocaleString()}</dd>
+              </>
+            ) : null}
+            {stats?.scaffold_l50 ? (
+              <>
+                <dt>Scaffold L50</dt>
+                <dd>{Number(stats.scaffold_l50).toLocaleString()}</dd>
+              </>
+            ) : null}
+            {stats?.contig_count ? (
+              <>
+                <dt>Contigs</dt>
+                <dd>{stats.contig_count}</dd>
+              </>
+            ) : null}
+            {stats?.contig_n50 ? (
+              <>
+                <dt>Contig N50</dt>
+                <dd>{Number(stats.contig_n50).toLocaleString()}</dd>
+              </>
+            ) : null}
+            {stats?.contig_l50 ? (
+              <>
+                <dt>Contig L50</dt>
+                <dd>{Number(stats.contig_l50).toLocaleString()}</dd>
+              </>
+            ) : null}
+            {gcPercent !== undefined ? (
+              <>
+                <dt>GC content</dt>
+                <dd>{gcPercent}%</dd>
+              </>
+            ) : null}
+            {genomeCoverage ? (
+              <>
+                <dt>Coverage</dt>
+                <dd>{genomeCoverage}x</dd>
+              </>
+            ) : null}
+            {sequencingTech ? (
+              <>
+                <dt>Sequencing</dt>
+                <dd>{sequencingTech}</dd>
+              </>
+            ) : null}
+          </dl>
+        </div>
+      ) : null
+    }
+    {
+      annotationInfo ? (
+        <div>
+          <h2>Annotation</h2>
+          <dl class={styles.statsTable}>
+            {annotationInfo.name ? (
+              <>
+                <dt>Name</dt>
+                <dd>
+                  {annotationInfo.name}
+                  {annotationInfo.provider
+                    ? ` (${annotationInfo.provider})`
+                    : null}
+                  {annotationInfo.release_date
+                    ? `, ${annotationInfo.release_date}`
+                    : null}
+                </dd>
+              </>
+            ) : null}
+            {annotationInfo.busco?.complete !== undefined ? (
+              <>
+                <dt>BUSCO completeness</dt>
+                <dd>
+                  {`${(annotationInfo.busco.complete * 100).toFixed(1)}% complete`}
+                  {buscoBreakdown.length ? ` (${buscoBreakdown.join(', ')})` : null}
+                  {annotationInfo.busco.busco_lineage
+                    ? ` — ${annotationInfo.busco.busco_lineage}`
+                    : null}
+                </dd>
+              </>
+            ) : null}
+            {annotationInfo.stats?.gene_counts ? (
+              <>
+                <dt>Gene counts</dt>
+                <dd>
+                  {annotationInfo.stats.gene_counts.total?.toLocaleString()}{' '}
+                  total —{' '}
+                  {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
+                  protein-coding,{' '}
+                  {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
+                  non-coding,{' '}
+                  {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
+                  pseudogenes
+                </dd>
+              </>
+            ) : null}
+          </dl>
+        </div>
+      ) : null
+    }
+    <div>
       {
         comments ? (
           <div>
@@ -288,7 +383,6 @@ const statsParts = [
           </div>
         ) : null
       }
-
       {
         imageUrl ? (
           <div class={styles.imageContainer}>
