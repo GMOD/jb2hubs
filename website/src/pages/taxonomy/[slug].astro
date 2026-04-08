@@ -3,6 +3,12 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
+import {
+  getCachedTree,
+  extractSubtreeByTaxonId,
+  extractLineageByTaxonId,
+  collectAccessions,
+} from '../../utils/taxonomyCache'
 import type { FlatNodeData } from '../../utils/taxonomyCache'
 import type { RowData } from '../../components/DataTable/hooks/useTableColumns.tsx'
 import { notEmpty } from '../../components/DataTable/utils.ts'
@@ -79,12 +85,6 @@ export async function getStaticPaths() {
     }
 
     // Load and parse the tree once for all taxonomy pages
-    const {
-      getCachedTree,
-      extractSubtreeByTaxonId,
-      extractLineageByTaxonId,
-      collectAccessions,
-    } = await import('../../utils/taxonomyCache')
     const fullTree = getCachedTree('all')
 
     // Create a map of all species data for fast lookup
