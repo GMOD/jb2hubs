@@ -193,6 +193,7 @@ function formatDate(isoString: string): string {
   interface HubEntry {
     accession: string
     createdDate: string
+    createdTimestamp: number
     scientificName: string
     commonName: string
     source: string
@@ -205,44 +206,76 @@ function formatDate(isoString: string): string {
     return format(new Date(isoString), 'MMM d, yyyy')
   }
 
-  function buildLinks(hub: HubEntry): string {
-    const links: string[] = []
+  function makeLink(href: string, text: string): HTMLAnchorElement {
+    const a = document.createElement('a')
+    a.href = href
+    a.textContent = text
+    a.target = '_blank'
+    a.rel = 'noopener noreferrer'
+    return a
+  }
+
+  function buildLinksCell(hub: HubEntry): HTMLTableCellElement {
+    const td = document.createElement('td')
+    const entries: [string, string][] = []
     if (hub.jbrowseLink) {
-      links.push(
-        `<a href="${hub.jbrowseLink}" target="_blank" rel="noopener noreferrer">JBrowse</a>`,
-      )
+      entries.push([hub.jbrowseLink, 'JBrowse'])
     }
     if (hub.ucscBrowserLink) {
-      links.push(
-        `<a href="${hub.ucscBrowserLink}" target="_blank" rel="noopener noreferrer">UCSC</a>`,
-      )
+      entries.push([hub.ucscBrowserLink, 'UCSC'])
     }
     if (hub.ncbiLink) {
-      links.push(
-        `<a href="${hub.ncbiLink}" target="_blank" rel="noopener noreferrer">NCBI</a>`,
-      )
+      entries.push([hub.ncbiLink, 'NCBI'])
     }
-    return links.join(' | ')
+    for (let i = 0; i < entries.length; i++) {
+      if (i > 0) {
+        td.append(' | ')
+      }
+      td.append(makeLink(entries[i][0], entries[i][1]))
+    }
+    return td
   }
 
   function renderTable(data: HubEntry[]) {
     const tbody = document.getElementById('table-body')
     if (!tbody) return
 
-    tbody.innerHTML = data
-      .map(
-        hub => `
-      <tr>
-        <td><a href="/accession/${hub.accession}">${hub.accession}</a></td>
-        <td>${hub.commonName}</td>
-        <td><em>${hub.scientificName}</em></td>
-        <td>${formatDate(hub.createdDate)}</td>
-        <td>${hub.source}</td>
-        <td>${buildLinks(hub)}</td>
-      </tr>
-    `,
+    const fragment = document.createDocumentFragment()
+    for (const hub of data) {
+      const tr = document.createElement('tr')
+
+      const accessionTd = document.createElement('td')
+      const accessionLink = document.createElement('a')
+      accessionLink.href = `/accession/${hub.accession}`
+      accessionLink.textContent = hub.accession
+      accessionTd.append(accessionLink)
+
+      const commonNameTd = document.createElement('td')
+      commonNameTd.textContent = hub.commonName
+
+      const sciNameTd = document.createElement('td')
+      const em = document.createElement('em')
+      em.textContent = hub.scientificName
+      sciNameTd.append(em)
+
+      const dateTd = document.createElement('td')
+      dateTd.textContent = formatDate(hub.createdDate)
+
+      const sourceTd = document.createElement('td')
+      sourceTd.textContent = hub.source
+
+      tr.append(
+        accessionTd,
+        commonNameTd,
+        sciNameTd,
+        dateTd,
+        sourceTd,
+        buildLinksCell(hub),
       )
-      .join('')
+      fragment.append(tr)
+    }
+
+    tbody.replaceChildren(fragment)
   }
 
   function updateURL(category: string) {

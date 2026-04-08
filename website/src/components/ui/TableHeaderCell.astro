@@ -2,7 +2,11 @@
 const { className, onClick, ...props } = Astro.props
 ---
 
-<th onclick={onClick} class={`tableHeaderCell ${className}`} {...props}>
+<th
+  onclick={onClick}
+  class={`tableHeaderCell ${className}`}
+  {...props}
+>
   <slot />
 </th>
 

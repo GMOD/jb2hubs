@@ -2,7 +2,11 @@
 const { href, className, variant = 'primary', ...props } = Astro.props
 ---
 
-<a href={href} class={`buttonLink ${variant} ${className}`} {...props}>
+<a
+  href={href}
+  class={`buttonLink ${variant} ${className}`}
+  {...props}
+>
   <slot />
 </a>
 

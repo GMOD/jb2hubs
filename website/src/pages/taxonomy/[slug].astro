@@ -154,13 +154,19 @@ if (isCategory) {
 }
 ---
 
-<Layout title={`Taxonomy - ${title}`} description={description}>
+<Layout
+  title={`Taxonomy - ${title}`}
+  description={description}
+>
   <Container wide>
     {
       isCategory && (
         <div class="page-header">
           <h1 class="page-title">GenArk taxonomy - {title}</h1>
-          <a href={`/hubs/${slug}`} class="hubs-link">
+          <a
+            href={`/hubs/${slug}`}
+            class="hubs-link"
+          >
             View list of species as table for {title}
           </a>
         </div>
@@ -174,7 +180,10 @@ if (isCategory) {
           <div class="lineage-breadcrumbs">
             {precomputedLineage.slice(0, -1).map(node => (
               <>
-                <a href={`/taxonomy/${node.taxonId}`} class="lineage-link">
+                <a
+                  href={`/taxonomy/${node.taxonId}`}
+                  class="lineage-link"
+                >
                   {node.name || 'Unnamed'}
                 </a>
                 <span class="lineage-separator">›</span>
@@ -211,7 +220,12 @@ if (isCategory) {
             >
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
               <polyline points="15 3 21 3 21 9" />
-              <line x1="10" y1="14" x2="21" y2="3" />
+              <line
+                x1="10"
+                y1="14"
+                x2="21"
+                y2="3"
+              />
             </svg>
           </a>
         </div>

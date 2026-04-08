@@ -11,7 +11,10 @@ export default function StyledLink({
   ...props
 }: StyledLinkProps) {
   return (
-    <a href={href} {...props}>
+    <a
+      href={href}
+      {...props}
+    >
       {children}
     </a>
   )

@@ -1,15 +1,17 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source "$(dirname "$0")/common.sh"
 
 echo "Phase 1: Building queue of assemblies that need NCBI metadata..."
 
 # Build the queue in a single Node process (avoids 50k+ shell/jq spawns)
 QUEUE_FILE=$(mktemp)
-fd '^meta\.json$' hubs | node src/buildNcbiQueue.ts > "$QUEUE_FILE"
+fd '^meta\.json$' hubs | node src/buildNcbiQueue.ts >"$QUEUE_FILE"
 
 # Count how many assemblies need fetching
-TOTAL=$(wc -l < "$QUEUE_FILE")
+TOTAL=$(wc -l <"$QUEUE_FILE")
 
 if [ "$TOTAL" -eq 0 ]; then
   echo "No assemblies need NCBI metadata fetching"
@@ -21,7 +23,7 @@ echo "Phase 2: Fetching NCBI metadata for $TOTAL assemblies using datasets CLI..
 
 # Extract accessions
 ACCESSION_FILE=$(mktemp)
-cut -d'|' -f2 "$QUEUE_FILE" > "$ACCESSION_FILE"
+cut -d'|' -f2 "$QUEUE_FILE" >"$ACCESSION_FILE"
 
 # Create a temp dir for per-accession results
 RESULT_DIR=$(mktemp -d)
@@ -47,10 +49,10 @@ fetch_batch() {
   local max_attempts=3
 
   for attempt in $(seq 1 $max_attempts); do
-    if datasets summary genome accession --inputfile "$batch_file" > "$batch_result" 2>/tmp/datasets_err_$$; then
+    if datasets summary genome accession --inputfile "$batch_file" >"$batch_result" 2>/tmp/datasets_err_$$; then
       # Valid response: either has .reports array, or has total_count:0 (no results)
-      if jq -e '.total_count' "$batch_result" > /dev/null 2>&1; then
-        if jq -e '.reports' "$batch_result" > /dev/null 2>&1; then
+      if jq -e '.total_count' "$batch_result" >/dev/null 2>&1; then
+        if jq -e '.reports' "$batch_result" >/dev/null 2>&1; then
           process_batch_result "$batch_result"
         fi
         rm -f "$batch_result"
@@ -78,12 +80,12 @@ total_batches=$(find . -maxdepth 1 -name "${ACCESSION_FILE}_batch_*" -type f | w
 
 for batch_file in "${ACCESSION_FILE}_batch_"*; do
   batch_num=$((batch_num + 1))
-  batch_count=$(wc -l < "$batch_file")
+  batch_count=$(wc -l <"$batch_file")
   echo "Fetching batch $batch_num/$total_batches ($batch_count accessions)..."
 
   if ! fetch_batch "$batch_file"; then
     echo "  Batch $batch_num failed after retries, saving accessions for individual retry"
-    cat "$batch_file" >> "$FAILED_FILE"
+    cat "$batch_file" >>"$FAILED_FILE"
   fi
 
   rm -f "$batch_file"
@@ -97,19 +99,19 @@ done
 
 # Retry failed batches in smaller groups
 if [ -s "$FAILED_FILE" ]; then
-  failed_count=$(wc -l < "$FAILED_FILE")
+  failed_count=$(wc -l <"$FAILED_FILE")
   echo ""
   echo "Phase 2b: Retrying $failed_count accessions from failed batches in smaller groups..."
 
   split -l 500 -d "$FAILED_FILE" "${FAILED_FILE}_retry_"
 
   for retry_batch in "${FAILED_FILE}_retry_"*; do
-    retry_count=$(wc -l < "$retry_batch")
+    retry_count=$(wc -l <"$retry_batch")
     echo "  Retrying batch of $retry_count accessions..."
 
     retry_result=$(mktemp)
-    if datasets summary genome accession --inputfile "$retry_batch" > "$retry_result" 2>/dev/null; then
-      if jq -e '.reports' "$retry_result" > /dev/null 2>&1; then
+    if datasets summary genome accession --inputfile "$retry_batch" >"$retry_result" 2>/dev/null; then
+      if jq -e '.reports' "$retry_result" >/dev/null 2>&1; then
         process_batch_result "$retry_result"
       fi
     fi
@@ -124,17 +126,17 @@ not_found=0
 while IFS='|' read -r dir id common_name; do
   ncbi_file="$dir/ncbi.json"
   if [ -f "$RESULT_DIR/$id.json" ]; then
-    jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$RESULT_DIR/$id.json" > "$ncbi_file"
+    jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$RESULT_DIR/$id.json" >"$ncbi_file"
     # Remove any previous notfound sentinel
     rm -f "$dir/ncbi.json.notfound"
     found=$((found + 1))
   else
     # Write sentinel so we don't keep re-queuing this accession
-    echo "Not found in NCBI Datasets API as of $(date -I)" > "$dir/ncbi.json.notfound"
+    echo "Not found in NCBI Datasets API as of $(date -I)" >"$dir/ncbi.json.notfound"
     not_found=$((not_found + 1))
     echo "Warning: No datasets result for $id ($common_name) - marked as not found"
   fi
-done < "$QUEUE_FILE"
+done <"$QUEUE_FILE"
 
 # Clean up
 rm -f "$QUEUE_FILE" "$ACCESSION_FILE" "$FAILED_FILE" "/tmp/datasets_err_$$"

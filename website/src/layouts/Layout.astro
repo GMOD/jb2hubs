@@ -18,9 +18,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
+    <meta
+      name="viewport"
+      content="width=device-width"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/favicon.ico"
+    />
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
     ></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || []
@@ -32,9 +41,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
       gtag('config', 'G-D9CD3J2V31')
     </script>
     <title>{pageTitle}</title>
-    <link rel="canonical" href={canonicalURL} />
-    <meta name="robots" content="index, follow" />
-    {pageDescription && <meta name="description" content={pageDescription} />}
+    <link
+      rel="canonical"
+      href={canonicalURL}
+    />
+    <meta
+      name="robots"
+      content="index, follow"
+    />
+    {
+      pageDescription && (
+        <meta
+          name="description"
+          content={pageDescription}
+        />
+      )
+    }
   </head>
   <body>
     <Header />

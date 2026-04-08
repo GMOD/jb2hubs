@@ -20,29 +20,29 @@ cd "$SCRIPT_DIR"
 SKIP_DOWNLOAD=false
 for arg in "$@"; do
   case $arg in
-    --skip-download)
-      SKIP_DOWNLOAD=true
-      shift
-      ;;
-    --reprocess-all)
-      export REPROCESS=true
-      shift
-      ;;
-    --help|-h)
-      echo "Usage: $0 [OPTIONS]"
-      echo ""
-      echo "Options:"
-      echo "  (default)          Download and process all assemblies"
-      echo "  --skip-download    Skip download, just process existing data"
-      echo "  --reprocess-all    Force reprocess everything (ignores cached hashes)"
-      echo "  --help, -h         Show this help message"
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $arg"
-      echo "Use --help for usage information"
-      exit 1
-      ;;
+  --skip-download)
+    SKIP_DOWNLOAD=true
+    shift
+    ;;
+  --reprocess-all)
+    export REPROCESS=true
+    shift
+    ;;
+  --help | -h)
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  (default)          Download and process all assemblies"
+    echo "  --skip-download    Skip download, just process existing data"
+    echo "  --reprocess-all    Force reprocess everything (ignores cached hashes)"
+    echo "  --help, -h         Show this help message"
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $arg"
+    echo "Use --help for usage information"
+    exit 1
+    ;;
   esac
 done
 
@@ -80,7 +80,7 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
     # For infrequent assemblies, skip rsync if synced within the last month
     if [ -z "${REPROCESS:-}" ] && ! echo "$FREQUENT_ASSEMBLIES" | grep -qw "$assembly"; then
       if [ -f "$sync_stamp" ]; then
-        age_days=$(( ( $(date +%s) - $(stat -c %Y "$sync_stamp") ) / 86400 ))
+        age_days=$((($(date +%s) - $(stat -c %Y "$sync_stamp")) / 86400))
         if [ "$age_days" -lt "$RSYNC_MONTHLY_DAYS" ]; then
           log "Skipping rsync for $assembly (synced ${age_days}d ago)"
           continue
@@ -137,11 +137,11 @@ else
       continue
     fi
 
-    current_hash=$(stat -c "%s" "$trackdb")
+    current_hash=$(xxhsum -H3 "$trackdb" | cut -d' ' -f1)
     stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
 
     if [ "$current_hash" = "$stored_hash" ] && [ -f "$built_dir/config.json" ]; then
-      continue  # unchanged
+      continue # unchanged
     fi
 
     CHANGED_DL_DIRS+=("$assembly_data_dir")
@@ -255,10 +255,10 @@ if [ "${#POST_PROCESS_DIRS[@]}" -gt 0 ]; then
     fi
   }
   export -f add_metadata_for_dir
-  parallel $PARALLEL_OPTS add_metadata_for_dir ::: "${POST_PROCESS_DIRS[@]}"
+  parallel $PARALLEL_OPTS add_metadata_for_dir ::: "${POST_PROCESS_DIRS[@]}" || true
 
   log "Adding original assembly to track name..."
-  printf '%s/config.json\n' "${POST_PROCESS_DIRS[@]}" | parallel $PARALLEL_OPTS -j1 node src/addOrigAssemblyToTrackName.ts {}
+  printf '%s/config.json\n' "${POST_PROCESS_DIRS[@]}" | parallel $PARALLEL_OPTS -j1 node src/addOrigAssemblyToTrackName.ts {} || true
 
   log "Renaming some tracks..."
   node src/rewriteUcscTrackNames.ts "$UCSC_BUILT_DIR"
@@ -273,11 +273,11 @@ log "Download and add GENCODE tracks"
 log "Ensuring text search adapters are present for all assemblies with trix files..."
 node src/ensureTextSearchAdapters.ts "$UCSC_BUILT_DIR"
 
-log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
-./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
-
 log "Generating default sessions for all assemblies..."
 ./generateDefaultSessions.sh
+
+log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
+./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
 
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_BUILT_DIR"/ | { grep -v "meta.json" || true; } | parallel $PARALLEL_OPTS -I {} "cp {} configs/\$(basename \$(dirname {})).json"
@@ -291,8 +291,9 @@ node src/mergeBlockedFiles.ts
 log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts
 
-log "Hashing all output files for integrity checking..."
-find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp" -exec stat -c "%s %n" {} + | LC_ALL=C sort -k2,2 >fileListing.txt
+log "Hashing output files for integrity checking..."
+make_file_listing fileListing.txt "$UCSC_BUILT_DIR" \
+  ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp"
 
 # Write updated hashes for assemblies we just processed
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ]; then
@@ -300,7 +301,7 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOW
     assembly=$(basename "$assembly_data_dir")
     trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
     if [ -f "$trackdb" ]; then
-      stat -c "%s" "$trackdb" >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
+      xxhsum -H3 "$trackdb" | cut -d' ' -f1 >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
     fi
   done
 fi

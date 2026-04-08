@@ -1101,48 +1101,25 @@
           "indexType": "CSI"
         }
       }
-    },
+    }
+  ],
+  "aggregateTextSearchAdapters": [
     {
-      "type": "SyntenyTrack",
-      "trackId": "rhiRox1_to_over.chain.gz_liftOver",
-      "name": "rhiRox1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rhiRox1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rhiRox1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/rhiRox1ToHg38.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rhiRox1ToHg38.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "rhiRox1_to_over.chain.gz_liftOver",
-      "name": "rhiRox1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["rhiRox1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "rhiRox1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/rhiRox1ToTarSyr2.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/rhiRox1ToTarSyr2.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "rhiRox1-index",
+      "ixFilePath": {
+        "uri": "trix/rhiRox1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/rhiRox1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/rhiRox1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["rhiRox1"]
     }
   ],
   "plugins": [
@@ -1198,24 +1175,5 @@
     "activeWidgets": {
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
-  },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "rhiRox1-index",
-      "ixFilePath": {
-        "uri": "trix/rhiRox1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/rhiRox1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/rhiRox1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["rhiRox1"]
-    }
-  ]
+  }
 }

@@ -7,12 +7,13 @@
   "scripts": {
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "lint:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shellcheck",
-    "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write .",
+    "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write . && prettier --parser json --print-width 0 --write website/public/taxonomyFilter.json",
+    "format:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print | xargs -0 shfmt -w -i 2",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@gmod/ucsc-hub": "^2.0.3",
-    "@types/node": "^25.5.2",
+    "@types/node": "^25.6.0",
     "@types/pako": "^2.0.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -20,10 +21,11 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unicorn": "^64.0.0",
     "fast-deep-equal": "^3.1.3",
+    "glob": "^13.0.6",
     "node-sql-parser": "^5.4.0",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.2",
     "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.1"
+    "typescript-eslint": "^8.58.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -35,7 +37,7 @@
     "@eslint/js": "^9.39.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "globals": "^17.4.0",
+    "globals": "^17.5.0",
     "prettier-plugin-astro": "^0.14.1"
   }
 }

@@ -632,32 +632,6 @@
       "description": "Single-read and multi-read mappability after bisulfite conversion"
     },
     {
-      "trackId": "hg38-gnomad3MeanCoverage",
-      "name": "gnomAD v3 Genome Coverage - Mean Coverage",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.mean.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "alwaysZero": "on",
-          "autoScale": "on",
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.mean.bw",
-          "color": "255,0,0",
-          "longLabel": "gnomAD Mean Genome Sample Coverage v3.0.1",
-          "parent": "gnomad3Coverage on",
-          "priority": "0.1",
-          "shortLabel": "Mean Coverage",
-          "track": "gnomad3MeanCoverage",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Mean Genome Sample Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4ExomeMeanCoverage",
       "name": "gnomAD v4 Exome Coverage - Mean Coverage",
       "type": "QuantitativeTrack",
@@ -684,29 +658,29 @@
       "category": ["Variation and Repeats"]
     },
     {
-      "trackId": "hg38-gnomad3MedianCoverage",
-      "name": "gnomAD v3 Genome Coverage - Median Coverage",
+      "trackId": "hg38-gnomad3MeanCoverage",
+      "name": "gnomAD v3 Genome Coverage - Mean Coverage",
       "type": "QuantitativeTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.median.bw"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.mean.bw"
       },
       "metadata": {
         "ucsc": {
           "alwaysZero": "on",
           "autoScale": "on",
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.median.bw",
-          "color": "0,0,255",
-          "longLabel": "gnomAD Median Genome Sample Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "0.2",
-          "shortLabel": "Median Coverage",
-          "track": "gnomad3MedianCoverage",
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.mean.bw",
+          "color": "255,0,0",
+          "longLabel": "gnomAD Mean Genome Sample Coverage v3.0.1",
+          "parent": "gnomad3Coverage on",
+          "priority": "0.1",
+          "shortLabel": "Mean Coverage",
+          "track": "gnomad3MeanCoverage",
           "html": ""
         }
       },
-      "description": "gnomAD Median Genome Sample Coverage v3.0.1",
+      "description": "gnomAD Mean Genome Sample Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -733,6 +707,32 @@
         }
       },
       "description": "gnomAD Median Exome Sample Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad3MedianCoverage",
+      "name": "gnomAD v3 Genome Coverage - Median Coverage",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.median.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "alwaysZero": "on",
+          "autoScale": "on",
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.median.bw",
+          "color": "0,0,255",
+          "longLabel": "gnomAD Median Genome Sample Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "0.2",
+          "shortLabel": "Median Coverage",
+          "track": "gnomad3MedianCoverage",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Median Genome Sample Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -1612,31 +1612,6 @@
       "category": ["Regulation"]
     },
     {
-      "trackId": "hg38-gnomad31XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 1X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_1.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_1.bw",
-          "color": "255,0,0",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 1X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "1",
-          "shortLabel": "Sample % > 1X",
-          "track": "gnomad31XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 1X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome1XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 1X",
       "type": "QuantitativeTrack",
@@ -1659,6 +1634,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 1X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad31XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 1X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_1.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_1.bw",
+          "color": "255,0,0",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 1X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "1",
+          "shortLabel": "Sample % > 1X",
+          "track": "gnomad31XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 1X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -1754,7 +1754,7 @@
           "detailsDynamicTable": "json_table|experiments support this rPeak",
           "filterType.factor": "multipleListOr",
           "filterValues.factor": "ADNP,AFF1,AFF4,AGO1,AGO2,AHDC1,AHR,AKAP8,AKNA,ARHGAP35,ARID1B,ARID2,ARID3A,ARID4A,ARID4B,ARID5B,ARNTL,ARNT,AR,ASH1L,ASH2L,ATF1,ATF2,ATF3,ATF4,ATF5,ATF6,ATF7,ATOH8,BACH1,BATF,BCL11A,BCL11B,BCL3,BCL6B,BCL6,BCLAF1,BCOR,BDP1,BHLHE40,BMI1,BNC2,BRCA1,BRCA2,BRD4,BRD9,C11orf30,CAMTA2,CBFA2T2,CBFA2T3,CBFB,CBX1,CBX2,CBX3,CBX5,CBX8,CC2D1A,CCAR2,CCNT2,CDC5L,CEBPA,CEBPB,CEBPD,CEBPG,CEBPZ,CERS6,CGGBP1,CHAMP1,CHD1,CHD2,CHD4,CHD7,CLOCK,CREB1,CREB3L1,CREB3,CREB5,CREM,CSDC2,CSDE1,CSRNP3,CTBP1,CTBP2,CTCFL,CTCF,CUX1,DACH1,DBP,DDIT3,DDX20,DEAF1,DEK,DIDO1,DLX6,DMAP1,DMTF1,DNMT1,DNMT3B,DPF2,DR1,DRAP1,DZIP1,E2F1,E2F2,E2F3,E2F4,E2F5,E2F6,E2F7,E2F8,E4F1,EBF1,EEA1,EED,EGR1,EGR2,EHF,EHMT2,ELF1,ELF2,ELF3,ELF4,ELK1,ELK4,EMX1,EP300,EP400,ERF,ERG,ESR1,ESRRA,ESRRG,ETS1,ETV1,ETV4,ETV5,ETV6,EZH2phosphoT487,EZH2,FEZF1,FIP1L1,FOSB,FOSL1,FOSL2,FOS,FOXA1,FOXA2,FOXA3,FOXC1,FOXF2,FOXJ2,FOXJ3,FOXK1,FOXK2,FOXM1,FOXO1,FOXO4,FOXP1,FOXP2,FOXP4,FOXS1,FUBP1,FUBP3,FUS,GABPA,GABPB1,GATA1,GATA2,GATA3,GATA4,GATAD1,GATAD2A,GATAD2B,GFI1B,GFI1,GLI2,GLI4,GLIS1,GLIS2,GLIS3,GLYR1,GMEB1,GMEB2,GPN1,GTF2A2,GTF2B,GTF2E2,GTF2F1,GTF2I,GTF3A,GTF3C2,GZF1,HBP1,HCFC1,HDAC1,HDAC2,HDAC3,HDAC6,HDAC8,HDGF,HES1,HES2,HES4,HEYL,HHEX,HIC1,HIC2,HINFP,HIVEP1,HLF,HLTF,HMBOX1,HMG20A,HMG20B,HMGA2,HMGN3,HMGXB3,HMGXB4,HNF1A,HNF1B,HNF4A,HNF4G,HNRNPH1,HNRNPK,HNRNPLL,HNRNPL,HNRNPUL1,HOMEZ,HOXA3,HOXA5,HOXA7,HOXB13,HOXB5,HOXD1,HSF1,HSF2,HSF4,ID3,IKZF1,IKZF2,IKZF3,IKZF4,IKZF5,ILF3,INSM2,IRF1,IRF2,IRF3,IRF4,IRF5,IRF9,ISL1,ISL2,ISX,JRK,JUNB,JUND,JUN,KAT2B,KAT7,KAT8,KDM1A,KDM2A,KDM2B,KDM3A,KDM4A,KDM4B,KDM5A,KDM5B,KDM6A,KHSRP,KIAA2018,KLF10,KLF11,KLF12,KLF13,KLF16,KLF17,KLF1,KLF4,KLF5,KLF6,KLF7,KLF8,KLF9,KMT2A,KMT2B,L3MBTL2,LARP7,LBX2,LCORL,LCOR,LEF1,LIN54,MAF1,MAFF,MAFG,MAFK,MAX,MAZ,MBD1,MBD2,MBD4,MED13,MED1,MEF2A,MEF2B,MEF2C,MEF2D,MEIS1,MEIS2,MGA,MIER1,MIER2,MIER3,MITF,MIXL1,MLLT1,MLXIP,MLX,MNT,MNX1,MSX2,MTA1,MTA2,MTA3,MTF1,MTF2,MXD1,MXD3,MXD4,MXI1,MYBL2,MYB,MYC,MYNN,MYRF,MZF1,NAIF1,NANOG,NBN,NCOA1,NCOA2,NCOA3,NCOA6,NCOR1,NEUROD1,NFAT5,NFATC1,NFATC3,NFATC4,NFE2L1,NFE2L2,NFE2,NFIA,NFIB,NFIC,NFIL3,NFIX,NFKB2,NFKBIZ,NFRKB,NFXL1,NFYA,NFYB,NFYC,NKRF,NKX3-1,NONO,NR0B2,NR1H2,NR2C1,NR2C2,NR2E3,NR2F1,NR2F2,NR2F6,NR3C1,NR4A1,NR5A1,NR5A2,NRF1,NRL,NUFIP1,ONECUT1,ONECUT2,OSR2,OTX2,OVOL1,OVOL3,PAF1,PATZ1,PAWR,PAX5,PAX8,PAXIP1,PBX1,PBX2,PBX3,PCBP1,PCBP2,PHB2,PHB,PHF20,PHF21A,PHF5A,PHF8,PITX1,PKNOX1,PLSCR1,PML,POGZ,POLR2AphosphoS2,POLR2AphosphoS5,POLR2A,POLR2B,POLR2G,POLR2H,POLR3A,POU2F2,POU5F1,POU6F1,PPARG,PRDM10,PRDM15,PRDM1,PRDM4,PRDM6,PRPF4,PRRX2,PTBP1,PTRF,PTTG1,PYGO2,RAD21,RAD51,RARA,RARB,RARG,RB1,RBAK,RBBP5,RBFOX2,RBM14,RBM22,RBM25,RBM39,RBPJ,RCOR1,RCOR2,RELA,RELB,REPIN1,RERE,REST,RFX1,RFX3,RFX5,RFXANK,RFXAP,RLF,RNF219,RNF2,RORA,RREB1,RUNX1,RUNX3,RXRA,RXRB,SAFB2,SAFB,SAP130,SAP30,SATB2,SCRT1,SCRT2,SETDB1,SFPQ,SHOX2,SIN3A,SIN3B,SIRT6,SIX1,SIX4,SIX5,SKIL,SKI,SMAD1,SMAD3,SMAD4,SMAD5,SMAD9,SMARCA4,SMARCA5,SMARCB1,SMARCC1,SMARCC2,SMARCE1,SMC3,SNAI1,SNAI2,SNAPC4,SNIP1,SOX13,SOX18,SOX5,SOX6,SP110,SP140L,SP1,SP2,SP3,SP4,SP5,SP7,SPDEF,SPEN,SPI1,SREBF1,SREBF2,SRF,SRSF1,SRSF3,SRSF4,SSRP1,STAG1,STAT1,STAT3,STAT5A,STAT5B,STAT6,SUPT5H,SUZ12,TAF15,TAF1,TAF7,TAF9B,TAL1,TARDBP,TBL1XR1,TBPL1,TBP,TBX18,TBX21,TBX2,TBX3,TCF12,TCF15,TCF3,TCF4,TCF7L2,TCF7,TEAD1,TEAD2,TEAD3,TEAD4,TEF,TFAP4,TFCP2L1,TFCP2,TFDP1,TFDP2,TFE3,TGIF2,THAP11,THAP12,THAP1,THAP7,THAP8,THAP9,THRAP3,THRA,THRB,TIGD3,TIGD6,TOE1,TOX2,TOX,TP53,TP63,TRAFD1,TRIM22,TRIM24,TRIM25,TRIM28,TSC22D2,TSHZ1,TSHZ2,U2AF1,U2AF2,UBTF,USF1,USF2,VEZF1,WIZ,WRNIP1,WT1,XBP1,XRCC5,YBX1,YEATS2,YEATS4,YY1,YY2,ZBED1,ZBED4,ZBED5,ZBTB10,ZBTB11,ZBTB12,ZBTB14,ZBTB17,ZBTB1,ZBTB20,ZBTB21,ZBTB24,ZBTB25,ZBTB26,ZBTB2,ZBTB33,ZBTB37,ZBTB38,ZBTB39,ZBTB3,ZBTB40,ZBTB42,ZBTB43,ZBTB44,ZBTB46,ZBTB48,ZBTB49,ZBTB4,ZBTB5,ZBTB6,ZBTB7A,ZBTB7B,ZBTB8A,ZBTB9,ZC3H10,ZC3H11A,ZC3H4,ZC3H8,ZCCHC11,ZEB1,ZEB2,ZFHX2,ZFP14,ZFP1,ZFP36L2,ZFP36,ZFP37,ZFP3,ZFP41,ZFP64,ZFP69B,ZFP82,ZFP91,ZFX,ZFY,ZGPAT,ZHX1,ZHX2,ZHX3,ZIC2,ZIK1,ZKSCAN1,ZKSCAN5,ZKSCAN8,ZMAT3,ZMIZ1,ZMYM2,ZMYM3,ZNF101,ZNF10,ZNF121,ZNF124,ZNF12,ZNF133,ZNF134,ZNF138,ZNF140,ZNF142,ZNF143,ZNF146,ZNF148,ZNF157,ZNF165,ZNF16,ZNF175,ZNF17,ZNF180,ZNF184,ZNF189,ZNF18,ZNF197,ZNF202,ZNF205,ZNF207,ZNF20,ZNF215,ZNF217,ZNF219,ZNF221,ZNF223,ZNF224,ZNF225,ZNF230,ZNF232,ZNF234,ZNF239,ZNF24,ZNF251,ZNF256,ZNF257,ZNF25,ZNF263,ZNF264,ZNF266,ZNF26,ZNF274,ZNF276,ZNF280A,ZNF280B,ZNF280D,ZNF281,ZNF282,ZNF296,ZNF2,ZNF30,ZNF311,ZNF316,ZNF317,ZNF318,ZNF319,ZNF324,ZNF329,ZNF331,ZNF333,ZNF335,ZNF337,ZNF33A,ZNF33B,ZNF341,ZNF343,ZNF34,ZNF350,ZNF354B,ZNF354C,ZNF362,ZNF366,ZNF367,ZNF383,ZNF384,ZNF391,ZNF394,ZNF395,ZNF397,ZNF398,ZNF3,ZNF407,ZNF414,ZNF416,ZNF41,ZNF423,ZNF426,ZNF430,ZNF431,ZNF433,ZNF441,ZNF444,ZNF445,ZNF446,ZNF449,ZNF44,ZNF451,ZNF460,ZNF462,ZNF483,ZNF484,ZNF485,ZNF488,ZNF48,ZNF490,ZNF501,ZNF503,ZNF507,ZNF510,ZNF511,ZNF512B,ZNF512,ZNF513,ZNF518A,ZNF526,ZNF529,ZNF530,ZNF532,ZNF543,ZNF547,ZNF548,ZNF549,ZNF550,ZNF552,ZNF555,ZNF556,ZNF557,ZNF558,ZNF561,ZNF569,ZNF570,ZNF572,ZNF574,ZNF576,ZNF579,ZNF580,ZNF583,ZNF584,ZNF585B,ZNF589,ZNF592,ZNF596,ZNF598,ZNF600,ZNF605,ZNF607,ZNF608,ZNF609,ZNF610,ZNF614,ZNF615,ZNF616,ZNF619,ZNF623,ZNF624,ZNF629,ZNF639,ZNF644,ZNF646,ZNF652,ZNF654,ZNF660,ZNF664,ZNF671,ZNF674,ZNF677,ZNF678,ZNF680,ZNF687,ZNF691,ZNF692,ZNF697,ZNF700,ZNF703,ZNF707,ZNF709,ZNF70,ZNF710,ZNF713,ZNF737,ZNF740,ZNF75A,ZNF761,ZNF764,ZNF766,ZNF768,ZNF76,ZNF770,ZNF772,ZNF773,ZNF775,ZNF776,ZNF777,ZNF778,ZNF781,ZNF782,ZNF784,ZNF785,ZNF786,ZNF788,ZNF791,ZNF792,ZNF79,ZNF7,ZNF800,ZNF816,ZNF830,ZNF839,ZNF83,ZNF843,ZNF84,ZNF850,ZNF865,ZNF883,ZNF891,ZNF8,ZSCAN12,ZSCAN16,ZSCAN18,ZSCAN20,ZSCAN21,ZSCAN22,ZSCAN23,ZSCAN29,ZSCAN30,ZSCAN31,ZSCAN32,ZSCAN4,ZSCAN5A,ZSCAN5C,ZSCAN9,ZXDB,ZXDC,ZZZ3",
-          "html": "<h2>Description</h2>\n\n<p>This track displays regulatory regions in the human genome identified using ENCODE \ndata, specifically spanning ENCODE phases 2 through 4. It highlights genomic \nregions bound by DNA-associated proteins involved in transcriptional regulation, \nsuch as RNA polymerase, transcription factors (TFs), and chromatin remodeling \nproteins. Sequence-specific TFs bind directly to short DNA motifs via their \nDNA-binding domains, while other DNA-associated proteins interact with DNA \nindirectly through protein-protein interactions with sequence-specific TFs. Chromatin \nimmunoprecipitation followed by sequencing (ChIP-seq) is a high-throughput method \nfor mapping genome-wide protein-DNA interactions. Regions of high ChIP signal, \ncommonly referred to as ChIP-seq peaks, indicate protein binding sites. For each DNA\n-associated protein, all ENCODE ChIP-seq peaks across biosamples were integrated to generate \na set of representative peaks (rPeaks). This track displays these rPeaks alongside \ndetected DNA motif sites.</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>Each rPeak is represented as a gray box, with the shade of gray corresponding \nto the maximum ChIP-seq signal observed across contributing biosamples. The HGNC \ngene name of the associated protein is displayed to the left of the box. If the \nrPeak overlaps a cognate TF motif site in the collection built previously (PMID: \n37104580 DOI: <a target=\"_blank\" href=\"https://www.science.org/doi/10.1126/science.abn7930\">10.1126/science.abn7930</a>), \nthe motif site is highlighted in green.</p>\n\n<p>Clicking on an rPeak provides detailed information about the biosamples where the \nrPeak was detected, including the count of biosamples with contributing ChIP-seq peaks \nand the total number of biosamples assayed for the protein. Links to relevant ENCODE \nChIP-seq experiments and overlapping ENCODE candidate cis-regulatory elements (cCREs) \nare also provided.</p>\n\n<p>By default, rPeaks for all 912 DNA-associated proteins with ENCODE ChIP-seq data \nare displayed. Users can customize the display by selecting specific DNA-associated \nproteins in the track settings.</p>\n\n<h2>Methods</h2>\n\n<p>2,509 ENCODE ChIP-seq experiments were integrated from 912 DNA-associated \nproteins across 1,152 unique biosamples to produce representative peaks (rPeaks) \nfor each protein. The processing steps were as follows:</p>\n\n<ol>\n<li>ChIP-seq peaks for each protein were downloaded from the <a target=\"_blank\" href=\"http://encodeproject.org\">ENCODE Portal</a>, \ngenerated using the <a target=\"_blank\" href=\"https://www.encodeproject.org/chip-seq/transcription_factor/\">\nENCODE Transcription Factor ChIP-seq Processing Pipeline</a>.</li>\n<li>Using bedtools merge, ChIP-seq peaks were clustered from the protein&rsquo;s experiments across all biosamples.</li>\n<li>In each cluster, the peak with the highest ChIP signal (normalized by sequencing depth) was selected as the rPeak.</li>\n<li>All ChIP-seq peaks overlapping this rPeak by at least one nucleotide were marked as represented and removed from subsequent clustering rounds.</li>\n<li>Steps 2-4 were repeated until a final list of non-overlapping rPeaks was generated, representing all ChIP-seq peaks for the protein.</li>\n</ol>\n\n<h2>Data Access</h2>\n\n<p>The raw data for the ENCODE TF rPeak track will soon be available.</p>\n\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>,\nfor download, intersection or correlations with other tracks. To join this track with others\nbased on the chromosome positions, use the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n\n<p>\nRegarding access to this data track in the Genome Browser, for automated download \nand analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/\" target=\"_blank\">our download server</a>.\nThe file for this track is called <tt>TFrPeakClusters.bb</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool\ncan also be used to obtain only features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/ENCODE4/TFrPeakClusters.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt></p>\n</p>\n\n<p> For automated access, this track like all others, is also available via our\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\">API</a>.  However, for bulk processing in\npipelines, downloading the data and/or using bigBed files as described above is\nusually faster.  </p>\n\n<h2>Credits</h2>\n<p>This track was made possible thanks to the efforts of the ENCODE Consortium, \nENCODE ChIP-seq production laboratories, and the ENCODE Data Coordination Center \nfor generating and processing the ChIP-seq datasets. The ENCODE accession numbers \nfor the constituent datasets are accessible from the peak details page. Special thanks \nto Drs. Mingshi Gao, Greg Andrews, Jill Moore, and Zhiping Weng at UMass Chan Medical \nSchool, who were members of the ENCODE Data Analysis Center, for developing this track, \nincluding providing the rPeak and motif datasets and associated metadata and building the \ntrack. We also extend our gratitude to Max Haeussler and Jonathan Casper from the UCSC \nGenome Browser Project Team for their assistance in developing this track. For updates \non the track, please contact the Weng lab.</p>\n",
+          "html": "<h2>Description</h2>\n\n<p>This track displays regulatory regions in the human genome identified using ENCODE \ndata, specifically spanning ENCODE phases 2 through 4. It highlights genomic \nregions bound by DNA-associated proteins involved in transcriptional regulation, \nsuch as RNA polymerase, transcription factors (TFs), and chromatin remodeling \nproteins. Sequence-specific TFs bind directly to short DNA motifs via their \nDNA-binding domains, while other DNA-associated proteins interact with DNA \nindirectly through protein-protein interactions with sequence-specific TFs. Chromatin \nimmunoprecipitation followed by sequencing (ChIP-seq) is a high-throughput method \nfor mapping genome-wide protein-DNA interactions. Regions of high ChIP signal, \ncommonly referred to as ChIP-seq peaks, indicate protein binding sites. For each DNA\n-associated protein, all ENCODE ChIP-seq peaks across biosamples were integrated to generate \na set of representative peaks (rPeaks). This track displays these rPeaks alongside \ndetected DNA motif sites.</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>Each rPeak is represented as a gray box, with the shade of gray corresponding \nto the maximum ChIP-seq signal observed across contributing biosamples. The HGNC \ngene name of the associated protein is displayed to the left of the box. If the \nrPeak overlaps a cognate TF motif site in the collection built previously (PMID: \n37104580 DOI: <a target=\"_blank\" href=\"https://www.science.org/doi/10.1126/science.abn7930\">10.1126/science.abn7930</a>), \nthe motif site is highlighted in green.</p>\n\n<p>Clicking on an rPeak provides detailed information about the biosamples where the \nrPeak was detected, including the count of biosamples with contributing ChIP-seq peaks \nand the total number of biosamples assayed for the protein. Links to relevant ENCODE \nChIP-seq experiments and overlapping ENCODE candidate cis-regulatory elements (cCREs) \nare also provided.</p>\n\n<p>By default, rPeaks for all 912 DNA-associated proteins with ENCODE ChIP-seq data \nare displayed. Users can customize the display by selecting specific DNA-associated \nproteins in the track settings.</p>\n\n<h2>Methods</h2>\n\n<p>2,509 ENCODE ChIP-seq experiments were integrated from 912 DNA-associated \nproteins across 1,152 unique biosamples to produce representative peaks (rPeaks) \nfor each protein. The processing steps were as follows:</p>\n\n<ol>\n<li>ChIP-seq peaks for each protein were downloaded from the <a target=\"_blank\" href=\"https://www.encodeproject.org\">ENCODE Portal</a>, \ngenerated using the <a target=\"_blank\" href=\"https://www.encodeproject.org/chip-seq/transcription_factor/\">\nENCODE Transcription Factor ChIP-seq Processing Pipeline</a>.</li>\n<li>Using bedtools merge, ChIP-seq peaks were clustered from the protein&rsquo;s experiments across all biosamples.</li>\n<li>In each cluster, the peak with the highest ChIP signal (normalized by sequencing depth) was selected as the rPeak.</li>\n<li>All ChIP-seq peaks overlapping this rPeak by at least one nucleotide were marked as represented and removed from subsequent clustering rounds.</li>\n<li>Steps 2-4 were repeated until a final list of non-overlapping rPeaks was generated, representing all ChIP-seq peaks for the protein.</li>\n</ol>\n\n<h2>Data Access</h2>\n\n<p>The raw data for the ENCODE TF rPeak track will soon be available.</p>\n\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>,\nfor download, intersection or correlations with other tracks. To join this track with others\nbased on the chromosome positions, use the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n\n<p>\nRegarding access to this data track in the Genome Browser, for automated download \nand analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/\" target=\"_blank\">our download server</a>.\nThe file for this track is called <tt>TFrPeakClusters.bb</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool\ncan also be used to obtain only features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/ENCODE4/TFrPeakClusters.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt></p>\n</p>\n\n<p> For automated access, this track like all others, is also available via our\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\">API</a>.  However, for bulk processing in\npipelines, downloading the data and/or using bigBed files as described above is\nusually faster.  </p>\n\n<h2>Credits</h2>\n<p>This track was made possible thanks to the efforts of the ENCODE Consortium, \nENCODE ChIP-seq production laboratories, and the ENCODE Data Coordination Center \nfor generating and processing the ChIP-seq datasets. The ENCODE accession numbers \nfor the constituent datasets are accessible from the peak details page. Special thanks \nto Drs. Mingshi Gao, Greg Andrews, Jill Moore, and Zhiping Weng at UMass Chan Medical \nSchool, who were members of the ENCODE Data Analysis Center, for developing this track, \nincluding providing the rPeak and motif datasets and associated metadata and building the \ntrack. We also extend our gratitude to Max Haeussler and Jonathan Casper from the UCSC \nGenome Browser Project Team for their assistance in developing this track. For updates \non the track, please contact the Weng lab.</p>\n",
           "itemRgb": "on",
           "labelFields": "factor",
           "longLabel": "Transcription Factor Representative Peak (rPeak) Clusters (912 factors in 1152 biosamples) from ENCODE 4",
@@ -2605,31 +2605,6 @@
       "category": ["Regulation"]
     },
     {
-      "trackId": "hg38-gnomad35XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 5X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_5.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_5.bw",
-          "color": "225,0,30",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 5X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "2",
-          "shortLabel": "Sample % > 5X",
-          "track": "gnomad35XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 5X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome5XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 5X",
       "type": "QuantitativeTrack",
@@ -2652,6 +2627,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 5X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad35XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 5X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_5.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_5.bw",
+          "color": "225,0,30",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 5X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "2",
+          "shortLabel": "Sample % > 5X",
+          "track": "gnomad35XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 5X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -3303,31 +3303,6 @@
       "category": ["Mapping and Sequencing"]
     },
     {
-      "trackId": "hg38-gnomad310XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 10X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_10.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_10.bw",
-          "color": "195,0,60",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 10X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "3",
-          "shortLabel": "Sample % > 10X",
-          "track": "gnomad310XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 10X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome10XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 10X",
       "type": "QuantitativeTrack",
@@ -3350,6 +3325,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 10X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad310XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 10X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_10.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_10.bw",
+          "color": "195,0,60",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 10X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "3",
+          "shortLabel": "Sample % > 10X",
+          "track": "gnomad310XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 10X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -3552,7 +3552,7 @@
           "filterValuesDefault.AC_non_cancer": "Non-Cancer",
           "filterValuesDefault.FILTER": "PASS",
           "filterValuesDefault.annot": "pLoF,missense,synonymous",
-          "html": "<h2>Description</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\ngnomAD 3 was a genomes-only release. The gnomAD v3.1.1 track is the current version of gnomAD 3\nand shows variants from 76,156 whole genomes (and no exomes), all mapped to the GRCh38/hg38\nreference sequence. 4,454 genomes were added to the number of genomes in the previous v3 release.\nFor more detailed information on gnomAD v3.1, see the related <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/blog/2020-10-gnomad-v3-1/\">blog post</a>.\nA bugfix to v3.1 resulted in gnomAD v3.1.1, see\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2021-03-gnomad-v3-1-1/\">changelog</a>.\nDo not use gnomAD v3.1 anymore, we will remove the 3.1 track soon.\n</p>\n\n<h3>gnomAD v3.1 <b>(Deprecated)</b></h3>\n<p>\nThe gnomAD v3.1 track is deprecated. Please use v3.1.1 instead.\n</p>\n\n<h3>gnomAD v3</h3>\n<p>\nThe gnomAD v3 track shows variants from 71,702 whole genomes (and no exomes), all mapped to the\nGRCh38/hg38 reference sequence. For more detailed\ninformation on gnomAD v3, see the related <a target=\"_blank\"\nhref=\"https://macarthurlab.org/2019/10/16/gnomad-v3-0/\">blog post</a>.</p>\n\n<p>\nFor questions on the gnomAD data, also see the <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/faq\">gnomAD FAQ</a>.</p>\n<p>\nMore details on the Variant type(s) can be found on the <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/so_wiki/index.php/Category:SO:SOFA\">Sequence Ontology page</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\nThe gnomAD v3.1.1 track version follows the same conventions and configuration as the v3.1 track,\nexcept as noted below.</p>\n\n<ol>\n<li>There is a Non-cancer filter used to exclude/include variants from samples of individuals who\nwere not ascertained for having cancer in a cancer study.\n<li>There are additional FILTER field filters: AS_VQSR, indel_stack (chrM only), and npg (chrM only).\n<li>Where possible, variants overlapping multiple transcripts/genes have been collapsed into one\nvariant, with additional information available on the details page, which has roughly halved the\nnumber of items in the bigBed.\n<li>The bigBed has been split into two files, one with the information necessary for the track\ndisplay, and one with the information necessary for the details page. For more information on\nthis data format, please see the <a href=\"#dataAccess\">Data Access</a> section below.\n<li>The VEP annotation is shown as a table instead of spread across multiple fields.\n<li>Intergenic variants have not been pre-filtered.\n</ol>\n\n<h3>gnomAD v3.1</h3>\n<p>\nBy default, a maximum of 50,000 variants can be displayed at a time (before applying the filters\ndescribed below), before the track switches to dense display mode.\n</p>\n\n<p>\nMouse hover on an item will display many details about each variant, including the affected gene(s),\nthe variant type, and annotation (missense, synonymous, etc).\n</p>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for these tracks:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP version 85 (GENCODE v19).\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP v85.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<a name=\"UCSCMethods\">\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v3.1.1 data is unfiltered.</p>\n\n<p>\nFor the deprecated v3.1 update only, in order to cut\ndown on the amount of displayed data, the following variant\ntypes have been filtered out, but are still viewable in the gnomAD browser:\n<ul>\n    <li>Regulatory Region Variants\n    <li>Downstream/Upstream Gene Variants\n    <li>Transcription Factor Binding Site Variants\n</ul>\n</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<a name=\"dataAccess\">\n<h2>Data Access</h2>\n\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below). The\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1/variants/\">v3.1</a> and\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">v3.1.1</a> variants can\nbe found in a special directory as they have been transformed from the underlying VCF.</p>\n\n<p>\nFor the v3.1.1 variants in particular, the underlying bigBed only contains enough information\nnecessary to use the track in the browser. The extra data like VEP annotations and CADD scores are\navailable in the <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">same directory</a>\nas the bigBed but in the files <em>gnomad.v3.1.1.details.tab.gz</em> and\n<em>gnomad.v3.1.1.details.tab.gz.gzi</em>. The gnomad.v3.1.1.details.tab.gz contains the gzip\ncompressed extra data in JSON format, and the .gzi file is available to speed searching of\nthis data. Each variant has an associated md5sum in the name field of the bigBed which can be\nused along with the _dataOffset and _dataLen fields to get the associated external data, as show\nbelow:\n<pre>\n# find item of interest:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted for brevity..]    chr1-12417-G-A    67293    902\n\n# use the final two fields, _dataOffset and _dataLen (add one to _dataLen to include a newline), to get the extra data:\nbgzip -b 67293 -s 903 gnomad.v3.1.1.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\",  [..omitted for brevity..]\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alföldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\ngnomAD 3 was a genomes-only release. The gnomAD v3.1.1 track is the current version of gnomAD 3\nand shows variants from 76,156 whole genomes (and no exomes), all mapped to the GRCh38/hg38\nreference sequence. 4,454 genomes were added to the number of genomes in the previous v3 release.\nFor more detailed information on gnomAD v3.1, see the related <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/blog/2020-10-gnomad-v3-1/\">blog post</a>.\nA bugfix to v3.1 resulted in gnomAD v3.1.1, see\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2021-03-gnomad-v3-1-1/\">changelog</a>.\nDo not use gnomAD v3.1 anymore, we will remove the 3.1 track soon.\n</p>\n\n<h3>gnomAD v3.1 <b>(Deprecated)</b></h3>\n<p>\nThe gnomAD v3.1 track is deprecated. Please use v3.1.1 instead.\n</p>\n\n<h3>gnomAD v3</h3>\n<p>\nThe gnomAD v3 track shows variants from 71,702 whole genomes (and no exomes), all mapped to the\nGRCh38/hg38 reference sequence. For more detailed\ninformation on gnomAD v3, see the related <a target=\"_blank\"\nhref=\"https://macarthurlab.org/2019/10/16/gnomad-v3-0/\">blog post</a>.</p>\n\n<p>\nFor questions on the gnomAD data, also see the <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/faq\">gnomAD FAQ</a>.</p>\n<p>\nMore details on the Variant type(s) can be found on the <a target=\"_blank\"\nhref=\"https://github.com/The-Sequence-Ontology/SO-Ontologies/blob/master/Ontology_Files/subsets/SOFA.obo\">Sequence Ontology page</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\nThe gnomAD v3.1.1 track version follows the same conventions and configuration as the v3.1 track,\nexcept as noted below.</p>\n\n<ol>\n<li>There is a Non-cancer filter used to exclude/include variants from samples of individuals who\nwere not ascertained for having cancer in a cancer study.\n<li>There are additional FILTER field filters: AS_VQSR, indel_stack (chrM only), and npg (chrM only).\n<li>Where possible, variants overlapping multiple transcripts/genes have been collapsed into one\nvariant, with additional information available on the details page, which has roughly halved the\nnumber of items in the bigBed.\n<li>The bigBed has been split into two files, one with the information necessary for the track\ndisplay, and one with the information necessary for the details page. For more information on\nthis data format, please see the <a href=\"#dataAccess\">Data Access</a> section below.\n<li>The VEP annotation is shown as a table instead of spread across multiple fields.\n<li>Intergenic variants have not been pre-filtered.\n</ol>\n\n<h3>gnomAD v3.1</h3>\n<p>\nBy default, a maximum of 50,000 variants can be displayed at a time (before applying the filters\ndescribed below), before the track switches to dense display mode.\n</p>\n\n<p>\nMouse hover on an item will display many details about each variant, including the affected gene(s),\nthe variant type, and annotation (missense, synonymous, etc).\n</p>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for these tracks:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP version 85 (GENCODE v19).\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP v85.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<a name=\"UCSCMethods\">\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v3.1.1 data is unfiltered.</p>\n\n<p>\nFor the deprecated v3.1 update only, in order to cut\ndown on the amount of displayed data, the following variant\ntypes have been filtered out, but are still viewable in the gnomAD browser:\n<ul>\n    <li>Regulatory Region Variants\n    <li>Downstream/Upstream Gene Variants\n    <li>Transcription Factor Binding Site Variants\n</ul>\n</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<a name=\"dataAccess\">\n<h2>Data Access</h2>\n\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below). The\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1/variants/\">v3.1</a> and\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">v3.1.1</a> variants can\nbe found in a special directory as they have been transformed from the underlying VCF.</p>\n\n<p>\nFor the v3.1.1 variants in particular, the underlying bigBed only contains enough information\nnecessary to use the track in the browser. The extra data like VEP annotations and CADD scores are\navailable in the <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">same directory</a>\nas the bigBed but in the files <em>gnomad.v3.1.1.details.tab.gz</em> and\n<em>gnomad.v3.1.1.details.tab.gz.gzi</em>. The gnomad.v3.1.1.details.tab.gz contains the gzip\ncompressed extra data in JSON format, and the .gzi file is available to speed searching of\nthis data. Each variant has an associated md5sum in the name field of the bigBed which can be\nused along with the _dataOffset and _dataLen fields to get the associated external data, as show\nbelow:\n<pre>\n# find item of interest:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted for brevity..]    chr1-12417-G-A    67293    902\n\n# use the final two fields, _dataOffset and _dataLen (add one to _dataLen to include a newline), to get the extra data:\nbgzip -b 67293 -s 903 gnomad.v3.1.1.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\",  [..omitted for brevity..]\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alföldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
           "itemRgb": "on",
           "labelFields": "rsId,_displayName",
           "longLabel": "Genome Aggregation Database (gnomAD) Genome Variants v3.1.1",
@@ -3598,7 +3598,7 @@
           "filterValues.annot": "pLoF,missense,synonymous,other",
           "filterValues.variation_type": "3_prime_UTR_variant,5_prime_UTR_variant,NMD_transcript_variant,TFBS_ablation,TF_binding_site_variant,coding_sequence_variant,frameshift_variant,incomplete_terminal_codon_variant,inframe_deletion,inframe_insertion,intergenic_variant,intron_variant,mature_miRNA_variant,missense_variant,non_coding_transcript_exon_variant,non_coding_transcript_variant,protein_altering_variant,splice_acceptor_variant,splice_donor_variant,splice_region_variant,start_lost,stop_gained,stop_lost,stop_retained_variant,synonymous_variant,transcript_ablation",
           "filterValuesDefault.FILTER": "PASS",
-          "html": "<h2>Description</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\ngnomAD 3 was a genomes-only release. The gnomAD v3.1.1 track is the current version of gnomAD 3\nand shows variants from 76,156 whole genomes (and no exomes), all mapped to the GRCh38/hg38\nreference sequence. 4,454 genomes were added to the number of genomes in the previous v3 release.\nFor more detailed information on gnomAD v3.1, see the related <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/blog/2020-10-gnomad-v3-1/\">blog post</a>.\nA bugfix to v3.1 resulted in gnomAD v3.1.1, see\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2021-03-gnomad-v3-1-1/\">changelog</a>.\nDo not use gnomAD v3.1 anymore, we will remove the 3.1 track soon.\n</p>\n\n<h3>gnomAD v3.1 <b>(Deprecated)</b></h3>\n<p>\nThe gnomAD v3.1 track is deprecated. Please use v3.1.1 instead.\n</p>\n\n<h3>gnomAD v3</h3>\n<p>\nThe gnomAD v3 track shows variants from 71,702 whole genomes (and no exomes), all mapped to the\nGRCh38/hg38 reference sequence. For more detailed\ninformation on gnomAD v3, see the related <a target=\"_blank\"\nhref=\"https://macarthurlab.org/2019/10/16/gnomad-v3-0/\">blog post</a>.</p>\n\n<p>\nFor questions on the gnomAD data, also see the <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/faq\">gnomAD FAQ</a>.</p>\n<p>\nMore details on the Variant type(s) can be found on the <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/so_wiki/index.php/Category:SO:SOFA\">Sequence Ontology page</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\nThe gnomAD v3.1.1 track version follows the same conventions and configuration as the v3.1 track,\nexcept as noted below.</p>\n\n<ol>\n<li>There is a Non-cancer filter used to exclude/include variants from samples of individuals who\nwere not ascertained for having cancer in a cancer study.\n<li>There are additional FILTER field filters: AS_VQSR, indel_stack (chrM only), and npg (chrM only).\n<li>Where possible, variants overlapping multiple transcripts/genes have been collapsed into one\nvariant, with additional information available on the details page, which has roughly halved the\nnumber of items in the bigBed.\n<li>The bigBed has been split into two files, one with the information necessary for the track\ndisplay, and one with the information necessary for the details page. For more information on\nthis data format, please see the <a href=\"#dataAccess\">Data Access</a> section below.\n<li>The VEP annotation is shown as a table instead of spread across multiple fields.\n<li>Intergenic variants have not been pre-filtered.\n</ol>\n\n<h3>gnomAD v3.1</h3>\n<p>\nBy default, a maximum of 50,000 variants can be displayed at a time (before applying the filters\ndescribed below), before the track switches to dense display mode.\n</p>\n\n<p>\nMouse hover on an item will display many details about each variant, including the affected gene(s),\nthe variant type, and annotation (missense, synonymous, etc).\n</p>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for these tracks:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP version 85 (GENCODE v19).\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP v85.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<a name=\"UCSCMethods\">\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v3.1.1 data is unfiltered.</p>\n\n<p>\nFor the deprecated v3.1 update only, in order to cut\ndown on the amount of displayed data, the following variant\ntypes have been filtered out, but are still viewable in the gnomAD browser:\n<ul>\n    <li>Regulatory Region Variants\n    <li>Downstream/Upstream Gene Variants\n    <li>Transcription Factor Binding Site Variants\n</ul>\n</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<a name=\"dataAccess\">\n<h2>Data Access</h2>\n\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below). The\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1/variants/\">v3.1</a> and\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">v3.1.1</a> variants can\nbe found in a special directory as they have been transformed from the underlying VCF.</p>\n\n<p>\nFor the v3.1.1 variants in particular, the underlying bigBed only contains enough information\nnecessary to use the track in the browser. The extra data like VEP annotations and CADD scores are\navailable in the <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">same directory</a>\nas the bigBed but in the files <em>gnomad.v3.1.1.details.tab.gz</em> and\n<em>gnomad.v3.1.1.details.tab.gz.gzi</em>. The gnomad.v3.1.1.details.tab.gz contains the gzip\ncompressed extra data in JSON format, and the .gzi file is available to speed searching of\nthis data. Each variant has an associated md5sum in the name field of the bigBed which can be\nused along with the _dataOffset and _dataLen fields to get the associated external data, as show\nbelow:\n<pre>\n# find item of interest:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted for brevity..]    chr1-12417-G-A    67293    902\n\n# use the final two fields, _dataOffset and _dataLen (add one to _dataLen to include a newline), to get the extra data:\nbgzip -b 67293 -s 903 gnomad.v3.1.1.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\",  [..omitted for brevity..]\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alföldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\ngnomAD 3 was a genomes-only release. The gnomAD v3.1.1 track is the current version of gnomAD 3\nand shows variants from 76,156 whole genomes (and no exomes), all mapped to the GRCh38/hg38\nreference sequence. 4,454 genomes were added to the number of genomes in the previous v3 release.\nFor more detailed information on gnomAD v3.1, see the related <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/blog/2020-10-gnomad-v3-1/\">blog post</a>.\nA bugfix to v3.1 resulted in gnomAD v3.1.1, see\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2021-03-gnomad-v3-1-1/\">changelog</a>.\nDo not use gnomAD v3.1 anymore, we will remove the 3.1 track soon.\n</p>\n\n<h3>gnomAD v3.1 <b>(Deprecated)</b></h3>\n<p>\nThe gnomAD v3.1 track is deprecated. Please use v3.1.1 instead.\n</p>\n\n<h3>gnomAD v3</h3>\n<p>\nThe gnomAD v3 track shows variants from 71,702 whole genomes (and no exomes), all mapped to the\nGRCh38/hg38 reference sequence. For more detailed\ninformation on gnomAD v3, see the related <a target=\"_blank\"\nhref=\"https://macarthurlab.org/2019/10/16/gnomad-v3-0/\">blog post</a>.</p>\n\n<p>\nFor questions on the gnomAD data, also see the <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/faq\">gnomAD FAQ</a>.</p>\n<p>\nMore details on the Variant type(s) can be found on the <a target=\"_blank\"\nhref=\"https://github.com/The-Sequence-Ontology/SO-Ontologies/blob/master/Ontology_Files/subsets/SOFA.obo\">Sequence Ontology page</a>.</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<h3>gnomAD v3.1.1</h3>\n<p>\nThe gnomAD v3.1.1 track version follows the same conventions and configuration as the v3.1 track,\nexcept as noted below.</p>\n\n<ol>\n<li>There is a Non-cancer filter used to exclude/include variants from samples of individuals who\nwere not ascertained for having cancer in a cancer study.\n<li>There are additional FILTER field filters: AS_VQSR, indel_stack (chrM only), and npg (chrM only).\n<li>Where possible, variants overlapping multiple transcripts/genes have been collapsed into one\nvariant, with additional information available on the details page, which has roughly halved the\nnumber of items in the bigBed.\n<li>The bigBed has been split into two files, one with the information necessary for the track\ndisplay, and one with the information necessary for the details page. For more information on\nthis data format, please see the <a href=\"#dataAccess\">Data Access</a> section below.\n<li>The VEP annotation is shown as a table instead of spread across multiple fields.\n<li>Intergenic variants have not been pre-filtered.\n</ol>\n\n<h3>gnomAD v3.1</h3>\n<p>\nBy default, a maximum of 50,000 variants can be displayed at a time (before applying the filters\ndescribed below), before the track switches to dense display mode.\n</p>\n\n<p>\nMouse hover on an item will display many details about each variant, including the affected gene(s),\nthe variant type, and annotation (missense, synonymous, etc).\n</p>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for these tracks:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP version 85 (GENCODE v19).\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP v85.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<a name=\"UCSCMethods\">\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v3.1.1 data is unfiltered.</p>\n\n<p>\nFor the deprecated v3.1 update only, in order to cut\ndown on the amount of displayed data, the following variant\ntypes have been filtered out, but are still viewable in the gnomAD browser:\n<ul>\n    <li>Regulatory Region Variants\n    <li>Downstream/Upstream Gene Variants\n    <li>Transcription Factor Binding Site Variants\n</ul>\n</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<a name=\"dataAccess\">\n<h2>Data Access</h2>\n\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below). The\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1/variants/\">v3.1</a> and\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">v3.1.1</a> variants can\nbe found in a special directory as they have been transformed from the underlying VCF.</p>\n\n<p>\nFor the v3.1.1 variants in particular, the underlying bigBed only contains enough information\nnecessary to use the track in the browser. The extra data like VEP annotations and CADD scores are\navailable in the <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v3.1.1/\">same directory</a>\nas the bigBed but in the files <em>gnomad.v3.1.1.details.tab.gz</em> and\n<em>gnomad.v3.1.1.details.tab.gz.gzi</em>. The gnomad.v3.1.1.details.tab.gz contains the gzip\ncompressed extra data in JSON format, and the .gzi file is available to speed searching of\nthis data. Each variant has an associated md5sum in the name field of the bigBed which can be\nused along with the _dataOffset and _dataLen fields to get the associated external data, as show\nbelow:\n<pre>\n# find item of interest:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted for brevity..]    chr1-12417-G-A    67293    902\n\n# use the final two fields, _dataOffset and _dataLen (add one to _dataLen to include a newline), to get the extra data:\nbgzip -b 67293 -s 903 gnomad.v3.1.1.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\",  [..omitted for brevity..]\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alföldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
           "itemRgb": "on",
           "labelFields": "name,rsId",
           "longLabel": "Deprecated: Genome Aggregation Database (gnomAD) Genome Variants v3.1",
@@ -4113,37 +4113,12 @@
           "skipEmptyFields": "on",
           "track": "ncbiRefSeqOther",
           "type": "bigBed 12 +",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/612091\" HGNC=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\"",
           "html": ""
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
       "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "trackId": "hg38-gnomad315XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 15X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_15.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_15.bw",
-          "color": "165,0,90",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 15X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "4",
-          "shortLabel": "Sample % > 15X",
-          "track": "gnomad315XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 15X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-gnomad4Exome15XPercentage",
@@ -4168,6 +4143,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 15X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad315XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 15X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_15.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_15.bw",
+          "color": "165,0,90",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 15X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "4",
+          "shortLabel": "Sample % > 15X",
+          "track": "gnomad315XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 15X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -5768,31 +5768,6 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
-      "trackId": "hg38-gnomad320XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 20X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_20.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_20.bw",
-          "color": "135,0,120",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 20X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "5",
-          "shortLabel": "Sample % > 20X",
-          "track": "gnomad320XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 20X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome20XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 20X",
       "type": "QuantitativeTrack",
@@ -5815,6 +5790,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 20X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad320XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 20X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_20.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_20.bw",
+          "color": "135,0,120",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 20X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "5",
+          "shortLabel": "Sample % > 20X",
+          "track": "gnomad320XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 20X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -6065,31 +6065,6 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "hg38-gnomad325XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 25X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_25.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_25.bw",
-          "color": "105,0,150",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 25X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "6",
-          "shortLabel": "Sample % > 25X",
-          "track": "gnomad325XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 25X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome25XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 25X",
       "type": "QuantitativeTrack",
@@ -6112,6 +6087,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 25X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad325XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 25X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_25.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_25.bw",
+          "color": "105,0,150",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 25X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "6",
+          "shortLabel": "Sample % > 25X",
+          "track": "gnomad325XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 25X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -6246,31 +6246,6 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "hg38-gnomad330XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 30X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_30.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_30.bw",
-          "color": "75,0,180",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 30X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "7",
-          "shortLabel": "Sample % > 30X",
-          "track": "gnomad330XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 30X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome30XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 30X",
       "type": "QuantitativeTrack",
@@ -6293,6 +6268,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 30X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad330XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 30X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_30.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_30.bw",
+          "color": "75,0,180",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 30X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "7",
+          "shortLabel": "Sample % > 30X",
+          "track": "gnomad330XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 30X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -6435,31 +6435,6 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
-      "trackId": "hg38-gnomad350XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 50X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_50.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_50.bw",
-          "color": "45,0,210",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 50X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "8",
-          "shortLabel": "Sample % > 50X",
-          "track": "gnomad350XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 50X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome50XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 50X",
       "type": "QuantitativeTrack",
@@ -6482,6 +6457,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 50X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad350XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 50X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_50.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_50.bw",
+          "color": "45,0,210",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 50X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "8",
+          "shortLabel": "Sample % > 50X",
+          "track": "gnomad350XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 50X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -6617,31 +6617,6 @@
       "category": ["Mapping and Sequencing"]
     },
     {
-      "trackId": "hg38-gnomad3100XPercentage",
-      "name": "gnomAD v3 Genome Coverage - Sample % > 100X",
-      "type": "QuantitativeTrack",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_100.bw"
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_100.bw",
-          "color": "15,0,240",
-          "longLabel": "gnomAD Percentage of Genome Samples with at least 100X Coverage v3.0.1",
-          "parent": "gnomad3Coverage off",
-          "priority": "9",
-          "shortLabel": "Sample % > 100X",
-          "track": "gnomad3100XPercentage",
-          "viewLimits": "0:1",
-          "html": ""
-        }
-      },
-      "description": "gnomAD Percentage of Genome Samples with at least 100X Coverage v3.0.1",
-      "category": ["Variation and Repeats"]
-    },
-    {
       "trackId": "hg38-gnomad4Exome100XPercentage",
       "name": "gnomAD v4 Exome Coverage - Sample % > 100X",
       "type": "QuantitativeTrack",
@@ -6664,6 +6639,31 @@
         }
       },
       "description": "gnomAD Percentage of Exome Samples with at least 100X Coverage v4.0",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomad3100XPercentage",
+      "name": "gnomAD v3 Genome Coverage - Sample % > 100X",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_100.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/coverage/v3-genome/gnomad.coverage.over_100.bw",
+          "color": "15,0,240",
+          "longLabel": "gnomAD Percentage of Genome Samples with at least 100X Coverage v3.0.1",
+          "parent": "gnomad3Coverage off",
+          "priority": "9",
+          "shortLabel": "Sample % > 100X",
+          "track": "gnomad3100XPercentage",
+          "viewLimits": "0:1",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Percentage of Genome Samples with at least 100X Coverage v3.0.1",
       "category": ["Variation and Repeats"]
     },
     {
@@ -7069,6 +7069,39 @@
       },
       "description": "UniProt Sequence Conflicts",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "trackId": "hg38-viennaVntr",
+      "name": "1KG Vienna ONT VNTR",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/viennaVntr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/strVar/viennaVntr.bb",
+          "dataVersion": "v1.1",
+          "filter.het": "0:1",
+          "filterByRange.het": "on",
+          "filterLimits.het": "0:1",
+          "itemRgb": "on",
+          "longLabel": "1000 Genomes Vienna ONT VNTR Allele Statistics (VAMOS, 1,019 samples, long-read)",
+          "mouseOver": "<b>Avg motif:</b> $ruLenAvg bp <br> <b>Median repeat units:</b> $medianRus (range: $minRus-$maxRus) <br> <b>Unique alleles:</b> $numUniqueVntrs <br> <b>Heterozygosity:</b> $het",
+          "scoreFilter": "0",
+          "searchIndex": "name",
+          "shortLabel": "1KG Vienna ONT VNTR",
+          "skipEmptyFields": "on",
+          "superTrack": "strVar dense",
+          "track": "viennaVntr",
+          "type": "bigBed 9 +",
+          "visibility": "dense",
+          "html": "<h2>Description</h2>\n<p>\nThis track shows allele statistics for 361,362 variable number tandem repeat (VNTR)\nloci genotyped from Oxford Nanopore long-read whole-genome sequencing of 1,019 samples\nfrom the\n<a href=\"https://github.com/marschall-lab/project-ont-1kg\" target=\"_blank\">1000 Genomes\nONT Vienna project</a>. VNTR genotyping was performed with\n<a href=\"https://github.com/ChaissonLab/vamos\" target=\"_blank\">VAMOS</a>,\na tool that determines the motif composition of VNTR alleles from long reads.\nThis is version 1.1 of the dataset.\n</p>\n\n<p>\nUnlike the other STR tracks in this collection which are based on short-read sequencing\nand limited to short tandem repeats (motifs of 1-6 bp), this track is derived from\nlong-read sequencing data, which can span much longer repeat regions. The VNTR loci\nin this track have average motif lengths ranging from a few base pairs to over 100 bp,\nand allele lengths up to several kilobases.\n</p>\n\n<p>\nFor each locus, the track shows the average repeat unit length, the number of unique\nalleles observed, the range and median of repeat unit counts, and the range and median\nof allele lengths in base pairs. The 1000 Genomes Vienna ONT project also produced\nstructural variant calls available in the\n<a href=\"hgTrackUi?g=lrSv\">Long-Read Structural Variants</a> track.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nItems are colored by expected heterozygosity, computed as\n<i>het</i> = 1 &minus; &sum;<i>p<sub>i</sub></i><sup>2</sup> from allele frequencies\nacross the 1,019 samples:</p>\n<ul>\n<li><span style=\"color: #0000B4;\">Dark blue</span> &ndash; nearly monomorphic (het &lt; 0.1)</li>\n<li><span style=\"color: #4682E6;\">Medium blue</span> &ndash; low diversity (het 0.1&ndash;0.3)</li>\n<li><span style=\"color: #B482C8;\">Light purple</span> &ndash;\n  moderate diversity (het 0.3&ndash;0.5)</li>\n<li><span style=\"color: #E66450;\">Salmon</span> &ndash; high diversity (het 0.5&ndash;0.7)</li>\n<li><span style=\"color: #B40000;\">Dark red</span> &ndash; very high diversity (het &ge; 0.7)</li>\n<li><span style=\"color: #808080;\">Gray</span> &ndash; no allele frequency data available</li>\n</ul>\n\n<h2>Methods</h2>\n<p>\nThe 1000 Genomes Vienna ONT project sequenced 1,019 samples from the 1000 Genomes\ncollection using Oxford Nanopore Technologies long-read sequencing. VNTR genotyping\nwas performed using\n<a href=\"https://github.com/ChaissonLab/vamos\" target=\"_blank\">VAMOS</a>,\nwhich determines the motif composition of VNTR alleles by aligning long reads to\na catalog of known VNTR sites.\nThe analysis pipeline is available at\n<a href=\"https://github.com/marschall-lab/project-ont-1kg\" target=\"_blank\">GitHub</a>.\n</p>\n<p>\nAt UCSC, the summary statistics file (<tt>vamos-summary.tsv</tt>) was converted\nto bigBed format using a\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/viennaVntr\"\ntarget=\"_blank\">custom Python script</a>.\nLoci with coordinates exceeding chromosome boundaries were excluded.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"hgIntegrator\" target=\"_blank\">Data Integrator</a>.\nThe data can be accessed from scripts through our\n<a href=\"https://api.genome.ucsc.edu\">API</a>, the track name is <i>viennaVntr</i>.\n</p>\n\n<p>\nFor automated download and analysis, the genome annotation is stored in a bigBed\nfile that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/\"\ntarget=\"_blank\">our download server</a>.\nThe file for this track is called <tt>viennaVntr.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a\nprecompiled binary for your system. Instructions for downloading source code and\nbinaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/viennaVntr.bb\n-chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<p>\nThe original data (multisample VCF and summary statistics) can be downloaded from\n<a href=\"https://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/1KG_ONT_VIENNA/release/v1.1/vamos-vntr-genotyping/\"\ntarget=\"_blank\">the 1000 Genomes FTP server</a>.\nThe VNTR site list used for genotyping is available from\n<a href=\"https://zenodo.org/records/13263615\" target=\"_blank\">Zenodo</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the 1000 Genomes ONT Vienna consortium and the Marschall Lab at\nHeinrich Heine University D&uuml;sseldorf for making this data publicly available.\n</p>\n\n<h2>References</h2>\n<p>\nDe Coster W, Condon DE, De Baets G, Tsui A, Saeed F, Harerimana J, Amiraghdam F, Yaari R,\nDe Vos L, Mahfouz A <em>et al</em>.\n<a href=\"https://doi.org/10.1101/2024.12.20.629807\" target=\"_blank\">\nSequencing and variant calling of 1019 samples from the\n1000 Genomes Project using Oxford Nanopore Technology</a>.\n<em>bioRxiv</em>. 2024 Dec 23;.\n</p>\n"
+        }
+      },
+      "description": "1000 Genomes Vienna ONT VNTR Allele Statistics (VAMOS, 1,019 samples, long-read)",
+      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-abSplice",
@@ -9204,7 +9237,7 @@
           "filterLimits.svLen": "0:12000",
           "filterType.svType": "multiple",
           "filterValues.svType": "INS,DEL,INV",
-          "html": "<h2>Description</h2>\n<p>\n  The Consortium of Long Read Sequencing (CoLoRSdb) catalogs both small genetic variants\n  (single nucleotide polymorphisms and short insertions and deletions) and structural\n  variants (insertions, deletions, and inversions) discovered from long-read whole genome\n  sequencing. Long reads improve sensitivity and breakpoint resolution compared to\n  short-read data, especially for repeats and complex loci.\n</p>\n<p>\n  For more information, see the CoLoRSdb website:\n  <a href=\"https://colorsdb.org/\" target=\"_blank\" rel=\"noopener\">https://colorsdb.org/</a>\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<h4>Small variants (DeepVariant + GLnexus)</h4>\n<ul>\n  <li>\n    DeepVariant + GLnexus tracks are shown using the <a href=\"/goldenPath/help/hgVcfTrackHelp.html\"\n    target=\"_blank\">VCF display format</a>.</li>\n  <li>\n    In <em>dense</em> mode, each variant appears as a single pixel.</li>\n  <li>\n    In <em>pack</em> or <em>full</em> modes, clicking a variant reveals the reference and\n    alternate alleles (REF/ALT), the quality score (QUAL), the filter status (FILTER), and fields\n    from the INFO column.</li>\n</ul>\n\n<h4>Structural variants (pbsv + Jasmine)</h4>\n<ul>\n  <li>\n    Structural variants are rendered as intervals with spans and block structures when applicable.\n  </li>\n  <li>\n    <b>Coloring</b> for each item is based on the variant type:\n    <ul>\n      <li><span style=\"display:inline-block;width:12px;height:12px;background:#ff0000;border:1px solid #000;vertical-align:middle;margin-right:6px;\"></span> Deletion (DEL) = red</li>\n      <li><span style=\"display:inline-block;width:12px;height:12px;background:#0000ff;border:1px solid #000;vertical-align:middle;margin-right:6px;\"></span> Insertion (INS) = blue</li>\n      <li><span style=\"display:inline-block;width:12px;height:12px;background:#800080;border:1px solid #000;vertical-align:middle;margin-right:6px;\"></span> Inversion (INV) = purple</li>\n    </ul>\n  </li>\n  <li>\n    Mouseover an item reveals the genomic position, structural variant type,\n    variant length, allele frequency, alternative allele count, number of samples, total allele\n    number, Hardy-Weinburg equilibrium (HWE) p-value, and excess heterozygosity (ExcHet) p-value.\n  </li>\n</ul>\n\n<h2>Methods</h2>\n<ul>\n  <li><strong>Small variants:</strong> Per-sample variant calling was performed with DeepVariant,\n      followed by joint genotyping across the cohort using GLnexus.</li>\n  <li><strong>Structural variants:</strong> Called from long-read sequencing data using pbsv and\n      merged using Jasmine across individuals. The VCF file was converted to a bigBed file for\n      efficient display.</li>\n</ul>\n\n<h2>Data Access</h2>\n<p>\nThe CoLoRSdb track can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>, the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a>, or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nThe VCF and bigBed files are available from our \n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/colorsDb/\">\ndownloads directory</a>.\nThe original VCF files are part of the v1.2.0 dataset, and documentation is available on Zenodo:\n<a href=\"https://zenodo.org/records/14814308\"\ntarget=\"_blank\">https://zenodo.org/records/14814308</a>\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Mike Schatz, Evan Eichler, and all <a href=\"https://colorsdb.org/membership\"\ntarget=\"_blank\">CoLoRSdb investigators</a> for generating and making the data publicly available.\n</p>\n\n<h2>References</h2>\n\n<p>\nEisfeldt J, Ameur A, Lenner F, Ten Berk de Boer E, Ek M, Wincent J, Vaz R, Ottosson J, Jonson T,\nIvarsson S <em>et al</em>.\n<a href=\"http://genome.cshlp.org/lookup/pmidlookup?view=long&amp;pmid=39472022\" target=\"_blank\">\nA national long-read sequencing study on chromosomal rearrangements uncovers hidden\ncomplexities</a>.\n<em>Genome Res</em>. 2024 Nov 20;34(11):1774-1784.\nDOI: <a href=\"https://doi.org/10.1101/gr.279510.124\" target=\"_blank\">10.1101/gr.279510.124</a>;\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/39472022\" target=\"_blank\">39472022</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11610602/\" target=\"_blank\">PMC11610602</a>\n</p>\n<p>\nKirsche M, Prabhu G, Sherman R, Ni B, Battle A, Aganezov S, Schatz MC.\n<a href=\"https://doi.org/10.1038/s41592-022-01753-3\" target=\"_blank\">\nJasmine and Iris: population-scale structural variant comparison and analysis</a>.\n<em>Nat Methods</em>. 2023 Mar;20(3):408-417.\nDOI: <a href=\"https://doi.org/10.1038/s41592-022-01753-3\"\ntarget=\"_blank\">10.1038/s41592-022-01753-3</a>; PMID: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pubmed/36658279\" target=\"_blank\">36658279</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10006329/\" target=\"_blank\">PMC10006329</a>\n</p>\n<p>\nLake, J. A., &amp; Consortium of Long Read Sequencing (CoLoRS).\n<a href=\"https://doi.org/10.5281/zenodo.14814308\" target=\"_blank\">Consortium of Long Read\nSequencing Database (CoLoRSdb) (v1.2.0) [Data set]</a> <em>Zendo</em>. 2025 Feb 5.\n<a href=https://doi.org/10.5281/zenodo.14814308 target=\"_blank\">10.5281/zenodo.14814308</a>\n</p>\n<p>\nPoplin R, Chang PC, Alexander D, Schwartz S, Colthurst T, Ku A, Newburger D, Dijamco J, Nguyen N,\nAfshar PT <em>et al</em>.\n<a href=\"https://doi.org/10.1038/nbt.4235\" target=\"_blank\">\nA universal SNP and small-indel variant caller using deep neural networks</a>.\n<em>Nat Biotechnol</em>. 2018 Nov;36(10):983-987.\nDOI: <a href=\"https://doi.org/10.1038/nbt.4235\" target=\"_blank\">10.1038/nbt.4235</a>; PMID: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pubmed/30247488\" target=\"_blank\">30247488</a>\n</p>\n<p>\nYun T, Li H, Chang PC, Lin MF, Carroll A, McLean CY.\n<a href=\"https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btaa1081\"\ntarget=\"_blank\">\nAccurate, scalable cohort variant calls using DeepVariant and GLnexus</a>.\n<em>Bioinformatics</em>. 2021 Apr 5;36(24):5582-5589.\nDOI: <a href=\"https://doi.org/10.1093/bioinformatics/btaa1081\"\ntarget=\"_blank\">10.1093/bioinformatics/btaa1081</a>; PMID: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pubmed/33399819\" target=\"_blank\">33399819</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8023681/\" target=\"_blank\">PMC8023681</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n<p>\n  The Consortium of Long Read Sequencing (CoLoRSdb) catalogs both small genetic variants\n  (single nucleotide polymorphisms and short insertions and deletions) and structural\n  variants (insertions, deletions, and inversions) discovered from long-read whole genome\n  sequencing. Long reads improve sensitivity and breakpoint resolution compared to\n  short-read data, especially for repeats and complex loci.\n</p>\n<p>\n  For more information, see the CoLoRSdb website:\n  <a href=\"https://colorsdb.org/\" target=\"_blank\" rel=\"noopener\">https://colorsdb.org/</a>\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<h4>Small variants (DeepVariant + GLnexus)</h4>\n<ul>\n  <li>\n    DeepVariant + GLnexus tracks are shown using the <a href=\"/goldenPath/help/hgVcfTrackHelp.html\"\n    target=\"_blank\">VCF display format</a>.</li>\n  <li>\n    In <em>dense</em> mode, each variant appears as a single pixel.</li>\n  <li>\n    In <em>pack</em> or <em>full</em> modes, clicking a variant reveals the reference and\n    alternate alleles (REF/ALT), the quality score (QUAL), the filter status (FILTER), and fields\n    from the INFO column.</li>\n</ul>\n\n<h4>Structural variants (pbsv + Jasmine)</h4>\n<ul>\n  <li>\n    Structural variants are rendered as intervals with spans and block structures when applicable.\n  </li>\n  <li>\n    <b>Coloring</b> for each item is based on the variant type:\n    <ul>\n      <li><span style=\"display:inline-block;width:12px;height:12px;background:#ff0000;border:1px solid #000;vertical-align:middle;margin-right:6px;\"></span> Deletion (DEL) = red</li>\n      <li><span style=\"display:inline-block;width:12px;height:12px;background:#0000ff;border:1px solid #000;vertical-align:middle;margin-right:6px;\"></span> Insertion (INS) = blue</li>\n      <li><span style=\"display:inline-block;width:12px;height:12px;background:#800080;border:1px solid #000;vertical-align:middle;margin-right:6px;\"></span> Inversion (INV) = purple</li>\n    </ul>\n  </li>\n  <li>\n    Mouseover an item reveals the genomic position, structural variant type,\n    variant length, allele frequency, alternative allele count, number of samples, total allele\n    number, Hardy-Weinburg equilibrium (HWE) p-value, and excess heterozygosity (ExcHet) p-value.\n  </li>\n</ul>\n\n<h2>Methods</h2>\n<ul>\n  <li><strong>Small variants:</strong> Per-sample variant calling was performed with DeepVariant,\n      followed by joint genotyping across the cohort using GLnexus.</li>\n  <li><strong>Structural variants:</strong> Called from long-read sequencing data using pbsv and\n      merged using Jasmine across individuals. The VCF file was converted to a bigBed file for\n      efficient display.</li>\n</ul>\n\n<h2>Data Access</h2>\n<p>\nThe CoLoRSdb track can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>, the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a>, or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nThe VCF and bigBed files are available from our \n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/colorsDb/\">\ndownloads directory</a>.\nThe original VCF files are part of the v1.2.0 dataset, and documentation is available on Zenodo:\n<a href=\"https://zenodo.org/records/14814308\"\ntarget=\"_blank\">https://zenodo.org/records/14814308</a>\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Mike Schatz, Evan Eichler, and all <a href=\"https://colorsdb.org/membership\"\ntarget=\"_blank\">CoLoRSdb investigators</a> for generating and making the data publicly available.\n</p>\n\n<h2>References</h2>\n\n<p>\nEisfeldt J, Ameur A, Lenner F, Ten Berk de Boer E, Ek M, Wincent J, Vaz R, Ottosson J, Jonson T,\nIvarsson S <em>et al</em>.\n<a href=\"http://genome.cshlp.org/lookup/pmid?view=long&amp;pmid=39472022\" target=\"_blank\">\nA national long-read sequencing study on chromosomal rearrangements uncovers hidden\ncomplexities</a>.\n<em>Genome Res</em>. 2024 Nov 20;34(11):1774-1784.\nDOI: <a href=\"https://doi.org/10.1101/gr.279510.124\" target=\"_blank\">10.1101/gr.279510.124</a>;\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/39472022\" target=\"_blank\">39472022</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11610602/\" target=\"_blank\">PMC11610602</a>\n</p>\n<p>\nKirsche M, Prabhu G, Sherman R, Ni B, Battle A, Aganezov S, Schatz MC.\n<a href=\"https://doi.org/10.1038/s41592-022-01753-3\" target=\"_blank\">\nJasmine and Iris: population-scale structural variant comparison and analysis</a>.\n<em>Nat Methods</em>. 2023 Mar;20(3):408-417.\nDOI: <a href=\"https://doi.org/10.1038/s41592-022-01753-3\"\ntarget=\"_blank\">10.1038/s41592-022-01753-3</a>; PMID: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pubmed/36658279\" target=\"_blank\">36658279</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10006329/\" target=\"_blank\">PMC10006329</a>\n</p>\n<p>\nLake, J. A., &amp; Consortium of Long Read Sequencing (CoLoRS).\n<a href=\"https://doi.org/10.5281/zenodo.14814308\" target=\"_blank\">Consortium of Long Read\nSequencing Database (CoLoRSdb) (v1.2.0) [Data set]</a> <em>Zendo</em>. 2025 Feb 5.\n<a href=https://doi.org/10.5281/zenodo.14814308 target=\"_blank\">10.5281/zenodo.14814308</a>\n</p>\n<p>\nPoplin R, Chang PC, Alexander D, Schwartz S, Colthurst T, Ku A, Newburger D, Dijamco J, Nguyen N,\nAfshar PT <em>et al</em>.\n<a href=\"https://doi.org/10.1038/nbt.4235\" target=\"_blank\">\nA universal SNP and small-indel variant caller using deep neural networks</a>.\n<em>Nat Biotechnol</em>. 2018 Nov;36(10):983-987.\nDOI: <a href=\"https://doi.org/10.1038/nbt.4235\" target=\"_blank\">10.1038/nbt.4235</a>; PMID: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pubmed/30247488\" target=\"_blank\">30247488</a>\n</p>\n<p>\nYun T, Li H, Chang PC, Lin MF, Carroll A, McLean CY.\n<a href=\"https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btaa1081\"\ntarget=\"_blank\">\nAccurate, scalable cohort variant calls using DeepVariant and GLnexus</a>.\n<em>Bioinformatics</em>. 2021 Apr 5;36(24):5582-5589.\nDOI: <a href=\"https://doi.org/10.1093/bioinformatics/btaa1081\"\ntarget=\"_blank\">10.1093/bioinformatics/btaa1081</a>; PMID: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pubmed/33399819\" target=\"_blank\">33399819</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8023681/\" target=\"_blank\">PMC8023681</a>\n</p>\n",
           "itemRgb": "on",
           "longLabel": "CoLoRSdb long-read structural variants",
           "mouseOver": "<b>Position</b>: $chrom:${chromStart}-${chromEnd}<br> <b>SV type</b>: ${svType}<br> <b>Length</b>: ${svLen} bp<br> <b>Allele Frequency</b>: ${af}<br> <b>Alt allele count</b>: ${AC} (Hom: ${AC_Hom}, Het: ${AC_Het}, Hemi: ${AC_Hemi})<br> <b>Number of samples</b>: ${NS} <br> <b>Total allele number</b>: ${AN}<br> <b>HWE p-value</b>: ${HWE}<br> <b>ExcHet</b>: ${ExcHet}",
@@ -9426,6 +9459,37 @@
         }
       },
       "description": "Genome Aggregation Database (gnomAD) - Rare CNV variants (<1% overall site frequency) v4.1",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-gnomadStr",
+      "name": "gnomAD - gnomAD STR",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/gnomadStr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/gnomadStr.bb",
+          "dataVersion": "gnomAD v3.1.3 STR genotypes (March 2025)",
+          "html": "<h2>Description</h2>\n<p>\nThe <b>gnomAD STR</b> track displays short tandem repeat (STR) genotypes at 87\ndisease-associated loci from the\n<a href=\"https://gnomad.broadinstitute.org/\" target=\"_blank\">Genome Aggregation\nDatabase (gnomAD)</a> v3.1.3. The data include individual-level STR genotypes from\n18,511 whole-genome sequenced samples across 10 populations, aggregated\ninto per-locus allele frequency distributions.</p>\n\n<p>\nThese loci were selected because tandem repeat expansions at these sites have been\nreported to cause human genetic diseases, including Huntington disease (<em>HTT</em>),\nfragile X syndrome (<em>FMR1</em>), Friedreich ataxia (<em>FXN</em>), various\nspinocerebellar ataxias, myotonic dystrophies, and other neurological and\nneuromuscular disorders. Most loci (56) have motifs between 3&ndash;6 bp, while\nadditional loci have longer motifs of 10&ndash;24 bp.</p>\n\n<p>\nThe genotypes were generated using\n<a href=\"https://github.com/Illumina/ExpansionHunter\" target=\"_blank\">ExpansionHunter\nv5</a> on gnomAD v3.1 whole-genome sequencing data (150 bp read lengths). Of the\nsamples, 64% were PCR-free, 13% PCR-plus, and 23% had unknown PCR protocol.\nExpansionHunter was selected because it had the best accuracy among existing tools\nfor detecting expansions at disease-associated loci. Results were generated without\noff-target regions to minimize overestimation of repeat sizes.\nFor each locus, the data show the distribution of repeat allele sizes observed\nacross the gnomAD population, providing a reference for normal and expanded allele\nranges. For more details on the methods, see the\n<a href=\"https://gnomad.broadinstitute.org/news/2022-01-the-addition-of-short-tandem-repeat-calls-to-gnomad/\"\ntarget=\"_blank\">gnomAD blog post on STR calls</a>.</p>\n\n<h2>Display Conventions</h2>\n<p>\nItems are colored by the length of the repeat motif:</p>\n<ul>\n<li><span style=\"color: #FF0000;\">Red</span> &ndash; mononucleotide (period 1)</li>\n<li><span style=\"color: #0000FF;\">Blue</span> &ndash; dinucleotide (period 2)</li>\n<li><span style=\"color: #008000;\">Green</span> &ndash; trinucleotide (period 3)</li>\n<li><span style=\"color: #FFA500;\">Orange</span> &ndash; tetranucleotide (period 4)</li>\n<li><span style=\"color: #800080;\">Purple</span> &ndash; pentanucleotide (period 5)</li>\n<li><span style=\"color: #4682B4;\">Steel blue</span> &ndash; hexanucleotide (period 6)</li>\n<li><span style=\"color: #808080;\">Gray</span> &ndash; longer or complex motifs</li>\n</ul>\n\n<p>\nEach item is labeled by the gene name. Hovering shows the repeat motif,\ngene, total sample count, and number passing quality filters. Clicking an item\nlinks to the corresponding gnomAD STR locus page with interactive allele\nfrequency histograms and detailed population breakdowns.</p>\n\n<p>\nThe detail page for each locus shows:</p>\n<ul>\n<li><b>Motif(s)</b> &ndash; the repeat unit(s) genotyped at this locus</li>\n<li><b>Samples</b> &ndash; total genotyped individuals and number passing filters</li>\n<li><b>Allele distribution</b> &ndash; allele sizes and their frequencies</li>\n<li><b>Populations</b> &ndash; sample counts per gnomAD population</li>\n</ul>\n\n<h2>Methods</h2>\n<p>\nThe gnomAD STR genotype data file\n(<code>gnomAD_STR_genotypes__2025_03_17.tsv.gz</code>) was downloaded from the\n<a href=\"https://gnomad.broadinstitute.org/downloads#v3-short-tandem-repeats\"\ntarget=\"_blank\">gnomAD downloads page</a>. This file contains individual-level\nSTR genotypes at 87 disease-associated loci generated using\n<a href=\"https://github.com/Illumina/ExpansionHunter\" target=\"_blank\">ExpansionHunter</a>\non gnomAD v3.1.3 whole-genome sequencing data.</p>\n\n<p>\nFor the UCSC Genome Browser track, the individual genotype records (~1.4 million rows)\nwere aggregated per locus to produce summary statistics: total sample count,\nPASS-filter count, allele size frequency distributions, and per-population sample counts.\nCoordinates were used as provided (0-based). Some loci include genotypes for multiple\nmotif patterns (e.g., complex repeat structures) and for adjacent repeats; these are\nrepresented as separate records.</p>\n\n<p>\nThe 10 populations represented are: African/African American (afr),\nAdmixed American/Latino (amr), Amish (ami), Ashkenazi Jewish (asj),\nEast Asian (eas), Finnish (fin), Middle Eastern (mid), Non-Finnish European (nfe),\nSouth Asian (sas), and Other (oth).</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"hgIntegrator\" target=\"_blank\">Data Integrator</a>. For automated\nanalysis, the data may be queried from our\n<a href=\"/goldenPath/help/api.html\" target=\"_blank\">REST API</a>. The underlying bigBed\nfile can be downloaded from our\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/\" target=\"_blank\">download\nserver</a>.</p>\n\n<p>\nThe complete gnomAD STR dataset, including individual-level genotypes, is available\nfrom the <a href=\"https://gnomad.broadinstitute.org/downloads#v3-short-tandem-repeats\"\ntarget=\"_blank\">gnomAD downloads page</a>. Interactive locus-level views with\nallele frequency histograms are available at the\n<a href=\"https://gnomad.broadinstitute.org/short-tandem-repeats?dataset=gnomad_r3\"\ntarget=\"_blank\">gnomAD STR browser</a>.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">gnomAD\nproduction team</a> at the Broad Institute for generating and distributing this data.</p>\n\n<h2>References</h2>\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q,\nAlf&ouml;ldi J, Watts NA, Vittal C, Gauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\nA genomic mutational constraint map using variation in 76,156 human\ngenomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\"\ntarget=\"_blank\">38057664</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11629659/\"\ntarget=\"_blank\">PMC11629659</a>\n</p>\n\n<p>\nDolzhenko E, Deshpande V, Schlesinger F, Krusche P, Petrovski R,\nChen S, Emig-Agius D, Gross A, Narzisi G, Bowman B\n<em>et al</em>.\n<a href=\"https://academic.oup.com/bioinformatics/article/35/22/4754/5499079\"\ntarget=\"_blank\">\nExpansionHunter: a sequence-graph-based tool to analyze variation\nin short tandem repeat regions</a>.\n<em>Bioinformatics</em>. 2019 Nov 1;35(22):4754-4756.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/31134279\"\ntarget=\"_blank\">31134279</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6853681/\"\ntarget=\"_blank\">PMC6853681</a>\n</p>\n",
+          "itemRgb": "on",
+          "longLabel": "Genome Aggregation Database (gnomAD) - Short Tandem Repeat Genotypes at Disease-Associated Loci",
+          "mouseOver": "<b>Gene:</b> $gene<br> <b>Repeat Motif(s):</b> $motif<br> <b>Number of samples:</b> $nSamples <br> <b>Passing quality filter:</b> $nPass <br> <b>Population sample counts:</b> $populations",
+          "parent": "gnomadVariants on",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#041026 \"Released Apr. 10, 2026\"",
+          "searchIndex": "name",
+          "shortLabel": "gnomAD STR",
+          "track": "gnomadStr",
+          "type": "bigBed 9 +",
+          "url": "https://gnomad.broadinstitute.org/short-tandem-repeat/$$?dataset=gnomad_r3",
+          "urlLabel": "View at gnomAD",
+          "visibility": "pack"
+        }
+      },
+      "description": "Genome Aggregation Database (gnomAD) - Short Tandem Repeat Genotypes at Disease-Associated Loci",
       "category": ["Variation and Repeats"]
     },
     {
@@ -9732,6 +9796,102 @@
       "category": ["Phenotypes, Variants, and Literature"]
     },
     {
+      "trackId": "hg38-strchive",
+      "name": "STRchive",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/strchive.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/strVar/strchive.bb",
+          "dataVersion": "/gbdb/hg38/strVar/strchive.version.txt",
+          "itemRgb": "on",
+          "longLabel": "STRchive Disease-Associated Short Tandem Repeat Loci",
+          "mouseOver": "<b>Gene:</b> $gene <br> <b>Motif:</b> $referenceMotif <br> <b>Minimum pathogenic repeat:</b> $pathogenicMin <br> <b>Mode of inheritance:</b> $inheritance <br> <b>Associated disease(s):</b> $disease",
+          "searchIndex": "name",
+          "shortLabel": "STRchive",
+          "superTrack": "strVar pack",
+          "track": "strchive",
+          "type": "bigBed 9 +",
+          "url": "https://strchive.org/loci/$$",
+          "urlLabel": "STRchive locus page",
+          "visibility": "pack",
+          "html": "<h2>Description</h2>\n<p>\nThe <b>STRchive</b> track displays 75 disease-associated short tandem repeat (STR) loci\ncurated by the <a href=\"https://strchive.org\" target=\"_blank\">STRchive</a> project.\nSTRchive is a dynamic, community-driven resource that compiles population-level and\nlocus-specific data for tandem repeat loci implicated in human genetic diseases.</p>\n\n<p>\nTandem repeat expansion disorders are caused by the expansion of short repetitive DNA\nsequences beyond a pathogenic threshold. These expansions can cause a wide range of\nneurological, neuromuscular, and developmental disorders, including Huntington disease,\nfragile X syndrome, Friedreich ataxia, and many forms of spinocerebellar ataxia.</p>\n\n<p>\nThis track shows the genomic positions of disease-associated STR loci from the STRchive\ncatalog, along with the reference and pathogenic repeat motifs, minimum pathogenic repeat\ncount thresholds, mode of inheritance, and associated diseases. The data are based on\nthe GRCh38/hg38 reference assembly.</p>\n\n<h2>Display Conventions</h2>\n<p>\nItems are colored by mode of inheritance:</p>\n<ul>\n<li><span style=\"color: #0000C8;\">Blue</span> &ndash; autosomal dominant (AD)</li>\n<li><span style=\"color: #C80000;\">Red</span> &ndash; autosomal recessive (AR)</li>\n<li><span style=\"color: #C86400;\">Orange</span> &ndash; both AD and AR</li>\n<li><span style=\"color: #800080;\">Purple</span> &ndash; X-linked recessive (XR)</li>\n<li><span style=\"color: #B400B4;\">Magenta</span> &ndash; X-linked dominant (XD)</li>\n<li><span style=\"color: #808080;\">Gray</span> &ndash; unknown</li>\n</ul>\n\n<p>\nEach item is labeled by its STRchive locus ID, which combines the disease abbreviation\nand gene symbol (e.g., &quot;HD_HTT&quot; for Huntington disease at the <em>HTT</em>\ngene). Hovering over an item shows the repeat motif, gene, pathogenic threshold,\nand inheritance mode. Clicking an item links to the corresponding\n<a href=\"https://strchive.org\" target=\"_blank\">STRchive</a> locus page with detailed\nclinical and population-level information.</p>\n\n<h2>Methods</h2>\n<p>\nThe STRchive disease locus catalog was downloaded from the\n<a href=\"https://github.com/dashnowlab/STRchive\" target=\"_blank\">STRchive GitHub\nrepository</a> (file <code>STRchive-disease-loci.hg38.general.bed</code>). The catalog is\nmanually curated by the STRchive team from published literature and contains loci where\ntandem repeat expansions have been reported to cause or be associated with human disease.</p>\n\n<p>\nFor each locus, the catalog provides:</p>\n<ul>\n<li><b>Reference motif</b> &ndash; the repeat unit found in the reference genome</li>\n<li><b>Pathogenic motif</b> &ndash; the repeat unit associated with disease (may differ\nfrom the reference motif, as in some familial adult myoclonic epilepsies where\nTTTCA insertions into TTTTA repeats are pathogenic)</li>\n<li><b>Pathogenic minimum</b> &ndash; the minimum number of repeat copies reported to\ncause disease</li>\n<li><b>Inheritance</b> &ndash; the mode of inheritance (AD, AR, XR, XD)</li>\n<li><b>Disease</b> &ndash; the associated disease name(s)</li>\n</ul>\n\n<p>\nThe BED file was converted to bigBed format for display in the Genome Browser. Coordinates\nwere used as provided (0-based half-open BED format).</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"hgIntegrator\" target=\"_blank\">Data Integrator</a>. For automated\nanalysis, the data may be queried from our\n<a href=\"/goldenPath/help/api.html\" target=\"_blank\">REST API</a>. The underlying bigBed\nfile can be downloaded from our\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/\" target=\"_blank\">download\nserver</a>.</p>\n\n<p>\nThe complete STRchive dataset, including additional annotations not shown in this track,\nis available from <a href=\"https://strchive.org\" target=\"_blank\">strchive.org</a> and\nthe <a href=\"https://github.com/dashnowlab/STRchive\" target=\"_blank\">STRchive GitHub\nrepository</a>. The data are released under a\n<a href=\"https://creativecommons.org/licenses/by/4.0/\" target=\"_blank\">CC BY 4.0</a>\nlicense.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Harriet Dashnow (University of Colorado), Laurel Hiatt (University of Utah),\nBen Weisburd (Broad Institute), and the STRchive team for creating and maintaining this\nresource.</p>\n\n<h2>References</h2>\n<p>\nHiatt L, Weisburd B, Dolzhenko E, Rubinetti V, Avvaru AK,\nVanNoy GE, Kurtas NE, Rehm HL, Quinlan AR, Dashnow H.\n<a href=\"https://doi.org/10.1186/s13073-025-01454-4\"\ntarget=\"_blank\">\nSTRchive: a dynamic resource detailing population-level and\nlocus-specific insights at tandem repeat disease loci</a>.\n<em>Genome Med</em>. 2025 Mar 26;17(1):29.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/40140942\"\ntarget=\"_blank\">40140942</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11938676/\"\ntarget=\"_blank\">PMC11938676</a>\n</p>\n"
+        }
+      },
+      "description": "STRchive Disease-Associated Short Tandem Repeat Loci",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-tommoStr",
+      "name": "ToMMo 61k STR",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/tommoStr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/strVar/tommoStr.bb",
+          "detailsScript.histogram.alleleHist": "{\"title\":\"Allele Count Distribution (61K Japanese)\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "filter.het": "0:1",
+          "filterByRange.het": "on",
+          "filterLimits.het": "0:1",
+          "itemRgb": "on",
+          "longLabel": "ToMMo 61KJPN Short Tandem Repeat Allele Counts (Expansion Hunter)",
+          "mouseOver": "<b>Motif:</b> $motif ($period bp) <br> <b>Ref copies:</b> $numCopies <br> <b>Mean:</b> $mean, <b>Median:</b> $median <br> <b>Heterozygosity:</b> $het",
+          "scoreFilter": "0",
+          "searchIndex": "name",
+          "shortLabel": "ToMMo 61k STR",
+          "superTrack": "strVar dense",
+          "track": "tommoStr",
+          "type": "bigBed 9 +",
+          "visibility": "dense",
+          "html": "<h2>Description</h2>\n<p>\nThis track shows allele count distributions for 174,300 short tandem repeat (STR)\nloci genotyped across 61,000 Japanese individuals by the\n<a href=\"https://jmorp.megabank.tohoku.ac.jp\" target=\"_blank\">Tohoku Medical Megabank\nOrganization (ToMMo)</a>. STR genotyping was performed with\n<a href=\"https://github.com/Illumina/ExpansionHunter\" target=\"_blank\">Expansion Hunter</a>,\nwhich estimates repeat copy numbers from short-read whole-genome sequencing data.\n</p>\n\n<p>\nFor each locus, the track provides the repeat motif, the reference copy number, the\nmean and median copy number across the cohort, and a histogram of allele counts\nby repeat size. Click on any locus to see the allele count distribution as a\nbar chart.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nItems are colored by expected heterozygosity, computed as\n<i>het</i> = 1 &minus; &sum;<i>p<sub>i</sub></i><sup>2</sup> from allele counts\nacross the 61,000 Japanese individuals:\n</p>\n<ul>\n<li><span style=\"color: #0000B4;\">Dark blue</span> &ndash; nearly monomorphic (het &lt; 0.1)</li>\n<li><span style=\"color: #4682E6;\">Medium blue</span> &ndash; low diversity (het 0.1&ndash;0.3)</li>\n<li><span style=\"color: #B482C8;\">Light purple</span> &ndash;\n  moderate diversity (het 0.3&ndash;0.5)</li>\n<li><span style=\"color: #E66450;\">Salmon</span> &ndash; high diversity (het 0.5&ndash;0.7)</li>\n<li><span style=\"color: #B40000;\">Dark red</span> &ndash; very high diversity (het &ge; 0.7)</li>\n<li><span style=\"color: #808080;\">Gray</span> &ndash; no allele frequency data available</li>\n</ul>\n\n<p>\nThe allele count histogram on the detail page shows the number of alleles observed\nat each repeat copy number. The reference allele count is computed as AN minus the\nsum of all alternate allele counts.\n</p>\n\n<h2>Methods</h2>\n<p>\nGenomic DNA was obtained from peripheral blood, saliva, or cord blood samples\nfrom participants in the Tohoku Medical Megabank Project. Whole-genome sequencing\nwas performed on multiple Illumina and MGI platforms (HiSeq 2500, NovaSeq 6000,\nDNBSeq-T7). STR genotyping was performed with\n<a href=\"https://github.com/Illumina/ExpansionHunter\" target=\"_blank\">Expansion Hunter</a>,\nwhich uses paired-end reads and read pairs spanning, flanking, and fully contained\nwithin repeat regions to estimate repeat copy numbers.\n</p>\n<p>\nAt UCSC, the Expansion Hunter VCF was converted to bigBed format using a\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/tommoStr\"\ntarget=\"_blank\">custom Python script</a>.\nFor each STR locus, the &lt;STRn&gt; symbolic alleles in the VCF ALT field encode\nthe repeat copy number, and the INFO/AC field provides the allele count for each.\nThe reference allele count was computed as AN minus the sum of all alternate AC values.\nThese were assembled into a histogram of copies=count pairs for display.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"hgIntegrator\" target=\"_blank\">Data Integrator</a>.\nThe data can be accessed from scripts through our\n<a href=\"https://api.genome.ucsc.edu\">API</a>, the track name is <i>tommoStr</i>.\n</p>\n\n<p>\nFor automated download and analysis, the genome annotation is stored in a bigBed\nfile that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/\"\ntarget=\"_blank\">our download server</a>.\nThe file for this track is called <tt>tommoStr.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a\nprecompiled binary for your system. Instructions for downloading source code and\nbinaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/tommoStr.bb\n-chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<p>\nThe original data can be downloaded from the\n<a href=\"https://jmorp.megabank.tohoku.ac.jp/downloads/tommo-61kstr-20250825\"\ntarget=\"_blank\">jMorp 61KJPN-STR Downloads</a> page.\nUse of the data requires agreement to the\n<a href=\"https://jmorp.megabank.tohoku.ac.jp/help/conditions-of-use\"\ntarget=\"_blank\">ToMMo conditions of use</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the Tohoku Medical Megabank Organization and the participants of the\nToMMo cohort study for making this data publicly available.\n</p>\n\n<h2>References</h2>\n<p>\nTadaka S, Hishinuma E, Komaki S, Motoike IN, Kawashima J,\nSaigusa D, Inoue J, Takayama J, Okamura Y, Aoki Y\n<em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/49/D1/D536/5976824\"\ntarget=\"_blank\">\njMorp updates in 2020: large enhancement of multi-omics data\nresources on the general Japanese population</a>.\n<em>Nucleic Acids Res</em>. 2021 Jan 8;49(D1):D536-D544.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/33179747\"\ntarget=\"_blank\">33179747</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7779038/\"\ntarget=\"_blank\">PMC7779038</a>\n</p>\n\n<p>\nTadaka S, Kawashima J, Hishinuma E, Saito S, Okamura Y,\nOtsuki A, Kojima K, Komaki S, Aoki Y, Kanno T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/52/D1/D622/7335743\"\ntarget=\"_blank\">\njMorp: Japanese Multi-Omics Reference Panel update report\n2023</a>.\n<em>Nucleic Acids Res</em>. 2024 Jan 5;52(D1):D622-D632.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37930845\"\ntarget=\"_blank\">37930845</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10767895/\"\ntarget=\"_blank\">PMC10767895</a>\n</p>\n"
+        }
+      },
+      "description": "ToMMo 61KJPN Short Tandem Repeat Allele Counts (Expansion Hunter)",
+      "category": ["Variation and Repeats"]
+    },
+    {
+      "trackId": "hg38-trexplorer",
+      "name": "TRExplorer",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/trexplorer.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/strVar/trexplorer.bb",
+          "detailsScript.histogram.hprcAlleleHist": "{\"title\":\"HPRC256 Allele Distribution\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "detailsScript.histogram.tenKAlleleHist": "{\"title\":\"TenK10K Allele Distribution\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "filter.het": "0:1",
+          "filterByRange.het": "on",
+          "filterLimits.het": "0:1",
+          "itemRgb": "on",
+          "longLabel": "TRExplorer V2 Tandem Repeat Catalog",
+          "mouseOver": "<b>Motif:</b> $referenceMotif ($motifSize bp) <br> <b>Copies in ref:</b> $numRepeats <br> <b>Purity:</b> $repeatPurity <br> <b>Heterozygosity:</b> $het <br> <b>Gene:</b> $geneName ($geneRegion)",
+          "searchIndex": "name",
+          "shortLabel": "TRExplorer",
+          "superTrack": "strVar dense",
+          "track": "trexplorer",
+          "type": "bigBed 9 +",
+          "urlLabel": "TRExplorer locus page",
+          "urls": "locusId=\"https://trexplorer.broadinstitute.org/index.html?#showRs=1&q=$$\"",
+          "visibility": "dense",
+          "html": "<h2>Description</h2>\n<p>\nThe <b>TRExplorer</b> track displays 5,599,658 tandem repeat (TR) loci from the\n<a href=\"https://trexplorer.broadinstitute.org\" target=\"_blank\">TRExplorer</a>\ncatalog. Tandem repeats are adjacent copies of a short DNA sequence motif; they include\nshort tandem repeats (STRs, motifs of 1&ndash;6 bp) and variable number tandem repeats\n(VNTRs, longer motifs). TRs are among the most polymorphic and mutationally active loci\nin the human genome, contributing to gene expression variation, complex disease risk,\nand over 60 known Mendelian disorders.</p>\n\n<p>\nThe catalog integrates loci from multiple sources, including perfect repeats in the\nreference genome, polymorphic TRs discovered in T2T assemblies and the Illumina 174k\ncohort, HipSTR catalog loci, and curated disease-associated repeat expansions. Each\nlocus is annotated with repeat purity, gene context, disease associations, and\npopulation allele frequency data from up to three cohorts.</p>\n\n<h2>Display Conventions</h2>\n<p>\nItems are colored by expected heterozygosity, computed as\n<i>het</i> = 1 &minus; &sum;<i>p<sub>i</sub></i><sup>2</sup> from allele counts\npooled across the TenK10K and HPRC256 cohorts:</p>\n<ul>\n<li><span style=\"color: #0000B4;\">Dark blue</span> &ndash; nearly monomorphic (het &lt; 0.1)</li>\n<li><span style=\"color: #4682E6;\">Medium blue</span> &ndash; low diversity (het 0.1&ndash;0.3)</li>\n<li><span style=\"color: #B482C8;\">Light purple</span> &ndash;\n  moderate diversity (het 0.3&ndash;0.5)</li>\n<li><span style=\"color: #E66450;\">Salmon</span> &ndash; high diversity (het 0.5&ndash;0.7)</li>\n<li><span style=\"color: #B40000;\">Dark red</span> &ndash; very high diversity (het &ge; 0.7)</li>\n<li><span style=\"color: #808080;\">Gray</span> &ndash; no allele frequency data available</li>\n</ul>\n\n<p>\nItems are labeled by the repeat motif sequence (truncated with &ldquo;..&rdquo; for\nmotifs longer than 25 characters). The BED score reflects repeat purity (0&ndash;1000).\nHovering over an item shows the full motif, motif size, number of reference copies,\nrepeat purity, gene annotation, and data source.</p>\n\n<p>\nClicking an item opens the details page, which includes a link to the corresponding\n<a href=\"https://trexplorer.broadinstitute.org\" target=\"_blank\">TRExplorer</a> locus\npage with interactive allele frequency visualizations.</p>\n\n<h2>Population Frequency Data</h2>\n<p>\nAllele frequency histograms are available for two cohorts where genotyping was\nperformed:</p>\n<ul>\n<li><b>TenK10K</b> &ndash; 1,925 short-read genomes of European\n  ancestry genotyped using ExpansionHunter</li>\n<li><b>HPRC256</b> &ndash; 256 diverse HiFi PacBio genomes from\n  the <a href=\"https://humanpangenome.org/\" target=\"_blank\">Human Pangenome Reference\n  Consortium</a> genotyped using TRGT-LPS</li>\n</ul>\n<p>\nFor each cohort, two parallel fields store allele sizes (in repeat copy numbers) and\ntheir corresponding counts, preserving the original order for histogram visualization.\nSummary allele counts are also available for the <b>AoU1027</b>\ncohort (1,027 HiFi PacBio samples from the All of Us Research Program\ngenotyped using TRGT-LPS).</p>\n\n<h2>Data Sources</h2>\n<p>\nLoci in this catalog were compiled from multiple sources:</p>\n<ul>\n<li><b>PerfectRepeatsInReference</b> &ndash; 4.4M loci with perfect tandem repeats in\nthe GRCh38 reference</li>\n<li><b>PolymorphicTRsInT2TAssemblies</b> &ndash; TRs polymorphic across T2T\nassemblies</li>\n<li><b>Illumina174kPolymorphicTRs</b> &ndash; TRs polymorphic in the Illumina 174k\ncohort</li>\n<li><b>HipSTRCatalog</b> &ndash; loci from the HipSTR reference panel</li>\n<li><b>AdottoTRsFromDanzi2025</b> &ndash; TRs from Danzi et al. 2025</li>\n<li><b>KnownDiseaseAssociatedLoci</b> &ndash; curated disease-associated repeat\nexpansion loci</li>\n<li>Additional sources: VamosV3, Hause2016, Manigbas2024, Garg2021, Tanudisastro2025,\nSulovari2021, Annear2021, Mukamel2021, ClinvarIndelsThatAreTRs2025,\nKnownFunctionalVNTRs</li>\n</ul>\n\n<h2>Methods</h2>\n<p>\nThe TRExplorer catalog was built by merging tandem repeat annotations from multiple\nreference-based and population-based discovery approaches. For each locus, the repeat\nmotif, copy number, and purity were determined from the GRCh38 reference sequence.\nGene annotations were derived from MANE Select transcripts (with fallback to Gencode).\nPopulation allele frequencies were obtained by genotyping large cohorts using\nExpansionHunter and other TR genotyping tools.</p>\n\n<p>\nFor the UCSC Genome Browser track, the source catalog (TSV format) was converted to\nbigBed format. Coordinates in the source data are already 0-based half-open (BED\nconvention). Allele frequency histograms were split into parallel size and count fields\nto facilitate visualization. Items are colored by expected heterozygosity.</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"hgIntegrator\" target=\"_blank\">Data Integrator</a>. For automated\nanalysis, the data may be queried from our\n<a href=\"/goldenPath/help/api.html\" target=\"_blank\">REST API</a>. The underlying bigBed\nfile can be downloaded from our\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/\" target=\"_blank\">download\nserver</a>.</p>\n\n<p>\nThe complete TRExplorer dataset and interactive tools are available from the\n<a href=\"https://trexplorer.broadinstitute.org\" target=\"_blank\">TRExplorer web\nportal</a> at the Broad Institute.</p>\n\n<h2>Credits</h2>\n<p>Thanks to Ben Weisburd, Egor Dolzhenko, and the TRExplorer team\nfor making these data available.</p>\n\n<h2>References</h2>\n<p>\nWeisburd B, Dolzhenko E, Bennett MF, Danzi MC, Xu IRL,\nTanudisastro H, Gu B, English A, Hiatt L, Mokveld T\n<em>et al.</em>\n<a href=\"https://doi.org/10.1101/2024.10.04.615514\" target=\"_blank\">\nTRExplorer: A comprehensive catalog of tandem repeat variation in the human genome</a>.\n<em>bioRxiv</em>. 2024.\ndoi: <a href=\"https://doi.org/10.1101/2024.10.04.615514\" target=\"_blank\">10.1101/2024.10.04.615514</a>\n</p>\n"
+        }
+      },
+      "description": "TRExplorer V2 Tandem Repeat Catalog",
+      "category": ["Variation and Repeats"]
+    },
+    {
       "trackId": "hg38-spMut",
       "name": "UniProt Variants",
       "type": "FeatureTrack",
@@ -9780,7 +9940,6 @@
           "mouseOver": "<b>$hgncSymbol $variantOrigStrs</b> in: $author ($journal, $year) - $title <br> <b>Number of publications:</b> $articlesCount <br> <b>Variant Effect:</b> $variantEffect",
           "noScoreFilter": "on",
           "parent": "varsInPubs pack",
-          "pennantIcon": "Updated red ../goldenPath/newsarch.html#111425 \"Nov. 14, 2025\"",
           "shortLabel": "Varaico Variants",
           "track": "varaico",
           "type": "bigBed 9 +",
@@ -9810,7 +9969,6 @@
           "mouseOver": "<b>$hgncSymbol $variantOrigStrs</b> in: $author ($journal, $year) - $title <br> <b>Number of publications:</b> $articlesCount <br> <b>Variant Effect:</b> $variantEffect",
           "noScoreFilter": "on",
           "parent": "varsInPubs pack",
-          "pennantIcon": "New red ../goldenPath/newsarch.html#111425 \"Released Nov. 14, 2025\"",
           "shortLabel": "Varaico Variants (suppl)",
           "track": "varaicoSuppl",
           "type": "bigBed 9 +",
@@ -9847,6 +10005,45 @@
       },
       "description": "VISTA Enhancers",
       "category": ["Regulation"]
+    },
+    {
+      "trackId": "hg38-webstr",
+      "name": "WebSTR",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/webstr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/strVar/webstr.bb",
+          "detailsScript.histogram.afrHist": "{\"title\":\"AFR Allele Frequencies\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "detailsScript.histogram.amrHist": "{\"title\":\"AMR Allele Frequencies\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "detailsScript.histogram.easHist": "{\"title\":\"EAS Allele Frequencies\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "detailsScript.histogram.eurHist": "{\"title\":\"EUR Allele Frequencies\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "detailsScript.histogram.sasHist": "{\"title\":\"SAS Allele Frequencies\",\"xLabel\":\"Allele size (repeat copies)\"}",
+          "filter.het": "0:1",
+          "filterByRange.het": "on",
+          "filterLimits.het": "0:1",
+          "itemRgb": "on",
+          "longLabel": "WebSTR Short Tandem Repeat Loci (EnsembleTR Panel, 1000 Genomes)",
+          "mouseOver": "<b>Repeat motif:</b> $motif ($period bp) <br> <b>Copies in ref:</b> $numCopies <br> <b>Heterozygosity:</b> $het",
+          "scoreFilter": "0",
+          "searchIndex": "name",
+          "shortLabel": "WebSTR",
+          "superTrack": "strVar dense",
+          "track": "webstr",
+          "type": "bigBed 9 +",
+          "url": "https://webstr.ucsd.edu/locus?repeat_id=$<repeatId>&genome=hg38",
+          "urlLabel": "Link to repeat record in WebSTR",
+          "urls": "repeatId=\"https://webstr.ucsd.edu/locus?repeat_id=$$&genome=hg38\"",
+          "visibility": "dense",
+          "html": "<h2>Description</h2>\n<p>\nThe <b>WebSTR</b> track displays 1,710,833 short tandem repeat (STR) loci across the\nhuman genome from the\n<a href=\"https://webstr.ucsd.edu\" target=\"_blank\">WebSTR</a> database. </p>\n\n<p>\nThis track is based on the <b>EnsembleTR panel</b> for the GRCh38/hg38 assembly,\nwhich represents a combined set of tandem repeats genotyped by four separate methods\n(HipSTR, GangSTR, ExpansionHunter, and AdVNTR) on data from the\n<a href=\"https://www.internationalgenome.org/\" target=\"_blank\">1000 Genomes Project</a>.\n<a href=\"https://github.com/gymrek-lab/EnsembleTR\" target=\"_blank\">EnsembleTR</a>\nwas applied to jointly genotype all 3,550 samples, producing consensus calls at\nover 1.7 million autosomal tandem repeat loci.</p>\n\n<p>\nThe track includes allele frequency distributions for five 1000 Genomes continental\npopulations:</p>\n<ul>\n<li>AFR &ndash; African (893 samples)</li>\n<li>AMR &ndash; Admixed American (490 samples)</li>\n<li>EAS &ndash; East Asian (585 samples)</li>\n<li>EUR &ndash; European (633 samples)</li>\n<li>SAS &ndash; South Asian (601 samples)</li>\n</ul>\n\n<p>\nFor each population, allele frequencies are defined as the number of copies of each allele\ndivided by the total number of alleles in that population. Alleles are represented as\nthe number of repeat unit copies.</p>\n\n<h2>Display Conventions</h2>\n<p>\nItems are colored by expected heterozygosity, computed as\n<i>het</i> = 1 &minus; &sum;<i>p<sub>i</sub></i><sup>2</sup> from allele frequencies\npooled across all five 1000 Genomes populations weighted by sample count:</p>\n<ul>\n<li><span style=\"color: #0000B4;\">Dark blue</span> &ndash; nearly monomorphic (het &lt; 0.1)</li>\n<li><span style=\"color: #4682E6;\">Medium blue</span> &ndash; low diversity (het 0.1&ndash;0.3)</li>\n<li><span style=\"color: #B482C8;\">Light purple</span> &ndash;\n  moderate diversity (het 0.3&ndash;0.5)</li>\n<li><span style=\"color: #E66450;\">Salmon</span> &ndash; high diversity (het 0.5&ndash;0.7)</li>\n<li><span style=\"color: #B40000;\">Dark red</span> &ndash; very high diversity (het &ge; 0.7)</li>\n<li><span style=\"color: #808080;\">Gray</span> &ndash; no allele frequency data available</li>\n</ul>\n\n<p>\nEach item is labeled by its repeat motif and copy count. Hovering over an item shows the repeat\nmotif, number of reference copies, and heterozygosity. Clicking an item links to the\ncorresponding\n<a href=\"https://webstr.ucsd.edu\" target=\"_blank\">WebSTR</a> locus page, which provides\ninteractive allele frequency histograms and additional annotations.</p>\n\n<h2>Methods</h2>\n<p>\nThe EnsembleTR reference panel was constructed as follows:</p>\n<ol>\n<li>Tandem repeat reference sets from four genotyping tools (HipSTR, GangSTR,\nExpansionHunter, and AdVNTR) were merged.</li>\n<li>Each tool was run independently on 1000 Genomes sequencing data.</li>\n<li><a href=\"https://github.com/gymrek-lab/EnsembleTR\" target=\"_blank\">EnsembleTR</a>\nwas used to produce joint consensus genotype calls across all four methods.</li>\n<li>Loci called in fewer than 75% of samples were removed, yielding 1,710,833 loci.</li>\n<li>Allele frequencies were computed per population.</li>\n</ol>\n\n<p>\nFor the UCSC Genome Browser track, the source data were converted from CSV to bigBed\nformat. Per-population allele frequency distributions are stored as extra bigBed fields.</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"hgIntegrator\" target=\"_blank\">Data Integrator</a>. For automated\nanalysis, the data may be queried from our\n<a href=\"/goldenPath/help/api.html\" target=\"_blank\">REST API</a>. The underlying bigBed\nfile can be downloaded from our\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/strVar/\" target=\"_blank\">download\nserver</a>.</p>\n\n<p>\nThe complete WebSTR dataset, including additional cohorts and data types not included in\nthis track, is available from the\n<a href=\"https://webstr.ucsd.edu\" target=\"_blank\">WebSTR web portal</a>. Programmatic\naccess to the full WebSTR database is available through the\n<a href=\"http://webstr-api.ucsd.edu/docs\" target=\"_blank\">WebSTR REST API</a>.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Melissa Gymrek (UC San Diego) and the WebSTR team for\nproviding the data for this track.</p>\n\n<h2>References</h2>\n<p>\nLundstr&ouml;m OS, Adriaan Verbiest M, Xia F, Jam HZ, Zlobec I,\nAnisimova M, Gymrek M.\n<a href=\"https://doi.org/10.1016/j.jmb.2023.168260\"\ntarget=\"_blank\">\nWebSTR: A Population-wide Database of Short Tandem Repeat Variation\nin Humans</a>.\n<em>J Mol Biol</em>. 2023 Oct 15;435(20):168260.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37678708\"\ntarget=\"_blank\">37678708</a>\n</p>\n\n<p>\nZiaei Jam H, Li Y, DeVito R, Mousavi N, Ma N, Lujumba I, Adam Y,\nMaksimov M, Huang B, Dolzhenko E <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41467-023-42278-3\" target=\"_blank\">\nA deep population reference panel of tandem repeat variation</a>.\n<em>Nat Commun</em>. 2023 Oct 23;14(1):6711.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/37872149\"\ntarget=\"_blank\">37872149</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10593948/\"\ntarget=\"_blank\">PMC10593948</a>\n</p>\n\n"
+        }
+      },
+      "description": "WebSTR Short Tandem Repeat Loci (EnsembleTR Panel, 1000 Genomes)",
+      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-hprcInsertsV1",
@@ -12068,7 +12265,7 @@
           "track": "ccdsGene",
           "type": "genePred",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<P>\nThis track shows human genome high-confidence gene annotations from the\n<A HREF=\"https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi\" TARGET=_blank>Consensus \nCoding Sequence (CCDS) project</A>. This project is a collaborative effort \nto identify a core set of \nhuman protein-coding regions that are consistently annotated and of high \nquality. The long-term goal is to support convergence towards a standard set \nof gene annotations on the human genome.\n</P>\n<P>Collaborators include:\n<UL>\n<LI><A HREF=\"https://www.ebi.ac.uk/\" TARGET=_blank>European Bioinformatics \nInstitute</A> (EBI)\n<LI><A HREF=\"https://www.ncbi.nlm.nih.gov\" TARGET=_blank>National Center for \nBiotechnology Information</A> (NCBI)\n<LI><A HREF=\"http://www.cbse.ucsc.edu/\" TARGET=_blank>University of \nCalifornia, Santa Cruz</A> (UCSC)\n<LI><A HREF=\"https://www.sanger.ac.uk/\" TARGET=_blank>Wellcome Trust Sanger \nInstitute</A> (WTSI)\n</UL>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<H2>Methods</H2>\n<P>\nCDS annotations of the human genome were obtained from two sources:\n<A HREF=\"https://www.ncbi.nlm.nih.gov/refseq/\" TARGET=_blank>NCBI \nRefSeq</A> and a union of the gene annotations from \n<A HREF=\"http://www.ensembl.org/index.html\" TARGET=_blank>Ensembl</A> and \n<A HREF=\"http://vega.archive.ensembl.org/index.html\" TARGET=_blank>Vega</A>, collectively known \nas <EM>Hinxton</EM>.</P>\n<P>\nGenes with identical CDS genomic coordinates in both sets become CCDS \ncandidates. The genes undergo a quality evaluation, which must be approved by \nall collaborators. The following criteria are currently used to assess each\ngene: \n<UL>\n<LI> an initiating ATG (Exception: a non-ATG translation start codon is \nannotated if it has sufficient experimental support), a valid stop codon, and \nno in-frame stop codons (Exception: selenoproteins, which contain a TGA codon \nthat is known to be translated to a selenocysteine instead of functioning as \na stop codon) \n<LI> ability to be translated from the genome reference sequence without frameshifts\n<LI> recognizable splicing sites\n<LI> no intersection with putative pseudogene predictions\n<LI> supporting transcripts and protein homology\n<LI> conservation evidence with other species\n</UL></P>\n<P>\nA unique CCDS ID is assigned to the CCDS, which links together all gene \nannotations with the same CDS.  CCDS gene annotations are under continuous\nreview, with periodic updates to this track.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC from data downloaded from the\n<A HREF=\"https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi\" TARGET=_blank>CCDS project</A> \nweb site.\n</P>\n\n<H2>References</H2>\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J, Curwen V, Down T <em>et\nal</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n<p>\nPruitt KD, Harrow J, Harte RA, Wallin C, Diekhans M, Maglott DR, Searle S, Farrell CM, Loveland JE,\nRuef BJ <em>et al</em>.\n<a href=\"https://genome.cshlp.org/content/19/7/1316.long\" target=\"_blank\">\nThe consensus coding sequence (CCDS) project: Identifying a common protein-coding gene set for the\nhuman and mouse genomes</a>.\n<em>Genome Res</em>. 2009 Jul;19(7):1316-23.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19498102\" target=\"_blank\">19498102</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2704439/\" target=\"_blank\">PMC2704439</a>\n</p>\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-\nRefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts\nand proteins</a>.\n<em>Nucleic Acids Res</em>. 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
+          "html": "<H2>Description</H2>\n<P>\nThis track shows human genome high-confidence gene annotations from the\n<A HREF=\"https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi\" TARGET=_blank>Consensus \nCoding Sequence (CCDS) project</A>. This project is a collaborative effort \nto identify a core set of \nhuman protein-coding regions that are consistently annotated and of high \nquality. The long-term goal is to support convergence towards a standard set \nof gene annotations on the human genome.\n</P>\n<P>Collaborators include:\n<UL>\n<LI><A HREF=\"https://www.ebi.ac.uk/\" TARGET=_blank>European Bioinformatics \nInstitute</A> (EBI)\n<LI><A HREF=\"https://www.ncbi.nlm.nih.gov\" TARGET=_blank>National Center for \nBiotechnology Information</A> (NCBI)\n<LI><A HREF=\"http://www.cbse.ucsc.edu/\" TARGET=_blank>University of \nCalifornia, Santa Cruz</A> (UCSC)\n<LI><A HREF=\"https://www.sanger.ac.uk/\" TARGET=_blank>Wellcome Trust Sanger \nInstitute</A> (WTSI)\n</UL>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<H2>Methods</H2>\n<P>\nCDS annotations of the human genome were obtained from two sources:\n<A HREF=\"https://www.ncbi.nlm.nih.gov/refseq/\" TARGET=_blank>NCBI \nRefSeq</A> and a union of the gene annotations from \n<A HREF=\"https://www.ensembl.org/index.html\" TARGET=_blank>Ensembl</A> and \n<A HREF=\"http://vega.archive.ensembl.org/index.html\" TARGET=_blank>Vega</A>, collectively known \nas <EM>Hinxton</EM>.</P>\n<P>\nGenes with identical CDS genomic coordinates in both sets become CCDS \ncandidates. The genes undergo a quality evaluation, which must be approved by \nall collaborators. The following criteria are currently used to assess each\ngene: \n<UL>\n<LI> an initiating ATG (Exception: a non-ATG translation start codon is \nannotated if it has sufficient experimental support), a valid stop codon, and \nno in-frame stop codons (Exception: selenoproteins, which contain a TGA codon \nthat is known to be translated to a selenocysteine instead of functioning as \na stop codon) \n<LI> ability to be translated from the genome reference sequence without frameshifts\n<LI> recognizable splicing sites\n<LI> no intersection with putative pseudogene predictions\n<LI> supporting transcripts and protein homology\n<LI> conservation evidence with other species\n</UL></P>\n<P>\nA unique CCDS ID is assigned to the CCDS, which links together all gene \nannotations with the same CDS.  CCDS gene annotations are under continuous\nreview, with periodic updates to this track.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC from data downloaded from the\n<A HREF=\"https://www.ncbi.nlm.nih.gov/CCDS/CcdsBrowse.cgi\" TARGET=_blank>CCDS project</A> \nweb site.\n</P>\n\n<H2>References</H2>\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J, Curwen V, Down T <em>et\nal</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n<p>\nPruitt KD, Harrow J, Harte RA, Wallin C, Diekhans M, Maglott DR, Searle S, Farrell CM, Loveland JE,\nRuef BJ <em>et al</em>.\n<a href=\"https://genome.cshlp.org/content/19/7/1316.long\" target=\"_blank\">\nThe consensus coding sequence (CCDS) project: Identifying a common protein-coding gene set for the\nhuman and mouse genomes</a>.\n<em>Genome Res</em>. 2009 Jul;19(7):1316-23.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19498102\" target=\"_blank\">19498102</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2704439/\" target=\"_blank\">PMC2704439</a>\n</p>\n<p>\nPruitt KD, Tatusova T, Maglott DR.\n<a href=\"https://academic.oup.com/nar/article/33/suppl_1/D501/2505241/NCBI-Reference-Sequence-\nRefSeq-a-curated-non\" target=\"_blank\">\nNCBI Reference Sequence (RefSeq): a curated non-redundant sequence database of genomes, transcripts\nand proteins</a>.\n<em>Nucleic Acids Res</em>. 2005 Jan 1;33(Database issue):D501-4.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/15608248\" target=\"_blank\">15608248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC539979/\" target=\"_blank\">PMC539979</a>\n</p>\n"
         }
       },
       "description": "Consensus CDS",
@@ -17412,27 +17609,6 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg38"]
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "hg38_to_over.chain.gz_liftOver",
-      "name": "hg38 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg38", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg38",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/hg38ToAilMel1.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg38ToAilMel1.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     }
   ],
   "aggregateTextSearchAdapters": [

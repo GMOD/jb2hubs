@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+
 import { glob } from 'glob'
 
 interface Report {
@@ -85,17 +86,17 @@ for (const file of files) {
   }
 }
 
-console.log('=== Pairing Analysis ===')
-console.log(`Total hubs with ncbi.json: ${counts.total}`)
-console.log(`No paired accession:       ${counts.noPairedAccession}`)
-console.log(`GCA → GCF (correct):       ${counts.gcaToGcf}`)
-console.log(`GCF → GCA (correct):       ${counts.gcfToGca}`)
-console.log(`Self-referential (bug):    ${counts.selfReferential}`)
-console.log(`Unexpected pairing:        ${counts.unexpectedPairing}`)
+console.error('=== Pairing Analysis ===')
+console.error(`Total hubs with ncbi.json: ${counts.total}`)
+console.error(`No paired accession:       ${counts.noPairedAccession}`)
+console.error(`GCA → GCF (correct):       ${counts.gcaToGcf}`)
+console.error(`GCF → GCA (correct):       ${counts.gcfToGca}`)
+console.error(`Self-referential (bug):    ${counts.selfReferential}`)
+console.error(`Unexpected pairing:        ${counts.unexpectedPairing}`)
 
 if (issues.length) {
-  console.log('\n=== Issues ===')
+  console.error('\n=== Issues ===')
   for (const issue of issues) {
-    console.log(issue)
+    console.error(issue)
   }
 }

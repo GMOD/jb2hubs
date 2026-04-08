@@ -43,4 +43,3 @@ fi
 
 # Run the process_assembly function in parallel for each input directory.
 find "$1" -mindepth 1 -maxdepth 1 -type d ! -name "trix" | parallel $PARALLEL_OPTS --will-cite process_assembly {}
-

@@ -9,7 +9,11 @@ export default function OrangeStar() {
       className={tooltipStyles.tooltip}
       data-tooltip="NCBI designated reference"
     >
-      <Star fill="orange" strokeWidth={0} className={styles.orangeStar} />
+      <Star
+        fill="orange"
+        strokeWidth={0}
+        className={styles.orangeStar}
+      />
     </span>
   )
 }

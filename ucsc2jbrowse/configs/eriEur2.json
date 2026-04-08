@@ -1214,69 +1214,25 @@
           "indexType": "CSI"
         }
       }
-    },
+    }
+  ],
+  "aggregateTextSearchAdapters": [
     {
-      "type": "SyntenyTrack",
-      "trackId": "eriEur2_to_over.chain.gz_liftOver",
-      "name": "eriEur2 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["eriEur2", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "eriEur2",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/eriEur2ToHg19.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/eriEur2ToHg19.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "eriEur2_to_over.chain.gz_liftOver",
-      "name": "eriEur2 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["eriEur2", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "eriEur2",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/eriEur2ToHg38.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/eriEur2ToHg38.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "eriEur2_to_over.chain.gz_liftOver",
-      "name": "eriEur2 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["eriEur2", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "eriEur2",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/eriEur2ToMm39.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/eriEur2ToMm39.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "eriEur2-index",
+      "ixFilePath": {
+        "uri": "trix/eriEur2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/eriEur2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/eriEur2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["eriEur2"]
     }
   ],
   "plugins": [
@@ -1332,24 +1288,5 @@
     "activeWidgets": {
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
-  },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "eriEur2-index",
-      "ixFilePath": {
-        "uri": "trix/eriEur2.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/eriEur2.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/eriEur2_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["eriEur2"]
-    }
-  ]
+  }
 }

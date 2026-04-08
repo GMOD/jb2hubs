@@ -31,11 +31,17 @@ const title = slug.charAt(0).toUpperCase() + slug.slice(1)
   <Container wide>
     <div class="page-header">
       <h1 class="page-title">GenArk hubs - {title}</h1>
-      <a href={`/taxonomy/${slug}`} class="taxonomy-link">
+      <a
+        href={`/taxonomy/${slug}`}
+        class="taxonomy-link"
+      >
         View taxonomy tree for GenArk {title}
       </a>
     </div>
-    <ClientOnlyDataTable rows={rows} client:load />
+    <ClientOnlyDataTable
+      rows={rows}
+      client:load
+    />
   </Container>
 </Layout>
 

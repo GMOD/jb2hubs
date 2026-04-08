@@ -10,24 +10,35 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
         with:
-          version: 8
+          version: 10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'pnpm'
 
       - run: pnpm install
+
+      - name: Astro sync
+        run: cd website && pnpm astro sync
+
+      - name: Astro check
+        run: cd website && pnpm astro check
 
       - name: TypeScript type check
         run: pnpm typecheck
 
       - name: ESLint
         run: pnpm lint
+
+      - name: Install shfmt
+        run: |
+          curl -sSL "https://github.com/mvdan/sh/releases/download/v3.13.1/shfmt_v3.13.1_linux_amd64" -o /usr/local/bin/shfmt
+          chmod +x /usr/local/bin/shfmt
 
       - name: ShellCheck
         run: pnpm lint:sh

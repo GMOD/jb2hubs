@@ -11,7 +11,10 @@ export default function Container({
 }: ContainerProps) {
   return (
     <div className="container">
-      <div className={`content ${className ?? ''}`} {...props}>
+      <div
+        className={`content ${className ?? ''}`}
+        {...props}
+      >
         {children}
       </div>
     </div>

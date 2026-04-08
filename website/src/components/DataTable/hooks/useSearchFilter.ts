@@ -30,7 +30,7 @@ export function useSearchFilter(rows: RowData[]) {
     } else {
       url.searchParams.delete('search')
     }
-    window.history.pushState({}, '', url.toString())
+    window.history.replaceState({}, '', url.toString())
   }, [])
 
   useEffect(() => {

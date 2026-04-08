@@ -10,7 +10,7 @@
 #   ./make.sh --reprocess-all # Re-download and reprocess everything
 #
 
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
@@ -20,30 +20,30 @@ cd "$SCRIPT_DIR"
 MODE="new"
 for arg in "$@"; do
   case $arg in
-    --all)
-      MODE="all"
-      shift
-      ;;
-    --reprocess-all)
-      MODE="reprocess"
-      export REPROCESS=true
-      shift
-      ;;
-    --help|-h)
-      echo "Usage: $0 [OPTIONS]"
-      echo ""
-      echo "Options:"
-      echo "  (default)        Process only new hubs (fastest)"
-      echo "  --all            Process all hubs"
-      echo "  --reprocess-all  Re-download and reprocess everything"
-      echo "  --help, -h       Show this help message"
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $arg"
-      echo "Use --help for usage information"
-      exit 1
-      ;;
+  --all)
+    MODE="all"
+    shift
+    ;;
+  --reprocess-all)
+    MODE="reprocess"
+    export REPROCESS=true
+    shift
+    ;;
+  --help | -h)
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  (default)        Process only new hubs (fastest)"
+    echo "  --all            Process all hubs"
+    echo "  --reprocess-all  Re-download and reprocess everything"
+    echo "  --help, -h       Show this help message"
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $arg"
+    echo "Use --help for usage information"
+    exit 1
+    ;;
   esac
 done
 
@@ -67,21 +67,21 @@ node src/downloadHubList.ts
 log "Downloading hub.txt files..."
 if [ "$MODE" = "new" ]; then
   # Capture new hubs for incremental processing
-  node src/downloadHubs.ts > "$NEW_HUBS_FILE"
+  node src/downloadHubs.ts >"$NEW_HUBS_FILE"
 
   if [ ! -s "$NEW_HUBS_FILE" ]; then
     log "No new hubs found. Nothing to process."
     exit 0
   fi
 
-  NEW_HUB_COUNT=$(wc -l < "$NEW_HUBS_FILE")
+  NEW_HUB_COUNT=$(wc -l <"$NEW_HUBS_FILE")
   log "Found $NEW_HUB_COUNT new hub(s) to process"
 
   # Extract accessions from new hubs
-  sed 's|.*/||; s|/meta.json||' "$NEW_HUBS_FILE" > "$NEW_ACCESSIONS_FILE"
+  sed 's|.*/||; s|/meta.json||' "$NEW_HUBS_FILE" >"$NEW_ACCESSIONS_FILE"
 else
   # Download all (output goes to stderr, stdout has new hubs which we ignore)
-  node src/downloadHubs.ts > /dev/null
+  node src/downloadHubs.ts >/dev/null
 fi
 
 # --- Phase 2: Fetch metadata ---
@@ -96,14 +96,15 @@ if [ "$MODE" = "new" ]; then
   while read -r meta_file; do
     dir="${meta_file%/meta.json}"
     echo "${dir##*/}"
-  done < "$NEW_HUBS_FILE" > "$NCBI_ACCESSION_FILE"
+  done <"$NEW_HUBS_FILE" >"$NCBI_ACCESSION_FILE"
 
-  new_count=$(wc -l < "$NCBI_ACCESSION_FILE")
+  new_count=$(wc -l <"$NCBI_ACCESSION_FILE")
   echo "Fetching NCBI data for $new_count new assemblies..."
   batch_result=$(mktemp)
-  if datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" > "$batch_result" 2>/tmp/datasets_err; then
+  datasets_err=$(mktemp)
+  if datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" >"$batch_result" 2>"$datasets_err"; then
     # Split into per-accession files
-    if jq -e '.reports' "$batch_result" > /dev/null 2>&1; then
+    if jq -e '.reports' "$batch_result" >/dev/null 2>&1; then
       jq -r '.reports[] |
         {reports: [.], total_count: 1} as $wrapped |
         .accession as $acc |
@@ -112,20 +113,21 @@ if [ "$MODE" = "new" ]; then
       ' "$batch_result" | awk -v dir="$NCBI_RESULT_DIR" 'NR%2==1 {filename=$0; next} {print > (dir "/" filename ".json")}'
     fi
   else
-    echo "Warning: datasets CLI failed: $(grep -v 'New version' /tmp/datasets_err 2>/dev/null)"
+    echo "Warning: datasets CLI failed: $(grep -v 'New version' "$datasets_err" 2>/dev/null)"
   fi
+  rm -f "$datasets_err"
 
   # Copy to hub directories
   while read -r meta_file; do
     dir="${meta_file%/meta.json}"
     id="${dir##*/}"
     if [ -f "$NCBI_RESULT_DIR/$id.json" ]; then
-      jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$NCBI_RESULT_DIR/$id.json" > "$dir/ncbi.json"
+      jq --argjson ts "$(date +%s)" '. + {downloaded_at: $ts}' "$NCBI_RESULT_DIR/$id.json" >"$dir/ncbi.json"
       echo "Saved NCBI data for $id"
     else
       echo "Warning: No datasets result for $id"
     fi
-  done < "$NEW_HUBS_FILE"
+  done <"$NEW_HUBS_FILE"
 
   rm -f "$NCBI_ACCESSION_FILE" "$batch_result"
   rm -rf "$NCBI_RESULT_DIR"
@@ -144,15 +146,15 @@ node src/processUcscList.ts
 # Cache fd results for "all" mode to avoid repeated directory traversals
 if [ "$MODE" != "new" ]; then
   ALL_META_FILE=$(mktemp)
-  fd '^meta\.json$' hubs > "$ALL_META_FILE"
-  log "Found $(wc -l < "$ALL_META_FILE") hub assemblies"
+  fd '^meta\.json$' hubs >"$ALL_META_FILE"
+  log "Found $(wc -l <"$ALL_META_FILE") hub assemblies"
 fi
 
 log "Generating JBrowse 2 config.json..."
 if [ "$MODE" = "new" ]; then
-  node src/generateConfigsBatch.ts < "$NEW_HUBS_FILE"
+  node src/generateConfigsBatch.ts <"$NEW_HUBS_FILE"
 else
-  node src/generateConfigsBatch.ts < "$ALL_META_FILE"
+  node src/generateConfigsBatch.ts <"$ALL_META_FILE"
 fi
 
 # --- Phase 4: Download and process GFF files ---
@@ -162,7 +164,7 @@ mkdir -p gff
 if [ "$MODE" = "new" ]; then
   # Pre-filter all.json to only new hub accessions
   jq --slurpfile accs <(jq -R -s 'split("\n") | map(select(length > 0))' "$NEW_ACCESSIONS_FILE") \
-    '[.[] | select(.accession as $a | $accs[0] | index($a))]' processedHubJson/all.json > "$NEW_HUB_DATA"
+    '[.[] | select(.accession as $a | $accs[0] | index($a))]' processedHubJson/all.json >"$NEW_HUB_DATA"
 
   download_gff_for_hub() {
     local line="$1"
@@ -193,6 +195,7 @@ log "Processing NCBI GFF files..."
 mkdir -p bgz
 if [ "$MODE" = "new" ]; then
   process_gff_for_hub() {
+    set -o pipefail
     local accession="$1"
     local input_file
     input_file=$(echo gff/"${accession}"_*.gz)
@@ -216,7 +219,7 @@ if [ "$MODE" = "new" ]; then
     rm "$unzipped_file"
   }
   export -f process_gff_for_hub
-  parallel -j8 $PARALLEL_OPTS process_gff_for_hub {} < "$NEW_ACCESSIONS_FILE"
+  parallel -j8 $PARALLEL_OPTS process_gff_for_hub {} <"$NEW_ACCESSIONS_FILE" || true
 else
   ./processGffFiles.sh
 fi
@@ -247,7 +250,7 @@ if [ "$MODE" = "new" ]; then
     fi
   }
   export -f add_track_for_hub
-  parallel -j16 $PARALLEL_OPTS add_track_for_hub {} < "$NEW_ACCESSIONS_FILE"
+  parallel -j16 $PARALLEL_OPTS add_track_for_hub {} <"$NEW_ACCESSIONS_FILE" || true
 else
   ./addNcbiGffAndTextIndex.sh
 fi
@@ -259,16 +262,18 @@ node src/makeGenArkExtensions.ts
 
 log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
-  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$NEW_HUBS_FILE"
+  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' <"$NEW_HUBS_FILE" || true
 else
-  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$ALL_META_FILE"
+  while IFS= read -r meta; do
+    [[ ! -f "$(dirname "$meta")/liftOver/.checked" ]] && echo "$meta"
+  done <"$ALL_META_FILE" | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' || true
 fi
 
 log "Adding chain tracks to configs..."
 if [ "$MODE" = "new" ]; then
-  node src/createChainTracksBatch.ts < "$NEW_HUBS_FILE"
+  node src/createChainTracksBatch.ts <"$NEW_HUBS_FILE"
 else
-  node src/createChainTracksBatch.ts < "$ALL_META_FILE"
+  node src/createChainTracksBatch.ts <"$ALL_META_FILE"
 fi
 
 # --- Phase 6: Wiki images and finishing ---
@@ -297,8 +302,8 @@ MOUSE_STRAIN_MAX_AGE_DAYS=30
 run_mouse_strains=true
 
 if [ -z "${REPROCESS:-}" ] && [ -f "$MOUSE_STRAIN_STAMP" ]; then
-  age_seconds=$(( $(date +%s) - $(stat -c %Y "$MOUSE_STRAIN_STAMP") ))
-  age_days=$(( age_seconds / 86400 ))
+  age_seconds=$(($(date +%s) - $(stat -c %Y "$MOUSE_STRAIN_STAMP")))
+  age_days=$((age_seconds / 86400))
   if [ "$age_days" -lt "$MOUSE_STRAIN_MAX_AGE_DAYS" ]; then
     log "Skipping mouse strain processing (last run ${age_days} day(s) ago, threshold: ${MOUSE_STRAIN_MAX_AGE_DAYS} days)"
     run_mouse_strains=false

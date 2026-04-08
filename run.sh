@@ -23,34 +23,34 @@ UPLOAD_ONLY=false
 NEW_ONLY=false
 for arg in "$@"; do
   case $arg in
-    --dry-run)
-      DRY_RUN=true
-      shift
-      ;;
-    --upload-only)
-      UPLOAD_ONLY=true
-      shift
-      ;;
-    --new-only)
-      NEW_ONLY=true
-      shift
-      ;;
-    --help|-h)
-      echo "Usage: $0 [OPTIONS]"
-      echo ""
-      echo "Options:"
-      echo "  (default)       Full pipeline: build + upload + deploy"
-      echo "  --dry-run       Build only, no upload or deploy"
-      echo "  --upload-only   Upload + deploy only, skip build (run after --dry-run)"
-      echo "  --new-only      Only process new genark hubs (faster builds)"
-      echo "  --help, -h      Show this help message"
-      exit 0
-      ;;
-    *)
-      echo "Unknown option: $arg"
-      echo "Use --help for usage information"
-      exit 1
-      ;;
+  --dry-run)
+    DRY_RUN=true
+    shift
+    ;;
+  --upload-only)
+    UPLOAD_ONLY=true
+    shift
+    ;;
+  --new-only)
+    NEW_ONLY=true
+    shift
+    ;;
+  --help | -h)
+    echo "Usage: $0 [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  (default)       Full pipeline: build + upload + deploy"
+    echo "  --dry-run       Build only, no upload or deploy"
+    echo "  --upload-only   Upload + deploy only, skip build (run after --dry-run)"
+    echo "  --new-only      Only process new genark hubs (faster builds)"
+    echo "  --help, -h      Show this help message"
+    exit 0
+    ;;
+  *)
+    echo "Unknown option: $arg"
+    echo "Use --help for usage information"
+    exit 1
+    ;;
   esac
 done
 
@@ -118,7 +118,6 @@ if [ "$DRY_RUN" = false ]; then
 
   echo "Running website deploy..."
   yarn --cwd website deploy
-
 
   git add .
   git commit -m "Updates" || echo "No additional changes to commit"

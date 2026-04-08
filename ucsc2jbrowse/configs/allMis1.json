@@ -1073,48 +1073,25 @@
           "indexType": "CSI"
         }
       }
-    },
+    }
+  ],
+  "aggregateTextSearchAdapters": [
     {
-      "type": "SyntenyTrack",
-      "trackId": "allMis1_to_over.chain.gz_liftOver",
-      "name": "allMis1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["allMis1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "allMis1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/allMis1ToHg19.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/allMis1ToHg19.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "allMis1_to_over.chain.gz_liftOver",
-      "name": "allMis1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["allMis1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "allMis1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/allMis1ToHg38.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/allMis1ToHg38.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "allMis1-index",
+      "ixFilePath": {
+        "uri": "trix/allMis1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/allMis1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/allMis1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["allMis1"]
     }
   ],
   "plugins": [
@@ -1170,24 +1147,5 @@
     "activeWidgets": {
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
-  },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "allMis1-index",
-      "ixFilePath": {
-        "uri": "trix/allMis1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/allMis1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/allMis1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["allMis1"]
-    }
-  ]
+  }
 }

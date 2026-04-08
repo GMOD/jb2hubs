@@ -9,7 +9,10 @@ export default function RedX() {
       className={tooltipStyles.tooltip}
       data-tooltip="NCBI RefSeq suppressed"
     >
-      <X stroke="red" className={styles.redX} />
+      <X
+        stroke="red"
+        className={styles.redX}
+      />
     </span>
   )
 }

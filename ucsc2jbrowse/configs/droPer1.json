@@ -921,90 +921,6 @@
           "indexType": "CSI"
         }
       }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "droPer1_to_over.chain.gz_liftOver",
-      "name": "droPer1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["droPer1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "droPer1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/droPer1ToDm2.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/droPer1ToDm2.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "droPer1_to_over.chain.gz_liftOver",
-      "name": "droPer1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["droPer1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "droPer1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/droPer1ToDm3.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/droPer1ToDm3.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "droPer1_to_over.chain.gz_liftOver",
-      "name": "droPer1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["droPer1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "droPer1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/droPer1ToDm6.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/droPer1ToDm6.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "droPer1_to_over.chain.gz_liftOver",
-      "name": "droPer1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["droPer1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "droPer1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/droPer1ToDp3.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/droPer1ToDp3.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     }
   ],
   "plugins": [
@@ -1037,6 +953,25 @@
       }
     }
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "droPer1-index",
+      "ixFilePath": {
+        "uri": "trix/droPer1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/droPer1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/droPer1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["droPer1"]
+    }
+  ],
   "defaultSession": {
     "name": "droPer1 Oct. 2005 (Broad/droPer1)",
     "views": [
@@ -1060,24 +995,5 @@
     "activeWidgets": {
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
-  },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "droPer1-index",
-      "ixFilePath": {
-        "uri": "trix/droPer1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/droPer1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/droPer1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["droPer1"]
-    }
-  ]
+  }
 }

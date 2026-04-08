@@ -854,111 +854,25 @@
           "indexType": "CSI"
         }
       }
-    },
+    }
+  ],
+  "aggregateTextSearchAdapters": [
     {
-      "type": "SyntenyTrack",
-      "trackId": "panPan1_to_over.chain.gz_liftOver",
-      "name": "panPan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan1ToHg18.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan1ToHg18.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panPan1_to_over.chain.gz_liftOver",
-      "name": "panPan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan1ToHg38.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan1ToHg38.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panPan1_to_over.chain.gz_liftOver",
-      "name": "panPan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan1ToPanPan2.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan1ToPanPan2.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panPan1_to_over.chain.gz_liftOver",
-      "name": "panPan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan1ToPanPan3.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan1ToPanPan3.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "panPan1_to_over.chain.gz_liftOver",
-      "name": "panPan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["panPan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "panPan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/panPan1ToTarSyr2.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/panPan1ToTarSyr2.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "panPan1-index",
+      "ixFilePath": {
+        "uri": "trix/panPan1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/panPan1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/panPan1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["panPan1"]
     }
   ],
   "plugins": [
@@ -1014,24 +928,5 @@
     "activeWidgets": {
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
-  },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "panPan1-index",
-      "ixFilePath": {
-        "uri": "trix/panPan1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/panPan1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/panPan1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["panPan1"]
-    }
-  ]
+  }
 }

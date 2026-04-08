@@ -34,14 +34,21 @@ const speciesInfo = node.accession
 
 {
   hasChildren ? (
-    <details class="tree-node" open style={`padding-left: ${indent}px;`}>
+    <details
+      class="tree-node"
+      open
+      style={`padding-left: ${indent}px;`}
+    >
       <summary
         class="tree-summary"
         style={`background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
       >
         <div class="tree-content">
           {node.taxonId ? (
-            <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+            <a
+              href={`/taxonomy/${node.taxonId}`}
+              class="tree-node-link"
+            >
               {node.name || 'Unnamed'}
             </a>
           ) : (
@@ -88,8 +95,18 @@ const speciesInfo = node.accession
                 stroke-width="2"
                 style="display: inline-block; vertical-align: middle;"
               >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
+                <line
+                  x1="18"
+                  y1="6"
+                  x2="6"
+                  y2="18"
+                />
+                <line
+                  x1="6"
+                  y1="6"
+                  x2="18"
+                  y2="18"
+                />
               </svg>
             </span>
           ) : null}
@@ -101,7 +118,10 @@ const speciesInfo = node.accession
         </div>
       </summary>
       {node.children!.map(child => (
-        <Astro.self node={child} speciesDataMap={speciesDataMap} />
+        <Astro.self
+          node={child}
+          speciesDataMap={speciesDataMap}
+        />
       ))}
     </details>
   ) : (
@@ -112,7 +132,10 @@ const speciesInfo = node.accession
       <div class="tree-content">
         <span style="margin-right: 8px;">•</span>
         {node.taxonId ? (
-          <a href={`/taxonomy/${node.taxonId}`} class="tree-node-link">
+          <a
+            href={`/taxonomy/${node.taxonId}`}
+            class="tree-node-link"
+          >
             {node.name || 'Unnamed'}
           </a>
         ) : (
@@ -155,8 +178,18 @@ const speciesInfo = node.accession
               stroke-width="2"
               style="display: inline-block; vertical-align: middle;"
             >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
+              <line
+                x1="18"
+                y1="6"
+                x2="6"
+                y2="18"
+              />
+              <line
+                x1="6"
+                y1="6"
+                x2="18"
+                y2="18"
+              />
             </svg>
           </span>
         ) : null}

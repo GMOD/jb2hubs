@@ -40,7 +40,11 @@ function SourceIcon({ source }: { source: string }) {
   const favicon = sourceFavicons[source]
   if (favicon) {
     return (
-      <img src={favicon} alt={sourceLabels[source]} className="source-icon" />
+      <img
+        src={favicon}
+        alt={sourceLabels[source]}
+        className="source-icon"
+      />
     )
   }
   return <span>{sourceTextIcons[source] ?? ''}</span>
@@ -305,7 +309,10 @@ export default function SyntenySelector({
           >
             <option value="">-- Select a track --</option>
             {matchingTracks.map(track => (
-              <option key={track.trackId} value={track.trackId}>
+              <option
+                key={track.trackId}
+                value={track.trackId}
+              >
                 {track.name}
               </option>
             ))}

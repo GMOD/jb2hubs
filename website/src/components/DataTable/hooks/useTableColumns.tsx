@@ -65,7 +65,7 @@ export function useTableColumns({
         id: 'assemblyStatus',
         header: 'Assembly status',
         enableSorting: true,
-        sortValue: row => statusOrder[row.assemblyStatus] ?? 999,
+        sortValue: row => statusOrder[row.assemblyStatus.toLowerCase()] ?? 999,
         cell: row => (
           <div className={styles.whitespaceNowrap}>{row.assemblyStatus}</div>
         ),

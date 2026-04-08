@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 # Configuration - can be overridden via environment variables

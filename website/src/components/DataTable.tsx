@@ -69,7 +69,10 @@ export default function DataTable({ rows }: TableProps) {
     <>
       <div className={styles.searchContainer}>
         <div className={styles.searchInputWrapper}>
-          <Search className={styles.searchIcon} size={16} />
+          <Search
+            className={styles.searchIcon}
+            size={16}
+          />
           <input
             type="text"
             placeholder="Search by common name, scientific name, NCBI assembly name, or accession number..."
@@ -109,7 +112,10 @@ export default function DataTable({ rows }: TableProps) {
             sortId={sortId}
             sortDesc={sortDesc}
           />
-          <TableBody columns={columns} rows={pagedRows} />
+          <TableBody
+            columns={columns}
+            rows={pagedRows}
+          />
         </table>
       </div>
 

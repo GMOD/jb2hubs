@@ -15,21 +15,19 @@ export function useTableSort() {
   }, [])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (sortId) {
-        params.set('sort', sortId)
-        params.set('dir', sortDesc ? 'desc' : 'asc')
-      } else {
-        params.delete('sort')
-        params.delete('dir')
-      }
-      window.history.replaceState(
-        null,
-        '',
-        `?${params.toString()}${window.location.hash}`,
-      )
+    const params = new URLSearchParams(window.location.search)
+    if (sortId) {
+      params.set('sort', sortId)
+      params.set('dir', sortDesc ? 'desc' : 'asc')
+    } else {
+      params.delete('sort')
+      params.delete('dir')
     }
+    window.history.replaceState(
+      null,
+      '',
+      `?${params.toString()}${window.location.hash}`,
+    )
   }, [sortId, sortDesc])
 
   const handleSort = (columnId: string) => {

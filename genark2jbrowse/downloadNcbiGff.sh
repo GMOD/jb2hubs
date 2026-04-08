@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source "$(dirname "$0")/common.sh"
 
 echo "Phase 1: Building queue of GFF files to download..."
@@ -26,10 +28,10 @@ export -f check_and_queue
 # Filter out null entries and null ncbiGff before using test()
 QUEUE_FILE=$(mktemp)
 jq -r '.[] | select(. != null) | select(.ncbiGff != null) | select(.ncbiGff | test("GCF_")) | "\(.ncbiGff)\t\(.commonName)"' processedHubJson/all.json |
-  parallel $PARALLEL_OPTS --colsep $'\t' check_and_queue {} > "$QUEUE_FILE"
+  parallel $PARALLEL_OPTS --colsep $'\t' check_and_queue {} >"$QUEUE_FILE"
 
 # Count how many files need downloading
-TOTAL=$(wc -l < "$QUEUE_FILE")
+TOTAL=$(wc -l <"$QUEUE_FILE")
 
 if [ "$TOTAL" -eq 0 ]; then
   echo "No GFF files need downloading"
