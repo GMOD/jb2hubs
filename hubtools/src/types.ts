@@ -81,6 +81,8 @@ export interface NCBIDatasetsReport {
   annotation_info?: AnnotationInfo
 }
 
+export type Adapter = Record<string, unknown> & { type: string }
+
 export interface NCBIDatasetsResponse {
   reports: NCBIDatasetsReport[]
   total_count: number

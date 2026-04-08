@@ -609,7 +609,7 @@ function parseAssemblyEntry({ entry }) {
 	const ncbiRefSeqCategory = assembly_info.refseq_category;
 	const suppressed = assembly_info.assembly_status === "suppressed";
 	const assemblyType = assembly_info.assembly_type;
-	const pairedAccession = report.paired_accession ?? assembly_info.paired_assembly?.accession;
+	const pairedAccession = report.paired_accession === accession ? report.accession : report.paired_accession ?? assembly_info.paired_assembly?.accession;
 	const pairedAssemblyStatus = assembly_info.paired_assembly?.status;
 	const pairedAssemblyDifferences = assembly_info.paired_assembly?.differences;
 	const genomeNotes = assembly_info.genome_notes;

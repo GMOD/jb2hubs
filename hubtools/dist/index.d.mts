@@ -33,10 +33,96 @@ declare function enhanceConfig(configPath: string, plugins?: {
   url: string;
 }[]): void;
 //#endregion
-//#region src/generateHubTracks.d.ts
+//#region src/types.d.ts
+interface UCSCGenArkAssemblyEntry {
+  taxId: number;
+  asmId: string;
+  genBank: string;
+  refSeq: string;
+  identical: string;
+  sciName: string;
+  comName: string;
+  ucscBrowser: string;
+}
+interface AnnotationInfo {
+  name?: string;
+  provider?: string;
+  release_date?: string;
+  busco?: {
+    busco_lineage?: string;
+    busco_ver?: string;
+    complete?: number;
+    single_copy?: number;
+    duplicated?: number;
+    fragmented?: number;
+    missing?: number;
+    total_count?: string;
+  };
+  stats?: {
+    gene_counts?: {
+      protein_coding?: number;
+      non_coding?: number;
+      pseudogene?: number;
+      total?: number;
+    };
+  };
+}
+interface NCBIDatasetsReport {
+  accession: string;
+  current_accession: string;
+  paired_accession?: string;
+  organism: {
+    organism_name: string;
+    common_name?: string;
+    tax_id: number;
+    infraspecific_names?: Record<string, string>;
+  };
+  assembly_info: {
+    assembly_level: string;
+    assembly_name: string;
+    assembly_status: string;
+    assembly_type: string;
+    refseq_category?: string;
+    release_date: string;
+    submitter: string;
+    bioproject_accession?: string;
+    comments?: string;
+    genome_notes?: string[];
+    sequencing_tech?: string;
+    suppression_reason?: string;
+    paired_assembly?: {
+      accession: string;
+      status: string;
+      differences?: string;
+    };
+  };
+  assembly_stats: {
+    contig_l50: number;
+    contig_n50: number;
+    scaffold_l50: number;
+    scaffold_n50: number;
+    number_of_contigs: number;
+    number_of_scaffolds: number;
+    total_number_of_chromosomes: number;
+    total_sequence_length: string;
+    total_ungapped_length: string;
+    gc_count?: string;
+    gc_percent?: number;
+    genome_coverage?: string;
+    number_of_component_sequences?: number;
+  };
+  annotation_info?: AnnotationInfo;
+}
 type Adapter = Record<string, unknown> & {
   type: string;
 };
+interface NCBIDatasetsResponse {
+  reports: NCBIDatasetsReport[];
+  total_count: number;
+  downloaded_at?: number;
+}
+//#endregion
+//#region src/generateHubTracks.d.ts
 declare function generateHubTracks({
   trackDb,
   trackDbUrl,
@@ -53,9 +139,7 @@ declare function generateHubTracks({
   adapter: {
     type: string;
     uri: string;
-    sequenceAdapter: Record<string, unknown> & {
-      type: string;
-    };
+    sequenceAdapter: Adapter;
   };
   trackId: string;
   description: string | undefined;
@@ -169,9 +253,7 @@ declare function generateJBrowseConfigForAssemblyHub({
     adapter: {
       type: string;
       uri: string;
-      sequenceAdapter: Record<string, unknown> & {
-        type: string;
-      };
+      sequenceAdapter: Adapter;
     };
     trackId: string;
     description: string | undefined;
@@ -278,9 +360,7 @@ declare function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string): Promis
       adapter: {
         type: string;
         uri: string;
-        sequenceAdapter: Record<string, unknown> & {
-          type: string;
-        };
+        sequenceAdapter: Adapter;
       };
       trackId: string;
       description: string | undefined;
@@ -345,81 +425,6 @@ declare const hubCategories: {
 //#endregion
 //#region src/notEmpty.d.ts
 declare function notEmpty<T>(value: T | null | undefined): value is T;
-//#endregion
-//#region src/types.d.ts
-interface UCSCGenArkAssemblyEntry {
-  taxId: number;
-  asmId: string;
-  genBank: string;
-  refSeq: string;
-  identical: string;
-  sciName: string;
-  comName: string;
-  ucscBrowser: string;
-}
-interface NCBIDatasetsReport {
-  accession: string;
-  current_accession: string;
-  paired_accession?: string;
-  organism: {
-    organism_name: string;
-    common_name?: string;
-    tax_id: number;
-    infraspecific_names?: Record<string, string>;
-  };
-  assembly_info: {
-    assembly_level: string;
-    assembly_name: string;
-    assembly_status: string;
-    assembly_type: string;
-    refseq_category?: string;
-    release_date: string;
-    submitter: string;
-    bioproject_accession?: string;
-    comments?: string;
-    genome_notes?: string[];
-    sequencing_tech?: string;
-    suppression_reason?: string;
-    paired_assembly?: {
-      accession: string;
-      status: string;
-      differences?: string;
-    };
-  };
-  assembly_stats: {
-    contig_l50: number;
-    contig_n50: number;
-    scaffold_l50: number;
-    scaffold_n50: number;
-    number_of_contigs: number;
-    number_of_scaffolds: number;
-    total_number_of_chromosomes: number;
-    total_sequence_length: string;
-    total_ungapped_length: string;
-    gc_count?: string;
-    gc_percent?: number;
-    genome_coverage?: string;
-    number_of_component_sequences?: number;
-  };
-  annotation_info?: {
-    name?: string;
-    provider?: string;
-    release_date?: string;
-    stats?: {
-      gene_counts?: {
-        protein_coding?: number;
-        non_coding?: number;
-        pseudogene?: number;
-        total?: number;
-      };
-    };
-  };
-}
-interface NCBIDatasetsResponse {
-  reports: NCBIDatasetsReport[];
-  total_count: number;
-  downloaded_at?: number;
-}
 //#endregion
 //#region src/parseAssemblyEntry.d.ts
 declare function parseAssemblyEntry({
@@ -499,19 +504,7 @@ declare function parseAssemblyEntry({
   genomeCoverage: string | undefined;
   sequencingTech: string | undefined;
   bioprojectAccession: string | undefined;
-  annotationInfo: {
-    name?: string;
-    provider?: string;
-    release_date?: string;
-    stats?: {
-      gene_counts?: {
-        protein_coding?: number;
-        non_coding?: number;
-        pseudogene?: number;
-        total?: number;
-      };
-    };
-  } | undefined;
+  annotationInfo: AnnotationInfo | undefined;
   ncbiDownloadedAt: number | undefined;
   ncbiMissing: boolean;
 } | undefined;
@@ -557,4 +550,4 @@ declare function replaceLink(htmlContent: string): string;
 declare function decodeURIComponentNoThrow(uri: string): string;
 declare function requireArg(arg: string | undefined, usage: string): string;
 //#endregion
-export { NCBIDatasetsReport, NCBIDatasetsResponse, UCSCGenArkAssemblyEntry, categoryMap, decodeURIComponentNoThrow, dedupe, enhanceConfig, generateHubTracks, generateJBrowseConfigForAssemblyHub, generateJBrowseConfigsForMultiGenomeHub, hubCategories, makeLoc, makeLoc2, makeLocAlt, myfetch, myfetchjson, myfetchtext, notEmpty, parseAssemblyEntry, readJSON, readJSONAsync, replaceLink, requireArg, resolve, splitOnFirst, writeJSON };
+export { Adapter, AnnotationInfo, NCBIDatasetsReport, NCBIDatasetsResponse, UCSCGenArkAssemblyEntry, categoryMap, decodeURIComponentNoThrow, dedupe, enhanceConfig, generateHubTracks, generateJBrowseConfigForAssemblyHub, generateJBrowseConfigsForMultiGenomeHub, hubCategories, makeLoc, makeLoc2, makeLocAlt, myfetch, myfetchjson, myfetchtext, notEmpty, parseAssemblyEntry, readJSON, readJSONAsync, replaceLink, requireArg, resolve, splitOnFirst, writeJSON };

@@ -2,8 +2,7 @@ import { categoryMap } from './const.ts'
 import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
 
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
-
-type Adapter = Record<string, unknown> & { type: string }
+import type { Adapter } from './types.ts'
 
 function makeAdapterConf(
   baseTrackType: string,

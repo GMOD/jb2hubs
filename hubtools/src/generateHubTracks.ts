@@ -7,8 +7,7 @@ import {
 } from './trackUtils.ts'
 
 import type { TrackDbFile } from '@gmod/ucsc-hub'
-
-type Adapter = Record<string, unknown> & { type: string }
+import type { Adapter } from './types.ts'
 
 export function generateHubTracks({
   trackDb,

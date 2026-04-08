@@ -33,8 +33,20 @@ export interface AssemblyData {
   [key: string]: unknown
 }
 
+export interface AssemblyStats {
+  total_length?: number
+  ungapped_length?: number
+  chromosome_count?: number
+  scaffold_count?: number
+  scaffold_n50?: number
+  scaffold_l50?: number
+  contig_count?: number
+  contig_n50?: number
+  contig_l50?: number
+}
+
 export interface NcbiDetails {
-  stats?: Record<string, unknown>
+  stats?: AssemblyStats
   annotationInfo?: AnnotationInfo
   infraspecificNames?: Record<string, string>
   comments?: string
