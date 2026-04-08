@@ -15,19 +15,22 @@ import path from 'path'
 
 export async function getStaticPaths() {
   const accessions = loadAccessionMap()
-  return [...accessions.keys()]
-    .filter(r => !!r)
-    .map(r => ({ params: { id: r } }))
+  const ucscMappings = buildUcscMapping(accessions)
+  return [...accessions.entries()]
+    .filter(([id]) => !!id)
+    .map(([id, data]) => ({
+      params: { id },
+      props: {
+        data,
+        pairedAssemblyData: data.pairedAccession
+          ? accessions.get(data.pairedAccession)
+          : undefined,
+        ucscDbName: ucscMappings.get(id),
+      },
+    }))
 }
 
-const { id } = Astro.params
-const accessions = loadAccessionMap()
-const ucscMappings = buildUcscMapping(accessions)
-const ret = accessions.get(id as string)
-
-if (!ret) {
-  throw new Error(`Accession not found: ${id}`)
-}
+const { data, pairedAssemblyData, ucscDbName } = Astro.props
 
 const {
   accession,
@@ -49,7 +52,7 @@ const {
   suppressed,
   pairedAccession,
   ncbiMissing,
-} = ret
+} = data
 
 const {
   stats,
@@ -66,12 +69,6 @@ const {
   annotationInfo,
   ncbiDownloadedAt,
 } = loadNcbiDetails(accession)
-
-const pairedAssemblyData = pairedAccession
-  ? accessions.get(pairedAccession)
-  : undefined
-
-const ucscDbName = ucscMappings.get(accession)
 
 // GCA = GenBank, GCF = RefSeq
 const pairedLabel = pairedAccession?.startsWith('GCF')
