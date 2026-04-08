@@ -17,7 +17,7 @@
     "astro": "astro",
     "deploy": "yarn sync",
     "predeploy": "yarn build",
-    "sync": "tar czf - -C dist . | ssh myserver 'tar xzf - -C /var/www/html'",
+    "sync": "tar czf - -C dist . | ssh myserver 'tar xzf - -C /var/www/html' && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",
     "format": "prettier --write ."
   },
   "dependencies": {
