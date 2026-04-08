@@ -107,12 +107,8 @@ if [ "$MODE" = "new" ]; then
       jq -r '.reports[] |
         {reports: [.], total_count: 1} as $wrapped |
         .accession as $acc |
-        (.paired_accession // "") as $paired |
-        (.current_accession // "") as $current |
         ($wrapped | tostring) as $json |
-        "\($acc)\n\($json)",
-        (if $paired != "" and $paired != $acc then "\($paired)\n\($json)" else empty end),
-        (if $current != "" and $current != $acc and $current != $paired then "\($current)\n\($json)" else empty end)
+        "\($acc)\n\($json)"
       ' "$batch_result" | awk -v dir="$NCBI_RESULT_DIR" 'NR%2==1 {filename=$0; next} {print > (dir "/" filename ".json")}'
     fi
   else
