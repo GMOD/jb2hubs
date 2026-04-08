@@ -6,8 +6,8 @@ import {
   isMetaTrack,
 } from './trackUtils.ts'
 
-import type { TrackDbFile } from '@gmod/ucsc-hub'
 import type { Adapter } from './types.ts'
+import type { TrackDbFile } from '@gmod/ucsc-hub'
 
 export function generateHubTracks({
   trackDb,

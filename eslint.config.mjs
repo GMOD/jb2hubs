@@ -69,6 +69,8 @@ export default tseslint.config(
       ],
       semi: ['error', 'never'],
 
+      '@typescript-eslint/consistent-type-imports': 'error',
+
       '@typescript-eslint/restrict-template-expressions': 'off',
       '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
