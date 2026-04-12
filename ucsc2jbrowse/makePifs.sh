@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source "$(dirname "$0")/common.sh"
 
 find "$UCSC_DOWNLOADS_DIR" -maxdepth 1 -mindepth 1 -type d | parallel -j+0 $PARALLEL_OPTS "

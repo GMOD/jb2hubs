@@ -137,7 +137,7 @@ else
       continue
     fi
 
-    current_hash=$(stat -c "%s" "$trackdb")
+    current_hash=$(xxhsum "$trackdb" | cut -d' ' -f1)
     stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
 
     if [ "$current_hash" = "$stored_hash" ] && [ -f "$built_dir/config.json" ]; then
@@ -292,7 +292,7 @@ log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts
 
 log "Hashing all output files for integrity checking..."
-find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp" -exec stat -c "%s %n" {} + | LC_ALL=C sort -k2,2 >fileListing.txt
+find "$UCSC_BUILT_DIR"/ -type f ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp" -exec xxhsum {} + | LC_ALL=C sort -k2,2 >fileListing.txt
 
 # Write updated hashes for assemblies we just processed
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ]; then
@@ -300,7 +300,7 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOW
     assembly=$(basename "$assembly_data_dir")
     trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
     if [ -f "$trackdb" ]; then
-      stat -c "%s" "$trackdb" >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
+      xxhsum "$trackdb" | cut -d' ' -f1 >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
     fi
   done
 fi

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source "$(dirname "$0")/common.sh"
 
 echo "Phase 1: Building queue of GFF files to download..."

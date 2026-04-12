@@ -10,7 +10,7 @@
 #   ./make.sh --reprocess-all # Re-download and reprocess everything
 #
 
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
@@ -101,7 +101,8 @@ if [ "$MODE" = "new" ]; then
   new_count=$(wc -l < "$NCBI_ACCESSION_FILE")
   echo "Fetching NCBI data for $new_count new assemblies..."
   batch_result=$(mktemp)
-  if datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" > "$batch_result" 2>/tmp/datasets_err; then
+  datasets_err=$(mktemp)
+  if datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" > "$batch_result" 2>"$datasets_err"; then
     # Split into per-accession files
     if jq -e '.reports' "$batch_result" > /dev/null 2>&1; then
       jq -r '.reports[] |
@@ -112,8 +113,9 @@ if [ "$MODE" = "new" ]; then
       ' "$batch_result" | awk -v dir="$NCBI_RESULT_DIR" 'NR%2==1 {filename=$0; next} {print > (dir "/" filename ".json")}'
     fi
   else
-    echo "Warning: datasets CLI failed: $(grep -v 'New version' /tmp/datasets_err 2>/dev/null)"
+    echo "Warning: datasets CLI failed: $(grep -v 'New version' "$datasets_err" 2>/dev/null)"
   fi
+  rm -f "$datasets_err"
 
   # Copy to hub directories
   while read -r meta_file; do
@@ -193,6 +195,7 @@ log "Processing NCBI GFF files..."
 mkdir -p bgz
 if [ "$MODE" = "new" ]; then
   process_gff_for_hub() {
+    set -o pipefail
     local accession="$1"
     local input_file
     input_file=$(echo gff/"${accession}"_*.gz)

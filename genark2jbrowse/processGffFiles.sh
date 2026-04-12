@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source "$(dirname "$0")/common.sh"
 
 echo "Phase 1: Building queue of GFF files to process..."
@@ -11,7 +13,7 @@ check_and_queue() {
   filename=$(basename "$input_file")
   local output_bgz_file="bgz/$filename"
 
-  if [ ! -f "$output_bgz_file" ] || [ -n "$REPROCESS" ]; then
+  if [ ! -f "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
     echo "$input_file"
   fi
 }
@@ -36,6 +38,7 @@ echo "Phase 2: Processing $TOTAL GFF files..."
 # Define function to process a single GFF file. It handles cases where start >
 # end, sorts, bgzips, and tabix indexes the GFF.
 process_gff_file() {
+  set -o pipefail
   local input_file="$1"
   local filename
   filename=$(basename "$input_file")

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source "$(dirname "$0")/common.sh"
 
 # Define function to add a GFF track to a JBrowse 2 assembly and create a text index.
@@ -28,7 +30,7 @@ add_track_and_text_index() {
 
   jbrowse add-track --force "$gff_file_path" --out "$hub_dir" --load copy --indexFile "${gff_file_path}".csi --trackId "${accession}-ncbiGff" --name "NCBI RefSeq - RefSeq All (GFF)" --category "Genes and Gene Predictions" >/dev/null
   # Check if trix folder exists
-  if [ -d "$hub_dir/trix" ] && [ -z "$REDOWNLOAD" ] && [ -z "$REPROCESS" ] && [ -z "$REPROCESS_TRIX" ]; then
+  if [ -d "$hub_dir/trix" ] && [ -z "${REDOWNLOAD:-}" ] && [ -z "${REPROCESS:-}" ] && [ -z "${REPROCESS_TRIX:-}" ]; then
     add_trix_adapter "$accession" "$config_file"
   else
     echo "Trix folder does not exist for $accession, running jbrowse text-index"

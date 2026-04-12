@@ -11,12 +11,14 @@
 #   ./cleanupStaleGff.sh --exec # actually delete the files
 #
 
+set -euo pipefail
+
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ALL_JSON="$SCRIPT_DIR/processedHubJson/all.json"
 LOG_FILE="$SCRIPT_DIR/CLEANED.md"
 DRY_RUN=true
 
-if [ "${1}" = "--exec" ]; then
+if [ "${1:-}" = "--exec" ]; then
   DRY_RUN=false
 fi
 
@@ -57,7 +59,7 @@ fi
 
 # Remove leftover uncompressed .gff files in bgz/
 echo "=== Leftover uncompressed .gff files in bgz/ ==="
-! $DRY_RUN && log "## Leftover uncompressed .gff files in bgz/"
+if ! $DRY_RUN; then log "## Leftover uncompressed .gff files in bgz/"; fi
 for f in "$SCRIPT_DIR/bgz/"*.gff; do
   [ -f "$f" ] || continue
   delete_file "$f"
@@ -66,7 +68,7 @@ done
 # Remove .csi files in bgz/ with no corresponding .gz
 echo ""
 echo "=== Orphaned .csi files in bgz/ ==="
-! $DRY_RUN && log "" && log "## Orphaned .csi files in bgz/"
+if ! $DRY_RUN; then log ""; log "## Orphaned .csi files in bgz/"; fi
 for f in "$SCRIPT_DIR/bgz/"GC[FA]_*.gz.csi; do
   [ -f "$f" ] || continue
   if [ ! -f "${f%.csi}" ]; then
@@ -79,7 +81,7 @@ done
 for dir in gff bgz; do
   echo ""
   echo "=== GFF files not in listing ($dir/) ==="
-  ! $DRY_RUN && log "" && log "## GFF files not in listing ($dir/)"
+  if ! $DRY_RUN; then log ""; log "## GFF files not in listing ($dir/)"; fi
 
   for f in "$SCRIPT_DIR/$dir/"GC[FA]_*.gz; do
     [ -f "$f" ] || continue
