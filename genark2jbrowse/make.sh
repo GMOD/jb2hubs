@@ -264,7 +264,9 @@ log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
   parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$NEW_HUBS_FILE"
 else
-  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' < "$ALL_META_FILE"
+  while IFS= read -r meta; do
+    [[ ! -f "$(dirname "$meta")/liftOver/.checked" ]] && echo "$meta"
+  done < "$ALL_META_FILE" | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}'
 fi
 
 log "Adding chain tracks to configs..."

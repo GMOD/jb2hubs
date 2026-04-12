@@ -180,6 +180,11 @@ process_chain_file() {
 process_liftover() {
   local liftover_dir="$CONFIG_DIR/liftOver"
   mkdir -p "$liftover_dir"
+  local stamp="$liftover_dir/.checked"
+
+  if [[ -f "$stamp" ]]; then
+    return 0
+  fi
 
   local base_url="$HUB_URL/liftOver/"
 
@@ -189,6 +194,7 @@ process_liftover() {
 
   if [[ -z "$urls" ]]; then
     # No liftOver files found, which is normal for many assemblies
+    touch "$stamp"
     return 0
   fi
 
@@ -197,6 +203,7 @@ process_liftover() {
     filename=$(basename "$url")
     process_chain_file "$url" "$filename" "$liftover_dir"
   done
+  touch "$stamp"
 }
 
 # --- Main Script ---

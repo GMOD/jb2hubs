@@ -182,6 +182,11 @@ process_chain_file() {
 process_liftover() {
   local liftover_dir="$CONFIG_DIR/liftOver"
   mkdir -p "$liftover_dir"
+  local stamp="$liftover_dir/.checked"
+
+  if [[ -f "$stamp" ]]; then
+    return 0
+  fi
 
   local base_url
   if [[ -n "$LIFTOVER_BASE_URL" ]]; then
@@ -196,6 +201,7 @@ process_liftover() {
 
   if [[ -z "$urls" ]]; then
     log_info "No liftOver chain files found at $base_url, skipping"
+    touch "$stamp"
     return 0
   fi
 
@@ -204,12 +210,18 @@ process_liftover() {
     filename=$(basename "$url")
     process_chain_file "$url" "$filename" '.chain.gz' "$liftover_dir"
   done
+  touch "$stamp"
 }
 
 # Processes vs chain files
 process_vs() {
   local vs_dir="$CONFIG_DIR/vs"
   mkdir -p "$vs_dir"
+  local stamp="$vs_dir/.checked"
+
+  if [[ -f "$stamp" ]]; then
+    return 0
+  fi
 
   local base_url="https://hgdownload.soe.ucsc.edu/goldenPath/$ASSEMBLY"
   # log_info "Processing vs chains for $ASSEMBLY from $base_url"
@@ -220,6 +232,7 @@ process_vs() {
 
   if [[ -z "$subdirs" ]]; then
     log_info "No 'vs*' subdirectories found at $base_url, skipping"
+    touch "$stamp"
     return 0
   fi
 
@@ -237,6 +250,7 @@ process_vs() {
       process_chain_file "$file_url" "$file" '.all.chain.gz' "$vs_dir"
     done
   done
+  touch "$stamp"
 }
 
 # --- Main Processing Function ---
