@@ -73,10 +73,13 @@ setup_config() {
 # Extracts file URLs from HTML directory listing
 # $1: URL to fetch
 # $2: grep pattern for files
+# Returns empty string (exit 0) if the URL is unreachable
 extract_file_urls() {
   local url="$1"
   local pattern="$2"
-  wget -q -O - "$url" | grep -oP 'href="\K[^"]+' | { grep "$pattern" || true; }
+  local raw
+  raw=$(wget -q -O - "$url" 2>/dev/null) || return 0
+  echo "$raw" | grep -oP 'href="\K[^"]+' | { grep "$pattern" || true; }
 }
 
 # Generates file paths for processing
@@ -192,7 +195,8 @@ process_liftover() {
   urls=$(extract_file_urls "$base_url" '\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|")
 
   if [[ -z "$urls" ]]; then
-    log_error "No chain files found at $base_url"
+    log_info "No liftOver chain files found at $base_url, skipping"
+    return 0
   fi
 
   echo "$urls" | while read -r url; do
@@ -215,7 +219,8 @@ process_vs() {
   subdirs=$(extract_file_urls "$base_url/" '^vs.*/$')
 
   if [[ -z "$subdirs" ]]; then
-    log_error "No 'vs*' subdirectories found at $base_url"
+    log_info "No 'vs*' subdirectories found at $base_url, skipping"
+    return 0
   fi
 
   echo "$subdirs" | while read -r subdir; do
