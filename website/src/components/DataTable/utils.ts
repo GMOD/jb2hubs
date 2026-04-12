@@ -5,11 +5,10 @@ export function notEmpty<TValue>(
 }
 
 export const statusOrder: Record<string, number> = {
-  'Complete Genome': 1,
-  'Complete genome': 1,
-  Chromosome: 2,
-  Scaffold: 3,
-  Contig: 4,
+  'complete genome': 1,
+  chromosome: 2,
+  scaffold: 3,
+  contig: 4,
 }
 
 // List accepted sort direction values

@@ -20,6 +20,9 @@ export const CURATED_CLADES = [
 
 async function fetcher(url: string): Promise<Map<string, Set<number>>> {
   const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error(res.statusText)
+  }
   const data = (await res.json()) as Record<string, number[]>
   return new Map(Object.entries(data).map(([k, v]) => [k, new Set(v)]))
 }

@@ -11,24 +11,21 @@ export function useCategoryFilter(rows: RowData[]) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const filter = params.get('filter')
-    // Ensure filter is a string before passing it to setFilterOption
-    setFilterOption(filterCategories[filter!] ? filter! : 'all')
+    setFilterOption(filter !== null && filterCategories[filter] ? filter : 'all')
   }, [])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (filterOption && filterOption !== 'all') {
-        params.set('filter', filterOption)
-      } else {
-        params.delete('filter')
-      }
-      window.history.replaceState(
-        null,
-        '',
-        `?${params.toString()}${window.location.hash}`,
-      )
+    const params = new URLSearchParams(window.location.search)
+    if (filterOption && filterOption !== 'all') {
+      params.set('filter', filterOption)
+    } else {
+      params.delete('filter')
     }
+    window.history.replaceState(
+      null,
+      '',
+      `?${params.toString()}${window.location.hash}`,
+    )
   }, [filterOption])
 
   const filteredRows = useMemo(() => {

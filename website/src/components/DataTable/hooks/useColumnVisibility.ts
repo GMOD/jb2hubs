@@ -9,19 +9,17 @@ export function useColumnVisibility() {
   }, [])
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (showAllColumns) {
-        params.set('show', 'true')
-      } else {
-        params.delete('show')
-      }
-      window.history.replaceState(
-        null,
-        '',
-        `?${params.toString()}${window.location.hash}`,
-      )
+    const params = new URLSearchParams(window.location.search)
+    if (showAllColumns) {
+      params.set('show', 'true')
+    } else {
+      params.delete('show')
     }
+    window.history.replaceState(
+      null,
+      '',
+      `?${params.toString()}${window.location.hash}`,
+    )
   }, [showAllColumns])
 
   return { showAllColumns, setShowAllColumns }
