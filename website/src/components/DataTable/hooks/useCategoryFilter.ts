@@ -11,7 +11,9 @@ export function useCategoryFilter(rows: RowData[]) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const filter = params.get('filter')
-    setFilterOption(filter !== null && filterCategories[filter] ? filter : 'all')
+    setFilterOption(
+      filter !== null && filterCategories[filter] ? filter : 'all',
+    )
   }, [])
 
   useEffect(() => {

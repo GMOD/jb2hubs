@@ -264,7 +264,14 @@ function formatDate(isoString: string): string {
       const sourceTd = document.createElement('td')
       sourceTd.textContent = hub.source
 
-      tr.append(accessionTd, commonNameTd, sciNameTd, dateTd, sourceTd, buildLinksCell(hub))
+      tr.append(
+        accessionTd,
+        commonNameTd,
+        sciNameTd,
+        dateTd,
+        sourceTd,
+        buildLinksCell(hub),
+      )
       fragment.append(tr)
     }
 
