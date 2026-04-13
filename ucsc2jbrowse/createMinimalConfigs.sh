@@ -3,7 +3,7 @@
 # Script to create minimal versions of UCSC configs in their assembly directories
 # Minimal configs include only: ncbiRefSeq, gencode, repeatMasker, clinvar, and gaps
 
-set -e
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
