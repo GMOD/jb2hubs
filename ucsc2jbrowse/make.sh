@@ -273,11 +273,11 @@ log "Download and add GENCODE tracks"
 log "Ensuring text search adapters are present for all assemblies with trix files..."
 node src/ensureTextSearchAdapters.ts "$UCSC_BUILT_DIR"
 
-log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
-./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
-
 log "Generating default sessions for all assemblies..."
 ./generateDefaultSessions.sh
+
+log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
+./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
 
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_BUILT_DIR"/ | { grep -v "meta.json" || true; } | parallel $PARALLEL_OPTS -I {} "cp {} configs/\$(basename \$(dirname {})).json"
