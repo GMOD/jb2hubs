@@ -1129,48 +1129,25 @@
           "indexType": "CSI"
         }
       }
-    },
+    }
+  ],
+  "aggregateTextSearchAdapters": [
     {
-      "type": "SyntenyTrack",
-      "trackId": "triMan1_to_over.chain.gz_liftOver",
-      "name": "triMan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["triMan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "triMan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/triMan1ToHg38.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/triMan1ToHg38.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "triMan1_to_over.chain.gz_liftOver",
-      "name": "triMan1 to over.chain.gz liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["triMan1", "over.chain.gz"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "triMan1",
-        "queryAssembly": "over.chain.gz",
-        "pifGzLocation": {
-          "uri": "liftOver/triMan1ToMm10.over.chain.gz.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/triMan1ToMm10.over.chain.gz.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "triMan1-index",
+      "ixFilePath": {
+        "uri": "trix/triMan1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/triMan1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/triMan1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["triMan1"]
     }
   ],
   "plugins": [
@@ -1226,24 +1203,5 @@
     "activeWidgets": {
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
-  },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "triMan1-index",
-      "ixFilePath": {
-        "uri": "trix/triMan1.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/triMan1.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/triMan1_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["triMan1"]
-    }
-  ]
+  }
 }
