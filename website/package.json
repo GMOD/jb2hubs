@@ -19,7 +19,7 @@
     "deploy": "yarn sync",
     "predeploy": "yarn build",
     "sync": "tar czf - -C dist . | ssh myserver 'tar xzf - -C /var/www/html' && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",
-    "format": "prettier --write ."
+    "format": "prettier --write . && prettier --parser json --print-width 0 --write public/taxonomyFilter.json"
   },
   "dependencies": {
     "@astrojs/react": "5.0.3",
