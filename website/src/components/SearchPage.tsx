@@ -4,6 +4,8 @@ import { Search } from 'lucide-react'
 
 import styles from './SearchPage.module.css'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
+import OrangeStar from './OrangeStar.tsx'
+import RedX from './RedX.tsx'
 import {
   CURATED_CLADES,
   useTaxonomyFilter,
@@ -213,6 +215,7 @@ export default function SearchPage() {
               <th>Assembly name</th>
               <th>Assembly status</th>
               <th>Category</th>
+              <th>NCBI status</th>
             </tr>
           </thead>
           <tbody>
@@ -228,6 +231,10 @@ export default function SearchPage() {
                 <td>{highlightMatch(entry[3], query)}</td>
                 <td>{entry[4]}</td>
                 <td>{entry[5]}</td>
+                <td>
+                  {entry[7] & 1 ? <OrangeStar /> : null}
+                  {entry[7] & 2 ? <RedX /> : null}
+                </td>
               </tr>
             ))}
           </tbody>

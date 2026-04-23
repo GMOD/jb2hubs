@@ -1,14 +1,16 @@
 import useSWRImmutable from 'swr/immutable'
 
-// [accession, commonName, scientificName, ncbiAssemblyName, assemblyStatus, source, taxonId]
+// [accession, commonName, scientificName, ncbiAssemblyName, assemblyStatus, source, taxonId, ncbiStatus]
+// ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
 export type IndexEntry = [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
+  string, // accession
+  string, // commonName
+  string, // scientificName
+  string, // ncbiAssemblyName
+  string, // assemblyStatus
+  string, // source
+  number, // taxonId
+  number, // ncbiStatus
 ]
 
 async function fetcher(url: string) {

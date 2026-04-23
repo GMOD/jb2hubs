@@ -48,6 +48,24 @@ export function useTableColumns({
           <>
             {highlightText(row.commonName || '', searchQuery)}{' '}
             <a href={`/accession/${row.accession}`}>(info)</a>{' '}
+          </>
+        ),
+      },
+      {
+        id: 'ncbiStatus',
+        header: 'NCBI status',
+        enableSorting: true,
+        sortValue: row => {
+          if (row.ncbiRefSeqCategory === 'reference genome') {
+            return 1
+          }
+          if (row.suppressed) {
+            return 2
+          }
+          return 0
+        },
+        cell: row => (
+          <>
             {row.ncbiRefSeqCategory === 'reference genome' ? (
               <OrangeStar />
             ) : null}
