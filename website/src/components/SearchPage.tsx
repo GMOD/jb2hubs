@@ -61,9 +61,14 @@ function scoreEntry(entry: IndexEntry, terms: string[]) {
   const nameBeforeParen = commonName.split('(')[0]!.trim()
   score += 1 / (1 + nameBeforeParen.length)
 
+  // Tiebreaker: prefer Reference genomes
+  if (entry[7] & 1) {
+    score += 0.1
+  }
+
   // Tiebreaker: prefer UCSC canonical browsers (hg38, mm39, etc.)
   if (entry[5] === 'ucsc') {
-    score += 0.5
+    score += 0.05
   }
 
   // Tiebreaker: prefer Chromosome-level assemblies

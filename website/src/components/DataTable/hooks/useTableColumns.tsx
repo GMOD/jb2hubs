@@ -57,12 +57,12 @@ export function useTableColumns({
         enableSorting: true,
         sortValue: row => {
           if (row.ncbiRefSeqCategory === 'reference genome') {
-            return 1
-          }
-          if (row.suppressed) {
             return 2
           }
-          return 0
+          if (row.suppressed) {
+            return 0
+          }
+          return 1
         },
         cell: row => (
           <>
