@@ -2,11 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
 
+import OrangeStar from './OrangeStar.tsx'
+import RedX from './RedX.tsx'
 import styles from './SearchPage.module.css'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
-import OrangeStar from './OrangeStar.tsx'
-import RedX from './RedX.tsx'
 import {
   CURATED_CLADES,
   useTaxonomyFilter,

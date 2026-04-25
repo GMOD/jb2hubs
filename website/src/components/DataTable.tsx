@@ -2,9 +2,9 @@ import { useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
 
+import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import TableBody from './DataTable/components/TableBody.tsx'
 import TableHeader from './DataTable/components/TableHeader.tsx'
-import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useCategoryFilter } from './DataTable/hooks/useCategoryFilter.ts'
 import { useColumnVisibility } from './DataTable/hooks/useColumnVisibility.ts'
 import { useSearchFilter } from './DataTable/hooks/useSearchFilter.ts'

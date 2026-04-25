@@ -24,7 +24,7 @@ async function getWikipediaMainImage(
     format: 'json',
     redirects: '1',
   }
-  const url = `${apiUrl}?${new URLSearchParams(params as Record<string, string>).toString()}`
+  const url = `${apiUrl}?${new URLSearchParams(params).toString()}`
   const response = await fetch(url)
   if (!response.ok) {
     return undefined
