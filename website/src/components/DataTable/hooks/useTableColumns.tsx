@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import styles from './useTableColumns.module.css'
 import OrangeStar from '../../OrangeStar.tsx'
 import RedX from '../../RedX.tsx'
-import { highlightText } from '../utils/highlightText.tsx'
 import { statusOrder } from '../utils.ts'
 
 export interface RowData {
@@ -31,10 +30,8 @@ export interface ColumnDef {
 }
 
 export function useTableColumns({
-  searchQuery = '',
   showAllColumns,
 }: {
-  searchQuery?: string
   showAllColumns: boolean
 }) {
   const columns = useMemo<ColumnDef[]>(() => {
@@ -46,7 +43,7 @@ export function useTableColumns({
         sortValue: row => row.commonName,
         cell: row => (
           <>
-            {highlightText(row.commonName || '', searchQuery)}{' '}
+            {row.commonName}{' '}
             <a href={`/accession/${row.accession}`}>(info)</a>{' '}
           </>
         ),
@@ -100,14 +97,14 @@ export function useTableColumns({
         header: 'Scientific name',
         enableSorting: true,
         sortValue: row => row.scientificName,
-        cell: row => highlightText(row.scientificName || '', searchQuery),
+        cell: row => row.scientificName,
       },
       {
         id: 'ncbiAssemblyName',
         header: 'NCBI assembly name',
         enableSorting: true,
         sortValue: row => row.ncbiAssemblyName,
-        cell: row => highlightText(row.ncbiAssemblyName || '', searchQuery),
+        cell: row => row.ncbiAssemblyName,
       },
       {
         id: 'accession',
@@ -141,7 +138,7 @@ export function useTableColumns({
       return allColumns
     }
     return allColumns.filter(col => !col.meta?.extra)
-  }, [searchQuery, showAllColumns])
+  }, [showAllColumns])
 
   return { columns }
 }

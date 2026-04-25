@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
 
 import styles from './SearchPage.module.css'
+import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import OrangeStar from './OrangeStar.tsx'
 import RedX from './RedX.tsx'
@@ -81,20 +82,6 @@ function scoreEntry(entry: IndexEntry, terms: string[]) {
   return score
 }
 
-function highlightMatch(text: string, query: string) {
-  if (!query.trim()) {
-    return text
-  }
-  const terms = query
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map(t => t.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-  return text
-    .split(new RegExp(`(${terms.join('|')})`, 'gi'))
-    .map((part, i) => (i % 2 === 1 ? <mark key={i}>{part}</mark> : part))
-}
-
 function entryHref(entry: IndexEntry) {
   return entry[5] === 'ucsc' ? `/ucsc/${entry[0]}` : `/accession/${entry[0]}`
 }
@@ -105,6 +92,8 @@ export default function SearchPage() {
   const [query, setQuery] = useState(() => getURLParam('q'))
   const [clade, setClade] = useState(() => getURLParam('clade'))
   const [page, setPage] = useState(0)
+  const tableRef = useRef<HTMLTableElement>(null)
+  useSearchHighlight(tableRef, query)
 
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -211,7 +200,7 @@ export default function SearchPage() {
         </div>
       )}
       {results.length > 0 && (
-        <table>
+        <table ref={tableRef}>
           <thead>
             <tr>
               <th>Scientific name</th>
@@ -227,13 +216,11 @@ export default function SearchPage() {
             {pagedResults.map(entry => (
               <tr key={entry[0]}>
                 <td>
-                  <a href={entryHref(entry)}>
-                    {highlightMatch(entry[2], query)}
-                  </a>
+                  <a href={entryHref(entry)}>{entry[2]}</a>
                 </td>
-                <td>{highlightMatch(entry[1], query)}</td>
-                <td>{highlightMatch(entry[0], query)}</td>
-                <td>{highlightMatch(entry[3], query)}</td>
+                <td>{entry[1]}</td>
+                <td>{entry[0]}</td>
+                <td>{entry[3]}</td>
                 <td>{entry[4]}</td>
                 <td>{entry[5]}</td>
                 <td>

@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
 
 import TableBody from './DataTable/components/TableBody.tsx'
 import TableHeader from './DataTable/components/TableHeader.tsx'
+import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useCategoryFilter } from './DataTable/hooks/useCategoryFilter.ts'
 import { useColumnVisibility } from './DataTable/hooks/useColumnVisibility.ts'
 import { useSearchFilter } from './DataTable/hooks/useSearchFilter.ts'
@@ -24,6 +25,7 @@ export interface TableProps {
 export default function DataTable({ rows }: TableProps) {
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(200)
+  const tableRef = useRef<HTMLDivElement>(null)
 
   const {
     filterOption,
@@ -35,7 +37,8 @@ export default function DataTable({ rows }: TableProps) {
     useSearchFilter(categoryFilteredRows)
   const { sortId, sortDesc, handleSort } = useTableSort()
   const { showAllColumns, setShowAllColumns } = useColumnVisibility()
-  const { columns } = useTableColumns({ searchQuery, showAllColumns })
+  const { columns } = useTableColumns({ showAllColumns })
+  useSearchHighlight(tableRef, searchQuery)
 
   const sortedRows = useMemo(() => {
     if (!sortId) {
@@ -104,7 +107,7 @@ export default function DataTable({ rows }: TableProps) {
         setShowAllColumns={setShowAllColumns}
       />
 
-      <div>
+      <div ref={tableRef}>
         <table>
           <TableHeader
             columns={columns}
