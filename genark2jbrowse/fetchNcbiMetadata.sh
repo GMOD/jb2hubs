@@ -76,9 +76,10 @@ FAILED_FILE=$(mktemp)
 split -l "$BATCH_SIZE" -d "$ACCESSION_FILE" "${ACCESSION_FILE}_batch_"
 
 batch_num=0
-total_batches=$(find . -maxdepth 1 -name "${ACCESSION_FILE}_batch_*" -type f | wc -l)
+batch_files=("${ACCESSION_FILE}_batch_"*)
+total_batches=${#batch_files[@]}
 
-for batch_file in "${ACCESSION_FILE}_batch_"*; do
+for batch_file in "${batch_files[@]}"; do
   batch_num=$((batch_num + 1))
   batch_count=$(wc -l <"$batch_file")
   echo "Fetching batch $batch_num/$total_batches ($batch_count accessions)..."
