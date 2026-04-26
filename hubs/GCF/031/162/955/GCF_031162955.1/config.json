@@ -510,6 +510,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/031/162/955/GCF_031162955.1/bbi/GCF_031162955.1_sanVit1.xenoRefGene.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "GCF_031162955.1-ncbiGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GCF_031162955.1_sanVit1_genomic.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GCF_031162955.1_sanVit1_genomic.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_031162955.1"]
     }
   ],
   "defaultSession": {
@@ -535,6 +556,25 @@
       }
     ]
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_031162955.1-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_031162955.1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_031162955.1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_031162955.1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_031162955.1"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",
