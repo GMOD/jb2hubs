@@ -24,6 +24,7 @@ rclone sync -c -v \
   --exclude "*meta.json" \
   --exclude "*ncbi.json" \
   --exclude "*.notfound" \
+  --exclude "*.checked" \
   --exclude "image.json" \
   --exclude "hub.txt" \
   genark-hubs-hashed: jbrowse-data:jbrowse.org/hubs/genark \

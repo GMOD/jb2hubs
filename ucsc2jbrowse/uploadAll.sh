@@ -20,6 +20,7 @@ echo "[1/2] Syncing files (using cached MD5 hashes via rclone hasher)..."
 rclone sync -c -v \
   --exclude "*.hash" \
   --exclude "*.xxh" \
+  --exclude "*.checked" \
   --exclude "*_meta.json" \
   --exclude "*/vs/*" \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
