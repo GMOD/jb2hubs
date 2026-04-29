@@ -36,7 +36,7 @@ add_track_and_text_index() {
   if [ -d "$hub_dir/trix" ] && [ -z "${REDOWNLOAD:-}" ] && [ -z "${REPROCESS:-}" ] && [ -z "${REPROCESS_TRIX:-}" ]; then
     add_trix_adapter "$accession" "$config_file"
   else
-    echo "Trix folder does not exist for $accession, running jbrowse text-index"
+    echo "Trix index missing or reprocessing requested for $accession, running jbrowse text-index"
 
     jbrowse text-index --force --out "$hub_dir" --tracks "${accession}-ncbiGff" --attributes Name,ID,Note || echo "Warning: text-index failed for $accession" >&2
   fi

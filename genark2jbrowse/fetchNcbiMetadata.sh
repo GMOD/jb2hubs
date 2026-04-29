@@ -8,6 +8,10 @@ echo "Phase 1: Building queue of assemblies that need NCBI metadata..."
 
 # Build the queue in a single Node process (avoids 50k+ shell/jq spawns)
 QUEUE_FILE=$(mktemp)
+DATASETS_ERR=$(mktemp)
+cleanup() { rm -f "$QUEUE_FILE" "$DATASETS_ERR"; }
+trap cleanup EXIT
+
 fd '^meta\.json$' hubs | node src/buildNcbiQueue.ts >"$QUEUE_FILE"
 
 # Count how many assemblies need fetching
@@ -49,7 +53,7 @@ fetch_batch() {
   local max_attempts=3
 
   for attempt in $(seq 1 $max_attempts); do
-    if datasets summary genome accession --inputfile "$batch_file" >"$batch_result" 2>/tmp/datasets_err_$$; then
+    if datasets summary genome accession --inputfile "$batch_file" >"$batch_result" 2>"$DATASETS_ERR"; then
       # Valid response: either has .reports array, or has total_count:0 (no results)
       if jq -e '.total_count' "$batch_result" >/dev/null 2>&1; then
         if jq -e '.reports' "$batch_result" >/dev/null 2>&1; then
@@ -61,7 +65,7 @@ fetch_batch() {
     fi
 
     local delay=$((attempt * 5))
-    echo "  Batch attempt $attempt/$max_attempts failed ($(grep -v 'New version' /tmp/datasets_err_$$ 2>/dev/null | head -1)), retrying in ${delay}s..."
+    echo "  Batch attempt $attempt/$max_attempts failed ($(grep -v 'New version' "$DATASETS_ERR" 2>/dev/null | head -1)), retrying in ${delay}s..."
     sleep "$delay"
   done
 
@@ -139,8 +143,8 @@ while IFS='|' read -r dir id common_name; do
   fi
 done <"$QUEUE_FILE"
 
-# Clean up
-rm -f "$QUEUE_FILE" "$ACCESSION_FILE" "$FAILED_FILE" "/tmp/datasets_err_$$"
+# Clean up (QUEUE_FILE and DATASETS_ERR handled by trap)
+rm -f "$ACCESSION_FILE" "$FAILED_FILE"
 rm -rf "$RESULT_DIR"
 
 echo ""

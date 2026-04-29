@@ -78,7 +78,7 @@ if [ "$MODE" = "new" ]; then
   log "Found $NEW_HUB_COUNT new hub(s) to process"
 
   # Extract accessions from new hubs
-  sed 's|.*/||; s|/meta.json||' "$NEW_HUBS_FILE" >"$NEW_ACCESSIONS_FILE"
+  sed 's|/meta\.json$||; s|.*/||' "$NEW_HUBS_FILE" >"$NEW_ACCESSIONS_FILE"
 else
   # Download all (output goes to stderr, stdout has new hubs which we ignore)
   node src/downloadHubs.ts >/dev/null
@@ -89,20 +89,13 @@ fi
 log "Fetching NCBI metadata..."
 if [ "$MODE" = "new" ]; then
   # Fetch only for new hubs using datasets CLI (bulk)
-  NCBI_ACCESSION_FILE=$(mktemp)
   NCBI_RESULT_DIR=$(mktemp -d)
 
-  # Extract accessions from new hubs
-  while read -r meta_file; do
-    dir="${meta_file%/meta.json}"
-    echo "${dir##*/}"
-  done <"$NEW_HUBS_FILE" >"$NCBI_ACCESSION_FILE"
-
-  new_count=$(wc -l <"$NCBI_ACCESSION_FILE")
+  new_count=$(wc -l <"$NEW_ACCESSIONS_FILE")
   echo "Fetching NCBI data for $new_count new assemblies..."
   batch_result=$(mktemp)
   datasets_err=$(mktemp)
-  if datasets summary genome accession --inputfile "$NCBI_ACCESSION_FILE" >"$batch_result" 2>"$datasets_err"; then
+  if datasets summary genome accession --inputfile "$NEW_ACCESSIONS_FILE" >"$batch_result" 2>"$datasets_err"; then
     # Split into per-accession files
     if jq -e '.reports' "$batch_result" >/dev/null 2>&1; then
       jq -r '.reports[] |
@@ -129,7 +122,7 @@ if [ "$MODE" = "new" ]; then
     fi
   done <"$NEW_HUBS_FILE"
 
-  rm -f "$NCBI_ACCESSION_FILE" "$batch_result"
+  rm -f "$batch_result"
   rm -rf "$NCBI_RESULT_DIR"
 else
   ./fetchNcbiMetadata.sh
@@ -213,7 +206,7 @@ if [ "$MODE" = "new" ]; then
 
     echo "Processing GFF file: $filename"
     local unzipped_file="${input_file%.gz}"
-    pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 >= $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
+    pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 > $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
     jbrowse sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file"
     tabix -C "$output_bgz_file"
     rm "$unzipped_file"

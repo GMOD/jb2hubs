@@ -22,6 +22,7 @@ export -f check_and_queue
 
 # Build the queue in parallel (fast I/O operations)
 QUEUE_FILE=$(mktemp)
+trap 'rm -f "$QUEUE_FILE"' EXIT
 find gff -name "*.gz" -print0 | parallel -0 $PARALLEL_OPTS check_and_queue {} >"$QUEUE_FILE"
 
 # Count how many files need processing
@@ -47,7 +48,7 @@ process_gff_file() {
 
   echo "Processing GFF file: $filename"
   # Decompress, swap start/end if start > end, then recompress and index
-  pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 >= $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
+  pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 > $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
   jbrowse sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file"
   tabix -C "$output_bgz_file"
   rm "$unzipped_file" # Clean up unzipped file
