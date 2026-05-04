@@ -105,15 +105,10 @@ function createChainTrackConfig({
 
   const trackSrcDir = isChainBridge ? `${srcDir}_chainBridge` : srcDir
 
-  let commonName = ''
-  if (
-    targetAssemblyOrig.startsWith('GCF') ||
-    targetAssemblyOrig.startsWith('GCA')
-  ) {
-    commonName = allJsonIndex.get(targetAssemblyOrig) ?? ''
-  } else {
-    commonName = ucscListJson[targetAssembly]?.organism ?? ''
-  }
+  const commonName =
+    targetAssemblyOrig.startsWith('GCF') || targetAssemblyOrig.startsWith('GCA')
+      ? (allJsonIndex.get(targetAssemblyOrig) ?? '')
+      : (ucscListJson[targetAssembly]?.organism ?? '')
 
   const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`
   const trackName = commonName
