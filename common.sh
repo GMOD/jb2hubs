@@ -55,12 +55,18 @@ make_file_listing() {
     return 0
   fi
 
+  if [[ ! -d "$find_dir" ]]; then
+    echo "ERROR: $find_dir does not exist or is not mounted, aborting to preserve existing listing" >&2
+    rm -f "$tmp_new" "$tmp_cur"
+    return 1
+  fi
+
   find "$find_dir" -type f "${extra_args[@]}" -newer "$listing" -exec xxhsum "$algo" {} + >"$tmp_new"
   find "$find_dir" -type f "${extra_args[@]}" | sort >"$tmp_cur"
 
   tail -n +2 "$listing" |
     awk 'NR==FNR{skip[$2]=1; next} !($2 in skip)' "$tmp_new" - |
-    awk 'NR==FNR{exists[$1]=1; next} ($2 in exists)' "$tmp_cur" - |
+    awk 'NR==FNR{exists["(" $1 ")"]=1; next} ($2 in exists)' "$tmp_cur" - |
     {
       cat
       cat "$tmp_new"
