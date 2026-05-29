@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import list from '../list.json'
+import { makeComparator } from './DataTable/utils.ts'
 import Container from './ui/react-wrappers/Container.tsx'
 import StyledLink from './ui/react-wrappers/StyledLink.tsx'
 
@@ -56,17 +57,7 @@ export default function UCSCTable() {
     if (!sortId) {
       return data
     }
-    return [...data].sort((a, b) => {
-      const aVal = a[sortId]
-      const bVal = b[sortId]
-      if (aVal < bVal) {
-        return sortDesc ? 1 : -1
-      }
-      if (aVal > bVal) {
-        return sortDesc ? -1 : 1
-      }
-      return 0
-    })
+    return data.toSorted(makeComparator(row => row[sortId], sortDesc))
   }, [data, sortId, sortDesc])
 
   const handleSort = (colId: ColId) => {

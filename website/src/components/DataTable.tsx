@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
 
@@ -10,6 +10,8 @@ import { useColumnVisibility } from './DataTable/hooks/useColumnVisibility.ts'
 import { useSearchFilter } from './DataTable/hooks/useSearchFilter.ts'
 import { useTableColumns } from './DataTable/hooks/useTableColumns.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
+import { makeComparator } from './DataTable/utils.ts'
+import { paginate } from '../utils/paginate.ts'
 import styles from './DataTable.module.css'
 import Pagination from './Pagination.tsx'
 import TableOptions from './TableOptions.tsx'
@@ -40,33 +42,24 @@ export default function DataTable({ rows }: TableProps) {
   const { columns } = useTableColumns({ showAllColumns })
   useSearchHighlight(tableRef, searchQuery)
 
+  useEffect(() => {
+    setPageIndex(0)
+  }, [searchQuery, filterOption])
+
   const sortedRows = useMemo(() => {
-    if (!sortId) {
-      return filteredRows
-    }
     const col = columns.find(c => c.id === sortId)
-    if (!col?.sortValue) {
+    const sortValue = col?.sortValue
+    if (!sortValue) {
       return filteredRows
     }
-    return [...filteredRows].sort((a, b) => {
-      const aVal = col.sortValue!(a)
-      const bVal = col.sortValue!(b)
-      if (aVal < bVal) {
-        return sortDesc ? 1 : -1
-      }
-      if (aVal > bVal) {
-        return sortDesc ? -1 : 1
-      }
-      return 0
-    })
+    return filteredRows.toSorted(makeComparator(sortValue, sortDesc))
   }, [filteredRows, sortId, sortDesc, columns])
 
-  const pageCount = Math.max(1, Math.ceil(sortedRows.length / pageSize))
-  const clampedPageIndex = Math.min(pageIndex, pageCount - 1)
-  const pagedRows = sortedRows.slice(
-    clampedPageIndex * pageSize,
-    (clampedPageIndex + 1) * pageSize,
-  )
+  const {
+    pageCount,
+    clampedPage: clampedPageIndex,
+    pageRows: pagedRows,
+  } = paginate(sortedRows, pageIndex, pageSize)
 
   return (
     <>

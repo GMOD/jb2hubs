@@ -36,6 +36,42 @@ const sourceLabels: Record<string, string> = {
   legacy: 'Legacy (unavailable)',
 }
 
+interface AssemblyOption {
+  id: string
+  displayName: string
+  scientificName: string
+  source: string
+}
+
+function toAssemblyOption(
+  id: string,
+  assemblyInfo: Record<string, AssemblyInfo>,
+): AssemblyOption {
+  const info = assemblyInfo[id]
+  return {
+    id,
+    displayName: info?.commonName ?? id,
+    scientificName: info?.scientificName ?? '',
+    source: info?.source ?? 'legacy',
+  }
+}
+
+function formatOption(asm: AssemblyOption) {
+  const parts: string[] = []
+  const textIcon = sourceTextIcons[asm.source]
+  if (textIcon) {
+    parts.push(textIcon)
+  }
+  if (asm.displayName && asm.displayName !== asm.id) {
+    parts.push(asm.displayName)
+  }
+  if (asm.scientificName) {
+    parts.push(`(${asm.scientificName})`)
+  }
+  parts.push(`[${asm.id}]`)
+  return parts.join(' ')
+}
+
 function SourceIcon({ source }: { source: string }) {
   const favicon = sourceFavicons[source]
   if (favicon) {
@@ -100,15 +136,7 @@ export default function SyntenySelector({
     }
 
     const sorted = Array.from(allAssemblies)
-      .map(id => {
-        const info = assemblyInfo[id]
-        return {
-          id,
-          displayName: info?.commonName ?? id,
-          scientificName: info?.scientificName ?? '',
-          source: info?.source ?? 'legacy',
-        }
-      })
+      .map(id => toAssemblyOption(id, assemblyInfo))
       .sort((a, b) => a.displayName.localeCompare(b.displayName))
 
     return { sortedAssemblies: sorted, assemblyPairs: pairs }
@@ -118,17 +146,9 @@ export default function SyntenySelector({
     if (!species1) {
       return []
     }
-    const available = assemblyPairs.get(species1) ?? new Set()
+    const available = assemblyPairs.get(species1) ?? new Set<string>()
     return Array.from(available)
-      .map(id => {
-        const info = assemblyInfo[id]
-        return {
-          id,
-          displayName: info?.commonName ?? id,
-          scientificName: info?.scientificName ?? '',
-          source: info?.source ?? 'legacy',
-        }
-      })
+      .map(id => toAssemblyOption(id, assemblyInfo))
       .sort((a, b) => a.displayName.localeCompare(b.displayName))
   }, [species1, assemblyPairs, assemblyInfo])
 
@@ -184,32 +204,6 @@ export default function SyntenySelector({
 
     return `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
   }, [species1, species2, selectedTrack])
-
-  const formatOption = (asm: {
-    id: string
-    displayName: string
-    scientificName: string
-    source: string
-  }) => {
-    const parts: string[] = []
-
-    const textIcon = sourceTextIcons[asm.source]
-    if (textIcon) {
-      parts.push(textIcon)
-    }
-
-    if (asm.displayName && asm.displayName !== asm.id) {
-      parts.push(asm.displayName)
-    }
-
-    if (asm.scientificName) {
-      parts.push(`(${asm.scientificName})`)
-    }
-
-    parts.push(`[${asm.id}]`)
-
-    return parts.join(' ')
-  }
 
   const species1Options = useMemo(
     () =>

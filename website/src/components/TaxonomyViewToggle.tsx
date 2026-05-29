@@ -16,11 +16,8 @@ export default function TaxonomyViewToggle({
   treeContainerId,
   accessionCount,
 }: Props) {
-  const [viewParam, setViewParam] = useUrlState('view', 'tree')
-  const view: 'tree' | 'table' = viewParam === 'table' ? 'table' : 'tree'
-  const setView = (v: 'tree' | 'table') => {
-    setViewParam(v)
-  }
+  const [viewParam, setView] = useUrlState('view', 'tree')
+  const view = viewParam === 'table' ? 'table' : 'tree'
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {

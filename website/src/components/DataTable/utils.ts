@@ -11,5 +11,19 @@ export const statusOrder: Record<string, number> = {
   contig: 4,
 }
 
-// List accepted sort direction values
-export const sortOrder: ('asc' | 'desc' | '')[] = ['asc', 'desc', '']
+export function makeComparator<T>(
+  getValue: (row: T) => string | number,
+  desc: boolean,
+) {
+  return (a: T, b: T) => {
+    const aVal = getValue(a)
+    const bVal = getValue(b)
+    if (aVal < bVal) {
+      return desc ? 1 : -1
+    }
+    if (aVal > bVal) {
+      return desc ? -1 : 1
+    }
+    return 0
+  }
+}

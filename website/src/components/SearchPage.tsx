@@ -12,6 +12,7 @@ import {
   useTaxonomyFilter,
 } from '../hooks/useTaxonomyFilter.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { paginate } from '../utils/paginate.ts'
 
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
 
@@ -116,12 +117,11 @@ export default function SearchPage() {
     return scored.map(s => s.entry)
   }, [index, query, clade, cladeSets])
 
-  const pageCount = Math.max(1, Math.ceil(results.length / PAGE_SIZE))
-  const clampedPage = Math.min(page, pageCount - 1)
-  const pagedResults = results.slice(
-    clampedPage * PAGE_SIZE,
-    (clampedPage + 1) * PAGE_SIZE,
-  )
+  const {
+    pageCount,
+    clampedPage,
+    pageRows: pagedResults,
+  } = paginate(results, page, PAGE_SIZE)
 
   if (loading) {
     return <div>Loading search index...</div>

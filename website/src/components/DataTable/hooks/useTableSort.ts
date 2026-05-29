@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
 import { useUrlState } from '../../../hooks/useUrlState.ts'
-import { sortOrder } from '../utils.ts'
 
 export function useTableSort() {
   const [sortId, setSortId] = useUrlState('sort', '')
@@ -27,5 +26,3 @@ export function useTableSort() {
 
   return { sortId, sortDesc, handleSort }
 }
-
-export { sortOrder }
