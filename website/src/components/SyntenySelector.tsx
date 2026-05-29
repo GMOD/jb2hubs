@@ -1,22 +1,16 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
+import { createStaticCatalog } from '../lib/syntenyCatalog.ts'
 
-interface SyntenyTrack {
-  trackId: string
-  name: string
-  assemblyNames: string[]
-}
-
-export interface AssemblyInfo {
-  commonName?: string
-  scientificName?: string
-  source: 'ucsc' | 'genark' | 'legacy'
-}
+import type {
+  SyntenyAssembly,
+  SyntenyCatalogData,
+  SyntenyTrackSummary,
+} from '../lib/syntenyCatalog.ts'
 
 interface Props {
-  syntenyTracks: SyntenyTrack[]
-  assemblyInfo: Record<string, AssemblyInfo>
+  data: SyntenyCatalogData
 }
 
 const sourceFavicons: Record<string, string> = {
@@ -36,42 +30,6 @@ const sourceLabels: Record<string, string> = {
   legacy: 'Legacy (unavailable)',
 }
 
-interface AssemblyOption {
-  id: string
-  displayName: string
-  scientificName: string
-  source: string
-}
-
-function toAssemblyOption(
-  id: string,
-  assemblyInfo: Record<string, AssemblyInfo>,
-): AssemblyOption {
-  const info = assemblyInfo[id]
-  return {
-    id,
-    displayName: info?.commonName ?? id,
-    scientificName: info?.scientificName ?? '',
-    source: info?.source ?? 'legacy',
-  }
-}
-
-function formatOption(asm: AssemblyOption) {
-  const parts: string[] = []
-  const textIcon = sourceTextIcons[asm.source]
-  if (textIcon) {
-    parts.push(textIcon)
-  }
-  if (asm.displayName && asm.displayName !== asm.id) {
-    parts.push(asm.displayName)
-  }
-  if (asm.scientificName) {
-    parts.push(`(${asm.scientificName})`)
-  }
-  parts.push(`[${asm.id}]`)
-  return parts.join(' ')
-}
-
 function SourceIcon({ source }: { source: string }) {
   const favicon = sourceFavicons[source]
   if (favicon) {
@@ -86,82 +44,87 @@ function SourceIcon({ source }: { source: string }) {
   return <span>{sourceTextIcons[source] ?? ''}</span>
 }
 
-export default function SyntenySelector({
-  syntenyTracks,
-  assemblyInfo,
-}: Props) {
+function formatOption(asm: SyntenyAssembly) {
+  const parts: string[] = []
+
+  const textIcon = sourceTextIcons[asm.source]
+  if (textIcon) {
+    parts.push(textIcon)
+  }
+
+  if (asm.displayName && asm.displayName !== asm.id) {
+    parts.push(asm.displayName)
+  }
+
+  if (asm.scientificName) {
+    parts.push(`(${asm.scientificName})`)
+  }
+
+  parts.push(`[${asm.id}]`)
+
+  return parts.join(' ')
+}
+
+export default function SyntenySelector({ data }: Props) {
   const [species1, setSpecies1] = useState('')
   const [species2, setSpecies2] = useState('')
   const [selectedTrackId, setSelectedTrackId] = useState('')
   const [showUcsc, setShowUcsc] = useState(true)
   const [showGenark, setShowGenark] = useState(true)
 
-  const launchableTracks = useMemo(() => {
-    return syntenyTracks.filter(track =>
-      track.assemblyNames.every(name => {
-        const info = assemblyInfo[name]
-        if (!info || info.source === 'legacy') {
-          return false
-        }
-        if (info.source === 'ucsc' && !showUcsc) {
-          return false
-        }
-        if (info.source === 'genark' && !showGenark) {
-          return false
-        }
-        return true
-      }),
-    )
-  }, [syntenyTracks, assemblyInfo, showUcsc, showGenark])
+  const [assemblies, setAssemblies] = useState<SyntenyAssembly[]>([])
+  const [partners, setPartners] = useState<SyntenyAssembly[]>([])
+  const [tracks, setTracks] = useState<SyntenyTrackSummary[]>([])
 
-  const { sortedAssemblies, assemblyPairs } = useMemo(() => {
-    const allAssemblies = new Set<string>()
-    const pairs = new Map<string, Set<string>>()
+  const catalog = useMemo(() => createStaticCatalog(data), [data])
+  const filter = useMemo(
+    () => ({ ucsc: showUcsc, genark: showGenark }),
+    [showUcsc, showGenark],
+  )
 
-    for (const track of launchableTracks) {
-      for (const assembly of track.assemblyNames) {
-        allAssemblies.add(assembly)
+  useEffect(() => {
+    let active = true
+    catalog.listAssemblies(filter).then(result => {
+      if (active) {
+        setAssemblies(result)
       }
-      if (track.assemblyNames.length === 2) {
-        const [first, second] = track.assemblyNames as [string, string]
-        if (!pairs.has(first)) {
-          pairs.set(first, new Set())
+    })
+    return () => {
+      active = false
+    }
+  }, [catalog, filter])
+
+  useEffect(() => {
+    let active = true
+    if (species1) {
+      catalog.listPartners(species1, filter).then(result => {
+        if (active) {
+          setPartners(result)
         }
-        pairs.get(first)!.add(second)
-        if (!pairs.has(second)) {
-          pairs.set(second, new Set())
+      })
+    } else {
+      setPartners([])
+    }
+    return () => {
+      active = false
+    }
+  }, [catalog, species1, filter])
+
+  useEffect(() => {
+    let active = true
+    if (species1 && species2) {
+      catalog.listTracks(species1, species2, filter).then(result => {
+        if (active) {
+          setTracks(result)
         }
-        pairs.get(second)!.add(first)
-      }
+      })
+    } else {
+      setTracks([])
     }
-
-    const sorted = Array.from(allAssemblies)
-      .map(id => toAssemblyOption(id, assemblyInfo))
-      .sort((a, b) => a.displayName.localeCompare(b.displayName))
-
-    return { sortedAssemblies: sorted, assemblyPairs: pairs }
-  }, [launchableTracks, assemblyInfo])
-
-  const availableSpecies2 = useMemo(() => {
-    if (!species1) {
-      return []
+    return () => {
+      active = false
     }
-    const available = assemblyPairs.get(species1) ?? new Set<string>()
-    return Array.from(available)
-      .map(id => toAssemblyOption(id, assemblyInfo))
-      .sort((a, b) => a.displayName.localeCompare(b.displayName))
-  }, [species1, assemblyPairs, assemblyInfo])
-
-  const matchingTracks = useMemo(() => {
-    if (!species1 || !species2) {
-      return []
-    }
-    return launchableTracks.filter(
-      track =>
-        track.assemblyNames.includes(species1) &&
-        track.assemblyNames.includes(species2),
-    )
-  }, [species1, species2, launchableTracks])
+  }, [catalog, species1, species2, filter])
 
   const handleSpecies1Change = (value: string) => {
     setSpecies1(value)
@@ -182,8 +145,8 @@ export default function SyntenySelector({
     if (!selectedTrackId) {
       return null
     }
-    return matchingTracks.find(t => t.trackId === selectedTrackId) ?? null
-  }, [selectedTrackId, matchingTracks])
+    return tracks.find(t => t.trackId === selectedTrackId) ?? null
+  }, [selectedTrackId, tracks])
 
   const launchUrl = useMemo(() => {
     if (!species1 || !species2 || !selectedTrack) {
@@ -207,20 +170,20 @@ export default function SyntenySelector({
 
   const species1Options = useMemo(
     () =>
-      sortedAssemblies.map(asm => ({
+      assemblies.map(asm => ({
         value: asm.id,
         label: formatOption(asm),
       })),
-    [sortedAssemblies],
+    [assemblies],
   )
 
   const species2Options = useMemo(
     () =>
-      availableSpecies2.map(asm => ({
+      partners.map(asm => ({
         value: asm.id,
         label: formatOption(asm),
       })),
-    [availableSpecies2],
+    [partners],
   )
 
   const handleFilterChange = (source: 'ucsc' | 'genark') => {
@@ -288,11 +251,11 @@ export default function SyntenySelector({
 
       {species1 && (
         <div className="status-text">
-          {availableSpecies2.length} species available for comparison
+          {partners.length} species available for comparison
         </div>
       )}
 
-      {matchingTracks.length > 0 && (
+      {tracks.length > 0 && (
         <div className="species-group track-selector">
           <label htmlFor="track">Synteny Track:</label>
           <select
@@ -302,7 +265,7 @@ export default function SyntenySelector({
             autoComplete="off"
           >
             <option value="">-- Select a track --</option>
-            {matchingTracks.map(track => (
+            {tracks.map(track => (
               <option
                 key={track.trackId}
                 value={track.trackId}
