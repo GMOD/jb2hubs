@@ -11,14 +11,11 @@ import {
   CURATED_CLADES,
   useTaxonomyFilter,
 } from '../hooks/useTaxonomyFilter.ts'
+import { useUrlState } from '../hooks/useUrlState.ts'
 
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
 
 const PAGE_SIZE = 100
-
-function getURLParam(key: string) {
-  return new URLSearchParams(window.location.search).get(key) ?? ''
-}
 
 function scoreTerm(term: string, field: string) {
   if (field.startsWith(term)) {
@@ -89,25 +86,13 @@ function entryHref(entry: IndexEntry) {
 export default function SearchPage() {
   const { index, loading } = useSearchIndex()
   const cladeSets = useTaxonomyFilter()
-  const [query, setQuery] = useState(() => getURLParam('q'))
-  const [clade, setClade] = useState(() => getURLParam('clade'))
+  const [query, setQuery] = useUrlState('q', '')
+  const [clade, setClade] = useUrlState('clade', '')
   const [page, setPage] = useState(0)
   const tableRef = useRef<HTMLTableElement>(null)
   useSearchHighlight(tableRef, query)
 
   useEffect(() => {
-    const url = new URL(window.location.href)
-    if (query) {
-      url.searchParams.set('q', query)
-    } else {
-      url.searchParams.delete('q')
-    }
-    if (clade) {
-      url.searchParams.set('clade', clade)
-    } else {
-      url.searchParams.delete('clade')
-    }
-    window.history.replaceState({}, '', url.toString())
     setPage(0)
   }, [query, clade])
 

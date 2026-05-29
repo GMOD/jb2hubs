@@ -132,7 +132,10 @@ function makeTrackConfig({
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
   const trackType = data.type ?? trackDb.data[parent]!.data.type ?? ''
   let baseTrackType = trackType.split(' ')[0] ?? ''
-  if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('cram')) {
+  if (
+    baseTrackType === 'bam' &&
+    bigDataUrlPre.toLowerCase().endsWith('.cram')
+  ) {
     baseTrackType = 'cram'
   }
   const uri = new URL(bigDataUrlPre, trackDbUrl).href

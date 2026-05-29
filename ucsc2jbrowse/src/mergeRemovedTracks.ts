@@ -36,7 +36,9 @@ function mergeRemovedTracks() {
     try {
       const data = fs.readFileSync(filePath, 'utf-8')
       const tracks: RemovedTrack[] = JSON.parse(data)
-      allTracks.push(...tracks)
+      for (const t of tracks) {
+        allTracks.push(t)
+      }
     } catch (error) {
       console.error(`Error reading ${filePath}: ${error}`)
     }

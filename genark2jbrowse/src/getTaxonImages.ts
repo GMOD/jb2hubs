@@ -79,8 +79,12 @@ async function fetchWikidataImages(): Promise<WikidataSpecies[]> {
   const partialPath = WIKIDATA_CACHE_PATH + '.partial'
   let offset = 0
   if (fs.existsSync(partialPath)) {
-    const partial = JSON.parse(fs.readFileSync(partialPath, 'utf8'))
-    allResults.push(...partial)
+    const partial: WikidataSpecies[] = JSON.parse(
+      fs.readFileSync(partialPath, 'utf8'),
+    )
+    for (const p of partial) {
+      allResults.push(p)
+    }
     offset = allResults.length
     console.log(`  Resuming from ${offset} (partial cache)`)
   }

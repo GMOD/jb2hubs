@@ -110,3 +110,18 @@ export function requireArg(arg: string | undefined, usage: string): string {
   }
   return arg
 }
+
+/**
+ * Splits a GenArk accession (e.g. GCF_000001405.40) into the path components
+ * UCSC uses for hubs: { base: 'GCF', b1, b2, b3 } where b1/b2/b3 are 3-char
+ * chunks of the digit portion. Returns undefined for malformed input.
+ */
+export function accessionChunks(accession: string) {
+  const [base, rest] = accession.split('_')
+  const matches = rest?.match(/.{1,3}/g)
+  if (!base || !matches || matches.length < 3) {
+    return undefined
+  }
+  const [b1, b2, b3] = matches as [string, string, string]
+  return { base, b1, b2, b3 }
+}

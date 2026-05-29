@@ -14,20 +14,16 @@ const CONFIGS_BASE_DIR = 'configs'
  * @param config The JBrowse configuration object or a part of it.
  * @param baseUrl The base URL to prepend to relative URIs.
  */
-function addRelativeUris(
-  config: Record<string, unknown> | null,
-  baseUrl: string,
-) {
-  if (typeof config === 'object' && config !== null) {
-    for (const key of Object.keys(config)) {
-      if (typeof config[key] === 'object' && config[key] !== null) {
-        // Recursively call for nested objects
-        addRelativeUris(config[key] as Record<string, unknown>, baseUrl)
-      } else if (key === 'uri' && typeof config[key] === 'string') {
-        const uri = config[key]
-        // Prepend base URL if the URI is relative
-        if (!uri.startsWith('http') && !uri.startsWith('/')) {
-          config[key] = `${baseUrl}/${uri}`
+function addRelativeUris(node: unknown, baseUrl: string) {
+  if (typeof node === 'object' && node !== null) {
+    const obj = node as Record<string, unknown>
+    for (const key of Object.keys(obj)) {
+      const val = obj[key]
+      if (typeof val === 'object' && val !== null) {
+        addRelativeUris(val, baseUrl)
+      } else if (key === 'uri' && typeof val === 'string') {
+        if (!val.startsWith('http') && !val.startsWith('/')) {
+          obj[key] = `${baseUrl}/${val}`
         }
       }
     }
@@ -49,7 +45,6 @@ function mergeAllConfigs() {
     // Assuming the first assembly's name can be used as a base for relative URIs
     const assemblyName = config.assemblies[0]?.name
     if (assemblyName) {
-      // @ts-expect-error
       addRelativeUris(config, assemblyName)
     }
     return config

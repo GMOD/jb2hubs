@@ -37,16 +37,13 @@ function parseNewick(newick: string): TreeNode | null {
 
     if (cleanNewick[index] === '(') {
       index++ // skip '('
-      do {
+      while (index < cleanNewick.length && cleanNewick[index] !== ')') {
         const child = parseNode()
         node.children!.push(child)
         if (cleanNewick[index] === ',') {
           index++ // skip ','
         }
-      } while (
-        cleanNewick[index] === ',' ||
-        (cleanNewick[index] !== ')' && index < cleanNewick.length)
-      )
+      }
       if (cleanNewick[index] === ')') {
         index++ // skip ')'
       }

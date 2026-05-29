@@ -1,13 +1,14 @@
 // Re-export utilities from hubtools for backward compatibility
 export { readJSON, readJSONAsync, requireArg, writeJSON } from 'hubtools'
 
+import { accessionChunks } from 'hubtools'
+
 export function getHubBasePath(accession: string): string {
-  const [base, rest] = accession.split('_')
-  const matches = rest?.match(/.{1,3}/g)
-  if (!matches || matches.length < 3) {
+  const chunks = accessionChunks(accession)
+  if (!chunks) {
     throw new Error(`Unexpected accession format: ${accession}`)
   }
-  const [b1, b2, b3] = matches
+  const { base, b1, b2, b3 } = chunks
   return `hubs/${base}/${b1}/${b2}/${b3}/${accession}`
 }
 

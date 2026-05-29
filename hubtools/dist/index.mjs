@@ -121,6 +121,23 @@ function requireArg(arg, usage) {
   }
   return arg
 }
+/**
+ * Splits a GenArk accession (e.g. GCF_000001405.40) into the path components
+ * UCSC uses for hubs: { base: 'GCF', b1, b2, b3 } where b1/b2/b3 are 3-char
+ * chunks of the digit portion. Returns undefined for malformed input.
+ */
+function accessionChunks(accession) {
+  const [base, rest] = accession.split('_')
+  const matches = rest?.match(/.{1,3}/g)
+  if (!base || !matches || matches.length < 3) return
+  const [b1, b2, b3] = matches
+  return {
+    base,
+    b1,
+    b2,
+    b3,
+  }
+}
 //#endregion
 //#region src/enhanceConfig.ts
 const defaultPlugins = [
@@ -154,11 +171,14 @@ function enhanceConfig(configPath, plugins = defaultPlugins) {
       config.plugins.push(plugin)
   config.configuration ??= {}
   config.configuration.hierarchical = {
+    ...config.configuration.hierarchical,
     sort: {
+      ...config.configuration.hierarchical?.sort,
       trackNames: true,
       categories: true,
     },
     defaultCollapsed: {
+      ...config.configuration.hierarchical?.defaultCollapsed,
       topLevelCategories: true,
       subCategories: true,
     },
@@ -327,7 +347,7 @@ function makeTrackConfig({
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
   let baseTrackType =
     (data.type ?? trackDb.data[parent].data.type ?? '').split(' ')[0] ?? ''
-  if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('cram'))
+  if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('.cram'))
     baseTrackType = 'cram'
   const uri = new URL(bigDataUrlPre, trackDbUrl).href
   const adapterConf = makeAdapterConf(
@@ -672,15 +692,35 @@ const hubCategories = [
 function parseAssemblyEntry({ entry }) {
   const { taxId, asmId, genBank, refSeq, sciName, comName, ucscBrowser } = entry
   const ucscAcc = path.basename(ucscBrowser)
-  const accession = ucscAcc.startsWith('GC') ? ucscAcc : refSeq || genBank
-  const [base, rest] = accession.split('_')
-  const matches = rest?.match(/.{1,3}/g)
-  if (!matches || matches.length < 3) {
+  const accession =
+    ucscAcc.startsWith('GCF_') || ucscAcc.startsWith('GCA_')
+      ? ucscAcc
+      : refSeq || genBank
+  const chunks = accessionChunks(accession)
+  if (!chunks) {
     console.error(`Unexpected accession format: ${accession}`)
     return
   }
-  const [b1, b2, b3] = matches
-  const fn = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/ncbi.json`
+  const { base, b1, b2, b3 } = chunks
+  const hubPath = `${base}/${b1}/${b2}/${b3}/${accession}`
+  const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${hubPath}`
+  const common = {
+    accession,
+    assembly: asmId || '',
+    scientificName: sciName || '',
+    commonName: comName || '',
+    taxonId: taxId || '',
+    jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${hubPath}/config.json`,
+    jbrowseConfig: `https://jbrowse.org/hubs/genark/${hubPath}/config.json`,
+    ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
+    ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
+    ucscDataLink: ucscBase,
+    ucscBrowserLink: ucscBrowser,
+    igvBrowserLink: `https://igv.org/app/?hubURL=${ucscBase}/hub.txt`,
+    ncbiName: asmId,
+    ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
+  }
+  const fn = `hubs/${hubPath}/ncbi.json`
   let report
   let ncbiDownloadedAt
   try {
@@ -700,6 +740,7 @@ function parseAssemblyEntry({ entry }) {
   }
   if (!report)
     return {
+      ...common,
       stats: void 0,
       seqReleaseDate: void 0,
       submitterOrg: void 0,
@@ -708,21 +749,7 @@ function parseAssemblyEntry({ entry }) {
       ncbiRefSeqCategory: void 0,
       suppressed: false,
       assemblyType: void 0,
-      accession: accession || '',
-      assembly: asmId || '',
-      scientificName: sciName || '',
-      commonName: comName || '',
-      taxonId: taxId || '',
       assemblyStatus: void 0,
-      jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
-      jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
-      ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
-      ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
-      ucscDataLink: `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`,
-      ucscBrowserLink: ucscBrowser,
-      igvBrowserLink: `https://igv.org/app/?hubURL=https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}/hub.txt`,
-      ncbiName: asmId,
-      ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
       pairedAccession: void 0,
       pairedAssemblyStatus: void 0,
       pairedAssemblyDifferences: void 0,
@@ -739,78 +766,45 @@ function parseAssemblyEntry({ entry }) {
       ncbiMissing: true,
     }
   const { assembly_info, assembly_stats, organism, annotation_info } = report
-  const assemblyStatus = assembly_info.assembly_level
-  const ncbiAssemblyName = assembly_info.assembly_name
-  const seqReleaseDate = assembly_info.release_date
   const ncbiOrganism = organism.common_name
     ? `${organism.organism_name} (${organism.common_name})`
     : organism.organism_name
-  const submitterOrg = assembly_info.submitter
-  const ncbiRefSeqCategory = assembly_info.refseq_category
-  const suppressed = assembly_info.assembly_status === 'suppressed'
-  const assemblyType = assembly_info.assembly_type
   const pairedAccession =
     report.paired_accession === accession
       ? report.accession
       : (report.paired_accession ?? assembly_info.paired_assembly?.accession)
-  const pairedAssemblyStatus = assembly_info.paired_assembly?.status
-  const pairedAssemblyDifferences = assembly_info.paired_assembly?.differences
-  const genomeNotes = assembly_info.genome_notes
-  const suppressionReason = assembly_info.suppression_reason
-  const infraspecificNames = organism.infraspecific_names
-  const comments = assembly_info.comments
-  const gcPercent = assembly_stats.gc_percent
-  const genomeCoverage = assembly_stats.genome_coverage
-  const sequencingTech = assembly_info.sequencing_tech
-  const bioprojectAccession = assembly_info.bioproject_accession
-  const ucscBase = `https://hgdownload.soe.ucsc.edu/hubs/${base}/${b1}/${b2}/${b3}/${accession}`
-  const stats = {
-    contig_count: assembly_stats.number_of_contigs,
-    contig_l50: assembly_stats.contig_l50,
-    contig_n50: assembly_stats.contig_n50,
-    scaffold_count: assembly_stats.number_of_scaffolds,
-    scaffold_l50: assembly_stats.scaffold_l50,
-    scaffold_n50: assembly_stats.scaffold_n50,
-    chromosome_count: assembly_stats.total_number_of_chromosomes,
-    total_length: assembly_stats.total_sequence_length,
-    ungapped_length: assembly_stats.total_ungapped_length,
-  }
-  const ncbiGffUrl = `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`
   return {
-    stats,
-    seqReleaseDate,
-    submitterOrg,
+    ...common,
+    stats: {
+      contig_count: assembly_stats.number_of_contigs,
+      contig_l50: assembly_stats.contig_l50,
+      contig_n50: assembly_stats.contig_n50,
+      scaffold_count: assembly_stats.number_of_scaffolds,
+      scaffold_l50: assembly_stats.scaffold_l50,
+      scaffold_n50: assembly_stats.scaffold_n50,
+      chromosome_count: assembly_stats.total_number_of_chromosomes,
+      total_length: assembly_stats.total_sequence_length,
+      ungapped_length: assembly_stats.total_ungapped_length,
+    },
+    seqReleaseDate: assembly_info.release_date,
+    submitterOrg: assembly_info.submitter,
     ncbiOrganism,
-    ncbiAssemblyName,
-    ncbiRefSeqCategory,
-    suppressed,
-    assemblyType,
-    accession: accession || '',
-    assembly: asmId || '',
-    scientificName: sciName || '',
-    commonName: comName || '',
-    taxonId: taxId || '',
-    assemblyStatus,
-    jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
-    jbrowseConfig: `https://jbrowse.org/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`,
-    ncbiGff: ncbiGffUrl,
-    ncbiLink: `https://www.ncbi.nlm.nih.gov/assembly/${accession}`,
-    ucscDataLink: ucscBase,
-    ucscBrowserLink: ucscBrowser,
-    igvBrowserLink: `https://igv.org/app/?hubURL=${ucscBase}/hub.txt`,
-    ncbiName: asmId,
-    ncbiBrowserLink: `https://www.ncbi.nlm.nih.gov/gdv/browser/genome/?id=${accession}`,
+    ncbiAssemblyName: assembly_info.assembly_name,
+    ncbiRefSeqCategory: assembly_info.refseq_category,
+    suppressed: assembly_info.assembly_status === 'suppressed',
+    assemblyType: assembly_info.assembly_type,
+    assemblyStatus: assembly_info.assembly_level,
     pairedAccession,
-    pairedAssemblyStatus,
-    pairedAssemblyDifferences,
-    genomeNotes,
-    suppressionReason,
-    infraspecificNames,
-    comments,
-    gcPercent,
-    genomeCoverage,
-    sequencingTech,
-    bioprojectAccession,
+    pairedAssemblyStatus: assembly_info.paired_assembly?.status,
+    pairedAssemblyDifferences: assembly_info.paired_assembly?.differences,
+    genomeNotes: assembly_info.genome_notes,
+    suppressionReason: assembly_info.suppression_reason,
+    infraspecificNames: organism.infraspecific_names,
+    comments: assembly_info.comments,
+    gcPercent: assembly_stats.gc_percent,
+    genomeCoverage: assembly_stats.genome_coverage,
+    sequencingTech: assembly_info.sequencing_tech,
+    bioprojectAccession: assembly_info.bioproject_accession,
     annotationInfo: annotation_info,
     ncbiDownloadedAt,
     ncbiMissing: false,
@@ -818,6 +812,7 @@ function parseAssemblyEntry({ entry }) {
 }
 //#endregion
 export {
+  accessionChunks,
   categoryMap,
   decodeURIComponentNoThrow,
   dedupe,

@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { accessionChunks } from 'hubtools'
+
 import type { AnnotationInfo } from 'hubtools'
 
 export type { AnnotationInfo }
@@ -116,19 +118,12 @@ export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
 }
 
 export function loadNcbiDetails(accession: string): NcbiDetails {
-  const parts = accession.split('_')
-  const base = parts[0]!
-  const rest = parts[1]!
-  const chunks = rest.match(/.{1,3}/g)!
-  const ncbiPath = path.join(
-    'hubs',
-    base,
-    chunks[0],
-    chunks[1]!,
-    chunks[2]!,
-    accession,
-    'ncbi.json',
-  )
+  const chunks = accessionChunks(accession)
+  if (!chunks) {
+    return {}
+  }
+  const { base, b1, b2, b3 } = chunks
+  const ncbiPath = path.join('hubs', base, b1, b2, b3, accession, 'ncbi.json')
   const raw = tryAndReadJSON<{
     reports?: {
       assembly_info?: {

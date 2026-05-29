@@ -2,6 +2,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { readJSON } from 'hubtools'
+
 interface ChainTrack {
   type: string
   trackId: string
@@ -29,20 +31,6 @@ interface MetaJson {
   [key: string]: unknown
 }
 
-/**
- * Reads a JSON file and parses its content.
- * @param filePath The path to the JSON file.
- * @returns The parsed JSON object.
- */
-function readJSON(filePath: string): unknown {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8'))
-}
-
-/**
- * Writes a JSON object to a file.
- * @param filePath The path to the file to write.
- * @param data The data to write as JSON.
- */
 function writeJSON(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf8')
 }
@@ -230,7 +218,7 @@ function main() {
   }
 
   // Read meta.json to get source assembly info
-  const meta = readJSON(metaPath) as MetaJson
+  const meta = readJSON<MetaJson>(metaPath)
   const sourceAccession = meta.accession
   const sourceCommonName = meta.commonName || meta.scientificName
 
@@ -251,7 +239,7 @@ function main() {
     return
   }
 
-  const config = readJSON(configFile) as JBrowseConfig
+  const config = readJSON<JBrowseConfig>(configFile)
 
   // Deduplicate tracks by trackId to avoid adding duplicates if script is run
   // multiple times

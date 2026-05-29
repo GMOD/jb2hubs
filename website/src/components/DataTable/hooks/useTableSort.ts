@@ -1,48 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useCallback } from 'react'
 
+import { useUrlState } from '../../../hooks/useUrlState.ts'
 import { sortOrder } from '../utils.ts'
 
 export function useTableSort() {
-  const [sortId, setSortId] = useState('')
-  const [sortDesc, setSortDesc] = useState(false)
+  const [sortId, setSortId] = useUrlState('sort', '')
+  const [dir, setDir] = useUrlState('dir', '')
+  const sortDesc = dir === 'desc'
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const id = params.get('sort') ?? ''
-    const dir = params.get('dir')
-    setSortId(id)
-    setSortDesc(dir === 'desc')
-  }, [])
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (sortId) {
-      params.set('sort', sortId)
-      params.set('dir', sortDesc ? 'desc' : 'asc')
-    } else {
-      params.delete('sort')
-      params.delete('dir')
-    }
-    window.history.replaceState(
-      null,
-      '',
-      `?${params.toString()}${window.location.hash}`,
-    )
-  }, [sortId, sortDesc])
-
-  const handleSort = (columnId: string) => {
-    if (sortId === columnId) {
-      if (!sortDesc) {
-        setSortDesc(true)
+  const handleSort = useCallback(
+    (columnId: string) => {
+      if (sortId === columnId) {
+        if (!sortDesc) {
+          setDir('desc')
+        } else {
+          setSortId('')
+          setDir('')
+        }
       } else {
-        setSortId('')
-        setSortDesc(false)
+        setSortId(columnId)
+        setDir('asc')
       }
-    } else {
-      setSortId(columnId)
-      setSortDesc(false)
-    }
-  }
+    },
+    [sortId, sortDesc, setSortId, setDir],
+  )
 
   return { sortId, sortDesc, handleSort }
 }

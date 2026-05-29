@@ -472,21 +472,7 @@ declare function parseAssemblyEntry({
       ncbiRefSeqCategory: undefined
       suppressed: boolean
       assemblyType: undefined
-      accession: string
-      assembly: string
-      scientificName: string
-      commonName: string
-      taxonId: string | number
       assemblyStatus: undefined
-      jbrowseLink: string
-      jbrowseConfig: string
-      ncbiGff: string
-      ncbiLink: string
-      ucscDataLink: string
-      ucscBrowserLink: string
-      igvBrowserLink: string
-      ncbiName: string
-      ncbiBrowserLink: string
       pairedAccession: undefined
       pairedAssemblyStatus: undefined
       pairedAssemblyDifferences: undefined
@@ -501,6 +487,20 @@ declare function parseAssemblyEntry({
       annotationInfo: undefined
       ncbiDownloadedAt: undefined
       ncbiMissing: boolean
+      accession: string
+      assembly: string
+      scientificName: string
+      commonName: string
+      taxonId: string | number
+      jbrowseLink: string
+      jbrowseConfig: string
+      ncbiGff: string
+      ncbiLink: string
+      ucscDataLink: string
+      ucscBrowserLink: string
+      igvBrowserLink: string
+      ncbiName: string
+      ncbiBrowserLink: string
     }
   | {
       stats: Record<string, unknown>
@@ -511,21 +511,7 @@ declare function parseAssemblyEntry({
       ncbiRefSeqCategory: string | undefined
       suppressed: boolean
       assemblyType: string
-      accession: string
-      assembly: string
-      scientificName: string
-      commonName: string
-      taxonId: string | number
       assemblyStatus: string
-      jbrowseLink: string
-      jbrowseConfig: string
-      ncbiGff: string
-      ncbiLink: string
-      ucscDataLink: string
-      ucscBrowserLink: string
-      igvBrowserLink: string
-      ncbiName: string
-      ncbiBrowserLink: string
       pairedAccession: string | undefined
       pairedAssemblyStatus: string | undefined
       pairedAssemblyDifferences: string | undefined
@@ -540,6 +526,20 @@ declare function parseAssemblyEntry({
       annotationInfo: AnnotationInfo | undefined
       ncbiDownloadedAt: number | undefined
       ncbiMissing: boolean
+      accession: string
+      assembly: string
+      scientificName: string
+      commonName: string
+      taxonId: string | number
+      jbrowseLink: string
+      jbrowseConfig: string
+      ncbiGff: string
+      ncbiLink: string
+      ucscDataLink: string
+      ucscBrowserLink: string
+      igvBrowserLink: string
+      ncbiName: string
+      ncbiBrowserLink: string
     }
   | undefined
 //#endregion
@@ -593,6 +593,19 @@ declare function replaceLink(htmlContent: string): string
  */
 declare function decodeURIComponentNoThrow(uri: string): string
 declare function requireArg(arg: string | undefined, usage: string): string
+/**
+ * Splits a GenArk accession (e.g. GCF_000001405.40) into the path components
+ * UCSC uses for hubs: { base: 'GCF', b1, b2, b3 } where b1/b2/b3 are 3-char
+ * chunks of the digit portion. Returns undefined for malformed input.
+ */
+declare function accessionChunks(accession: string):
+  | {
+      base: string
+      b1: string
+      b2: string
+      b3: string
+    }
+  | undefined
 //#endregion
 export {
   Adapter,
@@ -600,6 +613,7 @@ export {
   NCBIDatasetsReport,
   NCBIDatasetsResponse,
   UCSCGenArkAssemblyEntry,
+  accessionChunks,
   categoryMap,
   decodeURIComponentNoThrow,
   dedupe,

@@ -58,11 +58,14 @@ export function enhanceConfig(
 
   config.configuration ??= {}
   config.configuration.hierarchical = {
+    ...config.configuration.hierarchical,
     sort: {
+      ...config.configuration.hierarchical?.sort,
       trackNames: true,
       categories: true,
     },
     defaultCollapsed: {
+      ...config.configuration.hierarchical?.defaultCollapsed,
       topLevelCategories: true,
       subCategories: true,
     },

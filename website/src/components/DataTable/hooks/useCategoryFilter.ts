@@ -1,61 +1,32 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
+import { useUrlState } from '../../../hooks/useUrlState.ts'
 import { filterCategories } from '../utils/filterCategories.ts'
 import { notEmpty } from '../utils.ts'
 
 import type { RowData } from './useTableColumns.tsx'
 
 export function useCategoryFilter(rows: RowData[]) {
-  const [filterOption, setFilterOption] = useState('all')
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const filter = params.get('filter')
-    setFilterOption(
-      filter !== null && filterCategories[filter] ? filter : 'all',
-    )
-  }, [])
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (filterOption && filterOption !== 'all') {
-      params.set('filter', filterOption)
-    } else {
-      params.delete('filter')
-    }
-    window.history.replaceState(
-      null,
-      '',
-      `?${params.toString()}${window.location.hash}`,
-    )
-  }, [filterOption])
+  const [raw, setRaw] = useUrlState('filter', 'all')
+  const filterOption = filterCategories[raw] ? raw : 'all'
 
   const filteredRows = useMemo(() => {
     const validRows = rows.filter(notEmpty).filter(f => f.accession)
-
     switch (filterOption) {
-      case 'all': {
-        return validRows
-      }
-      case 'refseq': {
+      case 'refseq':
         return validRows.filter(r => r.accession.startsWith('GCF_'))
-      }
-      case 'genbank': {
+      case 'genbank':
         return validRows.filter(r => r.accession.startsWith('GCA_'))
-      }
-      case 'designatedReference': {
+      case 'designatedReference':
         return validRows.filter(
           r => r.ncbiRefSeqCategory === 'reference genome',
         )
-      }
-      case 'hidesuppressed': {
+      case 'hidesuppressed':
         return validRows.filter(r => !r.suppressed)
-      }
-      default: {
+      default:
         return validRows
-      }
     }
   }, [rows, filterOption])
 
-  return { filterOption, setFilterOption, filteredRows }
+  return { filterOption, setFilterOption: setRaw, filteredRows }
 }

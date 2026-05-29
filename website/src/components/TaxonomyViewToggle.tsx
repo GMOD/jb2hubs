@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 import ClientOnlyDataTable from './ClientOnlyDataTable.tsx'
+import { useUrlState } from '../hooks/useUrlState.ts'
 
 import type { RowData } from './DataTable/hooks/useTableColumns.tsx'
 
@@ -15,45 +16,24 @@ export default function TaxonomyViewToggle({
   treeContainerId,
   accessionCount,
 }: Props) {
-  const [view, setView] = useState<'tree' | 'table'>('tree')
+  const [viewParam, setViewParam] = useUrlState('view', 'tree')
+  const view: 'tree' | 'table' = viewParam === 'table' ? 'table' : 'tree'
+  const setView = (v: 'tree' | 'table') => {
+    setViewParam(v)
+  }
   const [isClient, setIsClient] = useState(false)
 
-  // Initialize from URL on mount
   useEffect(() => {
     setIsClient(true)
-    const params = new URLSearchParams(window.location.search)
-    const viewParam = params.get('view')
-    if (viewParam === 'table') {
-      setView('table')
-    }
   }, [])
-
-  // Update URL when view changes
-  useEffect(() => {
-    if (!isClient) {
-      return
-    }
-    const params = new URLSearchParams(window.location.search)
-    if (view === 'table') {
-      params.set('view', 'table')
-    } else {
-      params.delete('view')
-    }
-    const newUrl =
-      params.toString() !== ''
-        ? `${window.location.pathname}?${params.toString()}`
-        : window.location.pathname
-    window.history.replaceState({}, '', newUrl)
-  }, [view, isClient])
 
   // Toggle tree container visibility
   useEffect(() => {
-    if (!isClient) {
-      return
-    }
-    const treeContainer = document.getElementById(treeContainerId)
-    if (treeContainer) {
-      treeContainer.style.display = view === 'tree' ? 'block' : 'none'
+    if (isClient) {
+      const treeContainer = document.getElementById(treeContainerId)
+      if (treeContainer) {
+        treeContainer.style.display = view === 'tree' ? 'block' : 'none'
+      }
     }
   }, [view, treeContainerId, isClient])
 
