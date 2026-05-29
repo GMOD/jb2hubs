@@ -130,12 +130,12 @@ MM39_URLS=(
   "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.tRNAs.gff3.gz"
 )
 MM39_NAMES=(
-  "GENCODE V49 - Comprehensive gene annotation"
-  "GENCODE V49 - Basic gene annotation"
-  "GENCODE V49 - lncRNA gene annotation"
-  "GENCODE V49 - PolyA feature annotation"
-  "GENCODE V49 - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-  "GENCODE V49 - Predicted tRNA genes"
+  "GENCODE VM38 - Comprehensive gene annotation"
+  "GENCODE VM38 - Basic gene annotation"
+  "GENCODE VM38 - lncRNA gene annotation"
+  "GENCODE VM38 - PolyA feature annotation"
+  "GENCODE VM38 - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
+  "GENCODE VM38 - Predicted tRNA genes"
 )
 MM39_TRACK_IDS=(
   "mm39-gencodeComp"

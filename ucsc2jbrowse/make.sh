@@ -22,11 +22,9 @@ for arg in "$@"; do
   case $arg in
   --skip-download)
     SKIP_DOWNLOAD=true
-    shift
     ;;
   --reprocess-all)
     export REPROCESS=true
-    shift
     ;;
   --help | -h)
     echo "Usage: $0 [OPTIONS]"
@@ -137,7 +135,7 @@ else
       continue
     fi
 
-    current_hash=$(xxhsum -H3 "$trackdb" | cut -d' ' -f1)
+    current_hash=$(xxhsum -H3 "$trackdb" | awk '{print $NF}')
     stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
 
     if [ "$current_hash" = "$stored_hash" ] && [ -f "$built_dir/config.json" ]; then
@@ -280,7 +278,7 @@ log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only).
 ./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
 
 log "Copying generated config files to the local 'configs' directory..."
-fd "config.json$" "$UCSC_BUILT_DIR"/ | { grep -v "meta.json" || true; } | parallel $PARALLEL_OPTS -I {} "cp {} configs/\$(basename \$(dirname {})).json"
+fd "config.json$" "$UCSC_BUILT_DIR"/ | parallel $PARALLEL_OPTS -I {} "cp {} configs/\$(basename \$(dirname {})).json"
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts
@@ -301,7 +299,7 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOW
     assembly=$(basename "$assembly_data_dir")
     trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
     if [ -f "$trackdb" ]; then
-      xxhsum -H3 "$trackdb" | cut -d' ' -f1 >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
+      xxhsum -H3 "$trackdb" | awk '{print $NF}' >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
     fi
   done
 fi

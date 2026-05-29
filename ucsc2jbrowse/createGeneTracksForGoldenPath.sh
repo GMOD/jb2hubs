@@ -39,7 +39,7 @@ process_gene_tracks() {
       current_stat=$(stat -c "%s" "${infile}.txt.gz")
 
       local need_processing=true
-      if [ -f "${outfile}.gff.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS}" ]; then
+      if [ -f "${outfile}.gff.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS:-}" ]; then
         local stored_stat
         stored_stat=$(cat "$hash_file")
         if [ "$current_stat" = "$stored_stat" ]; then

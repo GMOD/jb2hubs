@@ -37,7 +37,7 @@ process_assembly() {
         current_stat=$(stat -c "%s" "${infile}.txt.gz")
 
         local need_processing=true
-        if [ -f "${outfile}.bed.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS}" ]; then
+        if [ -f "${outfile}.bed.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS:-}" ]; then
           local stored_stat
           stored_stat=$(cat "$hash_file")
           if [ "$current_stat" = "$stored_stat" ]; then

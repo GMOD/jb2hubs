@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# makeTrackHubConfigs.sh
+# generateJBrowseConfigForAssemblyHub.sh
 #
 # Creates JBrowse configuration files from UCSC track hubs.
 #

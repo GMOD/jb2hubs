@@ -22,12 +22,10 @@ for arg in "$@"; do
   case $arg in
   --all)
     MODE="all"
-    shift
     ;;
   --reprocess-all)
     MODE="reprocess"
     export REPROCESS=true
-    shift
     ;;
   --help | -h)
     echo "Usage: $0 [OPTIONS]"

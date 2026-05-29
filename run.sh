@@ -26,15 +26,12 @@ for arg in "$@"; do
   case $arg in
   --dry-run)
     DRY_RUN=true
-    shift
     ;;
   --upload-only)
     UPLOAD_ONLY=true
-    shift
     ;;
   --reprocess-all)
     REPROCESS_ALL=true
-    shift
     ;;
   --help | -h)
     echo "Usage: $0 [OPTIONS]"
