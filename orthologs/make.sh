@@ -14,8 +14,9 @@
 #      plus website/src/orthologManifest.json.
 #
 # Usage:
-#   ./make.sh                 # build, reusing cached downloads
-#   REPROCESS=true ./make.sh  # force re-download of NCBI tables
+#   ./make.sh                  # build, reusing cached downloads
+#   ./make.sh --skip-synteny   # assume syntenyTracks.json is already fresh
+#   REPROCESS=true ./make.sh   # force re-download of NCBI tables
 
 set -euo pipefail
 
@@ -23,8 +24,21 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/../common.sh"
 cd "$SCRIPT_DIR/.."
 
-log "Refreshing synteny tracks (assembly -> taxonId map + synteny pairs)..."
-node extractSyntenyTracks.ts
+SKIP_SYNTENY=false
+for arg in "$@"; do
+  case $arg in
+  --skip-synteny) SKIP_SYNTENY=true ;;
+  *)
+    echo "Unknown option: $arg"
+    exit 1
+    ;;
+  esac
+done
+
+if [ "$SKIP_SYNTENY" = false ]; then
+  log "Refreshing synteny tracks (assembly -> taxonId map + synteny pairs)..."
+  node extractSyntenyTracks.ts
+fi
 
 log "Downloading NCBI ortholog source tables..."
 "$SCRIPT_DIR/downloadOrthologData.sh"

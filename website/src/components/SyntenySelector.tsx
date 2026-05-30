@@ -12,10 +12,11 @@ import type {
 
 interface Props {
   data: SyntenyCatalogData
-  // Canonical "<loTax>_<hiTax>" keys that have an ortholog table available
-  // (website/public/orthologs/<key>.tsv). Drives the optional gene-level
-  // comparison. Built by orthologs/make.sh.
+  // Canonical "<loTax>_<hiTax>" keys with a cross-species ortholog table, and
+  // taxon ids with a same-species gene table, under website/public/orthologs/.
+  // Drive the optional gene-level comparison. Built by orthologs/make.sh.
   orthologPairs?: string[]
+  orthologTaxa?: number[]
 }
 
 // JBrowse Web build the synteny views launch into. Point this at the branch
@@ -32,7 +33,11 @@ function formatOption(asm: SyntenyAssembly) {
   return parts.join('  ·  ')
 }
 
-export default function SyntenySelector({ data, orthologPairs = [] }: Props) {
+export default function SyntenySelector({
+  data,
+  orthologPairs = [],
+  orthologTaxa = [],
+}: Props) {
   const [species1, setSpecies1] = useState('')
   const [species2, setSpecies2] = useState('')
   const [trackOverride, setTrackOverride] = useState('')
@@ -45,7 +50,7 @@ export default function SyntenySelector({ data, orthologPairs = [] }: Props) {
   // Stable, non-React data layer for the ortholog tables. Swappable for a
   // REST/tabix-backed adapter without touching this component.
   const [orthologAdapter] = useState(
-    () => new StaticFileOrthologAdapter(orthologPairs),
+    () => new StaticFileOrthologAdapter(orthologPairs, orthologTaxa),
   )
 
   const [assemblies, setAssemblies] = useState<SyntenyAssembly[]>([])

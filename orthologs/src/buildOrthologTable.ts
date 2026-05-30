@@ -1,22 +1,30 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import { createReadStream } from 'node:fs'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { createInterface } from 'node:readline'
-import { createGunzip } from 'node:zlib'
 
-// Builds cross-species gene ortholog mappings, scoped to taxon pairs that
-// already have a synteny track (so the resulting gene comparison always has an
-// alignment to load alongside it). Reads the NCBI Gene tables downloaded by
-// downloadOrthologData.sh and writes one TSV per taxon pair plus a manifest.
+import { ncbiSource } from './sources/ncbi.ts'
+
+import type { Contribution, OrthologSource, Wanted } from './sources/types.ts'
+
+// Builds the gene comparison tables that drive synteny gene search, scoped to
+// assembly pairs that already have a synteny track. The work splits cleanly in
+// three:
 //
-// Output orientation is canonical: each pair file is named <loTax>_<hiTax>.tsv
-// and every line is `loTaxSymbol<TAB>hiTaxSymbol`. The website maps its two
-// chosen assemblies to taxon ids, orders them, and fetches the matching file.
+//   1. loadWanted   - which taxon pairs / taxa to cover (from syntenyTracks)
+//   2. sources      - each yields a normalized Contribution (symbol pairs +
+//                     per-taxon genes); merged together
+//   3. emit         - writes the source-agnostic output the website reads
+//
+// Adding another source (e.g. OrthoDB) is just another entry in SOURCES that
+// returns a Contribution; emit and the runtime adapter are untouched.
+//
+// Output:
+//   <loTax>_<hiTax>.tsv  cross-species ortholog edges, `loSym<TAB>hiSym`
+//   <tax>.tsv            same-species genes, `symbol<TAB>synonym1|synonym2|...`
 
-const ORTHOLOG_DATA_DIR =
-  process.env.ORTHOLOG_DATA_DIR ?? '/mnt/sdb/cdiesh/orthologs'
+const SOURCES: OrthologSource[] = [ncbiSource]
+
 const SYNTENY_TRACKS = 'website/src/syntenyTracks.json'
 const OUTPUT_DIR = 'website/public/orthologs'
 const MANIFEST = 'website/src/orthologManifest.json'
@@ -27,149 +35,118 @@ interface SyntenyInput {
 }
 
 function pairKey(a: number, b: number) {
-  const lo = Math.min(a, b)
-  const hi = Math.max(a, b)
-  return `${lo}_${hi}`
+  return `${Math.min(a, b)}_${Math.max(a, b)}`
 }
 
-async function* gzipLines(path: string) {
-  const rl = createInterface({
-    input: createReadStream(path).pipe(createGunzip()),
-    crlfDelay: Infinity,
-  })
-  for await (const line of rl) {
-    yield line
-  }
-}
-
-// Taxon pairs that have at least one synteny track, derived from the assembly
-// pairs in syntenyTracks.json mapped through each assembly's taxonId.
-async function loadWantedPairs() {
+// From the synteny tracks: cross-species taxon pairs (taxA != taxB) and
+// same-species taxa (taxA == taxB), each derived from assembly pairs mapped
+// through their taxonId.
+async function loadWanted(): Promise<Wanted> {
   const synteny: SyntenyInput = JSON.parse(
     await readFile(SYNTENY_TRACKS, 'utf8'),
   )
-  const wanted = new Set<string>()
-  let withTaxa = 0
+  const pairs = new Set<string>()
+  const sameTaxa = new Set<number>()
   for (const track of synteny.tracks) {
     if (track.assemblyNames.length === 2) {
       const [a, b] = track.assemblyNames
       const taxA = synteny.assemblyInfo[a!]?.taxonId
       const taxB = synteny.assemblyInfo[b!]?.taxonId
-      if (taxA !== undefined && taxB !== undefined && taxA !== taxB) {
-        wanted.add(pairKey(taxA, taxB))
-        withTaxa++
-      }
-    }
-  }
-  console.log(
-    `${wanted.size} distinct taxon pairs from ${withTaxa} synteny tracks with known taxa`,
-  )
-  return wanted
-}
-
-interface Edge {
-  key: string
-  loTax: number
-  loGene: number
-  hiGene: number
-}
-
-// Pass over gene_orthologs.gz collecting only Ortholog edges whose unordered
-// taxon pair is wanted. Records the GeneIDs needed for symbol resolution.
-async function loadEdges(wanted: Set<string>) {
-  const edges: Edge[] = []
-  const neededGenes = new Set<number>()
-  let scanned = 0
-  for await (const line of gzipLines(
-    join(ORTHOLOG_DATA_DIR, 'gene_orthologs.gz'),
-  )) {
-    if (!line.startsWith('#')) {
-      scanned++
-      const [taxId, geneId, relationship, otherTax, otherGene] = line.split('\t')
-      if (relationship === 'Ortholog') {
-        const t1 = +taxId!
-        const t2 = +otherTax!
-        const key = pairKey(t1, t2)
-        if (t1 !== t2 && wanted.has(key)) {
-          const g1 = +geneId!
-          const g2 = +otherGene!
-          const loTax = Math.min(t1, t2)
-          const loGene = t1 === loTax ? g1 : g2
-          const hiGene = t1 === loTax ? g2 : g1
-          edges.push({ key, loTax, loGene, hiGene })
-          neededGenes.add(g1)
-          neededGenes.add(g2)
+      if (taxA !== undefined && taxB !== undefined) {
+        if (taxA === taxB) {
+          sameTaxa.add(taxA)
+        } else {
+          pairs.add(pairKey(taxA, taxB))
         }
       }
     }
   }
   console.log(
-    `scanned ${scanned} ortholog rows, kept ${edges.length} edges, ${neededGenes.size} genes to resolve`,
+    `${pairs.size} cross-species pairs, ${sameTaxa.size} same-species taxa`,
   )
-  return { edges, neededGenes }
+  return { pairs, sameTaxa }
 }
 
-// Pass over gene_info.gz resolving GeneID -> Symbol for just the needed genes.
-async function loadSymbols(neededGenes: Set<number>) {
-  const symbols = new Map<number, string>()
-  for await (const line of gzipLines(join(ORTHOLOG_DATA_DIR, 'gene_info.gz'))) {
-    if (!line.startsWith('#')) {
-      // cols: tax_id, GeneID, Symbol, ...
-      const tab1 = line.indexOf('\t')
-      const tab2 = line.indexOf('\t', tab1 + 1)
-      const geneId = +line.slice(tab1 + 1, tab2)
-      if (neededGenes.has(geneId)) {
-        const tab3 = line.indexOf('\t', tab2 + 1)
-        symbols.set(geneId, line.slice(tab2 + 1, tab3))
-      }
+// Fold one source's contribution into the running total: union the symbol-pair
+// rows, and union synonym tokens per same-species gene.
+function merge(into: Contribution, from: Contribution) {
+  for (const [key, rows] of from.pairRows) {
+    const target = into.pairRows.get(key) ?? new Set<string>()
+    for (const row of rows) {
+      target.add(row)
     }
+    into.pairRows.set(key, target)
   }
-  console.log(`resolved ${symbols.size} gene symbols`)
-  return symbols
+  for (const [tax, genes] of from.taxonGenes) {
+    const target = into.taxonGenes.get(tax) ?? new Map<string, string>()
+    for (const [symbol, synonyms] of genes) {
+      const merged = new Set(
+        [target.get(symbol), synonyms]
+          .filter(Boolean)
+          .flatMap(s => s!.split('|')),
+      )
+      target.set(symbol, [...merged].join('|'))
+    }
+    into.taxonGenes.set(tax, target)
+  }
 }
 
-async function main() {
-  const wanted = await loadWantedPairs()
-  if (wanted.size === 0) {
-    console.log('No taxon pairs with synteny tracks; nothing to build.')
-    return
-  }
-
-  const { edges, neededGenes } = await loadEdges(wanted)
-  const symbols = await loadSymbols(neededGenes)
-
-  // Group resolved symbol pairs per taxon-pair file, de-duplicating identical
-  // symbolA/symbolB rows that arise from the bidirectional ortholog records.
-  const perPair = new Map<string, Set<string>>()
-  for (const edge of edges) {
-    const loSym = symbols.get(edge.loGene)
-    const hiSym = symbols.get(edge.hiGene)
-    if (loSym && hiSym) {
-      const existing = perPair.get(edge.key)
-      const set = existing ?? new Set<string>()
-      set.add(`${loSym}\t${hiSym}`)
-      if (!existing) {
-        perPair.set(edge.key, set)
-      }
-    }
-  }
-
+async function emit(total: Contribution) {
   await mkdir(OUTPUT_DIR, { recursive: true })
+
   const pairs: string[] = []
-  for (const [key, rows] of perPair) {
-    const sorted = [...rows].sort((a, b) => a.localeCompare(b))
-    await writeFile(join(OUTPUT_DIR, `${key}.tsv`), `${sorted.join('\n')}\n`)
-    pairs.push(key)
+  for (const [key, rows] of total.pairRows) {
+    if (rows.size > 0) {
+      const sorted = [...rows].sort((a, b) => a.localeCompare(b))
+      await writeFile(join(OUTPUT_DIR, `${key}.tsv`), `${sorted.join('\n')}\n`)
+      pairs.push(key)
+    }
   }
   pairs.sort()
+
+  const taxa: number[] = []
+  for (const [tax, genes] of total.taxonGenes) {
+    if (genes.size > 0) {
+      const lines = [...genes]
+        .map(([symbol, synonyms]) => `${symbol}\t${synonyms}`)
+        .sort((a, b) => a.localeCompare(b))
+      await writeFile(join(OUTPUT_DIR, `${tax}.tsv`), `${lines.join('\n')}\n`)
+      taxa.push(tax)
+    }
+  }
+  taxa.sort((a, b) => a - b)
 
   await mkdir(dirname(MANIFEST), { recursive: true })
   await writeFile(
     MANIFEST,
-    JSON.stringify({ generatedAt: new Date().toISOString(), pairs }, null, 2),
+    JSON.stringify(
+      { generatedAt: new Date().toISOString(), pairs, taxa },
+      null,
+      2,
+    ),
   )
-  console.log(`Wrote ${pairs.length} pair files to ${OUTPUT_DIR}`)
-  console.log(`Wrote manifest ${MANIFEST}`)
+  console.log(
+    `Wrote ${pairs.length} pair + ${taxa.length} taxon files to ${OUTPUT_DIR}`,
+  )
+}
+
+async function main() {
+  const wanted = await loadWanted()
+  if (wanted.pairs.size === 0 && wanted.sameTaxa.size === 0) {
+    console.log('No synteny taxon pairs/taxa; nothing to build.')
+    return
+  }
+
+  const total: Contribution = {
+    pairRows: new Map(),
+    taxonGenes: new Map(),
+  }
+  for (const source of SOURCES) {
+    console.log(`Gathering from source: ${source.name}`)
+    merge(total, await source.gather(wanted))
+  }
+
+  await emit(total)
 }
 
 main().catch((e: unknown) => {

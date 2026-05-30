@@ -693,6 +693,28 @@ async function main() {
     `Total assembly info records: ${Object.keys(assemblyInfo).length}`,
   )
 
+  // Backfill taxonId for assemblies that lack it (UCSC, legacy) by matching
+  // scientificName against the GenArk assemblies that carry one. This lets
+  // same-species comparisons such as hg19 vs hg38 (both Homo sapiens) reach the
+  // ortholog tables, which are keyed by taxon.
+  const sciNameToTaxon = new Map<string, number>()
+  for (const info of Object.values(assemblyInfo)) {
+    if (info.taxonId !== undefined && info.scientificName) {
+      sciNameToTaxon.set(info.scientificName.toLowerCase(), info.taxonId)
+    }
+  }
+  let backfilled = 0
+  for (const info of Object.values(assemblyInfo)) {
+    if (info.taxonId === undefined && info.scientificName) {
+      const taxon = sciNameToTaxon.get(info.scientificName.toLowerCase())
+      if (taxon !== undefined) {
+        info.taxonId = taxon
+        backfilled++
+      }
+    }
+  }
+  console.log(`Backfilled taxonId for ${backfilled} assemblies via name`)
+
   // Check for assemblies without info
   const allAssemblyNames = new Set<string>()
   for (const track of allTracks) {
