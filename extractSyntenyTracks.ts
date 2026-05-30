@@ -41,6 +41,9 @@ interface AssemblyInfo {
   commonName?: string
   scientificName?: string
   source: 'ucsc' | 'genark' | 'legacy'
+  // NCBI taxonomy id, used to map assemblies to the cross-species ortholog
+  // tables. Only populated for GenArk assemblies (from all.json).
+  taxonId?: number
 }
 
 interface SyntenyDataset {
@@ -169,6 +172,7 @@ async function loadGenArkAssemblyInfo(): Promise<Record<string, AssemblyInfo>> {
       accession: string
       commonName?: string
       scientificName?: string
+      taxonId?: number
     }[]
     for (const asm of assemblies) {
       if (asm.accession) {
@@ -176,6 +180,7 @@ async function loadGenArkAssemblyInfo(): Promise<Record<string, AssemblyInfo>> {
           commonName: asm.commonName,
           scientificName: asm.scientificName,
           source: 'genark',
+          taxonId: asm.taxonId,
         }
       }
     }

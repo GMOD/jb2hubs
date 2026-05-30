@@ -10,6 +10,13 @@
 #   assembly:          The assembly name (e.g., hg38).
 #   outdir:            The root output directory for all assemblies. Defaults to UCSC_BUILT_DIR.
 #   liftover_base_url: Optional. Custom base URL for liftOver files. Overrides the default goldenPath URL.
+#
+# `jbrowse make-pif` emits the no-CIGAR coarse tier (uppercase T/Q rows) by
+# default since the coarse-tier release, so whole-genome synteny views auto-
+# switch to it. Regenerating existing PIFs to gain the coarse tier needs that
+# newer @jbrowse/cli on PATH plus a force pass: the default run skips assemblies
+# that already have outputs. Set REPROCESS=true to force a full rebuild (clears
+# the .checked stamp and ignores existing pif/csi).
 
 set -euo pipefail
 
@@ -65,7 +72,9 @@ process_liftover() {
   mkdir -p "$liftover_dir"
   local stamp="$liftover_dir/.checked"
 
-  if [[ -f "$stamp" ]]; then
+  if [[ -n "${REPROCESS:-}" ]]; then
+    rm -f "$stamp"
+  elif [[ -f "$stamp" ]]; then
     return 0
   fi
 
@@ -98,7 +107,9 @@ process_vs() {
   mkdir -p "$vs_dir"
   local stamp="$vs_dir/.checked"
 
-  if [[ -f "$stamp" ]]; then
+  if [[ -n "${REPROCESS:-}" ]]; then
+    rm -f "$stamp"
+  elif [[ -f "$stamp" ]]; then
     return 0
   fi
 

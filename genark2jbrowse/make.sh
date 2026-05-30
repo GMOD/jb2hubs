@@ -165,6 +165,10 @@ node src/makeGenArkExtensions.ts
 log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
   parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' <"$NEW_HUBS_FILE" || true
+elif [ -n "${REPROCESS:-}" ]; then
+  # Force regen (e.g. to add the coarse PIF tier): bypass the .checked gate and
+  # let createChainTrackPifs.sh clear stamps / overwrite existing outputs.
+  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' <"$ALL_META_FILE" || true
 else
   while IFS= read -r meta; do
     [[ ! -f "$(dirname "$meta")/liftOver/.checked" ]] && echo "$meta"

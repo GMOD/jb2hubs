@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import SyntenySelector from '../../components/SyntenySelector.tsx'
 import syntenyData from '../../syntenyTracks.json'
+import orthologManifest from '../../orthologManifest.json'
 import '../../styles/common-table.css'
 ---
 
@@ -17,6 +18,7 @@ import '../../styles/common-table.css'
     <SyntenySelector
       client:load
       data={syntenyData}
+      orthologPairs={orthologManifest.pairs}
     />
 
     <p><a href="/synteny/info">About synteny tracks &rarr;</a></p>
@@ -79,6 +81,10 @@ import '../../styles/common-table.css'
     margin: 0.75rem 0;
     font-size: 13px;
     color: #666;
+  }
+
+  .synteny-gene {
+    margin: 0.5rem 0 1rem;
   }
 
   .synteny-actions {
