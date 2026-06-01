@@ -16,7 +16,9 @@ function removeEverythingButLatest(configPath: string) {
     prefixes.flatMap(prefix => {
       const matching = config.tracks
         .filter(t => t.trackId.startsWith(prefix))
-        .sort((a, b) => a.trackId.localeCompare(b.trackId))
+        .sort((a, b) =>
+          a.trackId.localeCompare(b.trackId, undefined, { numeric: true }),
+        )
       return matching.slice(0, -1).map(t => t.trackId)
     }),
   )

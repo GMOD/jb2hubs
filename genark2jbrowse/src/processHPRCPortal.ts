@@ -66,7 +66,9 @@ const result: HPRCSample[] = Array.from(sampleMap.entries())
     const hap2 = v.hap2 ?? v.extras[1]
     return { sampleId, hap1, hap2 }
   })
-  .sort((a, b) => a.sampleId.localeCompare(b.sampleId))
+  .sort((a, b) =>
+    a.sampleId.localeCompare(b.sampleId, undefined, { numeric: true }),
+  )
 
 fs.writeFileSync(
   '../website/src/hprcSamples.json',

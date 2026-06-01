@@ -19,6 +19,7 @@ and serves them via a static website.
 - `src/pages/recently-updated.astro` — server-rendered table with category
   dropdown filter
 - `src/hooks/useSearchIndex.ts` — SWR fetch of the search index;
-  `IndexEntry = [accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId]`
+  `IndexEntry = [accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus]`
+  (ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both)
 - `src/recentlyUpdated.json` — build-time generated data for recently-updated
   page
