@@ -16,6 +16,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test 'src/**/*.test.ts'",
     "deploy": "yarn sync",
     "predeploy": "yarn build",
     "sync": "tar czf - -C dist . | ssh myserver 'tar xzf - -C /var/www/html' && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",

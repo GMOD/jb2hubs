@@ -35,25 +35,27 @@ const list = JSON.parse(fs.readFileSync(listPath, 'utf-8'))
 // Compact format: array of arrays to avoid repeating key names 50K times
 // [accession, commonName, scientificName, ncbiAssemblyName, assemblyStatus, source, taxonId, ncbiStatus]
 // ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
-const index = allHubs.map(h => {
-  let ncbiStatus = 0
-  if (h.ncbiRefSeqCategory === 'reference genome') {
-    ncbiStatus += 1
-  }
-  if (h.suppressed) {
-    ncbiStatus += 2
-  }
-  return [
-    h.accession ?? '',
-    h.commonName ?? '',
-    h.scientificName ?? '',
-    h.ncbiAssemblyName ?? '',
-    h.assemblyStatus ?? '',
-    h.source ?? '',
-    h.taxonId ?? 0,
-    ncbiStatus,
-  ]
-})
+const index = allHubs
+  .filter(h => h.accession)
+  .map(h => {
+    let ncbiStatus = 0
+    if (h.ncbiRefSeqCategory === 'reference genome') {
+      ncbiStatus += 1
+    }
+    if (h.suppressed) {
+      ncbiStatus += 2
+    }
+    return [
+      h.accession ?? '',
+      h.commonName ?? '',
+      h.scientificName ?? '',
+      h.ncbiAssemblyName ?? '',
+      h.assemblyStatus ?? '',
+      h.source ?? '',
+      h.taxonId ?? 0,
+      ncbiStatus,
+    ]
+  })
 
 // Add UCSC genomes (hg38, mm39, etc.)
 const ucscGenomes = list.ucscGenomes as Record<string, UcscGenome>
