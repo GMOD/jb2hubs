@@ -707,6 +707,32 @@ async function main() {
   await writeFile(outputFile, JSON.stringify(output, null, 2))
   console.log(`\nResults written to ${outputFile}`)
 
+  // Lightweight list of GCA/GCF accessions that take part in a launchable
+  // synteny track (both sides non-legacy). The accession pages import this
+  // instead of the multi-megabyte syntenyTracks.json.
+  const launchableAccessions = new Set<string>()
+  for (const track of allTracks) {
+    const usable = track.assemblyNames.every(name => {
+      const info = assemblyInfo[name]
+      return info && info.source !== 'legacy'
+    })
+    if (usable) {
+      for (const name of track.assemblyNames) {
+        if (name.startsWith('GCA_') || name.startsWith('GCF_')) {
+          launchableAccessions.add(name)
+        }
+      }
+    }
+  }
+  const accessionsFile = 'website/src/syntenyAccessions.json'
+  await writeFile(
+    accessionsFile,
+    JSON.stringify([...launchableAccessions].sort()),
+  )
+  console.log(
+    `Wrote ${launchableAccessions.size} synteny accessions to ${accessionsFile}`,
+  )
+
   // Generate summary statistics
   const assemblyPairs = new Map<string, number>()
   for (const track of allTracks) {

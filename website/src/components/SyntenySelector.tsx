@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
-import { createStaticCatalog } from '../lib/syntenyCatalog.ts'
+import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
 
 import type {
   SyntenyAssembly,
@@ -13,62 +13,19 @@ interface Props {
   data: SyntenyCatalogData
 }
 
-const sourceFavicons: Record<string, string> = {
-  ucsc: 'https://genome.ucsc.edu/favicon.ico',
-  genark: 'https://www.ncbi.nlm.nih.gov/favicon.ico',
-}
-
-const sourceTextIcons: Record<string, string> = {
-  ucsc: '[UCSC]',
-  genark: '[NCBI]',
-  legacy: '[Legacy]',
-}
-
-const sourceLabels: Record<string, string> = {
-  ucsc: 'UCSC',
-  genark: 'NCBI/GenArk',
-  legacy: 'Legacy (unavailable)',
-}
-
-function SourceIcon({ source }: { source: string }) {
-  const favicon = sourceFavicons[source]
-  if (favicon) {
-    return (
-      <img
-        src={favicon}
-        alt={sourceLabels[source]}
-        className="source-icon"
-      />
-    )
-  }
-  return <span>{sourceTextIcons[source] ?? ''}</span>
-}
-
 function formatOption(asm: SyntenyAssembly) {
-  const parts: string[] = []
-
-  const textIcon = sourceTextIcons[asm.source]
-  if (textIcon) {
-    parts.push(textIcon)
+  const parts = [asm.displayName]
+  if (asm.scientificName && asm.scientificName !== asm.displayName) {
+    parts.push(asm.scientificName)
   }
-
-  if (asm.displayName && asm.displayName !== asm.id) {
-    parts.push(asm.displayName)
-  }
-
-  if (asm.scientificName) {
-    parts.push(`(${asm.scientificName})`)
-  }
-
-  parts.push(`[${asm.id}]`)
-
-  return parts.join(' ')
+  parts.push(asm.id)
+  return parts.join('  ·  ')
 }
 
 export default function SyntenySelector({ data }: Props) {
   const [species1, setSpecies1] = useState('')
   const [species2, setSpecies2] = useState('')
-  const [selectedTrackId, setSelectedTrackId] = useState('')
+  const [trackOverride, setTrackOverride] = useState('')
   const [showUcsc, setShowUcsc] = useState(true)
   const [showGenark, setShowGenark] = useState(true)
 
@@ -76,30 +33,50 @@ export default function SyntenySelector({ data }: Props) {
   const [partners, setPartners] = useState<SyntenyAssembly[]>([])
   const [tracks, setTracks] = useState<SyntenyTrackSummary[]>([])
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const a1 = params.get('assembly')
+    const a2 = params.get('assembly2')
+    if (a1) {
+      setSpecies1(a1)
+    }
+    if (a1 && a2) {
+      setSpecies2(a2)
+    }
+  }, [])
+
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = useMemo(
     () => ({ ucsc: showUcsc, genark: showGenark }),
     [showUcsc, showGenark],
   )
+  const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
 
   useEffect(() => {
     let active = true
-    catalog.listAssemblies(filter).then(result => {
+    void catalog.listAssemblies(filter).then(result => {
       if (active) {
         setAssemblies(result)
+        if (species1 && !result.some(a => a.id === species1)) {
+          setSpecies1('')
+          setSpecies2('')
+        }
       }
     })
     return () => {
       active = false
     }
-  }, [catalog, filter])
+  }, [catalog, filter, species1])
 
   useEffect(() => {
     let active = true
     if (species1) {
-      catalog.listPartners(species1, filter).then(result => {
+      void catalog.listPartners(species1, filter).then(result => {
         if (active) {
           setPartners(result)
+          if (species2 && !result.some(a => a.id === species2)) {
+            setSpecies2('')
+          }
         }
       })
     } else {
@@ -108,18 +85,20 @@ export default function SyntenySelector({ data }: Props) {
     return () => {
       active = false
     }
-  }, [catalog, species1, filter])
+  }, [catalog, species1, species2, filter])
 
   useEffect(() => {
     let active = true
     if (species1 && species2) {
-      catalog.listTracks(species1, species2, filter).then(result => {
+      void catalog.listTracks(species1, species2, filter).then(result => {
         if (active) {
           setTracks(result)
+          setTrackOverride('')
         }
       })
     } else {
       setTracks([])
+      setTrackOverride('')
     }
     return () => {
       active = false
@@ -129,24 +108,22 @@ export default function SyntenySelector({ data }: Props) {
   const handleSpecies1Change = (value: string) => {
     setSpecies1(value)
     setSpecies2('')
-    setSelectedTrackId('')
   }
 
-  const handleSpecies2Change = (value: string) => {
-    setSpecies2(value)
-    setSelectedTrackId('')
-  }
-
-  const handleTrackChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedTrackId(e.target.value)
+  const handleSwap = () => {
+    setSpecies1(species2)
+    setSpecies2(species1)
   }
 
   const selectedTrack = useMemo(() => {
-    if (!selectedTrackId) {
+    if (tracks.length === 0) {
       return null
     }
-    return tracks.find(t => t.trackId === selectedTrackId) ?? null
-  }, [selectedTrackId, tracks])
+    if (trackOverride) {
+      return tracks.find(t => t.trackId === trackOverride) ?? null
+    }
+    return pickDefaultTrack(tracks, species1)
+  }, [tracks, trackOverride, species1])
 
   const launchUrl = useMemo(() => {
     if (!species1 || !species2 || !selectedTrack) {
@@ -186,111 +163,132 @@ export default function SyntenySelector({ data }: Props) {
     [partners],
   )
 
-  const handleFilterChange = (source: 'ucsc' | 'genark') => {
-    if (source === 'ucsc') {
-      setShowUcsc(!showUcsc)
-    } else {
-      setShowGenark(!showGenark)
-    }
-    setSpecies1('')
-    setSpecies2('')
-    setSelectedTrackId('')
-  }
-
   return (
     <div className="synteny-selector">
-      <div className="source-legend">
-        <label className="legend-item">
-          <input
-            type="checkbox"
-            checked={showUcsc}
-            onChange={() => {
-              handleFilterChange('ucsc')
-            }}
-          />
-          <SourceIcon source="ucsc" /> {sourceLabels.ucsc}
-        </label>
-        <label className="legend-item">
-          <input
-            type="checkbox"
-            checked={showGenark}
-            onChange={() => {
-              handleFilterChange('genark')
-            }}
-          />
-          <SourceIcon source="genark" /> {sourceLabels.genark}
-        </label>
-      </div>
-
-      <div className="species-selection">
-        <div className="species-group">
-          <label htmlFor="species1">First Species:</label>
+      <div className="synteny-pair">
+        <div className="synteny-field">
+          <label htmlFor="species1">First assembly</label>
           <Autocomplete
             id="species1"
             options={species1Options}
             value={species1}
             onChange={handleSpecies1Change}
-            placeholder="Search species..."
+            placeholder="Search species or accession…"
           />
         </div>
 
-        <div className="species-group">
-          <label htmlFor="species2">Second Species:</label>
+        <button
+          type="button"
+          className="synteny-swap"
+          onClick={handleSwap}
+          disabled={!species1 || !species2}
+          aria-label="Swap assemblies"
+          title="Swap"
+        >
+          ⇄
+        </button>
+
+        <div className="synteny-field">
+          <label htmlFor="species2">Second assembly</label>
           <Autocomplete
             id="species2"
             options={species2Options}
             value={species2}
-            onChange={handleSpecies2Change}
+            onChange={setSpecies2}
             placeholder={
-              species1 ? 'Search species...' : 'Select first species first'
+              species1
+                ? 'Search comparable species…'
+                : 'Choose a first assembly'
             }
             disabled={!species1}
           />
         </div>
       </div>
 
-      {species1 && (
-        <div className="status-text">
-          {partners.length} species available for comparison
-        </div>
-      )}
+      <div className="synteny-hint">
+        {!species1 && 'Pick two assemblies to compare their synteny.'}
+        {species1 &&
+          !species2 &&
+          `${partners.length} ${
+            partners.length === 1 ? 'assembly has' : 'assemblies have'
+          } a synteny comparison with ${nameOf(species1)}.`}
+        {species1 && species2 && (
+          <span>
+            Comparing <strong>{nameOf(species1)}</strong> ⇄{' '}
+            <strong>{nameOf(species2)}</strong>
+          </span>
+        )}
+      </div>
 
-      {tracks.length > 0 && (
-        <div className="species-group track-selector">
-          <label htmlFor="track">Synteny Track:</label>
-          <select
-            id="track"
-            value={selectedTrackId}
-            onChange={handleTrackChange}
-            autoComplete="off"
-          >
-            <option value="">-- Select a track --</option>
-            {tracks.map(track => (
-              <option
-                key={track.trackId}
-                value={track.trackId}
-              >
-                {track.name}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      <div className="button-group">
+      <div className="synteny-actions">
         {launchUrl ? (
           <a
             href={launchUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="launch-link"
+            className="synteny-launch"
           >
-            Launch Synteny View
+            Open synteny view →
           </a>
         ) : (
-          <button disabled>Launch Synteny View</button>
+          <button
+            className="synteny-launch"
+            disabled
+          >
+            Open synteny view →
+          </button>
         )}
       </div>
+
+      <details className="synteny-options">
+        <summary>Options</summary>
+        <div className="synteny-options-body">
+          {tracks.length > 1 && (
+            <div className="synteny-option">
+              <label htmlFor="track">Alignment</label>
+              <select
+                id="track"
+                value={selectedTrack?.trackId ?? ''}
+                onChange={e => {
+                  setTrackOverride(e.target.value)
+                }}
+              >
+                {tracks.map(track => (
+                  <option
+                    key={track.trackId}
+                    value={track.trackId}
+                  >
+                    {track.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="synteny-option">
+            <span>Sources</span>
+            <label className="synteny-source">
+              <input
+                type="checkbox"
+                checked={showUcsc}
+                onChange={() => {
+                  setShowUcsc(!showUcsc)
+                }}
+              />
+              UCSC
+            </label>
+            <label className="synteny-source">
+              <input
+                type="checkbox"
+                checked={showGenark}
+                onChange={() => {
+                  setShowGenark(!showGenark)
+                }}
+              />
+              NCBI/GenArk
+            </label>
+          </div>
+        </div>
+      </details>
     </div>
   )
 }

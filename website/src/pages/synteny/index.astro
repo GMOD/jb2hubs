@@ -2,7 +2,6 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import SyntenySelector from '../../components/SyntenySelector.tsx'
-import type { AssemblyInfo } from '../../components/SyntenySelector.tsx'
 import syntenyData from '../../syntenyTracks.json'
 import '../../styles/common-table.css'
 ---
@@ -11,14 +10,13 @@ import '../../styles/common-table.css'
   <Container>
     <h1>Synteny Comparison Browser</h1>
     <p>
-      Compare synteny (conserved genomic regions) between two species using
-      JBrowse 2.
+      Pick two assemblies to open a JBrowse 2 linear synteny view of the
+      conserved regions between them.
     </p>
 
     <SyntenySelector
       client:load
-      syntenyTracks={syntenyData.tracks}
-      assemblyInfo={syntenyData.assemblyInfo as Record<string, AssemblyInfo>}
+      data={syntenyData}
     />
 
     <p><a href="/synteny/info">About synteny tracks &rarr;</a></p>
@@ -28,35 +26,138 @@ import '../../styles/common-table.css'
 <style is:global>
   .synteny-selector {
     margin: 1.5rem 0;
-    padding: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fafafa;
   }
 
-  .source-legend {
+  .synteny-pair {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  .synteny-field {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .synteny-field label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #666;
+    margin-bottom: 4px;
+  }
+
+  .synteny-swap {
+    align-self: end;
+    height: 34px;
+    width: 34px;
+    padding: 0;
+    font-size: 16px;
+    line-height: 1;
+    color: #555;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .synteny-swap:hover:not(:disabled) {
+    border-color: #888;
+    color: #222;
+  }
+
+  .synteny-swap:disabled {
+    color: #ccc;
+    cursor: default;
+  }
+
+  .synteny-hint {
+    min-height: 1.25rem;
+    margin: 0.75rem 0;
     font-size: 13px;
     color: #666;
   }
 
-  .legend-item {
+  .synteny-actions {
+    margin-top: 0.25rem;
+  }
+
+  .synteny-launch {
+    display: inline-block;
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .synteny-launch:hover:not(:disabled) {
+    background: #0a5cba;
+  }
+
+  .synteny-launch:disabled {
+    color: #999;
+    background: #f0f0f0;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+
+  .synteny-options {
+    margin-top: 1.25rem;
+    font-size: 13px;
+  }
+
+  .synteny-options > summary {
+    cursor: pointer;
+    color: #666;
+    width: fit-content;
+  }
+
+  .synteny-options-body {
+    margin-top: 0.75rem;
+    padding-left: 1rem;
+    border-left: 2px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .synteny-option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+
+  .synteny-option > label:first-child,
+  .synteny-option > span:first-child {
+    font-weight: 600;
+    color: #444;
+  }
+
+  .synteny-option select {
+    flex: 1;
+    min-width: 0;
+    max-width: 100%;
+    padding: 5px 8px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background: white;
+  }
+
+  .synteny-source {
     display: flex;
     align-items: center;
     gap: 4px;
     cursor: pointer;
-  }
-
-  .legend-item input[type='checkbox'] {
-    cursor: pointer;
-  }
-
-  .source-icon {
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
   }
 
   .autocomplete {
@@ -67,12 +168,12 @@ import '../../styles/common-table.css'
     display: flex;
     align-items: center;
     border: 1px solid #ccc;
-    border-radius: 3px;
+    border-radius: 4px;
     background: white;
   }
 
   .autocomplete-input-wrapper:focus-within {
-    border-color: #888;
+    border-color: #0b69d4;
   }
 
   .autocomplete-input-wrapper.disabled {
@@ -82,7 +183,7 @@ import '../../styles/common-table.css'
   .autocomplete-input {
     flex: 1;
     min-width: 0;
-    padding: 6px 8px;
+    padding: 7px 8px;
     font-size: 14px;
     border: none;
     background: transparent;
@@ -114,7 +215,7 @@ import '../../styles/common-table.css'
     top: 100%;
     left: 0;
     right: 0;
-    max-height: 250px;
+    max-height: 280px;
     overflow-y: auto;
     background: white;
     border: 1px solid #ccc;
@@ -132,11 +233,11 @@ import '../../styles/common-table.css'
   }
 
   .autocomplete-option.highlighted {
-    background: #f0f0f0;
+    background: #eaf3fd;
   }
 
   .autocomplete-option.selected {
-    font-weight: 500;
+    font-weight: 600;
   }
 
   .autocomplete-no-results {
@@ -145,81 +246,14 @@ import '../../styles/common-table.css'
     font-size: 13px;
   }
 
-  .species-selection {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .species-group {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .species-group label {
-    font-size: 13px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: #333;
-  }
-
-  .species-group select {
-    padding: 6px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    background: white;
-    width: 100%;
-  }
-
-  .species-group select:disabled {
-    background: #f5f5f5;
-    color: #999;
-  }
-
-  .status-text {
-    margin-bottom: 1rem;
-    font-size: 13px;
-    color: #666;
-  }
-
-  .track-selector {
-    margin-bottom: 1rem;
-  }
-
-  .button-group {
-    margin-top: 1rem;
-  }
-
-  .synteny-selector button,
-  .synteny-selector .launch-link {
-    display: inline-block;
-    padding: 8px 16px;
-    font-size: 14px;
-    color: #0066cc;
-    background: white;
-    border: 1px solid #0066cc;
-    border-radius: 3px;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .synteny-selector button:hover:not(:disabled),
-  .synteny-selector .launch-link:hover {
-    background: #f0f7ff;
-  }
-
-  .synteny-selector button:disabled {
-    color: #999;
-    border-color: #ccc;
-    cursor: not-allowed;
-  }
-
   @media (max-width: 768px) {
-    .species-selection {
+    .synteny-pair {
       grid-template-columns: 1fr;
+    }
+
+    .synteny-swap {
+      justify-self: center;
+      transform: rotate(90deg);
     }
   }
 </style>

@@ -5,10 +5,12 @@
 // (e.g. createApiCatalog(endpoint)) is then a one-line change in the component
 // and requires no changes to the selector logic.
 
+export type AssemblySource = 'ucsc' | 'genark' | 'legacy'
+
 export interface AssemblyInfo {
   commonName?: string
   scientificName?: string
-  source: string
+  source: AssemblySource
 }
 
 export interface SyntenyTrackSummary {
@@ -50,6 +52,21 @@ export interface SyntenyCatalog {
 export interface SyntenyCatalogData {
   tracks: SyntenyTrackSummary[]
   assemblyInfo: Record<string, AssemblyInfo>
+}
+
+// A pair of assemblies usually exposes the same comparison in both liftOver
+// directions (the trackId always begins with the target assembly), plus the
+// occasional `_chainBridge` algorithm variant. The launcher reads
+// species1 -> species2, so default to the track whose target is species1 and
+// prefer the plain liftOver, letting the user swap or open Options to change it.
+export function pickDefaultTrack(
+  tracks: SyntenyTrackSummary[],
+  species1: string,
+) {
+  const forward = tracks.filter(t => t.trackId.startsWith(`${species1}_to_`))
+  const candidates = forward.length > 0 ? forward : tracks
+  const plain = candidates.find(t => !t.trackId.includes('chainBridge'))
+  return plain ?? candidates[0]
 }
 
 function trackIsLaunchable(
@@ -106,17 +123,17 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   }
 
   return {
-    async listAssemblies(filter) {
+    listAssemblies(filter) {
       const ids = new Set<string>()
       for (const track of launchableTracks(filter)) {
         for (const name of track.assemblyNames) {
           ids.add(name)
         }
       }
-      return sortedAssemblies(ids)
+      return Promise.resolve(sortedAssemblies(ids))
     },
 
-    async listPartners(assemblyId, filter) {
+    listPartners(assemblyId, filter) {
       const ids = new Set<string>()
       for (const track of launchableTracks(filter)) {
         if (
@@ -130,14 +147,16 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
           }
         }
       }
-      return sortedAssemblies(ids)
+      return Promise.resolve(sortedAssemblies(ids))
     },
 
-    async listTracks(assembly1, assembly2, filter) {
-      return launchableTracks(filter).filter(
-        track =>
-          track.assemblyNames.includes(assembly1) &&
-          track.assemblyNames.includes(assembly2),
+    listTracks(assembly1, assembly2, filter) {
+      return Promise.resolve(
+        launchableTracks(filter).filter(
+          track =>
+            track.assemblyNames.includes(assembly1) &&
+            track.assemblyNames.includes(assembly2),
+        ),
       )
     },
   }

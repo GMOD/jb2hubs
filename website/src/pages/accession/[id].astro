@@ -11,7 +11,13 @@ import {
 } from '../../utils/accessionData.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
+import syntenyAccessions from '../../syntenyAccessions.json'
 import path from 'path'
+
+// Accessions that participate in at least one launchable synteny track,
+// precomputed by extractSyntenyTracks.ts so accession pages avoid loading the
+// multi-megabyte syntenyTracks.json.
+const syntenyAssemblies = new Set<string>(syntenyAccessions)
 
 export async function getStaticPaths() {
   const accessions = loadAccessionMap()
