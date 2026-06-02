@@ -11,10 +11,10 @@ import { useSearchFilter } from './DataTable/hooks/useSearchFilter.ts'
 import { useTableColumns } from './DataTable/hooks/useTableColumns.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
-import { paginate } from '../utils/paginate.ts'
 import styles from './DataTable.module.css'
 import Pagination from './Pagination.tsx'
 import TableOptions from './TableOptions.tsx'
+import { paginate } from '../utils/paginate.ts'
 
 import type { RowData } from './DataTable/hooks/useTableColumns.tsx'
 

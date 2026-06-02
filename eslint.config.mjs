@@ -1,4 +1,4 @@
-import importPlugin from 'eslint-plugin-import'
+import importPlugin from 'eslint-plugin-import-x'
 import eslint from '@eslint/js'
 import eslintPluginReact from 'eslint-plugin-react'
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks'
@@ -84,11 +84,11 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
 
-      'import/no-unresolved': 'off',
-      'import/no-cycle': 'error',
-      'import/extensions': ['error', 'ignorePackages'],
+      'import-x/no-unresolved': 'off',
+      'import-x/no-cycle': 'error',
+      'import-x/extensions': ['error', 'ignorePackages'],
 
-      'import/order': [
+      'import-x/order': [
         'error',
         {
           named: true,
