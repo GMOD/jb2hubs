@@ -16,45 +16,6 @@ export async function myfetchtext(url: string) {
   const res = await myfetch(url)
   return res.text()
 }
-export async function myfetchjson(url: string) {
-  const res = await myfetch(url)
-  return res.json()
-}
-
-export function makeLoc(
-  first: string,
-  base: {
-    uri: string
-    baseUri?: string
-  },
-) {
-  return {
-    uri: new URL(first, new URL(base.uri, base.baseUri)).href,
-    locationType: 'UriLocation',
-  }
-}
-
-export function makeLocAlt(
-  first: string,
-  alt: string,
-  base: {
-    uri: string
-  },
-) {
-  return first ? makeLoc(first, base) : makeLoc(alt, base)
-}
-
-export function makeLoc2(first: string, alt?: string) {
-  return first
-    ? {
-        uri: first,
-        locationType: 'LocalPath',
-      }
-    : {
-        uri: alt,
-        locationType: 'UriLocation',
-      }
-}
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function readJSON<T = unknown>(filePath: string): T {
@@ -67,6 +28,34 @@ export async function readJSONAsync<T = unknown>(filePath: string): Promise<T> {
 
 export function writeJSON(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, undefined, 2))
+}
+
+// Builds the JBrowse defaultSession that opens a LinearGenomeView at the
+// assembly's default position with the track selector widget active.
+export function makeDefaultSession(assemblyName: string, loc: string) {
+  return {
+    name: assemblyName,
+    widgets: {
+      hierarchicalTrackSelector: {
+        id: 'hierarchicalTrackSelector',
+        type: 'HierarchicalTrackSelectorWidget',
+        view: 'initialView',
+      },
+    },
+    activeWidgets: {
+      hierarchicalTrackSelector: 'hierarchicalTrackSelector',
+    },
+    views: [
+      {
+        type: 'LinearGenomeView',
+        id: 'initialView',
+        init: {
+          assembly: assemblyName,
+          loc,
+        },
+      },
+    ],
+  }
 }
 
 export function splitOnFirst(str: string, sep: string): [string, string] {

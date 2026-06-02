@@ -1,5 +1,6 @@
 import { categoryMap } from './const.ts'
 import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
+import { resolve } from './util.ts'
 
 import type { Adapter } from './types.ts'
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
@@ -25,7 +26,7 @@ function makeAdapterConf(
     }
   } else if (baseTrackType === 'bigMaf') {
     const summaryUri = data.summary
-      ? new URL(data.summary, trackDbUrl).href
+      ? resolve(data.summary, trackDbUrl)
       : undefined
     return {
       type: 'MafTrack',
@@ -130,7 +131,7 @@ function makeTrackConfig({
   }
   const name =
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
-  const trackType = data.type ?? trackDb.data[parent]!.data.type ?? ''
+  const trackType = data.type ?? trackDb.data[parent]?.data.type ?? ''
   let baseTrackType = trackType.split(' ')[0] ?? ''
   if (
     baseTrackType === 'bam' &&
@@ -138,7 +139,7 @@ function makeTrackConfig({
   ) {
     baseTrackType = 'cram'
   }
-  const uri = new URL(bigDataUrlPre, trackDbUrl).href
+  const uri = resolve(bigDataUrlPre, trackDbUrl)
   const adapterConf = makeAdapterConf(
     baseTrackType,
     uri,

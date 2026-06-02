@@ -1,7 +1,8 @@
 import { GenomesFile, HubFile, TrackDbFile } from '@gmod/ucsc-hub'
 
 import { generateHubTracks } from './generateHubTracks.ts'
-import { myfetchtext, resolve } from './util.ts'
+import { createHtmlLink } from './trackUtils.ts'
+import { makeDefaultSession, myfetchtext, resolve } from './util.ts'
 
 // Fetches a trackDb file and recursively resolves `include` directives,
 // returning the concatenated text of all included files.
@@ -78,9 +79,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
           ucsc: {
             ...genomeStanza.data,
             ...(htmlPath
-              ? {
-                  htmlPath: `<a href="${resolve(htmlPath, genomesFileUrl)}">${htmlPath}</a>`,
-                }
+              ? { htmlPath: createHtmlLink(htmlPath, genomesFileUrl) }
               : {}),
           },
         },
@@ -100,31 +99,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
       assemblies: [asm],
       tracks,
       ...(defaultPos
-        ? {
-            defaultSession: {
-              name: genomeName,
-              widgets: {
-                hierarchicalTrackSelector: {
-                  id: 'hierarchicalTrackSelector',
-                  type: 'HierarchicalTrackSelectorWidget',
-                  view: 'initialView',
-                },
-              },
-              activeWidgets: {
-                hierarchicalTrackSelector: 'hierarchicalTrackSelector',
-              },
-              views: [
-                {
-                  type: 'LinearGenomeView',
-                  id: 'initialView',
-                  init: {
-                    assembly: genomeName,
-                    loc: defaultPos,
-                  },
-                },
-              ],
-            },
-          }
+        ? { defaultSession: makeDefaultSession(genomeName, defaultPos) }
         : {}),
     }
 

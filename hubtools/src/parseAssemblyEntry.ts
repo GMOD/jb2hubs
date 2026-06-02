@@ -118,7 +118,7 @@ export function parseAssemblyEntry({
       chromosome_count: assembly_stats.total_number_of_chromosomes,
       total_length: assembly_stats.total_sequence_length,
       ungapped_length: assembly_stats.total_ungapped_length,
-    } as Record<string, unknown>,
+    },
     seqReleaseDate: assembly_info.release_date,
     submitterOrg: assembly_info.submitter,
     ncbiOrganism,

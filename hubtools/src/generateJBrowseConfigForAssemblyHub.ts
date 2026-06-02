@@ -1,7 +1,8 @@
 import { SingleFileHub } from '@gmod/ucsc-hub'
 
 import { generateHubTracks } from './generateHubTracks.ts'
-import { resolve } from './util.ts'
+import { createHtmlLink } from './trackUtils.ts'
+import { makeDefaultSession, resolve } from './util.ts'
 
 export function generateJBrowseConfigForAssemblyHub({
   hubFileText,
@@ -39,9 +40,7 @@ export function generateJBrowseConfigForAssemblyHub({
           ucsc: {
             ...data,
             ...(htmlPath
-              ? {
-                  htmlPath: `<a href="${resolve(htmlPath, trackDbUrl)}">${htmlPath}</a>`,
-                }
+              ? { htmlPath: createHtmlLink(htmlPath, trackDbUrl) }
               : {}),
           },
         },
@@ -70,32 +69,7 @@ export function generateJBrowseConfigForAssemblyHub({
         sequenceAdapter,
       }),
       ...(defaultPos
-        ? {
-            defaultSession: {
-              name: asm.name,
-              widgets: {
-                hierarchicalTrackSelector: {
-                  id: 'hierarchicalTrackSelector',
-                  type: 'HierarchicalTrackSelectorWidget',
-                  view: 'initialView',
-                },
-              },
-              activeWidgets: {
-                hierarchicalTrackSelector: 'hierarchicalTrackSelector',
-              },
-
-              views: [
-                {
-                  type: 'LinearGenomeView',
-                  id: 'initialView',
-                  init: {
-                    assembly: asm.name,
-                    loc: defaultPos,
-                  },
-                },
-              ],
-            },
-          }
+        ? { defaultSession: makeDefaultSession(asm.name, defaultPos) }
         : {}),
     }
   }
