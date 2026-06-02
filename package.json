@@ -8,7 +8,7 @@
     "lint": "eslint --report-unused-disable-directives --max-warnings 0",
     "lint:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shellcheck",
     "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write .",
-    "format:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print | xargs -0 shfmt -w -i 2",
+    "format:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shfmt -w -i 2",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

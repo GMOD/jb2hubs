@@ -13,28 +13,16 @@
 
 set -euo pipefail
 
-# --- Configuration ---
-# These can be overridden via environment variables
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# --- Configuration (overridable via environment) ---
 UCSC_CHAINS_DIR="${UCSC_CHAINS_DIR:-/mnt/sdb/cdiesh/chains}"
 UCSC_PIFS_DIR="${UCSC_PIFS_DIR:-/mnt/sdb/cdiesh/pifs}"
 
+source "$SCRIPT_DIR/../chainpif.sh"
+
 # --- Global Variables ---
-declare -g CHAINS_DIR PIFS_DIR CONFIG_DIR SOURCE ASSEMBLY OUTDIR LIFTOVER_BASE_URL
-
-# --- Logging Functions ---
-
-# Logs an info message with timestamp
-log_info() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: $*"
-}
-
-# Logs an error message and exits
-log_error() {
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] ERROR: $*" >&2
-  exit 1
-}
-
-# --- Utility Functions ---
+declare -g CONFIG_DIR SOURCE ASSEMBLY OUTDIR LIFTOVER_BASE_URL
 
 # Prints usage information and exits.
 usage() {
@@ -61,119 +49,12 @@ setup_config() {
     log_error "Invalid source '$SOURCE'. Must be 'liftOver' or 'vs'."
   fi
 
-  # Define directories
+  # CHAINS_DIR and PIFS_DIR are read by the chainpif.sh helpers.
   CHAINS_DIR="$UCSC_CHAINS_DIR"
   PIFS_DIR="$UCSC_PIFS_DIR"
   CONFIG_DIR="$OUTDIR/$ASSEMBLY"
 
-  # log_info "Setting up directories for $SOURCE processing of $ASSEMBLY"
   mkdir -p "$CHAINS_DIR" "$PIFS_DIR" "$CONFIG_DIR"
-}
-
-# Extracts file URLs from HTML directory listing
-# $1: URL to fetch
-# $2: grep pattern for files
-# Returns empty string (exit 0) if the URL is unreachable
-extract_file_urls() {
-  local url="$1"
-  local pattern="$2"
-  local raw
-  raw=$(wget -q -O - "$url" 2>/dev/null) || return 0
-  echo "$raw" | grep -oP 'href="\K[^"]+' | { grep "$pattern" || true; }
-}
-
-# Generates file paths for processing
-# $1: filename
-# $2: file extension to remove (e.g., ".chain.gz" or ".all.chain.gz")
-generate_file_paths() {
-  local filename="$1"
-  local ext_to_remove="$2"
-  local filename_no_ext
-  filename_no_ext="${filename%"$ext_to_remove"}"
-
-  echo "$CHAINS_DIR/$filename"             # chain_path
-  echo "$PIFS_DIR/$filename_no_ext.pif.gz" # pif_path
-}
-
-# Downloads a file if it doesn't already exist.
-# $1: URL
-# $2: Output path
-download_file() {
-  local url="$1"
-  local output_path="$2"
-  if [ ! -f "$output_path" ]; then
-    log_info "Downloading $(basename "$output_path")..."
-    # Use a temporary file to ensure atomic downloads
-    # shellcheck disable=SC2015
-    wget -q -O "$output_path.tmp" "$url" && mv "$output_path.tmp" "$output_path" || {
-      rm -f "$output_path.tmp"
-      log_error "Failed to download $url"
-    }
-  else
-    log_info "File $(basename "$output_path") already exists, skipping download"
-  fi
-}
-
-# Converts a chain file to a PIF file.
-# $1: Path to the chain file (.chain.gz)
-# $2: Path to the output PIF file (.pif.gz)
-create_pif() {
-  local chain_path="$1"
-  local pif_path="$2"
-  if [ ! -f "$pif_path" ] || [ ! -f "$pif_path.csi" ]; then
-    log_info "Creating PIF file for $(basename "$chain_path")..."
-    local paf_path
-    paf_path=$(mktemp) || log_error "Failed to create temporary file"
-
-    if ! pigz -dc "$chain_path" | chain2paf --input /dev/stdin >"$paf_path"; then
-      rm -f "$paf_path"
-      log_error "Failed to convert chain to PAF for $(basename "$chain_path")"
-    fi
-
-    if ! jbrowse make-pif "$paf_path" --csi --out "$pif_path"; then
-      rm -f "$paf_path"
-      log_error "Failed to create PIF for $(basename "$chain_path")"
-    fi
-
-    rm "$paf_path"
-  fi
-}
-
-# Copies PIF files to destination directory
-# $1: source PIF path
-# $2: destination directory
-copy_pif_files() {
-  local pif_path="$1"
-  local dest_dir="$2"
-  cp "$pif_path" "$dest_dir/" || log_error "Failed to copy $pif_path"
-  cp "$pif_path.csi" "$dest_dir/" || log_error "Failed to copy $pif_path.csi"
-}
-
-# Processes a single chain file through the complete pipeline
-# $1: file URL or path
-# $2: filename
-# $3: file extension to remove
-# $4: destination directory for PIF files
-process_chain_file() {
-  local file_url="$1"
-  local filename="$2"
-  local ext_to_remove="$3"
-  local dest_dir="$4"
-  local paths
-  readarray -t paths < <(generate_file_paths "$filename" "$ext_to_remove")
-  local chain_path="${paths[0]}"
-  local pif_path="${paths[1]}"
-  local pif_filename
-  pif_filename=$(basename "$pif_path")
-
-  if [[ -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]]; then
-    log_info "PIF file $pif_filename already exists, skipping"
-    return
-  fi
-
-  download_file "$file_url" "$chain_path"
-  create_pif "$chain_path" "$pif_path"
-  copy_pif_files "$pif_path" "$dest_dir"
 }
 
 # --- Source-specific Processing Functions ---
@@ -206,9 +87,7 @@ process_liftover() {
   fi
 
   echo "$urls" | while read -r url; do
-    local filename
-    filename=$(basename "$url")
-    process_chain_file "$url" "$filename" '.chain.gz' "$liftover_dir"
+    process_chain_file "$url" "$(basename "$url")" '.chain.gz' "$liftover_dir"
   done
   touch "$stamp"
 }
@@ -224,7 +103,6 @@ process_vs() {
   fi
 
   local base_url="https://hgdownload.soe.ucsc.edu/goldenPath/$ASSEMBLY"
-  # log_info "Processing vs chains for $ASSEMBLY from $base_url"
 
   # Get 'vs*' subdirectories
   local subdirs
@@ -238,7 +116,6 @@ process_vs() {
 
   echo "$subdirs" | while read -r subdir; do
     local subdir_url="$base_url/$subdir"
-    # log_info "Processing subdirectory: $subdir"
 
     # Get '*.all.chain.gz' files from the subdirectory
     local files
@@ -246,14 +123,11 @@ process_vs() {
 
     echo "$files" | while read -r file; do
       [[ -n "$file" ]] || continue
-      local file_url="$subdir_url/$file"
-      process_chain_file "$file_url" "$file" '.all.chain.gz' "$vs_dir"
+      process_chain_file "$subdir_url/$file" "$file" '.all.chain.gz' "$vs_dir"
     done
   done
   touch "$stamp"
 }
-
-# --- Main Processing Function ---
 
 # Main processing dispatcher
 process_chains() {
@@ -270,12 +144,9 @@ process_chains() {
   esac
 }
 
-# --- Main Script ---
-
 main() {
   setup_config "$@"
   process_chains
 }
 
-# Run main function with all arguments
 main "$@"

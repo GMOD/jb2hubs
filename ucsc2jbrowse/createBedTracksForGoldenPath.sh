@@ -34,19 +34,7 @@ process_assembly() {
 
       if [ -f "${infile}.sql" ]; then
         local hash_file="${outfile}.hash"
-        local current_stat
-        current_stat=$(stat -c "%s" "${infile}.txt.gz")
-
-        local need_processing=true
-        if [ -f "${outfile}.bed.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS:-}" ]; then
-          local stored_stat
-          stored_stat=$(cat "$hash_file")
-          if [ "$current_stat" = "$stored_stat" ]; then
-            need_processing=false
-          fi
-        fi
-
-        if [ "$need_processing" = true ]; then
+        if needs_rebuild "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"; then
           local result
           result=$(node src/bedLike.ts "${infile}.sql" 2>&1)
           local header
@@ -59,7 +47,7 @@ process_assembly() {
           fi
           ./sortIfNeeded.sh "${outfile}.tmp" | bgzip -@2 >"${outfile}.bed.gz"
           tabix -p bed -C "${outfile}.bed.gz"
-          echo "$current_stat" >"$hash_file"
+          save_rebuild_stamp "${infile}.txt.gz" "$hash_file"
           rm -f "${outfile}.tmp"
         fi
       fi

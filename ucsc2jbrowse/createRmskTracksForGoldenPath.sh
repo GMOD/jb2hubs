@@ -24,33 +24,18 @@ process_assembly() {
   mkdir -p "$assembly_results_dir"
 
   if [ -f "$assembly_results_dir/tracks.json" ]; then
-    local keys
-    keys=$(jq -r 'to_entries | .[] | select(.value.type | startswith("rmsk")) | .key' "$assembly_results_dir/tracks.json")
-
-    for key in $keys; do
+    jq -r 'to_entries | .[] | select(.value.type | startswith("rmsk")) | .key' "$assembly_results_dir/tracks.json" | while read -r key; do
       local infile="$db_dir/$key"
       local outfile="$assembly_results_dir/$key"
 
       if [ -f "${infile}.sql" ]; then
         local hash_file="${outfile}.hash"
-        local current_stat
-        current_stat=$(stat -c "%s" "${infile}.txt.gz")
-
-        local need_processing=true
-        if [ -f "${outfile}.bed.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS:-}" ]; then
-          local stored_stat
-          stored_stat=$(cat "$hash_file")
-          if [ "$current_stat" = "$stored_stat" ]; then
-            need_processing=false
-          fi
-        fi
-
-        if [ "$need_processing" = true ]; then
+        if needs_rebuild "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"; then
           node src/rmskLike.ts "${infile}.sql" "${infile}.txt.gz" >"${outfile}.tmp"
           ./sortIfNeeded.sh "${outfile}.tmp" | bgzip -@2 >"${outfile}.bed.gz"
           tabix -p bed -C "${outfile}.bed.gz"
           rm -f "${outfile}.tmp"
-          echo "$current_stat" >"$hash_file"
+          save_rebuild_stamp "${infile}.txt.gz" "$hash_file"
         fi
       fi
     done

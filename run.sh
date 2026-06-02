@@ -13,7 +13,7 @@
 #
 
 set -e
-export NODE_OPTIONS="--experimental-strip-types"
+export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"

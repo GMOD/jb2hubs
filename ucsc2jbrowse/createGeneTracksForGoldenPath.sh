@@ -35,19 +35,7 @@ process_gene_tracks() {
       mkdir -p "$(dirname "$outfile")"
 
       local hash_file="${outfile}.hash"
-      local current_stat
-      current_stat=$(stat -c "%s" "${infile}.txt.gz")
-
-      local need_processing=true
-      if [ -f "${outfile}.gff.gz" ] && [ -f "$hash_file" ] && [ -z "${REPROCESS:-}" ]; then
-        local stored_stat
-        stored_stat=$(cat "$hash_file")
-        if [ "$current_stat" = "$stored_stat" ]; then
-          need_processing=false
-        fi
-      fi
-
-      if [ "$need_processing" = true ]; then
+      if needs_rebuild "${outfile}.gff.gz" "${infile}.txt.gz" "$hash_file"; then
         echo "Processing ${key}: file changed or new"
         node src/geneLike.ts "${infile}.sql" "${infile}.txt.gz" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($2 >= $3) {temp=$2; $2=$3; $3=temp} print}' | sort -k1,1 -k2,2n >"${outfile}.bed"
         hck -f 13,4 "${outfile}.bed" >"${outfile}.isoforms.txt"
@@ -63,7 +51,7 @@ process_gene_tracks() {
 
         tabix -C "${outfile}.gff.gz"
 
-        echo "$current_stat" >"$hash_file"
+        save_rebuild_stamp "${infile}.txt.gz" "$hash_file"
       fi
     fi
   done

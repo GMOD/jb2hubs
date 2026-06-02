@@ -4,9 +4,11 @@
 # addMetadata.sh
 #
 # Adds metadata from trackDb.sql to the JBrowse config.json for each assembly.
+# Standalone tool to (re)run over a whole built directory; the main pipeline
+# does this inline in make.sh.
 #
 
-# set -euo pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
@@ -28,7 +30,9 @@ process_assembly() {
   local tracks_file="$assembly_dir/tracks.json"
 
   # Add metadata from the tracksDb.sql to the config.json
-  node src/addMetadata.ts "$config_file" "$tracks_file"
+  if [ -f "$config_file" ] && [ -f "$tracks_file" ]; then
+    node src/addMetadata.ts "$config_file" "$tracks_file"
+  fi
 }
 
 export -f process_assembly
@@ -42,4 +46,4 @@ if [ $# -ne 1 ]; then
 fi
 
 # Run the process_assembly function in parallel for each input directory.
-find "$1" -mindepth 1 -maxdepth 1 -type d ! -name "trix" | parallel $PARALLEL_OPTS --will-cite process_assembly {}
+find "$1" -mindepth 1 -maxdepth 1 -type d ! -name "trix" | parallel $PARALLEL_OPTS process_assembly {} || true
