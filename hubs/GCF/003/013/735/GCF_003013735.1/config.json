@@ -252,8 +252,8 @@
           "shortLabel": "RefSeq All",
           "type": "bigGenePred",
           "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_003013735.1_Cand_pseudohaemulonii_B12108.ncbiRefSeq.ix",
           "bigDataUrl": "bbi/GCF_003013735.1_Cand_pseudohaemulonii_B12108.ncbiRefSeq.bb",
@@ -285,8 +285,8 @@
           "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
           "type": "bigGenePred",
           "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_003013735.1_Cand_pseudohaemulonii_B12108.ncbiRefSeqPredicted.ix",
           "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -519,6 +519,34 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/013/735/GCF_003013735.1/bbi/GCF_003013735.1_Cand_pseudohaemulonii_B12108.xenoRefGene.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "VEuPathDBGeneModels",
+          "shortLabel": "VEuPathDB Genes",
+          "longLabel": "Gene Models mirrored from VEuPathDB",
+          "group": "genes",
+          "type": "bigBed 12 .",
+          "visibility": "pack",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "bigDataUrl": "contrib/VEuPathDB/veupathGenes.bb",
+          "colorByStrand": "0,0,122 157,60,32",
+          "dataVersion": "VEuPathDB release 68",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/003/013/735/GCF_003013735.1/contrib/VEuPathDB/VEuPathDB\">contrib/VEuPathDB/VEuPathDB</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_003013735.1-VEuPathDBGeneModels",
+      "description": "Gene Models mirrored from VEuPathDB",
+      "assemblyNames": ["GCF_003013735.1"],
+      "name": "VEuPathDB Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/013/735/GCF_003013735.1/contrib/VEuPathDB/veupathGenes.bb"
       }
     },
     {

@@ -22,6 +22,7 @@ blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/003/025/GCF_000003025.6
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/003/025/GCF_000003025.6
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/003/025/GCF_000003025.6
 liftOver.GCF_002263795.3 liftOver/GCF_000003025.6ToGCF_002263795.3.over.chain.gz
+liftOver.GCF_964237555.1 liftOver/GCF_000003025.6ToGCF_964237555.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -302,111 +303,250 @@ baseColorDefault genomicCodons
 labelSeparator " "
 html html/GCF_000003025.6_Sscrofa11.1.ensGene
 
-##############################################################################
-# GCF_002263795.3 - pig - Sus scrofa - taxId: 9823
-##############################################################################
-track chainNetGCF_002263795.3
+track GCF_000003025.6_Sscrofa11.1ChainNet
 compositeTrack on
-shortLabel pig Chain/Net
-longLabel pig (2017-02-07), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_000003025.6_Sscrofa11.1
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_002263795.3 s001=GCF_964237555.1
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-otherDb GCF_002263795.3
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_000003025.6_Sscrofa11.1.chainNet
 
-    track chainNetGCF_002263795.3Viewchain
-    shortLabel Chain
+    track GCF_000003025.6_Sscrofa11.1ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetGCF_002263795.3
+    visibility dense
+    parent GCF_000003025.6_Sscrofa11.1ChainNet
     spectrum on
 
         track chainGCF_002263795.3
-        parent chainNetGCF_002263795.3Viewchain
-        subGroups view=chain
-        shortLabel pig Chain
-        longLabel pig (2017-02-07) Chained Alignments
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel cattle Chain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigChain GCF_002263795.3
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainGCF_002263795.3.bb
         linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainGCF_002263795.3Link.bb
-        priority 1
+        otherDb GCF_002263795.3
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
+
+        track chainGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel rabbit Chain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+    track GCF_000003025.6_Sscrofa11.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_000003025.6_Sscrofa11.1ChainNet
+    spectrum on
 
         track chainSynGCF_002263795.3
-        parent chainNetGCF_002263795.3Viewchain
-        subGroups view=chain
-        shortLabel pig synChain
-        longLabel pig (2017-02-07) Syntenic Chained Alignments
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel cattle synChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigChain GCF_002263795.3
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainSynGCF_002263795.3.bb
         linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainSynGCF_002263795.3Link.bb
-        priority 2
+        otherDb GCF_002263795.3
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
+
+        track chainSynGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel rabbit synChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainSynGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainSynGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+    track GCF_000003025.6_Sscrofa11.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_000003025.6_Sscrofa11.1ChainNet
+    spectrum on
 
         track chainRBestGCF_002263795.3
-        parent chainNetGCF_002263795.3Viewchain
-        subGroups view=chain
-        shortLabel pig rbChain
-        longLabel pig (2017-02-07) Reciprocal Best Chained Alignments
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel cattle rbChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigChain GCF_002263795.3
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainRBestGCF_002263795.3.bb
         linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainRBestGCF_002263795.3Link.bb
-        priority 3
+        otherDb GCF_002263795.3
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
+
+        track chainRBestGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel rabbit rbChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainRBestGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainRBestGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+    track GCF_000003025.6_Sscrofa11.1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000003025.6_Sscrofa11.1ChainNet
+    spectrum on
 
         track chainLiftOverGCF_002263795.3
-        parent chainNetGCF_002263795.3Viewchain
-        subGroups view=chain
-        shortLabel pig loChain
-        longLabel pig (2017-02-07) Lift Over Chained Alignments
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel cattle loChain
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigChain GCF_002263795.3
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainLiftOverGCF_002263795.3.bb
         linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainLiftOverGCF_002263795.3Link.bb
-        priority 4
+        otherDb GCF_002263795.3
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
 
-    track mafNetGCF_002263795.3Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetGCF_002263795.3
+        track chainLiftOverGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel rabbit loChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainLiftOverGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000003025.6_Sscrofa11.1.chainLiftOverGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+    track GCF_000003025.6_Sscrofa11.1MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_000003025.6_Sscrofa11.1ChainNet
 
         track netGCF_002263795.3
-        parent mafNetGCF_002263795.3Viewnet
-        subGroups view=net
-        shortLabel pig net
-        longLabel pig (2017-02-07) Net Alignment
+        parent GCF_000003025.6_Sscrofa11.1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel cattle mafNet
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.GCF_002263795.3.net.bb
         summary bbi/GCF_000003025.6_Sscrofa11.1.GCF_002263795.3.net.summary.bb
         speciesOrder GCF_002263795.3
-        priority 5
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
 
         track synNetGCF_002263795.3
-        parent mafNetGCF_002263795.3Viewnet
-        subGroups view=net
-        shortLabel pig synNet
-        longLabel pig (2017-02-07) Syntenic Net Alignment
+        parent GCF_000003025.6_Sscrofa11.1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel cattle synNet
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.GCF_002263795.3.synNet.bb
         summary bbi/GCF_000003025.6_Sscrofa11.1.GCF_002263795.3.synNet.summary.bb
         speciesOrder GCF_002263795.3
-        priority 6
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
 
         track rbestNetGCF_002263795.3
-        parent mafNetGCF_002263795.3Viewnet
-        subGroups view=net
-        shortLabel pig rbestNet
-        longLabel pig (2017-02-07) Reciprocal Best Net Alignment
+        parent GCF_000003025.6_Sscrofa11.1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel cattle rbestNet
+        longLabel cattle/GCF_002263795.3_ARS-UCD2.0 (2023-07-01) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.GCF_002263795.3.rbestNet.bb
         summary bbi/GCF_000003025.6_Sscrofa11.1.GCF_002263795.3.rbestNet.summary.bb
         speciesOrder GCF_002263795.3
-        priority 7
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 38.548
 
+        track netGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel rabbit mafNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.GCF_964237555.1.net.bb
+        summary bbi/GCF_000003025.6_Sscrofa11.1.GCF_964237555.1.net.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+        track synNetGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel rabbit synNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.GCF_964237555.1.synNet.bb
+        summary bbi/GCF_000003025.6_Sscrofa11.1.GCF_964237555.1.synNet.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+        track rbestNetGCF_964237555.1
+        parent GCF_000003025.6_Sscrofa11.1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel rabbit rbestNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000003025.6_Sscrofa11.1.GCF_964237555.1.rbestNet.bb
+        summary bbi/GCF_000003025.6_Sscrofa11.1.GCF_964237555.1.rbestNet.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_000003025.6_Sscrofa11.1.chainNet
+        priority 57.560
+
+
+track evaSnp8
+shortLabel EVA SNP Release 8
+longLabel Short Genetic Variants from European Variant Archive Release 8
+type bigBed 9 +
+visibility dense
+group varRep
+itemRgb on
+bigDataUrl contrib/evaSnp8/evaSnp8.bb
+url https://www.ebi.ac.uk/eva/?variant&accessionID=$$
+searchIndex name
+mouseOver <b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange
+filterValues.varClass SNV|SNV,deletion|Deletion,indel|Indel,insertion|Insertion,MNV|MNV,sequence_alteration|Sequence alteration
+filterLabel.varClass Variant class from EVA SO term
+filterLabel.ucscClass Functional effect per UCSC Variant Annotation
+filterValues.ucscClass downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant
+filterType.ucscClass multipleListOnlyOr
+filterValues.itemRgb 255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants
+filterLabel.itemRgb General variant types by color grouping
+maxWindowCoverage 250000
+maxItems 1000000
+html contrib/evaSnp8/description
 
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb

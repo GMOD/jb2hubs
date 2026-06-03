@@ -20,6 +20,7 @@ htmlPath html/GCF_023055335.1_fCliAna1.0.p.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/023/055/335/GCF_023055335.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/023/055/335/GCF_023055335.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/023/055/335/GCF_023055335.1
+liftOver.GCA_023055415.1 liftOver/GCF_023055335.1ToGCA_023055415.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -134,8 +135,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_023055335.1_fCliAna1.0.p.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_023055335.1_fCliAna1.0.p.ncbiRefSeq.bb
@@ -152,8 +153,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_023055335.1_fCliAna1.0.p.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -264,4 +265,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_023055335.1_fCliAna1.0.p.xenoRefGene.ix
 html html/GCF_023055335.1_fCliAna1.0.p.xenoRefGene
+
+##############################################################################
+# GCA_023055415.1 - woolly sculpin - Clinocottus analis - taxId: 304258
+##############################################################################
+track chainNetGCA_023055415.1
+compositeTrack on
+shortLabel woolly sculpin Chain/Net
+longLabel woolly sculpin (2022-04-19), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_023055415.1
+html html/GCF_023055335.1_fCliAna1.0.p.chainNet
+
+    track chainNetGCA_023055415.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_023055415.1
+    spectrum on
+
+        track chainGCA_023055415.1
+        parent chainNetGCA_023055415.1Viewchain
+        subGroups view=chain
+        shortLabel woolly sculpin Chain
+        longLabel woolly sculpin (2022-04-19) Chained Alignments
+        type bigChain GCA_023055415.1
+        bigDataUrl bbi/GCF_023055335.1_fCliAna1.0.p.chainGCA_023055415.1.bb
+        linkDataUrl bbi/GCF_023055335.1_fCliAna1.0.p.chainGCA_023055415.1Link.bb
+        priority 1
+
+        track chainLiftOverGCA_023055415.1
+        parent chainNetGCA_023055415.1Viewchain
+        subGroups view=chain
+        shortLabel woolly sculpin loChain
+        longLabel woolly sculpin (2022-04-19) Lift Over Chained Alignments
+        type bigChain GCA_023055415.1
+        bigDataUrl bbi/GCF_023055335.1_fCliAna1.0.p.chainLiftOverGCA_023055415.1.bb
+        linkDataUrl bbi/GCF_023055335.1_fCliAna1.0.p.chainLiftOverGCA_023055415.1Link.bb
+        priority 2
 

@@ -21,6 +21,7 @@ htmlPath html/GCF_028023285.1_mBalRic1.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/023/285/GCF_028023285.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/023/285/GCF_028023285.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/023/285/GCF_028023285.1
+liftOver.GCA_028017805.1 liftOver/GCF_028023285.1ToGCA_028017805.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -266,6 +267,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_028023285.1_mBalRic1.hap2.xenoRefGene.ix
 html html/GCF_028023285.1_mBalRic1.hap2.xenoRefGene
+
+##############################################################################
+# GCA_028017805.1 - Rice's whale - Balaenoptera ricei - taxId: 2746895
+##############################################################################
+track chainNetGCA_028017805.1
+compositeTrack on
+shortLabel Rice's whale Chain/Net
+longLabel Rice's whale (2023-01-30), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_028017805.1
+html html/GCF_028023285.1_mBalRic1.hap2.chainNet
+
+    track chainNetGCA_028017805.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_028017805.1
+    spectrum on
+
+        track chainGCA_028017805.1
+        parent chainNetGCA_028017805.1Viewchain
+        subGroups view=chain
+        shortLabel Rice's whale Chain
+        longLabel Rice's whale (2023-01-30) Chained Alignments
+        type bigChain GCA_028017805.1
+        bigDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainGCA_028017805.1.bb
+        linkDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainGCA_028017805.1Link.bb
+        priority 1
+
+        track chainLiftOverGCA_028017805.1
+        parent chainNetGCA_028017805.1Viewchain
+        subGroups view=chain
+        shortLabel Rice's whale loChain
+        longLabel Rice's whale (2023-01-30) Lift Over Chained Alignments
+        type bigChain GCA_028017805.1
+        bigDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainLiftOverGCA_028017805.1.bb
+        linkDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainLiftOverGCA_028017805.1Link.bb
+        priority 2
 
 
 track Tiberius

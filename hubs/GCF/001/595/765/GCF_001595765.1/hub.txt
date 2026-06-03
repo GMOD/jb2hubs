@@ -20,6 +20,7 @@ htmlPath html/GCF_001595765.1_Mnat.v1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/595/765/GCF_001595765.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/595/765/GCF_001595765.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/001/595/765/GCF_001595765.1
+liftOver.GCF_014108245.1 liftOver/GCF_001595765.1ToGCF_014108245.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -253,6 +254,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_001595765.1_Mnat.v1.xenoRefGene.ix
 html html/GCF_001595765.1_Mnat.v1.xenoRefGene
+
+##############################################################################
+# GCF_014108245.1 - bats - Miniopterus natalensis - taxId: 291302
+##############################################################################
+track chainNetGCF_014108245.1
+compositeTrack on
+shortLabel bats Chain/Net
+longLabel bats (2016-03-22), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_014108245.1
+html html/GCF_001595765.1_Mnat.v1.chainNet
+
+    track chainNetGCF_014108245.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_014108245.1
+    spectrum on
+
+        track chainGCF_014108245.1
+        parent chainNetGCF_014108245.1Viewchain
+        subGroups view=chain
+        shortLabel bats Chain
+        longLabel bats (2016-03-22) Chained Alignments
+        type bigChain GCF_014108245.1
+        bigDataUrl bbi/GCF_001595765.1_Mnat.v1.chainGCF_014108245.1.bb
+        linkDataUrl bbi/GCF_001595765.1_Mnat.v1.chainGCF_014108245.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_014108245.1
+        parent chainNetGCF_014108245.1Viewchain
+        subGroups view=chain
+        shortLabel bats loChain
+        longLabel bats (2016-03-22) Lift Over Chained Alignments
+        type bigChain GCF_014108245.1
+        bigDataUrl bbi/GCF_001595765.1_Mnat.v1.chainLiftOverGCF_014108245.1.bb
+        linkDataUrl bbi/GCF_001595765.1_Mnat.v1.chainLiftOverGCF_014108245.1Link.bb
+        priority 2
 
 track HLTOGAannotvHg38v1
 bigDataUrl bbi/HLTOGAannotVsHg38v1.bb

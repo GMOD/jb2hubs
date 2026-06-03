@@ -24,7 +24,7 @@ isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/001/417/965/GCA_001417965.1
 track assembly
 longLabel Assembly
 shortLabel Assembly
-visibility pack
+visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
@@ -49,7 +49,7 @@ track gc5Base
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
-visibility full
+visibility dense
 autoScale Off
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
@@ -122,9 +122,9 @@ priority 2
         color 12,12,120
         shortLabel RefSeq All
         type bigGenePred
-        urls geneName="https://www.ncbi.nlm.nih.gov/nuccore/$$?report=genbank" geneName2="https://www.ncbi.nlm.nih.gov/datasets/gene/$D/?search=$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCA_001417965.1_Aiptasia_genome_1.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCA_001417965.1_Aiptasia_genome_1.1.ncbiRefSeq.bb
@@ -140,9 +140,9 @@ priority 2
         shortLabel RefSeq Predicted
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
-        urls geneName="https://www.ncbi.nlm.nih.gov/nuccore/$$?report=genbank" geneName2="https://www.ncbi.nlm.nih.gov/datasets/gene/$D/?search=$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCA_001417965.1_Aiptasia_genome_1.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -190,7 +190,7 @@ compositeTrack on
 shortLabel CpG Islands
 longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
-visibility pack
+visibility dense
 type bigBed 4 +
 html html/GCA_001417965.1_Aiptasia_genome_1.1.cpgIslands
 
@@ -223,7 +223,7 @@ track allGaps
 shortLabel All Gaps
 longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
-visibility dense
+visibility hide
 type bigBed 3
 bigDataUrl bbi/GCA_001417965.1_Aiptasia_genome_1.1.allGaps.bb
 html html/GCA_001417965.1_Aiptasia_genome_1.1.allGaps

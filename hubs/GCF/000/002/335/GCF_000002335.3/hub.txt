@@ -21,6 +21,8 @@ htmlPath html/GCF_000002335.3_Tcas5.2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/002/335/GCF_000002335.3
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/002/335/GCF_000002335.3
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/002/335/GCF_000002335.3
+liftOver.GCF_000001215.4 liftOver/GCF_000002335.3ToGCF_000001215.4.over.chain.gz
+liftOver.GCF_020466585.1 liftOver/GCF_000002335.3ToGCF_020466585.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -134,8 +136,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002335.3_Tcas5.2.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeq.bb
@@ -152,8 +154,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002335.3_Tcas5.2.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -169,8 +171,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002335.3_Tcas5.2.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -281,4 +283,92 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_000002335.3_Tcas5.2.xenoRefGene.ix
 html html/GCF_000002335.3_Tcas5.2.xenoRefGene
+
+track GCF_000002335.3_Tcas5.2ChainNet
+compositeTrack on
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_000002335.3_Tcas5.2
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_020466585.1 s001=GCF_000001215.4
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
+dragAndDrop subTracks
+visibility hide
+group compGeno
+color 0,0,0
+altColor 255,255,0
+type bed 3
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
+html html/GCF_000002335.3_Tcas5.2.chainNet
+
+    track GCF_000002335.3_Tcas5.2ChainNetViewchain
+    shortLabel Chains
+    view chain
+    visibility dense
+    parent GCF_000002335.3_Tcas5.2ChainNet
+    spectrum on
+
+        track chainGCF_020466585.1
+        parent GCF_000002335.3_Tcas5.2ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel GCF_020466585.1 Chain
+        longLabel GCF_020466585.1/GCF_020466585.1_Dpon_F_20191213v2 (2021-10-13) Chained Alignments
+        type bigChain GCF_020466585.1
+        bigDataUrl bbi/GCF_000002335.3_Tcas5.2.chainGCF_020466585.1.bb
+        linkDataUrl bbi/GCF_000002335.3_Tcas5.2.chainGCF_020466585.1Link.bb
+        otherDb GCF_020466585.1
+        html html/GCF_000002335.3_Tcas5.2.chainNet
+        priority 90.723
+
+        track chainGCF_000001215.4
+        parent GCF_000002335.3_Tcas5.2ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel GCF_000001215.4 Chain
+        longLabel GCF_000001215.4/GCF_000001215.4_Release_6_plus_ISO1_MT (2014-08-01) Chained Alignments
+        type bigChain GCF_000001215.4
+        bigDataUrl bbi/GCF_000002335.3_Tcas5.2.chainGCF_000001215.4.bb
+        linkDataUrl bbi/GCF_000002335.3_Tcas5.2.chainGCF_000001215.4Link.bb
+        otherDb GCF_000001215.4
+        html html/GCF_000002335.3_Tcas5.2.chainNet
+        priority 95.211
+
+    track GCF_000002335.3_Tcas5.2ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000002335.3_Tcas5.2ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_020466585.1
+        parent GCF_000002335.3_Tcas5.2ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCF_020466585.1 loChain
+        longLabel GCF_020466585.1/GCF_020466585.1_Dpon_F_20191213v2 (2021-10-13) Chained Alignments
+        type bigChain GCF_020466585.1
+        bigDataUrl bbi/GCF_000002335.3_Tcas5.2.chainLiftOverGCF_020466585.1.bb
+        linkDataUrl bbi/GCF_000002335.3_Tcas5.2.chainLiftOverGCF_020466585.1Link.bb
+        otherDb GCF_020466585.1
+        html html/GCF_000002335.3_Tcas5.2.chainNet
+        priority 90.723
+
+        track chainLiftOverGCF_000001215.4
+        parent GCF_000002335.3_Tcas5.2ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel GCF_000001215.4 loChain
+        longLabel GCF_000001215.4/GCF_000001215.4_Release_6_plus_ISO1_MT (2014-08-01) Chained Alignments
+        type bigChain GCF_000001215.4
+        bigDataUrl bbi/GCF_000002335.3_Tcas5.2.chainLiftOverGCF_000001215.4.bb
+        linkDataUrl bbi/GCF_000002335.3_Tcas5.2.chainLiftOverGCF_000001215.4Link.bb
+        otherDb GCF_000001215.4
+        html html/GCF_000002335.3_Tcas5.2.chainNet
+        priority 95.211
+
+    track GCF_000002335.3_Tcas5.2MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_000002335.3_Tcas5.2ChainNet
 

@@ -21,6 +21,8 @@ htmlPath html/GCF_000002315.6_GRCg6a.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/002/315/GCF_000002315.6
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/002/315/GCF_000002315.6
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/002/315/GCF_000002315.6
+liftOver.GCF_004027225.2 liftOver/GCF_000002315.6ToGCF_004027225.2.over.chain.gz
+liftOver.GCF_964237555.1 liftOver/GCF_000002315.6ToGCF_964237555.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -294,3 +296,247 @@ baseColorDefault genomicCodons
 labelSeparator " "
 html html/GCF_000002315.6_GRCg6a.ensGene
 
+track GCF_000002315.6_GRCg6aChainNet
+compositeTrack on
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_000002315.6_GRCg6a
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_004027225.2 s001=GCF_964237555.1
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
+dragAndDrop subTracks
+visibility hide
+group compGeno
+color 0,0,0
+altColor 255,255,0
+type bed 3
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
+html html/GCF_000002315.6_GRCg6a.chainNet
+
+    track GCF_000002315.6_GRCg6aChainNetViewchain
+    shortLabel Chains
+    view chain
+    visibility dense
+    parent GCF_000002315.6_GRCg6aChainNet
+    spectrum on
+
+        track chainGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel kakapo Chain
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigChain GCF_004027225.2
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainGCF_004027225.2.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainGCF_004027225.2Link.bb
+        otherDb GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track chainGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel rabbit Chain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+    track GCF_000002315.6_GRCg6aChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_000002315.6_GRCg6aChainNet
+    spectrum on
+
+        track chainSynGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel kakapo synChain
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigChain GCF_004027225.2
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainSynGCF_004027225.2.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainSynGCF_004027225.2Link.bb
+        otherDb GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track chainSynGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel rabbit synChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainSynGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainSynGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+    track GCF_000002315.6_GRCg6aChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_000002315.6_GRCg6aChainNet
+    spectrum on
+
+        track chainRBestGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel kakapo rbChain
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigChain GCF_004027225.2
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainRBestGCF_004027225.2.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainRBestGCF_004027225.2Link.bb
+        otherDb GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track chainRBestGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel rabbit rbChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainRBestGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainRBestGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+    track GCF_000002315.6_GRCg6aChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000002315.6_GRCg6aChainNet
+    spectrum on
+
+        track chainLiftOverGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel kakapo loChain
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigChain GCF_004027225.2
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainLiftOverGCF_004027225.2.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainLiftOverGCF_004027225.2Link.bb
+        otherDb GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track chainLiftOverGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel rabbit loChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.chainLiftOverGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_000002315.6_GRCg6a.chainLiftOverGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+    track GCF_000002315.6_GRCg6aMafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_000002315.6_GRCg6aChainNet
+
+        track netGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aMafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel kakapo mafNet
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.GCF_004027225.2.net.bb
+        summary bbi/GCF_000002315.6_GRCg6a.GCF_004027225.2.net.summary.bb
+        speciesOrder GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track synNetGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aMafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel kakapo synNet
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.GCF_004027225.2.synNet.bb
+        summary bbi/GCF_000002315.6_GRCg6a.GCF_004027225.2.synNet.summary.bb
+        speciesOrder GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track rbestNetGCF_004027225.2
+        parent GCF_000002315.6_GRCg6aMafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel kakapo rbestNet
+        longLabel kakapo/GCF_004027225.2_bStrHab1.2.pri (2020-03-04) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.GCF_004027225.2.rbestNet.bb
+        summary bbi/GCF_000002315.6_GRCg6a.GCF_004027225.2.rbestNet.summary.bb
+        speciesOrder GCF_004027225.2
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 23.401
+
+        track netGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aMafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel rabbit mafNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.GCF_964237555.1.net.bb
+        summary bbi/GCF_000002315.6_GRCg6a.GCF_964237555.1.net.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+        track synNetGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aMafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel rabbit synNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.GCF_964237555.1.synNet.bb
+        summary bbi/GCF_000002315.6_GRCg6a.GCF_964237555.1.synNet.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+        track rbestNetGCF_964237555.1
+        parent GCF_000002315.6_GRCg6aMafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel rabbit rbestNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_000002315.6_GRCg6a.GCF_964237555.1.rbestNet.bb
+        summary bbi/GCF_000002315.6_GRCg6a.GCF_964237555.1.rbestNet.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_000002315.6_GRCg6a.chainNet
+        priority 94.034
+
+
+track evaSnp8
+shortLabel EVA SNP Release 8
+longLabel Short Genetic Variants from European Variant Archive Release 8
+type bigBed 9 +
+visibility dense
+group varRep
+itemRgb on
+bigDataUrl contrib/evaSnp8/evaSnp8.bb
+url https://www.ebi.ac.uk/eva/?variant&accessionID=$$
+searchIndex name
+mouseOver <b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange
+filterValues.varClass SNV|SNV,deletion|Deletion,indel|Indel,insertion|Insertion,MNV|MNV,sequence_alteration|Sequence alteration
+filterLabel.varClass Variant class from EVA SO term
+filterLabel.ucscClass Functional effect per UCSC Variant Annotation
+filterValues.ucscClass downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant
+filterType.ucscClass multipleListOnlyOr
+filterValues.itemRgb 255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants
+filterLabel.itemRgb General variant types by color grouping
+maxWindowCoverage 250000
+maxItems 1000000
+html contrib/evaSnp8/description

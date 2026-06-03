@@ -21,6 +21,7 @@ htmlPath html/GCF_900634795.4_fBetSpl5.4.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/900/634/795/GCF_900634795.4
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/900/634/795/GCF_900634795.4
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/900/634/795/GCF_900634795.4
+liftOver.GCA_900651605.2 liftOver/GCF_900634795.4ToGCA_900651605.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -136,8 +137,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_900634795.4_fBetSpl5.4.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_900634795.4_fBetSpl5.4.ncbiRefSeq.bb
@@ -154,8 +155,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_900634795.4_fBetSpl5.4.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -171,8 +172,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_900634795.4_fBetSpl5.4.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -283,4 +284,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_900634795.4_fBetSpl5.4.xenoRefGene.ix
 html html/GCF_900634795.4_fBetSpl5.4.xenoRefGene
+
+##############################################################################
+# GCA_900651605.2 - Siamese fighting fish - Betta splendens - taxId: 158456
+##############################################################################
+track chainNetGCA_900651605.2
+compositeTrack on
+shortLabel Siamese fighting fish Chain/Net
+longLabel Siamese fighting fish (2023-04-08), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_900651605.2
+html html/GCF_900634795.4_fBetSpl5.4.chainNet
+
+    track chainNetGCA_900651605.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_900651605.2
+    spectrum on
+
+        track chainGCA_900651605.2
+        parent chainNetGCA_900651605.2Viewchain
+        subGroups view=chain
+        shortLabel Siamese fighting fish Chain
+        longLabel Siamese fighting fish (2023-04-08) Chained Alignments
+        type bigChain GCA_900651605.2
+        bigDataUrl bbi/GCF_900634795.4_fBetSpl5.4.chainGCA_900651605.2.bb
+        linkDataUrl bbi/GCF_900634795.4_fBetSpl5.4.chainGCA_900651605.2Link.bb
+        priority 1
+
+        track chainLiftOverGCA_900651605.2
+        parent chainNetGCA_900651605.2Viewchain
+        subGroups view=chain
+        shortLabel Siamese fighting fish loChain
+        longLabel Siamese fighting fish (2023-04-08) Lift Over Chained Alignments
+        type bigChain GCA_900651605.2
+        bigDataUrl bbi/GCF_900634795.4_fBetSpl5.4.chainLiftOverGCA_900651605.2.bb
+        linkDataUrl bbi/GCF_900634795.4_fBetSpl5.4.chainLiftOverGCA_900651605.2Link.bb
+        priority 2
 

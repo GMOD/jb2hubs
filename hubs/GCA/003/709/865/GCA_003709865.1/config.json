@@ -226,18 +226,18 @@
       "metadata": {
         "ucsc": {
           "track": "ncbiGene",
-          "longLabel": "Gene models submitted to NCBI",
-          "shortLabel": "Gene models",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
           "visibility": "pack",
           "color": "0,80,150",
           "altColor": "150,80,0",
           "colorByStrand": "0,80,150 150,80,0",
           "bigDataUrl": "bbi/GCA_003709865.1_ASM370986v1.ncbiGene.bb",
           "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/709/865/GCA_003709865.1/html/GCA_003709865.1_ASM370986v1.ncbiGene\">html/GCA_003709865.1_ASM370986v1.ncbiGene</a>",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCA_003709865.1_ASM370986v1.ncbiGene.ix",
-          "url": "https://www.ncbi.nlm.nih.gov/gene/?term=$$",
           "urlLabel": "Entrez gene:",
           "labelFields": "geneName,geneName2",
           "defaultLabelFields": "geneName2",
@@ -246,9 +246,9 @@
       },
       "category": ["Genes and Gene Predictions"],
       "trackId": "GCA_003709865.1-ncbiGene",
-      "description": "Gene models submitted to NCBI",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
       "assemblyNames": ["GCA_003709865.1"],
-      "name": "Gene models",
+      "name": "NCBI GenBank",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
@@ -403,6 +403,34 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/709/865/GCA_003709865.1/bbi/GCA_003709865.1_ASM370986v1.xenoRefGene.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "VEuPathDBGeneModels",
+          "shortLabel": "VEuPathDB Genes",
+          "longLabel": "Gene Models mirrored from VEuPathDB",
+          "group": "genes",
+          "type": "bigBed 12 .",
+          "visibility": "pack",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "bigDataUrl": "contrib/VEuPathDB/veupathGenes.bb",
+          "colorByStrand": "0,0,122 157,60,32",
+          "dataVersion": "VEuPathDB release 68",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/003/709/865/GCA_003709865.1/contrib/VEuPathDB/VEuPathDB\">contrib/VEuPathDB/VEuPathDB</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_003709865.1-VEuPathDBGeneModels",
+      "description": "Gene Models mirrored from VEuPathDB",
+      "assemblyNames": ["GCA_003709865.1"],
+      "name": "VEuPathDB Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/709/865/GCA_003709865.1/contrib/VEuPathDB/veupathGenes.bb"
       }
     }
   ],

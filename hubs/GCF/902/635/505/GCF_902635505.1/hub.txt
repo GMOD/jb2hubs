@@ -21,6 +21,7 @@ htmlPath html/GCF_902635505.1_mSarHar1.11.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/635/505/GCF_902635505.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/635/505/GCF_902635505.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/635/505/GCF_902635505.1
+liftOver.GCF_001704415.2 liftOver/GCF_902635505.1ToGCF_001704415.2.over.chain.gz
 liftOver.rn7 liftOver/GCF_902635505.1ToRn7.over.chain.gz
 
 track assembly
@@ -284,112 +285,225 @@ searchIndex name
 searchTrix ixIxx/GCF_902635505.1_mSarHar1.11.xenoRefGene.ix
 html html/GCF_902635505.1_mSarHar1.11.xenoRefGene
 
-##############################################################################
-# rn7 - Rat - Rattus norvegicus - taxId: 10116
-##############################################################################
-track chainNetRn7
+track GCF_902635505.1_mSarHar1.11ChainNet
 compositeTrack on
-shortLabel Rat Chain/Net
-longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_902635505.1_mSarHar1.11
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_001704415.2 s001=rn7
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
-chainMinScore 3000
-chainLinearGap medium
-matrixHeader A, C, G, T
-otherDb rn7
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_902635505.1_mSarHar1.11.chainNet
 
-    track chainNetRn7Viewchain
-    shortLabel Chain
+    track GCF_902635505.1_mSarHar1.11ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetRn7
+    visibility dense
+    parent GCF_902635505.1_mSarHar1.11ChainNet
     spectrum on
 
+        track chainGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel goat Chain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
+
         track chainRn7
-        parent chainNetRn7Viewchain
-        subGroups view=chain
-        shortLabel Rat Chain
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Chained Alignments
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel Rat/rn7 Chain
+        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainRn7.bb
         linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainRn7Link.bb
-        priority 1
+        otherDb rn7
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
+
+    track GCF_902635505.1_mSarHar1.11ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_902635505.1_mSarHar1.11ChainNet
+    spectrum on
+
+        track chainSynGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel goat synChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainSynGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainSynGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
 
         track chainSynRn7
-        parent chainNetRn7Viewchain
-        subGroups view=chain
-        shortLabel Rat synChain
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Syntenic Chained Alignments
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Rat/rn7 synChain
+        longLabel Rat/rn7/rn7_ARS1.2 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainSynRn7.bb
         linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainSynRn7Link.bb
-        priority 2
+        otherDb rn7
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
+
+    track GCF_902635505.1_mSarHar1.11ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_902635505.1_mSarHar1.11ChainNet
+    spectrum on
+
+        track chainRBestGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel goat rbChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainRBestGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainRBestGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
 
         track chainRBestRn7
-        parent chainNetRn7Viewchain
-        subGroups view=chain
-        shortLabel Rat rbChain
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Reciprocal Best Chained Alignments
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Rat/rn7 rbChain
+        longLabel Rat/rn7/rn7_ARS1.2 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainRBestRn7.bb
         linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainRBestRn7Link.bb
-        priority 3
+        otherDb rn7
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
+
+    track GCF_902635505.1_mSarHar1.11ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_902635505.1_mSarHar1.11ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel goat loChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
 
         track chainLiftOverRn7
-        parent chainNetRn7Viewchain
-        subGroups view=chain
-        shortLabel Rat loChain
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Lift Over Chained Alignments
+        parent GCF_902635505.1_mSarHar1.11ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel Rat/rn7 loChain
+        longLabel Rat/rn7/rn7_ARS1.2 (Nov. 2020) Chained Alignments
         type bigChain rn7
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainLiftOverRn7.bb
         linkDataUrl bbi/GCF_902635505.1_mSarHar1.11.chainLiftOverRn7Link.bb
-        priority 4
+        otherDb rn7
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
 
-    track mafNetRn7Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetRn7
+    track GCF_902635505.1_mSarHar1.11MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_902635505.1_mSarHar1.11ChainNet
+
+        track netGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11MafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel goat mafNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.GCF_001704415.2.net.bb
+        summary bbi/GCF_902635505.1_mSarHar1.11.GCF_001704415.2.net.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
+
+        track synNetGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel goat synNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.GCF_001704415.2.synNet.bb
+        summary bbi/GCF_902635505.1_mSarHar1.11.GCF_001704415.2.synNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
+
+        track rbestNetGCF_001704415.2
+        parent GCF_902635505.1_mSarHar1.11MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel goat rbestNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.GCF_001704415.2.rbestNet.bb
+        summary bbi/GCF_902635505.1_mSarHar1.11.GCF_001704415.2.rbestNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 93.744
 
         track netRn7
-        parent mafNetRn7Viewnet
-        subGroups view=net
-        shortLabel Rat net
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Net Alignment
+        parent GCF_902635505.1_mSarHar1.11MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel Rat/rn7 mafNet
+        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.rn7.net.bb
         summary bbi/GCF_902635505.1_mSarHar1.11.rn7.net.summary.bb
         speciesOrder rn7
-        priority 5
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
 
         track synNetRn7
-        parent mafNetRn7Viewnet
-        subGroups view=net
-        shortLabel Rat synNet
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Syntenic Net Alignment
+        parent GCF_902635505.1_mSarHar1.11MafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel Rat/rn7 synNet
+        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.rn7.synNet.bb
         summary bbi/GCF_902635505.1_mSarHar1.11.rn7.synNet.summary.bb
         speciesOrder rn7
-        priority 6
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
 
         track rbestNetRn7
-        parent mafNetRn7Viewnet
-        subGroups view=net
-        shortLabel Rat rbestNet
-        longLabel Rat (Nov. 2020 (mRatBN7.2/rn7)) Reciprocal Best Net Alignment
+        parent GCF_902635505.1_mSarHar1.11MafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel Rat/rn7 rbestNet
+        longLabel Rat/rn7/rn7 (Nov. 2020) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_902635505.1_mSarHar1.11.rn7.rbestNet.bb
         summary bbi/GCF_902635505.1_mSarHar1.11.rn7.rbestNet.summary.bb
         speciesOrder rn7
-        priority 7
+        html html/GCF_902635505.1_mSarHar1.11.chainNet
+        priority 95.390
 

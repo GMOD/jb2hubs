@@ -21,8 +21,13 @@ htmlPath html/GCA_033439345.1_KIZ_version_2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/033/439/345/GCA_033439345.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/033/439/345/GCA_033439345.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/033/439/345/GCA_033439345.1
+liftOver.GCA_013371645.1 liftOver/GCA_033439345.1ToGCA_013371645.1.over.chain.gz
 liftOver.hg38 liftOver/GCA_033439345.1ToHg38.over.chain.gz
+liftOver.micMur2 liftOver/GCA_033439345.1ToMicMur2.over.chain.gz
 liftOver.mm10 liftOver/GCA_033439345.1ToMm10.over.chain.gz
+liftOver.susScr11 liftOver/GCA_033439345.1ToSusScr11.over.chain.gz
+liftOver.tupBel1 liftOver/GCA_033439345.1ToTupBel1.over.chain.gz
+liftOver.tupChi1 liftOver/GCA_033439345.1ToTupChi1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -98,6 +103,17 @@ bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.rmsk.bb
 xrefDataUrl bbi/GCA_033439345.1_KIZ_version_2.rmsk.align.bb
 maxWindowToDraw 5000000
 html html/GCA_033439345.1_KIZ_version_2.repeatMasker
+
+track repeatModeler
+shortLabel RepeatModeler
+longLabel RepeatModeler Repetitive Elements
+type bigRmsk 9 +
+visibility hide
+group varRep
+bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.rModel.bb
+xrefDataUrl bbi/GCA_033439345.1_KIZ_version_2.rModel.align.bb
+maxWindowToDraw 5000000
+html html/GCA_033439345.1_KIZ_version_2.repeatModeler
 
 track simpleRepeat
 shortLabel Simple Repeats
@@ -182,7 +198,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCA_033439345.1_KIZ_version_2
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=hg38 s001=mm10
+subGroup2 species Assembly s000=tupChi1 s001=tupBel1 s002=hg38 s003=micMur2 s004=susScr11 s005=GCA_013371645.1 s006=mm10
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -204,9 +220,33 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
     parent GCA_033439345.1_KIZ_version_2ChainNet
     spectrum on
 
-        track chainHg38
+        track chainTupChi1
         parent GCA_033439345.1_KIZ_version_2ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
+        shortLabel Chinese tree shrew/tupChi1 Chain
+        longLabel Chinese tree shrew/tupChi1/tupChi1 (Jan 2013) Chained Alignments
+        type bigChain tupChi1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainTupChi1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainTupChi1Link.bb
+        otherDb tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track chainTupBel1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel Tree shrew/tupBel1 Chain
+        longLabel Tree shrew/tupBel1/tupBel1 (Dec. 2006) Chained Alignments
+        type bigChain tupBel1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainTupBel1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainTupBel1Link.bb
+        otherDb tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track chainHg38
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewchain off
+        subGroups view=chain species=s002 chainType=c00
         shortLabel Human/hg38 Chain
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigChain hg38
@@ -216,9 +256,45 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
         html html/GCA_033439345.1_KIZ_version_2.chainNet
         priority 49.140
 
+        track chainMicMur2
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewchain off
+        subGroups view=chain species=s003 chainType=c00
+        shortLabel Mouse lemur/micMur2 Chain
+        longLabel Mouse lemur/micMur2/micMur2 (May 2015) Chained Alignments
+        type bigChain micMur2
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainMicMur2.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainMicMur2Link.bb
+        otherDb micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track chainSusScr11
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
+        shortLabel Pig/susScr11 Chain
+        longLabel Pig/susScr11/susScr11 (Feb. 2017) Chained Alignments
+        type bigChain susScr11
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSusScr11.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSusScr11Link.bb
+        otherDb susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track chainGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewchain off
+        subGroups view=chain species=s005 chainType=c00
+        shortLabel rabbit Chain
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigChain GCA_013371645.1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainGCA_013371645.1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainGCA_013371645.1Link.bb
+        otherDb GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
         track chainMm10
         parent GCA_033439345.1_KIZ_version_2ChainNetViewchain off
-        subGroups view=chain species=s001 chainType=c00
+        subGroups view=chain species=s006 chainType=c00
         shortLabel Mouse/mm10 Chain
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigChain mm10
@@ -235,9 +311,33 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
     parent GCA_033439345.1_KIZ_version_2ChainNet
     spectrum on
 
-        track chainSynHg38
+        track chainSynTupChi1
         parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
         subGroups view=synten species=s000 chainType=c01
+        shortLabel Chinese tree shrew/tupChi1 synChain
+        longLabel Chinese tree shrew/tupChi1/tupChi1 (Jan 2013) Chained Alignments
+        type bigChain tupChi1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynTupChi1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynTupChi1Link.bb
+        otherDb tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track chainSynTupBel1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Tree shrew/tupBel1 synChain
+        longLabel Tree shrew/tupBel1/tupBel1 (Dec. 2006) Chained Alignments
+        type bigChain tupBel1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynTupBel1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynTupBel1Link.bb
+        otherDb tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track chainSynHg38
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
         shortLabel Human/hg38 synChain
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigChain hg38
@@ -247,11 +347,47 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
         html html/GCA_033439345.1_KIZ_version_2.chainNet
         priority 49.140
 
+        track chainSynMicMur2
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
+        subGroups view=synten species=s003 chainType=c01
+        shortLabel Mouse lemur/micMur2 synChain
+        longLabel Mouse lemur/micMur2/micMur2 (May 2015) Chained Alignments
+        type bigChain micMur2
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynMicMur2.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynMicMur2Link.bb
+        otherDb micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track chainSynSusScr11
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel Pig/susScr11 synChain
+        longLabel Pig/susScr11/susScr11 (Feb. 2017) Chained Alignments
+        type bigChain susScr11
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynSusScr11.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynSusScr11Link.bb
+        otherDb susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track chainSynGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
+        subGroups view=synten species=s005 chainType=c01
+        shortLabel rabbit synChain
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigChain GCA_013371645.1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynGCA_013371645.1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynGCA_013371645.1Link.bb
+        otherDb GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
         track chainSynMm10
         parent GCA_033439345.1_KIZ_version_2ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
+        subGroups view=synten species=s006 chainType=c01
         shortLabel Mouse/mm10 synChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_OryCun3.0 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynMm10.bb
         linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainSynMm10Link.bb
@@ -266,11 +402,35 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
     parent GCA_033439345.1_KIZ_version_2ChainNet
     spectrum on
 
-        track chainRBestHg38
+        track chainRBestTupChi1
         parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
         subGroups view=rbest species=s000 chainType=c02
+        shortLabel Chinese tree shrew/tupChi1 rbChain
+        longLabel Chinese tree shrew/tupChi1/tupChi1_OryCun3.0 (Jan 2013) Chained Alignments
+        type bigChain tupChi1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestTupChi1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestTupChi1Link.bb
+        otherDb tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track chainRBestTupBel1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Tree shrew/tupBel1 rbChain
+        longLabel Tree shrew/tupBel1/tupBel1_OryCun3.0 (Dec. 2006) Chained Alignments
+        type bigChain tupBel1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestTupBel1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestTupBel1Link.bb
+        otherDb tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track chainRBestHg38
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_OryCun3.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestHg38.bb
         linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestHg38Link.bb
@@ -278,11 +438,47 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
         html html/GCA_033439345.1_KIZ_version_2.chainNet
         priority 49.140
 
+        track chainRBestMicMur2
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
+        subGroups view=rbest species=s003 chainType=c02
+        shortLabel Mouse lemur/micMur2 rbChain
+        longLabel Mouse lemur/micMur2/micMur2_OryCun3.0 (May 2015) Chained Alignments
+        type bigChain micMur2
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestMicMur2.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestMicMur2Link.bb
+        otherDb micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track chainRBestSusScr11
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel Pig/susScr11 rbChain
+        longLabel Pig/susScr11/susScr11_OryCun3.0 (Feb. 2017) Chained Alignments
+        type bigChain susScr11
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestSusScr11.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestSusScr11Link.bb
+        otherDb susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track chainRBestGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
+        subGroups view=rbest species=s005 chainType=c02
+        shortLabel rabbit rbChain
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigChain GCA_013371645.1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestGCA_013371645.1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestGCA_013371645.1Link.bb
+        otherDb GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
         track chainRBestMm10
         parent GCA_033439345.1_KIZ_version_2ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
+        subGroups view=rbest species=s006 chainType=c02
         shortLabel Mouse/mm10 rbChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_OryCun3.0 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestMm10.bb
         linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainRBestMm10Link.bb
@@ -297,11 +493,35 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
     parent GCA_033439345.1_KIZ_version_2ChainNet
     spectrum on
 
-        track chainLiftOverHg38
+        track chainLiftOverTupChi1
         parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
         subGroups view=liftover species=s000 chainType=c03
+        shortLabel Chinese tree shrew/tupChi1 loChain
+        longLabel Chinese tree shrew/tupChi1/tupChi1_OryCun3.0 (Jan 2013) Chained Alignments
+        type bigChain tupChi1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverTupChi1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverTupChi1Link.bb
+        otherDb tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track chainLiftOverTupBel1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel Tree shrew/tupBel1 loChain
+        longLabel Tree shrew/tupBel1/tupBel1_OryCun3.0 (Dec. 2006) Chained Alignments
+        type bigChain tupBel1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverTupBel1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverTupBel1Link.bb
+        otherDb tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track chainLiftOverHg38
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
+        subGroups view=liftover species=s002 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_OryCun3.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverHg38.bb
         linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverHg38Link.bb
@@ -309,11 +529,47 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
         html html/GCA_033439345.1_KIZ_version_2.chainNet
         priority 49.140
 
+        track chainLiftOverMicMur2
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c03
+        shortLabel Mouse lemur/micMur2 loChain
+        longLabel Mouse lemur/micMur2/micMur2_OryCun3.0 (May 2015) Chained Alignments
+        type bigChain micMur2
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverMicMur2.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverMicMur2Link.bb
+        otherDb micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track chainLiftOverSusScr11
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
+        subGroups view=liftover species=s004 chainType=c03
+        shortLabel Pig/susScr11 loChain
+        longLabel Pig/susScr11/susScr11_OryCun3.0 (Feb. 2017) Chained Alignments
+        type bigChain susScr11
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverSusScr11.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverSusScr11Link.bb
+        otherDb susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track chainLiftOverGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
+        subGroups view=liftover species=s005 chainType=c03
+        shortLabel rabbit loChain
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigChain GCA_013371645.1
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverGCA_013371645.1.bb
+        linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverGCA_013371645.1Link.bb
+        otherDb GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
         track chainLiftOverMm10
         parent GCA_033439345.1_KIZ_version_2ChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
+        subGroups view=liftover species=s006 chainType=c03
         shortLabel Mouse/mm10 loChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_OryCun3.0 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverMm10.bb
         linkDataUrl bbi/GCA_033439345.1_KIZ_version_2.chainLiftOverMm10Link.bb
@@ -327,9 +583,81 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
     visibility hide
     parent GCA_033439345.1_KIZ_version_2ChainNet
 
-        track netHg38
+        track netTupChi1
         parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
         subGroups view=align species=s000 chainType=c04
+        shortLabel Chinese tree shrew/tupChi1 mafNet
+        longLabel Chinese tree shrew/tupChi1/tupChi1 (Jan 2013) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.tupChi1.net.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.tupChi1.net.summary.bb
+        speciesOrder tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track synNetTupChi1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel Chinese tree shrew/tupChi1 synNet
+        longLabel Chinese tree shrew/tupChi1/tupChi1 (Jan 2013) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.tupChi1.synNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.tupChi1.synNet.summary.bb
+        speciesOrder tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track rbestNetTupChi1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel Chinese tree shrew/tupChi1 rbestNet
+        longLabel Chinese tree shrew/tupChi1/tupChi1 (Jan 2013) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.tupChi1.rbestNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.tupChi1.rbestNet.summary.bb
+        speciesOrder tupChi1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 1.535
+
+        track netTupBel1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel Tree shrew/tupBel1 mafNet
+        longLabel Tree shrew/tupBel1/tupBel1 (Dec. 2006) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.tupBel1.net.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.tupBel1.net.summary.bb
+        speciesOrder tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track synNetTupBel1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel Tree shrew/tupBel1 synNet
+        longLabel Tree shrew/tupBel1/tupBel1 (Dec. 2006) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.tupBel1.synNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.tupBel1.synNet.summary.bb
+        speciesOrder tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track rbestNetTupBel1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel Tree shrew/tupBel1 rbestNet
+        longLabel Tree shrew/tupBel1/tupBel1 (Dec. 2006) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.tupBel1.rbestNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.tupBel1.rbestNet.summary.bb
+        speciesOrder tupBel1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 23.860
+
+        track netHg38
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s002 chainType=c04
         shortLabel Human/hg38 mafNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -341,7 +669,7 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
 
         track synNetHg38
         parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
-        subGroups view=align species=s000 chainType=c05
+        subGroups view=align species=s002 chainType=c05
         shortLabel Human/hg38 synNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -353,7 +681,7 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
 
         track rbestNetHg38
         parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
-        subGroups view=align species=s000 chainType=c06
+        subGroups view=align species=s002 chainType=c06
         shortLabel Human/hg38 rbestNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -363,9 +691,117 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
         html html/GCA_033439345.1_KIZ_version_2.chainNet
         priority 49.140
 
+        track netMicMur2
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s003 chainType=c04
+        shortLabel Mouse lemur/micMur2 mafNet
+        longLabel Mouse lemur/micMur2/micMur2 (May 2015) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.micMur2.net.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.micMur2.net.summary.bb
+        speciesOrder micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track synNetMicMur2
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s003 chainType=c05
+        shortLabel Mouse lemur/micMur2 synNet
+        longLabel Mouse lemur/micMur2/micMur2 (May 2015) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.micMur2.synNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.micMur2.synNet.summary.bb
+        speciesOrder micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track rbestNetMicMur2
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s003 chainType=c06
+        shortLabel Mouse lemur/micMur2 rbestNet
+        longLabel Mouse lemur/micMur2/micMur2 (May 2015) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.micMur2.rbestNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.micMur2.rbestNet.summary.bb
+        speciesOrder micMur2
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 51.007
+
+        track netSusScr11
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s004 chainType=c04
+        shortLabel Pig/susScr11 mafNet
+        longLabel Pig/susScr11/susScr11 (Feb. 2017) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.susScr11.net.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.susScr11.net.summary.bb
+        speciesOrder susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track synNetSusScr11
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s004 chainType=c05
+        shortLabel Pig/susScr11 synNet
+        longLabel Pig/susScr11/susScr11 (Feb. 2017) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.susScr11.synNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.susScr11.synNet.summary.bb
+        speciesOrder susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track rbestNetSusScr11
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s004 chainType=c06
+        shortLabel Pig/susScr11 rbestNet
+        longLabel Pig/susScr11/susScr11 (Feb. 2017) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.susScr11.rbestNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.susScr11.rbestNet.summary.bb
+        speciesOrder susScr11
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 56.370
+
+        track netGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s005 chainType=c04
+        shortLabel rabbit mafNet
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.GCA_013371645.1.net.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.GCA_013371645.1.net.summary.bb
+        speciesOrder GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
+        track synNetGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s005 chainType=c05
+        shortLabel rabbit synNet
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.GCA_013371645.1.synNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.GCA_013371645.1.synNet.summary.bb
+        speciesOrder GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
+        track rbestNetGCA_013371645.1
+        parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
+        subGroups view=align species=s005 chainType=c06
+        shortLabel rabbit rbestNet
+        longLabel rabbit/GCA_013371645.1_OryCun3.0 (2020-06-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_033439345.1_KIZ_version_2.GCA_013371645.1.rbestNet.bb
+        summary bbi/GCA_033439345.1_KIZ_version_2.GCA_013371645.1.rbestNet.summary.bb
+        speciesOrder GCA_013371645.1
+        html html/GCA_033439345.1_KIZ_version_2.chainNet
+        priority 58.640
+
         track netMm10
         parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
-        subGroups view=align species=s001 chainType=c04
+        subGroups view=align species=s006 chainType=c04
         shortLabel Mouse/mm10 mafNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -377,7 +813,7 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
 
         track synNetMm10
         parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
-        subGroups view=align species=s001 chainType=c05
+        subGroups view=align species=s006 chainType=c05
         shortLabel Mouse/mm10 synNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -389,7 +825,7 @@ html html/GCA_033439345.1_KIZ_version_2.chainNet
 
         track rbestNetMm10
         parent GCA_033439345.1_KIZ_version_2MafNetViewnet off
-        subGroups view=align species=s001 chainType=c06
+        subGroups view=align species=s006 chainType=c06
         shortLabel Mouse/mm10 rbestNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf

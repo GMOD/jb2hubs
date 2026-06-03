@@ -20,6 +20,7 @@ htmlPath html/GCF_000260355.1_ConCri1.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/260/355/GCF_000260355.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/260/355/GCF_000260355.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/260/355/GCF_000260355.1
+liftOver.GCF_004115215.2 liftOver/GCF_000260355.1ToGCF_004115215.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -280,6 +281,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_000260355.1_ConCri1.0.xenoRefGene.ix
 html html/GCF_000260355.1_ConCri1.0.xenoRefGene
+
+##############################################################################
+# GCF_004115215.2 - star-nosed mole - Condylura cristata - taxId: 143302
+##############################################################################
+track chainNetGCF_004115215.2
+compositeTrack on
+shortLabel star-nosed mole Chain/Net
+longLabel star-nosed mole (2012-05-01), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_004115215.2
+html html/GCF_000260355.1_ConCri1.0.chainNet
+
+    track chainNetGCF_004115215.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_004115215.2
+    spectrum on
+
+        track chainGCF_004115215.2
+        parent chainNetGCF_004115215.2Viewchain
+        subGroups view=chain
+        shortLabel star-nosed mole Chain
+        longLabel star-nosed mole (2012-05-01) Chained Alignments
+        type bigChain GCF_004115215.2
+        bigDataUrl bbi/GCF_000260355.1_ConCri1.0.chainGCF_004115215.2.bb
+        linkDataUrl bbi/GCF_000260355.1_ConCri1.0.chainGCF_004115215.2Link.bb
+        priority 1
+
+        track chainLiftOverGCF_004115215.2
+        parent chainNetGCF_004115215.2Viewchain
+        subGroups view=chain
+        shortLabel star-nosed mole loChain
+        longLabel star-nosed mole (2012-05-01) Lift Over Chained Alignments
+        type bigChain GCF_004115215.2
+        bigDataUrl bbi/GCF_000260355.1_ConCri1.0.chainLiftOverGCF_004115215.2.bb
+        linkDataUrl bbi/GCF_000260355.1_ConCri1.0.chainLiftOverGCF_004115215.2Link.bb
+        priority 2
 
 
 track Tiberius

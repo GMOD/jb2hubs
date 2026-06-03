@@ -20,6 +20,7 @@ htmlPath html/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/900/651/605/GCA_900651605.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/900/651/605/GCA_900651605.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/900/651/605/GCA_900651605.2
+liftOver.GCF_900634795.4 liftOver/GCA_900651605.2ToGCF_900634795.4.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -176,4 +177,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.xenoRefGene.ix
 html html/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.xenoRefGene
+
+##############################################################################
+# GCF_900634795.4 - Siamese fighting fish - Betta splendens - taxId: 158456
+##############################################################################
+track chainNetGCF_900634795.4
+compositeTrack on
+shortLabel Siamese fighting fish Chain/Net
+longLabel Siamese fighting fish (2023-03-10), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_900634795.4
+html html/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.chainNet
+
+    track chainNetGCF_900634795.4Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_900634795.4
+    spectrum on
+
+        track chainGCF_900634795.4
+        parent chainNetGCF_900634795.4Viewchain
+        subGroups view=chain
+        shortLabel Siamese fighting fish Chain
+        longLabel Siamese fighting fish (2023-03-10) Chained Alignments
+        type bigChain GCF_900634795.4
+        bigDataUrl bbi/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.chainGCF_900634795.4.bb
+        linkDataUrl bbi/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.chainGCF_900634795.4Link.bb
+        priority 1
+
+        track chainLiftOverGCF_900634795.4
+        parent chainNetGCF_900634795.4Viewchain
+        subGroups view=chain
+        shortLabel Siamese fighting fish loChain
+        longLabel Siamese fighting fish (2023-03-10) Lift Over Chained Alignments
+        type bigChain GCF_900634795.4
+        bigDataUrl bbi/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.chainLiftOverGCF_900634795.4.bb
+        linkDataUrl bbi/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.chainLiftOverGCF_900634795.4Link.bb
+        priority 2
 

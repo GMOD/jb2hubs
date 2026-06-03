@@ -20,6 +20,7 @@ htmlPath html/GCF_014108245.1_mPipKuh1.p.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/014/108/245/GCF_014108245.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/014/108/245/GCF_014108245.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/014/108/245/GCF_014108245.1
+liftOver.GCF_001595765.1 liftOver/GCF_014108245.1ToGCF_001595765.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -264,6 +265,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_014108245.1_mPipKuh1.p.xenoRefGene.ix
 html html/GCF_014108245.1_mPipKuh1.p.xenoRefGene
+
+##############################################################################
+# GCF_001595765.1 - Kuhl's pipistrelle - Pipistrellus kuhlii - taxId: 59472
+##############################################################################
+track chainNetGCF_001595765.1
+compositeTrack on
+shortLabel Kuhl's pipistrelle Chain/Net
+longLabel Kuhl's pipistrelle (2020-08-07), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_001595765.1
+html html/GCF_014108245.1_mPipKuh1.p.chainNet
+
+    track chainNetGCF_001595765.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_001595765.1
+    spectrum on
+
+        track chainGCF_001595765.1
+        parent chainNetGCF_001595765.1Viewchain
+        subGroups view=chain
+        shortLabel Kuhl's pipistrelle Chain
+        longLabel Kuhl's pipistrelle (2020-08-07) Chained Alignments
+        type bigChain GCF_001595765.1
+        bigDataUrl bbi/GCF_014108245.1_mPipKuh1.p.chainGCF_001595765.1.bb
+        linkDataUrl bbi/GCF_014108245.1_mPipKuh1.p.chainGCF_001595765.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_001595765.1
+        parent chainNetGCF_001595765.1Viewchain
+        subGroups view=chain
+        shortLabel Kuhl's pipistrelle loChain
+        longLabel Kuhl's pipistrelle (2020-08-07) Lift Over Chained Alignments
+        type bigChain GCF_001595765.1
+        bigDataUrl bbi/GCF_014108245.1_mPipKuh1.p.chainLiftOverGCF_001595765.1.bb
+        linkDataUrl bbi/GCF_014108245.1_mPipKuh1.p.chainLiftOverGCF_001595765.1Link.bb
+        priority 2
 
 
 track Tiberius

@@ -21,6 +21,7 @@ htmlPath html/GCF_013758885.1_VT_AalbS3_pri_1.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/013/758/885/GCF_013758885.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/013/758/885/GCF_013758885.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/013/758/885/GCF_013758885.1
+liftOver.GCF_917208135.1 liftOver/GCF_013758885.1ToGCF_917208135.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -117,8 +118,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_013758885.1_VT_AalbS3_pri_1.0.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_013758885.1_VT_AalbS3_pri_1.0.ncbiRefSeq.bb
@@ -135,8 +136,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_013758885.1_VT_AalbS3_pri_1.0.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -247,4 +248,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_013758885.1_VT_AalbS3_pri_1.0.xenoRefGene.ix
 html html/GCF_013758885.1_VT_AalbS3_pri_1.0.xenoRefGene
+
+##############################################################################
+# GCF_917208135.1 - mosquitos - Anopheles albimanus - taxId: 7167
+##############################################################################
+track chainNetGCF_917208135.1
+compositeTrack on
+shortLabel mosquitos Chain/Net
+longLabel mosquitos (2020-08-06), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_917208135.1
+html html/GCF_013758885.1_VT_AalbS3_pri_1.0.chainNet
+
+    track chainNetGCF_917208135.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_917208135.1
+    spectrum on
+
+        track chainGCF_917208135.1
+        parent chainNetGCF_917208135.1Viewchain
+        subGroups view=chain
+        shortLabel mosquitos Chain
+        longLabel mosquitos (2020-08-06) Chained Alignments
+        type bigChain GCF_917208135.1
+        bigDataUrl bbi/GCF_013758885.1_VT_AalbS3_pri_1.0.chainGCF_917208135.1.bb
+        linkDataUrl bbi/GCF_013758885.1_VT_AalbS3_pri_1.0.chainGCF_917208135.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_917208135.1
+        parent chainNetGCF_917208135.1Viewchain
+        subGroups view=chain
+        shortLabel mosquitos loChain
+        longLabel mosquitos (2020-08-06) Lift Over Chained Alignments
+        type bigChain GCF_917208135.1
+        bigDataUrl bbi/GCF_013758885.1_VT_AalbS3_pri_1.0.chainLiftOverGCF_917208135.1.bb
+        linkDataUrl bbi/GCF_013758885.1_VT_AalbS3_pri_1.0.chainLiftOverGCF_917208135.1Link.bb
+        priority 2
 

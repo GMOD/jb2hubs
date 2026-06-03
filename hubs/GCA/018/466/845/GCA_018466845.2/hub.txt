@@ -175,3 +175,39 @@ searchIndex name
 searchTrix ixIxx/GCA_018466845.2_HG02257_pat_hprc_f2.xenoRefGene.ix
 html html/GCA_018466845.2_HG02257_pat_hprc_f2.xenoRefGene
 
+
+##############################################################################
+# HPRCv2 sequence: HG02257_pat_hprc_r2_v1.1.0 - GCA_018466845.2
+##############################################################################
+track chainNetGCA_018466845.2
+compositeTrack on
+shortLabel HPRCv2 GRCh38 Chain
+longLabel HPRCv2 Lift Over Chain to human/GRCh38
+subGroup1 view Views chain=Chain
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb hg38
+html contrib/HPRCv2/hg38Chain.html
+
+    track chainNetGCA_018466845.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_018466845.2
+    spectrum on
+
+        track chainLiftOverGCA_018466845.2
+        parent chainNetGCA_018466845.2Viewchain
+        subGroups view=chain
+        shortLabel GRCh38 loChain
+        longLabel HPRCv2 GRCh38 Lift Over Chained Alignments
+        type bigChain GCA_018466845.2
+        bigDataUrl contrib/HPRCv2/chainLiftOverHg38.bb
+        linkDataUrl contrib/HPRCv2/chainLiftOverHg38Link.bb
+        priority 4

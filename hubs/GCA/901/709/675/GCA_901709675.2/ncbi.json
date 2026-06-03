@@ -1,36 +1,7 @@
 {
   "reports": [
     {
-      "accession": "GCF_901709675.1",
-      "annotation_info": {
-        "busco": {
-          "busco_lineage": "actinopterygii_odb10",
-          "busco_ver": "4.0.2",
-          "complete": 0.97884613,
-          "duplicated": 0.012637363,
-          "fragmented": 0.0054945056,
-          "missing": 0.015659342,
-          "single_copy": 0.9662088,
-          "total_count": "3640"
-        },
-        "method": "Best-placed RefSeq; Gnomon",
-        "name": "NCBI Syngnathus acus Annotation Release 100",
-        "pipeline": "NCBI eukaryotic genome annotation pipeline",
-        "provider": "NCBI RefSeq",
-        "release_date": "2020-10-30",
-        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Syngnathus_acus/100",
-        "software_version": "8.5",
-        "stats": {
-          "gene_counts": {
-            "non_coding": 5089,
-            "other": 13,
-            "protein_coding": 19551,
-            "pseudogene": 274,
-            "total": 24927
-          }
-        },
-        "status": "Full annotation"
-      },
+      "accession": "GCA_901709675.2",
       "assembly_info": {
         "assembly_level": "Chromosome",
         "assembly_method": "various",
@@ -164,10 +135,18 @@
           },
           "submission_date": "2017-06-23T15:58:52.296"
         },
-        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_901709675.1",
-        "comments": "Assembly name: fSynAcu1.2\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the SC on 2020/07/31. The original whole-genome shotgun project has the accession CABFKE000000000.2.",
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_901709675.2",
+        "comments": "The assembly fSynAcu1.2 is based on\n96x PacBio data,\n190x coverage 10X Genomics Chromium data, and\n159x coverage Dovetail Hi-C data generated at the Wellcome Sanger Institute. The assembly process included the following sequence of steps: initial PacBio assembly generation with Falcon-unzip, retained haplotig identification with Purge Haplotigs, 10X based scaffolding with scaff10x, Hi-C based scaffolding with SALSA2, Arrow polishing, and two rounds of FreeBayes polishing. The mitochondrial assembly was produced at The Rockefeller University using mitoVGP. Finally, the assembly was analysed and manually improved using gEVAL. Chromosome-scale scaffolds are named by synteny to medaka.",
+        "diploid_role": "principal_pseudohaplotype_of_diploid",
+        "linked_assemblies": [
+          {
+            "assembly_type": "alternate_pseudohaplotype_of_diploid",
+            "linked_assembly": "GCA_901709685.1"
+          }
+        ],
         "paired_assembly": {
-          "accession": "GCA_901709675.2",
+          "accession": "GCF_901709675.1",
+          "annotation_name": "NCBI Syngnathus acus Annotation Release 100",
           "differences": "Removed chromosome MT",
           "only_genbank": "chromosome MT",
           "refseq_genbank_are_different": true,
@@ -187,6 +166,7 @@
         "genome_coverage": "96",
         "number_of_component_sequences": 87,
         "number_of_contigs": 130,
+        "number_of_organelles": 1,
         "number_of_scaffolds": 87,
         "scaffold_l50": 8,
         "scaffold_n50": 14974571,
@@ -194,14 +174,21 @@
         "total_sequence_length": "324331233",
         "total_ungapped_length": "324317533"
       },
-      "current_accession": "GCF_901709675.1",
+      "current_accession": "GCA_901709675.2",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Wellcome Sanger Institute",
+          "total_seq_length": "16454"
+        }
+      ],
       "organism": {
         "common_name": "greater pipefish",
         "organism_name": "Syngnathus acus",
         "tax_id": 161584
       },
-      "paired_accession": "GCA_901709675.2",
-      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "paired_accession": "GCF_901709675.1",
+      "source_database": "SOURCE_DATABASE_GENBANK",
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/CABFKE000000000.2",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/CABFKE02",
@@ -210,5 +197,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1774062329
+  "downloaded_at": 1780446076
 }

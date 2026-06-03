@@ -24,7 +24,7 @@ isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/209/185/GCA_000209185.1
 track assembly
 longLabel Assembly
 shortLabel Assembly
-visibility pack
+visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
@@ -40,7 +40,7 @@ group map
 track gap
 longLabel AGP gap
 shortLabel Gap (AGP defined)
-visibility dense
+visibility hide
 color 0,0,0
 bigDataUrl bbi/GCA_000209185.1_CulPip1.0.gap.bb
 type bigBed 4
@@ -59,7 +59,7 @@ track gc5Base
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
-visibility full
+visibility dense
 autoScale Off
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
@@ -115,18 +115,18 @@ bigDataUrl bbi/GCA_000209185.1_CulPip1.0.simpleRepeat.bb
 html html/GCA_000209185.1_CulPip1.0.simpleRepeat
 
 track ncbiGene
-longLabel Gene models submitted to NCBI
-shortLabel Gene models
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
 visibility pack
 color 0,80,150
 altColor 150,80,0
 colorByStrand 0,80,150 150,80,0
 bigDataUrl bbi/GCA_000209185.1_CulPip1.0.ncbiGene.bb
 type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
 html html/GCA_000209185.1_CulPip1.0.ncbiGene
 searchIndex name
 searchTrix ixIxx/GCA_000209185.1_CulPip1.0.ncbiGene.ix
-url https://www.ncbi.nlm.nih.gov/gene/?term=$$
 urlLabel Entrez gene:
 labelFields geneName,geneName2
 defaultLabelFields geneName2
@@ -137,7 +137,7 @@ compositeTrack on
 shortLabel CpG Islands
 longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
-visibility pack
+visibility dense
 type bigBed 4 +
 html html/GCA_000209185.1_CulPip1.0.cpgIslands
 
@@ -170,7 +170,7 @@ track allGaps
 shortLabel All Gaps
 longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
-visibility dense
+visibility hide
 type bigBed 3
 bigDataUrl bbi/GCA_000209185.1_CulPip1.0.allGaps.bb
 html html/GCA_000209185.1_CulPip1.0.allGaps

@@ -21,6 +21,7 @@ htmlPath html/GCF_000803125.2_CamDro3.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/803/125/GCF_000803125.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/803/125/GCF_000803125.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/803/125/GCF_000803125.2
+liftOver.GCF_001704415.2 liftOver/GCF_000803125.2ToGCF_001704415.2.over.chain.gz
 liftOver.GCF_036321535.1 liftOver/GCF_000803125.2ToGCF_036321535.1.over.chain.gz
 
 track assembly
@@ -273,110 +274,167 @@ searchIndex name
 searchTrix ixIxx/GCF_000803125.2_CamDro3.xenoRefGene.ix
 html html/GCF_000803125.2_CamDro3.xenoRefGene
 
-##############################################################################
-# GCF_036321535.1 - Arabian camel - Camelus dromedarius - taxId: 9838
-##############################################################################
-track chainNetGCF_036321535.1
+track GCF_000803125.2_CamDro3ChainNet
 compositeTrack on
-shortLabel Arabian camel Chain/Net
-longLabel Arabian camel (2019-10-07), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_000803125.2_CamDro3
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_036321535.1 s001=GCF_001704415.2
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-otherDb GCF_036321535.1
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_000803125.2_CamDro3.chainNet
 
-    track chainNetGCF_036321535.1Viewchain
-    shortLabel Chain
+    track GCF_000803125.2_CamDro3ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetGCF_036321535.1
+    visibility dense
+    parent GCF_000803125.2_CamDro3ChainNet
     spectrum on
 
         track chainGCF_036321535.1
-        parent chainNetGCF_036321535.1Viewchain
-        subGroups view=chain
-        shortLabel Arabian camel Chain
-        longLabel Arabian camel (2019-10-07) Chained Alignments
+        parent GCF_000803125.2_CamDro3ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel GCF_036321535.1 Chain
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigChain GCF_036321535.1
         bigDataUrl bbi/GCF_000803125.2_CamDro3.chainGCF_036321535.1.bb
         linkDataUrl bbi/GCF_000803125.2_CamDro3.chainGCF_036321535.1Link.bb
-        priority 1
+        otherDb GCF_036321535.1
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
+
+        track chainGCF_001704415.2
+        parent GCF_000803125.2_CamDro3ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel GCF_001704415.2 Chain
+        longLabel GCF_001704415.2/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_000803125.2_CamDro3.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_000803125.2_CamDro3.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 25.365
+
+    track GCF_000803125.2_CamDro3ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_000803125.2_CamDro3ChainNet
+    spectrum on
 
         track chainSynGCF_036321535.1
-        parent chainNetGCF_036321535.1Viewchain
-        subGroups view=chain
-        shortLabel Arabian camel synChain
-        longLabel Arabian camel (2019-10-07) Syntenic Chained Alignments
+        parent GCF_000803125.2_CamDro3ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel GCF_036321535.1 synChain
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigChain GCF_036321535.1
         bigDataUrl bbi/GCF_000803125.2_CamDro3.chainSynGCF_036321535.1.bb
         linkDataUrl bbi/GCF_000803125.2_CamDro3.chainSynGCF_036321535.1Link.bb
-        priority 2
+        otherDb GCF_036321535.1
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
+
+    track GCF_000803125.2_CamDro3ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_000803125.2_CamDro3ChainNet
+    spectrum on
 
         track chainRBestGCF_036321535.1
-        parent chainNetGCF_036321535.1Viewchain
-        subGroups view=chain
-        shortLabel Arabian camel rbChain
-        longLabel Arabian camel (2019-10-07) Reciprocal Best Chained Alignments
+        parent GCF_000803125.2_CamDro3ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel GCF_036321535.1 rbChain
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigChain GCF_036321535.1
         bigDataUrl bbi/GCF_000803125.2_CamDro3.chainRBestGCF_036321535.1.bb
         linkDataUrl bbi/GCF_000803125.2_CamDro3.chainRBestGCF_036321535.1Link.bb
-        priority 3
+        otherDb GCF_036321535.1
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
+
+    track GCF_000803125.2_CamDro3ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000803125.2_CamDro3ChainNet
+    spectrum on
 
         track chainLiftOverGCF_036321535.1
-        parent chainNetGCF_036321535.1Viewchain
-        subGroups view=chain
-        shortLabel Arabian camel loChain
-        longLabel Arabian camel (2019-10-07) Lift Over Chained Alignments
+        parent GCF_000803125.2_CamDro3ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCF_036321535.1 loChain
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigChain GCF_036321535.1
         bigDataUrl bbi/GCF_000803125.2_CamDro3.chainLiftOverGCF_036321535.1.bb
         linkDataUrl bbi/GCF_000803125.2_CamDro3.chainLiftOverGCF_036321535.1Link.bb
-        priority 4
+        otherDb GCF_036321535.1
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
 
-    track mafNetGCF_036321535.1Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetGCF_036321535.1
+        track chainLiftOverGCF_001704415.2
+        parent GCF_000803125.2_CamDro3ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel GCF_001704415.2 loChain
+        longLabel GCF_001704415.2/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_000803125.2_CamDro3.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_000803125.2_CamDro3.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 25.365
+
+    track GCF_000803125.2_CamDro3MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_000803125.2_CamDro3ChainNet
 
         track netGCF_036321535.1
-        parent mafNetGCF_036321535.1Viewnet
-        subGroups view=net
-        shortLabel Arabian camel net
-        longLabel Arabian camel (2019-10-07) Net Alignment
+        parent GCF_000803125.2_CamDro3MafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel GCF_036321535.1 mafNet
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_000803125.2_CamDro3.GCF_036321535.1.net.bb
         summary bbi/GCF_000803125.2_CamDro3.GCF_036321535.1.net.summary.bb
         speciesOrder GCF_036321535.1
-        priority 5
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
 
         track synNetGCF_036321535.1
-        parent mafNetGCF_036321535.1Viewnet
-        subGroups view=net
-        shortLabel Arabian camel synNet
-        longLabel Arabian camel (2019-10-07) Syntenic Net Alignment
+        parent GCF_000803125.2_CamDro3MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel GCF_036321535.1 synNet
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_000803125.2_CamDro3.GCF_036321535.1.synNet.bb
         summary bbi/GCF_000803125.2_CamDro3.GCF_036321535.1.synNet.summary.bb
         speciesOrder GCF_036321535.1
-        priority 6
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
 
         track rbestNetGCF_036321535.1
-        parent mafNetGCF_036321535.1Viewnet
-        subGroups view=net
-        shortLabel Arabian camel rbestNet
-        longLabel Arabian camel (2019-10-07) Reciprocal Best Net Alignment
+        parent GCF_000803125.2_CamDro3MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel GCF_036321535.1 rbestNet
+        longLabel GCF_036321535.1/GCF_036321535.1_mCamDro1.pat (2024-01-31) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_000803125.2_CamDro3.GCF_036321535.1.rbestNet.bb
         summary bbi/GCF_000803125.2_CamDro3.GCF_036321535.1.rbestNet.summary.bb
         speciesOrder GCF_036321535.1
-        priority 7
+        html html/GCF_000803125.2_CamDro3.chainNet
+        priority 2.000
 
 track HLTOGAannotvHg38v1
 bigDataUrl bbi/HLTOGAannotVsHg38v1.bb

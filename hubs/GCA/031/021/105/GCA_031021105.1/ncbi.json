@@ -1,36 +1,7 @@
 {
   "reports": [
     {
-      "accession": "GCF_031021105.1",
-      "annotation_info": {
-        "busco": {
-          "busco_lineage": "sauropsida_odb10",
-          "busco_ver": "5.7.1",
-          "complete": 0.93877006,
-          "duplicated": 0.031550802,
-          "fragmented": 0.008957219,
-          "missing": 0.052272726,
-          "single_copy": 0.90721923,
-          "total_count": "7480"
-        },
-        "method": "Gnomon; cmsearch; tRNAscan-SE",
-        "name": "GCF_031021105.1-RS_2024_12",
-        "pipeline": "NCBI eukaryotic genome annotation pipeline",
-        "provider": "NCBI RefSeq",
-        "release_date": "2024-12-31",
-        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Erythrolamprus_reginae/GCF_031021105.1-RS_2024_12.html",
-        "software_version": "10.3",
-        "stats": {
-          "gene_counts": {
-            "non_coding": 2416,
-            "other": 30,
-            "protein_coding": 19996,
-            "pseudogene": 702,
-            "total": 23144
-          }
-        },
-        "status": "Full annotation"
-      },
+      "accession": "GCA_031021105.1",
       "assembly_info": {
         "assembly_level": "Chromosome",
         "assembly_method": "Hifiasm + Hi-C phasing v. 0.16.1 + galaxy3; yahs v. 1.2a + galaxy1",
@@ -156,10 +127,22 @@
           "submission_date": "2023-01-07T23:39:03.860",
           "tissue": "kidney"
         },
-        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_031021105.1",
-        "comments": "Assembly name: rEryReg1.hap1\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the Vertebrate Genomes Project on 2023/08/31. The original whole-genome shotgun project has the accession JAVGWQ000000000.1.",
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_031021105.1",
+        "comments": "GenomeScope analyses indicates this individual is a triploid (model fits p=3); smudgeplot results in a proposed triploid, with a strong AAB signal. The Hifiasm + Hi-C process resulted in hap1 and hap2+3 assemblies, with hap2+3 having two copies of the genome based on QC metrics, while hap1 having one un-duplicated copy of the genome. This is supported by largely unduplicated BUSCO results, a largely 1 copy kmer-cn spectrum, and the length of the assembly being near to the expected genome size based on the triploid genomescope model. The hap1 assembly was scaffolded with Hi-C data using YAHS, and is what we are submitting for annotation. The hap2+3 assembly was purged with purge_dups, resulting in a purged hap2 only assembly and a remaining hap3 assembly, but were difficult to scaffold. Thus, hap2 and hap3 assembled are submitted as contigs only",
+        "diploid_role": "haplotype_1",
+        "linked_assemblies": [
+          {
+            "assembly_type": "haplotype_3",
+            "linked_assembly": "GCA_031001685.1"
+          },
+          {
+            "assembly_type": "haplotype_2",
+            "linked_assembly": "GCA_031021085.1"
+          }
+        ],
         "paired_assembly": {
-          "accession": "GCA_031021105.1",
+          "accession": "GCF_031021105.1",
+          "annotation_name": "GCF_031021105.1-RS_2024_12",
           "status": "current"
         },
         "refseq_category": "reference genome",
@@ -183,7 +166,7 @@
         "total_sequence_length": "1964049041",
         "total_ungapped_length": "1963770841"
       },
-      "current_accession": "GCF_031021105.1",
+      "current_accession": "GCA_031021105.1",
       "organism": {
         "common_name": "royal ground snake",
         "infraspecific_names": {
@@ -193,8 +176,8 @@
         "organism_name": "Erythrolamprus reginae",
         "tax_id": 121349
       },
-      "paired_accession": "GCA_031021105.1",
-      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "paired_accession": "GCF_031021105.1",
+      "source_database": "SOURCE_DATABASE_GENBANK",
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JAVGWQ000000000.1",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JAVGWQ01",
@@ -203,5 +186,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1774062161
+  "downloaded_at": 1780446014
 }

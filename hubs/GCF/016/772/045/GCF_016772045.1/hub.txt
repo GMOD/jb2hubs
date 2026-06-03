@@ -23,6 +23,7 @@ transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/016/772/045/GCF_016772045.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/016/772/045/GCF_016772045.1
 liftOver.GCF_002742125.1 liftOver/GCF_016772045.1ToGCF_002742125.1.over.chain.gz
 liftOver.GCF_016772045.2 liftOver/GCF_016772045.1ToGCF_016772045.2.over.chain.gz
+liftOver.GCF_964237555.1 liftOver/GCF_016772045.1ToGCF_964237555.1.over.chain.gz
 liftOver.oviAri3 liftOver/GCF_016772045.1ToOviAri3.over.chain.gz
 liftOver.oviAri4 liftOver/GCF_016772045.1ToOviAri4.over.chain.gz
 
@@ -275,7 +276,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_016772045.1_ARS-UI_Ramb_v2.0
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=GCF_016772045.2 s001=GCF_002742125.1 s002=oviAri4 s003=oviAri3
+subGroup2 species Assembly s000=GCF_016772045.2 s001=GCF_002742125.1 s002=oviAri4 s003=oviAri3 s004=GCF_964237555.1
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -345,6 +346,18 @@ html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         priority 4.434
 
+        track chainGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
+        shortLabel rabbit Chain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
+
     track GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewSynTen
     shortLabel Syntenic
     view synten
@@ -399,6 +412,18 @@ html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         otherDb oviAri3
         html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         priority 4.434
+
+        track chainSynGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel rabbit synChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainSynGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainSynGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
 
     track GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewRBest
     shortLabel Reciprocal best
@@ -455,6 +480,18 @@ html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         priority 4.434
 
+        track chainRBestGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel rabbit rbChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainRBestGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainRBestGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
+
     track GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewLiftOver
     shortLabel Lift over
     view liftover
@@ -509,6 +546,18 @@ html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         otherDb oviAri3
         html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         priority 4.434
+
+        track chainLiftOverGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s004 chainType=c03
+        shortLabel rabbit loChain
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigChain GCF_964237555.1
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainLiftOverGCF_964237555.1.bb
+        linkDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainLiftOverGCF_964237555.1Link.bb
+        otherDb GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
 
     track GCF_016772045.1_ARS-UI_Ramb_v2.0MafNetViewnet
     shortLabel Nets
@@ -695,4 +744,40 @@ html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         speciesOrder oviAri3
         html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
         priority 4.434
+
+        track netGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0MafNetViewnet off
+        subGroups view=align species=s004 chainType=c04
+        shortLabel rabbit mafNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.GCF_964237555.1.net.bb
+        summary bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.GCF_964237555.1.net.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
+
+        track synNetGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0MafNetViewnet off
+        subGroups view=align species=s004 chainType=c05
+        shortLabel rabbit synNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.GCF_964237555.1.synNet.bb
+        summary bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.GCF_964237555.1.synNet.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
+
+        track rbestNetGCF_964237555.1
+        parent GCF_016772045.1_ARS-UI_Ramb_v2.0MafNetViewnet off
+        subGroups view=align species=s004 chainType=c06
+        shortLabel rabbit rbestNet
+        longLabel rabbit/GCF_964237555.1_mOryCun1.1 (2024-08-31) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.GCF_964237555.1.rbestNet.bb
+        summary bbi/GCF_016772045.1_ARS-UI_Ramb_v2.0.GCF_964237555.1.rbestNet.summary.bb
+        speciesOrder GCF_964237555.1
+        html html/GCF_016772045.1_ARS-UI_Ramb_v2.0.chainNet
+        priority 60.993
 

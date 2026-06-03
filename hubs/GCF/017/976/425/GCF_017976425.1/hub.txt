@@ -21,6 +21,8 @@ htmlPath html/GCF_017976425.1_fToxJac2.pri.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/017/976/425/GCF_017976425.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/017/976/425/GCF_017976425.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/017/976/425/GCF_017976425.1
+liftOver.GCA_017976295.1 liftOver/GCF_017976425.1ToGCA_017976295.1.over.chain.gz
+liftOver.GCF_900634415.1 liftOver/GCF_017976425.1ToGCF_900634415.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -136,8 +138,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017976425.1_fToxJac2.pri.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.ncbiRefSeq.bb
@@ -154,8 +156,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_017976425.1_fToxJac2.pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -285,4 +287,166 @@ baseColorUseCds given
 baseColorDefault genomicCodons
 labelSeparator " "
 html html/GCF_017976425.1_fToxJac2.pri.ensGene
+
+track GCF_017976425.1_fToxJac2.priChainNet
+compositeTrack on
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_017976425.1_fToxJac2.pri
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCA_017976295.1 s001=GCF_900634415.1
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
+dragAndDrop subTracks
+visibility hide
+group compGeno
+color 0,0,0
+altColor 255,255,0
+type bed 3
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
+html html/GCF_017976425.1_fToxJac2.pri.chainNet
+
+    track GCF_017976425.1_fToxJac2.priChainNetViewchain
+    shortLabel Chains
+    view chain
+    visibility dense
+    parent GCF_017976425.1_fToxJac2.priChainNet
+    spectrum on
+
+        track chainGCA_017976295.1
+        parent GCF_017976425.1_fToxJac2.priChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel GCA_017976295.1 Chain
+        longLabel GCA_017976295.1/GCA_017976295.1_fToxJac2.alt (2021-04-15) Chained Alignments
+        type bigChain GCA_017976295.1
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainGCA_017976295.1.bb
+        linkDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainGCA_017976295.1Link.bb
+        otherDb GCA_017976295.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 4.793
+
+        track chainGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel GCF_900634415.1 Chain
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigChain GCF_900634415.1
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainGCF_900634415.1.bb
+        linkDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainGCF_900634415.1Link.bb
+        otherDb GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
+
+    track GCF_017976425.1_fToxJac2.priChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_017976425.1_fToxJac2.priChainNet
+    spectrum on
+
+        track chainSynGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel GCF_900634415.1 synChain
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigChain GCF_900634415.1
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainSynGCF_900634415.1.bb
+        linkDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainSynGCF_900634415.1Link.bb
+        otherDb GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
+
+    track GCF_017976425.1_fToxJac2.priChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_017976425.1_fToxJac2.priChainNet
+    spectrum on
+
+        track chainRBestGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel GCF_900634415.1 rbChain
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigChain GCF_900634415.1
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainRBestGCF_900634415.1.bb
+        linkDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainRBestGCF_900634415.1Link.bb
+        otherDb GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
+
+    track GCF_017976425.1_fToxJac2.priChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_017976425.1_fToxJac2.priChainNet
+    spectrum on
+
+        track chainLiftOverGCA_017976295.1
+        parent GCF_017976425.1_fToxJac2.priChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCA_017976295.1 loChain
+        longLabel GCA_017976295.1/GCA_017976295.1_fToxJac2.alt (2021-04-15) Chained Alignments
+        type bigChain GCA_017976295.1
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainLiftOverGCA_017976295.1.bb
+        linkDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainLiftOverGCA_017976295.1Link.bb
+        otherDb GCA_017976295.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 4.793
+
+        track chainLiftOverGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel GCF_900634415.1 loChain
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigChain GCF_900634415.1
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainLiftOverGCF_900634415.1.bb
+        linkDataUrl bbi/GCF_017976425.1_fToxJac2.pri.chainLiftOverGCF_900634415.1Link.bb
+        otherDb GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
+
+    track GCF_017976425.1_fToxJac2.priMafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_017976425.1_fToxJac2.priChainNet
+
+        track netGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priMafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel GCF_900634415.1 mafNet
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.GCF_900634415.1.net.bb
+        summary bbi/GCF_017976425.1_fToxJac2.pri.GCF_900634415.1.net.summary.bb
+        speciesOrder GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
+
+        track synNetGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priMafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel GCF_900634415.1 synNet
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.GCF_900634415.1.synNet.bb
+        summary bbi/GCF_017976425.1_fToxJac2.pri.GCF_900634415.1.synNet.summary.bb
+        speciesOrder GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
+
+        track rbestNetGCF_900634415.1
+        parent GCF_017976425.1_fToxJac2.priMafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel GCF_900634415.1 rbestNet
+        longLabel GCF_900634415.1/GCF_900634415.1_fCotGob3.1 (2019-02-06) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_017976425.1_fToxJac2.pri.GCF_900634415.1.rbestNet.bb
+        summary bbi/GCF_017976425.1_fToxJac2.pri.GCF_900634415.1.rbestNet.summary.bb
+        speciesOrder GCF_900634415.1
+        html html/GCF_017976425.1_fToxJac2.pri.chainNet
+        priority 41.006
 

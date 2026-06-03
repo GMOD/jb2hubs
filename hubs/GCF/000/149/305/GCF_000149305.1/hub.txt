@@ -1,6 +1,6 @@
 hub GCF_000149305.1 genome assembly
-shortLabel mucoromycotan R.delemar (RA 99-880 2009)
-longLabel mucoromycotan R.delemar (RA 99-880 2009)/Rhizopus delemar RA 99-880/GCF_000149305.1_RO3 genome assembly
+shortLabel mucoromycotan R.delemar (RA 99-880 2009 refseq)
+longLabel mucoromycotan R.delemar (RA 99-880 2009 refseq)/Rhizopus delemar RA 99-880/GCF_000149305.1_RO3 genome assembly
 useOneFile on
 email genome-www@soe.ucsc.edu
 descriptionUrl html/GCF_000149305.1_RO3.description.html
@@ -8,7 +8,7 @@ descriptionUrl html/GCF_000149305.1_RO3.description.html
 genome GCF_000149305.1
 taxId 246409
 groups groups.txt
-description mucoromycotan R.delemar (RA 99-880 2009)
+description mucoromycotan R.delemar (RA 99-880 2009 refseq)
 twoBitPath GCF_000149305.1.2bit
 twoBitBptUrl GCF_000149305.1.2bit.bpt
 chromSizes GCF_000149305.1.chrom.sizes.txt
@@ -127,8 +127,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000149305.1_RO3.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_000149305.1_RO3.ncbiRefSeq.bb
@@ -145,8 +145,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000149305.1_RO3.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -258,3 +258,16 @@ searchIndex name
 searchTrix ixIxx/GCF_000149305.1_RO3.xenoRefGene.ix
 html html/GCF_000149305.1_RO3.xenoRefGene
 
+
+track VEuPathDBGeneModels
+shortLabel VEuPathDB Genes
+longLabel Gene Models mirrored from VEuPathDB
+group genes
+type bigBed 12 .
+visibility pack
+labelFields name
+searchIndex name
+bigDataUrl contrib/VEuPathDB/veupathGenes.bb
+colorByStrand 0,0,122 157,60,32
+dataVersion VEuPathDB release 68
+html contrib/VEuPathDB/VEuPathDB

@@ -20,6 +20,7 @@ htmlPath html/GCF_965140235.1_rCarCar1.hap1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/965/140/235/GCF_965140235.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/965/140/235/GCF_965140235.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/965/140/235/GCF_965140235.1
+liftOver.GCA_015237465.2 liftOver/GCF_965140235.1ToGCA_015237465.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -264,4 +265,109 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_965140235.1_rCarCar1.hap1.xenoRefGene.ix
 html html/GCF_965140235.1_rCarCar1.hap1.xenoRefGene
+
+##############################################################################
+# GCA_015237465.2 - Loggerhead turtle - Caretta caretta - taxId: 8467
+##############################################################################
+track chainNetGCA_015237465.2
+compositeTrack on
+shortLabel Loggerhead turtle Chain/Net
+longLabel Loggerhead turtle (2025-02-13), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_015237465.2
+html html/GCF_965140235.1_rCarCar1.hap1.chainNet
+
+    track chainNetGCA_015237465.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_015237465.2
+    spectrum on
+
+        track chainGCA_015237465.2
+        parent chainNetGCA_015237465.2Viewchain
+        subGroups view=chain
+        shortLabel Loggerhead turtle Chain
+        longLabel Loggerhead turtle (2025-02-13) Chained Alignments
+        type bigChain GCA_015237465.2
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainGCA_015237465.2.bb
+        linkDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainGCA_015237465.2Link.bb
+        priority 1
+
+        track chainSynGCA_015237465.2
+        parent chainNetGCA_015237465.2Viewchain
+        subGroups view=chain
+        shortLabel Loggerhead turtle synChain
+        longLabel Loggerhead turtle (2025-02-13) Syntenic Chained Alignments
+        type bigChain GCA_015237465.2
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainSynGCA_015237465.2.bb
+        linkDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainSynGCA_015237465.2Link.bb
+        priority 2
+
+        track chainRBestGCA_015237465.2
+        parent chainNetGCA_015237465.2Viewchain
+        subGroups view=chain
+        shortLabel Loggerhead turtle rbChain
+        longLabel Loggerhead turtle (2025-02-13) Reciprocal Best Chained Alignments
+        type bigChain GCA_015237465.2
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainRBestGCA_015237465.2.bb
+        linkDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainRBestGCA_015237465.2Link.bb
+        priority 3
+
+        track chainLiftOverGCA_015237465.2
+        parent chainNetGCA_015237465.2Viewchain
+        subGroups view=chain
+        shortLabel Loggerhead turtle loChain
+        longLabel Loggerhead turtle (2025-02-13) Lift Over Chained Alignments
+        type bigChain GCA_015237465.2
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainLiftOverGCA_015237465.2.bb
+        linkDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.chainLiftOverGCA_015237465.2Link.bb
+        priority 4
+
+    track mafNetGCA_015237465.2Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetGCA_015237465.2
+
+        track netGCA_015237465.2
+        parent mafNetGCA_015237465.2Viewnet
+        subGroups view=net
+        shortLabel Loggerhead turtle net
+        longLabel Loggerhead turtle (2025-02-13) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.GCA_015237465.2.net.bb
+        summary bbi/GCF_965140235.1_rCarCar1.hap1.GCA_015237465.2.net.summary.bb
+        speciesOrder GCA_015237465.2
+        priority 5
+
+        track synNetGCA_015237465.2
+        parent mafNetGCA_015237465.2Viewnet
+        subGroups view=net
+        shortLabel Loggerhead turtle synNet
+        longLabel Loggerhead turtle (2025-02-13) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.GCA_015237465.2.synNet.bb
+        summary bbi/GCF_965140235.1_rCarCar1.hap1.GCA_015237465.2.synNet.summary.bb
+        speciesOrder GCA_015237465.2
+        priority 6
+
+        track rbestNetGCA_015237465.2
+        parent mafNetGCA_015237465.2Viewnet
+        subGroups view=net
+        shortLabel Loggerhead turtle rbestNet
+        longLabel Loggerhead turtle (2025-02-13) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_965140235.1_rCarCar1.hap1.GCA_015237465.2.rbestNet.bb
+        summary bbi/GCF_965140235.1_rCarCar1.hap1.GCA_015237465.2.rbestNet.summary.bb
+        speciesOrder GCA_015237465.2
+        priority 7
 

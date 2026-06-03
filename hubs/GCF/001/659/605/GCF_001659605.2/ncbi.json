@@ -1,8 +1,15 @@
 {
   "reports": [
     {
-      "accession": "GCF_001659605.1",
+      "accession": "GCF_001659605.2",
       "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "MK176513.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_045136.1",
+          "submitter": "College of Information Science and Technology, Nanjing Forestry University"
+        },
         {
           "chr_name": "Pltd",
           "genbank_accession": "EU117376.1",
@@ -12,25 +19,39 @@
         }
       ],
       "annotation_info": {
-        "name": "Annotation submitted by NCBI RefSeq",
+        "busco": {
+          "busco_lineage": "eudicots_odb10",
+          "busco_ver": "4.1.4",
+          "complete": 0.99527085,
+          "duplicated": 0.076956145,
+          "fragmented": 0.002149613,
+          "missing": 0.0025795356,
+          "single_copy": 0.9183147,
+          "total_count": "2326"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Manihot esculenta Annotation Release 101",
+        "pipeline": "NCBI Eukaryotic Genome Annotation Pipeline (EGAP)",
         "provider": "NCBI RefSeq",
-        "release_date": "2017-07-16",
-        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Manihot_esculenta/100",
+        "release_date": "2021-09-20",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Manihot_esculenta/101",
+        "software_version": "9.0",
         "stats": {
           "gene_counts": {
-            "non_coding": 2434,
+            "non_coding": 3366,
             "other": 3,
-            "protein_coding": 28299,
-            "pseudogene": 1218,
-            "total": 31954
+            "protein_coding": 29735,
+            "pseudogene": 1208,
+            "total": 34312
           }
-        }
+        },
+        "status": "Full annotation"
       },
       "assembly_info": {
         "assembly_level": "Chromosome",
-        "assembly_method": "Platanus v. 1.2.1",
-        "assembly_name": "Manihot esculenta v6",
-        "assembly_status": "previous",
+        "assembly_method": "Canu v. 1.6",
+        "assembly_name": "M.esculenta_v8",
+        "assembly_status": "current",
         "assembly_type": "haploid",
         "bioproject_accession": "PRJNA234389",
         "bioproject_lineage": [
@@ -104,35 +125,38 @@
           "submission_date": "2015-09-28T15:16:29.790",
           "tissue": "leaf"
         },
-        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_001659605.1",
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_001659605.2",
+        "comments": "Assembly name: M.esculenta_v8\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the DOE-Joint Genome Institute on 2021/08/13. The original whole-genome shotgun project has the accession LTYI00000000.2.",
         "paired_assembly": {
-          "accession": "GCA_001659605.1",
+          "accession": "GCA_001659605.2",
           "annotation_name": "Annotation submitted by DOE-Joint Genome Institute",
-          "differences": "Added chromosome Pltd",
-          "only_refseq": "chromosome Pltd",
+          "differences": "Added chromosomes MT and Pltd",
+          "only_refseq": "chromosomes MT and Pltd",
           "refseq_genbank_are_different": true,
-          "status": "previous"
+          "status": "current"
         },
-        "release_date": "2016-06-10",
-        "sequencing_tech": "Illumina + CHICAGO",
+        "refseq_category": "reference genome",
+        "release_date": "2021-08-13",
+        "sequencing_tech": "PacBio RSII; Sequel",
         "submitter": "DOE-Joint Genome Institute"
       },
       "assembly_stats": {
-        "atgc_count": "495468045",
-        "contig_l50": 5394,
-        "contig_n50": 26694,
-        "gc_count": "178080389",
-        "gc_percent": 36,
-        "genome_coverage": "121",
-        "number_of_component_sequences": 39915,
-        "number_of_contigs": 39915,
-        "number_of_organelles": 1,
-        "number_of_scaffolds": 2019,
+        "atgc_count": "637114355",
+        "contig_l50": 56,
+        "contig_n50": 3258867,
+        "gaps_between_scaffolds_count": 18,
+        "gc_count": "238985881",
+        "gc_percent": 37.5,
+        "genome_coverage": "97",
+        "number_of_component_sequences": 756,
+        "number_of_contigs": 756,
+        "number_of_organelles": 2,
+        "number_of_scaffolds": 102,
         "scaffold_l50": 10,
-        "scaffold_n50": 28119335,
+        "scaffold_n50": 29151420,
         "total_number_of_chromosomes": 18,
-        "total_sequence_length": "582117524",
-        "total_ungapped_length": "495468045"
+        "total_sequence_length": "639586700",
+        "total_ungapped_length": "637114355"
       },
       "current_accession": "GCF_001659605.2",
       "organelle_info": [
@@ -140,6 +164,11 @@
           "description": "Chloroplast",
           "submitter": "DOE-Joint Genome Institute",
           "total_seq_length": "161453"
+        },
+        {
+          "description": "Mitochondrion",
+          "submitter": "DOE-Joint Genome Institute",
+          "total_seq_length": "682840"
         }
       ],
       "organism": {
@@ -150,15 +179,15 @@
         "organism_name": "Manihot esculenta",
         "tax_id": 3983
       },
-      "paired_accession": "GCA_001659605.1",
+      "paired_accession": "GCA_001659605.2",
       "source_database": "SOURCE_DATABASE_REFSEQ",
       "wgs_info": {
-        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/LTYI00000000.1",
-        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/LTYI01",
-        "wgs_project_accession": "LTYI01"
+        "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/LTYI00000000.2",
+        "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/LTYI02",
+        "wgs_project_accession": "LTYI02"
       }
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1774062941
+  "downloaded_at": 1780446555
 }

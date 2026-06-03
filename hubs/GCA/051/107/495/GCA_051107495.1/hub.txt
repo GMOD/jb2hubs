@@ -21,6 +21,7 @@ htmlPath html/GCA_051107495.1_fChaAug3.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/107/495/GCA_051107495.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/107/495/GCA_051107495.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/107/495/GCA_051107495.1
+liftOver.GCF_051107435.1 liftOver/GCA_051107495.1ToGCF_051107435.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -167,4 +168,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_051107495.1_fChaAug3.hap2.xenoRefGene.ix
 html html/GCA_051107495.1_fChaAug3.hap2.xenoRefGene
+
+##############################################################################
+# GCF_051107435.1 - threadfin butterflyfish - Chaetodon auriga - taxId: 39042
+##############################################################################
+track chainNetGCF_051107435.1
+compositeTrack on
+shortLabel threadfin butterflyfish Chain/Net
+longLabel threadfin butterflyfish (2025-06-26), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_051107435.1
+html html/GCA_051107495.1_fChaAug3.hap2.chainNet
+
+    track chainNetGCF_051107435.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_051107435.1
+    spectrum on
+
+        track chainGCF_051107435.1
+        parent chainNetGCF_051107435.1Viewchain
+        subGroups view=chain
+        shortLabel threadfin butterflyfish Chain
+        longLabel threadfin butterflyfish (2025-06-26) Chained Alignments
+        type bigChain GCF_051107435.1
+        bigDataUrl bbi/GCA_051107495.1_fChaAug3.hap2.chainGCF_051107435.1.bb
+        linkDataUrl bbi/GCA_051107495.1_fChaAug3.hap2.chainGCF_051107435.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_051107435.1
+        parent chainNetGCF_051107435.1Viewchain
+        subGroups view=chain
+        shortLabel threadfin butterflyfish loChain
+        longLabel threadfin butterflyfish (2025-06-26) Lift Over Chained Alignments
+        type bigChain GCF_051107435.1
+        bigDataUrl bbi/GCA_051107495.1_fChaAug3.hap2.chainLiftOverGCF_051107435.1.bb
+        linkDataUrl bbi/GCA_051107495.1_fChaAug3.hap2.chainLiftOverGCF_051107435.1Link.bb
+        priority 2
 

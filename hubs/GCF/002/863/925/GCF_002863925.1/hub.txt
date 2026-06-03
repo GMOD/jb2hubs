@@ -21,6 +21,7 @@ htmlPath html/GCF_002863925.1_EquCab3.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/863/925/GCF_002863925.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/863/925/GCF_002863925.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/863/925/GCF_002863925.1
+liftOver.GCF_001704415.2 liftOver/GCF_002863925.1ToGCF_001704415.2.over.chain.gz
 liftOver.GCF_041296265.1 liftOver/GCF_002863925.1ToGCF_041296265.1.over.chain.gz
 
 track assembly
@@ -292,111 +293,190 @@ baseColorDefault genomicCodons
 labelSeparator " "
 html html/GCF_002863925.1_EquCab3.0.ensGene
 
-##############################################################################
-# GCF_041296265.1 - horse - Equus caballus - taxId: 9796
-##############################################################################
-track chainNetGCF_041296265.1
+track GCF_002863925.1_EquCab3.0ChainNet
 compositeTrack on
-shortLabel horse Chain/Net
-longLabel horse (2018-01-05), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_002863925.1_EquCab3.0
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_041296265.1 s001=GCF_001704415.2
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-otherDb GCF_041296265.1
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_002863925.1_EquCab3.0.chainNet
 
-    track chainNetGCF_041296265.1Viewchain
-    shortLabel Chain
+    track GCF_002863925.1_EquCab3.0ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetGCF_041296265.1
+    visibility dense
+    parent GCF_002863925.1_EquCab3.0ChainNet
     spectrum on
 
         track chainGCF_041296265.1
-        parent chainNetGCF_041296265.1Viewchain
-        subGroups view=chain
-        shortLabel horse Chain
-        longLabel horse (2018-01-05) Chained Alignments
+        parent GCF_002863925.1_EquCab3.0ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel GCF_041296265.1 Chain
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigChain GCF_041296265.1
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.chainGCF_041296265.1.bb
         linkDataUrl bbi/GCF_002863925.1_EquCab3.0.chainGCF_041296265.1Link.bb
-        priority 1
+        otherDb GCF_041296265.1
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
+
+        track chainGCF_001704415.2
+        parent GCF_002863925.1_EquCab3.0ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel GCF_001704415.2 Chain
+        longLabel GCF_001704415.2/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_002863925.1_EquCab3.0.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_002863925.1_EquCab3.0.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 36.621
+
+    track GCF_002863925.1_EquCab3.0ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_002863925.1_EquCab3.0ChainNet
+    spectrum on
 
         track chainSynGCF_041296265.1
-        parent chainNetGCF_041296265.1Viewchain
-        subGroups view=chain
-        shortLabel horse synChain
-        longLabel horse (2018-01-05) Syntenic Chained Alignments
+        parent GCF_002863925.1_EquCab3.0ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel GCF_041296265.1 synChain
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigChain GCF_041296265.1
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.chainSynGCF_041296265.1.bb
         linkDataUrl bbi/GCF_002863925.1_EquCab3.0.chainSynGCF_041296265.1Link.bb
-        priority 2
+        otherDb GCF_041296265.1
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
+
+    track GCF_002863925.1_EquCab3.0ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_002863925.1_EquCab3.0ChainNet
+    spectrum on
 
         track chainRBestGCF_041296265.1
-        parent chainNetGCF_041296265.1Viewchain
-        subGroups view=chain
-        shortLabel horse rbChain
-        longLabel horse (2018-01-05) Reciprocal Best Chained Alignments
+        parent GCF_002863925.1_EquCab3.0ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel GCF_041296265.1 rbChain
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigChain GCF_041296265.1
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.chainRBestGCF_041296265.1.bb
         linkDataUrl bbi/GCF_002863925.1_EquCab3.0.chainRBestGCF_041296265.1Link.bb
-        priority 3
+        otherDb GCF_041296265.1
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
+
+    track GCF_002863925.1_EquCab3.0ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_002863925.1_EquCab3.0ChainNet
+    spectrum on
 
         track chainLiftOverGCF_041296265.1
-        parent chainNetGCF_041296265.1Viewchain
-        subGroups view=chain
-        shortLabel horse loChain
-        longLabel horse (2018-01-05) Lift Over Chained Alignments
+        parent GCF_002863925.1_EquCab3.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCF_041296265.1 loChain
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigChain GCF_041296265.1
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.chainLiftOverGCF_041296265.1.bb
         linkDataUrl bbi/GCF_002863925.1_EquCab3.0.chainLiftOverGCF_041296265.1Link.bb
-        priority 4
+        otherDb GCF_041296265.1
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
 
-    track mafNetGCF_041296265.1Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetGCF_041296265.1
+        track chainLiftOverGCF_001704415.2
+        parent GCF_002863925.1_EquCab3.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel GCF_001704415.2 loChain
+        longLabel GCF_001704415.2/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_002863925.1_EquCab3.0.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_002863925.1_EquCab3.0.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 36.621
+
+    track GCF_002863925.1_EquCab3.0MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_002863925.1_EquCab3.0ChainNet
 
         track netGCF_041296265.1
-        parent mafNetGCF_041296265.1Viewnet
-        subGroups view=net
-        shortLabel horse net
-        longLabel horse (2018-01-05) Net Alignment
+        parent GCF_002863925.1_EquCab3.0MafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel GCF_041296265.1 mafNet
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.GCF_041296265.1.net.bb
         summary bbi/GCF_002863925.1_EquCab3.0.GCF_041296265.1.net.summary.bb
         speciesOrder GCF_041296265.1
-        priority 5
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
 
         track synNetGCF_041296265.1
-        parent mafNetGCF_041296265.1Viewnet
-        subGroups view=net
-        shortLabel horse synNet
-        longLabel horse (2018-01-05) Syntenic Net Alignment
+        parent GCF_002863925.1_EquCab3.0MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel GCF_041296265.1 synNet
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.GCF_041296265.1.synNet.bb
         summary bbi/GCF_002863925.1_EquCab3.0.GCF_041296265.1.synNet.summary.bb
         speciesOrder GCF_041296265.1
-        priority 6
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
 
         track rbestNetGCF_041296265.1
-        parent mafNetGCF_041296265.1Viewnet
-        subGroups view=net
-        shortLabel horse rbestNet
-        longLabel horse (2018-01-05) Reciprocal Best Net Alignment
+        parent GCF_002863925.1_EquCab3.0MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel GCF_041296265.1 rbestNet
+        longLabel GCF_041296265.1/GCF_041296265.1_TB-T2T (2024-08-16) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_002863925.1_EquCab3.0.GCF_041296265.1.rbestNet.bb
         summary bbi/GCF_002863925.1_EquCab3.0.GCF_041296265.1.rbestNet.summary.bb
         speciesOrder GCF_041296265.1
-        priority 7
+        html html/GCF_002863925.1_EquCab3.0.chainNet
+        priority 1.564
 
+
+track evaSnp8
+shortLabel EVA SNP Release 8
+longLabel Short Genetic Variants from European Variant Archive Release 8
+type bigBed 9 +
+visibility dense
+group varRep
+itemRgb on
+bigDataUrl contrib/evaSnp8/evaSnp8.bb
+url https://www.ebi.ac.uk/eva/?variant&accessionID=$$
+searchIndex name
+mouseOver <b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange
+filterValues.varClass SNV|SNV,deletion|Deletion,indel|Indel,insertion|Insertion,MNV|MNV,sequence_alteration|Sequence alteration
+filterLabel.varClass Variant class from EVA SO term
+filterLabel.ucscClass Functional effect per UCSC Variant Annotation
+filterValues.ucscClass downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant
+filterType.ucscClass multipleListOnlyOr
+filterValues.itemRgb 255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants
+filterLabel.itemRgb General variant types by color grouping
+maxWindowCoverage 250000
+maxItems 1000000
+html contrib/evaSnp8/description
 
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb

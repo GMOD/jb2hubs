@@ -21,6 +21,8 @@ htmlPath html/GCA_936440315.1_fBarBab1.1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/936/440/315/GCA_936440315.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/936/440/315/GCA_936440315.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/936/440/315/GCA_936440315.1
+liftOver.GCA_936446605.1 liftOver/GCA_936440315.1ToGCA_936446605.1.over.chain.gz
+liftOver.danRer11 liftOver/GCA_936440315.1ToDanRer11.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -185,4 +187,226 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_936440315.1_fBarBab1.1.xenoRefGene.ix
 html html/GCA_936440315.1_fBarBab1.1.xenoRefGene
+
+track GCA_936440315.1_fBarBab1.1ChainNet
+compositeTrack on
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCA_936440315.1_fBarBab1.1
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCA_936446605.1 s001=danRer11
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
+dragAndDrop subTracks
+visibility hide
+group compGeno
+color 0,0,0
+altColor 255,255,0
+type bed 3
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
+html html/GCA_936440315.1_fBarBab1.1.chainNet
+
+    track GCA_936440315.1_fBarBab1.1ChainNetViewchain
+    shortLabel Chains
+    view chain
+    visibility dense
+    parent GCA_936440315.1_fBarBab1.1ChainNet
+    spectrum on
+
+        track chainGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel barbel Chain
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigChain GCA_936446605.1
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainGCA_936446605.1.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainGCA_936446605.1Link.bb
+        otherDb GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track chainDanRer11
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel Zebrafish/danRer11 Chain
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainDanRer11.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainDanRer11Link.bb
+        otherDb danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
+
+    track GCA_936440315.1_fBarBab1.1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCA_936440315.1_fBarBab1.1ChainNet
+    spectrum on
+
+        track chainSynGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel barbel synChain
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigChain GCA_936446605.1
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainSynGCA_936446605.1.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainSynGCA_936446605.1Link.bb
+        otherDb GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track chainSynDanRer11
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Zebrafish/danRer11 synChain
+        longLabel Zebrafish/danRer11/danRer11_fBarBab1.1_alternate_haplotype (May 2017) Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainSynDanRer11.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainSynDanRer11Link.bb
+        otherDb danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
+
+    track GCA_936440315.1_fBarBab1.1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCA_936440315.1_fBarBab1.1ChainNet
+    spectrum on
+
+        track chainRBestGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel barbel rbChain
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigChain GCA_936446605.1
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainRBestGCA_936446605.1.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainRBestGCA_936446605.1Link.bb
+        otherDb GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track chainRBestDanRer11
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Zebrafish/danRer11 rbChain
+        longLabel Zebrafish/danRer11/danRer11_fBarBab1.1_alternate_haplotype (May 2017) Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainRBestDanRer11.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainRBestDanRer11Link.bb
+        otherDb danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
+
+    track GCA_936440315.1_fBarBab1.1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCA_936440315.1_fBarBab1.1ChainNet
+    spectrum on
+
+        track chainLiftOverGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel barbel loChain
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigChain GCA_936446605.1
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainLiftOverGCA_936446605.1.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainLiftOverGCA_936446605.1Link.bb
+        otherDb GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track chainLiftOverDanRer11
+        parent GCA_936440315.1_fBarBab1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel Zebrafish/danRer11 loChain
+        longLabel Zebrafish/danRer11/danRer11_fBarBab1.1_alternate_haplotype (May 2017) Chained Alignments
+        type bigChain danRer11
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainLiftOverDanRer11.bb
+        linkDataUrl bbi/GCA_936440315.1_fBarBab1.1.chainLiftOverDanRer11Link.bb
+        otherDb danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
+
+    track GCA_936440315.1_fBarBab1.1MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCA_936440315.1_fBarBab1.1ChainNet
+
+        track netGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel barbel mafNet
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.GCA_936446605.1.net.bb
+        summary bbi/GCA_936440315.1_fBarBab1.1.GCA_936446605.1.net.summary.bb
+        speciesOrder GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track synNetGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel barbel synNet
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.GCA_936446605.1.synNet.bb
+        summary bbi/GCA_936440315.1_fBarBab1.1.GCA_936446605.1.synNet.summary.bb
+        speciesOrder GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track rbestNetGCA_936446605.1
+        parent GCA_936440315.1_fBarBab1.1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel barbel rbestNet
+        longLabel barbel/GCA_936446605.1_fBarBab1.1_alternate_haplotype (2022-04-16) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.GCA_936446605.1.rbestNet.bb
+        summary bbi/GCA_936440315.1_fBarBab1.1.GCA_936446605.1.rbestNet.summary.bb
+        speciesOrder GCA_936446605.1
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 10.497
+
+        track netDanRer11
+        parent GCA_936440315.1_fBarBab1.1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel Zebrafish/danRer11 mafNet
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.danRer11.net.bb
+        summary bbi/GCA_936440315.1_fBarBab1.1.danRer11.net.summary.bb
+        speciesOrder danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
+
+        track synNetDanRer11
+        parent GCA_936440315.1_fBarBab1.1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel Zebrafish/danRer11 synNet
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.danRer11.synNet.bb
+        summary bbi/GCA_936440315.1_fBarBab1.1.danRer11.synNet.summary.bb
+        speciesOrder danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
+
+        track rbestNetDanRer11
+        parent GCA_936440315.1_fBarBab1.1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel Zebrafish/danRer11 rbestNet
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCA_936440315.1_fBarBab1.1.danRer11.rbestNet.bb
+        summary bbi/GCA_936440315.1_fBarBab1.1.danRer11.rbestNet.summary.bb
+        speciesOrder danRer11
+        html html/GCA_936440315.1_fBarBab1.1.chainNet
+        priority 64.430
 

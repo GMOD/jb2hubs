@@ -20,6 +20,7 @@ htmlPath html/GCF_026437365.1_fEucNew1.0.hap1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/026/437/365/GCF_026437365.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/026/437/365/GCF_026437365.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/026/437/365/GCF_026437365.1
+liftOver.GCA_026437355.1 liftOver/GCF_026437365.1ToGCA_026437355.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -124,8 +125,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_026437365.1_fEucNew1.0.hap1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_026437365.1_fEucNew1.0.hap1.ncbiRefSeq.bb
@@ -142,8 +143,8 @@ priority 2
         longLabel NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_026437365.1_fEucNew1.0.hap1.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -159,8 +160,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_026437365.1_fEucNew1.0.hap1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -271,4 +272,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_026437365.1_fEucNew1.0.hap1.xenoRefGene.ix
 html html/GCF_026437365.1_fEucNew1.0.hap1.xenoRefGene
+
+##############################################################################
+# GCA_026437355.1 - tidewater goby - Eucyclogobius newberryi - taxId: 166745
+##############################################################################
+track chainNetGCA_026437355.1
+compositeTrack on
+shortLabel tidewater goby Chain/Net
+longLabel tidewater goby (2022-11-28), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_026437355.1
+html html/GCF_026437365.1_fEucNew1.0.hap1.chainNet
+
+    track chainNetGCA_026437355.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_026437355.1
+    spectrum on
+
+        track chainGCA_026437355.1
+        parent chainNetGCA_026437355.1Viewchain
+        subGroups view=chain
+        shortLabel tidewater goby Chain
+        longLabel tidewater goby (2022-11-28) Chained Alignments
+        type bigChain GCA_026437355.1
+        bigDataUrl bbi/GCF_026437365.1_fEucNew1.0.hap1.chainGCA_026437355.1.bb
+        linkDataUrl bbi/GCF_026437365.1_fEucNew1.0.hap1.chainGCA_026437355.1Link.bb
+        priority 1
+
+        track chainLiftOverGCA_026437355.1
+        parent chainNetGCA_026437355.1Viewchain
+        subGroups view=chain
+        shortLabel tidewater goby loChain
+        longLabel tidewater goby (2022-11-28) Lift Over Chained Alignments
+        type bigChain GCA_026437355.1
+        bigDataUrl bbi/GCF_026437365.1_fEucNew1.0.hap1.chainLiftOverGCA_026437355.1.bb
+        linkDataUrl bbi/GCF_026437365.1_fEucNew1.0.hap1.chainLiftOverGCA_026437355.1Link.bb
+        priority 2
 

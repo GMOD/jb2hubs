@@ -165,3 +165,650 @@ type bigBed 3
 bigDataUrl bbi/GCF_000345385.2_ASM34538v2.allGaps.bb
 html html/GCF_000345385.2_ASM34538v2.allGaps
 
+
+track codingGene
+shortLabel NCBI Coding Genes
+longLabel GenBank/RefSeq protein-coding gene annotations
+type bigBed 12 +
+bigDataUrl contrib/lowelab/codingGene.bb
+html contrib/lowelab/codingGene
+itemRgb on
+visibility pack
+group genes
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/codingGene.ix
+labelFields name,gene
+defaultLabelFields name
+mouseOverField gene
+urls protein_id="https://www.ncbi.nlm.nih.gov/protein/$$" cog_id="https://www.ncbi.nlm.nih.gov/research/cog/cog/$$/" EC_number="https://enzyme.expasy.org/EC/$$" protein_seq="https://microbes.ucsc.edu/GCF_000345385.2/protein/$$"
+
+track Pfam
+shortLabel Pfam Domains
+longLabel Pfam domain hits
+type bigBed 9 +
+bigDataUrl contrib/lowelab/Pfam.bb
+html contrib/lowelab/Pfam
+itemRgb on
+visibility dense
+group genes
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/Pfam.ix
+labelFields name
+mouseOverField description
+urls pfam_acc="https://www.ebi.ac.uk/interpro/entry/pfam/$$/"
+
+track cddInfo
+shortLabel NCBI Conserved Domains
+longLabel NCBI Conserved Domain Database in genome
+type bigBed 9 +
+bigDataUrl contrib/lowelab/cddInfo.bb
+html contrib/lowelab/cddInfo
+itemRgb on
+visibility hide
+group genes
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/cddInfo.ix
+labelFields name
+mouseOverField description
+urls pssm_id="https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid=$$"
+
+track igenics
+shortLabel Intergenic Regions
+longLabel Intergenic Regions between proteins
+type bigBed 6
+bigDataUrl contrib/lowelab/igenics.bb
+html contrib/lowelab/igenics
+visibility dense
+group genes
+priority 2.56
+color 50,50,233
+
+track prodigal
+shortLabel Prodigal
+longLabel Gene predictions by Prodigal
+type bigBed 6
+bigDataUrl contrib/lowelab/prodigal.bb
+html contrib/lowelab/prodigal
+visibility dense
+group genes
+priority 3.0
+color 150,0,50
+
+track glimmer
+shortLabel Glimmer
+longLabel Gene predictions by Glimmer
+type bigBed 6
+bigDataUrl contrib/lowelab/glimmer.bb
+html contrib/lowelab/glimmer
+visibility dense
+group genes
+priority 3.0
+color 100,0,150
+
+track blastzSelf
+shortLabel Self Blastz
+longLabel Self Blastz Alignments
+type bigPsl
+bigDataUrl contrib/lowelab/blastzSelf.bb
+html contrib/lowelab/blastzSelf
+visibility dense
+group compGeno
+priority 2.06
+color 100,50,0
+altColor 255,240,200
+otherTwoBitUrl https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/385/GCF_000345385.2/GCF_000345385.2.2bit
+
+track selfHomologs
+shortLabel Self homologs
+longLabel Homologs Within Genome
+type bigBed 6 +
+bigDataUrl contrib/lowelab/selfHomologs.bb
+html contrib/lowelab/selfHomologs
+group compGeno
+color 129,25,54
+priority 2.1
+visibility dense
+useScore 1
+searchIndex name
+searchTrix contrib/lowelab/selfHomologs.ix
+labelFields name
+mouseOverField E_value
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/selfHomologs/$$"
+
+track BlastP_Crenarchaeota
+compositeTrack on
+shortLabel BlastP Crenarchaea
+longLabel BlastP Hits to Crenarchaea by Phyla
+type bigBed 6 +
+group compGeno
+visibility dense
+useScore 1
+color 200,20,50
+html contrib/lowelab/blastP
+
+track BlastP_Thermoproteales
+parent BlastP_Crenarchaeota on
+shortLabel Thermoproteales
+longLabel BlastP Hits to Thermoproteales (ie, Pyrobaculum, Thermoproteus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Thermoproteales.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Thermoproteales.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Sulfolobales
+parent BlastP_Crenarchaeota on
+shortLabel Sulfolobales
+longLabel BlastP hits to Sulfolobes
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Sulfolobales.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Sulfolobales.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Desulfurococcales
+parent BlastP_Crenarchaeota on
+shortLabel Desulfurococcales
+longLabel BlastP Hits to Desulfurococcales (ie, A.pernix, S.marinus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Desulfurococcales.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Desulfurococcales.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Euryarchaeota
+compositeTrack on
+shortLabel BlastP Euryarchaea
+longLabel BlastP Hits to Euryarchaea by Phyla
+type bigBed 6 +
+group compGeno
+visibility dense
+useScore 1
+color 45,103,27
+html contrib/lowelab/blastP
+
+track BlastP_Halobacteria
+parent BlastP_Euryarchaeota on
+shortLabel Halobacteria
+longLabel BlastP hits to Halobacteria (ie, Haloferax, Haloarcula)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Halobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Halobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Methanobacteria
+parent BlastP_Euryarchaeota on
+shortLabel Methanobacteria
+longLabel BlastP hits to Methanobacteria (ie, Methanothermobacter, Methanosphaera)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Methanobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Methanobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Methanococci
+parent BlastP_Euryarchaeota on
+shortLabel Methanococci
+longLabel BlastP hits to Methanococci (ie, M.jann, M.maripaludis)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Methanococci.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Methanococci.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Methanomicrobia
+parent BlastP_Euryarchaeota on
+shortLabel Methanomicrobia
+longLabel BlastP hits to Methanomicrobia (ie, Methanosarcina, Methanococcoides)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Methanomicrobia.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Methanomicrobia.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Methanopyri
+parent BlastP_Euryarchaeota on
+shortLabel Methanopyri
+longLabel BlastP hits to Methanopyri (ie, M.kandleri)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Methanopyri.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Methanopyri.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Thermococci
+parent BlastP_Euryarchaeota on
+shortLabel Thermococci
+longLabel BlastP hits to Thermococci (ie, Pyrococcus, Thermococcus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Thermococci.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Thermococci.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Thermoplasmata
+parent BlastP_Euryarchaeota on
+shortLabel Thermoplasmata
+longLabel BlastP hits to Thermoplasmata (ie, T.volcanium, Ferroplasma, Picrophilus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Thermoplasmata.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Thermoplasmata.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Archaeoglobi
+parent BlastP_Euryarchaeota on
+shortLabel Archaeoglobi
+longLabel BlastP hits to Archaeoglobi (ie, A.fulgidus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Archaeoglobi.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Archaeoglobi.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Bacteria
+compositeTrack on
+shortLabel BlastP Bacteria
+longLabel BlastP Hits to Bacteria by Phyla
+type bigBed 6 +
+group compGeno
+visibility dense
+useScore 1
+color 20,20,250
+html contrib/lowelab/blastP
+
+track BlastP_Aquificae
+parent BlastP_Bacteria on
+shortLabel Aquificae
+longLabel BlastP hits to Aquificae (ie, Aquifex)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Aquificae.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Aquificae.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Thermotogae
+parent BlastP_Bacteria on
+shortLabel Thermotogae
+longLabel BlastP hits to Phyla Thermotogae (ie, Thermatoga)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Thermotogae.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Thermotogae.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_DeinococcusThermus
+parent BlastP_Bacteria on
+shortLabel Dein-Thermus
+longLabel BlastP hits to Phyla Deinococcus-Thermus (ie, D.radiodurans, T.thermophilus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_DeinococcusThermus.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_DeinococcusThermus.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Firmicutes
+parent BlastP_Bacteria on
+shortLabel Firmicutes
+longLabel BlastP hits to Phyla Firmicutes (ie, B.halodurans, C.hydrogenformans)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Firmicutes.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Firmicutes.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Gammaproteobacteria
+parent BlastP_Bacteria on
+shortLabel Gamma-proteo
+longLabel BlastP hits to Gamma-Proteobacteria (ie, E.coli, V.cholera)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Gammaproteobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Gammaproteobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Alphaproteobacteria
+parent BlastP_Bacteria on
+shortLabel Alpha-proteo
+longLabel BlastP hits to Alpha-proteobacteria
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Alphaproteobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Alphaproteobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Betaproteobacteria
+parent BlastP_Bacteria on
+shortLabel Beta-proteo
+longLabel BlastP hits to Beta-proteobacteria
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Betaproteobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Betaproteobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Deltaproteobacteria
+parent BlastP_Bacteria on
+shortLabel Delta-proteo
+longLabel BlastP hits to Delta-proteobacteria (ie, Geobacter, S.acidotrophicus)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Deltaproteobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Deltaproteobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Epsilonproteobacteria
+parent BlastP_Bacteria on
+shortLabel Epsilon-proteo
+longLabel BlastP hits to Epsilon-proteobacteria (ie, H.pylori)
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Epsilonproteobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Epsilonproteobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Actinobacteria
+parent BlastP_Bacteria on
+shortLabel Actinobacteria
+longLabel BlastP hits to Actinobacteria
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Actinobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Actinobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Bacteroidetes
+parent BlastP_Bacteria on
+shortLabel Bacteroidetes
+longLabel BlastP hits to Bacteroidetes
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Bacteroidetes.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Bacteroidetes.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Cyanobacteria
+parent BlastP_Bacteria on
+shortLabel Cyanobacteria
+longLabel BlastP hits to Cyanobacteria
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Cyanobacteria.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Cyanobacteria.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_BacteriaOther
+parent BlastP_Bacteria on
+shortLabel BlastP Other Bacteria
+longLabel BlastP hits to Other Bacteria
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_BacteriaOther.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_BacteriaOther.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Spirochaetes
+parent BlastP_Bacteria on
+shortLabel Spirochaetes
+longLabel BlastP hits to Spirochaetes
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Spirochaetes.bb
+html contrib/lowelab/blastP
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Spirochaetes.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Related
+shortLabel BlastP Related
+longLabel BlastP Hits to Related Species
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Related.bb
+html contrib/lowelab/blastP
+group genes
+color 129,25,54
+visibility dense
+useScore 1
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Related.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Viruses
+shortLabel BlastP Viruses
+longLabel BlastP Hits to Viruses
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Viruses.bb
+html contrib/lowelab/blastP
+group compGeno
+color 50,50,100
+visibility dense
+useScore 1
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Viruses.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_ArchaeaOther
+shortLabel BlastP Other Archaea
+longLabel BlastP Hits to Other Archaea
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_ArchaeaOther.bb
+html contrib/lowelab/blastP
+group compGeno
+color 50,50,100
+visibility dense
+useScore 1
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_ArchaeaOther.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track BlastP_Thaumarchaeota
+shortLabel BlastP Thaumarchaeota
+longLabel BlastP hits to Thaumarchaeota
+type bigBed 6 +
+bigDataUrl contrib/lowelab/BlastP_Thaumarchaeota.bb
+html contrib/lowelab/blastP
+group compGeno
+color 50,50,100
+visibility dense
+useScore 1
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/BlastP_Thaumarchaeota.ix
+labelFields name
+mouseOverField target_org_name
+urls result_link="https://microbes.ucsc.edu/GCF_000345385.2/blastp/$$" target_rs_acc="https://genome.ucsc.edu/h/$$"
+
+track Conservation
+superTrack on show
+shortLabel Conservation
+longLabel Conservation
+group compGeno
+html contrib/lowelab/Conservation
+
+track phastCons
+parent Conservation
+shortLabel phastCons
+longLabel PhastCons conservation scores
+type bigWig 0 1
+bigDataUrl contrib/lowelab/phastCons.bw
+html contrib/lowelab/phastCons
+visibility full
+group compGeno
+color 0,60,120
+altColor 0,60,120
+autoScale off
+viewLimits 0:1
+maxHeightPixels 100:40:11
+priority 1
+
+track multiz
+parent Conservation
+shortLabel Multiz alignments
+longLabel Multiz multiple alignments
+type bigMaf
+bigDataUrl contrib/lowelab/multiz.bb
+html contrib/lowelab/multiz
+visibility pack
+group compGeno
+priority 2
+speciesOrder GCF_000009085.1 GCF_000009305.1 GCF_001693335.1 GCF_000007905.1 GCF_000091985.1 GCF_000008525.1 GCF_002952275.1 GCF_000172955.1 GCF_000270005.1 GCF_000281675.2 GCF_000021165.1 GCF_000345645.2 GCF_000013245.1 GCF_000008785.1 GCF_000021465.1 GCF_001991095.1 GCF_000299775.1 GCF_000475735.1 GCF_002005525.1 GCF_000513515.1 GCF_000401375.1 GCF_000497465.2
+speciesLabels GCF_000009085.1=Campylobacter_jejuni_NCTC_11168 GCF_000009305.1=Helicobacter_acinonychis_Sheeba GCF_001693335.1=Helicobacter_enhydrae_MIT_01-6242 GCF_000007905.1=Helicobacter_hepaticus_ATCC_51449 GCF_000091985.1=Helicobacter_mustelae_12198 GCF_000008525.1=Helicobacter_pylori_26695 GCF_002952275.1=Helicobacter_pylori_7.13 GCF_000172955.1=Helicobacter_pylori_B128 GCF_000270005.1=Helicobacter_pylori_F16 GCF_000281675.2=Helicobacter_pylori_FD423 GCF_000021165.1=Helicobacter_pylori_G27 GCF_000345385.2=Helicobacter_pylori_GAM254Ai GCF_000345645.2=Helicobacter_pylori_GAM83T GCF_000013245.1=Helicobacter_pylori_HPAG1 GCF_000008785.1=Helicobacter_pylori_J99 GCF_000021465.1=Helicobacter_pylori_P12 GCF_001991095.1=Helicobacter_pylori_PMSS1 GCF_000299775.1=Helicobacter_pylori_R046Wa GCF_000475735.1=Helicobacter_pylori_SA40A GCF_002005525.1=Helicobacter_pylori_SS1 GCF_000513515.1=Helicobacter_pylori_Sahul64 GCF_000401375.1=Helicobacter_pylori_UM034 GCF_000497465.2=Helicobacter_pylori_X47-2AL
+
+track gbRNA
+shortLabel NCBI ncRNAs
+longLabel Annotated GenBank/RefSeq ncRNAs
+type bigBed 9 +
+bigDataUrl contrib/lowelab/gbRNA.bb
+html contrib/lowelab/gbRNA
+itemRgb on
+visibility dense
+group genes
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/gbRNA.ix
+labelFields name
+mouseOverField description
+
+track tRNAs
+shortLabel tRNA genes
+longLabel tRNA genes predicted by tRNAscan-SE and annotated in GtRNAdb
+type bigBed 9 +
+bigDataUrl contrib/lowelab/tRNAs.bb
+html contrib/lowelab/tRNAs
+itemRgb on
+visibility pack
+group genes
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/tRNAs.ix
+labelFields name
+mouseOverField aa
+url https://gtrnadb.ucsc.edu/genomes/bacteria/Heli_pylo_GAM254Ai/genes/$$.html
+urlLabel GtRNAdb annotation:
+
+track Rfam
+shortLabel Rfam
+longLabel Rfam noncoding RNA annotations
+type bigBed 9 +
+bigDataUrl contrib/lowelab/Rfam.bb
+html contrib/lowelab/Rfam
+itemRgb on
+visibility dense
+group genes
+skipEmptyFields on
+searchIndex name
+searchTrix contrib/lowelab/Rfam.ix
+labelFields name
+mouseOverField description
+urls rfam_acc="https://rfam.org/family/$$"

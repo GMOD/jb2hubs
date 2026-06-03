@@ -22,6 +22,8 @@ blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/018/350/175/GCF_018350175.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/018/350/175/GCF_018350175.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/018/350/175/GCF_018350175.1
 liftOver.GCF_000181335.3 liftOver/GCF_018350175.1ToGCF_000181335.3.over.chain.gz
+liftOver.GCF_001704415.2 liftOver/GCF_018350175.1ToGCF_001704415.2.over.chain.gz
+liftOver.GCF_018350155.1 liftOver/GCF_018350175.1ToGCF_018350155.1.over.chain.gz
 liftOver.felCat8 liftOver/GCF_018350175.1ToFelCat8.over.chain.gz
 liftOver.felCat9 liftOver/GCF_018350175.1ToFelCat9.over.chain.gz
 liftOver.hg38 liftOver/GCF_018350175.1ToHg38.over.chain.gz
@@ -315,7 +317,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_018350175.1_F.catus_Fca126_mat1.0
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=felCat9 s001=GCF_000181335.3 s002=felCat8 s003=hg38
+subGroup2 species Assembly s000=felCat9 s001=GCF_000181335.3 s002=felCat8 s003=GCF_018350155.1 s004=hg38 s005=GCF_001704415.2
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -373,9 +375,21 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 1.255
 
-        track chainHg38
+        track chainGCF_018350155.1
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewchain off
         subGroups view=chain species=s003 chainType=c00
+        shortLabel Geoffroy's cat Chain
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigChain GCF_018350155.1
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainGCF_018350155.1.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainGCF_018350155.1Link.bb
+        otherDb GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track chainHg38
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
         shortLabel Human/hg38 Chain
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigChain hg38
@@ -384,6 +398,18 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         otherDb hg38
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 38.778
+
+        track chainGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewchain off
+        subGroups view=chain species=s005 chainType=c00
+        shortLabel goat Chain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
 
     track GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewSynTen
     shortLabel Syntenic
@@ -396,7 +422,7 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewSynTen off
         subGroups view=synten species=s000 chainType=c01
         shortLabel Cat/felCat9 synChain
-        longLabel Cat/felCat9/felCat9 (Nov. 2017) Chained Alignments
+        longLabel Cat/felCat9/felCat9_ARS1.2 (Nov. 2017) Chained Alignments
         type bigChain felCat9
         bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynFelCat9.bb
         linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynFelCat9Link.bb
@@ -428,17 +454,41 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 1.255
 
-        track chainSynHg38
+        track chainSynGCF_018350155.1
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewSynTen off
         subGroups view=synten species=s003 chainType=c01
+        shortLabel Geoffroy's cat synChain
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigChain GCF_018350155.1
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynGCF_018350155.1.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynGCF_018350155.1Link.bb
+        otherDb GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track chainSynHg38
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
         shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38_Felis_catus_9.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_O.geoffroyi_Oge1_pat1.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynHg38.bb
         linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynHg38Link.bb
         otherDb hg38
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 38.778
+
+        track chainSynGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewSynTen off
+        subGroups view=synten species=s005 chainType=c01
+        shortLabel goat synChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainSynGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
 
     track GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewRBest
     shortLabel Reciprocal best
@@ -451,7 +501,7 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewRBest off
         subGroups view=rbest species=s000 chainType=c02
         shortLabel Cat/felCat9 rbChain
-        longLabel Cat/felCat9/felCat9_Felis_catus_9.0 (Nov. 2017) Chained Alignments
+        longLabel Cat/felCat9/felCat9_ARS1.2 (Nov. 2017) Chained Alignments
         type bigChain felCat9
         bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestFelCat9.bb
         linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestFelCat9Link.bb
@@ -483,17 +533,41 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 1.255
 
-        track chainRBestHg38
+        track chainRBestGCF_018350155.1
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewRBest off
         subGroups view=rbest species=s003 chainType=c02
+        shortLabel Geoffroy's cat rbChain
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigChain GCF_018350155.1
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestGCF_018350155.1.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestGCF_018350155.1Link.bb
+        otherDb GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track chainRBestHg38
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38_Felis_catus_9.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_O.geoffroyi_Oge1_pat1.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestHg38.bb
         linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestHg38Link.bb
         otherDb hg38
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 38.778
+
+        track chainRBestGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewRBest off
+        subGroups view=rbest species=s005 chainType=c02
+        shortLabel goat rbChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainRBestGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
 
     track GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewLiftOver
     shortLabel Lift over
@@ -506,7 +580,7 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewLiftOver off
         subGroups view=liftover species=s000 chainType=c03
         shortLabel Cat/felCat9 loChain
-        longLabel Cat/felCat9/felCat9_Felis_catus_9.0 (Nov. 2017) Chained Alignments
+        longLabel Cat/felCat9/felCat9_ARS1.2 (Nov. 2017) Chained Alignments
         type bigChain felCat9
         bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverFelCat9.bb
         linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverFelCat9Link.bb
@@ -538,17 +612,41 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 1.255
 
-        track chainLiftOverHg38
+        track chainLiftOverGCF_018350155.1
         parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewLiftOver off
         subGroups view=liftover species=s003 chainType=c03
+        shortLabel Geoffroy's cat loChain
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigChain GCF_018350155.1
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverGCF_018350155.1.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverGCF_018350155.1Link.bb
+        otherDb GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track chainLiftOverHg38
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s004 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38_Felis_catus_9.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_O.geoffroyi_Oge1_pat1.0 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverHg38.bb
         linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverHg38Link.bb
         otherDb hg38
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 38.778
+
+        track chainLiftOverGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s005 chainType=c03
+        shortLabel goat loChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
 
     track GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet
     shortLabel Nets
@@ -664,9 +762,45 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 1.255
 
-        track netHg38
+        track netGCF_018350155.1
         parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
         subGroups view=align species=s003 chainType=c04
+        shortLabel Geoffroy's cat mafNet
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_018350155.1.net.bb
+        summary bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_018350155.1.net.summary.bb
+        speciesOrder GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track synNetGCF_018350155.1
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
+        subGroups view=align species=s003 chainType=c05
+        shortLabel Geoffroy's cat synNet
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_018350155.1.synNet.bb
+        summary bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_018350155.1.synNet.summary.bb
+        speciesOrder GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track rbestNetGCF_018350155.1
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
+        subGroups view=align species=s003 chainType=c06
+        shortLabel Geoffroy's cat rbestNet
+        longLabel Geoffroy's cat/GCF_018350155.1_O.geoffroyi_Oge1_pat1.0 (2021-05-13) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_018350155.1.rbestNet.bb
+        summary bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_018350155.1.rbestNet.summary.bb
+        speciesOrder GCF_018350155.1
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 2.942
+
+        track netHg38
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
+        subGroups view=align species=s004 chainType=c04
         shortLabel Human/hg38 mafNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -678,7 +812,7 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
 
         track synNetHg38
         parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
-        subGroups view=align species=s003 chainType=c05
+        subGroups view=align species=s004 chainType=c05
         shortLabel Human/hg38 synNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -690,7 +824,7 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
 
         track rbestNetHg38
         parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
-        subGroups view=align species=s003 chainType=c06
+        subGroups view=align species=s004 chainType=c06
         shortLabel Human/hg38 rbestNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -700,6 +834,64 @@ html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
         priority 38.778
 
+        track netGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
+        subGroups view=align species=s005 chainType=c04
+        shortLabel goat mafNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_001704415.2.net.bb
+        summary bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_001704415.2.net.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
+
+        track synNetGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
+        subGroups view=align species=s005 chainType=c05
+        shortLabel goat synNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_001704415.2.synNet.bb
+        summary bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_001704415.2.synNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
+
+        track rbestNetGCF_001704415.2
+        parent GCF_018350175.1_F.catus_Fca126_mat1.0MafNetViewnet off
+        subGroups view=align species=s005 chainType=c06
+        shortLabel goat rbestNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_001704415.2.rbestNet.bb
+        summary bbi/GCF_018350175.1_F.catus_Fca126_mat1.0.GCF_001704415.2.rbestNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_018350175.1_F.catus_Fca126_mat1.0.chainNet
+        priority 41.568
+
+
+track evaSnp8
+shortLabel EVA SNP Release 8
+longLabel Short Genetic Variants from European Variant Archive Release 8
+type bigBed 9 +
+visibility dense
+group varRep
+itemRgb on
+bigDataUrl contrib/evaSnp8/evaSnp8.bb
+url https://www.ebi.ac.uk/eva/?variant&accessionID=$$
+searchIndex name
+mouseOver <b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange
+filterValues.varClass SNV|SNV,deletion|Deletion,indel|Indel,insertion|Insertion,MNV|MNV,sequence_alteration|Sequence alteration
+filterLabel.varClass Variant class from EVA SO term
+filterLabel.ucscClass Functional effect per UCSC Variant Annotation
+filterValues.ucscClass downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant
+filterType.ucscClass multipleListOnlyOr
+filterValues.itemRgb 255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants
+filterLabel.itemRgb General variant types by color grouping
+maxWindowCoverage 250000
+maxItems 1000000
+html contrib/evaSnp8/description
 
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb

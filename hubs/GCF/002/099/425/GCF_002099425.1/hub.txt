@@ -20,6 +20,7 @@ htmlPath html/GCF_002099425.1_phaCin_unsw_v4.1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/099/425/GCF_002099425.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/099/425/GCF_002099425.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/099/425/GCF_002099425.1
+liftOver.GCF_001704415.2 liftOver/GCF_002099425.1ToGCF_001704415.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -263,6 +264,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_002099425.1_phaCin_unsw_v4.1.xenoRefGene.ix
 html html/GCF_002099425.1_phaCin_unsw_v4.1.xenoRefGene
+
+##############################################################################
+# GCF_001704415.2 - goat - Capra hircus - taxId: 9925
+##############################################################################
+track chainNetGCF_001704415.2
+compositeTrack on
+shortLabel goat Chain/Net
+longLabel goat (2016-08-24), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_001704415.2
+html html/GCF_002099425.1_phaCin_unsw_v4.1.chainNet
+
+    track chainNetGCF_001704415.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_001704415.2
+    spectrum on
+
+        track chainGCF_001704415.2
+        parent chainNetGCF_001704415.2Viewchain
+        subGroups view=chain
+        shortLabel goat Chain
+        longLabel goat (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_002099425.1_phaCin_unsw_v4.1.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_002099425.1_phaCin_unsw_v4.1.chainGCF_001704415.2Link.bb
+        priority 1
+
+        track chainLiftOverGCF_001704415.2
+        parent chainNetGCF_001704415.2Viewchain
+        subGroups view=chain
+        shortLabel goat loChain
+        longLabel goat (2016-08-24) Lift Over Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_002099425.1_phaCin_unsw_v4.1.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_002099425.1_phaCin_unsw_v4.1.chainLiftOverGCF_001704415.2Link.bb
+        priority 2
 
 track HLTOGAannotvHg38v1
 bigDataUrl bbi/HLTOGAannotVsHg38v1.bb

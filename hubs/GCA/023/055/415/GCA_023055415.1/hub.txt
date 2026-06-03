@@ -20,6 +20,7 @@ htmlPath html/GCA_023055415.1_fCliAna1.0.a.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/023/055/415/GCA_023055415.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/023/055/415/GCA_023055415.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/023/055/415/GCA_023055415.1
+liftOver.GCF_023055335.1 liftOver/GCA_023055415.1ToGCF_023055335.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -166,4 +167,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_023055415.1_fCliAna1.0.a.xenoRefGene.ix
 html html/GCA_023055415.1_fCliAna1.0.a.xenoRefGene
+
+##############################################################################
+# GCF_023055335.1 - woolly sculpin - Clinocottus analis - taxId: 304258
+##############################################################################
+track chainNetGCF_023055335.1
+compositeTrack on
+shortLabel woolly sculpin Chain/Net
+longLabel woolly sculpin (2022-04-19), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_023055335.1
+html html/GCA_023055415.1_fCliAna1.0.a.chainNet
+
+    track chainNetGCF_023055335.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_023055335.1
+    spectrum on
+
+        track chainGCF_023055335.1
+        parent chainNetGCF_023055335.1Viewchain
+        subGroups view=chain
+        shortLabel woolly sculpin Chain
+        longLabel woolly sculpin (2022-04-19) Chained Alignments
+        type bigChain GCF_023055335.1
+        bigDataUrl bbi/GCA_023055415.1_fCliAna1.0.a.chainGCF_023055335.1.bb
+        linkDataUrl bbi/GCA_023055415.1_fCliAna1.0.a.chainGCF_023055335.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_023055335.1
+        parent chainNetGCF_023055335.1Viewchain
+        subGroups view=chain
+        shortLabel woolly sculpin loChain
+        longLabel woolly sculpin (2022-04-19) Lift Over Chained Alignments
+        type bigChain GCF_023055335.1
+        bigDataUrl bbi/GCA_023055415.1_fCliAna1.0.a.chainLiftOverGCF_023055335.1.bb
+        linkDataUrl bbi/GCA_023055415.1_fCliAna1.0.a.chainLiftOverGCF_023055335.1Link.bb
+        priority 2
 

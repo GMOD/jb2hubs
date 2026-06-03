@@ -114,18 +114,18 @@ bigDataUrl bbi/GCA_901343595.1_MONAX5.simpleRepeat.bb
 html html/GCA_901343595.1_MONAX5.simpleRepeat
 
 track ncbiGene
-longLabel Gene models submitted to NCBI
-shortLabel Gene models
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
 visibility pack
 color 0,80,150
 altColor 150,80,0
 colorByStrand 0,80,150 150,80,0
 bigDataUrl bbi/GCA_901343595.1_MONAX5.ncbiGene.bb
 type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
 html html/GCA_901343595.1_MONAX5.ncbiGene
 searchIndex name
 searchTrix ixIxx/GCA_901343595.1_MONAX5.ncbiGene.ix
-url https://www.ncbi.nlm.nih.gov/gene/?term=$$
 urlLabel Entrez gene:
 labelFields geneName,geneName2
 defaultLabelFields geneName2
@@ -278,23 +278,6 @@ html html/GCA_901343595.1_MONAX5.chainNet
         bigDataUrl bbi/GCA_901343595.1_MONAX5.chainRBestMm10.bb
         linkDataUrl bbi/GCA_901343595.1_MONAX5.chainRBestMm10Link.bb
         priority 3
-
-    track mafNetMm10Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetMm10
-
-        track netMm10
-        parent mafNetMm10Viewnet
-        subGroups view=net
-        shortLabel Mouse net
-        longLabel Mouse (Dec. 2011 (GRCm38/mm10)) Net Alignment
-        type bigMaf
-        bigDataUrl bbi/GCA_901343595.1_MONAX5.mm10.net.bb
-        summary bbi/GCA_901343595.1_MONAX5.mm10.net.summary.bb
-        speciesOrder mm10
-        priority 4
 
 track HLTOGAannotvHg38v1
 bigDataUrl bbi/HLTOGAannotVsHg38v1.bb

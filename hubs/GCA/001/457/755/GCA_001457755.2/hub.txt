@@ -24,7 +24,7 @@ isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/001/457/755/GCA_001457755.2
 track assembly
 longLabel Assembly
 shortLabel Assembly
-visibility pack
+visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
@@ -49,7 +49,7 @@ track gc5Base
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
-visibility full
+visibility dense
 autoScale Off
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
@@ -98,18 +98,18 @@ bigDataUrl bbi/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.simpleRepeat.bb
 html html/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.simpleRepeat
 
 track ncbiGene
-longLabel Gene models submitted to NCBI
-shortLabel Gene models
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
 visibility pack
 color 0,80,150
 altColor 150,80,0
 colorByStrand 0,80,150 150,80,0
 bigDataUrl bbi/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.ncbiGene.bb
 type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
 html html/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.ncbiGene
 searchIndex name
 searchTrix ixIxx/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.ncbiGene.ix
-url https://www.ncbi.nlm.nih.gov/gene/?term=$$
 urlLabel Entrez gene:
 labelFields geneName,geneName2
 defaultLabelFields geneName2
@@ -120,7 +120,7 @@ compositeTrack on
 shortLabel CpG Islands
 longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
-visibility pack
+visibility dense
 type bigBed 4 +
 html html/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.cpgIslands
 
@@ -153,7 +153,7 @@ track allGaps
 shortLabel All Gaps
 longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
-visibility dense
+visibility hide
 type bigBed 3
 bigDataUrl bbi/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.allGaps.bb
 html html/GCA_001457755.2_Trypanosoma_equiperdum_OVI_V2.allGaps

@@ -21,6 +21,7 @@ htmlPath html/GCA_042242125.1_fPemKlu1.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/042/242/125/GCA_042242125.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/042/242/125/GCA_042242125.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/042/242/125/GCA_042242125.1
+liftOver.GCF_042242105.1 liftOver/GCA_042242125.1ToGCF_042242105.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -185,4 +186,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_042242125.1_fPemKlu1.hap2.xenoRefGene.ix
 html html/GCA_042242125.1_fPemKlu1.hap2.xenoRefGene
+
+##############################################################################
+# GCF_042242105.1 - bony fishes - Pempheris klunzingeri - taxId: 3127111
+##############################################################################
+track chainNetGCF_042242105.1
+compositeTrack on
+shortLabel bony fishes Chain/Net
+longLabel bony fishes (2024-09-25), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_042242105.1
+html html/GCA_042242125.1_fPemKlu1.hap2.chainNet
+
+    track chainNetGCF_042242105.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_042242105.1
+    spectrum on
+
+        track chainGCF_042242105.1
+        parent chainNetGCF_042242105.1Viewchain
+        subGroups view=chain
+        shortLabel bony fishes Chain
+        longLabel bony fishes (2024-09-25) Chained Alignments
+        type bigChain GCF_042242105.1
+        bigDataUrl bbi/GCA_042242125.1_fPemKlu1.hap2.chainGCF_042242105.1.bb
+        linkDataUrl bbi/GCA_042242125.1_fPemKlu1.hap2.chainGCF_042242105.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_042242105.1
+        parent chainNetGCF_042242105.1Viewchain
+        subGroups view=chain
+        shortLabel bony fishes loChain
+        longLabel bony fishes (2024-09-25) Lift Over Chained Alignments
+        type bigChain GCF_042242105.1
+        bigDataUrl bbi/GCA_042242125.1_fPemKlu1.hap2.chainLiftOverGCF_042242105.1.bb
+        linkDataUrl bbi/GCA_042242125.1_fPemKlu1.hap2.chainLiftOverGCF_042242105.1Link.bb
+        priority 2
 

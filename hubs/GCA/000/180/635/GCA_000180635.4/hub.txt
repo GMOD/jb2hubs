@@ -21,6 +21,7 @@ htmlPath html/GCA_000180635.4_El_Paco_v._4.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/180/635/GCA_000180635.4
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/180/635/GCA_000180635.4
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/180/635/GCA_000180635.4
+liftOver.ce11 liftOver/GCA_000180635.4ToCe11.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -100,8 +101,8 @@ bigDataUrl bbi/GCA_000180635.4_El_Paco_v._4.simpleRepeat.bb
 html html/GCA_000180635.4_El_Paco_v._4.simpleRepeat
 
 track ncbiGene
-longLabel Gene models submitted to NCBI
-shortLabel Gene models
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
 visibility pack
 color 0,80,150
 altColor 150,80,0
@@ -113,7 +114,7 @@ html html/GCA_000180635.4_El_Paco_v._4.ncbiGene
 searchIndex name
 searchTrix ixIxx/GCA_000180635.4_El_Paco_v._4.ncbiGene.ix
 urlLabel Entrez gene:
-labelFields name,geneName,geneName2
+labelFields geneName,geneName2
 defaultLabelFields geneName2
 group genes
 
@@ -185,4 +186,54 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_000180635.4_El_Paco_v._4.xenoRefGene.ix
 html html/GCA_000180635.4_El_Paco_v._4.xenoRefGene
+
+##############################################################################
+# ce11 - C. elegans - Caenorhabditis elegans - taxId: 6239
+##############################################################################
+track chainNetCe11
+compositeTrack on
+shortLabel C. elegans Chain/Net
+longLabel C. elegans (Feb. 2013 (WBcel235/ce11)), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainMinScore 5000
+chainLinearGap loose
+matrixHeader A, C, G, T
+otherDb ce11
+html html/GCA_000180635.4_El_Paco_v._4.chainNet
+
+    track chainNetCe11Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetCe11
+    spectrum on
+
+        track chainCe11
+        parent chainNetCe11Viewchain
+        subGroups view=chain
+        shortLabel C. elegans Chain
+        longLabel C. elegans (Feb. 2013 (WBcel235/ce11)) Chained Alignments
+        type bigChain ce11
+        bigDataUrl bbi/GCA_000180635.4_El_Paco_v._4.chainCe11.bb
+        linkDataUrl bbi/GCA_000180635.4_El_Paco_v._4.chainCe11Link.bb
+        priority 1
+
+        track chainLiftOverCe11
+        parent chainNetCe11Viewchain
+        subGroups view=chain
+        shortLabel C. elegans loChain
+        longLabel C. elegans (Feb. 2013 (WBcel235/ce11)) Lift Over Chained Alignments
+        type bigChain ce11
+        bigDataUrl bbi/GCA_000180635.4_El_Paco_v._4.chainLiftOverCe11.bb
+        linkDataUrl bbi/GCA_000180635.4_El_Paco_v._4.chainLiftOverCe11Link.bb
+        priority 2
 

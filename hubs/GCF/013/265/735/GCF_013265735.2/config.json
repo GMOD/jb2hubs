@@ -284,8 +284,8 @@
           "shortLabel": "RefSeq All",
           "type": "bigGenePred",
           "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_013265735.2_USDA_OmykA_1.1.ncbiRefSeq.ix",
           "bigDataUrl": "bbi/GCF_013265735.2_USDA_OmykA_1.1.ncbiRefSeq.bb",
@@ -317,8 +317,8 @@
           "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
           "type": "bigGenePred",
           "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_013265735.2_USDA_OmykA_1.1.ncbiRefSeqCurated.ix",
           "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -349,8 +349,8 @@
           "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
           "type": "bigGenePred",
           "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_013265735.2_USDA_OmykA_1.1.ncbiRefSeqPredicted.ix",
           "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -617,6 +617,43 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/265/735/GCF_013265735.2/bbi/GCF_013265735.2_USDA_OmykA_1.1.ensGene.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "evaSnp8",
+          "shortLabel": "EVA SNP Release 8",
+          "longLabel": "Short Genetic Variants from European Variant Archive Release 8",
+          "type": "bigBed 9 +",
+          "visibility": "dense",
+          "group": "varRep",
+          "itemRgb": "on",
+          "bigDataUrl": "contrib/evaSnp8/evaSnp8.bb",
+          "url": "https://www.ebi.ac.uk/eva/?variant&accessionID=$$",
+          "searchIndex": "name",
+          "mouseOver": "<b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange",
+          "filterValues.varClass": "SNV|SNV,deletion|Deletion,indel|Indel,insertion|Insertion,MNV|MNV,sequence_alteration|Sequence alteration",
+          "filterLabel.varClass": "Variant class from EVA SO term",
+          "filterLabel.ucscClass": "Functional effect per UCSC Variant Annotation",
+          "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
+          "filterType.ucscClass": "multipleListOnlyOr",
+          "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
+          "filterLabel.itemRgb": "General variant types by color grouping",
+          "maxWindowCoverage": "250000",
+          "maxItems": "1000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/013/265/735/GCF_013265735.2/contrib/evaSnp8/description\">contrib/evaSnp8/description</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCF_013265735.2-evaSnp8",
+      "description": "Short Genetic Variants from European Variant Archive Release 8",
+      "assemblyNames": ["GCF_013265735.2"],
+      "name": "EVA SNP Release 8",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/265/735/GCF_013265735.2/contrib/evaSnp8/evaSnp8.bb"
       }
     },
     {

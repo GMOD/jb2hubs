@@ -20,6 +20,7 @@ htmlPath html/GCF_020466585.1_Dpon_F_20191213v2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/020/466/585/GCF_020466585.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/020/466/585/GCF_020466585.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/020/466/585/GCF_020466585.1
+liftOver.GCF_000002335.3 liftOver/GCF_020466585.1ToGCF_000002335.3.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -124,8 +125,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_020466585.1_Dpon_F_20191213v2.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_020466585.1_Dpon_F_20191213v2.ncbiRefSeq.bb
@@ -142,8 +143,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_020466585.1_Dpon_F_20191213v2.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -254,4 +255,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_020466585.1_Dpon_F_20191213v2.xenoRefGene.ix
 html html/GCF_020466585.1_Dpon_F_20191213v2.xenoRefGene
+
+##############################################################################
+# GCF_000002335.3 - mountain pine beetle - Dendroctonus ponderosae - taxId: 77166
+##############################################################################
+track chainNetGCF_000002335.3
+compositeTrack on
+shortLabel mountain pine beetle Chain/Net
+longLabel mountain pine beetle (2021-10-13), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_000002335.3
+html html/GCF_020466585.1_Dpon_F_20191213v2.chainNet
+
+    track chainNetGCF_000002335.3Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_000002335.3
+    spectrum on
+
+        track chainGCF_000002335.3
+        parent chainNetGCF_000002335.3Viewchain
+        subGroups view=chain
+        shortLabel mountain pine beetle Chain
+        longLabel mountain pine beetle (2021-10-13) Chained Alignments
+        type bigChain GCF_000002335.3
+        bigDataUrl bbi/GCF_020466585.1_Dpon_F_20191213v2.chainGCF_000002335.3.bb
+        linkDataUrl bbi/GCF_020466585.1_Dpon_F_20191213v2.chainGCF_000002335.3Link.bb
+        priority 1
+
+        track chainLiftOverGCF_000002335.3
+        parent chainNetGCF_000002335.3Viewchain
+        subGroups view=chain
+        shortLabel mountain pine beetle loChain
+        longLabel mountain pine beetle (2021-10-13) Lift Over Chained Alignments
+        type bigChain GCF_000002335.3
+        bigDataUrl bbi/GCF_020466585.1_Dpon_F_20191213v2.chainLiftOverGCF_000002335.3.bb
+        linkDataUrl bbi/GCF_020466585.1_Dpon_F_20191213v2.chainLiftOverGCF_000002335.3Link.bb
+        priority 2
 

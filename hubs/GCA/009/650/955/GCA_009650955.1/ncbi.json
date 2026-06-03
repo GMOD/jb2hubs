@@ -1,36 +1,7 @@
 {
   "reports": [
     {
-      "accession": "GCF_009650955.1",
-      "annotation_info": {
-        "busco": {
-          "busco_lineage": "passeriformes_odb10",
-          "busco_ver": "4.0.2",
-          "complete": 0.99050164,
-          "duplicated": 0.0042419774,
-          "fragmented": 0.0021209887,
-          "missing": 0.0073773516,
-          "single_copy": 0.9862597,
-          "total_count": "10844"
-        },
-        "method": "Best-placed RefSeq; Gnomon",
-        "name": "NCBI Corvus moneduloides Annotation Release 100",
-        "pipeline": "NCBI eukaryotic genome annotation pipeline",
-        "provider": "NCBI RefSeq",
-        "release_date": "2020-01-06",
-        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Corvus_moneduloides/100",
-        "software_version": "8.3",
-        "stats": {
-          "gene_counts": {
-            "non_coding": 4479,
-            "other": 34,
-            "protein_coding": 16167,
-            "pseudogene": 101,
-            "total": 20781
-          }
-        },
-        "status": "Full annotation"
-      },
+      "accession": "GCA_009650955.1",
       "assembly_info": {
         "assembly_level": "Chromosome",
         "assembly_method": "FALCON v. 2018.31.08-03.06; FALCON-Unzip + Arrow v. 6.0.0.47841; purge_dups v. github ca23030ccf4254dfd2d3a5ea90d0eed41c24f88b; Bionano solve v. 3.2.1_04122018; Salsa HiC v. 2.2; Arrow polishing + gap filling v. SMRTlink_6.0.0.47841; longranger alignment v. 2.2.2; freebayes polishing v. 1.3.1; gEVAL manual curation v. 26 SEP 2019; VGP assembly pipeline v. 1.6",
@@ -187,10 +158,18 @@
           "submission_date": "2019-07-25T23:14:04.847",
           "tissue": "Blood"
         },
-        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_009650955.1",
-        "comments": "Assembly name: bCorMon1.pri\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the Vertebrate Genomes Project on 2019/11/14. The original whole-genome shotgun project has the accession WHPO00000000.1.",
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_009650955.1",
+        "comments": "The bCorMon1 primary assembly is based on the VGP 1.6 individual pipeline. Primary haplotype: Initial PacBio contig assembly with Falcon-unzip, Arrow polishing, retained haplotig identification with Purge Haplotigs, Arrow polishing and gap filling, and two rounds of FreeBayes polishing with Illumina short reads. Finally, the assembly was curated and chromosomes annotated using gEVAL\n#This assembly represents the principal haplotype of the diploid genome orvus moneduloides and includes the chromosomes. The alternate haplotype sequences are in WGS project WHPP00000000",
+        "diploid_role": "principal_pseudohaplotype_of_diploid",
+        "linked_assemblies": [
+          {
+            "assembly_type": "alternate_pseudohaplotype_of_diploid",
+            "linked_assembly": "GCA_009651025.1"
+          }
+        ],
         "paired_assembly": {
-          "accession": "GCA_009650955.1",
+          "accession": "GCF_009650955.1",
+          "annotation_name": "NCBI Corvus moneduloides Annotation Release 100",
           "differences": "Removed chromosome MT",
           "only_genbank": "chromosome MT",
           "refseq_genbank_are_different": true,
@@ -210,6 +189,7 @@
         "genome_coverage": "62.08",
         "number_of_component_sequences": 105,
         "number_of_contigs": 394,
+        "number_of_organelles": 1,
         "number_of_scaffolds": 105,
         "scaffold_l50": 5,
         "scaffold_n50": 74699841,
@@ -217,7 +197,14 @@
         "total_sequence_length": "1112734094",
         "total_ungapped_length": "1083863899"
       },
-      "current_accession": "GCF_009650955.1",
+      "current_accession": "GCA_009650955.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Vertebrate Genomes Project",
+          "total_seq_length": "16895"
+        }
+      ],
       "organism": {
         "common_name": "New Caledonian crow",
         "infraspecific_names": {
@@ -227,8 +214,8 @@
         "organism_name": "Corvus moneduloides",
         "tax_id": 1196302
       },
-      "paired_accession": "GCA_009650955.1",
-      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "paired_accession": "GCF_009650955.1",
+      "source_database": "SOURCE_DATABASE_GENBANK",
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/WHPO00000000.1",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/WHPO01",
@@ -237,5 +224,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1774062483
+  "downloaded_at": 1780446043
 }

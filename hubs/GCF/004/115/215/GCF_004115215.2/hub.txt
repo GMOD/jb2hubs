@@ -22,6 +22,8 @@ blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/004/115/215/GCF_004115215.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/004/115/215/GCF_004115215.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/004/115/215/GCF_004115215.2
 liftOver.GCA_002966995.1 liftOver/GCF_004115215.2ToGCA_002966995.1.over.chain.gz
+liftOver.GCF_000260355.1 liftOver/GCF_004115215.2ToGCF_000260355.1.over.chain.gz
+liftOver.GCF_001704415.2 liftOver/GCF_004115215.2ToGCF_001704415.2.over.chain.gz
 liftOver.hg38 liftOver/GCF_004115215.2ToHg38.over.chain.gz
 liftOver.mm39 liftOver/GCF_004115215.2ToMm39.over.chain.gz
 
@@ -285,7 +287,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_004115215.2_mOrnAna1.pri.v4
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=GCA_002966995.1 s001=hg38 s002=mm39
+subGroup2 species Assembly s000=GCA_002966995.1 s001=hg38 s002=GCF_001704415.2 s003=GCF_000260355.1 s004=mm39
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -310,8 +312,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track chainGCA_002966995.1
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
-        shortLabel platypus Chain
-        longLabel platypus/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
+        shortLabel GCA_002966995.1 Chain
+        longLabel GCA_002966995.1/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
         type bigChain GCA_002966995.1
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCA_002966995.1.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCA_002966995.1Link.bb
@@ -322,8 +324,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track chainHg38
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain off
         subGroups view=chain species=s001 chainType=c00
-        shortLabel Human/hg38 Chain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        shortLabel hg38 Chain
+        longLabel hg38/hg38 () Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainHg38.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainHg38Link.bb
@@ -331,11 +333,35 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         priority 85.047
 
-        track chainMm39
+        track chainGCF_001704415.2
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain off
         subGroups view=chain species=s002 chainType=c00
-        shortLabel Mouse/mm39 Chain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        shortLabel GCF_001704415.2 Chain
+        longLabel GCF_001704415.2/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 93.858
+
+        track chainGCF_000260355.1
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain off
+        subGroups view=chain species=s003 chainType=c00
+        shortLabel GCF_000260355.1 Chain
+        longLabel GCF_000260355.1/GCF_000260355.1_ConCri1.0 (2012-05-01) Chained Alignments
+        type bigChain GCF_000260355.1
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCF_000260355.1.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainGCF_000260355.1Link.bb
+        otherDb GCF_000260355.1
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 94.773
+
+        track chainMm39
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
+        shortLabel mm39 Chain
+        longLabel mm39/mm39 () Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainMm39Link.bb
@@ -353,8 +379,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track chainSynGCA_002966995.1
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
         subGroups view=synten species=s000 chainType=c01
-        shortLabel platypus synChain
-        longLabel platypus/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
+        shortLabel GCA_002966995.1 synChain
+        longLabel GCA_002966995.1/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
         type bigChain GCA_002966995.1
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynGCA_002966995.1.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynGCA_002966995.1Link.bb
@@ -365,8 +391,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track chainSynHg38
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
         subGroups view=synten species=s001 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38_ASM296699v1 (Dec. 2013) Chained Alignments
+        shortLabel hg38 synChain
+        longLabel hg38/hg38_ASM296699v1 () Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynHg38.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynHg38Link.bb
@@ -376,9 +402,9 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
 
         track chainSynMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39_ASM296699v1 (Jun. 2020) Chained Alignments
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel mm39 synChain
+        longLabel mm39/mm39_ASM296699v1 () Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainSynMm39Link.bb
@@ -396,8 +422,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track chainRBestHg38
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest off
         subGroups view=rbest species=s001 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38_ASM296699v1 (Dec. 2013) Chained Alignments
+        shortLabel hg38 rbChain
+        longLabel hg38/hg38_ASM296699v1 () Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestHg38.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestHg38Link.bb
@@ -407,9 +433,9 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
 
         track chainRBestMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39_ASM296699v1 (Jun. 2020) Chained Alignments
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel mm39 rbChain
+        longLabel mm39/mm39_ASM296699v1 () Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainRBestMm39Link.bb
@@ -424,11 +450,35 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
     parent GCF_004115215.2_mOrnAna1.pri.v4ChainNet
     spectrum on
 
-        track chainLiftOverMm39
+        track chainLiftOverGCF_001704415.2
         parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewLiftOver off
         subGroups view=liftover species=s002 chainType=c03
-        shortLabel Mouse/mm39 loChain
-        longLabel Mouse/mm39/mm39_ASM296699v1 (Jun. 2020) Chained Alignments
+        shortLabel GCF_001704415.2 loChain
+        longLabel GCF_001704415.2/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 93.858
+
+        track chainLiftOverGCF_000260355.1
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c03
+        shortLabel GCF_000260355.1 loChain
+        longLabel GCF_000260355.1/GCF_000260355.1_ConCri1.0 (2012-05-01) Chained Alignments
+        type bigChain GCF_000260355.1
+        bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverGCF_000260355.1.bb
+        linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverGCF_000260355.1Link.bb
+        otherDb GCF_000260355.1
+        html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
+        priority 94.773
+
+        track chainLiftOverMm39
+        parent GCF_004115215.2_mOrnAna1.pri.v4ChainNetViewLiftOver off
+        subGroups view=liftover species=s004 chainType=c03
+        shortLabel mm39 loChain
+        longLabel mm39/mm39_ConCri1.0 () Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverMm39.bb
         linkDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.chainLiftOverMm39Link.bb
@@ -445,8 +495,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track netGCA_002966995.1
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
         subGroups view=align species=s000 chainType=c04
-        shortLabel platypus mafNet
-        longLabel platypus/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
+        shortLabel GCA_002966995.1 mafNet
+        longLabel GCA_002966995.1/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.GCA_002966995.1.net.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.GCA_002966995.1.net.summary.bb
@@ -457,8 +507,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track synNetGCA_002966995.1
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
         subGroups view=align species=s000 chainType=c05
-        shortLabel platypus synNet
-        longLabel platypus/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
+        shortLabel GCA_002966995.1 synNet
+        longLabel GCA_002966995.1/GCA_002966995.1_ASM296699v1 (2018-03-02) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.GCA_002966995.1.synNet.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.GCA_002966995.1.synNet.summary.bb
@@ -469,8 +519,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track netHg38
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
         subGroups view=align species=s001 chainType=c04
-        shortLabel Human/hg38 mafNet
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        shortLabel hg38 mafNet
+        longLabel hg38/hg38 () Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.hg38.net.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.hg38.net.summary.bb
@@ -481,8 +531,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track synNetHg38
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
         subGroups view=align species=s001 chainType=c05
-        shortLabel Human/hg38 synNet
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        shortLabel hg38 synNet
+        longLabel hg38/hg38 () Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.hg38.synNet.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.hg38.synNet.summary.bb
@@ -493,8 +543,8 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
         track rbestNetHg38
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
         subGroups view=align species=s001 chainType=c06
-        shortLabel Human/hg38 rbestNet
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        shortLabel hg38 rbestNet
+        longLabel hg38/hg38 () Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.hg38.rbestNet.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.hg38.rbestNet.summary.bb
@@ -504,9 +554,9 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
 
         track netMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
-        subGroups view=align species=s002 chainType=c04
-        shortLabel Mouse/mm39 mafNet
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        subGroups view=align species=s004 chainType=c04
+        shortLabel mm39 mafNet
+        longLabel mm39/mm39 () Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.mm39.net.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.mm39.net.summary.bb
@@ -516,9 +566,9 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
 
         track synNetMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
-        subGroups view=align species=s002 chainType=c05
-        shortLabel Mouse/mm39 synNet
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        subGroups view=align species=s004 chainType=c05
+        shortLabel mm39 synNet
+        longLabel mm39/mm39 () Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.mm39.synNet.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.mm39.synNet.summary.bb
@@ -528,9 +578,9 @@ html html/GCF_004115215.2_mOrnAna1.pri.v4.chainNet
 
         track rbestNetMm39
         parent GCF_004115215.2_mOrnAna1.pri.v4MafNetViewnet off
-        subGroups view=align species=s002 chainType=c06
-        shortLabel Mouse/mm39 rbestNet
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        subGroups view=align species=s004 chainType=c06
+        shortLabel mm39 rbestNet
+        longLabel mm39/mm39 () Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_004115215.2_mOrnAna1.pri.v4.mm39.rbestNet.bb
         summary bbi/GCF_004115215.2_mOrnAna1.pri.v4.mm39.rbestNet.summary.bb

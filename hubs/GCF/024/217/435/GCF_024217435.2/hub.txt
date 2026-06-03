@@ -21,6 +21,7 @@ htmlPath html/GCF_024217435.2_RoL_Ssco_1.2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/024/217/435/GCF_024217435.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/024/217/435/GCF_024217435.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/024/217/435/GCF_024217435.2
+liftOver.GCF_033458585.1 liftOver/GCF_024217435.2ToGCF_033458585.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -118,8 +119,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_024217435.2_RoL_Ssco_1.2.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_024217435.2_RoL_Ssco_1.2.ncbiRefSeq.bb
@@ -136,8 +137,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_024217435.2_RoL_Ssco_1.2.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -248,4 +249,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_024217435.2_RoL_Ssco_1.2.xenoRefGene.ix
 html html/GCF_024217435.2_RoL_Ssco_1.2.xenoRefGene
+
+##############################################################################
+# GCF_033458585.1 - broad-nosed pipefish - Syngnathus typhle - taxId: 161592
+##############################################################################
+track chainNetGCF_033458585.1
+compositeTrack on
+shortLabel broad-nosed pipefish Chain/Net
+longLabel broad-nosed pipefish (2023-11-13), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_033458585.1
+html html/GCF_024217435.2_RoL_Ssco_1.2.chainNet
+
+    track chainNetGCF_033458585.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_033458585.1
+    spectrum on
+
+        track chainGCF_033458585.1
+        parent chainNetGCF_033458585.1Viewchain
+        subGroups view=chain
+        shortLabel broad-nosed pipefish Chain
+        longLabel broad-nosed pipefish (2023-11-13) Chained Alignments
+        type bigChain GCF_033458585.1
+        bigDataUrl bbi/GCF_024217435.2_RoL_Ssco_1.2.chainGCF_033458585.1.bb
+        linkDataUrl bbi/GCF_024217435.2_RoL_Ssco_1.2.chainGCF_033458585.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_033458585.1
+        parent chainNetGCF_033458585.1Viewchain
+        subGroups view=chain
+        shortLabel broad-nosed pipefish loChain
+        longLabel broad-nosed pipefish (2023-11-13) Lift Over Chained Alignments
+        type bigChain GCF_033458585.1
+        bigDataUrl bbi/GCF_024217435.2_RoL_Ssco_1.2.chainLiftOverGCF_033458585.1.bb
+        linkDataUrl bbi/GCF_024217435.2_RoL_Ssco_1.2.chainLiftOverGCF_033458585.1Link.bb
+        priority 2
 

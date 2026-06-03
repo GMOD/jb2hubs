@@ -117,8 +117,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002765.6_GCA_000002765.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_000002765.6_GCA_000002765.ncbiRefSeq.bb
@@ -135,8 +135,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_000002765.6_GCA_000002765.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -239,3 +239,370 @@ searchIndex name
 searchTrix ixIxx/GCF_000002765.6_GCA_000002765.xenoRefGene.ix
 html html/GCF_000002765.6_GCA_000002765.xenoRefGene
 
+
+
+track EST_Alignments
+bigDataUrl contrib/VEuPathDB/bbi/EST_Alignments.bb
+html contrib/VEuPathDB/html/blat_ests.html
+longLabel Transcriptomics__BLAT_and_Blast_Alignments__EST_Alignments.gff3.bed.bb
+maxWindowToDraw 200000
+shortLabel EST Alignments
+type bigBed 9
+visibility dense
+
+track Long_ncRNA
+bigDataUrl contrib/VEuPathDB/bbi/Long_ncRNA.bb
+html contrib/VEuPathDB/html/noncoding_rna.html
+longLabel Gene_Models__Transcripts__Long_non-coding_RNA_for_P._falciparum.gff3.bed.bb
+shortLabel Long ncRNA
+type bigBed 9
+visibility pack
+
+track Curated_transcript
+bigDataUrl contrib/VEuPathDB/bbi/Curated_transcript.bb
+html contrib/VEuPathDB/html/annotated_transcripts.html
+longLabel Gene_Models__Transcripts__Annotated_Transcripts.gff3.bed.bb
+shortLabel Curated transcript
+type bigBed 12
+visibility pack
+
+track Long_Read_RNA
+bigDataUrl contrib/VEuPathDB/bbi/Long_Read_RNA.bb
+html contrib/VEuPathDB/html/Long_Read_RNA.html
+longLabel Gene_Models__Transcripts__Long_Read_RNA_for_P._falciparum.gff3.bed.bb
+shortLabel Long Read RNA
+type bigBed 9
+visibility squish
+
+track Annotated_Introns
+bigDataUrl contrib/VEuPathDB/bbi/Annotated_Introns.bb
+html contrib/VEuPathDB/html/annotated_introns.html
+labelFields none
+longLabel Annotated introns that are confirmed by RNASeq reads
+mouseOverField readCount
+shortLabel Annotated Introns
+type bigBed 9+1
+visibility pack
+
+track Unannotated_Introns
+bigDataUrl contrib/VEuPathDB/bbi/Unannotated_Introns.bb
+html contrib/VEuPathDB/html/unannotated_introns.html
+labelFields none
+longLabel Unannotated introns that are suggested by RNASeq reads
+mouseOverField readCount
+shortLabel Unannotated Introns
+type bigBed 9+1
+visibility pack
+
+track Combined_RNA-Seq
+aggregate transparentOverlay
+container multiWig
+html contrib/VEuPathDB/html/Combined_RNA-Seq.html
+longLabel Combined RNA-Seq data mirrored from plasmodb.org
+shortLabel Combined RNA-Seq
+showSubtrackColorOnUi on
+type bigWig 0 756
+
+track Bartfai_IDC_2018_plus
+bigDataUrl contrib/VEuPathDB/bbi/Bartfai_IDC_2018_plus.bw
+color 130,100,130
+longLabel Bartfai_IDC_2018_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Bartfai_IDC_2018_plus
+type bigWig 0 121
+
+track Bartfai_IDC_2018_minus
+bigDataUrl contrib/VEuPathDB/bbi/Bartfai_IDC_2018_minus.bw
+color 120,100,120
+longLabel Bartfai_IDC_2018_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Bartfai_IDC_2018_minus
+type bigWig 0 116
+
+track Bunnik_Asexual_Cell_Cycle_nostrand
+bigDataUrl contrib/VEuPathDB/bbi/Bunnik_Asexual_Cell_Cycle_nostrand.bw
+color 110,100,110
+longLabel Bunnik_Asexual_Cell_Cycle_unstranded_merged
+parent Combined_RNA-Seq
+shortLabel Bunnik_Asexual_Cell_Cycle_nostrand
+type bigWig 0 90
+
+track Caro_ribosome_profiling_plus
+bigDataUrl contrib/VEuPathDB/bbi/Caro_ribosome_profiling_plus.bw
+color 100,150,150
+longLabel Caro_ribosome_profiling_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Caro_ribosome_profiling_plus
+type bigWig 1 184
+
+track Caro_ribosome_profiling_minus
+bigDataUrl contrib/VEuPathDB/bbi/Caro_ribosome_profiling_minus.bw
+color 100,140,140
+longLabel Caro_ribosome_profiling_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Caro_ribosome_profiling_minus
+type bigWig 4 164
+
+track Chappell_IDC_DAFT_UTRSeq_plus
+bigDataUrl contrib/VEuPathDB/bbi/Chappell_IDC_DAFT_UTRSeq_plus.bw
+color 100,130,130
+longLabel Chappell_IDC_DAFT_UTRSeq_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Chappell_IDC_DAFT_UTRSeq_plus
+type bigWig 0 267
+
+track Chappell_IDC_DAFT_UTRSeq_minus
+bigDataUrl contrib/VEuPathDB/bbi/Chappell_IDC_DAFT_UTRSeq_minus.bw
+color 100,120,120
+longLabel Chappell_IDC_DAFT_UTRSeq_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Chappell_IDC_DAFT_UTRSeq_minus
+type bigWig 0 261
+
+track Cultured_Sporozoites_nostrand
+bigDataUrl contrib/VEuPathDB/bbi/Cultured_Sporozoites_nostrand.bw
+color 100,110,110
+longLabel Cultured_Sporozoites_Transcriptome_unstranded_merged
+parent Combined_RNA-Seq
+shortLabel Cultured_Sporozoites_nostrand
+type bigWig 0 50
+
+track Duffy_Ring-Schiz-Tropho_plus
+bigDataUrl contrib/VEuPathDB/bbi/Duffy_Ring-Schiz-Tropho_plus.bw
+color 100,100,100
+longLabel Duffy_Ring-Schiz-Tropho_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Duffy_Ring-Schiz-Tropho_plus
+type bigWig 0 41
+
+track Duffy_Ring-Schiz-Tropho_minus
+bigDataUrl contrib/VEuPathDB/bbi/Duffy_Ring-Schiz-Tropho_minus.bw
+color 110,110,110
+longLabel Duffy_Ring-Schiz-Tropho_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Duffy_Ring-Schiz-Tropho_minus
+type bigWig 0 38
+
+track Gomez-Diaz_asexual_stages_plus
+bigDataUrl contrib/VEuPathDB/bbi/Gomez-Diaz_asexual_stages_plus.bw
+color 110,110,150
+longLabel Gomez-Diaz_asexual_stages_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Gomez-Diaz_asexual_stages_plus
+type bigWig 0 55
+
+track Gomez-Diaz_asexual_stages_minus
+bigDataUrl contrib/VEuPathDB/bbi/Gomez-Diaz_asexual_stages_minus.bw
+color 110,110,140
+longLabel Gomez-Diaz_asexual_stages_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Gomez-Diaz_asexual_stages_minus
+type bigWig 3 60
+
+track Josling_Schizont_Transcriptomes_plus
+bigDataUrl contrib/VEuPathDB/bbi/Josling_Schizont_Transcriptomes_plus.bw
+color 110,110,130
+longLabel Josling_Schizont_Transcriptomes_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Josling_Schizont_Transcriptomes_plus
+type bigWig 0 29
+
+track Josling_Schizont_Transcriptomes_minus
+bigDataUrl contrib/VEuPathDB/bbi/Josling_Schizont_Transcriptomes_minus.bw
+color 110,110,120
+longLabel Josling_Schizont_Transcriptomes_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Josling_Schizont_Transcriptomes_minus
+type bigWig 0 26
+
+track Kamaliddin_Sequestration_plus
+bigDataUrl contrib/VEuPathDB/bbi/Kamaliddin_Sequestration_plus.bw
+color 110,150,110
+longLabel Kamaliddin_Sequestration_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Kamaliddin_Sequestration_plus
+type bigWig 0 80
+
+track Kamaliddin_Sequestration_minus
+bigDataUrl contrib/VEuPathDB/bbi/Kamaliddin_Sequestration_minus.bw
+color 110,140,110
+longLabel Kamaliddin_Sequestration_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Kamaliddin_Sequestration_minus
+type bigWig 0 77
+
+track Lasonder_Bartfai_Gametocytes_plus
+bigDataUrl contrib/VEuPathDB/bbi/Lasonder_Bartfai_Gametocytes_plus.bw
+color 110,130,110
+longLabel Lasonder_Bartfai_Gametocytes_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Lasonder_Bartfai_Gametocytes_plus
+type bigWig 0 34
+
+track Lasonder_Bartfai_Gametocytes_minus
+bigDataUrl contrib/VEuPathDB/bbi/Lasonder_Bartfai_Gametocytes_minus.bw
+color 110,120,110
+longLabel Lasonder_Bartfai_Gametocytes_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Lasonder_Bartfai_Gametocytes_minus
+type bigWig 0 38
+
+track Lee_Gambian_plus
+bigDataUrl contrib/VEuPathDB/bbi/Lee_Gambian_plus.bw
+color 150,110,110
+longLabel Lee_Gambian_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Lee_Gambian_plus
+type bigWig 0 762
+
+track Lee_Gambian_minus
+bigDataUrl contrib/VEuPathDB/bbi/Lee_Gambian_minus.bw
+color 140,110,110
+longLabel Lee_Gambian_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Lee_Gambian_minus
+type bigWig 0 756
+
+track Lindner_Oocyst_Salivary_plus
+bigDataUrl contrib/VEuPathDB/bbi/Lindner_Oocyst_Salivary_plus.bw
+color 130,110,110
+longLabel Lindner_Oocyst_Salivary_Sporo_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Lindner_Oocyst_Salivary_plus
+type bigWig 0 34
+
+track Lindner_Oocyst_Salivary_minus
+bigDataUrl contrib/VEuPathDB/bbi/Lindner_Oocyst_Salivary_minus.bw
+color 120,110,110
+longLabel Lindner_Oocyst_Salivary_Sporo_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Lindner_Oocyst_Salivary_minus
+type bigWig 0 40
+
+track Newbold_nostrand
+bigDataUrl contrib/VEuPathDB/bbi/Newbold_nostrand.bw
+color 110,150,150
+longLabel Newbold_unstranded_merged
+parent Combined_RNA-Seq
+shortLabel Newbold_nostrand
+type bigWig 1 105
+
+track DC_UTR_2020_nostrand
+bigDataUrl contrib/VEuPathDB/bbi/DC_UTR_2020_nostrand.bw
+color 110,140,140
+longLabel DC_UTR_RNASeq_2020_unstranded_merged
+parent Combined_RNA-Seq
+shortLabel DC_UTR_2020_nostrand
+type bigWig 0 95
+
+track Febrile_temps_plus
+bigDataUrl contrib/VEuPathDB/bbi/Febrile_temps_plus.bw
+color 110,130,130
+longLabel Febrile_temps_RNASeq_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Febrile_temps_plus
+type bigWig 0 86
+
+track Febrile_temps_minus
+bigDataUrl contrib/VEuPathDB/bbi/Febrile_temps_minus.bw
+color 110,120,120
+longLabel Febrile_temps_RNASeq_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Febrile_temps_minus
+type bigWig 0 81
+
+track Scherf_Intraerythrocytic_cycle_plus
+bigDataUrl contrib/VEuPathDB/bbi/Scherf_Intraerythrocytic_cycle_plus.bw
+color 150,110,150
+longLabel Scherf_Intraerythrocytic_cycle_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Scherf_Intraerythrocytic_cycle_plus
+type bigWig 0 68
+
+track Scherf_Intraerythrocytic_cycle_minus
+bigDataUrl contrib/VEuPathDB/bbi/Scherf_Intraerythrocytic_cycle_minus.bw
+color 140,110,140
+longLabel Scherf_Intraerythrocytic_cycle_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Scherf_Intraerythrocytic_cycle_minus
+type bigWig 0 67
+
+track Scherf_Ring_Oocyst_Sporozoite_plus
+bigDataUrl contrib/VEuPathDB/bbi/Scherf_Ring_Oocyst_Sporozoite_plus.bw
+color 130,110,130
+longLabel Scherf_Ring_Oocyst_Sporozoite_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Scherf_Ring_Oocyst_Sporozoite_plus
+type bigWig 0 47
+
+track Scherf_Ring_Oocyst_Sporozoite_minus
+bigDataUrl contrib/VEuPathDB/bbi/Scherf_Ring_Oocyst_Sporozoite_minus.bw
+color 120,110,120
+longLabel Scherf_Ring_Oocyst_Sporozoite_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Scherf_Ring_Oocyst_Sporozoite_minus
+type bigWig 0 41
+
+track Stunnenberg_nostrand
+bigDataUrl contrib/VEuPathDB/bbi/Stunnenberg_nostrand.bw
+color 150,150,110
+longLabel Stunnenberg_unstranded_merged
+parent Combined_RNA-Seq
+shortLabel Stunnenberg_nostrand
+type bigWig 0 123
+
+track Tonkin_Hill_Malaria_plus
+bigDataUrl contrib/VEuPathDB/bbi/Tonkin_Hill_Malaria_plus.bw
+color 140,140,110
+longLabel Tonkin_Hill_Malaria_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel Tonkin_Hill_Malaria_plus
+type bigWig 0 604
+
+track Tonkin_Hill_Malaria_minus
+bigDataUrl contrib/VEuPathDB/bbi/Tonkin_Hill_Malaria_minus.bw
+color 130,130,110
+longLabel Tonkin_Hill_Malaria_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel Tonkin_Hill_Malaria_minus
+type bigWig 0 675
+
+track Wichers_Intraerythrocytic_Cycle_nostrand
+bigDataUrl contrib/VEuPathDB/bbi/Wichers_Intraerythrocytic_Cycle_nostrand.bw
+color 120,120,110
+longLabel Wichers_Intraerythrocytic_Cycle_unstranded_merged
+parent Combined_RNA-Seq
+shortLabel Wichers_Intraerythrocytic_Cycle_nostrand
+type bigWig 0 110
+
+track IDC2020_Subudhi_plus
+bigDataUrl contrib/VEuPathDB/bbi/IDC2020_Subudhi_plus.bw
+color 150,150,150
+longLabel IDC2020_Subudhi_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel IDC2020_Subudhi_plus
+type bigWig 0 345
+
+track IDC2020_Subudhi_minus
+bigDataUrl contrib/VEuPathDB/bbi/IDC2020_Subudhi_minus.bw
+color 140,140,140
+longLabel IDC2020_Subudhi_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel IDC2020_Subudhi_minus
+type bigWig 0 308
+
+track invitro_versus_mosquito_plus
+bigDataUrl contrib/VEuPathDB/bbi/invitro_versus_mosquito_plus.bw
+color 130,130,130
+longLabel invitro_versus_mosquito_produced_sporozoite_RNASeq_firststrand_merged
+parent Combined_RNA-Seq
+shortLabel invitro_versus_mosquito_plus
+type bigWig 0 25
+
+track invitro_versus_mosquito_minus
+bigDataUrl contrib/VEuPathDB/bbi/invitro_versus_mosquito_minus.bw
+color 120,120,120
+longLabel invitro_versus_mosquito_produced_sporozoite_RNASeq_secondstrand_merged
+parent Combined_RNA-Seq
+shortLabel invitro_versus_mosquito_minus
+type bigWig 0 31

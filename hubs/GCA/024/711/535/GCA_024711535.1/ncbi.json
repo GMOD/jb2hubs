@@ -1,36 +1,7 @@
 {
   "reports": [
     {
-      "accession": "GCF_024711535.1",
-      "annotation_info": {
-        "busco": {
-          "busco_lineage": "glires_odb10",
-          "busco_ver": "5.7.1",
-          "complete": 0.97898245,
-          "duplicated": 0.18212785,
-          "fragmented": 0.005652993,
-          "missing": 0.015364545,
-          "single_copy": 0.7968546,
-          "total_count": "13798"
-        },
-        "method": "Gnomon; cmsearch; tRNAscan-SE",
-        "name": "GCF_024711535.1-RS_2024_11",
-        "pipeline": "NCBI eukaryotic genome annotation pipeline",
-        "provider": "NCBI RefSeq",
-        "release_date": "2024-11-15",
-        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Dipodomys_merriami/GCF_024711535.1-RS_2024_11.html",
-        "software_version": "10.3",
-        "stats": {
-          "gene_counts": {
-            "non_coding": 8782,
-            "other": 243,
-            "protein_coding": 24322,
-            "pseudogene": 5836,
-            "total": 39183
-          }
-        },
-        "status": "Full annotation"
-      },
+      "accession": "GCA_024711535.1",
       "assembly_info": {
         "assembly_level": "Scaffold",
         "assembly_method": "HiFiasm v. 0.16.1-r375; SALSA v. 2",
@@ -43,7 +14,7 @@
             "bioprojects": [
               {
                 "accession": "PRJNA851460",
-                "parent_accessions": ["PRJNA777166"],
+                "parent_accessions": ["PRJNA777166", "PRJNA1399476"],
                 "title": "Dipodomys merriami principal pseudohaplotype genome sequencing"
               },
               {
@@ -52,18 +23,23 @@
                 "title": "Dipodomys merriami Genomic Resources"
               },
               {
+                "accession": "PRJNA1399476",
+                "parent_accessions": ["PRJNA533106"],
+                "title": "Rodent2K"
+              },
+              {
                 "accession": "PRJNA765815",
                 "parent_accessions": ["PRJNA720569"],
                 "title": "Dipodomys spp. Genomic Resources"
               },
               {
+                "accession": "PRJNA533106",
+                "title": "Earth BioGenome Project (EBP)"
+              },
+              {
                 "accession": "PRJNA720569",
                 "parent_accessions": ["PRJNA533106"],
                 "title": "The California Conservation Genomics Project (CCGP)"
-              },
-              {
-                "accession": "PRJNA533106",
-                "title": "Earth BioGenome Project (EBP)"
               }
             ]
           }
@@ -151,10 +127,17 @@
           "submission_date": "2022-06-14T16:56:24.543",
           "tissue": "liver"
         },
-        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_024711535.1",
-        "comments": "Assembly name: mDipMer1.0.p\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the UCLA on 2022/08/18. The original whole-genome shotgun project has the accession JANKKJ000000000.1.",
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_024711535.1",
+        "diploid_role": "principal_pseudohaplotype_of_diploid",
+        "linked_assemblies": [
+          {
+            "assembly_type": "alternate_pseudohaplotype_of_diploid",
+            "linked_assembly": "GCA_024711525.1"
+          }
+        ],
         "paired_assembly": {
-          "accession": "GCA_024711535.1",
+          "accession": "GCF_024711535.1",
+          "annotation_name": "GCF_024711535.1-RS_2024_11",
           "differences": "Removed 1 unlocalized scaffold on chromosome MT",
           "only_genbank": "1 unlocalized scaffold on chromosome MT",
           "refseq_genbank_are_different": true,
@@ -174,13 +157,20 @@
         "genome_coverage": "49",
         "number_of_component_sequences": 4353,
         "number_of_contigs": 4535,
+        "number_of_organelles": 1,
         "number_of_scaffolds": 4353,
         "scaffold_l50": 40,
         "scaffold_n50": 13535215,
         "total_sequence_length": "3365237443",
         "total_ungapped_length": "3365219243"
       },
-      "current_accession": "GCF_024711535.1",
+      "current_accession": "GCA_024711535.1",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "UCLA"
+        }
+      ],
       "organism": {
         "common_name": "Merriam's kangaroo rat",
         "infraspecific_names": {
@@ -190,8 +180,8 @@
         "organism_name": "Dipodomys merriami",
         "tax_id": 94247
       },
-      "paired_accession": "GCA_024711535.1",
-      "source_database": "SOURCE_DATABASE_REFSEQ",
+      "paired_accession": "GCF_024711535.1",
+      "source_database": "SOURCE_DATABASE_GENBANK",
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JANKKJ000000000.1",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JANKKJ01",
@@ -200,5 +190,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1774062387
+  "downloaded_at": 1780446062
 }

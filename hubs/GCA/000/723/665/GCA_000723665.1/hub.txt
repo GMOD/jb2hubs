@@ -105,18 +105,18 @@ bigDataUrl bbi/GCA_000723665.1_454Minimus.simpleRepeat.bb
 html html/GCA_000723665.1_454Minimus.simpleRepeat
 
 track ncbiGene
-longLabel Gene models submitted to NCBI
-shortLabel Gene models
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
 visibility pack
 color 0,80,150
 altColor 150,80,0
 colorByStrand 0,80,150 150,80,0
 bigDataUrl bbi/GCA_000723665.1_454Minimus.ncbiGene.bb
 type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
 html html/GCA_000723665.1_454Minimus.ncbiGene
 searchIndex name
 searchTrix ixIxx/GCA_000723665.1_454Minimus.ncbiGene.ix
-url https://www.ncbi.nlm.nih.gov/gene/?term=$$
 urlLabel Entrez gene:
 labelFields geneName,geneName2
 defaultLabelFields geneName2
@@ -191,3 +191,16 @@ searchIndex name
 searchTrix ixIxx/GCA_000723665.1_454Minimus.xenoRefGene.ix
 html html/GCA_000723665.1_454Minimus.xenoRefGene
 
+
+track VEuPathDBGeneModels
+shortLabel VEuPathDB Genes
+longLabel Gene Models mirrored from VEuPathDB
+group genes
+type bigBed 12 .
+visibility pack
+labelFields name
+searchIndex name
+bigDataUrl contrib/VEuPathDB/veupathGenes.bb
+colorByStrand 0,0,122 157,60,32
+dataVersion VEuPathDB release 68
+html contrib/VEuPathDB/VEuPathDB

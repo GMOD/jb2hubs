@@ -21,6 +21,7 @@ htmlPath html/GCF_049306965.1_GRCz12tu.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/049/306/965/GCF_049306965.1
+liftOver.GCA_944039275.1 liftOver/GCF_049306965.1ToGCA_944039275.1.over.chain.gz
 liftOver.danRer11 liftOver/GCF_049306965.1ToDanRer11.over.chain.gz
 
 track assembly
@@ -273,112 +274,225 @@ searchIndex name
 searchTrix ixIxx/GCF_049306965.1_GRCz12tu.xenoRefGene.ix
 html html/GCF_049306965.1_GRCz12tu.xenoRefGene
 
-##############################################################################
-# danRer11 - Zebrafish - Danio rerio - taxId: 7955
-##############################################################################
-track chainNetDanRer11
+track GCF_049306965.1_GRCz12tuChainNet
 compositeTrack on
-shortLabel Zebrafish Chain/Net
-longLabel Zebrafish (May 2017 (GRCz11/danRer11)), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_049306965.1_GRCz12tu
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=danRer11 s001=GCA_944039275.1
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
-chainMinScore 5000
 chainLinearGap loose
-matrixHeader A, C, G, T
-otherDb danRer11
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_049306965.1_GRCz12tu.chainNet
 
-    track chainNetDanRer11Viewchain
-    shortLabel Chain
+    track GCF_049306965.1_GRCz12tuChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetDanRer11
+    visibility dense
+    parent GCF_049306965.1_GRCz12tuChainNet
     spectrum on
 
         track chainDanRer11
-        parent chainNetDanRer11Viewchain
-        subGroups view=chain
-        shortLabel Zebrafish Chain
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Chained Alignments
+        parent GCF_049306965.1_GRCz12tuChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel Zebrafish/danRer11 Chain
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
         type bigChain danRer11
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainDanRer11.bb
         linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainDanRer11Link.bb
-        priority 1
+        otherDb danRer11
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
+
+        track chainGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel zebrafish Chain
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigChain GCA_944039275.1
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainGCA_944039275.1.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainGCA_944039275.1Link.bb
+        otherDb GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
+
+    track GCF_049306965.1_GRCz12tuChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_049306965.1_GRCz12tuChainNet
+    spectrum on
 
         track chainSynDanRer11
-        parent chainNetDanRer11Viewchain
-        subGroups view=chain
-        shortLabel Zebrafish synChain
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Chained Alignments
+        parent GCF_049306965.1_GRCz12tuChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel Zebrafish/danRer11 synChain
+        longLabel Zebrafish/danRer11/danRer11_fDanRer4.1 (May 2017) Chained Alignments
         type bigChain danRer11
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11.bb
         linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainSynDanRer11Link.bb
-        priority 2
+        otherDb danRer11
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
+
+        track chainSynGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel zebrafish synChain
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigChain GCA_944039275.1
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainSynGCA_944039275.1.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainSynGCA_944039275.1Link.bb
+        otherDb GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
+
+    track GCF_049306965.1_GRCz12tuChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_049306965.1_GRCz12tuChainNet
+    spectrum on
 
         track chainRBestDanRer11
-        parent chainNetDanRer11Viewchain
-        subGroups view=chain
-        shortLabel Zebrafish rbChain
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Chained Alignments
+        parent GCF_049306965.1_GRCz12tuChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel Zebrafish/danRer11 rbChain
+        longLabel Zebrafish/danRer11/danRer11_fDanRer4.1 (May 2017) Chained Alignments
         type bigChain danRer11
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11.bb
         linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainRBestDanRer11Link.bb
-        priority 3
+        otherDb danRer11
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
+
+        track chainRBestGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel zebrafish rbChain
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigChain GCA_944039275.1
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainRBestGCA_944039275.1.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainRBestGCA_944039275.1Link.bb
+        otherDb GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
+
+    track GCF_049306965.1_GRCz12tuChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_049306965.1_GRCz12tuChainNet
+    spectrum on
 
         track chainLiftOverDanRer11
-        parent chainNetDanRer11Viewchain
-        subGroups view=chain
-        shortLabel Zebrafish loChain
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Lift Over Chained Alignments
+        parent GCF_049306965.1_GRCz12tuChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel Zebrafish/danRer11 loChain
+        longLabel Zebrafish/danRer11/danRer11_fDanRer4.1 (May 2017) Chained Alignments
         type bigChain danRer11
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11.bb
         linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainLiftOverDanRer11Link.bb
-        priority 4
+        otherDb danRer11
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
 
-    track mafNetDanRer11Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetDanRer11
+        track chainLiftOverGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel zebrafish loChain
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigChain GCA_944039275.1
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.chainLiftOverGCA_944039275.1.bb
+        linkDataUrl bbi/GCF_049306965.1_GRCz12tu.chainLiftOverGCA_944039275.1Link.bb
+        otherDb GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
+
+    track GCF_049306965.1_GRCz12tuMafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_049306965.1_GRCz12tuChainNet
 
         track netDanRer11
-        parent mafNetDanRer11Viewnet
-        subGroups view=net
-        shortLabel Zebrafish net
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Net Alignment
+        parent GCF_049306965.1_GRCz12tuMafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel Zebrafish/danRer11 mafNet
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.danRer11.net.bb
         summary bbi/GCF_049306965.1_GRCz12tu.danRer11.net.summary.bb
         speciesOrder danRer11
-        priority 5
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
 
         track synNetDanRer11
-        parent mafNetDanRer11Viewnet
-        subGroups view=net
-        shortLabel Zebrafish synNet
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Syntenic Net Alignment
+        parent GCF_049306965.1_GRCz12tuMafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel Zebrafish/danRer11 synNet
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.bb
         summary bbi/GCF_049306965.1_GRCz12tu.danRer11.synNet.summary.bb
         speciesOrder danRer11
-        priority 6
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
 
         track rbestNetDanRer11
-        parent mafNetDanRer11Viewnet
-        subGroups view=net
-        shortLabel Zebrafish rbestNet
-        longLabel Zebrafish (May 2017 (GRCz11/danRer11)) Reciprocal Best Net Alignment
+        parent GCF_049306965.1_GRCz12tuMafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel Zebrafish/danRer11 rbestNet
+        longLabel Zebrafish/danRer11/danRer11 (May 2017) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.bb
         summary bbi/GCF_049306965.1_GRCz12tu.danRer11.rbestNet.summary.bb
         speciesOrder danRer11
-        priority 7
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 8.416
+
+        track netGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuMafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel zebrafish mafNet
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.GCA_944039275.1.net.bb
+        summary bbi/GCF_049306965.1_GRCz12tu.GCA_944039275.1.net.summary.bb
+        speciesOrder GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
+
+        track synNetGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuMafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel zebrafish synNet
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.GCA_944039275.1.synNet.bb
+        summary bbi/GCF_049306965.1_GRCz12tu.GCA_944039275.1.synNet.summary.bb
+        speciesOrder GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
+
+        track rbestNetGCA_944039275.1
+        parent GCF_049306965.1_GRCz12tuMafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel zebrafish rbestNet
+        longLabel zebrafish/GCA_944039275.1_fDanRer4.1 (2022-06-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_049306965.1_GRCz12tu.GCA_944039275.1.rbestNet.bb
+        summary bbi/GCF_049306965.1_GRCz12tu.GCA_944039275.1.rbestNet.summary.bb
+        speciesOrder GCA_944039275.1
+        html html/GCF_049306965.1_GRCz12tu.chainNet
+        priority 9.231
 

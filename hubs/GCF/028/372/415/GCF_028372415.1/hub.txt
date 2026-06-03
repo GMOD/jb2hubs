@@ -21,6 +21,7 @@ htmlPath html/GCF_028372415.1_mMacEug1.pri_v2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/372/415/GCF_028372415.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/372/415/GCF_028372415.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/372/415/GCF_028372415.1
+liftOver.GCF_001704415.2 liftOver/GCF_028372415.1ToGCF_001704415.2.over.chain.gz
 liftOver.hg38 liftOver/GCF_028372415.1ToHg38.over.chain.gz
 liftOver.hs1 liftOver/GCF_028372415.1ToHs1.over.chain.gz
 liftOver.mm10 liftOver/GCF_028372415.1ToMm10.over.chain.gz
@@ -276,7 +277,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_028372415.1_mMacEug1.pri_v2
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=hg38 s001=hs1 s002=mm10 s003=mm39
+subGroup2 species Assembly s000=GCF_001704415.2 s001=hg38 s002=hs1 s003=mm10 s004=mm39
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -298,9 +299,21 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
     parent GCF_028372415.1_mMacEug1.pri_v2ChainNet
     spectrum on
 
-        track chainHg38
+        track chainGCF_001704415.2
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
+        shortLabel goat Chain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track chainHg38
+        parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
         shortLabel Human/hg38 Chain
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigChain hg38
@@ -312,7 +325,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainHs1
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewchain off
-        subGroups view=chain species=s001 chainType=c00
+        subGroups view=chain species=s002 chainType=c00
         shortLabel Human/hs1 Chain
         longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
         type bigChain hs1
@@ -324,7 +337,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainMm10
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewchain off
-        subGroups view=chain species=s002 chainType=c00
+        subGroups view=chain species=s003 chainType=c00
         shortLabel Mouse/mm10 Chain
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigChain mm10
@@ -336,7 +349,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainMm39
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewchain off
-        subGroups view=chain species=s003 chainType=c00
+        subGroups view=chain species=s004 chainType=c00
         shortLabel Mouse/mm39 Chain
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigChain mm39
@@ -353,11 +366,23 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
     parent GCF_028372415.1_mMacEug1.pri_v2ChainNet
     spectrum on
 
-        track chainSynHg38
+        track chainSynGCF_001704415.2
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewSynTen off
         subGroups view=synten species=s000 chainType=c01
+        shortLabel goat synChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track chainSynHg38
+        parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
         shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynHg38.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynHg38Link.bb
@@ -367,9 +392,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainSynHs1
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
+        subGroups view=synten species=s002 chainType=c01
         shortLabel Human/hs1 synChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        longLabel Human/hs1/hs1_ARS1.2 (Jan. 2022) Chained Alignments
         type bigChain hs1
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynHs1.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynHs1Link.bb
@@ -379,9 +404,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainSynMm10
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
+        subGroups view=synten species=s003 chainType=c01
         shortLabel Mouse/mm10 synChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS1.2 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynMm10.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynMm10Link.bb
@@ -391,9 +416,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainSynMm39
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewSynTen off
-        subGroups view=synten species=s003 chainType=c01
+        subGroups view=synten species=s004 chainType=c01
         shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ARS1.2 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynMm39.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainSynMm39Link.bb
@@ -408,11 +433,23 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
     parent GCF_028372415.1_mMacEug1.pri_v2ChainNet
     spectrum on
 
-        track chainRBestHg38
+        track chainRBestGCF_001704415.2
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewRBest off
         subGroups view=rbest species=s000 chainType=c02
+        shortLabel goat rbChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track chainRBestHg38
+        parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestHg38.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestHg38Link.bb
@@ -422,9 +459,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainRBestHs1
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
+        subGroups view=rbest species=s002 chainType=c02
         shortLabel Human/hs1 rbChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        longLabel Human/hs1/hs1_ARS1.2 (Jan. 2022) Chained Alignments
         type bigChain hs1
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestHs1.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestHs1Link.bb
@@ -434,9 +471,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainRBestMm10
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
+        subGroups view=rbest species=s003 chainType=c02
         shortLabel Mouse/mm10 rbChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS1.2 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestMm10.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestMm10Link.bb
@@ -446,9 +483,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainRBestMm39
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewRBest off
-        subGroups view=rbest species=s003 chainType=c02
+        subGroups view=rbest species=s004 chainType=c02
         shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ARS1.2 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestMm39.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainRBestMm39Link.bb
@@ -463,11 +500,23 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
     parent GCF_028372415.1_mMacEug1.pri_v2ChainNet
     spectrum on
 
-        track chainLiftOverHg38
+        track chainLiftOverGCF_001704415.2
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewLiftOver off
         subGroups view=liftover species=s000 chainType=c03
+        shortLabel goat loChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track chainLiftOverHg38
+        parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverHg38.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverHg38Link.bb
@@ -477,9 +526,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainLiftOverHs1
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
+        subGroups view=liftover species=s002 chainType=c03
         shortLabel Human/hs1 loChain
-        longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
+        longLabel Human/hs1/hs1_ARS1.2 (Jan. 2022) Chained Alignments
         type bigChain hs1
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverHs1.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverHs1Link.bb
@@ -489,9 +538,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainLiftOverMm10
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewLiftOver off
-        subGroups view=liftover species=s002 chainType=c03
+        subGroups view=liftover species=s003 chainType=c03
         shortLabel Mouse/mm10 loChain
-        longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS1.2 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverMm10.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverMm10Link.bb
@@ -501,9 +550,9 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track chainLiftOverMm39
         parent GCF_028372415.1_mMacEug1.pri_v2ChainNetViewLiftOver off
-        subGroups view=liftover species=s003 chainType=c03
+        subGroups view=liftover species=s004 chainType=c03
         shortLabel Mouse/mm39 loChain
-        longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ARS1.2 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverMm39.bb
         linkDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.chainLiftOverMm39Link.bb
@@ -517,9 +566,45 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
     visibility hide
     parent GCF_028372415.1_mMacEug1.pri_v2ChainNet
 
-        track netHg38
+        track netGCF_001704415.2
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
         subGroups view=align species=s000 chainType=c04
+        shortLabel goat mafNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.GCF_001704415.2.net.bb
+        summary bbi/GCF_028372415.1_mMacEug1.pri_v2.GCF_001704415.2.net.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track synNetGCF_001704415.2
+        parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel goat synNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.GCF_001704415.2.synNet.bb
+        summary bbi/GCF_028372415.1_mMacEug1.pri_v2.GCF_001704415.2.synNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track rbestNetGCF_001704415.2
+        parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel goat rbestNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_028372415.1_mMacEug1.pri_v2.GCF_001704415.2.rbestNet.bb
+        summary bbi/GCF_028372415.1_mMacEug1.pri_v2.GCF_001704415.2.rbestNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
+        priority 92.624
+
+        track netHg38
+        parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
         shortLabel Human/hg38 mafNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -531,7 +616,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track synNetHg38
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s000 chainType=c05
+        subGroups view=align species=s001 chainType=c05
         shortLabel Human/hg38 synNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -543,7 +628,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track rbestNetHg38
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s000 chainType=c06
+        subGroups view=align species=s001 chainType=c06
         shortLabel Human/hg38 rbestNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -555,7 +640,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track netHs1
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s001 chainType=c04
+        subGroups view=align species=s002 chainType=c04
         shortLabel Human/hs1 mafNet
         longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
         type bigMaf
@@ -567,7 +652,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track synNetHs1
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s001 chainType=c05
+        subGroups view=align species=s002 chainType=c05
         shortLabel Human/hs1 synNet
         longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
         type bigMaf
@@ -579,7 +664,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track rbestNetHs1
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s001 chainType=c06
+        subGroups view=align species=s002 chainType=c06
         shortLabel Human/hs1 rbestNet
         longLabel Human/hs1/hs1 (Jan. 2022) Chained Alignments
         type bigMaf
@@ -591,7 +676,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track netMm10
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s002 chainType=c04
+        subGroups view=align species=s003 chainType=c04
         shortLabel Mouse/mm10 mafNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -603,7 +688,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track synNetMm10
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s002 chainType=c05
+        subGroups view=align species=s003 chainType=c05
         shortLabel Mouse/mm10 synNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -615,7 +700,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track rbestNetMm10
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s002 chainType=c06
+        subGroups view=align species=s003 chainType=c06
         shortLabel Mouse/mm10 rbestNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -627,7 +712,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track netMm39
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s003 chainType=c04
+        subGroups view=align species=s004 chainType=c04
         shortLabel Mouse/mm39 mafNet
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
@@ -639,7 +724,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track synNetMm39
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s003 chainType=c05
+        subGroups view=align species=s004 chainType=c05
         shortLabel Mouse/mm39 synNet
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
@@ -651,7 +736,7 @@ html html/GCF_028372415.1_mMacEug1.pri_v2.chainNet
 
         track rbestNetMm39
         parent GCF_028372415.1_mMacEug1.pri_v2MafNetViewnet off
-        subGroups view=align species=s003 chainType=c06
+        subGroups view=align species=s004 chainType=c06
         shortLabel Mouse/mm39 rbestNet
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf

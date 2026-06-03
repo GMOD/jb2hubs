@@ -21,7 +21,11 @@ htmlPath html/GCF_964237555.1_mOryCun1.1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/964/237/555/GCF_964237555.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/964/237/555/GCF_964237555.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/964/237/555/GCF_964237555.1
+liftOver.GCF_000002315.6 liftOver/GCF_964237555.1ToGCF_000002315.6.over.chain.gz
+liftOver.GCF_000003025.6 liftOver/GCF_964237555.1ToGCF_000003025.6.over.chain.gz
+liftOver.GCF_002263795.1 liftOver/GCF_964237555.1ToGCF_002263795.1.over.chain.gz
 liftOver.GCF_002263795.3 liftOver/GCF_964237555.1ToGCF_002263795.3.over.chain.gz
+liftOver.GCF_016772045.1 liftOver/GCF_964237555.1ToGCF_016772045.1.over.chain.gz
 liftOver.hg38 liftOver/GCF_964237555.1ToHg38.over.chain.gz
 
 track assembly
@@ -291,7 +295,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_964237555.1_mOryCun1.1
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=hg38 s001=GCF_002263795.3
+subGroup2 species Assembly s000=hg38 s001=GCF_002263795.3 s002=GCF_000003025.6 s003=GCF_016772045.1 s004=GCF_002263795.1 s005=GCF_000002315.6
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -337,6 +341,54 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
 
+        track chainGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewchain off
+        subGroups view=chain species=s002 chainType=c00
+        shortLabel pig Chain
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigChain GCF_000003025.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_000003025.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_000003025.6Link.bb
+        otherDb GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track chainGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewchain off
+        subGroups view=chain species=s003 chainType=c00
+        shortLabel Rambouillet sheep Chain
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigChain GCF_016772045.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_016772045.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_016772045.1Link.bb
+        otherDb GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track chainGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
+        shortLabel cattle Chain
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigChain GCF_002263795.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_002263795.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_002263795.1Link.bb
+        otherDb GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track chainGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewchain off
+        subGroups view=chain species=s005 chainType=c00
+        shortLabel chicken Chain
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigChain GCF_000002315.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_000002315.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainGCF_000002315.6Link.bb
+        otherDb GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
+
     track GCF_964237555.1_mOryCun1.1ChainNetViewSynTen
     shortLabel Syntenic
     view synten
@@ -348,7 +400,7 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
         subGroups view=synten species=s000 chainType=c01
         shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_GRCg6a (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynHg38.bb
         linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynHg38Link.bb
@@ -368,6 +420,54 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
 
+        track chainSynGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
+        subGroups view=synten species=s002 chainType=c01
+        shortLabel pig synChain
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigChain GCF_000003025.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_000003025.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_000003025.6Link.bb
+        otherDb GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track chainSynGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
+        subGroups view=synten species=s003 chainType=c01
+        shortLabel Rambouillet sheep synChain
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigChain GCF_016772045.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_016772045.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_016772045.1Link.bb
+        otherDb GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track chainSynGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
+        shortLabel cattle synChain
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigChain GCF_002263795.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_002263795.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_002263795.1Link.bb
+        otherDb GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track chainSynGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewSynTen off
+        subGroups view=synten species=s005 chainType=c01
+        shortLabel chicken synChain
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigChain GCF_000002315.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_000002315.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainSynGCF_000002315.6Link.bb
+        otherDb GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
+
     track GCF_964237555.1_mOryCun1.1ChainNetViewRBest
     shortLabel Reciprocal best
     view rbest
@@ -379,7 +479,7 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
         subGroups view=rbest species=s000 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_GRCg6a (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestHg38.bb
         linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestHg38Link.bb
@@ -399,6 +499,54 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
 
+        track chainRBestGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
+        subGroups view=rbest species=s002 chainType=c02
+        shortLabel pig rbChain
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigChain GCF_000003025.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_000003025.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_000003025.6Link.bb
+        otherDb GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track chainRBestGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
+        subGroups view=rbest species=s003 chainType=c02
+        shortLabel Rambouillet sheep rbChain
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigChain GCF_016772045.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_016772045.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_016772045.1Link.bb
+        otherDb GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track chainRBestGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
+        shortLabel cattle rbChain
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigChain GCF_002263795.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_002263795.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_002263795.1Link.bb
+        otherDb GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track chainRBestGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewRBest off
+        subGroups view=rbest species=s005 chainType=c02
+        shortLabel chicken rbChain
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigChain GCF_000002315.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_000002315.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainRBestGCF_000002315.6Link.bb
+        otherDb GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
+
     track GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver
     shortLabel Lift over
     view liftover
@@ -410,7 +558,7 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
         subGroups view=liftover species=s000 chainType=c03
         shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_GRCg6a (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverHg38.bb
         linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverHg38Link.bb
@@ -429,6 +577,54 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         otherDb GCF_002263795.3
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
+
+        track chainLiftOverGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s002 chainType=c03
+        shortLabel pig loChain
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigChain GCF_000003025.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_000003025.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_000003025.6Link.bb
+        otherDb GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track chainLiftOverGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c03
+        shortLabel Rambouillet sheep loChain
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigChain GCF_016772045.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_016772045.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_016772045.1Link.bb
+        otherDb GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track chainLiftOverGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s004 chainType=c03
+        shortLabel cattle loChain
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigChain GCF_002263795.1
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_002263795.1.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_002263795.1Link.bb
+        otherDb GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track chainLiftOverGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1ChainNetViewLiftOver off
+        subGroups view=liftover species=s005 chainType=c03
+        shortLabel chicken loChain
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigChain GCF_000002315.6
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_000002315.6.bb
+        linkDataUrl bbi/GCF_964237555.1_mOryCun1.1.chainLiftOverGCF_000002315.6Link.bb
+        otherDb GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
 
     track GCF_964237555.1_mOryCun1.1MafNetViewnet
     shortLabel Nets
@@ -507,6 +703,150 @@ html html/GCF_964237555.1_mOryCun1.1.chainNet
         speciesOrder GCF_002263795.3
         html html/GCF_964237555.1_mOryCun1.1.chainNet
         priority 56.406
+
+        track netGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s002 chainType=c04
+        shortLabel pig mafNet
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_000003025.6.net.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_000003025.6.net.summary.bb
+        speciesOrder GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track synNetGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s002 chainType=c05
+        shortLabel pig synNet
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_000003025.6.synNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_000003025.6.synNet.summary.bb
+        speciesOrder GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track rbestNetGCF_000003025.6
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s002 chainType=c06
+        shortLabel pig rbestNet
+        longLabel pig/GCF_000003025.6_Sscrofa11.1 (2017-02-07) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_000003025.6.rbestNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_000003025.6.rbestNet.summary.bb
+        speciesOrder GCF_000003025.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 60.780
+
+        track netGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s003 chainType=c04
+        shortLabel Rambouillet sheep mafNet
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_016772045.1.net.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_016772045.1.net.summary.bb
+        speciesOrder GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track synNetGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s003 chainType=c05
+        shortLabel Rambouillet sheep synNet
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_016772045.1.synNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_016772045.1.synNet.summary.bb
+        speciesOrder GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track rbestNetGCF_016772045.1
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s003 chainType=c06
+        shortLabel Rambouillet sheep rbestNet
+        longLabel Rambouillet sheep/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_016772045.1.rbestNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_016772045.1.rbestNet.summary.bb
+        speciesOrder GCF_016772045.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.444
+
+        track netGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s004 chainType=c04
+        shortLabel cattle mafNet
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_002263795.1.net.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_002263795.1.net.summary.bb
+        speciesOrder GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track synNetGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s004 chainType=c05
+        shortLabel cattle synNet
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_002263795.1.synNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_002263795.1.synNet.summary.bb
+        speciesOrder GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track rbestNetGCF_002263795.1
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s004 chainType=c06
+        shortLabel cattle rbestNet
+        longLabel cattle/GCF_002263795.1_ARS-UCD1.2 (2018-04-11) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_002263795.1.rbestNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_002263795.1.rbestNet.summary.bb
+        speciesOrder GCF_002263795.1
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 62.504
+
+        track netGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s005 chainType=c04
+        shortLabel chicken mafNet
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_000002315.6.net.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_000002315.6.net.summary.bb
+        speciesOrder GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
+
+        track synNetGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s005 chainType=c05
+        shortLabel chicken synNet
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_000002315.6.synNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_000002315.6.synNet.summary.bb
+        speciesOrder GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
+
+        track rbestNetGCF_000002315.6
+        parent GCF_964237555.1_mOryCun1.1MafNetViewnet off
+        subGroups view=align species=s005 chainType=c06
+        shortLabel chicken rbestNet
+        longLabel chicken/GCF_000002315.6_GRCg6a (2018-03-27) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_964237555.1_mOryCun1.1.GCF_000002315.6.rbestNet.bb
+        summary bbi/GCF_964237555.1_mOryCun1.1.GCF_000002315.6.rbestNet.summary.bb
+        speciesOrder GCF_000002315.6
+        html html/GCF_964237555.1_mOryCun1.1.chainNet
+        priority 97.299
 
 
 track Tiberius

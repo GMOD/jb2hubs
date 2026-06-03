@@ -21,6 +21,7 @@ htmlPath html/GCF_019923935.1_NDDB_SH_1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/019/923/935/GCF_019923935.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/019/923/935/GCF_019923935.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/019/923/935/GCF_019923935.1
+liftOver.GCF_001704415.2 liftOver/GCF_019923935.1ToGCF_001704415.2.over.chain.gz
 liftOver.GCF_002263795.3 liftOver/GCF_019923935.1ToGCF_002263795.3.over.chain.gz
 liftOver.GCF_029407905.1 liftOver/GCF_019923935.1ToGCF_029407905.1.over.chain.gz
 liftOver.bosTau9 liftOver/GCF_019923935.1ToBosTau9.over.chain.gz
@@ -285,7 +286,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_019923935.1_NDDB_SH_1
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=GCF_029407905.1 s001=GCF_002263795.3 s002=bosTau9 s003=hg38 s004=hg19 s005=mm39 s006=mm10
+subGroup2 species Assembly s000=GCF_029407905.1 s001=GCF_002263795.3 s002=bosTau9 s003=GCF_001704415.2 s004=hg38 s005=hg19 s006=mm39 s007=mm10
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -343,9 +344,21 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.797
 
-        track chainHg38
+        track chainGCF_001704415.2
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
         subGroups view=chain species=s003 chainType=c00
+        shortLabel goat Chain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
+
+        track chainHg38
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
+        subGroups view=chain species=s004 chainType=c00
         shortLabel Human/hg38 Chain
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigChain hg38
@@ -357,7 +370,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainHg19
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
-        subGroups view=chain species=s004 chainType=c00
+        subGroups view=chain species=s005 chainType=c00
         shortLabel Human/hg19 Chain
         longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
         type bigChain hg19
@@ -369,7 +382,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainMm39
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
-        subGroups view=chain species=s005 chainType=c00
+        subGroups view=chain species=s006 chainType=c00
         shortLabel Mouse/mm39 Chain
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigChain mm39
@@ -381,7 +394,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainMm10
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewchain off
-        subGroups view=chain species=s006 chainType=c00
+        subGroups view=chain species=s007 chainType=c00
         shortLabel Mouse/mm10 Chain
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigChain mm10
@@ -434,11 +447,23 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.797
 
-        track chainSynHg38
+        track chainSynGCF_001704415.2
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
         subGroups view=synten species=s003 chainType=c01
+        shortLabel goat synChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
+
+        track chainSynHg38
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
+        subGroups view=synten species=s004 chainType=c01
         shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg38.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg38Link.bb
@@ -448,9 +473,9 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainSynHg19
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s004 chainType=c01
+        subGroups view=synten species=s005 chainType=c01
         shortLabel Human/hg19 synChain
-        longLabel Human/hg19/hg19_ARS-UCD2.0 (Feb. 2009) Chained Alignments
+        longLabel Human/hg19/hg19_ARS1.2 (Feb. 2009) Chained Alignments
         type bigChain hg19
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg19.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynHg19Link.bb
@@ -460,9 +485,9 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainSynMm39
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s005 chainType=c01
+        subGroups view=synten species=s006 chainType=c01
         shortLabel Mouse/mm39 synChain
-        longLabel Mouse/mm39/mm39_ARS-UCD2.0 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ARS1.2 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm39.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm39Link.bb
@@ -472,9 +497,9 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainSynMm10
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewSynTen off
-        subGroups view=synten species=s006 chainType=c01
+        subGroups view=synten species=s007 chainType=c01
         shortLabel Mouse/mm10 synChain
-        longLabel Mouse/mm10/mm10_ARS-UCD2.0 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS1.2 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm10.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainSynMm10Link.bb
@@ -525,11 +550,23 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.797
 
-        track chainRBestHg38
+        track chainRBestGCF_001704415.2
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
         subGroups view=rbest species=s003 chainType=c02
+        shortLabel goat rbChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
+
+        track chainRBestHg38
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
+        subGroups view=rbest species=s004 chainType=c02
         shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38_ARS-UCD2.0 (Dec. 2013) Chained Alignments
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg38.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg38Link.bb
@@ -539,9 +576,9 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainRBestHg19
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s004 chainType=c02
+        subGroups view=rbest species=s005 chainType=c02
         shortLabel Human/hg19 rbChain
-        longLabel Human/hg19/hg19_ARS-UCD2.0 (Feb. 2009) Chained Alignments
+        longLabel Human/hg19/hg19_ARS1.2 (Feb. 2009) Chained Alignments
         type bigChain hg19
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg19.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestHg19Link.bb
@@ -551,9 +588,9 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainRBestMm39
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s005 chainType=c02
+        subGroups view=rbest species=s006 chainType=c02
         shortLabel Mouse/mm39 rbChain
-        longLabel Mouse/mm39/mm39_ARS-UCD2.0 (Jun. 2020) Chained Alignments
+        longLabel Mouse/mm39/mm39_ARS1.2 (Jun. 2020) Chained Alignments
         type bigChain mm39
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm39.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm39Link.bb
@@ -563,9 +600,9 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track chainRBestMm10
         parent GCF_019923935.1_NDDB_SH_1ChainNetViewRBest off
-        subGroups view=rbest species=s006 chainType=c02
+        subGroups view=rbest species=s007 chainType=c02
         shortLabel Mouse/mm10 rbChain
-        longLabel Mouse/mm10/mm10_ARS-UCD2.0 (Dec. 2011) Chained Alignments
+        longLabel Mouse/mm10/mm10_ARS1.2 (Dec. 2011) Chained Alignments
         type bigChain mm10
         bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm10.bb
         linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainRBestMm10Link.bb
@@ -603,6 +640,18 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         otherDb GCF_002263795.3
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.771
+
+        track chainLiftOverGCF_001704415.2
+        parent GCF_019923935.1_NDDB_SH_1ChainNetViewLiftOver off
+        subGroups view=liftover species=s003 chainType=c03
+        shortLabel goat loChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_019923935.1_NDDB_SH_1.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
 
     track GCF_019923935.1_NDDB_SH_1MafNetViewnet
     shortLabel Nets
@@ -718,9 +767,45 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
         html html/GCF_019923935.1_NDDB_SH_1.chainNet
         priority 3.797
 
-        track netHg38
+        track netGCF_001704415.2
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
         subGroups view=align species=s003 chainType=c04
+        shortLabel goat mafNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.GCF_001704415.2.net.bb
+        summary bbi/GCF_019923935.1_NDDB_SH_1.GCF_001704415.2.net.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
+
+        track synNetGCF_001704415.2
+        parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
+        subGroups view=align species=s003 chainType=c05
+        shortLabel goat synNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.GCF_001704415.2.synNet.bb
+        summary bbi/GCF_019923935.1_NDDB_SH_1.GCF_001704415.2.synNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
+
+        track rbestNetGCF_001704415.2
+        parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
+        subGroups view=align species=s003 chainType=c06
+        shortLabel goat rbestNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_019923935.1_NDDB_SH_1.GCF_001704415.2.rbestNet.bb
+        summary bbi/GCF_019923935.1_NDDB_SH_1.GCF_001704415.2.rbestNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_019923935.1_NDDB_SH_1.chainNet
+        priority 9.649
+
+        track netHg38
+        parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
+        subGroups view=align species=s004 chainType=c04
         shortLabel Human/hg38 mafNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -732,7 +817,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track synNetHg38
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s003 chainType=c05
+        subGroups view=align species=s004 chainType=c05
         shortLabel Human/hg38 synNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -744,7 +829,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track rbestNetHg38
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s003 chainType=c06
+        subGroups view=align species=s004 chainType=c06
         shortLabel Human/hg38 rbestNet
         longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
@@ -756,7 +841,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track netHg19
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s004 chainType=c04
+        subGroups view=align species=s005 chainType=c04
         shortLabel Human/hg19 mafNet
         longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
         type bigMaf
@@ -768,7 +853,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track synNetHg19
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s004 chainType=c05
+        subGroups view=align species=s005 chainType=c05
         shortLabel Human/hg19 synNet
         longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
         type bigMaf
@@ -780,7 +865,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track rbestNetHg19
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s004 chainType=c06
+        subGroups view=align species=s005 chainType=c06
         shortLabel Human/hg19 rbestNet
         longLabel Human/hg19/hg19 (Feb. 2009) Chained Alignments
         type bigMaf
@@ -792,7 +877,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track netMm39
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s005 chainType=c04
+        subGroups view=align species=s006 chainType=c04
         shortLabel Mouse/mm39 mafNet
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
@@ -804,7 +889,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track synNetMm39
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s005 chainType=c05
+        subGroups view=align species=s006 chainType=c05
         shortLabel Mouse/mm39 synNet
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
@@ -816,7 +901,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track rbestNetMm39
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s005 chainType=c06
+        subGroups view=align species=s006 chainType=c06
         shortLabel Mouse/mm39 rbestNet
         longLabel Mouse/mm39/mm39 (Jun. 2020) Chained Alignments
         type bigMaf
@@ -828,7 +913,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track netMm10
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s006 chainType=c04
+        subGroups view=align species=s007 chainType=c04
         shortLabel Mouse/mm10 mafNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -840,7 +925,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track synNetMm10
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s006 chainType=c05
+        subGroups view=align species=s007 chainType=c05
         shortLabel Mouse/mm10 synNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf
@@ -852,7 +937,7 @@ html html/GCF_019923935.1_NDDB_SH_1.chainNet
 
         track rbestNetMm10
         parent GCF_019923935.1_NDDB_SH_1MafNetViewnet off
-        subGroups view=align species=s006 chainType=c06
+        subGroups view=align species=s007 chainType=c06
         shortLabel Mouse/mm10 rbestNet
         longLabel Mouse/mm10/mm10 (Dec. 2011) Chained Alignments
         type bigMaf

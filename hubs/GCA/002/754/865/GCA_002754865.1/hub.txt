@@ -189,7 +189,7 @@ html html/GCA_002754865.1_ASM275486v1.xenoRefGene
 track chainNetGCA_011100555.2
 compositeTrack on
 shortLabel white-tufted-ear marmoset Chain/Net
-longLabel white-tufted-ear marmoset (2017-11-06), Chain and Net Alignments
+longLabel white-tufted-ear marmoset (2021-04-28), Chain and Net Alignments
 subGroup1 view Views chain=Chain net=Net
 dragAndDrop subTracks
 visibility hide
@@ -213,7 +213,7 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent chainNetGCA_011100555.2Viewchain
         subGroups view=chain
         shortLabel white-tufted-ear marmoset Chain
-        longLabel white-tufted-ear marmoset (2017-11-06) Chained Alignments
+        longLabel white-tufted-ear marmoset (2021-04-28) Chained Alignments
         type bigChain GCA_011100555.2
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainGCA_011100555.2.bb
         linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainGCA_011100555.2Link.bb
@@ -223,7 +223,7 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent chainNetGCA_011100555.2Viewchain
         subGroups view=chain
         shortLabel white-tufted-ear marmoset synChain
-        longLabel white-tufted-ear marmoset (2017-11-06) Syntenic Chained Alignments
+        longLabel white-tufted-ear marmoset (2021-04-28) Syntenic Chained Alignments
         type bigChain GCA_011100555.2
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainSynGCA_011100555.2.bb
         linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainSynGCA_011100555.2Link.bb
@@ -233,7 +233,7 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent chainNetGCA_011100555.2Viewchain
         subGroups view=chain
         shortLabel white-tufted-ear marmoset rbChain
-        longLabel white-tufted-ear marmoset (2017-11-06) Reciprocal Best Chained Alignments
+        longLabel white-tufted-ear marmoset (2021-04-28) Reciprocal Best Chained Alignments
         type bigChain GCA_011100555.2
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainRBestGCA_011100555.2.bb
         linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainRBestGCA_011100555.2Link.bb
@@ -243,7 +243,7 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent chainNetGCA_011100555.2Viewchain
         subGroups view=chain
         shortLabel white-tufted-ear marmoset loChain
-        longLabel white-tufted-ear marmoset (2017-11-06) Lift Over Chained Alignments
+        longLabel white-tufted-ear marmoset (2021-04-28) Lift Over Chained Alignments
         type bigChain GCA_011100555.2
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.chainLiftOverGCA_011100555.2.bb
         linkDataUrl bbi/GCA_002754865.1_ASM275486v1.chainLiftOverGCA_011100555.2Link.bb
@@ -259,7 +259,7 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent mafNetGCA_011100555.2Viewnet
         subGroups view=net
         shortLabel white-tufted-ear marmoset net
-        longLabel white-tufted-ear marmoset (2017-11-06) Net Alignment
+        longLabel white-tufted-ear marmoset (2021-04-28) Net Alignment
         type bigMaf
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.GCA_011100555.2.net.bb
         summary bbi/GCA_002754865.1_ASM275486v1.GCA_011100555.2.net.summary.bb
@@ -270,7 +270,7 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent mafNetGCA_011100555.2Viewnet
         subGroups view=net
         shortLabel white-tufted-ear marmoset synNet
-        longLabel white-tufted-ear marmoset (2017-11-06) Syntenic Net Alignment
+        longLabel white-tufted-ear marmoset (2021-04-28) Syntenic Net Alignment
         type bigMaf
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.GCA_011100555.2.synNet.bb
         summary bbi/GCA_002754865.1_ASM275486v1.GCA_011100555.2.synNet.summary.bb
@@ -281,10 +281,32 @@ html html/GCA_002754865.1_ASM275486v1.chainNet
         parent mafNetGCA_011100555.2Viewnet
         subGroups view=net
         shortLabel white-tufted-ear marmoset rbestNet
-        longLabel white-tufted-ear marmoset (2017-11-06) Reciprocal Best Net Alignment
+        longLabel white-tufted-ear marmoset (2021-04-28) Reciprocal Best Net Alignment
         type bigMaf
         bigDataUrl bbi/GCA_002754865.1_ASM275486v1.GCA_011100555.2.rbestNet.bb
         summary bbi/GCA_002754865.1_ASM275486v1.GCA_011100555.2.rbestNet.summary.bb
         speciesOrder GCA_011100555.2
         priority 7
 
+
+track evaSnp8
+shortLabel EVA SNP Release 8
+longLabel Short Genetic Variants from European Variant Archive Release 8
+type bigBed 9 +
+visibility dense
+group varRep
+itemRgb on
+bigDataUrl contrib/evaSnp8/evaSnp8.bb
+url https://www.ebi.ac.uk/eva/?variant&accessionID=$$
+searchIndex name
+mouseOver <b>Ref/Alt allele(s)</b>: $ref>$alt<br> <b>Var type</b>: $ucscClass<br> <b>AA change</b>: $aaChange
+filterValues.varClass SNV|SNV,deletion|Deletion,indel|Indel,insertion|Insertion,MNV|MNV,sequence_alteration|Sequence alteration
+filterLabel.varClass Variant class from EVA SO term
+filterLabel.ucscClass Functional effect per UCSC Variant Annotation
+filterValues.ucscClass downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant
+filterType.ucscClass multipleListOnlyOr
+filterValues.itemRgb 255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants
+filterLabel.itemRgb General variant types by color grouping
+maxWindowCoverage 250000
+maxItems 1000000
+html contrib/evaSnp8/description

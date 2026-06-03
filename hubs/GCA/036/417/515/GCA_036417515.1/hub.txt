@@ -21,6 +21,7 @@ htmlPath html/GCA_036417515.1_bDroNov1.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/036/417/515/GCA_036417515.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/036/417/515/GCA_036417515.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/036/417/515/GCA_036417515.1
+liftOver.GCF_036370855.1 liftOver/GCA_036417515.1ToGCF_036370855.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -188,4 +189,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_036417515.1_bDroNov1.hap2.xenoRefGene.ix
 html html/GCA_036417515.1_bDroNov1.hap2.xenoRefGene
+
+##############################################################################
+# GCF_036370855.1 - emu - Dromaius novaehollandiae - taxId: 8790
+##############################################################################
+track chainNetGCF_036370855.1
+compositeTrack on
+shortLabel emu Chain/Net
+longLabel emu (2024-02-26), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_036370855.1
+html html/GCA_036417515.1_bDroNov1.hap2.chainNet
+
+    track chainNetGCF_036370855.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_036370855.1
+    spectrum on
+
+        track chainGCF_036370855.1
+        parent chainNetGCF_036370855.1Viewchain
+        subGroups view=chain
+        shortLabel emu Chain
+        longLabel emu (2024-02-26) Chained Alignments
+        type bigChain GCF_036370855.1
+        bigDataUrl bbi/GCA_036417515.1_bDroNov1.hap2.chainGCF_036370855.1.bb
+        linkDataUrl bbi/GCA_036417515.1_bDroNov1.hap2.chainGCF_036370855.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_036370855.1
+        parent chainNetGCF_036370855.1Viewchain
+        subGroups view=chain
+        shortLabel emu loChain
+        longLabel emu (2024-02-26) Lift Over Chained Alignments
+        type bigChain GCF_036370855.1
+        bigDataUrl bbi/GCA_036417515.1_bDroNov1.hap2.chainLiftOverGCF_036370855.1.bb
+        linkDataUrl bbi/GCA_036417515.1_bDroNov1.hap2.chainLiftOverGCF_036370855.1Link.bb
+        priority 2
 

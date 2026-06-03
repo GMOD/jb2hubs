@@ -1,7 +1,45 @@
 {
   "reports": [
     {
-      "accession": "GCA_900324465.2",
+      "accession": "GCF_900324465.2",
+      "additional_submitters": [
+        {
+          "chr_name": "MT",
+          "genbank_accession": "KJ808811.1",
+          "molecule_type": "Mitochondrion",
+          "refseq_accession": "NC_024752.1",
+          "submitter": "Animal Science College, South China Agricultural University"
+        }
+      ],
+      "annotation_info": {
+        "busco": {
+          "busco_lineage": "actinopterygii_odb10",
+          "busco_ver": "4.0.2",
+          "complete": 0.99450547,
+          "duplicated": 0.013186813,
+          "fragmented": 0.0027472528,
+          "missing": 0.0027472528,
+          "single_copy": 0.98131865,
+          "total_count": "3640"
+        },
+        "method": "Best-placed RefSeq; Gnomon",
+        "name": "NCBI Anabas testudineus Annotation Release 101",
+        "pipeline": "NCBI Eukaryotic Genome Annotation Pipeline (EGAP)",
+        "provider": "NCBI RefSeq",
+        "release_date": "2020-04-03",
+        "report_url": "https://www.ncbi.nlm.nih.gov/genome/annotation_euk/Anabas_testudineus/101",
+        "software_version": "8.4",
+        "stats": {
+          "gene_counts": {
+            "non_coding": 2496,
+            "other": 191,
+            "protein_coding": 23846,
+            "pseudogene": 411,
+            "total": 26944
+          }
+        },
+        "status": "Full annotation"
+      },
       "assembly_info": {
         "assembly_level": "Chromosome",
         "assembly_method": "various",
@@ -126,18 +164,10 @@
           },
           "submission_date": "2017-02-05T10:21:24.526"
         },
-        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCA_900324465.2",
-        "comments": "The assembly fAnaTes1.3 is based on 68x PacBio Sequel data, 114x coverage Illumina HiSeqX data from a 10X Genomics Chromium library generated at the Wellcome Sanger Institute as well as BioNano Saphyr DLE data generated at the Rockefeller University Vertebrate Genome Laboratory and 170x coverage HiSeqX data from a Hi-C library prepared by Arima Genomics. An initial PacBio assembly was made using Falcon-unzip. The primary contigs were then scaffolded using the 10X data with scaff10x and mis-joins broken using break10x. After using the PacBio data to gap fill with PBJelly and polish with Arrow, the assembly was polished again using the 10X Illumina data and freebayes. Finally, the assembly was further manually curated using gEVAL to correct mis-joins and improve concordance with the BioNano data and Arima Hi-C data. This was the initial fAnaTes1.1 assembly. An updated fAnaTes1.2 assembly has been further curated to removed duplicate haplotypes using purge_haplotigs and using the Hi-C data to identify further breaks and joins and produce chromosomal-level scaffolds. fAnaTes1.3 includes a mitochondrial assembly produced at The Rockefeller University using mitoVGP. Chromosomes have been named by synteny to medaka.",
-        "diploid_role": "principal_pseudohaplotype_of_diploid",
-        "linked_assemblies": [
-          {
-            "assembly_type": "alternate_pseudohaplotype_of_diploid",
-            "linked_assembly": "GCA_900650485.1"
-          }
-        ],
+        "blast_url": "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PAGE_TYPE=BlastSearch&PROG_DEF=blastn&BLAST_SPEC=GDH_GCF_900324465.2",
+        "comments": "Assembly name: fAnaTes1.2\nThe genomic sequence for this RefSeq record is from the whole-genome assembly released by the SC on 2018/12/19. The original whole-genome shotgun project has the accession OOHO00000000.2.",
         "paired_assembly": {
-          "accession": "GCF_900324465.2",
-          "annotation_name": "NCBI Anabas testudineus Annotation Release 101",
+          "accession": "GCA_900324465.2",
           "differences": "Added chromosome MT",
           "only_refseq": "chromosome MT",
           "refseq_genbank_are_different": true,
@@ -156,6 +186,7 @@
         "genome_coverage": "68",
         "number_of_component_sequences": 50,
         "number_of_contigs": 316,
+        "number_of_organelles": 1,
         "number_of_scaffolds": 50,
         "scaffold_l50": 10,
         "scaffold_n50": 25063394,
@@ -163,7 +194,14 @@
         "total_sequence_length": "555641398",
         "total_ungapped_length": "552034902"
       },
-      "current_accession": "GCA_900324465.3",
+      "current_accession": "GCF_900324465.3",
+      "organelle_info": [
+        {
+          "description": "Mitochondrion",
+          "submitter": "Wellcome Sanger Institute",
+          "total_seq_length": "16603"
+        }
+      ],
       "organism": {
         "common_name": "climbing perch",
         "infraspecific_names": {
@@ -172,8 +210,8 @@
         "organism_name": "Anabas testudineus",
         "tax_id": 64144
       },
-      "paired_accession": "GCF_900324465.2",
-      "source_database": "SOURCE_DATABASE_GENBANK",
+      "paired_accession": "GCA_900324465.2",
+      "source_database": "SOURCE_DATABASE_REFSEQ",
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/OOHO00000000.2",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/OOHO02",
@@ -182,5 +220,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1774062189
+  "downloaded_at": 1780446924
 }

@@ -21,6 +21,7 @@ htmlPath html/GCF_902806685.1_iAphHyp1.1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/806/685/GCF_902806685.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/806/685/GCF_902806685.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/806/685/GCF_902806685.1
+liftOver.GCF_902806685.2 liftOver/GCF_902806685.1ToGCF_902806685.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -124,8 +125,8 @@ priority 2
         shortLabel RefSeq All
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_902806685.1_iAphHyp1.1.ncbiRefSeq.ix
         bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.ncbiRefSeq.bb
@@ -142,8 +143,8 @@ priority 2
         longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
         type bigGenePred
         urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
+        labelFields name2,geneName,geneName2
+        defaultLabelFields name2
         searchIndex name
         searchTrix ixIxx/GCF_902806685.1_iAphHyp1.1.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
@@ -254,4 +255,109 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_902806685.1_iAphHyp1.1.xenoRefGene.ix
 html html/GCF_902806685.1_iAphHyp1.1.xenoRefGene
+
+##############################################################################
+# GCF_902806685.2 - ringlet - Maniola hyperantus - taxId: 2795564
+##############################################################################
+track chainNetGCF_902806685.2
+compositeTrack on
+shortLabel ringlet Chain/Net
+longLabel ringlet (2020-02-22), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_902806685.2
+html html/GCF_902806685.1_iAphHyp1.1.chainNet
+
+    track chainNetGCF_902806685.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_902806685.2
+    spectrum on
+
+        track chainGCF_902806685.2
+        parent chainNetGCF_902806685.2Viewchain
+        subGroups view=chain
+        shortLabel ringlet Chain
+        longLabel ringlet (2020-02-22) Chained Alignments
+        type bigChain GCF_902806685.2
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainGCF_902806685.2.bb
+        linkDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainGCF_902806685.2Link.bb
+        priority 1
+
+        track chainSynGCF_902806685.2
+        parent chainNetGCF_902806685.2Viewchain
+        subGroups view=chain
+        shortLabel ringlet synChain
+        longLabel ringlet (2020-02-22) Syntenic Chained Alignments
+        type bigChain GCF_902806685.2
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainSynGCF_902806685.2.bb
+        linkDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainSynGCF_902806685.2Link.bb
+        priority 2
+
+        track chainRBestGCF_902806685.2
+        parent chainNetGCF_902806685.2Viewchain
+        subGroups view=chain
+        shortLabel ringlet rbChain
+        longLabel ringlet (2020-02-22) Reciprocal Best Chained Alignments
+        type bigChain GCF_902806685.2
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainRBestGCF_902806685.2.bb
+        linkDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainRBestGCF_902806685.2Link.bb
+        priority 3
+
+        track chainLiftOverGCF_902806685.2
+        parent chainNetGCF_902806685.2Viewchain
+        subGroups view=chain
+        shortLabel ringlet loChain
+        longLabel ringlet (2020-02-22) Lift Over Chained Alignments
+        type bigChain GCF_902806685.2
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainLiftOverGCF_902806685.2.bb
+        linkDataUrl bbi/GCF_902806685.1_iAphHyp1.1.chainLiftOverGCF_902806685.2Link.bb
+        priority 4
+
+    track mafNetGCF_902806685.2Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetGCF_902806685.2
+
+        track netGCF_902806685.2
+        parent mafNetGCF_902806685.2Viewnet
+        subGroups view=net
+        shortLabel ringlet net
+        longLabel ringlet (2020-02-22) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.GCF_902806685.2.net.bb
+        summary bbi/GCF_902806685.1_iAphHyp1.1.GCF_902806685.2.net.summary.bb
+        speciesOrder GCF_902806685.2
+        priority 5
+
+        track synNetGCF_902806685.2
+        parent mafNetGCF_902806685.2Viewnet
+        subGroups view=net
+        shortLabel ringlet synNet
+        longLabel ringlet (2020-02-22) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.GCF_902806685.2.synNet.bb
+        summary bbi/GCF_902806685.1_iAphHyp1.1.GCF_902806685.2.synNet.summary.bb
+        speciesOrder GCF_902806685.2
+        priority 6
+
+        track rbestNetGCF_902806685.2
+        parent mafNetGCF_902806685.2Viewnet
+        subGroups view=net
+        shortLabel ringlet rbestNet
+        longLabel ringlet (2020-02-22) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCF_902806685.1_iAphHyp1.1.GCF_902806685.2.rbestNet.bb
+        summary bbi/GCF_902806685.1_iAphHyp1.1.GCF_902806685.2.rbestNet.summary.bb
+        speciesOrder GCF_902806685.2
+        priority 7
 

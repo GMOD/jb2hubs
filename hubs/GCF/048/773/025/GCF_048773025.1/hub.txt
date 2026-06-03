@@ -21,6 +21,7 @@ htmlPath html/GCF_048773025.1_ASM4877302v1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/048/773/025/GCF_048773025.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/048/773/025/GCF_048773025.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/048/773/025/GCF_048773025.1
+liftOver.GCF_001704415.2 liftOver/GCF_048773025.1ToGCF_001704415.2.over.chain.gz
 liftOver.hg38 liftOver/GCF_048773025.1ToHg38.over.chain.gz
 
 track assembly
@@ -274,112 +275,225 @@ searchIndex name
 searchTrix ixIxx/GCF_048773025.1_ASM4877302v1.xenoRefGene.ix
 html html/GCF_048773025.1_ASM4877302v1.xenoRefGene
 
-##############################################################################
-# hg38 - Human - Homo sapiens - taxId: 9606
-##############################################################################
-track chainNetHg38
+track GCF_048773025.1_ASM4877302v1ChainNet
 compositeTrack on
-shortLabel Human Chain/Net
-longLabel Human (Dec. 2013 (GRCh38/hg38)), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_048773025.1_ASM4877302v1
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_001704415.2 s001=hg38
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
-chainMinScore 3000
-chainLinearGap medium
-matrixHeader A, C, G, T
-otherDb hg38
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_048773025.1_ASM4877302v1.chainNet
 
-    track chainNetHg38Viewchain
-    shortLabel Chain
+    track GCF_048773025.1_ASM4877302v1ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetHg38
+    visibility dense
+    parent GCF_048773025.1_ASM4877302v1ChainNet
     spectrum on
 
+        track chainGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel goat Chain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
+
         track chainHg38
-        parent chainNetHg38Viewchain
-        subGroups view=chain
-        shortLabel Human Chain
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Chained Alignments
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel Human/hg38 Chain
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainHg38.bb
         linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainHg38Link.bb
-        priority 1
+        otherDb hg38
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
+
+    track GCF_048773025.1_ASM4877302v1ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_048773025.1_ASM4877302v1ChainNet
+    spectrum on
+
+        track chainSynGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewSynTen off
+        subGroups view=synten species=s000 chainType=c01
+        shortLabel goat synChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainSynGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainSynGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
 
         track chainSynHg38
-        parent chainNetHg38Viewchain
-        subGroups view=chain
-        shortLabel Human synChain
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Syntenic Chained Alignments
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel Human/hg38 synChain
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainSynHg38.bb
         linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainSynHg38Link.bb
-        priority 2
+        otherDb hg38
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
+
+    track GCF_048773025.1_ASM4877302v1ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_048773025.1_ASM4877302v1ChainNet
+    spectrum on
+
+        track chainRBestGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewRBest off
+        subGroups view=rbest species=s000 chainType=c02
+        shortLabel goat rbChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainRBestGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainRBestGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
 
         track chainRBestHg38
-        parent chainNetHg38Viewchain
-        subGroups view=chain
-        shortLabel Human rbChain
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Reciprocal Best Chained Alignments
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel Human/hg38 rbChain
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainRBestHg38.bb
         linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainRBestHg38Link.bb
-        priority 3
+        otherDb hg38
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
+
+    track GCF_048773025.1_ASM4877302v1ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_048773025.1_ASM4877302v1ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel goat loChain
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigChain GCF_001704415.2
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainLiftOverGCF_001704415.2.bb
+        linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainLiftOverGCF_001704415.2Link.bb
+        otherDb GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
 
         track chainLiftOverHg38
-        parent chainNetHg38Viewchain
-        subGroups view=chain
-        shortLabel Human loChain
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Lift Over Chained Alignments
+        parent GCF_048773025.1_ASM4877302v1ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel Human/hg38 loChain
+        longLabel Human/hg38/hg38_ARS1.2 (Dec. 2013) Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainLiftOverHg38.bb
         linkDataUrl bbi/GCF_048773025.1_ASM4877302v1.chainLiftOverHg38Link.bb
-        priority 4
+        otherDb hg38
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
 
-    track mafNetHg38Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetHg38
+    track GCF_048773025.1_ASM4877302v1MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_048773025.1_ASM4877302v1ChainNet
+
+        track netGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c04
+        shortLabel goat mafNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.GCF_001704415.2.net.bb
+        summary bbi/GCF_048773025.1_ASM4877302v1.GCF_001704415.2.net.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
+
+        track synNetGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c05
+        shortLabel goat synNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.GCF_001704415.2.synNet.bb
+        summary bbi/GCF_048773025.1_ASM4877302v1.GCF_001704415.2.synNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
+
+        track rbestNetGCF_001704415.2
+        parent GCF_048773025.1_ASM4877302v1MafNetViewnet off
+        subGroups view=align species=s000 chainType=c06
+        shortLabel goat rbestNet
+        longLabel goat/GCF_001704415.2_ARS1.2 (2016-08-24) Chained Alignments
+        type bigMaf
+        bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.GCF_001704415.2.rbestNet.bb
+        summary bbi/GCF_048773025.1_ASM4877302v1.GCF_001704415.2.rbestNet.summary.bb
+        speciesOrder GCF_001704415.2
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 31.343
 
         track netHg38
-        parent mafNetHg38Viewnet
-        subGroups view=net
-        shortLabel Human net
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Net Alignment
+        parent GCF_048773025.1_ASM4877302v1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel Human/hg38 mafNet
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.hg38.net.bb
         summary bbi/GCF_048773025.1_ASM4877302v1.hg38.net.summary.bb
         speciesOrder hg38
-        priority 5
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
 
         track synNetHg38
-        parent mafNetHg38Viewnet
-        subGroups view=net
-        shortLabel Human synNet
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Syntenic Net Alignment
+        parent GCF_048773025.1_ASM4877302v1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel Human/hg38 synNet
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.hg38.synNet.bb
         summary bbi/GCF_048773025.1_ASM4877302v1.hg38.synNet.summary.bb
         speciesOrder hg38
-        priority 6
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
 
         track rbestNetHg38
-        parent mafNetHg38Viewnet
-        subGroups view=net
-        shortLabel Human rbestNet
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Reciprocal Best Net Alignment
+        parent GCF_048773025.1_ASM4877302v1MafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel Human/hg38 rbestNet
+        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_048773025.1_ASM4877302v1.hg38.rbestNet.bb
         summary bbi/GCF_048773025.1_ASM4877302v1.hg38.rbestNet.summary.bb
         speciesOrder hg38
-        priority 7
+        html html/GCF_048773025.1_ASM4877302v1.chainNet
+        priority 40.669
 
