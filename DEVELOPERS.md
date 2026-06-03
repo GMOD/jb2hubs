@@ -51,6 +51,16 @@ yarn
 ./uploadAll.sh
 ```
 
+After changing bed2gff or `src/geneLike.ts`, the incremental gates won't notice
+(they key off input-data hashes, not tool versions). Regenerate just the gene
+tracks for every assembly, then upload:
+
+```bash
+cd ucsc2jbrowse
+./reprocessGeneTracks.sh   # add --reindex to also rebuild the text index
+./uploadAll.sh
+```
+
 ## Deploy website
 
 ```bash
