@@ -15,7 +15,9 @@ list_gff_inputs() {
     while IFS= read -r acc; do
       [ -n "$acc" ] || continue
       for f in gff/"$acc"_*.gz; do
-        [ -f "$f" ] && printf '%s\0' "$f"
+        if [ -f "$f" ]; then
+          printf '%s\0' "$f"
+        fi
       done
     done <"$SCOPE_FILE"
   else

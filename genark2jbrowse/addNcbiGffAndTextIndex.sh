@@ -15,7 +15,9 @@ list_bgz_inputs() {
     while IFS= read -r acc; do
       [ -n "$acc" ] || continue
       for f in bgz/"$acc"_*.gz; do
-        [ -f "$f" ] && echo "$f"
+        if [ -f "$f" ]; then
+          echo "$f"
+        fi
       done
     done <"$SCOPE_FILE"
   else
