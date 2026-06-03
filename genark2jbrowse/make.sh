@@ -35,6 +35,11 @@ for arg in "$@"; do
     echo "  --all            Process all hubs"
     echo "  --reprocess-all  Re-download and reprocess everything"
     echo "  --help, -h       Show this help message"
+    echo ""
+    echo "Environment variables (full/--all runs):"
+    echo "  FETCH_UPDATES=1  Re-check NCBI and re-download GFFs changed in place"
+    echo "                   (wget -N); regeneration then cascades by timestamp"
+    echo "  REPROCESS=1      Force re-derivation of outputs regardless of timestamps"
     exit 0
     ;;
   *)

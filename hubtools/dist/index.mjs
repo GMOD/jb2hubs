@@ -51,29 +51,6 @@ async function myfetch(url) {
 async function myfetchtext(url) {
   return (await myfetch(url)).text()
 }
-async function myfetchjson(url) {
-  return (await myfetch(url)).json()
-}
-function makeLoc(first, base) {
-  return {
-    uri: new URL(first, new URL(base.uri, base.baseUri)).href,
-    locationType: 'UriLocation',
-  }
-}
-function makeLocAlt(first, alt, base) {
-  return first ? makeLoc(first, base) : makeLoc(alt, base)
-}
-function makeLoc2(first, alt) {
-  return first
-    ? {
-        uri: first,
-        locationType: 'LocalPath',
-      }
-    : {
-        uri: alt,
-        locationType: 'UriLocation',
-      }
-}
 function readJSON(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8'))
 }
@@ -82,6 +59,29 @@ async function readJSONAsync(filePath) {
 }
 function writeJSON(filePath, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, void 0, 2))
+}
+function makeDefaultSession(assemblyName, loc) {
+  return {
+    name: assemblyName,
+    widgets: {
+      hierarchicalTrackSelector: {
+        id: 'hierarchicalTrackSelector',
+        type: 'HierarchicalTrackSelectorWidget',
+        view: 'initialView',
+      },
+    },
+    activeWidgets: { hierarchicalTrackSelector: 'hierarchicalTrackSelector' },
+    views: [
+      {
+        type: 'LinearGenomeView',
+        id: 'initialView',
+        init: {
+          assembly: assemblyName,
+          loc,
+        },
+      },
+    ],
+  }
 }
 function splitOnFirst(str, sep) {
   const index = str.indexOf(sep)
@@ -249,9 +249,7 @@ function makeAdapterConf(
       },
     }
   else if (baseTrackType === 'bigMaf') {
-    const summaryUri = data.summary
-      ? new URL(data.summary, trackDbUrl).href
-      : void 0
+    const summaryUri = data.summary ? resolve(data.summary, trackDbUrl) : void 0
     return {
       type: 'MafTrack',
       adapter: {
@@ -346,10 +344,10 @@ function makeTrackConfig({
   const name =
     (data.shortLabel ?? '') + (bigDataUrlPre.includes('xeno') ? ' (xeno)' : '')
   let baseTrackType =
-    (data.type ?? trackDb.data[parent].data.type ?? '').split(' ')[0] ?? ''
+    (data.type ?? trackDb.data[parent]?.data.type ?? '').split(' ')[0] ?? ''
   if (baseTrackType === 'bam' && bigDataUrlPre.toLowerCase().endsWith('.cram'))
     baseTrackType = 'cram'
-  const uri = new URL(bigDataUrlPre, trackDbUrl).href
+  const uri = resolve(bigDataUrlPre, trackDbUrl)
   const adapterConf = makeAdapterConf(
     baseTrackType,
     uri,
@@ -423,9 +421,7 @@ function generateJBrowseConfigForAssemblyHub({ hubFileText, trackDbUrl }) {
           ucsc: {
             ...data,
             ...(htmlPath
-              ? {
-                  htmlPath: `<a href="${resolve(htmlPath, trackDbUrl)}">${htmlPath}</a>`,
-                }
+              ? { htmlPath: createHtmlLink(htmlPath, trackDbUrl) }
               : {}),
           },
         },
@@ -453,31 +449,7 @@ function generateJBrowseConfigForAssemblyHub({ hubFileText, trackDbUrl }) {
         sequenceAdapter,
       }),
       ...(defaultPos
-        ? {
-            defaultSession: {
-              name: asm.name,
-              widgets: {
-                hierarchicalTrackSelector: {
-                  id: 'hierarchicalTrackSelector',
-                  type: 'HierarchicalTrackSelectorWidget',
-                  view: 'initialView',
-                },
-              },
-              activeWidgets: {
-                hierarchicalTrackSelector: 'hierarchicalTrackSelector',
-              },
-              views: [
-                {
-                  type: 'LinearGenomeView',
-                  id: 'initialView',
-                  init: {
-                    assembly: asm.name,
-                    loc: defaultPos,
-                  },
-                },
-              ],
-            },
-          }
+        ? { defaultSession: makeDefaultSession(asm.name, defaultPos) }
         : {}),
     }
   }
@@ -540,9 +512,7 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
           ucsc: {
             ...genomeStanza.data,
             ...(htmlPath
-              ? {
-                  htmlPath: `<a href="${resolve(htmlPath, genomesFileUrl)}">${htmlPath}</a>`,
-                }
+              ? { htmlPath: createHtmlLink(htmlPath, genomesFileUrl) }
               : {}),
           },
         },
@@ -560,31 +530,7 @@ async function generateJBrowseConfigsForMultiGenomeHub(hubUrl) {
       assemblies: [asm],
       tracks,
       ...(defaultPos
-        ? {
-            defaultSession: {
-              name: genomeName,
-              widgets: {
-                hierarchicalTrackSelector: {
-                  id: 'hierarchicalTrackSelector',
-                  type: 'HierarchicalTrackSelectorWidget',
-                  view: 'initialView',
-                },
-              },
-              activeWidgets: {
-                hierarchicalTrackSelector: 'hierarchicalTrackSelector',
-              },
-              views: [
-                {
-                  type: 'LinearGenomeView',
-                  id: 'initialView',
-                  init: {
-                    assembly: genomeName,
-                    loc: defaultPos,
-                  },
-                },
-              ],
-            },
-          }
+        ? { defaultSession: makeDefaultSession(genomeName, defaultPos) }
         : {}),
     }
     configs.push({
@@ -821,11 +767,8 @@ export {
   generateJBrowseConfigForAssemblyHub,
   generateJBrowseConfigsForMultiGenomeHub,
   hubCategories,
-  makeLoc,
-  makeLoc2,
-  makeLocAlt,
+  makeDefaultSession,
   myfetch,
-  myfetchjson,
   myfetchtext,
   notEmpty,
   parseAssemblyEntry,

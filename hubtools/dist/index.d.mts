@@ -503,7 +503,17 @@ declare function parseAssemblyEntry({
       ncbiBrowserLink: string
     }
   | {
-      stats: Record<string, unknown>
+      stats: {
+        contig_count: number
+        contig_l50: number
+        contig_n50: number
+        scaffold_count: number
+        scaffold_l50: number
+        scaffold_n50: number
+        chromosome_count: number
+        total_length: string
+        ungapped_length: string
+      }
       seqReleaseDate: string
       submitterOrg: string
       ncbiOrganism: string
@@ -547,37 +557,33 @@ declare function parseAssemblyEntry({
 declare function resolve(uri: string, baseUri: string | URL): string
 declare function myfetch(url: string): Promise<Response>
 declare function myfetchtext(url: string): Promise<string>
-declare function myfetchjson(url: string): Promise<any>
-declare function makeLoc(
-  first: string,
-  base: {
-    uri: string
-    baseUri?: string
-  },
-): {
-  uri: string
-  locationType: string
-}
-declare function makeLocAlt(
-  first: string,
-  alt: string,
-  base: {
-    uri: string
-  },
-): {
-  uri: string
-  locationType: string
-}
-declare function makeLoc2(
-  first: string,
-  alt?: string,
-): {
-  uri: string | undefined
-  locationType: string
-}
 declare function readJSON<T = unknown>(filePath: string): T
 declare function readJSONAsync<T = unknown>(filePath: string): Promise<T>
 declare function writeJSON(filePath: string, data: unknown): void
+declare function makeDefaultSession(
+  assemblyName: string,
+  loc: string,
+): {
+  name: string
+  widgets: {
+    hierarchicalTrackSelector: {
+      id: string
+      type: string
+      view: string
+    }
+  }
+  activeWidgets: {
+    hierarchicalTrackSelector: string
+  }
+  views: {
+    type: string
+    id: string
+    init: {
+      assembly: string
+      loc: string
+    }
+  }[]
+}
 declare function splitOnFirst(str: string, sep: string): [string, string]
 /**
  * Replaces specific relative links in a string with absolute UCSC genome links.
@@ -622,11 +628,8 @@ export {
   generateJBrowseConfigForAssemblyHub,
   generateJBrowseConfigsForMultiGenomeHub,
   hubCategories,
-  makeLoc,
-  makeLoc2,
-  makeLocAlt,
+  makeDefaultSession,
   myfetch,
-  myfetchjson,
   myfetchtext,
   notEmpty,
   parseAssemblyEntry,

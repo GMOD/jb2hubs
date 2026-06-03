@@ -13,7 +13,10 @@ check_and_queue() {
   filename=$(basename "$input_file")
   local output_bgz_file="bgz/$filename"
 
-  if [ ! -f "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
+  # Reprocess when there is no output yet, when the downloaded GFF is newer than
+  # the existing output (an in-place re-annotation pulled by FETCH_UPDATES), or
+  # when REPROCESS forces it.
+  if [ ! -f "$output_bgz_file" ] || [ "$input_file" -nt "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
     echo "$input_file"
   fi
 }

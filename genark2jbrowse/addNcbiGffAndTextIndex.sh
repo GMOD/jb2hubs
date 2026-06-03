@@ -32,8 +32,11 @@ add_track_and_text_index() {
     echo "Warning: add-track failed for $accession" >&2
     return
   fi
-  # Check if trix folder exists
-  if [ -d "$hub_dir/trix" ] && [ -z "${REDOWNLOAD:-}" ] && [ -z "${REPROCESS:-}" ] && [ -z "${REPROCESS_TRIX:-}" ]; then
+  # Reuse the existing trix index only when it is present and not older than the
+  # current GFF; a newer GFF (an in-place re-annotation pulled by FETCH_UPDATES)
+  # or any reprocess flag forces a fresh text-index.
+  local trix_ix="$hub_dir/trix/${accession}.ix"
+  if [ -d "$hub_dir/trix" ] && [ -f "$trix_ix" ] && [ ! "$gff_file_path" -nt "$trix_ix" ] && [ -z "${REPROCESS:-}" ]; then
     add_trix_adapter "$accession" "$config_file"
   else
     echo "Trix index missing or reprocessing requested for $accession, running jbrowse text-index"
