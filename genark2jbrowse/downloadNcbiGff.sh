@@ -4,6 +4,14 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
+# Optional first arg: a file listing accessions (one per line) to restrict the
+# download to. When omitted, every NCBI GFF in all.json is considered.
+SCOPE_FILE="${1:-}"
+SCOPE_ACCESSIONS='[]'
+if [ -n "$SCOPE_FILE" ]; then
+  SCOPE_ACCESSIONS=$(jq -R -s 'split("\n") | map(select(length > 0))' "$SCOPE_FILE")
+fi
+
 # NCBI assembly URLs are versioned and immutable, so a new annotation or
 # assembly normally arrives as a new accession (new filename) and is picked up
 # automatically. By default we therefore only fetch files we don't already
@@ -32,10 +40,15 @@ check_and_queue() {
 
 export -f check_and_queue
 
-# Extract NCBI GFF URLs from processed JSON
-# Filter out null entries and null ncbiGff before using test()
+# Extract NCBI GFF URLs from processed JSON. Filter out null entries and null
+# ncbiGff before test(); when a scope list is given, also restrict to those
+# accessions (an empty list means "no restriction").
 QUEUE_FILE=$(mktemp)
-jq -r '.[] | select(. != null) | select(.ncbiGff != null) | select(.ncbiGff | test("GCF_")) | "\(.ncbiGff)\t\(.commonName)"' processedHubJson/all.json |
+jq -r --argjson accs "$SCOPE_ACCESSIONS" '
+  .[] | select(. != null)
+  | select(.ncbiGff != null) | select(.ncbiGff | test("GCF_"))
+  | select(.accession as $a | ($accs | length) == 0 or ($accs | index($a)))
+  | "\(.ncbiGff)\t\(.commonName)"' processedHubJson/all.json |
   parallel $PARALLEL_OPTS --colsep $'\t' check_and_queue {} >"$QUEUE_FILE"
 
 # Count how many files need downloading

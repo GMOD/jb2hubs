@@ -4,6 +4,25 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
+# Optional first arg: a file listing accessions (one per line) to restrict
+# processing to. When omitted, every downloaded GFF is considered.
+SCOPE_FILE="${1:-}"
+
+# Lists the candidate input GFFs (NUL-separated): either every file under gff/,
+# or just those belonging to the scoped accessions.
+list_gff_inputs() {
+  if [ -n "$SCOPE_FILE" ]; then
+    while IFS= read -r acc; do
+      [ -n "$acc" ] || continue
+      for f in gff/"$acc"_*.gz; do
+        [ -f "$f" ] && printf '%s\0' "$f"
+      done
+    done <"$SCOPE_FILE"
+  else
+    find gff -name "*.gz" -print0
+  fi
+}
+
 echo "Phase 1: Building queue of GFF files to process..."
 
 # Define function to check if a GFF file needs processing
@@ -26,7 +45,7 @@ export -f check_and_queue
 # Build the queue in parallel (fast I/O operations)
 QUEUE_FILE=$(mktemp)
 trap 'rm -f "$QUEUE_FILE"' EXIT
-find gff -name "*.gz" -print0 | parallel -0 $PARALLEL_OPTS check_and_queue {} >"$QUEUE_FILE"
+list_gff_inputs | parallel -0 $PARALLEL_OPTS check_and_queue {} >"$QUEUE_FILE"
 
 # Count how many files need processing
 TOTAL=$(wc -l <"$QUEUE_FILE")

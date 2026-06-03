@@ -24,8 +24,7 @@ process_assembly() {
   if [ -f "$assembly_results_dir/tracks.json" ]; then
     # Process each track that matches our types
     jq -r 'to_entries | map(select(.value.type | startswith("bed") or startswith("pgSnp") or startswith("peptideMapping"))) | map(.key) | .[]' "$assembly_results_dir/tracks.json" | while read -r key; do
-      # Skip tracks that start with "snp" or "wgEncode" (these are large and numerous)
-      if [[ "$key" == snp* ]] || [[ "$key" == wgEncode* ]]; then
+      if is_skipped_track "$key"; then
         continue
       fi
 

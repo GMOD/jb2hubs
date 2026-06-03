@@ -99,6 +99,16 @@ if needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when source si
   fail=1
 fi
 
+# Same byte size but different content -> needs rebuild. Byte-size stamping
+# missed this; the XXH3 content hash catches it.
+printf 'bbbbbbbb' >"$src"
+save_rebuild_stamp "$src" "$hash"
+printf 'cccccccc' >"$src" # still 8 bytes, different content
+if needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when content changes at identical size"; else
+  echo "FAIL - rebuild when content changes at identical size"
+  fail=1
+fi
+
 # REPROCESS forces rebuild even when the stamp matches.
 save_rebuild_stamp "$src" "$hash"
 if REPROCESS=1 needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when REPROCESS set"; else

@@ -48,6 +48,15 @@ jq -r '.[].ncbiGff | select(. != null) | split("/") | last' "$ALL_JSON" >"$known
 cleanup() { rm -f "$known_basenames_file"; }
 trap cleanup EXIT
 
+# Safety guard: this pipeline tracks tens of thousands of GenArk hubs, so a tiny
+# known set means all.json is truncated or corrupt. Deleting against it would
+# wipe valid GFFs that are expensive to re-download, so refuse to proceed.
+known_count=$(wc -l <"$known_basenames_file")
+if [ "$known_count" -lt 1000 ]; then
+  echo "ERROR: only $known_count known GFFs in $ALL_JSON; refusing to run (all.json looks incomplete/corrupt)." >&2
+  exit 1
+fi
+
 is_known() {
   grep -qxF "$1" "$known_basenames_file"
 }

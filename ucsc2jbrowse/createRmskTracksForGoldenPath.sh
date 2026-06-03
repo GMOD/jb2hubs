@@ -25,6 +25,9 @@ process_assembly() {
 
   if [ -f "$assembly_results_dir/tracks.json" ]; then
     jq -r 'to_entries | .[] | select(.value.type | startswith("rmsk")) | .key' "$assembly_results_dir/tracks.json" | while read -r key; do
+      if is_skipped_track "$key"; then
+        continue
+      fi
       local infile="$db_dir/$key"
       local outfile="$assembly_results_dir/$key"
 

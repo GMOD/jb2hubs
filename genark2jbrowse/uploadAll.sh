@@ -10,6 +10,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 cd "$SCRIPT_DIR"
 
 echo "=== Syncing GenArk JBrowse data to S3 ==="
@@ -43,15 +44,20 @@ echo ""
 
 # Determine whether anything actually changed on S3. rclone -v logs one line
 # per transferred/deleted object; aws s3 sync prints upload:/delete: lines.
-rclone_changed=$(grep -cE ': (Copied|Deleted|Moved|Renamed)' "$rclone_log" || true)
+# The hub data and processedHubJson live under different prefixes, so invalidate
+# only the prefix(es) that actually changed (invalidating /hubs/* would not
+# cover a processedHubJson-only change, and vice versa).
+rclone_changed=$(count_rclone_changes "$rclone_log")
 s3_changed=$(grep -cE '^(upload|delete):' "$s3_log" || true)
 rm -f "$rclone_log" "$s3_log"
 
-if [ "$rclone_changed" -gt 0 ] || [ "$s3_changed" -gt 0 ]; then
-  # Invalidate the CloudFront cache for the '/hubs/*' path so users get the
-  # latest content from S3.
-  echo "[3/3] Changes detected ($rclone_changed hub objects, $s3_changed processedHubJson objects); invalidating CloudFront cache..."
-  aws cloudfront create-invalidation --distribution-id E13LGELJOT4GQO --paths "/hubs/*"
+invalidate_paths=()
+[ "$rclone_changed" -gt 0 ] && invalidate_paths+=("/hubs/*")
+[ "$s3_changed" -gt 0 ] && invalidate_paths+=("/processedHubJson/*")
+
+if [ "${#invalidate_paths[@]}" -gt 0 ]; then
+  echo "[3/3] Changes detected ($rclone_changed hub objects, $s3_changed processedHubJson objects); invalidating CloudFront cache for ${invalidate_paths[*]}..."
+  cloudfront_invalidate "${invalidate_paths[@]}"
   echo "1" >"$SCRIPT_DIR/.upload-changed"
 else
   echo "[3/3] Nothing changed on S3; skipping CloudFront invalidation."

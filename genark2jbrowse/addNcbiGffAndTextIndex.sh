@@ -4,6 +4,25 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
+# Optional first arg: a file listing accessions (one per line) to restrict the
+# work to. When omitted, every processed GFF under bgz/ is considered.
+SCOPE_FILE="${1:-}"
+
+# Lists the bgz GFFs to add: either every file under bgz/, or just those
+# belonging to the scoped accessions.
+list_bgz_inputs() {
+  if [ -n "$SCOPE_FILE" ]; then
+    while IFS= read -r acc; do
+      [ -n "$acc" ] || continue
+      for f in bgz/"$acc"_*.gz; do
+        [ -f "$f" ] && echo "$f"
+      done
+    done <"$SCOPE_FILE"
+  else
+    find bgz -name "*.gz"
+  fi
+}
+
 # Define function to add a GFF track to a JBrowse 2 assembly and create a text index.
 add_track_and_text_index() {
   local gff_file_path="$1"
@@ -48,4 +67,4 @@ add_track_and_text_index() {
 # Export function for use with GNU Parallel
 export -f add_track_and_text_index
 
-find bgz -name "*.gz" | parallel -j16 $PARALLEL_OPTS add_track_and_text_index || true
+list_bgz_inputs | parallel -j16 $PARALLEL_OPTS add_track_and_text_index || true

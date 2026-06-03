@@ -23,8 +23,7 @@ process_gene_tracks() {
 
   # Use jq to extract gene prediction tracks
   jq -r 'to_entries | .[] | select(.value.type | startswith("genePred")) | .key' "$tracks_json" | while read -r key; do
-    # Skip wgEncode tracks
-    if [[ "$key" == wgEncode* ]]; then
+    if is_skipped_track "$key"; then
       continue
     fi
 

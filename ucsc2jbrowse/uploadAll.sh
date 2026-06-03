@@ -10,6 +10,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 
 # --- Main Script ---
 
@@ -32,14 +33,13 @@ rclone sync -c -v \
 
 echo ""
 
-# Determine whether anything actually changed on S3. rclone -v logs one line
-# per transferred/deleted object.
-rclone_changed=$(grep -cE ': (Copied|Deleted|Moved|Renamed)' "$rclone_log" || true)
+# Determine whether anything actually changed on S3.
+rclone_changed=$(count_rclone_changes "$rclone_log")
 rm -f "$rclone_log"
 
 if [ "$rclone_changed" -gt 0 ]; then
   echo "[2/2] Changes detected ($rclone_changed objects); invalidating CloudFront cache..."
-  aws cloudfront create-invalidation --distribution-id E13LGELJOT4GQO --paths "/ucsc/*"
+  cloudfront_invalidate "/ucsc/*"
   echo "1" >"$SCRIPT_DIR/.upload-changed"
 else
   echo "[2/2] Nothing changed on S3; skipping CloudFront invalidation."

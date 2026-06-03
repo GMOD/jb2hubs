@@ -6,6 +6,10 @@ source "$(dirname "$0")/common.sh"
 
 echo "Phase 1: Building queue of assemblies that need NCBI metadata..."
 
+# buildNcbiQueue.ts queues: assemblies with no ncbi.json yet (new hubs), plus a
+# bounded, oldest-first slice of already-fetched assemblies whose metadata has
+# aged out. With REPROCESS set it queues everything. The age-based trickle is
+# what lets ordinary runs pick up upstream NCBI changes without --reprocess-all.
 # Build the queue in a single Node process (avoids 50k+ shell/jq spawns)
 QUEUE_FILE=$(mktemp)
 DATASETS_ERR=$(mktemp)

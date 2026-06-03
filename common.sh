@@ -21,11 +21,30 @@ else
 fi
 export PARALLEL_OPTS
 
+# CloudFront distribution that fronts jbrowse.org. Centralized so the upload
+# scripts don't each hardcode the id.
+export CLOUDFRONT_DISTRIBUTION_ID="E13LGELJOT4GQO"
+
 # Logs a message with a timestamp.
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"
 }
 export -f log
+
+# Counts changed objects in an rclone -v log: one line is printed per
+# transferred/deleted object. Returns 0 (not an error) when nothing changed.
+count_rclone_changes() {
+  grep -cE ': (Copied|Deleted|Moved|Renamed)' "$1" || true
+}
+export -f count_rclone_changes
+
+# Invalidates one or more CloudFront paths on the jbrowse.org distribution.
+# Usage: cloudfront_invalidate "/ucsc/*" ["/processedHubJson/*" ...]
+cloudfront_invalidate() {
+  aws cloudfront create-invalidation \
+    --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" --paths "$@"
+}
+export -f cloudfront_invalidate
 
 # Creates a directory if it doesn't exist.
 ensure_dir() {
@@ -34,15 +53,17 @@ ensure_dir() {
 export -f ensure_dir
 
 # Decides whether a derived output needs (re)building from a source file, using
-# the source's byte size as a cheap change stamp recorded in a hash file.
+# the source's XXH3 content hash as the change stamp recorded in a hash file.
+# (Byte size was cheaper but missed same-size content changes — a re-published
+# UCSC table that changes content but keeps its compressed size.)
 # Returns 0 (needs rebuild) when REPROCESS is set, the output or hash file is
-# missing, or the source's size differs from the recorded stamp; else 1.
+# missing, or the source's hash differs from the recorded stamp; else 1.
 # Usage: if needs_rebuild out.bed.gz in.txt.gz out.hash; then ...; fi
 needs_rebuild() {
   local output="$1" source="$2" hash_file="$3"
   local rebuild=0
   if [ -z "${REPROCESS:-}" ] && [ -f "$output" ] && [ -f "$hash_file" ]; then
-    if [ "$(stat -c "%s" "$source")" = "$(cat "$hash_file")" ]; then
+    if [ "$(xxhsum -H3 "$source" | awk '{print $NF}')" = "$(cat "$hash_file")" ]; then
       rebuild=1
     fi
   fi
@@ -50,11 +71,11 @@ needs_rebuild() {
 }
 export -f needs_rebuild
 
-# Records a source file's current byte-size stamp into a hash file, for a later
+# Records a source file's current XXH3 content hash into a hash file, for a later
 # needs_rebuild check.
 # Usage: save_rebuild_stamp in.txt.gz out.hash
 save_rebuild_stamp() {
-  stat -c "%s" "$1" >"$2"
+  xxhsum -H3 "$1" | awk '{print $NF}' >"$2"
 }
 export -f save_rebuild_stamp
 

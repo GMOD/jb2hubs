@@ -18,6 +18,6 @@ echo "Syncing JBrowse data to S3..."
 rclone sync -c -v --exclude "*.hash" --exclude "*.checked" --exclude "*_meta.json" --exclude "*.pif.gz" --exclude "*.bed.gz" --exclude "*.gff.gz" --exclude "*.csi" --exclude "*/vs/*" "$UCSC_BUILT_DIR" jbrowse-data:jbrowse.org/ucsc --s3-storage-class INTELLIGENT_TIERING --checkers 20
 
 echo "Invalidating CloudFront cache..."
-aws cloudfront create-invalidation --distribution-id E13LGELJOT4GQO --paths "/ucsc/*"
+cloudfront_invalidate "/ucsc/*"
 
 echo "Upload complete!"
