@@ -1,16 +1,16 @@
 ---
 import Logo from '../logo.astro'
 
-const navItems = [
+const exploreItems = [
   { name: 'Search', href: '/search' },
+  { name: 'Synteny', href: '/synteny' },
+  { name: 'Orthologs', href: '/orthologs' },
+]
+
+const secondaryNavItems = [
   { name: 'Blog', href: '/blog' },
   { name: 'Demos', href: '/demos' },
   { name: 'About', href: '/about' },
-]
-
-const comparativeItems = [
-  { name: 'Synteny', href: '/synteny' },
-  { name: 'Orthologs', href: '/orthologs' },
 ]
 ---
 
@@ -27,53 +27,14 @@ const comparativeItems = [
           height={32}
           class="logo"
         />
-        <b class="logoText">JBrowse 2 Genomes</b>
+        JBrowse 2 Genomes
       </a>
-    </div>
-
-    <div class="right">
-      <div class="desktop-nav">
-        {
-          navItems.map(item => (
-            <a
-              href={item.href}
-              class="navLink"
-            >
-              {item.name === 'Search' && (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="searchNavIcon"
-                >
-                  <circle
-                    cx="11"
-                    cy="11"
-                    r="8"
-                  />
-                  <line
-                    x1="21"
-                    x2="16.65"
-                    y1="21"
-                    y2="16.65"
-                  />
-                </svg>
-              )}
-              {item.name}
-            </a>
-          ))
-        }
+      <div class="primary-nav desktop-nav">
         <div class="dropdown">
-          <span class="navLink dropdownToggle">Comparative ▾</span>
+          <span class="navLink dropdownToggle">Explore ▾</span>
           <div class="dropdownMenu">
             {
-              comparativeItems.map(item => (
+              exploreItems.map(item => (
                 <a
                   href={item.href}
                   class="dropdownItem"
@@ -84,6 +45,21 @@ const comparativeItems = [
             }
           </div>
         </div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="secondary-nav desktop-nav">
+        {
+          secondaryNavItems.map(item => (
+            <a
+              href={item.href}
+              class="navLink"
+            >
+              {item.name}
+            </a>
+          ))
+        }
         <a
           href="https://jbrowse.org/jb2"
           class="externalLink"
@@ -203,22 +179,22 @@ const comparativeItems = [
     id="mobile-menu"
     class="mobile-menu"
   >
+    <span class="navLink mobile-navLink mobile-groupLabel">Explore</span>
     {
-      navItems.map(item => (
+      exploreItems.map(item => (
         <a
           href={item.href}
-          class="navLink mobile-navLink"
+          class="navLink mobile-navLink mobile-subLink"
         >
           {item.name}
         </a>
       ))
     }
-    <span class="navLink mobile-navLink mobile-groupLabel">Comparative</span>
     {
-      comparativeItems.map(item => (
+      secondaryNavItems.map(item => (
         <a
           href={item.href}
-          class="navLink mobile-navLink mobile-subLink"
+          class="navLink mobile-navLink"
         >
           {item.name}
         </a>
@@ -237,23 +213,40 @@ const comparativeItems = [
         mobileMenu.classList.toggle('show')
       })
     }
+
+    const toggle = document.querySelector('.dropdownToggle')
+    const menu = document.querySelector('.dropdownMenu')
+
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('open')
+      })
+
+      document.addEventListener('click', e => {
+        if (!toggle.contains(e.target as Node) && !menu.contains(e.target as Node)) {
+          menu.classList.remove('open')
+        }
+      })
+    }
   })
 </script>
 
 <style>
   .nav {
-    background-color: #1e3a5c;
-    padding: 1rem;
-    border-bottom: 1px solid #152d48;
-    position: relative;
+    background-color: #0a4f5c;
+    padding: 0 1rem;
+    height: 60px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    position: sticky;
+    top: 0;
+    z-index: 200;
   }
 
   .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
-    margin: 0 auto;
+    height: 100%;
   }
 
   .left {
@@ -264,25 +257,27 @@ const comparativeItems = [
   .logoLink {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
     text-decoration: none;
     color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-right: 1rem;
   }
 
-  .logo {
-    margin-right: 0.5rem;
-  }
-
-  .logoText {
-    font-size: 1.25rem;
-    font-weight: bold;
+  .primary-nav {
+    margin-left: 0;
   }
 
   .navLink {
-    margin-left: 1rem;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem;
     font-weight: 500;
+    padding: 4px 12px;
     white-space: nowrap;
+    transition: color 0.2s;
   }
 
   .navLink:hover {
@@ -292,12 +287,13 @@ const comparativeItems = [
   .right {
     display: flex;
     align-items: center;
+    margin-left: auto;
   }
 
   .externalLink {
     display: inline-flex;
     align-items: center;
-    margin-left: 1rem;
+    padding: 4px 12px;
     text-decoration: none;
     color: rgba(255, 255, 255, 0.85);
     white-space: nowrap;
@@ -315,7 +311,7 @@ const comparativeItems = [
   .socialLink {
     display: inline-flex;
     align-items: center;
-    margin-left: 1rem;
+    padding: 4px 8px;
     color: rgba(255, 255, 255, 0.85);
     transition: color 0.2s ease;
   }
@@ -329,10 +325,7 @@ const comparativeItems = [
     height: 1.5rem;
   }
 
-  .searchNavIcon {
-    vertical-align: -2px;
-    margin-right: 2px;
-  }
+
 
   .mobile-nav {
     display: none;
@@ -351,9 +344,9 @@ const comparativeItems = [
     top: 100%;
     left: 0;
     right: 0;
-    background-color: #1e3a5c;
+    background-color: #0a4f5c;
     padding: 1rem;
-    border-top: 1px solid #152d48;
+    border-top: 1px solid #073d47;
     flex-direction: column;
   }
 
@@ -382,11 +375,10 @@ const comparativeItems = [
 
   .dropdown {
     position: relative;
-    margin-left: 1rem;
   }
 
   .dropdownToggle {
-    cursor: default;
+    cursor: pointer;
     margin-left: 0;
     user-select: none;
   }
@@ -405,7 +397,7 @@ const comparativeItems = [
     padding: 4px 0;
   }
 
-  .dropdown:hover .dropdownMenu {
+  .dropdownMenu.open {
     display: block;
   }
 
@@ -421,6 +413,11 @@ const comparativeItems = [
 
   .dropdownItem:hover {
     background: #f5f5f5;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
   }
 
   @media (max-width: 900px) {
