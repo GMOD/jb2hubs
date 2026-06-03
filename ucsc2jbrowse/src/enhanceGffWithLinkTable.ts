@@ -72,7 +72,9 @@ export async function enhanceGffWithLinkTable(
       const r0 = Object.fromEntries(
         Object.entries(data[ID0] ?? {})
           .filter(([_key, val]) => val.filter(f => !!f).length > 0)
-          .map(([key, val]) => [key === 'name' ? 'gene_name' : key, val] as const),
+          .map(
+            ([key, val]) => [key === 'name' ? 'gene_name' : key, val] as const,
+          ),
       )
 
       process.stdout.write(
