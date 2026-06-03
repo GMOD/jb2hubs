@@ -25,9 +25,12 @@ pub fn build_gff_line(
     let mut attr = String::new();
 
     if gene_type == "transcript" {
+        // Name is the transcript id (not the gene). Without an explicit Name,
+        // consumers like JBrowse fall back to gene_id and every transcript ends
+        // up labeled with the parent gene's name.
         attr.push_str(&format!(
-            "ID={};Parent={};gene_id={};transcript_id={}",
-            record.name, gene, gene, record.name
+            "ID={};Parent={};Name={};gene_id={};transcript_id={}",
+            record.name, gene, record.name, gene, record.name
         ));
     } else {
         if exon >= 0 {
@@ -140,6 +143,40 @@ pub fn write_codon(
             codon.start2,
             (codon.end - codon.start) as i16,
             result,
+        );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn record() -> BedRecord {
+        BedRecord {
+            chrom: "chr1".to_string(),
+            tx_start: 1000,
+            tx_end: 5000,
+            name: "ENST1".to_string(),
+            strand: "+".to_string(),
+            cds_start: 1200,
+            cds_end: 4800,
+            exon_count: 1,
+            exon_start: vec![1000],
+            exon_end: vec![5000],
+        }
+    }
+
+    // The transcript feature must carry Name=<transcript id>, so consumers don't
+    // fall back to gene_id and label every transcript with the parent gene.
+    #[test]
+    fn transcript_name_is_transcript_id() {
+        let r = record();
+        let mut result = Vec::new();
+        build_gff_line(&r, &"GENEA".to_string(), "transcript", r.tx_start, r.tx_end, 3, -1, &mut result);
+
+        assert_eq!(
+            result[0].6,
+            "ID=ENST1;Parent=GENEA;Name=ENST1;gene_id=GENEA;transcript_id=ENST1"
         );
     }
 }
