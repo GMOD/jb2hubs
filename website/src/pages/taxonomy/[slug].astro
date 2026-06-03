@@ -1,347 +1,39 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
-import TaxonomyTree from '../../components/TaxonomyTree.astro'
-import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
-import {
-  getCachedTree,
-  extractSubtreeByTaxonId,
-  extractLineageByTaxonId,
-  collectAccessions,
-} from '../../utils/taxonomyCache'
-import type { FlatNodeData } from '../../utils/taxonomyCache'
-import type { RowData } from '../../components/DataTable/hooks/useTableColumns.tsx'
-import { notEmpty } from '../../components/DataTable/utils.ts'
-import fs from 'fs'
-import path from 'path'
-
-interface Props {
-  rows: RowData[]
-  isCategory: boolean
-  taxonId?: string
-  precomputedSubtree?: FlatNodeData | null
-  precomputedLineage?: FlatNodeData[]
-}
+import TaxonomyPage from '../../components/TaxonomyPage.tsx'
 
 export async function getStaticPaths() {
-  const paths: {
-    params: { slug: string }
-    props: Props
-  }[] = []
-  const seenSlugs = new Set<string>()
-
-  // Generate paths for category-based taxonomy pages (existing functionality)
+  // Only generate category pages (archaea, bacteria, birds, etc.).
+  // Individual taxon ID pages (numeric slugs) are served by taxonomy/index.astro
+  // via nginx try_files, and load their data from /taxonomy-data/{id}.json.
   const modules = import.meta.glob('../../../processedHubJson/*.json')
-  const categoryPaths = await Promise.all(
-    Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = (await resolver()) as { default: Props['rows'] }
-      const slug = filepath.split('/').pop()!.replace('.json', '')
-      return slug !== 'all'
-        ? {
-            params: { slug },
-            props: { rows: data, isCategory: true },
-          }
-        : undefined
-    }),
-  )
-
-  // Add category paths and track their slugs
-  for (const path of categoryPaths.filter(f => !!f)) {
-    if (path && !seenSlugs.has(path.params.slug)) {
-      seenSlugs.add(path.params.slug)
-      paths.push(path)
-    }
-  }
-
-  // Generate paths for taxonomy ID pages
-  // Read all.newick and enumerate taxonIds
-  const newickPath = path.join(
-    process.cwd(),
-    'public',
-    'taxonomy',
-    'all.newick',
-  )
-  try {
-    const newickData = fs.readFileSync(newickPath, 'utf-8')
-    const allJson = (await import('../../../processedHubJson/all.json')) as {
-      default: RowData[]
-    }
-
-    // Extract all unique taxonIds from the newick data using regex
-    // Match both leaf nodes [accession|taxonId] and internal nodes {taxonId}
-    const leafPattern = /\[([^\|]+)\|(\d+)\]/g
-    const internalPattern = /\{(\d+)\}/g
-    const taxonIds = new Set<string>()
-
-    // Extract from leaf nodes
-    let match
-    while ((match = leafPattern.exec(newickData)) !== null) {
-      taxonIds.add(match[2]) // match[2] is the taxonId
-    }
-
-    // Extract from internal nodes
-    while ((match = internalPattern.exec(newickData)) !== null) {
-      taxonIds.add(match[1]) // match[1] is the taxonId
-    }
-
-    // Load and parse the tree once for all taxonomy pages
-    const fullTree = getCachedTree('all')
-
-    // Create a map of all species data for fast lookup
-    const allSpeciesMap = new Map<string, RowData>(
-      allJson.default.map(species => [species.accession, species]),
+  const paths = (
+    await Promise.all(
+      Object.entries(modules).map(async ([filepath]) => {
+        const slug = filepath.split('/').pop()!.replace('.json', '')
+        if (slug === 'all') return undefined
+        return { params: { slug }, props: { slug } }
+      }),
     )
-
-    // Generate a path for each taxonId (skip if already used by categories)
-    for (const taxonId of taxonIds) {
-      if (!seenSlugs.has(taxonId)) {
-        seenSlugs.add(taxonId)
-
-        // Pre-compute subtree and lineage for this taxonId
-        const subtree = fullTree
-          ? extractSubtreeByTaxonId(fullTree, taxonId)
-          : null
-        const lineage = fullTree
-          ? extractLineageByTaxonId(fullTree, taxonId)
-          : []
-
-        // Collect accessions from the subtree
-        const relevantAccessions = subtree ? collectAccessions(subtree) : []
-
-        // Filter species data to only include species in this subtree
-        const filteredSpecies = relevantAccessions
-          .map(acc => allSpeciesMap.get(acc))
-          .filter(notEmpty)
-
-        paths.push({
-          params: { slug: taxonId },
-          props: {
-            rows: filteredSpecies,
-            isCategory: false,
-            taxonId,
-            precomputedSubtree: subtree,
-            precomputedLineage: lineage,
-          },
-        })
-      } else {
-        console.warn(
-          `Skipping taxonId ${taxonId} - conflicts with category slug`,
-        )
-      }
-    }
-  } catch (err) {
-    console.error('Failed to read taxonomy file for generating paths:', err)
-  }
-
+  ).filter(Boolean)
   return paths
 }
 
 const { slug } = Astro.params
-const { rows, isCategory, taxonId, precomputedSubtree, precomputedLineage } =
-  Astro.props
-
-let title: string
-let description: string
-const category = isCategory ? slug : 'all'
-
-if (isCategory) {
-  title = slug.charAt(0).toUpperCase() + slug.slice(1)
-  description = `Browse ${title} genome assemblies from the GenArk collection`
-} else {
-  // For taxonomy pages, use precomputed subtree data
-  title = precomputedSubtree?.name || `Taxonomy ID: ${taxonId}`
-  description = `Browse genome assemblies for ${title} (NCBI Taxonomy ID: ${taxonId})`
-}
+const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 ---
 
 <Layout
   title={`Taxonomy - ${title}`}
-  description={description}
+  description={`Browse ${title} genome assemblies from the GenArk collection`}
 >
   <Container wide>
-    {
-      isCategory && (
-        <div class="page-header">
-          <h1 class="page-title">GenArk taxonomy - {title}</h1>
-          <a
-            href={`/hubs/${slug}`}
-            class="hubs-link"
-          >
-            View list of species as table for {title}
-          </a>
-        </div>
-      )
-    }
-
-    {
-      precomputedLineage && precomputedLineage.length > 0 && (
-        <div class="lineage-container">
-          <div class="lineage-label">Taxonomy:</div>
-          <div class="lineage-breadcrumbs">
-            {precomputedLineage.slice(0, -1).map(node => (
-              <>
-                <a
-                  href={`/taxonomy/${node.taxonId}`}
-                  class="lineage-link"
-                >
-                  {node.name || 'Unnamed'}
-                </a>
-                <span class="lineage-separator">›</span>
-              </>
-            ))}
-            <span class="lineage-current">
-              {precomputedLineage[precomputedLineage.length - 1]?.name ||
-                'Unnamed'}
-            </span>
-          </div>
-        </div>
-      )
-    }
-
-    {
-      taxonId && (
-        <div class="taxonomy-info-container">
-          <div class="taxonomy-info-label">Taxonomy information:</div>
-          <a
-            href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="taxonomy-info-link"
-          >
-            View on NCBI (taxonomy ID: {taxonId})
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              style="display: inline-block; vertical-align: middle; margin-left: 4px;"
-            >
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-              <polyline points="15 3 21 3 21 9" />
-              <line
-                x1="10"
-                y1="14"
-                x2="21"
-                y2="3"
-              />
-            </svg>
-          </a>
-        </div>
-      )
-    }
-
-    <TaxonomyViewToggle
-      rows={rows}
-      treeContainerId="taxonomy-tree-container"
-      accessionCount={rows.length}
-      client:load
-    />
-    <TaxonomyTree
-      category={category}
-      speciesData={rows}
-      filterTaxonId={isCategory ? undefined : taxonId}
-      precomputedSubtree={precomputedSubtree}
-      containerId="taxonomy-tree-container"
-    />
+    <div style="margin-bottom: 0.5rem">
+      <a href={`/hubs/${slug}`} style="font-size: 0.9rem; color: #2563eb">
+        View {title} species as table →
+      </a>
+    </div>
+    <TaxonomyPage slug={slug} client:only="react" />
   </Container>
 </Layout>
-
-<style>
-  .lineage-container {
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .lineage-label {
-    font-weight: 600;
-    color: #374151;
-    font-size: 14px;
-  }
-
-  .lineage-breadcrumbs {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-  }
-
-  .lineage-link {
-    color: #2563eb;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .lineage-link:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-  }
-
-  .lineage-separator {
-    color: #9ca3af;
-    user-select: none;
-  }
-
-  .lineage-current {
-    color: #1f2937;
-    font-weight: 600;
-  }
-
-  .taxonomy-info-container {
-    background-color: #eff6ff;
-    border: 1px solid #bfdbfe;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .taxonomy-info-label {
-    font-weight: 600;
-    color: #1e40af;
-    font-size: 14px;
-  }
-
-  .taxonomy-info-link {
-    color: #2563eb;
-    text-decoration: none;
-    font-size: 14px;
-    display: inline-flex;
-    align-items: center;
-    transition: color 0.2s;
-  }
-
-  .taxonomy-info-link:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-  }
-
-  .page-header {
-    margin-bottom: 16px;
-    display: flex;
-    gap: 8px;
-    align-items: baseline;
-    flex-wrap: wrap;
-  }
-
-  .page-title {
-    margin: 0;
-  }
-
-  .hubs-link {
-    color: #2563eb;
-    text-decoration: underline;
-  }
-</style>
