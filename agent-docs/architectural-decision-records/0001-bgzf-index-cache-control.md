@@ -2,8 +2,8 @@
 
 - **Status:** Accepted
 - **Date:** 2026-06-03
-- **Affected:** `genark2jbrowse/uploadAll.sh`, `ucsc2jbrowse/uploadAll.sh`,
-  the `jbrowse.org` S3 bucket, the CloudFront distribution (`E13LGELJOT4GQO`)
+- **Affected:** `genark2jbrowse/uploadAll.sh`, `ucsc2jbrowse/uploadAll.sh`, the
+  `jbrowse.org` S3 bucket, the CloudFront distribution (`E13LGELJOT4GQO`)
 
 ## Context
 
@@ -25,7 +25,7 @@ The mismatch survives our existing safeguards because of two cache layers:
 2. **The browser's own HTTP cache** — `create-invalidation` does **nothing** to
    this. And the data/index objects were uploaded with **no `Cache-Control`
    header at all** (verified: `CacheControl: null`), so browsers fall back to
-   *heuristic freshness* off `Last-Modified` and will reuse a cached index from
+   _heuristic freshness_ off `Last-Modified` and will reuse a cached index from
    disk without revalidating. A client that loaded a track before an update
    keeps its old index and pairs it with new data → torn pair.
 
@@ -38,11 +38,12 @@ looks like data corruption, not a transient cache issue.
 
 ## Decision
 
-Upload **index files only** (`*.csi`, `*.tbi`) with **`Cache-Control:
-no-cache`**. This means "store it, but you must revalidate with the origin
-(via ETag / `If-None-Match`) before reusing it" — *not* "don't cache". The
-origin returns a cheap `304 Not Modified` when unchanged and fresh bytes when
-changed, so the browser's index is always in lockstep with what's on S3.
+Upload **index files only** (`*.csi`, `*.tbi`) with
+**`Cache-Control: no-cache`**. This means "store it, but you must revalidate
+with the origin (via ETag / `If-None-Match`) before reusing it" — _not_ "don't
+cache". The origin returns a cheap `304 Not Modified` when unchanged and fresh
+bytes when changed, so the browser's index is always in lockstep with what's on
+S3.
 
 ### Why index-only and not the data too
 
@@ -59,8 +60,8 @@ changed, so the browser's index is always in lockstep with what's on S3.
 This is not theoretically airtight (a browser that also cached `.gz` range
 responses could still pair a fresh index with stale data), but it targets the
 dominant real-world failure at near-zero cost. Fully airtight would require
-immutable/content-hashed URLs for the pair — a much larger change to how
-JBrowse configs reference files, deemed not worth it.
+immutable/content-hashed URLs for the pair — a much larger change to how JBrowse
+configs reference files, deemed not worth it.
 
 ### Implementation
 
@@ -69,9 +70,10 @@ In both `uploadAll.sh` scripts the rclone sync is split into two passes:
 1. **Main pass** — `--exclude "*.csi" --exclude "*.tbi"`. rclone filters apply
    to both source and destination, so excluded index objects on S3 are **not
    deleted** by this pass (verified locally).
-2. **Index pass** — `--include "*.csi" --include "*.tbi"
-   --header-upload "Cache-Control: no-cache"`. Uploads new/changed indexes with
-   the header and still deletes orphaned ones (verified locally).
+2. **Index pass** —
+   `--include "*.csi" --include "*.tbi" --header-upload "Cache-Control: no-cache"`.
+   Uploads new/changed indexes with the header and still deletes orphaned ones
+   (verified locally).
 
 Change counts from both passes are summed so an index-only change still triggers
 the CloudFront invalidation and writes `.upload-changed`.
