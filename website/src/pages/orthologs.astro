@@ -7,39 +7,11 @@ import OrthologSearch from '../components/OrthologSearch.tsx'
 <Layout title="Gene Ortholog Navigator">
   <Container>
     <h1>Gene Ortholog Navigator</h1>
-    <p>
-      Find orthologs of a gene across all assemblies in our collection. Enter a
-      gene symbol (e.g. <em>BRCA1</em>, <em>Tp53</em>) or an{' '}
-      <a
-        href="https://www.ncbi.nlm.nih.gov/gene/"
-        target="_blank"
-        rel="noreferrer"
-        >NCBI Gene ID</a
-      >{' '}
-      to see which of our ~50,000 assemblies contain an annotated ortholog, with direct
-      links to JBrowse at the ortholog's genomic position.
-    </p>
-    <p class="orthologs-note">
-      Ortholog relationships and gene coordinates are retrieved in real time
-      from the{' '}
-      <a
-        href="https://www.ncbi.nlm.nih.gov/datasets/docs/v2/"
-        target="_blank"
-        rel="noreferrer"
-        >NCBI Datasets API</a
-      >. Only assemblies with RefSeq (GCF) accessions appear here, as those are
-      the assemblies with NCBI gene annotations.
-    </p>
     <OrthologSearch client:load />
   </Container>
 </Layout>
 
 <style is:global>
-  .orthologs-note {
-    font-size: 0.85rem;
-    color: #666;
-  }
-
   .orthologs-controls {
     display: flex;
     gap: 0.5rem;

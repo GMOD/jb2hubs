@@ -1,11 +1,17 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+
 import useSWRImmutable from 'swr/immutable'
 
 import OrthologResultsTable from './OrthologResultsTable.tsx'
-import { COMMON_SPECIES, buildOrthologResults } from './orthologSearchUtils.ts'
+import {
+  COMMON_SPECIES,
+  buildOrthologResults,
+  createStore,
+} from './orthologSearchUtils.ts'
+
 import type {
+  AssemblyIndex,
   NcbiOrthologResponse,
-  OrthologIndex,
   OrthologResult,
 } from './orthologSearchUtils.ts'
 
@@ -32,7 +38,7 @@ export default function OrthologSearch() {
   const [results, setResults] = useState<OrthologResult[] | null>(null)
   const [totalOrthologs, setTotalOrthologs] = useState(0)
 
-  const { data: index } = useSWRImmutable<OrthologIndex>(
+  const { data: indexData } = useSWRImmutable<AssemblyIndex>(
     '/ortholog_index.json',
     fetchJson,
   )
@@ -42,9 +48,14 @@ export default function OrthologSearch() {
     fetchJson,
   )
 
+  const store = useMemo(
+    () => (indexData ? createStore(indexData) : null),
+    [indexData],
+  )
+
   async function handleSearch() {
     const query = geneInput.trim()
-    if (!query || !index) {
+    if (!query || !store) {
       return
     }
     setLoading(true)
@@ -70,7 +81,6 @@ export default function OrthologSearch() {
         geneId = ids[0] ?? ''
       }
 
-      // Always fetch summary so numeric IDs also get a resolved gene name
       const summaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=${geneId}&retmode=json`
       const summaryRes = await fetchJson<{
         result?: Record<
@@ -89,7 +99,7 @@ export default function OrthologSearch() {
       const orthologRes = await fetchJson<NcbiOrthologResponse>(orthologUrl)
       const reports = orthologRes.reports ?? []
       setTotalOrthologs(orthologRes.total_count ?? reports.length)
-      setResults(buildOrthologResults(reports, index))
+      setResults(buildOrthologResults(reports, store))
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -97,8 +107,8 @@ export default function OrthologSearch() {
     }
   }
 
-  const refAccession = results?.find(r => r.taxonId === taxId)?.accession
-  const indexLoaded = index != null
+  const refAccession = results?.find(r => r.assembly.taxonId === taxId)
+    ?.assembly.accession
 
   return (
     <div>
@@ -108,7 +118,7 @@ export default function OrthologSearch() {
             htmlFor="gene-input"
             className="orthologs-label"
           >
-            Gene symbol or NCBI Gene ID
+            Gene symbol
           </label>
           <input
             id="gene-input"
@@ -123,7 +133,7 @@ export default function OrthologSearch() {
               }
             }}
             placeholder="e.g. BRCA1 or 672"
-            disabled={!indexLoaded || loading}
+            disabled={!store || loading}
             className="orthologs-input"
           />
         </div>
@@ -140,7 +150,7 @@ export default function OrthologSearch() {
             onChange={e => {
               setTaxId(Number(e.target.value))
             }}
-            disabled={!indexLoaded || loading}
+            disabled={!store || loading}
             className="orthologs-select"
           >
             {COMMON_SPECIES.map(s => (
@@ -157,16 +167,14 @@ export default function OrthologSearch() {
           onClick={() => {
             void handleSearch()
           }}
-          disabled={!indexLoaded || loading || !geneInput.trim()}
+          disabled={!store || loading || !geneInput.trim()}
           className="orthologs-search-btn"
         >
           {loading ? 'Searching…' : 'Search'}
         </button>
       </div>
 
-      {!indexLoaded && (
-        <p className="orthologs-hint">Loading assembly index…</p>
-      )}
+      {!store && <p className="orthologs-hint">Loading assembly index…</p>}
 
       {error && <p className="orthologs-error">{error}</p>}
 

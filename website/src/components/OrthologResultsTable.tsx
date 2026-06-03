@@ -3,6 +3,7 @@ import {
   formatNumber,
   orthoSyntenyUrl,
 } from './orthologSearchUtils.ts'
+
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
 interface ResultRowProps {
@@ -15,8 +16,8 @@ function ResultRow({ result: r, isRef, syntenyUrl }: ResultRowProps) {
   return (
     <tr>
       <td>
-        <em>{r.scientificName}</em>
-        {r.commonName ? ` (${r.commonName})` : ''}
+        <em>{r.assembly.scientificName}</em>
+        {r.assembly.commonName ? ` (${r.assembly.commonName})` : ''}
       </td>
       <td>
         <a
@@ -28,7 +29,9 @@ function ResultRow({ result: r, isRef, syntenyUrl }: ResultRowProps) {
         </a>
       </td>
       <td>
-        <a href={`/accession/${r.accession}`}>{r.accession}</a>
+        <a href={`/accession/${r.assembly.accession}`}>
+          {r.assembly.accession}
+        </a>
       </td>
       <td className="orthologs-loc">
         {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}
@@ -94,21 +97,21 @@ export default function OrthologResultsTable({
       </thead>
       <tbody>
         {results.flatMap((r, i) => {
-          const isRef = r.accession === refAccession
-          const trackId = isRef ? null : syntenyTrackId(r.accession)
+          const isRef = r.assembly.accession === refAccession
+          const trackId = isRef ? null : syntenyTrackId(r.assembly.accession)
           const syntenyUrl =
             trackId && refAccession
               ? orthoSyntenyUrl(refAccession, r, trackId)
               : null
           const next = results[i + 1]
           const isLastCommon =
-            COMMON_TAX_RANK.has(r.taxonId) &&
+            COMMON_TAX_RANK.has(r.assembly.taxonId) &&
             next &&
-            !COMMON_TAX_RANK.has(next.taxonId)
+            !COMMON_TAX_RANK.has(next.assembly.taxonId)
 
           const rows = [
             <ResultRow
-              key={r.accession}
+              key={r.assembly.accession}
               result={r}
               isRef={isRef}
               syntenyUrl={syntenyUrl}
