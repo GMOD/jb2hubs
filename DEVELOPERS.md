@@ -1,12 +1,24 @@
 ## Pre-requisites
 
-- Custom fork of bed2gff https://github.com/cmdcolin/bed2gff/ (clone, cargo
-  build, copy to ~/bed2gff)
+- Rust toolchain (cargo) — to build the vendored `bed2gff` (see below)
 - hck
 - fdfind aka fd
 - node.js, yarn, and npm install -g @jbrowse/cli
 - rclone
 - ncbi "datasets" cli
+
+### Build bed2gff
+
+Our fork of bed2gff is vendored at [`bed2gff/`](bed2gff/) (see
+[bed2gff/VENDORED.md](bed2gff/VENDORED.md)). Build it once before running the
+UCSC pipeline:
+
+```bash
+pnpm build:bed2gff   # -> bed2gff/target/release/bed2gff
+```
+
+`ucsc2jbrowse/createGeneTracksForGoldenPath.sh` resolves that binary
+automatically and fails fast with a build hint if it's missing.
 
 ## Do everything
 

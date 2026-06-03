@@ -10,6 +10,17 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
+# Our vendored fork of bed2gff (see ../bed2gff). Resolve and validate the release
+# build once up front so a missing binary fails fast with a clear, actionable
+# error instead of dying many tracks into the run.
+BED2GFF="$(cd "$(dirname "$0")/../bed2gff" && pwd)/target/release/bed2gff"
+if [ ! -x "$BED2GFF" ]; then
+  echo "ERROR: bed2gff not built at $BED2GFF" >&2
+  echo "       Build it with: pnpm build:bed2gff (or: cd bed2gff && cargo build --release)" >&2
+  exit 1
+fi
+export BED2GFF
+
 # --- Functions ---
 
 # Processes gene tracks for a single assembly.
@@ -39,7 +50,7 @@ process_gene_tracks() {
         node src/geneLike.ts "${infile}.sql" "${infile}.txt.gz" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($2 >= $3) {temp=$2; $2=$3; $3=temp} print}' | sort -k1,1 -k2,2n >"${outfile}.bed"
         hck -f 13,4 "${outfile}.bed" >"${outfile}.isoforms.txt"
         node src/fixupIsoforms.ts "${outfile}.isoforms.txt"
-        ~/bed2gff -t1 --bed "${outfile}.bed" --output "${outfile}.gff" --isoforms "${outfile}.isoforms.txt"
+        "$BED2GFF" -t1 --bed "${outfile}.bed" --output "${outfile}.gff" --isoforms "${outfile}.isoforms.txt"
         if [ -f "${infile}Link.sql" ]; then
           node src/enhanceGffWithLinkTable.ts "${outfile}.gff" "${infile}Link.txt.gz" "${infile}Link.sql" >"${outfile}.enhanced.gff"
           jbrowse sort-gff "${outfile}.enhanced.gff" | bgzip >"${outfile}.gff.gz"
