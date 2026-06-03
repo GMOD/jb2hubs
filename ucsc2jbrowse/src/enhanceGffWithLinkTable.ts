@@ -65,10 +65,14 @@ export async function enhanceGffWithLinkTable(
           ),
       )
       const ID0 = col9attrs.ID?.[0] ?? ''
+      // The link table's `name` column is the gene/locus. JBrowse lowercases
+      // attribute keys, so a lowercase `name` here would clobber the transcript
+      // feature's `Name` and every transcript would display the gene. Rename it
+      // to gene_name so the transcript keeps its own Name (the transcript id).
       const r0 = Object.fromEntries(
         Object.entries(data[ID0] ?? {})
-          .map(([key, val]) => [key, val] as const)
-          .filter(([_key, val]) => val.filter(f => !!f).length > 0),
+          .filter(([_key, val]) => val.filter(f => !!f).length > 0)
+          .map(([key, val]) => [key === 'name' ? 'gene_name' : key, val] as const),
       )
 
       process.stdout.write(
