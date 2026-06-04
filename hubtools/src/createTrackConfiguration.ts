@@ -32,8 +32,15 @@ function makeAdapterConf(
       type: 'MafTrack',
       adapter: {
         type: 'BigMafAdapter',
-        bigMafLocation: { uri },
-        ...(summaryUri ? { summaryLocation: { uri: summaryUri } } : {}),
+        bigBedLocation: { uri },
+        ...(summaryUri
+          ? {
+              summaryAdapter: {
+                type: 'BigBedAdapter',
+                bigBedLocation: { uri: summaryUri },
+              },
+            }
+          : {}),
       },
     }
   } else if (baseTrackType.startsWith('big')) {
