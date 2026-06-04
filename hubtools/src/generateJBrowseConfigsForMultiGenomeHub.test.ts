@@ -36,11 +36,27 @@ describe('generateJBrowseConfigsForMultiGenomeHub', { timeout: 60_000 }, () => {
     for (const { genomeName, config } of configs) {
       const tracks = config.tracks as {
         type: string
-        adapter: { type: string }
+        adapter: {
+          type: string
+          bigBedLocation?: { uri: string }
+          summaryAdapter?: { type: string; bigBedLocation?: { uri: string } }
+        }
       }[]
       const mafTrack = tracks.find(t => t.type === 'MafTrack')
       assert.ok(mafTrack, `${genomeName} is missing MafTrack`)
       assert.equal(mafTrack.adapter.type, 'BigMafAdapter')
+      // BigMafAdapter's file slot is bigBedLocation (not bigMafLocation, which
+      // the adapter silently drops); guard against regressing the key name
+      assert.ok(
+        mafTrack.adapter.bigBedLocation?.uri,
+        `${genomeName} MafTrack is missing bigBedLocation.uri`,
+      )
+      // when a UCSC `summary=` is present it must be a swappable BigBedAdapter
+      // sub-adapter, not a bare summaryLocation fileLocation
+      if (mafTrack.adapter.summaryAdapter) {
+        assert.equal(mafTrack.adapter.summaryAdapter.type, 'BigBedAdapter')
+        assert.ok(mafTrack.adapter.summaryAdapter.bigBedLocation?.uri)
+      }
     }
   })
 

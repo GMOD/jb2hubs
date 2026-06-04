@@ -128,7 +128,7 @@ for (const [acc, strainName] of Object.entries(STRAIN_NAMES)) {
       assemblyNames: [acc, 'mm39'],
       adapter: {
         type: 'BigMafAdapter',
-        bigMafLocation: { uri: `liftOver/${bigMafFile}` },
+        bigBedLocation: { uri: `liftOver/${bigMafFile}` },
       },
     })
     added++
