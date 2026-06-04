@@ -50,13 +50,6 @@ interface ChainTrack {
   }
 }
 
-/**
- * Creates a chain track configuration object from a PIF file.
- * @param pifFile The name of the PIF file (e.g., 'hg19ToHg38.over.pif.gz' or 'hg19.hg38.pif.gz').
- * @param sourceAssembly The source assembly name (e.g., 'hg19').
- * @param srcDir The source directory for the PIF files (e.g., 'liftOver' or 'vs').
- * @returns A ChainTrack object or null if parsing fails.
- */
 function createChainTrackConfig({
   pifFile,
   sourceAssembly,
@@ -133,11 +126,6 @@ function createChainTrackConfig({
   }
 }
 
-/**
- * Main function to update the JBrowse configuration with chain tracks.
- * It reads PIF files from a specified source directory and adds corresponding
- * SyntenyTrack entries to the config.json.
- */
 function main() {
   const { values } = parseArgs({
     args: process.argv.slice(2),
@@ -155,6 +143,10 @@ function main() {
   const sourceAssembly = values.assembly
   const outDir = values.output
   const srcDir = values.source
+
+  if (!sourceAssembly || !outDir || !srcDir) {
+    throw new Error('--assembly, --source, and --output are required')
+  }
 
   // Skip non-assembly directories
   if (sourceAssembly === 'trix') {
