@@ -2,8 +2,6 @@
 import * as fs from 'fs'
 import { execSync } from 'node:child_process'
 
-import slugify from 'slugify'
-
 import { readJSON } from './util.ts'
 
 const LLM_MODEL = 'claude-3-haiku'
@@ -36,7 +34,7 @@ function generateSpeciesDescriptions() {
       const hubDescriptionFilePath = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/description.json`
 
       // Construct the path for the central species description file
-      const centralDescriptionFilePath = `speciesDescriptions/${slugify(scientificName)}.json`
+      const centralDescriptionFilePath = `speciesDescriptions/${scientificName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}.json`
 
       // Check if the hub-specific description file already exists
       if (!fs.existsSync(hubDescriptionFilePath)) {

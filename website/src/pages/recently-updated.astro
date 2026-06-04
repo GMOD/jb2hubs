@@ -2,8 +2,6 @@
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
 import '../styles/common-table.css'
-import { format } from 'date-fns'
-
 // Import the recently updated data (generated at build time)
 import recentlyUpdated from '../recentlyUpdated.json'
 
@@ -42,8 +40,14 @@ for (const source of sources) {
     .slice(0, 500)
 }
 
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+})
+
 function formatDate(isoString: string): string {
-  return format(new Date(isoString), 'MMM d, yyyy')
+  return dateFormatter.format(new Date(isoString))
 }
 ---
 
@@ -188,8 +192,6 @@ function formatDate(isoString: string): string {
 </style>
 
 <script>
-  import { format } from 'date-fns'
-
   interface HubEntry {
     accession: string
     createdDate: string
@@ -202,8 +204,14 @@ function formatDate(isoString: string): string {
     ucscBrowserLink: string
   }
 
+  const dateFormatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
   function formatDate(isoString: string): string {
-    return format(new Date(isoString), 'MMM d, yyyy')
+    return dateFormatter.format(new Date(isoString))
   }
 
   function makeLink(href: string, text: string): HTMLAnchorElement {

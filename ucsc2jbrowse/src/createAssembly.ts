@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { inflate } from 'pako'
+import { gunzipSync } from 'node:zlib'
 
 import { readJSON, requireArg } from './util.ts'
 
@@ -40,7 +40,7 @@ try {
       throw new Error('Error fetching cytobands')
     }
     const ret = await ideoRes.arrayBuffer()
-    const text = inflate(ret)
+    const text = gunzipSync(Buffer.from(ret))
     const txt = new TextDecoder().decode(text)
     const allGneg = txt
       .split('\n')
@@ -50,7 +50,7 @@ try {
     cytoLink = allGneg ? undefined : cytoIdeoLink
   } else {
     const ret = await res.arrayBuffer()
-    const text = inflate(ret)
+    const text = gunzipSync(Buffer.from(ret))
     const txt = new TextDecoder().decode(text)
     const allGneg = txt
       .split('\n')

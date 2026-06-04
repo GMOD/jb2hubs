@@ -1,6 +1,4 @@
-import deepmerge from 'deepmerge'
 import { dedupe } from 'hubtools'
-import pLimit from 'p-limit'
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
@@ -15,6 +13,33 @@ interface BigDataTrack {
     longLabel?: string
     speciesLabels?: string
   }
+}
+
+function mergeDeep(
+  target: Record<string, unknown>,
+  source: Record<string, unknown>,
+): Record<string, unknown> {
+  const result = { ...target }
+  for (const key of Object.keys(source)) {
+    const srcVal = source[key]
+    const tgtVal = result[key]
+    if (
+      srcVal !== null &&
+      typeof srcVal === 'object' &&
+      !Array.isArray(srcVal) &&
+      tgtVal !== null &&
+      typeof tgtVal === 'object' &&
+      !Array.isArray(tgtVal)
+    ) {
+      result[key] = mergeDeep(
+        tgtVal as Record<string, unknown>,
+        srcVal as Record<string, unknown>,
+      )
+    } else {
+      result[key] = srcVal
+    }
+  }
+  return result
 }
 
 function parseSpeciesString(str: string) {
@@ -96,109 +121,86 @@ async function addBigDataTracks(
     /* do nothing */
   }
 
-  const limit = pLimit(1)
+  const newTracks = []
+  for (const entry of Object.values(bigDataEntries)) {
+    const { settings, tableName } = entry
+    const { type, speciesLabels, bigDataUrl } = settings
+    const trackId = `${assemblyName}-${tableName}`
+
+    if (bigDataUrl) {
+      const uri = bigDataUrl.startsWith(baseUrl)
+        ? bigDataUrl
+        : `${baseUrl}${bigDataUrl}`
+
+      if (
+        bigDataUrl.endsWith('.bb') ||
+        bigDataUrl.endsWith('.bigBed') ||
+        bigDataUrl.endsWith('.bigMaf')
+      ) {
+        const fileAccessible = await checkIfFileAccessible({
+          url: bigDataUrl,
+          trackName: settings.longLabel ?? tableName,
+        })
+        if (fileAccessible) {
+          if (type === 'bigMaf') {
+            const samples = speciesLabels ? parseSpeciesString(speciesLabels) : []
+            newTracks.push({
+              trackId,
+              name: tableName,
+              type: 'MafTrack',
+              assemblyNames: [assemblyName],
+              adapter: {
+                type: 'BigMafAdapter',
+                samples,
+                bigBedLocation: { uri: bigDataUrl },
+              },
+            })
+          } else {
+            newTracks.push({
+              trackId,
+              name: tableName,
+              type: 'FeatureTrack',
+              assemblyNames: [assemblyName],
+              adapter: { type: 'BigBedAdapter', uri },
+            })
+          }
+        }
+      } else if (bigDataUrl.endsWith('.bam')) {
+        if (!sequenceAdapter) {
+          console.warn(
+            `Skipping BAM track ${tableName}: No sequence adapter found for assembly ${assemblyName}`,
+          )
+        } else {
+          newTracks.push({
+            trackId,
+            name: tableName,
+            type: 'AlignmentsTrack',
+            assemblyNames: [assemblyName],
+            adapter: { type: 'BamAdapter', uri, sequenceAdapter },
+          })
+        }
+      } else {
+        newTracks.push({
+          trackId,
+          name: tableName,
+          type: 'QuantitativeTrack',
+          assemblyNames: [assemblyName],
+          adapter: { type: 'BigWigAdapter', uri },
+        })
+      }
+    }
+  }
 
   writeJSON(configPath, {
     ...config,
     tracks: dedupe(
-      [
-        ...config.tracks,
-        ...(
-          await Promise.all(
-            Object.values(bigDataEntries).map(entry =>
-              limit(async () => {
-                const { settings, tableName } = entry
-                const { type, speciesLabels, bigDataUrl } = settings
-                const trackId = `${assemblyName}-${tableName}`
-
-                if (!bigDataUrl) {
-                  return undefined
-                }
-
-                const uri = bigDataUrl.startsWith(baseUrl)
-                  ? bigDataUrl
-                  : `${baseUrl}${bigDataUrl}`
-
-                if (
-                  bigDataUrl.endsWith('.bb') ||
-                  bigDataUrl.endsWith('.bigBed') ||
-                  bigDataUrl.endsWith('.bigMaf')
-                ) {
-                  const fileAccessible = await checkIfFileAccessible({
-                    url: bigDataUrl,
-                    trackName: settings.longLabel ?? tableName,
-                  })
-                  if (!fileAccessible) {
-                    return undefined
-                  }
-                  if (type === 'bigMaf') {
-                    const samples = speciesLabels
-                      ? parseSpeciesString(speciesLabels)
-                      : []
-                    return {
-                      trackId,
-                      name: tableName,
-                      type: 'MafTrack',
-                      assemblyNames: [assemblyName],
-                      adapter: {
-                        type: 'BigMafAdapter',
-                        samples,
-                        bigBedLocation: {
-                          uri: bigDataUrl,
-                        },
-                      },
-                    }
-                  } else {
-                    return {
-                      trackId,
-                      name: tableName,
-                      type: 'FeatureTrack',
-                      assemblyNames: [assemblyName],
-                      adapter: {
-                        type: 'BigBedAdapter',
-                        uri,
-                      },
-                    }
-                  }
-                } else if (bigDataUrl.endsWith('.bam')) {
-                  if (!sequenceAdapter) {
-                    console.warn(
-                      `Skipping BAM track ${tableName}: No sequence adapter found for assembly ${assemblyName}`,
-                    )
-                    return undefined
-                  }
-                  return {
-                    trackId,
-                    name: tableName,
-                    type: 'AlignmentsTrack',
-                    assemblyNames: [assemblyName],
-                    adapter: {
-                      type: 'BamAdapter',
-                      uri,
-                      sequenceAdapter,
-                    },
-                  }
-                } else {
-                  return {
-                    trackId,
-                    name: tableName,
-                    type: 'QuantitativeTrack',
-                    assemblyNames: [assemblyName],
-                    adapter: {
-                      type: 'BigWigAdapter',
-                      uri,
-                    },
-                  }
-                }
-              }),
-            ),
-          )
-        ).filter(track => !!track),
-      ],
+      [...config.tracks, ...newTracks],
       track => track.trackId,
     ).map(r => {
-      /* @ts-expect-error*/
-      return mixinTracks[r.trackId] ? deepmerge(r, mixinTracks[r.trackId]) : r
+      const mixin = (mixinTracks as Record<string, Record<string, unknown>>)[
+        r.trackId
+      ]
+      return mixin ? mergeDeep(r as Record<string, unknown>, mixin) : r
     }),
   })
 }
