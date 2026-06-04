@@ -16,22 +16,22 @@ actual bytes local and the config rewritten to local paths.
 The blocker is **data volume**:
 
 - GenArk assembly hubs are small (~10–20 tracks).
-- Full **UCSC browser hubs** (`/ucsc/{db}/config.json`, e.g. hg38) have
-  hundreds of tracks and multi-GB ENCODE bigWigs. Bundling everything is
-  infeasible and pointless.
+- Full **UCSC browser hubs** (`/ucsc/{db}/config.json`, e.g. hg38) have hundreds
+  of tracks and multi-GB ENCODE bigWigs. Bundling everything is infeasible and
+  pointless.
 
 So a bundle must include only a **minimal, user-chosen pack** of tracks plus the
 reference.
 
 ## Decision summary
 
-| Question | Decision |
-| --- | --- |
-| Delivery | AWS Lambda builds a `.zip`, returns a presigned S3 URL |
-| Track selection | Checkbox picker, default-visible tracks pre-checked |
-| Size control | Sum `Content-Length` via HEAD; warn/cap before building |
-| Reference | Always included (2bit + chrom.sizes + chromAlias) |
-| Local script (`.sh`) alternative | Dropped for now; revisit as a power-user escape hatch |
+| Question                         | Decision                                                |
+| -------------------------------- | ------------------------------------------------------- |
+| Delivery                         | AWS Lambda builds a `.zip`, returns a presigned S3 URL  |
+| Track selection                  | Checkbox picker, default-visible tracks pre-checked     |
+| Size control                     | Sum `Content-Length` via HEAD; warn/cap before building |
+| Reference                        | Always included (2bit + chrom.sizes + chromAlias)       |
+| Local script (`.sh`) alternative | Dropped for now; revisit as a power-user escape hatch   |
 
 ## The `.jbrowse` artifact
 
@@ -54,25 +54,26 @@ GCA_000950515.2-offline.zip
     └── hgdownload.soe.ucsc.edu/hubs/GCA/.../*.{2bit,bb,bw,txt}
 ```
 
-Rewrite rule: only adapter subtrees are localized
-(`assembly.sequence.adapter`, `assembly.refNameAliases.adapter`,
-`track.adapter`). Track `metadata` (doc-link HTML, `$$` URL templates) is left
-untouched so we don't try to download documentation links.
+Rewrite rule: only adapter subtrees are localized (`assembly.sequence.adapter`,
+`assembly.refNameAliases.adapter`, `track.adapter`). Track `metadata` (doc-link
+HTML, `$$` URL templates) is left untouched so we don't try to download
+documentation links.
 
 **Open question — relative path resolution.** Confirm JBrowse Desktop resolves
-relative adapter `uri` against the opened config file's location (`baseUri`).
-If not, the Lambda should emit `localPath` instead, computed at unzip time
-isn't possible (we don't know the user's path), so we'd need either:
+relative adapter `uri` against the opened config file's location (`baseUri`). If
+not, the Lambda should emit `localPath` instead, computed at unzip time isn't
+possible (we don't know the user's path), so we'd need either:
+
 - relative `uri` + verified `baseUri` behavior (preferred, portable), or
-- a tiny launcher that rewrites paths to absolute on first run.
-This is the single most important thing to validate first (cheap: hand-build one
-zip and open it in Desktop).
+- a tiny launcher that rewrites paths to absolute on first run. This is the
+  single most important thing to validate first (cheap: hand-build one zip and
+  open it in Desktop).
 
 ## Minimal-pack selection
 
 Signal already in configs: UCSC `visibility`. Tracks with
-`metadata.ucsc.visibility` in `{pack, full, dense}` are shown by default;
-`hide` are hidden. The reference is always required.
+`metadata.ucsc.visibility` in `{pack, full, dense}` are shown by default; `hide`
+are hidden. The reference is always required.
 
 UI (checkbox picker, per the product decision):
 
@@ -117,8 +118,8 @@ Browser redirects/links to the presigned URL → user downloads the zip
 
 Key implementation points:
 
-- **Stream, never buffer.** Use a streaming zip (`yazl`/`archiver`) piped into an
-  S3 multipart upload (`@aws-sdk/lib-storage` `Upload`). Memory stays flat
+- **Stream, never buffer.** Use a streaming zip (`yazl`/`archiver`) piped into
+  an S3 multipart upload (`@aws-sdk/lib-storage` `Upload`). Memory stays flat
   regardless of bundle size. Per-file: `fetch(url).body` → zip entry → S3.
 - **No compression for bigBed/bigWig/2bit** (already compressed binary) — store,
   don't deflate. Saves CPU/time; size is unchanged anyway.
@@ -134,8 +135,8 @@ Key implementation points:
 ### Lambda config
 
 - Memory: 1–2 GB (network throughput scales with memory; we're I/O bound).
-- Timeout: 15 min (max). The hard size cap must be chosen so a worst-case
-  bundle finishes well under this.
+- Timeout: 15 min (max). The hard size cap must be chosen so a worst-case bundle
+  finishes well under this.
 - `/tmp`: not needed if we stream to S3 (avoid the 10 GB cap entirely).
 - Concurrency limit to bound UCSC egress and AWS cost.
 
@@ -163,7 +164,7 @@ Repo currently ships static data to S3 + CloudFront via `rclone` (see
 `ucsc2jbrowse/uploadAll.sh`); there is **no existing Lambda infra**. Options:
 
 - **AWS CDK or SST** (TypeScript, fits the repo) — define Lambda + Function URL
-  + S3 bucket + IAM + lifecycle in code. Preferred for reproducibility.
+  - S3 bucket + IAM + lifecycle in code. Preferred for reproducibility.
 - **Plain handler + manual deploy** — fastest to prototype, weakest to maintain.
 
 IAM: Lambda needs `s3:PutObject`/`CreateMultipartUpload`/`UploadPart` on the
@@ -197,4 +198,7 @@ bundle bucket and `s3:GetObject` for presigning. Outbound HTTPS to
   idempotency, lifecycle. Wire the button to it.
 - **Phase 3 — polish**: caching, concurrency limits, README content, error
   states, telemetry on popular bundles.
+
+```
+
 ```
