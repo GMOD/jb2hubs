@@ -45,7 +45,7 @@ function emit(metaPath: string, dir: string, id: string) {
 // stale and gets refreshed.
 function downloadedAtMs(file: string) {
   try {
-    const m = fs.readFileSync(file, 'utf8').match(/"downloaded_at"\s*:\s*(\d+)/)
+    const m = /"downloaded_at"\s*:\s*(\d+)/.exec(fs.readFileSync(file, 'utf8'))
     if (m) {
       return Number(m[1]) * 1000
     }
@@ -58,7 +58,7 @@ function downloadedAtMs(file: string) {
 // Epoch ms recorded in the .notfound sentinel ("...as of YYYY-MM-DD").
 function checkedAtMs(file: string) {
   try {
-    const m = fs.readFileSync(file, 'utf8').match(/\d{4}-\d{2}-\d{2}/)
+    const m = /\d{4}-\d{2}-\d{2}/.exec(fs.readFileSync(file, 'utf8'))
     if (m) {
       return Date.parse(m[0])
     }

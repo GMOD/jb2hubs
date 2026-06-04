@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
 import fs from 'fs'
-import path from 'path'
-
 import { parseArgs } from 'node:util'
+import path from 'path'
 
 import { readJSON, writeJSON } from './util.ts'
 
@@ -145,7 +144,11 @@ function main() {
     options: {
       assembly: { type: 'string', short: 'a' },
       source: { type: 'string', short: 's' },
-      output: { type: 'string', short: 'o', default: process.env.UCSC_BUILT_DIR },
+      output: {
+        type: 'string',
+        short: 'o',
+        default: process.env.UCSC_BUILT_DIR,
+      },
     },
   })
 

@@ -8,7 +8,6 @@ import type {
   UCSCGenArkAssemblyEntry,
 } from './types.ts'
 
-
 export function parseAssemblyEntry({
   entry,
 }: {

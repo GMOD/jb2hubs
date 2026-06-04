@@ -34,7 +34,10 @@ function generateSpeciesDescriptions() {
       const hubDescriptionFilePath = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/description.json`
 
       // Construct the path for the central species description file
-      const centralDescriptionFilePath = `speciesDescriptions/${scientificName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}.json`
+      const centralDescriptionFilePath = `speciesDescriptions/${scientificName
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')}.json`
 
       // Check if the hub-specific description file already exists
       if (!fs.existsSync(hubDescriptionFilePath)) {

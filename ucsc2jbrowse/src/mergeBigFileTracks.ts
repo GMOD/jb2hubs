@@ -143,7 +143,9 @@ async function addBigDataTracks(
         })
         if (fileAccessible) {
           if (type === 'bigMaf') {
-            const samples = speciesLabels ? parseSpeciesString(speciesLabels) : []
+            const samples = speciesLabels
+              ? parseSpeciesString(speciesLabels)
+              : []
             newTracks.push({
               trackId,
               name: tableName,
@@ -200,7 +202,7 @@ async function addBigDataTracks(
       const mixin = (mixinTracks as Record<string, Record<string, unknown>>)[
         r.trackId
       ]
-      return mixin ? mergeDeep(r as Record<string, unknown>, mixin) : r
+      return mixin ? mergeDeep(r, mixin) : r
     }),
   })
 }
