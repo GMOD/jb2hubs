@@ -24,10 +24,10 @@
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test 'src/**/*.test.ts'",
     "deploy": "yarn sync",
     "predeploy": "yarn build",
-    "sync": "rsync -a --delete dist/ myserver:/var/www/html/ && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",
+    "sync": "tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/html/* && tar -xzf - -C /var/www/html' && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",
     "deploy:staging": "yarn sync:staging",
     "predeploy:staging": "yarn build",
-    "sync:staging": "rsync -a --delete dist/ myserver:/var/www/staging/ && aws cloudfront create-invalidation --distribution-id E3IPPUV528KQIX --paths '/*'",
+    "sync:staging": "tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/staging/* && tar -xzf - -C /var/www/staging' && aws cloudfront create-invalidation --distribution-id E3IPPUV528KQIX --paths '/*'",
     "format": "prettier --write ."
   },
   "dependencies": {
