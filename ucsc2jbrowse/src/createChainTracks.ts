@@ -2,7 +2,7 @@
 import fs from 'fs'
 import path from 'path'
 
-import { Command } from 'commander'
+import { parseArgs } from 'node:util'
 
 import { readJSON, writeJSON } from './util.ts'
 
@@ -140,28 +140,18 @@ function createChainTrackConfig({
  * SyntenyTrack entries to the config.json.
  */
 function main() {
-  const program = new Command()
+  const { values } = parseArgs({
+    args: process.argv.slice(2),
+    options: {
+      assembly: { type: 'string', short: 'a' },
+      source: { type: 'string', short: 's' },
+      output: { type: 'string', short: 'o', default: process.env.UCSC_BUILT_DIR },
+    },
+  })
 
-  program
-    .option(
-      '-a, --assembly <assembly>',
-      'Source assembly name (e.g., hg19, hg38, mm10)',
-    )
-    .option(
-      '-s, --source <source_dir>',
-      'Either liftOver or vs, the source directory for PIF files',
-    )
-    .option(
-      '-o, --output <dir>',
-      'Output directory',
-      process.env.UCSC_BUILT_DIR,
-    )
-    .parse(process.argv)
-
-  const options = program.opts()
-  const sourceAssembly: string = options.assembly
-  const outDir: string = options.output
-  const srcDir: string = options.source
+  const sourceAssembly = values.assembly
+  const outDir = values.output
+  const srcDir = values.source
 
   // Skip non-assembly directories
   if (sourceAssembly === 'trix') {
