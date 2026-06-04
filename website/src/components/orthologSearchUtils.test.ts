@@ -1,26 +1,42 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { createStore } from './orthologDb.ts'
 import {
-  accessionBase,
   accessionToJbrowseUrl,
-  buildBaseIndex,
   buildOrthologResults,
-  resolveHit,
-} from './orthologSearchUtils.ts'
-import type {
-  NcbiOrthologReport,
-  OrthologIndex,
 } from './orthologSearchUtils.ts'
 
-const index: OrthologIndex = {
+import type {
+  AssemblyIndex,
+  NcbiOrthologReport,
+} from './orthologSearchUtils.ts'
+
+const indexData: AssemblyIndex = {
   'GCF_000001405.40': ['Human', 'Homo sapiens', 9606],
   'GCF_000001635.27': ['Mouse', 'Mus musculus', 10090],
 }
 
-test('accessionBase strips the version suffix', () => {
-  assert.equal(accessionBase('GCF_000001405.40'), 'GCF_000001405')
-  assert.equal(accessionBase('GCF_000001405'), 'GCF_000001405')
+test('createStore.find returns named assembly fields', () => {
+  const store = createStore(indexData)
+  const assembly = store.find('GCF_000001405.40')
+  assert.equal(assembly?.accession, 'GCF_000001405.40')
+  assert.equal(assembly?.commonName, 'Human')
+  assert.equal(assembly?.scientificName, 'Homo sapiens')
+  assert.equal(assembly?.taxonId, 9606)
+})
+
+test('createStore.find falls back to a version-stripped match', () => {
+  const store = createStore(indexData)
+  // NCBI reports .39 but we host .40
+  const assembly = store.find('GCF_000001405.39')
+  assert.equal(assembly?.accession, 'GCF_000001405.40')
+})
+
+test('createStore.find returns undefined for an unknown accession', () => {
+  const store = createStore(indexData)
+  assert.equal(store.find('GCF_999999999.1'), undefined)
 })
 
 test('accessionToJbrowseUrl shards the accession into the config path', () => {
@@ -36,26 +52,8 @@ test('accessionToJbrowseUrl appends an encoded loc when given', () => {
   assert.ok(url.includes('&loc=NC_000017.11%3A1-2'))
 })
 
-test('resolveHit prefers an exact accession match', () => {
-  const baseIndex = buildBaseIndex(index)
-  const hit = resolveHit(index, baseIndex, 'GCF_000001405.40')
-  assert.equal(hit?.accession, 'GCF_000001405.40')
-  assert.equal(hit?.entry[0], 'Human')
-})
-
-test('resolveHit falls back to a version-stripped match', () => {
-  const baseIndex = buildBaseIndex(index)
-  // NCBI reports .39 but we host .40
-  const hit = resolveHit(index, baseIndex, 'GCF_000001405.39')
-  assert.equal(hit?.accession, 'GCF_000001405.40')
-})
-
-test('resolveHit returns undefined for an unknown accession', () => {
-  const baseIndex = buildBaseIndex(index)
-  assert.equal(resolveHit(index, baseIndex, 'GCF_999999999.1'), undefined)
-})
-
 test('buildOrthologResults maps reports and ranks common species first', () => {
+  const store = createStore(indexData)
   const reports: NcbiOrthologReport[] = [
     {
       gene: {
@@ -64,7 +62,6 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
         annotations: [
           {
             assembly_accession: 'GCF_000001635.27',
-            assembly_name: 'GRCm39',
             genomic_locations: [
               {
                 genomic_accession_version: 'NC_000077.7',
@@ -83,7 +80,6 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
         annotations: [
           {
             assembly_accession: 'GCF_000001405.40',
-            assembly_name: 'GRCh38',
             genomic_locations: [
               {
                 genomic_accession_version: 'NC_000017.11',
@@ -97,17 +93,18 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
     },
   ]
 
-  const results = buildOrthologResults(reports, index)
+  const results = buildOrthologResults(reports, store)
   assert.equal(results.length, 2)
   // Human (taxId 9606, rank 0) sorts before Mouse (taxId 10090, rank 1)
-  assert.equal(results[0]?.scientificName, 'Homo sapiens')
+  assert.equal(results[0]?.assembly.scientificName, 'Homo sapiens')
   assert.equal(results[0]?.geneSymbol, 'humanGene')
   assert.equal(results[0]?.chromosome, '17')
   assert.equal(results[0]?.locStr, 'NC_000017.11:300-400')
-  assert.equal(results[1]?.scientificName, 'Mus musculus')
+  assert.equal(results[1]?.assembly.scientificName, 'Mus musculus')
 })
 
 test('buildOrthologResults skips assemblies not in our collection', () => {
+  const store = createStore(indexData)
   const reports: NcbiOrthologReport[] = [
     {
       gene: {
@@ -116,7 +113,6 @@ test('buildOrthologResults skips assemblies not in our collection', () => {
         annotations: [
           {
             assembly_accession: 'GCF_000004195.4',
-            assembly_name: 'UCB_Xtro_10.0',
             genomic_locations: [
               {
                 genomic_accession_version: 'NC_030677.2',
@@ -129,11 +125,11 @@ test('buildOrthologResults skips assemblies not in our collection', () => {
       },
     },
   ]
-  const results = buildOrthologResults(reports, index)
-  assert.equal(results.length, 0)
+  assert.equal(buildOrthologResults(reports, store).length, 0)
 })
 
 test('buildOrthologResults skips annotations lacking a genomic range', () => {
+  const store = createStore(indexData)
   const reports: NcbiOrthologReport[] = [
     {
       gene: {
@@ -142,7 +138,6 @@ test('buildOrthologResults skips annotations lacking a genomic range', () => {
         annotations: [
           {
             assembly_accession: 'GCF_000001405.40',
-            assembly_name: 'GRCh38',
             genomic_locations: [
               {
                 genomic_accession_version: 'NC_000017.11',
@@ -154,6 +149,5 @@ test('buildOrthologResults skips annotations lacking a genomic range', () => {
       },
     },
   ]
-  const results = buildOrthologResults(reports, index)
-  assert.equal(results.length, 0)
+  assert.equal(buildOrthologResults(reports, store).length, 0)
 })

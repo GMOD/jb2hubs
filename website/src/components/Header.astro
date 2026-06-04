@@ -1,6 +1,12 @@
 ---
 import Logo from '../logo.astro'
 
+const exploreItems = [
+  { name: 'Search', href: '/search' },
+  { name: 'Synteny', href: '/synteny' },
+  { name: 'Orthologs', href: '/orthologs' },
+]
+
 const secondaryNavItems = [
   { name: 'Blog', href: '/blog' },
   { name: 'Demos', href: '/demos' },
@@ -8,6 +14,7 @@ const secondaryNavItems = [
 ]
 
 const { pathname } = Astro.url
+const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
 ---
 
 <nav class="nav">
@@ -26,12 +33,30 @@ const { pathname } = Astro.url
         JBrowse 2 Genomes
       </a>
       <div class="primary-nav desktop-nav">
-        <a
-          href="/search"
-          class:list={['navLink', { active: pathname.startsWith('/search') }]}
-        >
-          Search
-        </a>
+        <div class="dropdown">
+          <span
+            class:list={[
+              'navLink',
+              'dropdownToggle',
+              { active: exploreActive },
+            ]}>Explore ▾</span
+          >
+          <div class="dropdownMenu">
+            {
+              exploreItems.map(item => (
+                <a
+                  href={item.href}
+                  class:list={[
+                    'dropdownItem',
+                    { active: pathname.startsWith(item.href) },
+                  ]}
+                >
+                  {item.name}
+                </a>
+              ))
+            }
+          </div>
+        </div>
       </div>
     </div>
 
@@ -169,16 +194,22 @@ const { pathname } = Astro.url
     id="mobile-menu"
     class="mobile-menu"
   >
-    <a
-      href="/search"
-      class:list={[
-        'navLink',
-        'mobile-navLink',
-        { active: pathname.startsWith('/search') },
-      ]}
-    >
-      Search
-    </a>
+    <span class="navLink mobile-navLink mobile-groupLabel">Explore</span>
+    {
+      exploreItems.map(item => (
+        <a
+          href={item.href}
+          class:list={[
+            'navLink',
+            'mobile-navLink',
+            'mobile-subLink',
+            { active: pathname.startsWith(item.href) },
+          ]}
+        >
+          {item.name}
+        </a>
+      ))
+    }
     {
       secondaryNavItems.map(item => (
         <a
@@ -207,7 +238,24 @@ const { pathname } = Astro.url
       })
     }
 
-})
+    const toggle = document.querySelector('.dropdownToggle')
+    const menu = document.querySelector('.dropdownMenu')
+
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => {
+        menu.classList.toggle('open')
+      })
+
+      document.addEventListener('click', e => {
+        if (
+          !toggle.contains(e.target as Node) &&
+          !menu.contains(e.target as Node)
+        ) {
+          menu.classList.remove('open')
+        }
+      })
+    }
+  })
 </script>
 
 <style>
@@ -338,6 +386,68 @@ const { pathname } = Astro.url
 
   .mobile-navLink {
     margin: 0.5rem 0;
+  }
+
+  .mobile-groupLabel {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    cursor: default;
+  }
+
+  .mobile-subLink {
+    padding-left: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdownToggle {
+    cursor: pointer;
+    margin-left: 0;
+    user-select: none;
+  }
+
+  .dropdownMenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    min-width: 130px;
+    z-index: 100;
+    padding: 4px 0;
+  }
+
+  .dropdownMenu.open {
+    display: block;
+  }
+
+  .dropdownItem {
+    display: block;
+    padding: 6px 12px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .dropdownItem:hover {
+    background: #f5f5f5;
+  }
+
+  .dropdownItem.active {
+    font-weight: 700;
+    color: #0a4f5c;
   }
 
   .desktop-nav {
