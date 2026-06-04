@@ -1,4 +1,4 @@
-import { dedupe } from 'hubtools'
+import { dedupe, isUsableMafSummary } from 'hubtools'
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
@@ -12,6 +12,7 @@ interface BigDataTrack {
     type?: string
     longLabel?: string
     speciesLabels?: string
+    summary?: string
   }
 }
 
@@ -124,7 +125,7 @@ async function addBigDataTracks(
   const newTracks = []
   for (const entry of Object.values(bigDataEntries)) {
     const { settings, tableName } = entry
-    const { type, speciesLabels, bigDataUrl } = settings
+    const { type, speciesLabels, bigDataUrl, summary } = settings
     const trackId = `${assemblyName}-${tableName}`
 
     if (bigDataUrl) {
@@ -146,6 +147,20 @@ async function addBigDataTracks(
             const samples = speciesLabels
               ? parseSpeciesString(speciesLabels)
               : []
+            // UCSC bigMaf tracks declare a `summary` bigBed (bed3+4
+            // mafSummary) for cheap zoom-out rendering; gbdb/relative
+            // paths resolve against baseUrl like bigDataUrl does. Skip
+            // `tinySummary.bb` placeholders — those are a degenerate
+            // bed4+1 (one whole-chromosome span per species), not
+            // mafSummary, so they render as useless full-width bars.
+            const usableSummary = isUsableMafSummary(summary)
+              ? summary
+              : undefined
+            const summaryUri = usableSummary?.startsWith(baseUrl)
+              ? usableSummary
+              : usableSummary
+                ? `${baseUrl}${usableSummary}`
+                : undefined
             newTracks.push({
               trackId,
               name: tableName,
@@ -155,6 +170,14 @@ async function addBigDataTracks(
                 type: 'BigMafAdapter',
                 samples,
                 bigBedLocation: { uri: bigDataUrl },
+                ...(summaryUri
+                  ? {
+                      summaryAdapter: {
+                        type: 'BigBedAdapter',
+                        bigBedLocation: { uri: summaryUri },
+                      },
+                    }
+                  : {}),
               },
             })
           } else {

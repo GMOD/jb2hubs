@@ -1,6 +1,6 @@
 import { categoryMap } from './const.ts'
 import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
-import { resolve } from './util.ts'
+import { isUsableMafSummary, resolve } from './util.ts'
 
 import type { Adapter } from './types.ts'
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
@@ -25,7 +25,8 @@ function makeAdapterConf(
       adapter: { type: 'BigWigAdapter', uri },
     }
   } else if (baseTrackType === 'bigMaf') {
-    const summaryUri = data.summary
+    // Skip degenerate `tinySummary.bb` placeholders (see isUsableMafSummary).
+    const summaryUri = isUsableMafSummary(data.summary)
       ? resolve(data.summary, trackDbUrl)
       : undefined
     return {

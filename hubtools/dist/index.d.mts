@@ -582,5 +582,12 @@ declare function accessionChunks(accession: string): {
   b2: string;
   b3: string;
 } | undefined;
+/**
+ * Whether a UCSC bigMaf `summary` value points at a usable `mafSummary` bigBed.
+ * UCSC ships `tinySummary.bb` placeholders that are a degenerate bed4+1 (one
+ * whole-chromosome span per species), not the per-block bed3+4 mafSummary, so
+ * they render as useless full-width bars — skip them.
+ */
+declare function isUsableMafSummary(summary: string | undefined): summary is string;
 //#endregion
-export { Adapter, AnnotationInfo, NCBIDatasetsReport, NCBIDatasetsResponse, UCSCGenArkAssemblyEntry, accessionChunks, categoryMap, decodeURIComponentNoThrow, dedupe, enhanceConfig, generateHubTracks, generateJBrowseConfigForAssemblyHub, generateJBrowseConfigsForMultiGenomeHub, hubCategories, makeDefaultSession, myfetch, myfetchtext, notEmpty, parseAssemblyEntry, readJSON, readJSONAsync, replaceLink, requireArg, resolve, splitOnFirst, writeJSON };
+export { Adapter, AnnotationInfo, NCBIDatasetsReport, NCBIDatasetsResponse, UCSCGenArkAssemblyEntry, accessionChunks, categoryMap, decodeURIComponentNoThrow, dedupe, enhanceConfig, generateHubTracks, generateJBrowseConfigForAssemblyHub, generateJBrowseConfigsForMultiGenomeHub, hubCategories, isUsableMafSummary, makeDefaultSession, myfetch, myfetchtext, notEmpty, parseAssemblyEntry, readJSON, readJSONAsync, replaceLink, requireArg, resolve, splitOnFirst, writeJSON };

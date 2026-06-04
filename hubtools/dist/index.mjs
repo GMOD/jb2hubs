@@ -123,6 +123,15 @@ function accessionChunks(accession) {
 		b3
 	};
 }
+/**
+* Whether a UCSC bigMaf `summary` value points at a usable `mafSummary` bigBed.
+* UCSC ships `tinySummary.bb` placeholders that are a degenerate bed4+1 (one
+* whole-chromosome span per species), not the per-block bed3+4 mafSummary, so
+* they render as useless full-width bars — skip them.
+*/
+function isUsableMafSummary(summary) {
+	return !!summary && !/tinysummary\.bb$/i.test(summary);
+}
 //#endregion
 //#region src/enhanceConfig.ts
 const defaultPlugins = [
@@ -216,7 +225,7 @@ function makeAdapterConf(baseTrackType, uri, sequenceAdapter, data, trackDbUrl) 
 		}
 	};
 	else if (baseTrackType === "bigMaf") {
-		const summaryUri = data.summary ? resolve(data.summary, trackDbUrl) : void 0;
+		const summaryUri = isUsableMafSummary(data.summary) ? resolve(data.summary, trackDbUrl) : void 0;
 		return {
 			type: "MafTrack",
 			adapter: {
@@ -634,4 +643,4 @@ function parseAssemblyEntry({ entry }) {
 	};
 }
 //#endregion
-export { accessionChunks, categoryMap, decodeURIComponentNoThrow, dedupe, enhanceConfig, generateHubTracks, generateJBrowseConfigForAssemblyHub, generateJBrowseConfigsForMultiGenomeHub, hubCategories, makeDefaultSession, myfetch, myfetchtext, notEmpty, parseAssemblyEntry, readJSON, readJSONAsync, replaceLink, requireArg, resolve, splitOnFirst, writeJSON };
+export { accessionChunks, categoryMap, decodeURIComponentNoThrow, dedupe, enhanceConfig, generateHubTracks, generateJBrowseConfigForAssemblyHub, generateJBrowseConfigsForMultiGenomeHub, hubCategories, isUsableMafSummary, makeDefaultSession, myfetch, myfetchtext, notEmpty, parseAssemblyEntry, readJSON, readJSONAsync, replaceLink, requireArg, resolve, splitOnFirst, writeJSON };

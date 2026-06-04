@@ -114,3 +114,13 @@ export function accessionChunks(accession: string) {
   const [b1, b2, b3] = matches as [string, string, string]
   return { base, b1, b2, b3 }
 }
+
+/**
+ * Whether a UCSC bigMaf `summary` value points at a usable `mafSummary` bigBed.
+ * UCSC ships `tinySummary.bb` placeholders that are a degenerate bed4+1 (one
+ * whole-chromosome span per species), not the per-block bed3+4 mafSummary, so
+ * they render as useless full-width bars — skip them.
+ */
+export function isUsableMafSummary(summary: string | undefined): summary is string {
+  return !!summary && !/tinysummary\.bb$/i.test(summary)
+}
