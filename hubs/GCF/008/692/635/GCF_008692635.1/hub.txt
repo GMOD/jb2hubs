@@ -1,0 +1,118 @@
+hub GCF_008692635.1 genome assembly
+shortLabel spotted hyena (KB4526 2019)
+longLabel spotted hyena (KB4526 2019)/Crocuta crocuta/GCF_008692635.1_BGI_CrCroc_1.0 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_008692635.1_BGI_CrCroc_1.0.description.html
+
+genome GCF_008692635.1
+taxId 9678
+groups groups.txt
+description spotted hyena (KB4526 2019)
+twoBitPath GCF_008692635.1.2bit
+twoBitBptUrl GCF_008692635.1.2bit.bpt
+chromSizes GCF_008692635.1.chrom.sizes.txt
+chromAliasBb GCF_008692635.1.chromAlias.bb
+organism BGI_CrCroc_1.0 Sep. 2019
+defaultPos NW_027532203.1:7979492-7989492
+scientificName Crocuta crocuta
+htmlPath html/GCF_008692635.1_BGI_CrCroc_1.0.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/008/692/635/GCF_008692635.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/008/692/635/GCF_008692635.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/008/692/635/GCF_008692635.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.assembly.bb
+type bigBed 6
+html html/GCF_008692635.1_BGI_CrCroc_1.0.assembly
+searchIndex name
+searchTrix ixIxx/GCF_008692635.1_BGI_CrCroc_1.0.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track gap
+longLabel AGP gap
+shortLabel Gap (AGP defined)
+visibility hide
+color 0,0,0
+bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.gap.bb
+type bigBed 4
+group map
+html html/GCF_008692635.1_BGI_CrCroc_1.0.gap
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.gc5Base.bw
+html html/GCF_008692635.1_BGI_CrCroc_1.0.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCF_008692635.1_BGI_CrCroc_1.0.tanDups
+
+    track gapOverlap
+    parent tanDups on
+    shortLabel Gap Overlaps
+    longLabel Paired exactly identical sequence on each side of a gap
+    bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.gapOverlap.bb
+    type bigBed 12
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.rmsk.bb
+xrefDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.rmsk.align.bb
+maxWindowToDraw 5000000
+
+track repeatModeler
+shortLabel RepeatModeler
+longLabel RepeatModeler Repetitive Elements
+type bigRmsk 9 +
+visibility hide
+group varRep
+bigDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.rModel.bb
+xrefDataUrl bbi/GCF_008692635.1_BGI_CrCroc_1.0.rModel.align.bb
+maxWindowToDraw 5000000
+html html/GCF_008692635.1_BGI_CrCroc_1.0.repeatModeler
+
