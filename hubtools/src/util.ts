@@ -121,6 +121,8 @@ export function accessionChunks(accession: string) {
  * whole-chromosome span per species), not the per-block bed3+4 mafSummary, so
  * they render as useless full-width bars — skip them.
  */
-export function isUsableMafSummary(summary: string | undefined): summary is string {
+export function isUsableMafSummary(
+  summary: string | undefined,
+): summary is string {
   return !!summary && !/tinysummary\.bb$/i.test(summary)
 }
