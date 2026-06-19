@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
-import { StaticFileOrthologAdapter } from '../orthologs/orthologAdapter.ts'
+import { orthologSymbol, searchGenes } from '../orthologs/ncbiOrthologs.ts'
 
 import type {
   SyntenyAssembly,
@@ -12,11 +12,6 @@ import type {
 
 interface Props {
   data: SyntenyCatalogData
-  // Canonical "<loTax>_<hiTax>" keys with a cross-species ortholog table, and
-  // taxon ids with a same-species gene table, under website/public/orthologs/.
-  // Drive the optional gene-level comparison. Built by orthologs/make.sh.
-  orthologPairs?: string[]
-  orthologTaxa?: number[]
 }
 
 // JBrowse Web build the synteny views launch into. The launch spec sets
@@ -33,25 +28,20 @@ function formatOption(asm: SyntenyAssembly) {
   return parts.join('  ·  ')
 }
 
-export default function SyntenySelector({
-  data,
-  orthologPairs = [],
-  orthologTaxa = [],
-}: Props) {
+export default function SyntenySelector({ data }: Props) {
   const [species1, setSpecies1] = useState('')
   const [species2, setSpecies2] = useState('')
   const [trackOverride, setTrackOverride] = useState('')
   const [showUcsc, setShowUcsc] = useState(true)
   const [showGenark, setShowGenark] = useState(true)
-  // The chosen ortholog, encoded as "species1Symbol\tspecies2Symbol" so the
-  // launch can navigate each sub-view to its symbol. Empty = whole genome.
+  // The gene chosen in the Autocomplete, encoded as "<geneId>\t<symbol>" (its
+  // option value). Drives display + ortholog resolution.
+  const [geneValue, setGeneValue] = useState('')
+  // The resolved ortholog pair as "species1Symbol\tspecies2Symbol", used to
+  // navigate each sub-view at launch. Empty = whole genome.
   const [selectedGene, setSelectedGene] = useState('')
-
-  // Stable, non-React data layer for the ortholog tables. Swappable for a
-  // REST/tabix-backed adapter without touching this component.
-  const [orthologAdapter] = useState(
-    () => new StaticFileOrthologAdapter(orthologPairs, orthologTaxa),
-  )
+  // Status under the gene box while resolving / when no ortholog exists.
+  const [geneNote, setGeneNote] = useState('')
 
   const [assemblies, setAssemblies] = useState<SyntenyAssembly[]>([])
   const [partners, setPartners] = useState<SyntenyAssembly[]>([])
@@ -131,45 +121,73 @@ export default function SyntenySelector({
 
   const taxon1 = data.assemblyInfo[species1]?.taxonId
   const taxon2 = data.assemblyInfo[species2]?.taxonId
-  const hasOrthologs =
-    taxon1 !== undefined &&
-    taxon2 !== undefined &&
-    orthologAdapter.hasPair(taxon1, taxon2)
+  // Gene centering is offered whenever both assemblies map to an NCBI taxon.
+  const canSearchGenes = taxon1 !== undefined && taxon2 !== undefined
 
-  // Database-like gene query handed to the gene Autocomplete. The adapter owns
-  // fetching, orientation, dedupe, and fuzzy ranking; here we just shape the
-  // result into options whose value carries both symbols for the launch loc.
+  const resetGene = () => {
+    setGeneValue('')
+    setSelectedGene('')
+    setGeneNote('')
+  }
+
+  // Gene-name typeahead in the first assembly's taxon. Each option carries the
+  // NCBI gene id so selection can resolve the ortholog in the second taxon.
   const queryGeneOptions = async (search: string) => {
     let opts: { value: string; label: string }[] = []
-    if (taxon1 !== undefined && taxon2 !== undefined) {
-      const rows = await orthologAdapter.queryGenes({
-        taxon1,
-        taxon2,
-        search,
-      })
-      opts = rows.map(r => ({
-        value: `${r.gene1}\t${r.gene2}`,
-        label: `${r.gene1} → ${r.gene2}`,
+    if (taxon1 !== undefined) {
+      const hits = await searchGenes(search, taxon1)
+      opts = hits.map(h => ({
+        value: `${h.geneId}\t${h.symbol}`,
+        label: h.symbol,
       }))
     }
     return opts
   }
 
+  // On selection, resolve the orthologous symbol in the second taxon (or reuse
+  // the same symbol for same-species pairs) so the launch can center both views.
+  const handleGeneChange = (value: string) => {
+    setGeneValue(value)
+    const [geneId, symbol1] = value.split('\t')
+    if (!geneId || !symbol1 || taxon2 === undefined) {
+      setSelectedGene('')
+      setGeneNote('')
+    } else if (taxon1 === taxon2) {
+      setSelectedGene(`${symbol1}\t${symbol1}`)
+      setGeneNote('')
+    } else {
+      setSelectedGene('')
+      setGeneNote(`Finding ${symbol1} ortholog in ${nameOf(species2)}…`)
+      void orthologSymbol(geneId, taxon2)
+        .then(symbol2 => {
+          if (symbol2) {
+            setSelectedGene(`${symbol1}\t${symbol2}`)
+            setGeneNote(`${symbol1} → ${symbol2}`)
+          } else {
+            setGeneNote(`No ${symbol1} ortholog in ${nameOf(species2)}.`)
+          }
+        })
+        .catch(() => {
+          setGeneNote('Ortholog lookup failed; try again.')
+        })
+    }
+  }
+
   const handleSpecies1Change = (value: string) => {
     setSpecies1(value)
     setSpecies2('')
-    setSelectedGene('')
+    resetGene()
   }
 
   const handleSpecies2Change = (value: string) => {
     setSpecies2(value)
-    setSelectedGene('')
+    resetGene()
   }
 
   const handleSwap = () => {
     setSpecies1(species2)
     setSpecies2(species1)
-    setSelectedGene('')
+    resetGene()
   }
 
   const selectedTrack = useMemo(() => {
@@ -198,7 +216,7 @@ export default function SyntenySelector({
     // symbol; JBrowse resolves the symbol to a locus via each assembly's text
     // search index at load. A whole-genome view (no loc) otherwise. selectedGene
     // encodes both symbols as "species1Symbol\tspecies2Symbol".
-    const [gene1, gene2] = hasOrthologs ? selectedGene.split('\t') : []
+    const [gene1, gene2] = selectedGene.split('\t')
     const subViews =
       gene1 && gene2
         ? [
@@ -221,7 +239,7 @@ export default function SyntenySelector({
     }
 
     return `${JBROWSE_BASE}/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
-  }, [species1, species2, selectedTrack, selectedGene, hasOrthologs])
+  }, [species1, species2, selectedTrack, selectedGene])
 
   const species1Options = useMemo(
     () =>
@@ -298,17 +316,18 @@ export default function SyntenySelector({
         )}
       </div>
 
-      {hasOrthologs && (
+      {canSearchGenes && (
         <div className="synteny-field synteny-gene">
           <label htmlFor="gene">Center on orthologous gene (optional)</label>
           <Autocomplete
             id="gene"
             key={`gene-${species1}-${species2}`}
             queryOptions={queryGeneOptions}
-            value={selectedGene}
-            onChange={value => setSelectedGene(value)}
-            placeholder="Whole genome (or search a gene)…"
+            value={geneValue}
+            onChange={value => handleGeneChange(value)}
+            placeholder={`Whole genome (or search a ${nameOf(species1)} gene)…`}
           />
+          {geneNote && <div className="synteny-gene-note">{geneNote}</div>}
         </div>
       )}
 

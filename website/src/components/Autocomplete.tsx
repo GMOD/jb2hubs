@@ -57,6 +57,8 @@ export default function Autocomplete({
   const listRef = useRef<HTMLUListElement>(null)
   // Discards out-of-order async query responses.
   const queryIdRef = useRef(0)
+  // Debounces async queries so a remote backend isn't hit on every keystroke.
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const selectedOption =
     pickedOption?.value === value
@@ -73,13 +75,26 @@ export default function Autocomplete({
   const runQuery = (search: string) => {
     if (queryOptions) {
       const id = ++queryIdRef.current
-      void queryOptions(search).then(res => {
-        if (id === queryIdRef.current) {
-          setAsyncResults(res)
-        }
-      })
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+      debounceRef.current = setTimeout(() => {
+        void queryOptions(search).then(res => {
+          if (id === queryIdRef.current) {
+            setAsyncResults(res)
+          }
+        })
+      }, 220)
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     setHighlightedIndex(0)

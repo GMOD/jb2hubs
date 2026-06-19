@@ -103,13 +103,6 @@ if [ "$UPLOAD_ONLY" = false ]; then
   echo "Extracting SyntenyTrack datasets..."
   node extractSyntenyTracks.ts
 
-  # Build the cross-species + same-species gene tables that drive gene-level
-  # synteny comparisons. syntenyTracks.json is already fresh from the step above,
-  # so skip its internal refresh. Non-fatal: a network/NCBI hiccup here must not
-  # fail the whole pipeline (the website just won't offer gene search this run).
-  echo "Building ortholog/gene comparison tables..."
-  ./orthologs/make.sh --skip-synteny || echo "Ortholog build failed (non-fatal)"
-
   echo "Formatting codebase..."
   yarn format
 
