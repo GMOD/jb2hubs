@@ -19,9 +19,9 @@ interface Props {
   orthologTaxa?: number[]
 }
 
-// JBrowse Web build the synteny views launch into. Point this at the branch
-// build while the new LinearSyntenyView init options live on a branch; switch
-// back to /code/jb2/main once merged.
+// JBrowse Web build the synteny views launch into. The launch spec sets
+// LinearSyntenyView init options (colorBy/drawCurves/autoDiagonalize) read by
+// the LaunchView extension point; builds predating them ignore the extra fields.
 const JBROWSE_BASE = 'https://jbrowse.org/code/jb2/main'
 
 function formatOption(asm: SyntenyAssembly) {

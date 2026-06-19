@@ -19,6 +19,7 @@
     "typecheck": "astro check",
     "build": "astro check && astro build",
     "build:fast": "astro build",
+    "build:staging": "yarn prebuild && astro check && astro build --mode staging",
     "preview": "astro preview",
     "astro": "astro",
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test 'src/**/*.test.ts'",
@@ -26,7 +27,7 @@
     "predeploy": "yarn build",
     "sync": "tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/html/* && tar -xzf - -C /var/www/html' && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",
     "deploy:staging": "yarn sync:staging",
-    "predeploy:staging": "yarn build",
+    "predeploy:staging": "yarn build:staging",
     "sync:staging": "tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/staging/* && tar -xzf - -C /var/www/staging' && aws cloudfront create-invalidation --distribution-id E3IPPUV528KQIX --paths '/*'",
     "format": "prettier --write ."
   },

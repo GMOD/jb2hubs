@@ -2,6 +2,12 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import syntenyData from '../../syntenyTracks.json'
+import { features } from '../../config/features.ts'
+
+// Staging-only alongside the synteny browser; see synteny/index.astro.
+if (!features.synteny) {
+  return Astro.redirect('/')
+}
 
 const allAssemblies = new Set<string>()
 for (const track of syntenyData.tracks) {

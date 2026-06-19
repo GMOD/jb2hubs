@@ -4,7 +4,14 @@ import Container from '../../components/Container.astro'
 import SyntenySelector from '../../components/SyntenySelector.tsx'
 import syntenyData from '../../syntenyTracks.json'
 import orthologManifest from '../../orthologManifest.json'
+import { features } from '../../config/features.ts'
 import '../../styles/common-table.css'
+
+// Staging-only while the synteny browser is in development. Production builds
+// (PUBLIC_STAGING unset) redirect to home so the page isn't reachable by URL.
+if (!features.synteny) {
+  return Astro.redirect('/')
+}
 ---
 
 <Layout title="Synteny Browser">
