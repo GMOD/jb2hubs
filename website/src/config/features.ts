@@ -8,4 +8,6 @@ export const features = {
   // The /synteny comparison browser, including its cross-species ortholog gene
   // picker (which is additionally gated on ortholog data being present).
   synteny: staging,
+  // The /orthologs gene-first search page (NCBI-backed).
+  orthologs: staging,
 }
