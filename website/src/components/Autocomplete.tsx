@@ -1,12 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+import { rankOptions } from '../utils/rankOptions.ts'
+
 export interface AutocompleteOption {
   value: string
   label: string
 }
 
 interface Props {
-  options: AutocompleteOption[]
+  // Static option list (fuzzy-ranked locally). Omit when using queryOptions.
+  options?: AutocompleteOption[]
+  // Database-like async backend: given the current search string, returns the
+  // ranked options to show. Lets a data adapter (e.g. the ortholog adapter)
+  // own all the querying, keeping this component presentational.
+  queryOptions?: (search: string) => Promise<AutocompleteOption[]>
   value: string
   onChange: (value: string) => void
   placeholder?: string
@@ -28,7 +35,8 @@ function ClearIcon() {
 }
 
 export default function Autocomplete({
-  options,
+  options = [],
+  queryOptions,
   value,
   onChange,
   placeholder = 'Search...',
@@ -38,17 +46,55 @@ export default function Autocomplete({
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState(0)
+  const [asyncResults, setAsyncResults] = useState<AutocompleteOption[]>([])
+  // Remembers the picked option so async mode can label the input without the
+  // selection necessarily being in the latest query results.
+  const [pickedOption, setPickedOption] = useState<AutocompleteOption | null>(
+    null,
+  )
   const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
+  // Discards out-of-order async query responses.
+  const queryIdRef = useRef(0)
+  // Debounces async queries so a remote backend isn't hit on every keystroke.
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  const selectedOption = options.find(o => o.value === value)
+  const selectedOption =
+    pickedOption?.value === value
+      ? pickedOption
+      : options.find(o => o.value === value)
 
-  const filteredOptions = inputValue
-    ? options.filter(o =>
-        o.label.toLowerCase().includes(inputValue.toLowerCase()),
-      )
-    : options
+  // Async (adapter) mode shows whatever the backend returned; static mode runs
+  // the shared ranked + capped fuzzy match locally, so a thousand-gene list
+  // ranks the best symbol first instead of dumping every hit in source order.
+  const filteredOptions = queryOptions
+    ? asyncResults
+    : rankOptions(inputValue, options)
+
+  const runQuery = (search: string) => {
+    if (queryOptions) {
+      const id = ++queryIdRef.current
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+      debounceRef.current = setTimeout(() => {
+        void queryOptions(search).then(res => {
+          if (id === queryIdRef.current) {
+            setAsyncResults(res)
+          }
+        })
+      }, 220)
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     setHighlightedIndex(0)
@@ -84,10 +130,12 @@ export default function Autocomplete({
     if (!isOpen) {
       setIsOpen(true)
     }
+    runQuery(e.target.value)
   }
 
-  const handleSelect = (optionValue: string) => {
-    onChange(optionValue)
+  const handleSelect = (option: AutocompleteOption) => {
+    setPickedOption(option)
+    onChange(option.value)
     setIsOpen(false)
     setInputValue('')
   }
@@ -107,7 +155,7 @@ export default function Autocomplete({
       e.preventDefault()
       const opt = filteredOptions.at(highlightedIndex)
       if (isOpen && opt) {
-        handleSelect(opt.value)
+        handleSelect(opt)
       }
     } else if (e.key === 'Escape') {
       setIsOpen(false)
@@ -117,10 +165,12 @@ export default function Autocomplete({
 
   const handleFocus = () => {
     setIsOpen(true)
+    runQuery(inputValue)
   }
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation()
+    setPickedOption(null)
     onChange('')
     setInputValue('')
     inputRef.current?.focus()
@@ -172,7 +222,7 @@ export default function Autocomplete({
                 key={option.value}
                 className={`autocomplete-option ${index === highlightedIndex ? 'highlighted' : ''} ${option.value === value ? 'selected' : ''}`}
                 onClick={() => {
-                  handleSelect(option.value)
+                  handleSelect(option)
                 }}
                 onMouseEnter={() => {
                   setHighlightedIndex(index)

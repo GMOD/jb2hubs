@@ -1,0 +1,168 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import OrthologSearch from '../../components/OrthologSearch.tsx'
+import { features } from '../../config/features.ts'
+
+// Staging-only while the ortholog browser is in development; see synteny/index.astro.
+if (!features.orthologs) {
+  return Astro.redirect('/')
+}
+---
+
+<Layout title="Ortholog Browser">
+  <Container>
+    <h1>Ortholog Gene Search</h1>
+    <p>
+      Search a gene and see its orthologs across species, with exact genomic
+      locations and one-click links into JBrowse 2 — including a synteny view
+      whenever the two assemblies have an alignment. Ortholog relationships come
+      live from the <a
+        href="https://www.ncbi.nlm.nih.gov/datasets/"
+        target="_blank"
+        rel="noreferrer"
+        >NCBI Datasets</a
+      > API; only orthologs whose genome we host are shown.
+    </p>
+
+    <OrthologSearch client:load />
+  </Container>
+</Layout>
+
+<style is:global>
+  .orthologs-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .orthologs-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .orthologs-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #666;
+    margin-bottom: 4px;
+  }
+
+  .orthologs-input,
+  .orthologs-select {
+    padding: 7px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+  }
+
+  .orthologs-input:focus,
+  .orthologs-select:focus {
+    border-color: #0b69d4;
+    outline: none;
+  }
+
+  .orthologs-input {
+    min-width: 240px;
+  }
+
+  .orthologs-search-btn {
+    padding: 9px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .orthologs-search-btn:hover:not(:disabled) {
+    background: #0a5cba;
+  }
+
+  .orthologs-search-btn:disabled {
+    color: #999;
+    background: #f0f0f0;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+
+  .orthologs-hint {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .orthologs-error {
+    color: #b00020;
+    font-size: 14px;
+  }
+
+  .orthologs-summary {
+    margin: 1.25rem 0 0.75rem;
+    font-size: 14px;
+    color: #444;
+  }
+
+  .orthologs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .orthologs-table th,
+  .orthologs-table td {
+    text-align: left;
+    padding: 7px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+
+  .orthologs-table th {
+    font-weight: 600;
+    color: #444;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+  }
+
+  .orthologs-table a {
+    color: #0b69d4;
+    text-decoration: none;
+  }
+
+  .orthologs-table a:hover {
+    text-decoration: underline;
+  }
+
+  .orthologs-loc {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .orthologs-actions {
+    white-space: nowrap;
+  }
+
+  .orthologs-ref-label {
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #0b69d4;
+    background: #eaf3fd;
+    border-radius: 3px;
+  }
+
+  .orthologs-divider td {
+    border-bottom: 2px solid #ddd;
+    padding: 0;
+    height: 0;
+  }
+</style>

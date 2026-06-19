@@ -75,7 +75,7 @@ download_file() {
 # $1: path to the chain file (.chain.gz)  $2: output PIF path (.pif.gz)
 create_pif() {
   local chain_path="$1" pif_path="$2"
-  if [ ! -f "$pif_path" ] || [ ! -f "$pif_path.csi" ]; then
+  if [ -n "${REPROCESS:-}" ] || [ ! -f "$pif_path" ] || [ ! -f "$pif_path.csi" ]; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
     local paf_path
     paf_path=$(mktemp) || log_error "Failed to create temporary file"
@@ -103,7 +103,8 @@ copy_pif_files() {
 }
 
 # Runs the full pipeline for one chain file: skip if the PIF already exists in
-# the destination, otherwise download, convert, and copy it.
+# the destination, otherwise download, convert, and copy it. Set REPROCESS to a
+# non-empty value to force a rebuild even when outputs already exist.
 # $1: file URL  $2: filename  $3: extension to strip  $4: destination directory
 process_chain_file() {
   local file_url="$1" filename="$2" ext_to_remove="$3" dest_dir="$4"
@@ -113,7 +114,7 @@ process_chain_file() {
   pif_path="${paths[1]}"
   pif_filename=$(basename "$pif_path")
 
-  if [[ -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]]; then
+  if [[ -z "${REPROCESS:-}" && -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]]; then
     log_info "PIF file $pif_filename already exists, skipping"
   else
     download_file "$file_url" "$chain_path"

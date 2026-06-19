@@ -3,7 +3,14 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import SyntenySelector from '../../components/SyntenySelector.tsx'
 import syntenyData from '../../syntenyTracks.json'
+import { features } from '../../config/features.ts'
 import '../../styles/common-table.css'
+
+// Staging-only while the synteny browser is in development. Production builds
+// (PUBLIC_STAGING unset) redirect to home so the page isn't reachable by URL.
+if (!features.synteny) {
+  return Astro.redirect('/')
+}
 ---
 
 <Layout title="Synteny Browser">
@@ -77,6 +84,16 @@ import '../../styles/common-table.css'
   .synteny-hint {
     min-height: 1.25rem;
     margin: 0.75rem 0;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .synteny-gene {
+    margin: 0.5rem 0 1rem;
+  }
+
+  .synteny-gene-note {
+    margin-top: 4px;
     font-size: 13px;
     color: #666;
   }

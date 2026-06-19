@@ -1,10 +1,11 @@
 ---
 import Logo from '../logo.astro'
+import { features } from '../config/features.ts'
 
 const exploreItems = [
   { name: 'Search', href: '/search' },
-  // { name: 'Synteny', href: '/synteny' },
-  // { name: 'Orthologs', href: '/orthologs' },
+  ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
+  ...(features.orthologs ? [{ name: 'Orthologs', href: '/orthologs' }] : []),
 ]
 
 const secondaryNavItems = [

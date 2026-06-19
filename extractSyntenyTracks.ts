@@ -41,6 +41,9 @@ interface AssemblyInfo {
   commonName?: string
   scientificName?: string
   source: 'ucsc' | 'genark' | 'legacy'
+  // NCBI taxonomy id, used to map assemblies to the cross-species ortholog
+  // tables. Only populated for GenArk assemblies (from all.json).
+  taxonId?: number
 }
 
 interface SyntenyDataset {
@@ -169,6 +172,7 @@ async function loadGenArkAssemblyInfo(): Promise<Record<string, AssemblyInfo>> {
       accession: string
       commonName?: string
       scientificName?: string
+      taxonId?: number
     }[]
     for (const asm of assemblies) {
       if (asm.accession) {
@@ -176,6 +180,7 @@ async function loadGenArkAssemblyInfo(): Promise<Record<string, AssemblyInfo>> {
           commonName: asm.commonName,
           scientificName: asm.scientificName,
           source: 'genark',
+          taxonId: asm.taxonId,
         }
       }
     }
@@ -687,6 +692,28 @@ async function main() {
   console.log(
     `Total assembly info records: ${Object.keys(assemblyInfo).length}`,
   )
+
+  // Backfill taxonId for assemblies that lack it (UCSC, legacy) by matching
+  // scientificName against the GenArk assemblies that carry one. This lets
+  // same-species comparisons such as hg19 vs hg38 (both Homo sapiens) reach the
+  // ortholog tables, which are keyed by taxon.
+  const sciNameToTaxon = new Map<string, number>()
+  for (const info of Object.values(assemblyInfo)) {
+    if (info.taxonId !== undefined && info.scientificName) {
+      sciNameToTaxon.set(info.scientificName.toLowerCase(), info.taxonId)
+    }
+  }
+  let backfilled = 0
+  for (const info of Object.values(assemblyInfo)) {
+    if (info.taxonId === undefined && info.scientificName) {
+      const taxon = sciNameToTaxon.get(info.scientificName.toLowerCase())
+      if (taxon !== undefined) {
+        info.taxonId = taxon
+        backfilled++
+      }
+    }
+  }
+  console.log(`Backfilled taxonId for ${backfilled} assemblies via name`)
 
   // Check for assemblies without info
   const allAssemblyNames = new Set<string>()

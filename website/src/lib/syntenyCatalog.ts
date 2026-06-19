@@ -11,6 +11,9 @@ export interface AssemblyInfo {
   commonName?: string
   scientificName?: string
   source: AssemblySource
+  // NCBI taxonomy id, used to map assemblies to the cross-species ortholog
+  // tables for the optional gene-level comparison.
+  taxonId?: number
 }
 
 export interface SyntenyTrackSummary {

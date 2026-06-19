@@ -7,6 +7,13 @@
 #
 # Usage: ./createChainTrackPifs.sh <meta_json_path>
 #   meta_json_path: Path to the meta.json file for the assembly (e.g. hubs/GCA/031/761/385/GCA_031761385.1/meta.json)
+#
+# `jbrowse make-pif` emits the no-CIGAR coarse tier (uppercase T/Q rows) by
+# default since the coarse-tier release, so whole-genome synteny views auto-
+# switch to it. Regenerating existing PIFs to gain the coarse tier needs that
+# newer @jbrowse/cli on PATH plus a force pass: the default run skips assemblies
+# that already have outputs. Set REPROCESS=true to force a full rebuild (clears
+# the .checked stamp and ignores existing pif/csi).
 
 set -euo pipefail
 
@@ -57,7 +64,9 @@ main() {
   stamp="$liftover_dir/.checked"
   mkdir -p "$CHAINS_DIR" "$PIFS_DIR" "$liftover_dir"
 
-  if [[ -f "$stamp" ]]; then
+  if [[ -n "${REPROCESS:-}" ]]; then
+    rm -f "$stamp"
+  elif [[ -f "$stamp" ]]; then
     return 0
   fi
 
