@@ -47,6 +47,7 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-# Run the process_assembly function in parallel for each input directory.
-# Use || true to prevent parallel job failures from stopping the pipeline
-parallel -j8 $PARALLEL_OPTS --halt never process_assembly ::: "$@" || true
+# Run the process_assembly function in parallel for each input directory. Don't
+# let individual job failures stop the pipeline, but surface the failure count.
+parallel -j8 $PARALLEL_OPTS --halt never process_assembly ::: "$@" ||
+  echo "WARNING: parallel reported failures during text indexing (exit $?)" >&2

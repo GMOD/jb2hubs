@@ -125,5 +125,34 @@ fi
 
 rm -rf "$rb"
 
+# --- rclone_sync_with_indexes ---
+# Stub rclone so the test is hermetic. count_rclone_changes counts one line per
+# changed object; the helper runs rclone twice (data phase + index phase), so the
+# reported total is double the stub's per-call count. stdout must be exactly that
+# total, with verbose rclone output kept off stdout.
+rc=$(mktemp -d)
+cat >"$rc/rclone" <<'STUB'
+#!/bin/bash
+echo "2024/01/01 INFO  : file1.gz: Copied (new)"
+echo "2024/01/01 INFO  : file2.gz: Copied (replaced existing)"
+echo "2024/01/01 INFO  : old.gz: Deleted"
+echo "verbose noise that must not reach stdout" >&2
+STUB
+chmod +x "$rc/rclone"
+
+out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: --exclude '*.hash' 2>/dev/null)
+check "rclone_sync_with_indexes sums data+index changes" 6 "$out"
+
+cat >"$rc/rclone" <<'STUB'
+#!/bin/bash
+echo "2024/01/01 INFO  : There was nothing to transfer"
+STUB
+chmod +x "$rc/rclone"
+
+out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
+check "rclone_sync_with_indexes reports 0 when nothing changed" 0 "$out"
+
+rm -rf "$rc"
+
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail

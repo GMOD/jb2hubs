@@ -74,91 +74,42 @@ process_gff_file() {
   fi
 }
 
-# hg38 URLs and track names
-HG38_URLS=(
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.annotation.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.basic.annotation.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.long_noncoding_RNAs.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.polyAs.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.2wayconspseudos.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.tRNAs.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.promoter_windows.gff3.gz"
-)
-HG38_NAMES=(
-  "GENCODE V49 - Comprehensive gene annotation"
-  "GENCODE V49 - Basic gene annotation"
-  "GENCODE V49 - lncRNA gene annotation"
-  "GENCODE V49 - PolyA feature annotation"
-  "GENCODE V49 - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-  "GENCODE V49 - Predicted tRNA genes"
-  "GENCODE V49 - Promoter Windows"
-)
-HG38_TRACK_IDS=(
-  "hg38-gencodeComp"
-  "hg38-gencodeBasic"
-  "hg38-gencodeLncRNA"
-  "hg38-gencodePolyA"
-  "hg38-gencodePseudo"
-  "hg38-gencodetRNA"
-  "hg38-gencodePromoter"
-)
+# GENCODE track definitions, one row per line as "url|track name|trackId".
+# Keeping the three fields together per row avoids the index-alignment hazard of
+# separate parallel arrays.
+HG38_TRACKS="\
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.annotation.gff3.gz|GENCODE V49 - Comprehensive gene annotation|hg38-gencodeComp
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.basic.annotation.gff3.gz|GENCODE V49 - Basic gene annotation|hg38-gencodeBasic
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.long_noncoding_RNAs.gff3.gz|GENCODE V49 - lncRNA gene annotation|hg38-gencodeLncRNA
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.polyAs.gff3.gz|GENCODE V49 - PolyA feature annotation|hg38-gencodePolyA
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.2wayconspseudos.gff3.gz|GENCODE V49 - Consensus pseudogenes predicted by the Yale and UCSC pipelines|hg38-gencodePseudo
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.tRNAs.gff3.gz|GENCODE V49 - Predicted tRNA genes|hg38-gencodetRNA
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.promoter_windows.gff3.gz|GENCODE V49 - Promoter Windows|hg38-gencodePromoter"
 
-# hg19 URLs and track names
-HG19_URLS=(
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.annotation.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.basic.annotation.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.long_noncoding_RNAs.gff3.gz"
-)
-HG19_NAMES=(
-  "GENCODE V49 - Comprehensive gene annotation"
-  "GENCODE V49 - Basic gene annotation"
-  "GENCODE V49 - lncRNA gene annotation"
-)
-HG19_TRACK_IDS=(
-  "hg19-gencodeComp"
-  "hg19-gencodeBasic"
-  "hg19-gencodeLncRNA"
-)
+HG19_TRACKS="\
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.annotation.gff3.gz|GENCODE V49 - Comprehensive gene annotation|hg19-gencodeComp
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.basic.annotation.gff3.gz|GENCODE V49 - Basic gene annotation|hg19-gencodeBasic
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.long_noncoding_RNAs.gff3.gz|GENCODE V49 - lncRNA gene annotation|hg19-gencodeLncRNA"
 
-# mm39 URLs and track names
-MM39_URLS=(
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.annotation.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.basic.annotation.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.long_noncoding_RNAs.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.polyAs.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.2wayconspseudos.gff3.gz"
-  "https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.tRNAs.gff3.gz"
-)
-MM39_NAMES=(
-  "GENCODE VM38 - Comprehensive gene annotation"
-  "GENCODE VM38 - Basic gene annotation"
-  "GENCODE VM38 - lncRNA gene annotation"
-  "GENCODE VM38 - PolyA feature annotation"
-  "GENCODE VM38 - Consensus pseudogenes predicted by the Yale and UCSC pipelines"
-  "GENCODE VM38 - Predicted tRNA genes"
-)
-MM39_TRACK_IDS=(
-  "mm39-gencodeComp"
-  "mm39-gencodeBasic"
-  "mm39-gencodeLncRNA"
-  "mm39-gencodePolyA"
-  "mm39-gencodePseudo"
-  "mm39-gencodetRNA"
-)
+MM39_TRACKS="\
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.annotation.gff3.gz|GENCODE VM38 - Comprehensive gene annotation|mm39-gencodeComp
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.basic.annotation.gff3.gz|GENCODE VM38 - Basic gene annotation|mm39-gencodeBasic
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.long_noncoding_RNAs.gff3.gz|GENCODE VM38 - lncRNA gene annotation|mm39-gencodeLncRNA
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.polyAs.gff3.gz|GENCODE VM38 - PolyA feature annotation|mm39-gencodePolyA
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.2wayconspseudos.gff3.gz|GENCODE VM38 - Consensus pseudogenes predicted by the Yale and UCSC pipelines|mm39-gencodePseudo
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M38/gencode.vM38.tRNAs.gff3.gz|GENCODE VM38 - Predicted tRNA genes|mm39-gencodetRNA"
 
-# Process hg38 files
-for i in "${!HG38_URLS[@]}"; do
-  process_gff_file "hg38" "${HG38_URLS[$i]}" "${HG38_NAMES[$i]}" "${HG38_TRACK_IDS[$i]}"
-done
+# Process one species table: one "url|name|trackId" row at a time.
+process_table() {
+  local assembly_name=$1 table=$2
+  while IFS='|' read -r url name track_id; do
+    [ -n "$url" ] || continue
+    process_gff_file "$assembly_name" "$url" "$name" "$track_id"
+  done <<<"$table"
+}
 
-# Process hg19 files
-for i in "${!HG19_URLS[@]}"; do
-  process_gff_file "hg19" "${HG19_URLS[$i]}" "${HG19_NAMES[$i]}" "${HG19_TRACK_IDS[$i]}"
-done
-
-# Process mm39 files
-for i in "${!MM39_URLS[@]}"; do
-  process_gff_file "mm39" "${MM39_URLS[$i]}" "${MM39_NAMES[$i]}" "${MM39_TRACK_IDS[$i]}"
-done
+process_table hg38 "$HG38_TRACKS"
+process_table hg19 "$HG19_TRACKS"
+process_table mm39 "$MM39_TRACKS"
 
 log "All GENCODE files processed."

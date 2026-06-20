@@ -74,7 +74,8 @@ export -f process_gff_file
 
 # Process the queue in parallel
 # Use :::: to read from file for better --bar support
-parallel -j8 $PARALLEL_OPTS process_gff_file :::: "$QUEUE_FILE" || true
+parallel -j8 $PARALLEL_OPTS process_gff_file :::: "$QUEUE_FILE" ||
+  echo "WARNING: parallel reported failures while processing GFF files (exit $?)" >&2
 
 # Clean up
 rm "$QUEUE_FILE"
