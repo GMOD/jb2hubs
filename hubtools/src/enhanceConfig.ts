@@ -1,24 +1,8 @@
 import { readJSON, writeJSON } from './util.ts'
 
-interface JBrowseConfig {
-  plugins?: { name: string; url: string }[]
-  assemblies?: unknown[]
-  tracks?: unknown[]
-  configuration?: {
-    hierarchical?: {
-      sort?: {
-        trackNames?: boolean
-        categories?: boolean
-      }
-      defaultCollapsed?: {
-        topLevelCategories?: boolean
-        subCategories?: boolean
-      }
-    }
-  }
-}
+import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
-const defaultPlugins = [
+const defaultPlugins: JBrowsePlugin[] = [
   {
     name: 'MafViewer',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
@@ -44,7 +28,7 @@ const defaultPlugins = [
  */
 export function enhanceConfig(
   configPath: string,
-  plugins: { name: string; url: string }[] = defaultPlugins,
+  plugins: JBrowsePlugin[] = defaultPlugins,
 ): void {
   const config = readJSON<JBrowseConfig>(configPath)
 

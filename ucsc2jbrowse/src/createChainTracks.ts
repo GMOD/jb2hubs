@@ -3,9 +3,12 @@ import fs from 'fs'
 import { parseArgs } from 'node:util'
 import path from 'path'
 
+import { isAccession, normalizeAssemblyName } from 'hubtools'
+
 import { readJSON, writeJSON } from './util.ts'
 
 import type { JBrowseConfig } from './types.ts'
+import type { ChainTrack } from 'hubtools'
 
 // Pre-load lookup tables once instead of re-reading per PIF file
 const allJsonIndex = new Map<string, string>()
@@ -33,21 +36,6 @@ try {
   }
 } catch {
   console.warn('Warning: could not load ucsc list.json')
-}
-
-interface ChainTrack {
-  type: string
-  trackId: string
-  name: string
-  category: string[]
-  assemblyNames: string[]
-  adapter: {
-    type: string
-    targetAssembly: string
-    queryAssembly: string
-    pifGzLocation: { uri: string }
-    index: { location: { uri: string }; indexType?: string }
-  }
 }
 
 function createChainTrackConfig({
@@ -81,17 +69,11 @@ function createChainTrackConfig({
   const targetAssemblyOrig = isChainBridge
     ? match[2].slice(0, -'.chainBridge'.length)
     : match[2]
-  // GCF_/GCA_ accessions are used verbatim; typical UCSC assembly names get
-  // their first letter lowercased.
-  const isAccession =
-    targetAssemblyOrig.startsWith('GCF') || targetAssemblyOrig.startsWith('GCA')
-  const targetAssembly = isAccession
-    ? targetAssemblyOrig
-    : targetAssemblyOrig.charAt(0).toLowerCase() + targetAssemblyOrig.slice(1)
+  const targetAssembly = normalizeAssemblyName(targetAssemblyOrig)
 
   const trackSrcDir = isChainBridge ? `${srcDir}_chainBridge` : srcDir
 
-  const commonName = isAccession
+  const commonName = isAccession(targetAssemblyOrig)
     ? (allJsonIndex.get(targetAssemblyOrig) ?? '')
     : (ucscListJson[targetAssembly]?.organism ?? '')
 

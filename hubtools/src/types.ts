@@ -88,3 +88,57 @@ export interface NCBIDatasetsResponse {
   total_count: number
   downloaded_at?: number
 }
+
+export interface JBrowsePlugin {
+  name: string
+  url?: string
+}
+
+export interface Track {
+  trackId: string
+  [key: string]: unknown
+}
+
+export interface HierarchicalConfig {
+  sort?: {
+    trackNames?: boolean
+    categories?: boolean
+  }
+  defaultCollapsed?: {
+    topLevelCategories?: boolean
+    subCategories?: boolean
+  }
+}
+
+export interface JBrowseConfiguration {
+  hierarchical?: HierarchicalConfig
+  [key: string]: unknown
+}
+
+// Permissive JBrowse 2 config shape shared across the converters. A config read
+// off disk may be missing any section, and each script only touches the parts
+// it cares about, so every field is optional.
+export interface JBrowseConfig {
+  plugins?: JBrowsePlugin[]
+  assemblies?: unknown[]
+  tracks?: Track[]
+  configuration?: JBrowseConfiguration
+  [key: string]: unknown
+}
+
+// A SyntenyTrack built from a pairwise-indexed PAF (.pif.gz) chain/liftOver
+// file. Produced by both the genark and ucsc chain-track converters.
+export interface ChainTrack {
+  type: string
+  trackId: string
+  name: string
+  category: string[]
+  assemblyNames: string[]
+  adapter: {
+    type: string
+    targetAssembly: string
+    queryAssembly: string
+    pifGzLocation: { uri: string }
+    index: { location: { uri: string }; indexType?: string }
+  }
+}

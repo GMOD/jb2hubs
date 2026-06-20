@@ -6,10 +6,7 @@ import { dedupe, readJSON } from 'hubtools'
 
 import { getHubBasePath } from './util.ts'
 
-interface JBrowseConfig {
-  tracks: { trackId: string; [key: string]: unknown }[]
-  [key: string]: unknown
-}
+import type { JBrowseConfig } from 'hubtools'
 
 /**
  * This script processes extension configuration files located in 'genArkExtensions/'
@@ -39,17 +36,19 @@ function applyGenArkExtensions() {
       )
 
       // Add assembly prefix to extension track IDs
-      const extensionTracksWithPrefix = extensionConfig.tracks.map(track => ({
-        ...track,
-        trackId: `${accession}-${track.trackId}`,
-      }))
+      const extensionTracksWithPrefix = (extensionConfig.tracks ?? []).map(
+        track => ({
+          ...track,
+          trackId: `${accession}-${track.trackId}`,
+        }),
+      )
 
       // Merge the configurations. Extension tracks take precedence and are deduplicated.
       const mergedConfig = {
         ...existingConfig,
         ...extensionConfig,
         tracks: dedupe(
-          [...extensionTracksWithPrefix, ...existingConfig.tracks],
+          [...extensionTracksWithPrefix, ...(existingConfig.tracks ?? [])],
           t => t.trackId,
         ),
       }

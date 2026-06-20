@@ -2,22 +2,14 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-import { readJSON, writeJSON } from 'hubtools'
+import {
+  isAccession,
+  normalizeAssemblyName,
+  readJSON,
+  writeJSON,
+} from 'hubtools'
 
-interface ChainTrack {
-  type: string
-  trackId: string
-  name: string
-  category: string[]
-  assemblyNames: string[]
-  adapter: {
-    type: string
-    targetAssembly: string
-    queryAssembly: string
-    pifGzLocation: { uri: string }
-    index: { location: { uri: string }; indexType?: string }
-  }
-}
+import type { ChainTrack } from 'hubtools'
 
 // Cache lookups that were repeated per-invocation
 const allJsonPath = path.join(process.cwd(), 'processedHubJson/all.json')
@@ -68,13 +60,6 @@ function parseTargetAssembly(filename: string) {
   return match[2]
 }
 
-function normalizeAssemblyName(name: string) {
-  if (name.startsWith('GCF') || name.startsWith('GCA')) {
-    return name
-  }
-  return name.charAt(0).toLowerCase() + name.slice(1)
-}
-
 function getTargetCommonName(target: string, isGenArk: boolean) {
   if (isGenArk) {
     return allJsonIndex.get(target) ?? ''
@@ -121,9 +106,7 @@ function processOne(metaPath: string) {
       continue
     }
     const target = normalizeAssemblyName(targetOrig)
-    const isGenArk =
-      targetOrig.startsWith('GCF') || targetOrig.startsWith('GCA')
-    const targetCommon = getTargetCommonName(target, isGenArk)
+    const targetCommon = getTargetCommonName(target, isAccession(targetOrig))
 
     const trackId = `${sourceAccession}_to_${target}_liftOver`
     const name = targetCommon

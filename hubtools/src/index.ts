@@ -1,3 +1,4 @@
+export * from './chainTracks.ts'
 export * from './const.ts'
 export * from './dedupe.ts'
 export * from './enhanceConfig.ts'
