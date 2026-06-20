@@ -2,7 +2,7 @@
 import * as fs from 'fs'
 import { execSync } from 'node:child_process'
 
-import { readJSON } from './util.ts'
+import { getHubBasePath, readJSON } from './util.ts'
 
 const LLM_MODEL = 'claude-3-haiku'
 
@@ -29,9 +29,7 @@ function generateSpeciesDescriptions() {
       const { scientificName, accession } = entry
 
       // Construct the path for the hub-specific description file
-      const [base, rest] = accession.split('_')
-      const [b1, b2, b3] = rest!.match(/.{1,3}/g)!
-      const hubDescriptionFilePath = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/description.json`
+      const hubDescriptionFilePath = `${getHubBasePath(accession)}/description.json`
 
       // Construct the path for the central species description file
       const centralDescriptionFilePath = `speciesDescriptions/${scientificName

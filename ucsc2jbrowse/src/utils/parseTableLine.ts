@@ -3,6 +3,6 @@ export function parseTableLine(line: string, cols: string[]) {
     line
       .replaceAll('\\\t', ' ')
       .split('\t')
-      .map((c, i) => [cols[i]!, c] as const),
+      .map((c, i) => [cols[i] ?? `col_${i}`, c] as const),
   )
 }

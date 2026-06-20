@@ -33,8 +33,7 @@ export function rankBy<T>(
   // Above uFuzzy's infoThresh `info`/`order` are null and we keep the unranked
   // filter order (capped anyway); otherwise `order` indexes the ranked facets.
   // (info===null discriminates: when it's non-null, order is too.)
-  const rankedIdxs =
-    info === null ? idxs : order.map(o => info.idx[o]!)
+  const rankedIdxs = info === null ? idxs : order.map(o => info.idx[o]!)
   return rankedIdxs.slice(0, limit).map(i => items[i]!)
 }
 

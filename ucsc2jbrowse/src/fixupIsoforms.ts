@@ -10,6 +10,10 @@ function fixupIsoforms(filePath: string) {
   const lines = content.split('\n')
 
   const fixedLines = lines.map(line => {
+    if (!line) {
+      // preserve blank lines (e.g. the trailing newline) as-is
+      return line
+    }
     const [r0, r1] = line.split('\t')
 
     // xenoRefGene has missing gene names

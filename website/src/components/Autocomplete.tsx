@@ -145,7 +145,7 @@ export default function Autocomplete({
       e.preventDefault()
       if (!isOpen) {
         setIsOpen(true)
-      } else {
+      } else if (filteredOptions.length > 0) {
         setHighlightedIndex(i => Math.min(i + 1, filteredOptions.length - 1))
       }
     } else if (e.key === 'ArrowUp') {

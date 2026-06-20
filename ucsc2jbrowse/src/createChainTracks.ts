@@ -81,26 +81,19 @@ function createChainTrackConfig({
   const targetAssemblyOrig = isChainBridge
     ? match[2].slice(0, -'.chainBridge'.length)
     : match[2]
-  let targetAssembly: string
-
-  // Handle cases like GCF_... or GCA_... accessions
-  if (
-    targetAssemblyOrig.startsWith('GCF') ||
-    targetAssemblyOrig.startsWith('GCA')
-  ) {
-    targetAssembly = targetAssemblyOrig
-  } else {
-    // Convert first letter to lowercase for typical UCSC assembly names
-    targetAssembly =
-      targetAssemblyOrig.charAt(0).toLowerCase() + targetAssemblyOrig.slice(1)
-  }
+  // GCF_/GCA_ accessions are used verbatim; typical UCSC assembly names get
+  // their first letter lowercased.
+  const isAccession =
+    targetAssemblyOrig.startsWith('GCF') || targetAssemblyOrig.startsWith('GCA')
+  const targetAssembly = isAccession
+    ? targetAssemblyOrig
+    : targetAssemblyOrig.charAt(0).toLowerCase() + targetAssemblyOrig.slice(1)
 
   const trackSrcDir = isChainBridge ? `${srcDir}_chainBridge` : srcDir
 
-  const commonName =
-    targetAssemblyOrig.startsWith('GCF') || targetAssemblyOrig.startsWith('GCA')
-      ? (allJsonIndex.get(targetAssemblyOrig) ?? '')
-      : (ucscListJson[targetAssembly]?.organism ?? '')
+  const commonName = isAccession
+    ? (allJsonIndex.get(targetAssemblyOrig) ?? '')
+    : (ucscListJson[targetAssembly]?.organism ?? '')
 
   const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`
   const trackName = commonName

@@ -4,6 +4,8 @@ import * as path from 'path'
 
 import { dedupe, readJSON } from 'hubtools'
 
+import { getHubBasePath } from './util.ts'
+
 interface JBrowseConfig {
   tracks: { trackId: string; [key: string]: unknown }[]
   [key: string]: unknown
@@ -20,9 +22,7 @@ function applyGenArkExtensions() {
 
   for (const item of extensionFiles) {
     const accession = item.replace('.json', '')
-    const [base, rest] = accession.split('_')
-    const [b1, b2, b3] = rest!.match(/.{1,3}/g)!
-    const configFilePath = `hubs/${base}/${b1}/${b2}/${b3}/${accession}/config.json`
+    const configFilePath = `${getHubBasePath(accession)}/config.json`
 
     // Ensure the directory structure exists for the config file
     const configDir = path.dirname(configFilePath)

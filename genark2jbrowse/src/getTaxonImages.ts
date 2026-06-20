@@ -2,7 +2,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { fetchWikipediaImage } from './util.ts'
+import { fetchWikipediaImage, getHubBasePath } from './util.ts'
 // Centralized taxon-level image fetcher.
 //
 // Images are a property of a taxon, not an individual assembly accession.
@@ -192,9 +192,7 @@ async function main() {
     if (!accession || !taxonId || hasTaxonImage(taxonId)) {
       continue
     }
-    const [basePrefix, restOfAccession] = accession.split('_')
-    const [b1, b2, b3] = restOfAccession!.match(/.{1,3}/g)!
-    const hubImagePath = `hubs/${basePrefix}/${b1}/${b2}/${b3}/${accession}/image.json`
+    const hubImagePath = `${getHubBasePath(accession)}/image.json`
     if (fs.existsSync(hubImagePath)) {
       try {
         const img = JSON.parse(fs.readFileSync(hubImagePath, 'utf8'))
