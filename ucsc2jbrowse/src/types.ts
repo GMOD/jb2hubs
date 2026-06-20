@@ -20,6 +20,7 @@ export interface JBrowseConfig {
       metadata?: Record<string, unknown>
       adapter: Record<string, unknown> // This is the sequence adapter
     }
+    geneticCodes?: Record<string, number>
   }[]
   plugins?: { name: string }[]
   aggregateTextSearchAdapters?: ({ textSearchAdapterId: string } & Record<

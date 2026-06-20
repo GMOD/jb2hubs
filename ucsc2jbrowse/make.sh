@@ -263,6 +263,17 @@ if [ "${#POST_PROCESS_DIRS[@]}" -gt 0 ]; then
 
   log "Enhancing configs with plugins and hierarchical configuration..."
   ./enhanceConfigs.sh "${POST_PROCESS_DIRS[@]}"
+
+  log "Adding mitochondrial genetic codes..."
+  gc_configs=()
+  for d in "${POST_PROCESS_DIRS[@]}"; do
+    if [ -f "$d/config.json" ]; then
+      gc_configs+=("$d/config.json")
+    fi
+  done
+  if [ "${#gc_configs[@]}" -gt 0 ]; then
+    node src/addGeneticCodes.ts "${gc_configs[@]}" || true
+  fi
 fi
 
 log "Download and add GENCODE tracks"
