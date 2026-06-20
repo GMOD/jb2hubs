@@ -48,6 +48,12 @@ export default tseslint.config(
   ...tseslint.configs.strictTypeChecked,
   eslintPluginReact.configs.flat.recommended,
   {
+    files: ['**/*.test.ts', '**/*.test.tsx'],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'off',
+    },
+  },
+  {
     rules: {
       'react/react-in-jsx-scope': 'off',
       '@typescript-eslint/no-unused-vars': [
