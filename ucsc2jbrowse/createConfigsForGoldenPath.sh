@@ -19,17 +19,25 @@ process_assembly() {
   local assembly_name
   assembly_name=$(basename "$assembly_data_dir")
   local assembly_results_dir="$UCSC_BUILT_DIR/$assembly_name"
+  local config="$assembly_results_dir/config.json"
 
-  for i in "$assembly_results_dir"/*.bed.gz; do
-    node src/addBedTabixTrackToConfig.ts "$assembly_results_dir/config.json" "$i"
-  done
+  # nullglob so an assembly with no bed/gff tracks yields an empty list rather
+  # than a literal "*.bed.gz" path. Each script reads and rewrites config.json
+  # once for the whole batch, instead of a node startup + full rewrite per file.
+  shopt -s nullglob
+  local bed_files=("$assembly_results_dir"/*.bed.gz)
+  local gff_files=("$assembly_results_dir"/*.gff.gz)
+  shopt -u nullglob
 
-  for i in "$assembly_results_dir"/*.gff.gz; do
-    node src/addGffTabixTrackToConfig.ts "$assembly_results_dir/config.json" "$i"
-  done
+  if [ "${#bed_files[@]}" -gt 0 ]; then
+    node src/addBedTabixTrackToConfig.ts "$config" "${bed_files[@]}"
+  fi
+  if [ "${#gff_files[@]}" -gt 0 ]; then
+    node src/addGffTabixTrackToConfig.ts "$config" "${gff_files[@]}"
+  fi
 
   # Optional: remove older copies of tracks, e.g. older dbSnp, older GENCODE, etc.
-  node src/removeEverythingButLatest.ts "$assembly_results_dir/config.json"
+  node src/removeEverythingButLatest.ts "$config"
 }
 
 export -f process_assembly
@@ -43,4 +51,4 @@ if [ $# -eq 0 ]; then
 fi
 
 # Run the process_assembly function in parallel for each input directory.
-parallel $PARALLEL_OPTS --will-cite process_assembly ::: "$@"
+parallel $PARALLEL_OPTS process_assembly ::: "$@"

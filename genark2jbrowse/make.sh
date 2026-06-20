@@ -195,9 +195,9 @@ log "Calculating gff file hashes..."
 
 log "Enhancing configs with plugins and hierarchical settings..."
 if [ "$MODE" = "new" ]; then
-  sed 's/meta.json/config.json/' "$NEW_HUBS_FILE" | node src/enhanceConfigsBatch.ts
+  sed 's|meta\.json$|config.json|' "$NEW_HUBS_FILE" | node src/enhanceConfigsBatch.ts
 else
-  sed 's/meta.json/config.json/' "$ALL_META_FILE" | node src/enhanceConfigsBatch.ts
+  sed 's|meta\.json$|config.json|' "$ALL_META_FILE" | node src/enhanceConfigsBatch.ts
 fi
 
 # --- Phase 7: Mouse strain assemblies ---

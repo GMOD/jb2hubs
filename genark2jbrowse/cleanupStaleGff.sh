@@ -41,24 +41,25 @@ delete_file() {
   fi
 }
 
-# Build a temp file of known GFF basenames for fast lookup
-known_basenames_file=$(mktemp)
-jq -r '.[].ncbiGff | select(. != null) | split("/") | last' "$ALL_JSON" >"$known_basenames_file"
-
-cleanup() { rm -f "$known_basenames_file"; }
-trap cleanup EXIT
+# Load known GFF basenames into a hash set for O(1) lookup. Looked up once per
+# candidate file across tens of thousands of files, so a grep-the-whole-file
+# probe per candidate would be quadratic.
+declare -A KNOWN
+while IFS= read -r name; do
+  KNOWN["$name"]=1
+done < <(jq -r '.[].ncbiGff | select(. != null) | split("/") | last' "$ALL_JSON")
 
 # Safety guard: this pipeline tracks tens of thousands of GenArk hubs, so a tiny
 # known set means all.json is truncated or corrupt. Deleting against it would
 # wipe valid GFFs that are expensive to re-download, so refuse to proceed.
-known_count=$(wc -l <"$known_basenames_file")
+known_count=${#KNOWN[@]}
 if [ "$known_count" -lt 1000 ]; then
   echo "ERROR: only $known_count known GFFs in $ALL_JSON; refusing to run (all.json looks incomplete/corrupt)." >&2
   exit 1
 fi
 
 is_known() {
-  grep -qxF "$1" "$known_basenames_file"
+  [[ -n "${KNOWN[$1]+set}" ]]
 }
 
 if ! $DRY_RUN; then

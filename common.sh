@@ -46,6 +46,43 @@ cloudfront_invalidate() {
 }
 export -f cloudfront_invalidate
 
+# Two-phase rclone sync shared by the upload scripts. First syncs data objects
+# with normal caching (indexes excluded), then the .csi/.tbi indexes with
+# Cache-Control: no-cache. An index stores byte offsets into its .gz; pairing a
+# stale cached index with freshly-regenerated data lands offsets mid-bgzf-block
+# ("invalid bgzf header"). Forcing the index to revalidate (cheap 304s via ETag)
+# keeps it in lockstep with the data, while large .gz files keep normal caching
+# so range requests during browsing aren't slowed by per-request revalidation.
+#
+# Extra args are passed only to the data phase (e.g. --exclude rules). Verbose
+# rclone output goes to stderr; the changed-object count is printed to stdout.
+# Usage: changed=$(rclone_sync_with_indexes <src> <dest> [extra rclone args...])
+rclone_sync_with_indexes() {
+  local src="$1" dest="$2"
+  shift 2
+  local data_log idx_log
+  data_log=$(mktemp)
+  idx_log=$(mktemp)
+
+  echo "Syncing data objects (cached MD5 hashes via rclone hasher)..." >&2
+  rclone sync -c -v \
+    --exclude "*.csi" --exclude "*.tbi" "$@" \
+    "$src" "$dest" \
+    --s3-storage-class INTELLIGENT_TIERING --checkers 20 2>&1 | tee "$data_log" >&2
+
+  echo "Syncing tabix/CSI indexes (Cache-Control: no-cache)..." >&2
+  rclone sync -c -v \
+    --include "*.csi" --include "*.tbi" \
+    --header-upload "Cache-Control: no-cache" \
+    "$src" "$dest" \
+    --s3-storage-class INTELLIGENT_TIERING --checkers 20 2>&1 | tee "$idx_log" >&2
+
+  local changed=$(($(count_rclone_changes "$data_log") + $(count_rclone_changes "$idx_log")))
+  rm -f "$data_log" "$idx_log"
+  echo "$changed"
+}
+export -f rclone_sync_with_indexes
+
 # Creates a directory if it doesn't exist.
 ensure_dir() {
   mkdir -p "$1"

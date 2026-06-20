@@ -20,36 +20,26 @@ fi
 # same URL. This is the replacement for rsync, which NCBI retired 2026-06-01.
 echo "Phase 1: Building queue of GFF files to download..."
 
-# Define function to check if a GFF file needs downloading
-check_and_queue() {
-  local line="$1"
-  local url
-  url=$(echo "$line" | cut -f1)
-  local common_name
-  common_name=$(echo "$line" | cut -f2)
-  local filename
-  filename=$(basename "$url")
-
-  # With FETCH_UPDATES, queue everything and let wget -N decide per file;
-  # otherwise only queue files we don't already have.
-  if [ -n "${FETCH_UPDATES:-}" ] || [ ! -f "gff/$filename" ]; then
-    # Output: url|common_name|filename
-    echo "$url|$common_name|$filename"
-  fi
-}
-
-export -f check_and_queue
-
 # Extract NCBI GFF URLs from processed JSON. Filter out null entries and null
 # ncbiGff before test(); when a scope list is given, also restrict to those
 # accessions (an empty list means "no restriction").
+#
+# The per-file decision is a cheap stat check, so a single inline pass beats a
+# parallel fan-out (one shell spawn per line). With FETCH_UPDATES we queue
+# everything and let wget -N decide per file; otherwise only queue files we
+# don't already have. Output: url|common_name|filename
 QUEUE_FILE=$(mktemp)
 jq -r --argjson accs "$SCOPE_ACCESSIONS" '
   .[] | select(. != null)
   | select(.ncbiGff != null) | select(.ncbiGff | test("GCF_"))
   | select(.accession as $a | ($accs | length) == 0 or ($accs | index($a)))
   | "\(.ncbiGff)\t\(.commonName)"' processedHubJson/all.json |
-  parallel $PARALLEL_OPTS --colsep $'\t' check_and_queue {} >"$QUEUE_FILE"
+  while IFS=$'\t' read -r url common_name; do
+    filename=${url##*/}
+    if [ -n "${FETCH_UPDATES:-}" ] || [ ! -f "gff/$filename" ]; then
+      printf '%s|%s|%s\n' "$url" "$common_name" "$filename"
+    fi
+  done >"$QUEUE_FILE"
 
 # Count how many files need downloading
 TOTAL=$(wc -l <"$QUEUE_FILE")

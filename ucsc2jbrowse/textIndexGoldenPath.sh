@@ -49,4 +49,4 @@ fi
 
 # Run the process_assembly function in parallel for each input directory.
 # Use || true to prevent parallel job failures from stopping the pipeline
-parallel -j8 $PARALLEL_OPTS --will-cite --halt never process_assembly ::: "$@" || true
+parallel -j8 $PARALLEL_OPTS --halt never process_assembly ::: "$@" || true

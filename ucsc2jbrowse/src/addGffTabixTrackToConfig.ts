@@ -2,22 +2,10 @@ import path from 'path'
 
 import { readConfig, writeJSON } from './util.ts'
 
-/**
- * Adds a GFF3Tabix track to a JBrowse configuration file.
- * @param configPath The path to the JBrowse configuration file.
- * @param gffFilePath The path to the GFF3Tabix file (e.g., 'file.gff.gz').
- */
-function addGffTabixTrackToConfig(configPath: string, gffFilePath: string) {
-  const config = readConfig(configPath)
+function gffTabixTrack(assemblyName: string, gffFilePath: string) {
   const gffFileName = path.basename(gffFilePath)
   const trackId = path.basename(gffFileName, '.gff.gz')
-  const assemblyName = config.assemblies[0]?.name
-
-  if (!assemblyName) {
-    throw new Error('Assembly name not found in config')
-  }
-
-  const newTrack = {
+  return {
     type: 'FeatureTrack',
     trackId: `${assemblyName}-${trackId}`,
     name: trackId,
@@ -31,25 +19,40 @@ function addGffTabixTrackToConfig(configPath: string, gffFilePath: string) {
       },
     },
   }
+}
 
-  const existingTrackIndex = config.tracks.findIndex(
-    track => track.trackId === newTrack.trackId,
-  )
+/**
+ * Adds one or more GFF3Tabix tracks to a JBrowse configuration file, reading and
+ * writing the config a single time for the whole batch.
+ */
+function addGffTabixTracksToConfig(configPath: string, gffFilePaths: string[]) {
+  const config = readConfig(configPath)
+  const assemblyName = config.assemblies[0]?.name
 
-  if (existingTrackIndex !== -1) {
-    config.tracks[existingTrackIndex] = newTrack
-  } else {
-    config.tracks.push(newTrack)
+  if (!assemblyName) {
+    throw new Error('Assembly name not found in config')
+  }
+
+  for (const gffFilePath of gffFilePaths) {
+    const newTrack = gffTabixTrack(assemblyName, gffFilePath)
+    const existingTrackIndex = config.tracks.findIndex(
+      track => track.trackId === newTrack.trackId,
+    )
+    if (existingTrackIndex === -1) {
+      config.tracks.push(newTrack)
+    } else {
+      config.tracks[existingTrackIndex] = newTrack
+    }
   }
 
   writeJSON(configPath, config)
 }
 
-if (process.argv.length !== 4) {
+if (process.argv.length < 4) {
   console.error(
-    'Usage: node addGffTabixTrackToConfig.ts <config.json> <file.gff.gz>',
+    'Usage: node addGffTabixTrackToConfig.ts <config.json> <file.gff.gz> [file2.gff.gz ...]',
   )
   process.exit(1)
 }
 
-addGffTabixTrackToConfig(process.argv[2]!, process.argv[3]!)
+addGffTabixTracksToConfig(process.argv[2]!, process.argv.slice(3))

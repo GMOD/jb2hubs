@@ -27,27 +27,19 @@ list_gff_inputs() {
 
 echo "Phase 1: Building queue of GFF files to process..."
 
-# Define function to check if a GFF file needs processing
-check_and_queue() {
-  local input_file="$1"
-  local filename
-  filename=$(basename "$input_file")
-  local output_bgz_file="bgz/$filename"
-
-  # Reprocess when there is no output yet, when the downloaded GFF is newer than
-  # the existing output (an in-place re-annotation pulled by FETCH_UPDATES), or
-  # when REPROCESS forces it.
-  if [ ! -f "$output_bgz_file" ] || [ "$input_file" -nt "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
-    echo "$input_file"
-  fi
-}
-
-export -f check_and_queue
-
-# Build the queue in parallel (fast I/O operations)
+# These are cheap per-file stat checks; a single inline pass is faster than a
+# parallel fan-out, where the per-job shell spawn dominates the actual work.
+# Reprocess when there is no output yet, when the downloaded GFF is newer than
+# the existing output (an in-place re-annotation pulled by FETCH_UPDATES), or
+# when REPROCESS forces it.
 QUEUE_FILE=$(mktemp)
 trap 'rm -f "$QUEUE_FILE"' EXIT
-list_gff_inputs | parallel -0 $PARALLEL_OPTS check_and_queue {} >"$QUEUE_FILE"
+while IFS= read -r -d '' input_file; do
+  output_bgz_file="bgz/${input_file##*/}"
+  if [ ! -f "$output_bgz_file" ] || [ "$input_file" -nt "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
+    printf '%s\n' "$input_file"
+  fi
+done < <(list_gff_inputs) >"$QUEUE_FILE"
 
 # Count how many files need processing
 TOTAL=$(wc -l <"$QUEUE_FILE")
