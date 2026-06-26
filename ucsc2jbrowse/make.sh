@@ -217,7 +217,7 @@ log "Creating configurations from track hubs..."
 log "Adding non-UCSC 'extension' tracks..."
 node src/makeUcscExtensions.ts "$UCSC_BUILT_DIR"
 
-log "Downloading and processing hs1 GFF..."
+log "Downloading and processing NCBI RefSeq GFFs..."
 ./downloadNcbiGff.sh
 
 log "Creating chain track PIFs..."

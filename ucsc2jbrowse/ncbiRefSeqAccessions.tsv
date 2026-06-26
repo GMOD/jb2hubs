@@ -1,0 +1,26 @@
+# UCSC db -> NCBI RefSeq accession, used by downloadNcbiGff.sh to add the source
+# NCBI RefSeq GFF3 as a <db>-ncbiRefSeqGff track.
+#
+# Columns: db <tab> accession <tab> assemblyName
+#   db           UCSC golden-path / hub assembly name
+#   accession    GCF_ RefSeq accession whose annotation to download
+#   assemblyName human-readable note only (not parsed)
+#
+# Policy: each accession is the latest RefSeq annotation on the SAME assembly as
+# the UCSC db (not merely the same species), so the GFF's RefSeq seqids match the
+# db's chromAlias. Picking by species alone is wrong: hg19 and hg38 are both
+# GCA_000001405.*, mm10/mm39 both GCA_000001635.*, etc. -- only the assembly
+# differs. The assembly's refNameAliases (UCSC chromAlias.txt) maps the GFF's
+# RefSeq accession seqids (NC_000001.11) to UCSC names (chr1) at load time, so the
+# GFF is used as-is with no seqid rewriting. Add a row to enable another assembly.
+hs1	GCF_009914755.1	T2T-CHM13v2.0
+hg38	GCF_000001405.40	GRCh38.p14
+hg19	GCF_000001405.25	GRCh37.p13
+mm39	GCF_000001635.27	GRCm39
+mm10	GCF_000001635.26	GRCm38.p6
+rn7	GCF_015227675.2	mRatBN7.2
+rn6	GCF_000001895.5	Rnor_6.0
+danRer11	GCF_000002035.6	GRCz11
+dm6	GCF_000001215.4	Release6-plus-ISO1-MT
+ce11	GCF_000002985.6	WBcel235
+sacCer3	GCF_000146045.2	R64
