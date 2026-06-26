@@ -109,7 +109,8 @@ const entries = configPaths.flatMap<Entry>(configPath => {
           configPath,
           config,
           taxId,
-          chromSizesUrl: typeof chromSizes === 'string' ? chromSizes : undefined,
+          chromSizesUrl:
+            typeof chromSizes === 'string' ? chromSizes : undefined,
         },
       ]
     : []

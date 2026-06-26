@@ -268,7 +268,9 @@ export default function SyntenySelector({ data }: Props) {
             id="species1"
             options={species1Options}
             value={species1}
-            onChange={value => { handleSpecies1Change(value) }}
+            onChange={value => {
+              handleSpecies1Change(value)
+            }}
             placeholder="Search species or accession…"
           />
         </div>
@@ -276,7 +278,9 @@ export default function SyntenySelector({ data }: Props) {
         <button
           type="button"
           className="synteny-swap"
-          onClick={() => { handleSwap() }}
+          onClick={() => {
+            handleSwap()
+          }}
           disabled={!species1 || !species2}
           aria-label="Swap assemblies"
           title="Swap"
@@ -290,7 +294,9 @@ export default function SyntenySelector({ data }: Props) {
             id="species2"
             options={species2Options}
             value={species2}
-            onChange={value => { handleSpecies2Change(value) }}
+            onChange={value => {
+              handleSpecies2Change(value)
+            }}
             placeholder={
               species1
                 ? 'Search comparable species…'
@@ -324,7 +330,9 @@ export default function SyntenySelector({ data }: Props) {
             key={`gene-${species1}-${species2}`}
             queryOptions={queryGeneOptions}
             value={geneValue}
-            onChange={value => { handleGeneChange(value) }}
+            onChange={value => {
+              handleGeneChange(value)
+            }}
             placeholder={`Whole genome (or search a ${nameOf(species1)} gene)…`}
           />
           {geneNote && <div className="synteny-gene-note">{geneNote}</div>}
