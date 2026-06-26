@@ -381,6 +381,26 @@
         }
       },
       "description": "NCBI RefSeq Select: One representative transcript per protein-coding gene"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm10-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm10.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mm10.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["mm10"]
     }
   ],
   "aggregateTextSearchAdapters": [
