@@ -1,0 +1,321 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import PangenomeExplorer from '../../components/PangenomeExplorer.tsx'
+import { features } from '../../config/features.ts'
+
+// Staging-only while the pangenome explorer is in development; see synteny/index.astro.
+if (!features.pangenome) {
+  return Astro.redirect('/')
+}
+---
+
+<Layout title="Pangenome Explorer">
+  <Container>
+    <h1>Human Pangenome Explorer</h1>
+    <p>
+      Any two humans are about 99.9% identical — so a single reference genome
+      hides the 0.1% that actually differs. This explorer leads with regions
+      famous for that divergence: structural / copy-number changes, genes that
+      are present in some people and absent in others, and hypervariable immune
+      loci. Each region is backed by the
+      <a
+        href="https://github.com/human-pangenomics/hpp_pangenome_resources"
+        target="_blank"
+        rel="noreferrer"
+        >Human Pangenome Reference Consortium</a
+      > minigraph-cactus v1.1 graph (47 samples), with one-click launches into JBrowse
+      2 and an upcoming multi-haplotype alignment view.
+    </p>
+
+    <PangenomeExplorer client:only="react" />
+  </Container>
+</Layout>
+
+<style is:global>
+  .pg-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+  }
+
+  .pg-filter {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .pg-filter:hover {
+    background: #eaeaea;
+  }
+
+  .pg-filter-active {
+    color: white;
+    background: #0b69d4;
+    border-color: #0b69d4;
+  }
+
+  .pg-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .pg-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+    text-align: left;
+    padding: 12px 14px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .pg-card:hover {
+    border-color: #0b69d4;
+    box-shadow: 0 1px 6px rgba(11, 105, 212, 0.12);
+  }
+
+  .pg-card-active {
+    border-color: #0b69d4;
+    box-shadow: 0 0 0 2px rgba(11, 105, 212, 0.25);
+  }
+
+  .pg-card-gene {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+  }
+
+  .pg-card-fullname {
+    font-size: 12px;
+    color: #666;
+  }
+
+  .pg-badge {
+    display: inline-block;
+    margin: 3px 4px 0 0;
+    padding: 1px 7px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-radius: 3px;
+  }
+
+  .pg-badge-structural {
+    color: #8a4b00;
+    background: #fdebd5;
+  }
+
+  .pg-badge-presence-absence {
+    color: #0a5c2e;
+    background: #d8f3e3;
+  }
+
+  .pg-badge-hypervariable {
+    color: #5a1a8a;
+    background: #ece0fb;
+  }
+
+  .pg-dashboard {
+    padding: 1.25rem 0 0;
+    border-top: 2px solid #eee;
+  }
+
+  .pg-dash-title {
+    margin: 0 0 6px;
+    font-size: 22px;
+  }
+
+  .pg-dash-fullname {
+    font-size: 15px;
+    font-weight: 400;
+    color: #666;
+  }
+
+  .pg-dash-loc {
+    margin: 8px 0 4px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    color: #444;
+  }
+
+  .pg-dash-story {
+    max-width: 70ch;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.5;
+  }
+
+  .pg-launch-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .pg-launch-btn {
+    padding: 9px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+
+  .pg-launch-btn:hover {
+    background: #0a5cba;
+  }
+
+  .pg-launch-secondary {
+    color: #0b69d4;
+    background: white;
+  }
+
+  .pg-launch-secondary:hover {
+    background: #eaf3fd;
+  }
+
+  .pg-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .pg-chart-title {
+    margin: 0 0 0.6rem;
+    font-size: 14px;
+    color: #444;
+  }
+
+  .pg-bar-row {
+    display: grid;
+    grid-template-columns: 92px 1fr 52px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 3px;
+    font-size: 12px;
+  }
+
+  .pg-bar-label {
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pg-bar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+    height: 14px;
+  }
+
+  .pg-bar-fill {
+    display: block;
+    height: 100%;
+    background: #0b69d4;
+    border-radius: 3px;
+    min-width: 1px;
+  }
+
+  .pg-bar-count {
+    color: #333;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pg-burden {
+    margin-bottom: 1.5rem;
+  }
+
+  .pg-burden .pg-bar-row {
+    grid-template-columns: 110px 1fr 52px;
+  }
+
+  .pg-pangene {
+    margin-bottom: 1.5rem;
+  }
+
+  .pg-pangene-caption {
+    max-width: 75ch;
+    margin: 0 0 0.75rem;
+  }
+
+  .pg-matrix-scroll {
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .pg-matrix {
+    display: grid;
+    gap: 2px;
+    align-items: center;
+    width: max-content;
+  }
+
+  .pg-matrix-gene {
+    font-size: 11px;
+    color: #333;
+    text-align: right;
+    padding-right: 8px;
+    white-space: nowrap;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .pg-matrix-cell {
+    width: 13px;
+    height: 13px;
+    border-radius: 2px;
+  }
+
+  .pg-matrix-legend {
+    display: flex;
+    gap: 12px;
+    margin-top: 0.6rem;
+    font-size: 12px;
+    color: #555;
+  }
+
+  .pg-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .pg-legend-swatch {
+    width: 13px;
+    height: 13px;
+    border-radius: 2px;
+  }
+
+  .pg-msa {
+    padding: 1rem 1.2rem;
+    background: #fafafa;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+  }
+
+  .pg-hint {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .pg-error {
+    color: #b00020;
+    font-size: 14px;
+  }
+</style>

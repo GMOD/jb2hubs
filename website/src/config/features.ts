@@ -12,4 +12,7 @@ export const features = {
   orthologs: staging,
   // The /synteny-multi multi-way, tree-ordered gene-order synteny view.
   multiSynteny: staging,
+  // The /pangenome HPRC pangenome explorer (curated divergence loci + JBrowse /
+  // react-msaview launches).
+  pangenome: staging,
 }
