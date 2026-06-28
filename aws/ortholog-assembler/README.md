@@ -23,15 +23,14 @@ Responses carry `X-Cache: HIT|MISS` and `Cache-Control: public, max-age=86400`.
 
 ```bash
 yarn install
-./deploy.sh              # yarn build (esbuild) -> sam build -> sam deploy
-# first time:
-sam deploy --guided      # creates samconfig.toml
-# with an NCBI key (raises 3->10 req/s, recommended):
-sam deploy --parameter-overrides NcbiApiKey=YOUR_KEY
+./deploy.sh                                      # build (esbuild) -> sam build -> sam deploy
+./deploy.sh --parameter-overrides NcbiApiKey=KEY # with an NCBI key (3->10 req/s, recommended)
 ```
 
-Note the `OrthologAssemblerApiUrl` output (e.g.
-`https://xxxx.execute-api.us-east-1.amazonaws.com/prod`).
+`deploy.sh` is self-contained (no `samconfig.toml` / `--guided` needed): stack
+`jbrowse-ortholog-assembler`, region `us-east-2`. Note the
+`OrthologAssemblerApiUrl` output and set it as `PUBLIC_ORTHOLOG_API` in the
+website env (already wired in `website/.env.staging`).
 
 ## Wire the website to it
 

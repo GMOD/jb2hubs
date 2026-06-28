@@ -6,10 +6,16 @@ import {
 
 import { assembleNeighborhood } from '../../../website/src/components/neighborhood.ts'
 
-import type {
-  APIGatewayProxyEventV2,
-  APIGatewayProxyResultV2,
-} from 'aws-lambda'
+import type { APIGatewayProxyResultV2 } from 'aws-lambda'
+
+// Tolerant of both REST API (v1: event.httpMethod) and HTTP API (v2:
+// event.requestContext.http.method) payloads, so the function works regardless
+// of which API Gateway type fronts it.
+interface ApiEvent {
+  httpMethod?: string
+  requestContext?: { http?: { method?: string } }
+  queryStringParameters?: Record<string, string | undefined> | null
+}
 
 // The assembler logic is imported verbatim from the website package (esbuild
 // bundles it in), so the serverless filler and the browser dev fallback run the
@@ -67,9 +73,9 @@ async function writeCache(key: string, body: string) {
 }
 
 export const handler = async (
-  event: APIGatewayProxyEventV2,
+  event: ApiEvent,
 ): Promise<APIGatewayProxyResultV2> => {
-  const method = event.requestContext.http.method
+  const method = event.requestContext?.http?.method ?? event.httpMethod ?? 'GET'
   if (method === 'OPTIONS') {
     return { statusCode: 200, headers: cors, body: '' }
   }

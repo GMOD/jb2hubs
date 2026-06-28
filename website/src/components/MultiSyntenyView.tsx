@@ -8,7 +8,7 @@ import {
   type GeneBox,
   type LayoutMode,
 } from './multiSyntenyLayout.ts'
-import { accessionToJbrowseUrl } from './orthologSearchUtils.ts'
+import { openGeneDrilldown } from './multiSyntenyDrilldown.ts'
 
 import type { Anchor, Neighborhood } from './neighborhood.ts'
 
@@ -56,12 +56,17 @@ export default function MultiSyntenyView({
   )
 
   const queryId = neighborhood.query.geneId
+  // The reference species' own copy of the query gene — the other half of every
+  // pairwise synteny drill-down.
+  const refAssembly = useMemo(
+    () =>
+      neighborhood.species
+        .find(s => s.taxonId === neighborhood.query.refTaxonId)
+        ?.genes.find(g => g.anchorId === queryId)?.assembly,
+    [neighborhood, queryId],
+  )
   const openGene = (g: GeneBox) => {
-    window.open(
-      accessionToJbrowseUrl(g.assembly, `${g.refName}:${g.start}-${g.end}`),
-      '_blank',
-      'noopener',
-    )
+    void openGeneDrilldown(g, refAssembly)
   }
 
   return (
