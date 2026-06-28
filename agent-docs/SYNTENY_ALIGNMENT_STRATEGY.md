@@ -64,6 +64,22 @@ Caveat: `hg38` and `GCF_000001405.40` are the *same assembly for
 gene/synteny/orthology cross-referencing* but **not byte-identical** (UCSC
 patches, alt loci, chrM). Scope the equivalence accordingly.
 
+**Attempted (2026-06), blocked — why a quick map isn't enough.** `syntenyTracks.json`
+has 2971 pairwise tracks (531 involve `hg38`, 156 `mm39`), but they're keyed in
+**UCSC-db / GenBank-GCA** assembly space (e.g. `['GCA_000152225.2','hg38']`),
+while NCBI orthology gives **RefSeq GCF accessions + NC_ refnames**. A JBrowse
+`LinearSyntenyView` track only binds when its `assemblyNames` match the loaded
+assemblies, and a GCA-named chain won't bind a GCF-loaded genome (nor will a GCF
+NC_ locus navigate on a GCA assembly). So aliasing must operate at the
+**assembly-identity** level (GCA↔GCF↔UCSC-db as one assembly, with
+`refNameAliases`), not just a name map — and even then the chain's coordinate
+space differs. `generateSyntenyPairIndex` filters to GCF×GCF precisely because of
+this; dropping the filter exposes the pairs but they still can't be launched
+without the identity layer. Net: the robust human alignment path is the hosted
+**447-way Cactus MAF** (already shipped via the `/synteny-multi` button), and
+`mm39` has no equivalent hosted multi-way multiz in jb2hubs, so the
+pairwise-chain bridge is deferred until the assembly-identity registry exists.
+
 ## Smallest first prototype
 
 **Human-ref drill-down → launch the hosted multiz hg38 MAF at the gene locus**
