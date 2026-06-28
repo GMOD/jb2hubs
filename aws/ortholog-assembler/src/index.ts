@@ -23,7 +23,9 @@ interface ApiEvent {
 
 const s3 = new S3Client({})
 const BUCKET = process.env.CACHE_BUCKET
-const PREFIX = 'neighborhood'
+// Bump when the assembler's output shape or logic changes, so stale cached
+// results are bypassed rather than served indefinitely.
+const PREFIX = 'neighborhood/v1'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',

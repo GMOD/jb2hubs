@@ -15,7 +15,9 @@ Parameters:
 
 Globals:
   Function:
-    Timeout: 60
+    # Cold-miss assembly does ~15 sequential (throttled) NCBI calls; 120s leaves
+    # headroom when NCBI is slow. Cache hits return in well under a second.
+    Timeout: 120
     MemorySize: 512
     Runtime: nodejs20.x
     Architectures:
