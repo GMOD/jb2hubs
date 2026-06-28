@@ -1,0 +1,124 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Container from '../components/Container.astro'
+import MultiSyntenyExplorer from '../components/MultiSyntenyExplorer.tsx'
+import { features } from '../config/features.ts'
+
+if (!features.multiSynteny) {
+  return Astro.redirect('/')
+}
+---
+
+<Layout title="Multi-way synteny">
+  <Container>
+    <h1>Multi-way gene-order synteny</h1>
+    <p>
+      Pick a gene: the view places that gene plus its protein-coding genomic
+      neighbors across every species that has orthologs, ordered by the NCBI
+      taxonomy tree. Ribbons connect orthologous genes between adjacent species —
+      crossings and flips reveal gene-order rearrangements. Toggle between
+      bp-scaled (real sizes/distances) and ordinal (equal slots) layouts. Click
+      any gene to open it in JBrowse.
+    </p>
+    <MultiSyntenyExplorer client:only="react" />
+  </Container>
+</Layout>
+
+<style is:global>
+  .msv-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 1.25rem 0;
+    flex-wrap: wrap;
+  }
+  .msv-form input,
+  .msv-form select {
+    padding: 7px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .msv-form input {
+    min-width: 220px;
+  }
+  .msv-form button {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .msv-form button:disabled {
+    background: #f0f0f0;
+    color: #999;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+  .msv-hint {
+    color: #666;
+    font-size: 14px;
+  }
+  .msv-error {
+    color: #b00020;
+    font-size: 14px;
+  }
+  .msv-controls {
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .msv-modes {
+    margin-left: auto;
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .msv-modes button {
+    padding: 5px 12px;
+    font-size: 13px;
+    border: none;
+    background: white;
+    cursor: pointer;
+  }
+  .msv-modes button.active {
+    background: #0b69d4;
+    color: white;
+  }
+  .msv-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0.6rem 0;
+    font-size: 12.5px;
+    color: #444;
+  }
+  .msv-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .msv-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .msv-scroll {
+    max-height: 75vh;
+    overflow: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+  }
+  .msv-label {
+    font-size: 11px;
+    fill: #333;
+  }
+</style>

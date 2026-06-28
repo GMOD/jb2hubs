@@ -1,0 +1,21 @@
+{
+  "name": "jbrowse-ortholog-assembler",
+  "version": "1.0.0",
+  "license": "MIT",
+  "description": "AWS Lambda that assembles a gene's cross-species ortholog neighborhood (NCBI) and caches each result to S3",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "yarn clean",
+    "clean": "rimraf dist",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs --external:@aws-sdk/*",
+    "lint": "eslint src --ext .ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^24.10.1",
+    "esbuild": "^0.27.0",
+    "rimraf": "^6.1.2",
+    "typescript": "^5.3.3"
+  }
+}

@@ -10,4 +10,6 @@ export const features = {
   synteny: staging,
   // The /orthologs gene-first search page (NCBI-backed).
   orthologs: staging,
+  // The /synteny-multi multi-way, tree-ordered gene-order synteny view.
+  multiSynteny: staging,
 }

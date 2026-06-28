@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: JBrowse ortholog-neighborhood assembler Lambda (NCBI -> cached JSON)
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    Description: API Gateway stage name
+  NcbiApiKey:
+    Type: String
+    Default: ''
+    NoEcho: true
+    Description: Optional NCBI API key; raises the rate limit (3->10 req/s)
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 512
+    Runtime: nodejs20.x
+    Architectures:
+      - x86_64
+
+Resources:
+  OrthologAssemblerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: jbrowse-ortholog-assembler
+      CodeUri: dist/
+      Handler: index.handler
+      Description: Assembles a gene's cross-species ortholog neighborhood and caches it to S3
+      Environment:
+        Variables:
+          NODE_ENV: production
+          CACHE_BUCKET: !Ref CacheBucket
+          NCBI_API_KEY: !Ref NcbiApiKey
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref CacheBucket
+      Events:
+        OrthologSet:
+          Type: Api
+          Properties:
+            Path: /ortholog-set
+            Method: GET
+            RestApiId: !Ref OrthologAssemblerApi
+        OptionsRequest:
+          Type: Api
+          Properties:
+            Path: /ortholog-set
+            Method: OPTIONS
+            RestApiId: !Ref OrthologAssemblerApi
+
+  OrthologAssemblerApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: jbrowse-ortholog-assembler-api
+      StageName: !Ref Stage
+      Cors:
+        AllowMethods: "'GET, OPTIONS'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+
+  # Durable cache of assembled neighborhoods. Each result is written once and
+  # served from here on repeat requests, so NCBI is hit only on a cache miss.
+  CacheBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub jbrowse-ortholog-cache-${AWS::AccountId}
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireStale
+            Status: Enabled
+            ExpirationInDays: 120
+
+  OrthologAssemblerFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/jbrowse-ortholog-assembler
+      RetentionInDays: 7
+
+Outputs:
+  OrthologAssemblerApiUrl:
+    Description: Base API Gateway URL (append /ortholog-set)
+    Value: !Sub https://${OrthologAssemblerApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+    Export:
+      Name: JBrowseOrthologAssemblerApiUrl
+  CacheBucketName:
+    Description: S3 bucket caching assembled neighborhoods
+    Value: !Ref CacheBucket
