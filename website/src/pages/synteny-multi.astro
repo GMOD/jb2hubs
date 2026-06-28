@@ -18,7 +18,8 @@ if (!features.multiSynteny) {
       taxonomy tree. Ribbons connect orthologous genes between adjacent species —
       crossings and flips reveal gene-order rearrangements. Toggle between
       bp-scaled (real sizes/distances) and ordinal (equal slots) layouts. Click
-      any gene to open it in JBrowse.
+      any gene to open it in JBrowse, or click an internal tree node to launch a
+      stacked synteny view of that whole subtree.
     </p>
     <MultiSyntenyExplorer client:only="react" />
   </Container>
@@ -120,5 +121,13 @@ if (!features.multiSynteny) {
   .msv-label {
     font-size: 11px;
     fill: #333;
+  }
+  .msv-treenodes circle {
+    fill: #0b69d4;
+    opacity: 0.5;
+    cursor: pointer;
+  }
+  .msv-treenodes circle:hover {
+    opacity: 1;
   }
 </style>

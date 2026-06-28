@@ -60,10 +60,19 @@ export interface TreeEdge {
   y2: number
 }
 
+// A clickable internal cladogram node: its position plus every leaf taxon under
+// it, so clicking launches a synteny view of that whole subtree.
+export interface TreeNodeHit {
+  x: number
+  y: number
+  leafTaxonIds: number[]
+}
+
 export interface MultiSyntenyLayout {
   rows: RowLayout[]
   ribbons: Ribbon[]
   treeEdges: TreeEdge[]
+  treeNodes: TreeNodeHit[]
   anchorColors: Map<string, string>
   trackLeft: number
   width: number
@@ -138,16 +147,18 @@ function placeOrdinal(
   }))
 }
 
-// Cladogram edges (rectangular): leaves sit at their row y, internal nodes at the
-// mean of their children, x by normalized depth. Returns edges + leaf y lookup.
+// Cladogram (rectangular): leaves sit at their row y, internal nodes at the mean
+// of their children, x by normalized depth. Returns edges to draw plus internal
+// nodes (position + their leaf taxa) as launch targets for subtree synteny.
 function layoutTree(
   tree: TaxonNode | undefined,
   rowY: Map<number, number>,
   treeWidth: number,
 ) {
   const edges: TreeEdge[] = []
+  const nodes: TreeNodeHit[] = []
   if (!tree) {
-    return edges
+    return { edges, nodes }
   }
   let maxDepth = 0
   function depthOf(node: TaxonNode, d: number) {
@@ -157,31 +168,32 @@ function layoutTree(
   depthOf(tree, 0)
   const xAt = (d: number) => (maxDepth === 0 ? 0 : (d / maxDepth) * treeWidth)
 
-  function place(node: TaxonNode, depth: number): number | undefined {
+  function place(
+    node: TaxonNode,
+    depth: number,
+  ): { y: number; leaves: number[] } | undefined {
     if (node.children.length === 0) {
-      return rowY.get(node.taxonId)
+      const y = rowY.get(node.taxonId)
+      return y === undefined ? undefined : { y, leaves: [node.taxonId] }
     }
-    const childYs = node.children
-      .map(c => ({ c, y: place(c, depth + 1) }))
-      .filter((e): e is { c: TaxonNode; y: number } => e.y !== undefined)
-    if (childYs.length === 0) {
+    const kids = node.children
+      .map(c => place(c, depth + 1))
+      .filter((r): r is { y: number; leaves: number[] } => r !== undefined)
+    if (kids.length === 0) {
       return undefined
     }
-    const y = childYs.reduce((s, e) => s + e.y, 0) / childYs.length
     const x = xAt(depth)
-    for (const e of childYs) {
-      edges.push({ x1: x, y1: e.y, x2: xAt(depth + 1), y2: e.y }) // horizontal
+    for (const kid of kids) {
+      edges.push({ x1: x, y1: kid.y, x2: xAt(depth + 1), y2: kid.y }) // horizontal
     }
-    edges.push({
-      x1: x,
-      y1: childYs[0]!.y,
-      x2: x,
-      y2: childYs.at(-1)!.y,
-    }) // vertical connector
-    return y
+    edges.push({ x1: x, y1: kids[0]!.y, x2: x, y2: kids.at(-1)!.y }) // vertical
+    const y = kids.reduce((s, k) => s + k.y, 0) / kids.length
+    const leaves = kids.flatMap(k => k.leaves)
+    nodes.push({ x, y, leafTaxonIds: leaves })
+    return { y, leaves }
   }
   place(tree, 0)
-  return edges
+  return { edges, nodes }
 }
 
 // gggenes-style arrow path: rectangular body with a triangular head on the
@@ -267,12 +279,17 @@ export function layoutNeighborhood(
   const rowY = new Map(
     rows.map(r => [r.taxonId, r.y + opt.geneHeight / 2] as const),
   )
-  const treeEdges = layoutTree(nb.tree, rowY, opt.treeWidth)
+  const { edges: treeEdges, nodes: treeNodes } = layoutTree(
+    nb.tree,
+    rowY,
+    opt.treeWidth,
+  )
 
   return {
     rows,
     ribbons,
     treeEdges,
+    treeNodes,
     anchorColors,
     trackLeft,
     width: trackLeft + opt.trackWidth + 12,

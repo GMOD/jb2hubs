@@ -77,6 +77,46 @@ function pairwiseSyntenyUrl(
   return `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
 }
 
+export interface SubtreeLeaf {
+  assembly: string
+  loc: string
+}
+
+// A multi-level LinearSyntenyView stacks one full genome browser per level, so a
+// huge subtree is unreadable; cap the launch to the nearest leaves (tree order).
+const MAX_SUBTREE_GENOMES = 15
+
+// Launch a stacked, tree-ordered LinearSyntenyView of a whole subtree, each
+// genome navigated to its ortholog locus, with synteny tracks between adjacent
+// genomes where a chain exists. JBrowse matches each track to its level by the
+// track's assemblyNames, so passing the found tracks (any order) is fine.
+export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
+  const picked = leaves.slice(0, MAX_SUBTREE_GENOMES)
+  if (picked.length >= 2) {
+    const index = await loadPairs()
+    const tracks: string[] = []
+    for (let i = 0; i < picked.length - 1; i++) {
+      const trackId = trackFor(index, picked[i]!.assembly, picked[i + 1]!.assembly)
+      if (trackId) {
+        tracks.push(trackId)
+      }
+    }
+    const hubIds = picked.map(p => p.assembly).join(',')
+    const sessionSpec = {
+      views: [
+        {
+          type: 'LinearSyntenyView',
+          tracks,
+          views: picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
+          drawCurves: true,
+        },
+      ],
+    }
+    const url = `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(`${MERGE_API}?hubIds=${hubIds}`)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
+    window.open(url, '_blank', 'noopener')
+  }
+}
+
 // Resolve the best JBrowse URL for a clicked gene, then open it.
 export async function openGeneDrilldown(
   gene: PlacedGene,

@@ -8,7 +8,11 @@ import {
   type GeneBox,
   type LayoutMode,
 } from './multiSyntenyLayout.ts'
-import { openGeneDrilldown } from './multiSyntenyDrilldown.ts'
+import {
+  openGeneDrilldown,
+  openSubtreeSynteny,
+  type SubtreeLeaf,
+} from './multiSyntenyDrilldown.ts'
 
 import type { Anchor, Neighborhood } from './neighborhood.ts'
 
@@ -67,6 +71,29 @@ export default function MultiSyntenyView({
   )
   const openGene = (g: GeneBox) => {
     void openGeneDrilldown(g, refAssembly)
+  }
+
+  // Per-species query-gene locus, for launching a subtree's stacked synteny view.
+  const placementByTaxon = useMemo(() => {
+    const m = new Map<number, SubtreeLeaf>()
+    for (const s of neighborhood.species) {
+      const q = s.genes.find(g => g.anchorId === queryId)
+      if (q) {
+        m.set(s.taxonId, {
+          assembly: q.assembly,
+          loc: `${q.refName}:${q.start}-${q.end}`,
+        })
+      }
+    }
+    return m
+  }, [neighborhood, queryId])
+
+  const openSubtree = (leafTaxonIds: number[]) => {
+    void openSubtreeSynteny(
+      leafTaxonIds
+        .map(t => placementByTaxon.get(t))
+        .filter((p): p is SubtreeLeaf => !!p),
+    )
   }
 
   return (
@@ -131,6 +158,27 @@ export default function MultiSyntenyView({
                 y2={e.y2}
               />
             ))}
+          </g>
+
+          <g className="msv-treenodes">
+            {layout.treeNodes.map((n, i) => {
+              const count = n.leafTaxonIds.filter(t =>
+                placementByTaxon.has(t),
+              ).length
+              return count >= 2 ? (
+                <circle
+                  key={i}
+                  cx={n.x}
+                  cy={n.y}
+                  r={3.5}
+                  onClick={() => {
+                    openSubtree(n.leafTaxonIds)
+                  }}
+                >
+                  <title>Launch stacked synteny view of {count} species</title>
+                </circle>
+              ) : null
+            })}
           </g>
 
           {layout.rows.map(row => (
