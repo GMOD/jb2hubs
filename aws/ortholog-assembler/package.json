@@ -5,12 +5,14 @@
   "description": "AWS Lambda that assembles a gene's cross-species ortholog neighborhood (NCBI) and caches each result to S3",
   "main": "index.js",
   "scripts": {
-    "prebuild": "yarn clean",
+    "prebuild": "pnpm run clean",
     "clean": "rimraf dist",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs --external:@aws-sdk/*",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs",
     "lint": "eslint src --ext .ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1075.0"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.145",
     "@types/node": "^24.10.1",

@@ -96,7 +96,9 @@ const PALETTE = [
 ]
 
 function anchorColorMap(anchors: Anchor[]) {
-  return new Map(anchors.map((a, i) => [a.geneId, PALETTE[i % PALETTE.length]!]))
+  return new Map(
+    anchors.map((a, i) => [a.geneId, PALETTE[i % PALETTE.length]!]),
+  )
 }
 
 // The scaffold a row is laid out on: the query gene's scaffold if present, else
@@ -132,11 +134,13 @@ function placeOrdinal(
 ) {
   const slotW = trackWidth / Math.max(1, slots)
   const ascending = [...genes].sort((a, b) => a.start - b.start)
-  return ascending.map((g, i): GeneBox => ({
-    ...g,
-    x: trackLeft + i * slotW + slotW * 0.1,
-    width: slotW * 0.8,
-  }))
+  return ascending.map(
+    (g, i): GeneBox => ({
+      ...g,
+      x: trackLeft + i * slotW + slotW * 0.1,
+      width: slotW * 0.8,
+    }),
+  )
 }
 
 // Cladogram (rectangular): leaves sit at their row y, internal nodes at the mean

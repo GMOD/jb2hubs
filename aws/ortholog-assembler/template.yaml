@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: JBrowse ortholog-neighborhood assembler Lambda (NCBI -> cached JSON)
+Description:
+  JBrowse ortholog-neighborhood assembler Lambda (NCBI -> cached JSON)
 
 Parameters:
   Stage:
@@ -30,7 +31,9 @@ Resources:
       FunctionName: jbrowse-ortholog-assembler
       CodeUri: dist/
       Handler: index.handler
-      Description: Assembles a gene's cross-species ortholog neighborhood and caches it to S3
+      Description:
+        Assembles a gene's cross-species ortholog neighborhood and caches it to
+        S3
       Environment:
         Variables:
           NODE_ENV: production

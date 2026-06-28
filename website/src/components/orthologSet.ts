@@ -61,7 +61,8 @@ function buildRows(reports: { gene?: DatasetsGene }[]): OrthologRow[] {
         symbol: gene.symbol ?? gene.gene_id,
         geneId: gene.gene_id,
         refName: hit.l.genomic_accession_version ?? '',
-        chromosome: hit.l.sequence_name ?? hit.l.genomic_accession_version ?? '',
+        chromosome:
+          hit.l.sequence_name ?? hit.l.genomic_accession_version ?? '',
         start: Number(begin),
         end: Number(end),
         strand: orientation === 'minus' ? -1 : 1,
@@ -73,7 +74,10 @@ function buildRows(reports: { gene?: DatasetsGene }[]): OrthologRow[] {
 
 // taxonId -> display names, harvested from every node of the induced tree.
 export function collectNames(tree: TaxonNode | undefined) {
-  const names = new Map<number, { scientificName: string; commonName?: string }>()
+  const names = new Map<
+    number,
+    { scientificName: string; commonName?: string }
+  >()
   function walk(node: TaxonNode) {
     names.set(node.taxonId, {
       scientificName: node.name,
@@ -102,7 +106,9 @@ export async function resolveGeneId(query: string, refTaxonId: number) {
 
 // One ortholog gene per species, with coordinates + strand, in a single Datasets
 // call. No tree (callers fetch one shared tree over the union of species).
-export async function fetchOrthologRows(geneId: string): Promise<OrthologRow[]> {
+export async function fetchOrthologRows(
+  geneId: string,
+): Promise<OrthologRow[]> {
   const json = await ncbiJson<{ reports?: { gene?: DatasetsGene }[] }>(
     `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE`,
   )

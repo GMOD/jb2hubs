@@ -3,7 +3,7 @@
 set -e
 
 echo "Building TypeScript..."
-yarn build
+pnpm build
 
 echo "Building SAM application..."
 sam build

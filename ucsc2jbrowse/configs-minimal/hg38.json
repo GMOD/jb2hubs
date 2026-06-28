@@ -44,6 +44,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -489,6 +492,26 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "hg38-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "hg38.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "hg38.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["hg38"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "hg38-gencodeComp",
       "name": "GENCODE V49 - Comprehensive gene annotation",
       "adapter": {
@@ -620,26 +643,6 @@
         "index": {
           "location": {
             "uri": "gencode.v48.promoter_windows.sorted.gff3.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["hg38"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg38-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "hg38.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "hg38.gff.gz.csi",
             "locationType": "UriLocation"
           },
           "indexType": "CSI"

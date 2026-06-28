@@ -124,7 +124,9 @@ export async function assembleNeighborhood(
   const queryRows = await fetchOrthologRows(queryGeneId)
   const queryRef = queryRows.find(r => r.taxonId === refTaxonId)
   if (!queryRef) {
-    throw new Error(`no reference placement for "${query}" in taxon ${refTaxonId}`)
+    throw new Error(
+      `no reference placement for "${query}" in taxon ${refTaxonId}`,
+    )
   }
 
   const neighborIds = await searchNeighborIds(
@@ -175,9 +177,10 @@ export async function assembleNeighborhood(
 
   const rowsByAnchor = new Map<string, OrthologRow[]>([
     [queryGeneId, queryRows],
-    ...neighbors.map(
-      (n, i): [string, OrthologRow[]] => [n.geneId, neighborRows[i] ?? []],
-    ),
+    ...neighbors.map((n, i): [string, OrthologRow[]] => [
+      n.geneId,
+      neighborRows[i] ?? [],
+    ]),
   ])
 
   // Place each anchor's ortholog into per-species rows, keyed by taxon.

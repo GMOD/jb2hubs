@@ -5,12 +5,12 @@
   "description": "AWS Lambda function to merge multiple JBrowse config files",
   "main": "index.js",
   "scripts": {
-    "prebuild": "yarn clean",
+    "prebuild": "pnpm run clean",
     "clean": "rimraf dist",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs --external:@aws-sdk/*",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=dist/index.mjs",
     "test": "vitest",
     "lint": "eslint src --ext .ts",
-    "precopy": "yarn build",
+    "precopy": "pnpm build",
     "copy": "cat dist/index.mjs | xclip -selection clipboard"
   },
   "dependencies": {},

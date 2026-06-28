@@ -1,10 +1,10 @@
 # jbrowse-ortholog-assembler
 
 Serverless filler + durable cache behind the multi-way synteny view
-(`/synteny-multi`). Given a gene, it assembles that gene's cross-species ortholog
-neighborhood from NCBI (orthologs + protein-coding neighbor anchors + induced
-taxonomy tree) and caches the result JSON to S3, so NCBI is hit only on a cache
-miss and every later request is fast.
+(`/synteny-multi`). Given a gene, it assembles that gene's cross-species
+ortholog neighborhood from NCBI (orthologs + protein-coding neighbor anchors +
+induced taxonomy tree) and caches the result JSON to S3, so NCBI is hit only on
+a cache miss and every later request is fast.
 
 The assembler logic is **imported verbatim** from
 `website/src/components/neighborhood.ts` (esbuild bundles it), so the Lambda and
@@ -22,7 +22,7 @@ Responses carry `X-Cache: HIT|MISS` and `Cache-Control: public, max-age=86400`.
 ## Deploy
 
 ```bash
-yarn install
+pnpm install
 ./deploy.sh                                      # build (esbuild) -> sam build -> sam deploy
 ./deploy.sh --parameter-overrides NcbiApiKey=KEY # with an NCBI key (3->10 req/s, recommended)
 ```

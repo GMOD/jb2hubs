@@ -3,7 +3,7 @@
 set -e
 
 echo "Bundling TypeScript (esbuild)..."
-yarn build
+pnpm build
 
 echo "Building SAM application..."
 sam build
