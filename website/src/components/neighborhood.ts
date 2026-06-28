@@ -11,7 +11,9 @@
 import {
   collectNames,
   fetchOrthologRows,
+  locate,
   resolveGeneId,
+  type DatasetsGene,
   type OrthologRow,
 } from './orthologSet.ts'
 import {
@@ -19,9 +21,7 @@ import {
   leafOrder,
   type TaxonNode,
 } from './multiSyntenyTaxonTree.ts'
-import { ncbiFetch } from './ncbiFetch.ts'
-
-const EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
+import { DATASETS, EUTILS, ncbiJson } from './ncbiFetch.ts'
 
 // Reference-genome neighbor gene used as a synteny anchor.
 export interface Anchor {
@@ -37,7 +37,8 @@ export interface PlacedGene {
   anchorId: string
   symbol: string
   assembly: string // GCF accession, for click -> JBrowse drill-down
-  refName: string
+  refName: string // genomic_accession_version (e.g. NC_000017.11)
+  chromosome: string // human-friendly sequence name (e.g. 17), for UCSC chr mapping
   start: number
   end: number
   strand: 1 | -1
@@ -62,8 +63,6 @@ export interface NeighborhoodOptions {
   maxAnchors?: number // cap on neighbor genes (nearest to the query)
 }
 
-const DATASETS = 'https://api.ncbi.nlm.nih.gov/datasets/v2'
-
 // A reference-genome gene with type + placement, used to pick protein-coding
 // anchors. Pseudogenes / ncRNA / predicted loci have no orthologs and would
 // collapse the view to the query gene alone, so only PROTEIN_CODING is kept.
@@ -73,31 +72,6 @@ interface GeneReport {
   type: string
   start: number
   end: number
-}
-
-// Same nested shape as the orthologs response, but single-species (the query
-// taxon), so each report carries one annotation/location.
-interface DatasetReport {
-  reports?: {
-    gene?: {
-      gene_id?: string
-      symbol?: string
-      type?: string
-      annotations?: {
-        genomic_locations?: {
-          genomic_range?: { begin?: string; end?: string }
-        }[]
-      }[]
-    }
-  }[]
-}
-
-async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await ncbiFetch(url, init)
-  if (!res.ok) {
-    throw new Error(`NCBI request failed (${res.status})`)
-  }
-  return res.json() as Promise<T>
 }
 
 // GeneIDs whose reference position falls in the window, via NCBI Gene's position
@@ -110,7 +84,7 @@ async function searchNeighborIds(
 ): Promise<string[]> {
   const term = `${refTaxonId}[taxid]+AND+${chromosome}[chromosome]+AND+${start}:${end}[Base+Position]`
   const url = `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=200`
-  const json = await fetchJson<{ esearchresult?: { idlist?: string[] } }>(url)
+  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(url)
   return json.esearchresult?.idlist ?? []
 }
 
@@ -119,13 +93,12 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
   if (geneIds.length === 0) {
     return []
   }
-  const url = `${DATASETS}/gene/id/${geneIds.join(',')}/dataset_report`
-  const json = await fetchJson<DatasetReport>(url)
+  const json = await ncbiJson<{ reports?: { gene?: DatasetsGene }[] }>(
+    `${DATASETS}/gene/id/${geneIds.join(',')}/dataset_report`,
+  )
   const reports: GeneReport[] = []
   for (const { gene } of json.reports ?? []) {
-    const range = gene?.annotations
-      ?.flatMap(a => a.genomic_locations ?? [])
-      .find(l => l.genomic_range?.begin)?.genomic_range
+    const range = locate(gene)?.l.genomic_range
     if (gene?.gene_id && gene.type && range?.begin && range.end) {
       reports.push({
         geneId: gene.gene_id,
@@ -139,12 +112,6 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
   return reports
 }
 
-// The query gene's own reference row gives the window center; its ortholog rows
-// double as the first anchor's placements, so we keep them.
-function refRow(rows: OrthologRow[], refTaxonId: number) {
-  return rows.find(r => r.taxonId === refTaxonId)
-}
-
 export async function assembleNeighborhood(
   query: string,
   refTaxonId: number,
@@ -155,7 +122,7 @@ export async function assembleNeighborhood(
     throw new Error(`no gene found for "${query}"`)
   }
   const queryRows = await fetchOrthologRows(queryGeneId)
-  const queryRef = refRow(queryRows, refTaxonId)
+  const queryRef = queryRows.find(r => r.taxonId === refTaxonId)
   if (!queryRef) {
     throw new Error(`no reference placement for "${query}" in taxon ${refTaxonId}`)
   }
@@ -230,6 +197,7 @@ export async function assembleNeighborhood(
         symbol: r.symbol,
         assembly: r.assembly,
         refName: r.refName,
+        chromosome: r.chromosome,
         start: r.start,
         end: r.end,
         strand: r.strand,
@@ -237,13 +205,19 @@ export async function assembleNeighborhood(
     }
   }
 
+  // Order rows by the tree (O(1) rank lookup, not indexOf-in-comparator); taxa
+  // absent from the tree sort to the end. Names are attached in the same pass.
   const names = collectNames(tree)
   const order = tree ? leafOrder(tree) : taxa
-  const species = [...byTaxon.keys()]
-    .sort((a, b) => order.indexOf(a) - order.indexOf(b))
-    .map(t => {
-      const row = rowFor(t)
-      const name = names.get(t)
+  const rank = new Map(order.map((t, i) => [t, i]))
+  const species = [...byTaxon.values()]
+    .sort(
+      (a, b) =>
+        (rank.get(a.taxonId) ?? order.length) -
+        (rank.get(b.taxonId) ?? order.length),
+    )
+    .map(row => {
+      const name = names.get(row.taxonId)
       row.scientificName = name?.scientificName
       row.commonName = name?.commonName
       return row

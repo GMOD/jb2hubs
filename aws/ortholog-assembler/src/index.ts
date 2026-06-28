@@ -24,8 +24,9 @@ interface ApiEvent {
 const s3 = new S3Client({})
 const BUCKET = process.env.CACHE_BUCKET
 // Bump when the assembler's output shape or logic changes, so stale cached
-// results are bypassed rather than served indefinitely.
-const PREFIX = 'neighborhood/v1'
+// results are bypassed rather than served indefinitely. v2: PlacedGene gained a
+// `chromosome` field (UCSC chr mapping for the whole-genome alignment launch).
+const PREFIX = 'neighborhood/v2'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -109,14 +110,20 @@ export const handler = async (
   }
   const key = cacheKey(params)
 
+  const ok = (body: string, hit: boolean) => ({
+    statusCode: 200,
+    headers: {
+      ...json,
+      'Cache-Control': 'public, max-age=86400',
+      'X-Cache': hit ? 'HIT' : 'MISS',
+    },
+    body,
+  })
+
   try {
     const cached = await readCache(key)
     if (cached !== undefined) {
-      return {
-        statusCode: 200,
-        headers: { ...json, 'Cache-Control': 'public, max-age=86400', 'X-Cache': 'HIT' },
-        body: cached,
-      }
+      return ok(cached, true)
     }
     const neighborhood = await assembleNeighborhood(params.gene, params.ref, {
       flankBp: params.flankBp,
@@ -124,11 +131,7 @@ export const handler = async (
     })
     const body = JSON.stringify(neighborhood)
     await writeCache(key, body)
-    return {
-      statusCode: 200,
-      headers: { ...json, 'Cache-Control': 'public, max-age=86400', 'X-Cache': 'MISS' },
-      body,
-    }
+    return ok(body, false)
   } catch (error) {
     console.error('ortholog-assembler error:', error)
     return {

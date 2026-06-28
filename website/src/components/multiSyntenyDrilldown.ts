@@ -1,15 +1,69 @@
-// Drill-down from a gene in the multi-way view into JBrowse. If a precomputed
-// pairwise synteny track (UCSC/GenArk chain -> PIF, catalogued in
-// synteny_pairs.json) exists between the clicked species and the reference, open
-// a LinearSyntenyView showing the real base-level ribbons; otherwise fall back to
-// the single-genome view at the gene locus. The overview is orthologs-only, so
-// this is where chains add value when present.
+// Drill-downs from the multi-way view into JBrowse:
+//  - a clicked gene -> pairwise LinearSyntenyView when a precomputed chain
+//    (synteny_pairs.json) links it to the reference, else single-genome;
+//  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
+//  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
 
 import { accessionToJbrowseUrl } from './orthologSearchUtils.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
 
 const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
+const JBROWSE = 'https://jbrowse.org/code/jb2/main'
+
+// A JBrowse URL: a config + a one-time `spec-` session the LaunchView extension
+// points expand into a real view.
+function specUrl(configUrl: string, view: object) {
+  const session = JSON.stringify({ views: [view] })
+  return `${JBROWSE}/?config=${encodeURIComponent(configUrl)}&session=spec-${encodeURIComponent(session)}`
+}
+
+// The merge API stitches several hosted hubs into one config.
+const mergeConfig = (hubIds: string[]) => `${MERGE_API}?hubIds=${hubIds.join(',')}`
+
+// taxId -> a hosted whole-genome alignment for that reference; add entries as
+// references gain one. First slice of the GCF<->UCSC-db registry in
+// agent-docs/SYNTENY_ALIGNMENT_STRATEGY.md.
+export interface RefAlignment {
+  ucscDb: string
+  configUrl: string
+  alignmentTrackId: string
+  alignmentLabel: string
+}
+
+export const REF_ALIGNMENTS: Record<number, RefAlignment> = {
+  9606: {
+    ucscDb: 'hg38',
+    configUrl: 'https://jbrowse.org/ucsc/hg38/config.json',
+    alignmentTrackId: 'hg38-cactus447way',
+    alignmentLabel: '447-way Cactus alignment (Zoonomia)',
+  },
+}
+
+// NCBI sequence_name -> UCSC chromosome (chr-prefixed; mitochondrion is chrM).
+function toUcscChrom(name: string) {
+  const n = name === 'MT' ? 'M' : name
+  return n.startsWith('chr') ? n : `chr${n}`
+}
+
+// Open the reference's hosted whole-genome multi-species alignment at a locus —
+// base-level alignment across species, zero compute, when the reference has one.
+export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
+  const a = REF_ALIGNMENTS[refTaxonId]
+  if (a && gene.chromosome) {
+    const loc = `${toUcscChrom(gene.chromosome)}:${gene.start}-${gene.end}`
+    window.open(
+      specUrl(a.configUrl, {
+        type: 'LinearGenomeView',
+        assembly: a.ucscDb,
+        loc,
+        tracks: [a.alignmentTrackId],
+      }),
+      '_blank',
+      'noopener',
+    )
+  }
+}
 
 // Version-stripped GCF/GCA base, e.g. GCF_000001405.40 or
 // GCF_000001735.4_TAIR10.1 -> GCF_000001405 / GCF_000001735, so accessions match
@@ -47,9 +101,10 @@ function loadPairs(): Promise<PairIndex> {
 }
 
 function trackFor(index: PairIndex, a: string, b: string) {
-  const x = accessionBase(a)
-  const y = accessionBase(b)
-  return index.get(`${x}|${y}`) ?? index.get(`${y}|${x}`)
+  return (
+    index.get(`${accessionBase(a)}|${accessionBase(b)}`) ??
+    index.get(`${accessionBase(b)}|${accessionBase(a)}`)
+  )
 }
 
 function pairwiseSyntenyUrl(
@@ -58,23 +113,14 @@ function pairwiseSyntenyUrl(
   loc: string,
   trackId: string,
 ) {
-  const mergeApiUrl = `${MERGE_API}?hubIds=${orthoAccession},${refAccession}`
-  const sessionSpec = {
-    views: [
-      {
-        type: 'LinearSyntenyView',
-        tracks: [trackId],
-        views: [
-          { assembly: orthoAccession, loc },
-          { assembly: refAccession },
-        ],
-        colorBy: 'query',
-        drawCurves: true,
-        autoDiagonalize: true,
-      },
-    ],
-  }
-  return `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
+  return specUrl(mergeConfig([orthoAccession, refAccession]), {
+    type: 'LinearSyntenyView',
+    tracks: [trackId],
+    views: [{ assembly: orthoAccession, loc }, { assembly: refAccession }],
+    colorBy: 'query',
+    drawCurves: true,
+    autoDiagonalize: true,
+  })
 }
 
 export interface SubtreeLeaf {
@@ -101,19 +147,16 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
         tracks.push(trackId)
       }
     }
-    const hubIds = picked.map(p => p.assembly).join(',')
-    const sessionSpec = {
-      views: [
-        {
-          type: 'LinearSyntenyView',
-          tracks,
-          views: picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
-          drawCurves: true,
-        },
-      ],
-    }
-    const url = `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(`${MERGE_API}?hubIds=${hubIds}`)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
-    window.open(url, '_blank', 'noopener')
+    window.open(
+      specUrl(mergeConfig(picked.map(p => p.assembly)), {
+        type: 'LinearSyntenyView',
+        tracks,
+        views: picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
+        drawCurves: true,
+      }),
+      '_blank',
+      'noopener',
+    )
   }
 }
 

@@ -110,15 +110,7 @@ function dominantRefName(genes: PlacedGene[], queryAnchorId: string) {
   for (const g of genes) {
     counts.set(g.refName, (counts.get(g.refName) ?? 0) + 1)
   }
-  let best: string | undefined
-  let bestCount = 0
-  for (const [refName, count] of counts) {
-    if (count > bestCount) {
-      best = refName
-      bestCount = count
-    }
-  }
-  return best
+  return [...counts].sort((a, b) => b[1] - a[1])[0]?.[0]
 }
 
 function placeBp(genes: PlacedGene[], trackLeft: number, trackWidth: number) {

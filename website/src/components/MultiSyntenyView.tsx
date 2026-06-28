@@ -10,7 +10,9 @@ import {
 } from './multiSyntenyLayout.ts'
 import {
   openGeneDrilldown,
+  openRefAlignment,
   openSubtreeSynteny,
+  REF_ALIGNMENTS,
   type SubtreeLeaf,
 } from './multiSyntenyDrilldown.ts'
 
@@ -18,7 +20,6 @@ import type { Anchor, Neighborhood } from './neighborhood.ts'
 
 interface Props {
   neighborhood: Neighborhood
-  initialMode?: LayoutMode
 }
 
 const H = DEFAULT_LAYOUT.geneHeight
@@ -49,26 +50,25 @@ function AnchorLegend({
   )
 }
 
-export default function MultiSyntenyView({
-  neighborhood,
-  initialMode = 'bp',
-}: Props) {
-  const [mode, setMode] = useState<LayoutMode>(initialMode)
+export default function MultiSyntenyView({ neighborhood }: Props) {
+  const [mode, setMode] = useState<LayoutMode>('bp')
   const layout = useMemo(
     () => layoutNeighborhood(neighborhood, { mode }),
     [neighborhood, mode],
   )
 
   const queryId = neighborhood.query.geneId
-  // The reference species' own copy of the query gene — the other half of every
-  // pairwise synteny drill-down.
-  const refAssembly = useMemo(
+  // The reference species' own copy of the query gene — half of every pairwise
+  // drill-down, and the locus for the reference's whole-genome alignment view.
+  const refGene = useMemo(
     () =>
       neighborhood.species
         .find(s => s.taxonId === neighborhood.query.refTaxonId)
-        ?.genes.find(g => g.anchorId === queryId)?.assembly,
+        ?.genes.find(g => g.anchorId === queryId),
     [neighborhood, queryId],
   )
+  const refAssembly = refGene?.assembly
+  const refAlignment = REF_ALIGNMENTS[neighborhood.query.refTaxonId]
   const openGene = (g: GeneBox) => {
     void openGeneDrilldown(g, refAssembly)
   }
@@ -131,6 +131,17 @@ export default function MultiSyntenyView({
             ordinal
           </button>
         </span>
+        {refAlignment && refGene && (
+          <button
+            className="msv-align-btn"
+            onClick={() => {
+              openRefAlignment(neighborhood.query.refTaxonId, refGene)
+            }}
+            title={`Open the ${refAlignment.alignmentLabel} at ${neighborhood.query.symbol} in JBrowse`}
+          >
+            ▤ {refAlignment.alignmentLabel}
+          </button>
+        )}
       </div>
 
       <AnchorLegend

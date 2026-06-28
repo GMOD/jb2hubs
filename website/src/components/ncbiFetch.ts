@@ -7,6 +7,9 @@
 // This throttle is the reason the assembler runs server-side once and caches:
 // per-user browsers can't share a rate budget, but one serverless filler can.
 
+export const EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
+export const DATASETS = 'https://api.ncbi.nlm.nih.gov/datasets/v2'
+
 const API_KEY =
   typeof process !== 'undefined' ? process.env?.NCBI_API_KEY : undefined
 const MIN_GAP_MS = API_KEY ? 110 : 350
@@ -55,4 +58,14 @@ export async function ncbiFetch(
     () => undefined,
   )
   return result
+}
+
+// Throttled fetch + JSON parse with a uniform error. The single place callers
+// need for an NCBI GET-and-parse.
+export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await ncbiFetch(url, init)
+  if (!res.ok) {
+    throw new Error(`NCBI request failed (${res.status})`)
+  }
+  return res.json() as Promise<T>
 }

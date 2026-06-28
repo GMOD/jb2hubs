@@ -10,13 +10,24 @@ import { COMMON_SPECIES } from './orthologSearchUtils.ts'
 const MIN_ANCHORS = 2
 const MAX_SPECIES = 80
 
-// Keep informative, tree-ordered rows. The cladogram auto-prunes to whatever
-// species remain, so slicing here is safe.
+// Keep informative, tree-ordered rows. When there are more than fit, take the
+// window CENTERED on the reference species rather than the head of the list:
+// tree order runs basal->derived, so a head-slice of a human query would be all
+// fish and omit the human reference itself. Centering shows the reference plus
+// its closest relatives — the meaningful comparison — and keeps adjacent-row
+// ribbons phylogenetically tight. The cladogram auto-prunes to whatever remains.
 function trim(nb: Neighborhood): Neighborhood {
-  const species = nb.species
-    .filter(s => s.genes.length >= MIN_ANCHORS)
-    .slice(0, MAX_SPECIES)
-  return { ...nb, species }
+  const eligible = nb.species.filter(s => s.genes.length >= MIN_ANCHORS)
+  if (eligible.length <= MAX_SPECIES) {
+    return { ...nb, species: eligible }
+  }
+  const refIdx = eligible.findIndex(s => s.taxonId === nb.query.refTaxonId)
+  const center = refIdx >= 0 ? refIdx : 0
+  const start = Math.min(
+    Math.max(0, center - Math.floor(MAX_SPECIES / 2)),
+    eligible.length - MAX_SPECIES,
+  )
+  return { ...nb, species: eligible.slice(start, start + MAX_SPECIES) }
 }
 
 export default function MultiSyntenyExplorer() {
