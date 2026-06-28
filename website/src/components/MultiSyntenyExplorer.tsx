@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { type Neighborhood } from './neighborhood.ts'
@@ -9,6 +9,11 @@ import { COMMON_SPECIES } from './orthologSearchUtils.ts'
 // view, so the explorer keeps the most informative species (tree order intact).
 const MIN_ANCHORS = 2
 const MAX_SPECIES = 80
+
+// Curated showcase genes (human): two with vertebrate gene-order rearrangements
+// (BRCA1 across sharks/rays, TP53), and two textbook conserved clusters whose
+// neighbors are the rest of the cluster — the beta-globin and HOXA clusters.
+const EXAMPLES = ['BRCA1', 'TP53', 'HBB', 'HOXA13']
 
 // Keep informative, tree-ordered rows. When there are more than fit, take the
 // window CENTERED on the reference species rather than the head of the list:
@@ -37,22 +42,28 @@ export default function MultiSyntenyExplorer() {
   const [error, setError] = useState('')
   const [nb, setNb] = useState<Neighborhood | null>(null)
 
-  async function run() {
-    const query = gene.trim()
-    if (!query) {
-      return
+  // Keeps the current view on screen while the next loads (no flicker), so a
+  // showcase gene swaps in place.
+  const run = useCallback(async (query: string, ref: number) => {
+    const q = query.trim()
+    if (q) {
+      setGene(q)
+      setLoading(true)
+      setError('')
+      try {
+        setNb(trim(await getNeighborhood(q, ref)))
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e))
+      } finally {
+        setLoading(false)
+      }
     }
-    setLoading(true)
-    setError('')
-    setNb(null)
-    try {
-      setNb(trim(await getNeighborhood(query, taxId)))
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e))
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [])
+
+  // Populate with a default example on arrival so the page demonstrates itself.
+  useEffect(() => {
+    void run('BRCA1', 9606)
+  }, [run])
 
   return (
     <div>
@@ -64,7 +75,7 @@ export default function MultiSyntenyExplorer() {
           }}
           onKeyDown={e => {
             if (e.key === 'Enter') {
-              void run()
+              void run(gene, taxId)
             }
           }}
           placeholder="Gene symbol, e.g. BRCA1"
@@ -88,7 +99,7 @@ export default function MultiSyntenyExplorer() {
         </select>
         <button
           onClick={() => {
-            void run()
+            void run(gene, taxId)
           }}
           disabled={loading || !gene.trim()}
         >
@@ -96,13 +107,29 @@ export default function MultiSyntenyExplorer() {
         </button>
       </div>
 
+      <div className="msv-examples">
+        <span>Examples:</span>
+        {EXAMPLES.map(g => (
+          <button
+            key={g}
+            className="msv-example-chip"
+            disabled={loading}
+            onClick={() => {
+              void run(g, taxId)
+            }}
+          >
+            {g}
+          </button>
+        ))}
+      </div>
+
       {loading && (
         <p className="msv-hint">
-          Querying NCBI orthologs + neighbors across species (throttled)…
+          Querying NCBI orthologs + neighbors across species…
         </p>
       )}
       {error && <p className="msv-error">{error}</p>}
-      {nb && nb.species.length === 0 && (
+      {nb && nb.species.length === 0 && !loading && (
         <p className="msv-hint">No informative ortholog neighborhoods found.</p>
       )}
       {nb && nb.species.length > 0 && <MultiSyntenyView neighborhood={nb} />}
