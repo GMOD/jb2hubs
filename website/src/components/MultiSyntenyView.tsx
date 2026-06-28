@@ -96,6 +96,18 @@ export default function MultiSyntenyView({
     )
   }
 
+  // Hovering a branch point highlights the contiguous band of rows it covers, so
+  // the clade a click would launch is visible before clicking.
+  const [hovered, setHovered] = useState<Set<number> | null>(null)
+  const band = useMemo(() => {
+    const ys = hovered
+      ? layout.rows.filter(r => hovered.has(r.taxonId)).map(r => r.y)
+      : []
+    return ys.length >= 2
+      ? { top: Math.min(...ys) - 4, bottom: Math.max(...ys) + H + 4 }
+      : null
+  }, [hovered, layout])
+
   return (
     <div className="msv">
       <div className="msv-controls">
@@ -132,6 +144,16 @@ export default function MultiSyntenyView({
           height={layout.height}
           role="img"
         >
+          {band && (
+            <rect
+              x={0}
+              y={band.top}
+              width={layout.width}
+              height={band.bottom - band.top}
+              className="msv-band"
+            />
+          )}
+
           <g className="msv-ribbons">
             {layout.ribbons.map((r, i) => (
               <path
@@ -166,17 +188,34 @@ export default function MultiSyntenyView({
                 placementByTaxon.has(t),
               ).length
               return count >= 2 ? (
-                <circle
+                <g
                   key={i}
-                  cx={n.x}
-                  cy={n.y}
-                  r={3.5}
+                  onMouseEnter={() => {
+                    setHovered(new Set(n.leafTaxonIds))
+                  }}
+                  onMouseLeave={() => {
+                    setHovered(null)
+                  }}
                   onClick={() => {
                     openSubtree(n.leafTaxonIds)
                   }}
+                  style={{ cursor: 'pointer' }}
                 >
+                  {/* generous transparent hit target around the small dot */}
+                  <circle
+                    cx={n.x}
+                    cy={n.y}
+                    r={9}
+                    style={{ fill: 'transparent' }}
+                  />
+                  <circle
+                    cx={n.x}
+                    cy={n.y}
+                    r={3.5}
+                    className="msv-node-dot"
+                  />
                   <title>Launch stacked synteny view of {count} species</title>
-                </circle>
+                </g>
               ) : null
             })}
           </g>
