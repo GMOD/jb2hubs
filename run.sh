@@ -10,6 +10,9 @@
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
 #   ./run.sh --reprocess-all # Re-download and reprocess everything from scratch
+#   ./run.sh --staging      # Build + deploy website to staging only. Skips S3
+#                           # data upload and git commit/push; staging reads the
+#                           # same production S3 data via absolute URLs.
 #
 
 set -e
@@ -22,6 +25,7 @@ cd "$SCRIPT_DIR"
 DRY_RUN=false
 UPLOAD_ONLY=false
 REPROCESS_ALL=false
+STAGING=false
 for arg in "$@"; do
   case $arg in
   --dry-run)
@@ -32,6 +36,9 @@ for arg in "$@"; do
     ;;
   --reprocess-all)
     REPROCESS_ALL=true
+    ;;
+  --staging)
+    STAGING=true
     ;;
   --help | -h)
     echo "Usage: $0 [OPTIONS]"
@@ -44,6 +51,9 @@ for arg in "$@"; do
     echo "  --upload-only    Upload + deploy only, skip build (run after --dry-run)"
     echo "  --reprocess-all  Re-download and reprocess every assembly from scratch."
     echo "                   Use after changing converter code/templates."
+    echo "  --staging        Build, then deploy the website to staging only."
+    echo "                   Skips S3 data upload and git commit/push; the"
+    echo "                   staging site reads the same production S3 data."
     echo "  --help, -h       Show this help message"
     exit 0
     ;;
@@ -58,6 +68,11 @@ done
 # Validate options
 if [ "$DRY_RUN" = true ] && [ "$UPLOAD_ONLY" = true ]; then
   echo "Error: --dry-run and --upload-only cannot be used together"
+  exit 1
+fi
+
+if [ "$STAGING" = true ] && [ "$DRY_RUN" = true ]; then
+  echo "Error: --staging deploys the website, so it cannot be used with --dry-run"
   exit 1
 fi
 
@@ -113,7 +128,16 @@ fi
 
 # --- Phase 2: Deploy ---
 
-if [ "$DRY_RUN" = false ]; then
+if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
+  # Staging deploys only the website. Data is shared with production (the site
+  # references jbrowse.org S3 via absolute URLs), so there is no S3 upload, and
+  # staging must not commit/push to main. The website is built with
+  # --mode staging (PUBLIC_STAGING=true) which enables in-progress pages.
+  echo "Staging mode: skipping S3 data upload and git commit/push."
+  echo "Deploying website to staging..."
+  yarn --cwd website deploy:staging
+  echo "Staging deploy complete"
+elif [ "$DRY_RUN" = false ]; then
   echo "Uploading genark data..."
   ./genark2jbrowse/uploadAll.sh
 
