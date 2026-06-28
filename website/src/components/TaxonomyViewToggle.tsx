@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import ClientOnlyDataTable from './ClientOnlyDataTable.tsx'
 import { useUrlState } from '../hooks/useUrlState.ts'
@@ -18,21 +18,12 @@ export default function TaxonomyViewToggle({
 }: Props) {
   const [viewParam, setView] = useUrlState('view', 'tree')
   const view = viewParam === 'table' ? 'table' : 'tree'
-  const [isClient, setIsClient] = useState(false)
-
   useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  // Toggle tree container visibility
-  useEffect(() => {
-    if (isClient) {
-      const treeContainer = document.getElementById(treeContainerId)
-      if (treeContainer) {
-        treeContainer.style.display = view === 'tree' ? 'block' : 'none'
-      }
+    const treeContainer = document.getElementById(treeContainerId)
+    if (treeContainer) {
+      treeContainer.style.display = view === 'tree' ? 'block' : 'none'
     }
-  }, [view, treeContainerId, isClient])
+  }, [view, treeContainerId])
 
   return (
     <div style={{ marginBottom: '16px' }}>

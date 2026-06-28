@@ -127,9 +127,7 @@ export default function Autocomplete({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
-    if (!isOpen) {
-      setIsOpen(true)
-    }
+    setIsOpen(true)
     runQuery(e.target.value)
   }
 

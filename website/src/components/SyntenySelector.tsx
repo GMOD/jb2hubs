@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
+import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
 import { orthologSymbol, searchGenes } from '../orthologs/ncbiOrthologs.ts'
 
@@ -29,8 +30,8 @@ function formatOption(asm: SyntenyAssembly) {
 }
 
 export default function SyntenySelector({ data }: Props) {
-  const [species1, setSpecies1] = useState('')
-  const [species2, setSpecies2] = useState('')
+  const [species1, setSpecies1] = useUrlState('assembly', '')
+  const [species2, setSpecies2] = useUrlState('assembly2', '')
   const [trackOverride, setTrackOverride] = useState('')
   const [showUcsc, setShowUcsc] = useState(true)
   const [showGenark, setShowGenark] = useState(true)
@@ -46,18 +47,6 @@ export default function SyntenySelector({ data }: Props) {
   const [assemblies, setAssemblies] = useState<SyntenyAssembly[]>([])
   const [partners, setPartners] = useState<SyntenyAssembly[]>([])
   const [tracks, setTracks] = useState<SyntenyTrackSummary[]>([])
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    const a1 = params.get('assembly')
-    const a2 = params.get('assembly2')
-    if (a1) {
-      setSpecies1(a1)
-    }
-    if (a1 && a2) {
-      setSpecies2(a2)
-    }
-  }, [])
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = useMemo(
@@ -132,17 +121,13 @@ export default function SyntenySelector({ data }: Props) {
 
   // Gene-name typeahead in the first assembly's taxon. Each option carries the
   // NCBI gene id so selection can resolve the ortholog in the second taxon.
-  const queryGeneOptions = async (search: string) => {
-    let opts: { value: string; label: string }[] = []
-    if (taxon1 !== undefined) {
-      const hits = await searchGenes(search, taxon1)
-      opts = hits.map(h => ({
-        value: `${h.geneId}\t${h.symbol}`,
-        label: h.symbol,
-      }))
-    }
-    return opts
-  }
+  const queryGeneOptions = async (search: string) =>
+    taxon1 !== undefined
+      ? (await searchGenes(search, taxon1)).map(h => ({
+          value: `${h.geneId}\t${h.symbol}`,
+          label: h.symbol,
+        }))
+      : []
 
   // On selection, resolve the orthologous symbol in the second taxon (or reuse
   // the same symbol for same-species pairs) so the launch can center both views.
