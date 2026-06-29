@@ -5,6 +5,15 @@ export interface Assembly {
   taxonId: number
 }
 
+// Common name for display, falling back to the scientific name. commonName is ""
+// (not absent) in the index when unknown, so this tests emptiness, not nullishness.
+export function assemblyLabel(a: {
+  commonName: string
+  scientificName: string
+}) {
+  return a.commonName ? a.commonName : a.scientificName
+}
+
 // Compact wire format for ortholog_index.json — kept small for the download.
 // Positions: [commonName, scientificName, taxonId]
 type IndexEntry = [string, string, number]

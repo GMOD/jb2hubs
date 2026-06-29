@@ -38,6 +38,7 @@ function AnchorLegend({
         <span
           key={a.geneId}
           className="msv-legend-item"
+          title={`${a.symbol}${a.isQuery ? ' — the query gene' : ' — neighbor gene'} · reference ${a.refStart.toLocaleString()}–${a.refEnd.toLocaleString()} · ribbons trace this gene's orthologs across species`}
         >
           <span
             className="msv-swatch"
@@ -56,6 +57,9 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   const layout = layoutNeighborhood(neighborhood, { mode })
 
   const queryId = neighborhood.query.geneId
+  // Per-taxon species detail (full names) for row-label tooltips; the drawn row
+  // label collapses to the common name, so the hover restores the rest.
+  const speciesByTaxon = new Map(neighborhood.species.map(s => [s.taxonId, s]))
   // The reference species' genes, keyed by anchor — each anchor's reference
   // locus drives the reference panel of a pairwise synteny drill-down, and the
   // query anchor's gene is the locus for the whole-genome alignment view.
@@ -126,6 +130,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
             onClick={() => {
               setMode('bp')
             }}
+            title="Place genes at their real genomic positions and sizes (intergenic distances to scale)"
           >
             bp-scaled
           </button>
@@ -134,6 +139,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
             onClick={() => {
               setMode('ordinal')
             }}
+            title="Place genes in equal-width slots by order, ignoring distances — makes gene-order rearrangements easiest to read"
           >
             ordinal
           </button>
@@ -244,40 +250,58 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
             })}
           </g>
 
-          {layout.rows.map(row => (
-            <g key={row.taxonId}>
-              <text
-                x={layout.trackLeft - 6}
-                y={row.y + H / 2}
-                textAnchor="end"
-                dominantBaseline="central"
-                className="msv-label"
-              >
-                {row.label}
-                {row.translocated > 0 ? ` (+${row.translocated})` : ''}
-              </text>
-              <g transform={`translate(0,${row.y})`}>
-                {row.genes.map(g => (
-                  <path
-                    key={g.anchorId}
-                    d={geneArrowPath(g, H)}
-                    fill={layout.anchorColors.get(g.anchorId) ?? '#999'}
-                    stroke={g.anchorId === queryId ? '#000' : 'none'}
-                    strokeWidth={g.anchorId === queryId ? 1.5 : 0}
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => {
-                      openGene(g)
-                    }}
-                  >
-                    <title>
-                      {g.symbol} · {row.label} · {g.refName}:{g.start}-{g.end} (
-                      {g.strand > 0 ? '+' : '−'})
-                    </title>
-                  </path>
-                ))}
+          {layout.rows.map(row => {
+            const detail = speciesByTaxon.get(row.taxonId)
+            const labelTitle = [
+              detail?.scientificName ?? row.label,
+              detail?.commonName && detail.commonName !== detail.scientificName
+                ? `(${detail.commonName})`
+                : '',
+              `· NCBI taxon ${row.taxonId}`,
+              row.translocated > 0
+                ? `· ${row.translocated} neighbor gene${row.translocated > 1 ? 's' : ''} on a different scaffold here, not drawn in this row`
+                : '',
+            ]
+              .filter(Boolean)
+              .join(' ')
+            return (
+              <g key={row.taxonId}>
+                <text
+                  x={layout.trackLeft - 6}
+                  y={row.y + H / 2}
+                  textAnchor="end"
+                  dominantBaseline="central"
+                  className="msv-label"
+                  style={{ cursor: 'help' }}
+                >
+                  {row.label}
+                  {row.translocated > 0 ? ` (+${row.translocated})` : ''}
+                  <title>{labelTitle}</title>
+                </text>
+                <g transform={`translate(0,${row.y})`}>
+                  {row.genes.map(g => (
+                    <path
+                      key={g.anchorId}
+                      d={geneArrowPath(g, H)}
+                      fill={layout.anchorColors.get(g.anchorId) ?? '#999'}
+                      stroke={g.anchorId === queryId ? '#000' : 'none'}
+                      strokeWidth={g.anchorId === queryId ? 1.5 : 0}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        openGene(g)
+                      }}
+                    >
+                      <title>
+                        {g.symbol} · {row.label} · {g.refName}:{g.start}-{g.end}{' '}
+                        ({g.strand > 0 ? '+' : '−'} strand) · click to open in
+                        JBrowse
+                      </title>
+                    </path>
+                  ))}
+                </g>
               </g>
-            </g>
-          ))}
+            )
+          })}
         </svg>
       </div>
     </div>

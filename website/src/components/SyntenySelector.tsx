@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
+import { syntenyViewUrl } from './jbrowseLinks.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
 import { orthologSymbol, searchGenes } from '../orthologs/ncbiOrthologs.ts'
@@ -14,11 +15,6 @@ import type {
 interface Props {
   data: SyntenyCatalogData
 }
-
-// JBrowse Web build the synteny views launch into. The launch spec sets
-// LinearSyntenyView init options (colorBy/drawCurves/autoDiagonalize) read by
-// the LaunchView extension point; builds predating them ignore the extra fields.
-const JBROWSE_BASE = 'https://jbrowse.org/code/jb2/main'
 
 function formatOption(asm: SyntenyAssembly) {
   const parts = [asm.displayName]
@@ -190,8 +186,6 @@ export default function SyntenySelector({ data }: Props) {
       return null
     }
 
-    const mergeApiUrl = `https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge?hubIds=${species1},${species2}`
-
     // The LinearSyntenyView LaunchView extension point reads these top-level
     // spec fields into its one-time init block. They make the whole-genome
     // synteny readable on first load: chromosome painting instead of grey
@@ -210,20 +204,11 @@ export default function SyntenySelector({ data }: Props) {
           ]
         : [{ assembly: species1 }, { assembly: species2 }]
 
-    const sessionSpec = {
-      views: [
-        {
-          type: 'LinearSyntenyView',
-          tracks: [selectedTrack.trackId],
-          views: subViews,
-          colorBy: 'query',
-          drawCurves: true,
-          autoDiagonalize: true,
-        },
-      ],
-    }
-
-    return `${JBROWSE_BASE}/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
+    return syntenyViewUrl(subViews, [selectedTrack.trackId], {
+      colorBy: 'query',
+      drawCurves: true,
+      autoDiagonalize: true,
+    })
   }, [species1, species2, selectedTrack, selectedGene])
 
   const species1Options = useMemo(

@@ -1,9 +1,9 @@
-import { mergeConfig, specUrl } from './jbrowseLinks.ts'
+import { syntenyViewUrl } from './jbrowseLinks.ts'
 
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
 
 export type { Assembly, AssemblyIndex, AssemblyStore } from './orthologDb.ts'
-export { createStore } from './orthologDb.ts'
+export { assemblyLabel, createStore } from './orthologDb.ts'
 
 export const COMMON_SPECIES = [
   { label: 'Human', taxId: 9606 },
@@ -101,19 +101,16 @@ export function orthoSyntenyUrl(
   ref: OrthologResult | undefined,
   flankBp = SYNTENY_FLANK_BP,
 ) {
-  return specUrl(mergeConfig([r.assembly.accession, refAccession]), [
-    {
-      type: 'LinearSyntenyView',
-      tracks: [trackId],
-      views: [
-        { assembly: r.assembly.accession, loc: windowedLoc(r, flankBp) },
-        {
-          assembly: refAccession,
-          ...(ref ? { loc: windowedLoc(ref, flankBp) } : {}),
-        },
-      ],
-    },
-  ])
+  return syntenyViewUrl(
+    [
+      { assembly: r.assembly.accession, loc: windowedLoc(r, flankBp) },
+      {
+        assembly: refAccession,
+        ...(ref ? { loc: windowedLoc(ref, flankBp) } : {}),
+      },
+    ],
+    [trackId],
+  )
 }
 
 export interface MultiSyntenyPlan {
@@ -213,16 +210,13 @@ export function buildMultiSyntenyUrl(
   plan: MultiSyntenyPlan,
   flankBp = SYNTENY_FLANK_BP,
 ) {
-  return specUrl(mergeConfig(plan.rows.map(r => r.assembly.accession)), [
-    {
-      type: 'LinearSyntenyView',
-      views: plan.rows.map(r => ({
-        assembly: r.assembly.accession,
-        loc: windowedLoc(r, flankBp),
-      })),
-      tracks: plan.tracks.map(t => [t]),
-    },
-  ])
+  return syntenyViewUrl(
+    plan.rows.map(r => ({
+      assembly: r.assembly.accession,
+      loc: windowedLoc(r, flankBp),
+    })),
+    plan.tracks.map(t => [t]),
+  )
 }
 
 export function formatNumber(n: number) {

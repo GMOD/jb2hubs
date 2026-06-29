@@ -2,13 +2,18 @@
 import Logo from '../logo.astro'
 import { features } from '../config/features.ts'
 
+// Gene-centric resources (Orthologs hub + its conserved-gene-order view) grouped
+// first, then the assembly-level synteny browser, then pangenomes.
 const exploreItems = [
   { name: 'Search', href: '/search' },
-  ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
-  ...(features.multiSynteny
-    ? [{ name: 'Multi-synteny', href: '/synteny-multi' }]
-    : []),
   ...(features.orthologs ? [{ name: 'Orthologs', href: '/orthologs' }] : []),
+  ...(features.multiSynteny
+    ? [{ name: 'Conserved gene order', href: '/conserved-gene-order' }]
+    : []),
+  ...(features.proteinMsa
+    ? [{ name: 'Protein alignment', href: '/protein-alignment' }]
+    : []),
+  ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
   ...(features.pangenome ? [{ name: 'Pangenomes', href: '/pangenomes' }] : []),
 ]
 

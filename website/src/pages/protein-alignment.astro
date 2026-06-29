@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Container from '../components/Container.astro'
+import ProteinMsaExplorer from '../components/ProteinMsaExplorer.tsx'
+import { features } from '../config/features.ts'
+
+if (!features.proteinMsa) {
+  return Astro.redirect('/')
+}
+---
+
+<Layout title="Protein alignment">
+  <Container>
+    <h1>Ortholog protein alignment & domains</h1>
+    <p>
+      Enter a gene and reference organism: this resolves the gene's NCBI
+      orthologs, picks a representative protein per species, aligns them with EBI
+      Clustal Omega, and overlays each protein's NCBI CDD conserved domains on
+      the alignment. Residue conservation and domain architecture are the
+      residue-level complement to the <a href="/conserved-gene-order"
+        >conserved gene order</a
+      > view. The alignment step runs at EBI and can take up to a minute.
+    </p>
+    <ProteinMsaExplorer client:only="react" />
+  </Container>
+</Layout>
+
+<style is:global>
+  .msv-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 1.25rem 0;
+    flex-wrap: wrap;
+  }
+  .msv-form input,
+  .msv-form select {
+    padding: 7px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .msv-form input {
+    min-width: 220px;
+  }
+  .msv-form button {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .msv-form button:disabled {
+    background: #f0f0f0;
+    color: #999;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+  .msv-hint {
+    color: #666;
+    font-size: 14px;
+  }
+  .msv-error {
+    color: #b00020;
+    font-size: 14px;
+  }
+  .msv-examples {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 1rem;
+    font-size: 13px;
+    color: #666;
+  }
+  .msv-example-chip {
+    padding: 3px 10px;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    border-radius: 999px;
+    background: white;
+    color: #0b69d4;
+    cursor: pointer;
+  }
+  .msv-example-chip:hover:not(:disabled) {
+    border-color: #0b69d4;
+    background: #eaf3fd;
+  }
+</style>

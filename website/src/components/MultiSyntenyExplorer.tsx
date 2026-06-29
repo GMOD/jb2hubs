@@ -4,6 +4,7 @@ import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { type Neighborhood } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
 import { COMMON_SPECIES } from './orthologSearchUtils.ts'
+import { features } from '../config/features.ts'
 
 // Rows with too few anchors carry little synteny signal and just lengthen the
 // view, so the explorer keeps the most informative species (tree order intact).
@@ -155,6 +156,25 @@ export default function MultiSyntenyExplorer() {
         <p className="msv-hint">
           Showing the {nb.species.length} species nearest the reference of{' '}
           {eligible} with orthologs here.
+        </p>
+      )}
+      {nb && nb.species.length > 0 && (
+        <p className="msv-hint">
+          <a
+            href={`/orthologs?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
+          >
+            View the full ortholog table for {nb.query.symbol} →
+          </a>
+          {features.proteinMsa && (
+            <>
+              {' · '}
+              <a
+                href={`/protein-alignment?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
+              >
+                protein alignment & domains →
+              </a>
+            </>
+          )}
         </p>
       )}
       {nb && nb.species.length > 0 && <MultiSyntenyView neighborhood={nb} />}

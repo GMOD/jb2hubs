@@ -11,7 +11,7 @@ export const EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
 export const DATASETS = 'https://api.ncbi.nlm.nih.gov/datasets/v2'
 
 const API_KEY =
-  typeof process !== 'undefined' ? process.env?.NCBI_API_KEY : undefined
+  typeof process !== 'undefined' ? process.env.NCBI_API_KEY : undefined
 const MIN_GAP_MS = API_KEY ? 110 : 350
 const MAX_RETRIES = 4
 
@@ -68,4 +68,14 @@ export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
     throw new Error(`NCBI request failed (${res.status})`)
   }
   return res.json() as Promise<T>
+}
+
+// Throttled fetch returning text — for efetch flatfile/FASTA endpoints, which
+// don't speak JSON.
+export async function ncbiText(url: string, init?: RequestInit): Promise<string> {
+  const res = await ncbiFetch(url, init)
+  if (!res.ok) {
+    throw new Error(`NCBI request failed (${res.status})`)
+  }
+  return res.text()
 }

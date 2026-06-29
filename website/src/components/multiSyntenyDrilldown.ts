@@ -4,7 +4,7 @@
 //  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
 //  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
 
-import { mergeConfig, specUrl } from './jbrowseLinks.ts'
+import { specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { accessionToJbrowseUrl } from './orthologSearchUtils.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
@@ -106,21 +106,16 @@ function pairwiseSyntenyUrl(
   trackId: string,
   refLoc: string | undefined,
 ) {
-  return specUrl(mergeConfig([orthoAccession, refAccession]), [
-    {
-      type: 'LinearSyntenyView',
-      tracks: [trackId],
-      views: [
-        { assembly: orthoAccession, loc },
-        // Land the reference panel on the orthologous locus too, so both
-        // genomes open at the gene rather than leaving the reference unnavigated.
-        { assembly: refAccession, ...(refLoc ? { loc: refLoc } : {}) },
-      ],
-      colorBy: 'query',
-      drawCurves: true,
-      autoDiagonalize: true,
-    },
-  ])
+  return syntenyViewUrl(
+    [
+      { assembly: orthoAccession, loc },
+      // Land the reference panel on the orthologous locus too, so both genomes
+      // open at the gene rather than leaving the reference unnavigated.
+      { assembly: refAccession, ...(refLoc ? { loc: refLoc } : {}) },
+    ],
+    [trackId],
+    { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+  )
 }
 
 export interface SubtreeLeaf {
@@ -152,14 +147,11 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
       }
     }
     window.open(
-      specUrl(mergeConfig(picked.map(p => p.assembly)), [
-        {
-          type: 'LinearSyntenyView',
-          tracks,
-          views: picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
-          drawCurves: true,
-        },
-      ]),
+      syntenyViewUrl(
+        picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
+        tracks,
+        { drawCurves: true },
+      ),
       '_blank',
       'noopener',
     )

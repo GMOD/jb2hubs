@@ -15,3 +15,31 @@ export function specUrl(config: string, views: object[]) {
 // The merge API stitches several hosted hubs into one config.
 export const mergeConfig = (hubIds: string[]) =>
   `${MERGE_API}?hubIds=${hubIds.join(',')}`
+
+// One genome panel in a stacked LinearSyntenyView, optionally pre-navigated.
+export interface SyntenySubView {
+  assembly: string
+  loc?: string
+}
+
+// LaunchView init options the LinearSyntenyView reads on first load; builds that
+// predate any of them just ignore the extra field.
+export interface SyntenyViewOptions {
+  colorBy?: string
+  drawCurves?: boolean
+  autoDiagonalize?: boolean
+}
+
+// A launch URL for a LinearSyntenyView over a stack of genome panels. `tracks`
+// is either a flat list (JBrowse binds each track to its level by matching
+// assemblyNames) or one array per level. The whole-genome merge config is built
+// from the panels' assemblies. Single source for every synteny-view launch.
+export function syntenyViewUrl(
+  views: SyntenySubView[],
+  tracks: (string | string[])[],
+  options: SyntenyViewOptions = {},
+) {
+  return specUrl(mergeConfig(views.map(v => v.assembly)), [
+    { type: 'LinearSyntenyView', views, tracks, ...options },
+  ])
+}

@@ -1,13 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
 import OrthologResultsTable from './OrthologResultsTable.tsx'
+import { ncbiJson } from './ncbiFetch.ts'
 import {
   COMMON_SPECIES,
   buildOrthologResults,
   createStore,
 } from './orthologSearchUtils.ts'
+import { features } from '../config/features.ts'
 
 import type {
   AssemblyIndex,
@@ -21,6 +23,8 @@ interface ResolvedGene {
   species: string
 }
 
+// Local static-asset fetch for the SWR-loaded index files; NCBI calls below go
+// through the shared throttled client (ncbiJson) instead.
 async function fetchJson<T>(url: string): Promise<T> {
   const res = await fetch(url)
   if (!res.ok) {
@@ -37,6 +41,7 @@ export default function OrthologSearch() {
   const [error, setError] = useState('')
   const [results, setResults] = useState<OrthologResult[] | null>(null)
   const [totalOrthologs, setTotalOrthologs] = useState(0)
+  const [initialized, setInitialized] = useState(false)
 
   const { data: indexData } = useSWRImmutable<AssemblyIndex>(
     '/ortholog_index.json',
@@ -53,11 +58,13 @@ export default function OrthologSearch() {
     [indexData],
   )
 
-  async function handleSearch() {
-    const query = geneInput.trim()
+  async function runSearch(rawQuery: string, tax: number) {
+    const query = rawQuery.trim()
     if (!query || !store) {
       return
     }
+    setGeneInput(query)
+    setTaxId(tax)
     setLoading(true)
     setError('')
     setResults(null)
@@ -66,15 +73,15 @@ export default function OrthologSearch() {
       if (/^\d+$/.test(query)) {
         geneId = query
       } else {
-        const taxFilter = taxId ? `+AND+${taxId}[taxid]` : ''
+        const taxFilter = tax ? `+AND+${tax}[taxid]` : ''
         const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=${encodeURIComponent(query)}[Gene+Name]${taxFilter}&retmode=json&retmax=1`
-        const searchRes = await fetchJson<{
+        const searchRes = await ncbiJson<{
           esearchresult?: { idlist?: string[] }
         }>(searchUrl)
         const ids = searchRes.esearchresult?.idlist ?? []
         if (ids.length === 0) {
           setError(
-            `No gene found for "${query}"${taxId ? ` in taxon ${taxId}` : ''}.`,
+            `No gene found for "${query}"${tax ? ` in taxon ${tax}` : ''}.`,
           )
           return
         }
@@ -82,7 +89,7 @@ export default function OrthologSearch() {
       }
 
       const summaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=${geneId}&retmode=json`
-      const summaryRes = await fetchJson<{
+      const summaryRes = await ncbiJson<{
         result?: Record<
           string,
           { name?: string; organism?: { scientificname?: string } }
@@ -96,7 +103,7 @@ export default function OrthologSearch() {
       })
 
       const orthologUrl = `https://api.ncbi.nlm.nih.gov/datasets/v2/gene/id/${geneId}/orthologs?returned_content=COMPLETE`
-      const orthologRes = await fetchJson<NcbiOrthologResponse>(orthologUrl)
+      const orthologRes = await ncbiJson<NcbiOrthologResponse>(orthologUrl)
       const reports = orthologRes.reports ?? []
       setTotalOrthologs(orthologRes.total_count ?? reports.length)
       setResults(buildOrthologResults(reports, store))
@@ -106,6 +113,22 @@ export default function OrthologSearch() {
       setLoading(false)
     }
   }
+
+  // Honour a shared/bookmarked link (?gene=BRCA1&ref=9606) — e.g. the back-link
+  // from the conserved-gene-order view — by auto-searching once the assembly
+  // index (store) is ready. Client-only: this island is client:load, so window
+  // is unavailable until mount.
+  useEffect(() => {
+    if (store && !initialized) {
+      setInitialized(true)
+      const p = new URLSearchParams(window.location.search)
+      const g = p.get('gene')?.trim()
+      const r = Number(p.get('ref'))
+      if (g) {
+        void runSearch(g, r > 0 ? r : taxId)
+      }
+    }
+  }, [store, initialized])
 
   const refAccession = results?.find(r => r.assembly.taxonId === taxId)
     ?.assembly.accession
@@ -129,7 +152,7 @@ export default function OrthologSearch() {
             }}
             onKeyDown={e => {
               if (e.key === 'Enter') {
-                void handleSearch()
+                void runSearch(geneInput, taxId)
               }
             }}
             placeholder="e.g. BRCA1 or 672"
@@ -165,7 +188,7 @@ export default function OrthologSearch() {
         </div>
         <button
           onClick={() => {
-            void handleSearch()
+            void runSearch(geneInput, taxId)
           }}
           disabled={!store || loading || !geneInput.trim()}
           className="orthologs-search-btn"
@@ -199,6 +222,26 @@ export default function OrthologSearch() {
             {results.length} of {totalOrthologs} NCBI ortholog
             {totalOrthologs !== 1 ? 's' : ''} present in our collection
           </p>
+          {resolved && features.multiSynteny && (
+            <p className="orthologs-summary">
+              <a
+                href={`/conserved-gene-order?gene=${encodeURIComponent(resolved.symbol)}&ref=${taxId}`}
+              >
+                View conserved gene order for {resolved.symbol} across species →
+              </a>{' '}
+              (the ortholog neighborhood, drawn as gene-order ribbons)
+            </p>
+          )}
+          {resolved && features.proteinMsa && (
+            <p className="orthologs-summary">
+              <a
+                href={`/protein-alignment?gene=${encodeURIComponent(resolved.symbol)}&ref=${taxId}`}
+              >
+                View the ortholog protein alignment for {resolved.symbol} →
+              </a>{' '}
+              (residue conservation + conserved-domain architecture)
+            </p>
+          )}
           {results.length === 0 ? (
             <p className="orthologs-hint">
               No orthologs found in our assembly collection for this gene.

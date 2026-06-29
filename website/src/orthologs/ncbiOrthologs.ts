@@ -2,17 +2,11 @@
 // comes from E-utilities (esearch + esummary); cross-species ortholog mapping
 // from the NCBI Datasets API. Same-species pairs (taxon1 === taxon2) need no
 // mapping — the gene symbol is shared, so both views center on the same symbol.
+//
+// All requests go through the shared throttled client so the gene picker shares
+// one NCBI rate budget with every other caller instead of bursting on keystroke.
 
-const EUTILS = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils'
-const DATASETS = 'https://api.ncbi.nlm.nih.gov/datasets/v2'
-
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(`NCBI request failed: ${res.status} ${res.statusText}`)
-  }
-  return res.json() as Promise<T>
-}
+import { DATASETS, EUTILS, ncbiJson } from '../components/ncbiFetch.ts'
 
 export interface GeneHit {
   geneId: string
@@ -29,12 +23,12 @@ export async function searchGenes(
   let hits: GeneHit[] = []
   if (q) {
     const term = `${q}*[Gene Name] AND ${taxId}[taxid]`
-    const search = await fetchJson<{ esearchresult?: { idlist?: string[] } }>(
+    const search = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
       `${EUTILS}/esearch.fcgi?db=gene&term=${encodeURIComponent(term)}&retmode=json&retmax=${limit}`,
     )
     const ids = search.esearchresult?.idlist ?? []
     if (ids.length > 0) {
-      const summary = await fetchJson<{
+      const summary = await ncbiJson<{
         result?: Record<string, { name?: string }>
       }>(`${EUTILS}/esummary.fcgi?db=gene&id=${ids.join(',')}&retmode=json`)
       const result = summary.result ?? {}
@@ -56,7 +50,7 @@ export async function orthologSymbol(
   geneId: string,
   targetTax: number,
 ): Promise<string | null> {
-  const data = await fetchJson<OrthologResponse>(
+  const data = await ncbiJson<OrthologResponse>(
     `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE`,
   )
   const match = (data.reports ?? []).find(

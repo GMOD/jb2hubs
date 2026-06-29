@@ -1,5 +1,6 @@
 import {
   COMMON_TAX_RANK,
+  assemblyLabel,
   buildMultiSyntenyUrl,
   formatNumber,
   orthoSyntenyUrl,
@@ -43,10 +44,18 @@ function ResultRow({ result: r, isRef, syntenyUrl }: ResultRowProps) {
           href={r.jbrowseUrl}
           target="_blank"
           rel="noreferrer"
+          title={`Open ${r.assembly.scientificName} at ${r.geneSymbol} (${r.chromosome}) in JBrowse`}
         >
           JBrowse
         </a>
-        {isRef && <span className="orthologs-ref-label">ref</span>}
+        {isRef && (
+          <span
+            className="orthologs-ref-label"
+            title="The reference species your search started from"
+          >
+            ref
+          </span>
+        )}
         {syntenyUrl && (
           <>
             {' · '}
@@ -54,6 +63,7 @@ function ResultRow({ result: r, isRef, syntenyUrl }: ResultRowProps) {
               href={syntenyUrl}
               target="_blank"
               rel="noreferrer"
+              title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
             >
               Synteny
             </a>
@@ -113,9 +123,7 @@ export default function OrthologResultsTable({
             Launch multi-species synteny view
           </a>{' '}
           ({multiPlan.rows.length} species:{' '}
-          {multiPlan.rows
-            .map(r => r.assembly.commonName ?? r.assembly.scientificName)
-            .join(' → ')}
+          {multiPlan.rows.map(r => assemblyLabel(r.assembly)).join(' → ')}
           )
         </p>
       )}
