@@ -36,6 +36,7 @@ export interface ProteinMsaResult {
 export interface ProteinMsaOptions {
   email?: string
   taxa?: number[] // species to include; defaults to the common-species set
+  onProgress?: (message: string) => void // staged status for the slow EBI step
 }
 
 interface OrthologGene {
@@ -109,7 +110,7 @@ async function fetchRepresentativeProteins(
 }
 
 // accession (first header token) -> ungapped sequence, from an efetch multi-FASTA.
-function parseFasta(text: string): Map<string, string> {
+export function parseFasta(text: string): Map<string, string> {
   const map = new Map<string, string>()
   let acc: string | undefined
   let buf: string[] = []
@@ -202,9 +203,22 @@ function sanitize(name: string) {
   return name.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '')
 }
 
+// Sanitized, unique single-token labels, used identically in the FASTA headers,
+// the tree leaf names, and the gff seq_ids so all three line up. Collisions
+// (e.g. two rows sanitizing to the same name) get a numeric suffix.
+export function dedupeLabels(names: string[]): string[] {
+  const seen = new Map<string, number>()
+  return names.map(name => {
+    const base = sanitize(name)
+    const n = seen.get(base) ?? 0
+    seen.set(base, n + 1)
+    return n === 0 ? base : `${base}_${n + 1}`
+  })
+}
+
 // EBI returns FASTA wrapped at 60 columns; collapse each record to a single
 // sequence line so the viewer's parser sees the alignment unambiguously.
-function unwrapFasta(text: string): string {
+export function unwrapFasta(text: string): string {
   const records: string[] = []
   let header: string | undefined
   let buf: string[] = []
@@ -225,16 +239,58 @@ function unwrapFasta(text: string): string {
   return records.join('\n')
 }
 
-// GFF attribute values must not contain the structural chars ; = tab.
+// GFF attribute values must not contain the structural chars ; = tab; collapse
+// any whitespace they leave behind so names stay tidy.
 function gffSafe(value: string) {
-  return value.replace(/[;=\t\r\n]+/g, ' ').trim()
+  return value.replace(/[;=\t\r\n]+/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
+// What the FASTA/GFF builders need from a row — kept narrow so they're trivially
+// testable without constructing a full ProteinMsaRow.
+interface LabelledProtein {
+  label: string
+  protein: string
+}
+
+// FASTA submitted to the aligner: our row labels as headers (so they propagate
+// to the aligned output + tree); rows with a missing sequence are dropped.
+export function buildInputFasta(
+  rows: LabelledProtein[],
+  seqById: Map<string, string>,
+): string {
+  return rows
+    .map(r => {
+      const seq = seqById.get(r.protein)
+      return seq ? `>${r.label}\n${seq}` : ''
+    })
+    .filter(Boolean)
+    .join('\n')
+}
+
+// Per-row domain track: each protein's CDD domains as protein_match features in
+// ungapped protein coordinates, keyed by the row label (= its alignment row).
+export function buildDomainGff(
+  rows: LabelledProtein[],
+  domainsByAcc: Map<string, Domain[]>,
+): string {
+  const lines = ['##gff-version 3']
+  for (const r of rows) {
+    for (const d of domainsByAcc.get(r.protein) ?? []) {
+      const name = gffSafe(d.name)
+      lines.push(
+        `${r.label}\tNCBI\tprotein_match\t${d.start}\t${d.end}\t.\t.\t.\tName=${name};description=${name}`,
+      )
+    }
+  }
+  return lines.join('\n')
 }
 
 export async function assembleProteinMsa(
   query: string,
   refTaxonId: number,
-  { email = EBI_EMAIL, taxa }: ProteinMsaOptions = {},
+  { email = EBI_EMAIL, taxa, onProgress = () => undefined }: ProteinMsaOptions = {},
 ): Promise<ProteinMsaResult> {
+  onProgress('Resolving orthologs across species…')
   const queryGeneId = await resolveGeneId(query, refTaxonId)
   if (!queryGeneId) {
     throw new Error(`no gene found for "${query}"`)
@@ -262,69 +318,50 @@ export async function assembleProteinMsa(
     )
   }
 
+  onProgress('Selecting a representative protein per species…')
   const proteinByGene = await fetchRepresentativeProteins(
     genes.map(g => g.geneId),
   )
 
-  // Build unique single-token labels shared across FASTA / tree / gff.
-  const used = new Map<string, number>()
-  const rows: ProteinMsaRow[] = []
-  for (const g of genes) {
-    const protein = proteinByGene.get(g.geneId)
-    if (protein) {
-      const base = sanitize(g.commonName ?? g.scientificName)
-      const n = used.get(base) ?? 0
-      used.set(base, n + 1)
-      rows.push({
-        taxId: g.taxId,
-        label: n === 0 ? base : `${base}_${n + 1}`,
-        scientificName: g.scientificName,
-        commonName: g.commonName,
-        geneId: g.geneId,
-        protein,
-      })
-    }
-  }
+  // Labels are shared across FASTA / tree / gff so the three line up.
+  const withProtein = genes.filter(g => proteinByGene.has(g.geneId))
+  const labels = dedupeLabels(
+    withProtein.map(g => g.commonName ?? g.scientificName),
+  )
+  const rows: ProteinMsaRow[] = withProtein.map((g, i) => ({
+    taxId: g.taxId,
+    label: labels[i]!,
+    scientificName: g.scientificName,
+    commonName: g.commonName,
+    geneId: g.geneId,
+    protein: proteinByGene.get(g.geneId)!,
+  }))
   if (rows.length < 2) {
     throw new Error('could not resolve representative proteins for the orthologs')
   }
 
+  onProgress('Fetching protein sequences…')
   const accessions = rows.map(r => r.protein)
   const seqById = parseFasta(
     await ncbiText(
       `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=fasta&retmode=text`,
     ),
   )
-  const inputFasta = rows
-    .map(r => {
-      const seq = seqById.get(r.protein)
-      return seq ? `>${r.label}\n${seq}` : ''
-    })
-    .filter(Boolean)
-    .join('\n')
-
+  onProgress(
+    'Aligning proteins at EBI Clustal Omega and mapping NCBI conserved domains…',
+  )
   const [{ aligned, newick }, domainsByAcc] = await Promise.all([
-    clustalOmega(inputFasta, { email }),
+    clustalOmega(buildInputFasta(rows, seqById), { email }),
     ncbiText(
       `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=gp&retmode=text`,
     ).then(parseAllDomains),
   ])
 
-  const gffLines = ['##gff-version 3']
-  for (const r of rows) {
-    for (const d of domainsByAcc.get(r.protein) ?? []) {
-      const name = gffSafe(d.name)
-      gffLines.push(
-        `${r.label}\tNCBI\tprotein_match\t${d.start}\t${d.end}\t.\t.\t.\tName=${name};description=${name}`,
-      )
-    }
-  }
-
   return {
     query: { symbol: query, refTaxonId },
     fasta: unwrapFasta(aligned),
     newick,
-    gff: gffLines.join('\n'),
+    gff: buildDomainGff(rows, domainsByAcc),
     rows,
   }
 }

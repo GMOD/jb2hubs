@@ -24,6 +24,7 @@ export default function ProteinMsaExplorer() {
   const [gene, setGene] = useState(() => paramsFromUrl().gene)
   const [taxId, setTaxId] = useState(() => paramsFromUrl().ref)
   const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState('')
   const [error, setError] = useState('')
   const [result, setResult] = useState<ProteinMsaResult | null>(null)
 
@@ -37,7 +38,7 @@ export default function ProteinMsaExplorer() {
       const params = new URLSearchParams({ gene: sym, ref: String(ref) })
       window.history.replaceState(null, '', `?${params.toString()}`)
       try {
-        setResult(await assembleProteinMsa(sym, ref))
+        setResult(await assembleProteinMsa(sym, ref, { onProgress: setStatus }))
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e))
       } finally {
@@ -109,10 +110,7 @@ export default function ProteinMsaExplorer() {
       </div>
 
       {loading && (
-        <p className="msv-hint">
-          Resolving NCBI orthologs, aligning proteins at EBI Clustal Omega (this
-          can take up to a minute), and mapping NCBI CDD conserved domains…
-        </p>
+        <p className="msv-hint">{status || 'Building…'}</p>
       )}
       {error && <p className="msv-error">{error}</p>}
 
