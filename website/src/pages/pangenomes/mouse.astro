@@ -3,8 +3,14 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import mouseStrains from '../../mouseStrains.json'
 import ensemblMouseStrains from '../../ensemblMouseStrains.json'
+import { features } from '../../config/features.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
+
+// The pangenomes section is staging-only while in development.
+if (!features.pangenome) {
+  return Astro.redirect('/')
+}
 ---
 
 <Layout title="Mouse Strain Assemblies">

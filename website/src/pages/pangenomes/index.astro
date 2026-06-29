@@ -3,6 +3,11 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import { features } from '../../config/features.ts'
 import '../../styles/portal.css'
+
+// The pangenomes section is staging-only while in development.
+if (!features.pangenome) {
+  return Astro.redirect('/')
+}
 ---
 
 <Layout title="Pangenomes">
@@ -15,28 +20,20 @@ import '../../styles/portal.css'
       interactive genome browser rather than file downloads.
     </p>
 
-    {
-      features.pangenome && (
-        <div class="portal-hero">
-          <div class="portal-hero-text">
-            <h2 class="portal-hero-title">Pangenome Explorer</h2>
-            <p>
-              Explore famous regions of human divergence interactively —
-              variant landscapes and one-click JBrowse launches over the HPRC
-              graph.
-            </p>
-          </div>
-          <div class="portal-hero-actions">
-            <a
-              class="portal-btn portal-btn-primary"
-              href="/pangenomes/explorer"
-            >
-              Open the Pangenome Explorer →
-            </a>
-          </div>
-        </div>
-      )
-    }
+    <div class="portal-hero">
+      <div class="portal-hero-text">
+        <h2 class="portal-hero-title">Pangenome Explorer</h2>
+        <p>
+          Explore famous regions of human divergence interactively — variant
+          landscapes and one-click JBrowse launches over the HPRC graph.
+        </p>
+      </div>
+      <div class="portal-hero-actions">
+        <a class="portal-btn portal-btn-primary" href="/pangenomes/explorer">
+          Open the Pangenome Explorer →
+        </a>
+      </div>
+    </div>
 
     <div class="portal-cards">
       <a class="portal-card" href="/pangenomes/hprc">

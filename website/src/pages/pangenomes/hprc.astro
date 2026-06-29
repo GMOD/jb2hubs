@@ -7,6 +7,11 @@ import { hprcBrowserUrl } from '../../components/pangenomeLinks.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
 
+// The pangenomes section is staging-only while in development.
+if (!features.pangenome) {
+  return Astro.redirect('/')
+}
+
 const browserUrl = hprcBrowserUrl()
 
 const pangenomeGraphs = [
@@ -87,16 +92,9 @@ const pangenomeGraphs = [
         </p>
       </div>
       <div class="portal-hero-actions">
-        {
-          features.pangenome && (
-            <a
-              class="portal-btn portal-btn-primary"
-              href="/pangenomes/explorer"
-            >
-              Open the Pangenome Explorer →
-            </a>
-          )
-        }
+        <a class="portal-btn portal-btn-primary" href="/pangenomes/explorer">
+          Open the Pangenome Explorer →
+        </a>
         <a
           class="portal-btn"
           href={browserUrl}
