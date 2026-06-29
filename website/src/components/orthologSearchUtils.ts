@@ -70,21 +70,157 @@ export function accessionToJbrowseUrl(accession: string, loc?: string) {
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 
+// bp of context drawn either side of the ortholog gene, so a launched synteny
+// panel shows the neighborhood rather than landing flush on the gene bounds
+// (at gene scale the alignment ribbons would otherwise be invisible).
+const SYNTENY_FLANK_BP = 100_000
+
+// genomic_accession_version:start-end with flanking context. The accession comes
+// off locStr (already `${accession}:${begin}-${end}`) rather than r.chromosome,
+// which is the human-friendly sequence name and not a navigable refName.
+function windowedLoc(r: OrthologResult, flankBp: number) {
+  const refName = r.locStr.split(':')[0] ?? r.chromosome
+  return `${refName}:${Math.max(1, r.begin - flankBp)}-${r.end + flankBp}`
+}
+
+function trackBetween(
+  syntenyPairs: Record<string, string>,
+  a: string,
+  b: string,
+) {
+  return syntenyPairs[`${a},${b}`] ?? syntenyPairs[`${b},${a}`]
+}
+
+// Pairwise reference-vs-ortholog synteny launch. Both panels land on the
+// neighborhood window around their gene; the reference panel is left unnavigated
+// only when the reference ortholog row is unknown.
 export function orthoSyntenyUrl(
   refAccession: string,
   r: OrthologResult,
   trackId: string,
-  refLoc: string | undefined,
+  ref: OrthologResult | undefined,
+  flankBp = SYNTENY_FLANK_BP,
 ) {
   return specUrl(mergeConfig([r.assembly.accession, refAccession]), [
     {
       type: 'LinearSyntenyView',
       tracks: [trackId],
       views: [
-        { assembly: r.assembly.accession, loc: r.locStr },
-        // Land the reference panel on the gene too, rather than unnavigated.
-        { assembly: refAccession, ...(refLoc ? { loc: refLoc } : {}) },
+        { assembly: r.assembly.accession, loc: windowedLoc(r, flankBp) },
+        {
+          assembly: refAccession,
+          ...(ref ? { loc: windowedLoc(ref, flankBp) } : {}),
+        },
       ],
+    },
+  ])
+}
+
+export interface MultiSyntenyPlan {
+  // top-to-bottom row order
+  rows: OrthologResult[]
+  // tracks[i] is the synteny track linking rows[i] and rows[i + 1]
+  tracks: string[]
+}
+
+// Order the ortholog rows into the longest chain we can build where every
+// *adjacent* pair has a synteny track in the catalog. A LinearSyntenyView is a
+// linear stack: level i only draws ribbons between rows i and i+1, so row
+// adjacency — not taxonomy — is what makes a ribbon appear. We grow a chain
+// outward from the reference at both ends, each step taking the closest-ranked
+// unused species that has a track to the current end of the chain. The result
+// degrades gracefully with catalog connectivity: a star-shaped catalog (every
+// ortholog links only to the reference) puts the reference in the middle and
+// can flank it with at most its two nearest partners (a 3-row chain) — the rest
+// can't be placed without repeating the reference; richer, path-shaped catalogs
+// yield longer multi-species stacks. Returns null when nothing chains to ref.
+export function planMultiSynteny(
+  results: OrthologResult[],
+  refAccession: string,
+  syntenyPairs: Record<string, string>,
+): MultiSyntenyPlan | null {
+  const ref = results.find(r => r.assembly.accession === refAccession)
+  // results arrive pre-sorted by evolutionary proximity to the reference, so a
+  // row's index doubles as a "closeness" rank for tie-breaking chain extension.
+  const rank = new Map(results.map((r, i) => [r.assembly.accession, i]))
+
+  let plan: MultiSyntenyPlan | null = null
+  if (ref) {
+    const used = new Set([refAccession])
+    const chain = [ref]
+
+    function bestNeighbor(node: string) {
+      let best: { result: OrthologResult; track: string } | undefined
+      let bestRank = Infinity
+      for (const r of results) {
+        const acc = r.assembly.accession
+        const track = used.has(acc)
+          ? undefined
+          : trackBetween(syntenyPairs, node, acc)
+        const rk = rank.get(acc) ?? Infinity
+        if (track && rk < bestRank) {
+          best = { result: r, track }
+          bestRank = rk
+        }
+      }
+      return best
+    }
+
+    let extended = true
+    while (extended) {
+      extended = false
+      const tail = chain.at(-1)
+      const next = tail && bestNeighbor(tail.assembly.accession)
+      if (next) {
+        chain.push(next.result)
+        used.add(next.result.assembly.accession)
+        extended = true
+      } else {
+        const head = chain.at(0)
+        const prev = head && bestNeighbor(head.assembly.accession)
+        if (prev) {
+          chain.unshift(prev.result)
+          used.add(prev.result.assembly.accession)
+          extended = true
+        }
+      }
+    }
+
+    if (chain.length >= 2) {
+      const tracks: string[] = []
+      for (let i = 1; i < chain.length; i++) {
+        const a = chain[i - 1]
+        const b = chain[i]
+        // every adjacency was added through an edge, so this is always defined
+        const track =
+          a &&
+          b &&
+          trackBetween(syntenyPairs, a.assembly.accession, b.assembly.accession)
+        if (track) {
+          tracks.push(track)
+        }
+      }
+      plan = { rows: chain, tracks }
+    }
+  }
+  return plan
+}
+
+// Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row
+// pair becomes a level carrying its single synteny track; every panel lands on
+// its ortholog's neighborhood window.
+export function buildMultiSyntenyUrl(
+  plan: MultiSyntenyPlan,
+  flankBp = SYNTENY_FLANK_BP,
+) {
+  return specUrl(mergeConfig(plan.rows.map(r => r.assembly.accession)), [
+    {
+      type: 'LinearSyntenyView',
+      views: plan.rows.map(r => ({
+        assembly: r.assembly.accession,
+        loc: windowedLoc(r, flankBp),
+      })),
+      tracks: plan.tracks.map(t => [t]),
     },
   ])
 }

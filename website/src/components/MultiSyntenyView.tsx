@@ -109,7 +109,10 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
     : []
   const band =
     hoveredYs.length >= 2
-      ? { top: Math.min(...hoveredYs) - 4, bottom: Math.max(...hoveredYs) + H + 4 }
+      ? {
+          top: Math.min(...hoveredYs) - 4,
+          bottom: Math.max(...hoveredYs) + H + 4,
+        }
       : null
 
   return (

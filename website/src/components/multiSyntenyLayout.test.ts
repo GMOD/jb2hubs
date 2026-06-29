@@ -6,7 +6,11 @@ import { geneArrowPath, layoutNeighborhood } from './multiSyntenyLayout.ts'
 import type { GeneBox } from './multiSyntenyLayout.ts'
 import type { Neighborhood, PlacedGene } from './neighborhood.ts'
 
-function gene(anchorId: string, start: number, over: Partial<PlacedGene> = {}): PlacedGene {
+function gene(
+  anchorId: string,
+  start: number,
+  over: Partial<PlacedGene> = {},
+): PlacedGene {
   return {
     anchorId,
     symbol: anchorId,
@@ -27,9 +31,17 @@ const nb: Neighborhood = {
     { geneId: 'B', symbol: 'B', isQuery: false, refStart: 200, refEnd: 300 },
   ],
   species: [
-    { taxonId: 9606, commonName: 'human', genes: [gene('A', 0), gene('B', 200)] },
+    {
+      taxonId: 9606,
+      commonName: 'human',
+      genes: [gene('A', 0), gene('B', 200)],
+    },
     // mouse has the same two anchors but B sits before A: a rearrangement.
-    { taxonId: 10090, commonName: 'mouse', genes: [gene('A', 200), gene('B', 0)] },
+    {
+      taxonId: 10090,
+      commonName: 'mouse',
+      genes: [gene('A', 200), gene('B', 0)],
+    },
   ],
 }
 

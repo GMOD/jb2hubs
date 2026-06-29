@@ -81,7 +81,9 @@ function buildIndex(pairs: Record<string, string>): PairIndex {
 
 function loadPairs(): Promise<PairIndex> {
   pairIndex ??= fetch('/synteny_pairs.json')
-    .then(res => (res.ok ? (res.json() as Promise<Record<string, string>>) : {}))
+    .then(res =>
+      res.ok ? (res.json() as Promise<Record<string, string>>) : {},
+    )
     .then(buildIndex)
     .catch(() => {
       pairIndex = undefined // let a later click retry rather than cache the failure
@@ -140,7 +142,11 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
     const index = await loadPairs()
     const tracks: string[] = []
     for (let i = 0; i < picked.length - 1; i++) {
-      const trackId = trackFor(index, picked[i]!.assembly, picked[i + 1]!.assembly)
+      const trackId = trackFor(
+        index,
+        picked[i]!.assembly,
+        picked[i + 1]!.assembly,
+      )
       if (trackId) {
         tracks.push(trackId)
       }

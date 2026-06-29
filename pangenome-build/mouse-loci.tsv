@@ -1,0 +1,16 @@
+# Curated mouse divergence loci to project across the strain panel.
+# Columns: id <TAB> anchor-gene-symbol <TAB> flank_kb <TAB> description
+# run.sh resolves each gene to its GRCm39 coordinates via NCBI `datasets`, adds
+# the flank, projects the window with impg, and writes an MSA to out/msa/<id>.fa.
+# Cluster loci use a representative anchor gene + a generous flank; tune as needed.
+h2-mhc	H2-K1	150	Mouse MHC (H2) — haplotype-level divergence across strains
+nnt	Nnt	40	C57BL/6J carries a multi-exon Nnt deletion absent in most strains
+r2d2	Cwc22	60	R2d2/Cwc22 — copy-number responder to female meiotic drive
+skint	Skint1	100	Skint cluster — rapidly-evolving T-cell-selection gene family
+slfn	Slfn1	100	Schlafen (Slfn) — strain-divergent immune cluster
+raet1-h60	Raet1a	100	Raet1/H60 — NKG2D-ligand cluster, gene presence/absence
+defb	Defb1	100	Beta-defensin cluster — copy-number-variable AMP genes
+hbb	Hbb-bs	60	Hbb beta-globin — Hbb-s/Hbb-d strain structural haplotypes
+# t-complex spans megabase-scale proximal-chr17 inversions — better viewed in a
+# browser than a single MSA, so it is left out of the MSA loop by default:
+# t-complex	Tcp1	200	t-haplotype proximal chr17 inversions (transmission distorter)

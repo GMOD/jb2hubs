@@ -4,12 +4,15 @@ import { test } from 'node:test'
 import { createStore } from './orthologDb.ts'
 import {
   accessionToJbrowseUrl,
+  buildMultiSyntenyUrl,
   buildOrthologResults,
+  planMultiSynteny,
 } from './orthologSearchUtils.ts'
 
 import type {
   AssemblyIndex,
   NcbiOrthologReport,
+  OrthologResult,
 } from './orthologSearchUtils.ts'
 
 const indexData: AssemblyIndex = {
@@ -149,4 +152,94 @@ test('buildOrthologResults skips annotations lacking a genomic range', () => {
     },
   ]
   assert.equal(buildOrthologResults(reports, store).length, 0)
+})
+
+// Pull the decoded LinearSyntenyView spec back out of a launch URL.
+function specOf(url: string) {
+  const spec = new URL(url).searchParams.get('session')!
+  return JSON.parse(spec.replace(/^spec-/, '')).views[0]
+}
+
+function res(
+  accession: string,
+  taxonId: number,
+  begin = 100,
+  end = 200,
+  refName = 'NC_1',
+): OrthologResult {
+  return {
+    assembly: {
+      accession,
+      commonName: accession,
+      scientificName: accession,
+      taxonId,
+    },
+    geneSymbol: 'G',
+    geneId: '1',
+    chromosome: 'c',
+    begin,
+    end,
+    locStr: `${refName}:${begin}-${end}`,
+    jbrowseUrl: 'x',
+  }
+}
+
+// results arrive pre-sorted by proximity to the reference: REF, A, B, C.
+const REF = res('REF', 9606)
+const A = res('A', 10090)
+const B = res('B', 10116)
+const C = res('C', 7955)
+
+test('planMultiSynteny chains a path-shaped catalog top-to-bottom', () => {
+  const plan = planMultiSynteny([REF, A, B, C], 'REF', {
+    'REF,A': 'tREF_A',
+    'A,B': 'tA_B',
+    'B,C': 'tB_C',
+  })
+  assert.deepEqual(
+    plan?.rows.map(r => r.assembly.accession),
+    ['REF', 'A', 'B', 'C'],
+  )
+  assert.deepEqual(plan?.tracks, ['tREF_A', 'tA_B', 'tB_C'])
+})
+
+test('planMultiSynteny flanks the reference with its two nearest partners for a star catalog', () => {
+  // every ortholog links only to REF, so REF lands in the middle flanked by A
+  // (nearest) and B (next); C cannot be placed without repeating REF.
+  const plan = planMultiSynteny([REF, A, B, C], 'REF', {
+    'REF,A': 'tREF_A',
+    'REF,B': 'tREF_B',
+    'REF,C': 'tREF_C',
+  })
+  assert.deepEqual(
+    plan?.rows.map(r => r.assembly.accession),
+    ['B', 'REF', 'A'],
+  )
+  assert.deepEqual(plan?.tracks, ['tREF_B', 'tREF_A'])
+})
+
+test('planMultiSynteny matches a track regardless of pair key order', () => {
+  const plan = planMultiSynteny([REF, A], 'REF', { 'A,REF': 'tA_REF' })
+  assert.deepEqual(plan?.tracks, ['tA_REF'])
+})
+
+test('planMultiSynteny returns null when nothing chains to the reference', () => {
+  assert.equal(planMultiSynteny([REF, A, B], 'REF', { 'A,B': 'tA_B' }), null)
+  assert.equal(planMultiSynteny([REF, A], 'MISSING', { 'REF,A': 't' }), null)
+})
+
+test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel', () => {
+  const r0 = res('REF', 9606, 300_000, 300_500)
+  const r1 = res('A', 10090, 50_000, 50_500)
+  const spec = specOf(
+    buildMultiSyntenyUrl({ rows: [r0, r1], tracks: ['tREF_A'] }, 100_000),
+  )
+  assert.equal(spec.type, 'LinearSyntenyView')
+  // per-level tracks are 2D: one single-track level for the one adjacency
+  assert.deepEqual(spec.tracks, [['tREF_A']])
+  assert.deepEqual(spec.views, [
+    { assembly: 'REF', loc: 'NC_1:200000-400500' },
+    // begin - flank clamps at 1 rather than going negative
+    { assembly: 'A', loc: 'NC_1:1-150500' },
+  ])
 })

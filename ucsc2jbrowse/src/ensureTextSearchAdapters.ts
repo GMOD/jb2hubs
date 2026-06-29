@@ -29,8 +29,7 @@ for (const entry of fs.readdirSync(resultsDir, { withFileTypes: true })) {
 
   const config = readJSON<Record<string, unknown>>(configPath)
   const existing = config.aggregateTextSearchAdapters as
-    | { textSearchAdapterId?: string }[]
-    | undefined
+    { textSearchAdapterId?: string }[] | undefined
 
   const adapterId = `${assemblyName}-index`
   if (existing?.some(a => a.textSearchAdapterId === adapterId)) {

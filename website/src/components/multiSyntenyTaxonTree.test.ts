@@ -48,10 +48,14 @@ test('leafOrder is a left-to-right DFS', () => {
     taxonId: 0,
     name: 'r',
     children: [
-      { taxonId: 0, name: 'a', children: [
-        { taxonId: 1, name: '1', children: [] },
-        { taxonId: 2, name: '2', children: [] },
-      ] },
+      {
+        taxonId: 0,
+        name: 'a',
+        children: [
+          { taxonId: 1, name: '1', children: [] },
+          { taxonId: 2, name: '2', children: [] },
+        ],
+      },
       { taxonId: 3, name: '3', children: [] },
     ],
   }

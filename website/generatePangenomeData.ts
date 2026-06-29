@@ -150,7 +150,10 @@ async function summarizeLocus(
     source: 'HPRC minigraph-cactus v1.1',
     variantCount,
     typeCounts,
-    afHistogram: AF_BINS.map((b, i) => ({ label: b.label, count: afCounts[i]! })),
+    afHistogram: AF_BINS.map((b, i) => ({
+      label: b.label,
+      count: afCounts[i]!,
+    })),
     sizeHistogram: SIZE_BINS.map((b, i) => ({
       label: b.label,
       count: sizeCounts[i]!,

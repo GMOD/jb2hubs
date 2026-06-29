@@ -134,13 +134,11 @@ function placeOrdinal(
 ) {
   const slotW = trackWidth / Math.max(1, slots)
   const ascending = [...genes].sort((a, b) => a.start - b.start)
-  return ascending.map(
-    (g, i): GeneBox => ({
-      ...g,
-      x: trackLeft + i * slotW + slotW * 0.1,
-      width: slotW * 0.8,
-    }),
-  )
+  return ascending.map((g, i): GeneBox => ({
+    ...g,
+    x: trackLeft + i * slotW + slotW * 0.1,
+    width: slotW * 0.8,
+  }))
 }
 
 // Cladogram (rectangular): leaves sit at their row y, internal nodes at the mean

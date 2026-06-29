@@ -1,7 +1,9 @@
 import {
   COMMON_TAX_RANK,
+  buildMultiSyntenyUrl,
   formatNumber,
   orthoSyntenyUrl,
+  planMultiSynteny,
 } from './orthologSearchUtils.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
@@ -84,57 +86,85 @@ export default function OrthologResultsTable({
     )
   }
 
-  // The reference gene's own locus, so a synteny launch navigates both panels.
-  const refLoc = results.find(
-    r => r.assembly.accession === refAccession,
-  )?.locStr
+  // The reference ortholog row, so a synteny launch can window both panels.
+  const refResult = results.find(r => r.assembly.accession === refAccession)
+
+  // Auto-infer a single multi-species synteny view from the whole ortholog set.
+  // Only surfaced when it chains 3+ rows — a 2-row chain adds nothing over the
+  // per-row pairwise "Synteny" links already in the table.
+  const multiPlan =
+    refAccession && syntenyPairs
+      ? planMultiSynteny(results, refAccession, syntenyPairs)
+      : null
+  const multiSyntenyUrl =
+    multiPlan && multiPlan.rows.length >= 3
+      ? buildMultiSyntenyUrl(multiPlan)
+      : null
 
   return (
-    <table className="orthologs-table">
-      <thead>
-        <tr>
-          <th>Species</th>
-          <th>Gene</th>
-          <th>Assembly</th>
-          <th>Location</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {results.flatMap((r, i) => {
-          const isRef = r.assembly.accession === refAccession
-          const trackId = isRef ? null : syntenyTrackId(r.assembly.accession)
-          const syntenyUrl =
-            trackId && refAccession
-              ? orthoSyntenyUrl(refAccession, r, trackId, refLoc)
-              : null
-          const next = results[i + 1]
-          const isLastCommon =
-            COMMON_TAX_RANK.has(r.assembly.taxonId) &&
-            next &&
-            !COMMON_TAX_RANK.has(next.assembly.taxonId)
+    <>
+      {multiPlan && multiSyntenyUrl && (
+        <p className="orthologs-summary">
+          <a
+            href={multiSyntenyUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Launch multi-species synteny view
+          </a>{' '}
+          ({multiPlan.rows.length} species:{' '}
+          {multiPlan.rows
+            .map(r => r.assembly.commonName ?? r.assembly.scientificName)
+            .join(' → ')}
+          )
+        </p>
+      )}
+      <table className="orthologs-table">
+        <thead>
+          <tr>
+            <th>Species</th>
+            <th>Gene</th>
+            <th>Assembly</th>
+            <th>Location</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {results.flatMap((r, i) => {
+            const isRef = r.assembly.accession === refAccession
+            const trackId = isRef ? null : syntenyTrackId(r.assembly.accession)
+            const syntenyUrl =
+              trackId && refAccession
+                ? orthoSyntenyUrl(refAccession, r, trackId, refResult)
+                : null
+            const next = results[i + 1]
+            const isLastCommon =
+              COMMON_TAX_RANK.has(r.assembly.taxonId) &&
+              next &&
+              !COMMON_TAX_RANK.has(next.assembly.taxonId)
 
-          const rows = [
-            <ResultRow
-              key={r.assembly.accession}
-              result={r}
-              isRef={isRef}
-              syntenyUrl={syntenyUrl}
-            />,
-          ]
-          if (isLastCommon) {
-            rows.push(
-              <tr
-                key={`divider-${i}`}
-                className="orthologs-divider"
-              >
-                <td colSpan={5} />
-              </tr>,
-            )
-          }
-          return rows
-        })}
-      </tbody>
-    </table>
+            const rows = [
+              <ResultRow
+                key={r.assembly.accession}
+                result={r}
+                isRef={isRef}
+                syntenyUrl={syntenyUrl}
+              />,
+            ]
+            if (isLastCommon) {
+              rows.push(
+                <tr
+                  key={`divider-${i}`}
+                  className="orthologs-divider"
+                >
+                  <td colSpan={5} />
+                </tr>,
+              )
+            }
+            return rows
+          })}
+        </tbody>
+      </table>
+    </>
   )
 }

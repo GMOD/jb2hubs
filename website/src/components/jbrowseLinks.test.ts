@@ -45,17 +45,26 @@ const result: OrthologResult = {
   jbrowseUrl: 'x',
 }
 
-test('orthoSyntenyUrl navigates both panels when a reference locus is given', () => {
+const refResult: OrthologResult = {
+  ...result,
+  assembly: { ...result.assembly, accession: 'GCF_REF' },
+  begin: 5,
+  end: 9,
+  locStr: 'NC_REF:5-9',
+}
+
+test('orthoSyntenyUrl windows both panels around their genes', () => {
   const views = sessionOf(
-    orthoSyntenyUrl('GCF_REF', result, 'track1', 'NC_REF:5-9'),
+    orthoSyntenyUrl('GCF_REF', result, 'track1', refResult, 10),
   ).views[0].views
   assert.deepEqual(views, [
-    { assembly: 'GCF_ORTHO', loc: 'NC_1:100-200' },
-    { assembly: 'GCF_REF', loc: 'NC_REF:5-9' },
+    { assembly: 'GCF_ORTHO', loc: 'NC_1:90-210' },
+    // begin - flank clamps at 1 rather than going negative
+    { assembly: 'GCF_REF', loc: 'NC_REF:1-19' },
   ])
 })
 
-test('orthoSyntenyUrl leaves the reference panel unnavigated when no locus', () => {
+test('orthoSyntenyUrl leaves the reference panel unnavigated when no ref row', () => {
   const views = sessionOf(
     orthoSyntenyUrl('GCF_REF', result, 'track1', undefined),
   ).views[0].views
