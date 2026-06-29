@@ -1,0 +1,60 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import { features } from '../../config/features.ts'
+import '../../styles/portal.css'
+---
+
+<Layout title="Pangenomes">
+  <Container>
+    <h1>Pangenomes</h1>
+    <p>
+      A single reference genome hides the variation that makes individuals (and
+      strains) different. These pages collect pangenome resources — many
+      assemblies plus the structural variation between them — and lead with the
+      interactive genome browser rather than file downloads.
+    </p>
+
+    {
+      features.pangenome && (
+        <div class="portal-hero">
+          <div class="portal-hero-text">
+            <h2 class="portal-hero-title">Pangenome Explorer</h2>
+            <p>
+              Explore famous regions of human divergence interactively —
+              variant landscapes and one-click JBrowse launches over the HPRC
+              graph.
+            </p>
+          </div>
+          <div class="portal-hero-actions">
+            <a
+              class="portal-btn portal-btn-primary"
+              href="/pangenomes/explorer"
+            >
+              Open the Pangenome Explorer →
+            </a>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="portal-cards">
+      <a class="portal-card" href="/pangenomes/hprc">
+        <h2>Human — HPRC</h2>
+        <p>
+          232 diploid assemblies (464 haplotypes) from the Human Pangenome
+          Reference Consortium, the Minigraph-Cactus / Minigraph / PGGB graphs,
+          and one-click browser launches.
+        </p>
+      </a>
+      <a class="portal-card" href="/pangenomes/mouse">
+        <h2>Mouse strains</h2>
+        <p>
+          Inbred mouse strain assemblies from the Ensembl Mouse Genomes Project
+          (18 strains, incl. two T2T) and the UCSC Mouse Strains Hub (16
+          strains, mm10-based).
+        </p>
+      </a>
+    </div>
+  </Container>
+</Layout>

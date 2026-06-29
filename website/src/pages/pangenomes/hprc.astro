@@ -3,7 +3,11 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import hprcSamples from '../../hprcSamples.json'
 import { features } from '../../config/features.ts'
+import { hprcBrowserUrl } from '../../components/pangenomeLinks.ts'
 import '../../styles/common-table.css'
+import '../../styles/portal.css'
+
+const browserUrl = hprcBrowserUrl()
 
 const pangenomeGraphs = [
   {
@@ -73,22 +77,51 @@ const pangenomeGraphs = [
         >pangenome resources repository</a
       > for full details.
     </p>
+    <div class="portal-hero">
+      <div class="portal-hero-text">
+        <h2 class="portal-hero-title">Explore the pangenome interactively</h2>
+        <p>
+          Skip the file downloads — open the HPRC pangenome in the genome
+          browser and see structural variants, presence/absence, and
+          hypervariable loci across haplotypes.
+        </p>
+      </div>
+      <div class="portal-hero-actions">
+        {
+          features.pangenome && (
+            <a
+              class="portal-btn portal-btn-primary"
+              href="/pangenomes/explorer"
+            >
+              Open the Pangenome Explorer →
+            </a>
+          )
+        }
+        <a
+          class="portal-btn"
+          href={browserUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Browse the pangenome in JBrowse →
+        </a>
+        <a
+          class="portal-btn portal-btn-ghost"
+          href="https://humanpangenome.org/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          HPRC data portal ↗
+        </a>
+      </div>
+    </div>
+
     <p>
-      This portal lists the 232 individual sample assemblies (464 haplotypes
+      This page also lists the 232 individual sample assemblies (464 haplotypes
       total) available in JBrowse. See <a href="/hubs/HPRC"
         >the full GenArk HPRC listing</a
       > for a searchable table of all assemblies.
     </p>
-
-    {
-      features.pangenome && (
-        <p class="callout">
-          <strong>New:</strong> explore famous regions of human divergence
-          interactively in the <a href="/pangenome">Pangenome Explorer</a> —
-          variant landscapes and one-click JBrowse launches for the HPRC graph.
-        </p>
-      )
-    }
 
     <h2>Pangenome Graphs</h2>
     <p>

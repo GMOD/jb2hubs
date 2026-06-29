@@ -15,6 +15,19 @@ const HG38_CONFIG = 'https://jbrowse.org/ucsc/hg38/config.json'
 const CHM13_ACCESSION = 'GCA_009914755.4'
 const HG38_CHM13_SYNTENY_TRACK = 'hg38_to_GCA_009914755.4_liftOver'
 
+// Whole-pangenome entry point: GRCh38 with the HPRC VCF + RefSeq, landing on the
+// MHC (chr6) — the most-studied divergent locus — as a sensible starting view.
+export function hprcBrowserUrl() {
+  return specUrl(HG38_CONFIG, [
+    {
+      type: 'LinearGenomeView',
+      assembly: 'hg38',
+      loc: 'chr6:29,700,000-33,500,000',
+      tracks: ['hg38-ncbiRefSeq', 'hg38-hprc-v1.1-pangenome-vcf'],
+    },
+  ])
+}
+
 // Linear genome view on GRCh38 with the HPRC pangenome VCF track open at the locus.
 export function hprcVcfLgvUrl(locus: PangenomeLocus) {
   return specUrl(HG38_CONFIG, [
