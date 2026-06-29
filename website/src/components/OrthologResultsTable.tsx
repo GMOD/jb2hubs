@@ -84,6 +84,11 @@ export default function OrthologResultsTable({
     )
   }
 
+  // The reference gene's own locus, so a synteny launch navigates both panels.
+  const refLoc = results.find(
+    r => r.assembly.accession === refAccession,
+  )?.locStr
+
   return (
     <table className="orthologs-table">
       <thead>
@@ -101,7 +106,7 @@ export default function OrthologResultsTable({
           const trackId = isRef ? null : syntenyTrackId(r.assembly.accession)
           const syntenyUrl =
             trackId && refAccession
-              ? orthoSyntenyUrl(refAccession, r, trackId)
+              ? orthoSyntenyUrl(refAccession, r, trackId, refLoc)
               : null
           const next = results[i + 1]
           const isLastCommon =

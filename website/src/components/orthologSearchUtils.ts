@@ -1,3 +1,5 @@
+import { mergeConfig, specUrl } from './jbrowseLinks.ts'
+
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
 
 export type { Assembly, AssemblyIndex, AssemblyStore } from './orthologDb.ts'
@@ -68,27 +70,23 @@ export function accessionToJbrowseUrl(accession: string, loc?: string) {
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 
-const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
-
 export function orthoSyntenyUrl(
   refAccession: string,
   r: OrthologResult,
   trackId: string,
+  refLoc: string | undefined,
 ) {
-  const mergeApiUrl = `${MERGE_API}?hubIds=${r.assembly.accession},${refAccession}`
-  const sessionSpec = {
-    views: [
-      {
-        type: 'LinearSyntenyView',
-        tracks: [trackId],
-        views: [
-          { assembly: r.assembly.accession, loc: r.locStr },
-          { assembly: refAccession },
-        ],
-      },
-    ],
-  }
-  return `https://jbrowse.org/code/jb2/main/?config=${encodeURIComponent(mergeApiUrl)}&session=spec-${encodeURIComponent(JSON.stringify(sessionSpec))}`
+  return specUrl(mergeConfig([r.assembly.accession, refAccession]), [
+    {
+      type: 'LinearSyntenyView',
+      tracks: [trackId],
+      views: [
+        { assembly: r.assembly.accession, loc: r.locStr },
+        // Land the reference panel on the gene too, rather than unnavigated.
+        { assembly: refAccession, ...(refLoc ? { loc: refLoc } : {}) },
+      ],
+    },
+  ])
 }
 
 export function formatNumber(n: number) {

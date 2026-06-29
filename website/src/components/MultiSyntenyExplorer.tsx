@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { type Neighborhood } from './neighborhood.ts'
@@ -21,10 +21,12 @@ const EXAMPLES = ['BRCA1', 'TP53', 'HBB', 'HOXA13']
 // fish and omit the human reference itself. Centering shows the reference plus
 // its closest relatives — the meaningful comparison — and keeps adjacent-row
 // ribbons phylogenetically tight. The cladogram auto-prunes to whatever remains.
-function trim(nb: Neighborhood): Neighborhood {
+// Returns the trimmed neighborhood plus how many species were eligible, so the
+// caller can disclose when the cap hid some.
+function trim(nb: Neighborhood): { nb: Neighborhood; eligible: number } {
   const eligible = nb.species.filter(s => s.genes.length >= MIN_ANCHORS)
   if (eligible.length <= MAX_SPECIES) {
-    return { ...nb, species: eligible }
+    return { nb: { ...nb, species: eligible }, eligible: eligible.length }
   }
   const refIdx = eligible.findIndex(s => s.taxonId === nb.query.refTaxonId)
   const center = refIdx >= 0 ? refIdx : 0
@@ -32,38 +34,55 @@ function trim(nb: Neighborhood): Neighborhood {
     Math.max(0, center - Math.floor(MAX_SPECIES / 2)),
     eligible.length - MAX_SPECIES,
   )
-  return { ...nb, species: eligible.slice(start, start + MAX_SPECIES) }
+  return {
+    nb: { ...nb, species: eligible.slice(start, start + MAX_SPECIES) },
+    eligible: eligible.length,
+  }
+}
+
+// Initial gene/reference come from the URL (?gene=BRCA1&ref=9606) so a view is
+// shareable/bookmarkable; this is a client:only island, so window is available.
+function paramsFromUrl() {
+  const p = new URLSearchParams(window.location.search)
+  const ref = Number(p.get('ref'))
+  return { gene: p.get('gene')?.trim() ?? 'BRCA1', ref: ref > 0 ? ref : 9606 }
 }
 
 export default function MultiSyntenyExplorer() {
-  const [gene, setGene] = useState('BRCA1')
-  const [taxId, setTaxId] = useState(9606)
+  const [gene, setGene] = useState(() => paramsFromUrl().gene)
+  const [taxId, setTaxId] = useState(() => paramsFromUrl().ref)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [nb, setNb] = useState<Neighborhood | null>(null)
+  const [eligible, setEligible] = useState(0)
 
   // Keeps the current view on screen while the next loads (no flicker), so a
   // showcase gene swaps in place.
-  const run = useCallback(async (query: string, ref: number) => {
+  const run = async (query: string, ref: number) => {
     const q = query.trim()
     if (q) {
       setGene(q)
       setLoading(true)
       setError('')
+      const params = new URLSearchParams({ gene: q, ref: String(ref) })
+      window.history.replaceState(null, '', `?${params.toString()}`)
       try {
-        setNb(trim(await getNeighborhood(q, ref)))
+        const trimmed = trim(await getNeighborhood(q, ref))
+        setNb(trimmed.nb)
+        setEligible(trimmed.eligible)
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e))
       } finally {
         setLoading(false)
       }
     }
-  }, [])
+  }
 
-  // Populate with a default example on arrival so the page demonstrates itself.
+  // Populate from the URL (or the BRCA1 default) on arrival so the page
+  // demonstrates itself and honours a shared link.
   useEffect(() => {
-    void run('BRCA1', 9606)
-  }, [run])
+    void run(gene, taxId)
+  }, [])
 
   return (
     <div>
@@ -129,8 +148,14 @@ export default function MultiSyntenyExplorer() {
         </p>
       )}
       {error && <p className="msv-error">{error}</p>}
-      {nb && nb.species.length === 0 && !loading && (
+      {nb?.species.length === 0 && !loading && (
         <p className="msv-hint">No informative ortholog neighborhoods found.</p>
+      )}
+      {nb && eligible > nb.species.length && (
+        <p className="msv-hint">
+          Showing the {nb.species.length} species nearest the reference of{' '}
+          {eligible} with orthologs here.
+        </p>
       )}
       {nb && nb.species.length > 0 && <MultiSyntenyView neighborhood={nb} />}
     </div>

@@ -83,8 +83,9 @@ export function leafOrder(node: TaxonNode): number[] {
     : node.children.flatMap(leafOrder)
 }
 
-// Fetch + build the induced, pruned, chain-collapsed tree for a taxon set. The
-// caller appends any requested taxon the API omits, so no species is dropped.
+// Fetch + build the induced, pruned, chain-collapsed tree for a taxon set. A
+// taxon the API omits simply won't appear in the tree; the caller still renders
+// its row (sorted after the tree-ordered ones), so no species is dropped.
 export async function fetchInducedTree(
   taxonIds: number[],
 ): Promise<TaxonNode | undefined> {

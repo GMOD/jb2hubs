@@ -4,23 +4,10 @@
 //  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
 //  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
 
+import { mergeConfig, specUrl } from './jbrowseLinks.ts'
 import { accessionToJbrowseUrl } from './orthologSearchUtils.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
-
-const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
-const JBROWSE = 'https://jbrowse.org/code/jb2/main'
-
-// A JBrowse URL: a config + a one-time `spec-` session the LaunchView extension
-// points expand into a real view.
-function specUrl(configUrl: string, view: object) {
-  const session = JSON.stringify({ views: [view] })
-  return `${JBROWSE}/?config=${encodeURIComponent(configUrl)}&session=spec-${encodeURIComponent(session)}`
-}
-
-// The merge API stitches several hosted hubs into one config.
-const mergeConfig = (hubIds: string[]) =>
-  `${MERGE_API}?hubIds=${hubIds.join(',')}`
 
 // taxId -> a hosted whole-genome alignment for that reference; add entries as
 // references gain one. First slice of the GCF<->UCSC-db registry in
@@ -54,12 +41,14 @@ export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
   if (a && gene.chromosome) {
     const loc = `${toUcscChrom(gene.chromosome)}:${gene.start}-${gene.end}`
     window.open(
-      specUrl(a.configUrl, {
-        type: 'LinearGenomeView',
-        assembly: a.ucscDb,
-        loc,
-        tracks: [a.alignmentTrackId],
-      }),
+      specUrl(a.configUrl, [
+        {
+          type: 'LinearGenomeView',
+          assembly: a.ucscDb,
+          loc,
+          tracks: [a.alignmentTrackId],
+        },
+      ]),
       '_blank',
       'noopener',
     )
@@ -92,9 +81,7 @@ function buildIndex(pairs: Record<string, string>): PairIndex {
 
 function loadPairs(): Promise<PairIndex> {
   pairIndex ??= fetch('/synteny_pairs.json')
-    .then(res =>
-      res.ok ? (res.json() as Promise<Record<string, string>>) : {},
-    )
+    .then(res => (res.ok ? (res.json() as Promise<Record<string, string>>) : {}))
     .then(buildIndex)
     .catch(() => {
       pairIndex = undefined // let a later click retry rather than cache the failure
@@ -115,15 +102,23 @@ function pairwiseSyntenyUrl(
   orthoAccession: string,
   loc: string,
   trackId: string,
+  refLoc: string | undefined,
 ) {
-  return specUrl(mergeConfig([orthoAccession, refAccession]), {
-    type: 'LinearSyntenyView',
-    tracks: [trackId],
-    views: [{ assembly: orthoAccession, loc }, { assembly: refAccession }],
-    colorBy: 'query',
-    drawCurves: true,
-    autoDiagonalize: true,
-  })
+  return specUrl(mergeConfig([orthoAccession, refAccession]), [
+    {
+      type: 'LinearSyntenyView',
+      tracks: [trackId],
+      views: [
+        { assembly: orthoAccession, loc },
+        // Land the reference panel on the orthologous locus too, so both
+        // genomes open at the gene rather than leaving the reference unnavigated.
+        { assembly: refAccession, ...(refLoc ? { loc: refLoc } : {}) },
+      ],
+      colorBy: 'query',
+      drawCurves: true,
+      autoDiagonalize: true,
+    },
+  ])
 }
 
 export interface SubtreeLeaf {
@@ -133,7 +128,7 @@ export interface SubtreeLeaf {
 
 // A multi-level LinearSyntenyView stacks one full genome browser per level, so a
 // huge subtree is unreadable; cap the launch to the nearest leaves (tree order).
-const MAX_SUBTREE_GENOMES = 15
+export const MAX_SUBTREE_GENOMES = 15
 
 // Launch a stacked, tree-ordered LinearSyntenyView of a whole subtree, each
 // genome navigated to its ortholog locus, with synteny tracks between adjacent
@@ -145,32 +140,33 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
     const index = await loadPairs()
     const tracks: string[] = []
     for (let i = 0; i < picked.length - 1; i++) {
-      const trackId = trackFor(
-        index,
-        picked[i]!.assembly,
-        picked[i + 1]!.assembly,
-      )
+      const trackId = trackFor(index, picked[i]!.assembly, picked[i + 1]!.assembly)
       if (trackId) {
         tracks.push(trackId)
       }
     }
     window.open(
-      specUrl(mergeConfig(picked.map(p => p.assembly)), {
-        type: 'LinearSyntenyView',
-        tracks,
-        views: picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
-        drawCurves: true,
-      }),
+      specUrl(mergeConfig(picked.map(p => p.assembly)), [
+        {
+          type: 'LinearSyntenyView',
+          tracks,
+          views: picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
+          drawCurves: true,
+        },
+      ]),
       '_blank',
       'noopener',
     )
   }
 }
 
-// Resolve the best JBrowse URL for a clicked gene, then open it.
+// Resolve the best JBrowse URL for a clicked gene, then open it. refLoc is the
+// same anchor's locus in the reference, used to navigate the reference panel of
+// a pairwise synteny view.
 export async function openGeneDrilldown(
   gene: PlacedGene,
   refAccession: string | undefined,
+  refLoc: string | undefined,
 ) {
   const loc = `${gene.refName}:${gene.start}-${gene.end}`
   const index = await loadPairs()
@@ -180,7 +176,7 @@ export async function openGeneDrilldown(
       : undefined
   const url =
     trackId && refAccession
-      ? pairwiseSyntenyUrl(refAccession, gene.assembly, loc, trackId)
+      ? pairwiseSyntenyUrl(refAccession, gene.assembly, loc, trackId, refLoc)
       : accessionToJbrowseUrl(gene.assembly, loc)
   window.open(url, '_blank', 'noopener')
 }

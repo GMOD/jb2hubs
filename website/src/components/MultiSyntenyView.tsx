@@ -1,20 +1,21 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import {
-  DEFAULT_LAYOUT,
-  geneArrowPath,
-  layoutNeighborhood,
-  ribbonPath,
-  type GeneBox,
-  type LayoutMode,
-} from './multiSyntenyLayout.ts'
-import {
+  MAX_SUBTREE_GENOMES,
+  REF_ALIGNMENTS,
+  type SubtreeLeaf,
   openGeneDrilldown,
   openRefAlignment,
   openSubtreeSynteny,
-  REF_ALIGNMENTS,
-  type SubtreeLeaf,
 } from './multiSyntenyDrilldown.ts'
+import {
+  DEFAULT_LAYOUT,
+  type GeneBox,
+  type LayoutMode,
+  geneArrowPath,
+  layoutNeighborhood,
+  ribbonPath,
+} from './multiSyntenyLayout.ts'
 
 import type { Anchor, Neighborhood } from './neighborhood.ts'
 
@@ -52,41 +53,45 @@ function AnchorLegend({
 
 export default function MultiSyntenyView({ neighborhood }: Props) {
   const [mode, setMode] = useState<LayoutMode>('bp')
-  const layout = useMemo(
-    () => layoutNeighborhood(neighborhood, { mode }),
-    [neighborhood, mode],
-  )
+  const layout = layoutNeighborhood(neighborhood, { mode })
 
   const queryId = neighborhood.query.geneId
-  // The reference species' own copy of the query gene — half of every pairwise
-  // drill-down, and the locus for the reference's whole-genome alignment view.
-  const refGene = useMemo(
-    () =>
-      neighborhood.species
-        .find(s => s.taxonId === neighborhood.query.refTaxonId)
-        ?.genes.find(g => g.anchorId === queryId),
-    [neighborhood, queryId],
+  // The reference species' genes, keyed by anchor — each anchor's reference
+  // locus drives the reference panel of a pairwise synteny drill-down, and the
+  // query anchor's gene is the locus for the whole-genome alignment view.
+  const refSpecies = neighborhood.species.find(
+    s => s.taxonId === neighborhood.query.refTaxonId,
   )
+  const refGenesByAnchor = new Map(
+    refSpecies?.genes.map(g => [g.anchorId, g]) ?? [],
+  )
+  const refGene = refGenesByAnchor.get(queryId)
   const refAssembly = refGene?.assembly
   const refAlignment = REF_ALIGNMENTS[neighborhood.query.refTaxonId]
   const openGene = (g: GeneBox) => {
-    void openGeneDrilldown(g, refAssembly)
+    const r = refGenesByAnchor.get(g.anchorId)
+    const refLoc = r ? `${r.refName}:${r.start}-${r.end}` : undefined
+    void openGeneDrilldown(g, refAssembly, refLoc)
   }
 
-  // Per-species query-gene locus, for launching a subtree's stacked synteny view.
-  const placementByTaxon = useMemo(() => {
-    const m = new Map<number, SubtreeLeaf>()
-    for (const s of neighborhood.species) {
-      const q = s.genes.find(g => g.anchorId === queryId)
-      if (q) {
-        m.set(s.taxonId, {
-          assembly: q.assembly,
-          loc: `${q.refName}:${q.start}-${q.end}`,
-        })
-      }
+  // Per-species locus for launching a subtree's stacked synteny view: the span of
+  // the whole neighborhood (every anchor on the query gene's scaffold), not just
+  // the query gene, so each stacked genome opens showing the gene-order region the
+  // ribbons describe. 5% flank keeps the edge genes off the panel border.
+  const placementByTaxon = new Map<number, SubtreeLeaf>()
+  for (const s of neighborhood.species) {
+    const q = s.genes.find(g => g.anchorId === queryId)
+    if (q) {
+      const onScaffold = s.genes.filter(g => g.refName === q.refName)
+      const min = Math.min(...onScaffold.map(g => g.start))
+      const max = Math.max(...onScaffold.map(g => g.end))
+      const flank = Math.round((max - min) * 0.05)
+      placementByTaxon.set(s.taxonId, {
+        assembly: q.assembly,
+        loc: `${q.refName}:${min - flank}-${max + flank}`,
+      })
     }
-    return m
-  }, [neighborhood, queryId])
+  }
 
   const openSubtree = (leafTaxonIds: number[]) => {
     void openSubtreeSynteny(
@@ -99,14 +104,13 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   // Hovering a branch point highlights the contiguous band of rows it covers, so
   // the clade a click would launch is visible before clicking.
   const [hovered, setHovered] = useState<Set<number> | null>(null)
-  const band = useMemo(() => {
-    const ys = hovered
-      ? layout.rows.filter(r => hovered.has(r.taxonId)).map(r => r.y)
-      : []
-    return ys.length >= 2
-      ? { top: Math.min(...ys) - 4, bottom: Math.max(...ys) + H + 4 }
+  const hoveredYs = hovered
+    ? layout.rows.filter(r => hovered.has(r.taxonId)).map(r => r.y)
+    : []
+  const band =
+    hoveredYs.length >= 2
+      ? { top: Math.min(...hoveredYs) - 4, bottom: Math.max(...hoveredYs) + H + 4 }
       : null
-  }, [hovered, layout])
 
   return (
     <div className="msv">
@@ -225,7 +229,13 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                     r={3.5}
                     className="msv-node-dot"
                   />
-                  <title>Launch stacked synteny view of {count} species</title>
+                  <title>
+                    Launch stacked synteny view of{' '}
+                    {count > MAX_SUBTREE_GENOMES
+                      ? `the ${MAX_SUBTREE_GENOMES} nearest of ${count}`
+                      : count}{' '}
+                    species
+                  </title>
                 </g>
               ) : null
             })}
