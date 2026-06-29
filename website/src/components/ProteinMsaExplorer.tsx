@@ -1,15 +1,22 @@
 import { Suspense, lazy, useEffect, useState } from 'react'
 
+import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import { COMMON_SPECIES } from './orthologSearchUtils.ts'
-import { type ProteinMsaResult, assembleProteinMsa } from './proteinMsa.ts'
+import {
+  type ProteinAlignment,
+  type ProteinPanel,
+  alignProteinPanel,
+  assembleProteinPanel,
+} from './proteinMsa.ts'
 
 // react-msaview pulls in @jbrowse/core + MUI + mobx and renders to canvas, so it
-// only runs client-side; lazy-loading keeps it off the first paint.
+// only runs client-side; lazy-loading keeps it off the first paint and out of
+// the panel/cartoon path until the user opens the full alignment.
 const MSAViewer = lazy(() =>
   import('react-msaview').then(m => ({ default: m.MSAViewer })),
 )
 
-// Genes with clear, textbook multi-domain architecture, so the domain overlay
+// Genes with clear, textbook multi-domain architecture, so the domain cartoon
 // reads immediately.
 const EXAMPLES = ['TP53', 'BRCA2', 'EGFR', 'SOD1']
 
@@ -26,8 +33,11 @@ export default function ProteinMsaExplorer() {
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState('')
   const [error, setError] = useState('')
-  const [result, setResult] = useState<ProteinMsaResult | null>(null)
+  const [panel, setPanel] = useState<ProteinPanel | null>(null)
+  const [alignment, setAlignment] = useState<ProteinAlignment | null>(null)
+  const [aligning, setAligning] = useState(false)
 
+  // Phase 1: NCBI-only panel that backs the domain cartoon (fast).
   const run = async (query: string, ref: number) => {
     const sym = query.trim()
     if (sym) {
@@ -35,10 +45,12 @@ export default function ProteinMsaExplorer() {
       setTaxId(ref)
       setLoading(true)
       setError('')
+      setPanel(null)
+      setAlignment(null)
       const params = new URLSearchParams({ gene: sym, ref: String(ref) })
       window.history.replaceState(null, '', `?${params.toString()}`)
       try {
-        setResult(await assembleProteinMsa(sym, ref, { onProgress: setStatus }))
+        setPanel(await assembleProteinPanel(sym, ref, { onProgress: setStatus }))
       } catch (e) {
         setError(e instanceof Error ? e.message : String(e))
       } finally {
@@ -47,9 +59,26 @@ export default function ProteinMsaExplorer() {
     }
   }
 
+  // Phase 2: EBI Clustal Omega alignment for the full react-msaview (slow,
+  // on demand).
+  const buildAlignment = async (p: ProteinPanel) => {
+    setAligning(true)
+    setError('')
+    try {
+      setAlignment(await alignProteinPanel(p, { onProgress: setStatus }))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setAligning(false)
+    }
+  }
+
   useEffect(() => {
     void run(gene, taxId)
   }, [])
+
+  const found = new Set(panel?.rows.map(r => r.taxId))
+  const missing = COMMON_SPECIES.filter(s => !found.has(s.taxId))
 
   return (
     <div>
@@ -109,38 +138,70 @@ export default function ProteinMsaExplorer() {
         ))}
       </div>
 
-      {loading && (
-        <p className="msv-hint">{status || 'Building…'}</p>
-      )}
+      <p className="msv-scope">
+        Compares one representative protein (MANE Select, else longest isoform)
+        per species across {COMMON_SPECIES.length} model organisms — human
+        through yeast and plants. Not a general species search.
+      </p>
+
+      {loading && <p className="msv-hint">{status || 'Building…'}</p>}
       {error && <p className="msv-error">{error}</p>}
 
-      {result && !loading && (
+      {panel && !loading && (
         <>
           <p className="msv-hint">
-            {result.rows.length} species ·{' '}
+            {panel.rows.length} of {COMMON_SPECIES.length} model species ·{' '}
             <a
-              href={`/orthologs?gene=${encodeURIComponent(result.query.symbol)}&ref=${result.query.refTaxonId}`}
+              href={`/orthologs?gene=${encodeURIComponent(panel.query.symbol)}&ref=${panel.query.refTaxonId}`}
             >
               ortholog table
             </a>{' '}
             ·{' '}
             <a
-              href={`/conserved-gene-order?gene=${encodeURIComponent(result.query.symbol)}&ref=${result.query.refTaxonId}`}
+              href={`/conserved-gene-order?gene=${encodeURIComponent(panel.query.symbol)}&ref=${panel.query.refTaxonId}`}
             >
               conserved gene order
             </a>
           </p>
-          <Suspense
-            fallback={<p className="msv-hint">Loading alignment viewer…</p>}
-          >
-            <MSAViewer
-              msa={result.fasta}
-              tree={result.newick}
-              gff={result.gff}
-              colorScheme="clustalx_protein_dynamic"
-              height={520}
-            />
-          </Suspense>
+          {missing.length > 0 && (
+            <p className="msv-note">
+              No annotated ortholog in: {missing.map(s => s.label).join(', ')}
+            </p>
+          )}
+
+          <ProteinDomainCartoon rows={panel.rows} />
+
+          {alignment ? (
+            <Suspense
+              fallback={<p className="msv-hint">Loading alignment viewer…</p>}
+            >
+              <MSAViewer
+                msa={alignment.fasta}
+                tree={alignment.newick}
+                gff={alignment.gff}
+                colorScheme="clustalx_protein_dynamic"
+                height={520}
+              />
+            </Suspense>
+          ) : (
+            <div className="msv-advanced">
+              <button
+                className="msv-advanced-btn"
+                disabled={aligning}
+                onClick={() => {
+                  void buildAlignment(panel)
+                }}
+              >
+                {aligning
+                  ? status || 'Aligning…'
+                  : 'Open full multiple sequence alignment'}
+              </button>
+              <span className="msv-advanced-note">
+                Residue-level alignment + guide tree via EBI Clustal Omega — can
+                take up to a minute.
+              </span>
+            </div>
+          )}
         </>
       )}
     </div>

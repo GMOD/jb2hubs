@@ -1,15 +1,20 @@
-// Assembles an ortholog protein alignment with conserved-domain annotations for
-// react-msaview, entirely from NCBI data plus one EBI alignment step:
-//   1. resolve the query gene -> its NCBI orthologs (one gene per species)
-//   2. pick a representative protein per gene (MANE Select, else longest)
-//   3. fetch protein sequences (efetch FASTA)
-//   4. align them with EBI Clustal Omega -> column-locked FASTA + guide tree
-//   5. fetch CDD conserved domains per protein (efetch GenPept Region features)
-//   6. emit { fasta, newick, gff } — gff domains are per-row (seq_id = label) in
-//      ungapped protein coordinates, which react-msaview projects onto columns.
-// react-msaview does not align, so step 4 is unavoidable; NCBI has no clean
-// alignment API, hence EBI. Sequences + domains stay on NCBI (already a site-wide
-// dependency), so EBI is the only added external service.
+// Assembles an ortholog protein comparison in two phases so the cheap view can
+// render before the slow one:
+//   Phase 1 — assembleProteinPanel (NCBI only, a few seconds):
+//     1. resolve the query gene -> its NCBI orthologs (one gene per species)
+//     2. pick a representative protein per gene (MANE Select, else longest)
+//     3. fetch protein sequences (efetch FASTA) + CDD conserved domains
+//        (efetch GenPept Region features)
+//     -> rows carrying sequence, length and domains: enough to draw the
+//        domain-architecture cartoon without aligning anything.
+//   Phase 2 — alignProteinPanel (EBI Clustal Omega, up to minutes):
+//     4. align the panel's sequences -> column-locked FASTA + guide tree
+//     5. emit { fasta, newick, gff } — gff domains are per-row (seq_id = label)
+//        in ungapped protein coordinates, which react-msaview projects onto
+//        columns.
+// react-msaview does not align, so phase 2 is unavoidable for the full viewer;
+// NCBI has no clean alignment API, hence EBI. Splitting it out lets the UI show
+// the cartoon immediately and only pay the EBI cost on demand.
 
 import { EBI_EMAIL, clustalOmega } from './ebiAlign.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
@@ -25,17 +30,34 @@ export interface ProteinMsaRow {
   protein: string // accession.version
 }
 
-export interface ProteinMsaResult {
+// A panel row carries everything the domain cartoon needs without any alignment.
+export interface ProteinPanelRow extends ProteinMsaRow {
+  sequence: string // ungapped protein sequence
+  length: number // residues
+  domains: Domain[] // CDD conserved domains, ungapped protein coords
+}
+
+// Phase 1 output: the curated ortholog set with sequences + domains.
+export interface ProteinPanel {
   query: { symbol: string; refTaxonId: number }
+  rows: ProteinPanelRow[]
+}
+
+// Phase 2 output: a column-locked alignment + guide tree + per-row domain gff,
+// ready to hand straight to react-msaview.
+export interface ProteinAlignment {
   fasta: string
   newick: string
   gff: string
-  rows: ProteinMsaRow[]
 }
 
-export interface ProteinMsaOptions {
-  email?: string
+export interface ProteinPanelOptions {
   taxa?: number[] // species to include; defaults to the common-species set
+  onProgress?: (message: string) => void
+}
+
+export interface ProteinAlignOptions {
+  email?: string
   onProgress?: (message: string) => void // staged status for the slow EBI step
 }
 
@@ -285,11 +307,13 @@ export function buildDomainGff(
   return lines.join('\n')
 }
 
-export async function assembleProteinMsa(
+// Phase 1: resolve the ortholog panel and fetch sequences + domains from NCBI.
+// Fast enough to drive the domain cartoon; no EBI alignment.
+export async function assembleProteinPanel(
   query: string,
   refTaxonId: number,
-  { email = EBI_EMAIL, taxa, onProgress = () => undefined }: ProteinMsaOptions = {},
-): Promise<ProteinMsaResult> {
+  { taxa, onProgress = () => undefined }: ProteinPanelOptions = {},
+): Promise<ProteinPanel> {
   onProgress('Resolving orthologs across species…')
   const queryGeneId = await resolveGeneId(query, refTaxonId)
   if (!queryGeneId) {
@@ -299,8 +323,8 @@ export async function assembleProteinMsa(
   const wanted = new Set(taxa ?? COMMON_SPECIES.map(s => s.taxId))
   wanted.add(refTaxonId)
   // One ortholog per species, restricted to the wanted set, ordered by the
-  // common-species rank (reference and close relatives first) so the alignment
-  // is a readable, curated panel rather than hundreds of rows.
+  // common-species rank (reference and close relatives first) so the panel is a
+  // readable, curated set rather than hundreds of rows.
   const byTaxon = new Map<number, OrthologGene>()
   for (const g of await fetchOrthologGenes(queryGeneId)) {
     if (wanted.has(g.taxId) && !byTaxon.has(g.taxId)) {
@@ -314,7 +338,7 @@ export async function assembleProteinMsa(
   )
   if (genes.length < 2) {
     throw new Error(
-      `need at least two species with orthologs for an alignment (found ${genes.length})`,
+      `need at least two species with orthologs to compare (found ${genes.length})`,
     )
   }
 
@@ -328,40 +352,61 @@ export async function assembleProteinMsa(
   const labels = dedupeLabels(
     withProtein.map(g => g.commonName ?? g.scientificName),
   )
-  const rows: ProteinMsaRow[] = withProtein.map((g, i) => ({
-    taxId: g.taxId,
-    label: labels[i]!,
-    scientificName: g.scientificName,
-    commonName: g.commonName,
-    geneId: g.geneId,
-    protein: proteinByGene.get(g.geneId)!,
-  }))
-  if (rows.length < 2) {
+  if (withProtein.length < 2) {
     throw new Error('could not resolve representative proteins for the orthologs')
   }
 
-  onProgress('Fetching protein sequences…')
-  const accessions = rows.map(r => r.protein)
-  const seqById = parseFasta(
-    await ncbiText(
+  onProgress('Fetching protein sequences and conserved domains…')
+  const accessions = withProtein.map(g => proteinByGene.get(g.geneId)!)
+  const [seqById, domainsByAcc] = await Promise.all([
+    ncbiText(
       `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=fasta&retmode=text`,
-    ),
-  )
-  onProgress(
-    'Aligning proteins at EBI Clustal Omega and mapping NCBI conserved domains…',
-  )
-  const [{ aligned, newick }, domainsByAcc] = await Promise.all([
-    clustalOmega(buildInputFasta(rows, seqById), { email }),
+    ).then(parseFasta),
     ncbiText(
       `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=gp&retmode=text`,
     ).then(parseAllDomains),
   ])
 
+  const rows = withProtein
+    .map((g, i) => {
+      const protein = proteinByGene.get(g.geneId)!
+      const sequence = seqById.get(protein) ?? ''
+      return {
+        taxId: g.taxId,
+        label: labels[i]!,
+        scientificName: g.scientificName,
+        commonName: g.commonName,
+        geneId: g.geneId,
+        protein,
+        sequence,
+        length: sequence.length,
+        domains: domainsByAcc.get(protein) ?? [],
+      }
+    })
+    .filter(r => r.sequence)
+  if (rows.length < 2) {
+    throw new Error('could not fetch protein sequences for the orthologs')
+  }
+
+  return { query: { symbol: query, refTaxonId }, rows }
+}
+
+// Phase 2: align the panel's sequences at EBI Clustal Omega and emit the
+// column-locked alignment, guide tree, and per-row domain gff for react-msaview.
+export async function alignProteinPanel(
+  panel: ProteinPanel,
+  { email = EBI_EMAIL, onProgress = () => undefined }: ProteinAlignOptions = {},
+): Promise<ProteinAlignment> {
+  onProgress('Aligning proteins at EBI Clustal Omega…')
+  const seqById = new Map(panel.rows.map(r => [r.protein, r.sequence]))
+  const domainsByAcc = new Map(panel.rows.map(r => [r.protein, r.domains]))
+  const { aligned, newick } = await clustalOmega(
+    buildInputFasta(panel.rows, seqById),
+    { email },
+  )
   return {
-    query: { symbol: query, refTaxonId },
     fasta: unwrapFasta(aligned),
     newick,
-    gff: buildDomainGff(rows, domainsByAcc),
-    rows,
+    gff: buildDomainGff(panel.rows, domainsByAcc),
   }
 }
