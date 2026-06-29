@@ -15,17 +15,18 @@ if (!features.pangenome) {
     <h1>Human Pangenome Explorer</h1>
     <p>
       Any two humans are about 99.9% identical — so a single reference genome
-      hides the 0.1% that actually differs. This explorer leads with regions
-      famous for that divergence: structural / copy-number changes, genes that
-      are present in some people and absent in others, and hypervariable immune
-      loci. Each region is backed by the
+      hides the 0.1% that actually differs. This explorer leads with loci of
+      exceptional human genetic variation: copy-number variation, genes present
+      on some haplotypes and absent on others, tandem-repeat and inversion
+      polymorphisms, and the hyperdiverse immune loci. Each region is backed by
+      the
       <a
         href="https://github.com/human-pangenomics/hpp_pangenome_resources"
         target="_blank"
         rel="noreferrer"
         >Human Pangenome Reference Consortium</a
-      > minigraph-cactus v1.1 graph (47 samples), with one-click launches into JBrowse
-      2 and an upcoming multi-haplotype alignment view.
+      > minigraph-cactus v1.1 graph (47 samples, 94 haplotypes), with one-click launches
+      into JBrowse 2 and an embedded multi-haplotype alignment view (react-msaview).
     </p>
 
     <PangenomeExplorer client:only="react" />
@@ -113,19 +114,29 @@ if (!features.pangenome) {
     border-radius: 3px;
   }
 
-  .pg-badge-structural {
+  .pg-badge-cnv {
     color: #8a4b00;
     background: #fdebd5;
   }
 
-  .pg-badge-presence-absence {
+  .pg-badge-pav {
     color: #0a5c2e;
     background: #d8f3e3;
   }
 
-  .pg-badge-hypervariable {
+  .pg-badge-hyperdiversity {
     color: #5a1a8a;
     background: #ece0fb;
+  }
+
+  .pg-badge-vntr {
+    color: #0b5a6b;
+    background: #d3eef3;
+  }
+
+  .pg-badge-inversion {
+    color: #8a1a4b;
+    background: #fbe0ec;
   }
 
   .pg-dashboard {
@@ -307,6 +318,40 @@ if (!features.pangenome) {
     background: #fafafa;
     border: 1px dashed #ccc;
     border-radius: 8px;
+  }
+
+  .pg-msa-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .pg-msa-controls {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .pg-msa-toggle {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #0b69d4;
+    background: white;
+    border: 1px solid #cdd9e6;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .pg-msa-toggle:hover {
+    background: #eaf3fd;
+  }
+
+  .pg-msa-toggle-on {
+    color: white;
+    background: #0b69d4;
+    border-color: #0b69d4;
   }
 
   .pg-hint {

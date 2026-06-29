@@ -5,7 +5,7 @@
 // synteny track. Coordinates are GRCh38/hg38 (the catalog's reference).
 
 import { mergeConfig, specUrl } from './jbrowseLinks.ts'
-import { locusRegion } from './pangenomeLoci.ts'
+import { locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -15,29 +15,33 @@ const HG38_CONFIG = 'https://jbrowse.org/ucsc/hg38/config.json'
 const CHM13_ACCESSION = 'GCA_009914755.4'
 const HG38_CHM13_SYNTENY_TRACK = 'hg38_to_GCA_009914755.4_liftOver'
 
-// Whole-pangenome entry point: GRCh38 with the HPRC VCF + RefSeq, landing on the
-// MHC (chr6) — the most-studied divergent locus — as a sensible starting view.
-export function hprcBrowserUrl() {
+// GRCh38 LinearGenomeView with the HPRC pangenome VCF + RefSeq open at `loc`.
+function hg38VcfLgvUrl(loc: string) {
   return specUrl(HG38_CONFIG, [
     {
       type: 'LinearGenomeView',
       assembly: 'hg38',
-      loc: 'chr6:29,700,000-33,500,000',
+      loc,
       tracks: ['hg38-ncbiRefSeq', 'hg38-hprc-v1.1-pangenome-vcf'],
     },
   ])
 }
 
-// Linear genome view on GRCh38 with the HPRC pangenome VCF track open at the locus.
+// Whole-pangenome entry point: lands on the MHC (chr6) — the most-studied
+// divergent locus — as a sensible starting view.
+export function hprcBrowserUrl() {
+  return hg38VcfLgvUrl('chr6:29,700,000-33,500,000')
+}
+
+// The HPRC pangenome VCF open at a specific catalog locus.
 export function hprcVcfLgvUrl(locus: PangenomeLocus) {
-  return specUrl(HG38_CONFIG, [
-    {
-      type: 'LinearGenomeView',
-      assembly: 'hg38',
-      loc: locusRegion(locus),
-      tracks: ['hg38-ncbiRefSeq', 'hg38-hprc-v1.1-pangenome-vcf'],
-    },
-  ])
+  return hg38VcfLgvUrl(locusRegion(locus))
+}
+
+// Internal cross-link into the conserved-gene-order view for the locus's marker
+// gene (not a JBrowse spec — a site route).
+export function syntenyMultiUrl(locus: PangenomeLocus) {
+  return `/conserved-gene-order?gene=${encodeURIComponent(syntenyGene(locus))}&ref=9606`
 }
 
 // Pairwise GRCh38 ↔ CHM13 synteny at the locus, showing reference-level divergence.

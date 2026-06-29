@@ -15,6 +15,9 @@ export interface MsaPanelProps {
   gff?: string
   tree?: string
   height?: number
+  // Row name to diff every other row against (matches render as "."), so the
+  // divergence from a reference haplotype pops out of an otherwise-identical wall.
+  relativeTo?: string
 }
 
 export default function MsaPanel({
@@ -25,6 +28,7 @@ export default function MsaPanel({
   gff,
   tree,
   height = 460,
+  relativeTo,
 }: MsaPanelProps) {
   return (
     <Suspense fallback={<p className="pg-hint">Loading alignment viewer…</p>}>
@@ -43,6 +47,7 @@ export default function MsaPanel({
         }
         height={height}
         colorScheme="clustalx_dna"
+        relativeTo={relativeTo}
       />
     </Suspense>
   )

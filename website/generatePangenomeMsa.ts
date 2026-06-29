@@ -290,6 +290,10 @@ async function main() {
   console.log(
     `Wrote MSA + exon GFF for ${PANGENOME_LOCI.length} loci to ${OUT_DIR}`,
   )
+  console.log(
+    'Next: run `node generatePangenomeMsaTree.ts` to rebuild the *.nh guide ' +
+      'trees the react-msaview panel clusters haplotypes by.',
+  )
 }
 
 void main()

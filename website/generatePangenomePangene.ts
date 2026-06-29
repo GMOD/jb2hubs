@@ -1,10 +1,12 @@
 /* eslint-disable no-console */
-// Precompute per-locus gene presence/absence + copy-number matrices from the
-// lh3/pangene human100 graph (Zenodo 10.5281/zenodo.8118576). The graph's W-lines
-// are per-sample walks through gene nodes, so counting how often each curated
-// marker gene appears in a sample's walks gives that sample's diploid copy number
-// (0 = absent, e.g. RHD in Rh-negative haplotypes; >2 = amplified, e.g. AMY).
-// Writes public/pangenome/<id>.pangene.json for each locus with pangeneGenes.
+// Precompute per-locus gene copy-number matrices from the lh3/pangene human100
+// graph (Zenodo 10.5281/zenodo.8118576). Each W-line is one *haplotype* walk
+// (PanSN `sample hapIdx …`), so counting how often a marker gene appears in a
+// haplotype's walks gives that haplotype's copy number (0 = absent, e.g. RHD on
+// an Rh-negative haplotype; ≥2 = amplified, e.g. AMY1). Keying by haplotype — not
+// by diploid sample — keeps the single-haplotype references (GRCh38#0, CHM13#0)
+// directly comparable to each sample haplotype on one scale, which is how pangene
+// itself represents gene content. Writes public/pangenome/<id>.pangene.json.
 //
 // NOT wired into the build: needs network + ~8MB download; outputs are committed.
 //   node generatePangenomePangene.ts
@@ -12,8 +14,8 @@ import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import readline from 'readline'
-import { createGunzip } from 'zlib'
 import { fileURLToPath } from 'url'
+import { createGunzip } from 'zlib'
 
 import { PANGENOME_LOCI } from './src/components/pangenomeLoci.ts'
 
@@ -24,8 +26,15 @@ const GFA_URL =
   'https://zenodo.org/records/14854301/files/human100-v1.1-a1.gfa.gz?download=1'
 const CACHE = path.join(os.tmpdir(), 'pangene-human100-v1.1-a1.gfa.gz')
 
-// References first, then samples alphabetically.
-const REF_ORDER = ['GRCh38', 'CHM13']
+// Single-haplotype references first (PanSN hap 0), then sample haplotypes.
+const REF_HAPLOTYPES = ['GRCh38#0', 'CHM13#0']
+
+// The `refs` present in `items` (in `refs` order), followed by everything else
+// sorted. Keeps the references pinned to the front of the matrix columns.
+function refsFirst(items: Set<string>, refs: string[]) {
+  const rest = [...items].filter(i => !refs.includes(i)).sort()
+  return [...refs.filter(r => items.has(r)), ...rest]
+}
 
 async function ensureGfa() {
   if (fs.existsSync(CACHE) && fs.statSync(CACHE).size > 0) {
@@ -44,12 +53,13 @@ async function main() {
   await ensureGfa()
 
   const targetGenes = new Set(PANGENOME_LOCI.flatMap(l => l.pangeneGenes ?? []))
-  // counts: gene -> sample -> copy number (summed over haplotypes + contigs)
+  // counts: gene -> haplotype (sample#hap) -> copy number on that haplotype
+  // (summed across its contigs).
   const counts = new Map<string, Map<string, number>>()
   for (const g of targetGenes) {
     counts.set(g, new Map())
   }
-  const samples = new Set<string>()
+  const haplotypes = new Set<string>()
 
   const rl = readline.createInterface({
     input: fs.createReadStream(CACHE).pipe(createGunzip()),
@@ -59,21 +69,18 @@ async function main() {
       continue
     }
     const f = line.split('\t')
-    const sample = f[1]!
+    const haplotype = `${f[1]}#${f[2]}` // PanSN sample#hapIdx
     const walk = f[6] ?? ''
-    samples.add(sample)
+    haplotypes.add(haplotype)
     for (const token of walk.split(/[<>]/)) {
       const geneCounts = counts.get(token)
       if (geneCounts) {
-        geneCounts.set(sample, (geneCounts.get(sample) ?? 0) + 1)
+        geneCounts.set(haplotype, (geneCounts.get(haplotype) ?? 0) + 1)
       }
     }
   }
 
-  const orderedSamples = [
-    ...REF_ORDER.filter(s => samples.has(s)),
-    ...[...samples].filter(s => !REF_ORDER.includes(s)).sort(),
-  ]
+  const orderedHaplotypes = refsFirst(haplotypes, REF_HAPLOTYPES)
 
   let written = 0
   for (const locus of PANGENOME_LOCI) {
@@ -83,14 +90,14 @@ async function main() {
     const genes = locus.pangeneGenes.filter(g => targetGenes.has(g))
     const matrix = genes.map(g => {
       const gc = counts.get(g)!
-      return orderedSamples.map(s => gc.get(s) ?? 0)
+      return orderedHaplotypes.map(h => gc.get(h) ?? 0)
     })
     fs.writeFileSync(
       path.join(OUT_DIR, `${locus.id}.pangene.json`),
       JSON.stringify({
         id: locus.id,
         source: 'lh3/pangene human100-v1.1',
-        samples: orderedSamples,
+        haplotypes: orderedHaplotypes,
         genes,
         matrix,
       }),
@@ -98,12 +105,12 @@ async function main() {
     written++
     const present = genes.map(
       (g, i) =>
-        `${g}:${matrix[i]!.filter(n => n > 0).length}/${orderedSamples.length}`,
+        `${g}:${matrix[i]!.filter(n => n > 0).length}/${orderedHaplotypes.length}`,
     )
     console.log(`  ${locus.id}: ${present.join('  ')}`)
   }
   console.log(
-    `Wrote ${written} pangene matrices (${orderedSamples.length} samples) to ${OUT_DIR}`,
+    `Wrote ${written} pangene matrices (${orderedHaplotypes.length} haplotypes) to ${OUT_DIR}`,
   )
 }
 
