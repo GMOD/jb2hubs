@@ -1,0 +1,25 @@
+digraph neighborhood {
+    rankdir=TB;
+    node [shape=box, style="rounded,filled", fontname="Helvetica", fillcolor="#eef4ff"];
+    edge [fontname="Helvetica", fontsize=10];
+
+    start   [label="Someone asks for a gene's neighborhood", fillcolor="#d7e9ff"];
+    geneid  [label="Look up the gene's NCBI ID\n(one search; skipped if they already gave a number)"];
+    orth    [label="Grab the gene's orthologs\nOne call hands back its position in every genome"];
+    nsearch [label="Find the genes sitting nearby (within 150kb)\nOne search for the IDs, one batched call for their details"];
+    anchorO [label="For each neighbor, grab its orthologs too\nThis is the only place we loop --\nand we loop over genes (~11), never over genomes",
+             fillcolor="#ffd9d9", penwidth=2, color="#cc0000"];
+    tree    [label="Pull the species tree once\nOne call covers every genome we've seen"];
+    result  [label="Hand back the assembled neighborhood", fillcolor="#d7e9ff"];
+
+    start   -> geneid  [label="  what they typed"];
+    geneid  -> orth    [label="  the gene ID"];
+    orth    -> nsearch [label="  where it lives"];
+    nsearch -> anchorO [label="  the neighbor genes"];
+    anchorO -> tree    [label="  every species involved"];
+    tree    -> result  [label="  rows sorted by the tree"];
+
+    note [shape=note, fillcolor="#f0f0f0",
+          label="Every call goes through ncbiFetch.ts, which paces them and retries.\nThe finished result gets cached to S3 for a day, so repeats are instant."];
+    tree -> note [style=dashed, color="#999999", arrowhead=none];
+}

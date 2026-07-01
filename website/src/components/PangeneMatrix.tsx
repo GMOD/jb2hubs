@@ -30,11 +30,9 @@ export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
 
   return (
     <div className="pg-pangene">
-      <h4 className="pg-chart-title">
-        Gene copy number per haplotype
-      </h4>
+      <h4 className="pg-chart-title">Gene copy number per haplotype</h4>
       <p className="pg-hint pg-pangene-caption">
-        Copy number of each gene on each of the 100 haplotypes from the{' '}
+        From the{' '}
         <a
           href="https://github.com/lh3/pangene"
           target="_blank"
@@ -42,9 +40,8 @@ export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
         >
           pangene
         </a>{' '}
-        gene graph (human100). Each column is one assembled haplotype (PanSN
-        sample#hap); GRCh38#0 and CHM13#0 are the single-haplotype references. Red
-        = gene absent on that haplotype; blue darkens with copy number.
+        human100 gene graph (a separate cohort from the variant charts). One
+        column per haplotype; red = absent, blue darkens with copy number.
       </p>
       {error && <p className="pg-error">Could not load pangene matrix.</p>}
       {!data && !error && <p className="pg-hint">Loading matrix…</p>}
@@ -77,6 +74,9 @@ export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
             </div>
           </div>
           <div className="pg-matrix-legend">
+            <span className="pg-legend-item pg-legend-count">
+              {data.haplotypes.length} haplotypes
+            </span>
             {LEGEND_COPIES.map(n => (
               <span
                 key={n}

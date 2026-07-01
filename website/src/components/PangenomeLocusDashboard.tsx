@@ -51,7 +51,6 @@ export default function PangenomeLocusDashboard({
               </>
             )}
           </p>
-          <p className="pg-dash-story">{locus.story}</p>
         </div>
       </div>
 
@@ -62,7 +61,7 @@ export default function PangenomeLocusDashboard({
           target="_blank"
           rel="noreferrer"
         >
-          Browse HPRC variants in JBrowse →
+          Browse HPRC variants + structural variation in JBrowse →
         </a>
         <a
           className="pg-launch-btn pg-launch-secondary"
@@ -89,6 +88,11 @@ export default function PangenomeLocusDashboard({
 
       {summary && (
         <>
+          <p className="pg-hint pg-provenance">
+            From the {summary.source} VCF ({summary.sampleBurden.length}{' '}
+            samples), a reference-projected decomposition of the graph onto{' '}
+            {summary.ref}; classes per <code>vcfwave</code>.
+          </p>
           <div className="pg-charts">
             <PangenomeBarChart
               title="Variant types"
@@ -101,18 +105,6 @@ export default function PangenomeLocusDashboard({
             <PangenomeBarChart
               title="Variant size"
               bins={summary.sizeHistogram}
-            />
-          </div>
-
-          <div className="pg-burden">
-            <h4 className="pg-chart-title">
-              Non-reference alleles per sample (this region)
-            </h4>
-            <PangenomeBarChart
-              bins={summary.sampleBurden.map(s => ({
-                label: s.sample,
-                count: s.count,
-              }))}
             />
           </div>
         </>

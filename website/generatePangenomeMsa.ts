@@ -2,13 +2,15 @@
 // Build a per-locus multi-haplotype DNA alignment (FASTA) + exon overlay (GFF)
 // for the react-msaview panel, from the HPRC minigraph-cactus GRCh38 VCF.
 //
-// Approach (no large downloads): for each locus pick the densest ~500bp variant
-// window, fetch the GRCh38 reference window (UCSC API), tabix the HPRC VCF there,
-// and reconstruct every sample haplotype by applying its genotypes to the
+// Approach (no large downloads): for each locus pick an exon-overlapping WINDOW-bp
+// sub-window ranked by indel-weighted variation (so structural variation shows, not
+// just conserved SNVs), fetch the GRCh38 reference window (UCSC API), tabix the HPRC
+// VCF there, and reconstruct every sample haplotype by applying its genotypes to the
 // reference. The reference row is the spine, so the alignment is column-locked:
-// SNVs substitute a column, deletions become gaps, and insertions add shared gap
-// columns. Because the reference row is ungapped GRCh38, exon overlay coordinates
-// are just (genomicPos - windowStart). Outputs (committed) under public/pangenome/msa/.
+// SNVs/MNVs substitute columns, deletions become gaps, and insertions add shared
+// insertion columns. Because the reference row is ungapped GRCh38, exon overlay
+// coordinates are just (genomicPos - windowStart). Outputs (committed) under
+// public/pangenome/msa/.
 //
 // NOT wired into the build: needs network + tabix. Re-run manually:
 //   node generatePangenomeMsa.ts
@@ -27,7 +29,13 @@ const TABIX_OPTS = { cwd: os.tmpdir() }
 const VCF_URL =
   'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.vcfbub.a100k.wave.vcf.gz'
 const UCSC_API = 'https://api.genome.ucsc.edu'
-const WINDOW = 500
+const WINDOW = 800
+// Skip windows containing a single insertion longer than this: the column-locked
+// model emits one shared column per inserted base, so a multi-kb insertion balloons
+// the alignment to tens of thousands of columns (one bad pick made defb 31k cols
+// wide). Multi-kb SVs are the JBrowse/MAF launch's job; the inline panel shows the
+// sequence-level variation that fits.
+const INS_CAP = 1000
 
 interface VcfRow {
   pos: number // 1-based genomic
@@ -43,7 +51,9 @@ function tabix(args: string[]): Promise<string> {
     proc.stdout.on('data', d => (out += d))
     proc.stderr.on('data', d => process.stderr.write(d))
     proc.on('error', reject)
-    proc.on('close', () => resolve(out))
+    proc.on('close', () => {
+      resolve(out)
+    })
   })
 }
 
@@ -72,9 +82,36 @@ async function fetchRows(region: string): Promise<VcfRow[]> {
   return rows
 }
 
-// Densest WINDOW-bp sub-window. Prefer windows that overlap a coding exon (so
-// the exon overlay is populated) when any exist; among the eligible windows pick
-// the one with the most variants — the most visually interesting alignment.
+// Variation richness of a window. Indels are weighted heavily over SNVs because
+// they are the structural "headline" the panel exists to show; maxIns gates out
+// windows with a single over-cap insertion.
+function windowScore(rows: VcfRow[], w: number) {
+  let nVar = 0
+  let indel = 0
+  let maxIns = 0
+  for (const r of rows) {
+    if (r.pos < w || r.pos >= w + WINDOW) {
+      continue
+    }
+    nVar++
+    for (const alt of r.alts) {
+      const d = alt.length - r.ref.length
+      if (d !== 0) {
+        indel++
+      }
+      maxIns = Math.max(maxIns, d)
+    }
+  }
+  return { score: nVar + 4 * indel, maxIns }
+}
+
+// Pick the WINDOW-bp sub-window for the inline alignment. The old ranking led with
+// exon-overlap then *SNV* density, steering into conserved coding sequence, so
+// structural loci landed on near-invariant windows. Now: still require exon overlap
+// (so the gene + exon overlay are in view — multi-kb SVs are the JBrowse/MAF
+// launch's job, not the inline panel's) but rank the eligible windows by
+// indel-weighted variation, and skip any window with an over-cap insertion. If no
+// exon-overlapping window qualifies, fall back to the richest window anywhere.
 function densestWindow(
   rows: VcfRow[],
   start: number,
@@ -83,23 +120,26 @@ function densestWindow(
 ) {
   const overlapsExon = (w: number) =>
     exons.some(e => e.start < w + WINDOW && e.end > w)
+  const requireExon = exons.length > 0
   let best = start
   let bestScore = -1
-  let bestExonScore = -1
+  let fallback = start
+  let fallbackScore = -1
   for (let w = start; w < end; w += WINDOW / 2) {
-    const count = rows.filter(r => r.pos >= w && r.pos < w + WINDOW).length
-    const exonBonus = overlapsExon(w) ? 1 : 0
-    // Rank by exon-overlap first, then variant density.
-    if (
-      exonBonus > bestExonScore ||
-      (exonBonus === bestExonScore && count > bestScore)
-    ) {
-      bestExonScore = exonBonus
-      bestScore = count
+    const { score, maxIns } = windowScore(rows, w)
+    if (maxIns > INS_CAP) {
+      continue
+    }
+    if (score > fallbackScore) {
+      fallbackScore = score
+      fallback = w
+    }
+    if ((!requireExon || overlapsExon(w)) && score > bestScore) {
+      bestScore = score
       best = w
     }
   }
-  return best
+  return bestScore >= 0 ? best : fallback
 }
 
 async function fetchJsonRetry(url: string, attempts = 5): Promise<unknown> {
@@ -191,9 +231,16 @@ function buildMsa(
       const L = r.ref.length
       if (L === 1 && alt.length === 1) {
         cells[h]![vi] = alt // SNV
-      } else if (alt.length < L && alt[0] === r.ref[0]) {
-        cells[h]![vi] = alt[0]! // deletion: keep anchor base
-        for (let k = 1; k < L; k++) {
+      } else if (alt.length === L) {
+        for (let k = 0; k < L && vi + k < W; k++) {
+          cells[h]![vi + k] = alt[k]! // MNV / equal-length substitution
+        }
+      } else if (alt.length < L && r.ref.startsWith(alt)) {
+        // deletion: keep the retained prefix, gap the deleted suffix
+        for (let k = 0; k < alt.length && vi + k < W; k++) {
+          cells[h]![vi + k] = alt[k]!
+        }
+        for (let k = alt.length; k < L; k++) {
           if (vi + k < W) {
             cells[h]![vi + k] = '-'
           }
@@ -201,15 +248,15 @@ function buildMsa(
       } else if (alt.length > L && alt.startsWith(r.ref)) {
         ins[h]!.set(vi + L - 1, alt.slice(L)) // insertion after the ref span
       } else {
-        cells[h]![vi] = alt[0]! // complex: anchor only (rare)
+        cells[h]![vi] = alt[0]! // complex non-anchored: anchor only (rare)
       }
     })
   })
 
   const maxIns = new Map<number, number>()
-  ins.forEach(m =>
-    m.forEach((s, i) => maxIns.set(i, Math.max(maxIns.get(i) ?? 0, s.length))),
-  )
+  ins.forEach(m => {
+    m.forEach((s, i) => maxIns.set(i, Math.max(maxIns.get(i) ?? 0, s.length)))
+  })
 
   // Render a row through the shared column model: per ref position emit the
   // cell, then pad that position's insertion columns to maxIns width.
@@ -289,10 +336,6 @@ async function main() {
   }
   console.log(
     `Wrote MSA + exon GFF for ${PANGENOME_LOCI.length} loci to ${OUT_DIR}`,
-  )
-  console.log(
-    'Next: run `node generatePangenomeMsaTree.ts` to rebuild the *.nh guide ' +
-      'trees the react-msaview panel clusters haplotypes by.',
   )
 }
 

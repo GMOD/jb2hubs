@@ -23,11 +23,15 @@ const out: Record<string, unknown> = {}
 for (const gene of GENES) {
   console.log(`\n${gene}: assembling panel…`)
   const panel = await assembleProteinPanel(gene, REF_TAXON, {
-    onProgress: m => { console.log(`  ${m}`) },
+    onProgress: m => {
+      console.log(`  ${m}`)
+    },
   })
   console.log(`  aligning ${panel.rows.length} proteins at EBI…`)
   const alignment = await alignProteinPanel(panel, {
-    onProgress: m => { console.log(`  ${m}`) },
+    onProgress: m => {
+      console.log(`  ${m}`)
+    },
   })
   out[`${gene}:${REF_TAXON}`] = { panel, alignment }
   console.log(`  done (${panel.rows.length} species)`)

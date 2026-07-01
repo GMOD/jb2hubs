@@ -54,7 +54,8 @@ test('parseGenpeptDomains returns nothing when there is no FEATURES table', () =
 })
 
 test('parseFasta concatenates wrapped lines, keyed by accession token', () => {
-  const fa = '>NP_1.1 some protein [Homo sapiens]\nMKTA\nYIAK\n>NP_2.2 other\nMKTL'
+  const fa =
+    '>NP_1.1 some protein [Homo sapiens]\nMKTA\nYIAK\n>NP_2.2 other\nMKTL'
   const map = parseFasta(fa)
   assert.equal(map.get('NP_1.1'), 'MKTAYIAK')
   assert.equal(map.get('NP_2.2'), 'MKTL')
@@ -66,11 +67,10 @@ test('unwrapFasta collapses each record to one sequence line, keeping gaps', () 
 })
 
 test('dedupeLabels sanitizes and disambiguates collisions', () => {
-  assert.deepEqual(dedupeLabels(['Homo sapiens', 'Mus musculus', 'Homo sapiens']), [
-    'Homo_sapiens',
-    'Mus_musculus',
-    'Homo_sapiens_2',
-  ])
+  assert.deepEqual(
+    dedupeLabels(['Homo sapiens', 'Mus musculus', 'Homo sapiens']),
+    ['Homo_sapiens', 'Mus_musculus', 'Homo_sapiens_2'],
+  )
 })
 
 test('buildInputFasta uses row labels as headers and drops missing sequences', () => {

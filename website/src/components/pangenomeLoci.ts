@@ -1,20 +1,13 @@
-// Curated catalog of loci of exceptional human genetic variation for the
-// pangenome explorer.
-//
-// Humans are ~99.9% identical, so a flat pangenome browser buries the signal.
-// This catalog leads with regions that are textbook examples of the *classes* of
-// variation — copy-number, gene presence/absence, tandem repeats, inversions, and
-// allelic hyperdiversity — so the demo teaches those axes at a glance and every
-// region has a real story.
+// Curated catalog of human loci where genome structure varies between
+// haplotypes — copy number, gene presence/absence, tandem repeats, inversions,
+// and allelic hyperdiversity — used by the pangenome explorer.
 //
 // Coordinates are GRCh38 / hg38 (UCSC chr-naming), matching the HPRC
-// minigraph-cactus GRCh38 VCF contigs and the hg38 UCSC JBrowse config. Windows
-// are deliberately generous so the locus and its structural context are in view.
-// `id` is the slug used for generated data filenames under public/pangenome/.
+// minigraph-cactus GRCh38 VCF contigs and the hg38 UCSC JBrowse config. `id` is
+// the slug used for the generated data filenames under public/pangenome/.
 
-// Classes of human genetic variation, using standard terms (dbVar/VCF-aligned)
-// rather than invented labels. A locus can carry several. These describe *within*-
-// species variation (polymorphism), not between-species divergence.
+// Variation classes, using standard dbVar/VCF-aligned terms. A locus can carry
+// several. These describe within-species variation (polymorphism).
 export type VariationClass =
   | 'cnv' // copy-number variation (segmental gene dosage)
   | 'pav' // gene presence/absence (gene-content variation)
@@ -30,10 +23,9 @@ export interface PangenomeLocus {
   start: number
   end: number
   variation: VariationClass[]
-  story: string
   // Marker genes (pangene node names) whose per-haplotype copy number is shown as
-  // a copy-number matrix. Omitted where gene-level copy number isn't the story
-  // (e.g. an intragenic VNTR). Names match the lh3/pangene human100 graph.
+  // a matrix. Omitted where gene-level copy number isn't relevant (e.g. an
+  // intragenic VNTR). Names match the lh3/pangene human100 graph.
   pangeneGenes?: string[]
 }
 
@@ -54,8 +46,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 28_510_000,
     end: 33_480_000,
     variation: ['hyperdiversity', 'cnv'],
-    story:
-      'The most polymorphic region of the human genome. Thousands of HLA alleles and large haplotype-level structural variation make a single reference a poor fit — the canonical case for a pangenome.',
     pangeneGenes: [
       'HLA-A',
       'HLA-B',
@@ -79,8 +69,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 103_540_000,
     end: 103_830_000,
     variation: ['cnv'],
-    story:
-      'Copy number of the salivary amylase gene varies widely between individuals and tracks dietary starch intake. A classic multi-allelic copy-number locus.',
     pangeneGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
   },
   {
@@ -91,8 +79,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 31_950_000,
     end: 32_080_000,
     variation: ['cnv', 'pav'],
-    story:
-      'C4 copy number and the C4A/C4B balance vary between haplotypes (plus a HERV-K insertion polymorphism) and are linked to schizophrenia risk via complement-driven synaptic pruning.',
     pangeneGenes: ['C4A', 'C4B'],
   },
   {
@@ -103,8 +89,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 160_500_000,
     end: 160_700_000,
     variation: ['vntr'],
-    story:
-      'A variable number of kringle-IV-type-2 repeats sets Lp(a) particle size and plasma level, a major heritable cardiovascular risk factor — a VNTR that short-read references collapse.',
   },
   {
     id: 'rhd',
@@ -114,8 +98,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 25_250_000,
     end: 25_460_000,
     variation: ['pav'],
-    story:
-      'Rh-negative individuals carry a whole-gene deletion of RHD between Rhesus-box repeats — gene presence/absence determining blood type, invisible as ordinary SNPs.',
     pangeneGenes: ['RHD', 'RHCE'],
   },
   {
@@ -126,8 +108,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 70_000_000,
     end: 70_130_000,
     variation: ['cnv', 'pav'],
-    story:
-      'SMN1 and its near-identical paralog SMN2 sit in a segmental duplication with variable copy number; SMN1 loss causes spinal muscular atrophy and SMN2 copies modify severity.',
     pangeneGenes: ['SMN1'],
   },
   {
@@ -138,8 +118,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 54_720_000,
     end: 54_870_000,
     variation: ['hyperdiversity', 'pav'],
-    story:
-      'The KIR locus varies in both gene content and allele sequence between haplotypes, shaping NK-cell immunity — gene presence/absence layered on hypervariability.',
     pangeneGenes: [
       'KIR3DL3',
       'KIR2DL3',
@@ -166,8 +144,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 6_900_000,
     end: 7_800_000,
     variation: ['cnv', 'inversion'],
-    story:
-      'The 8p23.1 beta-defensin cluster is a large, highly copy-number-variable antimicrobial-peptide region nested in a recurrent inversion polymorphism.',
     pangeneGenes: [
       'DEFB103A',
       'DEFB104B',
@@ -186,8 +162,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 161_500_000,
     end: 161_700_000,
     variation: ['cnv', 'pav'],
-    story:
-      'The low-affinity Fc-gamma receptor cluster carries copy-number variants and gene fusions (FCGR2C) affecting antibody-mediated immunity and autoimmune risk.',
     pangeneGenes: ['FCGR1A', 'FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
   },
   {
@@ -198,8 +172,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 72_040_000,
     end: 72_090_000,
     variation: ['cnv'],
-    story:
-      'A common intragenic deletion creates the HP1/HP2 alleles, changing the haptoglobin multimer and altering plasma haptoglobin — a structural allele missed by SNP genotyping.',
     pangeneGenes: ['HP', 'HPR'],
   },
 ]

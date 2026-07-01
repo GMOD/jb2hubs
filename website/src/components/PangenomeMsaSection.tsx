@@ -9,11 +9,11 @@ const TALL_HEIGHT = 760
 // FASTA reference row to diff every other haplotype against.
 const REFERENCE_ROW = 'GRCh38'
 
-// The embedded react-msaview panel: a precomputed UPGMA guide tree (*.nh) clusters
-// haplotypes by similarity; "diff vs GRCh38" collapses matching columns to "." so
-// divergence from the reference stands out (opt-in — first paint shows real bases).
-// Both toggles change the panel `key` to remount the viewer (re-reads the small
-// alignment) rather than mutating its internal model.
+// The embedded react-msaview panel. Rows are shown reference-first (no guide tree);
+// "diff vs GRCh38" collapses matching columns to "." so divergence from the
+// reference stands out (opt-in — first paint shows real bases). Both toggles change
+// the panel `key` to remount the viewer (re-reads the small alignment) rather than
+// mutating its internal model.
 export default function PangenomeMsaSection({
   locus,
 }: {
@@ -45,23 +45,14 @@ export default function PangenomeMsaSection({
         </div>
       </div>
       <p className="pg-hint pg-pangene-caption">
-        Each HPRC haplotype reconstructed from the pangenome VCF and projected onto{' '}
-        {REFERENCE_ROW} across this window — a reference-anchored reconstruction,
-        not a de-novo alignment — clustered by a guide tree in an embedded{' '}
-        <a
-          href="https://github.com/GMOD/react-msaview"
-          target="_blank"
-          rel="noreferrer"
-        >
-          react-msaview
-        </a>{' '}
-        panel; gene exons are overlaid on the reference row.
+        One ~800 bp window, haplotypes reconstructed from the VCF and projected
+        onto {REFERENCE_ROW} (base-level SNVs/indels only — not structural
+        variation, not gene structure).
       </p>
       <MsaPanel
         key={`${locus.id}-${expanded ? 'tall' : 'short'}-${diff ? 'diff' : 'raw'}`}
         msaUrl={`/pangenome/msa/${locus.id}.fa`}
         gffUrl={`/pangenome/msa/${locus.id}.exons.gff`}
-        treeUrl={`/pangenome/msa/${locus.id}.nh`}
         relativeTo={diff ? REFERENCE_ROW : undefined}
         height={expanded ? TALL_HEIGHT : SHORT_HEIGHT}
       />

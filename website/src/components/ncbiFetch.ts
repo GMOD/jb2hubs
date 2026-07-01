@@ -72,7 +72,10 @@ export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 // Throttled fetch returning text — for efetch flatfile/FASTA endpoints, which
 // don't speak JSON.
-export async function ncbiText(url: string, init?: RequestInit): Promise<string> {
+export async function ncbiText(
+  url: string,
+  init?: RequestInit,
+): Promise<string> {
   const res = await ncbiFetch(url, init)
   if (!res.ok) {
     throw new Error(`NCBI request failed (${res.status})`)

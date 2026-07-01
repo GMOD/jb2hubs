@@ -6,9 +6,19 @@
 const JBROWSE = 'https://jbrowse.org/code/jb2/main'
 const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
 
-// config + spec session of one or more views.
-export function specUrl(config: string, views: object[]) {
-  const session = JSON.stringify({ views })
+// config + spec session of one or more views. `sessionTracks` carries full track
+// configs that aren't in the hosted config — loadSessionSpec adds them via
+// session.addTrackConf, so a view's `tracks` can reference their trackIds. This is
+// how we attach data (e.g. the HPRC VCF on public S3) without first baking it into
+// the served config.
+export function specUrl(
+  config: string,
+  views: object[],
+  sessionTracks?: object[],
+) {
+  const session = JSON.stringify(
+    sessionTracks?.length ? { views, sessionTracks } : { views },
+  )
   return `${JBROWSE}/?config=${encodeURIComponent(config)}&session=spec-${encodeURIComponent(session)}`
 }
 

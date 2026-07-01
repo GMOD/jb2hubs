@@ -123,8 +123,7 @@ export default function OrthologResultsTable({
             Launch multi-species synteny view
           </a>{' '}
           ({multiPlan.rows.length} species:{' '}
-          {multiPlan.rows.map(r => assemblyLabel(r.assembly)).join(' → ')}
-          )
+          {multiPlan.rows.map(r => assemblyLabel(r.assembly)).join(' → ')})
         </p>
       )}
       <table className="orthologs-table">

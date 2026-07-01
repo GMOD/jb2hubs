@@ -34,7 +34,11 @@ async function text(url: string, init?: RequestInit) {
 // controls the labels used everywhere downstream.
 export async function clustalOmega(
   fasta: string,
-  { email = EBI_EMAIL, pollMs = 2000, timeoutMs = 180_000 }: ClustalOptions = {},
+  {
+    email = EBI_EMAIL,
+    pollMs = 2000,
+    timeoutMs = 180_000,
+  }: ClustalOptions = {},
 ): Promise<{ aligned: string; newick: string }> {
   const body = new URLSearchParams({ email, stype: 'protein', sequence: fasta })
   const jobId = await text(`${CLUSTALO}/run`, { method: 'POST', body })

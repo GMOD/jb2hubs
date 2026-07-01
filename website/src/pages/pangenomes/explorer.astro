@@ -3,30 +3,30 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import PangenomeExplorer from '../../components/PangenomeExplorer.tsx'
 import { features } from '../../config/features.ts'
+import manifest from '../../../public/pangenome/manifest.json'
 
 // Staging-only while the pangenome explorer is in development; see synteny/index.astro.
 if (!features.pangenome) {
   return Astro.redirect('/')
 }
+
+// Sample count comes from the generated manifest, not a hand-written figure.
+const sampleCount = manifest.samples.length
 ---
 
-<Layout title="Pangenome Explorer">
+<Layout title="Human pangenome — variable loci">
   <Container>
-    <h1>Human Pangenome Explorer</h1>
+    <h1>Human pangenome: variable loci</h1>
     <p>
-      Any two humans are about 99.9% identical — so a single reference genome
-      hides the 0.1% that actually differs. This explorer leads with loci of
-      exceptional human genetic variation: copy-number variation, genes present
-      on some haplotypes and absent on others, tandem-repeat and inversion
-      polymorphisms, and the hyperdiverse immune loci. Each region is backed by
-      the
+      GRCh38 loci where structure varies between haplotypes (copy number, gene
+      presence/absence, tandem repeats, inversions, hypervariable immune
+      regions), from the
       <a
         href="https://github.com/human-pangenomics/hpp_pangenome_resources"
         target="_blank"
         rel="noreferrer"
-        >Human Pangenome Reference Consortium</a
-      > minigraph-cactus v1.1 graph (47 samples, 94 haplotypes), with one-click launches
-      into JBrowse 2 and an embedded multi-haplotype alignment view (react-msaview).
+        >HPRC</a
+      > minigraph-cactus v1.1 graph ({sampleCount} samples), with JBrowse launches.
     </p>
 
     <PangenomeExplorer client:only="react" />
@@ -160,13 +160,6 @@ if (!features.pangenome) {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 13px;
     color: #444;
-  }
-
-  .pg-dash-story {
-    max-width: 70ch;
-    font-size: 14px;
-    color: #333;
-    line-height: 1.5;
   }
 
   .pg-launch-bar {
@@ -357,6 +350,22 @@ if (!features.pangenome) {
   .pg-hint {
     color: #666;
     font-size: 14px;
+  }
+
+  .pg-provenance {
+    max-width: 80ch;
+    margin: 0 0 1.25rem;
+    font-size: 13px;
+  }
+
+  .pg-provenance code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+  }
+
+  .pg-legend-count {
+    font-weight: 600;
+    color: #333;
   }
 
   .pg-error {

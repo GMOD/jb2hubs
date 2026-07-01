@@ -3,7 +3,7 @@
 Decision-oriented notes for sourcing pairwise synteny tracks from a Cactus/HAL
 multiple alignment (`halSynteny`) and folding them into the existing
 static-generation pipeline. Sibling to `SYNTENY_ALIGNMENT_STRATEGY.md`, which
-frames halSynteny as drill-down tier 2; this doc is how it actually *builds*.
+frames halSynteny as drill-down tier 2; this doc is how it actually _builds_.
 
 ## Where this fits: a third converter, not a service
 
@@ -19,14 +19,14 @@ halSynteny extraction is **the same shape as those converters**: a new
 runs `halSynteny` over a chosen pair set, converts the output to the repo's PIF
 track format, and writes config entries. Its **output is fully static** — PIF
 files on S3 + entries in the synteny catalog. Nothing about the runtime browse
-path changes; `planMultiSynteny` and the pairwise launcher just see more
-catalog edges.
+path changes; `planMultiSynteny` and the pairwise launcher just see more catalog
+edges.
 
 The one wrinkle vs the other converters: halSynteny is a C++/HDF5 binary and the
 HAL is large (random access wants the file on local/EBS, not streamed from S3),
 so this stage runs on **one big instance as a one-off / periodic batch** rather
-than the regular `make.sh` box. But that's a property of *where the generator
-runs*, not of the pipeline model — the artifacts it produces are as static as
+than the regular `make.sh` box. But that's a property of _where the generator
+runs_, not of the pipeline model — the artifacts it produces are as static as
 everything else, and it reruns only when the HAL changes (rarely).
 
 ## Why halSynteny specifically (vs salvaging the UCSC chains)
@@ -34,8 +34,8 @@ everything else, and it reruns only when the HAL changes (rarely).
 Two reasons that matter after the `planMultiSynteny` work:
 
 - **It densifies the catalog graph, which is what caps multi-row.**
-  `planMultiSynteny` orders an ortholog set into a chain where each *adjacent*
-  pair has a track; a star-shaped catalog caps it at 3 rows. A HAL yields *any*
+  `planMultiSynteny` orders an ortholog set into a chain where each _adjacent_
+  pair has a track; a star-shaped catalog caps it at 3 rows. A HAL yields _any_
   pair, so we choose the graph shape — extract **tree-adjacent** pairs (each
   species vs its nearest neighbor in the alignment's tree) and the catalog
   becomes path-shaped, so long chains fall out for free.
@@ -44,11 +44,12 @@ Two reasons that matter after the `planMultiSynteny` work:
   deferred UCSC-chain bridge died because `syntenyTracks.json` is keyed in
   UCSC-db/GCA space and won't bind GCF-loaded GenArk assemblies (see
   `SYNTENY_ALIGNMENT_STRATEGY.md`, "Attempted 2026-06"). halSynteny output is in
-  the HAL's own genome+sequence space, so we set `queryAssembly`/`targetAssembly`
-  to GCF accessions when building the track — no GCA↔GCF↔UCSC-db identity layer
-  needed. The only mapping required is a finite **HAL-genome-name → GCF
-  accession** table (one row per genome), plus `refNameAliases`/chromAlias for
-  chr↔NC_ within each assembly, which GenArk already ships.
+  the HAL's own genome+sequence space, so we set
+  `queryAssembly`/`targetAssembly` to GCF accessions when building the track —
+  no GCA↔GCF↔UCSC-db identity layer needed. The only mapping required is a
+  finite **HAL-genome-name → GCF accession** table (one row per genome), plus
+  `refNameAliases`/chromAlias for chr↔NC_ within each assembly, which GenArk
+  already ships.
 
 ## Pipeline stages
 
@@ -72,13 +73,13 @@ SyntenyTrack { adapter: PairwiseIndexedPAFAdapter, assemblyNames:[GCF_A,GCF_B] }
 synteny_pairs.json:  "GCF_A,GCF_B" -> "GCF_A_to_GCF_B_halSynteny"
 ```
 
-Everything from PAF down already exists. The **new code is three small,
-pure-JS, testable pieces**:
+Everything from PAF down already exists. The **new code is three small, pure-JS,
+testable pieces**:
 
 - **`psl2paf`** — PSL → PAF. PSL gives `blockSizes`, `qStarts`, `tStarts`,
   strand, and q/t sizes; that's a direct walk into a PAF `cigar` (`=`/`M` runs
-  plus `I`/`D` gaps between blocks) with absolute coordinates. No alignment, just
-  format translation.
+  plus `I`/`D` gaps between blocks) with absolute coordinates. No alignment,
+  just format translation.
 - **`halGenomeToAccession`** — the HAL-genome-name → GCF-accession map (curated
   table; finite, one row per HAL genome). Used to name `queryAssembly`/
   `targetAssembly` and the output files. A HAL genome with no hosted GenArk
@@ -105,11 +106,11 @@ deterministically.
   `chr1` block navigates an `NC_000001.11` assembly. Verify per-HAL which naming
   it uses before bulk extraction.
 - **Strand.** PSL `strand` is query-relative (`+`/`-`, occasionally `++`/`+-`
-  for translated); PIF/PAF want target-forward with a query strand flag. `psl2paf`
-  normalizes (flip query coords when `-`).
+  for translated); PIF/PAF want target-forward with a query strand flag.
+  `psl2paf` normalizes (flip query coords when `-`).
 - **Identity.** `make-pif`'s `de:f:` tag drives the synteny view's
-  opacity/color-by-identity; populate it from PSL `matches`/(`matches+misMatches`)
-  rather than leaving it default.
+  opacity/color-by-identity; populate it from PSL
+  `matches`/(`matches+misMatches`) rather than leaving it default.
 
 ## Pair selection (what to actually extract)
 
@@ -134,16 +135,17 @@ neighborhood window a default run can collapse to one block. Mitigations:
   survives.
 - For genuine base-level detail in a window, the alternative is region-scoped
   `hal2maf --refGenome --refSequence --start --length` → per-pair PAF, but that
-  is a *dynamic* path (per-request) and breaks the static model — defer unless a
+  is a _dynamic_ path (per-request) and breaks the static model — defer unless a
   use case demands base-level mismatches inside the gene window. For
-  synteny-context ribbons (the current ortholog use case) coarse blocks are fine.
+  synteny-context ribbons (the current ortholog use case) coarse blocks are
+  fine.
 
 ## Smallest-first
 
 Prove the whole loop on ~5 model mammals (human, mouse, rat, dog, cow): extract
 the ~4–5 tree-path pairs, run `psl2paf → make-pif`, append to
-`synteny_pairs.json`, and confirm `planMultiSynteny` yields a real 5-row chain in
-the launched view. This validates extraction + naming + chromAlias binding +
+`synteny_pairs.json`, and confirm `planMultiSynteny` yields a real 5-row chain
+in the launched view. This validates extraction + naming + chromAlias binding +
 catalog + launcher before scaling to the full pair set. Pure-JS pieces
 (`psl2paf`, the mapping table, catalog-append) can be written and unit-tested
 ahead of having a HAL on a box.
@@ -152,10 +154,11 @@ ahead of having a HAL on a box.
 
 - **Which HAL.** Zoonomia 447-way (mammals, already run per the strategy doc) is
   the obvious first target; confirm hosting/access and its genome→assembly
-  naming. Non-mammal clades need their own HAL or fall to the minimap2 long tail.
-- **Where the batch runs.** A one-off big EC2/Batch instance with the HAL on EBS;
-  output PIFs to the same S3 layout as the other converters. Not Lambda.
-- **Refresh cadence.** The HAL is static; rerun only on a new HAL release or when
-  the hosted-assembly set changes enough to add/remove launchable pairs.
+  naming. Non-mammal clades need their own HAL or fall to the minimap2 long
+  tail.
+- **Where the batch runs.** A one-off big EC2/Batch instance with the HAL on
+  EBS; output PIFs to the same S3 layout as the other converters. Not Lambda.
+- **Refresh cadence.** The HAL is static; rerun only on a new HAL release or
+  when the hosted-assembly set changes enough to add/remove launchable pairs.
 - **psl2paf home.** `hubtools/` (shared, alongside `chainTracks.ts`) so both a
   future `hal2jbrowse/make.sh` and ad-hoc use can call it.

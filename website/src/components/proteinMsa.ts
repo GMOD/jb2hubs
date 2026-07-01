@@ -119,7 +119,9 @@ async function fetchRepresentativeProteins(
           len: t.protein?.length ?? 0,
           mane: /select/i.test(t.select_category ?? ''),
         }))
-        .filter((c): c is { acc: string; len: number; mane: boolean } => !!c.acc)
+        .filter(
+          (c): c is { acc: string; len: number; mane: boolean } => !!c.acc,
+        )
       const best =
         candidates.find(c => c.mane) ??
         [...candidates].sort((a, b) => b.len - a.len)[0]
@@ -167,7 +169,10 @@ export function parseGenpeptDomains(record: string): Domain[] {
   const origin = record.indexOf('\nORIGIN')
   const out: Domain[] = []
   if (featStart >= 0) {
-    const block = record.slice(featStart, origin > featStart ? origin : undefined)
+    const block = record.slice(
+      featStart,
+      origin > featStart ? origin : undefined,
+    )
     let cur: { start: number; end: number; name: string; cdd: boolean } | null =
       null
     let openName = false
@@ -213,7 +218,7 @@ export function parseGenpeptDomains(record: string): Domain[] {
 function parseAllDomains(text: string): Map<string, Domain[]> {
   const byAcc = new Map<string, Domain[]>()
   for (const record of text.split(/\n\/\/\s*\n/)) {
-    const ver = (/^VERSION\s+(\S+)/m.exec(record))?.[1]
+    const ver = /^VERSION\s+(\S+)/m.exec(record)?.[1]
     if (ver) {
       byAcc.set(ver, parseGenpeptDomains(record))
     }
@@ -264,7 +269,10 @@ export function unwrapFasta(text: string): string {
 // GFF attribute values must not contain the structural chars ; = tab; collapse
 // any whitespace they leave behind so names stay tidy.
 function gffSafe(value: string) {
-  return value.replace(/[;=\t\r\n]+/g, ' ').replace(/\s+/g, ' ').trim()
+  return value
+    .replace(/[;=\t\r\n]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 // What the FASTA/GFF builders need from a row — kept narrow so they're trivially
@@ -353,7 +361,9 @@ export async function assembleProteinPanel(
     withProtein.map(g => g.commonName ?? g.scientificName),
   )
   if (withProtein.length < 2) {
-    throw new Error('could not resolve representative proteins for the orthologs')
+    throw new Error(
+      'could not resolve representative proteins for the orthologs',
+    )
   }
 
   onProgress('Fetching protein sequences and conserved domains…')

@@ -1,54 +1,23 @@
 import { Suspense, lazy } from 'react'
 
-// react-msaview pulls in @jbrowse/core + MUI + mobx and renders to canvas, so it
-// must run client-side only. React.lazy keeps it out of the SSR pass (the parent
-// island server-renders the Suspense fallback) without any useEffect plumbing.
-const MSAViewer = lazy(() =>
-  import('react-msaview').then(m => ({ default: m.MSAViewer })),
-)
+// react-msaview pulls in @jbrowse/core + MUI + mobx and renders to canvas, so the
+// model-building inner must run client-side only. React.lazy keeps it out of the
+// SSR pass (the parent island server-renders the Suspense fallback).
+const MsaPanelInner = lazy(() => import('./MsaPanelInner.tsx'))
 
 export interface MsaPanelProps {
   msaUrl?: string
   gffUrl?: string
-  treeUrl?: string
-  msa?: string
-  gff?: string
-  tree?: string
   height?: number
   // Row name to diff every other row against (matches render as "."), so the
   // divergence from a reference haplotype pops out of an otherwise-identical wall.
   relativeTo?: string
 }
 
-export default function MsaPanel({
-  msaUrl,
-  gffUrl,
-  treeUrl,
-  msa,
-  gff,
-  tree,
-  height = 460,
-  relativeTo,
-}: MsaPanelProps) {
+export default function MsaPanel(props: MsaPanelProps) {
   return (
     <Suspense fallback={<p className="pg-hint">Loading alignment viewer…</p>}>
-      <MSAViewer
-        msa={msa}
-        gff={gff}
-        tree={tree}
-        msaFilehandle={
-          msaUrl ? { uri: msaUrl, locationType: 'UriLocation' } : undefined
-        }
-        gffFilehandle={
-          gffUrl ? { uri: gffUrl, locationType: 'UriLocation' } : undefined
-        }
-        treeFilehandle={
-          treeUrl ? { uri: treeUrl, locationType: 'UriLocation' } : undefined
-        }
-        height={height}
-        colorScheme="clustalx_dna"
-        relativeTo={relativeTo}
-      />
+      <MsaPanelInner {...props} />
     </Suspense>
   )
 }
