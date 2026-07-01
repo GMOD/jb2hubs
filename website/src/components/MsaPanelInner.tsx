@@ -24,8 +24,9 @@ export default function MsaPanelInner({
   relativeTo,
 }: MsaPanelProps) {
   // MST instance, built once from the initial props (a stable model, not a value
-  // safe to recompute — so useState lazy init, not useMemo). The parent remounts
-  // via its `key` when a toggle changes, so there's nothing to keep in sync here.
+  // safe to recompute — so useState lazy init, not useMemo). Height is synced
+  // below; the parent still remounts via `key` when the diff toggle flips, since
+  // `relativeTo` is a construction-time model option.
   const [model] = useState(() =>
     MSAModelF().create({
       type: 'MsaView',
@@ -45,6 +46,12 @@ export default function MsaPanelInner({
       model.setWidth(width)
     }
   }, [model, width])
+
+  // Expand/collapse is a pure height change — set it on the model instead of
+  // remounting (and re-fetching the alignment) the way a `key` change would.
+  useEffect(() => {
+    model.setHeight(height)
+  }, [model, height])
 
   return (
     <ThemeProvider theme={theme}>

@@ -81,6 +81,9 @@ async function main() {
   }
 
   const orderedHaplotypes = refsFirst(haplotypes, REF_HAPLOTYPES)
+  // The references actually present, in order — emitted so the viewer never has to
+  // hardcode reference names (keeps the matrix component graph-agnostic).
+  const referenceHaplotypes = REF_HAPLOTYPES.filter(r => haplotypes.has(r))
 
   let written = 0
   for (const locus of PANGENOME_LOCI) {
@@ -98,6 +101,7 @@ async function main() {
         id: locus.id,
         source: 'lh3/pangene human100-v1.1',
         haplotypes: orderedHaplotypes,
+        referenceHaplotypes,
         genes,
         matrix,
       }),

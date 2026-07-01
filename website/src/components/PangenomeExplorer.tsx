@@ -28,11 +28,24 @@ export default function PangenomeExplorer() {
   const [selectedId, setSelectedId] = useUrlState('locus', DEFAULT_LOCUS_ID)
   const [filter, setFilter] = useState<Filter>('all')
 
-  const visible = PANGENOME_LOCI.filter(
-    l => filter === 'all' || l.variation.includes(filter),
-  )
+  const matchesFilter = (l: (typeof PANGENOME_LOCI)[number], f: Filter) =>
+    f === 'all' || l.variation.includes(f)
+  const visible = PANGENOME_LOCI.filter(l => matchesFilter(l, filter))
   const selected =
     PANGENOME_LOCI.find(l => l.id === selectedId) ?? PANGENOME_LOCI[0]
+
+  // Keep the dashboard in sync with the grid: if a new filter would hide the
+  // selected locus, jump to the first locus that survives it (no effect needed —
+  // the selection change happens in the same click that changes the filter).
+  const applyFilter = (f: Filter) => {
+    setFilter(f)
+    if (selected && !matchesFilter(selected, f)) {
+      const first = PANGENOME_LOCI.find(l => matchesFilter(l, f))
+      if (first) {
+        setSelectedId(first.id)
+      }
+    }
+  }
 
   return (
     <div>
@@ -41,8 +54,9 @@ export default function PangenomeExplorer() {
           <button
             key={f}
             className={`pg-filter${filter === f ? ' pg-filter-active' : ''}`}
+            aria-pressed={filter === f}
             onClick={() => {
-              setFilter(f)
+              applyFilter(f)
             }}
           >
             {filterLabel(f)}
@@ -55,6 +69,7 @@ export default function PangenomeExplorer() {
           <button
             key={l.id}
             className={`pg-card${l.id === selectedId ? ' pg-card-active' : ''}`}
+            aria-pressed={l.id === selectedId}
             onClick={() => {
               setSelectedId(l.id)
             }}

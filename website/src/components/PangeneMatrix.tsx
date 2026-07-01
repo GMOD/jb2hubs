@@ -22,11 +22,49 @@ function copyLabel(n: number) {
   return n === 0 ? 'absent' : n === 8 ? '8+' : String(n)
 }
 
+// Column order for the heatmap. References (identified by the generator, not
+// guessed here) are pinned to the front in their given order; the remaining
+// assembly haplotypes are sorted by their copy-number vector, so haplotypes with
+// the same gene-content pattern sit together instead of scattering across ~100
+// look-alike columns. This is a pure display reordering — it asserts nothing
+// beyond "group like patterns" and works for any graph's matrix.
+function columnOrder(data: PangeneData) {
+  const refNames = data.referenceHaplotypes ?? []
+  const refSet = new Set(refNames)
+  const index = new Map(data.haplotypes.map((hap, hi) => [hap, hi]))
+  const refCols = refNames
+    .filter(r => index.has(r))
+    .map(hap => ({ hap, hi: index.get(hap)! }))
+  const byPattern = (a: number, b: number) => {
+    for (const row of data.matrix) {
+      const d = row[b]! - row[a]!
+      if (d !== 0) {
+        return d
+      }
+    }
+    return 0
+  }
+  const assemblyCols = data.haplotypes
+    .map((hap, hi) => ({ hap, hi }))
+    .filter(c => !refSet.has(c.hap))
+    .sort((a, b) => byPattern(a.hi, b.hi))
+  return { order: [...refCols, ...assemblyCols], refCount: refCols.length }
+}
+
+function copyRange(row: number[]) {
+  const min = Math.min(...row)
+  const max = Math.max(...row)
+  return min === max ? String(min) : `${min}–${max}`
+}
+
 export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
   const { data, error } = useSWRImmutable<PangeneData>(
     `/pangenome/${locus.id}.pangene.json`,
     fetchJson,
   )
+  const { order, refCount } = data
+    ? columnOrder(data)
+    : { order: [], refCount: 0 }
 
   return (
     <div className="pg-pangene">
@@ -41,7 +79,10 @@ export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
           pangene
         </a>{' '}
         human100 gene graph (a separate cohort from the variant charts). One
-        column per haplotype; red = absent, blue darkens with copy number.
+        column per haplotype; {refCount > 0 ? 'references first, then ' : ''}
+        assemblies ordered by copy-number pattern so like patterns group. The
+        range column is min–max copies across haplotypes; red (hatched) = gene
+        absent (copy 0), blue darkens with copy number.
       </p>
       {error && <p className="pg-error">Could not load pangene matrix.</p>}
       {!data && !error && <p className="pg-hint">Loading matrix…</p>}
@@ -51,31 +92,39 @@ export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
             <div
               className="pg-matrix"
               style={{
-                gridTemplateColumns: `110px repeat(${data.haplotypes.length}, 13px)`,
+                gridTemplateColumns: `110px 44px repeat(${order.length}, 13px)`,
               }}
             >
-              {data.genes.map((gene, gi) => (
-                <div
-                  key={gene}
-                  className="pg-matrix-row"
-                  style={{ display: 'contents' }}
-                >
-                  <span className="pg-matrix-gene">{gene}</span>
-                  {data.matrix[gi]!.map((n, hi) => (
-                    <span
-                      key={data.haplotypes[hi]}
-                      className="pg-matrix-cell"
-                      style={{ background: copyColor(n) }}
-                      title={`${data.haplotypes[hi]} · ${gene} × ${n}`}
-                    />
-                  ))}
-                </div>
-              ))}
+              {data.genes.map((gene, gi) => {
+                const row = data.matrix[gi]!
+                return (
+                  <div
+                    key={gene}
+                    className="pg-matrix-row"
+                    style={{ display: 'contents' }}
+                  >
+                    <span className="pg-matrix-gene">{gene}</span>
+                    <span className="pg-matrix-range">{copyRange(row)}</span>
+                    {order.map((o, pos) => {
+                      const n = row[o.hi]!
+                      return (
+                        <span
+                          key={o.hap}
+                          className={`pg-matrix-cell${n === 0 ? ' pg-matrix-cell-absent' : ''}${pos === refCount - 1 ? ' pg-matrix-cell-refdiv' : ''}`}
+                          style={{ backgroundColor: copyColor(n) }}
+                          title={`${o.hap} · ${gene} × ${n}`}
+                        />
+                      )
+                    })}
+                  </div>
+                )
+              })}
             </div>
           </div>
           <div className="pg-matrix-legend">
             <span className="pg-legend-item pg-legend-count">
-              {data.haplotypes.length} haplotypes
+              {order.length} haplotypes
+              {refCount > 0 ? ` · first ${refCount} are references` : ''}
             </span>
             {LEGEND_COPIES.map(n => (
               <span
@@ -83,8 +132,8 @@ export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
                 className="pg-legend-item"
               >
                 <span
-                  className="pg-legend-swatch"
-                  style={{ background: copyColor(n) }}
+                  className={`pg-legend-swatch${n === 0 ? ' pg-matrix-cell-absent' : ''}`}
+                  style={{ backgroundColor: copyColor(n) }}
                 />
                 {copyLabel(n)}
               </span>

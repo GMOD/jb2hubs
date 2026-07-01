@@ -21,6 +21,12 @@ function typeBins(typeCounts: Record<string, number>) {
     .sort((a, b) => b.count - a.count)
 }
 
+// sampleBurden[i] = number of variant sites in this locus where sample i carries
+// any non-reference allele (counted once per site, hom or het) — i.e. per-sample
+// divergence from the reference, not an allele count or a functional load. It's
+// pre-sorted descending by the generator, so this slice is the most-divergent N.
+const TOP_DIVERGENT = 12
+
 export default function PangenomeLocusDashboard({
   locus,
 }: {
@@ -89,8 +95,9 @@ export default function PangenomeLocusDashboard({
       {summary && (
         <>
           <p className="pg-hint pg-provenance">
-            From the {summary.source} VCF ({summary.sampleBurden.length}{' '}
-            samples), a reference-projected decomposition of the graph onto{' '}
+            From the {summary.source} VCF ({summary.sampleBurden.length} samples
+            in the graph cohort — a different set from the 232-assembly GenArk
+            listing), a reference-projected decomposition of the graph onto{' '}
             {summary.ref}; classes per <code>vcfwave</code>.
           </p>
           <div className="pg-charts">
@@ -106,6 +113,22 @@ export default function PangenomeLocusDashboard({
               title="Variant size"
               bins={summary.sizeHistogram}
             />
+          </div>
+
+          <div className="pg-burden">
+            <PangenomeBarChart
+              title={`Variant sites differing from ${summary.ref} — most-divergent ${Math.min(TOP_DIVERGENT, summary.sampleBurden.length)} of ${summary.sampleBurden.length} samples`}
+              bins={summary.sampleBurden
+                .slice(0, TOP_DIVERGENT)
+                .map(s => ({ label: s.sample, count: s.count }))}
+            />
+            <p className="pg-hint pg-pangene-caption">
+              Per sample, the count of variant sites in this locus where the
+              assembly differs from {summary.ref} (a site counts once whether
+              heterozygous or homozygous). Dominated by common SNVs, so this
+              tracks overall sequence divergence from the reference — not a
+              functional or disease burden.
+            </p>
           </div>
         </>
       )}

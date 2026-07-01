@@ -50,7 +50,7 @@ export default function PangenomeMsaSection({
         variation, not gene structure).
       </p>
       <MsaPanel
-        key={`${locus.id}-${expanded ? 'tall' : 'short'}-${diff ? 'diff' : 'raw'}`}
+        key={`${locus.id}-${diff ? 'diff' : 'raw'}`}
         msaUrl={`/pangenome/msa/${locus.id}.fa`}
         gffUrl={`/pangenome/msa/${locus.id}.exons.gff`}
         relativeTo={diff ? REFERENCE_ROW : undefined}

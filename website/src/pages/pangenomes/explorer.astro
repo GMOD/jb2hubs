@@ -280,10 +280,34 @@ const sampleCount = manifest.samples.length
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
+  .pg-matrix-range {
+    font-size: 11px;
+    color: #888;
+    text-align: right;
+    padding-right: 8px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
   .pg-matrix-cell {
     width: 13px;
     height: 13px;
     border-radius: 2px;
+  }
+
+  /* Absent = red, but hatched so it survives grayscale / color-blind viewing. */
+  .pg-matrix-cell-absent {
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.34) 0 1.5px,
+      transparent 1.5px 4px
+    );
+  }
+
+  /* Divider drawn in the gap after the last reference column (no layout shift). */
+  .pg-matrix-cell-refdiv {
+    box-shadow: 3px 0 0 -1px #b0b0b0;
   }
 
   .pg-matrix-legend {
