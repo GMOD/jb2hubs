@@ -9,9 +9,11 @@ export interface MsaPanelProps {
   msaUrl?: string
   gffUrl?: string
   height?: number
-  // Row name to diff every other row against (matches render as "."), so the
-  // divergence from a reference haplotype pops out of an otherwise-identical wall.
-  relativeTo?: string
+  // Diff every row against the alignment's reference (matches render as "."), so
+  // divergence pops out of an otherwise-identical wall. The reference is the first
+  // row — the spine of a reference-projected MSA — so the panel needs no
+  // organism-specific row name and works for any such alignment.
+  diff?: boolean
 }
 
 export default function MsaPanel(props: MsaPanelProps) {

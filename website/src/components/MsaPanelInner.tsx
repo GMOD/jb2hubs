@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { createJBrowseTheme } from '@jbrowse/core/ui/theme'
 import useMeasure from '@jbrowse/core/util/useMeasure'
 import { ThemeProvider } from '@mui/material/styles'
+import { autorun } from 'mobx'
 import { MSAModelF, MSAView } from 'react-msaview'
 
 import type { MsaPanelProps } from './MsaPanel.tsx'
@@ -21,12 +22,11 @@ export default function MsaPanelInner({
   msaUrl,
   gffUrl,
   height = 460,
-  relativeTo,
+  diff,
 }: MsaPanelProps) {
-  // MST instance, built once from the initial props (a stable model, not a value
-  // safe to recompute — so useState lazy init, not useMemo). Height is synced
-  // below; the parent still remounts via `key` when the diff toggle flips, since
-  // `relativeTo` is a construction-time model option.
+  // MST instance, built once (a stable model, not a value safe to recompute — so
+  // useState lazy init, not useMemo). Height and diff are synced live below, so
+  // the parent never has to remount the viewer to change either.
   const [model] = useState(() =>
     MSAModelF().create({
       type: 'MsaView',
@@ -36,7 +36,6 @@ export default function MsaPanelInner({
       drawTree: false,
       treeAreaWidth: LABEL_GUTTER,
       height,
-      ...(relativeTo ? { relativeTo } : {}),
     }),
   )
 
@@ -52,6 +51,18 @@ export default function MsaPanelInner({
   useEffect(() => {
     model.setHeight(height)
   }, [model, height])
+
+  // Diff against the alignment's reference — its first row, by the
+  // reference-projected convention — so no organism-specific name is baked in.
+  // The autorun re-fires once the MSA finishes loading and rowNames populates.
+  useEffect(
+    () =>
+      autorun(() => {
+        const reference = model.MSA ? model.rowNames[0] : undefined
+        model.drawRelativeTo(diff && reference ? reference : undefined)
+      }),
+    [model, diff],
+  )
 
   return (
     <ThemeProvider theme={theme}>

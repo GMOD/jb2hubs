@@ -11,9 +11,9 @@ const REFERENCE_ROW = 'GRCh38'
 
 // The embedded react-msaview panel. Rows are shown reference-first (no guide tree);
 // "diff vs GRCh38" collapses matching columns to "." so divergence from the
-// reference stands out (opt-in — first paint shows real bases). Both toggles change
-// the panel `key` to remount the viewer (re-reads the small alignment) rather than
-// mutating its internal model.
+// reference stands out (opt-in — first paint shows real bases). Both toggles are
+// applied live on the model (height + drawRelativeTo), so the viewer only remounts
+// when the locus changes, not on every toggle.
 export default function PangenomeMsaSection({
   locus,
 }: {
@@ -50,10 +50,10 @@ export default function PangenomeMsaSection({
         variation, not gene structure).
       </p>
       <MsaPanel
-        key={`${locus.id}-${diff ? 'diff' : 'raw'}`}
+        key={locus.id}
         msaUrl={`/pangenome/msa/${locus.id}.fa`}
         gffUrl={`/pangenome/msa/${locus.id}.exons.gff`}
-        relativeTo={diff ? REFERENCE_ROW : undefined}
+        diff={diff}
         height={expanded ? TALL_HEIGHT : SHORT_HEIGHT}
       />
     </div>
