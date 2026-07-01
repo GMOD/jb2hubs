@@ -5,14 +5,15 @@ import PangenomeBarChart from './PangenomeBarChart.tsx'
 import PangenomeMsaSection from './PangenomeMsaSection.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import {
-  hprcSyntenyUrl,
-  hprcVcfLgvUrl,
-  syntenyMultiUrl,
+  crossSpeciesGeneOrderUrl,
+  graphVcfLgvUrl,
+  referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
 import { locusRegion, syntenyGene } from './pangenomeLoci.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 
 import type { LocusSummary } from './pangenomeData.ts'
+import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 function typeBins(typeCounts: Record<string, number>) {
@@ -28,15 +29,18 @@ function typeBins(typeCounts: Record<string, number>) {
 const TOP_DIVERGENT = 12
 
 export default function PangenomeLocusDashboard({
+  dataset,
   locus,
 }: {
+  dataset: PangenomeDataset
   locus: PangenomeLocus
 }) {
   const { data: summary, error } = useSWRImmutable<LocusSummary>(
-    `/pangenome/${locus.id}.vcfsummary.json`,
+    `${dataset.dataPrefix}/${locus.id}.vcfsummary.json`,
     fetchJson,
   )
   const gene = syntenyGene(locus)
+  const syntenyUrl = referenceSyntenyUrl(dataset, locus)
 
   return (
     <div className="pg-dashboard">
@@ -48,7 +52,7 @@ export default function PangenomeLocusDashboard({
           </h2>
           <PangenomeVariationBadges variation={locus.variation} />
           <p className="pg-dash-loc">
-            GRCh38 {locusRegion(locus)}
+            {dataset.reference.label} {locusRegion(locus)}
             {summary && (
               <>
                 {' · '}
@@ -57,29 +61,35 @@ export default function PangenomeLocusDashboard({
               </>
             )}
           </p>
+          {locus.significance && (
+            <p className="pg-dash-significance">{locus.significance}</p>
+          )}
         </div>
       </div>
 
       <div className="pg-launch-bar">
         <a
           className="pg-launch-btn"
-          href={hprcVcfLgvUrl(locus)}
+          href={graphVcfLgvUrl(dataset, locus)}
           target="_blank"
           rel="noreferrer"
         >
-          Browse HPRC variants + structural variation in JBrowse →
+          Browse {dataset.label} variants + structural variation in JBrowse →
         </a>
+        {syntenyUrl && dataset.syntenyTarget && (
+          <a
+            className="pg-launch-btn pg-launch-secondary"
+            href={syntenyUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Compare {dataset.reference.label} ↔ {dataset.syntenyTarget.label}{' '}
+            (synteny) →
+          </a>
+        )}
         <a
           className="pg-launch-btn pg-launch-secondary"
-          href={hprcSyntenyUrl(locus)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Compare GRCh38 ↔ CHM13 (synteny) →
-        </a>
-        <a
-          className="pg-launch-btn pg-launch-secondary"
-          href={syntenyMultiUrl(locus)}
+          href={crossSpeciesGeneOrderUrl(dataset, locus)}
         >
           {gene} gene-order across species →
         </a>
@@ -133,9 +143,18 @@ export default function PangenomeLocusDashboard({
         </>
       )}
 
-      {locus.pangeneGenes?.length ? <PangeneMatrix locus={locus} /> : null}
+      {locus.pangeneGenes?.length ? (
+        <PangeneMatrix
+          dataPrefix={dataset.dataPrefix}
+          locus={locus}
+        />
+      ) : null}
 
-      <PangenomeMsaSection locus={locus} />
+      <PangenomeMsaSection
+        dataPrefix={dataset.dataPrefix}
+        referenceLabel={dataset.reference.label}
+        locus={locus}
+      />
     </div>
   )
 }

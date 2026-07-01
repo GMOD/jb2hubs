@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import PangenomeExplorer from '../../components/PangenomeExplorer.tsx'
 import { features } from '../../config/features.ts'
+import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
 import manifest from '../../../public/pangenome/manifest.json'
 
 // Staging-only while the pangenome explorer is in development; see synteny/index.astro.
@@ -29,7 +30,10 @@ const sampleCount = manifest.samples.length
       > minigraph-cactus v1.1 graph ({sampleCount} samples), with JBrowse launches.
     </p>
 
-    <PangenomeExplorer client:only="react" />
+    <PangenomeExplorer
+      dataset={HPRC_DATASET}
+      client:only="react"
+    />
   </Container>
 </Layout>
 
@@ -101,6 +105,20 @@ const sampleCount = manifest.samples.length
   .pg-card-fullname {
     font-size: 12px;
     color: #666;
+  }
+
+  .pg-card-count {
+    margin-top: 2px;
+    font-size: 11px;
+    color: #888;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pg-dash-significance {
+    max-width: 80ch;
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #333;
   }
 
   .pg-badge {

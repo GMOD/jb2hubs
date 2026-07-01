@@ -3,7 +3,8 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import hprcSamples from '../../hprcSamples.json'
 import { features } from '../../config/features.ts'
-import { hprcBrowserUrl } from '../../components/pangenomeLinks.ts'
+import { graphBrowserUrl } from '../../components/pangenomeLinks.ts'
+import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
 
@@ -12,7 +13,7 @@ if (!features.pangenome) {
   return Astro.redirect('/')
 }
 
-const browserUrl = hprcBrowserUrl()
+const browserUrl = graphBrowserUrl(HPRC_DATASET)
 
 const pangenomeGraphs = [
   {

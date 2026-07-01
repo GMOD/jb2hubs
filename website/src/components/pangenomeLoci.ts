@@ -19,6 +19,9 @@ export interface PangenomeLocus {
   id: string
   gene: string
   fullName: string
+  // One-sentence, structural-variation-focused note on why the locus is hard for
+  // a single linear reference. Kept factual and about the variation itself.
+  significance?: string
   chrom: string
   start: number
   end: number
@@ -42,6 +45,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'mhc-hla',
     gene: 'HLA / MHC',
     fullName: 'Major histocompatibility complex',
+    significance:
+      'The most variable region of the human genome — HLA genes carry thousands of alleles and haplotypes differ by megabases, so any single reference represents it poorly.',
     chrom: 'chr6',
     start: 28_510_000,
     end: 33_480_000,
@@ -65,6 +70,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'amy1',
     gene: 'AMY1',
     fullName: 'Salivary amylase cluster',
+    significance:
+      'A textbook copy-number cluster: haplotypes range from a single copy to many tandem copies of the salivary amylase gene AMY1.',
     chrom: 'chr1',
     start: 103_540_000,
     end: 103_830_000,
@@ -75,6 +82,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'c4',
     gene: 'C4A / C4B',
     fullName: 'Complement component 4',
+    significance:
+      'Complement C4 varies in the copy number of its C4A and C4B genes, and in a long/short form set by a retroviral insertion in intron 9.',
     chrom: 'chr6',
     start: 31_950_000,
     end: 32_080_000,
@@ -85,6 +94,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'lpa',
     gene: 'LPA',
     fullName: 'Lipoprotein(a) — kringle IV repeats',
+    significance:
+      'Apolipoprotein(a) size is set by the KIV-2 variable-number tandem repeat in LPA, which varies several-fold in copy number between haplotypes.',
     chrom: 'chr6',
     start: 160_500_000,
     end: 160_700_000,
@@ -94,6 +105,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'rhd',
     gene: 'RHD / RHCE',
     fullName: 'Rh blood group',
+    significance:
+      'RhD-negative blood type is commonly caused by a complete deletion of RHD, so the gene is present on some haplotypes and absent on others.',
     chrom: 'chr1',
     start: 25_250_000,
     end: 25_460_000,
@@ -104,6 +117,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'smn',
     gene: 'SMN1 / SMN2',
     fullName: 'Survival motor neuron paralogs',
+    significance:
+      'SMN1 and SMN2 are near-identical paralogs in a segmental duplication; both vary in copy number, and loss of SMN1 causes spinal muscular atrophy.',
     chrom: 'chr5',
     start: 70_000_000,
     end: 70_130_000,
@@ -114,6 +129,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'kir',
     gene: 'KIR',
     fullName: 'Killer-cell immunoglobulin-like receptors',
+    significance:
+      'KIR haplotypes differ in gene content, not just sequence — individuals carry different combinations of activating and inhibitory receptor genes.',
     chrom: 'chr19',
     start: 54_720_000,
     end: 54_870_000,
@@ -140,6 +157,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'defb',
     gene: 'DEFB (8p23.1)',
     fullName: 'Beta-defensin cluster',
+    significance:
+      'The 8p23.1 beta-defensin cluster is a multiallelic copy-number region flanked by a common large inversion polymorphism.',
     chrom: 'chr8',
     start: 6_900_000,
     end: 7_800_000,
@@ -158,6 +177,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'fcgr',
     gene: 'FCGR (1q23.3)',
     fullName: 'Fc-gamma receptor cluster',
+    significance:
+      'The low-affinity Fcγ-receptor genes undergo copy-number variation and gene conversion between their near-identical paralogs.',
     chrom: 'chr1',
     start: 161_500_000,
     end: 161_700_000,
@@ -168,6 +189,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'hp',
     gene: 'HP',
     fullName: 'Haptoglobin',
+    significance:
+      'Haptoglobin carries a common intragenic duplication (the HP1/HP2 alleles) plus deletion alleles, changing the gene’s length between haplotypes.',
     chrom: 'chr16',
     start: 72_040_000,
     end: 72_090_000,

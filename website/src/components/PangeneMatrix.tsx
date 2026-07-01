@@ -57,9 +57,15 @@ function copyRange(row: number[]) {
   return min === max ? String(min) : `${min}–${max}`
 }
 
-export default function PangeneMatrix({ locus }: { locus: PangenomeLocus }) {
+export default function PangeneMatrix({
+  dataPrefix,
+  locus,
+}: {
+  dataPrefix: string
+  locus: PangenomeLocus
+}) {
   const { data, error } = useSWRImmutable<PangeneData>(
-    `/pangenome/${locus.id}.pangene.json`,
+    `${dataPrefix}/${locus.id}.pangene.json`,
     fetchJson,
   )
   const { order, refCount } = data
