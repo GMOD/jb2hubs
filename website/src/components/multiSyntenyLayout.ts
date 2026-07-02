@@ -3,8 +3,8 @@
 // homologous genes between adjacent rows, and a cladogram on the left. No React,
 // no DOM, so it is unit-testable and the component is a thin renderer over it.
 
-import type { Anchor, Neighborhood, PlacedGene } from './neighborhood.ts'
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
+import type { Anchor, Neighborhood, PlacedGene } from './neighborhood.ts'
 
 export type LayoutMode = 'bp' | 'ordinal'
 
@@ -15,6 +15,10 @@ export interface LayoutOptions {
   trackWidth: number
   rowHeight: number
   geneHeight: number
+  // Mirror each row whose query ortholog sits on the opposite strand from the
+  // reference, so a whole-locus inversion reads as a flipped block rather than a
+  // tangle of crossing ribbons.
+  orientToRef: boolean
 }
 
 export const DEFAULT_LAYOUT: LayoutOptions = {
@@ -24,11 +28,16 @@ export const DEFAULT_LAYOUT: LayoutOptions = {
   trackWidth: 620,
   rowHeight: 22,
   geneHeight: 12,
+  orientToRef: true,
 }
 
 export interface GeneBox extends PlacedGene {
   x: number
   width: number
+  // Arrow direction as drawn. Equals the genomic strand, except in a mirrored
+  // (inverted) row where it is negated so the arrow points correctly in the
+  // flipped frame. `strand` stays the genomic truth for tooltips.
+  drawStrand: 1 | -1
 }
 
 export interface RowLayout {
@@ -37,6 +46,12 @@ export interface RowLayout {
   y: number // top of the row's gene track band
   genes: GeneBox[]
   translocated: number // anchors on a different scaffold (not drawn in-track)
+  inverted: boolean // row mirrored to match the reference's query orientation
+  hasQuery: boolean // the query anchor's ortholog is present on this scaffold
+  assembly: string // GCF accession of this row's genes (for JBrowse launch)
+  refName: string // dominant scaffold the row is laid out on
+  spanStart: number // genomic bounds of the drawn genes on that scaffold
+  spanEnd: number
 }
 
 // A filled band connecting one anchor's gene in the top row to the same anchor's
@@ -77,6 +92,7 @@ export interface MultiSyntenyLayout {
   trackLeft: number
   width: number
   height: number
+  geneHeight: number
 }
 
 // Distinct, stable hues per anchor (the query gene is always the first anchor).
@@ -122,7 +138,12 @@ function placeBp(genes: PlacedGene[], trackLeft: number, trackWidth: number) {
   const scale = trackWidth / span
   return genes.map((g): GeneBox => {
     const x = trackLeft + (g.start - min) * scale
-    return { ...g, x, width: Math.max(3, (g.end - g.start) * scale) }
+    return {
+      ...g,
+      x,
+      width: Math.max(3, (g.end - g.start) * scale),
+      drawStrand: g.strand,
+    }
   })
 }
 
@@ -138,6 +159,22 @@ function placeOrdinal(
     ...g,
     x: trackLeft + i * slotW + slotW * 0.1,
     width: slotW * 0.8,
+    drawStrand: g.strand,
+  }))
+}
+
+// Mirror placed genes within the track so an inverted locus reads as a flipped
+// block: x reflects across the track, and the drawn arrow direction negates.
+function mirrorRow(
+  genes: GeneBox[],
+  trackLeft: number,
+  trackWidth: number,
+): GeneBox[] {
+  const right = trackLeft + trackWidth
+  return genes.map((g): GeneBox => ({
+    ...g,
+    x: right - (g.x - trackLeft) - g.width,
+    drawStrand: g.drawStrand > 0 ? -1 : 1,
   }))
 }
 
@@ -157,7 +194,7 @@ function layoutTree(
   let maxDepth = 0
   function depthOf(node: TaxonNode, d: number) {
     maxDepth = Math.max(maxDepth, d)
-    node.children.forEach(c => depthOf(c, d + 1))
+    node.children.forEach(c => { depthOf(c, d + 1) })
   }
   depthOf(tree, 0)
   const xAt = (d: number) => (maxDepth === 0 ? 0 : (d / maxDepth) * treeWidth)
@@ -197,7 +234,7 @@ export function geneArrowPath(g: GeneBox, h: number) {
   const head = Math.min(h, g.width)
   const x = g.x
   const r = g.x + g.width
-  return g.strand > 0
+  return g.drawStrand > 0
     ? `M${x},0 L${r - head},0 L${r},${h / 2} L${r - head},${h} L${x},${h} Z`
     : `M${r},0 L${x + head},0 L${x},${h / 2} L${x + head},${h} L${r},${h} Z`
 }
@@ -223,9 +260,16 @@ export function layoutNeighborhood(
   const anchorColors = anchorColorMap(nb.anchors)
   const centerOffset = (opt.rowHeight - opt.geneHeight) / 2
 
+  // The reference's query-gene strand defines the canonical orientation; rows
+  // whose query ortholog runs the other way get mirrored (the reference row
+  // itself never flips, since it matches by definition).
+  const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
+  const canonicalStrand =
+    refRow?.genes.find(g => g.anchorId === nb.query.geneId)?.strand ?? 1
+
   const rows: RowLayout[] = nb.species.map((s, i) => {
     const y = i * opt.rowHeight
-    const ref = dominantRefName(s.genes, nb.query.geneId)
+    const ref = dominantRefName(s.genes, nb.query.geneId) ?? ''
     const onScaffold = s.genes.filter(g => g.refName === ref)
     const placed =
       onScaffold.length === 0
@@ -238,12 +282,25 @@ export function layoutNeighborhood(
               opt.trackWidth,
               nb.anchors.length,
             )
+    const queryGene = onScaffold.find(g => g.anchorId === nb.query.geneId)
+    const inverted =
+      opt.orientToRef &&
+      queryGene !== undefined &&
+      queryGene.strand !== canonicalStrand
     return {
       taxonId: s.taxonId,
-      label: s.commonName || s.scientificName || String(s.taxonId),
+      label: s.commonName ?? s.scientificName ?? String(s.taxonId),
       y: y + centerOffset,
-      genes: placed,
+      genes: inverted ? mirrorRow(placed, trackLeft, opt.trackWidth) : placed,
       translocated: s.genes.length - onScaffold.length,
+      inverted,
+      hasQuery: queryGene !== undefined,
+      assembly: onScaffold[0]?.assembly ?? '',
+      refName: ref,
+      spanStart: onScaffold.length
+        ? Math.min(...onScaffold.map(g => g.start))
+        : 0,
+      spanEnd: onScaffold.length ? Math.max(...onScaffold.map(g => g.end)) : 0,
     }
   })
 
@@ -288,5 +345,6 @@ export function layoutNeighborhood(
     trackLeft,
     width: trackLeft + opt.trackWidth + 12,
     height: rows.length * opt.rowHeight,
+    geneHeight: opt.geneHeight,
   }
 }

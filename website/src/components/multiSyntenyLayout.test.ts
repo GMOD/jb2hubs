@@ -98,8 +98,60 @@ test('ordinal mode lays genes in equal slots sorted by position', () => {
   assert.equal(sorted[1]?.anchorId, 'A')
 })
 
-test('geneArrowPath points right for + strand and left for - strand', () => {
-  const g: GeneBox = { ...gene('A', 0), x: 10, width: 40 }
+test('geneArrowPath points right for + drawStrand and left for -', () => {
+  const g: GeneBox = { ...gene('A', 0), x: 10, width: 40, drawStrand: 1 }
   assert.ok(geneArrowPath(g, 12).startsWith('M10,0'))
-  assert.ok(geneArrowPath({ ...g, strand: -1 }, 12).startsWith('M50,0'))
+  assert.ok(geneArrowPath({ ...g, drawStrand: -1 }, 12).startsWith('M50,0'))
+})
+
+// Reference query gene (row 0) is + strand; a row whose query ortholog is -
+// strand is a whole-locus inversion and gets mirrored to match the reference.
+const inverted: Neighborhood = {
+  query: { geneId: 'A', symbol: 'A', refTaxonId: 9606 },
+  anchors: [
+    { geneId: 'A', symbol: 'A', isQuery: true, refStart: 0, refEnd: 100 },
+    { geneId: 'B', symbol: 'B', isQuery: false, refStart: 200, refEnd: 300 },
+  ],
+  species: [
+    { taxonId: 9606, commonName: 'human', genes: [gene('A', 0), gene('B', 200)] },
+    {
+      taxonId: 10090,
+      commonName: 'mouse',
+      genes: [gene('A', 0, { strand: -1 }), gene('B', 200)],
+    },
+  ],
+}
+
+test('a row with an opposite-strand query is flagged inverted and mirrored', () => {
+  const l = layoutNeighborhood(inverted)
+  assert.equal(l.rows[0]?.inverted, false)
+  assert.equal(l.rows[1]?.inverted, true)
+  const mouse = l.rows[1]!
+  const a = mouse.genes.find(g => g.anchorId === 'A')!
+  const b = mouse.genes.find(g => g.anchorId === 'B')!
+  // Genomic order is A(0) then B(200), but the mirrored row draws A to the right.
+  assert.ok(a.x > b.x)
+  // Drawn arrow direction negates in the mirror; genomic strand is untouched.
+  assert.equal(a.drawStrand, 1)
+  assert.equal(a.strand, -1)
+})
+
+test('orientToRef:false leaves an inverted locus in genomic order', () => {
+  const l = layoutNeighborhood(inverted, { orientToRef: false })
+  assert.equal(l.rows[1]?.inverted, false)
+  const mouse = l.rows[1]!
+  const a = mouse.genes.find(g => g.anchorId === 'A')!
+  const b = mouse.genes.find(g => g.anchorId === 'B')!
+  assert.ok(a.x < b.x)
+  assert.equal(a.drawStrand, -1)
+})
+
+test('layout exposes per-row span and geneHeight for launch + rendering', () => {
+  const l = layoutNeighborhood(inverted)
+  assert.equal(l.geneHeight, 12)
+  const mouse = l.rows[1]!
+  assert.equal(mouse.hasQuery, true)
+  assert.equal(mouse.assembly, 'GCF_TEST')
+  assert.equal(mouse.spanStart, 0)
+  assert.equal(mouse.spanEnd, 300)
 })

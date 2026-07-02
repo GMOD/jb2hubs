@@ -6,6 +6,7 @@
 
 import { specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { accessionToJbrowseUrl } from './orthologSearchUtils.ts'
+import { type PairIndex, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
 
@@ -55,48 +56,21 @@ export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
   }
 }
 
-// Version-stripped GCF/GCA base, e.g. GCF_000001405.40 or
-// GCF_000001735.4_TAIR10.1 -> GCF_000001405 / GCF_000001735, so accessions match
-// regardless of version or assembly-name suffix.
-function accessionBase(accession: string) {
-  const [prefix, id] = accession.split('_')
-  return prefix && id ? `${prefix}_${id.replace(/\.\d+$/, '')}` : accession
-}
-
-// synteny_pairs.json is "${assemblyName1},${assemblyName2}" -> trackId. Index it
-// by base-accession pair for tolerant lookup, fetched once on first drill-down.
-type PairIndex = Map<string, string>
+// The pair catalog is fetched once on first drill-down and indexed for tolerant
+// (version/suffix/order-insensitive) lookup.
 let pairIndex: Promise<PairIndex> | undefined
-
-function buildIndex(pairs: Record<string, string>): PairIndex {
-  const index: PairIndex = new Map()
-  for (const [key, trackId] of Object.entries(pairs)) {
-    const [a, b] = key.split(',')
-    if (a && b) {
-      index.set(`${accessionBase(a)}|${accessionBase(b)}`, trackId)
-    }
-  }
-  return index
-}
 
 function loadPairs(): Promise<PairIndex> {
   pairIndex ??= fetch('/synteny_pairs.json')
     .then(res =>
       res.ok ? (res.json() as Promise<Record<string, string>>) : {},
     )
-    .then(buildIndex)
+    .then(buildPairIndex)
     .catch(() => {
       pairIndex = undefined // let a later click retry rather than cache the failure
       return new Map<string, string>()
     })
   return pairIndex
-}
-
-function trackFor(index: PairIndex, a: string, b: string) {
-  return (
-    index.get(`${accessionBase(a)}|${accessionBase(b)}`) ??
-    index.get(`${accessionBase(b)}|${accessionBase(a)}`)
-  )
 }
 
 function pairwiseSyntenyUrl(

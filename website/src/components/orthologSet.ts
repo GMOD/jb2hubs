@@ -4,6 +4,7 @@
 // neighborhood.ts (which adds neighbors + the induced tree).
 
 import { DATASETS, EUTILS, ncbiJson } from './ncbiFetch.ts'
+import { COMMON_SPECIES } from './orthologSearchUtils.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 
@@ -102,6 +103,31 @@ export async function resolveGeneId(query: string, refTaxonId: number) {
     `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`,
   )
   return json.esearchresult?.idlist?.[0]
+}
+
+// Resolve a free-text reference — a numeric taxon id, a common-species label, or
+// any scientific/common name — to an NCBI taxon id, so the reference organism is
+// not limited to a fixed dropdown. Common species resolve locally (no request);
+// anything else goes through NCBI taxonomy search.
+export async function resolveRefTaxon(input: string): Promise<number> {
+  const q = input.trim()
+  const known = COMMON_SPECIES.find(
+    s => s.label.toLowerCase() === q.toLowerCase(),
+  )
+  if (/^\d+$/.test(q)) {
+    return Number(q)
+  }
+  if (known) {
+    return known.taxId
+  }
+  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
+    `${EUTILS}/esearch.fcgi?db=taxonomy&term=${encodeURIComponent(q)}&retmode=json&retmax=1`,
+  )
+  const id = json.esearchresult?.idlist?.[0]
+  if (!id) {
+    throw new Error(`no NCBI taxon found for "${input}"`)
+  }
+  return Number(id)
 }
 
 // One ortholog gene per species, with coordinates + strand, in a single Datasets

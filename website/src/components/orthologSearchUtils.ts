@@ -1,4 +1,5 @@
 import { syntenyViewUrl } from './jbrowseLinks.ts'
+import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
 
@@ -83,14 +84,6 @@ function windowedLoc(r: OrthologResult, flankBp: number) {
   return `${refName}:${Math.max(1, r.begin - flankBp)}-${r.end + flankBp}`
 }
 
-function trackBetween(
-  syntenyPairs: Record<string, string>,
-  a: string,
-  b: string,
-) {
-  return syntenyPairs[`${a},${b}`] ?? syntenyPairs[`${b},${a}`]
-}
-
 // Pairwise reference-vs-ortholog synteny launch. Both panels land on the
 // neighborhood window around their gene; the reference panel is left unnavigated
 // only when the reference ortholog row is unknown.
@@ -140,6 +133,7 @@ export function planMultiSynteny(
   // results arrive pre-sorted by evolutionary proximity to the reference, so a
   // row's index doubles as a "closeness" rank for tie-breaking chain extension.
   const rank = new Map(results.map((r, i) => [r.assembly.accession, i]))
+  const index = buildPairIndex(syntenyPairs)
 
   let plan: MultiSyntenyPlan | null = null
   if (ref) {
@@ -151,9 +145,7 @@ export function planMultiSynteny(
       let bestRank = Infinity
       for (const r of results) {
         const acc = r.assembly.accession
-        const track = used.has(acc)
-          ? undefined
-          : trackBetween(syntenyPairs, node, acc)
+        const track = used.has(acc) ? undefined : trackFor(index, node, acc)
         const rk = rank.get(acc) ?? Infinity
         if (track && rk < bestRank) {
           best = { result: r, track }
@@ -190,9 +182,7 @@ export function planMultiSynteny(
         const b = chain[i]
         // every adjacency was added through an edge, so this is always defined
         const track =
-          a &&
-          b &&
-          trackBetween(syntenyPairs, a.assembly.accession, b.assembly.accession)
+          a && b && trackFor(index, a.assembly.accession, b.assembly.accession)
         if (track) {
           tracks.push(track)
         }

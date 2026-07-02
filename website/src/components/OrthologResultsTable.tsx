@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import {
   COMMON_TAX_RANK,
   assemblyLabel,
@@ -6,6 +8,7 @@ import {
   orthoSyntenyUrl,
   planMultiSynteny,
 } from './orthologSearchUtils.ts'
+import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
 
@@ -85,15 +88,14 @@ export default function OrthologResultsTable({
   refAccession,
   syntenyPairs,
 }: OrthologResultsTableProps) {
+  const pairIndex = useMemo(
+    () => (syntenyPairs ? buildPairIndex(syntenyPairs) : undefined),
+    [syntenyPairs],
+  )
   function syntenyTrackId(orthoAccession: string) {
-    if (!syntenyPairs || !refAccession) {
-      return null
-    }
-    return (
-      syntenyPairs[`${orthoAccession},${refAccession}`] ??
-      syntenyPairs[`${refAccession},${orthoAccession}`] ??
-      null
-    )
+    return pairIndex && refAccession
+      ? (trackFor(pairIndex, orthoAccession, refAccession) ?? null)
+      : null
   }
 
   // The reference ortholog row, so a synteny launch can window both panels.

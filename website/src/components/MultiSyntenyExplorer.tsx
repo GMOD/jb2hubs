@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
+
+import useSWRImmutable from 'swr/immutable'
 
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { type Neighborhood } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
 import { COMMON_SPECIES } from './orthologSearchUtils.ts'
+import { resolveRefTaxon } from './orthologSet.ts'
 import { features } from '../config/features.ts'
 
 // Rows with too few anchors carry little synteny signal and just lengthen the
@@ -41,87 +44,165 @@ function trim(nb: Neighborhood): { nb: Neighborhood; eligible: number } {
   }
 }
 
+// The submitted query drives the SWR key; the raw reference string (a taxid or a
+// species name) is resolved to a taxon id inside the fetcher.
+interface Query {
+  gene: string
+  ref: string
+  maxAnchors: number
+  flankBp: number
+}
+
+// Neighbor-gene counts and reference windows offered in the form. maxAnchors
+// includes the query gene; flankBp is the search window each side of it.
+const ANCHOR_CHOICES = [7, 11, 15, 21]
+const FLANK_CHOICES = [
+  { label: '±100 kb', bp: 100_000 },
+  { label: '±150 kb', bp: 150_000 },
+  { label: '±300 kb', bp: 300_000 },
+  { label: '±500 kb', bp: 500_000 },
+]
+
+// A friendly label for a reference stored as a bare taxid, so the input shows
+// "Human" rather than "9606" when arriving from a taxid URL.
+function labelForRef(ref: string) {
+  return COMMON_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
+}
+
 // Initial gene/reference come from the URL (?gene=BRCA1&ref=9606) so a view is
 // shareable/bookmarkable; this is a client:only island, so window is available.
-function paramsFromUrl() {
+function paramsFromUrl(): Query {
   const p = new URLSearchParams(window.location.search)
-  const ref = Number(p.get('ref'))
-  return { gene: p.get('gene')?.trim() ?? 'BRCA1', ref: ref > 0 ? ref : 9606 }
+  const anchors = Number(p.get('anchors'))
+  const flank = Number(p.get('flank'))
+  return {
+    gene: p.get('gene')?.trim() ?? 'BRCA1',
+    ref: p.get('ref')?.trim() ?? '9606',
+    maxAnchors: ANCHOR_CHOICES.includes(anchors) ? anchors : 11,
+    flankBp: FLANK_CHOICES.some(f => f.bp === flank) ? flank : 150_000,
+  }
 }
 
 export default function MultiSyntenyExplorer() {
-  const [gene, setGene] = useState(() => paramsFromUrl().gene)
-  const [taxId, setTaxId] = useState(() => paramsFromUrl().ref)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [nb, setNb] = useState<Neighborhood | null>(null)
-  const [eligible, setEligible] = useState(0)
+  const initial = paramsFromUrl()
+  const [geneInput, setGeneInput] = useState(initial.gene)
+  const [refInput, setRefInput] = useState(() => labelForRef(initial.ref))
+  const [anchors, setAnchors] = useState(initial.maxAnchors)
+  const [flankBp, setFlankBp] = useState(initial.flankBp)
+  const [query, setQuery] = useState<Query>(initial)
 
-  // Keeps the current view on screen while the next loads (no flicker), so a
-  // showcase gene swaps in place.
-  const run = async (query: string, ref: number) => {
-    const q = query.trim()
-    if (q) {
-      setGene(q)
-      setLoading(true)
-      setError('')
-      const params = new URLSearchParams({ gene: q, ref: String(ref) })
+  // SWR fetches on mount from the URL-derived key and again whenever the query
+  // changes — no effect needed. keepPreviousData holds the current view on screen
+  // (no flicker) while the next one loads.
+  const { data, error, isValidating } = useSWRImmutable(
+    query.gene
+      ? ['neighborhood', query.gene, query.ref, query.maxAnchors, query.flankBp]
+      : null,
+    async ([, gene, ref, maxAnchors, flank]) =>
+      getNeighborhood(gene, await resolveRefTaxon(ref), {
+        maxAnchors,
+        flankBp: flank,
+      }),
+    { keepPreviousData: true, revalidateOnFocus: false, shouldRetryOnError: false },
+  )
+  const trimmed = useMemo(() => (data ? trim(data) : null), [data])
+  const nb = trimmed?.nb ?? null
+  const eligible = trimmed?.eligible ?? 0
+  const loading = isValidating
+
+  const run = (gene: string, ref: string) => {
+    const g = gene.trim()
+    if (g) {
+      setGeneInput(g)
+      setQuery({ gene: g, ref, maxAnchors: anchors, flankBp })
+      const params = new URLSearchParams({
+        gene: g,
+        ref,
+        anchors: String(anchors),
+        flank: String(flankBp),
+      })
       window.history.replaceState(null, '', `?${params.toString()}`)
-      try {
-        const trimmed = trim(await getNeighborhood(q, ref))
-        setNb(trimmed.nb)
-        setEligible(trimmed.eligible)
-      } catch (e) {
-        setError(e instanceof Error ? e.message : String(e))
-      } finally {
-        setLoading(false)
-      }
     }
   }
-
-  // Populate from the URL (or the BRCA1 default) on arrival so the page
-  // demonstrates itself and honours a shared link.
-  useEffect(() => {
-    void run(gene, taxId)
-  }, [])
 
   return (
     <div>
       <div className="msv-form">
         <input
-          value={gene}
+          value={geneInput}
           onChange={e => {
-            setGene(e.target.value)
+            setGeneInput(e.target.value)
           }}
           onKeyDown={e => {
             if (e.key === 'Enter') {
-              void run(gene, taxId)
+              run(geneInput, refInput)
             }
           }}
           placeholder="Gene symbol, e.g. BRCA1"
           disabled={loading}
         />
-        <select
-          value={taxId}
+        <input
+          list="msv-ref-species"
+          value={refInput}
           onChange={e => {
-            setTaxId(Number(e.target.value))
+            setRefInput(e.target.value)
           }}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              run(geneInput, refInput)
+            }
+          }}
+          placeholder="Reference species or taxid"
           disabled={loading}
-        >
+          title="Any species name or NCBI taxon id — common species are suggested"
+        />
+        <datalist id="msv-ref-species">
           {COMMON_SPECIES.map(s => (
             <option
               key={s.taxId}
-              value={s.taxId}
+              value={s.label}
+            />
+          ))}
+        </datalist>
+        <select
+          value={anchors}
+          onChange={e => {
+            setAnchors(Number(e.target.value))
+          }}
+          disabled={loading}
+          title="How many genes to show: the query gene plus its nearest protein-coding neighbors"
+        >
+          {ANCHOR_CHOICES.map(n => (
+            <option
+              key={n}
+              value={n}
             >
-              {s.label}
+              {n} genes
+            </option>
+          ))}
+        </select>
+        <select
+          value={flankBp}
+          onChange={e => {
+            setFlankBp(Number(e.target.value))
+          }}
+          disabled={loading}
+          title="Search window each side of the query gene for neighbor genes"
+        >
+          {FLANK_CHOICES.map(f => (
+            <option
+              key={f.bp}
+              value={f.bp}
+            >
+              {f.label}
             </option>
           ))}
         </select>
         <button
           onClick={() => {
-            void run(gene, taxId)
+            run(geneInput, refInput)
           }}
-          disabled={loading || !gene.trim()}
+          disabled={loading || !geneInput.trim() || !refInput.trim()}
         >
           {loading ? 'Building…' : 'Build'}
         </button>
@@ -135,7 +216,7 @@ export default function MultiSyntenyExplorer() {
             className="msv-example-chip"
             disabled={loading}
             onClick={() => {
-              void run(g, taxId)
+              run(g, refInput)
             }}
           >
             {g}
@@ -148,7 +229,11 @@ export default function MultiSyntenyExplorer() {
           Querying NCBI orthologs + neighbors across species…
         </p>
       )}
-      {error && <p className="msv-error">{error}</p>}
+      {error && (
+        <p className="msv-error">
+          {error instanceof Error ? error.message : String(error)}
+        </p>
+      )}
       {nb?.species.length === 0 && !loading && (
         <p className="msv-hint">No informative ortholog neighborhoods found.</p>
       )}

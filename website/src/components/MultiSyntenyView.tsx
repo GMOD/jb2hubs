@@ -9,7 +9,6 @@ import {
   openSubtreeSynteny,
 } from './multiSyntenyDrilldown.ts'
 import {
-  DEFAULT_LAYOUT,
   type GeneBox,
   type LayoutMode,
   geneArrowPath,
@@ -22,8 +21,6 @@ import type { Anchor, Neighborhood } from './neighborhood.ts'
 interface Props {
   neighborhood: Neighborhood
 }
-
-const H = DEFAULT_LAYOUT.geneHeight
 
 function AnchorLegend({
   anchors,
@@ -54,7 +51,9 @@ function AnchorLegend({
 
 export default function MultiSyntenyView({ neighborhood }: Props) {
   const [mode, setMode] = useState<LayoutMode>('bp')
-  const layout = layoutNeighborhood(neighborhood, { mode })
+  const [orientToRef, setOrientToRef] = useState(true)
+  const layout = layoutNeighborhood(neighborhood, { mode, orientToRef })
+  const H = layout.geneHeight
 
   const queryId = neighborhood.query.geneId
   // Per-taxon species detail (full names) for row-label tooltips; the drawn row
@@ -79,20 +78,17 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   }
 
   // Per-species locus for launching a subtree's stacked synteny view: the span of
-  // the whole neighborhood (every anchor on the query gene's scaffold), not just
-  // the query gene, so each stacked genome opens showing the gene-order region the
-  // ribbons describe. 5% flank keeps the edge genes off the panel border.
+  // the whole neighborhood the row draws (every anchor on the query gene's
+  // scaffold), so each stacked genome opens showing the gene-order region the
+  // ribbons describe. 5% flank keeps the edge genes off the panel border. Only
+  // rows carrying the query ortholog can be placed at the query locus.
   const placementByTaxon = new Map<number, SubtreeLeaf>()
-  for (const s of neighborhood.species) {
-    const q = s.genes.find(g => g.anchorId === queryId)
-    if (q) {
-      const onScaffold = s.genes.filter(g => g.refName === q.refName)
-      const min = Math.min(...onScaffold.map(g => g.start))
-      const max = Math.max(...onScaffold.map(g => g.end))
-      const flank = Math.round((max - min) * 0.05)
-      placementByTaxon.set(s.taxonId, {
-        assembly: q.assembly,
-        loc: `${q.refName}:${min - flank}-${max + flank}`,
+  for (const row of layout.rows) {
+    if (row.hasQuery && row.assembly) {
+      const flank = Math.round((row.spanEnd - row.spanStart) * 0.05)
+      placementByTaxon.set(row.taxonId, {
+        assembly: row.assembly,
+        loc: `${row.refName}:${row.spanStart - flank}-${row.spanEnd + flank}`,
       })
     }
   }
@@ -144,6 +140,19 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
             ordinal
           </button>
         </span>
+        <label
+          className="msv-orient"
+          title="Mirror rows whose locus is inverted relative to the reference, so a whole-block inversion reads as a flip rather than crossing ribbons"
+        >
+          <input
+            type="checkbox"
+            checked={orientToRef}
+            onChange={e => {
+              setOrientToRef(e.target.checked)
+            }}
+          />
+          orient to reference
+        </label>
         {refAlignment && refGene && (
           <button
             className="msv-align-btn"
@@ -261,6 +270,9 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
               row.translocated > 0
                 ? `· ${row.translocated} neighbor gene${row.translocated > 1 ? 's' : ''} on a different scaffold here, not drawn in this row`
                 : '',
+              row.inverted
+                ? '· locus inverted relative to the reference (row mirrored)'
+                : '',
             ]
               .filter(Boolean)
               .join(' ')
@@ -276,6 +288,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                 >
                   {row.label}
                   {row.translocated > 0 ? ` (+${row.translocated})` : ''}
+                  {row.inverted ? ' ⇄' : ''}
                   <title>{labelTitle}</title>
                 </text>
                 <g transform={`translate(0,${row.y})`}>
