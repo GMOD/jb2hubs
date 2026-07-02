@@ -93,9 +93,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   const refAssembly = refGene?.assembly
   const refAlignment = REF_ALIGNMENTS[neighborhood.query.refTaxonId]
   const openGene = (g: GeneBox) => {
-    const r = refGenesByAnchor.get(g.anchorId)
-    const refLoc = r ? `${r.refName}:${r.start}-${r.end}` : undefined
-    void openGeneDrilldown(g, refAssembly, refLoc)
+    void openGeneDrilldown(g, refAssembly, refGenesByAnchor.get(g.anchorId))
   }
 
   // Per-species locus for launching a subtree's stacked synteny view: the span of
@@ -337,8 +335,9 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                       }}
                     >
                       <title>
-                        {g.symbol} · {row.label} · {g.refName}:{g.start}-{g.end}{' '}
-                        ({g.strand > 0 ? '+' : '−'} strand) · click to open in
+                        {g.symbol} · {row.label} · {g.refName}:
+                        {g.start.toLocaleString()}-{g.end.toLocaleString()} (
+                        {g.strand > 0 ? '+' : '−'} strand) · click to open in
                         JBrowse
                       </title>
                     </path>

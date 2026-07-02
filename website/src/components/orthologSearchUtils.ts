@@ -74,14 +74,25 @@ export function accessionToJbrowseUrl(accession: string, loc?: string) {
 // bp of context drawn either side of the ortholog gene, so a launched synteny
 // panel shows the neighborhood rather than landing flush on the gene bounds
 // (at gene scale the alignment ribbons would otherwise be invisible).
-const SYNTENY_FLANK_BP = 100_000
+export const SYNTENY_FLANK_BP = 100_000
+
+// A refName:start-end locstring expanded by flankBp each side, clamped to 1
+// (locstrings are 1-based) so a gene near a contig start stays parseable.
+export function flankLoc(
+  refName: string,
+  start: number,
+  end: number,
+  flankBp: number,
+) {
+  return `${refName}:${Math.max(1, start - flankBp)}-${end + flankBp}`
+}
 
 // genomic_accession_version:start-end with flanking context. The accession comes
 // off locStr (already `${accession}:${begin}-${end}`) rather than r.chromosome,
 // which is the human-friendly sequence name and not a navigable refName.
 function windowedLoc(r: OrthologResult, flankBp: number) {
   const refName = r.locStr.split(':')[0] ?? r.chromosome
-  return `${refName}:${Math.max(1, r.begin - flankBp)}-${r.end + flankBp}`
+  return flankLoc(refName, r.begin, r.end, flankBp)
 }
 
 // Pairwise reference-vs-ortholog synteny launch. Both panels land on the

@@ -5,7 +5,11 @@
 //  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
 
 import { specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
-import { accessionToJbrowseUrl } from './orthologSearchUtils.ts'
+import {
+  SYNTENY_FLANK_BP,
+  accessionToJbrowseUrl,
+  flankLoc,
+} from './orthologSearchUtils.ts'
 import { type PairIndex, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
@@ -135,15 +139,16 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
   }
 }
 
-// Resolve the best JBrowse URL for a clicked gene, then open it. refLoc is the
-// same anchor's locus in the reference, used to navigate the reference panel of
-// a pairwise synteny view.
+// Resolve the best JBrowse URL for a clicked gene, then open it. refGene is the
+// same anchor's ortholog in the reference, used to navigate the reference panel
+// of a pairwise synteny view. A pairwise launch flanks both panels so the
+// alignment ribbons are visible instead of landing flush on the gene bounds; the
+// single-genome fallback lands on the gene itself.
 export async function openGeneDrilldown(
   gene: PlacedGene,
   refAccession: string | undefined,
-  refLoc: string | undefined,
+  refGene: PlacedGene | undefined,
 ) {
-  const loc = `${gene.refName}:${gene.start}-${gene.end}`
   const index = await loadPairs()
   const trackId =
     refAccession && gene.assembly !== refAccession
@@ -151,7 +156,22 @@ export async function openGeneDrilldown(
       : undefined
   const url =
     trackId && refAccession
-      ? pairwiseSyntenyUrl(refAccession, gene.assembly, loc, trackId, refLoc)
-      : accessionToJbrowseUrl(gene.assembly, loc)
+      ? pairwiseSyntenyUrl(
+          refAccession,
+          gene.assembly,
+          flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
+          trackId,
+          refGene &&
+            flankLoc(
+              refGene.refName,
+              refGene.start,
+              refGene.end,
+              SYNTENY_FLANK_BP,
+            ),
+        )
+      : accessionToJbrowseUrl(
+          gene.assembly,
+          `${gene.refName}:${gene.start}-${gene.end}`,
+        )
   window.open(url, '_blank', 'noopener')
 }
