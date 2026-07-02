@@ -101,34 +101,37 @@ export interface SubtreeLeaf {
 // huge subtree is unreadable; cap the launch to the nearest leaves (tree order).
 export const MAX_SUBTREE_GENOMES = 15
 
-// Launch a stacked, tree-ordered LinearSyntenyView of a whole subtree, each
-// genome navigated to its ortholog locus, with synteny tracks between adjacent
-// genomes where a chain exists. JBrowse matches each track to its level by the
-// track's assemblyNames, so passing the found tracks (any order) is fine.
+// Build a stacked, tree-ordered LinearSyntenyView URL for a subtree, each genome
+// navigated to its ortholog locus, with a synteny track between adjacent genomes
+// where a chain exists. JBrowse binds tracks to a level by array position, NOT by
+// assemblyNames, so tracks is one slot per level (the gap between picked[i] and
+// picked[i+1]); a level with no chain gets an empty slot to keep the rest aligned.
+// Pure (no DOM/fetch) so the level binding stays unit-testable. Returns undefined
+// for fewer than two genomes.
+export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
+  if (picked.length < 2) {
+    return undefined
+  }
+  const tracks = picked.slice(0, -1).map((leaf, i) => {
+    const trackId = trackFor(index, leaf.assembly, picked[i + 1]!.assembly)
+    return trackId ? [trackId] : []
+  })
+  return syntenyViewUrl(
+    picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
+    tracks,
+    { drawCurves: true },
+  )
+}
+
+// Cap the launch to the nearest leaves (tree order) — a multi-level synteny view
+// stacks one genome browser per level, so a huge subtree is unreadable.
 export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
-  const picked = leaves.slice(0, MAX_SUBTREE_GENOMES)
-  if (picked.length >= 2) {
-    const index = await loadPairs()
-    const tracks: string[] = []
-    for (let i = 0; i < picked.length - 1; i++) {
-      const trackId = trackFor(
-        index,
-        picked[i]!.assembly,
-        picked[i + 1]!.assembly,
-      )
-      if (trackId) {
-        tracks.push(trackId)
-      }
-    }
-    window.open(
-      syntenyViewUrl(
-        picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
-        tracks,
-        { drawCurves: true },
-      ),
-      '_blank',
-      'noopener',
-    )
+  const url = subtreeSyntenyUrl(
+    leaves.slice(0, MAX_SUBTREE_GENOMES),
+    await loadPairs(),
+  )
+  if (url) {
+    window.open(url, '_blank', 'noopener')
   }
 }
 
