@@ -20,8 +20,13 @@ const categories = [
   })),
 ]
 
-// Written alongside make.sh/uploadAll.sh, not under processedHubJson/, since
-// it's uploaded to a different S3 prefix (see uploadAll.sh) than the rest of
-// that directory.
-fs.writeFileSync('categories.json', JSON.stringify({ categories }, null, 2))
-console.log(`Generated categories.json with ${categories.length} categories`)
+// Own directory (not processedHubJson/) since it's uploaded to a different
+// S3 key (see uploadAll.sh) than the rest of that directory's contents.
+fs.mkdirSync('categoryIndex', { recursive: true })
+fs.writeFileSync(
+  'categoryIndex/categories.json',
+  JSON.stringify({ categories }, null, 2),
+)
+console.log(
+  `Generated categoryIndex/categories.json with ${categories.length} categories`,
+)

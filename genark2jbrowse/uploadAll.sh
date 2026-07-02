@@ -18,16 +18,14 @@ echo ""
 
 # Category index (drives the category picker in JBrowse Desktop's "available
 # genomes" dialog), regenerated from hubCategories every run by make.sh so it
-# can't drift out of sync with the real category list.
+# can't drift out of sync with the real category list. The stamp file is
+# git-tracked (same pattern as .mouse_strain_stamp) so change detection
+# survives a fresh checkout, not just a persistent server disk.
 echo "[1/4] Checking category index..."
-categories_changed=0
-if ! diff -q categories.json <(aws s3 cp s3://jbrowse.org/hubs/categories.json - 2>/dev/null) >/dev/null 2>&1; then
-  echo "Uploading category index..."
-  aws s3 cp categories.json s3://jbrowse.org/hubs/categories.json
-  categories_changed=1
-else
-  echo "Category index unchanged."
-fi
+categories_changed=$(upload_if_changed \
+  categoryIndex/categories.json \
+  s3://jbrowse.org/hubs/categories.json \
+  "$SCRIPT_DIR/.categories-uploaded.json")
 
 echo ""
 

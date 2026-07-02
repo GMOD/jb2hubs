@@ -46,6 +46,39 @@ cloudfront_invalidate() {
 }
 export -f cloudfront_invalidate
 
+# Uploads a local file to S3 only if it differs from the last upload, tracked
+# via a local stamp file copy -- avoids needing S3 read permissions just to
+# check for changes (every upload script here otherwise only ever writes),
+# and avoids `aws s3 sync` having to list an entire large destination prefix
+# just to check one small file. Prints "1" (uploaded) or "0" (unchanged) to
+# stdout; diagnostics go to stderr. A missing local file is not an error: it
+# just leaves the live copy alone and reports unchanged. An upload failure
+# returns non-zero WITHOUT printing a status or touching the stamp, so a
+# `changed=$(upload_if_changed ...)` caller under `set -e` aborts instead of
+# silently recording a failed upload as done (bash's -e does not fire on a
+# failing command mid-function when the function's own output is captured by
+# a command substitution -- only the function's own final exit status does).
+# Usage: changed=$(upload_if_changed <local-file> <s3-uri> <stamp-file>)
+upload_if_changed() {
+  local local_file="$1" s3_uri="$2" stamp_file="$3"
+  if [ ! -f "$local_file" ]; then
+    echo "$local_file not found locally; leaving the live copy unchanged." >&2
+    echo 0
+    return
+  fi
+  if diff -q "$local_file" "$stamp_file" >/dev/null 2>&1; then
+    echo 0
+    return
+  fi
+  if ! aws s3 cp "$local_file" "$s3_uri" >&2; then
+    echo "upload_if_changed: failed to upload $local_file to $s3_uri" >&2
+    return 1
+  fi
+  cp "$local_file" "$stamp_file"
+  echo 1
+}
+export -f upload_if_changed
+
 # Two-phase rclone sync shared by the upload scripts. First syncs data objects
 # with normal caching (indexes excluded), then the .csi/.tbi indexes with
 # Cache-Control: no-cache. An index stores byte offsets into its .gz; pairing a
