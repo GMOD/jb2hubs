@@ -105,6 +105,9 @@ log "Fetching NCBI metadata..."
 log "Processing hub JSON data..."
 node src/processHubJson.ts
 
+log "Generating category index..."
+node src/generateCategoriesJson.ts
+
 # With no new hubs, the stale-metadata refresh and all.json regen above are the
 # only work needed; everything below is per-hub generation for new hubs, so skip
 # it (the same point the old "nothing to process" early-exit reached).

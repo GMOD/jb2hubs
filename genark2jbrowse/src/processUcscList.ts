@@ -33,6 +33,10 @@ try {
       name: key,
       accession: key,
       commonName: value.organism,
+      // UCSC's API names this taxId; every other source (GenArk/NCBI) in
+      // processedHubJson names it taxonId. Emit taxonId too so consumers
+      // don't need to special-case UCSC entries.
+      taxonId: value.taxId,
       jbrowseConfig: `https://jbrowse.org/ucsc/${key}/config.json`,
       jbrowseMinimalConfig: `https://jbrowse.org/ucsc/${key}/minimal.json`,
     }),
