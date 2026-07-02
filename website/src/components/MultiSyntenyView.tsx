@@ -86,9 +86,11 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   for (const row of layout.rows) {
     if (row.hasQuery && row.assembly) {
       const flank = Math.round((row.spanEnd - row.spanStart) * 0.05)
+      // Clamp the flanked start to 1 (locstrings are 1-based) so a locus near a
+      // contig start doesn't produce a negative coordinate JBrowse can't parse.
       placementByTaxon.set(row.taxonId, {
         assembly: row.assembly,
-        loc: `${row.refName}:${row.spanStart - flank}-${row.spanEnd + flank}`,
+        loc: `${row.refName}:${Math.max(1, row.spanStart - flank)}-${row.spanEnd + flank}`,
       })
     }
   }

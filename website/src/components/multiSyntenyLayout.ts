@@ -96,6 +96,8 @@ export interface MultiSyntenyLayout {
 }
 
 // Distinct, stable hues per anchor (the query gene is always the first anchor).
+// Long enough to give every anchor a unique color at the largest offered anchor
+// count (21) before the modulo wraps.
 const PALETTE = [
   '#d62728', // query — red
   '#1f77b4',
@@ -109,6 +111,16 @@ const PALETTE = [
   '#7f7f7f',
   '#393b79',
   '#637939',
+  '#5254a3',
+  '#8ca252',
+  '#bd9e39',
+  '#843c39',
+  '#ad494a',
+  '#7b4173',
+  '#a55194',
+  '#ce6dbd',
+  '#6b6ecf',
+  '#e7ba52',
 ]
 
 function anchorColorMap(anchors: Anchor[]) {
@@ -163,23 +175,34 @@ function placeOrdinal(
   }))
 }
 
-// Mirror placed genes within the track so an inverted locus reads as a flipped
-// block: x reflects across the track, and the drawn arrow direction negates.
-function mirrorRow(
-  genes: GeneBox[],
-  trackLeft: number,
-  trackWidth: number,
-): GeneBox[] {
-  const right = trackLeft + trackWidth
+// Mirror placed genes so an inverted locus reads as a flipped block: reflect each
+// gene across the row's own occupied span (not the full track) and negate the
+// drawn arrow direction. Reflecting across the occupied span is what makes this
+// correct in ordinal mode, where a row with fewer genes than anchors fills only
+// the leftmost slots — reflecting across the whole track would fling it to the
+// right and misalign its ribbons. In bp mode the extreme genes already touch both
+// track edges, so the occupied span equals the track and the result is unchanged.
+function mirrorRow(genes: GeneBox[]): GeneBox[] {
+  if (genes.length === 0) {
+    return genes
+  }
+  const min = Math.min(...genes.map(g => g.x))
+  const max = Math.max(...genes.map(g => g.x + g.width))
   return genes.map((g): GeneBox => ({
     ...g,
-    x: right - (g.x - trackLeft) - g.width,
+    x: min + max - (g.x + g.width),
     drawStrand: g.drawStrand > 0 ? -1 : 1,
   }))
 }
 
-// Cladogram (rectangular): leaves sit at their row y, internal nodes at the mean
-// of their children, x by normalized depth. Returns edges to draw plus internal
+// Cladogram (rectangular): rows are the vertical axis (a leaf sits at its row y),
+// topological depth is the horizontal axis. Every node is positioned at
+// `rootHeight - height` — where a node's height is its longest link chain down to
+// a leaf — which right-aligns all leaf tips at treeWidth regardless of tree
+// balance, instead of leaving shallow leaves dangling mid-panel. This is the
+// ape::plot.phylo / JBrowse tree-sidebar convention (packages/tree-sidebar
+// assignDepthY). Each horizontal edge runs to its child's own depth, so an
+// unbalanced clade still connects correctly. Returns edges to draw plus internal
 // nodes (position + their leaf taxa) as launch targets for subtree synteny.
 function layoutTree(
   tree: TaxonNode | undefined,
@@ -191,39 +214,46 @@ function layoutTree(
   if (!tree) {
     return { edges, nodes }
   }
-  let maxDepth = 0
-  function depthOf(node: TaxonNode, d: number) {
-    maxDepth = Math.max(maxDepth, d)
-    node.children.forEach(c => { depthOf(c, d + 1) })
+  const height = new Map<TaxonNode, number>()
+  function heightOf(node: TaxonNode): number {
+    const h =
+      node.children.length === 0
+        ? 0
+        : 1 + Math.max(...node.children.map(heightOf))
+    height.set(node, h)
+    return h
   }
-  depthOf(tree, 0)
-  const xAt = (d: number) => (maxDepth === 0 ? 0 : (d / maxDepth) * treeWidth)
+  const rootHeight = heightOf(tree)
+  const xAt = (h: number) =>
+    rootHeight === 0 ? treeWidth : ((rootHeight - h) / rootHeight) * treeWidth
 
-  function place(
-    node: TaxonNode,
-    depth: number,
-  ): { y: number; leaves: number[] } | undefined {
+  interface Placed {
+    x: number
+    y: number
+    leaves: number[]
+  }
+  function place(node: TaxonNode): Placed | undefined {
     if (node.children.length === 0) {
       const y = rowY.get(node.taxonId)
-      return y === undefined ? undefined : { y, leaves: [node.taxonId] }
+      return y === undefined ? undefined : { x: treeWidth, y, leaves: [node.taxonId] }
     }
     const kids = node.children
-      .map(c => place(c, depth + 1))
-      .filter((r): r is { y: number; leaves: number[] } => r !== undefined)
+      .map(place)
+      .filter((r): r is Placed => r !== undefined)
     if (kids.length === 0) {
       return undefined
     }
-    const x = xAt(depth)
+    const x = xAt(height.get(node) ?? 0)
     for (const kid of kids) {
-      edges.push({ x1: x, y1: kid.y, x2: xAt(depth + 1), y2: kid.y }) // horizontal
+      edges.push({ x1: x, y1: kid.y, x2: kid.x, y2: kid.y }) // horizontal to child
     }
-    edges.push({ x1: x, y1: kids[0]!.y, x2: x, y2: kids.at(-1)!.y }) // vertical
+    edges.push({ x1: x, y1: kids[0]!.y, x2: x, y2: kids.at(-1)!.y }) // vertical spine
     const y = kids.reduce((s, k) => s + k.y, 0) / kids.length
     const leaves = kids.flatMap(k => k.leaves)
     nodes.push({ x, y, leafTaxonIds: leaves })
-    return { y, leaves }
+    return { x, y, leaves }
   }
-  place(tree, 0)
+  place(tree)
   return { edges, nodes }
 }
 
@@ -291,7 +321,7 @@ export function layoutNeighborhood(
       taxonId: s.taxonId,
       label: s.commonName ?? s.scientificName ?? String(s.taxonId),
       y: y + centerOffset,
-      genes: inverted ? mirrorRow(placed, trackLeft, opt.trackWidth) : placed,
+      genes: inverted ? mirrorRow(placed) : placed,
       translocated: s.genes.length - onScaffold.length,
       inverted,
       hasQuery: queryGene !== undefined,
