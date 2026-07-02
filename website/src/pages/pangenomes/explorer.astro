@@ -41,8 +41,16 @@ const sampleCount = manifest.samples.length
   .pg-filters {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.5rem;
     margin: 1.25rem 0;
+  }
+
+  /* Pushes the sort chips to the right edge of the filter bar (collapses to 0
+     when the bar wraps, so the sort chips just flow underneath on narrow view). */
+  .pg-filter-spacer {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .pg-filter {
