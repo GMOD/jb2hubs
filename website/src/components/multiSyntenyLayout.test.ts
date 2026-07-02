@@ -67,13 +67,25 @@ test('ribbons link the same anchor across adjacent rows', () => {
   assert.deepEqual(new Set(l.ribbons.map(r => r.anchorId)), new Set(['A', 'B']))
 })
 
-test('a rearrangement makes the two ribbons cross', () => {
-  const l = layoutNeighborhood(nb)
+test('a reversed row crosses when not oriented to the reference', () => {
+  // orientToRef off: mouse keeps its genomic order (B then A), so the shared
+  // anchors' ribbons cross — A is left on top but right on the bottom.
+  const l = layoutNeighborhood(nb, { orientToRef: false })
   const a = l.ribbons.find(r => r.anchorId === 'A')!
   const b = l.ribbons.find(r => r.anchorId === 'B')!
-  // A is left on top but right on the bottom; B is the mirror -> crossing.
   assert.ok(a.topLeft < b.topLeft)
   assert.ok(a.bottomLeft > b.bottomLeft)
+})
+
+test('a two-gene order reversal is treated as an inversion and mirrored', () => {
+  // With orient-to-reference on (default), the smallest possible inversion — a
+  // reversed pair — is flipped back so the ribbons run straight, not crossed.
+  const l = layoutNeighborhood(nb)
+  assert.equal(l.rows[1]?.inverted, true)
+  const a = l.ribbons.find(r => r.anchorId === 'A')!
+  const b = l.ribbons.find(r => r.anchorId === 'B')!
+  assert.ok(a.topLeft < b.topLeft)
+  assert.ok(a.bottomLeft < b.bottomLeft)
 })
 
 test('genes off the dominant scaffold are counted as translocated, not placed', () => {
@@ -93,7 +105,8 @@ test('genes off the dominant scaffold are counted as translocated, not placed', 
 })
 
 test('ordinal mode lays genes in equal slots sorted by position', () => {
-  const l = layoutNeighborhood(nb, { mode: 'ordinal' })
+  // orientToRef off so the row keeps its genomic order for the slot check.
+  const l = layoutNeighborhood(nb, { mode: 'ordinal', orientToRef: false })
   const mouse = l.rows[1]!
   const sorted = [...mouse.genes].sort((g1, g2) => g1.x - g2.x)
   // mouse: B at 0, A at 200 -> B is the leftmost slot.
@@ -107,8 +120,8 @@ test('geneArrowPath points right for + drawStrand and left for -', () => {
   assert.ok(geneArrowPath({ ...g, drawStrand: -1 }, 12).startsWith('M50,0'))
 })
 
-// Reference query gene (row 0) is + strand; a row whose query ortholog is -
-// strand is a whole-locus inversion and gets mirrored to match the reference.
+// A genuine inversion reverses gene ORDER: reference is A(0),B(200); the inverted
+// row has B before A. Order — not a single gene's strand — drives the mirror.
 const inverted: Neighborhood = {
   query: { geneId: 'A', symbol: 'A', refTaxonId: 9606 },
   anchors: [
@@ -120,23 +133,61 @@ const inverted: Neighborhood = {
     {
       taxonId: 10090,
       commonName: 'mouse',
-      genes: [gene('A', 0, { strand: -1 }), gene('B', 200)],
+      genes: [gene('B', 0), gene('A', 200, { strand: -1 })],
     },
   ],
 }
 
-test('a row with an opposite-strand query is flagged inverted and mirrored', () => {
+test('a row with reversed gene order is flagged inverted and mirrored', () => {
   const l = layoutNeighborhood(inverted)
   assert.equal(l.rows[0]?.inverted, false)
   assert.equal(l.rows[1]?.inverted, true)
   const mouse = l.rows[1]!
   const a = mouse.genes.find(g => g.anchorId === 'A')!
   const b = mouse.genes.find(g => g.anchorId === 'B')!
-  // Genomic order is A(0) then B(200), but the mirrored row draws A to the right.
-  assert.ok(a.x > b.x)
+  // Genomic order is B(0) then A(200); the mirror draws A back to the left so the
+  // shared anchors line up with the reference above.
+  assert.ok(a.x < b.x)
   // Drawn arrow direction negates in the mirror; genomic strand is untouched.
   assert.equal(a.drawStrand, 1)
   assert.equal(a.strand, -1)
+})
+
+// The false-positive the correlation approach fixes: a lone query ortholog on the
+// opposite strand while the NEIGHBOR order is preserved is not a locus inversion.
+test('a flipped-strand query with preserved neighbor order is not inverted', () => {
+  const notInverted: Neighborhood = {
+    ...inverted,
+    species: [
+      inverted.species[0]!,
+      {
+        taxonId: 10090,
+        commonName: 'mouse',
+        genes: [gene('A', 0, { strand: -1 }), gene('B', 200)],
+      },
+    ],
+  }
+  const l = layoutNeighborhood(notInverted)
+  assert.equal(l.rows[1]?.inverted, false)
+  const mouse = l.rows[1]!
+  const a = mouse.genes.find(g => g.anchorId === 'A')!
+  const b = mouse.genes.find(g => g.anchorId === 'B')!
+  // Order preserved, so genes stay in genomic order and strand is drawn as-is.
+  assert.ok(a.x < b.x)
+  assert.equal(a.drawStrand, -1)
+})
+
+// With only the query ortholog on the scaffold there is no order signal, so the
+// mirror falls back to comparing that gene's strand with the reference's.
+test('a single opposite-strand ortholog falls back to strand for inversion', () => {
+  const lone: Neighborhood = {
+    ...inverted,
+    species: [
+      inverted.species[0]!,
+      { taxonId: 10090, commonName: 'mouse', genes: [gene('A', 0, { strand: -1 })] },
+    ],
+  }
+  assert.equal(layoutNeighborhood(lone).rows[1]?.inverted, true)
 })
 
 test('orientToRef:false leaves an inverted locus in genomic order', () => {
@@ -145,7 +196,8 @@ test('orientToRef:false leaves an inverted locus in genomic order', () => {
   const mouse = l.rows[1]!
   const a = mouse.genes.find(g => g.anchorId === 'A')!
   const b = mouse.genes.find(g => g.anchorId === 'B')!
-  assert.ok(a.x < b.x)
+  // Genomic order B(0) then A(200) is preserved unmirrored.
+  assert.ok(b.x < a.x)
   assert.equal(a.drawStrand, -1)
 })
 

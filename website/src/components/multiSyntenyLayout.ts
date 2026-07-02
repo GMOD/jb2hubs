@@ -175,6 +175,42 @@ function placeOrdinal(
   }))
 }
 
+// Decide whether a row's locus is inverted relative to the reference from the
+// SIGN of its gene-order correlation, not a single gene's annotated strand. Among
+// anchors shared with the reference, count concordant vs discordant ordered pairs
+// (the sign of Kendall's tau): a locus read back-to-front is fully discordant.
+// This is robust to arbitrary scaffold orientation across assemblies, where an
+// individual ortholog's strand is not — orthologs routinely differ in strand
+// without the surrounding locus being inverted. With too little order information
+// (0 or 1 shared anchor, or a dead tie) fall back to the query gene's strand.
+function isInverted(
+  genes: PlacedGene[],
+  refRank: Map<string, number>,
+  queryAnchorId: string,
+  canonicalStrand: 1 | -1,
+): boolean {
+  const ranked = genes
+    .map(g => ({ pos: g.start, rank: refRank.get(g.anchorId) }))
+    .filter((r): r is { pos: number; rank: number } => r.rank !== undefined)
+    .sort((a, b) => a.pos - b.pos)
+  let concordant = 0
+  let discordant = 0
+  for (let i = 0; i < ranked.length; i++) {
+    for (let j = i + 1; j < ranked.length; j++) {
+      const earlier = ranked[i]!.rank
+      const later = ranked[j]!.rank
+      if (later > earlier) {
+        concordant++
+      } else if (later < earlier) {
+        discordant++
+      }
+    }
+  }
+  const query = genes.find(g => g.anchorId === queryAnchorId)
+  const strandFallback = query !== undefined && query.strand !== canonicalStrand
+  return concordant === discordant ? strandFallback : discordant > concordant
+}
+
 // Mirror placed genes so an inverted locus reads as a flipped block: reflect each
 // gene across the row's own occupied span (not the full track) and negate the
 // drawn arrow direction. Reflecting across the occupied span is what makes this
@@ -290,9 +326,15 @@ export function layoutNeighborhood(
   const anchorColors = anchorColorMap(nb.anchors)
   const centerOffset = (opt.rowHeight - opt.geneHeight) / 2
 
-  // The reference's query-gene strand defines the canonical orientation; rows
-  // whose query ortholog runs the other way get mirrored (the reference row
-  // itself never flips, since it matches by definition).
+  // Rows whose gene order runs opposite the reference's get mirrored so a
+  // whole-locus inversion reads as a flipped block (the reference row itself never
+  // flips, since it defines the order). Reference order = anchors by genomic
+  // position; the query gene's reference strand is only a fallback tiebreaker.
+  const refRank = new Map(
+    [...nb.anchors]
+      .sort((a, b) => a.refStart - b.refStart)
+      .map((a, i) => [a.geneId, i] as const),
+  )
   const refRow = nb.species.find(s => s.taxonId === nb.query.refTaxonId)
   const canonicalStrand =
     refRow?.genes.find(g => g.anchorId === nb.query.geneId)?.strand ?? 1
@@ -315,8 +357,7 @@ export function layoutNeighborhood(
     const queryGene = onScaffold.find(g => g.anchorId === nb.query.geneId)
     const inverted =
       opt.orientToRef &&
-      queryGene !== undefined &&
-      queryGene.strand !== canonicalStrand
+      isInverted(onScaffold, refRank, nb.query.geneId, canonicalStrand)
     return {
       taxonId: s.taxonId,
       label: s.commonName ?? s.scientificName ?? String(s.taxonId),

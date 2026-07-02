@@ -25,9 +25,13 @@ interface Props {
 function AnchorLegend({
   anchors,
   colors,
+  focus,
+  onFocus,
 }: {
   anchors: Anchor[]
   colors: Map<string, string>
+  focus: string | null
+  onFocus: (anchorId: string | null) => void
 }) {
   return (
     <div className="msv-legend">
@@ -35,7 +39,15 @@ function AnchorLegend({
         <span
           key={a.geneId}
           className="msv-legend-item"
-          title={`${a.symbol}${a.isQuery ? ' — the query gene' : ' — neighbor gene'} · reference ${a.refStart.toLocaleString()}–${a.refEnd.toLocaleString()} · ribbons trace this gene's orthologs across species`}
+          data-dim={focus !== null && focus !== a.geneId ? '' : undefined}
+          data-focus={focus === a.geneId ? '' : undefined}
+          onMouseEnter={() => {
+            onFocus(a.geneId)
+          }}
+          onMouseLeave={() => {
+            onFocus(null)
+          }}
+          title={`${a.symbol}${a.isQuery ? ' — the query gene' : ' — neighbor gene'} · reference ${a.refStart.toLocaleString()}–${a.refEnd.toLocaleString()} · hover to trace this gene's orthologs across species`}
         >
           <span
             className="msv-swatch"
@@ -54,6 +66,15 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   const [orientToRef, setOrientToRef] = useState(true)
   const layout = layoutNeighborhood(neighborhood, { mode, orientToRef })
   const H = layout.geneHeight
+
+  // Hovering a gene or legend swatch traces one ortholog down the whole view:
+  // its genes and ribbon chain stay vivid while everything else dims, so a single
+  // gene is followable through the phylogeny despite the many-color palette.
+  const [focusAnchor, setFocusAnchor] = useState<string | null>(null)
+  const ribbonOpacity = (anchorId: string) =>
+    focusAnchor === null ? 0.25 : focusAnchor === anchorId ? 0.65 : 0.04
+  const geneOpacity = (anchorId: string) =>
+    focusAnchor === null || focusAnchor === anchorId ? 1 : 0.18
 
   const queryId = neighborhood.query.geneId
   // Per-taxon species detail (full names) for row-label tooltips; the drawn row
@@ -171,6 +192,8 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
       <AnchorLegend
         anchors={neighborhood.anchors}
         colors={layout.anchorColors}
+        focus={focusAnchor}
+        onFocus={setFocusAnchor}
       />
 
       <div className="msv-scroll">
@@ -195,7 +218,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                 key={i}
                 d={ribbonPath(r)}
                 fill={r.color}
-                fillOpacity={0.25}
+                fillOpacity={ribbonOpacity(r.anchorId)}
               />
             ))}
           </g>
@@ -299,9 +322,16 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                       key={g.anchorId}
                       d={geneArrowPath(g, H)}
                       fill={layout.anchorColors.get(g.anchorId) ?? '#999'}
+                      fillOpacity={geneOpacity(g.anchorId)}
                       stroke={g.anchorId === queryId ? '#000' : 'none'}
                       strokeWidth={g.anchorId === queryId ? 1.5 : 0}
                       style={{ cursor: 'pointer' }}
+                      onMouseEnter={() => {
+                        setFocusAnchor(g.anchorId)
+                      }}
+                      onMouseLeave={() => {
+                        setFocusAnchor(null)
+                      }}
                       onClick={() => {
                         openGene(g)
                       }}
