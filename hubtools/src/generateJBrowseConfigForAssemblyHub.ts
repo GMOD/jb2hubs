@@ -37,6 +37,10 @@ export function generateJBrowseConfigForAssemblyHub({
       sequence: {
         type: 'ReferenceSequenceTrack',
         metadata: {
+          // hgBlat resolves the bare GenArk accession (== genomeName), so this
+          // is the db a BLAT query targets; jbrowse-plugin-blat reads it to
+          // know the assembly is BLAT-able and which db to query
+          blatDb: genomeName,
           ucsc: {
             ...data,
             ...(htmlPath

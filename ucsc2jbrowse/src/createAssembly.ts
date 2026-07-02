@@ -77,7 +77,10 @@ console.log(
           sequence: {
             type: 'ReferenceSequenceTrack',
             trackId: `${assemblyName}-refseq`,
-            metadata,
+            // for UCSC golden-path assemblies the db BLAT queries against is
+            // just the assembly name; jbrowse-plugin-blat reads blatDb to know
+            // the assembly is BLAT-able and which db to query
+            metadata: { ...metadata, blatDb: assemblyName },
             adapter: {
               type: 'TwoBitAdapter',
               uri: getBigDataLink(`${assemblyName}.2bit`),
