@@ -150,7 +150,11 @@ const defaultPlugins = [
 	{
 		name: "MsaView",
 		url: "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
-	}
+	},
+	...process.env.BLAT_PLUGIN_URL ? [{
+		name: "Blat",
+		url: process.env.BLAT_PLUGIN_URL
+	}] : []
 ];
 /**
 * Enhances a JBrowse configuration file with standard plugins and hierarchical settings.
@@ -346,10 +350,13 @@ function generateJBrowseConfigForAssemblyHub({ hubFileText, trackDbUrl }) {
 			displayName: shortLabel,
 			sequence: {
 				type: "ReferenceSequenceTrack",
-				metadata: { ucsc: {
-					...data,
-					...htmlPath ? { htmlPath: createHtmlLink(htmlPath, trackDbUrl) } : {}
-				} },
+				metadata: {
+					blatDb: genomeName,
+					ucsc: {
+						...data,
+						...htmlPath ? { htmlPath: createHtmlLink(htmlPath, trackDbUrl) } : {}
+					}
+				},
 				trackId: `${genomeName}-ReferenceSequenceTrack`,
 				adapter: sequenceAdapter
 			},

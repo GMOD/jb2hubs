@@ -289,6 +289,7 @@ declare function generateJBrowseConfigForAssemblyHub({
     sequence: {
       type: string;
       metadata: {
+        blatDb: string;
         ucsc: {
           htmlPath?: string | undefined;
         };

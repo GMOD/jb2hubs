@@ -15,6 +15,11 @@ source "$(dirname "$0")/common.sh"
 # Processes a single assembly.
 # $1: The assembly directory in the data folder.
 process_assembly() {
+  # GNU parallel runs exported functions in a fresh bash without the parent's
+  # `set -euo pipefail`; fail fast so a failed track-adding step doesn't leave a
+  # half-written config.json (a reprocess rebuilds config.json from scratch, so
+  # aborting here is self-healing).
+  set -eo pipefail
   local assembly_data_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_data_dir")

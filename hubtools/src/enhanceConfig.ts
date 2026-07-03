@@ -2,6 +2,17 @@ import { readJSON, writeJSON } from './util.ts'
 
 import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
+// The BLAT plugin pairs with the sequence.metadata.blatDb stamp (createAssembly /
+// generateJBrowseConfigForAssemblyHub). It is opt-in via BLAT_PLUGIN_URL because
+// a plugin url that 404s hard-fails the whole web session (PluginLoader.load runs
+// Promise.all over every entry), and web BLAT queries only work once the
+// CORS/apiKey proxy is live. Set BLAT_PLUGIN_URL for a rebuild only after the UMD
+// build is published and the proxy is deployed. The name must be 'Blat' so
+// PluginLoader finds the JBrowsePluginBlat UMD global.
+const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
+  ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
+  : []
+
 const defaultPlugins: JBrowsePlugin[] = [
   {
     name: 'MafViewer',
@@ -19,6 +30,7 @@ const defaultPlugins: JBrowsePlugin[] = [
     name: 'MsaView',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js',
   },
+  ...blatPlugin,
 ]
 
 /**
