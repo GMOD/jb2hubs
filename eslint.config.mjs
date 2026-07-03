@@ -11,7 +11,7 @@ export default tseslint.config(
       '**/dist/',
       'eslint.config.mjs',
       'website/.astro/**/*',
-      '.aws-sam/**',
+      '**/.aws-sam/**',
     ],
   },
 

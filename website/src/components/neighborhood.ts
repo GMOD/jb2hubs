@@ -9,19 +9,19 @@
 // shared tree over the union of species".
 
 import {
+  type TaxonNode,
+  fetchInducedTree,
+  leafOrder,
+} from './multiSyntenyTaxonTree.ts'
+import { DATASETS, EUTILS, ncbiJson } from './ncbiFetch.ts'
+import {
+  type DatasetsGene,
+  type OrthologRow,
   collectNames,
   fetchOrthologRows,
   locate,
   resolveGeneId,
-  type DatasetsGene,
-  type OrthologRow,
 } from './orthologSet.ts'
-import {
-  fetchInducedTree,
-  leafOrder,
-  type TaxonNode,
-} from './multiSyntenyTaxonTree.ts'
-import { DATASETS, EUTILS, ncbiJson } from './ncbiFetch.ts'
 
 // Reference-genome neighbor gene used as a synteny anchor.
 export interface Anchor {

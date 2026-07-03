@@ -5,9 +5,9 @@
 // Neighborhood shape.
 
 import {
-  assembleNeighborhood,
   type Neighborhood,
   type NeighborhoodOptions,
+  assembleNeighborhood,
 } from './neighborhood.ts'
 
 const API = import.meta.env.PUBLIC_ORTHOLOG_API as string | undefined
