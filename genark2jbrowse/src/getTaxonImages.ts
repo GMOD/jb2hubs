@@ -46,12 +46,23 @@ function commonsUrlToPageUrl(commonsUrl: string): string {
   return `https://commons.wikimedia.org/wiki/File:${filename}`
 }
 
-async function fetchSparql(query: string): Promise<any> {
+// The SPARQL SELECT binds ?taxId ?scientificName ?image; the JSON results
+// format wraps each as { value: string } under results.bindings.
+interface SparqlBinding {
+  taxId: { value: string }
+  scientificName: { value: string }
+  image: { value: string }
+}
+interface SparqlResponse {
+  results: { bindings: SparqlBinding[] }
+}
+
+async function fetchSparql(query: string): Promise<SparqlResponse> {
   const url = `${SPARQL_ENDPOINT}?query=${encodeURIComponent(query)}&format=json`
   for (let attempt = 0; attempt < 3; attempt++) {
     const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
     if (res.ok) {
-      return res.json()
+      return res.json() as Promise<SparqlResponse>
     }
     if (res.status === 429 || res.status === 503 || res.status === 504) {
       const delay = 30000 * (attempt + 1)

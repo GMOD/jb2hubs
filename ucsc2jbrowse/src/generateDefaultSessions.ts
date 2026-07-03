@@ -16,7 +16,7 @@ interface UcscGenome {
   defaultPos: string
   id: string
   name: string
-  [key: string]: any
+  [key: string]: unknown
 }
 
 interface ListJson {
@@ -47,10 +47,10 @@ interface DefaultSession {
 }
 
 interface Config {
-  assemblies?: any[]
-  tracks?: any[]
+  assemblies?: unknown[]
+  tracks?: unknown[]
   defaultSession?: DefaultSession
-  [key: string]: any
+  [key: string]: unknown
 }
 
 // Hardcoded track mappings for specific assemblies

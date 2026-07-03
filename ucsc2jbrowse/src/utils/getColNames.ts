@@ -1,5 +1,15 @@
 import pkg from 'node-sql-parser'
+
+import type { AST, ColumnRef, Create } from 'node-sql-parser'
+
 const { Parser } = pkg
+
+// A column definition's name is normally a plain identifier (ColumnRefItem), but
+// the AST union also allows an aliased expression form; unwrap both to the name.
+function columnName(ref: ColumnRef): string {
+  const item = ref.type === 'expr' ? ref.expr : ref
+  return typeof item.column === 'string' ? item.column : ''
+}
 
 /**
  * Extracts column names and table name from a SQL CREATE TABLE statement.
@@ -13,11 +23,12 @@ export function getColNames(sqlContent: string): {
 } {
   const parser = new Parser()
   // Parse the SQL content. Assumes MySQL grammar by default.
-  const ast = parser.astify(sqlContent)
+  const ast: AST[] | AST = parser.astify(sqlContent)
+  const statements = Array.isArray(ast) ? ast : [ast]
 
-  // Find the CREATE TABLE statement in the AST
-  // @ts-expect-error - The AST type definition might not perfectly match runtime structure
-  const createStatement = ast.find(node => node.type === 'create')
+  const createStatement = statements.find(
+    (node): node is Create => node.type === 'create',
+  )
 
   if (!createStatement?.table || !createStatement.create_definitions) {
     throw new Error(
@@ -25,14 +36,14 @@ export function getColNames(sqlContent: string): {
     )
   }
 
-  const tableName = createStatement.table[0].table
+  const { table } = createStatement
+  const tableName = Array.isArray(table) ? (table[0]?.table ?? '') : table.table
 
-  // Filter for column definitions
-  const columnDefinitions = createStatement.create_definitions.filter(
-    (def: any) => def.resource === 'column',
-  ) as { column: { column: string } }[]
-
-  const colNames = columnDefinitions.map(colDef => colDef.column.column)
+  // Keep positional integrity with the data rows (parseTableLine maps values to
+  // columns by index), so map every column definition rather than dropping any.
+  const colNames = createStatement.create_definitions
+    .filter(def => def.resource === 'column')
+    .map(def => columnName(def.column))
 
   return {
     tableName,

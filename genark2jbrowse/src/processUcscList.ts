@@ -8,8 +8,9 @@ const __dirname = path.dirname(__filename)
 
 interface UcscGenome {
   organism: string
-  // Add other properties if known from list.json, otherwise they will be spread
-  [key: string]: any
+  taxId: number
+  // Other list.json fields are spread through to the output untouched
+  [key: string]: unknown
 }
 
 const ucscApiUrl = 'https://api.genome.ucsc.edu/list/ucscGenomes'

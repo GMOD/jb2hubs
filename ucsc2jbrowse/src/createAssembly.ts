@@ -31,34 +31,27 @@ try {
 
 let cytoLink = undefined
 try {
+  // Prefer cytoBand (curated banding); fall back to cytoBandIdeo. Whichever
+  // resolves, drop it when every band is 'gneg' — a placeholder ideogram with no
+  // real banding information, not worth wiring up as a cytobands adapter.
   const cytoTxtLink = getCytoBandLink()
-  const res = await fetch(cytoTxtLink)
+  const cytoIdeoLink = getCytoBandIdeoLink()
+  const primaryRes = await fetch(cytoTxtLink)
+  const [link, res] = primaryRes.ok
+    ? [cytoTxtLink, primaryRes]
+    : [cytoIdeoLink, await fetch(cytoIdeoLink)]
   if (!res.ok) {
-    const cytoIdeoLink = getCytoBandIdeoLink()
-    const ideoRes = await fetch(cytoIdeoLink)
-    if (!ideoRes.ok) {
-      throw new Error('Error fetching cytobands')
-    }
-    const ret = await ideoRes.arrayBuffer()
-    const text = gunzipSync(Buffer.from(ret))
-    const txt = new TextDecoder().decode(text)
-    const allGneg = txt
-      .split('\n')
-      .map(f => f.trim())
-      .filter(f => !!f)
-      .every(line => line.split('\t')[4] === 'gneg')
-    cytoLink = allGneg ? undefined : cytoIdeoLink
-  } else {
-    const ret = await res.arrayBuffer()
-    const text = gunzipSync(Buffer.from(ret))
-    const txt = new TextDecoder().decode(text)
-    const allGneg = txt
-      .split('\n')
-      .map(f => f.trim())
-      .filter(f => !!f)
-      .every(line => line.split('\t')[4] === 'gneg')
-    cytoLink = allGneg ? undefined : cytoTxtLink
+    throw new Error('Error fetching cytobands')
   }
+  const txt = new TextDecoder().decode(
+    gunzipSync(Buffer.from(await res.arrayBuffer())),
+  )
+  const allGneg = txt
+    .split('\n')
+    .map(f => f.trim())
+    .filter(f => !!f)
+    .every(line => line.split('\t')[4] === 'gneg')
+  cytoLink = allGneg ? undefined : link
 } catch (_e) {}
 
 interface GenomeRecord {
