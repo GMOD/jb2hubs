@@ -28,6 +28,13 @@ export BED2GFF
 # $2: The database directory for the assembly.
 # $3: The results directory for the assembly.
 process_gene_tracks() {
+  # GNU parallel runs exported functions in a fresh bash that does NOT inherit
+  # the parent's `set -euo pipefail`. Without this, a failing derivation step
+  # (geneLike, bed2gff, bgzip, tabix, ...) would be ignored and the run would
+  # still reach save_rebuild_stamp below, permanently caching a broken track.
+  # Fail fast instead so the stamp is never written and the track rebuilds next
+  # run; the caller's parallel invocation tolerates and reports the failed job.
+  set -eo pipefail
   local tracks_json=$1
   local db_dir=$2
   local outdir=$3
@@ -91,4 +98,5 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-parallel $PARALLEL_OPTS process_assembly ::: "$@"
+parallel $PARALLEL_OPTS process_assembly ::: "$@" ||
+  echo "WARNING: parallel reported failures while creating gene tracks (exit $?)" >&2

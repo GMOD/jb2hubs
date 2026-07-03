@@ -59,12 +59,8 @@ fi
 # Define function to download a single NCBI GFF file
 download_ncbi_gff() {
   local line="$1"
-  local url
-  url=$(echo "$line" | cut -d'|' -f1)
-  local common_name
-  common_name=$(echo "$line" | cut -d'|' -f2)
-  local filename
-  filename=$(echo "$line" | cut -d'|' -f3)
+  local url common_name filename
+  IFS='|' read -r url common_name filename <<<"$line"
 
   # -nc never re-downloads an existing file; -N (timestamping) re-downloads
   # only when the remote Last-Modified is newer than the local copy. They are

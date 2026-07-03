@@ -55,7 +55,10 @@ echo "Phase 2: Processing $TOTAL GFF files..."
 # Define function to process a single GFF file. It handles cases where start >
 # end, sorts, bgzips, and tabix indexes the GFF.
 process_gff_file() {
-  set -o pipefail
+  # GNU parallel runs exported functions in a fresh bash without the parent's
+  # `set -euo pipefail`; enable it here so a failed step aborts the job instead
+  # of silently producing a truncated output.
+  set -eo pipefail
   local input_file="$1"
   local filename
   filename=$(basename "$input_file")
@@ -63,10 +66,14 @@ process_gff_file() {
   local unzipped_file="${input_file%.gz}"
 
   echo "Processing GFF file: $filename"
-  # Decompress, swap start/end if start > end, then recompress and index
+  # Decompress, swap start/end if start > end, then recompress and index. Build
+  # into temp files and move into place only after tabix succeeds, so a failure
+  # never leaves an indexless output that the existence-based gate treats as done.
   pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 > $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
-  jbrowse sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file"
-  tabix -C "$output_bgz_file"
+  jbrowse sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file.tmp"
+  tabix -C "$output_bgz_file.tmp"
+  mv "$output_bgz_file.tmp" "$output_bgz_file"
+  mv "$output_bgz_file.tmp.csi" "$output_bgz_file.csi"
   rm "$unzipped_file" # Clean up unzipped file
 }
 

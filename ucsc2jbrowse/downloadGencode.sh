@@ -84,7 +84,7 @@ https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49
 https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.polyAs.gff3.gz|GENCODE V49 - PolyA feature annotation|hg38-gencodePolyA
 https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.2wayconspseudos.gff3.gz|GENCODE V49 - Consensus pseudogenes predicted by the Yale and UCSC pipelines|hg38-gencodePseudo
 https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.tRNAs.gff3.gz|GENCODE V49 - Predicted tRNA genes|hg38-gencodetRNA
-https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_48/gencode.v48.promoter_windows.gff3.gz|GENCODE V49 - Promoter Windows|hg38-gencodePromoter"
+https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.promoter_windows.gff3.gz|GENCODE V49 - Promoter Windows|hg38-gencodePromoter"
 
 HG19_TRACKS="\
 https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/GRCh37_mapping/gencode.v49lift37.annotation.gff3.gz|GENCODE V49 - Comprehensive gene annotation|hg19-gencodeComp

@@ -15,6 +15,10 @@ source "$(dirname "$0")/common.sh"
 # Processes a single assembly.
 # $1: The assembly directory in the data folder.
 process_assembly() {
+  # GNU parallel runs exported functions in a fresh bash without the parent's
+  # `set -euo pipefail`; fail fast so a failed step never reaches
+  # save_rebuild_stamp and caches a broken track (see createGeneTracks for why).
+  set -eo pipefail
   local assembly_data_dir=$1
   local assembly_name
   assembly_name=$(basename "$assembly_data_dir")
@@ -55,4 +59,5 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-parallel $PARALLEL_OPTS process_assembly ::: "$@"
+parallel $PARALLEL_OPTS process_assembly ::: "$@" ||
+  echo "WARNING: parallel reported failures while creating RepeatMasker tracks (exit $?)" >&2
