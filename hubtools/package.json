@@ -3,18 +3,24 @@
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
-  "main": "dist/index.mjs",
-  "exports": "./dist/index.mjs",
+  "main": "src/index.ts",
+  "exports": "./src/index.ts",
   "files": [
     "src",
     "dist"
   ],
+  "publishConfig": {
+    "main": "dist/index.mjs",
+    "types": "dist/index.d.mts",
+    "exports": "./dist/index.mjs"
+  },
   "scripts": {
     "clean": "rimraf dist",
-    "prebuild": "yarn clean",
+    "prebuild": "pnpm clean",
     "build": "tsdown --dts src/index.ts",
+    "prepack": "pnpm build",
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test src/*.test.ts",
-    "preversion": "yarn build",
+    "preversion": "pnpm build",
     "postversion": "git push --follow-tags"
   },
   "dependencies": {
