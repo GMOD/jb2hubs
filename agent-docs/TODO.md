@@ -1,1 +1,2 @@
-- check that create invalidation run less
+- check that aws create-invalidation run less
+- optimize lint and format speed somehow
