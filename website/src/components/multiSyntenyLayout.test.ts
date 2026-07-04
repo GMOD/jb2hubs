@@ -129,7 +129,11 @@ const inverted: Neighborhood = {
     { geneId: 'B', symbol: 'B', isQuery: false, refStart: 200, refEnd: 300 },
   ],
   species: [
-    { taxonId: 9606, commonName: 'human', genes: [gene('A', 0), gene('B', 200)] },
+    {
+      taxonId: 9606,
+      commonName: 'human',
+      genes: [gene('A', 0), gene('B', 200)],
+    },
     {
       taxonId: 10090,
       commonName: 'mouse',
@@ -184,7 +188,11 @@ test('a single opposite-strand ortholog falls back to strand for inversion', () 
     ...inverted,
     species: [
       inverted.species[0]!,
-      { taxonId: 10090, commonName: 'mouse', genes: [gene('A', 0, { strand: -1 })] },
+      {
+        taxonId: 10090,
+        commonName: 'mouse',
+        genes: [gene('A', 0, { strand: -1 })],
+      },
     ],
   }
   assert.equal(layoutNeighborhood(lone).rows[1]?.inverted, true)
@@ -216,7 +224,11 @@ test('layout exposes per-row span and geneHeight for launch + rendering', () => 
 // found inverted, and sometimes only partially retained. The reference row is the
 // full operon on +; other rows exercise conservation, whole-operon inversion, and
 // a partial+inverted operon — the last being what the mirror bug used to corrupt.
-function operonGene(anchorId: string, start: number, strand: 1 | -1): PlacedGene {
+function operonGene(
+  anchorId: string,
+  start: number,
+  strand: 1 | -1,
+): PlacedGene {
   return {
     anchorId,
     symbol: anchorId,
@@ -232,18 +244,49 @@ function operonGene(anchorId: string, start: number, strand: 1 | -1): PlacedGene
 // Operon genes laid head-to-tail from `from`; `strand` flips every gene and, when
 // negative, reverses their order so the cluster reads as a genomic inversion.
 function operon(from: number, strand: 1 | -1): PlacedGene[] {
-  const order = strand > 0 ? ['E', 'D', 'C', 'B', 'A'] : ['A', 'B', 'C', 'D', 'E']
+  const order =
+    strand > 0 ? ['E', 'D', 'C', 'B', 'A'] : ['A', 'B', 'C', 'D', 'E']
   return order.map((id, i) => operonGene(`trp${id}`, from + i * 1200, strand))
 }
 
 const trpOperon: Neighborhood = {
   query: { geneId: 'trpA', symbol: 'trpA', refTaxonId: 562 },
   anchors: [
-    { geneId: 'trpE', symbol: 'trpE', isQuery: false, refStart: 0, refEnd: 1000 },
-    { geneId: 'trpD', symbol: 'trpD', isQuery: false, refStart: 1200, refEnd: 2200 },
-    { geneId: 'trpC', symbol: 'trpC', isQuery: false, refStart: 2400, refEnd: 3400 },
-    { geneId: 'trpB', symbol: 'trpB', isQuery: false, refStart: 3600, refEnd: 4600 },
-    { geneId: 'trpA', symbol: 'trpA', isQuery: true, refStart: 4800, refEnd: 5800 },
+    {
+      geneId: 'trpE',
+      symbol: 'trpE',
+      isQuery: false,
+      refStart: 0,
+      refEnd: 1000,
+    },
+    {
+      geneId: 'trpD',
+      symbol: 'trpD',
+      isQuery: false,
+      refStart: 1200,
+      refEnd: 2200,
+    },
+    {
+      geneId: 'trpC',
+      symbol: 'trpC',
+      isQuery: false,
+      refStart: 2400,
+      refEnd: 3400,
+    },
+    {
+      geneId: 'trpB',
+      symbol: 'trpB',
+      isQuery: false,
+      refStart: 3600,
+      refEnd: 4600,
+    },
+    {
+      geneId: 'trpA',
+      symbol: 'trpA',
+      isQuery: true,
+      refStart: 4800,
+      refEnd: 5800,
+    },
   ],
   species: [
     // E. coli reference: whole operon on + strand (query trpA is +).
@@ -281,7 +324,9 @@ test('a whole-operon inversion is flagged and the arrows flip', () => {
   assert.ok(klebsiella.genes.every(g => g.strand === -1))
   assert.ok(klebsiella.genes.every(g => g.drawStrand === 1))
   // Mirrored order matches the reference reading direction: trpE..trpA left->right.
-  const order = [...klebsiella.genes].sort((a, b) => a.x - b.x).map(g => g.anchorId)
+  const order = [...klebsiella.genes]
+    .sort((a, b) => a.x - b.x)
+    .map(g => g.anchorId)
   assert.deepEqual(order, ['trpE', 'trpD', 'trpC', 'trpB', 'trpA'])
 })
 
@@ -293,14 +338,16 @@ test('a partial inverted operon stays left-aligned in ordinal mode', () => {
   const reduced = l.rows[3]! // 2 genes, inverted
   assert.equal(reduced.inverted, true)
   assert.equal(reduced.genes.length, 2)
-  const slotW = (full.genes[1]!.x - full.genes[0]!.x)
+  const slotW = full.genes[1]!.x - full.genes[0]!.x
   const leftEdge = Math.min(...reduced.genes.map(g => g.x))
   const rightEdge = Math.max(...reduced.genes.map(g => g.x + g.width))
   // Occupies only the first two slots, same left origin as the full row.
   assert.ok(Math.abs(leftEdge - full.genes[0]!.x) < 0.001)
   assert.ok(rightEdge <= full.genes[0]!.x + 2 * slotW + 0.001)
   // Reversed within those slots: trpB before trpA left->right.
-  const order = [...reduced.genes].sort((a, b) => a.x - b.x).map(g => g.anchorId)
+  const order = [...reduced.genes]
+    .sort((a, b) => a.x - b.x)
+    .map(g => g.anchorId)
   assert.deepEqual(order, ['trpB', 'trpA'])
 })
 
@@ -343,7 +390,9 @@ const unbalancedTree: TaxonNode = {
 
 const withTree: Neighborhood = {
   query: { geneId: 'A', symbol: 'A', refTaxonId: 9606 },
-  anchors: [{ geneId: 'A', symbol: 'A', isQuery: true, refStart: 0, refEnd: 100 }],
+  anchors: [
+    { geneId: 'A', symbol: 'A', isQuery: true, refStart: 0, refEnd: 100 },
+  ],
   species: [13616, 9606, 10090, 10116].map(taxonId => ({
     taxonId,
     commonName: String(taxonId),

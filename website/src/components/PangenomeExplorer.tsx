@@ -58,9 +58,7 @@ export default function PangenomeExplorer({
     `${dataset.dataPrefix}/manifest.json`,
     fetchJson,
   )
-  const variantCount = new Map(
-    manifest?.loci.map(l => [l.id, l.variantCount]),
-  )
+  const variantCount = new Map(manifest?.loci.map(l => [l.id, l.variantCount]))
 
   // "Most variants" needs the manifest counts; until it loads the comparator
   // returns 0, leaving the stable catalog order in place.

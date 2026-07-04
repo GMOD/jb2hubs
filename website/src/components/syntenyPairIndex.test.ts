@@ -1,11 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import {
-  accessionBase,
-  buildPairIndex,
-  trackFor,
-} from './syntenyPairIndex.ts'
+import { accessionBase, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 
 test('accessionBase strips version and assembly-name suffix', () => {
   assert.equal(accessionBase('GCF_000001405.40'), 'GCF_000001405')

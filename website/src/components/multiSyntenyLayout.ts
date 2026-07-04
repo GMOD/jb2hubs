@@ -271,7 +271,9 @@ function layoutTree(
   function place(node: TaxonNode): Placed | undefined {
     if (node.children.length === 0) {
       const y = rowY.get(node.taxonId)
-      return y === undefined ? undefined : { x: treeWidth, y, leaves: [node.taxonId] }
+      return y === undefined
+        ? undefined
+        : { x: treeWidth, y, leaves: [node.taxonId] }
     }
     const kids = node.children
       .map(place)

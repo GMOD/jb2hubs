@@ -28,16 +28,17 @@ through it:
 - `graphBrowserUrl`, `graphVcfLgvUrl`, `referenceLgvUrl` — `pangenomeLinks.ts`
 - ortholog result launches — `OrthologSearch.tsx`
 
-The plain genome list is the *only* launch that uses just a hosted config with
+The plain genome list is the _only_ launch that uses just a hosted config with
 no spec.
 
 On the jbrowse-components side:
 
 - The `spec-` expander, `loadSessionSpec.ts`, lives in
   `products/jbrowse-web/src/` — it is **web-only**. Desktop has no equivalent.
-- Desktop's `LaunchCallback` (`products/jbrowse-desktop/src/components/StartScreen/types.ts`)
-  is `(sel: { shortName, jbrowseConfig }[]) => void` — it can open a hosted
-  config URL and nothing else. No views, no `sessionTracks`, no merge.
+- Desktop's `LaunchCallback`
+  (`products/jbrowse-desktop/src/components/StartScreen/types.ts`) is
+  `(sel: { shortName, jbrowseConfig }[]) => void` — it can open a hosted config
+  URL and nothing else. No views, no `sessionTracks`, no merge.
 
 So desktop cannot launch pangenomes/orthologs/synteny because its launch
 primitive only understands "one hosted config," while everything new the website
@@ -59,7 +60,7 @@ the website can express as a spec — present and future.
 ### 2. Make the spec builders a shared package, not website-private
 
 `specUrl`, `syntenyViewUrl`, `graphBrowserUrl`, `mergeConfig` currently live
-inside this repo "so the encoding lives once" — but that's once *per website*.
+inside this repo "so the encoding lives once" — but that's once _per website_.
 Move them to a shared lib so desktop consumes the identical **spec object** and
 simply skips the URL-encoding/`window.open` step, handing the object to its
 local session.
@@ -71,13 +72,14 @@ and desktop both build from the same builder, so they can't drift.
 
 The website already generates content indexes that only Astro pages consume:
 
-- `generatePangenomeData.ts`, `generatePangenomeMsa.ts`, `generatePangenomePangene.ts`
+- `generatePangenomeData.ts`, `generatePangenomeMsa.ts`,
+  `generatePangenomePangene.ts`
 - `generateSyntenyPairIndex.ts`, `generateSyntenyAccessions.ts`
 - `generateOrthologIndex.ts`
 - `generateRecentlyUpdated.ts` → `recentlyUpdated.json`
 - `generateSearchIndex.ts` → `public/searchIndex.json`
 
-Desktop's start screen only knows `categories.json` (a list of *genome lists*,
+Desktop's start screen only knows `categories.json` (a list of _genome lists_,
 built by `genark2jbrowse/src/generateCategoriesJson.ts`). Generalize that
 manifest: alongside genome categories, enumerate pangenome datasets, synteny
 pairs, and variable loci as launchable resources. The dialog then becomes a
@@ -86,9 +88,9 @@ pairs, and variable loci as launchable resources. The dialog then becomes a
 
 ### 4. Orthologs needs an explicit decision
 
-Orthologs is not a static list — `OrthologSearch.tsx` is a live query against the
-NCBI Datasets API filtered to hosted genomes. Desktop can't ship an Astro page.
-Two honest options:
+Orthologs is not a static list — `OrthologSearch.tsx` is a live query against
+the NCBI Datasets API filtered to hosted genomes. Desktop can't ship an Astro
+page. Two honest options:
 
 - **Replicate the behavior**: desktop calls the same NCBI API plus a published
   ortholog index, and builds the result launch via the shared spec builder (#2).
@@ -113,8 +115,9 @@ These improve integration today without the keystone above:
   `image.json`). Fold the thumbnail URL into the processed entries, then add a
   thumbnail column to the desktop table.
 - **In-app "More info".** Today desktop's per-row "More info" is a
-  `window.open('https://genomes.jbrowse.org/accession/<acc>/')`. An in-app detail
-  panel fed by the accession JSON (stats/BUSCO/synteny/paired) is tighter.
+  `window.open('https://genomes.jbrowse.org/accession/<acc>/')`. An in-app
+  detail panel fed by the accession JSON (stats/BUSCO/synteny/paired) is
+  tighter.
 
 ## Cross-repo drift note
 

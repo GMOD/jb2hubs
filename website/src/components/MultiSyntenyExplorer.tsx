@@ -103,7 +103,11 @@ export default function MultiSyntenyExplorer() {
         maxAnchors,
         flankBp: flank,
       }),
-    { keepPreviousData: true, revalidateOnFocus: false, shouldRetryOnError: false },
+    {
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+    },
   )
   const trimmed = useMemo(() => (data ? trim(data) : null), [data])
   const nb = trimmed?.nb ?? null

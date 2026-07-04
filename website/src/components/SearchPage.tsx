@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 
 import OrangeStar from './OrangeStar.tsx'
 import RedX from './RedX.tsx'
@@ -18,6 +18,19 @@ import { paginate } from '../utils/paginate.ts'
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
 
 const PAGE_SIZE = 100
+
+const EXAMPLE_QUERIES = ['human', 'mouse', 'zebrafish', 'GCF_000001405']
+
+const statusLegend = (
+  <div className={styles.legend}>
+    <span className={styles.legendItem}>
+      <OrangeStar /> NCBI designated reference genome
+    </span>
+    <span className={styles.legendItem}>
+      <RedX /> NCBI RefSeq suppressed
+    </span>
+  </div>
+)
 
 export default function SearchPage() {
   const { index, loading } = useSearchIndex()
@@ -90,7 +103,7 @@ export default function SearchPage() {
               className={styles.clearButton}
               aria-label="Clear search"
             >
-              x
+              <X size={16} />
             </button>
           )}
         </div>
@@ -113,7 +126,38 @@ export default function SearchPage() {
           ))}
         </select>
       </div>
-      {query.trim() && (
+      {!query.trim() && (
+        <div className={styles.emptyState}>
+          <p>
+            Search {index.length.toLocaleString()} genome assemblies by common
+            name, scientific name, or accession.
+          </p>
+          <p className={styles.examples}>
+            Try:{' '}
+            {EXAMPLE_QUERIES.map(example => (
+              <button
+                key={example}
+                type="button"
+                className={styles.exampleChip}
+                onClick={() => {
+                  setQuery(example)
+                }}
+              >
+                {example}
+              </button>
+            ))}
+          </p>
+          {statusLegend}
+        </div>
+      )}
+      {query.trim() && results.length === 0 && (
+        <div className={styles.noResults}>
+          No genomes match &ldquo;{query.trim()}&rdquo;
+          {clade ? ' in this clade' : ''}. Try a different spelling, or broaden
+          your filters.
+        </div>
+      )}
+      {query.trim() && results.length > 0 && (
         <div className={styles.resultCount}>
           {results.length.toLocaleString()} results for &ldquo;{query.trim()}
           &rdquo;
@@ -152,6 +196,7 @@ export default function SearchPage() {
           </tbody>
         </table>
       )}
+      {results.length > 0 && statusLegend}
       {pageCount > 1 && results.length > 0 && (
         <div className={styles.pagination}>
           <button

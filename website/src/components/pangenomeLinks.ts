@@ -48,7 +48,10 @@ export function graphBrowserUrl(dataset: PangenomeDataset) {
 }
 
 // The graph variants (plus SV tracks) open at a specific catalog locus.
-export function graphVcfLgvUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
+export function graphVcfLgvUrl(
+  dataset: PangenomeDataset,
+  locus: PangenomeLocus,
+) {
   return referenceLgvUrl(dataset, locusRegion(locus))
 }
 
