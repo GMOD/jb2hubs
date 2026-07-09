@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import list from '../list.json'
+import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import Container from './ui/react-wrappers/Container.tsx'
 import StyledLink from './ui/react-wrappers/StyledLink.tsx'
@@ -33,11 +34,11 @@ const columns = [
   { id: 'ucscLink', header: 'UCSC' },
 ] as const
 
-type ColId = (typeof columns)[number]['id']
-
 export default function UCSCTable() {
-  const [sortId, setSortId] = useState<ColId | ''>('')
-  const [sortDesc, setSortDesc] = useState(false)
+  const { sortId: rawSortId, sortDesc, handleSort } = useTableSort()
+  // Validate the URL-supplied sort against the known columns so `sortId` stays
+  // a typed ColId (or '') without a cast.
+  const sortId = columns.find(col => col.id === rawSortId)?.id ?? ''
 
   const data = useMemo<RowData[]>(() => {
     return Object.entries(list.ucscGenomes as Record<string, UCSCGenome>)
@@ -53,26 +54,13 @@ export default function UCSCTable() {
       .sort((a, b) => a.orderKey - b.orderKey)
   }, [])
 
-  const sortedRows = useMemo(() => {
-    if (!sortId) {
-      return data
-    }
-    return data.toSorted(makeComparator(row => row[sortId], sortDesc))
-  }, [data, sortId, sortDesc])
-
-  const handleSort = (colId: ColId) => {
-    if (sortId === colId) {
-      if (!sortDesc) {
-        setSortDesc(true)
-      } else {
-        setSortId('')
-        setSortDesc(false)
-      }
-    } else {
-      setSortId(colId)
-      setSortDesc(false)
-    }
-  }
+  const sortedRows = useMemo(
+    () =>
+      sortId
+        ? data.toSorted(makeComparator(row => row[sortId], sortDesc))
+        : data,
+    [data, sortId, sortDesc],
+  )
 
   return (
     <Container>

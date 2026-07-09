@@ -6,7 +6,7 @@
 // All requests go through the shared throttled client so the gene picker shares
 // one NCBI rate budget with every other caller instead of bursting on keystroke.
 
-import { DATASETS, EUTILS, ncbiJson } from '../components/ncbiFetch.ts'
+import { EUTILS, fetchOrthologReports, ncbiJson } from '../components/ncbiFetch.ts'
 
 export interface GeneHit {
   geneId: string
@@ -50,9 +50,7 @@ export async function orthologSymbol(
   geneId: string,
   targetTax: number,
 ): Promise<string | null> {
-  const data = await ncbiJson<OrthologResponse>(
-    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE`,
-  )
+  const data = await fetchOrthologReports<OrthologResponse>(geneId)
   const match = (data.reports ?? []).find(
     r => Number(r.gene.tax_id) === targetTax,
   )

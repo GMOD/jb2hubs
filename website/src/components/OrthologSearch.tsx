@@ -3,12 +3,13 @@ import { useEffect, useMemo, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import OrthologResultsTable from './OrthologResultsTable.tsx'
-import { ncbiJson } from './ncbiFetch.ts'
+import { fetchOrthologReports, ncbiJson } from './ncbiFetch.ts'
 import {
   COMMON_SPECIES,
   buildOrthologResults,
   createStore,
 } from './orthologSearchUtils.ts'
+import { resolveGeneId } from './orthologSet.ts'
 import { features } from '../config/features.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 
@@ -22,6 +23,7 @@ interface ResolvedGene {
   geneId: string
   symbol: string
   species: string
+  refTaxId: number
 }
 
 // The SWR-loaded index files use the shared fetchJson; NCBI calls below go
@@ -62,23 +64,10 @@ export default function OrthologSearch() {
     setError('')
     setResults(null)
     try {
-      let geneId = ''
-      if (/^\d+$/.test(query)) {
-        geneId = query
-      } else {
-        const taxFilter = tax ? `+AND+${tax}[taxid]` : ''
-        const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=${encodeURIComponent(query)}[Gene+Name]${taxFilter}&retmode=json&retmax=1`
-        const searchRes = await ncbiJson<{
-          esearchresult?: { idlist?: string[] }
-        }>(searchUrl)
-        const ids = searchRes.esearchresult?.idlist ?? []
-        if (ids.length === 0) {
-          setError(
-            `No gene found for "${query}"${tax ? ` in taxon ${tax}` : ''}.`,
-          )
-          return
-        }
-        geneId = ids[0] ?? ''
+      const geneId = await resolveGeneId(query, tax)
+      if (!geneId) {
+        setError(`No gene found for "${query}"${tax ? ` in taxon ${tax}` : ''}.`)
+        return
       }
 
       const summaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=${geneId}&retmode=json`
@@ -93,10 +82,12 @@ export default function OrthologSearch() {
         geneId,
         symbol: summary.name ?? query,
         species: summary.organism?.scientificname ?? '',
+        refTaxId: tax,
       })
 
-      const orthologUrl = `https://api.ncbi.nlm.nih.gov/datasets/v2/gene/id/${geneId}/orthologs?returned_content=COMPLETE`
-      const orthologRes = await ncbiJson<NcbiOrthologResponse>(orthologUrl)
+      const orthologRes = await fetchOrthologReports<NcbiOrthologResponse>(
+        geneId,
+      )
       const reports = orthologRes.reports ?? []
       setTotalOrthologs(orthologRes.total_count ?? reports.length)
       setResults(buildOrthologResults(reports, store))
@@ -123,8 +114,9 @@ export default function OrthologSearch() {
     }
   }, [store, initialized])
 
-  const refAccession = results?.find(r => r.assembly.taxonId === taxId)
-    ?.assembly.accession
+  const refAccession = results?.find(
+    r => r.assembly.taxonId === resolved?.refTaxId,
+  )?.assembly.accession
 
   return (
     <div>
@@ -218,7 +210,7 @@ export default function OrthologSearch() {
           {resolved && features.multiSynteny && (
             <p className="orthologs-summary">
               <a
-                href={`/conserved-gene-order?gene=${encodeURIComponent(resolved.symbol)}&ref=${taxId}`}
+                href={`/conserved-gene-order?gene=${encodeURIComponent(resolved.symbol)}&ref=${resolved.refTaxId}`}
               >
                 View conserved gene order for {resolved.symbol} across species →
               </a>{' '}
@@ -228,7 +220,7 @@ export default function OrthologSearch() {
           {resolved && features.proteinMsa && (
             <p className="orthologs-summary">
               <a
-                href={`/protein-alignment?gene=${encodeURIComponent(resolved.symbol)}&ref=${taxId}`}
+                href={`/protein-alignment?gene=${encodeURIComponent(resolved.symbol)}&ref=${resolved.refTaxId}`}
               >
                 View the ortholog protein alignment for {resolved.symbol} →
               </a>{' '}

@@ -4,18 +4,11 @@ import Container from '../components/Container.astro'
 import '../styles/common-table.css'
 // Import the recently updated data (generated at build time)
 import recentlyUpdated from '../recentlyUpdated.json'
-
-interface HubEntry {
-  accession: string
-  createdDate: string
-  createdTimestamp: number
-  scientificName: string
-  commonName: string
-  source: string
-  jbrowseLink: string
-  ncbiLink: string
-  ucscBrowserLink: string
-}
+import {
+  type HubEntry,
+  formatDate,
+  linkEntries,
+} from '../lib/recentlyUpdated.ts'
 
 const data = recentlyUpdated as HubEntry[]
 
@@ -38,16 +31,6 @@ for (const source of sources) {
   dataBySource[source] = sortedData
     .filter(h => h.source === source)
     .slice(0, 500)
-}
-
-const dateFormatter = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-})
-
-function formatDate(isoString: string): string {
-  return dateFormatter.format(new Date(isoString))
 }
 ---
 
@@ -94,37 +77,18 @@ function formatDate(isoString: string): string {
                 <td>{formatDate(hub.createdDate)}</td>
                 <td>{hub.source}</td>
                 <td>
-                  {hub.jbrowseLink && (
-                    <a
-                      href={hub.jbrowseLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      JBrowse
-                    </a>
-                  )}
-                  {hub.jbrowseLink && hub.ucscBrowserLink && ' | '}
-                  {hub.ucscBrowserLink && (
-                    <a
-                      href={hub.ucscBrowserLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      UCSC
-                    </a>
-                  )}
-                  {(hub.jbrowseLink || hub.ucscBrowserLink) &&
-                    hub.ncbiLink &&
-                    ' | '}
-                  {hub.ncbiLink && (
-                    <a
-                      href={hub.ncbiLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      NCBI
-                    </a>
-                  )}
+                  {linkEntries(hub).map(([href, label], i) => (
+                    <Fragment key={href}>
+                      {i > 0 ? ' | ' : ''}
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {label}
+                      </a>
+                    </Fragment>
+                  ))}
                 </td>
               </tr>
             ))
@@ -192,27 +156,11 @@ function formatDate(isoString: string): string {
 </style>
 
 <script>
-  interface HubEntry {
-    accession: string
-    createdDate: string
-    createdTimestamp: number
-    scientificName: string
-    commonName: string
-    source: string
-    jbrowseLink: string
-    ncbiLink: string
-    ucscBrowserLink: string
-  }
-
-  const dateFormatter = new Intl.DateTimeFormat('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-
-  function formatDate(isoString: string): string {
-    return dateFormatter.format(new Date(isoString))
-  }
+  import {
+    type HubEntry,
+    formatDate,
+    linkEntries,
+  } from '../lib/recentlyUpdated.ts'
 
   function makeLink(href: string, text: string): HTMLAnchorElement {
     const a = document.createElement('a')
@@ -225,16 +173,7 @@ function formatDate(isoString: string): string {
 
   function buildLinksCell(hub: HubEntry): HTMLTableCellElement {
     const td = document.createElement('td')
-    const entries: [string, string][] = []
-    if (hub.jbrowseLink) {
-      entries.push([hub.jbrowseLink, 'JBrowse'])
-    }
-    if (hub.ucscBrowserLink) {
-      entries.push([hub.ucscBrowserLink, 'UCSC'])
-    }
-    if (hub.ncbiLink) {
-      entries.push([hub.ncbiLink, 'NCBI'])
-    }
+    const entries = linkEntries(hub)
     for (let i = 0; i < entries.length; i++) {
       if (i > 0) {
         td.append(' | ')

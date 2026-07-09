@@ -7,6 +7,8 @@
 // EBI requires a contact email and validates that its domain has a real MX
 // record (jbrowse.org is rejected, gmail is fine), so this is a real address.
 
+import { delay } from '../lib/delay.ts'
+
 const CLUSTALO = 'https://www.ebi.ac.uk/Tools/services/rest/clustalo'
 
 export const EBI_EMAIL = 'colin.diesh@gmail.com'
@@ -15,10 +17,6 @@ interface ClustalOptions {
   email?: string
   pollMs?: number
   timeoutMs?: number
-}
-
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 async function text(url: string, init?: RequestInit) {

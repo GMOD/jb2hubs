@@ -73,21 +73,21 @@ export default function ProteinMsaExplorer() {
       setPrecomputed(null)
       const params = new URLSearchParams({ gene: sym, ref: String(ref) })
       window.history.replaceState(null, '', `?${params.toString()}`)
-      const cached = (await loadExampleCache())[cacheKey(sym, ref)]
-      if (cached) {
-        setPrecomputed(cached.alignment)
-        setPanel(cached.panel)
-      } else {
-        setLoading(true)
-        try {
+      setLoading(true)
+      try {
+        const cached = (await loadExampleCache())[cacheKey(sym, ref)]
+        if (cached) {
+          setPrecomputed(cached.alignment)
+          setPanel(cached.panel)
+        } else {
           setPanel(
             await assembleProteinPanel(sym, ref, { onProgress: setStatus }),
           )
-        } catch (e) {
-          setError(e instanceof Error ? e.message : String(e))
-        } finally {
-          setLoading(false)
         }
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e))
+      } finally {
+        setLoading(false)
       }
     }
   }

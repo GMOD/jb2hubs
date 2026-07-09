@@ -84,7 +84,7 @@ function paramsFromUrl(): Query {
 }
 
 export default function MultiSyntenyExplorer() {
-  const initial = paramsFromUrl()
+  const [initial] = useState(paramsFromUrl)
   const [geneInput, setGeneInput] = useState(initial.gene)
   const [refInput, setRefInput] = useState(() => labelForRef(initial.ref))
   const [anchors, setAnchors] = useState(initial.maxAnchors)

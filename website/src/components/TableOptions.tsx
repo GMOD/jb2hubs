@@ -46,6 +46,7 @@ export default function TableOptions({
         >
           <input
             type="radio"
+            name="columnVisibility"
             checked={!showAllColumns}
             onChange={() => {
               setShowAllColumns(false)
@@ -60,6 +61,7 @@ export default function TableOptions({
         >
           <input
             type="radio"
+            name="columnVisibility"
             checked={showAllColumns}
             onChange={() => {
               setShowAllColumns(true)

@@ -3,7 +3,7 @@
 // GeneIDs — no static assembly index, no eutils chaining. Consumed by
 // neighborhood.ts (which adds neighbors + the induced tree).
 
-import { DATASETS, EUTILS, ncbiJson } from './ncbiFetch.ts'
+import { EUTILS, fetchOrthologReports, ncbiJson } from './ncbiFetch.ts'
 import { COMMON_SPECIES } from './orthologSearchUtils.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
@@ -135,8 +135,8 @@ export async function resolveRefTaxon(input: string): Promise<number> {
 export async function fetchOrthologRows(
   geneId: string,
 ): Promise<OrthologRow[]> {
-  const json = await ncbiJson<{ reports?: { gene?: DatasetsGene }[] }>(
-    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE`,
-  )
+  const json = await fetchOrthologReports<{
+    reports?: { gene?: DatasetsGene }[]
+  }>(geneId)
   return buildRows(json.reports ?? [])
 }

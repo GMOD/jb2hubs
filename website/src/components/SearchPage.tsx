@@ -201,7 +201,7 @@ export default function SearchPage() {
         <div className={styles.pagination}>
           <button
             onClick={() => {
-              setPage(p => p - 1)
+              setPage(clampedPage - 1)
             }}
             disabled={clampedPage === 0}
           >
@@ -212,7 +212,7 @@ export default function SearchPage() {
           </span>
           <button
             onClick={() => {
-              setPage(p => p + 1)
+              setPage(clampedPage + 1)
             }}
             disabled={clampedPage >= pageCount - 1}
           >

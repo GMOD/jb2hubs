@@ -17,7 +17,13 @@
 // the cartoon immediately and only pay the EBI cost on demand.
 
 import { EBI_EMAIL, clustalOmega } from './ebiAlign.ts'
-import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
+import {
+  DATASETS,
+  EUTILS,
+  fetchOrthologReports,
+  ncbiJson,
+  ncbiText,
+} from './ncbiFetch.ts'
 import { COMMON_SPECIES, COMMON_TAX_RANK } from './orthologSearchUtils.ts'
 import { resolveGeneId } from './orthologSet.ts'
 
@@ -70,7 +76,7 @@ interface OrthologGene {
 
 // One ortholog gene per species from the NCBI Datasets orthologs endpoint.
 async function fetchOrthologGenes(geneId: string): Promise<OrthologGene[]> {
-  const json = await ncbiJson<{
+  const json = await fetchOrthologReports<{
     reports?: {
       gene?: {
         gene_id?: string
@@ -79,7 +85,7 @@ async function fetchOrthologGenes(geneId: string): Promise<OrthologGene[]> {
         common_name?: string
       }
     }[]
-  }>(`${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE`)
+  }>(geneId)
   const genes: OrthologGene[] = []
   for (const { gene } of json.reports ?? []) {
     const taxId = Number(gene?.tax_id)
@@ -124,7 +130,7 @@ async function fetchRepresentativeProteins(
         )
       const best =
         candidates.find(c => c.mane) ??
-        [...candidates].sort((a, b) => b.len - a.len)[0]
+        candidates.sort((a, b) => b.len - a.len)[0]
       if (product?.gene_id && best) {
         byGene.set(product.gene_id, best.acc)
       }

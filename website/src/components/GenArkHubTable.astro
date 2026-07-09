@@ -1,0 +1,31 @@
+---
+import { hubCategories } from 'hubtools'
+
+interface Props {
+  main: boolean
+}
+
+const { main } = Astro.props
+const rows = hubCategories.filter(f => (main ? f.tag === 'main' : f.tag !== 'main'))
+---
+
+<table>
+  <thead>
+    <tr>
+      <th>hub&nbsp;gateway</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map(elt => (
+        <tr>
+          <td>
+            <a href={`/hubs/${elt.id}`}>{elt.id}</a>
+          </td>
+          <td>{elt.description}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
