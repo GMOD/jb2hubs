@@ -8,6 +8,7 @@ import {
   alignProteinPanel,
   assembleProteinPanel,
 } from './proteinMsa.ts'
+import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 // react-msaview pulls in @jbrowse/core + MUI + mobx and renders to canvas, so it
 // only runs client-side; lazy-loading keeps it off the first paint and out of
@@ -28,12 +29,12 @@ interface CachedExample {
   alignment: ProteinAlignment
 }
 
-let cachePromise: Promise<Record<string, CachedExample>> | undefined
-function loadExampleCache() {
-  cachePromise ??= fetch('/proteinExamples.json')
-    .then(r => (r.ok ? r.json() : {}))
-    .catch(() => ({}))
-  return cachePromise
+// Optional precomputed cache: a load failure just means examples resolve live,
+// so degrade to an empty map rather than surfacing an error.
+function loadExampleCache(): Promise<Record<string, CachedExample>> {
+  return loadJsonOnce<Record<string, CachedExample>>(
+    '/proteinExamples.json',
+  ).catch((): Record<string, CachedExample> => ({}))
 }
 
 const cacheKey = (symbol: string, ref: number) =>

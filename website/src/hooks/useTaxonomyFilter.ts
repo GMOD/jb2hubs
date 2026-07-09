@@ -1,5 +1,7 @@
 import useSWRImmutable from 'swr/immutable'
 
+import { fetchJson } from '../lib/fetchJson.ts'
+
 // Ordered from specific to broad — must match generateTaxonomyFilter.ts
 export const CURATED_CLADES = [
   { label: 'Mammalia', display: 'Mammalia (mammals) [txid:40674]' },
@@ -19,11 +21,7 @@ export const CURATED_CLADES = [
 ] as const
 
 async function fetcher(url: string): Promise<Map<string, Set<number>>> {
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(res.statusText)
-  }
-  const data = (await res.json()) as Record<string, number[]>
+  const data = await fetchJson<Record<string, number[]>>(url)
   return new Map(Object.entries(data).map(([k, v]) => [k, new Set(v)]))
 }
 

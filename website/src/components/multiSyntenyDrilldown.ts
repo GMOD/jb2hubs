@@ -11,6 +11,7 @@ import {
   flankLoc,
 } from './orthologSearchUtils.ts'
 import { type PairIndex, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
+import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
 
@@ -60,21 +61,16 @@ export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
   }
 }
 
-// The pair catalog is fetched once on first drill-down and indexed for tolerant
-// (version/suffix/order-insensitive) lookup.
-let pairIndex: Promise<PairIndex> | undefined
-
+// The pair catalog is fetched once on first drill-down (loadJsonOnce shares the
+// request and, unlike the old inline fetch, doesn't cache a 404 forever) and
+// indexed for tolerant (version/suffix/order-insensitive) lookup. Any load
+// failure degrades to an empty index — the click falls back to single-genome —
+// and a later drill-down retries.
 function loadPairs(): Promise<PairIndex> {
-  pairIndex ??= fetch('/synteny_pairs.json')
-    .then(res =>
-      res.ok ? (res.json() as Promise<Record<string, string>>) : {},
-    )
-    .then(buildPairIndex)
-    .catch(() => {
-      pairIndex = undefined // let a later click retry rather than cache the failure
-      return new Map<string, string>()
-    })
-  return pairIndex
+  return loadJsonOnce<Record<string, string>>('/synteny_pairs.json').then(
+    buildPairIndex,
+    () => new Map<string, string>(),
+  )
 }
 
 function pairwiseSyntenyUrl(

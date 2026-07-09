@@ -1,5 +1,7 @@
 import useSWRImmutable from 'swr/immutable'
 
+import { fetchJson } from '../lib/fetchJson.ts'
+
 // [accession, commonName, scientificName, ncbiAssemblyName, assemblyStatus, source, taxonId, ncbiStatus]
 // ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
 export type IndexEntry = [
@@ -13,15 +15,10 @@ export type IndexEntry = [
   number, // ncbiStatus
 ]
 
-async function fetcher(url: string) {
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(res.statusText)
-  }
-  return res.json() as Promise<IndexEntry[]>
-}
-
 export function useSearchIndex() {
-  const { data, isLoading } = useSWRImmutable('/searchIndex.json', fetcher)
+  const { data, isLoading } = useSWRImmutable(
+    '/searchIndex.json',
+    fetchJson<IndexEntry[]>,
+  )
   return { index: data ?? [], loading: isLoading }
 }

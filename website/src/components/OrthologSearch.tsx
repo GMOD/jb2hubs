@@ -10,6 +10,7 @@ import {
   createStore,
 } from './orthologSearchUtils.ts'
 import { features } from '../config/features.ts'
+import { fetchJson } from '../lib/fetchJson.ts'
 
 import type {
   AssemblyIndex,
@@ -23,16 +24,8 @@ interface ResolvedGene {
   species: string
 }
 
-// Local static-asset fetch for the SWR-loaded index files; NCBI calls below go
+// The SWR-loaded index files use the shared fetchJson; NCBI calls below go
 // through the shared throttled client (ncbiJson) instead.
-async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) {
-    throw new Error(`${res.status} ${res.statusText}`)
-  }
-  return res.json() as Promise<T>
-}
-
 export default function OrthologSearch() {
   const [geneInput, setGeneInput] = useState('')
   const [taxId, setTaxId] = useState(9606)
@@ -43,14 +36,14 @@ export default function OrthologSearch() {
   const [totalOrthologs, setTotalOrthologs] = useState(0)
   const [initialized, setInitialized] = useState(false)
 
-  const { data: indexData } = useSWRImmutable<AssemblyIndex>(
+  const { data: indexData } = useSWRImmutable(
     '/ortholog_index.json',
-    fetchJson,
+    fetchJson<AssemblyIndex>,
   )
 
-  const { data: syntenyPairs } = useSWRImmutable<Record<string, string>>(
+  const { data: syntenyPairs } = useSWRImmutable(
     '/synteny_pairs.json',
-    fetchJson,
+    fetchJson<Record<string, string>>,
   )
 
   const store = useMemo(
