@@ -1,6 +1,7 @@
+import { getUcscFeatureDisplay } from './featureDisplay.ts'
 import { readJSON, writeJSON } from './util.ts'
 
-import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
+import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 
 // The BLAT plugin pairs with the sequence.metadata.blatDb stamp (createAssembly /
 // generateJBrowseConfigForAssemblyHub). It is opt-in via BLAT_PLUGIN_URL because
@@ -33,6 +34,24 @@ const defaultPlugins: JBrowsePlugin[] = [
   ...blatPlugin,
 ]
 
+function isRecord(x: unknown): x is Record<string, unknown> {
+  return typeof x === 'object' && x !== null
+}
+
+// Labels/tooltips bigBed FeatureTracks from the columns UCSC's trackDb intends
+// (e.g. gnomAD _displayName, ncbiGene geneName2), leaving any hand-authored
+// display untouched.
+function deriveFeatureDisplay(track: Track): Track {
+  const { metadata } = track
+  const ucsc =
+    isRecord(metadata) && isRecord(metadata.ucsc) ? metadata.ucsc : undefined
+  return track.type === 'FeatureTrack' &&
+    ucsc !== undefined &&
+    track.displays === undefined
+    ? { ...track, ...getUcscFeatureDisplay(track.trackId, ucsc) }
+    : track
+}
+
 /**
  * Enhances a JBrowse configuration file with standard plugins and hierarchical settings.
  * @param configPath Path to the config.json file to enhance.
@@ -51,6 +70,8 @@ export function enhanceConfig(
       config.plugins.push(plugin)
     }
   }
+
+  config.tracks = config.tracks?.map(deriveFeatureDisplay)
 
   config.configuration ??= {}
   config.configuration.hierarchical = {

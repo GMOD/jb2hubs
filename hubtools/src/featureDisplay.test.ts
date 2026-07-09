@@ -1,11 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import {
-  getTrackModifications,
-  getUcscFeatureDisplay,
-  mouseOverTemplateToJexl,
-} from './getTrackModifications.ts'
+import { getUcscFeatureDisplay, mouseOverTemplateToJexl } from './featureDisplay.ts'
 
 describe('mouseOverTemplateToJexl', () => {
   it('converts $field and ${field} tokens', () => {
@@ -42,23 +38,17 @@ describe('mouseOverTemplateToJexl', () => {
 })
 
 describe('getUcscFeatureDisplay', () => {
-  it('labels from defaultLabelFields (gnomAD _displayName)', () => {
+  it('labels from defaultLabelFields at the display level (gnomAD _displayName)', () => {
     const d = getUcscFeatureDisplay('hg38-gnomad', {
       labelFields: 'rsId,_displayName',
       defaultLabelFields: '_displayName',
     })
-    assert.equal(
-      d.displays?.[0]?.renderer?.labels.name,
-      "jexl:get(feature,'_displayName')",
-    )
+    assert.equal(d.displays?.[0]?.labels?.name, "jexl:get(feature,'_displayName')")
   })
 
-  it('falls back to first labelFields when no default', () => {
-    const d = getUcscFeatureDisplay('t', { labelFields: 'TFName' })
-    assert.equal(
-      d.displays?.[0]?.renderer?.labels.name,
-      "jexl:get(feature,'TFName')",
-    )
+  it('falls back to first labelFields when no default (GenArk ncbiGene)', () => {
+    const d = getUcscFeatureDisplay('t', { labelFields: 'geneName,geneName2' })
+    assert.equal(d.displays?.[0]?.labels?.name, "jexl:get(feature,'geneName')")
   })
 
   it('suppresses the label when defaultLabelFields is none', () => {
@@ -66,7 +56,7 @@ describe('getUcscFeatureDisplay', () => {
       labelFields: 'name',
       defaultLabelFields: 'none',
     })
-    assert.equal(d.displays?.[0]?.renderer?.labels.name, "jexl:''")
+    assert.equal(d.displays?.[0]?.labels?.name, "jexl:''")
   })
 
   it('prefers a mouseOver template over mouseOverField', () => {
@@ -82,38 +72,12 @@ describe('getUcscFeatureDisplay', () => {
     assert.equal(d.displays?.[0]?.mouseover, "jexl:get(feature,'_mouseOver')")
   })
 
+  it('emits no renderer block (new display-level shape)', () => {
+    const d = getUcscFeatureDisplay('t', { defaultLabelFields: 'geneName2' })
+    assert.equal('renderer' in (d.displays?.[0] ?? {}), false)
+  })
+
   it('returns no display when there are no relevant settings', () => {
     assert.deepEqual(getUcscFeatureDisplay('t', { track: 'foo' }), {})
-  })
-})
-
-describe('getTrackModifications', () => {
-  const baseTrack = {
-    trackId: 'hg38-gnomadGenomesVariantsV4_1',
-    type: 'FeatureTrack',
-    name: 'gnomAD v4.1',
-    assemblyNames: ['hg38'],
-    metadata: {
-      ucsc: {
-        track: 'gnomadGenomesVariantsV4_1',
-        defaultLabelFields: '_displayName',
-      },
-    },
-  }
-
-  it('attaches a display derived from UCSC settings for FeatureTracks', () => {
-    const out = getTrackModifications(baseTrack)
-    assert.equal(
-      out?.displays?.[0]?.renderer?.labels.name,
-      "jexl:get(feature,'_displayName')",
-    )
-  })
-
-  it('does not attach a display to non-FeatureTracks', () => {
-    const out = getTrackModifications({
-      ...baseTrack,
-      type: 'VariantTrack',
-    })
-    assert.equal(out?.displays, undefined)
   })
 })
