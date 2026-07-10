@@ -16,28 +16,33 @@ export function firstField(value: unknown) {
   return typeof value === 'string' ? value.split(',')[0]! : undefined
 }
 
-function escapeJexlString(s: string) {
-  return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+// Escapes literal text destined for the static portion of a jexl template
+// literal (backtick-delimited, ${...} interpolation): backslash and backtick so
+// the text can't terminate the template, and $ so stray label text like "${" is
+// never read as an interpolation. jexl's _unescapeTemplateString reverses these.
+function escapeTemplateStatic(s: string) {
+  return s
+    .replace(/\\/g, '\\\\')
+    .replace(/`/g, '\\`')
+    .replace(/\$/g, '\\$&')
 }
 
 // Converts a UCSC trackDb `mouseOver` template (e.g. "<b>AF</b>: ${AF} ($ref)")
-// into a JBrowse jexl string that concatenates literal text with feature field
-// lookups. Both $field and ${field} forms are supported.
+// into a jexl template literal, mapping both $field and ${field} to
+// ${get(feature,'field')}. A jexl template literal renders a missing/null field
+// as '' (and preserves 0), matching UCSC — unlike the old string concatenation,
+// which emitted the literal text "undefined" for absent fields.
 export function mouseOverTemplateToJexl(template: string) {
-  const parts: string[] = []
+  let out = ''
   let last = 0
   for (const m of template.matchAll(/\$\{(\w+)\}|\$(\w+)/g)) {
     const idx = m.index
-    if (idx > last) {
-      parts.push(`'${escapeJexlString(template.slice(last, idx))}'`)
-    }
-    parts.push(`get(feature,'${m[1] ?? m[2] ?? ''}')`)
+    out += escapeTemplateStatic(template.slice(last, idx))
+    out += `\${get(feature,'${m[1] ?? m[2]!}')}`
     last = idx + m[0].length
   }
-  if (last < template.length) {
-    parts.push(`'${escapeJexlString(template.slice(last))}'`)
-  }
-  return parts.length > 0 ? `jexl:${parts.join('+')}` : undefined
+  out += escapeTemplateStatic(template.slice(last))
+  return out ? `jexl:\`${out}\`` : undefined
 }
 
 export function getUcscFeatureDisplay(

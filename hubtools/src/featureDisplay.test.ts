@@ -10,33 +10,40 @@ describe('mouseOverTemplateToJexl', () => {
   it('converts $field and ${field} tokens', () => {
     assert.equal(
       mouseOverTemplateToJexl('<b>Pos</b>: $chrom:${chromStart}-${chromEnd}'),
-      "jexl:'<b>Pos</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')",
+      "jexl:`<b>Pos</b>: ${get(feature,'chrom')}:${get(feature,'chromStart')}-${get(feature,'chromEnd')}`",
     )
   })
 
   it('keeps double quotes from href attributes intact', () => {
     assert.equal(
       mouseOverTemplateToJexl('<a href="x?a=${name}">${name}</a>'),
-      "jexl:'<a href=\"x?a='+get(feature,'name')+'\">'+get(feature,'name')+'</a>'",
+      "jexl:`<a href=\"x?a=${get(feature,'name')}\">${get(feature,'name')}</a>`",
     )
   })
 
   it('handles adjacent tokens with no literal between', () => {
     assert.equal(
       mouseOverTemplateToJexl('$ref$alt'),
-      "jexl:get(feature,'ref')+get(feature,'alt')",
+      "jexl:`${get(feature,'ref')}${get(feature,'alt')}`",
     )
   })
 
-  it('escapes single quotes in literal text', () => {
+  it('leaves single quotes in literal text untouched', () => {
     assert.equal(
       mouseOverTemplateToJexl("it's $x"),
-      "jexl:'it\\'s '+get(feature,'x')",
+      "jexl:`it's ${get(feature,'x')}`",
     )
   })
 
-  it('returns a plain literal when there are no tokens', () => {
-    assert.equal(mouseOverTemplateToJexl('no tokens'), "jexl:'no tokens'")
+  it('escapes backticks and non-token dollar signs in literal text', () => {
+    assert.equal(
+      mouseOverTemplateToJexl('$ a `b` $z'),
+      "jexl:`\\$ a \\`b\\` ${get(feature,'z')}`",
+    )
+  })
+
+  it('returns a template literal when there are no tokens', () => {
+    assert.equal(mouseOverTemplateToJexl('no tokens'), 'jexl:`no tokens`')
   })
 })
 
@@ -70,7 +77,7 @@ describe('getUcscFeatureDisplay', () => {
       mouseOver: 'AF: ${AF}',
       mouseOverField: '_mouseOver',
     })
-    assert.equal(d.displays?.[0]?.mouseover, "jexl:'AF: '+get(feature,'AF')")
+    assert.equal(d.displays?.[0]?.mouseover, "jexl:`AF: ${get(feature,'AF')}`")
   })
 
   it('uses mouseOverField when no template', () => {
