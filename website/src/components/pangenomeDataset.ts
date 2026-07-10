@@ -80,8 +80,8 @@ export const HPRC_DATASET: PangenomeDataset = {
     'hg38-hprcArrDupBedV1',
   ],
   syntenyTarget: {
-    assembly: 'GCA_009914755.4',
-    trackId: 'hg38_to_GCA_009914755.4_liftOver',
+    assembly: 'hs1',
+    trackId: 'hg38_to_hs1_liftOver',
     label: 'CHM13',
   },
   dataPrefix: '/pangenome',

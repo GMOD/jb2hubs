@@ -120,8 +120,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     significance:
       'SMN1 and SMN2 are near-identical paralogs in a segmental duplication; both vary in copy number, and loss of SMN1 causes spinal muscular atrophy.',
     chrom: 'chr5',
-    start: 70_000_000,
-    end: 70_130_000,
+    start: 70_040_000,
+    end: 70_960_000,
     variation: ['cnv', 'pav'],
     pangeneGenes: ['SMN1'],
   },
@@ -161,7 +161,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
       'The 8p23.1 beta-defensin cluster is a multiallelic copy-number region flanked by a common large inversion polymorphism.',
     chrom: 'chr8',
     start: 6_900_000,
-    end: 7_800_000,
+    end: 7_900_000,
     variation: ['cnv', 'inversion'],
     pangeneGenes: [
       'DEFB103A',
@@ -170,7 +170,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
       'DEFB106B',
       'DEFB107B',
       'DEFB4B',
-      'DEFB130A',
     ],
   },
   {
@@ -183,7 +182,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 161_500_000,
     end: 161_700_000,
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['FCGR1A', 'FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
+    pangeneGenes: ['FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
   },
   {
     id: 'hp',
