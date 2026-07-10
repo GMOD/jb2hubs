@@ -16,7 +16,7 @@ import type {
 } from './orthologSearchUtils.ts'
 
 const indexData: AssemblyIndex = {
-  'GCF_000001405.40': ['Human', 'Homo sapiens', 9606],
+  'GCF_000001405.40': ['Human', 'Homo sapiens', 9606, 'hg38'],
   'GCF_000001635.27': ['Mouse', 'Mus musculus', 10090],
 }
 
@@ -27,6 +27,7 @@ test('createStore.find returns named assembly fields', () => {
   assert.equal(assembly?.commonName, 'Human')
   assert.equal(assembly?.scientificName, 'Homo sapiens')
   assert.equal(assembly?.taxonId, 9606)
+  assert.equal(assembly?.ucscDb, 'hg38')
 })
 
 test('createStore.find falls back to a version-stripped match', () => {
@@ -41,6 +42,15 @@ test('createStore.find returns undefined for an unknown accession', () => {
   assert.equal(store.find('GCF_999999999.1'), undefined)
 })
 
+test('createStore.find resolves the base fallback to the newest hosted version', () => {
+  const store = createStore({
+    'GCF_000001635.26': ['Mouse', 'Mus musculus', 10090],
+    'GCF_000001635.27': ['Mouse', 'Mus musculus', 10090],
+  })
+  // NCBI reports .25; we host .26 and .27 — the newest (.27) wins deterministically
+  assert.equal(store.find('GCF_000001635.25')?.accession, 'GCF_000001635.27')
+})
+
 test('accessionToJbrowseUrl shards the accession into the config path', () => {
   const url = accessionToJbrowseUrl('GCF_000001405.40')
   assert.ok(
@@ -51,6 +61,18 @@ test('accessionToJbrowseUrl shards the accession into the config path', () => {
 
 test('accessionToJbrowseUrl appends an encoded loc when given', () => {
   const url = accessionToJbrowseUrl('GCF_000001405.40', 'NC_000017.11:1-2')
+  assert.ok(url.includes('&loc=NC_000017.11%3A1-2'))
+})
+
+test('accessionToJbrowseUrl targets the /ucsc config for UCSC-native assemblies', () => {
+  const url = accessionToJbrowseUrl(
+    'GCF_000001405.40',
+    'NC_000017.11:1-2',
+    'hg38',
+  )
+  assert.ok(url.includes('config=/ucsc/hg38/config.json'))
+  assert.ok(url.includes('&assembly=hg38'))
+  assert.ok(!url.includes('/hubs/genark/'))
   assert.ok(url.includes('&loc=NC_000017.11%3A1-2'))
 })
 
@@ -128,6 +150,37 @@ test('buildOrthologResults skips assemblies not in our collection', () => {
     },
   ]
   assert.equal(buildOrthologResults(reports, store).length, 0)
+})
+
+test('buildOrthologResults resolves off a later location when the first lacks a range', () => {
+  const store = createStore(indexData)
+  const reports: NcbiOrthologReport[] = [
+    {
+      gene: {
+        gene_id: '555',
+        symbol: 'lateLoc',
+        annotations: [
+          {
+            assembly_accession: 'GCF_000001405.40',
+            genomic_locations: [
+              {
+                genomic_accession_version: 'NW_unplaced.1',
+                sequence_name: 'un',
+              },
+              {
+                genomic_accession_version: 'NC_000017.11',
+                sequence_name: '17',
+                genomic_range: { begin: '10', end: '20' },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ]
+  const results = buildOrthologResults(reports, store)
+  assert.equal(results.length, 1)
+  assert.equal(results[0]?.locStr, 'NC_000017.11:10-20')
 })
 
 test('buildOrthologResults skips annotations lacking a genomic range', () => {

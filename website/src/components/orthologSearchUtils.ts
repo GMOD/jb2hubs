@@ -60,14 +60,27 @@ export interface OrthologResult {
   jbrowseUrl: string
 }
 
-export function accessionToJbrowseUrl(accession: string, loc?: string) {
+// Single-genome JBrowse launch URL. UCSC-native assemblies (ucscDb set, e.g.
+// human/hg38) resolve to the curated /ucsc/<db> config — their GenArk-sharded
+// config exists but its sequence data 404s, so the GenArk path would open a
+// browser with no sequence. Everything else uses the GenArk hub path, whose base
+// is the accession sharded three digits at a time. NCBI's RefSeq refName in loc
+// (e.g. NC_000017.11) resolves against both configs via their chromAlias.
+export function accessionToJbrowseUrl(
+  accession: string,
+  loc?: string,
+  ucscDb?: string,
+) {
   const [base = '', rest = ''] = accession.split('_')
   const digits = rest.replace(/\.\d+$/, '')
   const b1 = digits.slice(0, 3)
   const b2 = digits.slice(3, 6)
   const b3 = digits.slice(6, 9)
-  const configPath = `${base}/${b1}/${b2}/${b3}/${accession}/config.json`
-  const url = `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${configPath}&assembly=${encodeURIComponent(accession)}`
+  const config = ucscDb
+    ? `/ucsc/${ucscDb}/config.json`
+    : `/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`
+  const assembly = ucscDb ?? accession
+  const url = `https://jbrowse.org/code/jb2/latest/?config=${config}&assembly=${encodeURIComponent(assembly)}`
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 
@@ -231,15 +244,18 @@ export function buildOrthologResults(
   const results: OrthologResult[] = []
 
   for (const { gene } of reports) {
-    for (const ann of gene.annotations ?? []) {
-      const assembly = store.find(ann.assembly_accession)
-      if (!assembly) {
-        continue
-      }
-      const loc = ann.genomic_locations?.[0]
-      if (!loc?.genomic_range) {
-        continue
-      }
+    // First hosted annotation carrying any placed location. Scans every location
+    // (not just [0]) so an annotation whose first location lacks a range still
+    // resolves off a later placed one, matching locate() in orthologSet.ts.
+    const hit = (gene.annotations ?? [])
+      .map(ann => ({
+        assembly: store.find(ann.assembly_accession),
+        loc: ann.genomic_locations?.find(l => l.genomic_range),
+      }))
+      .find(({ assembly, loc }) => assembly && loc?.genomic_range)
+    const assembly = hit?.assembly
+    const loc = hit?.loc
+    if (assembly && loc?.genomic_range) {
       const begin = parseInt(loc.genomic_range.begin)
       const end = parseInt(loc.genomic_range.end)
       const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
@@ -251,9 +267,12 @@ export function buildOrthologResults(
         begin,
         end,
         locStr,
-        jbrowseUrl: accessionToJbrowseUrl(assembly.accession, locStr),
+        jbrowseUrl: accessionToJbrowseUrl(
+          assembly.accession,
+          locStr,
+          assembly.ucscDb,
+        ),
       })
-      break
     }
   }
 
