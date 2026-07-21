@@ -135,7 +135,7 @@ if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
   # --mode staging (PUBLIC_STAGING=true) which enables in-progress pages.
   echo "Staging mode: skipping S3 data upload and git commit/push."
   echo "Deploying website to staging..."
-  pnpm --filter website2 deploy:staging
+  pnpm --filter website2 run deploy:staging
   echo "Staging deploy complete"
 elif [ "$DRY_RUN" = false ]; then
   echo "Uploading genark data..."
@@ -170,7 +170,7 @@ elif [ "$DRY_RUN" = false ]; then
 
   if [ -f "$DEPLOY_STAMP" ]; then
     echo "Changes detected (genark=$GENARK_CHANGED ucsc=$UCSC_CHANGED website=$WEBSITE_DIRTY) or prior deploy incomplete; running website deploy..."
-    pnpm --filter website2 deploy
+    pnpm --filter website2 run deploy
     rm -f "$DEPLOY_STAMP"
     WEBSITE_DEPLOYED=yes
   else
