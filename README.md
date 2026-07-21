@@ -7,11 +7,11 @@ browsers and portal features
 
 ## Live site
 
-https://genomes.jbrowse.org
+See https://genomes.jbrowse.org
 
 ## Staging site
 
-https://staging.genomes.jbrowse.org
+See https://staging.genomes.jbrowse.org
 
 ## Developing
 
