@@ -33,3 +33,27 @@ and re-upload the configs.
   (ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both)
 - `src/recentlyUpdated.json` — build-time generated data for recently-updated
   page
+
+## UCSC hubs vs GenArk aliases (two-flavor configs)
+
+The UCSC genome list is fetched **live** from `api.genome.ucsc.edu/list/ucscGenomes`
+on every `ucsc2jbrowse/make.sh` run, so new UCSC assemblies can appear (and break
+the pipeline) without any repo change.
+
+Hub-backed entries (`nibPath` starts with `hub:`) come in two shapes, and
+`generateJBrowseConfigForAssemblyHub.sh` derives the `hub.txt` URL from `nibPath`,
+not the assembly name:
+
+- native UCSC assembly hub (e.g. `hs1`, `mpxvRivers`): `hub:/gbdb/<db>/hubs` →
+  `/gbdb/<db>/hubs/public/hub.txt`
+- **GenArk-backed alias** (e.g. `rn8` = GRCr8): `hub:/gbdb/genark/<GC[AF] path>` →
+  `/hubs/<GC[AF] path>/hub.txt` (served from `/hubs/`, not `/gbdb/genark/`)
+
+A UCSC assembly and a GenArk assembly can be the **same biological genome** and
+both get a full config — this is intentional, not a bug. `buildUcscMapping`
+(`src/utils/accessionData.ts`) maps an NCBI accession to a UCSC db name via the
+`GC[AF]_…` in the entry's `sourceName`, and the accession page prefers the UCSC
+config (`/ucsc/<db>/config.json`) when one exists, falling back to the GenArk
+config otherwise. So do **not** "dedup" GenArk aliases by pointing them at the
+GenArk config — that would make them inconsistent with hg38/mm39/etc., and the
+accession page relies on the `/ucsc/<db>/config.json` build existing.
