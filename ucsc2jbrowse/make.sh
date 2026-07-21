@@ -7,7 +7,11 @@
 # Usage:
 #   ./make.sh                  # Download + process (default)
 #   ./make.sh --skip-download  # Skip download, just process
-#   ./make.sh --reprocess-all  # Force reprocess everything
+#   ./make.sh --reprocess-all  # Force reprocess everything from cached downloads
+#
+# --reprocess-all re-derives every config from already-downloaded data; it does
+# not re-pull NCBI RefSeq GFFs (set FETCH_UPDATES=1 for that). The UCSC rsync it
+# still runs is incremental, so an already-synced tree transfers almost nothing.
 #
 
 set -euo pipefail
@@ -32,7 +36,8 @@ for arg in "$@"; do
     echo "Options:"
     echo "  (default)          Download and process all assemblies"
     echo "  --skip-download    Skip download, just process existing data"
-    echo "  --reprocess-all    Force reprocess everything (ignores cached hashes)"
+    echo "  --reprocess-all    Reprocess everything from cached downloads"
+    echo "                     (ignores cached hashes; FETCH_UPDATES=1 re-pulls GFFs)"
     echo "  --help, -h         Show this help message"
     exit 0
     ;;

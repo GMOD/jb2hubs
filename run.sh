@@ -9,7 +9,9 @@
 #                           # Incremental: only new/changed assemblies rebuilt.
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
-#   ./run.sh --reprocess-all # Re-download and reprocess everything from scratch
+#   ./run.sh --reprocess-all # Reprocess genark2jbrowse + ucsc2jbrowse from
+#                           # cached downloads (re-derives all configs; does not
+#                           # re-pull NCBI GFFs unless FETCH_UPDATES=1)
 #   ./run.sh --staging      # Build + deploy website to staging only. Skips S3
 #                           # data upload and git commit/push; staging reads the
 #                           # same production S3 data via absolute URLs.
@@ -49,8 +51,10 @@ for arg in "$@"; do
     echo "                   are reprocessed."
     echo "  --dry-run        Build only, no upload or deploy"
     echo "  --upload-only    Upload + deploy only, skip build (run after --dry-run)"
-    echo "  --reprocess-all  Re-download and reprocess every assembly from scratch."
-    echo "                   Use after changing converter code/templates."
+    echo "  --reprocess-all  Reprocess genark2jbrowse + ucsc2jbrowse from cached"
+    echo "                   downloads (re-derives every config). Use after changing"
+    echo "                   converter code/templates. Does not re-pull NCBI GFFs"
+    echo "                   unless FETCH_UPDATES=1."
     echo "  --staging        Build, then deploy the website to staging only."
     echo "                   Skips S3 data upload and git commit/push; the"
     echo "                   staging site reads the same production S3 data."

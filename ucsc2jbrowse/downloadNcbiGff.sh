@@ -17,6 +17,10 @@
 #   ./downloadNcbiGff.sh             # every db in ncbiRefSeqAccessions.tsv
 #   ./downloadNcbiGff.sh hg38 mm39   # only the named dbs
 #
+# By default we only fetch a GFF we don't already have, so a --reprocess-all
+# rebuild re-derives configs from cached GFFs without re-hitting NCBI (matching
+# genark2jbrowse). Set FETCH_UPDATES=1 to force a re-download of every GFF.
+#
 
 set -euo pipefail
 
@@ -45,7 +49,7 @@ process_db() {
   if [ ! -f "$config" ]; then
     log "Skipping $db: no config.json (assembly not built)"
   else
-    if [ ! -f "$gff.csi" ] || [ -n "${REPROCESS:-}" ]; then
+    if [ ! -f "$gff.csi" ] || [ -n "${FETCH_UPDATES:-}" ]; then
       log "Downloading $db NCBI RefSeq GFF ($acc)..."
       local zip="$GFF_DIR/$db.ncbi_dataset.zip"
       local extract="$GFF_DIR/$db.ncbi_dataset"

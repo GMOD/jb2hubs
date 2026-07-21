@@ -1,4 +1,5 @@
 import { categoryMap } from './const.ts'
+import { firstField } from './featureDisplay.ts'
 import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
 import { resolve } from './util.ts'
 
@@ -47,12 +48,20 @@ function makeAdapterConf(
     const trackName = data.track ?? ''
     const disableGeneHeuristic =
       trackName.endsWith('tandemDups') || trackName.endsWith('gapOverlap')
+    // bigGenePred groups transcripts into genes; UCSC's own defaultLabelFields
+    // (fallback labelFields) names the gene field to aggregate on, e.g. name2
+    // for ncbiRefSeq, rather than the adapter's fixed geneName2 default
+    const aggregateField =
+      baseTrackType === 'bigGenePred'
+        ? (firstField(data.defaultLabelFields) ?? firstField(data.labelFields))
+        : undefined
     return {
       type: 'FeatureTrack',
       adapter: {
         type: 'BigBedAdapter',
         uri,
         ...(disableGeneHeuristic ? { disableGeneHeuristic: true } : {}),
+        ...(aggregateField ? { aggregateField } : {}),
       },
     }
   } else if (baseTrackType === 'vcfTabix') {
