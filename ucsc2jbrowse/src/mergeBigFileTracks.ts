@@ -1,4 +1,4 @@
-import { dedupe } from 'hubtools'
+import { dedupe, firstField } from 'hubtools'
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
@@ -12,6 +12,8 @@ interface BigDataTrack {
     type?: string
     longLabel?: string
     speciesLabels?: string
+    labelFields?: string
+    defaultLabelFields?: string
   }
 }
 
@@ -158,12 +160,25 @@ async function addBigDataTracks(
               },
             })
           } else {
+            // bigGenePred groups transcripts into genes; UCSC's own
+            // defaultLabelFields (fallback labelFields) names the gene field to
+            // aggregate on, e.g. name2 for ncbiRefSeq, rather than the adapter's
+            // fixed geneName2 default
+            const aggregateField =
+              type === 'bigGenePred'
+                ? (firstField(settings.defaultLabelFields) ??
+                  firstField(settings.labelFields))
+                : undefined
             newTracks.push({
               trackId,
               name: tableName,
               type: 'FeatureTrack',
               assemblyNames: [assemblyName],
-              adapter: { type: 'BigBedAdapter', uri },
+              adapter: {
+                type: 'BigBedAdapter',
+                uri,
+                ...(aggregateField ? { aggregateField } : {}),
+              },
             })
           }
         }

@@ -5,6 +5,12 @@
 # Shared configuration for all scripts.
 # Source this file at the top of other scripts: source "$(dirname "$0")/../common.sh"
 #
+# Control plane (both pipelines, incremental by default). Two independent env
+# axes that compose:
+#   REPROCESS=1      re-derive outputs from cached downloads, ignoring the
+#                    change gates (implied by make.sh --reprocess-all).
+#   FETCH_UPDATES=1  re-pull upstream NCBI GFFs even if a local copy exists;
+#                    regeneration then cascades from the newer file.
 
 # Suppress Node.js experimental warnings
 export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"

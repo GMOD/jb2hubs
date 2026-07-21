@@ -9,13 +9,15 @@
 #                           # Incremental: only new/changed assemblies rebuilt.
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
-#   ./run.sh --reprocess-all # Re-download and reprocess everything from scratch
+#   ./run.sh --reprocess-all # Reprocess genark2jbrowse + ucsc2jbrowse from
+#                           # cached downloads (re-derives all configs; does not
+#                           # re-pull NCBI GFFs unless FETCH_UPDATES=1)
 #   ./run.sh --staging      # Build + deploy website to staging only. Skips S3
 #                           # data upload and git commit/push; staging reads the
 #                           # same production S3 data via absolute URLs.
 #
 
-set -e
+set -euo pipefail
 export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -49,12 +51,18 @@ for arg in "$@"; do
     echo "                   are reprocessed."
     echo "  --dry-run        Build only, no upload or deploy"
     echo "  --upload-only    Upload + deploy only, skip build (run after --dry-run)"
-    echo "  --reprocess-all  Re-download and reprocess every assembly from scratch."
-    echo "                   Use after changing converter code/templates."
+    echo "  --reprocess-all  Reprocess genark2jbrowse + ucsc2jbrowse from cached"
+    echo "                   downloads (re-derives every config). Use after changing"
+    echo "                   converter code/templates. Does not re-pull NCBI GFFs"
+    echo "                   unless FETCH_UPDATES=1."
     echo "  --staging        Build, then deploy the website to staging only."
     echo "                   Skips S3 data upload and git commit/push; the"
     echo "                   staging site reads the same production S3 data."
     echo "  --help, -h       Show this help message"
+    echo ""
+    echo "Env vars (see common.sh):"
+    echo "  REPROCESS=1      Re-derive from cached downloads (implied by --reprocess-all)"
+    echo "  FETCH_UPDATES=1  Re-pull upstream NCBI GFFs in both pipelines"
     exit 0
     ;;
   *)
@@ -73,6 +81,12 @@ fi
 
 if [ "$STAGING" = true ] && [ "$DRY_RUN" = true ]; then
   echo "Error: --staging deploys the website, so it cannot be used with --dry-run"
+  exit 1
+fi
+
+# --upload-only skips the build, so --reprocess-all would silently do nothing.
+if [ "$UPLOAD_ONLY" = true ] && [ "$REPROCESS_ALL" = true ]; then
+  echo "Error: --upload-only skips the build, so it cannot be combined with --reprocess-all"
   exit 1
 fi
 
@@ -183,7 +197,15 @@ elif [ "$DRY_RUN" = false ]; then
   describe() { [ "$1" = 1 ] && echo "changed" || echo "unchanged"; }
   echo "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED"
 
-  git add .
+  # Scope the commit to pipeline-generated paths so stray edits in the working
+  # tree don't ride along to origin. hubs/ was committed above.
+  git add -A -- \
+    genark2jbrowse/hubs genark2jbrowse/taxon_images \
+    genark2jbrowse/processedHubJson genark2jbrowse/speciesDescriptions \
+    ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal \
+    ucsc2jbrowse/blockedFiles ucsc2jbrowse/removedTracks \
+    ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
+    ucsc2jbrowse/fileListing.txt website/src/*.json
   git commit -m "Updates" || echo "No additional changes to commit"
   git push
 

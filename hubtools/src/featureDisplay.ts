@@ -12,7 +12,7 @@ export interface FeatureDisplay {
   }[]
 }
 
-function firstField(value: unknown) {
+export function firstField(value: unknown) {
   return typeof value === 'string' ? value.split(',')[0]! : undefined
 }
 
