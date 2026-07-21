@@ -23,8 +23,19 @@ automatically and fails fast with a build hint if it's missing.
 ## Do everything
 
 ```bash
-./run.sh           # Full pipeline: build + upload + deploy (default)
-./run.sh --dry-run # Build only, no upload or deploy
+./run.sh                 # Full pipeline: build + upload + deploy (default, incremental)
+./run.sh --dry-run       # Build only, no upload or deploy
+./run.sh --upload-only    # Upload + deploy only, skip build (run after --dry-run)
+./run.sh --reprocess-all # Re-derive every config from cached downloads
+./run.sh --staging       # Build + deploy website to staging only (no S3 upload / git push)
+```
+
+Two env vars force work past the incremental gates (canonical description in
+`common.sh`; they compose):
+
+```bash
+REPROCESS=1 ./run.sh      # re-derive outputs from cached downloads (implied by --reprocess-all)
+FETCH_UPDATES=1 ./run.sh  # re-pull upstream NCBI GFFs in both pipelines
 ```
 
 ## Preparing GenArk hubs
