@@ -66,7 +66,9 @@ export default function OrthologSearch() {
     try {
       const geneId = await resolveGeneId(query, tax)
       if (!geneId) {
-        setError(`No gene found for "${query}"${tax ? ` in taxon ${tax}` : ''}.`)
+        setError(
+          `No gene found for "${query}"${tax ? ` in taxon ${tax}` : ''}.`,
+        )
         return
       }
 
@@ -85,9 +87,8 @@ export default function OrthologSearch() {
         refTaxId: tax,
       })
 
-      const orthologRes = await fetchOrthologReports<NcbiOrthologResponse>(
-        geneId,
-      )
+      const orthologRes =
+        await fetchOrthologReports<NcbiOrthologResponse>(geneId)
       const reports = orthologRes.reports ?? []
       setTotalOrthologs(orthologRes.total_count ?? reports.length)
       setResults(buildOrthologResults(reports, store))

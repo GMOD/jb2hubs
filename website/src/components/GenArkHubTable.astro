@@ -6,7 +6,9 @@ interface Props {
 }
 
 const { main } = Astro.props
-const rows = hubCategories.filter(f => (main ? f.tag === 'main' : f.tag !== 'main'))
+const rows = hubCategories.filter(f =>
+  main ? f.tag === 'main' : f.tag !== 'main',
+)
 ---
 
 <table>

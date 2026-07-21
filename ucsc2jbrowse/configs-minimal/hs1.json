@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "hs1",
           "ucsc": {
             "genome": "hs1",
             "taxId": "9606",
@@ -74,7 +75,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeq.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -103,7 +113,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -132,7 +151,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -149,7 +177,7 @@
           "color": "32,32,32",
           "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
           "skipEmptyFields": "on",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
         }
       },
       "trackId": "hs1-ncbiRefSeqOther",
@@ -160,7 +188,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

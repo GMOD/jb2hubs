@@ -6,7 +6,11 @@
 // All requests go through the shared throttled client so the gene picker shares
 // one NCBI rate budget with every other caller instead of bursting on keystroke.
 
-import { EUTILS, fetchOrthologReports, ncbiJson } from '../components/ncbiFetch.ts'
+import {
+  EUTILS,
+  fetchOrthologReports,
+  ncbiJson,
+} from '../components/ncbiFetch.ts'
 
 export interface GeneHit {
   geneId: string

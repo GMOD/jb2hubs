@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "hs1",
           "ucsc": {
             "genome": "hs1",
             "taxId": "9606",
@@ -92,7 +93,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/catLiftOffGenesV1/catLiftOffGenesV1.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-catLiftOffGenesV1-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -120,7 +130,14 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/censat/censat.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-censat-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'component')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -151,7 +168,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeq.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -181,7 +207,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqCurated.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -211,7 +246,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqPredicted.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -228,7 +272,7 @@
           "color": "32,32,32",
           "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
           "skipEmptyFields": "on",
-          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"https://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"https://www.informatics.jax.org//marker/$$\""
         }
       },
       "category": ["Genes and Gene Predictions"],
@@ -240,7 +284,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/ncbiRefSeq/ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -780,7 +833,14 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/colorsDb/colorsDb.v1.2.0.sv.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-pbsv-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>SV type</b>: '+get(feature,'svType')+'<br> <b>Length</b>: '+get(feature,'svLen')+' bp<br> <b>Allele Frequency</b>: '+get(feature,'af')+'<br> <b>Alt allele count</b>: '+get(feature,'AC')+' (Hom: '+get(feature,'AC_Hom')+', Het: '+get(feature,'AC_Het')+', Hemi: '+get(feature,'AC_Hemi')+')<br> <b>Number of samples</b>: '+get(feature,'NS')+' <br> <b>Total allele number</b>: '+get(feature,'AN')+'<br> <b>HWE p-value</b>: '+get(feature,'HWE')+'<br> <b>ExcHet</b>: '+get(feature,'ExcHet')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -861,30 +921,14 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/crispr/crispr.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "type": "bigBed 4 +",
-          "visibility": "dense",
-          "shortLabel": "Cytobands (Ideogram)",
-          "group": "map",
-          "bigDataUrl": "/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb",
-          "longLabel": "Cytobands Mapped from hg38/GRCh38"
-        }
       },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-cytoBandIdeo",
-      "description": "Cytobands Mapped from hg38/GRCh38",
-      "assemblyNames": ["hs1"],
-      "name": "Cytobands (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb"
-      }
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-crisprHs1-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -902,6 +946,29 @@
       },
       "category": ["Mapping and Sequencing"],
       "trackId": "hs1-cytoBand",
+      "description": "Cytobands Mapped from hg38/GRCh38",
+      "assemblyNames": ["hs1"],
+      "name": "Cytobands (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cytoBandIdeo",
+          "type": "bigBed 4 +",
+          "visibility": "dense",
+          "shortLabel": "Cytobands (Ideogram)",
+          "group": "map",
+          "bigDataUrl": "/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb",
+          "longLabel": "Cytobands Mapped from hg38/GRCh38"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-cytoBandIdeo",
       "description": "Cytobands Mapped from hg38/GRCh38",
       "assemblyNames": ["hs1"],
       "name": "Cytobands (Ideogram)",
@@ -992,156 +1059,6 @@
       "adapter": {
         "type": "VcfTabixAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/gwasSNPs2022-03-08/chm13v2.0_GWASv1.0rsids_e100_r2022-03-08.vcf.gz"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap24",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S24",
-          "priority": "1",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb",
-          "parent": "umapBigBed on",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 24-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap24",
-      "description": "Single-read mappability with 24-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S24",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap36",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S36",
-          "priority": "2",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 36-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap36",
-      "description": "Single-read mappability with 36-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S36",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap50",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S50",
-          "priority": "3",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 50-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap50",
-      "description": "Single-read mappability with 50-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S50",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap100",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S100",
-          "priority": "4",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 100-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap100",
-      "description": "Single-read mappability with 100-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S100",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap150",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S150",
-          "priority": "5",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 150-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap150",
-      "description": "Single-read mappability with 150-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S150",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap250",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S250",
-          "priority": "6",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 250-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap250",
-      "description": "Single-read mappability with 250-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S250",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb"
       }
     },
     {
@@ -1297,6 +1214,156 @@
       "adapter": {
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k250.Umap.MultiTrackMappability.bw"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap24",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S24",
+          "priority": "1",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb",
+          "parent": "umapBigBed on",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 24-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap24",
+      "description": "Single-read mappability with 24-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S24",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap36",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S36",
+          "priority": "2",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 36-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap36",
+      "description": "Single-read mappability with 36-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S36",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap50",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S50",
+          "priority": "3",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 50-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap50",
+      "description": "Single-read mappability with 50-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S50",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap100",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S100",
+          "priority": "4",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 100-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap100",
+      "description": "Single-read mappability with 100-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S100",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap150",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S150",
+          "priority": "5",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 150-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap150",
+      "description": "Single-read mappability with 150-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S150",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap250",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S250",
+          "priority": "6",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 250-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap250",
+      "description": "Single-read mappability with 250-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S250",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb"
       }
     },
     {
@@ -1517,7 +1584,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/bbi/xenoRefGene.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

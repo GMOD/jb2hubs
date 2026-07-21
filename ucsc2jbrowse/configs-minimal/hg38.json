@@ -25,7 +25,8 @@
           "accession": "hg38",
           "commonName": "Human",
           "jbrowseConfig": "https://jbrowse.org/ucsc/hg38/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg38/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg38/minimal.json",
+          "blatDb": "hg38"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -78,7 +79,14 @@
           "visibility": "dense"
         }
       },
-      "description": "NMD escape predictions: Gencode transcripts"
+      "description": "NMD escape predictions: Gencode transcripts",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-nmdEscGencode-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'mouseover')"
+        }
+      ]
     },
     {
       "trackId": "hg38-nmdEscNcbiRefSeq",
@@ -107,7 +115,14 @@
           "visibility": "hide"
         }
       },
-      "description": "NMD escape predictions: NCBI RefSeq Curated transcripts"
+      "description": "NMD escape predictions: NCBI RefSeq Curated transcripts",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-nmdEscNcbiRefSeq-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'mouseover')"
+        }
+      ]
     },
     {
       "trackId": "hg38-ncbiRefSeqOther",
@@ -136,7 +151,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg38-ncbiRefSeqGenomicDiff",
@@ -637,12 +661,12 @@
       "adapter": {
         "type": "Gff3TabixAdapter",
         "gffGzLocation": {
-          "uri": "gencode.v48.promoter_windows.sorted.gff3.gz",
+          "uri": "gencode.v49.promoter_windows.sorted.gff3.gz",
           "locationType": "UriLocation"
         },
         "index": {
           "location": {
-            "uri": "gencode.v48.promoter_windows.sorted.gff3.gz.csi",
+            "uri": "gencode.v49.promoter_windows.sorted.gff3.gz.csi",
             "locationType": "UriLocation"
           },
           "indexType": "CSI"

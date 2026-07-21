@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { getUcscFeatureDisplay, mouseOverTemplateToJexl } from './featureDisplay.ts'
+import {
+  getUcscFeatureDisplay,
+  mouseOverTemplateToJexl,
+} from './featureDisplay.ts'
 
 describe('mouseOverTemplateToJexl', () => {
   it('converts $field and ${field} tokens', () => {
@@ -43,7 +46,10 @@ describe('getUcscFeatureDisplay', () => {
       labelFields: 'rsId,_displayName',
       defaultLabelFields: '_displayName',
     })
-    assert.equal(d.displays?.[0]?.labels?.name, "jexl:get(feature,'_displayName')")
+    assert.equal(
+      d.displays?.[0]?.labels?.name,
+      "jexl:get(feature,'_displayName')",
+    )
   })
 
   it('falls back to first labelFields when no default (GenArk ncbiGene)', () => {

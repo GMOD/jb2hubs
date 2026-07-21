@@ -25,7 +25,8 @@
           "accession": "mm10",
           "commonName": "Mouse",
           "jbrowseConfig": "https://jbrowse.org/ucsc/mm10/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm10/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm10/minimal.json",
+          "blatDb": "mm10"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +79,16 @@
         }
       },
       "description": "CLS target regions",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-target_regions-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:''"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-cCREregistry",
@@ -107,7 +120,14 @@
         }
       },
       "description": "ENCODE4 Registry of candidate Cis-Regulatory Elements (cCREs)",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-cCREregistry-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=mm10&accessions='+get(feature,'name')+'\">'+get(feature,'name')+'</a><br><b>Class:</b> '+get(feature,'cCRE_class')+'<br><b>DNase max-Z:</b> '+get(feature,'DNase_maxZ')+'<br><b>H3K4me3 max-Z:</b> '+get(feature,'H3K4me3_maxZ')+'<br><b>H3K27ac max-Z:</b> '+get(feature,'H3K27ac_maxZ')+'<br><b>CTCF max-Z:</b> '+get(feature,'CTCF_maxZ')"
+        }
+      ]
     },
     {
       "trackId": "mm10-egEnhancerRep",
@@ -191,7 +211,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 3",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-evaSnp-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm10-ReMapDensity",
@@ -248,7 +275,16 @@
         }
       },
       "description": "JASPAR CORE 2024 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-jaspar2024-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-cls_gene_models",
@@ -337,7 +373,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm10-jaspar2022",
@@ -365,7 +408,16 @@
         }
       },
       "description": "JASPAR CORE 2022 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-jaspar2022-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-egPromoterRep",
@@ -427,7 +479,16 @@
         }
       },
       "description": "ReMap Atlas of Regulatory Regions",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-ReMapTFs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-egInteractionRep",
@@ -485,7 +546,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm10-jaspar2020",
@@ -541,7 +609,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "mm10-egClusteredInteractionRep",
@@ -585,7 +660,7 @@
           "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
           "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
           "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the mouse mm10 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID,\nseparated by spaces, describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not, then\nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g., a variant that is a deletion of an A\n       may be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g., a variant that is an insertion of a T may\n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style,\nand the variants were passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism, the NCBI RefSeq curated models were used when available,\nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then to bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11, the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp8.txt\">\nEVA Release 8 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g., <tt>evaSnp8.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/evaSnp8.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq, as well as ensembl gene models.\n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the mouse mm10 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms.</p>\n<p>\nStarting with EVA SNP Release 9, each variant is annotated with the single\nmost-severe consequence ranked by Sequence Ontology severity, so the ucscClass\nfield contains one term per variant. In releases 3 through 8, the ucscClass\nfield instead contained a comma-separated list of every consequence predicted\nacross overlapping transcripts. Multiple HGVS.p terms may still appear for a\nsingle rsID when more than one transcript yields a non-equivalent protein\nchange.</p>\n<p>\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not, then\nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nStarting with EVA SNP Release 9, the variant class labels stored in each\nbigBed and exposed by the <em>Variant Class</em> filter follow the short\nSequence Ontology names used by modern VCF and dbSNP exports\n(<b>SNV</b>, <b>deletion</b>, <b>insertion</b>, <b>indel</b>, <b>MNV</b>,\n<b>sequence_alteration</b>). Releases 3 through 8 retain their original\nlabels (<b>substitution</b>, <b>delins</b>, <b>multipleNucleotideVariant</b>,\n<b>sequence alteration</b>) because those bigBeds were built before the\nlabel refresh. The underlying SO terms and the biology they describe are\nunchanged; only the displayed names differ.</p>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>SNV</b> (v9+) / <b>substitution</b> (v3&ndash;v8) &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash;\n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the\n       Alternate Allele field (Alt).  E.g., a variant that is a deletion of an A\n       may be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash;\n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the\n       Alternate Allele field (Alt).  E.g., a variant that is an insertion of a T may\n       be represented as Ref = G and Alt = GT.\n  <li> <b>indel</b> (v9+) / <b>delins</b> (v3&ndash;v8) &mdash;\n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>MNV</b> (v9+) / <b>multipleNucleotideVariant</b> (v3&ndash;v8) &mdash;\n       More than one nucleotide is substituted by an equal number of different\n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence_alteration</b> (v9+) / <b>sequence alteration</b> (v3&ndash;v8) &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style,\nand the variants were passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism, the NCBI RefSeq curated models were used when available,\nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then to bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11, the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp9.txt\">\nEVA Release 9 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g., <tt>evaSnp9.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/evaSnp9.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq, as well as ensembl gene models.\n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
           "itemRgb": "on",
           "longLabel": "Short Genetic Variants from European Variant Archive Release 6",
           "maxItems": "1000000",
@@ -599,7 +674,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipLocExtra",
@@ -628,7 +710,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipInterest",
@@ -656,7 +745,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "mm10-ncbiRefSeqOther",
@@ -686,7 +782,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-egEnhancerAll",
@@ -730,7 +835,7 @@
           "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
           "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
           "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the mouse mm10 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID,\nseparated by spaces, describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not, then\nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g., a variant that is a deletion of an A\n       may be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g., a variant that is an insertion of a T may\n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style,\nand the variants were passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism, the NCBI RefSeq curated models were used when available,\nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then to bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11, the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp8.txt\">\nEVA Release 8 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g., <tt>evaSnp8.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/evaSnp8.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq, as well as ensembl gene models.\n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the mouse mm10 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms.</p>\n<p>\nStarting with EVA SNP Release 9, each variant is annotated with the single\nmost-severe consequence ranked by Sequence Ontology severity, so the ucscClass\nfield contains one term per variant. In releases 3 through 8, the ucscClass\nfield instead contained a comma-separated list of every consequence predicted\nacross overlapping transcripts. Multiple HGVS.p terms may still appear for a\nsingle rsID when more than one transcript yields a non-equivalent protein\nchange.</p>\n<p>\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not, then\nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nStarting with EVA SNP Release 9, the variant class labels stored in each\nbigBed and exposed by the <em>Variant Class</em> filter follow the short\nSequence Ontology names used by modern VCF and dbSNP exports\n(<b>SNV</b>, <b>deletion</b>, <b>insertion</b>, <b>indel</b>, <b>MNV</b>,\n<b>sequence_alteration</b>). Releases 3 through 8 retain their original\nlabels (<b>substitution</b>, <b>delins</b>, <b>multipleNucleotideVariant</b>,\n<b>sequence alteration</b>) because those bigBeds were built before the\nlabel refresh. The underlying SO terms and the biology they describe are\nunchanged; only the displayed names differ.</p>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>SNV</b> (v9+) / <b>substitution</b> (v3&ndash;v8) &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash;\n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the\n       Alternate Allele field (Alt).  E.g., a variant that is a deletion of an A\n       may be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash;\n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the\n       Alternate Allele field (Alt).  E.g., a variant that is an insertion of a T may\n       be represented as Ref = G and Alt = GT.\n  <li> <b>indel</b> (v9+) / <b>delins</b> (v3&ndash;v8) &mdash;\n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>MNV</b> (v9+) / <b>multipleNucleotideVariant</b> (v3&ndash;v8) &mdash;\n       More than one nucleotide is substituted by an equal number of different\n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence_alteration</b> (v9+) / <b>sequence alteration</b> (v3&ndash;v8) &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style,\nand the variants were passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism, the NCBI RefSeq curated models were used when available,\nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then to bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11, the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp9.txt\">\nEVA Release 9 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g., <tt>evaSnp9.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/evaSnp9.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq, as well as ensembl gene models.\n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
           "itemRgb": "on",
           "longLabel": "Short Genetic Variants from European Variant Archive Release 7",
           "maxItems": "1000000",
@@ -744,7 +849,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipLocTransMemb",
@@ -773,7 +885,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipLocCytopl",
@@ -802,7 +921,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-evaSnp8",
@@ -823,7 +949,7 @@
           "filterValues.itemRgb": "255,,0,,0|Protein-altering and splice variants,0,,128,,0|Synonymous variants,0,,0,,255|Non-coding transcripts or UTR variants,0,,0,,0|Intergenic and intronic variants",
           "filterValues.ucscClass": "downstream_gene_variant|Downstream gene variant,upstream_gene_variant|Upstream gene variant,intron_variant|Intron variant,NMD_transcript_variant|Nonsense-mediated mRNA decay (NMD) variant,5_prime_UTR_variant|5 prime UTR variant,3_prime_UTR_variant|3 prime UTR variant,missense_variant|Missense variant,synonymous_variant|Synonymous variant,non_coding_transcript_exon_variant|Non-coding transcript exon variant,no_sequence_alteration|No sequence alteration,splice_region_variant|Splice region variant,frameshift_variant|Frameshift variant,stop_gained|Stop gained,splice_acceptor_variant|Splice acceptor variant,inframe_deletion|Inframe deletion,inframe_insertion|Inframe insertion,splice_donor_variant|Splice donor variant,coding_sequence_variant|Coding sequence variant,initiator_codon_variant|Initiator codon variant,stop_lost|Stop lost,stop_retained_variant|Stop retained variant,intergenic_variant|Intergenic variant",
           "filterValues.varClass": "deletion|Deletion,delins|Deletion-Insertion,insertion|Insertion,multipleNucleotideSubstitution|Multiple nucleotide substitution,substitution|Substitution,sequence alteration|Sequence alteration",
-          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the mouse mm10 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms. Items may have multiple ucscClasses, which will all be shown in the mouse-over\nin a comma-separated list. Likewise, multiple HGVS.p terms may be shown for each rsID,\nseparated by spaces, describing all possible AA changes.</p>\n<p>\nMultiple items may appear due to different variant predictions on multiple gene transcripts.\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not, then\nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>substitution</b> &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash; \n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g., a variant that is a deletion of an A\n       may be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash; \n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the \n       Alternate Allele field (Alt).  E.g., a variant that is an insertion of a T may\n       be represented as Ref = G and Alt = GT.\n  <li> <b>delins</b> &mdash; \n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>multipleNucleotideVariant</b> &mdash; \n       More than one nucleotide is substituted by an equal number of different \n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence alteration</b> &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style,\nand the variants were passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism, the NCBI RefSeq curated models were used when available,\nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then to bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11, the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp8.txt\">\nEVA Release 8 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g., <tt>evaSnp8.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/evaSnp8.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq, as well as ensembl gene models.\n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n<p>\nThese tracks contain mappings of single nucleotide variants\nand small insertions and deletions (indels)\nfrom the European Variation Archive\n(<a href=\"https://www.ebi.ac.uk/eva/\" target=\"_blank\">EVA</A>) \nfor the mouse mm10 genome. The dbSNP database at NCBI no longer\nhosts non-human variants.\n</p>\n\n<h2>Interpreting and Configuring the Graphical Display</h2>\n<p>\nVariants are shown as single tick marks at most zoom levels.\nWhen viewing the track at or near base-level resolution, the displayed\nwidth of the SNP variant corresponds to the width of the variant in the\nreference sequence. Insertions are indicated by a single tick mark displayed\nbetween two nucleotides, single nucleotide polymorphisms are displayed as the\nwidth of a single base, and multiple nucleotide variants are represented by a\nblock that spans two or more bases. The display is set to automatically collapse to \ndense visibility when there are more than 100k variants in the window. \nWhen the window size is more than 250k bp, the display is switched to density graph mode.\n</p>\n\n<h3>Searching, details, and filtering</h3>\n<p>\nNavigation to an individual variant can be accomplished by typing or copying\nthe variant identifier (rsID) or the genomic coordinates into the Position/Search box on the                                                       \nBrowser.</p>\n\n<p>\nA click on an item in the graphical display displays a page with data about\nthat variant.  Data fields include the Reference and Alternate Alleles, the\nclass of the variant as reported by EVA, the source of the data, the amino acid\nchange, if any, and the functional class as determined by UCSC's Variant Annotation\nIntegrator.\n</p>\n\n<p>Variants can be filtered using the track controls to show subsets of the \ndata by either EVA Sequence Ontology (SO) term, UCSC-generated functional effect, or\nby color, which bins the UCSC functional effects into general classes.</p>\n\n<h3>Mouse-over</h3>\n<p>\nMousing over an item shows the ucscClass, which is the consequence according to the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a>, and\nthe aaChange when one is available, which is the change in amino acid in HGVS.p\nterms.</p>\n<p>\nStarting with EVA SNP Release 9, each variant is annotated with the single\nmost-severe consequence ranked by Sequence Ontology severity, so the ucscClass\nfield contains one term per variant. In releases 3 through 8, the ucscClass\nfield instead contained a comma-separated list of every consequence predicted\nacross overlapping transcripts. Multiple HGVS.p terms may still appear for a\nsingle rsID when more than one transcript yields a non-equivalent protein\nchange.</p>\n<p>\nFor all organisms, the gene models used were the NCBI RefSeq curated when available, if not, then\nensembl genes, or finally, UCSC mappings of RefSeq if neither of the previous models was possible.\n</p>\n\n<h3>Track colors</h3>\n\n<p>\nVariants are colored according to the most potentially deleterious functional effect prediction\naccording to the Variant Annotation Integrator. Specific bins can be seen in the Methods section\nbelow.\n</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Variant Type</th>\n  </tr></thead>\n  <tr><td style=\"background-color: red\"></td><td>Protein-altering variants and splice site variants</td></tr>\n  <tr><td style=\"background-color: green\"></td><td>Synonymous codon variants</td></tr>\n  <tr><td style=\"background-color: blue\"></td><td>Non-coding transcript or Untranslated Region (UTR) variants</td></tr>\n  <tr><td style=\"background-color: black\"></td><td>Intergenic and intronic variants</td></tr>\n</table>\n</p>\n\n<h3>Sequence Ontology (SO)</h3>\n\n<p>\nStarting with EVA SNP Release 9, the variant class labels stored in each\nbigBed and exposed by the <em>Variant Class</em> filter follow the short\nSequence Ontology names used by modern VCF and dbSNP exports\n(<b>SNV</b>, <b>deletion</b>, <b>insertion</b>, <b>indel</b>, <b>MNV</b>,\n<b>sequence_alteration</b>). Releases 3 through 8 retain their original\nlabels (<b>substitution</b>, <b>delins</b>, <b>multipleNucleotideVariant</b>,\n<b>sequence alteration</b>) because those bigBeds were built before the\nlabel refresh. The underlying SO terms and the biology they describe are\nunchanged; only the displayed names differ.</p>\n\n<p>\nVariants are classified by EVA into one of the following <a target=\"_blank\"\nhref=\"http://www.sequenceontology.org/\">sequence ontology</a> terms:\n</p>\n\n<ul>\n  <li> <b>SNV</b> (v9+) / <b>substitution</b> (v3&ndash;v8) &mdash;\n       A single nucleotide in the reference is replaced by another, alternate allele.\n  <li> <b>deletion</b> &mdash;\n       One or more nucleotides are deleted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the\n       Alternate Allele field (Alt).  E.g., a variant that is a deletion of an A\n       may be represented as Ref = GA and Alt = G.\n  <li> <b>insertion</b> &mdash;\n       One or more nucleotides are inserted.  The representation in the database is to\n       display one additional nucleotide in both the Reference field (Ref) and the\n       Alternate Allele field (Alt).  E.g., a variant that is an insertion of a T may\n       be represented as Ref = G and Alt = GT.\n  <li> <b>indel</b> (v9+) / <b>delins</b> (v3&ndash;v8) &mdash;\n       Similar to a tandem repeat, in that the runs of Ref and Alt Alleles are of\n       different length, except that there is more than one type of nucleotide,\n       e.g., Ref = CCAAAAACAAAAACA, Alt = ACAAAAAC.\n  <li> <b>MNV</b> (v9+) / <b>multipleNucleotideVariant</b> (v3&ndash;v8) &mdash;\n       More than one nucleotide is substituted by an equal number of different\n       nucleotides, e.g.,  Ref = AA, Alt = GC.\n  <li> <b>sequence_alteration</b> (v9+) / <b>sequence alteration</b> (v3&ndash;v8) &mdash;\n       A parent term meant to signify a deviation from another sequence. Can be\n       assigned to variants that have not been characterized yet.\n</ul>\n</p>\n\n<h2>Methods</h2>\n<p>\nData were downloaded from the European Variation Archive EVA\n<a href=\"https://ftp.ebi.ac.uk/pub/databases/eva/rs_releases/\"\ntarget=\"_blank\">current_ids.vcf.gz</a> files corresponding to the proper assembly.</p>\n<p>\nChromosome names were converted to UCSC-style,\nand the variants were passed through the\n<a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgVai\">Variant Annotation Integrator</a> to\npredict consequence. For every organism, the NCBI RefSeq curated models were used when available,\nfollowed by ensembl genes, and finally UCSC mapping of RefSeq when neither of the previous models\nwere possible.</p>\n<p>\nVariants were then colored according to their predicted consequence in the following fashion:\n<ul>\n<li><b><font color=red>Protein-altering variants</font></b> and \n  <b><font color=red> splice site variants</font></b> \n- exon_loss_variant, frameshift_variant, \ninframe_deletion, inframe_insertion, initiator_codon_variant, missense_variant, \nsplice_acceptor_variant, splice_donor_variant, splice_region_variant, stop_gained, \nstop_lost, coding_sequence_variant, transcript_ablation</li>\n<li><b><font color=green>Synonymous codon variants</font></b>\n- synonymous_variant, stop_retained_variant</li>\n<li><b><font color=blue>Non-coding transcript </font></b> or\n    <b><font color=blue>Untranslated Region (UTR) variants</font></b>\n- 5_prime_UTR_variant,\n3_prime_UTR_variant, complex_transcript_variant, non_coding_transcript_exon_variant</li>\n<li><b>Intergenic and intronic variants</b> - upstream_gene_variant, downstream_gene_variant,\nintron_variant, intergenic_variant, NMD_transcript_variant, no_sequence_alteration</li></ul>\n</p>\n\n<p>\nSequence Ontology (&quot;<a href=\"http://www.sequenceontology.org/browser/current_release\"\ntarget=\"_blank\">SO</a>:&quot;)\nterms were converted to the variant classes, then the files were converted to BED,\nand then to bigBed format.\n</p>\n<p>\nNo functional annotations were provided by the EVA (e.g., missense, nonsense, etc).\nThese were computed using UCSC's Variant Annotation Integrator (Hinrichs, et al., 2016).\nAmino-acid substitutions for missense variants are based\non RefSeq alignments of mRNA transcripts, which do not always match the amino acids\npredicted from translating the genomic sequence.  Therefore, in some instances, the\nvariant and the genomic nucleotide and associated amino acid may be reversed.\nE.g., a Pro &gt; Arg change from the perspective of the mRNA would be Arg &gt; Pro from\nthe perspective of the genomic sequence. Also, in bosTau9, galGal5, rheMac10,\nand danRer11, the mitochondrial sequence was removed or renamed to match UCSC.\nFor complete documentation of the processing of these tracks, see the makedoc corresponding\nto the version of interest. For example, the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/evaSnp9.txt\">\nEVA Release 9 MakeDoc</a>.</p>\n\n<h2>Data Access</h2>\n<p>\n<b>Note:</b> It is not recommended to use LiftOver to convert SNPs between assemblies,\nand more information about how to convert SNPs between assemblies can be found on the following\n<a href=\"/FAQ/FAQreleases.html#snpConversion\">FAQ entry</a>.</p>\n<p>\nThe data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated analysis, the data may be\nqueried from our <a href=\"/goldenPath/help/api.html\">REST API</a>. Please refer to our\n<a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\">mailing list archives</a>\nfor questions or our <a href=\"/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more\ninformation.</p>\n\n<p>\nFor automated download and analysis, this annotation is stored in a bigBed file that\ncan be downloaded from <a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/\"\ntarget=\"_blank\">our download server</a>. Use the corresponding version number for the track\nof interest, e.g., <tt>evaSnp9.bb</tt>.\nIndividual regions or the whole genome annotation can be obtained using our tool\n<tt>bigBedToBed</tt>, which can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g.\n<br><br>\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/mm10/bbi/evaSnp9.bb -chrom=chr21 -start=0 -end=100000000 stdout</tt>\n</p>\n\n<h2>Credits</h2>\n<p>\nThis track was produced from the <a target=\"_blank\" href=\"https://www.ebi.ac.uk/eva/\">European\nVariation Archive release</a> data. Consequences were predicted using UCSC's Variant Annotation\nIntegrator and NCBI's RefSeq, as well as ensembl gene models.\n</p>\n\n<h2>References</h2>\n<p>\nCezard T, Cunningham F, Hunt SE, Koylass B, Kumar N, Saunders G, Shen A, Silva AF,\nTsukanov K, Venkataraman S <em>et al.</em> <a href=\"https://doi.org/10.1093/nar/gkab960\"\ntarget=\"_blank\">The European Variation Archive: a FAIR resource of genomic variation for all\nspecies</a>.  <em>Nucleic Acids Res.</em> 2021 Oct 28:gkab960.\n<a href=\"https://doi.org/10.1093/nar/gkab960\" target=\"_blank\">doi:10.1093/nar/gkab960</a>.\nEpub ahead of print. PMID: <a href=\"https://pubmed.ncbi.nlm.nih.gov/34718739/\"\ntarget=\"_blank\">34718739</a>. PMID: <a href=\"https://pmc.ncbi.nlm.nih.gov/articles/pmc8728205/\"\ntarget=\"_blank\">PMC8728205</a>.\n</p>\n<p>\nHinrichs AS, Raney BJ, Speir ML, Rhead B, Casper J, Karolchik D, Kuhn RM, Rosenbloom KR, Zweig AS,\nHaussler D, Kent WJ.\n<a href=\"https://academic.oup.com/bioinformatics/article/32/9/1430/1744314/\"\ntarget=\"_blank\">UCSC Data Integrator and Variant Annotation Integrator</a>.\n<em>Bioinformatics</em>. 2016 May 1;32(9):1430-2.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26740527\" target=\"_blank\">26740527</a>; PMC:\n<a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4848401/\" target=\"_blank\">PMC4848401</a>\n</p>\n",
           "itemRgb": "on",
           "longLabel": "Short Genetic Variants from European Variant Archive Release 8",
           "maxItems": "1000000",
@@ -838,7 +964,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm10-egPromoterAll",
@@ -938,7 +1071,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-egClusteredInteractionAll",
@@ -988,7 +1128,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipDomain",
@@ -1016,7 +1163,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipModif",
@@ -1044,7 +1198,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipMut",
@@ -1071,7 +1232,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipOther",
@@ -1099,7 +1267,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipStruct",
@@ -1128,7 +1303,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipRepeat",
@@ -1156,7 +1338,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-unipConflict",
@@ -1184,7 +1373,14 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm10-allGaps",
@@ -1236,7 +1432,14 @@
         }
       },
       "description": "Human ClinVar variants lifted to Mouse",
-      "category": ["Comparative Genomics"]
+      "category": ["Comparative Genomics"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-clinvarLift-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "mm10-recount3",
@@ -1279,7 +1482,17 @@
         }
       },
       "description": "recount3 SRA introns",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-recount3-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:''"
+          },
+          "mouseover": "jexl:'<b>Split read count</b>: '+get(feature,'readcount')+'<br><b>Splice donor</b>: '+get(feature,'donor')+'<br><b>Splice acceptor</b>: '+get(feature,'acceptor')+'<br><b>Intron size</b>: '+get(feature,'size')+' bp<br><b>Strand</b>: '+get(feature,'strand')"
+        }
+      ]
     },
     {
       "trackId": "mm10-refSeqFuncElems",
@@ -1306,7 +1519,14 @@
         }
       },
       "description": "NCBI RefSeq Functional Elements",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-refSeqFuncElems-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "mm10-HLTOGAannotvHg38v1",
@@ -1363,7 +1583,14 @@
         }
       },
       "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Literature"]
+      "category": ["Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-spMut-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "mm10-vistaEnhancersBb",
@@ -1390,7 +1617,14 @@
         }
       },
       "description": "VISTA Enhancers",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-vistaEnhancersBb-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'patternExpression')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1445,7 +1679,7 @@
       },
       "metadata": {
         "ucsc": {
-          "html": "<h2>Description</h2>\n\n<p>CpG islands are associated with genes, particularly housekeeping\ngenes, in vertebrates.  CpG islands are typically common near\ntranscription start sites and may be associated with promoter\nregions.  Normally a C (cytosine) base followed immediately by a \nG (guanine) base (a CpG) is rare in\nvertebrate DNA because the Cs in such an arrangement tend to be\nmethylated.  This methylation helps distinguish the newly synthesized\nDNA strand from the parent strand, which aids in the final stages of\nDNA proofreading after duplication.  However, over evolutionary time,\nmethylated Cs tend to turn into Ts because of spontaneous\ndeamination.  The result is that CpGs are relatively rare unless\nthere is selective pressure to keep them or a region is not methylated\nfor some other reason, perhaps having to do with the regulation of gene\nexpression.  CpG islands are regions where CpGs are present at\nsignificantly higher levels than is typical for the genome as a whole.</p>\n\n<p>\nThe unmasked version of the track displays potential CpG islands\nthat exist in repeat regions and would otherwise not be visible\nin the repeat masked version.\n</p>\n\n<p>\nBy default, only the masked version of the track is displayed.  To view the\nunmasked version, change the visibility settings in the track controls at\nthe top of this page.\n</p>\n\n<h2>Methods</h2>\n\n<p>CpG islands were predicted by searching the sequence one base at a\ntime, scoring each dinucleotide (+17 for CG and -1 for others) and\nidentifying maximally scoring segments.  Each segment was then\nevaluated for the following criteria:\n\n<ul>\n <li>GC content of 50% or greater</li>\n <li>length greater than 200 bp</li>\n <li>ratio greater than 0.6 of observed number of CG dinucleotides to the expected number on the \n basis of the number of Gs and Cs in the segment</li>\n</ul>\n</p>\n<p>\nThe entire genome sequence, masking areas included, was\nused for the construction of the  track <em>Unmasked CpG</em>.\nThe track <em>CpG Islands</em> is constructed on the sequence after\nall masked sequence is removed.\n</p>\n\n<p>The CpG count is the number of CG dinucleotides in the island.  \nThe Percentage CpG is the ratio of CpG nucleotide bases\n(twice the CpG count) to the length.  The ratio of observed to expected \nCpG is calculated according to the formula (cited in \nGardiner-Garden <em>et al</em>. (1987)):\n\n<pre>    Obs/Exp CpG = Number of CpG * N / (Number of C * Number of G)</pre>\n\nwhere N = length of sequence.</p>\n<p>\nThe calculation of the track data is performed by the following command sequence:\n<pre>\ntwoBitToFa <em>assembly.2bit</em> stdout | maskOutFa stdin hard stdout   \n  | cpg_lh /dev/stdin 2&gt; cpg_lh.err   \n    |  awk '{&dollar;2 = &dollar;2 - 1; width = &dollar;3 - &dollar;2;  printf(\"%s  t%d  t%s  t%s %s  t%s  t%s  t%0.0f  t%0.1f  t%s  t%s  n\", &dollar;1, &dollar;2, &dollar;3, &dollar;5, &dollar;6, width, &dollar;6, width*&dollar;7*0.01, 100.0*2*&dollar;6/width, &dollar;7, &dollar;9);}'   \n     | sort -k1,1 -k2,2n &gt; cpgIsland.bed\n</pre>\nThe <em>unmasked</em> track data is constructed from\n<em>twoBitToFa -noMask</em> output for the <em>twoBitToFa</em> command.\n</p>\n\n<h2>Data access</h2>\n<p>\nCpG islands and its associated tables can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>, the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>.\nAll the tables can also be queried directly from our public MySQL\nservers, with more information available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">help page</a> as well as on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n<p>\nThe source for the <em>cpg_lh</em> program can be obtained from\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/utils/cpgIslandExt/\" target=_blank>src/utils/cpgIslandExt/</a>.\nThe <em>cpg_lh</em> program binary can be obtained from: <a href=\"http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh\" download=\"cpg_lh\">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh</a> (choose \"save file\")\n</p>\n\n<h2>Credits</h2>\n\n<p>This track was generated using a modification of a program developed by G. Miklem and L. Hillier \n(unpublished).</p>\n\n<h2>References</h2>\n\n<p>\nGardiner-Garden M, Frommer M.\n<a href=\"https://www.sciencedirect.com/science/article/pii/0022283687906899\" target=\"_blank\">\nCpG islands in vertebrate genomes</a>.\n<em>J Mol Biol</em>. 1987 Jul 20;196(2):261-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/3656447\" target=\"_blank\">3656447</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n\n<p>CpG islands are associated with genes, particularly housekeeping\ngenes, in vertebrates.  CpG islands are typically common near\ntranscription start sites and may be associated with promoter\nregions.  Normally a C (cytosine) base followed immediately by a \nG (guanine) base (a CpG) is rare in\nvertebrate DNA because the Cs in such an arrangement tend to be\nmethylated.  This methylation helps distinguish the newly synthesized\nDNA strand from the parent strand, which aids in the final stages of\nDNA proofreading after duplication.  However, over evolutionary time,\nmethylated Cs tend to turn into Ts because of spontaneous\ndeamination.  The result is that CpGs are relatively rare unless\nthere is selective pressure to keep them or a region is not methylated\nfor some other reason, perhaps having to do with the regulation of gene\nexpression.  CpG islands are regions where CpGs are present at\nsignificantly higher levels than is typical for the genome as a whole.</p>\n\n<p>\nThe unmasked version of the track displays potential CpG islands\nthat exist in repeat regions and would otherwise not be visible\nin the repeat masked version.\n</p>\n\n<p>\nBy default, only the masked version of the track is displayed.  To view the\nunmasked version, change the visibility settings in the track controls at\nthe top of this page.\n</p>\n\n<h2>Methods</h2>\n\n<p>CpG islands were predicted by searching the sequence one base at a\ntime, scoring each dinucleotide (+17 for CG and -1 for others) and\nidentifying maximally scoring segments.  Each segment was then\nevaluated for the following criteria:\n\n<ul>\n <li>GC content of 50% or greater</li>\n <li>length greater than 200 bp</li>\n <li>ratio greater than 0.6 of observed number of CG dinucleotides to the expected number on the \n basis of the number of Gs and Cs in the segment</li>\n</ul>\n</p>\n<p>\nThe entire genome sequence, masking areas included, was\nused for the construction of the  track <em>Unmasked CpG</em>.\nThe track <em>CpG Islands</em> is constructed on the sequence after\nall masked sequence is removed.\n</p>\n\n<p>The CpG count is the number of CG dinucleotides in the island.  \nThe Percentage CpG is the ratio of CpG nucleotide bases\n(twice the CpG count) to the length.  The ratio of observed to expected \nCpG is calculated according to the formula (cited in \nGardiner-Garden <em>et al</em>. (1987)):\n\n<pre>    Obs/Exp CpG = Number of CpG * N / (Number of C * Number of G)</pre>\n\nwhere N = length of sequence.</p>\n<p>\nThe calculation of the track data is performed by the following command sequence:\n<pre>\ntwoBitToFa <em>assembly.2bit</em> stdout | maskOutFa stdin hard stdout   \n  | cpg_lh /dev/stdin 2&gt; cpg_lh.err   \n    |  awk '{&dollar;2 = &dollar;2 - 1; width = &dollar;3 - &dollar;2;  printf(\"%s  t%d  t%s  t%s %s  t%s  t%s  t%0.0f  t%0.1f  t%s  t%s  n\", &dollar;1, &dollar;2, &dollar;3, &dollar;5, &dollar;6, width, &dollar;6, width*&dollar;7*0.01, 100.0*2*&dollar;6/width, &dollar;7, &dollar;9);}'   \n     | sort -k1,1 -k2,2n &gt; cpgIsland.bed\n</pre>\nThe <em>unmasked</em> track data is constructed from\n<em>twoBitToFa -noMask</em> output for the <em>twoBitToFa</em> command.\n</p>\n\n<h2>Data access</h2>\n<p>\nCpG islands and its associated tables can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>, the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>.\nAll the tables can also be queried directly from our public MySQL\nservers, with more information available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">help page</a> as well as on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n<p>\nThe source for the <em>cpg_lh</em> program can be obtained from\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/utils/cpgIslandExt/\" target=_blank>src/utils/cpgIslandExt/</a>.\nThe <em>cpg_lh</em> program binary can be obtained from: <a href=\"http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh\" download=\"cpg_lh\">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh</a> (choose \"save file\")\n</p>\n\n<h2>Credits</h2>\n\n<p>This track was generated using a modification of a program developed by G. Micklem and L. Hillier \n(unpublished).</p>\n\n<h2>References</h2>\n\n<p>\nGardiner-Garden M, Frommer M.\n<a href=\"https://www.sciencedirect.com/science/article/pii/0022283687906899\" target=\"_blank\">\nCpG islands in vertebrate genomes</a>.\n<em>J Mol Biol</em>. 1987 Jul 20;196(2):261-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/3656447\" target=\"_blank\">3656447</a>\n</p>\n",
           "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
           "parent": "cpgIslandSuper pack",
           "priority": "1",
@@ -1475,7 +1709,7 @@
       },
       "metadata": {
         "ucsc": {
-          "html": "<h2>Description</h2>\n\n<p>CpG islands are associated with genes, particularly housekeeping\ngenes, in vertebrates.  CpG islands are typically common near\ntranscription start sites and may be associated with promoter\nregions.  Normally a C (cytosine) base followed immediately by a \nG (guanine) base (a CpG) is rare in\nvertebrate DNA because the Cs in such an arrangement tend to be\nmethylated.  This methylation helps distinguish the newly synthesized\nDNA strand from the parent strand, which aids in the final stages of\nDNA proofreading after duplication.  However, over evolutionary time,\nmethylated Cs tend to turn into Ts because of spontaneous\ndeamination.  The result is that CpGs are relatively rare unless\nthere is selective pressure to keep them or a region is not methylated\nfor some other reason, perhaps having to do with the regulation of gene\nexpression.  CpG islands are regions where CpGs are present at\nsignificantly higher levels than is typical for the genome as a whole.</p>\n\n<p>\nThe unmasked version of the track displays potential CpG islands\nthat exist in repeat regions and would otherwise not be visible\nin the repeat masked version.\n</p>\n\n<p>\nBy default, only the masked version of the track is displayed.  To view the\nunmasked version, change the visibility settings in the track controls at\nthe top of this page.\n</p>\n\n<h2>Methods</h2>\n\n<p>CpG islands were predicted by searching the sequence one base at a\ntime, scoring each dinucleotide (+17 for CG and -1 for others) and\nidentifying maximally scoring segments.  Each segment was then\nevaluated for the following criteria:\n\n<ul>\n <li>GC content of 50% or greater</li>\n <li>length greater than 200 bp</li>\n <li>ratio greater than 0.6 of observed number of CG dinucleotides to the expected number on the \n basis of the number of Gs and Cs in the segment</li>\n</ul>\n</p>\n<p>\nThe entire genome sequence, masking areas included, was\nused for the construction of the  track <em>Unmasked CpG</em>.\nThe track <em>CpG Islands</em> is constructed on the sequence after\nall masked sequence is removed.\n</p>\n\n<p>The CpG count is the number of CG dinucleotides in the island.  \nThe Percentage CpG is the ratio of CpG nucleotide bases\n(twice the CpG count) to the length.  The ratio of observed to expected \nCpG is calculated according to the formula (cited in \nGardiner-Garden <em>et al</em>. (1987)):\n\n<pre>    Obs/Exp CpG = Number of CpG * N / (Number of C * Number of G)</pre>\n\nwhere N = length of sequence.</p>\n<p>\nThe calculation of the track data is performed by the following command sequence:\n<pre>\ntwoBitToFa <em>assembly.2bit</em> stdout | maskOutFa stdin hard stdout   \n  | cpg_lh /dev/stdin 2&gt; cpg_lh.err   \n    |  awk '{&dollar;2 = &dollar;2 - 1; width = &dollar;3 - &dollar;2;  printf(\"%s  t%d  t%s  t%s %s  t%s  t%s  t%0.0f  t%0.1f  t%s  t%s  n\", &dollar;1, &dollar;2, &dollar;3, &dollar;5, &dollar;6, width, &dollar;6, width*&dollar;7*0.01, 100.0*2*&dollar;6/width, &dollar;7, &dollar;9);}'   \n     | sort -k1,1 -k2,2n &gt; cpgIsland.bed\n</pre>\nThe <em>unmasked</em> track data is constructed from\n<em>twoBitToFa -noMask</em> output for the <em>twoBitToFa</em> command.\n</p>\n\n<h2>Data access</h2>\n<p>\nCpG islands and its associated tables can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>, the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>.\nAll the tables can also be queried directly from our public MySQL\nservers, with more information available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">help page</a> as well as on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n<p>\nThe source for the <em>cpg_lh</em> program can be obtained from\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/utils/cpgIslandExt/\" target=_blank>src/utils/cpgIslandExt/</a>.\nThe <em>cpg_lh</em> program binary can be obtained from: <a href=\"http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh\" download=\"cpg_lh\">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh</a> (choose \"save file\")\n</p>\n\n<h2>Credits</h2>\n\n<p>This track was generated using a modification of a program developed by G. Miklem and L. Hillier \n(unpublished).</p>\n\n<h2>References</h2>\n\n<p>\nGardiner-Garden M, Frommer M.\n<a href=\"https://www.sciencedirect.com/science/article/pii/0022283687906899\" target=\"_blank\">\nCpG islands in vertebrate genomes</a>.\n<em>J Mol Biol</em>. 1987 Jul 20;196(2):261-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/3656447\" target=\"_blank\">3656447</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n\n<p>CpG islands are associated with genes, particularly housekeeping\ngenes, in vertebrates.  CpG islands are typically common near\ntranscription start sites and may be associated with promoter\nregions.  Normally a C (cytosine) base followed immediately by a \nG (guanine) base (a CpG) is rare in\nvertebrate DNA because the Cs in such an arrangement tend to be\nmethylated.  This methylation helps distinguish the newly synthesized\nDNA strand from the parent strand, which aids in the final stages of\nDNA proofreading after duplication.  However, over evolutionary time,\nmethylated Cs tend to turn into Ts because of spontaneous\ndeamination.  The result is that CpGs are relatively rare unless\nthere is selective pressure to keep them or a region is not methylated\nfor some other reason, perhaps having to do with the regulation of gene\nexpression.  CpG islands are regions where CpGs are present at\nsignificantly higher levels than is typical for the genome as a whole.</p>\n\n<p>\nThe unmasked version of the track displays potential CpG islands\nthat exist in repeat regions and would otherwise not be visible\nin the repeat masked version.\n</p>\n\n<p>\nBy default, only the masked version of the track is displayed.  To view the\nunmasked version, change the visibility settings in the track controls at\nthe top of this page.\n</p>\n\n<h2>Methods</h2>\n\n<p>CpG islands were predicted by searching the sequence one base at a\ntime, scoring each dinucleotide (+17 for CG and -1 for others) and\nidentifying maximally scoring segments.  Each segment was then\nevaluated for the following criteria:\n\n<ul>\n <li>GC content of 50% or greater</li>\n <li>length greater than 200 bp</li>\n <li>ratio greater than 0.6 of observed number of CG dinucleotides to the expected number on the \n basis of the number of Gs and Cs in the segment</li>\n</ul>\n</p>\n<p>\nThe entire genome sequence, masking areas included, was\nused for the construction of the  track <em>Unmasked CpG</em>.\nThe track <em>CpG Islands</em> is constructed on the sequence after\nall masked sequence is removed.\n</p>\n\n<p>The CpG count is the number of CG dinucleotides in the island.  \nThe Percentage CpG is the ratio of CpG nucleotide bases\n(twice the CpG count) to the length.  The ratio of observed to expected \nCpG is calculated according to the formula (cited in \nGardiner-Garden <em>et al</em>. (1987)):\n\n<pre>    Obs/Exp CpG = Number of CpG * N / (Number of C * Number of G)</pre>\n\nwhere N = length of sequence.</p>\n<p>\nThe calculation of the track data is performed by the following command sequence:\n<pre>\ntwoBitToFa <em>assembly.2bit</em> stdout | maskOutFa stdin hard stdout   \n  | cpg_lh /dev/stdin 2&gt; cpg_lh.err   \n    |  awk '{&dollar;2 = &dollar;2 - 1; width = &dollar;3 - &dollar;2;  printf(\"%s  t%d  t%s  t%s %s  t%s  t%s  t%0.0f  t%0.1f  t%s  t%s  n\", &dollar;1, &dollar;2, &dollar;3, &dollar;5, &dollar;6, width, &dollar;6, width*&dollar;7*0.01, 100.0*2*&dollar;6/width, &dollar;7, &dollar;9);}'   \n     | sort -k1,1 -k2,2n &gt; cpgIsland.bed\n</pre>\nThe <em>unmasked</em> track data is constructed from\n<em>twoBitToFa -noMask</em> output for the <em>twoBitToFa</em> command.\n</p>\n\n<h2>Data access</h2>\n<p>\nCpG islands and its associated tables can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>, the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>.\nAll the tables can also be queried directly from our public MySQL\nservers, with more information available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">help page</a> as well as on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n<p>\nThe source for the <em>cpg_lh</em> program can be obtained from\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/utils/cpgIslandExt/\" target=_blank>src/utils/cpgIslandExt/</a>.\nThe <em>cpg_lh</em> program binary can be obtained from: <a href=\"http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh\" download=\"cpg_lh\">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/cpg_lh</a> (choose \"save file\")\n</p>\n\n<h2>Credits</h2>\n\n<p>This track was generated using a modification of a program developed by G. Micklem and L. Hillier \n(unpublished).</p>\n\n<h2>References</h2>\n\n<p>\nGardiner-Garden M, Frommer M.\n<a href=\"https://www.sciencedirect.com/science/article/pii/0022283687906899\" target=\"_blank\">\nCpG islands in vertebrate genomes</a>.\n<em>J Mol Biol</em>. 1987 Jul 20;196(2):261-82.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/3656447\" target=\"_blank\">3656447</a>\n</p>\n",
           "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
           "parent": "cpgIslandSuper hide",
           "priority": "2",
@@ -2489,6 +2723,24 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "mm10-mm10",
+      "name": "mm10",
+      "assemblyNames": ["mm10"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm10.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "mm10.gff.gz.csi"
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "mm10-ncbiRefSeq",
       "name": "NCBI RefSeq - RefSeq All",
       "assemblyNames": ["mm10"],
@@ -2725,6 +2977,27 @@
       },
       "description": "Non-Mouse RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm10-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm10.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mm10.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["mm10"]
     },
     {
       "type": "SyntenyTrack",
@@ -6358,27 +6631,6 @@
           "indexType": "CSI"
         }
       }
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm10-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "mm10.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "mm10.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["mm10"]
     }
   ],
   "aggregateTextSearchAdapters": [

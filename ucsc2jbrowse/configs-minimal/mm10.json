@@ -25,7 +25,8 @@
           "accession": "mm10",
           "commonName": "Mouse",
           "jbrowseConfig": "https://jbrowse.org/ucsc/mm10/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm10/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm10/minimal.json",
+          "blatDb": "mm10"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +79,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm10-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm10-ncbiRefSeqGenomicDiff",

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "mpxvRivers",
           "ucsc": {
             "genome": "mpxvRivers",
             "taxId": "10244",
@@ -65,7 +66,14 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/viralzoneGenes/viralzone.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mpxvRivers-viralzoneGenes-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'stage')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -208,7 +216,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mpxvRivers-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

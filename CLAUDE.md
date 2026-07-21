@@ -36,18 +36,18 @@ and re-upload the configs.
 
 ## UCSC hubs vs GenArk aliases (two-flavor configs)
 
-The UCSC genome list is fetched **live** from `api.genome.ucsc.edu/list/ucscGenomes`
-on every `ucsc2jbrowse/make.sh` run, so new UCSC assemblies can appear (and break
-the pipeline) without any repo change.
+The UCSC genome list is fetched **live** from
+`api.genome.ucsc.edu/list/ucscGenomes` on every `ucsc2jbrowse/make.sh` run, so
+new UCSC assemblies can appear (and break the pipeline) without any repo change.
 
 Hub-backed entries (`nibPath` starts with `hub:`) come in two shapes, and
-`generateJBrowseConfigForAssemblyHub.sh` derives the `hub.txt` URL from `nibPath`,
-not the assembly name:
+`generateJBrowseConfigForAssemblyHub.sh` derives the `hub.txt` URL from
+`nibPath`, not the assembly name:
 
 - native UCSC assembly hub (e.g. `hs1`, `mpxvRivers`): `hub:/gbdb/<db>/hubs` →
   `/gbdb/<db>/hubs/public/hub.txt`
-- **GenArk-backed alias** (e.g. `rn8` = GRCr8): `hub:/gbdb/genark/<GC[AF] path>` →
-  `/hubs/<GC[AF] path>/hub.txt` (served from `/hubs/`, not `/gbdb/genark/`)
+- **GenArk-backed alias** (e.g. `rn8` = GRCr8): `hub:/gbdb/genark/<GC[AF] path>`
+  → `/hubs/<GC[AF] path>/hub.txt` (served from `/hubs/`, not `/gbdb/genark/`)
 
 A UCSC assembly and a GenArk assembly can be the **same biological genome** and
 both get a full config — this is intentional, not a bug. `buildUcscMapping`
