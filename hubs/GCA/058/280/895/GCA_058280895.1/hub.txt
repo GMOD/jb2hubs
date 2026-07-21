@@ -1,0 +1,170 @@
+hub GCA_058280895.1 genome assembly
+shortLabel human (iPSC primary hap 2026)
+longLabel human (iPSC primary hap 2026)/Homo sapiens/GCA_058280895.1_KOLF2.1Jv1.1.pri genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_058280895.1_KOLF2.1Jv1.1.pri.description.html
+
+genome GCA_058280895.1
+taxId 9606
+groups groups.txt
+description human (iPSC primary hap 2026)
+twoBitPath GCA_058280895.1.2bit
+twoBitBptUrl GCA_058280895.1.2bit.bpt
+chromSizes GCA_058280895.1.chrom.sizes.txt
+chromAliasBb GCA_058280895.1.chromAlias.bb
+chromAuthority ucsc
+organism KOLF2.1Jv1.1.pri Jun. 2026
+defaultPos CM177805.1:82697402-82707402
+scientificName Homo sapiens
+htmlPath html/GCA_058280895.1_KOLF2.1Jv1.1.pri.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/058/280/895/GCA_058280895.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/058/280/895/GCA_058280895.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/058/280/895/GCA_058280895.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.assembly.bb
+type bigBed 6
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.assembly
+searchIndex name
+searchTrix ixIxx/GCA_058280895.1_KOLF2.1Jv1.1.pri.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.gc5Base.bw
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.rmsk.bb
+xrefDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.simpleRepeat.bb
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.windowMasker.bb
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.allGaps.bb
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.augustus.bb
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_058280895.1_KOLF2.1Jv1.1.pri.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_058280895.1_KOLF2.1Jv1.1.pri.xenoRefGene.ix
+html html/GCA_058280895.1_KOLF2.1Jv1.1.pri.xenoRefGene
+
