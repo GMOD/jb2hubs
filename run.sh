@@ -17,7 +17,7 @@
 #                           # same production S3 data via absolute URLs.
 #
 
-set -e
+set -euo pipefail
 export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -59,6 +59,10 @@ for arg in "$@"; do
     echo "                   Skips S3 data upload and git commit/push; the"
     echo "                   staging site reads the same production S3 data."
     echo "  --help, -h       Show this help message"
+    echo ""
+    echo "Env vars (see common.sh):"
+    echo "  REPROCESS=1      Re-derive from cached downloads (implied by --reprocess-all)"
+    echo "  FETCH_UPDATES=1  Re-pull upstream NCBI GFFs in both pipelines"
     exit 0
     ;;
   *)
@@ -77,6 +81,12 @@ fi
 
 if [ "$STAGING" = true ] && [ "$DRY_RUN" = true ]; then
   echo "Error: --staging deploys the website, so it cannot be used with --dry-run"
+  exit 1
+fi
+
+# --upload-only skips the build, so --reprocess-all would silently do nothing.
+if [ "$UPLOAD_ONLY" = true ] && [ "$REPROCESS_ALL" = true ]; then
+  echo "Error: --upload-only skips the build, so it cannot be combined with --reprocess-all"
   exit 1
 fi
 
@@ -187,7 +197,15 @@ elif [ "$DRY_RUN" = false ]; then
   describe() { [ "$1" = 1 ] && echo "changed" || echo "unchanged"; }
   echo "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED"
 
-  git add .
+  # Scope the commit to pipeline-generated paths so stray edits in the working
+  # tree don't ride along to origin. hubs/ was committed above.
+  git add -A -- \
+    genark2jbrowse/hubs genark2jbrowse/taxon_images \
+    genark2jbrowse/processedHubJson genark2jbrowse/speciesDescriptions \
+    ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal \
+    ucsc2jbrowse/blockedFiles ucsc2jbrowse/removedTracks \
+    ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
+    ucsc2jbrowse/fileListing.txt website/src/*.json
   git commit -m "Updates" || echo "No additional changes to commit"
   git push
 
