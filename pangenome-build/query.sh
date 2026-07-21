@@ -18,7 +18,7 @@ ID="${2:?missing locus id}"
 REGION="${3:?missing region, e.g. GRCm39#1#NC_000083.7:33000000-34000000}"
 MERGE="${4:-10000}"
 OUT="${5:-$(dirname "$PAF")}"
-PAN="$(dirname "$PAF")/panel.pansn.fa"
+PAN="$(dirname "$PAF")/panel.major.pansn.fa"
 INDEX="${PAF%.paf}.impg"
 
 for tool in impg samtools abpoa; do

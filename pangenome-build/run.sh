@@ -20,6 +20,10 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+# Prepend local shims (pggb, wfmash, impg via singularity) to PATH.
+export PATH="$(pwd)/bin:$PATH"
+export PGGB_SANDBOX="${PGGB_SANDBOX:-$HOME/pggb_sandbox}"
+
 PANEL="${PANEL:-mouse-strains.tsv}"
 LOCI="${LOCI:-mouse-loci.tsv}"
 OUT="${OUT:-build}"
@@ -36,7 +40,9 @@ for arg in "$@"; do
 done
 
 command -v datasets >/dev/null ||
-  { echo "ERROR: tools missing. Run ./setup-env.sh && conda activate." >&2; exit 1; }
+  { echo "ERROR: 'datasets' not on PATH. Install ncbi-datasets-cli (conda/mamba or https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)." >&2; exit 1; }
+[[ -d "$PGGB_SANDBOX" ]] ||
+  { echo "ERROR: pggb sandbox not found at $PGGB_SANDBOX. Run ./setup-env.sh first." >&2; exit 1; }
 
 # 1-3. Download + PanSN concat + all-vs-all align + impg index.
 ./build.sh "$PANEL" "$OUT" "$THREADS"
