@@ -2,3 +2,10 @@
 # Suppresses SC1090 ("can't follow non-constant source") for patterns like:
 #   source "$(dirname "$0")/common.sh"
 source-path=SCRIPTDIR
+
+# We intentionally rely on word splitting for option-string variables such as
+# PARALLEL_OPTS ("--will-cite --bar") and WFMASH_PARAMS ("-s 10000 -p 95 ...").
+# Quoting them, as SC2086 suggests, would pass the whole string as a single
+# argument and break every call site. Arrays aren't an option either: these are
+# exported to child scripts, and bash cannot export arrays.
+disable=SC2086
