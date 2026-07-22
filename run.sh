@@ -187,7 +187,7 @@ elif [ "$DRY_RUN" = false ]; then
     ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal \
     ucsc2jbrowse/blockedFiles ucsc2jbrowse/removedTracks \
     ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
-    ucsc2jbrowse/fileListing.txt website/src/*.json
+    ucsc2jbrowse/fileListing.txt 'website/src/*.json'
   git commit -m "Updates" || echo "No additional changes to commit"
   git push
 
