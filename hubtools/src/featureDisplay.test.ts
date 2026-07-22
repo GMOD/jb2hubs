@@ -9,8 +9,15 @@ import {
 describe('mouseOverTemplateToJexl', () => {
   it('converts $field and ${field} tokens', () => {
     assert.equal(
-      mouseOverTemplateToJexl('<b>Pos</b>: $chrom:${chromStart}-${chromEnd}'),
-      "jexl:`<b>Pos</b>: ${get(feature,'chrom')}:${get(feature,'chromStart')}-${get(feature,'chromEnd')}`",
+      mouseOverTemplateToJexl('<b>Pos</b>: ${AF} $ref'),
+      "jexl:`<b>Pos</b>: ${get(feature,'AF')} ${get(feature,'ref')}`",
+    )
+  })
+
+  it('renames the standard BED columns to the adapter feature fields', () => {
+    assert.equal(
+      mouseOverTemplateToJexl('$chrom:${chromStart}-${chromEnd}'),
+      "jexl:`${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}`",
     )
   })
 

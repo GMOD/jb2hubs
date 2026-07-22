@@ -27,6 +27,20 @@ function escapeTemplateStatic(s: string) {
     .replace(/\$/g, '\\$&')
 }
 
+// The BED/BigBed adapter consumes the three standard positional columns and
+// re-emits them under JBrowse names, so a template referencing the UCSC names
+// resolves to nothing (the "undefined:undefined-undefined" tooltips). Extra
+// autoSql columns keep their own names and need no mapping.
+const featureFieldRenames: Record<string, string> = {
+  chrom: 'refName',
+  chromStart: 'start',
+  chromEnd: 'end',
+}
+
+export function toFeatureField(field: string) {
+  return featureFieldRenames[field] ?? field
+}
+
 // Converts a UCSC trackDb `mouseOver` template (e.g. "<b>AF</b>: ${AF} ($ref)")
 // into a jexl template literal, mapping both $field and ${field} to
 // ${get(feature,'field')}. A jexl template literal renders a missing/null field
@@ -38,7 +52,7 @@ export function mouseOverTemplateToJexl(template: string) {
   for (const m of template.matchAll(/\$\{(\w+)\}|\$(\w+)/g)) {
     const idx = m.index
     out += escapeTemplateStatic(template.slice(last, idx))
-    out += `\${get(feature,'${m[1] ?? m[2]!}')}`
+    out += `\${get(feature,'${toFeatureField(m[1] ?? m[2]!)}')}`
     last = idx + m[0].length
   }
   out += escapeTemplateStatic(template.slice(last))
@@ -57,7 +71,7 @@ export function getUcscFeatureDisplay(
           name:
             labelField === 'none'
               ? "jexl:''"
-              : `jexl:get(feature,'${labelField}')`,
+              : `jexl:get(feature,'${toFeatureField(labelField)}')`,
         }
       : undefined
 
@@ -69,7 +83,7 @@ export function getUcscFeatureDisplay(
       : undefined
   const mouseoverField =
     typeof ucsc.mouseOverField === 'string'
-      ? `jexl:get(feature,'${ucsc.mouseOverField}')`
+      ? `jexl:get(feature,'${toFeatureField(ucsc.mouseOverField)}')`
       : undefined
   const mouseover = mouseoverTemplate ?? mouseoverField
 
