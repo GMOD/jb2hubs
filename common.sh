@@ -156,6 +156,12 @@ export -f upload_if_changed
 #
 # Extra args are passed only to the data phase (e.g. --exclude rules). Verbose
 # rclone output goes to stderr; the changed-object count is printed to stdout.
+#
+# --checkers is deliberately low: the hasher source lives on a single spinning
+# HDD, so many concurrent hashers just thrash the disk head on random seeks and
+# collapse aggregate read throughput. Fewer parallel readers keeps the re-hash
+# pass closer to sequential and faster. --fast-list does one recursive S3
+# listing instead of many paginated LISTs across the deep object tree.
 # Usage: changed=$(rclone_sync_with_indexes <src> <dest> [extra rclone args...])
 rclone_sync_with_indexes() {
   local src="$1" dest="$2"
@@ -168,14 +174,14 @@ rclone_sync_with_indexes() {
   rclone sync -c -v \
     --exclude "*.csi" --exclude "*.tbi" "$@" \
     "$src" "$dest" \
-    --s3-storage-class INTELLIGENT_TIERING --checkers 20 2>&1 | tee "$data_log" >&2
+    --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$data_log" >&2
 
   echo "Syncing tabix/CSI indexes (Cache-Control: no-cache)..." >&2
   rclone sync -c -v \
     --include "*.csi" --include "*.tbi" \
     --header-upload "Cache-Control: no-cache" \
     "$src" "$dest" \
-    --s3-storage-class INTELLIGENT_TIERING --checkers 20 2>&1 | tee "$idx_log" >&2
+    --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$idx_log" >&2
 
   local changed=$(($(count_rclone_changes "$data_log") + $(count_rclone_changes "$idx_log")))
   rm -f "$data_log" "$idx_log"
