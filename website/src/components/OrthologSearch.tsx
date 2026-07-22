@@ -196,43 +196,25 @@ export default function OrthologSearch() {
             ))}
           </datalist>
         </div>
-        <div className="orthologs-field">
-          <span
-            className="orthologs-label orthologs-label--hidden"
-            aria-hidden="true"
-          >
-            Search
-          </span>
-          <button
-            onClick={() => {
-              void runSearch(geneInput, refInput)
-            }}
-            disabled={
-              !store || loading || !geneInput.trim() || !refInput.trim()
-            }
-            className="orthologs-search-btn"
-          >
-            {loading ? 'Searching…' : 'Search'}
-          </button>
-        </div>
-        <div className="orthologs-field">
-          <span
-            className="orthologs-label orthologs-label--hidden"
-            aria-hidden="true"
-          >
-            Help
-          </span>
-          <button
-            onClick={() => {
-              setHelpOpen(true)
-            }}
-            className="orthologs-help-btn"
-            title="How this search works"
-            aria-label="How this search works"
-          >
-            ?
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            void runSearch(geneInput, refInput)
+          }}
+          disabled={!store || loading || !geneInput.trim() || !refInput.trim()}
+          className="orthologs-search-btn"
+        >
+          {loading ? 'Searching…' : 'Search'}
+        </button>
+        <button
+          onClick={() => {
+            setHelpOpen(true)
+          }}
+          className="orthologs-help-btn"
+          title="How this search works"
+          aria-label="How this search works"
+        >
+          ?
+        </button>
       </div>
 
       {helpOpen && (
