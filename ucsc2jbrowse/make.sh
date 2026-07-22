@@ -263,6 +263,9 @@ fi
 log "Download and add GENCODE tracks"
 ./downloadGencode.sh
 
+log "Ensuring UCSC db names are aliased on GenArk-backed hub assemblies..."
+node src/ensureUcscAssemblyNames.ts "$UCSC_BUILT_DIR"
+
 log "Ensuring text search adapters are present for all assemblies with trix files..."
 node src/ensureTextSearchAdapters.ts "$UCSC_BUILT_DIR"
 

@@ -47,22 +47,38 @@ interface DefaultSession {
 }
 
 interface Config {
-  assemblies?: unknown[]
-  tracks?: unknown[]
+  assemblies?: { name?: string }[]
+  tracks?: { trackId?: string }[]
   defaultSession?: DefaultSession
   [key: string]: unknown
 }
 
-// Hardcoded track mappings for specific assemblies
-const HARDCODED_TRACKS: Record<string, string> = {
-  hg19: 'hg19-ncbiRefSeq',
-  hg38: 'hg38-ncbiRefSeq',
-  hs1: 'hs1-ncbiRefSeq',
-}
-
-function generateDefaultSession(genome: UcscGenome): DefaultSession {
+// The assembly name in the config is not always the UCSC db name: GenArk-backed
+// UCSC aliases (e.g. rn8, Fca126_mat1.0) get their assembly and track IDs named
+// after the GenArk accession by generateJBrowseConfigForAssemblyHub. A
+// defaultSession pointing at the db name would then reference an assembly that
+// does not exist in the config, which makes the hubs plugin fire its
+// Core-handleUnrecognizedAssembly handler and load the very same config again
+// as a connection, duplicating every track.
+function generateDefaultSession(
+  genome: UcscGenome,
+  config: Config,
+): DefaultSession {
   const assemblyId = genome.id
-  const trackId = HARDCODED_TRACKS[assemblyId] ?? `${assemblyId}-ncbiRefSeq`
+  const assemblyName = config.assemblies?.[0]?.name ?? assemblyId
+  const trackIds = new Set(
+    config.tracks?.map(t => t.trackId).filter(t => t !== undefined),
+  )
+  const candidates = [
+    `${assemblyName}-ncbiRefSeq`,
+    `${assemblyName}-ncbiRefSeqCurated`,
+    `${assemblyName}-ncbiGene`,
+    `${assemblyName}-refGene`,
+    `${assemblyName}-ensGene`,
+    `${assemblyName}-augustus`,
+    `${assemblyName}-xenoRefGene`,
+  ]
+  const trackId = candidates.find(t => trackIds.has(t))
 
   return {
     name: `${assemblyId} ${genome.description}`,
@@ -72,8 +88,8 @@ function generateDefaultSession(genome: UcscGenome): DefaultSession {
         type: 'LinearGenomeView',
         init: {
           loc: genome.defaultPos,
-          assembly: assemblyId,
-          tracks: [trackId],
+          assembly: assemblyName,
+          tracks: trackId ? [trackId] : [],
         },
       },
     ],
@@ -119,9 +135,7 @@ function main() {
 
     try {
       const config: Config = JSON.parse(fs.readFileSync(configPath, 'utf-8'))
-      const defaultSession = generateDefaultSession(genome)
-
-      config.defaultSession = defaultSession
+      config.defaultSession = generateDefaultSession(genome, config)
 
       fs.writeFileSync(configPath, JSON.stringify(config, null, 2))
       updated++
