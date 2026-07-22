@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_029215685.1",
           "ucsc": {
             "genome": "GCF_029215685.1",
             "taxId": "94852",
@@ -303,8 +304,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029215685.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -335,8 +346,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029215685.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -365,7 +386,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029215685.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -549,7 +579,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/bbi/GCF_029215685.1_rPitCat1.0.hap2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029215685.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_029215685.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCF_029215685.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/215/685/GCF_029215685.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     },
     {

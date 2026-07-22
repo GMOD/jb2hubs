@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000467125.1",
           "ucsc": {
             "genome": "GCF_000467125.1",
             "taxId": "1219065",
@@ -37,6 +38,57 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/467/125/GCF_000467125.1/GCF_000467125.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BATJ01000017.1": 11,
+        "NZ_BATJ01000002.1": 11,
+        "NZ_BATJ01000049.1": 11,
+        "NZ_BATJ01000023.1": 11,
+        "NZ_BATJ01000040.1": 11,
+        "NZ_BATJ01000007.1": 11,
+        "NZ_BATJ01000028.1": 11,
+        "NZ_BATJ01000013.1": 11,
+        "NZ_BATJ01000045.1": 11,
+        "NZ_BATJ01000034.1": 11,
+        "NZ_BATJ01000003.1": 11,
+        "NZ_BATJ01000018.1": 11,
+        "NZ_BATJ01000039.1": 11,
+        "NZ_BATJ01000024.1": 11,
+        "NZ_BATJ01000041.1": 11,
+        "NZ_BATJ01000030.1": 11,
+        "NZ_BATJ01000008.1": 11,
+        "NZ_BATJ01000029.1": 11,
+        "NZ_BATJ01000014.1": 11,
+        "NZ_BATJ01000046.1": 11,
+        "NZ_BATJ01000035.1": 11,
+        "NZ_BATJ01000020.1": 11,
+        "NZ_BATJ01000019.1": 11,
+        "NZ_BATJ01000004.1": 11,
+        "NZ_BATJ01000010.1": 11,
+        "NZ_BATJ01000025.1": 11,
+        "NZ_BATJ01000042.1": 11,
+        "NZ_BATJ01000031.1": 11,
+        "NZ_BATJ01000009.1": 11,
+        "NZ_BATJ01000015.1": 11,
+        "NZ_BATJ01000047.1": 11,
+        "NZ_BATJ01000036.1": 11,
+        "NZ_BATJ01000021.1": 11,
+        "NZ_BATJ01000005.1": 11,
+        "NZ_BATJ01000026.1": 11,
+        "NZ_BATJ01000011.1": 11,
+        "NZ_BATJ01000043.1": 11,
+        "NZ_BATJ01000032.1": 11,
+        "NZ_BATJ01000016.1": 11,
+        "NZ_BATJ01000001.1": 11,
+        "NZ_BATJ01000048.1": 11,
+        "NZ_BATJ01000037.1": 11,
+        "NZ_BATJ01000022.1": 11,
+        "NZ_BATJ01000006.1": 11,
+        "NZ_BATJ01000027.1": 11,
+        "NZ_BATJ01000012.1": 11,
+        "NZ_BATJ01000044.1": 11,
+        "NZ_BATJ01000033.1": 11,
+        "NZ_BATJ01000050.1": 11
       }
     }
   ],
@@ -204,8 +256,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/467/125/GCF_000467125.1/bbi/GCF_000467125.1_ASM46712v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/467/125/GCF_000467125.1/bbi/GCF_000467125.1_ASM46712v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000467125.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

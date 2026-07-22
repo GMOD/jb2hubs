@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900698925.1",
           "ucsc": {
             "genome": "GCF_900698925.1",
             "taxId": "1922217",
@@ -38,6 +39,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/698/925/GCF_900698925.1/GCF_900698925.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LR217713.1": 11,
+        "NZ_LR217714.1": 11
       }
     }
   ],
@@ -182,8 +187,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/698/925/GCF_900698925.1/bbi/GCF_900698925.1_ErCicurvipes_v1.0.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/698/925/GCF_900698925.1/bbi/GCF_900698925.1_ErCicurvipes_v1.0.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900698925.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

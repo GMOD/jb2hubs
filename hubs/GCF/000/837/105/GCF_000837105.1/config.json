@@ -2,15 +2,16 @@
   "assemblies": [
     {
       "name": "GCF_000837105.1",
-      "displayName": "Tomato mottle virus (Florida 2000)",
+      "displayName": "Tomato mottle virus (Florida 2000 refseq)",
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000837105.1",
           "ucsc": {
             "genome": "GCF_000837105.1",
             "taxId": "10835",
             "groups": "groups.txt",
-            "description": "Tomato mottle virus (Florida 2000)",
+            "description": "Tomato mottle virus (Florida 2000 refseq)",
             "twoBitPath": "GCF_000837105.1.2bit",
             "twoBitBptUrl": "GCF_000837105.1.2bit.bpt",
             "chromSizes": "GCF_000837105.1.chrom.sizes.txt",
@@ -157,8 +158,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/837/105/GCF_000837105.1/bbi/GCF_000837105.1_ViralMultiSegProj14079.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/837/105/GCF_000837105.1/bbi/GCF_000837105.1_ViralMultiSegProj14079.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000837105.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

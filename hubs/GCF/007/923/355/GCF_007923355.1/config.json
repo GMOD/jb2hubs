@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_007923355.1",
           "ucsc": {
             "genome": "GCF_007923355.1",
             "taxId": "1492905",
@@ -37,6 +38,70 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/007/923/355/GCF_007923355.1/GCF_007923355.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VOGO01000017.1": 11,
+        "NZ_VOGO01000006.1": 11,
+        "NZ_VOGO01000038.1": 11,
+        "NZ_VOGO01000023.1": 11,
+        "NZ_VOGO01000059.1": 11,
+        "NZ_VOGO01000044.1": 11,
+        "NZ_VOGO01000050.1": 11,
+        "NZ_VOGO01000028.1": 11,
+        "NZ_VOGO01000013.1": 11,
+        "NZ_VOGO01000002.1": 11,
+        "NZ_VOGO01000049.1": 11,
+        "NZ_VOGO01000034.1": 11,
+        "NZ_VOGO01000055.1": 11,
+        "NZ_VOGO01000040.1": 11,
+        "NZ_VOGO01000018.1": 11,
+        "NZ_VOGO01000007.1": 11,
+        "NZ_VOGO01000039.1": 11,
+        "NZ_VOGO01000024.1": 11,
+        "NZ_VOGO01000045.1": 11,
+        "NZ_VOGO01000030.1": 11,
+        "NZ_VOGO01000051.1": 11,
+        "NZ_VOGO01000029.1": 11,
+        "NZ_VOGO01000014.1": 11,
+        "NZ_VOGO01000003.1": 11,
+        "NZ_VOGO01000035.1": 11,
+        "NZ_VOGO01000020.1": 11,
+        "NZ_VOGO01000056.1": 11,
+        "NZ_VOGO01000041.1": 11,
+        "NZ_VOGO01000062.1": 11,
+        "NZ_VOGO01000019.1": 11,
+        "NZ_VOGO01000008.1": 11,
+        "NZ_VOGO01000025.1": 11,
+        "NZ_VOGO01000010.1": 11,
+        "NZ_VOGO01000046.1": 11,
+        "NZ_VOGO01000031.1": 11,
+        "NZ_VOGO01000015.1": 11,
+        "NZ_VOGO01000004.1": 11,
+        "NZ_VOGO01000036.1": 11,
+        "NZ_VOGO01000021.1": 11,
+        "NZ_VOGO01000057.1": 11,
+        "NZ_VOGO01000042.1": 11,
+        "NZ_VOGO01000063.1": 11,
+        "NZ_VOGO01000009.1": 11,
+        "NZ_VOGO01000026.1": 11,
+        "NZ_VOGO01000011.1": 11,
+        "NZ_VOGO01000047.1": 11,
+        "NZ_VOGO01000032.1": 11,
+        "NZ_VOGO01000053.1": 11,
+        "NZ_VOGO01000016.1": 11,
+        "NZ_VOGO01000005.1": 11,
+        "NZ_VOGO01000037.1": 11,
+        "NZ_VOGO01000022.1": 11,
+        "NZ_VOGO01000058.1": 11,
+        "NZ_VOGO01000043.1": 11,
+        "NZ_VOGO01000064.1": 11,
+        "NZ_VOGO01000027.1": 11,
+        "NZ_VOGO01000012.1": 11,
+        "NZ_VOGO01000001.1": 11,
+        "NZ_VOGO01000048.1": 11,
+        "NZ_VOGO01000033.1": 11,
+        "NZ_VOGO01000054.1": 11,
+        "NZ_VOGO01000060.1": 11
       }
     }
   ],
@@ -204,8 +269,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/007/923/355/GCF_007923355.1/bbi/GCF_007923355.1_ASM792335v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/007/923/355/GCF_007923355.1/bbi/GCF_007923355.1_ASM792335v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_007923355.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

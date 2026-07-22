@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_963930665.1",
           "ucsc": {
             "genome": "GCA_963930665.1",
             "taxId": "9886",
@@ -349,8 +350,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/963/930/665/GCA_963930665.1/bbi/GCA_963930665.1_mMunRee1.1_alternate_haplotype.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/963/930/665/GCA_963930665.1/bbi/GCA_963930665.1_mMunRee1.1_alternate_haplotype.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_963930665.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

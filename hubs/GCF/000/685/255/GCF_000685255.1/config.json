@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000685255.1",
           "ucsc": {
             "genome": "GCF_000685255.1",
             "taxId": "1280951",
@@ -37,6 +38,45 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/685/255/GCF_000685255.1/GCF_000685255.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_ARYI01000030.1": 11,
+        "NZ_ARYI01000023.1": 11,
+        "NZ_ARYI01000016.1": 11,
+        "NZ_ARYI01000009.1": 11,
+        "NZ_ARYI01000038.1": 11,
+        "NZ_ARYI01000011.1": 11,
+        "NZ_ARYI01000004.1": 11,
+        "NZ_ARYI01000033.1": 11,
+        "NZ_ARYI01000026.1": 11,
+        "NZ_ARYI01000019.1": 11,
+        "NZ_ARYI01000021.1": 11,
+        "NZ_ARYI01000014.1": 11,
+        "NZ_ARYI01000007.1": 11,
+        "NZ_ARYI01000036.1": 11,
+        "NZ_ARYI01000029.1": 11,
+        "NZ_ARYI01000002.1": 11,
+        "NZ_ARYI01000031.1": 11,
+        "NZ_ARYI01000024.1": 11,
+        "NZ_ARYI01000017.1": 11,
+        "NZ_ARYI01000012.1": 11,
+        "NZ_ARYI01000005.1": 11,
+        "NZ_ARYI01000034.1": 11,
+        "NZ_ARYI01000027.1": 11,
+        "NZ_ARYI01000022.1": 11,
+        "NZ_ARYI01000015.1": 11,
+        "NZ_ARYI01000008.1": 11,
+        "NZ_ARYI01000037.1": 11,
+        "NZ_ARYI01000010.1": 11,
+        "NZ_ARYI01000003.1": 11,
+        "NZ_ARYI01000032.1": 11,
+        "NZ_ARYI01000025.1": 11,
+        "NZ_ARYI01000018.1": 11,
+        "NZ_ARYI01000020.1": 11,
+        "NZ_ARYI01000013.1": 11,
+        "NZ_ARYI01000006.1": 11,
+        "NZ_ARYI01000028.1": 11,
+        "NZ_ARYI01000001.1": 11
       }
     }
   ],
@@ -204,8 +244,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/685/255/GCF_000685255.1/bbi/GCF_000685255.1_SOAPdenovo_v1.05.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/685/255/GCF_000685255.1/bbi/GCF_000685255.1_SOAPdenovo_v1.05.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000685255.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_023283885.1",
           "ucsc": {
             "genome": "GCF_023283885.1",
             "taxId": "472183",
@@ -37,6 +38,59 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/283/885/GCF_023283885.1/GCF_023283885.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAKILA010000043.1": 11,
+        "NZ_JAKILA010000027.1": 11,
+        "NZ_JAKILA010000012.1": 11,
+        "NZ_JAKILA010000001.1": 11,
+        "NZ_JAKILA010000048.1": 11,
+        "NZ_JAKILA010000033.1": 11,
+        "NZ_JAKILA010000054.1": 11,
+        "NZ_JAKILA010000017.1": 11,
+        "NZ_JAKILA010000006.1": 11,
+        "NZ_JAKILA010000038.1": 11,
+        "NZ_JAKILA010000023.1": 11,
+        "NZ_JAKILA010000044.1": 11,
+        "NZ_JAKILA010000050.1": 11,
+        "NZ_JAKILA010000028.1": 11,
+        "NZ_JAKILA010000013.1": 11,
+        "NZ_JAKILA010000002.1": 11,
+        "NZ_JAKILA010000049.1": 11,
+        "NZ_JAKILA010000034.1": 11,
+        "NZ_JAKILA010000055.1": 11,
+        "NZ_JAKILA010000040.1": 11,
+        "NZ_JAKILA010000018.1": 11,
+        "NZ_JAKILA010000007.1": 11,
+        "NZ_JAKILA010000039.1": 11,
+        "NZ_JAKILA010000024.1": 11,
+        "NZ_JAKILA010000030.1": 11,
+        "NZ_JAKILA010000029.1": 11,
+        "NZ_JAKILA010000014.1": 11,
+        "NZ_JAKILA010000003.1": 11,
+        "NZ_JAKILA010000035.1": 11,
+        "NZ_JAKILA010000020.1": 11,
+        "NZ_JAKILA010000041.1": 11,
+        "NZ_JAKILA010000019.1": 11,
+        "NZ_JAKILA010000008.1": 11,
+        "NZ_JAKILA010000010.1": 11,
+        "NZ_JAKILA010000025.1": 11,
+        "NZ_JAKILA010000046.1": 11,
+        "NZ_JAKILA010000031.1": 11,
+        "NZ_JAKILA010000052.1": 11,
+        "NZ_JAKILA010000015.1": 11,
+        "NZ_JAKILA010000004.1": 11,
+        "NZ_JAKILA010000036.1": 11,
+        "NZ_JAKILA010000021.1": 11,
+        "NZ_JAKILA010000042.1": 11,
+        "NZ_JAKILA010000009.1": 11,
+        "NZ_JAKILA010000026.1": 11,
+        "NZ_JAKILA010000011.1": 11,
+        "NZ_JAKILA010000032.1": 11,
+        "NZ_JAKILA010000016.1": 11,
+        "NZ_JAKILA010000005.1": 11,
+        "NZ_JAKILA010000037.1": 11,
+        "NZ_JAKILA010000022.1": 11
       }
     }
   ],
@@ -204,8 +258,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/283/885/GCF_023283885.1/bbi/GCF_023283885.1_ASM2328388v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/283/885/GCF_023283885.1/bbi/GCF_023283885.1_ASM2328388v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023283885.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

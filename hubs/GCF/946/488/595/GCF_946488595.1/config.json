@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_946488595.1",
           "ucsc": {
             "genome": "GCF_946488595.1",
             "taxId": "190976",
@@ -37,6 +38,23 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/488/595/GCF_946488595.1/GCF_946488595.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAMLVV010000008.1": 11,
+        "NZ_CAMLVV010000010.1": 11,
+        "NZ_CAMLVV010000003.1": 11,
+        "NZ_CAMLVV010000013.1": 11,
+        "NZ_CAMLVV010000006.1": 11,
+        "NZ_CAMLVV010000001.1": 11,
+        "NZ_CAMLVV010000009.1": 11,
+        "NZ_CAMLVV010000011.1": 11,
+        "NZ_CAMLVV010000004.1": 11,
+        "NZ_CAMLVV010000014.1": 11,
+        "NZ_CAMLVV010000007.1": 11,
+        "NZ_CAMLVV010000002.1": 11,
+        "NZ_CAMLVV010000017.1": 11,
+        "NZ_CAMLVV010000012.1": 11,
+        "NZ_CAMLVV010000005.1": 11
       }
     }
   ],
@@ -204,8 +222,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/488/595/GCF_946488595.1/bbi/GCF_946488595.1_ERR4336989_bin.74_MetaWRAP_v1.1_MAG.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/488/595/GCF_946488595.1/bbi/GCF_946488595.1_ERR4336989_bin.74_MetaWRAP_v1.1_MAG.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_946488595.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

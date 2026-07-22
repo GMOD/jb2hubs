@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_905120475.1",
           "ucsc": {
             "genome": "GCF_905120475.1",
             "taxId": "2790657",
@@ -37,6 +38,24 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/905/120/475/GCF_905120475.1/GCF_905120475.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAJHOE010000010.1": 11,
+        "NZ_CAJHOE010000003.1": 11,
+        "NZ_CAJHOE010000013.1": 11,
+        "NZ_CAJHOE010000006.1": 11,
+        "NZ_CAJHOE010000001.1": 11,
+        "NZ_CAJHOE010000016.1": 11,
+        "NZ_CAJHOE010000009.1": 11,
+        "NZ_CAJHOE010000011.1": 11,
+        "NZ_CAJHOE010000004.1": 11,
+        "NZ_CAJHOE010000014.1": 11,
+        "NZ_CAJHOE010000007.1": 11,
+        "NZ_CAJHOE010000002.1": 11,
+        "NZ_CAJHOE010000012.1": 11,
+        "NZ_CAJHOE010000005.1": 11,
+        "NZ_CAJHOE010000015.1": 11,
+        "NZ_CAJHOE010000008.1": 11
       }
     }
   ],
@@ -204,8 +223,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/905/120/475/GCF_905120475.1/bbi/GCF_905120475.1_LMG_8286.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/905/120/475/GCF_905120475.1/bbi/GCF_905120475.1_LMG_8286.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_905120475.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

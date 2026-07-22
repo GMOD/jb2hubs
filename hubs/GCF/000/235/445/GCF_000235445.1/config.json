@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000235445.1",
           "ucsc": {
             "genome": "GCF_000235445.1",
             "taxId": "679200",
@@ -37,6 +38,50 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/235/445/GCF_000235445.1/GCF_000235445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH378859.1": 11,
+        "NZ_JH378844.1": 11,
+        "NZ_JH378865.1": 11,
+        "NZ_JH378850.1": 11,
+        "NZ_JH378871.1": 11,
+        "NZ_JH378849.1": 11,
+        "NZ_JH378834.1": 11,
+        "NZ_JH378855.1": 11,
+        "NZ_JH378840.1": 11,
+        "NZ_JH378861.1": 11,
+        "NZ_JH378839.1": 11,
+        "NZ_JH378845.1": 11,
+        "NZ_JH378830.1": 11,
+        "NZ_JH378866.1": 11,
+        "NZ_JH378851.1": 11,
+        "NZ_JH378829.1": 11,
+        "NZ_JH378835.1": 11,
+        "NZ_JH378856.1": 11,
+        "NZ_JH378841.1": 11,
+        "NZ_JH378862.1": 11,
+        "NZ_JH378846.1": 11,
+        "NZ_JH378831.1": 11,
+        "NZ_JH378867.1": 11,
+        "NZ_JH378852.1": 11,
+        "NZ_JH378836.1": 11,
+        "NZ_JH378842.1": 11,
+        "NZ_JH378857.1": 11,
+        "NZ_JH378847.1": 11,
+        "NZ_JH378832.1": 11,
+        "NZ_JH378868.1": 11,
+        "NZ_JH378853.1": 11,
+        "NZ_JH378837.1": 11,
+        "NZ_JH378858.1": 11,
+        "NZ_JH378843.1": 11,
+        "NZ_JH378864.1": 11,
+        "NZ_JH378870.1": 11,
+        "NZ_JH378848.1": 11,
+        "NZ_JH378833.1": 11,
+        "NZ_JH378869.1": 11,
+        "NZ_JH378854.1": 11,
+        "NZ_JH378860.1": 11,
+        "NZ_JH378838.1": 11
       }
     }
   ],
@@ -252,8 +297,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/235/445/GCF_000235445.1/bbi/GCF_000235445.1_John_igna_ATCC_51276_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/235/445/GCF_000235445.1/bbi/GCF_000235445.1_John_igna_ATCC_51276_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000235445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_977007025.2",
           "ucsc": {
             "genome": "GCF_977007025.2",
             "taxId": "52761",
@@ -37,6 +38,15 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/977/007/025/GCF_977007025.2/GCF_977007025.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CDRMUA020000005.1": 11,
+        "NZ_CDRMUA020000003.1": 11,
+        "NZ_CDRMUA020000006.1": 11,
+        "NZ_CDRMUA020000001.1": 11,
+        "NZ_CDRMUA020000004.1": 11,
+        "NZ_CDRMUA020000007.1": 11,
+        "NZ_CDRMUA020000002.1": 11
       }
     }
   ],
@@ -204,8 +214,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/977/007/025/GCF_977007025.2/bbi/GCF_977007025.2_Azospirillum_largimobile_SpUSA5b_annotation.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/977/007/025/GCF_977007025.2/bbi/GCF_977007025.2_Azospirillum_largimobile_SpUSA5b_annotation.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_977007025.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

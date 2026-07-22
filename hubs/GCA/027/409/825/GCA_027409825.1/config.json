@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_027409825.1",
           "ucsc": {
             "genome": "GCA_027409825.1",
             "taxId": "13676",
@@ -253,8 +254,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.ncbiRefSeq.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_027409825.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -285,8 +296,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.ncbiRefSeqPredicted.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_027409825.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -315,7 +336,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_027409825.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -499,7 +529,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/bbi/GCA_027409825.1_fScoJap1.pri.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_027409825.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_027409825.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_027409825.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/409/825/GCA_027409825.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

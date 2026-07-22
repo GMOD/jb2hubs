@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_000826265.1",
           "ucsc": {
             "genome": "GCA_000826265.1",
             "taxId": "43142",
@@ -394,8 +395,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/826/265/GCA_000826265.1/bbi/GCA_000826265.1_Acanthamoeba_culbertsoni_genome_assembly.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/826/265/GCA_000826265.1/bbi/GCA_000826265.1_Acanthamoeba_culbertsoni_genome_assembly.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000826265.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {

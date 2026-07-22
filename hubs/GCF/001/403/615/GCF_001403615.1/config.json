@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001403615.1",
           "ucsc": {
             "genome": "GCF_001403615.1",
             "taxId": "1650662",
@@ -37,6 +38,21 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/403/615/GCF_001403615.1/GCF_001403615.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN879454.1": 11,
+        "NZ_LN879448.1": 11,
+        "NZ_LN879457.1": 11,
+        "NZ_LN879452.1": 11,
+        "NZ_LN879446.1": 11,
+        "NZ_LN879455.1": 11,
+        "NZ_LN879450.1": 11,
+        "NZ_LN879449.1": 11,
+        "NZ_LN879444.1": 11,
+        "NZ_LN879453.1": 11,
+        "NZ_LN879456.1": 11,
+        "NZ_LN879451.1": 11,
+        "NZ_LN879445.1": 11
       }
     }
   ],
@@ -229,8 +245,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/403/615/GCF_001403615.1/bbi/GCF_001403615.1_Desnusiella_massiliensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/403/615/GCF_001403615.1/bbi/GCF_001403615.1_Desnusiella_massiliensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001403615.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

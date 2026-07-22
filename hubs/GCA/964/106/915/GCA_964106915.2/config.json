@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_964106915.2",
           "ucsc": {
             "genome": "GCA_964106915.2",
             "taxId": "90521",
@@ -397,7 +398,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/964/106/915/GCA_964106915.2/bbi/GCA_964106915.2_rPodGai1.hap1.2.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/964/106/915/GCA_964106915.2/bbi/GCA_964106915.2_rPodGai1.hap1.2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_964106915.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/964/106/915/GCA_964106915.2/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_964106915.2-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_964106915.2"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/964/106/915/GCA_964106915.2/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_048129065.1",
           "ucsc": {
             "genome": "GCA_048129065.1",
             "taxId": "2930458",
@@ -397,7 +398,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/129/065/GCA_048129065.1/bbi/GCA_048129065.1_fEpiMut1.hap2.cur.20240206.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/129/065/GCA_048129065.1/bbi/GCA_048129065.1_fEpiMut1.hap2.cur.20240206.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_048129065.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/048/129/065/GCA_048129065.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_048129065.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_048129065.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/129/065/GCA_048129065.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_980694505.1",
           "ucsc": {
             "genome": "GCA_980694505.1",
             "taxId": "241585",
@@ -395,8 +396,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/980/694/505/GCA_980694505.1/bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/980/694/505/GCA_980694505.1/bbi/GCA_980694505.1_bAmaVit1.2.curated_20260112_allscaffolds.masked.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_980694505.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {

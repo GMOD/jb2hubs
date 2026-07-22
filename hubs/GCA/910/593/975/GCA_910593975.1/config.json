@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_910593975.1",
           "ucsc": {
             "genome": "GCA_910593975.1",
             "taxId": "4577",
@@ -396,8 +397,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/910/593/975/GCA_910593975.1/bbi/GCA_910593975.1_Zm-B104-REFERENCE-CORTEVA-1.0.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/910/593/975/GCA_910593975.1/bbi/GCA_910593975.1_Zm-B104-REFERENCE-CORTEVA-1.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_910593975.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {

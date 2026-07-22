@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_051107495.1",
           "ucsc": {
             "genome": "GCA_051107495.1",
             "taxId": "39042",
@@ -349,7 +350,38 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/051/107/495/GCA_051107495.1/bbi/GCA_051107495.1_fChaAug3.hap2.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/051/107/495/GCA_051107495.1/bbi/GCA_051107495.1_fChaAug3.hap2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_051107495.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_051107495.1_to_GCF_051107435.1_liftOver",
+      "name": "GCA_051107495.1 (threadfin butterflyfish (hap2 2025)) to threadfin butterflyfish (fChaAug3hap1 2025) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_051107495.1", "GCF_051107435.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_051107495.1",
+        "queryAssembly": "GCF_051107435.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_051107495.1ToGCF_051107435.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_051107495.1ToGCF_051107435.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

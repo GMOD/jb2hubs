@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001282685.1",
           "ucsc": {
             "genome": "GCF_001282685.1",
             "taxId": "1658108",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/282/685/GCF_001282685.1/GCF_001282685.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN875032.1": 11,
+        "NZ_LN875025.1": 11,
+        "NZ_LN875035.1": 11,
+        "NZ_LN875030.1": 11,
+        "NZ_LN875033.1": 11,
+        "NZ_LN875026.1": 11,
+        "NZ_LN875029.1": 11,
+        "NZ_LN875031.1": 11,
+        "NZ_LN875034.1": 11,
+        "NZ_LN875027.1": 11
       }
     }
   ],
@@ -252,8 +265,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/282/685/GCF_001282685.1/bbi/GCF_001282685.1_Niameyia_massiliensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/282/685/GCF_001282685.1/bbi/GCF_001282685.1_Niameyia_massiliensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001282685.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

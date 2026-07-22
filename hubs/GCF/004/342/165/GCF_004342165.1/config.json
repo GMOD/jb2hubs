@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_004342165.1",
           "ucsc": {
             "genome": "GCF_004342165.1",
             "taxId": "682400",
@@ -37,6 +38,33 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/004/342/165/GCF_004342165.1/GCF_004342165.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_SMAL01000010.1": 11,
+        "NZ_SMAL01000003.1": 11,
+        "NZ_SMAL01000025.1": 11,
+        "NZ_SMAL01000018.1": 11,
+        "NZ_SMAL01000020.1": 11,
+        "NZ_SMAL01000013.1": 11,
+        "NZ_SMAL01000006.1": 11,
+        "NZ_SMAL01000001.1": 11,
+        "NZ_SMAL01000023.1": 11,
+        "NZ_SMAL01000016.1": 11,
+        "NZ_SMAL01000009.1": 11,
+        "NZ_SMAL01000011.1": 11,
+        "NZ_SMAL01000004.1": 11,
+        "NZ_SMAL01000019.1": 11,
+        "NZ_SMAL01000021.1": 11,
+        "NZ_SMAL01000014.1": 11,
+        "NZ_SMAL01000007.1": 11,
+        "NZ_SMAL01000002.1": 11,
+        "NZ_SMAL01000024.1": 11,
+        "NZ_SMAL01000017.1": 11,
+        "NZ_SMAL01000012.1": 11,
+        "NZ_SMAL01000005.1": 11,
+        "NZ_SMAL01000027.1": 11,
+        "NZ_SMAL01000015.1": 11,
+        "NZ_SMAL01000008.1": 11
       }
     }
   ],
@@ -227,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/004/342/165/GCF_004342165.1/bbi/GCF_004342165.1_ASM434216v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/004/342/165/GCF_004342165.1/bbi/GCF_004342165.1_ASM434216v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_004342165.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

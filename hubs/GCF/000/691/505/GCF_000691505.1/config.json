@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000691505.1",
           "ucsc": {
             "genome": "GCF_000691505.1",
             "taxId": "1495067",
@@ -37,6 +38,33 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/691/505/GCF_000691505.1/GCF_000691505.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JMIP02000025.1": 11,
+        "NZ_JMIP02000018.1": 11,
+        "NZ_JMIP02000020.1": 11,
+        "NZ_JMIP02000013.1": 11,
+        "NZ_JMIP02000006.1": 11,
+        "NZ_JMIP02000001.1": 11,
+        "NZ_JMIP02000023.1": 11,
+        "NZ_JMIP02000016.1": 11,
+        "NZ_JMIP02000009.1": 11,
+        "NZ_JMIP02000011.1": 11,
+        "NZ_JMIP02000026.1": 11,
+        "NZ_JMIP02000019.1": 11,
+        "NZ_JMIP02000021.1": 11,
+        "NZ_JMIP02000014.1": 11,
+        "NZ_JMIP02000007.1": 11,
+        "NZ_JMIP02000002.1": 11,
+        "NZ_JMIP02000024.1": 11,
+        "NZ_JMIP02000017.1": 11,
+        "NZ_JMIP02000012.1": 11,
+        "NZ_JMIP02000005.1": 11,
+        "NZ_JMIP02000022.1": 11,
+        "NZ_JMIP02000015.1": 11,
+        "NZ_JMIP02000008.1": 11,
+        "NZ_JMIP02000010.1": 11,
+        "NZ_JMIP02000003.1": 11
       }
     }
   ],
@@ -229,8 +257,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/691/505/GCF_000691505.1/bbi/GCF_000691505.1_ASM69150v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/691/505/GCF_000691505.1/bbi/GCF_000691505.1_ASM69150v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000691505.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

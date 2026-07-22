@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_028017805.1",
           "ucsc": {
             "genome": "GCA_028017805.1",
             "taxId": "2746895",
@@ -397,8 +398,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/017/805/GCA_028017805.1/bbi/GCA_028017805.1_mBalRic1.hap1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/017/805/GCA_028017805.1/bbi/GCA_028017805.1_mBalRic1.hap1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_028017805.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -426,6 +437,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/017/805/GCA_028017805.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_028017805.1_to_GCF_028023285.1_liftOver",
+      "name": "GCA_028017805.1 (Rice's whale (hap1 2023)) to Rice's whale (hap2 2023 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_028017805.1", "GCF_028023285.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_028017805.1",
+        "queryAssembly": "GCF_028023285.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_028017805.1ToGCF_028023285.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_028017805.1ToGCF_028023285.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

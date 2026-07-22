@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900411375.1",
           "ucsc": {
             "genome": "GCF_900411375.1",
             "taxId": "1987503",
@@ -37,6 +38,36 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/411/375/GCF_900411375.1/GCF_900411375.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LS423007.1": 11,
+        "NZ_LS422998.1": 11,
+        "NZ_LS423002.1": 11,
+        "NZ_LS422993.1": 11,
+        "NZ_LS422986.1": 11,
+        "NZ_LS422981.1": 11,
+        "NZ_LS423005.1": 11,
+        "NZ_LS422996.1": 11,
+        "NZ_LS422989.1": 11,
+        "NZ_LS423000.1": 11,
+        "NZ_LS422991.1": 11,
+        "NZ_LS422984.1": 11,
+        "NZ_LS423008.1": 11,
+        "NZ_LS422999.1": 11,
+        "NZ_LS423003.1": 11,
+        "NZ_LS422994.1": 11,
+        "NZ_LS422987.1": 11,
+        "NZ_LS422982.1": 11,
+        "NZ_LS423006.1": 11,
+        "NZ_LS422997.1": 11,
+        "NZ_LS423001.1": 11,
+        "NZ_LS422992.1": 11,
+        "NZ_LS422985.1": 11,
+        "NZ_LS422980.1": 11,
+        "NZ_LS423004.1": 11,
+        "NZ_LS422995.1": 11,
+        "NZ_LS422988.1": 11,
+        "NZ_LS422983.1": 11
       }
     }
   ],
@@ -229,8 +260,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/411/375/GCF_900411375.1/bbi/GCF_900411375.1_PRJEB20856.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/411/375/GCF_900411375.1/bbi/GCF_900411375.1_PRJEB20856.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900411375.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

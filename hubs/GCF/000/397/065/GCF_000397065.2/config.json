@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000397065.2",
           "ucsc": {
             "genome": "GCF_000397065.2",
             "taxId": "1318628",
@@ -37,6 +38,32 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/397/065/GCF_000397065.2/GCF_000397065.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KE007325.1": 11,
+        "NZ_KE007311.1": 11,
+        "NZ_KE007320.1": 11,
+        "NZ_KE007319.1": 11,
+        "NZ_KE007328.1": 11,
+        "NZ_KE007314.1": 11,
+        "NZ_KE007307.1": 11,
+        "NZ_KE007330.1": 11,
+        "NZ_KE007323.1": 11,
+        "NZ_KE007317.1": 11,
+        "NZ_KE007326.1": 11,
+        "NZ_KE007312.1": 11,
+        "NZ_KE007321.1": 11,
+        "NZ_KE007329.1": 11,
+        "NZ_KE007315.1": 11,
+        "NZ_KE007308.1": 11,
+        "NZ_KE007331.1": 11,
+        "NZ_KE007310.1": 11,
+        "NZ_KE007318.1": 11,
+        "NZ_KE007327.1": 11,
+        "NZ_KE007306.1": 11,
+        "NZ_KE007322.1": 11,
+        "NZ_KE007316.1": 11,
+        "NZ_KE007309.1": 11
       }
     }
   ],
@@ -229,8 +256,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/397/065/GCF_000397065.2/bbi/GCF_000397065.2_MarLipol1.0.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/397/065/GCF_000397065.2/bbi/GCF_000397065.2_MarLipol1.0.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000397065.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

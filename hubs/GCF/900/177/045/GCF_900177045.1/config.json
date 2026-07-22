@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900177045.1",
           "ucsc": {
             "genome": "GCF_900177045.1",
             "taxId": "1903276",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/177/045/GCF_900177045.1/GCF_900177045.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LT841358.1": 11
       }
     }
   ],
@@ -228,8 +232,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/177/045/GCF_900177045.1/bbi/GCF_900177045.1_Candidatus_Nitrosotalea_koreensis_CS_whole_genome.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/177/045/GCF_900177045.1/bbi/GCF_900177045.1_Candidatus_Nitrosotalea_koreensis_CS_whole_genome.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900177045.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

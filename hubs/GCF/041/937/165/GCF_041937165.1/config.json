@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_041937165.1",
           "ucsc": {
             "genome": "GCF_041937165.1",
             "taxId": "3142537",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/041/937/165/GCF_041937165.1/GCF_041937165.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CP154362.1": 11,
+        "NZ_CP154355.1": 11,
+        "NZ_CP154358.1": 11,
+        "NZ_CP154360.1": 11,
+        "NZ_CP154353.1": 11,
+        "NZ_CP154356.1": 11,
+        "NZ_CP154359.1": 11,
+        "NZ_CP154361.1": 11,
+        "NZ_CP154354.1": 11,
+        "NZ_CP154357.1": 11
       }
     }
   ],
@@ -204,8 +217,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/041/937/165/GCF_041937165.1/bbi/GCF_041937165.1_UNISA_Eadel_1.0.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/041/937/165/GCF_041937165.1/bbi/GCF_041937165.1_UNISA_Eadel_1.0.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_041937165.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

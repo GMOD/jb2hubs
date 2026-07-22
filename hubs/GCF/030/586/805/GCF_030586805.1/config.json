@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_030586805.1",
           "ucsc": {
             "genome": "GCF_030586805.1",
             "taxId": "2982628",
@@ -37,6 +38,57 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/586/805/GCF_030586805.1/GCF_030586805.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAOSIM010000016.1": 11,
+        "NZ_JAOSIM010000005.1": 11,
+        "NZ_JAOSIM010000037.1": 11,
+        "NZ_JAOSIM010000022.1": 11,
+        "NZ_JAOSIM010000011.1": 11,
+        "NZ_JAOSIM010000043.1": 11,
+        "NZ_JAOSIM010000001.1": 11,
+        "NZ_JAOSIM010000048.1": 11,
+        "NZ_JAOSIM010000033.1": 11,
+        "NZ_JAOSIM010000017.1": 11,
+        "NZ_JAOSIM010000006.1": 11,
+        "NZ_JAOSIM010000023.1": 11,
+        "NZ_JAOSIM010000038.1": 11,
+        "NZ_JAOSIM010000012.1": 11,
+        "NZ_JAOSIM010000044.1": 11,
+        "NZ_JAOSIM010000050.1": 11,
+        "NZ_JAOSIM010000002.1": 11,
+        "NZ_JAOSIM010000049.1": 11,
+        "NZ_JAOSIM010000034.1": 11,
+        "NZ_JAOSIM010000040.1": 11,
+        "NZ_JAOSIM010000018.1": 11,
+        "NZ_JAOSIM010000007.1": 11,
+        "NZ_JAOSIM010000039.1": 11,
+        "NZ_JAOSIM010000024.1": 11,
+        "NZ_JAOSIM010000013.1": 11,
+        "NZ_JAOSIM010000045.1": 11,
+        "NZ_JAOSIM010000030.1": 11,
+        "NZ_JAOSIM010000051.1": 11,
+        "NZ_JAOSIM010000029.1": 11,
+        "NZ_JAOSIM010000014.1": 11,
+        "NZ_JAOSIM010000003.1": 11,
+        "NZ_JAOSIM010000035.1": 11,
+        "NZ_JAOSIM010000020.1": 11,
+        "NZ_JAOSIM010000041.1": 11,
+        "NZ_JAOSIM010000019.1": 11,
+        "NZ_JAOSIM010000008.1": 11,
+        "NZ_JAOSIM010000025.1": 11,
+        "NZ_JAOSIM010000046.1": 11,
+        "NZ_JAOSIM010000031.1": 11,
+        "NZ_JAOSIM010000015.1": 11,
+        "NZ_JAOSIM010000004.1": 11,
+        "NZ_JAOSIM010000036.1": 11,
+        "NZ_JAOSIM010000021.1": 11,
+        "NZ_JAOSIM010000010.1": 11,
+        "NZ_JAOSIM010000042.1": 11,
+        "NZ_JAOSIM010000009.1": 11,
+        "NZ_JAOSIM010000026.1": 11,
+        "NZ_JAOSIM010000047.1": 11,
+        "NZ_JAOSIM010000032.1": 11
       }
     }
   ],
@@ -229,8 +281,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/586/805/GCF_030586805.1/bbi/GCF_030586805.1_ASM3058680v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/586/805/GCF_030586805.1/bbi/GCF_030586805.1_ASM3058680v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_030586805.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

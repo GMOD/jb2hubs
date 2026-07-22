@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002946355.1",
           "ucsc": {
             "genome": "GCF_002946355.1",
             "taxId": "2064768",
@@ -37,6 +38,61 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/946/355/GCF_002946355.1/GCF_002946355.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_PKOZ01000006.1": 11,
+        "NZ_PKOZ01000038.1": 11,
+        "NZ_PKOZ01000023.1": 11,
+        "NZ_PKOZ01000044.1": 11,
+        "NZ_PKOZ01000050.1": 11,
+        "NZ_PKOZ01000028.1": 11,
+        "NZ_PKOZ01000013.1": 11,
+        "NZ_PKOZ01000002.1": 11,
+        "NZ_PKOZ01000049.1": 11,
+        "NZ_PKOZ01000034.1": 11,
+        "NZ_PKOZ01000055.1": 11,
+        "NZ_PKOZ01000040.1": 11,
+        "NZ_PKOZ01000018.1": 11,
+        "NZ_PKOZ01000007.1": 11,
+        "NZ_PKOZ01000024.1": 11,
+        "NZ_PKOZ01000045.1": 11,
+        "NZ_PKOZ01000030.1": 11,
+        "NZ_PKOZ01000051.1": 11,
+        "NZ_PKOZ01000014.1": 11,
+        "NZ_PKOZ01000029.1": 11,
+        "NZ_PKOZ01000003.1": 11,
+        "NZ_PKOZ01000020.1": 11,
+        "NZ_PKOZ01000041.1": 11,
+        "NZ_PKOZ01000019.1": 11,
+        "NZ_PKOZ01000008.1": 11,
+        "NZ_PKOZ01000025.1": 11,
+        "NZ_PKOZ01000010.1": 11,
+        "NZ_PKOZ01000046.1": 11,
+        "NZ_PKOZ01000031.1": 11,
+        "NZ_PKOZ01000052.1": 11,
+        "NZ_PKOZ01000015.1": 11,
+        "NZ_PKOZ01000004.1": 11,
+        "NZ_PKOZ01000021.1": 11,
+        "NZ_PKOZ01000036.1": 11,
+        "NZ_PKOZ01000057.1": 11,
+        "NZ_PKOZ01000042.1": 11,
+        "NZ_PKOZ01000009.1": 11,
+        "NZ_PKOZ01000026.1": 11,
+        "NZ_PKOZ01000011.1": 11,
+        "NZ_PKOZ01000047.1": 11,
+        "NZ_PKOZ01000032.1": 11,
+        "NZ_PKOZ01000016.1": 11,
+        "NZ_PKOZ01000005.1": 11,
+        "NZ_PKOZ01000037.1": 11,
+        "NZ_PKOZ01000022.1": 11,
+        "NZ_PKOZ01000043.1": 11,
+        "NZ_PKOZ01000027.1": 11,
+        "NZ_PKOZ01000012.1": 11,
+        "NZ_PKOZ01000001.1": 11,
+        "NZ_PKOZ01000048.1": 11,
+        "NZ_PKOZ01000033.1": 11,
+        "NZ_PKOZ01000054.1": 11,
+        "NZ_PKOZ01000017.1": 11
       }
     }
   ],
@@ -227,8 +283,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/946/355/GCF_002946355.1/bbi/GCF_002946355.1_ASM294635v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/946/355/GCF_002946355.1/bbi/GCF_002946355.1_ASM294635v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002946355.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

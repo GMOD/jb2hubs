@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_963668415.2",
           "ucsc": {
             "genome": "GCF_963668415.2",
             "taxId": "262503",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/668/415/GCF_963668415.2/GCF_963668415.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAXXDL010000002.1": 11,
+        "NZ_CAXXDL010000001.1": 11
       }
     }
   ],
@@ -204,8 +209,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/668/415/GCF_963668415.2/bbi/GCF_963668415.2_piHetPala1.Methanospirillum_sp_1.2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/668/415/GCF_963668415.2/bbi/GCF_963668415.2_piHetPala1.Methanospirillum_sp_1.2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_963668415.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

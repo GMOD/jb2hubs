@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000827595.2",
           "ucsc": {
             "genome": "GCF_000827595.2",
             "taxId": "1400001",
@@ -37,6 +38,39 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/827/595/GCF_000827595.2/GCF_000827595.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN776201.1": 11,
+        "NZ_LN776186.1": 11,
+        "NZ_LN776179.1": 11,
+        "NZ_LN776181.1": 11,
+        "NZ_LN776204.1": 11,
+        "NZ_LN776190.1": 11,
+        "NZ_LN776189.1": 11,
+        "NZ_LN776220.1": 11,
+        "NZ_LN776198.1": 11,
+        "NZ_LN776184.1": 11,
+        "NZ_LN776214.1": 11,
+        "NZ_LN776193.1": 11,
+        "NZ_LN776187.1": 11,
+        "NZ_LN776217.1": 11,
+        "NZ_LN776196.1": 11,
+        "NZ_LN776212.1": 11,
+        "NZ_LN776191.1": 11,
+        "NZ_LN776200.1": 11,
+        "NZ_LN776199.1": 11,
+        "NZ_LN776178.1": 11,
+        "NZ_LN776215.1": 11,
+        "NZ_LN776208.1": 11,
+        "NZ_LN776194.1": 11,
+        "NZ_LN776180.1": 11,
+        "NZ_LN776210.1": 11,
+        "NZ_LN776203.1": 11,
+        "NZ_LN776188.1": 11,
+        "NZ_LN776197.1": 11,
+        "NZ_LN776183.1": 11,
+        "NZ_LN776213.1": 11,
+        "NZ_LN776192.1": 11
       }
     }
   ],
@@ -229,8 +263,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/827/595/GCF_000827595.2/bbi/GCF_000827595.2_Necropsobacter_senegalensis_FF6.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/827/595/GCF_000827595.2/bbi/GCF_000827595.2_Necropsobacter_senegalensis_FF6.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000827595.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

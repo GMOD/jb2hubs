@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_024345185.1",
           "ucsc": {
             "genome": "GCF_024345185.1",
             "taxId": "2950375",
@@ -37,6 +38,73 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/024/345/185/GCF_024345185.1/GCF_024345185.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BROB01000061.1": 11,
+        "NZ_BROB01000007.1": 11,
+        "NZ_BROB01000039.1": 11,
+        "NZ_BROB01000013.1": 11,
+        "NZ_BROB01000028.1": 11,
+        "NZ_BROB01000045.1": 11,
+        "NZ_BROB01000030.1": 11,
+        "NZ_BROB01000066.1": 11,
+        "NZ_BROB01000051.1": 11,
+        "NZ_BROB01000018.1": 11,
+        "NZ_BROB01000003.1": 11,
+        "NZ_BROB01000035.1": 11,
+        "NZ_BROB01000024.1": 11,
+        "NZ_BROB01000056.1": 11,
+        "NZ_BROB01000041.1": 11,
+        "NZ_BROB01000062.1": 11,
+        "NZ_BROB01000008.1": 11,
+        "NZ_BROB01000029.1": 11,
+        "NZ_BROB01000014.1": 11,
+        "NZ_BROB01000046.1": 11,
+        "NZ_BROB01000031.1": 11,
+        "NZ_BROB01000020.1": 11,
+        "NZ_BROB01000067.1": 11,
+        "NZ_BROB01000019.1": 11,
+        "NZ_BROB01000004.1": 11,
+        "NZ_BROB01000036.1": 11,
+        "NZ_BROB01000025.1": 11,
+        "NZ_BROB01000010.1": 11,
+        "NZ_BROB01000057.1": 11,
+        "NZ_BROB01000042.1": 11,
+        "NZ_BROB01000063.1": 11,
+        "NZ_BROB01000009.1": 11,
+        "NZ_BROB01000015.1": 11,
+        "NZ_BROB01000047.1": 11,
+        "NZ_BROB01000032.1": 11,
+        "NZ_BROB01000021.1": 11,
+        "NZ_BROB01000005.1": 11,
+        "NZ_BROB01000037.1": 11,
+        "NZ_BROB01000026.1": 11,
+        "NZ_BROB01000011.1": 11,
+        "NZ_BROB01000058.1": 11,
+        "NZ_BROB01000043.1": 11,
+        "NZ_BROB01000064.1": 11,
+        "NZ_BROB01000016.1": 11,
+        "NZ_BROB01000001.1": 11,
+        "NZ_BROB01000048.1": 11,
+        "NZ_BROB01000033.1": 11,
+        "NZ_BROB01000022.1": 11,
+        "NZ_BROB01000054.1": 11,
+        "NZ_BROB01000060.1": 11,
+        "NZ_BROB01000006.1": 11,
+        "NZ_BROB01000038.1": 11,
+        "NZ_BROB01000027.1": 11,
+        "NZ_BROB01000012.1": 11,
+        "NZ_BROB01000059.1": 11,
+        "NZ_BROB01000044.1": 11,
+        "NZ_BROB01000065.1": 11,
+        "NZ_BROB01000050.1": 11,
+        "NZ_BROB01000017.1": 11,
+        "NZ_BROB01000002.1": 11,
+        "NZ_BROB01000049.1": 11,
+        "NZ_BROB01000034.1": 11,
+        "NZ_BROB01000023.1": 11,
+        "NZ_BROB01000055.1": 11,
+        "NZ_BROB01000040.1": 11
       }
     }
   ],
@@ -204,8 +272,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/024/345/185/GCF_024345185.1/bbi/GCF_024345185.1_ASM2434518v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/024/345/185/GCF_024345185.1/bbi/GCF_024345185.1_ASM2434518v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_024345185.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

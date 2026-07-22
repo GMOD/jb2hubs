@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_038727195.1",
           "ucsc": {
             "genome": "GCF_038727195.1",
             "taxId": "2020860",
@@ -37,6 +38,15 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/038/727/195/GCF_038727195.1/GCF_038727195.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAVYWI010000005.1": 11,
+        "NZ_JAVYWI010000003.1": 11,
+        "NZ_JAVYWI010000006.1": 11,
+        "NZ_JAVYWI010000001.1": 11,
+        "NZ_JAVYWI010000004.1": 11,
+        "NZ_JAVYWI010000007.1": 11,
+        "NZ_JAVYWI010000002.1": 11
       }
     }
   ],
@@ -229,8 +239,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/038/727/195/GCF_038727195.1/bbi/GCF_038727195.1_ASM3872719v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/038/727/195/GCF_038727195.1/bbi/GCF_038727195.1_ASM3872719v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_038727195.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

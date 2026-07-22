@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_052805135.1",
           "ucsc": {
             "genome": "GCF_052805135.1",
             "taxId": "766966",
@@ -37,6 +38,31 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/052/805/135/GCF_052805135.1/GCF_052805135.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JBRBDK010000001.1": 11,
+        "NZ_JBRBDK010000023.1": 11,
+        "NZ_JBRBDK010000016.1": 11,
+        "NZ_JBRBDK010000009.1": 11,
+        "NZ_JBRBDK010000011.1": 11,
+        "NZ_JBRBDK010000004.1": 11,
+        "NZ_JBRBDK010000019.1": 11,
+        "NZ_JBRBDK010000021.1": 11,
+        "NZ_JBRBDK010000014.1": 11,
+        "NZ_JBRBDK010000007.1": 11,
+        "NZ_JBRBDK010000002.1": 11,
+        "NZ_JBRBDK010000024.1": 11,
+        "NZ_JBRBDK010000012.1": 11,
+        "NZ_JBRBDK010000005.1": 11,
+        "NZ_JBRBDK010000022.1": 11,
+        "NZ_JBRBDK010000015.1": 11,
+        "NZ_JBRBDK010000008.1": 11,
+        "NZ_JBRBDK010000010.1": 11,
+        "NZ_JBRBDK010000003.1": 11,
+        "NZ_JBRBDK010000018.1": 11,
+        "NZ_JBRBDK010000020.1": 11,
+        "NZ_JBRBDK010000013.1": 11,
+        "NZ_JBRBDK010000006.1": 11
       }
     }
   ],
@@ -204,8 +230,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/052/805/135/GCF_052805135.1/bbi/GCF_052805135.1_ASM5280513v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/052/805/135/GCF_052805135.1/bbi/GCF_052805135.1_ASM5280513v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_052805135.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

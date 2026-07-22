@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900021175.1",
           "ucsc": {
             "genome": "GCF_900021175.1",
             "taxId": "1755099",
@@ -37,6 +38,21 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/021/175/GCF_900021175.1/GCF_900021175.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FCOP01000008.1": 11,
+        "NZ_FCOP01000003.1": 11,
+        "NZ_FCOP01000012.1": 11,
+        "NZ_FCOP01000006.1": 11,
+        "NZ_FCOP01000001.1": 11,
+        "NZ_FCOP01000010.1": 11,
+        "NZ_FCOP01000009.1": 11,
+        "NZ_FCOP01000004.1": 11,
+        "NZ_FCOP01000013.1": 11,
+        "NZ_FCOP01000007.1": 11,
+        "NZ_FCOP01000002.1": 11,
+        "NZ_FCOP01000011.1": 11,
+        "NZ_FCOP01000005.1": 11
       }
     }
   ],
@@ -252,8 +268,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/021/175/GCF_900021175.1/bbi/GCF_900021175.1_Enterobacter_timonensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/021/175/GCF_900021175.1/bbi/GCF_900021175.1_Enterobacter_timonensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900021175.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

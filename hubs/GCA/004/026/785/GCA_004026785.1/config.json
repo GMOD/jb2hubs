@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_004026785.1",
           "ucsc": {
             "genome": "GCA_004026785.1",
             "taxId": "10047",
@@ -370,8 +371,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/004/026/785/GCA_004026785.1/bbi/GCA_004026785.1_MerUng_v1_BIUU.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/004/026/785/GCA_004026785.1/bbi/GCA_004026785.1_MerUng_v1_BIUU.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_004026785.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -404,8 +415,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/004/026/785/GCA_004026785.1/bbi/GCA_004026785.1_MerUng_v1_BIUU.ensGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/004/026/785/GCA_004026785.1/bbi/GCA_004026785.1_MerUng_v1_BIUU.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_004026785.1-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {

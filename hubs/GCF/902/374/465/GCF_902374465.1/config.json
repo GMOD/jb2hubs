@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_902374465.1",
           "ucsc": {
             "genome": "GCF_902374465.1",
             "taxId": "329",
@@ -37,6 +38,25 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/374/465/GCF_902374465.1/GCF_902374465.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CABKQE010000017.1": 11,
+        "NZ_CABKQE010000003.1": 11,
+        "NZ_CABKQE010000012.1": 11,
+        "NZ_CABKQE010000006.1": 11,
+        "NZ_CABKQE010000015.1": 11,
+        "NZ_CABKQE010000001.1": 11,
+        "NZ_CABKQE010000010.1": 11,
+        "NZ_CABKQE010000009.1": 11,
+        "NZ_CABKQE010000004.1": 11,
+        "NZ_CABKQE010000013.1": 11,
+        "NZ_CABKQE010000007.1": 11,
+        "NZ_CABKQE010000016.1": 11,
+        "NZ_CABKQE010000002.1": 11,
+        "NZ_CABKQE010000011.1": 11,
+        "NZ_CABKQE010000005.1": 11,
+        "NZ_CABKQE010000014.1": 11,
+        "NZ_CABKQE010000008.1": 11
       }
     }
   ],
@@ -227,8 +247,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/374/465/GCF_902374465.1/bbi/GCF_902374465.1_MGYG-HGUT-01384.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/374/465/GCF_902374465.1/bbi/GCF_902374465.1_MGYG-HGUT-01384.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_902374465.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

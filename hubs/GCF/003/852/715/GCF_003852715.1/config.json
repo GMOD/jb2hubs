@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_003852715.1",
           "ucsc": {
             "genome": "GCF_003852715.1",
             "taxId": "2486280",
@@ -37,6 +38,79 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/852/715/GCF_003852715.1/GCF_003852715.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_RIAV01000005.1": 11,
+        "NZ_RIAV01000037.1": 11,
+        "NZ_RIAV01000022.1": 11,
+        "NZ_RIAV01000011.1": 11,
+        "NZ_RIAV01000058.1": 11,
+        "NZ_RIAV01000043.1": 11,
+        "NZ_RIAV01000064.1": 11,
+        "NZ_RIAV01000027.1": 11,
+        "NZ_RIAV01000016.1": 11,
+        "NZ_RIAV01000001.1": 11,
+        "NZ_RIAV01000048.1": 11,
+        "NZ_RIAV01000033.1": 11,
+        "NZ_RIAV01000069.1": 11,
+        "NZ_RIAV01000054.1": 11,
+        "NZ_RIAV01000071.1": 11,
+        "NZ_RIAV01000060.1": 11,
+        "NZ_RIAV01000006.1": 11,
+        "NZ_RIAV01000038.1": 11,
+        "NZ_RIAV01000023.1": 11,
+        "NZ_RIAV01000012.1": 11,
+        "NZ_RIAV01000059.1": 11,
+        "NZ_RIAV01000044.1": 11,
+        "NZ_RIAV01000065.1": 11,
+        "NZ_RIAV01000050.1": 11,
+        "NZ_RIAV01000028.1": 11,
+        "NZ_RIAV01000017.1": 11,
+        "NZ_RIAV01000002.1": 11,
+        "NZ_RIAV01000049.1": 11,
+        "NZ_RIAV01000034.1": 11,
+        "NZ_RIAV01000055.1": 11,
+        "NZ_RIAV01000040.1": 11,
+        "NZ_RIAV01000072.1": 11,
+        "NZ_RIAV01000061.1": 11,
+        "NZ_RIAV01000007.1": 11,
+        "NZ_RIAV01000039.1": 11,
+        "NZ_RIAV01000024.1": 11,
+        "NZ_RIAV01000013.1": 11,
+        "NZ_RIAV01000045.1": 11,
+        "NZ_RIAV01000030.1": 11,
+        "NZ_RIAV01000051.1": 11,
+        "NZ_RIAV01000029.1": 11,
+        "NZ_RIAV01000018.1": 11,
+        "NZ_RIAV01000003.1": 11,
+        "NZ_RIAV01000035.1": 11,
+        "NZ_RIAV01000020.1": 11,
+        "NZ_RIAV01000056.1": 11,
+        "NZ_RIAV01000041.1": 11,
+        "NZ_RIAV01000073.1": 11,
+        "NZ_RIAV01000019.1": 11,
+        "NZ_RIAV01000008.1": 11,
+        "NZ_RIAV01000025.1": 11,
+        "NZ_RIAV01000014.1": 11,
+        "NZ_RIAV01000046.1": 11,
+        "NZ_RIAV01000031.1": 11,
+        "NZ_RIAV01000067.1": 11,
+        "NZ_RIAV01000052.1": 11,
+        "NZ_RIAV01000004.1": 11,
+        "NZ_RIAV01000036.1": 11,
+        "NZ_RIAV01000021.1": 11,
+        "NZ_RIAV01000010.1": 11,
+        "NZ_RIAV01000057.1": 11,
+        "NZ_RIAV01000042.1": 11,
+        "NZ_RIAV01000074.1": 11,
+        "NZ_RIAV01000009.1": 11,
+        "NZ_RIAV01000026.1": 11,
+        "NZ_RIAV01000015.1": 11,
+        "NZ_RIAV01000047.1": 11,
+        "NZ_RIAV01000032.1": 11,
+        "NZ_RIAV01000068.1": 11,
+        "NZ_RIAV01000053.1": 11,
+        "NZ_RIAV01000070.1": 11
       }
     }
   ],
@@ -204,8 +278,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/852/715/GCF_003852715.1/bbi/GCF_003852715.1_ASM385271v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/852/715/GCF_003852715.1/bbi/GCF_003852715.1_ASM385271v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_003852715.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

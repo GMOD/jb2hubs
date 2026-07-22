@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000298275.1",
           "ucsc": {
             "genome": "GCF_000298275.1",
             "taxId": "1230840",
@@ -21,7 +22,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/html/GCF_000298275.1_OryAfe1.0.description.html\">html/GCF_000298275.1_OryAfe1.0.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1",
+            "liftOver.GCF_048772815.1": "liftOver/GCF_000298275.1ToGCF_048772815.1.over.chain.gz"
           }
         },
         "trackId": "GCF_000298275.1-ReferenceSequenceTrack",
@@ -37,6 +39,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/GCF_000298275.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NC_002078.1": 2
       }
     }
   ],
@@ -251,8 +256,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000298275.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -283,8 +298,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000298275.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -313,7 +338,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000298275.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -497,8 +531,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/298/275/GCF_000298275.1/bbi/GCF_000298275.1_OryAfe1.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000298275.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -548,6 +592,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_000298275.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_000298275.1_to_GCF_048772815.1_liftOver",
+      "name": "GCF_000298275.1 (aardvark (SDZICR_OR568_19922 2012 Broad)) to golden-mantled ground squirrel (hap1 2025 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_000298275.1", "GCF_048772815.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_000298275.1",
+        "queryAssembly": "GCF_048772815.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_000298275.1ToGCF_048772815.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_000298275.1ToGCF_048772815.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

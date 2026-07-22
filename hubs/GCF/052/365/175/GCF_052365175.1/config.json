@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_052365175.1",
           "ucsc": {
             "genome": "GCF_052365175.1",
             "taxId": "3085639",
@@ -37,6 +38,81 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/052/365/175/GCF_052365175.1/GCF_052365175.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_DAWEHO010000038.1": 11,
+        "NZ_DAWEHO010000027.1": 11,
+        "NZ_DAWEHO010000012.1": 11,
+        "NZ_DAWEHO010000059.1": 11,
+        "NZ_DAWEHO010000044.1": 11,
+        "NZ_DAWEHO010000065.1": 11,
+        "NZ_DAWEHO010000050.1": 11,
+        "NZ_DAWEHO010000071.1": 11,
+        "NZ_DAWEHO010000002.1": 11,
+        "NZ_DAWEHO010000017.1": 11,
+        "NZ_DAWEHO010000049.1": 11,
+        "NZ_DAWEHO010000034.1": 11,
+        "NZ_DAWEHO010000023.1": 11,
+        "NZ_DAWEHO010000055.1": 11,
+        "NZ_DAWEHO010000040.1": 11,
+        "NZ_DAWEHO010000061.1": 11,
+        "NZ_DAWEHO010000007.1": 11,
+        "NZ_DAWEHO010000039.1": 11,
+        "NZ_DAWEHO010000028.1": 11,
+        "NZ_DAWEHO010000013.1": 11,
+        "NZ_DAWEHO010000045.1": 11,
+        "NZ_DAWEHO010000030.1": 11,
+        "NZ_DAWEHO010000066.1": 11,
+        "NZ_DAWEHO010000051.1": 11,
+        "NZ_DAWEHO010000072.1": 11,
+        "NZ_DAWEHO010000018.1": 11,
+        "NZ_DAWEHO010000003.1": 11,
+        "NZ_DAWEHO010000035.1": 11,
+        "NZ_DAWEHO010000024.1": 11,
+        "NZ_DAWEHO010000056.1": 11,
+        "NZ_DAWEHO010000041.1": 11,
+        "NZ_DAWEHO010000062.1": 11,
+        "NZ_DAWEHO010000008.1": 11,
+        "NZ_DAWEHO010000029.1": 11,
+        "NZ_DAWEHO010000014.1": 11,
+        "NZ_DAWEHO010000046.1": 11,
+        "NZ_DAWEHO010000031.1": 11,
+        "NZ_DAWEHO010000020.1": 11,
+        "NZ_DAWEHO010000067.1": 11,
+        "NZ_DAWEHO010000052.1": 11,
+        "NZ_DAWEHO010000073.1": 11,
+        "NZ_DAWEHO010000019.1": 11,
+        "NZ_DAWEHO010000004.1": 11,
+        "NZ_DAWEHO010000036.1": 11,
+        "NZ_DAWEHO010000025.1": 11,
+        "NZ_DAWEHO010000010.1": 11,
+        "NZ_DAWEHO010000057.1": 11,
+        "NZ_DAWEHO010000042.1": 11,
+        "NZ_DAWEHO010000063.1": 11,
+        "NZ_DAWEHO010000009.1": 11,
+        "NZ_DAWEHO010000015.1": 11,
+        "NZ_DAWEHO010000047.1": 11,
+        "NZ_DAWEHO010000032.1": 11,
+        "NZ_DAWEHO010000021.1": 11,
+        "NZ_DAWEHO010000068.1": 11,
+        "NZ_DAWEHO010000053.1": 11,
+        "NZ_DAWEHO010000005.1": 11,
+        "NZ_DAWEHO010000037.1": 11,
+        "NZ_DAWEHO010000026.1": 11,
+        "NZ_DAWEHO010000011.1": 11,
+        "NZ_DAWEHO010000058.1": 11,
+        "NZ_DAWEHO010000043.1": 11,
+        "NZ_DAWEHO010000064.1": 11,
+        "NZ_DAWEHO010000070.1": 11,
+        "NZ_DAWEHO010000016.1": 11,
+        "NZ_DAWEHO010000001.1": 11,
+        "NZ_DAWEHO010000048.1": 11,
+        "NZ_DAWEHO010000033.1": 11,
+        "NZ_DAWEHO010000022.1": 11,
+        "NZ_DAWEHO010000069.1": 11,
+        "NZ_DAWEHO010000054.1": 11,
+        "NZ_DAWEHO010000060.1": 11,
+        "NZ_DAWEHO010000006.1": 11
       }
     }
   ],
@@ -252,8 +328,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/052/365/175/GCF_052365175.1/bbi/GCF_052365175.1_ASM5236517v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/052/365/175/GCF_052365175.1/bbi/GCF_052365175.1_ASM5236517v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_052365175.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

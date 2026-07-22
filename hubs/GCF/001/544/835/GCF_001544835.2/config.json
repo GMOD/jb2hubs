@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001544835.2",
           "ucsc": {
             "genome": "GCF_001544835.2",
             "taxId": "1777138",
@@ -37,6 +38,56 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/544/835/GCF_001544835.2/GCF_001544835.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FCNX02000014.1": 11,
+        "NZ_FCNX02000029.1": 11,
+        "NZ_FCNX02000003.1": 11,
+        "NZ_FCNX02000035.1": 11,
+        "NZ_FCNX02000020.1": 11,
+        "NZ_FCNX02000041.1": 11,
+        "NZ_FCNX02000019.1": 11,
+        "NZ_FCNX02000008.1": 11,
+        "NZ_FCNX02000025.1": 11,
+        "NZ_FCNX02000010.1": 11,
+        "NZ_FCNX02000046.1": 11,
+        "NZ_FCNX02000031.1": 11,
+        "NZ_FCNX02000015.1": 11,
+        "NZ_FCNX02000004.1": 11,
+        "NZ_FCNX02000021.1": 11,
+        "NZ_FCNX02000036.1": 11,
+        "NZ_FCNX02000009.1": 11,
+        "NZ_FCNX02000026.1": 11,
+        "NZ_FCNX02000011.1": 11,
+        "NZ_FCNX02000047.1": 11,
+        "NZ_FCNX02000032.1": 11,
+        "NZ_FCNX02000016.1": 11,
+        "NZ_FCNX02000005.1": 11,
+        "NZ_FCNX02000037.1": 11,
+        "NZ_FCNX02000022.1": 11,
+        "NZ_FCNX02000027.1": 11,
+        "NZ_FCNX02000012.1": 11,
+        "NZ_FCNX02000001.1": 11,
+        "NZ_FCNX02000048.1": 11,
+        "NZ_FCNX02000033.1": 11,
+        "NZ_FCNX02000017.1": 11,
+        "NZ_FCNX02000006.1": 11,
+        "NZ_FCNX02000038.1": 11,
+        "NZ_FCNX02000023.1": 11,
+        "NZ_FCNX02000044.1": 11,
+        "NZ_FCNX02000050.1": 11,
+        "NZ_FCNX02000028.1": 11,
+        "NZ_FCNX02000013.1": 11,
+        "NZ_FCNX02000002.1": 11,
+        "NZ_FCNX02000049.1": 11,
+        "NZ_FCNX02000034.1": 11,
+        "NZ_FCNX02000040.1": 11,
+        "NZ_FCNX02000018.1": 11,
+        "NZ_FCNX02000007.1": 11,
+        "NZ_FCNX02000039.1": 11,
+        "NZ_FCNX02000024.1": 11,
+        "NZ_FCNX02000045.1": 11,
+        "NZ_FCNX02000030.1": 11
       }
     }
   ],
@@ -204,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/544/835/GCF_001544835.2/bbi/GCF_001544835.2_Burkholderia_sp._LMG_29320.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/544/835/GCF_001544835.2/bbi/GCF_001544835.2_Burkholderia_sp._LMG_29320.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001544835.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

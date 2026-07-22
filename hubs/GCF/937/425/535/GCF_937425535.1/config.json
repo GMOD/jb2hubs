@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_937425535.1",
           "ucsc": {
             "genome": "GCF_937425535.1",
             "taxId": "504468",
@@ -37,6 +38,17 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/937/425/535/GCF_937425535.1/GCF_937425535.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OW485603.1": 11,
+        "NZ_OW485606.1": 11,
+        "NZ_OW485601.1": 11,
+        "NZ_OW485609.1": 11,
+        "NZ_OW485604.1": 11,
+        "NZ_OW485607.1": 11,
+        "NZ_OW485602.1": 11,
+        "NZ_OW485605.1": 11,
+        "NZ_OW485608.1": 11
       }
     }
   ],
@@ -204,8 +216,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/937/425/535/GCF_937425535.1/bbi/GCF_937425535.1_Rhodovastum_atsumiense_G2-11.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/937/425/535/GCF_937425535.1/bbi/GCF_937425535.1_Rhodovastum_atsumiense_G2-11.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_937425535.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

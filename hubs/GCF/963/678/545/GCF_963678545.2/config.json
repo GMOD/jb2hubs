@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_963678545.2",
           "ucsc": {
             "genome": "GCF_963678545.2",
             "taxId": "183759",
@@ -37,6 +38,12 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/678/545/GCF_963678545.2/GCF_963678545.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAXXMK010000001.1": 11,
+        "NZ_CAXXMK010000002.1": 11,
+        "NZ_OY782867.2": 11,
+        "NZ_CAXXMK010000003.1": 11
       }
     }
   ],
@@ -204,8 +211,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/678/545/GCF_963678545.2/bbi/GCF_963678545.2_piPlaSpea1.Methanomethylovorans_sp_1.2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/678/545/GCF_963678545.2/bbi/GCF_963678545.2_piPlaSpea1.Methanomethylovorans_sp_1.2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_963678545.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

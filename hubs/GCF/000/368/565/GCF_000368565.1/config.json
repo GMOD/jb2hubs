@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000368565.1",
           "ucsc": {
             "genome": "GCF_000368565.1",
             "taxId": "1120926",
@@ -37,6 +38,50 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/368/565/GCF_000368565.1/GCF_000368565.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KB849552.1": 11,
+        "NZ_KB849519.1": 11,
+        "NZ_KB849525.1": 11,
+        "NZ_KB849542.1": 11,
+        "NZ_KB849531.1": 11,
+        "NZ_KB849515.1": 11,
+        "NZ_KB849547.1": 11,
+        "NZ_KB849536.1": 11,
+        "NZ_KB849521.1": 11,
+        "NZ_KB849553.1": 11,
+        "NZ_KB849526.1": 11,
+        "NZ_KB849543.1": 11,
+        "NZ_KB849532.1": 11,
+        "NZ_KB849516.1": 11,
+        "NZ_KB849548.1": 11,
+        "NZ_KB849537.1": 11,
+        "NZ_KB849522.1": 11,
+        "NZ_KB849554.1": 11,
+        "NZ_KB849527.1": 11,
+        "NZ_KB849544.1": 11,
+        "NZ_KB849533.1": 11,
+        "NZ_KB849550.1": 11,
+        "NZ_KB849517.1": 11,
+        "NZ_KB849549.1": 11,
+        "NZ_KB849538.1": 11,
+        "NZ_KB849523.1": 11,
+        "NZ_KB849555.1": 11,
+        "NZ_KB849540.1": 11,
+        "NZ_KB849528.1": 11,
+        "NZ_KB849545.1": 11,
+        "NZ_KB849534.1": 11,
+        "NZ_KB849551.1": 11,
+        "NZ_KB849518.1": 11,
+        "NZ_KB849539.1": 11,
+        "NZ_KB849524.1": 11,
+        "NZ_KB849541.1": 11,
+        "NZ_KB849530.1": 11,
+        "NZ_KB849529.1": 11,
+        "NZ_KB849514.1": 11,
+        "NZ_KB849546.1": 11,
+        "NZ_KB849535.1": 11,
+        "NZ_KB849520.1": 11
       }
     }
   ],
@@ -252,8 +297,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/368/565/GCF_000368565.1/bbi/GCF_000368565.1_Acin_gern_CIP_107464_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/368/565/GCF_000368565.1/bbi/GCF_000368565.1_Acin_gern_CIP_107464_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000368565.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

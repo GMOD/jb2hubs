@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_023055415.1",
           "ucsc": {
             "genome": "GCA_023055415.1",
             "taxId": "304258",
@@ -348,7 +349,66 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/023/055/415/GCA_023055415.1/bbi/GCA_023055415.1_fCliAna1.0.a.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/023/055/415/GCA_023055415.1/bbi/GCA_023055415.1_fCliAna1.0.a.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_023055415.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/023/055/415/GCA_023055415.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_023055415.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_023055415.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/023/055/415/GCA_023055415.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_023055415.1_to_GCF_023055335.1_liftOver",
+      "name": "GCA_023055415.1 (woolly sculpin (CAN_PGR_092001 alternate hap 2022)) to woolly sculpin (CAN_PGR_092001 primary hap 2022) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_023055415.1", "GCF_023055335.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_023055415.1",
+        "queryAssembly": "GCF_023055335.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_023055415.1ToGCF_023055335.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_023055415.1ToGCF_023055335.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

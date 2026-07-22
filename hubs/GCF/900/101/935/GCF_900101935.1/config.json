@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900101935.1",
           "ucsc": {
             "genome": "GCF_900101935.1",
             "taxId": "637679",
@@ -37,6 +38,20 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/101/935/GCF_900101935.1/GCF_900101935.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FNAK01000006.1": 11,
+        "NZ_FNAK01000001.1": 11,
+        "NZ_FNAK01000009.1": 11,
+        "NZ_FNAK01000011.1": 11,
+        "NZ_FNAK01000004.1": 11,
+        "NZ_FNAK01000007.1": 11,
+        "NZ_FNAK01000002.1": 11,
+        "NZ_FNAK01000012.1": 11,
+        "NZ_FNAK01000005.1": 11,
+        "NZ_FNAK01000008.1": 11,
+        "NZ_FNAK01000010.1": 11,
+        "NZ_FNAK01000003.1": 11
       }
     }
   ],
@@ -204,8 +219,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/101/935/GCF_900101935.1/bbi/GCF_900101935.1_IMG-taxon_2617270924_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/101/935/GCF_900101935.1/bbi/GCF_900101935.1_IMG-taxon_2617270924_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900101935.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

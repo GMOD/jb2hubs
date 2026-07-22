@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_042647865.1",
           "ucsc": {
             "genome": "GCF_042647865.1",
             "taxId": "2054422",
@@ -37,6 +38,31 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/042/647/865/GCF_042647865.1/GCF_042647865.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JBHRWO010000023.1": 11,
+        "NZ_JBHRWO010000009.1": 11,
+        "NZ_JBHRWO010000011.1": 11,
+        "NZ_JBHRWO010000004.1": 11,
+        "NZ_JBHRWO010000019.1": 11,
+        "NZ_JBHRWO010000021.1": 11,
+        "NZ_JBHRWO010000014.1": 11,
+        "NZ_JBHRWO010000007.1": 11,
+        "NZ_JBHRWO010000002.1": 11,
+        "NZ_JBHRWO010000012.1": 11,
+        "NZ_JBHRWO010000005.1": 11,
+        "NZ_JBHRWO010000027.1": 11,
+        "NZ_JBHRWO010000022.1": 11,
+        "NZ_JBHRWO010000015.1": 11,
+        "NZ_JBHRWO010000008.1": 11,
+        "NZ_JBHRWO010000001.1": 11,
+        "NZ_JBHRWO010000010.1": 11,
+        "NZ_JBHRWO010000003.1": 11,
+        "NZ_JBHRWO010000025.1": 11,
+        "NZ_JBHRWO010000018.1": 11,
+        "NZ_JBHRWO010000020.1": 11,
+        "NZ_JBHRWO010000013.1": 11,
+        "NZ_JBHRWO010000006.1": 11
       }
     }
   ],
@@ -229,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/042/647/865/GCF_042647865.1/bbi/GCF_042647865.1_ASM4264786v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/042/647/865/GCF_042647865.1/bbi/GCF_042647865.1_ASM4264786v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_042647865.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001636545.1",
           "ucsc": {
             "genome": "GCF_001636545.1",
             "taxId": "1453497",
@@ -37,6 +38,46 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/636/545/GCF_001636545.1/GCF_001636545.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JFHK01000036.1": 11,
+        "NZ_JFHK01000029.1": 11,
+        "NZ_JFHK01000015.1": 11,
+        "NZ_JFHK01000008.1": 11,
+        "NZ_JFHK01000031.1": 11,
+        "NZ_JFHK01000024.1": 11,
+        "NZ_JFHK01000010.1": 11,
+        "NZ_JFHK01000003.1": 11,
+        "NZ_JFHK01000039.1": 11,
+        "NZ_JFHK01000018.1": 11,
+        "NZ_JFHK01000034.1": 11,
+        "NZ_JFHK01000027.1": 11,
+        "NZ_JFHK01000013.1": 11,
+        "NZ_JFHK01000006.1": 11,
+        "NZ_JFHK01000022.1": 11,
+        "NZ_JFHK01000001.1": 11,
+        "NZ_JFHK01000037.1": 11,
+        "NZ_JFHK01000016.1": 11,
+        "NZ_JFHK01000009.1": 11,
+        "NZ_JFHK01000032.1": 11,
+        "NZ_JFHK01000025.1": 11,
+        "NZ_JFHK01000004.1": 11,
+        "NZ_JFHK01000020.1": 11,
+        "NZ_JFHK01000019.1": 11,
+        "NZ_JFHK01000035.1": 11,
+        "NZ_JFHK01000028.1": 11,
+        "NZ_JFHK01000014.1": 11,
+        "NZ_JFHK01000007.1": 11,
+        "NZ_JFHK01000030.1": 11,
+        "NZ_JFHK01000023.1": 11,
+        "NZ_JFHK01000002.1": 11,
+        "NZ_JFHK01000017.1": 11,
+        "NZ_JFHK01000040.1": 11,
+        "NZ_JFHK01000033.1": 11,
+        "NZ_JFHK01000026.1": 11,
+        "NZ_JFHK01000012.1": 11,
+        "NZ_JFHK01000005.1": 11,
+        "NZ_JFHK01000021.1": 11
       }
     }
   ],
@@ -204,8 +245,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/636/545/GCF_001636545.1/bbi/GCF_001636545.1_K.arenicorallinaCLCassembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/636/545/GCF_001636545.1/bbi/GCF_001636545.1_K.arenicorallinaCLCassembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001636545.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

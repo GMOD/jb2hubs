@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_003115855.1",
           "ucsc": {
             "genome": "GCF_003115855.1",
             "taxId": "2173106",
@@ -37,6 +38,86 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/115/855/GCF_003115855.1/GCF_003115855.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KZ819106.1": 11,
+        "NZ_KZ819076.1": 11,
+        "NZ_KZ819138.1": 11,
+        "NZ_KZ819127.1": 11,
+        "NZ_KZ819112.1": 11,
+        "NZ_KZ819097.1": 11,
+        "NZ_KZ819082.1": 11,
+        "NZ_KZ819144.1": 11,
+        "NZ_KZ819150.1": 11,
+        "NZ_KZ819117.1": 11,
+        "NZ_KZ819087.1": 11,
+        "NZ_KZ819102.1": 11,
+        "NZ_KZ819072.1": 11,
+        "NZ_KZ819134.1": 11,
+        "NZ_KZ819123.1": 11,
+        "NZ_KZ819093.1": 11,
+        "NZ_KZ819140.1": 11,
+        "NZ_KZ819107.1": 11,
+        "NZ_KZ819077.1": 11,
+        "NZ_KZ819139.1": 11,
+        "NZ_KZ819128.1": 11,
+        "NZ_KZ819113.1": 11,
+        "NZ_KZ819098.1": 11,
+        "NZ_KZ819083.1": 11,
+        "NZ_KZ819145.1": 11,
+        "NZ_KZ819130.1": 11,
+        "NZ_KZ819118.1": 11,
+        "NZ_KZ819088.1": 11,
+        "NZ_KZ819103.1": 11,
+        "NZ_KZ819073.1": 11,
+        "NZ_KZ819135.1": 11,
+        "NZ_KZ819124.1": 11,
+        "NZ_KZ819094.1": 11,
+        "NZ_KZ819141.1": 11,
+        "NZ_KZ819108.1": 11,
+        "NZ_KZ819078.1": 11,
+        "NZ_KZ819129.1": 11,
+        "NZ_KZ819114.1": 11,
+        "NZ_KZ819099.1": 11,
+        "NZ_KZ819084.1": 11,
+        "NZ_KZ819146.1": 11,
+        "NZ_KZ819131.1": 11,
+        "NZ_KZ819120.1": 11,
+        "NZ_KZ819090.1": 11,
+        "NZ_KZ819119.1": 11,
+        "NZ_KZ819089.1": 11,
+        "NZ_KZ819104.1": 11,
+        "NZ_KZ819074.1": 11,
+        "NZ_KZ819136.1": 11,
+        "NZ_KZ819125.1": 11,
+        "NZ_KZ819110.1": 11,
+        "NZ_KZ819095.1": 11,
+        "NZ_KZ819080.1": 11,
+        "NZ_KZ819142.1": 11,
+        "NZ_KZ819109.1": 11,
+        "NZ_KZ819079.1": 11,
+        "NZ_KZ819115.1": 11,
+        "NZ_KZ819085.1": 11,
+        "NZ_KZ819100.1": 11,
+        "NZ_KZ819132.1": 11,
+        "NZ_KZ819121.1": 11,
+        "NZ_KZ819091.1": 11,
+        "NZ_KZ819153.1": 11,
+        "NZ_KZ819105.1": 11,
+        "NZ_KZ819075.1": 11,
+        "NZ_KZ819137.1": 11,
+        "NZ_KZ819111.1": 11,
+        "NZ_KZ819096.1": 11,
+        "NZ_KZ819081.1": 11,
+        "NZ_KZ819143.1": 11,
+        "NZ_KZ819116.1": 11,
+        "NZ_KZ819071.1": 11,
+        "NZ_KZ819086.1": 11,
+        "NZ_KZ819101.1": 11,
+        "NZ_KZ819148.1": 11,
+        "NZ_KZ819133.1": 11,
+        "NZ_KZ819122.1": 11,
+        "NZ_KZ819092.1": 11
       }
     }
   ],
@@ -252,8 +333,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/115/855/GCF_003115855.1/bbi/GCF_003115855.1_ASM311585v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/115/855/GCF_003115855.1/bbi/GCF_003115855.1_ASM311585v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_003115855.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

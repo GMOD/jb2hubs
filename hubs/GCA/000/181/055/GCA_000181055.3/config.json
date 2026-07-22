@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_000181055.3",
           "ucsc": {
             "genome": "GCA_000181055.3",
             "taxId": "13249",
@@ -395,7 +396,38 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/181/055/GCA_000181055.3/bbi/GCA_000181055.3_Rhodnius_prolixus-3.0.3.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/181/055/GCA_000181055.3/bbi/GCA_000181055.3_Rhodnius_prolixus-3.0.3.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000181055.3-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_000181055.3_to_dm6_liftOver",
+      "name": "GCA_000181055.3 (bugs R.prolixus (2015)) to D. melanogaster (dm6) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_000181055.3", "dm6"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_000181055.3",
+        "queryAssembly": "dm6",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_000181055.3ToDm6.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_000181055.3ToDm6.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

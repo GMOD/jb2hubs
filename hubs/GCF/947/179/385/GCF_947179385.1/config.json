@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_947179385.1",
           "ucsc": {
             "genome": "GCF_947179385.1",
             "taxId": "2953985",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/179/385/GCF_947179385.1/GCF_947179385.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAMXBK010000001.1": 11,
+        "NZ_CAMXBK010000002.1": 11
       }
     }
   ],
@@ -204,8 +209,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/179/385/GCF_947179385.1/bbi/GCF_947179385.1_ilAriAges1.Wolbachia_sp_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/179/385/GCF_947179385.1/bbi/GCF_947179385.1_ilAriAges1.Wolbachia_sp_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_947179385.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_902728005.1",
           "ucsc": {
             "genome": "GCA_902728005.1",
             "taxId": "400667",
@@ -204,8 +205,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/728/005/GCA_902728005.1/bbi/GCA_902728005.1_Acinetobacter_baumannii_ATCC17978.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/902/728/005/GCA_902728005.1/bbi/GCA_902728005.1_Acinetobacter_baumannii_ATCC17978.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_902728005.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

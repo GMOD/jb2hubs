@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000315795.1",
           "ucsc": {
             "genome": "GCF_000315795.1",
             "taxId": "1238182",
@@ -37,6 +38,63 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/795/GCF_000315795.1/GCF_000315795.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_ANHY01000013.1": 11,
+        "NZ_ANHY01000045.1": 11,
+        "NZ_ANHY01000030.1": 11,
+        "NZ_ANHY01000051.1": 11,
+        "NZ_ANHY01000029.1": 11,
+        "NZ_ANHY01000018.1": 11,
+        "NZ_ANHY01000003.1": 11,
+        "NZ_ANHY01000020.1": 11,
+        "NZ_ANHY01000056.1": 11,
+        "NZ_ANHY01000041.1": 11,
+        "NZ_ANHY01000008.1": 11,
+        "NZ_ANHY01000025.1": 11,
+        "NZ_ANHY01000014.1": 11,
+        "NZ_ANHY01000046.1": 11,
+        "NZ_ANHY01000031.1": 11,
+        "NZ_ANHY01000052.1": 11,
+        "NZ_ANHY01000019.1": 11,
+        "NZ_ANHY01000004.1": 11,
+        "NZ_ANHY01000036.1": 11,
+        "NZ_ANHY01000021.1": 11,
+        "NZ_ANHY01000010.1": 11,
+        "NZ_ANHY01000057.1": 11,
+        "NZ_ANHY01000042.1": 11,
+        "NZ_ANHY01000009.1": 11,
+        "NZ_ANHY01000026.1": 11,
+        "NZ_ANHY01000015.1": 11,
+        "NZ_ANHY01000047.1": 11,
+        "NZ_ANHY01000032.1": 11,
+        "NZ_ANHY01000005.1": 11,
+        "NZ_ANHY01000022.1": 11,
+        "NZ_ANHY01000037.1": 11,
+        "NZ_ANHY01000011.1": 11,
+        "NZ_ANHY01000058.1": 11,
+        "NZ_ANHY01000043.1": 11,
+        "NZ_ANHY01000027.1": 11,
+        "NZ_ANHY01000001.1": 11,
+        "NZ_ANHY01000016.1": 11,
+        "NZ_ANHY01000048.1": 11,
+        "NZ_ANHY01000033.1": 11,
+        "NZ_ANHY01000054.1": 11,
+        "NZ_ANHY01000006.1": 11,
+        "NZ_ANHY01000038.1": 11,
+        "NZ_ANHY01000012.1": 11,
+        "NZ_ANHY01000059.1": 11,
+        "NZ_ANHY01000050.1": 11,
+        "NZ_ANHY01000028.1": 11,
+        "NZ_ANHY01000017.1": 11,
+        "NZ_ANHY01000002.1": 11,
+        "NZ_ANHY01000049.1": 11,
+        "NZ_ANHY01000034.1": 11,
+        "NZ_ANHY01000055.1": 11,
+        "NZ_ANHY01000040.1": 11,
+        "NZ_ANHY01000007.1": 11,
+        "NZ_ANHY01000039.1": 11,
+        "NZ_ANHY01000024.1": 11
       }
     }
   ],
@@ -204,8 +262,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/795/GCF_000315795.1/bbi/GCF_000315795.1_Caenispirillum_salinarum.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/795/GCF_000315795.1/bbi/GCF_000315795.1_Caenispirillum_salinarum.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000315795.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

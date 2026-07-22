@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_016861975.1",
           "ucsc": {
             "genome": "GCF_016861975.1",
             "taxId": "519421",
@@ -37,6 +38,88 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/861/975/GCF_016861975.1/GCF_016861975.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BOMB01000009.1": 11,
+        "NZ_BOMB01000015.1": 11,
+        "NZ_BOMB01000036.1": 11,
+        "NZ_BOMB01000021.1": 11,
+        "NZ_BOMB01000068.1": 11,
+        "NZ_BOMB01000057.1": 11,
+        "NZ_BOMB01000042.1": 11,
+        "NZ_BOMB01000074.1": 11,
+        "NZ_BOMB01000080.1": 11,
+        "NZ_BOMB01000005.1": 11,
+        "NZ_BOMB01000026.1": 11,
+        "NZ_BOMB01000011.1": 11,
+        "NZ_BOMB01000047.1": 11,
+        "NZ_BOMB01000032.1": 11,
+        "NZ_BOMB01000079.1": 11,
+        "NZ_BOMB01000064.1": 11,
+        "NZ_BOMB01000053.1": 11,
+        "NZ_BOMB01000070.1": 11,
+        "NZ_BOMB01000016.1": 11,
+        "NZ_BOMB01000001.1": 11,
+        "NZ_BOMB01000037.1": 11,
+        "NZ_BOMB01000022.1": 11,
+        "NZ_BOMB01000069.1": 11,
+        "NZ_BOMB01000058.1": 11,
+        "NZ_BOMB01000043.1": 11,
+        "NZ_BOMB01000075.1": 11,
+        "NZ_BOMB01000060.1": 11,
+        "NZ_BOMB01000081.1": 11,
+        "NZ_BOMB01000006.1": 11,
+        "NZ_BOMB01000027.1": 11,
+        "NZ_BOMB01000012.1": 11,
+        "NZ_BOMB01000048.1": 11,
+        "NZ_BOMB01000033.1": 11,
+        "NZ_BOMB01000065.1": 11,
+        "NZ_BOMB01000054.1": 11,
+        "NZ_BOMB01000071.1": 11,
+        "NZ_BOMB01000017.1": 11,
+        "NZ_BOMB01000002.1": 11,
+        "NZ_BOMB01000038.1": 11,
+        "NZ_BOMB01000023.1": 11,
+        "NZ_BOMB01000059.1": 11,
+        "NZ_BOMB01000044.1": 11,
+        "NZ_BOMB01000076.1": 11,
+        "NZ_BOMB01000061.1": 11,
+        "NZ_BOMB01000050.1": 11,
+        "NZ_BOMB01000007.1": 11,
+        "NZ_BOMB01000028.1": 11,
+        "NZ_BOMB01000013.1": 11,
+        "NZ_BOMB01000049.1": 11,
+        "NZ_BOMB01000034.1": 11,
+        "NZ_BOMB01000066.1": 11,
+        "NZ_BOMB01000055.1": 11,
+        "NZ_BOMB01000040.1": 11,
+        "NZ_BOMB01000072.1": 11,
+        "NZ_BOMB01000018.1": 11,
+        "NZ_BOMB01000003.1": 11,
+        "NZ_BOMB01000039.1": 11,
+        "NZ_BOMB01000024.1": 11,
+        "NZ_BOMB01000045.1": 11,
+        "NZ_BOMB01000030.1": 11,
+        "NZ_BOMB01000077.1": 11,
+        "NZ_BOMB01000051.1": 11,
+        "NZ_BOMB01000008.1": 11,
+        "NZ_BOMB01000029.1": 11,
+        "NZ_BOMB01000014.1": 11,
+        "NZ_BOMB01000035.1": 11,
+        "NZ_BOMB01000020.1": 11,
+        "NZ_BOMB01000067.1": 11,
+        "NZ_BOMB01000056.1": 11,
+        "NZ_BOMB01000041.1": 11,
+        "NZ_BOMB01000073.1": 11,
+        "NZ_BOMB01000019.1": 11,
+        "NZ_BOMB01000004.1": 11,
+        "NZ_BOMB01000025.1": 11,
+        "NZ_BOMB01000010.1": 11,
+        "NZ_BOMB01000046.1": 11,
+        "NZ_BOMB01000031.1": 11,
+        "NZ_BOMB01000078.1": 11,
+        "NZ_BOMB01000063.1": 11,
+        "NZ_BOMB01000052.1": 11
       }
     }
   ],
@@ -204,8 +287,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/861/975/GCF_016861975.1/bbi/GCF_016861975.1_ASM1686197v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/861/975/GCF_016861975.1/bbi/GCF_016861975.1_ASM1686197v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_016861975.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

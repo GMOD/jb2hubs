@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000317495.1",
           "ucsc": {
             "genome": "GCF_000317495.1",
             "taxId": "1173022",
@@ -37,6 +38,17 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/317/495/GCF_000317495.1/GCF_000317495.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NC_019756.1": 11,
+        "NC_019737.1": 11,
+        "NC_019754.1": 11,
+        "NC_019735.1": 11,
+        "NC_019733.1": 11,
+        "NC_019755.1": 11,
+        "NC_019736.1": 11,
+        "NC_019753.1": 11,
+        "NC_019734.1": 11
       }
     }
   ],
@@ -204,8 +216,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/317/495/GCF_000317495.1/bbi/GCF_000317495.1_ASM31749v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/317/495/GCF_000317495.1/bbi/GCF_000317495.1_ASM31749v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000317495.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

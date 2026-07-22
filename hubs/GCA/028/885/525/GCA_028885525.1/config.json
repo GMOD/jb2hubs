@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_028885525.1",
           "ucsc": {
             "genome": "GCA_028885525.1",
             "taxId": "9600",
@@ -399,8 +400,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/885/525/GCA_028885525.1/bbi/GCA_028885525.1_NHGRI_mPonPyg2-v1.1-hic.freeze_alt.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/885/525/GCA_028885525.1/bbi/GCA_028885525.1_NHGRI_mPonPyg2-v1.1-hic.freeze_alt.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_028885525.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {

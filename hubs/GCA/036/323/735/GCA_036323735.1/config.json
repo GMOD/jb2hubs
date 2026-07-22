@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_036323735.1",
           "ucsc": {
             "genome": "GCA_036323735.1",
             "taxId": "10116",
@@ -254,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -286,8 +297,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -318,8 +339,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -348,7 +379,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -412,8 +452,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqSelectCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.ncbiRefSeqSelectCurated.bb",
+        "aggregateField": "name"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-ncbiRefSeqSelect-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -562,8 +612,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/bbi/GCA_036323735.1_GRCr8.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -600,7 +660,14 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/contrib/evaSnp8/evaSnp8.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_036323735.1-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -628,6 +695,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/036/323/735/GCA_036323735.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_036323735.1_to_GCF_001704415.2_liftOver",
+      "name": "GCA_036323735.1 (Norway rat (BN/NHsdMcwi 2024 genbank)) to goat (v2 San Clemente 2016 USDA) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_036323735.1", "GCF_001704415.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_036323735.1",
+        "queryAssembly": "GCF_001704415.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_036323735.1ToGCF_001704415.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_036323735.1ToGCF_001704415.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

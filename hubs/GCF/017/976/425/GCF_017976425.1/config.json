@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_017976425.1",
           "ucsc": {
             "genome": "GCF_017976425.1",
             "taxId": "941984",
@@ -281,8 +282,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_017976425.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -313,8 +324,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_017976425.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -343,7 +364,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_017976425.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -527,8 +557,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_017976425.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -561,7 +601,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ensGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/bbi/GCF_017976425.1_fToxJac2.pri.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_017976425.1-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_017976425.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCF_017976425.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/017/976/425/GCF_017976425.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     },
     {
@@ -584,6 +662,48 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_017976425.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_017976425.1_to_GCA_017976295.1_liftOver",
+      "name": "GCF_017976425.1 (banded archerfish (primary hap 2021 refseq)) to banded archerfish (alternate hap 2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_017976425.1", "GCA_017976295.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_017976425.1",
+        "queryAssembly": "GCA_017976295.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_017976425.1ToGCA_017976295.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_017976425.1ToGCA_017976295.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_017976425.1_to_GCF_900634415.1_liftOver",
+      "name": "GCF_017976425.1 (banded archerfish (primary hap 2021 refseq)) to channel bull blenny (2019 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_017976425.1", "GCF_900634415.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_017976425.1",
+        "queryAssembly": "GCF_900634415.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_017976425.1ToGCF_900634415.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_017976425.1ToGCF_900634415.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

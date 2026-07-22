@@ -194,14 +194,80 @@ baseColorDefault genomicCodons
 labelSeparator " "
 html html/GCA_004026885.1_MegLyr_v1_BIUU.ensGene
 
-track HLTOGAannotvHg38v1
-bigDataUrl bbi/HLTOGAannotVsHg38v1.bb
-shortLabel TOGA vs. hg38
-longLabel TOGA annotations using human/hg38 as reference
+
+track TOGAv2
+shortLabel TOGA V2
+longLabel TOGA 2.0 annotations, multiple reference
 group genes
-visibility pack
-itemRgb on
-type bigBed 12
-searchIndex name
-searchTrix  ixIxx/HLTOGAannotVsHg38v1.ix
-html html/TOGAannotation
+visibility hide
+type bigBed 12 +
+superTrack on
+html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLbosTau10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsMm10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLeleMaxInd3Av2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHg38v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2

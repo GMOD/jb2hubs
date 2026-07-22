@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_042654865.1",
           "ucsc": {
             "genome": "GCF_042654865.1",
             "taxId": "3252683",
@@ -37,6 +38,13 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/042/654/865/GCF_042654865.1/GCF_042654865.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JBHSFD010000001.1": 11,
+        "NZ_JBHSFD010000004.1": 11,
+        "NZ_JBHSFD010000002.1": 11,
+        "NZ_JBHSFD010000005.1": 11,
+        "NZ_JBHSFD010000003.1": 11
       }
     }
   ],
@@ -178,8 +186,8 @@
       "metadata": {
         "ucsc": {
           "track": "ncbiGene",
-          "longLabel": "NCBI gene predictions",
-          "shortLabel": "NCBI Genes",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
           "visibility": "pack",
           "color": "0,80,150",
           "altColor": "150,80,0",
@@ -191,21 +199,31 @@
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_042654865.1_ASM4265486v1.ncbiGene.ix",
           "urlLabel": "Entrez gene:",
-          "labelFields": "name,geneName,geneName2",
+          "labelFields": "geneName,geneName2",
           "defaultLabelFields": "geneName2",
           "group": "genes"
         }
       },
       "category": ["Genes and Gene Predictions"],
       "trackId": "GCF_042654865.1-ncbiGene",
-      "description": "NCBI gene predictions",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
       "assemblyNames": ["GCF_042654865.1"],
-      "name": "NCBI Genes",
+      "name": "NCBI GenBank",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/042/654/865/GCF_042654865.1/bbi/GCF_042654865.1_ASM4265486v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/042/654/865/GCF_042654865.1/bbi/GCF_042654865.1_ASM4265486v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_042654865.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

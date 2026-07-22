@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000160535.1",
           "ucsc": {
             "genome": "GCF_000160535.1",
             "taxId": "585502",
@@ -37,6 +38,37 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/160/535/GCF_000160535.1/GCF_000160535.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_GG704791.1": 11,
+        "NZ_GG704784.1": 11,
+        "NZ_GG704807.1": 11,
+        "NZ_GG704799.1": 11,
+        "NZ_GG704802.1": 11,
+        "NZ_GG704794.1": 11,
+        "NZ_GG704787.1": 11,
+        "NZ_GG704782.1": 11,
+        "NZ_GG704797.1": 11,
+        "NZ_GG704800.1": 11,
+        "NZ_GG704792.1": 11,
+        "NZ_GG704785.1": 11,
+        "NZ_GG704808.1": 11,
+        "NZ_GG704780.1": 11,
+        "NZ_GG704803.1": 11,
+        "NZ_GG704795.1": 11,
+        "NZ_GG704788.1": 11,
+        "NZ_GG704790.1": 11,
+        "NZ_GG704783.1": 11,
+        "NZ_GG704806.1": 11,
+        "NZ_GG704798.1": 11,
+        "NZ_GG704801.1": 11,
+        "NZ_GG704793.1": 11,
+        "NZ_GG704786.1": 11,
+        "NZ_GG704809.1": 11,
+        "NZ_GG704781.1": 11,
+        "NZ_GG704804.1": 11,
+        "NZ_GG704796.1": 11,
+        "NZ_GG704789.1": 11
       }
     }
   ],
@@ -252,8 +284,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/160/535/GCF_000160535.1/bbi/GCF_000160535.1_ASM16053v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/160/535/GCF_000160535.1/bbi/GCF_000160535.1_ASM16053v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000160535.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

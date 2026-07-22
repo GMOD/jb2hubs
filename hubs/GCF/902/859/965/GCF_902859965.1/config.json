@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_902859965.1",
           "ucsc": {
             "genome": "GCF_902859965.1",
             "taxId": "1287736",
@@ -37,6 +38,24 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/859/965/GCF_902859965.1/GCF_902859965.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CADIKO010000001.1": 11,
+        "NZ_CADIKO010000016.1": 11,
+        "NZ_CADIKO010000009.1": 11,
+        "NZ_CADIKO010000011.1": 11,
+        "NZ_CADIKO010000004.1": 11,
+        "NZ_CADIKO010000019.1": 11,
+        "NZ_CADIKO010000014.1": 11,
+        "NZ_CADIKO010000007.1": 11,
+        "NZ_CADIKO010000002.1": 11,
+        "NZ_CADIKO010000012.1": 11,
+        "NZ_CADIKO010000005.1": 11,
+        "NZ_CADIKO010000015.1": 11,
+        "NZ_CADIKO010000008.1": 11,
+        "NZ_CADIKO010000003.1": 11,
+        "NZ_CADIKO010000018.1": 11,
+        "NZ_CADIKO010000006.1": 11
       }
     }
   ],
@@ -204,8 +223,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/859/965/GCF_902859965.1/bbi/GCF_902859965.1_LMG_26854.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/859/965/GCF_902859965.1/bbi/GCF_902859965.1_LMG_26854.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_902859965.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

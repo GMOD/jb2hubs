@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_037102585.1",
           "ucsc": {
             "genome": "GCF_037102585.1",
             "taxId": "43959",
@@ -37,6 +38,26 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/GCF_037102585.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NW_027043820.1": 12,
+        "NW_027043819.1": 12,
+        "NW_027043835.1": 12,
+        "NW_027043828.1": 12,
+        "NW_027043830.1": 12,
+        "NW_027043823.1": 12,
+        "NW_027043838.1": 12,
+        "NW_027043826.1": 12,
+        "NW_027043821.1": 12,
+        "NW_027043829.1": 12,
+        "NW_027043831.1": 12,
+        "NW_027043824.1": 12,
+        "NW_027043839.1": 3,
+        "NW_027043827.1": 12,
+        "NW_027043822.1": 12,
+        "NW_027043837.1": 12,
+        "NW_027043832.1": 12,
+        "NW_027043825.1": 12
       }
     }
   ],
@@ -229,8 +250,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/bbi/GCF_037102585.1_ASM3710258v1.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/bbi/GCF_037102585.1_ASM3710258v1.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_037102585.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -261,8 +292,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/bbi/GCF_037102585.1_ASM3710258v1.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/bbi/GCF_037102585.1_ASM3710258v1.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_037102585.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -446,8 +487,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/bbi/GCF_037102585.1_ASM3710258v1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/102/585/GCF_037102585.1/bbi/GCF_037102585.1_ASM3710258v1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_037102585.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

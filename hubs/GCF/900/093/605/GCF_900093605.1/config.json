@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900093605.1",
           "ucsc": {
             "genome": "GCF_900093605.1",
             "taxId": "1867952",
@@ -37,6 +38,52 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/093/605/GCF_900093605.1/GCF_900093605.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FLYE01000041.1": 11,
+        "NZ_FLYE01000019.1": 11,
+        "NZ_FLYE01000004.1": 11,
+        "NZ_FLYE01000010.1": 11,
+        "NZ_FLYE01000025.1": 11,
+        "NZ_FLYE01000046.1": 11,
+        "NZ_FLYE01000031.1": 11,
+        "NZ_FLYE01000009.1": 11,
+        "NZ_FLYE01000015.1": 11,
+        "NZ_FLYE01000042.1": 11,
+        "NZ_FLYE01000005.1": 11,
+        "NZ_FLYE01000026.1": 11,
+        "NZ_FLYE01000011.1": 11,
+        "NZ_FLYE01000047.1": 11,
+        "NZ_FLYE01000032.1": 11,
+        "NZ_FLYE01000016.1": 11,
+        "NZ_FLYE01000001.1": 11,
+        "NZ_FLYE01000037.1": 11,
+        "NZ_FLYE01000022.1": 11,
+        "NZ_FLYE01000006.1": 11,
+        "NZ_FLYE01000027.1": 11,
+        "NZ_FLYE01000012.1": 11,
+        "NZ_FLYE01000048.1": 11,
+        "NZ_FLYE01000033.1": 11,
+        "NZ_FLYE01000017.1": 11,
+        "NZ_FLYE01000002.1": 11,
+        "NZ_FLYE01000038.1": 11,
+        "NZ_FLYE01000023.1": 11,
+        "NZ_FLYE01000044.1": 11,
+        "NZ_FLYE01000007.1": 11,
+        "NZ_FLYE01000028.1": 11,
+        "NZ_FLYE01000013.1": 11,
+        "NZ_FLYE01000034.1": 11,
+        "NZ_FLYE01000040.1": 11,
+        "NZ_FLYE01000003.1": 11,
+        "NZ_FLYE01000018.1": 11,
+        "NZ_FLYE01000024.1": 11,
+        "NZ_FLYE01000045.1": 11,
+        "NZ_FLYE01000030.1": 11,
+        "NZ_FLYE01000008.1": 11,
+        "NZ_FLYE01000029.1": 11,
+        "NZ_FLYE01000014.1": 11,
+        "NZ_FLYE01000035.1": 11,
+        "NZ_FLYE01000020.1": 11
       }
     }
   ],
@@ -252,8 +299,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/093/605/GCF_900093605.1/bbi/GCF_900093605.1_Terasakiella_magnetica_strain_PR1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/093/605/GCF_900093605.1/bbi/GCF_900093605.1_Terasakiella_magnetica_strain_PR1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900093605.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900314615.1",
           "ucsc": {
             "genome": "GCF_900314615.1",
             "taxId": "253161",
@@ -37,6 +38,63 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/314/615/GCF_900314615.1/GCF_900314615.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OMWA01000036.1": 11,
+        "NZ_OMWA01000021.1": 11,
+        "NZ_OMWA01000053.1": 11,
+        "NZ_OMWA01000005.1": 11,
+        "NZ_OMWA01000026.1": 11,
+        "NZ_OMWA01000011.1": 11,
+        "NZ_OMWA01000043.1": 11,
+        "NZ_OMWA01000032.1": 11,
+        "NZ_OMWA01000016.1": 11,
+        "NZ_OMWA01000001.1": 11,
+        "NZ_OMWA01000048.1": 11,
+        "NZ_OMWA01000037.1": 11,
+        "NZ_OMWA01000022.1": 11,
+        "NZ_OMWA01000054.1": 11,
+        "NZ_OMWA01000006.1": 11,
+        "NZ_OMWA01000027.1": 11,
+        "NZ_OMWA01000012.1": 11,
+        "NZ_OMWA01000044.1": 11,
+        "NZ_OMWA01000033.1": 11,
+        "NZ_OMWA01000050.1": 11,
+        "NZ_OMWA01000017.1": 11,
+        "NZ_OMWA01000002.1": 11,
+        "NZ_OMWA01000049.1": 11,
+        "NZ_OMWA01000038.1": 11,
+        "NZ_OMWA01000023.1": 11,
+        "NZ_OMWA01000055.1": 11,
+        "NZ_OMWA01000040.1": 11,
+        "NZ_OMWA01000007.1": 11,
+        "NZ_OMWA01000028.1": 11,
+        "NZ_OMWA01000013.1": 11,
+        "NZ_OMWA01000045.1": 11,
+        "NZ_OMWA01000034.1": 11,
+        "NZ_OMWA01000051.1": 11,
+        "NZ_OMWA01000018.1": 11,
+        "NZ_OMWA01000003.1": 11,
+        "NZ_OMWA01000039.1": 11,
+        "NZ_OMWA01000024.1": 11,
+        "NZ_OMWA01000056.1": 11,
+        "NZ_OMWA01000041.1": 11,
+        "NZ_OMWA01000030.1": 11,
+        "NZ_OMWA01000008.1": 11,
+        "NZ_OMWA01000029.1": 11,
+        "NZ_OMWA01000014.1": 11,
+        "NZ_OMWA01000046.1": 11,
+        "NZ_OMWA01000035.1": 11,
+        "NZ_OMWA01000020.1": 11,
+        "NZ_OMWA01000019.1": 11,
+        "NZ_OMWA01000004.1": 11,
+        "NZ_OMWA01000025.1": 11,
+        "NZ_OMWA01000010.1": 11,
+        "NZ_OMWA01000042.1": 11,
+        "NZ_OMWA01000031.1": 11,
+        "NZ_OMWA01000009.1": 11,
+        "NZ_OMWA01000015.1": 11,
+        "NZ_OMWA01000047.1": 11
       }
     }
   ],
@@ -227,8 +285,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/314/615/GCF_900314615.1/bbi/GCF_900314615.1_Rumen_uncultured_genome_RUG018.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/314/615/GCF_900314615.1/bbi/GCF_900314615.1_Rumen_uncultured_genome_RUG018.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900314615.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

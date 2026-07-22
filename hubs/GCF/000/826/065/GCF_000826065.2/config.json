@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000826065.2",
           "ucsc": {
             "genome": "GCF_000826065.2",
             "taxId": "1522311",
@@ -37,6 +38,25 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/065/GCF_000826065.2/GCF_000826065.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN623542.1": 11,
+        "NZ_LN623535.1": 11,
+        "NZ_LN623530.1": 11,
+        "NZ_LN623529.1": 11,
+        "NZ_LN623538.1": 11,
+        "NZ_LN623540.1": 11,
+        "NZ_LN623533.1": 11,
+        "NZ_LN623527.1": 11,
+        "NZ_LN623543.1": 11,
+        "NZ_LN623536.1": 11,
+        "NZ_LN623531.1": 11,
+        "NZ_LN623539.1": 11,
+        "NZ_LN623541.1": 11,
+        "NZ_LN623534.1": 11,
+        "NZ_LN623528.1": 11,
+        "NZ_LN623537.1": 11,
+        "NZ_LN623532.1": 11
       }
     }
   ],
@@ -252,8 +272,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/065/GCF_000826065.2/bbi/GCF_000826065.2_Tessaracoccus_massiliensis_SIT6.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/065/GCF_000826065.2/bbi/GCF_000826065.2_Tessaracoccus_massiliensis_SIT6.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000826065.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

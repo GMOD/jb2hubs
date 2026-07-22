@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_017976295.1",
           "ucsc": {
             "genome": "GCA_017976295.1",
             "taxId": "941984",
@@ -348,7 +349,66 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/017/976/295/GCA_017976295.1/bbi/GCA_017976295.1_fToxJac2.alt.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/017/976/295/GCA_017976295.1/bbi/GCA_017976295.1_fToxJac2.alt.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_017976295.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/017/976/295/GCA_017976295.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_017976295.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_017976295.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/017/976/295/GCA_017976295.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_017976295.1_to_GCF_017976425.1_liftOver",
+      "name": "GCA_017976295.1 (banded archerfish (alternate hap 2021)) to banded archerfish (primary hap 2021 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_017976295.1", "GCF_017976425.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_017976295.1",
+        "queryAssembly": "GCF_017976425.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_017976295.1ToGCF_017976425.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_017976295.1ToGCF_017976425.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

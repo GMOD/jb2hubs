@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_013340305.1",
           "ucsc": {
             "genome": "GCF_013340305.1",
             "taxId": "415242",
@@ -37,6 +38,45 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/340/305/GCF_013340305.1/GCF_013340305.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BLVP01000035.1": 11,
+        "NZ_BLVP01000028.1": 11,
+        "NZ_BLVP01000014.1": 11,
+        "NZ_BLVP01000007.1": 11,
+        "NZ_BLVP01000030.1": 11,
+        "NZ_BLVP01000023.1": 11,
+        "NZ_BLVP01000002.1": 11,
+        "NZ_BLVP01000038.1": 11,
+        "NZ_BLVP01000033.1": 11,
+        "NZ_BLVP01000026.1": 11,
+        "NZ_BLVP01000012.1": 11,
+        "NZ_BLVP01000005.1": 11,
+        "NZ_BLVP01000021.1": 11,
+        "NZ_BLVP01000043.1": 11,
+        "NZ_BLVP01000036.1": 11,
+        "NZ_BLVP01000015.1": 11,
+        "NZ_BLVP01000008.1": 11,
+        "NZ_BLVP01000031.1": 11,
+        "NZ_BLVP01000024.1": 11,
+        "NZ_BLVP01000010.1": 11,
+        "NZ_BLVP01000003.1": 11,
+        "NZ_BLVP01000046.1": 11,
+        "NZ_BLVP01000018.1": 11,
+        "NZ_BLVP01000041.1": 11,
+        "NZ_BLVP01000027.1": 11,
+        "NZ_BLVP01000013.1": 11,
+        "NZ_BLVP01000006.1": 11,
+        "NZ_BLVP01000022.1": 11,
+        "NZ_BLVP01000001.1": 11,
+        "NZ_BLVP01000044.1": 11,
+        "NZ_BLVP01000016.1": 11,
+        "NZ_BLVP01000009.1": 11,
+        "NZ_BLVP01000011.1": 11,
+        "NZ_BLVP01000004.1": 11,
+        "NZ_BLVP01000047.1": 11,
+        "NZ_BLVP01000020.1": 11,
+        "NZ_BLVP01000019.1": 11
       }
     }
   ],
@@ -204,8 +244,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/340/305/GCF_013340305.1/bbi/GCF_013340305.1_ASM1334030v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/340/305/GCF_013340305.1/bbi/GCF_013340305.1_ASM1334030v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_013340305.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000427785.1",
           "ucsc": {
             "genome": "GCF_000427785.1",
             "taxId": "1111733",
@@ -37,6 +38,83 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/427/785/GCF_000427785.1/GCF_000427785.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_ATYR01000007.1": 11,
+        "NZ_ATYR01000039.1": 11,
+        "NZ_ATYR01000028.1": 11,
+        "NZ_ATYR01000013.1": 11,
+        "NZ_ATYR01000045.1": 11,
+        "NZ_ATYR01000030.1": 11,
+        "NZ_ATYR01000066.1": 11,
+        "NZ_ATYR01000051.1": 11,
+        "NZ_ATYR01000072.1": 11,
+        "NZ_ATYR01000018.1": 11,
+        "NZ_ATYR01000003.1": 11,
+        "NZ_ATYR01000024.1": 11,
+        "NZ_ATYR01000056.1": 11,
+        "NZ_ATYR01000041.1": 11,
+        "NZ_ATYR01000077.1": 11,
+        "NZ_ATYR01000062.1": 11,
+        "NZ_ATYR01000008.1": 11,
+        "NZ_ATYR01000029.1": 11,
+        "NZ_ATYR01000014.1": 11,
+        "NZ_ATYR01000046.1": 11,
+        "NZ_ATYR01000031.1": 11,
+        "NZ_ATYR01000067.1": 11,
+        "NZ_ATYR01000052.1": 11,
+        "NZ_ATYR01000073.1": 11,
+        "NZ_ATYR01000004.1": 11,
+        "NZ_ATYR01000025.1": 11,
+        "NZ_ATYR01000010.1": 11,
+        "NZ_ATYR01000057.1": 11,
+        "NZ_ATYR01000042.1": 11,
+        "NZ_ATYR01000063.1": 11,
+        "NZ_ATYR01000009.1": 11,
+        "NZ_ATYR01000015.1": 11,
+        "NZ_ATYR01000047.1": 11,
+        "NZ_ATYR01000032.1": 11,
+        "NZ_ATYR01000021.1": 11,
+        "NZ_ATYR01000068.1": 11,
+        "NZ_ATYR01000053.1": 11,
+        "NZ_ATYR01000074.1": 11,
+        "NZ_ATYR01000005.1": 11,
+        "NZ_ATYR01000037.1": 11,
+        "NZ_ATYR01000026.1": 11,
+        "NZ_ATYR01000011.1": 11,
+        "NZ_ATYR01000058.1": 11,
+        "NZ_ATYR01000043.1": 11,
+        "NZ_ATYR01000064.1": 11,
+        "NZ_ATYR01000070.1": 11,
+        "NZ_ATYR01000016.1": 11,
+        "NZ_ATYR01000001.1": 11,
+        "NZ_ATYR01000048.1": 11,
+        "NZ_ATYR01000033.1": 11,
+        "NZ_ATYR01000022.1": 11,
+        "NZ_ATYR01000069.1": 11,
+        "NZ_ATYR01000054.1": 11,
+        "NZ_KE386581.1": 11,
+        "NZ_ATYR01000075.1": 11,
+        "NZ_ATYR01000060.1": 11,
+        "NZ_ATYR01000006.1": 11,
+        "NZ_ATYR01000038.1": 11,
+        "NZ_ATYR01000027.1": 11,
+        "NZ_ATYR01000012.1": 11,
+        "NZ_ATYR01000059.1": 11,
+        "NZ_ATYR01000044.1": 11,
+        "NZ_ATYR01000065.1": 11,
+        "NZ_ATYR01000050.1": 11,
+        "NZ_ATYR01000071.1": 11,
+        "NZ_ATYR01000017.1": 11,
+        "NZ_ATYR01000002.1": 11,
+        "NZ_ATYR01000049.1": 11,
+        "NZ_ATYR01000034.1": 11,
+        "NZ_ATYR01000023.1": 11,
+        "NZ_ATYR01000055.1": 11,
+        "NZ_ATYR01000040.1": 11,
+        "NZ_KE386582.1": 11,
+        "NZ_ATYR01000076.1": 11,
+        "NZ_ATYR01000061.1": 11
       }
     }
   ],
@@ -252,8 +330,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/427/785/GCF_000427785.1/bbi/GCF_000427785.1_ASM42778v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/427/785/GCF_000427785.1/bbi/GCF_000427785.1_ASM42778v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000427785.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

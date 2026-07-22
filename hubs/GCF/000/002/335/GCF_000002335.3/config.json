@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000002335.3",
           "ucsc": {
             "genome": "GCF_000002335.3",
             "taxId": "7070",
@@ -40,6 +41,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/GCF_000002335.3.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NC_003081.2": 5
       }
     }
   ],
@@ -279,8 +283,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000002335.3-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -311,8 +325,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000002335.3-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -343,8 +367,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000002335.3-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -373,7 +407,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000002335.3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -557,8 +600,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/002/335/GCF_000002335.3/bbi/GCF_000002335.3_Tcas5.2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000002335.3-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -580,6 +633,48 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_000002335.3"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_000002335.3_to_GCF_000001215.4_liftOver",
+      "name": "GCF_000002335.3 (red flour beetle) to fly D.melanogaster liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_000002335.3", "GCF_000001215.4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_000002335.3",
+        "queryAssembly": "GCF_000001215.4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_000002335.3ToGCF_000001215.4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_000002335.3ToGCF_000001215.4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_000002335.3_to_GCF_020466585.1_liftOver",
+      "name": "GCF_000002335.3 (red flour beetle) to mountain pine beetle (2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_000002335.3", "GCF_020466585.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_000002335.3",
+        "queryAssembly": "GCF_020466585.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_000002335.3ToGCF_020466585.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_000002335.3ToGCF_020466585.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

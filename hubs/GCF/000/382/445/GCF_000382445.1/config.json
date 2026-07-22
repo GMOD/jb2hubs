@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000382445.1",
           "ucsc": {
             "genome": "GCF_000382445.1",
             "taxId": "1121098",
@@ -37,6 +38,17 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/382/445/GCF_000382445.1/GCF_000382445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KB905472.1": 11,
+        "NZ_KB905475.1": 11,
+        "NZ_KB905478.1": 11,
+        "NZ_KB905473.1": 11,
+        "NZ_KB905483.1": 11,
+        "NZ_KB905476.1": 11,
+        "NZ_KB905486.1": 11,
+        "NZ_KB905474.1": 11,
+        "NZ_KB905477.1": 11
       }
     }
   ],
@@ -252,8 +264,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/382/445/GCF_000382445.1/bbi/GCF_000382445.1_Bact_mass_DSM_17679_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/382/445/GCF_000382445.1/bbi/GCF_000382445.1_Bact_mass_DSM_17679_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000382445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

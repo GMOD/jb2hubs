@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_903652925.1",
           "ucsc": {
             "genome": "GCF_903652925.1",
             "taxId": "1287737",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/652/925/GCF_903652925.1/GCF_903652925.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAHLAR010000002.1": 11,
+        "NZ_CAHLAR010000024.1": 11,
+        "NZ_CAHLAR010000017.1": 11,
+        "NZ_CAHLAR010000012.1": 11,
+        "NZ_CAHLAR010000005.1": 11,
+        "NZ_CAHLAR010000022.1": 11,
+        "NZ_CAHLAR010000015.1": 11,
+        "NZ_CAHLAR010000008.1": 11,
+        "NZ_CAHLAR010000010.1": 11,
+        "NZ_CAHLAR010000003.1": 11,
+        "NZ_CAHLAR010000025.1": 11,
+        "NZ_CAHLAR010000018.1": 11,
+        "NZ_CAHLAR010000020.1": 11,
+        "NZ_CAHLAR010000013.1": 11,
+        "NZ_CAHLAR010000006.1": 11,
+        "NZ_CAHLAR010000028.1": 11,
+        "NZ_CAHLAR010000001.1": 11,
+        "NZ_CAHLAR010000030.1": 11,
+        "NZ_CAHLAR010000023.1": 11,
+        "NZ_CAHLAR010000016.1": 11,
+        "NZ_CAHLAR010000009.1": 11,
+        "NZ_CAHLAR010000011.1": 11,
+        "NZ_CAHLAR010000004.1": 11,
+        "NZ_CAHLAR010000019.1": 11,
+        "NZ_CAHLAR010000021.1": 11,
+        "NZ_CAHLAR010000014.1": 11,
+        "NZ_CAHLAR010000007.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/652/925/GCF_903652925.1/bbi/GCF_903652925.1_LMG_26857.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/652/925/GCF_903652925.1/bbi/GCF_903652925.1_LMG_26857.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_903652925.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

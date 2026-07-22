@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_028372415.1",
           "ucsc": {
             "genome": "GCF_028372415.1",
             "taxId": "9315",
@@ -284,8 +285,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_028372415.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -316,8 +327,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_028372415.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -346,7 +367,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_028372415.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -530,8 +560,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/028/372/415/GCF_028372415.1/bbi/GCF_028372415.1_mMacEug1.pri_v2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_028372415.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -553,6 +593,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_028372415.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_028372415.1_to_GCF_001704415.2_liftOver",
+      "name": "GCF_028372415.1 (tammar wallaby (v2 primary hap 2023 refseq)) to goat (v2 San Clemente 2016 USDA) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_028372415.1", "GCF_001704415.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_028372415.1",
+        "queryAssembly": "GCF_001704415.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_028372415.1ToGCF_001704415.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_028372415.1ToGCF_001704415.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",

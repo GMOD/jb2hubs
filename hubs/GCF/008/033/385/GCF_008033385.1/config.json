@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_008033385.1",
           "ucsc": {
             "genome": "GCF_008033385.1",
             "taxId": "2599389",
@@ -37,6 +38,62 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/008/033/385/GCF_008033385.1/GCF_008033385.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VOGY01000054.1": 11,
+        "NZ_VOGY01000017.1": 11,
+        "NZ_VOGY01000006.1": 11,
+        "NZ_VOGY01000038.1": 11,
+        "NZ_VOGY01000023.1": 11,
+        "NZ_VOGY01000044.1": 11,
+        "NZ_VOGY01000050.1": 11,
+        "NZ_VOGY01000028.1": 11,
+        "NZ_VOGY01000013.1": 11,
+        "NZ_VOGY01000002.1": 11,
+        "NZ_VOGY01000049.1": 11,
+        "NZ_VOGY01000034.1": 11,
+        "NZ_VOGY01000055.1": 11,
+        "NZ_VOGY01000040.1": 11,
+        "NZ_VOGY01000018.1": 11,
+        "NZ_VOGY01000007.1": 11,
+        "NZ_VOGY01000039.1": 11,
+        "NZ_VOGY01000045.1": 11,
+        "NZ_VOGY01000030.1": 11,
+        "NZ_VOGY01000051.1": 11,
+        "NZ_VOGY01000014.1": 11,
+        "NZ_VOGY01000029.1": 11,
+        "NZ_VOGY01000003.1": 11,
+        "NZ_VOGY01000035.1": 11,
+        "NZ_VOGY01000020.1": 11,
+        "NZ_VOGY01000041.1": 11,
+        "NZ_VOGY01000019.1": 11,
+        "NZ_VOGY01000008.1": 11,
+        "NZ_VOGY01000025.1": 11,
+        "NZ_VOGY01000046.1": 11,
+        "NZ_ML701731.1": 11,
+        "NZ_VOGY01000031.1": 11,
+        "NZ_VOGY01000052.1": 11,
+        "NZ_VOGY01000015.1": 11,
+        "NZ_VOGY01000004.1": 11,
+        "NZ_VOGY01000021.1": 11,
+        "NZ_VOGY01000036.1": 11,
+        "NZ_VOGY01000057.1": 11,
+        "NZ_VOGY01000042.1": 11,
+        "NZ_VOGY01000009.1": 11,
+        "NZ_VOGY01000026.1": 11,
+        "NZ_VOGY01000047.1": 11,
+        "NZ_VOGY01000032.1": 11,
+        "NZ_VOGY01000053.1": 11,
+        "NZ_VOGY01000016.1": 11,
+        "NZ_VOGY01000005.1": 11,
+        "NZ_VOGY01000037.1": 11,
+        "NZ_VOGY01000022.1": 11,
+        "NZ_VOGY01000043.1": 11,
+        "NZ_VOGY01000027.1": 11,
+        "NZ_VOGY01000012.1": 11,
+        "NZ_VOGY01000001.1": 11,
+        "NZ_VOGY01000048.1": 11,
+        "NZ_VOGY01000033.1": 11
       }
     }
   ],
@@ -229,8 +286,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/008/033/385/GCF_008033385.1/bbi/GCF_008033385.1_ASM803338v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/008/033/385/GCF_008033385.1/bbi/GCF_008033385.1_ASM803338v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_008033385.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

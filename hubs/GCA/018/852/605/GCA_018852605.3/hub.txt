@@ -298,3 +298,39 @@ html html/GCA_018852605.3_hg002v1.1.pat.chainNet
         speciesOrder hg38
         priority 7
 
+
+##############################################################################
+# HPRCv2 sequence: hg002v1.1.pat_GCA_018852605.3 - GCA_018852605.3
+##############################################################################
+track chainNetGCA_018852605.3
+compositeTrack on
+shortLabel HPRCv2 GRCh38 Chain
+longLabel HPRCv2 Lift Over Chain to human/GRCh38
+subGroup1 view Views chain=Chain
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb hg38
+html contrib/HPRCv2/hg38Chain.html
+
+    track chainNetGCA_018852605.3Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_018852605.3
+    spectrum on
+
+        track chainLiftOverGCA_018852605.3
+        parent chainNetGCA_018852605.3Viewchain
+        subGroups view=chain
+        shortLabel GRCh38 loChain
+        longLabel HPRCv2 GRCh38 Lift Over Chained Alignments
+        type bigChain GCA_018852605.3
+        bigDataUrl contrib/HPRCv2/chainLiftOverHg38.bb
+        linkDataUrl contrib/HPRCv2/chainLiftOverHg38Link.bb
+        priority 4

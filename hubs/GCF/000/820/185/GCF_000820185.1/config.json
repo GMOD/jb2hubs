@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000820185.1",
           "ucsc": {
             "genome": "GCF_000820185.1",
             "taxId": "324617",
@@ -37,6 +38,57 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/820/185/GCF_000820185.1/GCF_000820185.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CDCA01000027.1": 11,
+        "NZ_CDCA01000016.1": 11,
+        "NZ_CDCA01000048.1": 11,
+        "NZ_CDCA01000033.1": 11,
+        "NZ_CDCA01000006.1": 11,
+        "NZ_CDCA01000038.1": 11,
+        "NZ_CDCA01000023.1": 11,
+        "NZ_CDCA01000012.1": 11,
+        "NZ_CDCA01000044.1": 11,
+        "NZ_CDCA01000050.1": 11,
+        "NZ_CDCA01000028.1": 11,
+        "NZ_CDCA01000017.1": 11,
+        "NZ_CDCA01000002.1": 11,
+        "NZ_CDCA01000049.1": 11,
+        "NZ_CDCA01000034.1": 11,
+        "NZ_CDCA01000040.1": 11,
+        "NZ_CDCA01000007.1": 11,
+        "NZ_CDCA01000039.1": 11,
+        "NZ_CDCA01000024.1": 11,
+        "NZ_CDCA01000045.1": 11,
+        "NZ_CDCA01000030.1": 11,
+        "NZ_CDCA01000051.1": 11,
+        "NZ_CDCA01000029.1": 11,
+        "NZ_CDCA01000018.1": 11,
+        "NZ_CDCA01000003.1": 11,
+        "NZ_CDCA01000020.1": 11,
+        "NZ_CDCA01000035.1": 11,
+        "NZ_CDCA01000041.1": 11,
+        "NZ_CDCA01000008.1": 11,
+        "NZ_CDCA01000025.1": 11,
+        "NZ_CDCA01000014.1": 11,
+        "NZ_CDCA01000046.1": 11,
+        "NZ_CDCA01000031.1": 11,
+        "NZ_CDCA01000019.1": 11,
+        "NZ_CDCA01000004.1": 11,
+        "NZ_CDCA01000036.1": 11,
+        "NZ_CDCA01000021.1": 11,
+        "NZ_CDCA01000010.1": 11,
+        "NZ_CDCA01000042.1": 11,
+        "NZ_CDCA01000009.1": 11,
+        "NZ_CDCA01000026.1": 11,
+        "NZ_CDCA01000015.1": 11,
+        "NZ_CDCA01000047.1": 11,
+        "NZ_CDCA01000032.1": 11,
+        "NZ_CDCA01000005.1": 11,
+        "NZ_CDCA01000037.1": 11,
+        "NZ_CDCA01000022.1": 11,
+        "NZ_CDCA01000011.1": 11,
+        "NZ_CDCA01000043.1": 11
       }
     }
   ],
@@ -204,8 +256,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/820/185/GCF_000820185.1/bbi/GCF_000820185.1_PRJEB7042.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/820/185/GCF_000820185.1/bbi/GCF_000820185.1_PRJEB7042.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000820185.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

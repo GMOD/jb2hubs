@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001012825.1",
           "ucsc": {
             "genome": "GCF_001012825.1",
             "taxId": "1306852",
@@ -37,6 +38,85 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/012/825/GCF_001012825.1/GCF_001012825.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LCZJ02000039.1": 11,
+        "NZ_LCZJ02000028.1": 11,
+        "NZ_LCZJ02000013.1": 11,
+        "NZ_LCZJ02000030.1": 11,
+        "NZ_LCZJ02000066.1": 11,
+        "NZ_LCZJ02000051.1": 11,
+        "NZ_LCZJ02000098.1": 11,
+        "NZ_LCZJ02000072.1": 11,
+        "NZ_LCZJ02000029.1": 11,
+        "NZ_LCZJ02000018.1": 11,
+        "NZ_LCZJ02000003.1": 11,
+        "NZ_LCZJ02000035.1": 11,
+        "NZ_LCZJ02000024.1": 11,
+        "NZ_LCZJ02000041.1": 11,
+        "NZ_LCZJ02000088.1": 11,
+        "NZ_LCZJ02000107.1": 11,
+        "NZ_LCZJ02000062.1": 11,
+        "NZ_LCZJ02000094.1": 11,
+        "NZ_LCZJ02000008.1": 11,
+        "NZ_LCZJ02000014.1": 11,
+        "NZ_LCZJ02000031.1": 11,
+        "NZ_LCZJ02000020.1": 11,
+        "NZ_LCZJ02000099.1": 11,
+        "NZ_LCZJ02000084.1": 11,
+        "NZ_LCZJ02000073.1": 11,
+        "NZ_LCZJ02000090.1": 11,
+        "NZ_LCZJ02000019.1": 11,
+        "NZ_LCZJ02000004.1": 11,
+        "NZ_LCZJ02000036.1": 11,
+        "NZ_LCZJ02000025.1": 11,
+        "NZ_LCZJ02000010.1": 11,
+        "NZ_LCZJ02000042.1": 11,
+        "NZ_LCZJ02000089.1": 11,
+        "NZ_LCZJ02000078.1": 11,
+        "NZ_LCZJ02000063.1": 11,
+        "NZ_LCZJ02000080.1": 11,
+        "NZ_LCZJ02000015.1": 11,
+        "NZ_LCZJ02000032.1": 11,
+        "NZ_LCZJ02000021.1": 11,
+        "NZ_LCZJ02000068.1": 11,
+        "NZ_LCZJ02000091.1": 11,
+        "NZ_LCZJ02000005.1": 11,
+        "NZ_LCZJ02000037.1": 11,
+        "NZ_LCZJ02000026.1": 11,
+        "NZ_LCZJ02000011.1": 11,
+        "NZ_LCZJ02000058.1": 11,
+        "NZ_LCZJ02000043.1": 11,
+        "NZ_LCZJ02000079.1": 11,
+        "NZ_LCZJ02000064.1": 11,
+        "NZ_LCZJ02000096.1": 11,
+        "NZ_LCZJ02000081.1": 11,
+        "NZ_LCZJ02000100.1": 11,
+        "NZ_LCZJ02000070.1": 11,
+        "NZ_LCZJ02000016.1": 11,
+        "NZ_LCZJ02000001.1": 11,
+        "NZ_LCZJ02000033.1": 11,
+        "NZ_LCZJ02000022.1": 11,
+        "NZ_LCZJ02000054.1": 11,
+        "NZ_LCZJ02000086.1": 11,
+        "NZ_LCZJ02000060.1": 11,
+        "NZ_LCZJ02000038.1": 11,
+        "NZ_LCZJ02000027.1": 11,
+        "NZ_LCZJ02000012.1": 11,
+        "NZ_LCZJ02000044.1": 11,
+        "NZ_LCZJ02000065.1": 11,
+        "NZ_LCZJ02000050.1": 11,
+        "NZ_LCZJ02000097.1": 11,
+        "NZ_LCZJ02000101.1": 11,
+        "NZ_LCZJ02000071.1": 11,
+        "NZ_LCZJ02000017.1": 11,
+        "NZ_LCZJ02000002.1": 11,
+        "NZ_LCZJ02000034.1": 11,
+        "NZ_LCZJ02000023.1": 11,
+        "NZ_LCZJ02000040.1": 11,
+        "NZ_LCZJ02000087.1": 11,
+        "NZ_LCZJ02000076.1": 11,
+        "NZ_LCZJ02000093.1": 11
       }
     }
   ],
@@ -204,8 +284,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/012/825/GCF_001012825.1/bbi/GCF_001012825.1_ASM101282v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/012/825/GCF_001012825.1/bbi/GCF_001012825.1_ASM101282v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001012825.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

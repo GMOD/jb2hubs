@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000271485.2",
           "ucsc": {
             "genome": "GCF_000271485.2",
             "taxId": "1122947",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/271/485/GCF_000271485.2/GCF_000271485.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AKVN02000002.1": 11,
+        "NZ_AKVN02000001.1": 11
       }
     }
   ],
@@ -204,8 +209,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/271/485/GCF_000271485.2/bbi/GCF_000271485.2_Pelosinus_fermentans_DSM_17108_v1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/271/485/GCF_000271485.2/bbi/GCF_000271485.2_Pelosinus_fermentans_DSM_17108_v1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000271485.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

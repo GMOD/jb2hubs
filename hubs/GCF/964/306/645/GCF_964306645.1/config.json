@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964306645.1",
           "ucsc": {
             "genome": "GCF_964306645.1",
             "taxId": "1406512",
@@ -37,6 +38,41 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/306/645/GCF_964306645.1/GCF_964306645.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYAYF010000020.1": 11,
+        "NZ_CAYAYF010000013.1": 11,
+        "NZ_CAYAYF010000006.1": 11,
+        "NZ_CAYAYF010000028.1": 11,
+        "NZ_CAYAYF010000001.1": 11,
+        "NZ_CAYAYF010000030.1": 11,
+        "NZ_CAYAYF010000023.1": 11,
+        "NZ_CAYAYF010000016.1": 11,
+        "NZ_CAYAYF010000009.1": 11,
+        "NZ_CAYAYF010000011.1": 11,
+        "NZ_CAYAYF010000004.1": 11,
+        "NZ_CAYAYF010000033.1": 11,
+        "NZ_CAYAYF010000026.1": 11,
+        "NZ_CAYAYF010000019.1": 11,
+        "NZ_CAYAYF010000021.1": 11,
+        "NZ_CAYAYF010000014.1": 11,
+        "NZ_CAYAYF010000007.1": 11,
+        "NZ_CAYAYF010000029.1": 11,
+        "NZ_CAYAYF010000002.1": 11,
+        "NZ_CAYAYF010000031.1": 11,
+        "NZ_CAYAYF010000024.1": 11,
+        "NZ_CAYAYF010000017.1": 11,
+        "NZ_CAYAYF010000012.1": 11,
+        "NZ_CAYAYF010000005.1": 11,
+        "NZ_CAYAYF010000027.1": 11,
+        "NZ_CAYAYF010000022.1": 11,
+        "NZ_CAYAYF010000015.1": 11,
+        "NZ_CAYAYF010000008.1": 11,
+        "NZ_CAYAYF010000010.1": 11,
+        "NZ_CAYAYF010000003.1": 11,
+        "NZ_CAYAYF010000032.1": 11,
+        "NZ_CAYAYF010000025.1": 11,
+        "NZ_CAYAYF010000018.1": 11
       }
     }
   ],
@@ -204,8 +240,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/306/645/GCF_964306645.1/bbi/GCF_964306645.1_EST-A-0092_Methanomassiliicoccus_A-intestinalis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/306/645/GCF_964306645.1/bbi/GCF_964306645.1_EST-A-0092_Methanomassiliicoccus_A-intestinalis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964306645.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

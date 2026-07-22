@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964307005.1",
           "ucsc": {
             "genome": "GCF_964307005.1",
             "taxId": "1291540",
@@ -37,6 +38,50 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/005/GCF_964307005.1/GCF_964307005.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYAZJ010000016.1": 11,
+        "NZ_CAYAZJ010000001.1": 11,
+        "NZ_CAYAZJ010000037.1": 11,
+        "NZ_CAYAZJ010000022.1": 11,
+        "NZ_CAYAZJ010000054.1": 11,
+        "NZ_CAYAZJ010000075.1": 11,
+        "NZ_CAYAZJ010000081.1": 11,
+        "NZ_CAYAZJ010000027.1": 11,
+        "NZ_CAYAZJ010000033.1": 11,
+        "NZ_CAYAZJ010000065.1": 11,
+        "NZ_CAYAZJ010000086.1": 11,
+        "NZ_CAYAZJ010000017.1": 11,
+        "NZ_CAYAZJ010000002.1": 11,
+        "NZ_CAYAZJ010000038.1": 11,
+        "NZ_CAYAZJ010000023.1": 11,
+        "NZ_CAYAZJ010000076.1": 11,
+        "NZ_CAYAZJ010000028.1": 11,
+        "NZ_CAYAZJ010000066.1": 11,
+        "NZ_CAYAZJ010000051.1": 11,
+        "NZ_CAYAZJ010000040.1": 11,
+        "NZ_CAYAZJ010000072.1": 11,
+        "NZ_CAYAZJ010000003.1": 11,
+        "NZ_CAYAZJ010000039.1": 11,
+        "NZ_CAYAZJ010000024.1": 11,
+        "NZ_CAYAZJ010000056.1": 11,
+        "NZ_CAYAZJ010000035.1": 11,
+        "NZ_CAYAZJ010000067.1": 11,
+        "NZ_CAYAZJ010000041.1": 11,
+        "NZ_CAYAZJ010000088.1": 11,
+        "NZ_CAYAZJ010000073.1": 11,
+        "NZ_CAYAZJ010000004.1": 11,
+        "NZ_CAYAZJ010000046.1": 11,
+        "NZ_CAYAZJ010000031.1": 11,
+        "NZ_CAYAZJ010000078.1": 11,
+        "NZ_CAYAZJ010000009.1": 11,
+        "NZ_CAYAZJ010000015.1": 11,
+        "NZ_CAYAZJ010000021.1": 11,
+        "NZ_CAYAZJ010000036.1": 11,
+        "NZ_CAYAZJ010000074.1": 11,
+        "NZ_CAYAZJ010000026.1": 11,
+        "NZ_CAYAZJ010000032.1": 11,
+        "NZ_CAYAZJ010000064.1": 11
       }
     }
   ],
@@ -204,8 +249,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/005/GCF_964307005.1/bbi/GCF_964307005.1_EST-A-0126_Methanomethylophilus-alvus.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/005/GCF_964307005.1/bbi/GCF_964307005.1_EST-A-0126_Methanomethylophilus-alvus.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964307005.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

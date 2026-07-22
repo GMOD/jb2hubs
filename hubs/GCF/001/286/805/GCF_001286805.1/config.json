@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001286805.1",
           "ucsc": {
             "genome": "GCF_001286805.1",
             "taxId": "1686287",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/286/805/GCF_001286805.1/GCF_001286805.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CXYV01000001.1": 11,
+        "NZ_CXYV01000002.1": 11
       }
     }
   ],
@@ -229,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/286/805/GCF_001286805.1/bbi/GCF_001286805.1_Kallipyga_gabonensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/286/805/GCF_001286805.1/bbi/GCF_001286805.1_Kallipyga_gabonensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001286805.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

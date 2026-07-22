@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000299915.1",
           "ucsc": {
             "genome": "GCF_000299915.1",
             "taxId": "745411",
@@ -37,6 +38,66 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/299/915/GCF_000299915.1/GCF_000299915.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AMRI01000009.1": 11,
+        "NZ_AMRI01000015.1": 11,
+        "NZ_AMRI01000036.1": 11,
+        "NZ_AMRI01000021.1": 11,
+        "NZ_AMRI01000057.1": 11,
+        "NZ_AMRI01000042.1": 11,
+        "NZ_AMRI01000005.1": 11,
+        "NZ_AMRI01000026.1": 11,
+        "NZ_AMRI01000011.1": 11,
+        "NZ_AMRI01000047.1": 11,
+        "NZ_AMRI01000032.1": 11,
+        "NZ_AMRI01000053.1": 11,
+        "NZ_AMRI01000016.1": 11,
+        "NZ_AMRI01000001.1": 11,
+        "NZ_AMRI01000037.1": 11,
+        "NZ_AMRI01000022.1": 11,
+        "NZ_AMRI01000058.1": 11,
+        "NZ_AMRI01000043.1": 11,
+        "NZ_AMRI01000006.1": 11,
+        "NZ_AMRI01000027.1": 11,
+        "NZ_AMRI01000012.1": 11,
+        "NZ_AMRI01000048.1": 11,
+        "NZ_AMRI01000033.1": 11,
+        "NZ_AMRI01000002.1": 11,
+        "NZ_AMRI01000017.1": 11,
+        "NZ_AMRI01000038.1": 11,
+        "NZ_AMRI01000023.1": 11,
+        "NZ_AMRI01000044.1": 11,
+        "NZ_AMRI01000061.1": 11,
+        "NZ_AMRI01000007.1": 11,
+        "NZ_AMRI01000028.1": 11,
+        "NZ_AMRI01000013.1": 11,
+        "NZ_AMRI01000049.1": 11,
+        "NZ_AMRI01000034.1": 11,
+        "NZ_AMRI01000055.1": 11,
+        "NZ_AMRI01000040.1": 11,
+        "NZ_AMRI01000018.1": 11,
+        "NZ_AMRI01000003.1": 11,
+        "NZ_AMRI01000039.1": 11,
+        "NZ_AMRI01000024.1": 11,
+        "NZ_AMRI01000045.1": 11,
+        "NZ_AMRI01000030.1": 11,
+        "NZ_AMRI01000062.1": 11,
+        "NZ_AMRI01000051.1": 11,
+        "NZ_AMRI01000008.1": 11,
+        "NZ_AMRI01000029.1": 11,
+        "NZ_AMRI01000014.1": 11,
+        "NZ_AMRI01000035.1": 11,
+        "NZ_AMRI01000020.1": 11,
+        "NZ_AMRI01000056.1": 11,
+        "NZ_AMRI01000041.1": 11,
+        "NZ_AMRI01000019.1": 11,
+        "NZ_AMRI01000004.1": 11,
+        "NZ_AMRI01000025.1": 11,
+        "NZ_AMRI01000010.1": 11,
+        "NZ_AMRI01000046.1": 11,
+        "NZ_AMRI01000031.1": 11,
+        "NZ_AMRI01000052.1": 11
       }
     }
   ],
@@ -204,8 +265,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/299/915/GCF_000299915.1/bbi/GCF_000299915.1_ASM29991v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/299/915/GCF_000299915.1/bbi/GCF_000299915.1_ASM29991v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000299915.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

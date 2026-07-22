@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000497125.1",
           "ucsc": {
             "genome": "GCF_000497125.1",
             "taxId": "348837",
@@ -38,6 +39,45 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/GCF_000497125.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NW_027150745.1": 6,
+        "NW_027150738.1": 6,
+        "NW_027150724.1": 6,
+        "NW_027150717.1": 6,
+        "NC_090597.1": 6,
+        "NW_027150740.1": 6,
+        "NW_027150733.1": 6,
+        "NC_090600.1": 6,
+        "NW_027150727.1": 6,
+        "NW_027150743.1": 6,
+        "NW_027150736.1": 6,
+        "NW_027150722.1": 6,
+        "NW_027150715.1": 6,
+        "NC_090603.1": 6,
+        "NW_027150731.1": 6,
+        "NW_027150739.1": 6,
+        "NW_027150725.1": 6,
+        "NW_027150718.1": 6,
+        "NC_090598.1": 6,
+        "NW_027150741.1": 6,
+        "NW_027150734.1": 6,
+        "NW_027150720.1": 6,
+        "NC_090601.1": 6,
+        "NW_027150728.1": 6,
+        "NW_027150737.1": 6,
+        "NW_027150723.1": 6,
+        "NW_027150716.1": 6,
+        "NC_090604.1": 6,
+        "NC_090596.1": 6,
+        "NW_027150732.1": 6,
+        "NW_027150726.1": 6,
+        "NC_090599.1": 6,
+        "NW_027150742.1": 6,
+        "NW_027150735.1": 6,
+        "NW_027150721.1": 6,
+        "NW_027150714.1": 6,
+        "NC_090602.1": 6
       }
     }
   ],
@@ -230,8 +270,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497125.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -262,8 +312,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497125.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -292,7 +352,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497125.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -476,8 +545,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/125/GCF_000497125.1/bbi/GCF_000497125.1_ASM49712v2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497125.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

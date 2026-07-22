@@ -22,8 +22,12 @@
         "assembly_level": "Contig",
         "assembly_method": "SPAdes v. 3.15.4",
         "assembly_name": "ASM3339187v1",
-        "assembly_status": "current",
+        "assembly_status": "suppressed",
         "assembly_type": "haploid",
+        "atypical": {
+          "is_atypical": true,
+          "warnings": ["genome length too large"]
+        },
         "bioproject_accession": "PRJNA1001293",
         "bioproject_lineage": [
           {
@@ -123,6 +127,7 @@
           "submission_date": "2023-08-02T09:50:06.086"
         },
         "comments": "The annotation was added by the NCBI Prokaryotic Genome Annotation Pipeline (PGAP). Information about PGAP can be found here: https://www.ncbi.nlm.nih.gov/genome/annotation_prok/",
+        "genome_notes": ["genome length too large", "not used as type"],
         "paired_assembly": {
           "accession": "GCA_033391875.1",
           "annotation_name": "NCBI Prokaryotic Genome Annotation Pipeline (PGAP)",
@@ -130,7 +135,8 @@
         },
         "release_date": "2023-11-06",
         "sequencing_tech": "Illumina",
-        "submitter": "University of East Anglia"
+        "submitter": "University of East Anglia",
+        "suppression_reason": "This record was removed by RefSeq staff. Please contact info@ncbi.nlm.nih.gov for further details. Reason: genome length too large; not used as type"
       },
       "assembly_stats": {
         "atgc_count": "10248056",
@@ -156,12 +162,17 @@
           "organism_name": "Cupriavidus basilensis",
           "type_assembly_coverage": 66.2
         },
-        "category": "type",
-        "comment": "Assembly is the type_strain, mismatch is within genus and expected",
-        "match_status": "genus_match",
+        "category": "category_na",
+        "comment": "na",
+        "match_status": "below_threshold_mismatch",
+        "submitted_ani_match": {
+          "assembly": "no-type",
+          "category": "no_type",
+          "organism_name": "na"
+        },
         "submitted_organism": "Cupriavidus ulmosensis",
         "submitted_species": "Cupriavidus ulmosensis",
-        "taxonomy_check_status": "OK"
+        "taxonomy_check_status": "Inconclusive"
       },
       "checkm_info": {
         "checkm_marker_set": "Cupriavidus",
@@ -182,10 +193,6 @@
       },
       "paired_accession": "GCA_033391875.1",
       "source_database": "SOURCE_DATABASE_REFSEQ",
-      "type_material": {
-        "type_display_text": "assembly from type material",
-        "type_label": "TYPE_MATERIAL"
-      },
       "wgs_info": {
         "master_wgs_url": "https://www.ncbi.nlm.nih.gov/nuccore/JAVCPL000000000.1",
         "wgs_contigs_url": "https://www.ncbi.nlm.nih.gov/Traces/wgs/JAVCPL01",
@@ -194,5 +201,5 @@
     }
   ],
   "total_count": 1,
-  "downloaded_at": 1780446633
+  "downloaded_at": 1784672149
 }

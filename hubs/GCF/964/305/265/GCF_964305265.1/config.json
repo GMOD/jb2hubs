@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964305265.1",
           "ucsc": {
             "genome": "GCF_964305265.1",
             "taxId": "2911857",
@@ -37,6 +38,11 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/265/GCF_964305265.1/GCF_964305265.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYATA010000003.1": 11,
+        "NZ_CAYATA010000001.1": 11,
+        "NZ_CAYATA010000002.1": 11
       }
     }
   ],
@@ -204,8 +210,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/265/GCF_964305265.1/bbi/GCF_964305265.1_EST-A-0151_MX-02-sp006954405.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/265/GCF_964305265.1/bbi/GCF_964305265.1_EST-A-0151_MX-02-sp006954405.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964305265.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

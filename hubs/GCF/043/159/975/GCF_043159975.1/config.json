@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_043159975.1",
           "ucsc": {
             "genome": "GCF_043159975.1",
             "taxId": "9545",
@@ -22,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/html/GCF_043159975.1_mMacNem.hap1.description.html\">html/GCF_043159975.1_mMacNem.hap1.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1",
+            "liftOver.GCA_043161795.1": "liftOver/GCF_043159975.1ToGCA_043161795.1.over.chain.gz"
           }
         },
         "trackId": "GCF_043159975.1-ReferenceSequenceTrack",
@@ -278,8 +280,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -310,8 +322,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -342,8 +364,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -372,7 +404,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -556,8 +597,182 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/bbi/GCF_043159975.1_mMacNem.hap1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsHLbosTau10v2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 zebrafinch annotations",
+          "longLabel": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+          "group": "genes",
+          "priority": "3",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_043159975.1-HLTOGAannotvsHLbosTau10v2",
+      "description": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+      "assemblyNames": ["GCF_043159975.1"],
+      "name": "TOGA V2 - TOGA2 zebrafinch annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-HLTOGAannotvsHLbosTau10v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsMm10v2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 zebrafinch annotations",
+          "longLabel": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+          "group": "genes",
+          "priority": "3",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_043159975.1-HLTOGAannotvsMm10v2",
+      "description": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+      "assemblyNames": ["GCF_043159975.1"],
+      "name": "TOGA V2 - TOGA2 zebrafinch annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-HLTOGAannotvsMm10v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsHLeleMaxInd3Av2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 zebrafinch annotations",
+          "longLabel": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+          "group": "genes",
+          "priority": "3",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_043159975.1-HLTOGAannotvsHLeleMaxInd3Av2",
+      "description": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+      "assemblyNames": ["GCF_043159975.1"],
+      "name": "TOGA V2 - TOGA2 zebrafinch annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-HLTOGAannotvsHLeleMaxInd3Av2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsHg38v2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 zebrafinch annotations",
+          "longLabel": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+          "group": "genes",
+          "priority": "3",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_043159975.1-HLTOGAannotvsHg38v2",
+      "description": "TOGA 2.0 annotations using zebrafinch taeGut5 as reference",
+      "assemblyNames": ["GCF_043159975.1"],
+      "name": "TOGA V2 - TOGA2 zebrafinch annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/043/159/975/GCF_043159975.1/contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_043159975.1-HLTOGAannotvsHg38v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -579,6 +794,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_043159975.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_043159975.1_to_GCA_043161795.1_liftOver",
+      "name": "GCF_043159975.1 (pig-tailed macaque (mMacNem1hap1 2024 refseq)) to pig-tailed macaque (mMacNem1hap2 2024) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_043159975.1", "GCA_043161795.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_043159975.1",
+        "queryAssembly": "GCA_043161795.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_043159975.1ToGCA_043161795.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_043159975.1ToGCA_043161795.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

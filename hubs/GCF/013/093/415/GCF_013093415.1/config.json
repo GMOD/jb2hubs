@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_013093415.1",
           "ucsc": {
             "genome": "GCF_013093415.1",
             "taxId": "1505036",
@@ -37,6 +38,33 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/093/415/GCF_013093415.1/GCF_013093415.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JABFBC010000022.1": 11,
+        "NZ_JABFBC010000001.1": 11,
+        "NZ_JABFBC010000016.1": 11,
+        "NZ_JABFBC010000009.1": 11,
+        "NZ_JABFBC010000025.1": 11,
+        "NZ_JABFBC010000011.1": 11,
+        "NZ_JABFBC010000004.1": 11,
+        "NZ_JABFBC010000020.1": 11,
+        "NZ_JABFBC010000019.1": 11,
+        "NZ_JABFBC010000014.1": 11,
+        "NZ_JABFBC010000007.1": 11,
+        "NZ_JABFBC010000023.1": 11,
+        "NZ_JABFBC010000002.1": 11,
+        "NZ_JABFBC010000017.1": 11,
+        "NZ_JABFBC010000026.1": 11,
+        "NZ_JABFBC010000012.1": 11,
+        "NZ_JABFBC010000005.1": 11,
+        "NZ_JABFBC010000021.1": 11,
+        "NZ_JABFBC010000015.1": 11,
+        "NZ_JABFBC010000008.1": 11,
+        "NZ_JABFBC010000024.1": 11,
+        "NZ_JABFBC010000010.1": 11,
+        "NZ_JABFBC010000003.1": 11,
+        "NZ_JABFBC010000018.1": 11,
+        "NZ_JABFBC010000006.1": 11
       }
     }
   ],
@@ -204,8 +232,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/093/415/GCF_013093415.1/bbi/GCF_013093415.1_ASM1309341v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/093/415/GCF_013093415.1/bbi/GCF_013093415.1_ASM1309341v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_013093415.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

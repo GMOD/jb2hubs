@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964305465.1",
           "ucsc": {
             "genome": "GCF_964305465.1",
             "taxId": "1291540",
@@ -37,6 +38,38 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/465/GCF_964305465.1/GCF_964305465.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYATU010000035.1": 11,
+        "NZ_CAYATU010000028.1": 11,
+        "NZ_CAYATU010000007.1": 11,
+        "NZ_CAYATU010000030.1": 11,
+        "NZ_CAYATU010000023.1": 11,
+        "NZ_CAYATU010000016.1": 11,
+        "NZ_CAYATU010000033.1": 11,
+        "NZ_CAYATU010000026.1": 11,
+        "NZ_CAYATU010000019.1": 11,
+        "NZ_CAYATU010000005.1": 11,
+        "NZ_CAYATU010000021.1": 11,
+        "NZ_CAYATU010000014.1": 11,
+        "NZ_CAYATU010000008.1": 11,
+        "NZ_CAYATU010000031.1": 11,
+        "NZ_CAYATU010000024.1": 11,
+        "NZ_CAYATU010000017.1": 11,
+        "NZ_CAYATU010000012.1": 11,
+        "NZ_CAYATU010000034.1": 11,
+        "NZ_CAYATU010000027.1": 11,
+        "NZ_CAYATU010000006.1": 11,
+        "NZ_CAYATU010000022.1": 11,
+        "NZ_CAYATU010000015.1": 11,
+        "NZ_CAYATU010000001.1": 11,
+        "NZ_CAYATU010000010.1": 11,
+        "NZ_CAYATU010000009.1": 11,
+        "NZ_CAYATU010000032.1": 11,
+        "NZ_CAYATU010000025.1": 11,
+        "NZ_CAYATU010000018.1": 11,
+        "NZ_CAYATU010000020.1": 11,
+        "NZ_CAYATU010000013.1": 11
       }
     }
   ],
@@ -204,8 +237,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/465/GCF_964305465.1/bbi/GCF_964305465.1_EST-A-0108_Methanomethylophilus-alvus.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/465/GCF_964305465.1/bbi/GCF_964305465.1_EST-A-0108_Methanomethylophilus-alvus.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964305465.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

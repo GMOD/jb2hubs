@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_000280705.1",
           "ucsc": {
             "genome": "GCA_000280705.1",
             "taxId": "51337",
@@ -255,9 +256,9 @@
           "color": "12,12,120",
           "shortLabel": "RefSeq All",
           "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/$D/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCA_000280705.1_JacJac1.0.ncbiRefSeq.ix",
           "bigDataUrl": "bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeq.bb",
@@ -276,8 +277,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000280705.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -288,9 +299,9 @@
           "shortLabel": "RefSeq Curated",
           "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
           "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/$D/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCA_000280705.1_JacJac1.0.ncbiRefSeqCurated.ix",
           "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -308,8 +319,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000280705.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -320,9 +341,9 @@
           "shortLabel": "RefSeq Predicted",
           "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
           "type": "bigGenePred",
-          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/$D/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
-          "labelFields": "name,geneName,geneName2",
-          "defaultLabelFields": "geneName2",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCA_000280705.1_JacJac1.0.ncbiRefSeqPredicted.ix",
           "idXref": "ncbiRefSeqLink mrnaAcc name",
@@ -340,8 +361,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000280705.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -370,7 +401,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000280705.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -554,8 +594,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/GCA_000280705.1_JacJac1.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000280705.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -582,6 +632,34 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/bbi/HLTOGAannotVsHg38v1.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_000280705.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_000280705.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/280/705/GCA_000280705.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

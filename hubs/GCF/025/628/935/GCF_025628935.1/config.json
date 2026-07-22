@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_025628935.1",
           "ucsc": {
             "genome": "GCF_025628935.1",
             "taxId": "2982690",
@@ -37,6 +38,56 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/025/628/935/GCF_025628935.1/GCF_025628935.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAOTIS010000005.1": 11,
+        "NZ_JAOTIS010000037.1": 11,
+        "NZ_JAOTIS010000026.1": 11,
+        "NZ_JAOTIS010000011.1": 11,
+        "NZ_JAOTIS010000043.1": 11,
+        "NZ_JAOTIS010000016.1": 11,
+        "NZ_JAOTIS010000001.1": 11,
+        "NZ_JAOTIS010000048.1": 11,
+        "NZ_JAOTIS010000033.1": 11,
+        "NZ_JAOTIS010000022.1": 11,
+        "NZ_JAOTIS010000006.1": 11,
+        "NZ_JAOTIS010000027.1": 11,
+        "NZ_JAOTIS010000012.1": 11,
+        "NZ_JAOTIS010000044.1": 11,
+        "NZ_JAOTIS010000050.1": 11,
+        "NZ_JAOTIS010000017.1": 11,
+        "NZ_JAOTIS010000002.1": 11,
+        "NZ_JAOTIS010000049.1": 11,
+        "NZ_JAOTIS010000034.1": 11,
+        "NZ_JAOTIS010000023.1": 11,
+        "NZ_JAOTIS010000040.1": 11,
+        "NZ_JAOTIS010000007.1": 11,
+        "NZ_JAOTIS010000039.1": 11,
+        "NZ_JAOTIS010000028.1": 11,
+        "NZ_JAOTIS010000013.1": 11,
+        "NZ_JAOTIS010000045.1": 11,
+        "NZ_JAOTIS010000030.1": 11,
+        "NZ_JAOTIS010000018.1": 11,
+        "NZ_JAOTIS010000003.1": 11,
+        "NZ_JAOTIS010000035.1": 11,
+        "NZ_JAOTIS010000024.1": 11,
+        "NZ_JAOTIS010000041.1": 11,
+        "NZ_JAOTIS010000008.1": 11,
+        "NZ_JAOTIS010000029.1": 11,
+        "NZ_JAOTIS010000014.1": 11,
+        "NZ_JAOTIS010000046.1": 11,
+        "NZ_JAOTIS010000031.1": 11,
+        "NZ_JAOTIS010000020.1": 11,
+        "NZ_JAOTIS010000019.1": 11,
+        "NZ_JAOTIS010000004.1": 11,
+        "NZ_JAOTIS010000036.1": 11,
+        "NZ_JAOTIS010000025.1": 11,
+        "NZ_JAOTIS010000010.1": 11,
+        "NZ_JAOTIS010000042.1": 11,
+        "NZ_JAOTIS010000009.1": 11,
+        "NZ_JAOTIS010000015.1": 11,
+        "NZ_JAOTIS010000047.1": 11,
+        "NZ_JAOTIS010000021.1": 11
       }
     }
   ],
@@ -204,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/025/628/935/GCF_025628935.1/bbi/GCF_025628935.1_ASM2562893v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/025/628/935/GCF_025628935.1/bbi/GCF_025628935.1_ASM2562893v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_025628935.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

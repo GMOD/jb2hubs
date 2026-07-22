@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_015852505.1",
           "ucsc": {
             "genome": "GCF_015852505.1",
             "taxId": "9261",
@@ -279,8 +280,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_015852505.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -311,8 +322,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_015852505.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -341,7 +362,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_015852505.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -525,8 +555,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/852/505/GCF_015852505.1/bbi/GCF_015852505.1_mTacAcu1.pri.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_015852505.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -603,6 +643,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_015852505.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_015852505.1_to_GCF_001704415.2_liftOver",
+      "name": "GCF_015852505.1 (Australian echidna (mTacAcu1 primary hap 2020)) to goat (v2 San Clemente 2016 USDA) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_015852505.1", "GCF_001704415.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_015852505.1",
+        "queryAssembly": "GCF_001704415.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_015852505.1ToGCF_001704415.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_015852505.1ToGCF_001704415.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_005925325.2",
           "ucsc": {
             "genome": "GCF_005925325.2",
             "taxId": "2563444",
@@ -37,6 +38,58 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/005/925/325/GCF_005925325.2/GCF_005925325.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_SRMP02000006.1": 11,
+        "NZ_SRMP02000038.1": 11,
+        "NZ_SRMP02000027.1": 11,
+        "NZ_SRMP02000012.1": 11,
+        "NZ_SRMP02000044.1": 11,
+        "NZ_SRMP02000050.1": 11,
+        "NZ_SRMP02000017.1": 11,
+        "NZ_SRMP02000002.1": 11,
+        "NZ_SRMP02000049.1": 11,
+        "NZ_SRMP02000034.1": 11,
+        "NZ_SRMP02000023.1": 11,
+        "NZ_SRMP02000040.1": 11,
+        "NZ_SRMP02000007.1": 11,
+        "NZ_SRMP02000039.1": 11,
+        "NZ_SRMP02000028.1": 11,
+        "NZ_SRMP02000013.1": 11,
+        "NZ_SRMP02000045.1": 11,
+        "NZ_SRMP02000030.1": 11,
+        "NZ_SRMP02000051.1": 11,
+        "NZ_SRMP02000018.1": 11,
+        "NZ_SRMP02000003.1": 11,
+        "NZ_SRMP02000035.1": 11,
+        "NZ_SRMP02000024.1": 11,
+        "NZ_SRMP02000008.1": 11,
+        "NZ_SRMP02000029.1": 11,
+        "NZ_SRMP02000014.1": 11,
+        "NZ_SRMP02000046.1": 11,
+        "NZ_SRMP02000031.1": 11,
+        "NZ_SRMP02000020.1": 11,
+        "NZ_SRMP02000052.1": 11,
+        "NZ_SRMP02000019.1": 11,
+        "NZ_SRMP02000004.1": 11,
+        "NZ_SRMP02000036.1": 11,
+        "NZ_SRMP02000025.1": 11,
+        "NZ_SRMP02000010.1": 11,
+        "NZ_SRMP02000042.1": 11,
+        "NZ_SRMP02000009.1": 11,
+        "NZ_SRMP02000015.1": 11,
+        "NZ_SRMP02000047.1": 11,
+        "NZ_SRMP02000032.1": 11,
+        "NZ_SRMP02000021.1": 11,
+        "NZ_SRMP02000005.1": 11,
+        "NZ_SRMP02000037.1": 11,
+        "NZ_SRMP02000026.1": 11,
+        "NZ_SRMP02000011.1": 11,
+        "NZ_SRMP02000043.1": 11,
+        "NZ_SRMP02000016.1": 11,
+        "NZ_SRMP02000001.1": 11,
+        "NZ_SRMP02000033.1": 11,
+        "NZ_SRMP02000022.1": 11
       }
     }
   ],
@@ -229,8 +282,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/005/925/325/GCF_005925325.2/bbi/GCF_005925325.2_ASM592532v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/005/925/325/GCF_005925325.2/bbi/GCF_005925325.2_ASM592532v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_005925325.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

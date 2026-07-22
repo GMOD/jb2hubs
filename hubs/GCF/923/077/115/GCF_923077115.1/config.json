@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_923077115.1",
           "ucsc": {
             "genome": "GCF_923077115.1",
             "taxId": "1641715",
@@ -37,6 +38,17 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/923/077/115/GCF_923077115.1/GCF_923077115.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAKLPX010000008.1": 11,
+        "NZ_CAKLPX010000003.1": 11,
+        "NZ_CAKLPX010000006.1": 11,
+        "NZ_CAKLPX010000001.1": 11,
+        "NZ_CAKLPX010000009.1": 11,
+        "NZ_CAKLPX010000004.1": 11,
+        "NZ_CAKLPX010000007.1": 11,
+        "NZ_CAKLPX010000002.1": 11,
+        "NZ_CAKLPX010000005.1": 11
       }
     }
   ],
@@ -204,8 +216,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/923/077/115/GCF_923077115.1/bbi/GCF_923077115.1_Sinobacterium_norvegicum_CECT_8267_Spades_Prokka.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/923/077/115/GCF_923077115.1/bbi/GCF_923077115.1_Sinobacterium_norvegicum_CECT_8267_Spades_Prokka.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_923077115.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

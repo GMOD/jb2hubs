@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_006381105.1",
           "ucsc": {
             "genome": "GCF_006381105.1",
             "taxId": "2585141",
@@ -37,6 +38,81 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/381/105/GCF_006381105.1/GCF_006381105.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VDET01000035.1": 11,
+        "NZ_VDET01000020.1": 11,
+        "NZ_VDET01000067.1": 11,
+        "NZ_VDET01000056.1": 11,
+        "NZ_VDET01000041.1": 11,
+        "NZ_VDET01000073.1": 11,
+        "NZ_VDET01000019.1": 11,
+        "NZ_VDET01000004.1": 11,
+        "NZ_VDET01000025.1": 11,
+        "NZ_VDET01000010.1": 11,
+        "NZ_VDET01000046.1": 11,
+        "NZ_VDET01000031.1": 11,
+        "NZ_VDET01000063.1": 11,
+        "NZ_VDET01000052.1": 11,
+        "NZ_VDET01000009.1": 11,
+        "NZ_VDET01000015.1": 11,
+        "NZ_VDET01000036.1": 11,
+        "NZ_VDET01000021.1": 11,
+        "NZ_VDET01000068.1": 11,
+        "NZ_VDET01000057.1": 11,
+        "NZ_VDET01000042.1": 11,
+        "NZ_VDET01000074.1": 11,
+        "NZ_VDET01000005.1": 11,
+        "NZ_VDET01000026.1": 11,
+        "NZ_VDET01000011.1": 11,
+        "NZ_VDET01000047.1": 11,
+        "NZ_VDET01000032.1": 11,
+        "NZ_VDET01000064.1": 11,
+        "NZ_VDET01000053.1": 11,
+        "NZ_VDET01000070.1": 11,
+        "NZ_VDET01000016.1": 11,
+        "NZ_VDET01000001.1": 11,
+        "NZ_VDET01000037.1": 11,
+        "NZ_VDET01000022.1": 11,
+        "NZ_VDET01000069.1": 11,
+        "NZ_VDET01000058.1": 11,
+        "NZ_VDET01000043.1": 11,
+        "NZ_VDET01000075.1": 11,
+        "NZ_VDET01000060.1": 11,
+        "NZ_VDET01000006.1": 11,
+        "NZ_VDET01000027.1": 11,
+        "NZ_VDET01000048.1": 11,
+        "NZ_VDET01000033.1": 11,
+        "NZ_VDET01000065.1": 11,
+        "NZ_VDET01000054.1": 11,
+        "NZ_VDET01000071.1": 11,
+        "NZ_VDET01000017.1": 11,
+        "NZ_VDET01000002.1": 11,
+        "NZ_VDET01000023.1": 11,
+        "NZ_VDET01000038.1": 11,
+        "NZ_VDET01000059.1": 11,
+        "NZ_VDET01000076.1": 11,
+        "NZ_VDET01000061.1": 11,
+        "NZ_VDET01000050.1": 11,
+        "NZ_VDET01000007.1": 11,
+        "NZ_VDET01000028.1": 11,
+        "NZ_VDET01000013.1": 11,
+        "NZ_VDET01000049.1": 11,
+        "NZ_VDET01000034.1": 11,
+        "NZ_VDET01000066.1": 11,
+        "NZ_VDET01000040.1": 11,
+        "NZ_VDET01000072.1": 11,
+        "NZ_VDET01000018.1": 11,
+        "NZ_VDET01000003.1": 11,
+        "NZ_VDET01000039.1": 11,
+        "NZ_VDET01000024.1": 11,
+        "NZ_VDET01000030.1": 11,
+        "NZ_VDET01000077.1": 11,
+        "NZ_VDET01000062.1": 11,
+        "NZ_VDET01000051.1": 11,
+        "NZ_VDET01000008.1": 11,
+        "NZ_VDET01000029.1": 11,
+        "NZ_VDET01000014.1": 11
       }
     }
   ],
@@ -204,8 +280,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/381/105/GCF_006381105.1/bbi/GCF_006381105.1_ASM638110v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/381/105/GCF_006381105.1/bbi/GCF_006381105.1_ASM638110v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_006381105.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

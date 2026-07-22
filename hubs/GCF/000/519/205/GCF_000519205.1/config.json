@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000519205.1",
           "ucsc": {
             "genome": "GCF_000519205.1",
             "taxId": "1120984",
@@ -37,6 +38,78 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/519/205/GCF_000519205.1/GCF_000519205.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAFB01000028.1": 11,
+        "NZ_JAFB01000013.1": 11,
+        "NZ_KI912599.1": 11,
+        "NZ_JAFB01000049.1": 11,
+        "NZ_JAFB01000034.1": 11,
+        "NZ_JAFB01000066.1": 11,
+        "NZ_JAFB01000055.1": 11,
+        "NZ_JAFB01000040.1": 11,
+        "NZ_JAFB01000072.1": 11,
+        "NZ_JAFB01000003.1": 11,
+        "NZ_JAFB01000039.1": 11,
+        "NZ_JAFB01000024.1": 11,
+        "NZ_JAFB01000045.1": 11,
+        "NZ_JAFB01000030.1": 11,
+        "NZ_JAFB01000062.1": 11,
+        "NZ_JAFB01000051.1": 11,
+        "NZ_JAFB01000008.1": 11,
+        "NZ_JAFB01000029.1": 11,
+        "NZ_JAFB01000014.1": 11,
+        "NZ_JAFB01000035.1": 11,
+        "NZ_JAFB01000067.1": 11,
+        "NZ_JAFB01000056.1": 11,
+        "NZ_JAFB01000041.1": 11,
+        "NZ_JAFB01000073.1": 11,
+        "NZ_JAFB01000019.1": 11,
+        "NZ_JAFB01000004.1": 11,
+        "NZ_JAFB01000025.1": 11,
+        "NZ_JAFB01000010.1": 11,
+        "NZ_KI912600.1": 11,
+        "NZ_JAFB01000046.1": 11,
+        "NZ_JAFB01000031.1": 11,
+        "NZ_JAFB01000078.1": 11,
+        "NZ_JAFB01000063.1": 11,
+        "NZ_JAFB01000052.1": 11,
+        "NZ_JAFB01000009.1": 11,
+        "NZ_JAFB01000015.1": 11,
+        "NZ_JAFB01000036.1": 11,
+        "NZ_JAFB01000068.1": 11,
+        "NZ_JAFB01000057.1": 11,
+        "NZ_JAFB01000042.1": 11,
+        "NZ_JAFB01000005.1": 11,
+        "NZ_JAFB01000026.1": 11,
+        "NZ_KI912601.1": 11,
+        "NZ_JAFB01000032.1": 11,
+        "NZ_JAFB01000047.1": 11,
+        "NZ_JAFB01000064.1": 11,
+        "NZ_JAFB01000053.1": 11,
+        "NZ_JAFB01000070.1": 11,
+        "NZ_JAFB01000016.1": 11,
+        "NZ_JAFB01000037.1": 11,
+        "NZ_JAFB01000022.1": 11,
+        "NZ_JAFB01000069.1": 11,
+        "NZ_JAFB01000058.1": 11,
+        "NZ_JAFB01000043.1": 11,
+        "NZ_JAFB01000075.1": 11,
+        "NZ_JAFB01000060.1": 11,
+        "NZ_JAFB01000027.1": 11,
+        "NZ_KI912598.1": 11,
+        "NZ_KI912602.1": 11,
+        "NZ_JAFB01000048.1": 11,
+        "NZ_JAFB01000033.1": 11,
+        "NZ_JAFB01000065.1": 11,
+        "NZ_JAFB01000054.1": 11,
+        "NZ_JAFB01000071.1": 11,
+        "NZ_JAFB01000038.1": 11,
+        "NZ_JAFB01000023.1": 11,
+        "NZ_JAFB01000059.1": 11,
+        "NZ_JAFB01000044.1": 11,
+        "NZ_JAFB01000061.1": 11,
+        "NZ_JAFB01000050.1": 11
       }
     }
   ],
@@ -252,8 +325,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/519/205/GCF_000519205.1/bbi/GCF_000519205.1_ASM51920v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/519/205/GCF_000519205.1/bbi/GCF_000519205.1_ASM51920v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000519205.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_006491595.2",
           "ucsc": {
             "genome": "GCF_006491595.2",
             "taxId": "1544455",
@@ -37,6 +38,79 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/491/595/GCF_006491595.2/GCF_006491595.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VEVQ02000034.1": 11,
+        "NZ_VEVQ02000066.1": 11,
+        "NZ_VEVQ02000051.1": 11,
+        "NZ_VEVQ02000072.1": 11,
+        "NZ_VEVQ02000018.1": 11,
+        "NZ_VEVQ02000003.1": 11,
+        "NZ_VEVQ02000039.1": 11,
+        "NZ_VEVQ02000024.1": 11,
+        "NZ_VEVQ02000056.1": 11,
+        "NZ_VEVQ02000041.1": 11,
+        "NZ_VEVQ02000030.1": 11,
+        "NZ_VEVQ02000062.1": 11,
+        "NZ_VEVQ02000008.1": 11,
+        "NZ_VEVQ02000029.1": 11,
+        "NZ_VEVQ02000014.1": 11,
+        "NZ_VEVQ02000046.1": 11,
+        "NZ_VEVQ02000035.1": 11,
+        "NZ_VEVQ02000020.1": 11,
+        "NZ_VEVQ02000067.1": 11,
+        "NZ_VEVQ02000052.1": 11,
+        "NZ_VEVQ02000073.1": 11,
+        "NZ_VEVQ02000019.1": 11,
+        "NZ_VEVQ02000004.1": 11,
+        "NZ_VEVQ02000025.1": 11,
+        "NZ_VEVQ02000010.1": 11,
+        "NZ_VEVQ02000057.1": 11,
+        "NZ_VEVQ02000042.1": 11,
+        "NZ_VEVQ02000031.1": 11,
+        "NZ_VEVQ02000063.1": 11,
+        "NZ_VEVQ02000009.1": 11,
+        "NZ_VEVQ02000015.1": 11,
+        "NZ_VEVQ02000047.1": 11,
+        "NZ_VEVQ02000036.1": 11,
+        "NZ_VEVQ02000021.1": 11,
+        "NZ_VEVQ02000068.1": 11,
+        "NZ_VEVQ02000053.1": 11,
+        "NZ_VEVQ02000005.1": 11,
+        "NZ_VEVQ02000026.1": 11,
+        "NZ_VEVQ02000011.1": 11,
+        "NZ_VEVQ02000058.1": 11,
+        "NZ_VEVQ02000043.1": 11,
+        "NZ_VEVQ02000064.1": 11,
+        "NZ_VEVQ02000016.1": 11,
+        "NZ_VEVQ02000001.1": 11,
+        "NZ_VEVQ02000048.1": 11,
+        "NZ_VEVQ02000037.1": 11,
+        "NZ_VEVQ02000022.1": 11,
+        "NZ_VEVQ02000069.1": 11,
+        "NZ_VEVQ02000054.1": 11,
+        "NZ_VEVQ02000060.1": 11,
+        "NZ_VEVQ02000006.1": 11,
+        "NZ_VEVQ02000027.1": 11,
+        "NZ_VEVQ02000012.1": 11,
+        "NZ_VEVQ02000059.1": 11,
+        "NZ_VEVQ02000044.1": 11,
+        "NZ_VEVQ02000033.1": 11,
+        "NZ_VEVQ02000065.1": 11,
+        "NZ_VEVQ02000050.1": 11,
+        "NZ_VEVQ02000071.1": 11,
+        "NZ_VEVQ02000017.1": 11,
+        "NZ_VEVQ02000002.1": 11,
+        "NZ_VEVQ02000049.1": 11,
+        "NZ_VEVQ02000038.1": 11,
+        "NZ_VEVQ02000023.1": 11,
+        "NZ_VEVQ02000055.1": 11,
+        "NZ_VEVQ02000040.1": 11,
+        "NZ_VEVQ02000061.1": 11,
+        "NZ_VEVQ02000007.1": 11,
+        "NZ_VEVQ02000028.1": 11,
+        "NZ_VEVQ02000013.1": 11,
+        "NZ_VEVQ02000045.1": 11
       }
     }
   ],
@@ -204,8 +278,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/491/595/GCF_006491595.2/bbi/GCF_006491595.2_ASM649159v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/491/595/GCF_006491595.2/bbi/GCF_006491595.2_ASM649159v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_006491595.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

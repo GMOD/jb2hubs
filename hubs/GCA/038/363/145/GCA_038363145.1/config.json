@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_038363145.1",
           "ucsc": {
             "genome": "GCA_038363145.1",
             "taxId": "51014",
@@ -22,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/038/363/145/GCA_038363145.1/html/GCA_038363145.1_mArtInt1.hap1.description.html\">html/GCA_038363145.1_mArtInt1.hap1.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1",
+            "liftOver.GCA_038363225.1": "liftOver/GCA_038363145.1ToGCA_038363225.1.over.chain.gz"
           }
         },
         "trackId": "GCA_038363145.1-ReferenceSequenceTrack",
@@ -397,8 +399,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/038/363/145/GCA_038363145.1/bbi/GCA_038363145.1_mArtInt1.hap1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/038/363/145/GCA_038363145.1/bbi/GCA_038363145.1_mArtInt1.hap1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_038363145.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -426,6 +438,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/038/363/145/GCA_038363145.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_038363145.1_to_GCA_038363225.1_liftOver",
+      "name": "GCA_038363145.1 (intermediate fruit-eating bat (hap1 2024)) to bat A.intermedius (hap2 2024) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_038363145.1", "GCA_038363225.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_038363145.1",
+        "queryAssembly": "GCA_038363225.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_038363145.1ToGCA_038363225.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_038363145.1ToGCA_038363225.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

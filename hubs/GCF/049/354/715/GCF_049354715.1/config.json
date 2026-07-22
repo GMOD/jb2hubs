@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_049354715.1",
           "ucsc": {
             "genome": "GCF_049354715.1",
             "taxId": "9483",
@@ -41,6 +42,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/GCF_049354715.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NC_025586.1": 2
       }
     }
   ],
@@ -233,8 +237,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_049354715.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -265,8 +279,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_049354715.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -297,8 +321,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_049354715.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -327,7 +361,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_049354715.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -511,8 +554,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/049/354/715/GCF_049354715.1/bbi/GCF_049354715.1_calJac240_pri.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_049354715.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -534,6 +587,69 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_049354715.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_049354715.1_to_hg38_liftOver",
+      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025)) to Human (hg38) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_049354715.1", "hg38"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_049354715.1",
+        "queryAssembly": "hg38",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_049354715.1ToHg38.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_049354715.1ToHg38.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_049354715.1_to_mm39_liftOver",
+      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025)) to Mouse (mm39) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_049354715.1", "mm39"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_049354715.1",
+        "queryAssembly": "mm39",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_049354715.1ToMm39.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_049354715.1ToMm39.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_049354715.1_to_rheMac10_liftOver",
+      "name": "GCF_049354715.1 (white-tufted-ear marmoset (240 primary hap 2025)) to Rhesus (rheMac10) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_049354715.1", "rheMac10"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_049354715.1",
+        "queryAssembly": "rheMac10",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_049354715.1ToRheMac10.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_049354715.1ToRheMac10.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900114055.1",
           "ucsc": {
             "genome": "GCF_900114055.1",
             "taxId": "46223",
@@ -37,6 +38,84 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/114/055/GCF_900114055.1/GCF_900114055.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FORR01000075.1": 11,
+        "NZ_FORR01000060.1": 11,
+        "NZ_FORR01000006.1": 11,
+        "NZ_FORR01000038.1": 11,
+        "NZ_FORR01000027.1": 11,
+        "NZ_FORR01000012.1": 11,
+        "NZ_FORR01000059.1": 11,
+        "NZ_FORR01000044.1": 11,
+        "NZ_FORR01000065.1": 11,
+        "NZ_FORR01000050.1": 11,
+        "NZ_FORR01000071.1": 11,
+        "NZ_FORR01000017.1": 11,
+        "NZ_FORR01000002.1": 11,
+        "NZ_FORR01000049.1": 11,
+        "NZ_FORR01000034.1": 11,
+        "NZ_FORR01000023.1": 11,
+        "NZ_FORR01000055.1": 11,
+        "NZ_FORR01000040.1": 11,
+        "NZ_FORR01000076.1": 11,
+        "NZ_FORR01000061.1": 11,
+        "NZ_FORR01000007.1": 11,
+        "NZ_FORR01000039.1": 11,
+        "NZ_FORR01000013.1": 11,
+        "NZ_FORR01000028.1": 11,
+        "NZ_FORR01000045.1": 11,
+        "NZ_FORR01000030.1": 11,
+        "NZ_FORR01000066.1": 11,
+        "NZ_FORR01000051.1": 11,
+        "NZ_FORR01000072.1": 11,
+        "NZ_FORR01000018.1": 11,
+        "NZ_FORR01000003.1": 11,
+        "NZ_FORR01000035.1": 11,
+        "NZ_FORR01000024.1": 11,
+        "NZ_FORR01000056.1": 11,
+        "NZ_FORR01000041.1": 11,
+        "NZ_FORR01000077.1": 11,
+        "NZ_FORR01000008.1": 11,
+        "NZ_FORR01000029.1": 11,
+        "NZ_FORR01000014.1": 11,
+        "NZ_FORR01000046.1": 11,
+        "NZ_FORR01000031.1": 11,
+        "NZ_FORR01000020.1": 11,
+        "NZ_FORR01000067.1": 11,
+        "NZ_FORR01000052.1": 11,
+        "NZ_FORR01000073.1": 11,
+        "NZ_FORR01000019.1": 11,
+        "NZ_FORR01000004.1": 11,
+        "NZ_FORR01000036.1": 11,
+        "NZ_FORR01000025.1": 11,
+        "NZ_FORR01000010.1": 11,
+        "NZ_FORR01000057.1": 11,
+        "NZ_FORR01000042.1": 11,
+        "NZ_FORR01000063.1": 11,
+        "NZ_FORR01000009.1": 11,
+        "NZ_FORR01000015.1": 11,
+        "NZ_FORR01000047.1": 11,
+        "NZ_FORR01000032.1": 11,
+        "NZ_FORR01000021.1": 11,
+        "NZ_FORR01000068.1": 11,
+        "NZ_FORR01000053.1": 11,
+        "NZ_FORR01000074.1": 11,
+        "NZ_FORR01000005.1": 11,
+        "NZ_FORR01000037.1": 11,
+        "NZ_FORR01000026.1": 11,
+        "NZ_FORR01000011.1": 11,
+        "NZ_FORR01000058.1": 11,
+        "NZ_FORR01000043.1": 11,
+        "NZ_FORR01000064.1": 11,
+        "NZ_FORR01000070.1": 11,
+        "NZ_FORR01000016.1": 11,
+        "NZ_FORR01000001.1": 11,
+        "NZ_FORR01000048.1": 11,
+        "NZ_FORR01000033.1": 11,
+        "NZ_FORR01000022.1": 11,
+        "NZ_FORR01000069.1": 11,
+        "NZ_FORR01000054.1": 11
       }
     }
   ],
@@ -204,8 +283,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/114/055/GCF_900114055.1/bbi/GCF_900114055.1_IMG-taxon_2675903228_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/114/055/GCF_900114055.1/bbi/GCF_900114055.1_IMG-taxon_2675903228_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900114055.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

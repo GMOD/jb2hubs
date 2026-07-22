@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_013761005.1",
           "ucsc": {
             "genome": "GCF_013761005.1",
             "taxId": "332175",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/761/005/GCF_013761005.1/GCF_013761005.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JACDUS010000002.1": 11,
+        "NZ_JACDUS010000017.1": 11,
+        "NZ_JACDUS010000012.1": 11,
+        "NZ_JACDUS010000005.1": 11,
+        "NZ_JACDUS010000027.1": 11,
+        "NZ_JACDUS010000022.1": 11,
+        "NZ_JACDUS010000015.1": 11,
+        "NZ_JACDUS010000008.1": 11,
+        "NZ_JACDUS010000010.1": 11,
+        "NZ_JACDUS010000003.1": 11,
+        "NZ_JACDUS010000025.1": 11,
+        "NZ_JACDUS010000018.1": 11,
+        "NZ_JACDUS010000020.1": 11,
+        "NZ_JACDUS010000013.1": 11,
+        "NZ_JACDUS010000006.1": 11,
+        "NZ_JACDUS010000028.1": 11,
+        "NZ_JACDUS010000001.1": 11,
+        "NZ_JACDUS010000023.1": 11,
+        "NZ_JACDUS010000016.1": 11,
+        "NZ_JACDUS010000009.1": 11,
+        "NZ_JACDUS010000011.1": 11,
+        "NZ_JACDUS010000004.1": 11,
+        "NZ_JACDUS010000026.1": 11,
+        "NZ_JACDUS010000019.1": 11,
+        "NZ_JACDUS010000021.1": 11,
+        "NZ_JACDUS010000014.1": 11,
+        "NZ_JACDUS010000007.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/761/005/GCF_013761005.1/bbi/GCF_013761005.1_ASM1376100v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/013/761/005/GCF_013761005.1/bbi/GCF_013761005.1_ASM1376100v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_013761005.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

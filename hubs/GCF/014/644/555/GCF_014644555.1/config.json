@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014644555.1",
           "ucsc": {
             "genome": "GCF_014644555.1",
             "taxId": "225894",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/644/555/GCF_014644555.1/GCF_014644555.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BMKX01000022.1": 11,
+        "NZ_BMKX01000015.1": 11,
+        "NZ_BMKX01000008.1": 11,
+        "NZ_BMKX01000010.1": 11,
+        "NZ_BMKX01000003.1": 11,
+        "NZ_BMKX01000025.1": 11,
+        "NZ_BMKX01000020.1": 11,
+        "NZ_BMKX01000013.1": 11,
+        "NZ_BMKX01000006.1": 11,
+        "NZ_BMKX01000028.1": 11,
+        "NZ_BMKX01000001.1": 11,
+        "NZ_BMKX01000023.1": 11,
+        "NZ_BMKX01000016.1": 11,
+        "NZ_BMKX01000009.1": 11,
+        "NZ_BMKX01000011.1": 11,
+        "NZ_BMKX01000004.1": 11,
+        "NZ_BMKX01000026.1": 11,
+        "NZ_BMKX01000019.1": 11,
+        "NZ_BMKX01000021.1": 11,
+        "NZ_BMKX01000014.1": 11,
+        "NZ_BMKX01000007.1": 11,
+        "NZ_BMKX01000002.1": 11,
+        "NZ_BMKX01000024.1": 11,
+        "NZ_BMKX01000017.1": 11,
+        "NZ_BMKX01000012.1": 11,
+        "NZ_BMKX01000005.1": 11,
+        "NZ_BMKX01000027.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/644/555/GCF_014644555.1/bbi/GCF_014644555.1_ASM1464455v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/644/555/GCF_014644555.1/bbi/GCF_014644555.1_ASM1464455v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014644555.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

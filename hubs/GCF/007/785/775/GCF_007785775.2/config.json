@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_007785775.2",
           "ucsc": {
             "genome": "GCF_007785775.2",
             "taxId": "2597517",
@@ -37,6 +38,62 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/007/785/775/GCF_007785775.2/GCF_007785775.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VNIK02000034.1": 11,
+        "NZ_VNIK02000051.1": 11,
+        "NZ_VNIK02000018.1": 11,
+        "NZ_VNIK02000003.1": 11,
+        "NZ_VNIK02000039.1": 11,
+        "NZ_VNIK02000024.1": 11,
+        "NZ_VNIK02000056.1": 11,
+        "NZ_VNIK02000041.1": 11,
+        "NZ_VNIK02000030.1": 11,
+        "NZ_VNIK02000008.1": 11,
+        "NZ_VNIK02000029.1": 11,
+        "NZ_VNIK02000014.1": 11,
+        "NZ_VNIK02000046.1": 11,
+        "NZ_VNIK02000035.1": 11,
+        "NZ_VNIK02000020.1": 11,
+        "NZ_VNIK02000052.1": 11,
+        "NZ_VNIK02000019.1": 11,
+        "NZ_VNIK02000004.1": 11,
+        "NZ_VNIK02000010.1": 11,
+        "NZ_VNIK02000042.1": 11,
+        "NZ_VNIK02000031.1": 11,
+        "NZ_VNIK02000009.1": 11,
+        "NZ_VNIK02000015.1": 11,
+        "NZ_VNIK02000047.1": 11,
+        "NZ_VNIK02000036.1": 11,
+        "NZ_VNIK02000021.1": 11,
+        "NZ_VNIK02000053.1": 11,
+        "NZ_VNIK02000005.1": 11,
+        "NZ_VNIK02000026.1": 11,
+        "NZ_VNIK02000011.1": 11,
+        "NZ_VNIK02000043.1": 11,
+        "NZ_VNIK02000032.1": 11,
+        "NZ_VNIK02000016.1": 11,
+        "NZ_VNIK02000001.1": 11,
+        "NZ_VNIK02000048.1": 11,
+        "NZ_VNIK02000037.1": 11,
+        "NZ_VNIK02000022.1": 11,
+        "NZ_VNIK02000054.1": 11,
+        "NZ_VNIK02000006.1": 11,
+        "NZ_VNIK02000012.1": 11,
+        "NZ_VNIK02000027.1": 11,
+        "NZ_VNIK02000044.1": 11,
+        "NZ_VNIK02000033.1": 11,
+        "NZ_VNIK02000050.1": 11,
+        "NZ_VNIK02000017.1": 11,
+        "NZ_VNIK02000002.1": 11,
+        "NZ_VNIK02000049.1": 11,
+        "NZ_VNIK02000038.1": 11,
+        "NZ_VNIK02000023.1": 11,
+        "NZ_VNIK02000055.1": 11,
+        "NZ_VNIK02000040.1": 11,
+        "NZ_VNIK02000007.1": 11,
+        "NZ_VNIK02000028.1": 11,
+        "NZ_VNIK02000013.1": 11
       }
     }
   ],
@@ -227,8 +284,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/007/785/775/GCF_007785775.2/bbi/GCF_007785775.2_ASM778577v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/007/785/775/GCF_007785775.2/bbi/GCF_007785775.2_ASM778577v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_007785775.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

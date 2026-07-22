@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000529525.1",
           "ucsc": {
             "genome": "GCF_000529525.1",
             "taxId": "1415626",
@@ -37,6 +38,21 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/529/525/GCF_000529525.1/GCF_000529525.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_HG796207.1": 11,
+        "NZ_HG796202.1": 11,
+        "NZ_HG796211.1": 11,
+        "NZ_HG796205.1": 11,
+        "NZ_HG796200.1": 11,
+        "NZ_HG796199.1": 11,
+        "NZ_HG796208.1": 11,
+        "NZ_HG796203.1": 11,
+        "NZ_HG796212.1": 11,
+        "NZ_HG796206.1": 11,
+        "NZ_HG796201.1": 11,
+        "NZ_HG796209.1": 11,
+        "NZ_HG796204.1": 11
       }
     }
   ],
@@ -229,8 +245,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/529/525/GCF_000529525.1/bbi/GCF_000529525.1_Methanobrevibacter_oralis_JMR01.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/529/525/GCF_000529525.1/bbi/GCF_000529525.1_Methanobrevibacter_oralis_JMR01.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000529525.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

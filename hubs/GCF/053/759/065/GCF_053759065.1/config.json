@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_053759065.1",
           "ucsc": {
             "genome": "GCF_053759065.1",
             "taxId": "81950",
@@ -37,6 +38,31 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/053/759/065/GCF_053759065.1/GCF_053759065.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JBSMTQ010000011.1": 11,
+        "NZ_JBSMTQ010000019.1": 11,
+        "NZ_JBSMTQ010000005.1": 11,
+        "NZ_JBSMTQ010000014.1": 11,
+        "NZ_JBSMTQ010000008.1": 11,
+        "NZ_JBSMTQ010000024.1": 11,
+        "NZ_JBSMTQ010000017.1": 11,
+        "NZ_JBSMTQ010000003.1": 11,
+        "NZ_JBSMTQ010000012.1": 11,
+        "NZ_JBSMTQ010000006.1": 11,
+        "NZ_JBSMTQ010000022.1": 11,
+        "NZ_JBSMTQ010000015.1": 11,
+        "NZ_JBSMTQ010000001.1": 11,
+        "NZ_JBSMTQ010000010.1": 11,
+        "NZ_JBSMTQ010000009.1": 11,
+        "NZ_JBSMTQ010000025.1": 11,
+        "NZ_JBSMTQ010000018.1": 11,
+        "NZ_JBSMTQ010000004.1": 11,
+        "NZ_JBSMTQ010000020.1": 11,
+        "NZ_JBSMTQ010000013.1": 11,
+        "NZ_JBSMTQ010000007.1": 11,
+        "NZ_JBSMTQ010000016.1": 11,
+        "NZ_JBSMTQ010000002.1": 11
       }
     }
   ],
@@ -204,8 +230,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/053/759/065/GCF_053759065.1/bbi/GCF_053759065.1_ASM5375906v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/053/759/065/GCF_053759065.1/bbi/GCF_053759065.1_ASM5375906v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_053759065.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

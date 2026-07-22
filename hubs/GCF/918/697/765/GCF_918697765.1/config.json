@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_918697765.1",
           "ucsc": {
             "genome": "GCF_918697765.1",
             "taxId": "2886377",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/918/697/765/GCF_918697765.1/GCF_918697765.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OU953855.1": 11
       }
     }
   ],
@@ -204,8 +208,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/918/697/765/GCF_918697765.1/bbi/GCF_918697765.1_Wolbachia_Phyllotreta_cruciferaeV1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/918/697/765/GCF_918697765.1/bbi/GCF_918697765.1_Wolbachia_Phyllotreta_cruciferaeV1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_918697765.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

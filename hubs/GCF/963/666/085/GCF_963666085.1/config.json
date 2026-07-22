@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_963666085.1",
           "ucsc": {
             "genome": "GCF_963666085.1",
             "taxId": "477666",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/666/085/GCF_963666085.1/GCF_963666085.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OY762556.1": 11
       }
     }
   ],
@@ -204,8 +208,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/666/085/GCF_963666085.1/bbi/GCF_963666085.1_piHetPala1.Bacteroides_graminisolvens_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/666/085/GCF_963666085.1/bbi/GCF_963666085.1_piHetPala1.Bacteroides_graminisolvens_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_963666085.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

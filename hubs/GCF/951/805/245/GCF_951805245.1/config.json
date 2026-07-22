@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_951805245.1",
           "ucsc": {
             "genome": "GCF_951805245.1",
             "taxId": "2066024",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/951/805/245/GCF_951805245.1/GCF_951805245.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OX638200.1": 11
       }
     }
   ],
@@ -204,8 +208,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/951/805/245/GCF_951805245.1/bbi/GCF_951805245.1_peDipJapo1.Cytomitobacter_primus_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/951/805/245/GCF_951805245.1/bbi/GCF_951805245.1_peDipJapo1.Cytomitobacter_primus_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_951805245.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

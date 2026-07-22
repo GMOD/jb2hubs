@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014287455.1",
           "ucsc": {
             "genome": "GCF_014287455.1",
             "taxId": "2763032",
@@ -37,6 +38,84 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/287/455/GCF_014287455.1/GCF_014287455.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JACOOH010000005.1": 11,
+        "NZ_JACOOH010000037.1": 11,
+        "NZ_JACOOH010000022.1": 11,
+        "NZ_JACOOH010000011.1": 11,
+        "NZ_JACOOH010000058.1": 11,
+        "NZ_JACOOH010000043.1": 11,
+        "NZ_JACOOH010000075.1": 11,
+        "NZ_JACOOH010000064.1": 11,
+        "NZ_JACOOH010000027.1": 11,
+        "NZ_JACOOH010000016.1": 11,
+        "NZ_JACOOH010000001.1": 11,
+        "NZ_JACOOH010000048.1": 11,
+        "NZ_JACOOH010000033.1": 11,
+        "NZ_JACOOH010000069.1": 11,
+        "NZ_JACOOH010000054.1": 11,
+        "NZ_JACOOH010000071.1": 11,
+        "NZ_JACOOH010000060.1": 11,
+        "NZ_JACOOH010000006.1": 11,
+        "NZ_JACOOH010000023.1": 11,
+        "NZ_JACOOH010000012.1": 11,
+        "NZ_JACOOH010000059.1": 11,
+        "NZ_JACOOH010000044.1": 11,
+        "NZ_JACOOH010000076.1": 11,
+        "NZ_JACOOH010000065.1": 11,
+        "NZ_JACOOH010000050.1": 11,
+        "NZ_JACOOH010000028.1": 11,
+        "NZ_JACOOH010000017.1": 11,
+        "NZ_JACOOH010000002.1": 11,
+        "NZ_JACOOH010000049.1": 11,
+        "NZ_JACOOH010000034.1": 11,
+        "NZ_JACOOH010000055.1": 11,
+        "NZ_JACOOH010000040.1": 11,
+        "NZ_JACOOH010000072.1": 11,
+        "NZ_JACOOH010000061.1": 11,
+        "NZ_JACOOH010000007.1": 11,
+        "NZ_JACOOH010000024.1": 11,
+        "NZ_JACOOH010000039.1": 11,
+        "NZ_JACOOH010000013.1": 11,
+        "NZ_JACOOH010000045.1": 11,
+        "NZ_JACOOH010000077.1": 11,
+        "NZ_JACOOH010000066.1": 11,
+        "NZ_JACOOH010000051.1": 11,
+        "NZ_JACOOH010000029.1": 11,
+        "NZ_JACOOH010000003.1": 11,
+        "NZ_JACOOH010000018.1": 11,
+        "NZ_JACOOH010000035.1": 11,
+        "NZ_JACOOH010000020.1": 11,
+        "NZ_JACOOH010000056.1": 11,
+        "NZ_JACOOH010000041.1": 11,
+        "NZ_JACOOH010000073.1": 11,
+        "NZ_JACOOH010000008.1": 11,
+        "NZ_JACOOH010000025.1": 11,
+        "NZ_JACOOH010000014.1": 11,
+        "NZ_JACOOH010000046.1": 11,
+        "NZ_JACOOH010000031.1": 11,
+        "NZ_JACOOH010000078.1": 11,
+        "NZ_JACOOH010000067.1": 11,
+        "NZ_JACOOH010000052.1": 11,
+        "NZ_JACOOH010000019.1": 11,
+        "NZ_JACOOH010000004.1": 11,
+        "NZ_JACOOH010000036.1": 11,
+        "NZ_JACOOH010000021.1": 11,
+        "NZ_JACOOH010000010.1": 11,
+        "NZ_JACOOH010000057.1": 11,
+        "NZ_JACOOH010000042.1": 11,
+        "NZ_JACOOH010000074.1": 11,
+        "NZ_JACOOH010000063.1": 11,
+        "NZ_JACOOH010000080.1": 11,
+        "NZ_JACOOH010000009.1": 11,
+        "NZ_JACOOH010000026.1": 11,
+        "NZ_JACOOH010000015.1": 11,
+        "NZ_JACOOH010000047.1": 11,
+        "NZ_JACOOH010000032.1": 11,
+        "NZ_JACOOH010000079.1": 11,
+        "NZ_JACOOH010000068.1": 11,
+        "NZ_JACOOH010000053.1": 11
       }
     }
   ],
@@ -204,8 +283,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/287/455/GCF_014287455.1/bbi/GCF_014287455.1_ASM1428745v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/287/455/GCF_014287455.1/bbi/GCF_014287455.1_ASM1428745v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014287455.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

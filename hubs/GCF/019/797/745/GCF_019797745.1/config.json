@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_019797745.1",
           "ucsc": {
             "genome": "GCF_019797745.1",
             "taxId": "2601682",
@@ -37,6 +38,15 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/019/797/745/GCF_019797745.1/GCF_019797745.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VOSI01000005.1": 11,
+        "NZ_VOSI01000003.1": 11,
+        "NZ_VOSI01000006.1": 11,
+        "NZ_VOSI01000001.1": 11,
+        "NZ_VOSI01000004.1": 11,
+        "NZ_VOSI01000007.1": 11,
+        "NZ_VOSI01000002.1": 11
       }
     }
   ],
@@ -204,8 +214,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/019/797/745/GCF_019797745.1/bbi/GCF_019797745.1_ASM1979774v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/019/797/745/GCF_019797745.1/bbi/GCF_019797745.1_ASM1979774v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_019797745.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

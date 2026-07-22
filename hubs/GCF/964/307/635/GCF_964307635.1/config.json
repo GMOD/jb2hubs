@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964307635.1",
           "ucsc": {
             "genome": "GCF_964307635.1",
             "taxId": "1406512",
@@ -37,6 +38,82 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/635/GCF_964307635.1/GCF_964307635.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYBCE010000067.1": 11,
+        "NZ_CAYBCE010000056.1": 11,
+        "NZ_CAYBCE010000041.1": 11,
+        "NZ_CAYBCE010000073.1": 11,
+        "NZ_CAYBCE010000019.1": 11,
+        "NZ_CAYBCE010000004.1": 11,
+        "NZ_CAYBCE010000010.1": 11,
+        "NZ_CAYBCE010000025.1": 11,
+        "NZ_CAYBCE010000031.1": 11,
+        "NZ_CAYBCE010000078.1": 11,
+        "NZ_CAYBCE010000009.1": 11,
+        "NZ_CAYBCE010000015.1": 11,
+        "NZ_CAYBCE010000036.1": 11,
+        "NZ_CAYBCE010000021.1": 11,
+        "NZ_CAYBCE010000068.1": 11,
+        "NZ_CAYBCE010000057.1": 11,
+        "NZ_CAYBCE010000042.1": 11,
+        "NZ_CAYBCE010000074.1": 11,
+        "NZ_CAYBCE010000005.1": 11,
+        "NZ_CAYBCE010000026.1": 11,
+        "NZ_CAYBCE010000011.1": 11,
+        "NZ_CAYBCE010000047.1": 11,
+        "NZ_CAYBCE010000032.1": 11,
+        "NZ_CAYBCE010000079.1": 11,
+        "NZ_CAYBCE010000064.1": 11,
+        "NZ_CAYBCE010000070.1": 11,
+        "NZ_CAYBCE010000016.1": 11,
+        "NZ_CAYBCE010000037.1": 11,
+        "NZ_CAYBCE010000022.1": 11,
+        "NZ_CAYBCE010000043.1": 11,
+        "NZ_CAYBCE010000075.1": 11,
+        "NZ_CAYBCE010000060.1": 11,
+        "NZ_CAYBCE010000081.1": 11,
+        "NZ_CAYBCE010000006.1": 11,
+        "NZ_CAYBCE010000027.1": 11,
+        "NZ_CAYBCE010000012.1": 11,
+        "NZ_CAYBCE010000001.1": 11,
+        "NZ_CAYBCE010000048.1": 11,
+        "NZ_CAYBCE010000033.1": 11,
+        "NZ_CAYBCE010000065.1": 11,
+        "NZ_CAYBCE010000054.1": 11,
+        "NZ_CAYBCE010000071.1": 11,
+        "NZ_CAYBCE010000017.1": 11,
+        "NZ_CAYBCE010000038.1": 11,
+        "NZ_CAYBCE010000023.1": 11,
+        "NZ_CAYBCE010000059.1": 11,
+        "NZ_CAYBCE010000044.1": 11,
+        "NZ_CAYBCE010000076.1": 11,
+        "NZ_CAYBCE010000061.1": 11,
+        "NZ_CAYBCE010000050.1": 11,
+        "NZ_CAYBCE010000082.1": 11,
+        "NZ_CAYBCE010000007.1": 11,
+        "NZ_CAYBCE010000013.1": 11,
+        "NZ_CAYBCE010000002.1": 11,
+        "NZ_CAYBCE010000049.1": 11,
+        "NZ_CAYBCE010000034.1": 11,
+        "NZ_CAYBCE010000066.1": 11,
+        "NZ_CAYBCE010000055.1": 11,
+        "NZ_CAYBCE010000040.1": 11,
+        "NZ_CAYBCE010000072.1": 11,
+        "NZ_CAYBCE010000003.1": 11,
+        "NZ_CAYBCE010000018.1": 11,
+        "NZ_CAYBCE010000039.1": 11,
+        "NZ_CAYBCE010000024.1": 11,
+        "NZ_CAYBCE010000045.1": 11,
+        "NZ_CAYBCE010000030.1": 11,
+        "NZ_CAYBCE010000062.1": 11,
+        "NZ_CAYBCE010000051.1": 11,
+        "NZ_CAYBCE010000083.1": 11,
+        "NZ_CAYBCE010000008.1": 11,
+        "NZ_CAYBCE010000029.1": 11,
+        "NZ_CAYBCE010000014.1": 11,
+        "NZ_CAYBCE010000035.1": 11,
+        "NZ_CAYBCE010000020.1": 11
       }
     }
   ],
@@ -204,8 +281,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/635/GCF_964307635.1/bbi/GCF_964307635.1_EST-A-0096_Methanomassiliicoccus_A-sp905203995.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/635/GCF_964307635.1/bbi/GCF_964307635.1_EST-A-0096_Methanomassiliicoccus_A-sp905203995.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964307635.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

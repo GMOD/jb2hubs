@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_006130075.1",
           "ucsc": {
             "genome": "GCA_006130075.1",
             "taxId": "8853",
@@ -394,7 +395,86 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/006/130/075/GCA_006130075.1/bbi/GCA_006130075.1_GSC_cangoose_1.0.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/006/130/075/GCA_006130075.1/bbi/GCA_006130075.1_GSC_cangoose_1.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_006130075.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsHLrisTri2v2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 kittiwake annotations",
+          "longLabel": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+          "group": "genes",
+          "priority": "4",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/006/130/075/GCA_006130075.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_006130075.1-HLTOGAannotvsHLrisTri2v2",
+      "description": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+      "assemblyNames": ["GCA_006130075.1"],
+      "name": "TOGA V2 - TOGA2 kittiwake annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/006/130/075/GCA_006130075.1/contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_006130075.1-HLTOGAannotvsHLrisTri2v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/006/130/075/GCA_006130075.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_006130075.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_006130075.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/006/130/075/GCA_006130075.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

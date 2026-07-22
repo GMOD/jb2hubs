@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_932750685.1",
           "ucsc": {
             "genome": "GCF_932750685.1",
             "taxId": "2742600",
@@ -37,6 +38,25 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/932/750/685/GCF_932750685.1/GCF_932750685.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAKOBX010000018.1": 11,
+        "NZ_CAKOBX010000013.1": 11,
+        "NZ_CAKOBX010000006.1": 11,
+        "NZ_CAKOBX010000001.1": 11,
+        "NZ_CAKOBX010000009.1": 11,
+        "NZ_CAKOBX010000011.1": 11,
+        "NZ_CAKOBX010000004.1": 11,
+        "NZ_CAKOBX010000014.1": 11,
+        "NZ_CAKOBX010000007.1": 11,
+        "NZ_CAKOBX010000002.1": 11,
+        "NZ_CAKOBX010000017.1": 11,
+        "NZ_CAKOBX010000012.1": 11,
+        "NZ_CAKOBX010000005.1": 11,
+        "NZ_CAKOBX010000015.1": 11,
+        "NZ_CAKOBX010000008.1": 11,
+        "NZ_CAKOBX010000010.1": 11,
+        "NZ_CAKOBX010000003.1": 11
       }
     }
   ],
@@ -204,8 +224,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/932/750/685/GCF_932750685.1/bbi/GCF_932750685.1_Limosilactobacillus_urinaemulieris_DSM106190.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/932/750/685/GCF_932750685.1/bbi/GCF_932750685.1_Limosilactobacillus_urinaemulieris_DSM106190.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_932750685.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

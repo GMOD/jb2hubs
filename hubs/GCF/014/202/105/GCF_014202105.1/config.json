@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014202105.1",
           "ucsc": {
             "genome": "GCF_014202105.1",
             "taxId": "69656",
@@ -37,6 +38,78 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/202/105/GCF_014202105.1/GCF_014202105.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JACHFY010000032.1": 11,
+        "NZ_JACHFY010000064.1": 11,
+        "NZ_JACHFY010000070.1": 11,
+        "NZ_JACHFY010000016.1": 11,
+        "NZ_JACHFY010000001.1": 11,
+        "NZ_JACHFY010000048.1": 11,
+        "NZ_JACHFY010000037.1": 11,
+        "NZ_JACHFY010000022.1": 11,
+        "NZ_JACHFY010000069.1": 11,
+        "NZ_JACHFY010000054.1": 11,
+        "NZ_JACHFY010000060.1": 11,
+        "NZ_JACHFY010000006.1": 11,
+        "NZ_JACHFY010000027.1": 11,
+        "NZ_JACHFY010000012.1": 11,
+        "NZ_JACHFY010000059.1": 11,
+        "NZ_JACHFY010000044.1": 11,
+        "NZ_JACHFY010000033.1": 11,
+        "NZ_JACHFY010000065.1": 11,
+        "NZ_JACHFY010000050.1": 11,
+        "NZ_JACHFY010000017.1": 11,
+        "NZ_JACHFY010000002.1": 11,
+        "NZ_JACHFY010000049.1": 11,
+        "NZ_JACHFY010000038.1": 11,
+        "NZ_JACHFY010000023.1": 11,
+        "NZ_JACHFY010000055.1": 11,
+        "NZ_JACHFY010000040.1": 11,
+        "NZ_JACHFY010000061.1": 11,
+        "NZ_JACHFY010000007.1": 11,
+        "NZ_JACHFY010000028.1": 11,
+        "NZ_JACHFY010000013.1": 11,
+        "NZ_JACHFY010000045.1": 11,
+        "NZ_JACHFY010000034.1": 11,
+        "NZ_JACHFY010000066.1": 11,
+        "NZ_JACHFY010000051.1": 11,
+        "NZ_JACHFY010000018.1": 11,
+        "NZ_JACHFY010000003.1": 11,
+        "NZ_JACHFY010000039.1": 11,
+        "NZ_JACHFY010000024.1": 11,
+        "NZ_JACHFY010000056.1": 11,
+        "NZ_JACHFY010000041.1": 11,
+        "NZ_JACHFY010000030.1": 11,
+        "NZ_JACHFY010000062.1": 11,
+        "NZ_JACHFY010000008.1": 11,
+        "NZ_JACHFY010000014.1": 11,
+        "NZ_JACHFY010000029.1": 11,
+        "NZ_JACHFY010000046.1": 11,
+        "NZ_JACHFY010000035.1": 11,
+        "NZ_JACHFY010000020.1": 11,
+        "NZ_JACHFY010000067.1": 11,
+        "NZ_JACHFY010000052.1": 11,
+        "NZ_JACHFY010000019.1": 11,
+        "NZ_JACHFY010000004.1": 11,
+        "NZ_JACHFY010000025.1": 11,
+        "NZ_JACHFY010000010.1": 11,
+        "NZ_JACHFY010000057.1": 11,
+        "NZ_JACHFY010000042.1": 11,
+        "NZ_JACHFY010000031.1": 11,
+        "NZ_JACHFY010000063.1": 11,
+        "NZ_JACHFY010000009.1": 11,
+        "NZ_JACHFY010000015.1": 11,
+        "NZ_JACHFY010000047.1": 11,
+        "NZ_JACHFY010000021.1": 11,
+        "NZ_JACHFY010000036.1": 11,
+        "NZ_JACHFY010000068.1": 11,
+        "NZ_JACHFY010000053.1": 11,
+        "NZ_JACHFY010000005.1": 11,
+        "NZ_JACHFY010000026.1": 11,
+        "NZ_JACHFY010000011.1": 11,
+        "NZ_JACHFY010000058.1": 11,
+        "NZ_JACHFY010000043.1": 11
       }
     }
   ],
@@ -204,8 +277,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/202/105/GCF_014202105.1/bbi/GCF_014202105.1_ASM1420210v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/202/105/GCF_014202105.1/bbi/GCF_014202105.1_ASM1420210v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014202105.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

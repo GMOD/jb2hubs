@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_023375975.1",
           "ucsc": {
             "genome": "GCF_023375975.1",
             "taxId": "7994",
@@ -257,8 +258,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023375975.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -289,8 +300,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023375975.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -321,8 +342,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023375975.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -351,7 +382,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023375975.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -535,8 +575,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023375975.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -569,7 +619,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ensGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/bbi/GCF_023375975.1_AstMex3_surface.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023375975.1-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_023375975.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCF_023375975.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/375/975/GCF_023375975.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     },
     {
@@ -615,11 +703,14 @@
       "type": "MafTrack",
       "adapter": {
         "type": "BigMafAdapter",
-        "bigMafLocation": {
+        "bigBedLocation": {
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/VGP/vgp577way/bbi/GCF_023375975.1/GCF_023375975.1.vgp577way.bb"
         },
-        "summaryLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/hubs/VGP/vgp577way/bbi/GCF_023375975.1/GCF_023375975.1.vgp577waySummary.bb"
+        "summaryAdapter": {
+          "type": "BigBedAdapter",
+          "bigBedLocation": {
+            "uri": "https://hgdownload.soe.ucsc.edu/hubs/VGP/vgp577way/bbi/GCF_023375975.1/GCF_023375975.1.vgp577waySummary.bb"
+          }
         }
       }
     },

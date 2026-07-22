@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_018469865.1",
           "ucsc": {
             "genome": "GCA_018469865.1",
             "taxId": "9606",
@@ -348,8 +349,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/469/865/GCA_018469865.1/bbi/GCA_018469865.1_HG01358.pri.mat.f1_v2.1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/469/865/GCA_018469865.1/bbi/GCA_018469865.1_HG01358.pri.mat.f1_v2.1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_018469865.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -379,8 +390,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/469/865/GCA_018469865.1/bbi/GCA_018469865.1_HG01358.pri.mat.f1_v2.1.ebiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/469/865/GCA_018469865.1/bbi/GCA_018469865.1_HG01358.pri.mat.f1_v2.1.ebiGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_018469865.1-ebiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "type": "SyntenyTrack",

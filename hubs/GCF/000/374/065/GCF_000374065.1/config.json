@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000374065.1",
           "ucsc": {
             "genome": "GCF_000374065.1",
             "taxId": "1123276",
@@ -37,6 +38,74 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/374/065/GCF_000374065.1/GCF_000374065.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KB893302.1": 11,
+        "NZ_KB893287.1": 11,
+        "NZ_KB893272.1": 11,
+        "NZ_KB893293.1": 11,
+        "NZ_KB893256.1": 11,
+        "NZ_KB893245.1": 11,
+        "NZ_KB893307.1": 11,
+        "NZ_KB893277.1": 11,
+        "NZ_KB893262.1": 11,
+        "NZ_KB893313.1": 11,
+        "NZ_KB893283.1": 11,
+        "NZ_KB893267.1": 11,
+        "NZ_KB893252.1": 11,
+        "NZ_KB893303.1": 11,
+        "NZ_KB893288.1": 11,
+        "NZ_KB893273.1": 11,
+        "NZ_KB893294.1": 11,
+        "NZ_KB893257.1": 11,
+        "NZ_KB893246.1": 11,
+        "NZ_KB893308.1": 11,
+        "NZ_KB893278.1": 11,
+        "NZ_KB893263.1": 11,
+        "NZ_KB893299.1": 11,
+        "NZ_KB893284.1": 11,
+        "NZ_KB893290.1": 11,
+        "NZ_KB893268.1": 11,
+        "NZ_KB893253.1": 11,
+        "NZ_KB893304.1": 11,
+        "NZ_KB893289.1": 11,
+        "NZ_KB893274.1": 11,
+        "NZ_KB893310.1": 11,
+        "NZ_KB893295.1": 11,
+        "NZ_KB893280.1": 11,
+        "NZ_KB893258.1": 11,
+        "NZ_KB893247.1": 11,
+        "NZ_KB893279.1": 11,
+        "NZ_KB893264.1": 11,
+        "NZ_KB893300.1": 11,
+        "NZ_KB893285.1": 11,
+        "NZ_KB893270.1": 11,
+        "NZ_KB893291.1": 11,
+        "NZ_KB893269.1": 11,
+        "NZ_KB893254.1": 11,
+        "NZ_KB893305.1": 11,
+        "NZ_KB893275.1": 11,
+        "NZ_KB893260.1": 11,
+        "NZ_KB893311.1": 11,
+        "NZ_KB893281.1": 11,
+        "NZ_KB893259.1": 11,
+        "NZ_KB893248.1": 11,
+        "NZ_KB893265.1": 11,
+        "NZ_KB893250.1": 11,
+        "NZ_KB893301.1": 11,
+        "NZ_KB893286.1": 11,
+        "NZ_KB893271.1": 11,
+        "NZ_KB893292.1": 11,
+        "NZ_KB893255.1": 11,
+        "NZ_KB893306.1": 11,
+        "NZ_KB893276.1": 11,
+        "NZ_KB893261.1": 11,
+        "NZ_KB893312.1": 11,
+        "NZ_KB893297.1": 11,
+        "NZ_KB893282.1": 11,
+        "NZ_KB893249.1": 11,
+        "NZ_KB893266.1": 11,
+        "NZ_KB893251.1": 11
       }
     }
   ],
@@ -252,8 +321,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/374/065/GCF_000374065.1/bbi/GCF_000374065.1_ASM37406v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/374/065/GCF_000374065.1/bbi/GCF_000374065.1_ASM37406v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000374065.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

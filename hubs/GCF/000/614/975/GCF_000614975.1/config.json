@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000614975.1",
           "ucsc": {
             "genome": "GCF_000614975.1",
             "taxId": "1236542",
@@ -37,6 +38,74 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/614/975/GCF_000614975.1/GCF_000614975.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BALM01000057.1": 11,
+        "NZ_BALM01000046.1": 11,
+        "NZ_BALM01000031.1": 11,
+        "NZ_BALM01000063.1": 11,
+        "NZ_BALM01000009.1": 11,
+        "NZ_BALM01000015.1": 11,
+        "NZ_BALM01000036.1": 11,
+        "NZ_BALM01000021.1": 11,
+        "NZ_BALM01000053.1": 11,
+        "NZ_BALM01000042.1": 11,
+        "NZ_BALM01000005.1": 11,
+        "NZ_BALM01000011.1": 11,
+        "NZ_BALM01000026.1": 11,
+        "NZ_BALM01000058.1": 11,
+        "NZ_BALM01000047.1": 11,
+        "NZ_BALM01000032.1": 11,
+        "NZ_BALM01000064.1": 11,
+        "NZ_BALM01000016.1": 11,
+        "NZ_BALM01000001.1": 11,
+        "NZ_BALM01000037.1": 11,
+        "NZ_BALM01000022.1": 11,
+        "NZ_BALM01000069.1": 11,
+        "NZ_BALM01000054.1": 11,
+        "NZ_BALM01000043.1": 11,
+        "NZ_BALM01000006.1": 11,
+        "NZ_BALM01000027.1": 11,
+        "NZ_BALM01000012.1": 11,
+        "NZ_BALM01000059.1": 11,
+        "NZ_BALM01000048.1": 11,
+        "NZ_BALM01000033.1": 11,
+        "NZ_BALM01000050.1": 11,
+        "NZ_BALM01000017.1": 11,
+        "NZ_BALM01000002.1": 11,
+        "NZ_BALM01000038.1": 11,
+        "NZ_BALM01000023.1": 11,
+        "NZ_BALM01000055.1": 11,
+        "NZ_BALM01000044.1": 11,
+        "NZ_BALM01000061.1": 11,
+        "NZ_BALM01000007.1": 11,
+        "NZ_BALM01000028.1": 11,
+        "NZ_BALM01000013.1": 11,
+        "NZ_BALM01000049.1": 11,
+        "NZ_BALM01000034.1": 11,
+        "NZ_BALM01000066.1": 11,
+        "NZ_BALM01000051.1": 11,
+        "NZ_BALM01000040.1": 11,
+        "NZ_BALM01000018.1": 11,
+        "NZ_BALM01000003.1": 11,
+        "NZ_BALM01000039.1": 11,
+        "NZ_BALM01000024.1": 11,
+        "NZ_BALM01000056.1": 11,
+        "NZ_BALM01000045.1": 11,
+        "NZ_BALM01000030.1": 11,
+        "NZ_BALM01000062.1": 11,
+        "NZ_BALM01000008.1": 11,
+        "NZ_BALM01000029.1": 11,
+        "NZ_BALM01000014.1": 11,
+        "NZ_BALM01000035.1": 11,
+        "NZ_BALM01000020.1": 11,
+        "NZ_BALM01000052.1": 11,
+        "NZ_BALM01000041.1": 11,
+        "NZ_BALM01000073.1": 11,
+        "NZ_BALM01000004.1": 11,
+        "NZ_BALM01000019.1": 11,
+        "NZ_BALM01000025.1": 11,
+        "NZ_BALM01000010.1": 11
       }
     }
   ],
@@ -204,8 +273,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/614/975/GCF_000614975.1/bbi/GCF_000614975.1_ASM61497v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/614/975/GCF_000614975.1/bbi/GCF_000614975.1_ASM61497v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000614975.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

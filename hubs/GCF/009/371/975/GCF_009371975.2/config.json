@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_009371975.2",
           "ucsc": {
             "genome": "GCF_009371975.2",
             "taxId": "2591847",
@@ -37,6 +38,70 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/009/371/975/GCF_009371975.2/GCF_009371975.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VIKT02000007.1": 11,
+        "NZ_VIKT02000028.1": 11,
+        "NZ_VIKT02000013.1": 11,
+        "NZ_VIKT02000049.1": 11,
+        "NZ_VIKT02000034.1": 11,
+        "NZ_VIKT02000051.1": 11,
+        "NZ_VIKT02000040.1": 11,
+        "NZ_VIKT02000003.1": 11,
+        "NZ_VIKT02000018.1": 11,
+        "NZ_VIKT02000039.1": 11,
+        "NZ_VIKT02000024.1": 11,
+        "NZ_VIKT02000056.1": 11,
+        "NZ_VIKT02000045.1": 11,
+        "NZ_VIKT02000030.1": 11,
+        "NZ_VIKT02000062.1": 11,
+        "NZ_VIKT02000008.1": 11,
+        "NZ_VIKT02000029.1": 11,
+        "NZ_VIKT02000014.1": 11,
+        "NZ_VIKT02000035.1": 11,
+        "NZ_VIKT02000020.1": 11,
+        "NZ_VIKT02000052.1": 11,
+        "NZ_VIKT02000041.1": 11,
+        "NZ_VIKT02000019.1": 11,
+        "NZ_VIKT02000004.1": 11,
+        "NZ_VIKT02000010.1": 11,
+        "NZ_VIKT02000025.1": 11,
+        "NZ_VIKT02000057.1": 11,
+        "NZ_VIKT02000046.1": 11,
+        "NZ_VIKT02000031.1": 11,
+        "NZ_VIKT02000009.1": 11,
+        "NZ_VIKT02000015.1": 11,
+        "NZ_VIKT02000036.1": 11,
+        "NZ_VIKT02000021.1": 11,
+        "NZ_VIKT02000053.1": 11,
+        "NZ_VIKT02000042.1": 11,
+        "NZ_VIKT02000005.1": 11,
+        "NZ_VIKT02000026.1": 11,
+        "NZ_VIKT02000011.1": 11,
+        "NZ_VIKT02000058.1": 11,
+        "NZ_VIKT02000047.1": 11,
+        "NZ_VIKT02000032.1": 11,
+        "NZ_VIKT02000016.1": 11,
+        "NZ_VIKT02000001.1": 11,
+        "NZ_VIKT02000037.1": 11,
+        "NZ_VIKT02000022.1": 11,
+        "NZ_VIKT02000054.1": 11,
+        "NZ_VIKT02000043.1": 11,
+        "NZ_VIKT02000060.1": 11,
+        "NZ_VIKT02000006.1": 11,
+        "NZ_VIKT02000027.1": 11,
+        "NZ_VIKT02000012.1": 11,
+        "NZ_VIKT02000059.1": 11,
+        "NZ_VIKT02000048.1": 11,
+        "NZ_VIKT02000033.1": 11,
+        "NZ_VIKT02000050.1": 11,
+        "NZ_VIKT02000017.1": 11,
+        "NZ_VIKT02000002.1": 11,
+        "NZ_VIKT02000038.1": 11,
+        "NZ_VIKT02000023.1": 11,
+        "NZ_VIKT02000055.1": 11,
+        "NZ_VIKT02000044.1": 11,
+        "NZ_VIKT02000061.1": 11
       }
     }
   ],
@@ -204,8 +269,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/009/371/975/GCF_009371975.2/bbi/GCF_009371975.2_ASM937197v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/009/371/975/GCF_009371975.2/bbi/GCF_009371975.2_ASM937197v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_009371975.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

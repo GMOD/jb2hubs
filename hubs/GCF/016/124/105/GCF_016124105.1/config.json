@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_016124105.1",
           "ucsc": {
             "genome": "GCF_016124105.1",
             "taxId": "2781738",
@@ -37,6 +38,37 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/124/105/GCF_016124105.1/GCF_016124105.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JADGMQ010000012.1": 11,
+        "NZ_JADGMQ010000005.1": 11,
+        "NZ_JADGMQ010000027.1": 11,
+        "NZ_JADGMQ010000022.1": 11,
+        "NZ_JADGMQ010000015.1": 11,
+        "NZ_JADGMQ010000008.1": 11,
+        "NZ_JADGMQ010000010.1": 11,
+        "NZ_JADGMQ010000003.1": 11,
+        "NZ_JADGMQ010000025.1": 11,
+        "NZ_JADGMQ010000018.1": 11,
+        "NZ_JADGMQ010000020.1": 11,
+        "NZ_JADGMQ010000013.1": 11,
+        "NZ_JADGMQ010000006.1": 11,
+        "NZ_JADGMQ010000028.1": 11,
+        "NZ_JADGMQ010000001.1": 11,
+        "NZ_JADGMQ010000023.1": 11,
+        "NZ_JADGMQ010000016.1": 11,
+        "NZ_JADGMQ010000009.1": 11,
+        "NZ_JADGMQ010000011.1": 11,
+        "NZ_JADGMQ010000004.1": 11,
+        "NZ_JADGMQ010000026.1": 11,
+        "NZ_JADGMQ010000019.1": 11,
+        "NZ_JADGMQ010000021.1": 11,
+        "NZ_JADGMQ010000014.1": 11,
+        "NZ_JADGMQ010000007.1": 11,
+        "NZ_JADGMQ010000029.1": 11,
+        "NZ_JADGMQ010000002.1": 11,
+        "NZ_JADGMQ010000024.1": 11,
+        "NZ_JADGMQ010000017.1": 11
       }
     }
   ],
@@ -227,8 +259,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/124/105/GCF_016124105.1/bbi/GCF_016124105.1_ASM1612410v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/124/105/GCF_016124105.1/bbi/GCF_016124105.1_ASM1612410v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_016124105.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

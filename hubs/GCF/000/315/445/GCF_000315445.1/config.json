@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000315445.1",
           "ucsc": {
             "genome": "GCF_000315445.1",
             "taxId": "883081",
@@ -37,6 +38,16 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/445/GCF_000315445.1/GCF_000315445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH992962.1": 11,
+        "NZ_JH992958.1": 11,
+        "NZ_JH992960.1": 11,
+        "NZ_JH992963.1": 11,
+        "NZ_JH992959.1": 11,
+        "NZ_JH992961.1": 11,
+        "NZ_JH992964.1": 11,
+        "NZ_JH992957.1": 11
       }
     }
   ],
@@ -252,8 +263,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/445/GCF_000315445.1/bbi/GCF_000315445.1_Allo_otit_ATCC_51267_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/445/GCF_000315445.1/bbi/GCF_000315445.1_Allo_otit_ATCC_51267_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000315445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

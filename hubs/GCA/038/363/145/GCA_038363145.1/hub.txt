@@ -21,6 +21,7 @@ htmlPath html/GCA_038363145.1_mArtInt1.hap1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/038/363/145/GCA_038363145.1
+liftOver.GCA_038363225.1 liftOver/GCA_038363145.1ToGCA_038363225.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -185,6 +186,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_038363145.1_mArtInt1.hap1.xenoRefGene.ix
 html html/GCA_038363145.1_mArtInt1.hap1.xenoRefGene
+
+##############################################################################
+# GCA_038363225.1 - bats - Artibeus intermedius - taxId: 51014
+##############################################################################
+track chainNetGCA_038363225.1
+compositeTrack on
+shortLabel bats Chain/Net
+longLabel bats (2024-04-22), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_038363225.1
+html html/GCA_038363145.1_mArtInt1.hap1.chainNet
+
+    track chainNetGCA_038363225.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_038363225.1
+    spectrum on
+
+        track chainGCA_038363225.1
+        parent chainNetGCA_038363225.1Viewchain
+        subGroups view=chain
+        shortLabel bats Chain
+        longLabel bats (2024-04-22) Chained Alignments
+        type bigChain GCA_038363225.1
+        bigDataUrl bbi/GCA_038363145.1_mArtInt1.hap1.chainGCA_038363225.1.bb
+        linkDataUrl bbi/GCA_038363145.1_mArtInt1.hap1.chainGCA_038363225.1Link.bb
+        priority 1
+
+        track chainLiftOverGCA_038363225.1
+        parent chainNetGCA_038363225.1Viewchain
+        subGroups view=chain
+        shortLabel bats loChain
+        longLabel bats (2024-04-22) Lift Over Chained Alignments
+        type bigChain GCA_038363225.1
+        bigDataUrl bbi/GCA_038363145.1_mArtInt1.hap1.chainLiftOverGCA_038363225.1.bb
+        linkDataUrl bbi/GCA_038363145.1_mArtInt1.hap1.chainLiftOverGCA_038363225.1Link.bb
+        priority 2
 
 
 track Tiberius

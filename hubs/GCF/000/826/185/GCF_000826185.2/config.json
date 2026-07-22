@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000826185.2",
           "ucsc": {
             "genome": "GCF_000826185.2",
             "taxId": "1231063",
@@ -37,6 +38,20 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/185/GCF_000826185.2/GCF_000826185.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN648873.1": 11,
+        "NZ_LN648866.1": 11,
+        "NZ_LN648869.1": 11,
+        "NZ_LN648871.1": 11,
+        "NZ_LN648864.1": 11,
+        "NZ_LN648874.1": 11,
+        "NZ_LN648867.1": 11,
+        "NZ_LN648872.1": 11,
+        "NZ_LN648865.1": 11,
+        "NZ_LN648875.1": 11,
+        "NZ_LN648868.1": 11,
+        "NZ_LN648870.1": 11
       }
     }
   ],
@@ -229,8 +244,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/185/GCF_000826185.2/bbi/GCF_000826185.2_Microbacterium_massiliensis_G3.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/185/GCF_000826185.2/bbi/GCF_000826185.2_Microbacterium_massiliensis_G3.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000826185.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

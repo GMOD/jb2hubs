@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000006335.3",
           "ucsc": {
             "genome": "GCF_000006335.3",
             "taxId": "294747",
@@ -37,6 +38,29 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/GCF_000006335.3.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NW_003020055.1": 12,
+        "NW_003020050.1": 12,
+        "NW_003020043.1": 12,
+        "NW_003020058.1": 12,
+        "NW_003020053.1": 12,
+        "NW_003020046.1": 12,
+        "NW_003020039.1": 12,
+        "NW_003020041.1": 12,
+        "NW_003020056.1": 12,
+        "NW_003020049.1": 12,
+        "NW_003020051.1": 12,
+        "NW_003020044.1": 12,
+        "NW_003020060.1": 12,
+        "NW_003020059.1": 12,
+        "NW_003020047.1": 12,
+        "NW_003020042.1": 12,
+        "NW_003020057.1": 12,
+        "NW_003020052.1": 12,
+        "NW_003020038.1": 12,
+        "NW_003020061.1": 12,
+        "NW_003020040.1": 12
       }
     }
   ],
@@ -297,8 +321,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000006335.3-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -329,8 +363,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000006335.3-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -359,7 +403,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000006335.3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -543,8 +596,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/bbi/GCF_000006335.3_ASM633v3.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000006335.3-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -572,7 +635,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/006/335/GCF_000006335.3/contrib/VEuPathDB/veupathGenes.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000006335.3-VEuPathDBGeneModels-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

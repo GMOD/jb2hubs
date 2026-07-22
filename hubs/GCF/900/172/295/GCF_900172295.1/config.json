@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900172295.1",
           "ucsc": {
             "genome": "GCF_900172295.1",
             "taxId": "1312363",
@@ -37,6 +38,44 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/172/295/GCF_900172295.1/GCF_900172295.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FWFL01000012.1": 11,
+        "NZ_FWFL01000034.1": 11,
+        "NZ_FWFL01000027.1": 11,
+        "NZ_FWFL01000006.1": 11,
+        "NZ_FWFL01000022.1": 11,
+        "NZ_FWFL01000015.1": 11,
+        "NZ_FWFL01000001.1": 11,
+        "NZ_FWFL01000010.1": 11,
+        "NZ_FWFL01000009.1": 11,
+        "NZ_FWFL01000032.1": 11,
+        "NZ_FWFL01000025.1": 11,
+        "NZ_FWFL01000018.1": 11,
+        "NZ_FWFL01000004.1": 11,
+        "NZ_FWFL01000020.1": 11,
+        "NZ_FWFL01000013.1": 11,
+        "NZ_FWFL01000035.1": 11,
+        "NZ_FWFL01000028.1": 11,
+        "NZ_FWFL01000007.1": 11,
+        "NZ_FWFL01000030.1": 11,
+        "NZ_FWFL01000023.1": 11,
+        "NZ_FWFL01000016.1": 11,
+        "NZ_FWFL01000002.1": 11,
+        "NZ_FWFL01000038.1": 11,
+        "NZ_FWFL01000011.1": 11,
+        "NZ_FWFL01000033.1": 11,
+        "NZ_FWFL01000019.1": 11,
+        "NZ_FWFL01000005.1": 11,
+        "NZ_FWFL01000021.1": 11,
+        "NZ_FWFL01000014.1": 11,
+        "NZ_FWFL01000036.1": 11,
+        "NZ_FWFL01000029.1": 11,
+        "NZ_FWFL01000008.1": 11,
+        "NZ_FWFL01000031.1": 11,
+        "NZ_FWFL01000024.1": 11,
+        "NZ_FWFL01000017.1": 11,
+        "NZ_FWFL01000003.1": 11
       }
     }
   ],
@@ -204,8 +243,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/172/295/GCF_900172295.1/bbi/GCF_900172295.1_P.litorisediminis_CECT8287_Spades_Prokka.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/172/295/GCF_900172295.1/bbi/GCF_900172295.1_P.litorisediminis_CECT8287_Spades_Prokka.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900172295.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

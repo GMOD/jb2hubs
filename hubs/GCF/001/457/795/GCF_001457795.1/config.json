@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001457795.1",
           "ucsc": {
             "genome": "GCF_001457795.1",
             "taxId": "1622075",
@@ -37,6 +38,21 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/457/795/GCF_001457795.1/GCF_001457795.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN898201.1": 11,
+        "NZ_LN898209.1": 11,
+        "NZ_LN898211.1": 11,
+        "NZ_LN898204.1": 11,
+        "NZ_LN898207.1": 11,
+        "NZ_LN898199.1": 11,
+        "NZ_LN898202.1": 11,
+        "NZ_LN898205.1": 11,
+        "NZ_LN898200.1": 11,
+        "NZ_LN898208.1": 11,
+        "NZ_LN898210.1": 11,
+        "NZ_LN898203.1": 11,
+        "NZ_LN898206.1": 11
       }
     }
   ],
@@ -229,8 +245,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/457/795/GCF_001457795.1/bbi/GCF_001457795.1_Olsenella_massiliensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/457/795/GCF_001457795.1/bbi/GCF_001457795.1_Olsenella_massiliensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001457795.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

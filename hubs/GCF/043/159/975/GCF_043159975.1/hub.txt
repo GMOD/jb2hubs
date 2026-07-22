@@ -21,6 +21,7 @@ htmlPath html/GCF_043159975.1_mMacNem.hap1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/043/159/975/GCF_043159975.1
+liftOver.GCA_043161795.1 liftOver/GCF_043159975.1ToGCA_043161795.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -283,3 +284,126 @@ searchIndex name
 searchTrix ixIxx/GCF_043159975.1_mMacNem.hap1.xenoRefGene.ix
 html html/GCF_043159975.1_mMacNem.hap1.xenoRefGene
 
+##############################################################################
+# GCA_043161795.1 - pig-tailed macaque - Macaca nemestrina - taxId: 9545
+##############################################################################
+track chainNetGCA_043161795.1
+compositeTrack on
+shortLabel pig-tailed macaque Chain/Net
+longLabel pig-tailed macaque (2024-10-15), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_043161795.1
+html html/GCF_043159975.1_mMacNem.hap1.chainNet
+
+    track chainNetGCA_043161795.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_043161795.1
+    spectrum on
+
+        track chainGCA_043161795.1
+        parent chainNetGCA_043161795.1Viewchain
+        subGroups view=chain
+        shortLabel pig-tailed macaque Chain
+        longLabel pig-tailed macaque (2024-10-15) Chained Alignments
+        type bigChain GCA_043161795.1
+        bigDataUrl bbi/GCF_043159975.1_mMacNem.hap1.chainGCA_043161795.1.bb
+        linkDataUrl bbi/GCF_043159975.1_mMacNem.hap1.chainGCA_043161795.1Link.bb
+        priority 1
+
+        track chainLiftOverGCA_043161795.1
+        parent chainNetGCA_043161795.1Viewchain
+        subGroups view=chain
+        shortLabel pig-tailed macaque loChain
+        longLabel pig-tailed macaque (2024-10-15) Lift Over Chained Alignments
+        type bigChain GCA_043161795.1
+        bigDataUrl bbi/GCF_043159975.1_mMacNem.hap1.chainLiftOverGCA_043161795.1.bb
+        linkDataUrl bbi/GCF_043159975.1_mMacNem.hap1.chainLiftOverGCA_043161795.1Link.bb
+        priority 2
+
+
+track TOGAv2
+shortLabel TOGA V2
+longLabel TOGA 2.0 annotations, multiple reference
+group genes
+visibility hide
+type bigBed 12 +
+superTrack on
+html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLbosTau10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsMm10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLeleMaxInd3Av2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHg38v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2

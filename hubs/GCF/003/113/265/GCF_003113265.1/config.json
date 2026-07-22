@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_003113265.1",
           "ucsc": {
             "genome": "GCF_003113265.1",
             "taxId": "428",
@@ -37,6 +38,63 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/113/265/GCF_003113265.1/GCF_003113265.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_PUIV01000019.1": 11,
+        "NZ_PUIV01000008.1": 11,
+        "NZ_PUIV01000025.1": 11,
+        "NZ_PUIV01000010.1": 11,
+        "NZ_PUIV01000046.1": 11,
+        "NZ_PUIV01000031.1": 11,
+        "NZ_PUIV01000052.1": 11,
+        "NZ_PUIV01000015.1": 11,
+        "NZ_PUIV01000004.1": 11,
+        "NZ_PUIV01000036.1": 11,
+        "NZ_PUIV01000021.1": 11,
+        "NZ_PUIV01000042.1": 11,
+        "NZ_PUIV01000009.1": 11,
+        "NZ_PUIV01000026.1": 11,
+        "NZ_PUIV01000011.1": 11,
+        "NZ_PUIV01000047.1": 11,
+        "NZ_PUIV01000032.1": 11,
+        "NZ_PUIV01000053.1": 11,
+        "NZ_PUIV01000016.1": 11,
+        "NZ_PUIV01000005.1": 11,
+        "NZ_PUIV01000037.1": 11,
+        "NZ_PUIV01000022.1": 11,
+        "NZ_PUIV01000043.1": 11,
+        "NZ_PUIV01000027.1": 11,
+        "NZ_PUIV01000012.1": 11,
+        "NZ_PUIV01000001.1": 11,
+        "NZ_PUIV01000048.1": 11,
+        "NZ_PUIV01000033.1": 11,
+        "NZ_PUIV01000054.1": 11,
+        "NZ_PUIV01000017.1": 11,
+        "NZ_PUIV01000006.1": 11,
+        "NZ_PUIV01000038.1": 11,
+        "NZ_PUIV01000023.1": 11,
+        "NZ_PUIV01000044.1": 11,
+        "NZ_PUIV01000050.1": 11,
+        "NZ_PUIV01000028.1": 11,
+        "NZ_PUIV01000013.1": 11,
+        "NZ_PUIV01000002.1": 11,
+        "NZ_PUIV01000049.1": 11,
+        "NZ_PUIV01000034.1": 11,
+        "NZ_PUIV01000055.1": 11,
+        "NZ_PUIV01000040.1": 11,
+        "NZ_PUIV01000018.1": 11,
+        "NZ_PUIV01000007.1": 11,
+        "NZ_PUIV01000039.1": 11,
+        "NZ_PUIV01000024.1": 11,
+        "NZ_PUIV01000045.1": 11,
+        "NZ_PUIV01000030.1": 11,
+        "NZ_PUIV01000051.1": 11,
+        "NZ_PUIV01000029.1": 11,
+        "NZ_PUIV01000014.1": 11,
+        "NZ_PUIV01000003.1": 11,
+        "NZ_PUIV01000035.1": 11,
+        "NZ_PUIV01000020.1": 11,
+        "NZ_PUIV01000041.1": 11
       }
     }
   ],
@@ -204,8 +262,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/113/265/GCF_003113265.1/bbi/GCF_003113265.1_ASM311326v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/113/265/GCF_003113265.1/bbi/GCF_003113265.1_ASM311326v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_003113265.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001447265.1",
           "ucsc": {
             "genome": "GCF_001447265.1",
             "taxId": "9172",
@@ -276,8 +277,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -308,8 +319,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -338,7 +359,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -522,35 +552,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.xenoRefGene.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "HLTOGAannotvGalGal6v1",
-          "bigDataUrl": "bbi/HLTOGAannotVsGalGal6v1.bb",
-          "shortLabel": "TOGA vs. galGal6",
-          "longLabel": "TOGA annotations using chicken/galGal6 as reference",
-          "group": "genes",
-          "visibility": "pack",
-          "itemRgb": "on",
-          "type": "bigBed 12",
-          "searchIndex": "name",
-          "searchTrix": " ixIxx/HLTOGAannotVsGalGal6v1.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/html/TOGAannotation\">html/TOGAannotation</a>"
-        }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/GCF_001447265.1_Sturnus_vulgaris-1.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
       },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_001447265.1-HLTOGAannotvGalGal6v1",
-      "description": "TOGA annotations using chicken/galGal6 as reference",
-      "assemblyNames": ["GCF_001447265.1"],
-      "name": "TOGA vs. galGal6",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/bbi/HLTOGAannotVsGalGal6v1.bb"
-      }
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -582,7 +595,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-HLTOGAannotvsHLrisTri2v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -614,7 +636,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/TOGAv2/TOGAvGCF_020740725.1v2/HLTOGAannotVsHLcorHaw3v2.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-HLTOGAannotvsHLcorHaw3v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -646,7 +677,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/TOGAv2/TOGAvGCF_003957565.2v2/HLTOGAannotVsHLtaeGut5v2.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-HLTOGAannotvsHLtaeGut5v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -678,7 +718,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/TOGAv2/TOGAvGCF_036370855.1v2/HLTOGAannotVsHLdroNov3v2.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-HLTOGAannotvsHLdroNov3v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -710,6 +759,43 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/TOGAv2/TOGAvGCF_016699485.2v2/HLTOGAannotVsHLgalGal7v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001447265.1-HLTOGAannotvsHLgalGal7v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_001447265.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCF_001447265.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/447/265/GCF_001447265.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     },
     {

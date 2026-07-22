@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002288875.1",
           "ucsc": {
             "genome": "GCF_002288875.1",
             "taxId": "2029117",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/288/875/GCF_002288875.1/GCF_002288875.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_NTBH01000012.1": 11,
+        "NZ_NTBH01000005.1": 11,
+        "NZ_NTBH01000027.1": 11,
+        "NZ_NTBH01000022.1": 11,
+        "NZ_NTBH01000015.1": 11,
+        "NZ_NTBH01000008.1": 11,
+        "NZ_NTBH01000010.1": 11,
+        "NZ_NTBH01000003.1": 11,
+        "NZ_NTBH01000025.1": 11,
+        "NZ_NTBH01000020.1": 11,
+        "NZ_NTBH01000013.1": 11,
+        "NZ_NTBH01000006.1": 11,
+        "NZ_NTBH01000028.1": 11,
+        "NZ_NTBH01000001.1": 11,
+        "NZ_NTBH01000023.1": 11,
+        "NZ_NTBH01000016.1": 11,
+        "NZ_NTBH01000009.1": 11,
+        "NZ_NTBH01000011.1": 11,
+        "NZ_NTBH01000004.1": 11,
+        "NZ_NTBH01000026.1": 11,
+        "NZ_NTBH01000019.1": 11,
+        "NZ_NTBH01000021.1": 11,
+        "NZ_NTBH01000014.1": 11,
+        "NZ_NTBH01000007.1": 11,
+        "NZ_NTBH01000002.1": 11,
+        "NZ_NTBH01000024.1": 11,
+        "NZ_NTBH01000017.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/288/875/GCF_002288875.1/bbi/GCF_002288875.1_ASM228887v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/288/875/GCF_002288875.1/bbi/GCF_002288875.1_ASM228887v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002288875.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

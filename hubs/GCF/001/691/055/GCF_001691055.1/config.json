@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001691055.1",
           "ucsc": {
             "genome": "GCF_001691055.1",
             "taxId": "688",
@@ -37,6 +38,77 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/691/055/GCF_001691055.1/GCF_001691055.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_MAJU01000059.1": 11,
+        "NZ_MAJU01000048.1": 11,
+        "NZ_MAJU01000033.1": 11,
+        "NZ_MAJU01000065.1": 11,
+        "NZ_MAJU01000050.1": 11,
+        "NZ_MAJU01000071.1": 11,
+        "NZ_MAJU01000017.1": 11,
+        "NZ_MAJU01000002.1": 11,
+        "NZ_MAJU01000038.1": 11,
+        "NZ_MAJU01000023.1": 11,
+        "NZ_MAJU01000055.1": 11,
+        "NZ_MAJU01000044.1": 11,
+        "NZ_MAJU01000076.1": 11,
+        "NZ_MAJU01000061.1": 11,
+        "NZ_MAJU01000007.1": 11,
+        "NZ_MAJU01000028.1": 11,
+        "NZ_MAJU01000013.1": 11,
+        "NZ_MAJU01000049.1": 11,
+        "NZ_MAJU01000034.1": 11,
+        "NZ_MAJU01000066.1": 11,
+        "NZ_MAJU01000051.1": 11,
+        "NZ_MAJU01000040.1": 11,
+        "NZ_MAJU01000018.1": 11,
+        "NZ_MAJU01000003.1": 11,
+        "NZ_MAJU01000039.1": 11,
+        "NZ_MAJU01000024.1": 11,
+        "NZ_MAJU01000056.1": 11,
+        "NZ_MAJU01000062.1": 11,
+        "NZ_MAJU01000008.1": 11,
+        "NZ_MAJU01000014.1": 11,
+        "NZ_MAJU01000029.1": 11,
+        "NZ_MAJU01000035.1": 11,
+        "NZ_MAJU01000020.1": 11,
+        "NZ_MAJU01000052.1": 11,
+        "NZ_MAJU01000041.1": 11,
+        "NZ_MAJU01000073.1": 11,
+        "NZ_MAJU01000019.1": 11,
+        "NZ_MAJU01000004.1": 11,
+        "NZ_MAJU01000025.1": 11,
+        "NZ_MAJU01000010.1": 11,
+        "NZ_MAJU01000057.1": 11,
+        "NZ_MAJU01000046.1": 11,
+        "NZ_MAJU01000031.1": 11,
+        "NZ_MAJU01000063.1": 11,
+        "NZ_MAJU01000009.1": 11,
+        "NZ_MAJU01000015.1": 11,
+        "NZ_MAJU01000021.1": 11,
+        "NZ_MAJU01000036.1": 11,
+        "NZ_MAJU01000068.1": 11,
+        "NZ_MAJU01000053.1": 11,
+        "NZ_MAJU01000042.1": 11,
+        "NZ_MAJU01000074.1": 11,
+        "NZ_MAJU01000005.1": 11,
+        "NZ_MAJU01000026.1": 11,
+        "NZ_MAJU01000011.1": 11,
+        "NZ_MAJU01000058.1": 11,
+        "NZ_MAJU01000047.1": 11,
+        "NZ_MAJU01000032.1": 11,
+        "NZ_MAJU01000064.1": 11,
+        "NZ_MAJU01000037.1": 11,
+        "NZ_MAJU01000022.1": 11,
+        "NZ_MAJU01000069.1": 11,
+        "NZ_MAJU01000054.1": 11,
+        "NZ_MAJU01000043.1": 11,
+        "NZ_MAJU01000075.1": 11,
+        "NZ_MAJU01000060.1": 11,
+        "NZ_MAJU01000006.1": 11,
+        "NZ_MAJU01000027.1": 11,
+        "NZ_MAJU01000012.1": 11
       }
     }
   ],
@@ -204,8 +276,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/691/055/GCF_001691055.1/bbi/GCF_001691055.1_ASM169105v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/691/055/GCF_001691055.1/bbi/GCF_001691055.1_ASM169105v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001691055.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

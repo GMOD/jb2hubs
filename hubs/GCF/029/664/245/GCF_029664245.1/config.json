@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_029664245.1",
           "ucsc": {
             "genome": "GCF_029664245.1",
             "taxId": "2961959",
@@ -37,6 +38,75 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/664/245/GCF_029664245.1/GCF_029664245.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JANAIE010000007.1": 11,
+        "NZ_JANAIE010000028.1": 11,
+        "NZ_JANAIE010000049.1": 11,
+        "NZ_JANAIE010000055.1": 11,
+        "NZ_JANAIE010000018.1": 11,
+        "NZ_JANAIE010000003.1": 11,
+        "NZ_JANAIE010000024.1": 11,
+        "NZ_JANAIE010000045.1": 11,
+        "NZ_JANAIE010000107.1": 11,
+        "NZ_JANAIE010000077.1": 11,
+        "NZ_JANAIE010000051.1": 11,
+        "NZ_JANAIE010000098.1": 11,
+        "NZ_JANAIE010000083.1": 11,
+        "NZ_JANAIE010000008.1": 11,
+        "NZ_JANAIE010000029.1": 11,
+        "NZ_JANAIE010000020.1": 11,
+        "NZ_JANAIE010000067.1": 11,
+        "NZ_JANAIE010000103.1": 11,
+        "NZ_JANAIE010000088.1": 11,
+        "NZ_JANAIE010000094.1": 11,
+        "NZ_JANAIE010000019.1": 11,
+        "NZ_JANAIE010000004.1": 11,
+        "NZ_JANAIE010000025.1": 11,
+        "NZ_JANAIE010000010.1": 11,
+        "NZ_JANAIE010000031.1": 11,
+        "NZ_JANAIE010000078.1": 11,
+        "NZ_JANAIE010000052.1": 11,
+        "NZ_JANAIE010000099.1": 11,
+        "NZ_JANAIE010000084.1": 11,
+        "NZ_JANAIE010000009.1": 11,
+        "NZ_JANAIE010000036.1": 11,
+        "NZ_JANAIE010000021.1": 11,
+        "NZ_JANAIE010000068.1": 11,
+        "NZ_JANAIE010000057.1": 11,
+        "NZ_JANAIE010000042.1": 11,
+        "NZ_JANAIE010000074.1": 11,
+        "NZ_JANAIE010000095.1": 11,
+        "NZ_JANAIE010000005.1": 11,
+        "NZ_JANAIE010000011.1": 11,
+        "NZ_JANAIE010000079.1": 11,
+        "NZ_JANAIE010000064.1": 11,
+        "NZ_JANAIE010000053.1": 11,
+        "NZ_JANAIE010000085.1": 11,
+        "NZ_JANAIE010000070.1": 11,
+        "NZ_JANAIE010000001.1": 11,
+        "NZ_JANAIE010000037.1": 11,
+        "NZ_JANAIE010000022.1": 11,
+        "NZ_JANAIE010000058.1": 11,
+        "NZ_JANAIE010000043.1": 11,
+        "NZ_JANAIE010000075.1": 11,
+        "NZ_JANAIE010000060.1": 11,
+        "NZ_JANAIE010000006.1": 11,
+        "NZ_JANAIE010000027.1": 11,
+        "NZ_JANAIE010000048.1": 11,
+        "NZ_JANAIE010000033.1": 11,
+        "NZ_JANAIE010000054.1": 11,
+        "NZ_JANAIE010000101.1": 11,
+        "NZ_JANAIE010000086.1": 11,
+        "NZ_JANAIE010000071.1": 11,
+        "NZ_JANAIE010000092.1": 11,
+        "NZ_JANAIE010000002.1": 11,
+        "NZ_JANAIE010000038.1": 11,
+        "NZ_JANAIE010000023.1": 11,
+        "NZ_JANAIE010000059.1": 11,
+        "NZ_JANAIE010000106.1": 11,
+        "NZ_JANAIE010000076.1": 11,
+        "NZ_JANAIE010000050.1": 11
       }
     }
   ],
@@ -204,8 +274,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/664/245/GCF_029664245.1/bbi/GCF_029664245.1_ASM2966424v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/664/245/GCF_029664245.1/bbi/GCF_029664245.1_ASM2966424v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029664245.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

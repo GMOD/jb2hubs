@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_009764565.4",
           "ucsc": {
             "genome": "GCA_009764565.4",
             "taxId": "27794",
@@ -372,7 +373,66 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/009/764/565/GCA_009764565.4/bbi/GCA_009764565.4_rDerCor1.pri.v4.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/009/764/565/GCA_009764565.4/bbi/GCA_009764565.4_rDerCor1.pri.v4.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_009764565.4-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/009/764/565/GCA_009764565.4/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_009764565.4-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_009764565.4"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/009/764/565/GCA_009764565.4/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_009764565.4_to_GCA_015237465.2_liftOver",
+      "name": "GCA_009764565.4 (leatherback sea turtle (primary hap 2021)) to green sea turtle (primary hap 2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_009764565.4", "GCA_015237465.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_009764565.4",
+        "queryAssembly": "GCA_015237465.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_009764565.4ToGCA_015237465.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_009764565.4ToGCA_015237465.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

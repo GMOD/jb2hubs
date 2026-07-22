@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_048771995.1",
           "ucsc": {
             "genome": "GCA_048771995.1",
             "taxId": "59729",
@@ -257,8 +258,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_048771995.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -289,8 +300,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_048771995.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -321,8 +342,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_048771995.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -351,7 +382,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_048771995.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -535,7 +575,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/bbi/GCA_048771995.1_bTaeGut7.mat.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_048771995.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_048771995.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_048771995.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/048/771/995/GCA_048771995.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     },
     {
@@ -581,11 +659,14 @@
       "type": "MafTrack",
       "adapter": {
         "type": "BigMafAdapter",
-        "bigMafLocation": {
+        "bigBedLocation": {
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/VGP/vgp577way/bbi/GCA_048771995.1/GCA_048771995.1.vgp577way.bb"
         },
-        "summaryLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/hubs/VGP/vgp577way/bbi/GCA_048771995.1/GCA_048771995.1.vgp577waySummary.bb"
+        "summaryAdapter": {
+          "type": "BigBedAdapter",
+          "bigBedLocation": {
+            "uri": "https://hgdownload.soe.ucsc.edu/hubs/VGP/vgp577way/bbi/GCA_048771995.1/GCA_048771995.1.vgp577waySummary.bb"
+          }
         }
       }
     },

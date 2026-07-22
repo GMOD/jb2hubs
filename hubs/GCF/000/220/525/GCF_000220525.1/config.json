@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000220525.1",
           "ucsc": {
             "genome": "GCF_000220525.1",
             "taxId": "1042376",
@@ -37,6 +38,80 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/220/525/GCF_000220525.1/GCF_000220525.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AFPK01000049.1": 11,
+        "NZ_AFPK01000034.1": 11,
+        "NZ_AFPK01000066.1": 11,
+        "NZ_AFPK01000051.1": 11,
+        "NZ_AFPK01000040.1": 11,
+        "NZ_AFPK01000072.1": 11,
+        "NZ_AFPK01000018.1": 11,
+        "NZ_AFPK01000003.1": 11,
+        "NZ_AFPK01000039.1": 11,
+        "NZ_AFPK01000024.1": 11,
+        "NZ_AFPK01000056.1": 11,
+        "NZ_AFPK01000045.1": 11,
+        "NZ_AFPK01000030.1": 11,
+        "NZ_AFPK01000077.1": 11,
+        "NZ_AFPK01000062.1": 11,
+        "NZ_AFPK01000008.1": 11,
+        "NZ_AFPK01000029.1": 11,
+        "NZ_AFPK01000014.1": 11,
+        "NZ_AFPK01000035.1": 11,
+        "NZ_AFPK01000020.1": 11,
+        "NZ_AFPK01000067.1": 11,
+        "NZ_AFPK01000052.1": 11,
+        "NZ_AFPK01000041.1": 11,
+        "NZ_AFPK01000073.1": 11,
+        "NZ_AFPK01000019.1": 11,
+        "NZ_AFPK01000004.1": 11,
+        "NZ_AFPK01000025.1": 11,
+        "NZ_AFPK01000010.1": 11,
+        "NZ_AFPK01000057.1": 11,
+        "NZ_AFPK01000046.1": 11,
+        "NZ_AFPK01000031.1": 11,
+        "NZ_AFPK01000063.1": 11,
+        "NZ_AFPK01000015.1": 11,
+        "NZ_AFPK01000036.1": 11,
+        "NZ_AFPK01000021.1": 11,
+        "NZ_AFPK01000068.1": 11,
+        "NZ_AFPK01000053.1": 11,
+        "NZ_AFPK01000042.1": 11,
+        "NZ_AFPK01000074.1": 11,
+        "NZ_AFPK01000005.1": 11,
+        "NZ_AFPK01000026.1": 11,
+        "NZ_AFPK01000011.1": 11,
+        "NZ_AFPK01000058.1": 11,
+        "NZ_AFPK01000047.1": 11,
+        "NZ_AFPK01000032.1": 11,
+        "NZ_AFPK01000064.1": 11,
+        "NZ_AFPK01000070.1": 11,
+        "NZ_AFPK01000001.1": 11,
+        "NZ_AFPK01000016.1": 11,
+        "NZ_AFPK01000037.1": 11,
+        "NZ_AFPK01000022.1": 11,
+        "NZ_AFPK01000069.1": 11,
+        "NZ_AFPK01000054.1": 11,
+        "NZ_AFPK01000043.1": 11,
+        "NZ_AFPK01000075.1": 11,
+        "NZ_AFPK01000060.1": 11,
+        "NZ_AFPK01000006.1": 11,
+        "NZ_AFPK01000027.1": 11,
+        "NZ_AFPK01000012.1": 11,
+        "NZ_AFPK01000048.1": 11,
+        "NZ_AFPK01000065.1": 11,
+        "NZ_AFPK01000050.1": 11,
+        "NZ_AFPK01000071.1": 11,
+        "NZ_AFPK01000017.1": 11,
+        "NZ_AFPK01000002.1": 11,
+        "NZ_AFPK01000038.1": 11,
+        "NZ_AFPK01000023.1": 11,
+        "NZ_AFPK01000044.1": 11,
+        "NZ_AFPK01000061.1": 11,
+        "NZ_AFPK01000007.1": 11,
+        "NZ_AFPK01000028.1": 11,
+        "NZ_AFPK01000013.1": 11
       }
     }
   ],
@@ -229,8 +304,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/220/525/GCF_000220525.1/bbi/GCF_000220525.1_ASM22052v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/220/525/GCF_000220525.1/bbi/GCF_000220525.1_ASM22052v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000220525.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_904067185.1",
           "ucsc": {
             "genome": "GCF_904067185.1",
             "taxId": "2762819",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/904/067/185/GCF_904067185.1/GCF_904067185.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NC_070650.1": 11
       }
     }
   ],
@@ -180,8 +184,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/904/067/185/GCF_904067185.1/bbi/GCF_904067185.1_vB_KvM-Eowyn_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/904/067/185/GCF_904067185.1/bbi/GCF_904067185.1_vB_KvM-Eowyn_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_904067185.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

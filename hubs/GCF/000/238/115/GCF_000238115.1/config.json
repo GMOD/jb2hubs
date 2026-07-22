@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000238115.1",
           "ucsc": {
             "genome": "GCF_000238115.1",
             "taxId": "796937",
@@ -37,6 +38,56 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/238/115/GCF_000238115.1/GCF_000238115.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH414556.1": 11,
+        "NZ_JH414577.1": 11,
+        "NZ_JH414562.1": 11,
+        "NZ_JH414583.1": 11,
+        "NZ_JH414567.1": 11,
+        "NZ_JH414552.1": 11,
+        "NZ_JH414588.1": 11,
+        "NZ_JH414573.1": 11,
+        "NZ_JH414594.1": 11,
+        "NZ_JH414557.1": 11,
+        "NZ_JH414546.1": 11,
+        "NZ_JH414563.1": 11,
+        "NZ_JH414578.1": 11,
+        "NZ_JH414584.1": 11,
+        "NZ_JH414590.1": 11,
+        "NZ_JH414568.1": 11,
+        "NZ_JH414553.1": 11,
+        "NZ_JH414589.1": 11,
+        "NZ_JH414574.1": 11,
+        "NZ_JH414595.1": 11,
+        "NZ_JH414558.1": 11,
+        "NZ_JH414547.1": 11,
+        "NZ_JH414579.1": 11,
+        "NZ_JH414564.1": 11,
+        "NZ_JH414570.1": 11,
+        "NZ_JH414591.1": 11,
+        "NZ_JH414569.1": 11,
+        "NZ_JH414554.1": 11,
+        "NZ_JH414575.1": 11,
+        "NZ_JH414560.1": 11,
+        "NZ_JH414581.1": 11,
+        "NZ_JH414559.1": 11,
+        "NZ_JH414548.1": 11,
+        "NZ_JH414565.1": 11,
+        "NZ_JH414550.1": 11,
+        "NZ_JH414586.1": 11,
+        "NZ_JH414571.1": 11,
+        "NZ_JH414592.1": 11,
+        "NZ_JH414555.1": 11,
+        "NZ_JH414576.1": 11,
+        "NZ_JH414561.1": 11,
+        "NZ_JH414582.1": 11,
+        "NZ_JH414549.1": 11,
+        "NZ_JH414566.1": 11,
+        "NZ_JH414551.1": 11,
+        "NZ_JH414587.1": 11,
+        "NZ_JH414572.1": 11,
+        "NZ_JH414593.1": 11
       }
     }
   ],
@@ -252,8 +303,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/238/115/GCF_000238115.1/bbi/GCF_000238115.1_Euba_bact_ACC19a_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/238/115/GCF_000238115.1/bbi/GCF_000238115.1_Euba_bact_ACC19a_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000238115.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

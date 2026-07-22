@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900142215.1",
           "ucsc": {
             "genome": "GCF_900142215.1",
             "taxId": "1121322",
@@ -37,6 +38,74 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/142/215/GCF_900142215.1/GCF_900142215.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FRAC01000019.1": 11,
+        "NZ_FRAC01000025.1": 11,
+        "NZ_FRAC01000010.1": 11,
+        "NZ_FRAC01000046.1": 11,
+        "NZ_FRAC01000031.1": 11,
+        "NZ_FRAC01000063.1": 11,
+        "NZ_FRAC01000052.1": 11,
+        "NZ_FRAC01000009.1": 11,
+        "NZ_FRAC01000015.1": 11,
+        "NZ_FRAC01000036.1": 11,
+        "NZ_FRAC01000021.1": 11,
+        "NZ_FRAC01000068.1": 11,
+        "NZ_FRAC01000057.1": 11,
+        "NZ_FRAC01000042.1": 11,
+        "NZ_FRAC01000026.1": 11,
+        "NZ_FRAC01000011.1": 11,
+        "NZ_FRAC01000047.1": 11,
+        "NZ_FRAC01000032.1": 11,
+        "NZ_FRAC01000064.1": 11,
+        "NZ_FRAC01000053.1": 11,
+        "NZ_FRAC01000070.1": 11,
+        "NZ_FRAC01000016.1": 11,
+        "NZ_FRAC01000037.1": 11,
+        "NZ_FRAC01000022.1": 11,
+        "NZ_FRAC01000069.1": 11,
+        "NZ_FRAC01000058.1": 11,
+        "NZ_FRAC01000043.1": 11,
+        "NZ_FRAC01000060.1": 11,
+        "NZ_FRAC01000006.1": 11,
+        "NZ_FRAC01000027.1": 11,
+        "NZ_FRAC01000012.1": 11,
+        "NZ_FRAC01000048.1": 11,
+        "NZ_FRAC01000033.1": 11,
+        "NZ_FRAC01000065.1": 11,
+        "NZ_FRAC01000054.1": 11,
+        "NZ_FRAC01000071.1": 11,
+        "NZ_FRAC01000017.1": 11,
+        "NZ_FRAC01000038.1": 11,
+        "NZ_FRAC01000023.1": 11,
+        "NZ_FRAC01000059.1": 11,
+        "NZ_FRAC01000044.1": 11,
+        "NZ_FRAC01000061.1": 11,
+        "NZ_FRAC01000050.1": 11,
+        "NZ_FRAC01000007.1": 11,
+        "NZ_FRAC01000028.1": 11,
+        "NZ_FRAC01000013.1": 11,
+        "NZ_FRAC01000049.1": 11,
+        "NZ_FRAC01000034.1": 11,
+        "NZ_FRAC01000066.1": 11,
+        "NZ_FRAC01000055.1": 11,
+        "NZ_FRAC01000040.1": 11,
+        "NZ_FRAC01000018.1": 11,
+        "NZ_FRAC01000039.1": 11,
+        "NZ_FRAC01000024.1": 11,
+        "NZ_FRAC01000045.1": 11,
+        "NZ_FRAC01000030.1": 11,
+        "NZ_FRAC01000062.1": 11,
+        "NZ_FRAC01000051.1": 11,
+        "NZ_FRAC01000008.1": 11,
+        "NZ_FRAC01000029.1": 11,
+        "NZ_FRAC01000014.1": 11,
+        "NZ_FRAC01000035.1": 11,
+        "NZ_FRAC01000020.1": 11,
+        "NZ_FRAC01000067.1": 11,
+        "NZ_FRAC01000056.1": 11,
+        "NZ_FRAC01000041.1": 11
       }
     }
   ],
@@ -227,8 +296,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/142/215/GCF_900142215.1/bbi/GCF_900142215.1_IMG-taxon_2585428173_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/142/215/GCF_900142215.1/bbi/GCF_900142215.1_IMG-taxon_2585428173_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900142215.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

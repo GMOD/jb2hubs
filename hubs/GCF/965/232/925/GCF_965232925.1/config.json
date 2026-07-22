@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_965232925.1",
           "ucsc": {
             "genome": "GCF_965232925.1",
             "taxId": "56111",
@@ -37,6 +38,83 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/232/925/GCF_965232925.1/GCF_965232925.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CBDDRA010000075.1": 11,
+        "NZ_CBDDRA010000006.1": 11,
+        "NZ_CBDDRA010000038.1": 11,
+        "NZ_CBDDRA010000027.1": 11,
+        "NZ_CBDDRA010000012.1": 11,
+        "NZ_CBDDRA010000059.1": 11,
+        "NZ_CBDDRA010000044.1": 11,
+        "NZ_CBDDRA010000065.1": 11,
+        "NZ_CBDDRA010000050.1": 11,
+        "NZ_CBDDRA010000071.1": 11,
+        "NZ_CBDDRA010000017.1": 11,
+        "NZ_CBDDRA010000002.1": 11,
+        "NZ_CBDDRA010000049.1": 11,
+        "NZ_CBDDRA010000034.1": 11,
+        "NZ_CBDDRA010000023.1": 11,
+        "NZ_CBDDRA010000055.1": 11,
+        "NZ_CBDDRA010000040.1": 11,
+        "NZ_CBDDRA010000076.1": 11,
+        "NZ_CBDDRA010000061.1": 11,
+        "NZ_CBDDRA010000007.1": 11,
+        "NZ_CBDDRA010000039.1": 11,
+        "NZ_CBDDRA010000028.1": 11,
+        "NZ_CBDDRA010000013.1": 11,
+        "NZ_CBDDRA010000045.1": 11,
+        "NZ_CBDDRA010000030.1": 11,
+        "NZ_CBDDRA010000066.1": 11,
+        "NZ_CBDDRA010000051.1": 11,
+        "NZ_CBDDRA010000072.1": 11,
+        "NZ_CBDDRA010000018.1": 11,
+        "NZ_CBDDRA010000003.1": 11,
+        "NZ_CBDDRA010000035.1": 11,
+        "NZ_CBDDRA010000024.1": 11,
+        "NZ_CBDDRA010000056.1": 11,
+        "NZ_CBDDRA010000041.1": 11,
+        "NZ_CBDDRA010000062.1": 11,
+        "NZ_CBDDRA010000008.1": 11,
+        "NZ_CBDDRA010000014.1": 11,
+        "NZ_CBDDRA010000029.1": 11,
+        "NZ_CBDDRA010000046.1": 11,
+        "NZ_CBDDRA010000031.1": 11,
+        "NZ_CBDDRA010000020.1": 11,
+        "NZ_CBDDRA010000067.1": 11,
+        "NZ_CBDDRA010000052.1": 11,
+        "NZ_CBDDRA010000073.1": 11,
+        "NZ_CBDDRA010000019.1": 11,
+        "NZ_CBDDRA010000004.1": 11,
+        "NZ_CBDDRA010000036.1": 11,
+        "NZ_CBDDRA010000025.1": 11,
+        "NZ_CBDDRA010000010.1": 11,
+        "NZ_CBDDRA010000057.1": 11,
+        "NZ_CBDDRA010000042.1": 11,
+        "NZ_CBDDRA010000063.1": 11,
+        "NZ_CBDDRA010000009.1": 11,
+        "NZ_CBDDRA010000015.1": 11,
+        "NZ_CBDDRA010000047.1": 11,
+        "NZ_CBDDRA010000032.1": 11,
+        "NZ_CBDDRA010000021.1": 11,
+        "NZ_CBDDRA010000068.1": 11,
+        "NZ_CBDDRA010000053.1": 11,
+        "NZ_CBDDRA010000074.1": 11,
+        "NZ_CBDDRA010000005.1": 11,
+        "NZ_CBDDRA010000037.1": 11,
+        "NZ_CBDDRA010000026.1": 11,
+        "NZ_CBDDRA010000011.1": 11,
+        "NZ_CBDDRA010000058.1": 11,
+        "NZ_CBDDRA010000043.1": 11,
+        "NZ_CBDDRA010000064.1": 11,
+        "NZ_CBDDRA010000070.1": 11,
+        "NZ_CBDDRA010000016.1": 11,
+        "NZ_CBDDRA010000001.1": 11,
+        "NZ_CBDDRA010000048.1": 11,
+        "NZ_CBDDRA010000033.1": 11,
+        "NZ_CBDDRA010000022.1": 11,
+        "NZ_CBDDRA010000069.1": 11,
+        "NZ_CBDDRA010000054.1": 11
       }
     }
   ],
@@ -229,8 +307,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/232/925/GCF_965232925.1/bbi/GCF_965232925.1_PCC7403.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/232/925/GCF_965232925.1/bbi/GCF_965232925.1_PCC7403.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_965232925.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

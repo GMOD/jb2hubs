@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_943169685.1",
           "ucsc": {
             "genome": "GCF_943169685.1",
             "taxId": "2811780",
@@ -37,6 +38,22 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/943/169/685/GCF_943169685.1/GCF_943169685.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CALPBU010000009.1": 11,
+        "NZ_CALPBU010000011.1": 11,
+        "NZ_CALPBU010000004.1": 11,
+        "NZ_CALPBU010000007.1": 11,
+        "NZ_CALPBU010000002.1": 11,
+        "NZ_CALPBU010000017.1": 11,
+        "NZ_CALPBU010000012.1": 11,
+        "NZ_CALPBU010000005.1": 11,
+        "NZ_CALPBU010000008.1": 11,
+        "NZ_CALPBU010000010.1": 11,
+        "NZ_CALPBU010000003.1": 11,
+        "NZ_CALPBU010000013.1": 11,
+        "NZ_CALPBU010000006.1": 11,
+        "NZ_CALPBU010000001.1": 11
       }
     }
   ],
@@ -204,8 +221,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/943/169/685/GCF_943169685.1/bbi/GCF_943169685.1_Porphyromonas_sp._bobii-EMRHCC_6C.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/943/169/685/GCF_943169685.1/bbi/GCF_943169685.1_Porphyromonas_sp._bobii-EMRHCC_6C.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_943169685.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

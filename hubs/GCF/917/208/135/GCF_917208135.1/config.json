@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_917208135.1",
           "ucsc": {
             "genome": "GCF_917208135.1",
             "taxId": "37344",
@@ -254,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_917208135.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -286,8 +297,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_917208135.1-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -318,8 +339,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_917208135.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -348,7 +379,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_917208135.1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -532,8 +572,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_917208135.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -566,8 +616,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ensGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/917/208/135/GCF_917208135.1/bbi/GCF_917208135.1_iyAthRosa1.1.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_917208135.1-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -589,6 +649,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_917208135.1"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_917208135.1_to_GCF_013758885.1_liftOver",
+      "name": "GCF_917208135.1 (coleseed sawfly (2021 Wellcome Sanger)) to mosquito A.albimanus (STELCA 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_917208135.1", "GCF_013758885.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_917208135.1",
+        "queryAssembly": "GCF_013758885.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_917208135.1ToGCF_013758885.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_917208135.1ToGCF_013758885.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

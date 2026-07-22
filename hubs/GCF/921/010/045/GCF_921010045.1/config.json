@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_921010045.1",
           "ucsc": {
             "genome": "GCF_921010045.1",
             "taxId": "1191734",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/921/010/045/GCF_921010045.1/GCF_921010045.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAKLCA010000002.1": 11,
+        "NZ_CAKLCA010000001.1": 11
       }
     }
   ],
@@ -204,8 +209,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/921/010/045/GCF_921010045.1/bbi/GCF_921010045.1_Aquimarina_sp._strain_Aq135.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/921/010/045/GCF_921010045.1/bbi/GCF_921010045.1_Aquimarina_sp._strain_Aq135.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_921010045.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

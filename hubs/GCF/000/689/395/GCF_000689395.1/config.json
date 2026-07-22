@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000689395.1",
           "ucsc": {
             "genome": "GCF_000689395.1",
             "taxId": "1458461",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/689/395/GCF_000689395.1/GCF_000689395.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_HG966617.1": 11
       }
     }
   ],
@@ -228,8 +232,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/689/395/GCF_000689395.1/bbi/GCF_000689395.1_Ectocarpus_siliculous_Es32_genome_assembly_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/689/395/GCF_000689395.1/bbi/GCF_000689395.1_Ectocarpus_siliculous_Es32_genome_assembly_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000689395.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

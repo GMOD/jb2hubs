@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_022869005.1",
           "ucsc": {
             "genome": "GCF_022869005.1",
             "taxId": "2931982",
@@ -37,6 +38,25 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/022/869/005/GCF_022869005.1/GCF_022869005.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JALIEA010000014.1": 11,
+        "NZ_JALIEA010000007.1": 11,
+        "NZ_JALIEA010000002.1": 11,
+        "NZ_JALIEA010000017.1": 11,
+        "NZ_JALIEA010000012.1": 11,
+        "NZ_JALIEA010000005.1": 11,
+        "NZ_JALIEA010000015.1": 11,
+        "NZ_JALIEA010000008.1": 11,
+        "NZ_JALIEA010000010.1": 11,
+        "NZ_JALIEA010000003.1": 11,
+        "NZ_JALIEA010000013.1": 11,
+        "NZ_JALIEA010000006.1": 11,
+        "NZ_JALIEA010000001.1": 11,
+        "NZ_JALIEA010000016.1": 11,
+        "NZ_JALIEA010000009.1": 11,
+        "NZ_JALIEA010000011.1": 11,
+        "NZ_JALIEA010000004.1": 11
       }
     }
   ],
@@ -204,8 +224,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/022/869/005/GCF_022869005.1/bbi/GCF_022869005.1_ASM2286900v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/022/869/005/GCF_022869005.1/bbi/GCF_022869005.1_ASM2286900v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_022869005.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_020026915.1",
           "ucsc": {
             "genome": "GCF_020026915.1",
             "taxId": "2872310",
@@ -37,6 +38,83 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/020/026/915/GCF_020026915.1/GCF_020026915.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAINUY010000002.1": 11,
+        "NZ_JAINUY010000034.1": 11,
+        "NZ_JAINUY010000055.1": 11,
+        "NZ_JAINUY010000040.1": 11,
+        "NZ_JAINUY010000102.1": 11,
+        "NZ_JAINUY010000087.1": 11,
+        "NZ_JAINUY010000093.1": 11,
+        "NZ_JAINUY010000007.1": 11,
+        "NZ_JAINUY010000107.1": 11,
+        "NZ_JAINUY010000066.1": 11,
+        "NZ_JAINUY010000113.1": 11,
+        "NZ_JAINUY010000098.1": 11,
+        "NZ_JAINUY010000083.1": 11,
+        "NZ_JAINUY010000029.1": 11,
+        "NZ_JAINUY010000014.1": 11,
+        "NZ_JAINUY010000003.1": 11,
+        "NZ_JAINUY010000035.1": 11,
+        "NZ_JAINUY010000020.1": 11,
+        "NZ_JAINUY010000056.1": 11,
+        "NZ_JAINUY010000103.1": 11,
+        "NZ_JAINUY010000094.1": 11,
+        "NZ_JAINUY010000019.1": 11,
+        "NZ_JAINUY010000008.1": 11,
+        "NZ_JAINUY010000025.1": 11,
+        "NZ_JAINUY010000010.1": 11,
+        "NZ_JAINUY010000046.1": 11,
+        "NZ_JAINUY010000031.1": 11,
+        "NZ_JAINUY010000067.1": 11,
+        "NZ_JAINUY010000052.1": 11,
+        "NZ_JAINUY010000114.1": 11,
+        "NZ_JAINUY010000090.1": 11,
+        "NZ_JAINUY010000015.1": 11,
+        "NZ_JAINUY010000004.1": 11,
+        "NZ_JAINUY010000036.1": 11,
+        "NZ_JAINUY010000021.1": 11,
+        "NZ_JAINUY010000057.1": 11,
+        "NZ_JAINUY010000089.1": 11,
+        "NZ_JAINUY010000074.1": 11,
+        "NZ_JAINUY010000080.1": 11,
+        "NZ_JAINUY010000009.1": 11,
+        "NZ_JAINUY010000011.1": 11,
+        "NZ_JAINUY010000047.1": 11,
+        "NZ_JAINUY010000109.1": 11,
+        "NZ_JAINUY010000079.1": 11,
+        "NZ_JAINUY010000068.1": 11,
+        "NZ_JAINUY010000115.1": 11,
+        "NZ_JAINUY010000100.1": 11,
+        "NZ_JAINUY010000085.1": 11,
+        "NZ_JAINUY010000070.1": 11,
+        "NZ_JAINUY010000091.1": 11,
+        "NZ_JAINUY010000016.1": 11,
+        "NZ_JAINUY010000005.1": 11,
+        "NZ_JAINUY010000037.1": 11,
+        "NZ_JAINUY010000058.1": 11,
+        "NZ_JAINUY010000075.1": 11,
+        "NZ_JAINUY010000111.1": 11,
+        "NZ_JAINUY010000081.1": 11,
+        "NZ_JAINUY010000027.1": 11,
+        "NZ_JAINUY010000012.1": 11,
+        "NZ_JAINUY010000001.1": 11,
+        "NZ_JAINUY010000048.1": 11,
+        "NZ_JAINUY010000033.1": 11,
+        "NZ_JAINUY010000069.1": 11,
+        "NZ_JAINUY010000101.1": 11,
+        "NZ_JAINUY010000086.1": 11,
+        "NZ_JAINUY010000017.1": 11,
+        "NZ_JAINUY010000006.1": 11,
+        "NZ_JAINUY010000038.1": 11,
+        "NZ_JAINUY010000059.1": 11,
+        "NZ_JAINUY010000044.1": 11,
+        "NZ_JAINUY010000106.1": 11,
+        "NZ_JAINUY010000065.1": 11,
+        "NZ_JAINUY010000050.1": 11,
+        "NZ_JAINUY010000112.1": 11,
+        "NZ_JAINUY010000082.1": 11
       }
     }
   ],
@@ -204,8 +282,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/020/026/915/GCF_020026915.1/bbi/GCF_020026915.1_ASM2002691v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/020/026/915/GCF_020026915.1/bbi/GCF_020026915.1_ASM2002691v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_020026915.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

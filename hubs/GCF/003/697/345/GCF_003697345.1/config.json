@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_003697345.1",
           "ucsc": {
             "genome": "GCF_003697345.1",
             "taxId": "2483112",
@@ -37,6 +38,80 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/697/345/GCF_003697345.1/GCF_003697345.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_RFLY01000006.1": 11,
+        "NZ_RFLY01000027.1": 11,
+        "NZ_RFLY01000012.1": 11,
+        "NZ_RFLY01000059.1": 11,
+        "NZ_RFLY01000048.1": 11,
+        "NZ_RFLY01000033.1": 11,
+        "NZ_RFLY01000065.1": 11,
+        "NZ_RFLY01000050.1": 11,
+        "NZ_RFLY01000017.1": 11,
+        "NZ_RFLY01000002.1": 11,
+        "NZ_RFLY01000038.1": 11,
+        "NZ_RFLY01000023.1": 11,
+        "NZ_RFLY01000055.1": 11,
+        "NZ_RFLY01000044.1": 11,
+        "NZ_RFLY01000061.1": 11,
+        "NZ_RFLY01000007.1": 11,
+        "NZ_RFLY01000028.1": 11,
+        "NZ_RFLY01000013.1": 11,
+        "NZ_RFLY01000049.1": 11,
+        "NZ_RFLY01000034.1": 11,
+        "NZ_RFLY01000066.1": 11,
+        "NZ_RFLY01000051.1": 11,
+        "NZ_RFLY01000040.1": 11,
+        "NZ_RFLY01000072.1": 11,
+        "NZ_RFLY01000018.1": 11,
+        "NZ_RFLY01000003.1": 11,
+        "NZ_RFLY01000039.1": 11,
+        "NZ_RFLY01000024.1": 11,
+        "NZ_RFLY01000056.1": 11,
+        "NZ_RFLY01000045.1": 11,
+        "NZ_RFLY01000030.1": 11,
+        "NZ_RFLY01000062.1": 11,
+        "NZ_RFLY01000008.1": 11,
+        "NZ_RFLY01000029.1": 11,
+        "NZ_RFLY01000014.1": 11,
+        "NZ_RFLY01000035.1": 11,
+        "NZ_RFLY01000020.1": 11,
+        "NZ_RFLY01000067.1": 11,
+        "NZ_RFLY01000052.1": 11,
+        "NZ_RFLY01000041.1": 11,
+        "NZ_RFLY01000073.1": 11,
+        "NZ_RFLY01000019.1": 11,
+        "NZ_RFLY01000004.1": 11,
+        "NZ_RFLY01000025.1": 11,
+        "NZ_RFLY01000010.1": 11,
+        "NZ_RFLY01000057.1": 11,
+        "NZ_RFLY01000046.1": 11,
+        "NZ_RFLY01000031.1": 11,
+        "NZ_RFLY01000063.1": 11,
+        "NZ_RFLY01000009.1": 11,
+        "NZ_RFLY01000015.1": 11,
+        "NZ_RFLY01000036.1": 11,
+        "NZ_RFLY01000021.1": 11,
+        "NZ_RFLY01000068.1": 11,
+        "NZ_RFLY01000053.1": 11,
+        "NZ_RFLY01000042.1": 11,
+        "NZ_RFLY01000074.1": 11,
+        "NZ_RFLY01000005.1": 11,
+        "NZ_RFLY01000026.1": 11,
+        "NZ_RFLY01000011.1": 11,
+        "NZ_RFLY01000058.1": 11,
+        "NZ_RFLY01000047.1": 11,
+        "NZ_RFLY01000032.1": 11,
+        "NZ_RFLY01000064.1": 11,
+        "NZ_RFLY01000070.1": 11,
+        "NZ_RFLY01000016.1": 11,
+        "NZ_RFLY01000001.1": 11,
+        "NZ_RFLY01000022.1": 11,
+        "NZ_RFLY01000037.1": 11,
+        "NZ_RFLY01000054.1": 11,
+        "NZ_RFLY01000043.1": 11,
+        "NZ_RFLY01000060.1": 11
       }
     }
   ],
@@ -204,8 +279,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/697/345/GCF_003697345.1/bbi/GCF_003697345.1_ASM369734v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/697/345/GCF_003697345.1/bbi/GCF_003697345.1_ASM369734v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_003697345.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_003660325.2",
           "ucsc": {
             "genome": "GCA_003660325.2",
             "taxId": "3483",
@@ -323,8 +324,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/660/325/GCA_003660325.2/bbi/GCA_003660325.2_Oct15_3.7Mb_N50_Jamaican_Lion_Assembly.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/003/660/325/GCA_003660325.2/bbi/GCA_003660325.2_Oct15_3.7Mb_N50_Jamaican_Lion_Assembly.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_003660325.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "SyntenyTrack",

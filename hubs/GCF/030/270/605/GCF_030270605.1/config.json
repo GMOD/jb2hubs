@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_030270605.1",
           "ucsc": {
             "genome": "GCF_030270605.1",
             "taxId": "3036711",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/270/605/GCF_030270605.1/GCF_030270605.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BSYJ01000023.1": 11,
+        "NZ_BSYJ01000016.1": 11,
+        "NZ_BSYJ01000009.1": 11,
+        "NZ_BSYJ01000011.1": 11,
+        "NZ_BSYJ01000004.1": 11,
+        "NZ_BSYJ01000026.1": 11,
+        "NZ_BSYJ01000019.1": 11,
+        "NZ_BSYJ01000021.1": 11,
+        "NZ_BSYJ01000014.1": 11,
+        "NZ_BSYJ01000007.1": 11,
+        "NZ_BSYJ01000029.1": 11,
+        "NZ_BSYJ01000002.1": 11,
+        "NZ_BSYJ01000017.1": 11,
+        "NZ_BSYJ01000005.1": 11,
+        "NZ_BSYJ01000034.1": 11,
+        "NZ_BSYJ01000027.1": 11,
+        "NZ_BSYJ01000022.1": 11,
+        "NZ_BSYJ01000015.1": 11,
+        "NZ_BSYJ01000008.1": 11,
+        "NZ_BSYJ01000010.1": 11,
+        "NZ_BSYJ01000003.1": 11,
+        "NZ_BSYJ01000032.1": 11,
+        "NZ_BSYJ01000018.1": 11,
+        "NZ_BSYJ01000020.1": 11,
+        "NZ_BSYJ01000006.1": 11,
+        "NZ_BSYJ01000028.1": 11,
+        "NZ_BSYJ01000001.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/270/605/GCF_030270605.1/bbi/GCF_030270605.1_ASM3027060v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/270/605/GCF_030270605.1/bbi/GCF_030270605.1_ASM3027060v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_030270605.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

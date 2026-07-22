@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900108085.1",
           "ucsc": {
             "genome": "GCF_900108085.1",
             "taxId": "1120964",
@@ -37,6 +38,83 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/108/085/GCF_900108085.1/GCF_900108085.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FNVR01000015.1": 11,
+        "NZ_FNVR01000004.1": 11,
+        "NZ_FNVR01000036.1": 11,
+        "NZ_FNVR01000021.1": 11,
+        "NZ_FNVR01000068.1": 11,
+        "NZ_FNVR01000057.1": 11,
+        "NZ_FNVR01000042.1": 11,
+        "NZ_FNVR01000074.1": 11,
+        "NZ_FNVR01000063.1": 11,
+        "NZ_FNVR01000009.1": 11,
+        "NZ_FNVR01000011.1": 11,
+        "NZ_FNVR01000026.1": 11,
+        "NZ_FNVR01000047.1": 11,
+        "NZ_FNVR01000032.1": 11,
+        "NZ_FNVR01000053.1": 11,
+        "NZ_FNVR01000070.1": 11,
+        "NZ_FNVR01000016.1": 11,
+        "NZ_FNVR01000005.1": 11,
+        "NZ_FNVR01000037.1": 11,
+        "NZ_FNVR01000022.1": 11,
+        "NZ_FNVR01000069.1": 11,
+        "NZ_FNVR01000058.1": 11,
+        "NZ_FNVR01000043.1": 11,
+        "NZ_FNVR01000027.1": 11,
+        "NZ_FNVR01000012.1": 11,
+        "NZ_FNVR01000001.1": 11,
+        "NZ_FNVR01000048.1": 11,
+        "NZ_FNVR01000033.1": 11,
+        "NZ_FNVR01000065.1": 11,
+        "NZ_FNVR01000054.1": 11,
+        "NZ_FNVR01000071.1": 11,
+        "NZ_FNVR01000060.1": 11,
+        "NZ_FNVR01000017.1": 11,
+        "NZ_FNVR01000006.1": 11,
+        "NZ_FNVR01000038.1": 11,
+        "NZ_FNVR01000023.1": 11,
+        "NZ_FNVR01000059.1": 11,
+        "NZ_FNVR01000044.1": 11,
+        "NZ_FNVR01000076.1": 11,
+        "NZ_FNVR01000050.1": 11,
+        "NZ_FNVR01000028.1": 11,
+        "NZ_FNVR01000013.1": 11,
+        "NZ_FNVR01000002.1": 11,
+        "NZ_FNVR01000049.1": 11,
+        "NZ_FNVR01000034.1": 11,
+        "NZ_FNVR01000066.1": 11,
+        "NZ_FNVR01000055.1": 11,
+        "NZ_FNVR01000040.1": 11,
+        "NZ_FNVR01000072.1": 11,
+        "NZ_FNVR01000061.1": 11,
+        "NZ_FNVR01000018.1": 11,
+        "NZ_FNVR01000007.1": 11,
+        "NZ_FNVR01000039.1": 11,
+        "NZ_FNVR01000024.1": 11,
+        "NZ_FNVR01000045.1": 11,
+        "NZ_FNVR01000030.1": 11,
+        "NZ_FNVR01000077.1": 11,
+        "NZ_FNVR01000051.1": 11,
+        "NZ_FNVR01000029.1": 11,
+        "NZ_FNVR01000014.1": 11,
+        "NZ_FNVR01000003.1": 11,
+        "NZ_FNVR01000035.1": 11,
+        "NZ_FNVR01000020.1": 11,
+        "NZ_FNVR01000067.1": 11,
+        "NZ_FNVR01000056.1": 11,
+        "NZ_FNVR01000041.1": 11,
+        "NZ_FNVR01000073.1": 11,
+        "NZ_FNVR01000062.1": 11,
+        "NZ_FNVR01000019.1": 11,
+        "NZ_FNVR01000008.1": 11,
+        "NZ_FNVR01000025.1": 11,
+        "NZ_FNVR01000010.1": 11,
+        "NZ_FNVR01000046.1": 11,
+        "NZ_FNVR01000031.1": 11,
+        "NZ_FNVR01000052.1": 11
       }
     }
   ],
@@ -227,8 +305,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/108/085/GCF_900108085.1/bbi/GCF_900108085.1_IMG-taxon_2599185235_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/108/085/GCF_900108085.1/bbi/GCF_900108085.1_IMG-taxon_2599185235_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900108085.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000407605.1",
           "ucsc": {
             "genome": "GCF_000407605.1",
             "taxId": "1140003",
@@ -37,6 +38,15 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/407/605/GCF_000407605.1/GCF_000407605.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_ASWO01000007.1": 11,
+        "NZ_ASWO01000005.1": 11,
+        "NZ_ASWO01000008.1": 11,
+        "NZ_ASWO01000003.1": 11,
+        "NZ_ASWO01000006.1": 11,
+        "NZ_ASWO01000001.1": 11,
+        "NZ_ASWO01000004.1": 11
       }
     }
   ],
@@ -204,8 +214,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/407/605/GCF_000407605.1/bbi/GCF_000407605.1_Ente_sulf_ATCC49903_V2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/407/605/GCF_000407605.1/bbi/GCF_000407605.1_Ente_sulf_ATCC49903_V2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000407605.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964035735.1",
           "ucsc": {
             "genome": "GCF_964035735.1",
             "taxId": "3077929",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/035/735/GCF_964035735.1/GCF_964035735.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAXIVO010000002.1": 4,
+        "NZ_CAXIVO010000001.1": 4
       }
     }
   ],
@@ -204,8 +209,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/035/735/GCF_964035735.1/bbi/GCF_964035735.1_icCalSpil2.Spiroplasma_sp_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/035/735/GCF_964035735.1/bbi/GCF_964035735.1_icCalSpil2.Spiroplasma_sp_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964035735.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

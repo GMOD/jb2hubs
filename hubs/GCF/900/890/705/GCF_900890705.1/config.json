@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900890705.1",
           "ucsc": {
             "genome": "GCF_900890705.1",
             "taxId": "2750658",
@@ -37,6 +38,13 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/890/705/GCF_900890705.1/GCF_900890705.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAAHFH010000003.1": 11,
+        "NZ_CAAHFH010000001.1": 11,
+        "NZ_CAAHFH010000004.1": 11,
+        "NZ_CAAHFH010000002.1": 11,
+        "NZ_CAAHFH010000005.1": 11
       }
     }
   ],
@@ -204,8 +212,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/890/705/GCF_900890705.1/bbi/GCF_900890705.1_Pontiella_sulfatireligans_F21_T_draft_genome.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/890/705/GCF_900890705.1/bbi/GCF_900890705.1_Pontiella_sulfatireligans_F21_T_draft_genome.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900890705.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

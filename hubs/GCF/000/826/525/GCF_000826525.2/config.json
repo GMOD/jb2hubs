@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000826525.2",
           "ucsc": {
             "genome": "GCF_000826525.2",
             "taxId": "1522310",
@@ -37,6 +38,29 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/525/GCF_000826525.2/GCF_000826525.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN651325.1": 11,
+        "NZ_LN651318.1": 11,
+        "NZ_LN651320.1": 11,
+        "NZ_LN651313.1": 11,
+        "NZ_LN651328.1": 11,
+        "NZ_LN651330.1": 11,
+        "NZ_LN651323.1": 11,
+        "NZ_LN651316.1": 11,
+        "NZ_LN651311.1": 11,
+        "NZ_LN651326.1": 11,
+        "NZ_LN651319.1": 11,
+        "NZ_LN651321.1": 11,
+        "NZ_LN651314.1": 11,
+        "NZ_LN651329.1": 11,
+        "NZ_LN651331.1": 11,
+        "NZ_LN651324.1": 11,
+        "NZ_LN651317.1": 11,
+        "NZ_LN651312.1": 11,
+        "NZ_LN651327.1": 11,
+        "NZ_LN651322.1": 11,
+        "NZ_LN651315.1": 11
       }
     }
   ],
@@ -252,8 +276,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/525/GCF_000826525.2/bbi/GCF_000826525.2_Mobilicoccus_massiliensis_SIT2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/826/525/GCF_000826525.2/bbi/GCF_000826525.2_Mobilicoccus_massiliensis_SIT2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000826525.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

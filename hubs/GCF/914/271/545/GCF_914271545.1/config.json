@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_914271545.1",
           "ucsc": {
             "genome": "GCF_914271545.1",
             "taxId": "195930",
@@ -37,6 +38,26 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/914/271/545/GCF_914271545.1/GCF_914271545.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAJZAH010000001.1": 11,
+        "NZ_CAJZAH010000016.1": 11,
+        "NZ_CAJZAH010000009.1": 11,
+        "NZ_CAJZAH010000011.1": 11,
+        "NZ_CAJZAH010000004.1": 11,
+        "NZ_CAJZAH010000014.1": 11,
+        "NZ_CAJZAH010000007.1": 11,
+        "NZ_CAJZAH010000002.1": 11,
+        "NZ_CAJZAH010000017.1": 11,
+        "NZ_CAJZAH010000012.1": 11,
+        "NZ_CAJZAH010000005.1": 11,
+        "NZ_CAJZAH010000015.1": 11,
+        "NZ_CAJZAH010000008.1": 11,
+        "NZ_CAJZAH010000010.1": 11,
+        "NZ_CAJZAH010000003.1": 11,
+        "NZ_CAJZAH010000018.1": 11,
+        "NZ_CAJZAH010000013.1": 11,
+        "NZ_CAJZAH010000006.1": 11
       }
     }
   ],
@@ -204,8 +225,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/914/271/545/GCF_914271545.1/bbi/GCF_914271545.1_LMG_21510.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/914/271/545/GCF_914271545.1/bbi/GCF_914271545.1_LMG_21510.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_914271545.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

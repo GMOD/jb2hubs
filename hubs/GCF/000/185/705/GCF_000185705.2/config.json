@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000185705.2",
           "ucsc": {
             "genome": "GCF_000185705.2",
             "taxId": "563192",
@@ -37,6 +38,12 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/185/705/GCF_000185705.2/GCF_000185705.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KE150238.1": 11,
+        "NZ_KE150240.1": 11,
+        "NZ_KE150239.1": 11,
+        "NZ_KE150241.1": 11
       }
     }
   ],
@@ -229,8 +236,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/185/705/GCF_000185705.2/bbi/GCF_000185705.2_Bilo_wads_3_1_6_V2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/185/705/GCF_000185705.2/bbi/GCF_000185705.2_Bilo_wads_3_1_6_V2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000185705.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

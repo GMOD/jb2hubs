@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001486585.1",
           "ucsc": {
             "genome": "GCF_001486585.1",
             "taxId": "1737426",
@@ -37,6 +38,23 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/486/585/GCF_001486585.1/GCF_001486585.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN909045.1": 11,
+        "NZ_LN909038.1": 11,
+        "NZ_LN909040.1": 11,
+        "NZ_LN909033.1": 11,
+        "NZ_LN909043.1": 11,
+        "NZ_LN909036.1": 11,
+        "NZ_LN909046.1": 11,
+        "NZ_LN909039.1": 11,
+        "NZ_LN909041.1": 11,
+        "NZ_LN909034.1": 11,
+        "NZ_LN909044.1": 11,
+        "NZ_LN909037.1": 11,
+        "NZ_LN909032.1": 11,
+        "NZ_LN909042.1": 11,
+        "NZ_LN909035.1": 11
       }
     }
   ],
@@ -229,8 +247,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/486/585/GCF_001486585.1/bbi/GCF_001486585.1_Paenibacillus_senegalomassiliensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/486/585/GCF_001486585.1/bbi/GCF_001486585.1_Paenibacillus_senegalomassiliensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001486585.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

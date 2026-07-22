@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_015237465.2",
           "ucsc": {
             "genome": "GCA_015237465.2",
             "taxId": "8469",
@@ -351,7 +352,108 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/015/237/465/GCA_015237465.2/bbi/GCA_015237465.2_rCheMyd1.pri.v2.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/015/237/465/GCA_015237465.2/bbi/GCA_015237465.2_rCheMyd1.pri.v2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_015237465.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/015/237/465/GCA_015237465.2/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_015237465.2-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_015237465.2"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/015/237/465/GCA_015237465.2/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_015237465.2_to_GCA_009764565.4_liftOver",
+      "name": "GCA_015237465.2 (green sea turtle (primary hap 2021)) to leatherback sea turtle (primary hap 2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_015237465.2", "GCA_009764565.4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_015237465.2",
+        "queryAssembly": "GCA_009764565.4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_015237465.2ToGCA_009764565.4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_015237465.2ToGCA_009764565.4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_015237465.2_to_GCA_965152275.1_liftOver",
+      "name": "GCA_015237465.2 (green sea turtle (primary hap 2021)) to flatback sea turtle (hap1 2025) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_015237465.2", "GCA_965152275.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_015237465.2",
+        "queryAssembly": "GCA_965152275.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_015237465.2ToGCA_965152275.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_015237465.2ToGCA_965152275.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_015237465.2_to_GCF_965140235.1_liftOver",
+      "name": "GCA_015237465.2 (green sea turtle (primary hap 2021)) to loggerhead turtle (hap1 2025 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_015237465.2", "GCF_965140235.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_015237465.2",
+        "queryAssembly": "GCF_965140235.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_015237465.2ToGCF_965140235.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_015237465.2ToGCF_965140235.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

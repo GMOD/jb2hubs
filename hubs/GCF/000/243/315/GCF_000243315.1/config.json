@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000243315.1",
           "ucsc": {
             "genome": "GCF_000243315.1",
             "taxId": "671065",
@@ -37,6 +38,29 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/315/GCF_000243315.1/GCF_000243315.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH597772.1": 11,
+        "NZ_JH597765.1": 11,
+        "NZ_JH597758.1": 11,
+        "NZ_JH597760.1": 11,
+        "NZ_JH597753.1": 11,
+        "NZ_JH597768.1": 11,
+        "NZ_JH597770.1": 11,
+        "NZ_JH597763.1": 11,
+        "NZ_JH597756.1": 11,
+        "NZ_JH597766.1": 11,
+        "NZ_JH597759.1": 11,
+        "NZ_JH597761.1": 11,
+        "NZ_JH597754.1": 11,
+        "NZ_JH597769.1": 11,
+        "NZ_JH597771.1": 11,
+        "NZ_JH597764.1": 11,
+        "NZ_JH597757.1": 11,
+        "NZ_JH597752.1": 11,
+        "NZ_JH597767.1": 11,
+        "NZ_JH597762.1": 11,
+        "NZ_JH597755.1": 11
       }
     }
   ],
@@ -226,8 +250,8 @@
       "metadata": {
         "ucsc": {
           "track": "ncbiGene",
-          "longLabel": "NCBI gene predictions",
-          "shortLabel": "NCBI Genes",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
           "visibility": "pack",
           "color": "0,80,150",
           "altColor": "150,80,0",
@@ -239,21 +263,31 @@
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_000243315.1_ASM24331v1.ncbiGene.ix",
           "urlLabel": "Entrez gene:",
-          "labelFields": "name,geneName,geneName2",
+          "labelFields": "geneName,geneName2",
           "defaultLabelFields": "geneName2",
           "group": "genes"
         }
       },
       "category": ["Genes and Gene Predictions"],
       "trackId": "GCF_000243315.1-ncbiGene",
-      "description": "NCBI gene predictions",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
       "assemblyNames": ["GCF_000243315.1"],
-      "name": "NCBI Genes",
+      "name": "NCBI GenBank",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/315/GCF_000243315.1/bbi/GCF_000243315.1_ASM24331v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/315/GCF_000243315.1/bbi/GCF_000243315.1_ASM24331v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000243315.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

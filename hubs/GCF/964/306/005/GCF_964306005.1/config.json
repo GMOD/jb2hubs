@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964306005.1",
           "ucsc": {
             "genome": "GCF_964306005.1",
             "taxId": "2173",
@@ -37,6 +38,76 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/306/005/GCF_964306005.1/GCF_964306005.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYAVS010000009.1": 11,
+        "NZ_CAYAVS010000015.1": 11,
+        "NZ_CAYAVS010000047.1": 11,
+        "NZ_CAYAVS010000021.1": 11,
+        "NZ_CAYAVS010000068.1": 11,
+        "NZ_CAYAVS010000053.1": 11,
+        "NZ_CAYAVS010000005.1": 11,
+        "NZ_CAYAVS010000037.1": 11,
+        "NZ_CAYAVS010000011.1": 11,
+        "NZ_CAYAVS010000026.1": 11,
+        "NZ_CAYAVS010000058.1": 11,
+        "NZ_CAYAVS010000043.1": 11,
+        "NZ_CAYAVS010000032.1": 11,
+        "NZ_CAYAVS010000064.1": 11,
+        "NZ_CAYAVS010000001.1": 11,
+        "NZ_CAYAVS010000048.1": 11,
+        "NZ_CAYAVS010000022.1": 11,
+        "NZ_CAYAVS010000069.1": 11,
+        "NZ_CAYAVS010000054.1": 11,
+        "NZ_CAYAVS010000060.1": 11,
+        "NZ_CAYAVS010000006.1": 11,
+        "NZ_CAYAVS010000038.1": 11,
+        "NZ_CAYAVS010000027.1": 11,
+        "NZ_CAYAVS010000012.1": 11,
+        "NZ_CAYAVS010000059.1": 11,
+        "NZ_CAYAVS010000044.1": 11,
+        "NZ_CAYAVS010000033.1": 11,
+        "NZ_CAYAVS010000065.1": 11,
+        "NZ_CAYAVS010000050.1": 11,
+        "NZ_CAYAVS010000017.1": 11,
+        "NZ_CAYAVS010000002.1": 11,
+        "NZ_CAYAVS010000049.1": 11,
+        "NZ_CAYAVS010000023.1": 11,
+        "NZ_CAYAVS010000055.1": 11,
+        "NZ_CAYAVS010000040.1": 11,
+        "NZ_CAYAVS010000061.1": 11,
+        "NZ_CAYAVS010000007.1": 11,
+        "NZ_CAYAVS010000039.1": 11,
+        "NZ_CAYAVS010000028.1": 11,
+        "NZ_CAYAVS010000013.1": 11,
+        "NZ_CAYAVS010000045.1": 11,
+        "NZ_CAYAVS010000034.1": 11,
+        "NZ_CAYAVS010000066.1": 11,
+        "NZ_CAYAVS010000051.1": 11,
+        "NZ_CAYAVS010000018.1": 11,
+        "NZ_CAYAVS010000003.1": 11,
+        "NZ_CAYAVS010000024.1": 11,
+        "NZ_CAYAVS010000056.1": 11,
+        "NZ_CAYAVS010000041.1": 11,
+        "NZ_CAYAVS010000030.1": 11,
+        "NZ_CAYAVS010000062.1": 11,
+        "NZ_CAYAVS010000008.1": 11,
+        "NZ_CAYAVS010000029.1": 11,
+        "NZ_CAYAVS010000014.1": 11,
+        "NZ_CAYAVS010000046.1": 11,
+        "NZ_CAYAVS010000035.1": 11,
+        "NZ_CAYAVS010000020.1": 11,
+        "NZ_CAYAVS010000067.1": 11,
+        "NZ_CAYAVS010000052.1": 11,
+        "NZ_CAYAVS010000004.1": 11,
+        "NZ_CAYAVS010000019.1": 11,
+        "NZ_CAYAVS010000036.1": 11,
+        "NZ_CAYAVS010000025.1": 11,
+        "NZ_CAYAVS010000010.1": 11,
+        "NZ_CAYAVS010000057.1": 11,
+        "NZ_CAYAVS010000042.1": 11,
+        "NZ_CAYAVS010000031.1": 11,
+        "NZ_CAYAVS010000063.1": 11
       }
     }
   ],
@@ -204,8 +275,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/306/005/GCF_964306005.1/bbi/GCF_964306005.1_EST-A-0014_Methanobrevibacter_A-smithii.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/306/005/GCF_964306005.1/bbi/GCF_964306005.1_EST-A-0014_Methanobrevibacter_A-smithii.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964306005.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

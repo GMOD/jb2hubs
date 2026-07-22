@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_030758345.1",
           "ucsc": {
             "genome": "GCF_030758345.1",
             "taxId": "3064389",
@@ -37,6 +38,87 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/758/345/GCF_030758345.1/GCF_030758345.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAVAMO010000025.1": 11,
+        "NZ_JAVAMO010000010.1": 11,
+        "NZ_JAVAMO010000057.1": 11,
+        "NZ_JAVAMO010000031.1": 11,
+        "NZ_JAVAMO010000078.1": 11,
+        "NZ_JAVAMO010000063.1": 11,
+        "NZ_JAVAMO010000009.1": 11,
+        "NZ_JAVAMO010000015.1": 11,
+        "NZ_JAVAMO010000047.1": 11,
+        "NZ_JAVAMO010000036.1": 11,
+        "NZ_JAVAMO010000021.1": 11,
+        "NZ_JAVAMO010000068.1": 11,
+        "NZ_JAVAMO010000053.1": 11,
+        "NZ_JAVAMO010000042.1": 11,
+        "NZ_JAVAMO010000074.1": 11,
+        "NZ_JAVAMO010000005.1": 11,
+        "NZ_JAVAMO010000026.1": 11,
+        "NZ_JAVAMO010000011.1": 11,
+        "NZ_JAVAMO010000058.1": 11,
+        "NZ_JAVAMO010000043.1": 11,
+        "NZ_JAVAMO010000032.1": 11,
+        "NZ_JAVAMO010000079.1": 11,
+        "NZ_JAVAMO010000064.1": 11,
+        "NZ_JAVAMO010000070.1": 11,
+        "NZ_JAVAMO010000016.1": 11,
+        "NZ_JAVAMO010000001.1": 11,
+        "NZ_JAVAMO010000048.1": 11,
+        "NZ_JAVAMO010000037.1": 11,
+        "NZ_JAVAMO010000022.1": 11,
+        "NZ_JAVAMO010000069.1": 11,
+        "NZ_JAVAMO010000054.1": 11,
+        "NZ_JAVAMO010000075.1": 11,
+        "NZ_JAVAMO010000060.1": 11,
+        "NZ_JAVAMO010000081.1": 11,
+        "NZ_JAVAMO010000006.1": 11,
+        "NZ_JAVAMO010000027.1": 11,
+        "NZ_JAVAMO010000012.1": 11,
+        "NZ_JAVAMO010000059.1": 11,
+        "NZ_JAVAMO010000044.1": 11,
+        "NZ_JAVAMO010000033.1": 11,
+        "NZ_JAVAMO010000065.1": 11,
+        "NZ_JAVAMO010000050.1": 11,
+        "NZ_JAVAMO010000071.1": 11,
+        "NZ_JAVAMO010000017.1": 11,
+        "NZ_JAVAMO010000002.1": 11,
+        "NZ_JAVAMO010000049.1": 11,
+        "NZ_JAVAMO010000038.1": 11,
+        "NZ_JAVAMO010000023.1": 11,
+        "NZ_JAVAMO010000055.1": 11,
+        "NZ_JAVAMO010000076.1": 11,
+        "NZ_JAVAMO010000061.1": 11,
+        "NZ_JAVAMO010000007.1": 11,
+        "NZ_JAVAMO010000028.1": 11,
+        "NZ_JAVAMO010000013.1": 11,
+        "NZ_JAVAMO010000045.1": 11,
+        "NZ_JAVAMO010000034.1": 11,
+        "NZ_JAVAMO010000066.1": 11,
+        "NZ_JAVAMO010000051.1": 11,
+        "NZ_JAVAMO010000040.1": 11,
+        "NZ_JAVAMO010000072.1": 11,
+        "NZ_JAVAMO010000018.1": 11,
+        "NZ_JAVAMO010000003.1": 11,
+        "NZ_JAVAMO010000039.1": 11,
+        "NZ_JAVAMO010000024.1": 11,
+        "NZ_JAVAMO010000056.1": 11,
+        "NZ_JAVAMO010000030.1": 11,
+        "NZ_JAVAMO010000077.1": 11,
+        "NZ_JAVAMO010000062.1": 11,
+        "NZ_JAVAMO010000008.1": 11,
+        "NZ_JAVAMO010000029.1": 11,
+        "NZ_JAVAMO010000014.1": 11,
+        "NZ_JAVAMO010000035.1": 11,
+        "NZ_JAVAMO010000020.1": 11,
+        "NZ_JAVAMO010000067.1": 11,
+        "NZ_JAVAMO010000052.1": 11,
+        "NZ_JAVAMO010000041.1": 11,
+        "NZ_JAVAMO010000073.1": 11,
+        "NZ_JAVAMO010000019.1": 11,
+        "NZ_JAVAMO010000004.1": 11
       }
     }
   ],
@@ -204,8 +286,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/758/345/GCF_030758345.1/bbi/GCF_030758345.1_ASM3075834v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/758/345/GCF_030758345.1/bbi/GCF_030758345.1_ASM3075834v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_030758345.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

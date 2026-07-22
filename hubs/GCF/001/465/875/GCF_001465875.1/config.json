@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001465875.1",
           "ucsc": {
             "genome": "GCF_001465875.1",
             "taxId": "1750561",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/465/875/GCF_001465875.1/GCF_001465875.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN901322.1": 11,
+        "NZ_LN901315.1": 11,
+        "NZ_LN901318.1": 11,
+        "NZ_LN901320.1": 11,
+        "NZ_LN901323.1": 11,
+        "NZ_LN901316.1": 11,
+        "NZ_LN901319.1": 11,
+        "NZ_LN901321.1": 11,
+        "NZ_LN901324.1": 11,
+        "NZ_LN901317.1": 11
       }
     }
   ],
@@ -229,8 +242,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/465/875/GCF_001465875.1/bbi/GCF_001465875.1_Legionella_saoudiensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/465/875/GCF_001465875.1/bbi/GCF_001465875.1_Legionella_saoudiensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001465875.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

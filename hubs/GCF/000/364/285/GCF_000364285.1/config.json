@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000364285.1",
           "ucsc": {
             "genome": "GCF_000364285.1",
             "taxId": "1235804",
@@ -37,6 +38,25 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/364/285/GCF_000364285.1/GCF_000364285.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KB822512.1": 11,
+        "NZ_KB822505.1": 11,
+        "NZ_KB822515.1": 11,
+        "NZ_KB822508.1": 11,
+        "NZ_KB822510.1": 11,
+        "NZ_KB822518.1": 11,
+        "NZ_KB822520.1": 11,
+        "NZ_KB822513.1": 11,
+        "NZ_KB822506.1": 11,
+        "NZ_KB822516.1": 11,
+        "NZ_KB822509.1": 11,
+        "NZ_KB822511.1": 11,
+        "NZ_KB822519.1": 11,
+        "NZ_KB822521.1": 11,
+        "NZ_KB822514.1": 11,
+        "NZ_KB822507.1": 11,
+        "NZ_KB822517.1": 11
       }
     }
   ],
@@ -252,8 +272,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/364/285/GCF_000364285.1/bbi/GCF_000364285.1_Heli_bili_WiWa_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/364/285/GCF_000364285.1/bbi/GCF_000364285.1_Heli_bili_WiWa_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000364285.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000765825.2",
           "ucsc": {
             "genome": "GCF_000765825.2",
             "taxId": "471858",
@@ -37,6 +38,61 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/765/825/GCF_000765825.2/GCF_000765825.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JRPE02000037.1": 11,
+        "NZ_JRPE02000022.1": 11,
+        "NZ_JRPE02000043.1": 11,
+        "NZ_JRPE02000006.1": 11,
+        "NZ_JRPE02000027.1": 11,
+        "NZ_JRPE02000012.1": 11,
+        "NZ_JRPE02000048.1": 11,
+        "NZ_JRPE02000033.1": 11,
+        "NZ_JRPE02000050.1": 11,
+        "NZ_JRPE02000017.1": 11,
+        "NZ_JRPE02000002.1": 11,
+        "NZ_JRPE02000023.1": 11,
+        "NZ_JRPE02000038.1": 11,
+        "NZ_JRPE02000044.1": 11,
+        "NZ_JRPE02000007.1": 11,
+        "NZ_JRPE02000028.1": 11,
+        "NZ_JRPE02000013.1": 11,
+        "NZ_JRPE02000049.1": 11,
+        "NZ_JRPE02000034.1": 11,
+        "NZ_JRPE02000051.1": 11,
+        "NZ_JRPE02000040.1": 11,
+        "NZ_JRPE02000018.1": 11,
+        "NZ_JRPE02000003.1": 11,
+        "NZ_JRPE02000039.1": 11,
+        "NZ_JRPE02000024.1": 11,
+        "NZ_JRPE02000056.1": 11,
+        "NZ_JRPE02000045.1": 11,
+        "NZ_JRPE02000030.1": 11,
+        "NZ_JRPE02000008.1": 11,
+        "NZ_JRPE02000014.1": 11,
+        "NZ_JRPE02000035.1": 11,
+        "NZ_JRPE02000020.1": 11,
+        "NZ_JRPE02000052.1": 11,
+        "NZ_JRPE02000041.1": 11,
+        "NZ_JRPE02000019.1": 11,
+        "NZ_JRPE02000004.1": 11,
+        "NZ_JRPE02000025.1": 11,
+        "NZ_JRPE02000010.1": 11,
+        "NZ_JRPE02000057.1": 11,
+        "NZ_JRPE02000046.1": 11,
+        "NZ_JRPE02000031.1": 11,
+        "NZ_JRPE02000009.1": 11,
+        "NZ_JRPE02000015.1": 11,
+        "NZ_JRPE02000036.1": 11,
+        "NZ_JRPE02000021.1": 11,
+        "NZ_JRPE02000053.1": 11,
+        "NZ_JRPE02000042.1": 11,
+        "NZ_JRPE02000005.1": 11,
+        "NZ_JRPE02000026.1": 11,
+        "NZ_JRPE02000011.1": 11,
+        "NZ_JRPE02000032.1": 11,
+        "NZ_JRPE02000016.1": 11,
+        "NZ_JRPE02000001.1": 11
       }
     }
   ],
@@ -204,8 +260,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/765/825/GCF_000765825.2/bbi/GCF_000765825.2_ASM76582v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/765/825/GCF_000765825.2/bbi/GCF_000765825.2_ASM76582v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000765825.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

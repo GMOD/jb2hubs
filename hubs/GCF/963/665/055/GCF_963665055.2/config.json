@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_963665055.2",
           "ucsc": {
             "genome": "GCF_963665055.2",
             "taxId": "176306",
@@ -37,6 +38,19 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/665/055/GCF_963665055.2/GCF_963665055.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAXXRN010000005.1": 11,
+        "NZ_CAXXRN010000008.1": 11,
+        "NZ_CAXXRN010000003.1": 11,
+        "NZ_CAXXRN010000006.1": 11,
+        "NZ_CAXXRN010000001.1": 11,
+        "NZ_CAXXRN010000010.1": 11,
+        "NZ_CAXXRN010000009.1": 11,
+        "NZ_CAXXRN010000004.1": 11,
+        "NZ_CAXXRN010000007.1": 11,
+        "NZ_CAXXRN010000002.1": 11,
+        "NZ_CAXXRN010000011.1": 11
       }
     }
   ],
@@ -204,8 +218,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/665/055/GCF_963665055.2/bbi/GCF_963665055.2_piHetPala1.Methanobacterium_sp_1.2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/665/055/GCF_963665055.2/bbi/GCF_963665055.2_piHetPala1.Methanobacterium_sp_1.2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_963665055.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

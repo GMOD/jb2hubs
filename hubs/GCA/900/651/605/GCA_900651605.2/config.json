@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_900651605.2",
           "ucsc": {
             "genome": "GCA_900651605.2",
             "taxId": "158456",
@@ -373,7 +374,66 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/900/651/605/GCA_900651605.2/bbi/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/900/651/605/GCA_900651605.2/bbi/GCA_900651605.2_fBetSpl5.4_alternate_haplotype.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_900651605.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/900/651/605/GCA_900651605.2/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_900651605.2-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_900651605.2"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/900/651/605/GCA_900651605.2/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_900651605.2_to_GCF_900634795.4_liftOver",
+      "name": "GCA_900651605.2 (Siamese fighting fish (v5.4 alternate hap 2023)) to Siamese fighting fish (v4 primary hap 2023) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_900651605.2", "GCF_900634795.4"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_900651605.2",
+        "queryAssembly": "GCF_900634795.4",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_900651605.2ToGCF_900634795.4.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_900651605.2ToGCF_900634795.4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

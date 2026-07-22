@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_005497185.1",
           "ucsc": {
             "genome": "GCF_005497185.1",
             "taxId": "2485124",
@@ -37,6 +38,76 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/005/497/185/GCF_005497185.1/GCF_005497185.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_RJTN01000036.1": 11,
+        "NZ_RJTN01000021.1": 11,
+        "NZ_RJTN01000068.1": 11,
+        "NZ_RJTN01000053.1": 11,
+        "NZ_RJTN01000005.1": 11,
+        "NZ_RJTN01000026.1": 11,
+        "NZ_RJTN01000011.1": 11,
+        "NZ_RJTN01000058.1": 11,
+        "NZ_RJTN01000043.1": 11,
+        "NZ_RJTN01000032.1": 11,
+        "NZ_RJTN01000064.1": 11,
+        "NZ_RJTN01000070.1": 11,
+        "NZ_RJTN01000016.1": 11,
+        "NZ_RJTN01000001.1": 11,
+        "NZ_RJTN01000037.1": 11,
+        "NZ_RJTN01000022.1": 11,
+        "NZ_RJTN01000054.1": 11,
+        "NZ_RJTN01000060.1": 11,
+        "NZ_RJTN01000006.1": 11,
+        "NZ_RJTN01000012.1": 11,
+        "NZ_RJTN01000027.1": 11,
+        "NZ_RJTN01000059.1": 11,
+        "NZ_RJTN01000044.1": 11,
+        "NZ_RJTN01000033.1": 11,
+        "NZ_RJTN01000050.1": 11,
+        "NZ_RJTN01000071.1": 11,
+        "NZ_RJTN01000017.1": 11,
+        "NZ_RJTN01000002.1": 11,
+        "NZ_RJTN01000049.1": 11,
+        "NZ_RJTN01000038.1": 11,
+        "NZ_RJTN01000023.1": 11,
+        "NZ_RJTN01000055.1": 11,
+        "NZ_RJTN01000040.1": 11,
+        "NZ_RJTN01000061.1": 11,
+        "NZ_RJTN01000007.1": 11,
+        "NZ_RJTN01000028.1": 11,
+        "NZ_RJTN01000013.1": 11,
+        "NZ_RJTN01000045.1": 11,
+        "NZ_RJTN01000034.1": 11,
+        "NZ_RJTN01000066.1": 11,
+        "NZ_RJTN01000051.1": 11,
+        "NZ_RJTN01000018.1": 11,
+        "NZ_RJTN01000003.1": 11,
+        "NZ_RJTN01000039.1": 11,
+        "NZ_RJTN01000024.1": 11,
+        "NZ_RJTN01000056.1": 11,
+        "NZ_RJTN01000041.1": 11,
+        "NZ_RJTN01000030.1": 11,
+        "NZ_RJTN01000062.1": 11,
+        "NZ_RJTN01000008.1": 11,
+        "NZ_RJTN01000029.1": 11,
+        "NZ_RJTN01000014.1": 11,
+        "NZ_RJTN01000046.1": 11,
+        "NZ_RJTN01000035.1": 11,
+        "NZ_RJTN01000020.1": 11,
+        "NZ_RJTN01000067.1": 11,
+        "NZ_RJTN01000052.1": 11,
+        "NZ_RJTN01000019.1": 11,
+        "NZ_RJTN01000004.1": 11,
+        "NZ_RJTN01000025.1": 11,
+        "NZ_RJTN01000010.1": 11,
+        "NZ_RJTN01000057.1": 11,
+        "NZ_RJTN01000042.1": 11,
+        "NZ_RJTN01000031.1": 11,
+        "NZ_RJTN01000063.1": 11,
+        "NZ_RJTN01000009.1": 11,
+        "NZ_RJTN01000015.1": 11,
+        "NZ_RJTN01000047.1": 11
       }
     }
   ],
@@ -204,8 +275,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/005/497/185/GCF_005497185.1/bbi/GCF_005497185.1_ASM549718v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/005/497/185/GCF_005497185.1/bbi/GCF_005497185.1_ASM549718v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_005497185.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_018139145.1",
           "ucsc": {
             "genome": "GCA_018139145.1",
             "taxId": "33616",
@@ -371,8 +372,59 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/bbi/GCA_018139145.1_ASM1813914v1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_018139145.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "HLTOGAannotvsHLrisTri2v2",
+          "parent": "TOGAv2",
+          "shortLabel": "TOGA2 kittiwake annotations",
+          "longLabel": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+          "group": "genes",
+          "priority": "4",
+          "visibility": "pack",
+          "itemRgb": "on",
+          "type": "bigBed 12 +",
+          "bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb",
+          "labelFields": "name",
+          "searchIndex": "name",
+          "searchTrix": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.ix",
+          "decorator.default.bigDataUrl": "contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.decorator.bb",
+          "decorator.default.maxLabelBases": "5000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/contrib/TOGAv2/TOGAv2\">contrib/TOGAv2/TOGAv2</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_018139145.1-HLTOGAannotvsHLrisTri2v2",
+      "description": "TOGA 2.0 annotations using Black-legged kittiwake HLrisTri2 as reference",
+      "assemblyNames": ["GCA_018139145.1"],
+      "name": "TOGA V2 - TOGA2 kittiwake annotations",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/018/139/145/GCA_018139145.1/contrib/TOGAv2/TOGAvGCF_028500815.1v2/HLTOGAannotVsHLrisTri2v2.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_018139145.1-HLTOGAannotvsHLrisTri2v2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     }
   ],
   "defaultSession": {

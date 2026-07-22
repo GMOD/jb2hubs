@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_030813115.1",
           "ucsc": {
             "genome": "GCF_030813115.1",
             "taxId": "77523",
@@ -37,6 +38,53 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/813/115/GCF_030813115.1/GCF_030813115.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAUSTY010000005.1": 11,
+        "NZ_JAUSTY010000026.1": 11,
+        "NZ_JAUSTY010000011.1": 11,
+        "NZ_JAUSTY010000047.1": 11,
+        "NZ_JAUSTY010000032.1": 11,
+        "NZ_JAUSTY010000016.1": 11,
+        "NZ_JAUSTY010000001.1": 11,
+        "NZ_JAUSTY010000022.1": 11,
+        "NZ_JAUSTY010000037.1": 11,
+        "NZ_JAUSTY010000043.1": 11,
+        "NZ_JAUSTY010000006.1": 11,
+        "NZ_JAUSTY010000027.1": 11,
+        "NZ_JAUSTY010000012.1": 11,
+        "NZ_JAUSTY010000033.1": 11,
+        "NZ_JAUSTY010000017.1": 11,
+        "NZ_JAUSTY010000002.1": 11,
+        "NZ_JAUSTY010000038.1": 11,
+        "NZ_JAUSTY010000023.1": 11,
+        "NZ_JAUSTY010000007.1": 11,
+        "NZ_JAUSTY010000028.1": 11,
+        "NZ_JAUSTY010000013.1": 11,
+        "NZ_JAUSTY010000034.1": 11,
+        "NZ_JAUSTY010000040.1": 11,
+        "NZ_JAUSTY010000018.1": 11,
+        "NZ_JAUSTY010000003.1": 11,
+        "NZ_JAUSTY010000039.1": 11,
+        "NZ_JAUSTY010000024.1": 11,
+        "NZ_JAUSTY010000045.1": 11,
+        "NZ_JAUSTY010000030.1": 11,
+        "NZ_JAUSTY010000008.1": 11,
+        "NZ_JAUSTY010000029.1": 11,
+        "NZ_JAUSTY010000014.1": 11,
+        "NZ_JAUSTY010000035.1": 11,
+        "NZ_JAUSTY010000020.1": 11,
+        "NZ_JAUSTY010000041.1": 11,
+        "NZ_JAUSTY010000019.1": 11,
+        "NZ_JAUSTY010000004.1": 11,
+        "NZ_JAUSTY010000025.1": 11,
+        "NZ_JAUSTY010000010.1": 11,
+        "NZ_JAUSTY010000046.1": 11,
+        "NZ_JAUSTY010000031.1": 11,
+        "NZ_JAUSTY010000009.1": 11,
+        "NZ_JAUSTY010000015.1": 11,
+        "NZ_JAUSTY010000036.1": 11,
+        "NZ_JAUSTY010000021.1": 11
       }
     }
   ],
@@ -204,8 +252,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/813/115/GCF_030813115.1/bbi/GCF_030813115.1_ASM3081311v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/030/813/115/GCF_030813115.1/bbi/GCF_030813115.1_ASM3081311v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_030813115.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

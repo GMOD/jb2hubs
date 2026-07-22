@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001046895.1",
           "ucsc": {
             "genome": "GCF_001046895.1",
             "taxId": "861266",
@@ -37,6 +38,59 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/046/895/GCF_001046895.1/GCF_001046895.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAQI01000009.1": 11,
+        "NZ_CAQI01000047.1": 11,
+        "NZ_CAQI01000036.1": 11,
+        "NZ_CAQI01000053.1": 11,
+        "NZ_CAQI01000005.1": 11,
+        "NZ_CAQI01000026.1": 11,
+        "NZ_CAQI01000058.1": 11,
+        "NZ_CAQI01000043.1": 11,
+        "NZ_CAQI01000032.1": 11,
+        "NZ_CAQI01000048.1": 11,
+        "NZ_CAQI01000037.1": 11,
+        "NZ_CAQI01000054.1": 11,
+        "NZ_CAQI01000060.1": 11,
+        "NZ_CAQI01000006.1": 11,
+        "NZ_CAQI01000027.1": 11,
+        "NZ_CAQI01000012.1": 11,
+        "NZ_CAQI01000059.1": 11,
+        "NZ_CAQI01000044.1": 11,
+        "NZ_CAQI01000033.1": 11,
+        "NZ_CAQI01000050.1": 11,
+        "NZ_CAQI01000002.1": 11,
+        "NZ_CAQI01000049.1": 11,
+        "NZ_CAQI01000038.1": 11,
+        "NZ_CAQI01000055.1": 11,
+        "NZ_CAQI01000040.1": 11,
+        "NZ_CAQI01000061.1": 11,
+        "NZ_CAQI01000007.1": 11,
+        "NZ_CAQI01000028.1": 11,
+        "NZ_CAQI01000013.1": 11,
+        "NZ_CAQI01000045.1": 11,
+        "NZ_CAQI01000034.1": 11,
+        "NZ_CAQI01000051.1": 11,
+        "NZ_CAQI01000003.1": 11,
+        "NZ_CAQI01000039.1": 11,
+        "NZ_CAQI01000024.1": 11,
+        "NZ_CAQI01000056.1": 11,
+        "NZ_CAQI01000041.1": 11,
+        "NZ_CAQI01000030.1": 11,
+        "NZ_CAQI01000062.1": 11,
+        "NZ_CAQI01000008.1": 11,
+        "NZ_CAQI01000029.1": 11,
+        "NZ_CAQI01000046.1": 11,
+        "NZ_CAQI01000035.1": 11,
+        "NZ_CAQI01000052.1": 11,
+        "NZ_CAQI01000004.1": 11,
+        "NZ_CAQI01000025.1": 11,
+        "NZ_CAQI01000010.1": 11,
+        "NZ_CAQI01000057.1": 11,
+        "NZ_CAQI01000042.1": 11,
+        "NZ_CAQI01000031.1": 11,
+        "NZ_CAQI01000063.1": 11
       }
     }
   ],
@@ -204,8 +258,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/046/895/GCF_001046895.1/bbi/GCF_001046895.1_ASM104689v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/046/895/GCF_001046895.1/bbi/GCF_001046895.1_ASM104689v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001046895.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

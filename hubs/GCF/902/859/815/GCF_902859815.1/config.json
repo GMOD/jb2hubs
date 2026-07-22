@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_902859815.1",
           "ucsc": {
             "genome": "GCF_902859815.1",
             "taxId": "380675",
@@ -37,6 +38,60 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/859/815/GCF_902859815.1/GCF_902859815.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CADIKD010000051.1": 11,
+        "NZ_CADIKD010000029.1": 11,
+        "NZ_CADIKD010000014.1": 11,
+        "NZ_CADIKD010000003.1": 11,
+        "NZ_CADIKD010000020.1": 11,
+        "NZ_CADIKD010000035.1": 11,
+        "NZ_CADIKD010000019.1": 11,
+        "NZ_CADIKD010000008.1": 11,
+        "NZ_CADIKD010000025.1": 11,
+        "NZ_CADIKD010000010.1": 11,
+        "NZ_CADIKD010000046.1": 11,
+        "NZ_CADIKD010000031.1": 11,
+        "NZ_CADIKD010000052.1": 11,
+        "NZ_CADIKD010000015.1": 11,
+        "NZ_CADIKD010000004.1": 11,
+        "NZ_CADIKD010000036.1": 11,
+        "NZ_CADIKD010000021.1": 11,
+        "NZ_CADIKD010000042.1": 11,
+        "NZ_CADIKD010000009.1": 11,
+        "NZ_CADIKD010000026.1": 11,
+        "NZ_CADIKD010000011.1": 11,
+        "NZ_CADIKD010000047.1": 11,
+        "NZ_CADIKD010000032.1": 11,
+        "NZ_CADIKD010000016.1": 11,
+        "NZ_CADIKD010000005.1": 11,
+        "NZ_CADIKD010000037.1": 11,
+        "NZ_CADIKD010000022.1": 11,
+        "NZ_CADIKD010000043.1": 11,
+        "NZ_CADIKD010000027.1": 11,
+        "NZ_CADIKD010000012.1": 11,
+        "NZ_CADIKD010000001.1": 11,
+        "NZ_CADIKD010000048.1": 11,
+        "NZ_CADIKD010000033.1": 11,
+        "NZ_CADIKD010000054.1": 11,
+        "NZ_CADIKD010000017.1": 11,
+        "NZ_CADIKD010000006.1": 11,
+        "NZ_CADIKD010000038.1": 11,
+        "NZ_CADIKD010000023.1": 11,
+        "NZ_CADIKD010000044.1": 11,
+        "NZ_CADIKD010000050.1": 11,
+        "NZ_CADIKD010000013.1": 11,
+        "NZ_CADIKD010000028.1": 11,
+        "NZ_CADIKD010000002.1": 11,
+        "NZ_CADIKD010000049.1": 11,
+        "NZ_CADIKD010000034.1": 11,
+        "NZ_CADIKD010000040.1": 11,
+        "NZ_CADIKD010000018.1": 11,
+        "NZ_CADIKD010000007.1": 11,
+        "NZ_CADIKD010000039.1": 11,
+        "NZ_CADIKD010000024.1": 11,
+        "NZ_CADIKD010000045.1": 11,
+        "NZ_CADIKD010000030.1": 11
       }
     }
   ],
@@ -204,8 +259,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/859/815/GCF_902859815.1/bbi/GCF_902859815.1_LMG_24076.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/859/815/GCF_902859815.1/bbi/GCF_902859815.1_LMG_24076.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_902859815.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

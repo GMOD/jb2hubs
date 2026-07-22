@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_946616125.1",
           "ucsc": {
             "genome": "GCF_946616125.1",
             "taxId": "262501",
@@ -37,6 +38,26 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/616/125/GCF_946616125.1/GCF_946616125.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAMOIM010000014.1": 11,
+        "NZ_CAMOIM010000007.1": 11,
+        "NZ_CAMOIM010000002.1": 11,
+        "NZ_CAMOIM010000017.1": 11,
+        "NZ_CAMOIM010000012.1": 11,
+        "NZ_CAMOIM010000005.1": 11,
+        "NZ_CAMOIM010000015.1": 11,
+        "NZ_CAMOIM010000008.1": 11,
+        "NZ_CAMOIM010000010.1": 11,
+        "NZ_CAMOIM010000003.1": 11,
+        "NZ_CAMOIM010000018.1": 11,
+        "NZ_CAMOIM010000013.1": 11,
+        "NZ_CAMOIM010000006.1": 11,
+        "NZ_CAMOIM010000001.1": 11,
+        "NZ_CAMOIM010000016.1": 11,
+        "NZ_CAMOIM010000009.1": 11,
+        "NZ_CAMOIM010000011.1": 11,
+        "NZ_CAMOIM010000004.1": 11
       }
     }
   ],
@@ -204,8 +225,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/616/125/GCF_946616125.1/bbi/GCF_946616125.1_SRR873602_bin.81_metaWRAP_v1.3_MAG.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/616/125/GCF_946616125.1/bbi/GCF_946616125.1_SRR873602_bin.81_metaWRAP_v1.3_MAG.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_946616125.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

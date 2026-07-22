@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_903992525.1",
           "ucsc": {
             "genome": "GCA_903992525.1",
             "taxId": "1047088",
@@ -21,7 +22,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/903/992/525/GCA_903992525.1/html/GCA_903992525.1_mArvAmp1.1_alternate_haplotype.description.html\">html/GCA_903992525.1_mArvAmp1.1_alternate_haplotype.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/903/992/525/GCA_903992525.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/903/992/525/GCA_903992525.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/903/992/525/GCA_903992525.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/903/992/525/GCA_903992525.1",
+            "liftOver.GCF_903992535.2": "liftOver/GCA_903992525.1ToGCF_903992535.2.over.chain.gz"
           }
         },
         "trackId": "GCA_903992525.1-ReferenceSequenceTrack",
@@ -371,8 +373,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/903/992/525/GCA_903992525.1/bbi/GCA_903992525.1_mArvAmp1.1_alternate_haplotype.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/903/992/525/GCA_903992525.1/bbi/GCA_903992525.1_mArvAmp1.1_alternate_haplotype.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_903992525.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -400,6 +412,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/903/992/525/GCA_903992525.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_903992525.1_to_GCF_903992535.2_liftOver",
+      "name": "GCA_903992525.1 (Eurasian water vole (alternate hap 2020)) to Eurasian water vole (v2 2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_903992525.1", "GCF_903992535.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_903992525.1",
+        "queryAssembly": "GCF_903992535.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_903992525.1ToGCF_903992535.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_903992525.1ToGCF_903992535.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

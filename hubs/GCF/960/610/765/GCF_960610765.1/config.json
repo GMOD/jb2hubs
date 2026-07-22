@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_960610765.1",
           "ucsc": {
             "genome": "GCF_960610765.1",
             "taxId": "2601668",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/960/610/765/GCF_960610765.1/GCF_960610765.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OY490516.1": 11
       }
     }
   ],
@@ -204,8 +208,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/960/610/765/GCF_960610765.1/bbi/GCF_960610765.1_peDipJapo1.Nesciobacter_abundans_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/960/610/765/GCF_960610765.1/bbi/GCF_960610765.1_peDipJapo1.Nesciobacter_abundans_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_960610765.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

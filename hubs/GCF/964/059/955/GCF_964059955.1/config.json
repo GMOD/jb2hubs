@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964059955.1",
           "ucsc": {
             "genome": "GCF_964059955.1",
             "taxId": "2994493",
@@ -37,6 +38,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/059/955/GCF_964059955.1/GCF_964059955.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OZ060925.1": 11,
+        "NZ_OZ060924.1": 11
       }
     }
   ],
@@ -204,8 +209,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/059/955/GCF_964059955.1/bbi/GCF_964059955.1_SoDrplatanoidis-3702_v1.0.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/059/955/GCF_964059955.1/bbi/GCF_964059955.1_SoDrplatanoidis-3702_v1.0.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964059955.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

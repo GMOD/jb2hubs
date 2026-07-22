@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001375535.1",
           "ucsc": {
             "genome": "GCF_001375535.1",
             "taxId": "1522308",
@@ -37,6 +38,14 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/375/535/GCF_001375535.1/GCF_001375535.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN831197.1": 11,
+        "NZ_LN831192.1": 11,
+        "NZ_LN831195.1": 11,
+        "NZ_LN831193.1": 11,
+        "NZ_LN831196.1": 11,
+        "NZ_LN831194.1": 11
       }
     }
   ],
@@ -252,8 +261,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/375/535/GCF_001375535.1/bbi/GCF_001375535.1_Bacillus_niameyensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/375/535/GCF_001375535.1/bbi/GCF_001375535.1_Bacillus_niameyensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001375535.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

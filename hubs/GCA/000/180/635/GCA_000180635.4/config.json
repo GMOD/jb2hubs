@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_000180635.4",
           "ucsc": {
             "genome": "GCA_000180635.4",
             "taxId": "54126",
@@ -232,8 +233,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/180/635/GCA_000180635.4/bbi/GCA_000180635.4_El_Paco_v._4.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/180/635/GCA_000180635.4/bbi/GCA_000180635.4_El_Paco_v._4.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000180635.4-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -382,7 +393,38 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/180/635/GCA_000180635.4/bbi/GCA_000180635.4_El_Paco_v._4.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/000/180/635/GCA_000180635.4/bbi/GCA_000180635.4_El_Paco_v._4.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_000180635.4-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_000180635.4_to_ce11_liftOver",
+      "name": "GCA_000180635.4 (nematode P.pacificus (PS312 2020)) to C. elegans (ce11) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_000180635.4", "ce11"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_000180635.4",
+        "queryAssembly": "ce11",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_000180635.4ToCe11.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_000180635.4ToCe11.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

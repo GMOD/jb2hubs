@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001368795.1",
           "ucsc": {
             "genome": "GCF_001368795.1",
             "taxId": "1232431",
@@ -37,6 +38,20 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/368/795/GCF_001368795.1/GCF_001368795.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN831206.1": 11,
+        "NZ_LN831201.1": 11,
+        "NZ_LN831209.1": 11,
+        "NZ_LN831204.1": 11,
+        "NZ_LN831198.1": 11,
+        "NZ_LN831207.1": 11,
+        "NZ_LN831202.1": 11,
+        "NZ_LN831205.1": 11,
+        "NZ_LN831200.1": 11,
+        "NZ_LN831199.1": 11,
+        "NZ_LN831208.1": 11,
+        "NZ_LN831203.1": 11
       }
     }
   ],
@@ -252,8 +267,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/368/795/GCF_001368795.1/bbi/GCF_001368795.1_Paenibacillus_reamassiliensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/368/795/GCF_001368795.1/bbi/GCF_001368795.1_Paenibacillus_reamassiliensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001368795.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

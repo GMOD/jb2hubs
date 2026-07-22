@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_903992535.2",
           "ucsc": {
             "genome": "GCF_903992535.2",
             "taxId": "1047088",
@@ -23,6 +24,7 @@
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/903/992/535/GCF_903992535.2",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/903/992/535/GCF_903992535.2",
             "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/903/992/535/GCF_903992535.2",
+            "liftOver.GCA_903992525.1": "liftOver/GCF_903992535.2ToGCA_903992525.1.over.chain.gz",
             "liftOver.GCF_903992535.1": "liftOver/GCF_903992535.2ToGCF_903992535.1.over.chain.gz"
           }
         },
@@ -280,8 +282,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_903992535.2-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -312,8 +324,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_903992535.2-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -342,7 +364,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_903992535.2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -526,8 +557,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_903992535.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -560,8 +601,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ensGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/903/992/535/GCF_903992535.2/bbi/GCF_903992535.2_mArvAmp1.2.ensGene.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_903992535.2-ensGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -611,6 +662,27 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_903992535.2"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_903992535.2_to_GCA_903992525.1_liftOver",
+      "name": "GCF_903992535.2 (Eurasian water vole (v2 2021)) to Eurasian water vole (alternate hap 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_903992535.2", "GCA_903992525.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_903992535.2",
+        "queryAssembly": "GCA_903992525.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_903992535.2ToGCA_903992525.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_903992535.2ToGCA_903992525.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",

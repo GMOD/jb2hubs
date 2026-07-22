@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_902500215.1",
           "ucsc": {
             "genome": "GCF_902500215.1",
             "taxId": "2607506",
@@ -37,6 +38,56 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/500/215/GCF_902500215.1/GCF_902500215.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CABVOU010000005.1": 11,
+        "NZ_CABVOU010000026.1": 11,
+        "NZ_CABVOU010000011.1": 11,
+        "NZ_CABVOU010000047.1": 11,
+        "NZ_CABVOU010000032.1": 11,
+        "NZ_CABVOU010000016.1": 11,
+        "NZ_CABVOU010000001.1": 11,
+        "NZ_CABVOU010000037.1": 11,
+        "NZ_CABVOU010000022.1": 11,
+        "NZ_CABVOU010000054.1": 11,
+        "NZ_CABVOU010000043.1": 11,
+        "NZ_CABVOU010000060.1": 11,
+        "NZ_CABVOU010000006.1": 11,
+        "NZ_CABVOU010000027.1": 11,
+        "NZ_CABVOU010000012.1": 11,
+        "NZ_CABVOU010000059.1": 11,
+        "NZ_CABVOU010000048.1": 11,
+        "NZ_CABVOU010000033.1": 11,
+        "NZ_CABVOU010000017.1": 11,
+        "NZ_CABVOU010000038.1": 11,
+        "NZ_CABVOU010000055.1": 11,
+        "NZ_CABVOU010000044.1": 11,
+        "NZ_CABVOU010000061.1": 11,
+        "NZ_CABVOU010000049.1": 11,
+        "NZ_CABVOU010000040.1": 11,
+        "NZ_CABVOU010000018.1": 11,
+        "NZ_CABVOU010000039.1": 11,
+        "NZ_CABVOU010000024.1": 11,
+        "NZ_CABVOU010000045.1": 11,
+        "NZ_CABVOU010000030.1": 11,
+        "NZ_CABVOU010000062.1": 11,
+        "NZ_CABVOU010000008.1": 11,
+        "NZ_CABVOU010000029.1": 11,
+        "NZ_CABVOU010000014.1": 11,
+        "NZ_CABVOU010000020.1": 11,
+        "NZ_CABVOU010000052.1": 11,
+        "NZ_CABVOU010000041.1": 11,
+        "NZ_CABVOU010000019.1": 11,
+        "NZ_CABVOU010000025.1": 11,
+        "NZ_CABVOU010000010.1": 11,
+        "NZ_CABVOU010000046.1": 11,
+        "NZ_CABVOU010000031.1": 11,
+        "NZ_CABVOU010000009.1": 11,
+        "NZ_CABVOU010000015.1": 11,
+        "NZ_CABVOU010000036.1": 11,
+        "NZ_CABVOU010000021.1": 11,
+        "NZ_CABVOU010000053.1": 11,
+        "NZ_CABVOU010000042.1": 11
       }
     }
   ],
@@ -204,8 +255,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/500/215/GCF_902500215.1/bbi/GCF_902500215.1_CIP111708.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/500/215/GCF_902500215.1/bbi/GCF_902500215.1_CIP111708.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_902500215.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

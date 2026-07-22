@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_004354045.1",
           "ucsc": {
             "genome": "GCF_004354045.1",
             "taxId": "2547395",
@@ -37,6 +38,62 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/004/354/045/GCF_004354045.1/GCF_004354045.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_SMRT01000020.1": 11,
+        "NZ_SMRT01000019.1": 11,
+        "NZ_SMRT01000004.1": 11,
+        "NZ_SMRT01000036.1": 11,
+        "NZ_SMRT01000025.1": 11,
+        "NZ_SMRT01000010.1": 11,
+        "NZ_SMRT01000057.1": 11,
+        "NZ_SMRT01000042.1": 11,
+        "NZ_SMRT01000009.1": 11,
+        "NZ_SMRT01000015.1": 11,
+        "NZ_SMRT01000047.1": 11,
+        "NZ_SMRT01000032.1": 11,
+        "NZ_SMRT01000021.1": 11,
+        "NZ_SMRT01000053.1": 11,
+        "NZ_SMRT01000005.1": 11,
+        "NZ_SMRT01000037.1": 11,
+        "NZ_SMRT01000026.1": 11,
+        "NZ_SMRT01000011.1": 11,
+        "NZ_SMRT01000043.1": 11,
+        "NZ_SMRT01000016.1": 11,
+        "NZ_SMRT01000001.1": 11,
+        "NZ_SMRT01000048.1": 11,
+        "NZ_SMRT01000033.1": 11,
+        "NZ_SMRT01000022.1": 11,
+        "NZ_SMRT01000054.1": 11,
+        "NZ_SMRT01000006.1": 11,
+        "NZ_SMRT01000038.1": 11,
+        "NZ_SMRT01000027.1": 11,
+        "NZ_SMRT01000012.1": 11,
+        "NZ_SMRT01000044.1": 11,
+        "NZ_SMRT01000017.1": 11,
+        "NZ_SMRT01000002.1": 11,
+        "NZ_SMRT01000049.1": 11,
+        "NZ_SMRT01000034.1": 11,
+        "NZ_SMRT01000023.1": 11,
+        "NZ_SMRT01000040.1": 11,
+        "NZ_SMRT01000007.1": 11,
+        "NZ_SMRT01000039.1": 11,
+        "NZ_SMRT01000028.1": 11,
+        "NZ_SMRT01000013.1": 11,
+        "NZ_SMRT01000045.1": 11,
+        "NZ_SMRT01000030.1": 11,
+        "NZ_SMRT01000051.1": 11,
+        "NZ_SMRT01000018.1": 11,
+        "NZ_SMRT01000003.1": 11,
+        "NZ_SMRT01000035.1": 11,
+        "NZ_SMRT01000024.1": 11,
+        "NZ_SMRT01000056.1": 11,
+        "NZ_SMRT01000041.1": 11,
+        "NZ_SMRT01000008.1": 11,
+        "NZ_SMRT01000014.1": 11,
+        "NZ_SMRT01000029.1": 11,
+        "NZ_SMRT01000046.1": 11,
+        "NZ_SMRT01000031.1": 11
       }
     }
   ],
@@ -252,8 +309,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/004/354/045/GCF_004354045.1/bbi/GCF_004354045.1_ASM435404v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/004/354/045/GCF_004354045.1/bbi/GCF_004354045.1_ASM435404v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_004354045.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

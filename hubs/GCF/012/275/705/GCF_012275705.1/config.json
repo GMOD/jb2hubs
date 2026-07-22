@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_012275705.1",
           "ucsc": {
             "genome": "GCF_012275705.1",
             "taxId": "2527672",
@@ -37,6 +38,66 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/012/275/705/GCF_012275705.1/GCF_012275705.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_SHOE01000035.1": 11,
+        "NZ_SHOE01000020.1": 11,
+        "NZ_SHOE01000052.1": 11,
+        "NZ_SHOE01000019.1": 11,
+        "NZ_SHOE01000004.1": 11,
+        "NZ_SHOE01000025.1": 11,
+        "NZ_SHOE01000010.1": 11,
+        "NZ_SHOE01000042.1": 11,
+        "NZ_SHOE01000031.1": 11,
+        "NZ_SHOE01000009.1": 11,
+        "NZ_SHOE01000015.1": 11,
+        "NZ_SHOE01000047.1": 11,
+        "NZ_SHOE01000036.1": 11,
+        "NZ_SHOE01000021.1": 11,
+        "NZ_SHOE01000053.1": 11,
+        "NZ_SHOE01000005.1": 11,
+        "NZ_SHOE01000026.1": 11,
+        "NZ_SHOE01000011.1": 11,
+        "NZ_SHOE01000058.1": 11,
+        "NZ_SHOE01000043.1": 11,
+        "NZ_SHOE01000032.1": 11,
+        "NZ_SHOE01000016.1": 11,
+        "NZ_SHOE01000001.1": 11,
+        "NZ_SHOE01000048.1": 11,
+        "NZ_SHOE01000037.1": 11,
+        "NZ_SHOE01000022.1": 11,
+        "NZ_SHOE01000054.1": 11,
+        "NZ_SHOE01000060.1": 11,
+        "NZ_SHOE01000006.1": 11,
+        "NZ_SHOE01000027.1": 11,
+        "NZ_SHOE01000012.1": 11,
+        "NZ_SHOE01000059.1": 11,
+        "NZ_SHOE01000044.1": 11,
+        "NZ_SHOE01000033.1": 11,
+        "NZ_SHOE01000050.1": 11,
+        "NZ_SHOE01000017.1": 11,
+        "NZ_SHOE01000002.1": 11,
+        "NZ_SHOE01000049.1": 11,
+        "NZ_SHOE01000023.1": 11,
+        "NZ_SHOE01000038.1": 11,
+        "NZ_SHOE01000040.1": 11,
+        "NZ_SHOE01000061.1": 11,
+        "NZ_SHOE01000007.1": 11,
+        "NZ_SHOE01000028.1": 11,
+        "NZ_SHOE01000013.1": 11,
+        "NZ_SHOE01000045.1": 11,
+        "NZ_SHOE01000034.1": 11,
+        "NZ_SHOE01000051.1": 11,
+        "NZ_SHOE01000018.1": 11,
+        "NZ_SHOE01000003.1": 11,
+        "NZ_SHOE01000039.1": 11,
+        "NZ_SHOE01000024.1": 11,
+        "NZ_SHOE01000041.1": 11,
+        "NZ_SHOE01000030.1": 11,
+        "NZ_SHOE01000008.1": 11,
+        "NZ_SHOE01000029.1": 11,
+        "NZ_SHOE01000014.1": 11,
+        "NZ_SHOE01000046.1": 11
       }
     }
   ],
@@ -204,8 +265,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/012/275/705/GCF_012275705.1/bbi/GCF_012275705.1_ASM1227570v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/012/275/705/GCF_012275705.1/bbi/GCF_012275705.1_ASM1227570v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_012275705.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900155655.1",
           "ucsc": {
             "genome": "GCF_900155655.1",
             "taxId": "1917878",
@@ -37,6 +38,26 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/155/655/GCF_900155655.1/GCF_900155655.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LT707000.1": 11,
+        "NZ_LT706998.1": 11,
+        "NZ_LT706993.1": 11,
+        "NZ_LT706996.1": 11,
+        "NZ_LT706989.1": 11,
+        "NZ_LT706991.1": 11,
+        "NZ_LT707001.1": 11,
+        "NZ_LT706999.1": 11,
+        "NZ_LT706994.1": 11,
+        "NZ_LT706987.1": 11,
+        "NZ_LT707004.1": 11,
+        "NZ_LT706997.1": 11,
+        "NZ_LT706992.1": 11,
+        "NZ_LT707002.1": 11,
+        "NZ_LT706995.1": 11,
+        "NZ_LT706988.1": 11,
+        "NZ_LT707005.1": 11,
+        "NZ_LT706990.1": 11
       }
     }
   ],
@@ -252,8 +273,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/155/655/GCF_900155655.1/bbi/GCF_900155655.1_Prevotella_ihuae.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/155/655/GCF_900155655.1/bbi/GCF_900155655.1_Prevotella_ihuae.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900155655.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

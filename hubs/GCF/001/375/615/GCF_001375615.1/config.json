@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001375615.1",
           "ucsc": {
             "genome": "GCF_001375615.1",
             "taxId": "211146",
@@ -37,6 +38,11 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/375/615/GCF_001375615.1/GCF_001375615.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CVLG01000001.1": 11,
+        "NZ_CVLG01000002.1": 11,
+        "NZ_CVLG01000003.1": 11
       }
     }
   ],
@@ -204,8 +210,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/375/615/GCF_001375615.1/bbi/GCF_001375615.1_Draft_genome_sequence_of_an_Arthrobacter_sp..ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/375/615/GCF_001375615.1/bbi/GCF_001375615.1_Draft_genome_sequence_of_an_Arthrobacter_sp..ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001375615.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

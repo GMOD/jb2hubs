@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_009901565.1",
           "ucsc": {
             "genome": "GCF_009901565.1",
             "taxId": "2696284",
@@ -37,6 +38,33 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/009/901/565/GCF_009901565.1/GCF_009901565.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_WXEW01000022.1": 11,
+        "NZ_WXEW01000015.1": 11,
+        "NZ_WXEW01000008.1": 11,
+        "NZ_WXEW01000010.1": 11,
+        "NZ_WXEW01000003.1": 11,
+        "NZ_WXEW01000018.1": 11,
+        "NZ_WXEW01000027.1": 11,
+        "NZ_WXEW01000020.1": 11,
+        "NZ_WXEW01000013.1": 11,
+        "NZ_WXEW01000006.1": 11,
+        "NZ_WXEW01000001.1": 11,
+        "NZ_WXEW01000016.1": 11,
+        "NZ_WXEW01000009.1": 11,
+        "NZ_WXEW01000011.1": 11,
+        "NZ_WXEW01000004.1": 11,
+        "NZ_WXEW01000019.1": 11,
+        "NZ_WXEW01000021.1": 11,
+        "NZ_WXEW01000014.1": 11,
+        "NZ_WXEW01000007.1": 11,
+        "NZ_WXEW01000002.1": 11,
+        "NZ_WXEW01000024.1": 11,
+        "NZ_WXEW01000017.1": 11,
+        "NZ_WXEW01000026.1": 11,
+        "NZ_WXEW01000012.1": 11,
+        "NZ_WXEW01000005.1": 11
       }
     }
   ],
@@ -204,8 +232,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/009/901/565/GCF_009901565.1/bbi/GCF_009901565.1_ASM990156v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/009/901/565/GCF_009901565.1/bbi/GCF_009901565.1_ASM990156v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_009901565.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

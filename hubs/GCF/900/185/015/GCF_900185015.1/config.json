@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900185015.1",
           "ucsc": {
             "genome": "GCF_900185015.1",
             "taxId": "1655543",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/185/015/GCF_900185015.1/GCF_900185015.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FXYD01000009.1": 11,
+        "NZ_FXYD01000011.1": 11,
+        "NZ_FXYD01000004.1": 11,
+        "NZ_FXYD01000007.1": 11,
+        "NZ_FXYD01000002.1": 11,
+        "NZ_FXYD01000005.1": 11,
+        "NZ_FXYD01000008.1": 11,
+        "NZ_FXYD01000003.1": 11,
+        "NZ_FXYD01000006.1": 11,
+        "NZ_FXYD01000001.1": 11
       }
     }
   ],
@@ -204,8 +217,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/185/015/GCF_900185015.1/bbi/GCF_900185015.1_O.ascidiaceicola_CECT8868_Spades_Prokka.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/185/015/GCF_900185015.1/bbi/GCF_900185015.1_O.ascidiaceicola_CECT8868_Spades_Prokka.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900185015.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

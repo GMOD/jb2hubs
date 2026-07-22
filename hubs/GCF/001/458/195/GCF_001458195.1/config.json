@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001458195.1",
           "ucsc": {
             "genome": "GCF_001458195.1",
             "taxId": "81569",
@@ -37,6 +38,82 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/458/195/GCF_001458195.1/GCF_001458195.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CYPU01000018.1": 11,
+        "NZ_CYPU01000003.1": 11,
+        "NZ_CYPU01000039.1": 11,
+        "NZ_CYPU01000024.1": 11,
+        "NZ_CYPU01000056.1": 11,
+        "NZ_CYPU01000045.1": 11,
+        "NZ_CYPU01000030.1": 11,
+        "NZ_CYPU01000062.1": 11,
+        "NZ_CYPU01000008.1": 11,
+        "NZ_CYPU01000029.1": 11,
+        "NZ_CYPU01000014.1": 11,
+        "NZ_CYPU01000035.1": 11,
+        "NZ_CYPU01000020.1": 11,
+        "NZ_CYPU01000067.1": 11,
+        "NZ_CYPU01000052.1": 11,
+        "NZ_CYPU01000041.1": 11,
+        "NZ_CYPU01000073.1": 11,
+        "NZ_CYPU01000019.1": 11,
+        "NZ_CYPU01000004.1": 11,
+        "NZ_CYPU01000025.1": 11,
+        "NZ_CYPU01000010.1": 11,
+        "NZ_CYPU01000057.1": 11,
+        "NZ_CYPU01000046.1": 11,
+        "NZ_CYPU01000031.1": 11,
+        "NZ_CYPU01000063.1": 11,
+        "NZ_CYPU01000009.1": 11,
+        "NZ_CYPU01000015.1": 11,
+        "NZ_CYPU01000036.1": 11,
+        "NZ_CYPU01000021.1": 11,
+        "NZ_CYPU01000068.1": 11,
+        "NZ_CYPU01000053.1": 11,
+        "NZ_CYPU01000042.1": 11,
+        "NZ_CYPU01000074.1": 11,
+        "NZ_CYPU01000005.1": 11,
+        "NZ_CYPU01000026.1": 11,
+        "NZ_CYPU01000011.1": 11,
+        "NZ_CYPU01000058.1": 11,
+        "NZ_CYPU01000047.1": 11,
+        "NZ_CYPU01000032.1": 11,
+        "NZ_CYPU01000064.1": 11,
+        "NZ_CYPU01000070.1": 11,
+        "NZ_CYPU01000001.1": 11,
+        "NZ_CYPU01000016.1": 11,
+        "NZ_CYPU01000037.1": 11,
+        "NZ_CYPU01000022.1": 11,
+        "NZ_CYPU01000069.1": 11,
+        "NZ_CYPU01000054.1": 11,
+        "NZ_CYPU01000043.1": 11,
+        "NZ_CYPU01000060.1": 11,
+        "NZ_CYPU01000006.1": 11,
+        "NZ_CYPU01000027.1": 11,
+        "NZ_CYPU01000012.1": 11,
+        "NZ_CYPU01000059.1": 11,
+        "NZ_CYPU01000048.1": 11,
+        "NZ_CYPU01000033.1": 11,
+        "NZ_CYPU01000065.1": 11,
+        "NZ_CYPU01000050.1": 11,
+        "NZ_CYPU01000071.1": 11,
+        "NZ_CYPU01000017.1": 11,
+        "NZ_CYPU01000002.1": 11,
+        "NZ_CYPU01000038.1": 11,
+        "NZ_CYPU01000023.1": 11,
+        "NZ_CYPU01000055.1": 11,
+        "NZ_CYPU01000044.1": 11,
+        "NZ_CYPU01000061.1": 11,
+        "NZ_CYPU01000007.1": 11,
+        "NZ_CYPU01000028.1": 11,
+        "NZ_CYPU01000013.1": 11,
+        "NZ_CYPU01000049.1": 11,
+        "NZ_CYPU01000034.1": 11,
+        "NZ_CYPU01000066.1": 11,
+        "NZ_CYPU01000051.1": 11,
+        "NZ_CYPU01000040.1": 11,
+        "NZ_CYPU01000072.1": 11
       }
     }
   ],
@@ -229,8 +306,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/458/195/GCF_001458195.1/bbi/GCF_001458195.1_R.atlanticaCECT4292_SeqMan_Prokka.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/458/195/GCF_001458195.1/bbi/GCF_001458195.1_R.atlanticaCECT4292_SeqMan_Prokka.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001458195.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

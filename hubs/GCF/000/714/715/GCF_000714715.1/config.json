@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000714715.1",
           "ucsc": {
             "genome": "GCF_000714715.1",
             "taxId": "1455061",
@@ -37,6 +38,78 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/714/715/GCF_000714715.1/GCF_000714715.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JMFO01000027.1": 11,
+        "NZ_JMFO01000012.1": 11,
+        "NZ_JMFO01000001.1": 11,
+        "NZ_JMFO01000048.1": 11,
+        "NZ_JMFO01000033.1": 11,
+        "NZ_JMFO01000069.1": 11,
+        "NZ_JMFO01000054.1": 11,
+        "NZ_JMFO01000060.1": 11,
+        "NZ_JMFO01000017.1": 11,
+        "NZ_JMFO01000006.1": 11,
+        "NZ_JMFO01000038.1": 11,
+        "NZ_JMFO01000023.1": 11,
+        "NZ_JMFO01000059.1": 11,
+        "NZ_JMFO01000044.1": 11,
+        "NZ_JMFO01000065.1": 11,
+        "NZ_JMFO01000050.1": 11,
+        "NZ_JMFO01000028.1": 11,
+        "NZ_JMFO01000013.1": 11,
+        "NZ_JMFO01000002.1": 11,
+        "NZ_JMFO01000049.1": 11,
+        "NZ_JMFO01000034.1": 11,
+        "NZ_JMFO01000055.1": 11,
+        "NZ_JMFO01000040.1": 11,
+        "NZ_JMFO01000061.1": 11,
+        "NZ_JMFO01000018.1": 11,
+        "NZ_JMFO01000007.1": 11,
+        "NZ_JMFO01000039.1": 11,
+        "NZ_JMFO01000024.1": 11,
+        "NZ_JMFO01000045.1": 11,
+        "NZ_JMFO01000030.1": 11,
+        "NZ_JMFO01000066.1": 11,
+        "NZ_JMFO01000051.1": 11,
+        "NZ_JMFO01000029.1": 11,
+        "NZ_JMFO01000014.1": 11,
+        "NZ_JMFO01000003.1": 11,
+        "NZ_JMFO01000035.1": 11,
+        "NZ_JMFO01000020.1": 11,
+        "NZ_JMFO01000056.1": 11,
+        "NZ_JMFO01000041.1": 11,
+        "NZ_JMFO01000062.1": 11,
+        "NZ_JMFO01000019.1": 11,
+        "NZ_JMFO01000008.1": 11,
+        "NZ_JMFO01000025.1": 11,
+        "NZ_JMFO01000010.1": 11,
+        "NZ_JMFO01000046.1": 11,
+        "NZ_JMFO01000031.1": 11,
+        "NZ_JMFO01000067.1": 11,
+        "NZ_JMFO01000052.1": 11,
+        "NZ_JMFO01000015.1": 11,
+        "NZ_JMFO01000004.1": 11,
+        "NZ_JMFO01000036.1": 11,
+        "NZ_JMFO01000021.1": 11,
+        "NZ_JMFO01000057.1": 11,
+        "NZ_JMFO01000042.1": 11,
+        "NZ_JMFO01000063.1": 11,
+        "NZ_JMFO01000009.1": 11,
+        "NZ_JMFO01000026.1": 11,
+        "NZ_JMFO01000011.1": 11,
+        "NZ_JMFO01000047.1": 11,
+        "NZ_JMFO01000032.1": 11,
+        "NZ_JMFO01000068.1": 11,
+        "NZ_JMFO01000053.1": 11,
+        "NZ_JMFO01000070.1": 11,
+        "NZ_JMFO01000016.1": 11,
+        "NZ_JMFO01000005.1": 11,
+        "NZ_JMFO01000037.1": 11,
+        "NZ_JMFO01000022.1": 11,
+        "NZ_JMFO01000058.1": 11,
+        "NZ_JMFO01000043.1": 11,
+        "NZ_JMFO01000064.1": 11
       }
     }
   ],
@@ -229,8 +302,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/714/715/GCF_000714715.1/bbi/GCF_000714715.1_Draft_genome_of_Candidatus_Magnetobacterium_casensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/714/715/GCF_000714715.1/bbi/GCF_000714715.1_Draft_genome_of_Candidatus_Magnetobacterium_casensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000714715.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

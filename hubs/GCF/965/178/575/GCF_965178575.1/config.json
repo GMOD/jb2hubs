@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_965178575.1",
           "ucsc": {
             "genome": "GCF_965178575.1",
             "taxId": "3066271",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/178/575/GCF_965178575.1/GCF_965178575.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OZ238268.1": 11
       }
     }
   ],
@@ -204,8 +208,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/178/575/GCF_965178575.1/bbi/GCF_965178575.1_ilMicArun9.Tisiphia_sp_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/178/575/GCF_965178575.1/bbi/GCF_965178575.1_ilMicArun9.Tisiphia_sp_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_965178575.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001280595.1",
           "ucsc": {
             "genome": "GCF_001280595.1",
             "taxId": "1705561",
@@ -37,6 +38,82 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/280/595/GCF_001280595.1/GCF_001280595.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LITU01000019.1": 11,
+        "NZ_LITU01000004.1": 11,
+        "NZ_LITU01000036.1": 11,
+        "NZ_LITU01000021.1": 11,
+        "NZ_LITU01000057.1": 11,
+        "NZ_LITU01000042.1": 11,
+        "NZ_LITU01000078.1": 11,
+        "NZ_LITU01000063.1": 11,
+        "NZ_LITU01000080.1": 11,
+        "NZ_LITU01000009.1": 11,
+        "NZ_LITU01000026.1": 11,
+        "NZ_LITU01000015.1": 11,
+        "NZ_LITU01000047.1": 11,
+        "NZ_LITU01000032.1": 11,
+        "NZ_LITU01000068.1": 11,
+        "NZ_LITU01000053.1": 11,
+        "NZ_LITU01000074.1": 11,
+        "NZ_LITU01000005.1": 11,
+        "NZ_LITU01000037.1": 11,
+        "NZ_LITU01000011.1": 11,
+        "NZ_LITU01000058.1": 11,
+        "NZ_LITU01000064.1": 11,
+        "NZ_LITU01000081.1": 11,
+        "NZ_LITU01000070.1": 11,
+        "NZ_LITU01000027.1": 11,
+        "NZ_LITU01000001.1": 11,
+        "NZ_LITU01000016.1": 11,
+        "NZ_LITU01000048.1": 11,
+        "NZ_LITU01000033.1": 11,
+        "NZ_LITU01000069.1": 11,
+        "NZ_LITU01000054.1": 11,
+        "NZ_LITU01000075.1": 11,
+        "NZ_LITU01000060.1": 11,
+        "NZ_LITU01000006.1": 11,
+        "NZ_LITU01000038.1": 11,
+        "NZ_LITU01000023.1": 11,
+        "NZ_LITU01000012.1": 11,
+        "NZ_LITU01000059.1": 11,
+        "NZ_LITU01000044.1": 11,
+        "NZ_LITU01000065.1": 11,
+        "NZ_LITU01000050.1": 11,
+        "NZ_LITU01000082.1": 11,
+        "NZ_LITU01000071.1": 11,
+        "NZ_LITU01000017.1": 11,
+        "NZ_LITU01000002.1": 11,
+        "NZ_LITU01000049.1": 11,
+        "NZ_LITU01000034.1": 11,
+        "NZ_LITU01000055.1": 11,
+        "NZ_LITU01000040.1": 11,
+        "NZ_LITU01000061.1": 11,
+        "NZ_LITU01000039.1": 11,
+        "NZ_LITU01000024.1": 11,
+        "NZ_LITU01000013.1": 11,
+        "NZ_LITU01000045.1": 11,
+        "NZ_LITU01000030.1": 11,
+        "NZ_LITU01000066.1": 11,
+        "NZ_LITU01000051.1": 11,
+        "NZ_LITU01000083.1": 11,
+        "NZ_LITU01000029.1": 11,
+        "NZ_LITU01000018.1": 11,
+        "NZ_LITU01000035.1": 11,
+        "NZ_LITU01000020.1": 11,
+        "NZ_LITU01000056.1": 11,
+        "NZ_LITU01000041.1": 11,
+        "NZ_LITU01000077.1": 11,
+        "NZ_LITU01000062.1": 11,
+        "NZ_LITU01000008.1": 11,
+        "NZ_LITU01000025.1": 11,
+        "NZ_LITU01000014.1": 11,
+        "NZ_LITU01000046.1": 11,
+        "NZ_LITU01000031.1": 11,
+        "NZ_LITU01000067.1": 11,
+        "NZ_LITU01000052.1": 11,
+        "NZ_LITU01000073.1": 11
       }
     }
   ],
@@ -204,8 +281,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/280/595/GCF_001280595.1/bbi/GCF_001280595.1_ASM128059v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/280/595/GCF_001280595.1/bbi/GCF_001280595.1_ASM128059v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001280595.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

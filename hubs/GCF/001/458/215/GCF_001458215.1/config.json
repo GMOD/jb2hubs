@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001458215.1",
           "ucsc": {
             "genome": "GCF_001458215.1",
             "taxId": "1715693",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/458/215/GCF_001458215.1/GCF_001458215.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CYTW01000007.1": 11,
+        "NZ_CYTW01000002.1": 11,
+        "NZ_CYTW01000012.1": 11,
+        "NZ_CYTW01000005.1": 11,
+        "NZ_CYTW01000008.1": 11,
+        "NZ_CYTW01000003.1": 11,
+        "NZ_CYTW01000006.1": 11,
+        "NZ_CYTW01000001.1": 11,
+        "NZ_CYTW01000011.1": 11,
+        "NZ_CYTW01000004.1": 11
       }
     }
   ],
@@ -204,8 +217,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/458/215/GCF_001458215.1/bbi/GCF_001458215.1_Phaeobacter_sp._CECT7735_Spades_Prokka.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/458/215/GCF_001458215.1/bbi/GCF_001458215.1_Phaeobacter_sp._CECT7735_Spades_Prokka.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001458215.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

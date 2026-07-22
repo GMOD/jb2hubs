@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_029439465.1",
           "ucsc": {
             "genome": "GCF_029439465.1",
             "taxId": "3031728",
@@ -37,6 +38,64 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/439/465/GCF_029439465.1/GCF_029439465.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAROAV010000008.1": 11,
+        "NZ_JAROAV010000029.1": 11,
+        "NZ_JAROAV010000014.1": 11,
+        "NZ_JAROAV010000035.1": 11,
+        "NZ_JAROAV010000020.1": 11,
+        "NZ_JAROAV010000056.1": 11,
+        "NZ_JAROAV010000041.1": 11,
+        "NZ_JAROAV010000019.1": 11,
+        "NZ_JAROAV010000004.1": 11,
+        "NZ_JAROAV010000025.1": 11,
+        "NZ_JAROAV010000010.1": 11,
+        "NZ_JAROAV010000046.1": 11,
+        "NZ_JAROAV010000031.1": 11,
+        "NZ_JAROAV010000052.1": 11,
+        "NZ_JAROAV010000009.1": 11,
+        "NZ_JAROAV010000015.1": 11,
+        "NZ_JAROAV010000036.1": 11,
+        "NZ_JAROAV010000021.1": 11,
+        "NZ_JAROAV010000057.1": 11,
+        "NZ_JAROAV010000042.1": 11,
+        "NZ_JAROAV010000005.1": 11,
+        "NZ_JAROAV010000026.1": 11,
+        "NZ_JAROAV010000011.1": 11,
+        "NZ_JAROAV010000047.1": 11,
+        "NZ_JAROAV010000032.1": 11,
+        "NZ_JAROAV010000053.1": 11,
+        "NZ_JAROAV010000016.1": 11,
+        "NZ_JAROAV010000001.1": 11,
+        "NZ_JAROAV010000037.1": 11,
+        "NZ_JAROAV010000022.1": 11,
+        "NZ_JAROAV010000043.1": 11,
+        "NZ_JAROAV010000006.1": 11,
+        "NZ_JAROAV010000027.1": 11,
+        "NZ_JAROAV010000012.1": 11,
+        "NZ_JAROAV010000048.1": 11,
+        "NZ_JAROAV010000033.1": 11,
+        "NZ_JAROAV010000054.1": 11,
+        "NZ_JAROAV010000002.1": 11,
+        "NZ_JAROAV010000017.1": 11,
+        "NZ_JAROAV010000038.1": 11,
+        "NZ_JAROAV010000023.1": 11,
+        "NZ_JAROAV010000044.1": 11,
+        "NZ_JAROAV010000050.1": 11,
+        "NZ_JAROAV010000007.1": 11,
+        "NZ_JAROAV010000028.1": 11,
+        "NZ_JAROAV010000013.1": 11,
+        "NZ_JAROAV010000049.1": 11,
+        "NZ_JAROAV010000034.1": 11,
+        "NZ_JAROAV010000055.1": 11,
+        "NZ_JAROAV010000040.1": 11,
+        "NZ_JAROAV010000003.1": 11,
+        "NZ_JAROAV010000039.1": 11,
+        "NZ_JAROAV010000024.1": 11,
+        "NZ_JAROAV010000045.1": 11,
+        "NZ_JAROAV010000030.1": 11,
+        "NZ_JAROAV010000051.1": 11
       }
     }
   ],
@@ -204,8 +263,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/439/465/GCF_029439465.1/bbi/GCF_029439465.1_ASM2943946v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/439/465/GCF_029439465.1/bbi/GCF_029439465.1_ASM2943946v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029439465.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

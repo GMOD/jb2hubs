@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964263225.1",
           "ucsc": {
             "genome": "GCF_964263225.1",
             "taxId": "3139318",
@@ -37,6 +38,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/263/225/GCF_964263225.1/GCF_964263225.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OZ181654.1": 11
       }
     }
   ],
@@ -204,8 +208,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/263/225/GCF_964263225.1/bbi/GCF_964263225.1_idLimTigr1.Wolbachia_sp_2.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/263/225/GCF_964263225.1/bbi/GCF_964263225.1_idLimTigr1.Wolbachia_sp_2.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964263225.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

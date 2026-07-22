@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000517265.1",
           "ucsc": {
             "genome": "GCF_000517265.1",
             "taxId": "1004151",
@@ -37,6 +38,25 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/517/265/GCF_000517265.1/GCF_000517265.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AYSJ01000013.1": 11,
+        "NZ_AYSJ01000006.1": 11,
+        "NZ_AYSJ01000001.1": 11,
+        "NZ_AYSJ01000016.1": 11,
+        "NZ_AYSJ01000009.1": 11,
+        "NZ_AYSJ01000011.1": 11,
+        "NZ_AYSJ01000004.1": 11,
+        "NZ_AYSJ01000014.1": 11,
+        "NZ_AYSJ01000007.1": 11,
+        "NZ_AYSJ01000002.1": 11,
+        "NZ_AYSJ01000017.1": 11,
+        "NZ_AYSJ01000012.1": 11,
+        "NZ_AYSJ01000005.1": 11,
+        "NZ_AYSJ01000015.1": 11,
+        "NZ_AYSJ01000008.1": 11,
+        "NZ_AYSJ01000010.1": 11,
+        "NZ_AYSJ01000003.1": 11
       }
     }
   ],
@@ -204,8 +224,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/517/265/GCF_000517265.1/bbi/GCF_000517265.1_Photorhabdus_temperata_NC19.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/517/265/GCF_000517265.1/bbi/GCF_000517265.1_Photorhabdus_temperata_NC19.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000517265.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

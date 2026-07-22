@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900640035.1",
           "ucsc": {
             "genome": "GCF_900640035.1",
             "taxId": "40335",
@@ -37,6 +38,30 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/640/035/GCF_900640035.1/GCF_900640035.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAAAIP010000022.1": 11,
+        "NZ_CAAAIP010000008.1": 11,
+        "NZ_CAAAIP010000010.1": 11,
+        "NZ_CAAAIP010000003.1": 11,
+        "NZ_CAAAIP010000020.1": 11,
+        "NZ_CAAAIP010000013.1": 11,
+        "NZ_CAAAIP010000006.1": 11,
+        "NZ_CAAAIP010000001.1": 11,
+        "NZ_CAAAIP010000023.1": 11,
+        "NZ_CAAAIP010000016.1": 11,
+        "NZ_CAAAIP010000009.1": 11,
+        "NZ_CAAAIP010000011.1": 11,
+        "NZ_CAAAIP010000004.1": 11,
+        "NZ_CAAAIP010000019.1": 11,
+        "NZ_CAAAIP010000021.1": 11,
+        "NZ_CAAAIP010000014.1": 11,
+        "NZ_CAAAIP010000007.1": 11,
+        "NZ_CAAAIP010000002.1": 11,
+        "NZ_CAAAIP010000024.1": 11,
+        "NZ_CAAAIP010000017.1": 11,
+        "NZ_CAAAIP010000012.1": 11,
+        "NZ_CAAAIP010000005.1": 11
       }
     }
   ],
@@ -229,8 +254,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/640/035/GCF_900640035.1/bbi/GCF_900640035.1_Leg_tucsonensis_1087-AZ-H.v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/640/035/GCF_900640035.1/bbi/GCF_900640035.1_Leg_tucsonensis_1087-AZ-H.v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900640035.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

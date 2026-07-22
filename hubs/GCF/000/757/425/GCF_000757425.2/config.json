@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000757425.2",
           "ucsc": {
             "genome": "GCF_000757425.2",
             "taxId": "642227",
@@ -37,6 +38,14 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/757/425/GCF_000757425.2/GCF_000757425.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JPKR02000003.1": 11,
+        "NZ_JPKR02000001.1": 11,
+        "NZ_JPKR02000004.1": 11,
+        "NZ_CM003276.1": 11,
+        "NZ_JPKR02000002.1": 11,
+        "NZ_JPKR02000005.1": 11
       }
     }
   ],
@@ -229,8 +238,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/757/425/GCF_000757425.2/bbi/GCF_000757425.2_Tmorbiroseiassem5.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/757/425/GCF_000757425.2/bbi/GCF_000757425.2_Tmorbiroseiassem5.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000757425.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

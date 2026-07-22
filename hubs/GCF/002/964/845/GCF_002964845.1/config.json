@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002964845.1",
           "ucsc": {
             "genome": "GCF_002964845.1",
             "taxId": "2078690",
@@ -37,6 +38,73 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/964/845/GCF_002964845.1/GCF_002964845.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_PRDA01000043.1": 11,
+        "NZ_PRDA01000096.1": 11,
+        "NZ_PRDA01000081.1": 11,
+        "NZ_KZ672979.1": 11,
+        "NZ_KZ672968.1": 11,
+        "NZ_KZ672970.1": 11,
+        "NZ_PRDA01000033.1": 11,
+        "NZ_PRDA01000086.1": 11,
+        "NZ_PRDA01000071.1": 11,
+        "NZ_KZ672958.1": 11,
+        "NZ_PRDA01000092.1": 11,
+        "NZ_KZ672975.1": 11,
+        "NZ_KZ672964.1": 11,
+        "NZ_KZ672981.1": 11,
+        "NZ_PRDA01000076.1": 11,
+        "NZ_PRDA01000065.1": 11,
+        "NZ_PRDA01000050.1": 11,
+        "NZ_PRDA01000097.1": 11,
+        "NZ_PRDA01000082.1": 11,
+        "NZ_KZ672969.1": 11,
+        "NZ_KZ672971.1": 11,
+        "NZ_KZ672960.1": 11,
+        "NZ_PRDA01000034.1": 11,
+        "NZ_PRDA01000087.1": 11,
+        "NZ_PRDA01000072.1": 11,
+        "NZ_KZ672959.1": 11,
+        "NZ_KZ672976.1": 11,
+        "NZ_KZ672965.1": 11,
+        "NZ_PRDA01000018.1": 11,
+        "NZ_PRDA01000007.1": 11,
+        "NZ_PRDA01000024.1": 11,
+        "NZ_PRDA01000039.1": 11,
+        "NZ_PRDA01000030.1": 11,
+        "NZ_PRDA01000077.1": 11,
+        "NZ_PRDA01000083.1": 11,
+        "NZ_KZ672972.1": 11,
+        "NZ_KZ672961.1": 11,
+        "NZ_PRDA01000003.1": 11,
+        "NZ_PRDA01000088.1": 11,
+        "NZ_PRDA01000073.1": 11,
+        "NZ_PRDA01000062.1": 11,
+        "NZ_KZ672977.1": 11,
+        "NZ_KZ672966.1": 11,
+        "NZ_PRDA01000019.1": 11,
+        "NZ_PRDA01000025.1": 11,
+        "NZ_PRDA01000010.1": 11,
+        "NZ_PRDA01000078.1": 11,
+        "NZ_KZ672956.1": 11,
+        "NZ_KZ672973.1": 11,
+        "NZ_KZ672962.1": 11,
+        "NZ_PRDA01000015.1": 11,
+        "NZ_PRDA01000042.1": 11,
+        "NZ_PRDA01000095.1": 11,
+        "NZ_PRDA01000080.1": 11,
+        "NZ_KZ672978.1": 11,
+        "NZ_KZ672967.1": 11,
+        "NZ_PRDA01000079.1": 11,
+        "NZ_PRDA01000053.1": 11,
+        "NZ_PRDA01000085.1": 11,
+        "NZ_PRDA01000070.1": 11,
+        "NZ_KZ672957.1": 11,
+        "NZ_PRDA01000091.1": 11,
+        "NZ_KZ672974.1": 11,
+        "NZ_KZ672963.1": 11,
+        "NZ_KZ672980.1": 11
       }
     }
   ],
@@ -229,8 +297,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/964/845/GCF_002964845.1/bbi/GCF_002964845.1_ASM296484v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/964/845/GCF_002964845.1/bbi/GCF_002964845.1_ASM296484v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002964845.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000497445.1",
           "ucsc": {
             "genome": "GCF_000497445.1",
             "taxId": "1352936",
@@ -38,6 +39,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/445/GCF_000497445.1/GCF_000497445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CM002285.1": 11,
+        "NZ_CM002286.1": 11
       }
     }
   ],
@@ -253,8 +258,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/445/GCF_000497445.1/bbi/GCF_000497445.1_S.roseochromogenes_v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/445/GCF_000497445.1/bbi/GCF_000497445.1_S.roseochromogenes_v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002924445.1",
           "ucsc": {
             "genome": "GCF_002924445.1",
             "taxId": "2056226",
@@ -37,6 +38,90 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/924/445/GCF_002924445.1/GCF_002924445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_PIGG01000019.1": 11,
+        "NZ_PIGG01000004.1": 11,
+        "NZ_PIGG01000025.1": 11,
+        "NZ_PIGG01000010.1": 11,
+        "NZ_PIGG01000057.1": 11,
+        "NZ_PIGG01000046.1": 11,
+        "NZ_PIGG01000031.1": 11,
+        "NZ_PIGG01000078.1": 11,
+        "NZ_PIGG01000063.1": 11,
+        "NZ_PIGG01000009.1": 11,
+        "NZ_PIGG01000015.1": 11,
+        "NZ_PIGG01000036.1": 11,
+        "NZ_PIGG01000021.1": 11,
+        "NZ_PIGG01000068.1": 11,
+        "NZ_PIGG01000053.1": 11,
+        "NZ_PIGG01000042.1": 11,
+        "NZ_PIGG01000074.1": 11,
+        "NZ_PIGG01000080.1": 11,
+        "NZ_PIGG01000005.1": 11,
+        "NZ_PIGG01000026.1": 11,
+        "NZ_PIGG01000011.1": 11,
+        "NZ_PIGG01000058.1": 11,
+        "NZ_PIGG01000047.1": 11,
+        "NZ_PIGG01000032.1": 11,
+        "NZ_PIGG01000079.1": 11,
+        "NZ_PIGG01000064.1": 11,
+        "NZ_PIGG01000070.1": 11,
+        "NZ_PIGG01000016.1": 11,
+        "NZ_PIGG01000001.1": 11,
+        "NZ_PIGG01000037.1": 11,
+        "NZ_PIGG01000022.1": 11,
+        "NZ_PIGG01000069.1": 11,
+        "NZ_PIGG01000054.1": 11,
+        "NZ_PIGG01000043.1": 11,
+        "NZ_PIGG01000075.1": 11,
+        "NZ_PIGG01000060.1": 11,
+        "NZ_PIGG01000081.1": 11,
+        "NZ_PIGG01000006.1": 11,
+        "NZ_PIGG01000027.1": 11,
+        "NZ_PIGG01000012.1": 11,
+        "NZ_PIGG01000059.1": 11,
+        "NZ_PIGG01000048.1": 11,
+        "NZ_PIGG01000033.1": 11,
+        "NZ_PIGG01000065.1": 11,
+        "NZ_PIGG01000050.1": 11,
+        "NZ_PIGG01000071.1": 11,
+        "NZ_PIGG01000017.1": 11,
+        "NZ_PIGG01000002.1": 11,
+        "NZ_PIGG01000038.1": 11,
+        "NZ_PIGG01000023.1": 11,
+        "NZ_PIGG01000055.1": 11,
+        "NZ_PIGG01000044.1": 11,
+        "NZ_PIGG01000076.1": 11,
+        "NZ_PIGG01000061.1": 11,
+        "NZ_PIGG01000082.1": 11,
+        "NZ_PIGG01000007.1": 11,
+        "NZ_PIGG01000028.1": 11,
+        "NZ_PIGG01000013.1": 11,
+        "NZ_PIGG01000049.1": 11,
+        "NZ_PIGG01000034.1": 11,
+        "NZ_PIGG01000066.1": 11,
+        "NZ_PIGG01000051.1": 11,
+        "NZ_PIGG01000040.1": 11,
+        "NZ_PIGG01000072.1": 11,
+        "NZ_PIGG01000018.1": 11,
+        "NZ_PIGG01000003.1": 11,
+        "NZ_PIGG01000039.1": 11,
+        "NZ_PIGG01000024.1": 11,
+        "NZ_PIGG01000056.1": 11,
+        "NZ_PIGG01000045.1": 11,
+        "NZ_PIGG01000030.1": 11,
+        "NZ_PIGG01000077.1": 11,
+        "NZ_PIGG01000062.1": 11,
+        "NZ_PIGG01000008.1": 11,
+        "NZ_PIGG01000029.1": 11,
+        "NZ_PIGG01000014.1": 11,
+        "NZ_PIGG01000035.1": 11,
+        "NZ_PIGG01000020.1": 11,
+        "NZ_PIGG01000067.1": 11,
+        "NZ_PIGG01000052.1": 11,
+        "NZ_PIGG01000041.1": 11,
+        "NZ_PIGG01000073.1": 11
       }
     }
   ],
@@ -204,8 +289,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/924/445/GCF_002924445.1/bbi/GCF_002924445.1_ASM292444v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/924/445/GCF_002924445.1/bbi/GCF_002924445.1_ASM292444v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002924445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000315485.1",
           "ucsc": {
             "genome": "GCF_000315485.1",
             "taxId": "742727",
@@ -37,6 +38,23 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/485/GCF_000315485.1/GCF_000315485.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH992948.1": 11,
+        "NZ_JH992950.1": 11,
+        "NZ_JH992943.1": 11,
+        "NZ_JH992953.1": 11,
+        "NZ_JH992946.1": 11,
+        "NZ_JH992941.1": 11,
+        "NZ_JH992949.1": 11,
+        "NZ_JH992951.1": 11,
+        "NZ_JH992944.1": 11,
+        "NZ_JH992954.1": 11,
+        "NZ_JH992947.1": 11,
+        "NZ_JH992942.1": 11,
+        "NZ_JH992952.1": 11,
+        "NZ_JH992945.1": 11,
+        "NZ_JH992940.1": 11
       }
     }
   ],
@@ -252,8 +270,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/485/GCF_000315485.1/bbi/GCF_000315485.1_Bact_olei_YIT_12058_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/315/485/GCF_000315485.1/bbi/GCF_000315485.1_Bact_olei_YIT_12058_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000315485.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

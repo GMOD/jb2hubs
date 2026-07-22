@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900115675.1",
           "ucsc": {
             "genome": "GCF_900115675.1",
             "taxId": "699431",
@@ -37,6 +38,44 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/115/675/GCF_900115675.1/GCF_900115675.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FOXI01000032.1": 11,
+        "NZ_FOXI01000025.1": 11,
+        "NZ_FOXI01000018.1": 11,
+        "NZ_FOXI01000020.1": 11,
+        "NZ_FOXI01000013.1": 11,
+        "NZ_FOXI01000006.1": 11,
+        "NZ_FOXI01000035.1": 11,
+        "NZ_FOXI01000028.1": 11,
+        "NZ_FOXI01000001.1": 11,
+        "NZ_FOXI01000030.1": 11,
+        "NZ_FOXI01000023.1": 11,
+        "NZ_FOXI01000016.1": 11,
+        "NZ_FOXI01000009.1": 11,
+        "NZ_FOXI01000011.1": 11,
+        "NZ_FOXI01000004.1": 11,
+        "NZ_FOXI01000033.1": 11,
+        "NZ_FOXI01000026.1": 11,
+        "NZ_FOXI01000019.1": 11,
+        "NZ_FOXI01000021.1": 11,
+        "NZ_FOXI01000014.1": 11,
+        "NZ_FOXI01000007.1": 11,
+        "NZ_FOXI01000036.1": 11,
+        "NZ_FOXI01000029.1": 11,
+        "NZ_FOXI01000002.1": 11,
+        "NZ_FOXI01000031.1": 11,
+        "NZ_FOXI01000024.1": 11,
+        "NZ_FOXI01000017.1": 11,
+        "NZ_FOXI01000012.1": 11,
+        "NZ_FOXI01000005.1": 11,
+        "NZ_FOXI01000027.1": 11,
+        "NZ_FOXI01000022.1": 11,
+        "NZ_FOXI01000015.1": 11,
+        "NZ_FOXI01000008.1": 11,
+        "NZ_FOXI01000037.1": 11,
+        "NZ_FOXI01000010.1": 11,
+        "NZ_FOXI01000003.1": 11
       }
     }
   ],
@@ -204,8 +243,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/115/675/GCF_900115675.1/bbi/GCF_900115675.1_IMG-taxon_2663762745_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/115/675/GCF_900115675.1/bbi/GCF_900115675.1_IMG-taxon_2663762745_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900115675.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

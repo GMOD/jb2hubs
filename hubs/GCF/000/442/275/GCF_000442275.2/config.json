@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000442275.2",
           "ucsc": {
             "genome": "GCF_000442275.2",
             "taxId": "1123360",
@@ -37,6 +38,20 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/442/275/GCF_000442275.2/GCF_000442275.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KE557316.1": 11,
+        "NZ_KE557309.1": 11,
+        "NZ_KE557311.1": 11,
+        "NZ_KE557304.1": 11,
+        "NZ_KE557314.1": 11,
+        "NZ_KE557307.1": 11,
+        "NZ_KE557317.1": 11,
+        "NZ_KE557312.1": 11,
+        "NZ_KE557305.1": 11,
+        "NZ_KE557310.1": 11,
+        "NZ_KE557303.1": 11,
+        "NZ_KE557306.1": 11
       }
     }
   ],
@@ -252,8 +267,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/442/275/GCF_000442275.2/bbi/GCF_000442275.2_Thalar.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/442/275/GCF_000442275.2/bbi/GCF_000442275.2_Thalar.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000442275.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

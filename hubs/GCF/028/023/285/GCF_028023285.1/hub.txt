@@ -274,7 +274,7 @@ html html/GCF_028023285.1_mBalRic1.hap2.xenoRefGene
 track chainNetGCA_028017805.1
 compositeTrack on
 shortLabel Rice's whale Chain/Net
-longLabel Rice's whale (2023-01-30), Chain and Net Alignments
+longLabel Rice's whale (2023-01-26), Chain and Net Alignments
 subGroup1 view Views chain=Chain net=Net
 dragAndDrop subTracks
 visibility hide
@@ -298,7 +298,7 @@ html html/GCF_028023285.1_mBalRic1.hap2.chainNet
         parent chainNetGCA_028017805.1Viewchain
         subGroups view=chain
         shortLabel Rice's whale Chain
-        longLabel Rice's whale (2023-01-30) Chained Alignments
+        longLabel Rice's whale (2023-01-26) Chained Alignments
         type bigChain GCA_028017805.1
         bigDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainGCA_028017805.1.bb
         linkDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainGCA_028017805.1Link.bb
@@ -308,12 +308,89 @@ html html/GCF_028023285.1_mBalRic1.hap2.chainNet
         parent chainNetGCA_028017805.1Viewchain
         subGroups view=chain
         shortLabel Rice's whale loChain
-        longLabel Rice's whale (2023-01-30) Lift Over Chained Alignments
+        longLabel Rice's whale (2023-01-26) Lift Over Chained Alignments
         type bigChain GCA_028017805.1
         bigDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainLiftOverGCA_028017805.1.bb
         linkDataUrl bbi/GCF_028023285.1_mBalRic1.hap2.chainLiftOverGCA_028017805.1Link.bb
         priority 2
 
+
+track TOGAv2
+shortLabel TOGA V2
+longLabel TOGA 2.0 annotations, multiple reference
+group genes
+visibility hide
+type bigBed 12 +
+superTrack on
+html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLbosTau10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsMm10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLeleMaxInd3Av2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHg38v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
 
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb

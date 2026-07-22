@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964030855.1",
           "ucsc": {
             "genome": "GCF_964030855.1",
             "taxId": "3066277",
@@ -37,6 +38,16 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/030/855/GCF_964030855.1/GCF_964030855.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAXIQF010000008.1": 4,
+        "NZ_CAXIQF010000003.1": 4,
+        "NZ_CAXIQF010000006.1": 4,
+        "NZ_CAXIQF010000001.1": 4,
+        "NZ_CAXIQF010000004.1": 4,
+        "NZ_CAXIQF010000007.1": 4,
+        "NZ_CAXIQF010000002.1": 4,
+        "NZ_CAXIQF010000005.1": 4
       }
     }
   ],
@@ -204,8 +215,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/030/855/GCF_964030855.1/bbi/GCF_964030855.1_icCanLate1.Spiroplasma_sp_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/030/855/GCF_964030855.1/bbi/GCF_964030855.1_icCanLate1.Spiroplasma_sp_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964030855.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

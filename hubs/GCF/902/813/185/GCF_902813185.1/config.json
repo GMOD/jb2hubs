@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_902813185.1",
           "ucsc": {
             "genome": "GCF_902813185.1",
             "taxId": "311182",
@@ -38,6 +39,10 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/813/185/GCF_902813185.1/GCF_902813185.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LR778302.1": 11,
+        "NZ_LR778301.1": 11
       }
     }
   ],
@@ -205,8 +210,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/813/185/GCF_902813185.1/bbi/GCF_902813185.1_Denitratisoma_oestradiolicum_DSM16959.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/813/185/GCF_902813185.1/bbi/GCF_902813185.1_Denitratisoma_oestradiolicum_DSM16959.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_902813185.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

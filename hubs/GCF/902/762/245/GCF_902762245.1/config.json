@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_902762245.1",
           "ucsc": {
             "genome": "GCF_902762245.1",
             "taxId": "253161",
@@ -37,6 +38,74 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/762/245/GCF_902762245.1/GCF_902762245.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CACWNM010000005.1": 11,
+        "NZ_CACWNM010000037.1": 11,
+        "NZ_CACWNM010000022.1": 11,
+        "NZ_CACWNM010000011.1": 11,
+        "NZ_CACWNM010000058.1": 11,
+        "NZ_CACWNM010000043.1": 11,
+        "NZ_CACWNM010000064.1": 11,
+        "NZ_CACWNM010000027.1": 11,
+        "NZ_CACWNM010000016.1": 11,
+        "NZ_CACWNM010000001.1": 11,
+        "NZ_CACWNM010000048.1": 11,
+        "NZ_CACWNM010000033.1": 11,
+        "NZ_CACWNM010000054.1": 11,
+        "NZ_CACWNM010000060.1": 11,
+        "NZ_CACWNM010000006.1": 11,
+        "NZ_CACWNM010000038.1": 11,
+        "NZ_CACWNM010000023.1": 11,
+        "NZ_CACWNM010000012.1": 11,
+        "NZ_CACWNM010000059.1": 11,
+        "NZ_CACWNM010000044.1": 11,
+        "NZ_CACWNM010000065.1": 11,
+        "NZ_CACWNM010000050.1": 11,
+        "NZ_CACWNM010000028.1": 11,
+        "NZ_CACWNM010000017.1": 11,
+        "NZ_CACWNM010000002.1": 11,
+        "NZ_CACWNM010000049.1": 11,
+        "NZ_CACWNM010000034.1": 11,
+        "NZ_CACWNM010000055.1": 11,
+        "NZ_CACWNM010000040.1": 11,
+        "NZ_CACWNM010000061.1": 11,
+        "NZ_CACWNM010000007.1": 11,
+        "NZ_CACWNM010000039.1": 11,
+        "NZ_CACWNM010000024.1": 11,
+        "NZ_CACWNM010000013.1": 11,
+        "NZ_CACWNM010000045.1": 11,
+        "NZ_CACWNM010000030.1": 11,
+        "NZ_CACWNM010000066.1": 11,
+        "NZ_CACWNM010000051.1": 11,
+        "NZ_CACWNM010000029.1": 11,
+        "NZ_CACWNM010000018.1": 11,
+        "NZ_CACWNM010000003.1": 11,
+        "NZ_CACWNM010000035.1": 11,
+        "NZ_CACWNM010000020.1": 11,
+        "NZ_CACWNM010000056.1": 11,
+        "NZ_CACWNM010000041.1": 11,
+        "NZ_CACWNM010000062.1": 11,
+        "NZ_CACWNM010000008.1": 11,
+        "NZ_CACWNM010000025.1": 11,
+        "NZ_CACWNM010000014.1": 11,
+        "NZ_CACWNM010000046.1": 11,
+        "NZ_CACWNM010000031.1": 11,
+        "NZ_CACWNM010000052.1": 11,
+        "NZ_CACWNM010000019.1": 11,
+        "NZ_CACWNM010000004.1": 11,
+        "NZ_CACWNM010000036.1": 11,
+        "NZ_CACWNM010000021.1": 11,
+        "NZ_CACWNM010000010.1": 11,
+        "NZ_CACWNM010000057.1": 11,
+        "NZ_CACWNM010000042.1": 11,
+        "NZ_CACWNM010000063.1": 11,
+        "NZ_CACWNM010000009.1": 11,
+        "NZ_CACWNM010000026.1": 11,
+        "NZ_CACWNM010000015.1": 11,
+        "NZ_CACWNM010000047.1": 11,
+        "NZ_CACWNM010000032.1": 11,
+        "NZ_CACWNM010000053.1": 11
       }
     }
   ],
@@ -204,8 +273,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/762/245/GCF_902762245.1/bbi/GCF_902762245.1_Rumen_uncultured_genome_RUG10743.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/902/762/245/GCF_902762245.1/bbi/GCF_902762245.1_Rumen_uncultured_genome_RUG10743.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_902762245.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_933208495.1",
           "ucsc": {
             "genome": "GCF_933208495.1",
             "taxId": "2880963",
@@ -37,6 +38,27 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/933/208/495/GCF_933208495.1/GCF_933208495.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAKOET010000005.1": 11,
+        "NZ_CAKOET010000021.1": 11,
+        "NZ_CAKOET010000015.1": 11,
+        "NZ_CAKOET010000008.1": 11,
+        "NZ_CAKOET010000010.1": 11,
+        "NZ_CAKOET010000003.1": 11,
+        "NZ_CAKOET010000013.1": 11,
+        "NZ_CAKOET010000006.1": 11,
+        "NZ_CAKOET010000001.1": 11,
+        "NZ_CAKOET010000016.1": 11,
+        "NZ_CAKOET010000009.1": 11,
+        "NZ_CAKOET010000011.1": 11,
+        "NZ_CAKOET010000004.1": 11,
+        "NZ_CAKOET010000020.1": 11,
+        "NZ_CAKOET010000019.1": 11,
+        "NZ_CAKOET010000014.1": 11,
+        "NZ_CAKOET010000007.1": 11,
+        "NZ_CAKOET010000002.1": 11,
+        "NZ_CAKOET010000017.1": 11
       }
     }
   ],
@@ -204,8 +226,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/933/208/495/GCF_933208495.1/bbi/GCF_933208495.1_R-78138.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/933/208/495/GCF_933208495.1/bbi/GCF_933208495.1_R-78138.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_933208495.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

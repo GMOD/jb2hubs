@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964307525.1",
           "ucsc": {
             "genome": "GCF_964307525.1",
             "taxId": "1291540",
@@ -37,6 +38,43 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/525/GCF_964307525.1/GCF_964307525.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYBBT010000030.1": 11,
+        "NZ_CAYBBT010000023.1": 11,
+        "NZ_CAYBBT010000016.1": 11,
+        "NZ_CAYBBT010000002.1": 11,
+        "NZ_CAYBBT010000011.1": 11,
+        "NZ_CAYBBT010000033.1": 11,
+        "NZ_CAYBBT010000026.1": 11,
+        "NZ_CAYBBT010000019.1": 11,
+        "NZ_CAYBBT010000005.1": 11,
+        "NZ_CAYBBT010000021.1": 11,
+        "NZ_CAYBBT010000014.1": 11,
+        "NZ_CAYBBT010000029.1": 11,
+        "NZ_CAYBBT010000008.1": 11,
+        "NZ_CAYBBT010000031.1": 11,
+        "NZ_CAYBBT010000024.1": 11,
+        "NZ_CAYBBT010000017.1": 11,
+        "NZ_CAYBBT010000003.1": 11,
+        "NZ_CAYBBT010000012.1": 11,
+        "NZ_CAYBBT010000034.1": 11,
+        "NZ_CAYBBT010000027.1": 11,
+        "NZ_CAYBBT010000006.1": 11,
+        "NZ_CAYBBT010000022.1": 11,
+        "NZ_CAYBBT010000015.1": 11,
+        "NZ_CAYBBT010000001.1": 11,
+        "NZ_CAYBBT010000010.1": 11,
+        "NZ_CAYBBT010000009.1": 11,
+        "NZ_CAYBBT010000032.1": 11,
+        "NZ_CAYBBT010000025.1": 11,
+        "NZ_CAYBBT010000018.1": 11,
+        "NZ_CAYBBT010000004.1": 11,
+        "NZ_CAYBBT010000020.1": 11,
+        "NZ_CAYBBT010000013.1": 11,
+        "NZ_CAYBBT010000035.1": 11,
+        "NZ_CAYBBT010000028.1": 11,
+        "NZ_CAYBBT010000007.1": 11
       }
     }
   ],
@@ -204,8 +242,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/525/GCF_964307525.1/bbi/GCF_964307525.1_EST-A-0128_Methanomethylophilus-alvus.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/525/GCF_964307525.1/bbi/GCF_964307525.1_EST-A-0128_Methanomethylophilus-alvus.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964307525.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

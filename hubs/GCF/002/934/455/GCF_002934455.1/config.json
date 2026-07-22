@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002934455.1",
           "ucsc": {
             "genome": "GCF_002934455.1",
             "taxId": "863227",
@@ -37,6 +38,68 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/934/455/GCF_002934455.1/GCF_002934455.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_PTIR01000009.1": 11,
+        "NZ_PTIR01000015.1": 11,
+        "NZ_PTIR01000047.1": 11,
+        "NZ_PTIR01000032.1": 11,
+        "NZ_PTIR01000021.1": 11,
+        "NZ_PTIR01000053.1": 11,
+        "NZ_PTIR01000005.1": 11,
+        "NZ_PTIR01000037.1": 11,
+        "NZ_PTIR01000026.1": 11,
+        "NZ_PTIR01000011.1": 11,
+        "NZ_PTIR01000058.1": 11,
+        "NZ_PTIR01000043.1": 11,
+        "NZ_PTIR01000016.1": 11,
+        "NZ_PTIR01000001.1": 11,
+        "NZ_PTIR01000048.1": 11,
+        "NZ_PTIR01000033.1": 11,
+        "NZ_PTIR01000022.1": 11,
+        "NZ_PTIR01000054.1": 11,
+        "NZ_PTIR01000060.1": 11,
+        "NZ_PTIR01000006.1": 11,
+        "NZ_PTIR01000038.1": 11,
+        "NZ_PTIR01000027.1": 11,
+        "NZ_PTIR01000012.1": 11,
+        "NZ_PTIR01000059.1": 11,
+        "NZ_PTIR01000044.1": 11,
+        "NZ_PTIR01000050.1": 11,
+        "NZ_PTIR01000017.1": 11,
+        "NZ_PTIR01000002.1": 11,
+        "NZ_PTIR01000034.1": 11,
+        "NZ_PTIR01000023.1": 11,
+        "NZ_PTIR01000055.1": 11,
+        "NZ_PTIR01000040.1": 11,
+        "NZ_PTIR01000061.1": 11,
+        "NZ_PTIR01000007.1": 11,
+        "NZ_PTIR01000039.1": 11,
+        "NZ_PTIR01000028.1": 11,
+        "NZ_PTIR01000013.1": 11,
+        "NZ_PTIR01000045.1": 11,
+        "NZ_PTIR01000030.1": 11,
+        "NZ_PTIR01000051.1": 11,
+        "NZ_PTIR01000018.1": 11,
+        "NZ_PTIR01000003.1": 11,
+        "NZ_PTIR01000035.1": 11,
+        "NZ_PTIR01000024.1": 11,
+        "NZ_PTIR01000056.1": 11,
+        "NZ_PTIR01000041.1": 11,
+        "NZ_PTIR01000008.1": 11,
+        "NZ_PTIR01000029.1": 11,
+        "NZ_PTIR01000014.1": 11,
+        "NZ_PTIR01000046.1": 11,
+        "NZ_PTIR01000031.1": 11,
+        "NZ_PTIR01000020.1": 11,
+        "NZ_PTIR01000052.1": 11,
+        "NZ_PTIR01000019.1": 11,
+        "NZ_PTIR01000004.1": 11,
+        "NZ_PTIR01000036.1": 11,
+        "NZ_PTIR01000025.1": 11,
+        "NZ_PTIR01000010.1": 11,
+        "NZ_PTIR01000057.1": 11,
+        "NZ_PTIR01000042.1": 11
       }
     }
   ],
@@ -204,8 +267,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/934/455/GCF_002934455.1/bbi/GCF_002934455.1_ASM293445v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/934/455/GCF_002934455.1/bbi/GCF_002934455.1_ASM293445v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002934455.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

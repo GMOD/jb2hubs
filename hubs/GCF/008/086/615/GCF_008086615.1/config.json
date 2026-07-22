@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_008086615.1",
           "ucsc": {
             "genome": "GCF_008086615.1",
             "taxId": "132932",
@@ -37,6 +38,70 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/008/086/615/GCF_008086615.1/GCF_008086615.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_RXYB01000018.1": 11,
+        "NZ_RXYB01000003.1": 11,
+        "NZ_RXYB01000039.1": 11,
+        "NZ_RXYB01000024.1": 11,
+        "NZ_RXYB01000045.1": 11,
+        "NZ_RXYB01000030.1": 11,
+        "NZ_RXYB01000062.1": 11,
+        "NZ_RXYB01000008.1": 11,
+        "NZ_RXYB01000029.1": 11,
+        "NZ_RXYB01000014.1": 11,
+        "NZ_RXYB01000035.1": 11,
+        "NZ_RXYB01000020.1": 11,
+        "NZ_RXYB01000056.1": 11,
+        "NZ_RXYB01000041.1": 11,
+        "NZ_RXYB01000019.1": 11,
+        "NZ_RXYB01000004.1": 11,
+        "NZ_RXYB01000025.1": 11,
+        "NZ_RXYB01000010.1": 11,
+        "NZ_RXYB01000046.1": 11,
+        "NZ_RXYB01000031.1": 11,
+        "NZ_RXYB01000063.1": 11,
+        "NZ_RXYB01000009.1": 11,
+        "NZ_RXYB01000015.1": 11,
+        "NZ_RXYB01000036.1": 11,
+        "NZ_RXYB01000021.1": 11,
+        "NZ_RXYB01000057.1": 11,
+        "NZ_RXYB01000042.1": 11,
+        "NZ_RXYB01000005.1": 11,
+        "NZ_RXYB01000026.1": 11,
+        "NZ_RXYB01000011.1": 11,
+        "NZ_RXYB01000047.1": 11,
+        "NZ_RXYB01000032.1": 11,
+        "NZ_RXYB01000064.1": 11,
+        "NZ_RXYB01000053.1": 11,
+        "NZ_RXYB01000016.1": 11,
+        "NZ_RXYB01000001.1": 11,
+        "NZ_RXYB01000037.1": 11,
+        "NZ_RXYB01000022.1": 11,
+        "NZ_RXYB01000058.1": 11,
+        "NZ_RXYB01000043.1": 11,
+        "NZ_RXYB01000060.1": 11,
+        "NZ_RXYB01000006.1": 11,
+        "NZ_RXYB01000027.1": 11,
+        "NZ_RXYB01000012.1": 11,
+        "NZ_RXYB01000048.1": 11,
+        "NZ_RXYB01000033.1": 11,
+        "NZ_RXYB01000065.1": 11,
+        "NZ_RXYB01000054.1": 11,
+        "NZ_RXYB01000002.1": 11,
+        "NZ_RXYB01000017.1": 11,
+        "NZ_RXYB01000038.1": 11,
+        "NZ_RXYB01000023.1": 11,
+        "NZ_RXYB01000059.1": 11,
+        "NZ_RXYB01000044.1": 11,
+        "NZ_RXYB01000061.1": 11,
+        "NZ_RXYB01000007.1": 11,
+        "NZ_RXYB01000028.1": 11,
+        "NZ_RXYB01000013.1": 11,
+        "NZ_RXYB01000049.1": 11,
+        "NZ_RXYB01000034.1": 11,
+        "NZ_RXYB01000066.1": 11,
+        "NZ_RXYB01000040.1": 11
       }
     }
   ],
@@ -204,8 +269,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/008/086/615/GCF_008086615.1/bbi/GCF_008086615.1_ASM808661v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/008/086/615/GCF_008086615.1/bbi/GCF_008086615.1_ASM808661v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_008086615.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -2,15 +2,16 @@
   "assemblies": [
     {
       "name": "GCA_963924005.1",
-      "displayName": "Bolin's lanternfish (primary hap 2024)",
+      "displayName": "Bolin's lanternfish (primary hap 2024 genbank)",
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_963924005.1",
           "ucsc": {
             "genome": "GCA_963924005.1",
             "taxId": "443714",
             "groups": "groups.txt",
-            "description": "Bolin's lanternfish (primary hap 2024)",
+            "description": "Bolin's lanternfish (primary hap 2024 genbank)",
             "twoBitPath": "GCA_963924005.1.2bit",
             "twoBitBptUrl": "GCA_963924005.1.2bit.bpt",
             "chromSizes": "GCA_963924005.1.chrom.sizes.txt",
@@ -422,7 +423,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/963/924/005/GCA_963924005.1/bbi/GCA_963924005.1_fProBol1.1.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/963/924/005/GCA_963924005.1/bbi/GCA_963924005.1_fProBol1.1.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_963924005.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/963/924/005/GCA_963924005.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_963924005.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_963924005.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/963/924/005/GCA_963924005.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964305225.1",
           "ucsc": {
             "genome": "GCF_964305225.1",
             "taxId": "2173",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/225/GCF_964305225.1/GCF_964305225.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYASV010000012.1": 11,
+        "NZ_CAYASV010000005.1": 11,
+        "NZ_CAYASV010000027.1": 11,
+        "NZ_CAYASV010000022.1": 11,
+        "NZ_CAYASV010000015.1": 11,
+        "NZ_CAYASV010000008.1": 11,
+        "NZ_CAYASV010000010.1": 11,
+        "NZ_CAYASV010000003.1": 11,
+        "NZ_CAYASV010000025.1": 11,
+        "NZ_CAYASV010000018.1": 11,
+        "NZ_CAYASV010000020.1": 11,
+        "NZ_CAYASV010000013.1": 11,
+        "NZ_CAYASV010000006.1": 11,
+        "NZ_CAYASV010000001.1": 11,
+        "NZ_CAYASV010000023.1": 11,
+        "NZ_CAYASV010000016.1": 11,
+        "NZ_CAYASV010000009.1": 11,
+        "NZ_CAYASV010000011.1": 11,
+        "NZ_CAYASV010000004.1": 11,
+        "NZ_CAYASV010000026.1": 11,
+        "NZ_CAYASV010000019.1": 11,
+        "NZ_CAYASV010000021.1": 11,
+        "NZ_CAYASV010000014.1": 11,
+        "NZ_CAYASV010000007.1": 11,
+        "NZ_CAYASV010000002.1": 11,
+        "NZ_CAYASV010000024.1": 11,
+        "NZ_CAYASV010000017.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/225/GCF_964305225.1/bbi/GCF_964305225.1_EST-A-0016_Methanobrevibacter_A-smithii.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/305/225/GCF_964305225.1/bbi/GCF_964305225.1_EST-A-0016_Methanobrevibacter_A-smithii.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964305225.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_043161795.1",
           "ucsc": {
             "genome": "GCA_043161795.1",
             "taxId": "9545",
@@ -22,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/043/161/795/GCA_043161795.1/html/GCA_043161795.1_mMacNem.hap2.description.html\">html/GCA_043161795.1_mMacNem.hap2.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1",
+            "liftOver.GCF_043159975.1": "liftOver/GCA_043161795.1ToGCF_043159975.1.over.chain.gz"
           }
         },
         "trackId": "GCA_043161795.1-ReferenceSequenceTrack",
@@ -397,8 +399,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/043/161/795/GCA_043161795.1/bbi/GCA_043161795.1_mMacNem.hap2.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/043/161/795/GCA_043161795.1/bbi/GCA_043161795.1_mMacNem.hap2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_043161795.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -426,6 +438,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/043/161/795/GCA_043161795.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_043161795.1_to_GCF_043159975.1_liftOver",
+      "name": "GCA_043161795.1 (pig-tailed macaque (mMacNem1hap2 2024)) to pig-tailed macaque (mMacNem1hap1 2024 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_043161795.1", "GCF_043159975.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_043161795.1",
+        "queryAssembly": "GCF_043159975.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_043161795.1ToGCF_043159975.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_043161795.1ToGCF_043159975.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

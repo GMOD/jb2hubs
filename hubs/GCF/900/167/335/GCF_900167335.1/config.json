@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900167335.1",
           "ucsc": {
             "genome": "GCF_900167335.1",
             "taxId": "263852",
@@ -37,6 +38,67 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/167/335/GCF_900167335.1/GCF_900167335.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FUXI01000016.1": 11,
+        "NZ_FUXI01000005.1": 11,
+        "NZ_FUXI01000037.1": 11,
+        "NZ_FUXI01000022.1": 11,
+        "NZ_FUXI01000058.1": 11,
+        "NZ_FUXI01000043.1": 11,
+        "NZ_FUXI01000006.1": 11,
+        "NZ_FUXI01000027.1": 11,
+        "NZ_FUXI01000012.1": 11,
+        "NZ_FUXI01000001.1": 11,
+        "NZ_FUXI01000048.1": 11,
+        "NZ_FUXI01000033.1": 11,
+        "NZ_FUXI01000054.1": 11,
+        "NZ_FUXI01000017.1": 11,
+        "NZ_FUXI01000038.1": 11,
+        "NZ_FUXI01000023.1": 11,
+        "NZ_FUXI01000059.1": 11,
+        "NZ_FUXI01000044.1": 11,
+        "NZ_FUXI01000050.1": 11,
+        "NZ_FUXI01000007.1": 11,
+        "NZ_FUXI01000028.1": 11,
+        "NZ_FUXI01000013.1": 11,
+        "NZ_FUXI01000002.1": 11,
+        "NZ_FUXI01000049.1": 11,
+        "NZ_FUXI01000034.1": 11,
+        "NZ_FUXI01000055.1": 11,
+        "NZ_FUXI01000040.1": 11,
+        "NZ_FUXI01000018.1": 11,
+        "NZ_FUXI01000039.1": 11,
+        "NZ_FUXI01000024.1": 11,
+        "NZ_FUXI01000045.1": 11,
+        "NZ_FUXI01000030.1": 11,
+        "NZ_FUXI01000051.1": 11,
+        "NZ_FUXI01000008.1": 11,
+        "NZ_FUXI01000029.1": 11,
+        "NZ_FUXI01000014.1": 11,
+        "NZ_FUXI01000003.1": 11,
+        "NZ_FUXI01000035.1": 11,
+        "NZ_FUXI01000020.1": 11,
+        "NZ_FUXI01000056.1": 11,
+        "NZ_FUXI01000041.1": 11,
+        "NZ_FUXI01000019.1": 11,
+        "NZ_FUXI01000025.1": 11,
+        "NZ_FUXI01000010.1": 11,
+        "NZ_FUXI01000046.1": 11,
+        "NZ_FUXI01000031.1": 11,
+        "NZ_FUXI01000052.1": 11,
+        "NZ_FUXI01000009.1": 11,
+        "NZ_FUXI01000015.1": 11,
+        "NZ_FUXI01000004.1": 11,
+        "NZ_FUXI01000036.1": 11,
+        "NZ_FUXI01000021.1": 11,
+        "NZ_FUXI01000057.1": 11,
+        "NZ_FUXI01000042.1": 11,
+        "NZ_FUXI01000026.1": 11,
+        "NZ_FUXI01000011.1": 11,
+        "NZ_FUXI01000047.1": 11,
+        "NZ_FUXI01000032.1": 11,
+        "NZ_FUXI01000053.1": 11
       }
     }
   ],
@@ -227,8 +289,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/167/335/GCF_900167335.1/bbi/GCF_900167335.1_IMG-taxon_2585428141_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/167/335/GCF_900167335.1/bbi/GCF_900167335.1_IMG-taxon_2585428141_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900167335.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

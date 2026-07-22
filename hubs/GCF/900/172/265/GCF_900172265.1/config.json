@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900172265.1",
           "ucsc": {
             "genome": "GCF_900172265.1",
             "taxId": "1529041",
@@ -37,6 +38,23 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/172/265/GCF_900172265.1/GCF_900172265.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FWFK01000015.1": 11,
+        "NZ_FWFK01000008.1": 11,
+        "NZ_FWFK01000010.1": 11,
+        "NZ_FWFK01000003.1": 11,
+        "NZ_FWFK01000006.1": 11,
+        "NZ_FWFK01000001.1": 11,
+        "NZ_FWFK01000016.1": 11,
+        "NZ_FWFK01000009.1": 11,
+        "NZ_FWFK01000011.1": 11,
+        "NZ_FWFK01000004.1": 11,
+        "NZ_FWFK01000007.1": 11,
+        "NZ_FWFK01000002.1": 11,
+        "NZ_FWFK01000017.1": 11,
+        "NZ_FWFK01000012.1": 11,
+        "NZ_FWFK01000005.1": 11
       }
     }
   ],
@@ -204,8 +222,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/172/265/GCF_900172265.1/bbi/GCF_900172265.1_R.jejudonensis_CECT8625_Spades_Prokka.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/172/265/GCF_900172265.1/bbi/GCF_900172265.1_R.jejudonensis_CECT8625_Spades_Prokka.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900172265.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

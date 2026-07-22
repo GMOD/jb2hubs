@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964062745.1",
           "ucsc": {
             "genome": "GCF_964062745.1",
             "taxId": "1704076",
@@ -37,6 +38,19 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/062/745/GCF_964062745.1/GCF_964062745.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OZ061267.1": 11,
+        "NZ_OZ061262.1": 11,
+        "NZ_OZ061265.1": 11,
+        "NZ_OZ061260.1": 11,
+        "NZ_OZ061259.1": 11,
+        "NZ_OZ061263.1": 11,
+        "NZ_OZ061257.1": 11,
+        "NZ_OZ061266.1": 11,
+        "NZ_OZ061261.1": 11,
+        "NZ_OZ061264.1": 11,
+        "NZ_OZ061258.1": 11
       }
     }
   ],
@@ -204,8 +218,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/062/745/GCF_964062745.1/bbi/GCF_964062745.1_Levilactobacillus_cerevisiae_CIRM-BIA2671.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/062/745/GCF_964062745.1/bbi/GCF_964062745.1_Levilactobacillus_cerevisiae_CIRM-BIA2671.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964062745.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

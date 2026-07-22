@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002233755.1",
           "ucsc": {
             "genome": "GCF_002233755.1",
             "taxId": "2006115",
@@ -37,6 +38,63 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/233/755/GCF_002233755.1/GCF_002233755.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KZ268705.1": 11,
+        "NZ_NIFO01000049.1": 11,
+        "NZ_NIFO01000034.1": 11,
+        "NZ_KZ268711.1": 11,
+        "NZ_NIFO01000023.1": 11,
+        "NZ_NIFO01000055.1": 11,
+        "NZ_NIFO01000040.1": 11,
+        "NZ_NIFO01000061.1": 11,
+        "NZ_NIFO01000039.1": 11,
+        "NZ_NIFO01000028.1": 11,
+        "NZ_NIFO01000045.1": 11,
+        "NZ_NIFO01000030.1": 11,
+        "NZ_NIFO01000066.1": 11,
+        "NZ_NIFO01000051.1": 11,
+        "NZ_NIFO01000072.1": 11,
+        "NZ_KZ268706.1": 11,
+        "NZ_NIFO01000024.1": 11,
+        "NZ_KZ268712.1": 11,
+        "NZ_NIFO01000056.1": 11,
+        "NZ_NIFO01000062.1": 11,
+        "NZ_NIFO01000029.1": 11,
+        "NZ_NIFO01000046.1": 11,
+        "NZ_NIFO01000073.1": 11,
+        "NZ_KZ268707.1": 11,
+        "NZ_NIFO01000004.1": 11,
+        "NZ_KZ268713.1": 11,
+        "NZ_NIFO01000025.1": 11,
+        "NZ_NIFO01000057.1": 11,
+        "NZ_NIFO01000063.1": 11,
+        "NZ_KZ268708.1": 11,
+        "NZ_NIFO01000005.1": 11,
+        "NZ_NIFO01000037.1": 11,
+        "NZ_NIFO01000026.1": 11,
+        "NZ_NIFO01000011.1": 11,
+        "NZ_NIFO01000058.1": 11,
+        "NZ_NIFO01000043.1": 11,
+        "NZ_NIFO01000064.1": 11,
+        "NZ_KZ268704.1": 11,
+        "NZ_NIFO01000001.1": 11,
+        "NZ_NIFO01000033.1": 11,
+        "NZ_KZ268710.1": 11,
+        "NZ_NIFO01000022.1": 11,
+        "NZ_NIFO01000069.1": 11,
+        "NZ_NIFO01000054.1": 11,
+        "NZ_NIFO01000060.1": 11,
+        "NZ_KZ268709.1": 11,
+        "NZ_NIFO01000006.1": 11,
+        "NZ_NIFO01000038.1": 11,
+        "NZ_KZ268715.1": 11,
+        "NZ_NIFO01000027.1": 11,
+        "NZ_NIFO01000012.1": 11,
+        "NZ_NIFO01000059.1": 11,
+        "NZ_NIFO01000044.1": 11,
+        "NZ_NIFO01000065.1": 11,
+        "NZ_NIFO01000050.1": 11
       }
     }
   ],
@@ -252,8 +310,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/233/755/GCF_002233755.1/bbi/GCF_002233755.1_ASM223375v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/233/755/GCF_002233755.1/bbi/GCF_002233755.1_ASM223375v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002233755.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

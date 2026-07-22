@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_041663825.1",
           "ucsc": {
             "genome": "GCF_041663825.1",
             "taxId": "2052170",
@@ -37,6 +38,76 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/041/663/825/GCF_041663825.1/GCF_041663825.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JBAYLY010000012.1": 11,
+        "NZ_JBAYLY010000059.1": 11,
+        "NZ_JBAYLY010000044.1": 11,
+        "NZ_JBAYLY010000065.1": 11,
+        "NZ_JBAYLY010000050.1": 11,
+        "NZ_JBAYLY010000028.1": 11,
+        "NZ_JBAYLY010000017.1": 11,
+        "NZ_JBAYLY010000002.1": 11,
+        "NZ_JBAYLY010000049.1": 11,
+        "NZ_JBAYLY010000034.1": 11,
+        "NZ_JBAYLY010000055.1": 11,
+        "NZ_JBAYLY010000040.1": 11,
+        "NZ_JBAYLY010000061.1": 11,
+        "NZ_JBAYLY010000007.1": 11,
+        "NZ_JBAYLY010000039.1": 11,
+        "NZ_JBAYLY010000024.1": 11,
+        "NZ_JBAYLY010000013.1": 11,
+        "NZ_JBAYLY010000045.1": 11,
+        "NZ_JBAYLY010000030.1": 11,
+        "NZ_JBAYLY010000066.1": 11,
+        "NZ_JBAYLY010000051.1": 11,
+        "NZ_JBAYLY010000029.1": 11,
+        "NZ_JBAYLY010000018.1": 11,
+        "NZ_JBAYLY010000003.1": 11,
+        "NZ_JBAYLY010000035.1": 11,
+        "NZ_JBAYLY010000020.1": 11,
+        "NZ_JBAYLY010000056.1": 11,
+        "NZ_JBAYLY010000041.1": 11,
+        "NZ_JBAYLY010000062.1": 11,
+        "NZ_JBAYLY010000008.1": 11,
+        "NZ_JBAYLY010000025.1": 11,
+        "NZ_JBAYLY010000014.1": 11,
+        "NZ_JBAYLY010000046.1": 11,
+        "NZ_JBAYLY010000031.1": 11,
+        "NZ_JBAYLY010000067.1": 11,
+        "NZ_JBAYLY010000052.1": 11,
+        "NZ_JBAYLY010000019.1": 11,
+        "NZ_JBAYLY010000004.1": 11,
+        "NZ_JBAYLY010000036.1": 11,
+        "NZ_JBAYLY010000021.1": 11,
+        "NZ_JBAYLY010000010.1": 11,
+        "NZ_JBAYLY010000057.1": 11,
+        "NZ_JBAYLY010000042.1": 11,
+        "NZ_JBAYLY010000063.1": 11,
+        "NZ_JBAYLY010000009.1": 11,
+        "NZ_JBAYLY010000026.1": 11,
+        "NZ_JBAYLY010000015.1": 11,
+        "NZ_JBAYLY010000047.1": 11,
+        "NZ_JBAYLY010000032.1": 11,
+        "NZ_JBAYLY010000068.1": 11,
+        "NZ_JBAYLY010000053.1": 11,
+        "NZ_JBAYLY010000005.1": 11,
+        "NZ_JBAYLY010000037.1": 11,
+        "NZ_JBAYLY010000022.1": 11,
+        "NZ_JBAYLY010000011.1": 11,
+        "NZ_JBAYLY010000058.1": 11,
+        "NZ_JBAYLY010000043.1": 11,
+        "NZ_JBAYLY010000064.1": 11,
+        "NZ_JBAYLY010000027.1": 11,
+        "NZ_JBAYLY010000016.1": 11,
+        "NZ_JBAYLY010000001.1": 11,
+        "NZ_JBAYLY010000048.1": 11,
+        "NZ_JBAYLY010000033.1": 11,
+        "NZ_JBAYLY010000054.1": 11,
+        "NZ_JBAYLY010000060.1": 11,
+        "NZ_JBAYLY010000006.1": 11,
+        "NZ_JBAYLY010000038.1": 11,
+        "NZ_JBAYLY010000023.1": 11
       }
     }
   ],
@@ -204,8 +275,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/041/663/825/GCF_041663825.1/bbi/GCF_041663825.1_ASM4166382v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/041/663/825/GCF_041663825.1/bbi/GCF_041663825.1_ASM4166382v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_041663825.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

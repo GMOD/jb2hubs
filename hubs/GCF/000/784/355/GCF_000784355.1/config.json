@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000784355.1",
           "ucsc": {
             "genome": "GCF_000784355.1",
             "taxId": "230356",
@@ -37,6 +38,52 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/784/355/GCF_000784355.1/GCF_000784355.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AXDV01000098.1": 11,
+        "NZ_KN360925.1": 11,
+        "NZ_KN360931.1": 11,
+        "NZ_AXDV01000046.1": 11,
+        "NZ_KN360936.1": 11,
+        "NZ_AXDV01000004.1": 11,
+        "NZ_KN360942.1": 11,
+        "NZ_KN360926.1": 11,
+        "NZ_KN360932.1": 11,
+        "NZ_AXDV01000036.1": 11,
+        "NZ_AXDV01000074.1": 11,
+        "NZ_KN360937.1": 11,
+        "NZ_AXDV01000005.1": 11,
+        "NZ_KN360943.1": 11,
+        "NZ_AXDV01000011.1": 11,
+        "NZ_AXDV01000085.1": 11,
+        "NZ_AXDV01000091.1": 11,
+        "NZ_KN360927.1": 11,
+        "NZ_KN360933.1": 11,
+        "NZ_AXDV01000001.1": 11,
+        "NZ_KN360938.1": 11,
+        "NZ_KN360944.1": 11,
+        "NZ_AXDV01000027.1": 11,
+        "NZ_AXDV01000012.1": 11,
+        "NZ_AXDV01000086.1": 11,
+        "NZ_AXDV01000092.1": 11,
+        "NZ_KN360928.1": 11,
+        "NZ_KN360934.1": 11,
+        "NZ_AXDV01000002.1": 11,
+        "NZ_KN360940.1": 11,
+        "NZ_AXDV01000055.1": 11,
+        "NZ_AXDV01000097.1": 11,
+        "NZ_KN360939.1": 11,
+        "NZ_KN360945.1": 11,
+        "NZ_KN360930.1": 11,
+        "NZ_AXDV01000028.1": 11,
+        "NZ_AXDV01000013.1": 11,
+        "NZ_AXDV01000045.1": 11,
+        "NZ_AXDV01000087.1": 11,
+        "NZ_KN360929.1": 11,
+        "NZ_KN360935.1": 11,
+        "NZ_AXDV01000003.1": 11,
+        "NZ_KN360941.1": 11,
+        "NZ_AXDV01000056.1": 11
       }
     }
   ],
@@ -229,8 +276,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/784/355/GCF_000784355.1/bbi/GCF_000784355.1_Metpay.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/784/355/GCF_000784355.1/bbi/GCF_000784355.1_Metpay.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000784355.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

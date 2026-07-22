@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_938048705.1",
           "ucsc": {
             "genome": "GCF_938048705.1",
             "taxId": "190976",
@@ -37,6 +38,20 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/938/048/705/GCF_938048705.1/GCF_938048705.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CALIUN010000010.1": 11,
+        "NZ_CALIUN010000009.1": 11,
+        "NZ_CALIUN010000004.1": 11,
+        "NZ_CALIUN010000013.1": 11,
+        "NZ_CALIUN010000007.1": 11,
+        "NZ_CALIUN010000002.1": 11,
+        "NZ_CALIUN010000011.1": 11,
+        "NZ_CALIUN010000005.1": 11,
+        "NZ_CALIUN010000008.1": 11,
+        "NZ_CALIUN010000003.1": 11,
+        "NZ_CALIUN010000012.1": 11,
+        "NZ_CALIUN010000006.1": 11
       }
     }
   ],
@@ -204,8 +219,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/938/048/705/GCF_938048705.1/bbi/GCF_938048705.1_ERR1018268_bin.70_CONCOCT_v1.1_MAG.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/938/048/705/GCF_938048705.1/bbi/GCF_938048705.1_ERR1018268_bin.70_CONCOCT_v1.1_MAG.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_938048705.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

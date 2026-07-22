@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000497465.2",
           "ucsc": {
             "genome": "GCF_000497465.2",
             "taxId": "1386083",
@@ -37,6 +38,68 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/GCF_000497465.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AWNG01000045.1": 11,
+        "NZ_AWNG01000030.1": 11,
+        "NZ_AWNG01000062.1": 11,
+        "NZ_AWNG01000051.1": 11,
+        "NZ_AWNG01000008.1": 11,
+        "NZ_AWNG01000029.1": 11,
+        "NZ_AWNG01000014.1": 11,
+        "NZ_AWNG01000035.1": 11,
+        "NZ_AWNG01000020.1": 11,
+        "NZ_AWNG01000056.1": 11,
+        "NZ_AWNG01000041.1": 11,
+        "NZ_AWNG01000019.1": 11,
+        "NZ_AWNG01000004.1": 11,
+        "NZ_AWNG01000025.1": 11,
+        "NZ_AWNG01000010.1": 11,
+        "NZ_AWNG01000046.1": 11,
+        "NZ_AWNG01000031.1": 11,
+        "NZ_AWNG01000063.1": 11,
+        "NZ_AWNG01000052.1": 11,
+        "NZ_AWNG01000009.1": 11,
+        "NZ_AWNG01000015.1": 11,
+        "NZ_AWNG01000036.1": 11,
+        "NZ_AWNG01000021.1": 11,
+        "NZ_AWNG01000057.1": 11,
+        "NZ_AWNG01000042.1": 11,
+        "NZ_AWNG01000005.1": 11,
+        "NZ_AWNG01000026.1": 11,
+        "NZ_AWNG01000011.1": 11,
+        "NZ_AWNG01000032.1": 11,
+        "NZ_AWNG01000053.1": 11,
+        "NZ_AWNG01000016.1": 11,
+        "NZ_AWNG01000001.1": 11,
+        "NZ_AWNG01000037.1": 11,
+        "NZ_AWNG01000022.1": 11,
+        "NZ_AWNG01000058.1": 11,
+        "NZ_AWNG01000060.1": 11,
+        "NZ_AWNG01000006.1": 11,
+        "NZ_AWNG01000027.1": 11,
+        "NZ_AWNG01000012.1": 11,
+        "NZ_AWNG01000048.1": 11,
+        "NZ_AWNG01000033.1": 11,
+        "NZ_AWNG01000054.1": 11,
+        "NZ_AWNG01000017.1": 11,
+        "NZ_AWNG01000002.1": 11,
+        "NZ_AWNG01000038.1": 11,
+        "NZ_AWNG01000023.1": 11,
+        "NZ_AWNG01000059.1": 11,
+        "NZ_AWNG01000044.1": 11,
+        "NZ_AWNG01000061.1": 11,
+        "NZ_AWNG01000050.1": 11,
+        "NZ_AWNG01000007.1": 11,
+        "NZ_AWNG01000028.1": 11,
+        "NZ_AWNG01000013.1": 11,
+        "NZ_AWNG01000049.1": 11,
+        "NZ_AWNG01000034.1": 11,
+        "NZ_AWNG01000040.1": 11,
+        "NZ_AWNG01000018.1": 11,
+        "NZ_AWNG01000003.1": 11,
+        "NZ_AWNG01000039.1": 11,
+        "NZ_AWNG01000024.1": 11
       }
     }
   ],
@@ -204,8 +267,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/bbi/GCF_000497465.2_HpX47v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/bbi/GCF_000497465.2_HpX47v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -307,7 +380,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/codingGene.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-codingGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'gene')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -338,7 +421,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/Pfam.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-Pfam-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'description')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -369,7 +462,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/cddInfo.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-cddInfo-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'description')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -481,7 +584,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/selfHomologs.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-selfHomologs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'E_value')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -510,7 +623,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Thermoproteales.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Thermoproteales-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -539,7 +662,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Sulfolobales.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Sulfolobales-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -568,7 +701,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Desulfurococcales.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Desulfurococcales-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -597,7 +740,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Halobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Halobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -626,7 +779,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Methanobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Methanobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -655,7 +818,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Methanococci.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Methanococci-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -684,7 +857,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Methanomicrobia.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Methanomicrobia-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -713,7 +896,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Methanopyri.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Methanopyri-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -742,7 +935,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Thermococci.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Thermococci-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -771,7 +974,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Thermoplasmata.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Thermoplasmata-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -800,7 +1013,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Archaeoglobi.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Archaeoglobi-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -829,7 +1052,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Aquificae.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Aquificae-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -858,7 +1091,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Thermotogae.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Thermotogae-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -887,7 +1130,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_DeinococcusThermus.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_DeinococcusThermus-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -916,7 +1169,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Firmicutes.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Firmicutes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -945,7 +1208,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Gammaproteobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Gammaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -974,7 +1247,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Alphaproteobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Alphaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1003,7 +1286,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Betaproteobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Betaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1032,7 +1325,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Deltaproteobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Deltaproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1061,7 +1364,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Epsilonproteobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Epsilonproteobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1090,7 +1403,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Actinobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Actinobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1119,7 +1442,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Bacteroidetes.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Bacteroidetes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1148,7 +1481,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Cyanobacteria.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Cyanobacteria-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1177,7 +1520,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_BacteriaOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_BacteriaOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1206,7 +1559,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Spirochaetes.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Spirochaetes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1238,7 +1601,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Related.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Related-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1270,7 +1643,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Viruses.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Viruses-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1302,7 +1685,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_ArchaeaOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_ArchaeaOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1334,7 +1727,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/BlastP_Thaumarchaeota.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-BlastP_Thaumarchaeota-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'target_org_name')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1392,7 +1795,7 @@
       "type": "MafTrack",
       "adapter": {
         "type": "BigMafAdapter",
-        "bigMafLocation": {
+        "bigBedLocation": {
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/multiz.bb"
         }
       }
@@ -1425,7 +1828,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/gbRNA.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-gbRNA-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'description')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1457,7 +1870,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/tRNAs.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-tRNAs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'aa')"
+        }
+      ]
     },
     {
       "metadata": {
@@ -1488,7 +1911,17 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/497/465/GCF_000497465.2/contrib/lowelab/Rfam.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000497465.2-Rfam-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'description')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001244495.1",
           "ucsc": {
             "genome": "GCF_001244495.1",
             "taxId": "1650661",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/244/495/GCF_001244495.1/GCF_001244495.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN866273.1": 11,
+        "NZ_LN866266.1": 11,
+        "NZ_LN866269.1": 11,
+        "NZ_LN866271.1": 11,
+        "NZ_LN866274.1": 11,
+        "NZ_LN866267.1": 11,
+        "NZ_LN866272.1": 11,
+        "NZ_LN866265.1": 11,
+        "NZ_LN866268.1": 11,
+        "NZ_LN866270.1": 11
       }
     }
   ],
@@ -252,8 +265,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/244/495/GCF_001244495.1/bbi/GCF_001244495.1_Clostridium_phoceensis.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/244/495/GCF_001244495.1/bbi/GCF_001244495.1_Clostridium_phoceensis.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001244495.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

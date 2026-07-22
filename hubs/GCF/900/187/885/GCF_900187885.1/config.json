@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900187885.1",
           "ucsc": {
             "genome": "GCF_900187885.1",
             "taxId": "877466",
@@ -37,6 +38,64 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/187/885/GCF_900187885.1/GCF_900187885.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FYEK01000043.1": 11,
+        "NZ_FYEK01000075.1": 11,
+        "NZ_FYEK01000006.1": 11,
+        "NZ_FYEK01000027.1": 11,
+        "NZ_FYEK01000012.1": 11,
+        "NZ_FYEK01000048.1": 11,
+        "NZ_FYEK01000054.1": 11,
+        "NZ_FYEK01000071.1": 11,
+        "NZ_FYEK01000002.1": 11,
+        "NZ_FYEK01000038.1": 11,
+        "NZ_FYEK01000059.1": 11,
+        "NZ_FYEK01000044.1": 11,
+        "NZ_FYEK01000076.1": 11,
+        "NZ_FYEK01000061.1": 11,
+        "NZ_FYEK01000007.1": 11,
+        "NZ_FYEK01000028.1": 11,
+        "NZ_FYEK01000013.1": 11,
+        "NZ_FYEK01000049.1": 11,
+        "NZ_FYEK01000066.1": 11,
+        "NZ_FYEK01000055.1": 11,
+        "NZ_FYEK01000040.1": 11,
+        "NZ_FYEK01000072.1": 11,
+        "NZ_FYEK01000018.1": 11,
+        "NZ_FYEK01000003.1": 11,
+        "NZ_FYEK01000024.1": 11,
+        "NZ_FYEK01000039.1": 11,
+        "NZ_FYEK01000045.1": 11,
+        "NZ_FYEK01000030.1": 11,
+        "NZ_FYEK01000077.1": 11,
+        "NZ_FYEK01000062.1": 11,
+        "NZ_FYEK01000008.1": 11,
+        "NZ_FYEK01000029.1": 11,
+        "NZ_FYEK01000035.1": 11,
+        "NZ_FYEK01000020.1": 11,
+        "NZ_FYEK01000067.1": 11,
+        "NZ_FYEK01000056.1": 11,
+        "NZ_FYEK01000041.1": 11,
+        "NZ_FYEK01000073.1": 11,
+        "NZ_FYEK01000019.1": 11,
+        "NZ_FYEK01000025.1": 11,
+        "NZ_FYEK01000010.1": 11,
+        "NZ_FYEK01000031.1": 11,
+        "NZ_FYEK01000046.1": 11,
+        "NZ_FYEK01000078.1": 11,
+        "NZ_FYEK01000063.1": 11,
+        "NZ_FYEK01000015.1": 11,
+        "NZ_FYEK01000036.1": 11,
+        "NZ_FYEK01000057.1": 11,
+        "NZ_FYEK01000005.1": 11,
+        "NZ_FYEK01000026.1": 11,
+        "NZ_FYEK01000032.1": 11,
+        "NZ_FYEK01000064.1": 11,
+        "NZ_FYEK01000053.1": 11,
+        "NZ_FYEK01000016.1": 11,
+        "NZ_FYEK01000037.1": 11,
+        "NZ_FYEK01000022.1": 11
       }
     }
   ],
@@ -204,8 +263,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/187/885/GCF_900187885.1/bbi/GCF_900187885.1_IMG-taxon_2140918011_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/187/885/GCF_900187885.1/bbi/GCF_900187885.1_IMG-taxon_2140918011_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900187885.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

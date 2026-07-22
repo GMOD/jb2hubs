@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000758165.1",
           "ucsc": {
             "genome": "GCF_000758165.1",
             "taxId": "1480694",
@@ -37,6 +38,67 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/758/165/GCF_000758165.1/GCF_000758165.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JNUP01000006.1": 11,
+        "NZ_JNUP01000038.1": 11,
+        "NZ_JNUP01000023.1": 11,
+        "NZ_JNUP01000059.1": 11,
+        "NZ_JNUP01000044.1": 11,
+        "NZ_JNUP01000065.1": 11,
+        "NZ_JNUP01000050.1": 11,
+        "NZ_JNUP01000028.1": 11,
+        "NZ_JNUP01000013.1": 11,
+        "NZ_JNUP01000002.1": 11,
+        "NZ_JNUP01000049.1": 11,
+        "NZ_JNUP01000034.1": 11,
+        "NZ_JNUP01000055.1": 11,
+        "NZ_JNUP01000040.1": 11,
+        "NZ_JNUP01000072.1": 11,
+        "NZ_JNUP01000061.1": 11,
+        "NZ_JNUP01000007.1": 11,
+        "NZ_JNUP01000039.1": 11,
+        "NZ_JNUP01000024.1": 11,
+        "NZ_JNUP01000045.1": 11,
+        "NZ_JNUP01000066.1": 11,
+        "NZ_JNUP01000051.1": 11,
+        "NZ_JNUP01000029.1": 11,
+        "NZ_JNUP01000014.1": 11,
+        "NZ_JNUP01000003.1": 11,
+        "NZ_JNUP01000035.1": 11,
+        "NZ_JNUP01000056.1": 11,
+        "NZ_JNUP01000041.1": 11,
+        "NZ_JNUP01000062.1": 11,
+        "NZ_JNUP01000019.1": 11,
+        "NZ_JNUP01000025.1": 11,
+        "NZ_JNUP01000046.1": 11,
+        "NZ_JNUP01000031.1": 11,
+        "NZ_JNUP01000067.1": 11,
+        "NZ_JNUP01000052.1": 11,
+        "NZ_JNUP01000015.1": 11,
+        "NZ_JNUP01000004.1": 11,
+        "NZ_JNUP01000036.1": 11,
+        "NZ_JNUP01000057.1": 11,
+        "NZ_JNUP01000042.1": 11,
+        "NZ_JNUP01000063.1": 11,
+        "NZ_JNUP01000032.1": 11,
+        "NZ_JNUP01000047.1": 11,
+        "NZ_JNUP01000068.1": 11,
+        "NZ_JNUP01000053.1": 11,
+        "NZ_JNUP01000070.1": 11,
+        "NZ_JNUP01000016.1": 11,
+        "NZ_JNUP01000037.1": 11,
+        "NZ_JNUP01000058.1": 11,
+        "NZ_JNUP01000043.1": 11,
+        "NZ_JNUP01000064.1": 11,
+        "NZ_JNUP01000027.1": 11,
+        "NZ_JNUP01000001.1": 11,
+        "NZ_JNUP01000048.1": 11,
+        "NZ_JNUP01000033.1": 11,
+        "NZ_JNUP01000069.1": 11,
+        "NZ_JNUP01000054.1": 11,
+        "NZ_JNUP01000071.1": 11,
+        "NZ_JNUP01000060.1": 11
       }
     }
   ],
@@ -227,8 +289,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/758/165/GCF_000758165.1/bbi/GCF_000758165.1_Spiroch1.0.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/758/165/GCF_000758165.1/bbi/GCF_000758165.1_Spiroch1.0.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000758165.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

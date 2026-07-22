@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_947179415.1",
           "ucsc": {
             "genome": "GCF_947179415.1",
             "taxId": "2954048",
@@ -37,6 +38,14 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/179/415/GCF_947179415.1/GCF_947179415.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAMXBJ010000001.1": 11,
+        "NZ_CAMXBJ010000004.1": 11,
+        "NZ_CAMXBJ010000002.1": 11,
+        "NZ_CAMXBJ010000005.1": 11,
+        "NZ_CAMXBJ010000003.1": 11,
+        "NZ_CAMXBJ010000006.1": 11
       }
     }
   ],
@@ -204,8 +213,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/179/415/GCF_947179415.1/bbi/GCF_947179415.1_idPlaAlba1.Wolbachia_sp_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/179/415/GCF_947179415.1/bbi/GCF_947179415.1_idPlaAlba1.Wolbachia_sp_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_947179415.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

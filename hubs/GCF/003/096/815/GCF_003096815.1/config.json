@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_003096815.1",
           "ucsc": {
             "genome": "GCF_003096815.1",
             "taxId": "1703337",
@@ -37,6 +38,68 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/096/815/GCF_003096815.1/GCF_003096815.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_QENY01000005.1": 11,
+        "NZ_QENY01000026.1": 11,
+        "NZ_QENY01000011.1": 11,
+        "NZ_QENY01000047.1": 11,
+        "NZ_QENY01000032.1": 11,
+        "NZ_QENY01000053.1": 11,
+        "NZ_QENY01000016.1": 11,
+        "NZ_QENY01000001.1": 11,
+        "NZ_QENY01000037.1": 11,
+        "NZ_QENY01000022.1": 11,
+        "NZ_QENY01000058.1": 11,
+        "NZ_QENY01000043.1": 11,
+        "NZ_QENY01000060.1": 11,
+        "NZ_QENY01000006.1": 11,
+        "NZ_QENY01000027.1": 11,
+        "NZ_QENY01000012.1": 11,
+        "NZ_QENY01000048.1": 11,
+        "NZ_QENY01000033.1": 11,
+        "NZ_QENY01000054.1": 11,
+        "NZ_QENY01000017.1": 11,
+        "NZ_QENY01000002.1": 11,
+        "NZ_QENY01000038.1": 11,
+        "NZ_QENY01000023.1": 11,
+        "NZ_QENY01000059.1": 11,
+        "NZ_QENY01000061.1": 11,
+        "NZ_QENY01000050.1": 11,
+        "NZ_QENY01000007.1": 11,
+        "NZ_QENY01000028.1": 11,
+        "NZ_QENY01000013.1": 11,
+        "NZ_QENY01000049.1": 11,
+        "NZ_QENY01000034.1": 11,
+        "NZ_QENY01000055.1": 11,
+        "NZ_QENY01000040.1": 11,
+        "NZ_QENY01000018.1": 11,
+        "NZ_QENY01000003.1": 11,
+        "NZ_QENY01000039.1": 11,
+        "NZ_QENY01000024.1": 11,
+        "NZ_QENY01000045.1": 11,
+        "NZ_QENY01000030.1": 11,
+        "NZ_QENY01000051.1": 11,
+        "NZ_QENY01000008.1": 11,
+        "NZ_QENY01000029.1": 11,
+        "NZ_QENY01000014.1": 11,
+        "NZ_QENY01000035.1": 11,
+        "NZ_QENY01000020.1": 11,
+        "NZ_QENY01000056.1": 11,
+        "NZ_QENY01000041.1": 11,
+        "NZ_QENY01000019.1": 11,
+        "NZ_QENY01000004.1": 11,
+        "NZ_QENY01000025.1": 11,
+        "NZ_QENY01000010.1": 11,
+        "NZ_QENY01000046.1": 11,
+        "NZ_QENY01000031.1": 11,
+        "NZ_QENY01000052.1": 11,
+        "NZ_QENY01000009.1": 11,
+        "NZ_QENY01000015.1": 11,
+        "NZ_QENY01000036.1": 11,
+        "NZ_QENY01000021.1": 11,
+        "NZ_QENY01000057.1": 11,
+        "NZ_QENY01000042.1": 11
       }
     }
   ],
@@ -227,8 +290,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/096/815/GCF_003096815.1/bbi/GCF_003096815.1_ASM309681v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/096/815/GCF_003096815.1/bbi/GCF_003096815.1_ASM309681v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_003096815.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

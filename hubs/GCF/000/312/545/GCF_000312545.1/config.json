@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000312545.1",
           "ucsc": {
             "genome": "GCF_000312545.1",
             "taxId": "929794",
@@ -37,6 +38,41 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/312/545/GCF_000312545.1/GCF_000312545.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_HE997574.1": 11,
+        "NZ_HE997567.1": 11,
+        "NZ_HE997540.1": 11,
+        "NZ_HE997562.1": 11,
+        "NZ_HE997555.1": 11,
+        "NZ_HE997548.1": 11,
+        "NZ_HE997577.1": 11,
+        "NZ_HE997550.1": 11,
+        "NZ_HE997543.1": 11,
+        "NZ_HE997558.1": 11,
+        "NZ_HE997560.1": 11,
+        "NZ_HE997553.1": 11,
+        "NZ_HE997546.1": 11,
+        "NZ_HE997568.1": 11,
+        "NZ_HE997541.1": 11,
+        "NZ_HE997563.1": 11,
+        "NZ_HE997556.1": 11,
+        "NZ_HE997549.1": 11,
+        "NZ_HE997578.1": 11,
+        "NZ_HE997551.1": 11,
+        "NZ_HE997544.1": 11,
+        "NZ_HE997566.1": 11,
+        "NZ_HE997559.1": 11,
+        "NZ_HE997554.1": 11,
+        "NZ_HE997547.1": 11,
+        "NZ_HE997576.1": 11,
+        "NZ_HE997542.1": 11,
+        "NZ_HE997571.1": 11,
+        "NZ_HE997564.1": 11,
+        "NZ_HE997557.1": 11,
+        "NZ_HE997579.1": 11,
+        "NZ_HE997552.1": 11,
+        "NZ_HE997545.1": 11
       }
     }
   ],
@@ -252,8 +288,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/312/545/GCF_000312545.1/bbi/GCF_000312545.1_ASM31254v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/312/545/GCF_000312545.1/bbi/GCF_000312545.1_ASM31254v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000312545.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

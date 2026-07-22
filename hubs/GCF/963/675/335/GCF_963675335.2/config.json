@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_963675335.2",
           "ucsc": {
             "genome": "GCF_963675335.2",
             "taxId": "191960",
@@ -37,6 +38,12 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/675/335/GCF_963675335.2/GCF_963675335.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAXXYC010000002.1": 11,
+        "NZ_CAXXYC010000004.1": 11,
+        "NZ_CAXXYC010000003.1": 11,
+        "NZ_CAXXYC010000001.1": 11
       }
     }
   ],
@@ -204,8 +211,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/675/335/GCF_963675335.2/bbi/GCF_963675335.2_piTriSpea1.Sedimenticola_selenatireducens_1.2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/963/675/335/GCF_963675335.2/bbi/GCF_963675335.2_piTriSpea1.Sedimenticola_selenatireducens_1.2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_963675335.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

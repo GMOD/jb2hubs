@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_036754085.1",
           "ucsc": {
             "genome": "GCF_036754085.1",
             "taxId": "13773",
@@ -37,6 +38,85 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/754/085/GCF_036754085.1/GCF_036754085.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_DAIOPL010000045.1": 11,
+        "NZ_DAIOPL010000030.1": 11,
+        "NZ_DAIOPL010000077.1": 11,
+        "NZ_DAIOPL010000066.1": 11,
+        "NZ_DAIOPL010000051.1": 11,
+        "NZ_DAIOPL010000029.1": 11,
+        "NZ_DAIOPL010000014.1": 11,
+        "NZ_DAIOPL010000003.1": 11,
+        "NZ_DAIOPL010000035.1": 11,
+        "NZ_DAIOPL010000020.1": 11,
+        "NZ_DAIOPL010000056.1": 11,
+        "NZ_DAIOPL010000041.1": 11,
+        "NZ_DAIOPL010000073.1": 11,
+        "NZ_DAIOPL010000062.1": 11,
+        "NZ_DAIOPL010000019.1": 11,
+        "NZ_DAIOPL010000008.1": 11,
+        "NZ_DAIOPL010000025.1": 11,
+        "NZ_DAIOPL010000046.1": 11,
+        "NZ_DAIOPL010000031.1": 11,
+        "NZ_DAIOPL010000067.1": 11,
+        "NZ_DAIOPL010000052.1": 11,
+        "NZ_DAIOPL010000015.1": 11,
+        "NZ_DAIOPL010000004.1": 11,
+        "NZ_DAIOPL010000036.1": 11,
+        "NZ_DAIOPL010000021.1": 11,
+        "NZ_DAIOPL010000010.1": 11,
+        "NZ_DAIOPL010000057.1": 11,
+        "NZ_DAIOPL010000042.1": 11,
+        "NZ_DAIOPL010000074.1": 11,
+        "NZ_DAIOPL010000063.1": 11,
+        "NZ_DAIOPL010000009.1": 11,
+        "NZ_DAIOPL010000026.1": 11,
+        "NZ_DAIOPL010000047.1": 11,
+        "NZ_DAIOPL010000032.1": 11,
+        "NZ_DAIOPL010000068.1": 11,
+        "NZ_DAIOPL010000053.1": 11,
+        "NZ_DAIOPL010000070.1": 11,
+        "NZ_DAIOPL010000016.1": 11,
+        "NZ_DAIOPL010000005.1": 11,
+        "NZ_DAIOPL010000037.1": 11,
+        "NZ_DAIOPL010000022.1": 11,
+        "NZ_DAIOPL010000011.1": 11,
+        "NZ_DAIOPL010000058.1": 11,
+        "NZ_DAIOPL010000043.1": 11,
+        "NZ_DAIOPL010000075.1": 11,
+        "NZ_DAIOPL010000064.1": 11,
+        "NZ_DAIOPL010000027.1": 11,
+        "NZ_DAIOPL010000001.1": 11,
+        "NZ_DAIOPL010000048.1": 11,
+        "NZ_DAIOPL010000033.1": 11,
+        "NZ_DAIOPL010000069.1": 11,
+        "NZ_DAIOPL010000054.1": 11,
+        "NZ_DAIOPL010000071.1": 11,
+        "NZ_DAIOPL010000060.1": 11,
+        "NZ_DAIOPL010000017.1": 11,
+        "NZ_DAIOPL010000006.1": 11,
+        "NZ_DAIOPL010000038.1": 11,
+        "NZ_DAIOPL010000023.1": 11,
+        "NZ_DAIOPL010000012.1": 11,
+        "NZ_DAIOPL010000059.1": 11,
+        "NZ_DAIOPL010000044.1": 11,
+        "NZ_DAIOPL010000076.1": 11,
+        "NZ_DAIOPL010000065.1": 11,
+        "NZ_DAIOPL010000050.1": 11,
+        "NZ_DAIOPL010000028.1": 11,
+        "NZ_DAIOPL010000013.1": 11,
+        "NZ_DAIOPL010000002.1": 11,
+        "NZ_DAIOPL010000049.1": 11,
+        "NZ_DAIOPL010000034.1": 11,
+        "NZ_DAIOPL010000055.1": 11,
+        "NZ_DAIOPL010000040.1": 11,
+        "NZ_DAIOPL010000072.1": 11,
+        "NZ_DAIOPL010000061.1": 11,
+        "NZ_DAIOPL010000018.1": 11,
+        "NZ_DAIOPL010000007.1": 11,
+        "NZ_DAIOPL010000039.1": 11,
+        "NZ_DAIOPL010000024.1": 11
       }
     }
   ],
@@ -229,8 +309,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/754/085/GCF_036754085.1/bbi/GCF_036754085.1_ASM3675408v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/036/754/085/GCF_036754085.1/bbi/GCF_036754085.1_ASM3675408v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_036754085.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

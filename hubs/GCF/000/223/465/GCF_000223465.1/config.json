@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000223465.1",
           "ucsc": {
             "genome": "GCF_000223465.1",
             "taxId": "590646",
@@ -37,6 +38,31 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/GCF_000223465.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NW_006281245.1": 12,
+        "NW_006281231.1": 12,
+        "NW_006281240.1": 12,
+        "NW_006281239.1": 12,
+        "NW_006281248.1": 12,
+        "NW_006281234.1": 12,
+        "NW_006281227.1": 12,
+        "NW_006281250.1": 12,
+        "NW_006281243.1": 12,
+        "NW_006281246.1": 12,
+        "NW_006281232.1": 12,
+        "NW_006281249.1": 12,
+        "NW_006281235.1": 12,
+        "NW_006281228.1": 12,
+        "NW_006281244.1": 12,
+        "NW_006281230.1": 12,
+        "NW_006281238.1": 12,
+        "NW_006281247.1": 12,
+        "NW_006281233.1": 12,
+        "NW_006281226.1": 12,
+        "NW_006281242.1": 12,
+        "NW_006281236.1": 12,
+        "NW_006281229.1": 12
       }
     }
   ],
@@ -297,8 +323,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/bbi/GCF_000223465.1_Candida_tenuis_v1.0.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/bbi/GCF_000223465.1_Candida_tenuis_v1.0.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000223465.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -329,8 +365,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/bbi/GCF_000223465.1_Candida_tenuis_v1.0.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/bbi/GCF_000223465.1_Candida_tenuis_v1.0.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000223465.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -514,8 +560,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/bbi/GCF_000223465.1_Candida_tenuis_v1.0.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/465/GCF_000223465.1/bbi/GCF_000223465.1_Candida_tenuis_v1.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000223465.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

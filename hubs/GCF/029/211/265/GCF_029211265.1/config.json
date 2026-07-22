@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_029211265.1",
           "ucsc": {
             "genome": "GCF_029211265.1",
             "taxId": "3031322",
@@ -37,6 +38,56 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/211/265/GCF_029211265.1/GCF_029211265.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JARGEL010000005.1": 11,
+        "NZ_JARGEL010000026.1": 11,
+        "NZ_JARGEL010000011.1": 11,
+        "NZ_JARGEL010000032.1": 11,
+        "NZ_JARGEL010000016.1": 11,
+        "NZ_JARGEL010000001.1": 11,
+        "NZ_JARGEL010000037.1": 11,
+        "NZ_JARGEL010000022.1": 11,
+        "NZ_JARGEL010000043.1": 11,
+        "NZ_JARGEL010000006.1": 11,
+        "NZ_JARGEL010000027.1": 11,
+        "NZ_JARGEL010000012.1": 11,
+        "NZ_JARGEL010000048.1": 11,
+        "NZ_JARGEL010000033.1": 11,
+        "NZ_JARGEL010000050.1": 11,
+        "NZ_JARGEL010000017.1": 11,
+        "NZ_JARGEL010000002.1": 11,
+        "NZ_JARGEL010000038.1": 11,
+        "NZ_JARGEL010000023.1": 11,
+        "NZ_JARGEL010000044.1": 11,
+        "NZ_JARGEL010000007.1": 11,
+        "NZ_JARGEL010000028.1": 11,
+        "NZ_JARGEL010000013.1": 11,
+        "NZ_JARGEL010000049.1": 11,
+        "NZ_JARGEL010000034.1": 11,
+        "NZ_JARGEL010000040.1": 11,
+        "NZ_JARGEL010000018.1": 11,
+        "NZ_JARGEL010000003.1": 11,
+        "NZ_JARGEL010000039.1": 11,
+        "NZ_JARGEL010000024.1": 11,
+        "NZ_JARGEL010000045.1": 11,
+        "NZ_JARGEL010000030.1": 11,
+        "NZ_JARGEL010000008.1": 11,
+        "NZ_JARGEL010000029.1": 11,
+        "NZ_JARGEL010000014.1": 11,
+        "NZ_JARGEL010000020.1": 11,
+        "NZ_JARGEL010000041.1": 11,
+        "NZ_JARGEL010000019.1": 11,
+        "NZ_JARGEL010000004.1": 11,
+        "NZ_JARGEL010000025.1": 11,
+        "NZ_JARGEL010000010.1": 11,
+        "NZ_JARGEL010000046.1": 11,
+        "NZ_JARGEL010000031.1": 11,
+        "NZ_JARGEL010000009.1": 11,
+        "NZ_JARGEL010000015.1": 11,
+        "NZ_JARGEL010000036.1": 11,
+        "NZ_JARGEL010000021.1": 11,
+        "NZ_JARGEL010000042.1": 11
       }
     }
   ],
@@ -229,8 +280,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/211/265/GCF_029211265.1/bbi/GCF_029211265.1_ASM2921126v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/211/265/GCF_029211265.1/bbi/GCF_029211265.1_ASM2921126v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029211265.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

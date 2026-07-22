@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_026805325.1",
           "ucsc": {
             "genome": "GCF_026805325.1",
             "taxId": "472978",
@@ -37,6 +38,79 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/026/805/325/GCF_026805325.1/GCF_026805325.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAPRAT010000009.1": 11,
+        "NZ_JAPRAT010000026.1": 11,
+        "NZ_JAPRAT010000015.1": 11,
+        "NZ_JAPRAT010000047.1": 11,
+        "NZ_JAPRAT010000032.1": 11,
+        "NZ_JAPRAT010000053.1": 11,
+        "NZ_JAPRAT010000074.1": 11,
+        "NZ_JAPRAT010000005.1": 11,
+        "NZ_JAPRAT010000037.1": 11,
+        "NZ_JAPRAT010000022.1": 11,
+        "NZ_JAPRAT010000011.1": 11,
+        "NZ_JAPRAT010000058.1": 11,
+        "NZ_JAPRAT010000043.1": 11,
+        "NZ_JAPRAT010000064.1": 11,
+        "NZ_JAPRAT010000070.1": 11,
+        "NZ_JAPRAT010000027.1": 11,
+        "NZ_JAPRAT010000016.1": 11,
+        "NZ_JAPRAT010000001.1": 11,
+        "NZ_JAPRAT010000048.1": 11,
+        "NZ_JAPRAT010000033.1": 11,
+        "NZ_JAPRAT010000069.1": 11,
+        "NZ_JAPRAT010000054.1": 11,
+        "NZ_JAPRAT010000075.1": 11,
+        "NZ_JAPRAT010000060.1": 11,
+        "NZ_JAPRAT010000006.1": 11,
+        "NZ_JAPRAT010000023.1": 11,
+        "NZ_JAPRAT010000038.1": 11,
+        "NZ_JAPRAT010000012.1": 11,
+        "NZ_JAPRAT010000044.1": 11,
+        "NZ_JAPRAT010000065.1": 11,
+        "NZ_JAPRAT010000050.1": 11,
+        "NZ_JAPRAT010000071.1": 11,
+        "NZ_JAPRAT010000028.1": 11,
+        "NZ_JAPRAT010000002.1": 11,
+        "NZ_JAPRAT010000017.1": 11,
+        "NZ_JAPRAT010000049.1": 11,
+        "NZ_JAPRAT010000034.1": 11,
+        "NZ_JAPRAT010000055.1": 11,
+        "NZ_JAPRAT010000040.1": 11,
+        "NZ_JAPRAT010000061.1": 11,
+        "NZ_JAPRAT010000007.1": 11,
+        "NZ_JAPRAT010000039.1": 11,
+        "NZ_JAPRAT010000024.1": 11,
+        "NZ_JAPRAT010000013.1": 11,
+        "NZ_JAPRAT010000045.1": 11,
+        "NZ_JAPRAT010000030.1": 11,
+        "NZ_JAPRAT010000051.1": 11,
+        "NZ_JAPRAT010000029.1": 11,
+        "NZ_JAPRAT010000018.1": 11,
+        "NZ_JAPRAT010000003.1": 11,
+        "NZ_JAPRAT010000035.1": 11,
+        "NZ_JAPRAT010000020.1": 11,
+        "NZ_JAPRAT010000056.1": 11,
+        "NZ_JAPRAT010000041.1": 11,
+        "NZ_JAPRAT010000062.1": 11,
+        "NZ_JAPRAT010000008.1": 11,
+        "NZ_JAPRAT010000025.1": 11,
+        "NZ_JAPRAT010000014.1": 11,
+        "NZ_JAPRAT010000046.1": 11,
+        "NZ_JAPRAT010000031.1": 11,
+        "NZ_JAPRAT010000067.1": 11,
+        "NZ_JAPRAT010000052.1": 11,
+        "NZ_JAPRAT010000073.1": 11,
+        "NZ_JAPRAT010000019.1": 11,
+        "NZ_JAPRAT010000004.1": 11,
+        "NZ_JAPRAT010000036.1": 11,
+        "NZ_JAPRAT010000021.1": 11,
+        "NZ_JAPRAT010000010.1": 11,
+        "NZ_JAPRAT010000057.1": 11,
+        "NZ_JAPRAT010000042.1": 11,
+        "NZ_JAPRAT010000063.1": 11
       }
     }
   ],
@@ -204,8 +278,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/026/805/325/GCF_026805325.1/bbi/GCF_026805325.1_ASM2680532v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/026/805/325/GCF_026805325.1/bbi/GCF_026805325.1_ASM2680532v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_026805325.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

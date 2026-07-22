@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_006334915.2",
           "ucsc": {
             "genome": "GCF_006334915.2",
             "taxId": "1712871",
@@ -37,6 +38,75 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/334/915/GCF_006334915.2/GCF_006334915.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_VDMA02000008.1": 11,
+        "NZ_VDMA02000029.1": 11,
+        "NZ_VDMA02000014.1": 11,
+        "NZ_VDMA02000046.1": 11,
+        "NZ_VDMA02000031.1": 11,
+        "NZ_VDMA02000020.1": 11,
+        "NZ_VDMA02000067.1": 11,
+        "NZ_VDMA02000052.1": 11,
+        "NZ_VDMA02000019.1": 11,
+        "NZ_VDMA02000004.1": 11,
+        "NZ_VDMA02000036.1": 11,
+        "NZ_VDMA02000025.1": 11,
+        "NZ_VDMA02000010.1": 11,
+        "NZ_VDMA02000057.1": 11,
+        "NZ_VDMA02000042.1": 11,
+        "NZ_VDMA02000063.1": 11,
+        "NZ_VDMA02000009.1": 11,
+        "NZ_VDMA02000015.1": 11,
+        "NZ_VDMA02000047.1": 11,
+        "NZ_VDMA02000032.1": 11,
+        "NZ_VDMA02000021.1": 11,
+        "NZ_VDMA02000068.1": 11,
+        "NZ_VDMA02000053.1": 11,
+        "NZ_VDMA02000005.1": 11,
+        "NZ_VDMA02000037.1": 11,
+        "NZ_VDMA02000026.1": 11,
+        "NZ_VDMA02000011.1": 11,
+        "NZ_VDMA02000058.1": 11,
+        "NZ_VDMA02000043.1": 11,
+        "NZ_VDMA02000064.1": 11,
+        "NZ_VDMA02000016.1": 11,
+        "NZ_VDMA02000001.1": 11,
+        "NZ_VDMA02000048.1": 11,
+        "NZ_VDMA02000033.1": 11,
+        "NZ_VDMA02000022.1": 11,
+        "NZ_VDMA02000054.1": 11,
+        "NZ_VDMA02000060.1": 11,
+        "NZ_VDMA02000006.1": 11,
+        "NZ_VDMA02000038.1": 11,
+        "NZ_VDMA02000027.1": 11,
+        "NZ_VDMA02000012.1": 11,
+        "NZ_VDMA02000059.1": 11,
+        "NZ_VDMA02000044.1": 11,
+        "NZ_VDMA02000065.1": 11,
+        "NZ_VDMA02000050.1": 11,
+        "NZ_VDMA02000017.1": 11,
+        "NZ_VDMA02000002.1": 11,
+        "NZ_VDMA02000049.1": 11,
+        "NZ_VDMA02000034.1": 11,
+        "NZ_VDMA02000023.1": 11,
+        "NZ_VDMA02000055.1": 11,
+        "NZ_VDMA02000040.1": 11,
+        "NZ_VDMA02000061.1": 11,
+        "NZ_VDMA02000007.1": 11,
+        "NZ_VDMA02000039.1": 11,
+        "NZ_VDMA02000028.1": 11,
+        "NZ_VDMA02000013.1": 11,
+        "NZ_VDMA02000045.1": 11,
+        "NZ_VDMA02000030.1": 11,
+        "NZ_VDMA02000051.1": 11,
+        "NZ_VDMA02000018.1": 11,
+        "NZ_VDMA02000003.1": 11,
+        "NZ_VDMA02000035.1": 11,
+        "NZ_VDMA02000024.1": 11,
+        "NZ_VDMA02000056.1": 11,
+        "NZ_VDMA02000041.1": 11,
+        "NZ_VDMA02000062.1": 11
       }
     }
   ],
@@ -204,8 +274,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/334/915/GCF_006334915.2/bbi/GCF_006334915.2_ASM633491v2.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/334/915/GCF_006334915.2/bbi/GCF_006334915.2_ASM633491v2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_006334915.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

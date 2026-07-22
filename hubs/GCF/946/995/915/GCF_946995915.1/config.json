@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_946995915.1",
           "ucsc": {
             "genome": "GCF_946995915.1",
             "taxId": "83265",
@@ -37,6 +38,12 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/995/915/GCF_946995915.1/GCF_946995915.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_OX341517.1": 11,
+        "NZ_OX341518.1": 11,
+        "NZ_OX341520.1": 11,
+        "NZ_OX341519.1": 11
       }
     }
   ],
@@ -204,8 +211,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/995/915/GCF_946995915.1/bbi/GCF_946995915.1_Assembled_genome_of_Aminobacter_niigataensis_MD1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/946/995/915/GCF_946995915.1/bbi/GCF_946995915.1_Assembled_genome_of_Aminobacter_niigataensis_MD1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_946995915.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

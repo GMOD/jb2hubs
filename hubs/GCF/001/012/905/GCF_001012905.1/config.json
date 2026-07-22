@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001012905.1",
           "ucsc": {
             "genome": "GCF_001012905.1",
             "taxId": "1622024",
@@ -204,8 +205,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/012/905/GCF_001012905.1/bbi/GCF_001012905.1_Desmodus_rotundus_endogenous_retrovirus_DrERV_consensus_sequence.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/012/905/GCF_001012905.1/bbi/GCF_001012905.1_Desmodus_rotundus_endogenous_retrovirus_DrERV_consensus_sequence.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001012905.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

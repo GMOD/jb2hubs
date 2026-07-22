@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001704415.2",
           "ucsc": {
             "genome": "GCF_001704415.2",
             "taxId": "9925",
@@ -70,6 +71,9 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/GCF_001704415.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NC_005044.2": 2
       }
     }
   ],
@@ -262,8 +266,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001704415.2-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -294,8 +308,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeqCurated.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001704415.2-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -326,8 +350,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001704415.2-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -356,7 +390,16 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.ncbiRefSeqOther.bb"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001704415.2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -540,8 +583,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/704/415/GCF_001704415.2/bbi/GCF_001704415.2_ARS1.2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001704415.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -594,6 +647,69 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCA_000001905.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to African savanna elephant (2009 genbank) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCA_000001905.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCA_000001905.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCA_000001905.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCA_000001905.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCA_000003625.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to rabbit (Thorbecke 2009 Broad genbank) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCA_000003625.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCA_000003625.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCA_000003625.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCA_000003625.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCA_000151735.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to domestic guinea pig (2N 2008 genbank) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCA_000151735.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCA_000151735.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCA_000151735.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCA_000151735.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "GCF_001704415.2_to_GCA_000978405.1_liftOver",
       "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to wild goat liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -636,6 +752,153 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCA_009873245.2_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to blue whale (JJ_BM4_2016_0621 v2 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCA_009873245.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCA_009873245.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCA_009873245.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCA_009873245.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCA_034195675.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to sika deer (Changchun, China MLH-2022 2023) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCA_034195675.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCA_034195675.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCA_034195675.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCA_034195675.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCA_036323735.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Norway rat (BN/NHsdMcwi 2024 genbank) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCA_036323735.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCA_036323735.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCA_036323735.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCA_036323735.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_000002295.2_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to gray short-tailed opossum (MonDom5 2007) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_000002295.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_000002295.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_000002295.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_000002295.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_000151845.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to large flying fox liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_000151845.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_000151845.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_000151845.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_000151845.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_000803125.2_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Arabian camel (Drom800 2019 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_000803125.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_000803125.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_000803125.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_000803125.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_002099425.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to koala (Bilbo 61053 2017) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_002099425.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_002099425.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_002099425.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_002099425.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "GCF_001704415.2_to_GCF_002263795.3_liftOver",
       "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to cattle (Hereford L1 Dominette 01449 42190680 v2.0 2023 USDA) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -650,6 +913,174 @@
         "index": {
           "location": {
             "uri": "liftOver/GCF_001704415.2ToGCF_002263795.3.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_002863925.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to horse (Twilight 2018) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_002863925.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_002863925.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_002863925.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_002863925.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_003339765.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Rhesus monkey (2019 U. Washington) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_003339765.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_003339765.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_003339765.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_003339765.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_003668045.3_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Chinese hamster (17A/GY CHO 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_003668045.3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_003668045.3",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_003668045.3.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_003668045.3.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_004115215.2_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to platypus (Pmale09 v4 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_004115215.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_004115215.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_004115215.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_004115215.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_004348235.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to harbor seal liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_004348235.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_004348235.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_004348235.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_004348235.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_014441545.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to dog (labrador SID07034 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_014441545.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_014441545.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_014441545.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_014441545.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_015852505.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Australian echidna (mTacAcu1 primary hap 2020) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_015852505.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_015852505.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_015852505.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_015852505.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_016077325.2_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to ass (Dezhou 2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_016077325.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_016077325.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_016077325.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_016077325.2.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -678,6 +1109,153 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_018350175.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to domestic cat (Fca126 2021 Texas A&M U) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_018350175.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_018350175.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_018350175.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_018350175.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_019923935.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to water buffalo (Murrah 2021) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_019923935.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_019923935.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_019923935.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_019923935.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_028372415.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to tammar wallaby (v2 primary hap 2023 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_028372415.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_028372415.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_028372415.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_028372415.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_028583685.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to sugar glider (PSGF00001 2023) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_028583685.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_028583685.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_028583685.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_028583685.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_048773025.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Bactrian camel YW-2024 2025 liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_048773025.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_048773025.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_048773025.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_048773025.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_GCF_902635505.1_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Tasmanian devil (primary hap 2019) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "GCF_902635505.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "GCF_902635505.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToGCF_902635505.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToGCF_902635505.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_hg38_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Human (hg38) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "hg38"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "hg38",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToHg38.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToHg38.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "GCF_001704415.2_to_oviAri4_liftOver",
       "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Sheep (oviAri4) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -692,6 +1270,27 @@
         "index": {
           "location": {
             "uri": "liftOver/GCF_001704415.2ToOviAri4.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_001704415.2_to_panTro5_liftOver",
+      "name": "GCF_001704415.2 (goat (v2 San Clemente 2016 USDA)) to Chimp (panTro5) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_001704415.2", "panTro5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_001704415.2",
+        "queryAssembly": "panTro5",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_001704415.2ToPanTro5.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_001704415.2ToPanTro5.pif.gz.csi"
           },
           "indexType": "CSI"
         }

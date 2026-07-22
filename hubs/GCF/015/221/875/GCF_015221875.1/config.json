@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_015221875.1",
           "ucsc": {
             "genome": "GCF_015221875.1",
             "taxId": "2773304",
@@ -37,6 +38,26 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/221/875/GCF_015221875.1/GCF_015221875.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JACYGY010000011.1": 11,
+        "NZ_JACYGY010000004.1": 11,
+        "NZ_JACYGY010000020.1": 11,
+        "NZ_JACYGY010000019.1": 11,
+        "NZ_JACYGY010000007.1": 11,
+        "NZ_JACYGY010000002.1": 11,
+        "NZ_JACYGY010000017.1": 11,
+        "NZ_JACYGY010000012.1": 11,
+        "NZ_JACYGY010000005.1": 11,
+        "NZ_JACYGY010000015.1": 11,
+        "NZ_JACYGY010000008.1": 11,
+        "NZ_JACYGY010000003.1": 11,
+        "NZ_JACYGY010000018.1": 11,
+        "NZ_JACYGY010000013.1": 11,
+        "NZ_JACYGY010000006.1": 11,
+        "NZ_JACYGY010000001.1": 11,
+        "NZ_JACYGY010000016.1": 11,
+        "NZ_JACYGY010000009.1": 11
       }
     }
   ],
@@ -204,8 +225,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/221/875/GCF_015221875.1/bbi/GCF_015221875.1_ASM1522187v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/015/221/875/GCF_015221875.1/bbi/GCF_015221875.1_ASM1522187v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_015221875.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014830205.1",
           "ucsc": {
             "genome": "GCF_014830205.1",
             "taxId": "2268022",
@@ -37,6 +38,79 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/830/205/GCF_014830205.1/GCF_014830205.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_QORN01000029.1": 11,
+        "NZ_QORN01000014.1": 11,
+        "NZ_QORN01000003.1": 11,
+        "NZ_QORN01000035.1": 11,
+        "NZ_QORN01000020.1": 11,
+        "NZ_QORN01000041.1": 11,
+        "NZ_QORN01000073.1": 11,
+        "NZ_QORN01000019.1": 11,
+        "NZ_QORN01000008.1": 11,
+        "NZ_QORN01000025.1": 11,
+        "NZ_QORN01000046.1": 11,
+        "NZ_QORN01000031.1": 11,
+        "NZ_QORN01000067.1": 11,
+        "NZ_QORN01000052.1": 11,
+        "NZ_QORN01000015.1": 11,
+        "NZ_QORN01000004.1": 11,
+        "NZ_QORN01000036.1": 11,
+        "NZ_QORN01000021.1": 11,
+        "NZ_QORN01000010.1": 11,
+        "NZ_QORN01000057.1": 11,
+        "NZ_QORN01000042.1": 11,
+        "NZ_QORN01000074.1": 11,
+        "NZ_QORN01000063.1": 11,
+        "NZ_QORN01000009.1": 11,
+        "NZ_QORN01000026.1": 11,
+        "NZ_QORN01000047.1": 11,
+        "NZ_QORN01000032.1": 11,
+        "NZ_QORN01000068.1": 11,
+        "NZ_QORN01000053.1": 11,
+        "NZ_QORN01000070.1": 11,
+        "NZ_QORN01000016.1": 11,
+        "NZ_QORN01000005.1": 11,
+        "NZ_QORN01000037.1": 11,
+        "NZ_QORN01000022.1": 11,
+        "NZ_QORN01000011.1": 11,
+        "NZ_QORN01000058.1": 11,
+        "NZ_QORN01000043.1": 11,
+        "NZ_QORN01000064.1": 11,
+        "NZ_QORN01000027.1": 11,
+        "NZ_QORN01000001.1": 11,
+        "NZ_QORN01000048.1": 11,
+        "NZ_QORN01000033.1": 11,
+        "NZ_QORN01000069.1": 11,
+        "NZ_QORN01000054.1": 11,
+        "NZ_QORN01000071.1": 11,
+        "NZ_QORN01000060.1": 11,
+        "NZ_QORN01000017.1": 11,
+        "NZ_QORN01000006.1": 11,
+        "NZ_QORN01000038.1": 11,
+        "NZ_QORN01000023.1": 11,
+        "NZ_QORN01000012.1": 11,
+        "NZ_QORN01000059.1": 11,
+        "NZ_QORN01000044.1": 11,
+        "NZ_QORN01000065.1": 11,
+        "NZ_QORN01000028.1": 11,
+        "NZ_QORN01000013.1": 11,
+        "NZ_QORN01000002.1": 11,
+        "NZ_QORN01000049.1": 11,
+        "NZ_QORN01000034.1": 11,
+        "NZ_QORN01000055.1": 11,
+        "NZ_QORN01000040.1": 11,
+        "NZ_QORN01000072.1": 11,
+        "NZ_QORN01000061.1": 11,
+        "NZ_QORN01000018.1": 11,
+        "NZ_QORN01000007.1": 11,
+        "NZ_QORN01000039.1": 11,
+        "NZ_QORN01000024.1": 11,
+        "NZ_QORN01000045.1": 11,
+        "NZ_QORN01000030.1": 11,
+        "NZ_QORN01000066.1": 11,
+        "NZ_QORN01000051.1": 11
       }
     }
   ],
@@ -204,8 +278,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/830/205/GCF_014830205.1/bbi/GCF_014830205.1_ASM1483020v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/830/205/GCF_014830205.1/bbi/GCF_014830205.1_ASM1483020v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014830205.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

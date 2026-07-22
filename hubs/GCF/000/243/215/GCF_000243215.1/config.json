@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000243215.1",
           "ucsc": {
             "genome": "GCF_000243215.1",
             "taxId": "742817",
@@ -37,6 +38,17 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/215/GCF_000243215.1/GCF_000243215.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH594601.1": 11,
+        "NZ_JH594604.1": 11,
+        "NZ_JH594598.1": 11,
+        "NZ_JH594602.1": 11,
+        "NZ_JH594596.1": 11,
+        "NZ_JH594600.1": 11,
+        "NZ_JH594599.1": 11,
+        "NZ_JH594603.1": 11,
+        "NZ_JH594597.1": 11
       }
     }
   ],
@@ -252,8 +264,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/215/GCF_000243215.1/bbi/GCF_000243215.1_Odor_lane_YIT_12061_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/215/GCF_000243215.1/bbi/GCF_000243215.1_Odor_lane_YIT_12061_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000243215.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

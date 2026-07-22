@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000213555.1",
           "ucsc": {
             "genome": "GCF_000213555.1",
             "taxId": "742766",
@@ -37,6 +38,33 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/213/555/GCF_000213555.1/GCF_000213555.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_GL891988.1": 11,
+        "NZ_GL891997.1": 11,
+        "NZ_GL891983.1": 11,
+        "NZ_GL891992.1": 11,
+        "NZ_GL892002.1": 11,
+        "NZ_GL891986.1": 11,
+        "NZ_GL891979.1": 11,
+        "NZ_GL891995.1": 11,
+        "NZ_GL891981.1": 11,
+        "NZ_GL891990.1": 11,
+        "NZ_GL891989.1": 11,
+        "NZ_GL892000.1": 11,
+        "NZ_GL891998.1": 11,
+        "NZ_GL891984.1": 11,
+        "NZ_GL891993.1": 11,
+        "NZ_GL892003.1": 11,
+        "NZ_GL891987.1": 11,
+        "NZ_GL891996.1": 11,
+        "NZ_GL891982.1": 11,
+        "NZ_GL891991.1": 11,
+        "NZ_GL892001.1": 11,
+        "NZ_GL891999.1": 11,
+        "NZ_GL891985.1": 11,
+        "NZ_GL891994.1": 11,
+        "NZ_GL891980.1": 11
       }
     }
   ],
@@ -252,8 +280,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/213/555/GCF_000213555.1/bbi/GCF_000213555.1_Dysg_gade_ATCC_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/213/555/GCF_000213555.1/bbi/GCF_000213555.1_Dysg_gade_ATCC_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000213555.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

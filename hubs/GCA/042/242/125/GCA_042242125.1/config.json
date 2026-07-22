@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_042242125.1",
           "ucsc": {
             "genome": "GCA_042242125.1",
             "taxId": "3127111",
@@ -398,7 +399,66 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/242/125/GCA_042242125.1/bbi/GCA_042242125.1_fPemKlu1.hap2.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/242/125/GCA_042242125.1/bbi/GCA_042242125.1_fPemKlu1.hap2.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_042242125.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/042/242/125/GCA_042242125.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_042242125.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_042242125.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/042/242/125/GCA_042242125.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_042242125.1_to_GCF_042242105.1_liftOver",
+      "name": "GCA_042242125.1 (rough bullseye (RE-2024b hap2 2024)) to rouch bullseye (RE-2024b hap1 2024 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_042242125.1", "GCF_042242105.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_042242125.1",
+        "queryAssembly": "GCF_042242105.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_042242125.1ToGCF_042242105.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_042242125.1ToGCF_042242105.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

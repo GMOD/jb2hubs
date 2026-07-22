@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000369885.1",
           "ucsc": {
             "genome": "GCF_000369885.1",
             "taxId": "1217716",
@@ -37,6 +38,28 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/369/885/GCF_000369885.1/GCF_000369885.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KB850272.1": 11,
+        "NZ_KB850265.1": 11,
+        "NZ_KB850258.1": 11,
+        "NZ_KB850260.1": 11,
+        "NZ_KB850268.1": 11,
+        "NZ_KB850270.1": 11,
+        "NZ_KB850263.1": 11,
+        "NZ_KB850256.1": 11,
+        "NZ_KB850273.1": 11,
+        "NZ_KB850266.1": 11,
+        "NZ_KB850259.1": 11,
+        "NZ_KB850261.1": 11,
+        "NZ_KB850254.1": 11,
+        "NZ_KB850269.1": 11,
+        "NZ_KB850271.1": 11,
+        "NZ_KB850264.1": 11,
+        "NZ_KB850257.1": 11,
+        "NZ_KB850267.1": 11,
+        "NZ_KB850262.1": 11,
+        "NZ_KB850255.1": 11
       }
     }
   ],
@@ -252,8 +275,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/369/885/GCF_000369885.1/bbi/GCF_000369885.1_Acin_ursi_NIPH_706_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/369/885/GCF_000369885.1/bbi/GCF_000369885.1_Acin_ursi_NIPH_706_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000369885.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000223485.1",
           "ucsc": {
             "genome": "GCF_000223485.1",
             "taxId": "619300",
@@ -37,6 +38,16 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/GCF_000223485.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NW_006767432.1": 12,
+        "NW_006767425.1": 12,
+        "NW_006767428.1": 12,
+        "NW_006767430.1": 12,
+        "NW_006767426.1": 12,
+        "NW_006767429.1": 12,
+        "NW_006767431.1": 12,
+        "NW_006767427.1": 12
       }
     }
   ],
@@ -297,8 +308,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/bbi/GCF_000223485.1_Spathaspora_passalidarum_v2.0.ncbiRefSeq.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/bbi/GCF_000223485.1_Spathaspora_passalidarum_v2.0.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000223485.1-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -329,8 +350,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/bbi/GCF_000223485.1_Spathaspora_passalidarum_v2.0.ncbiRefSeqPredicted.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/bbi/GCF_000223485.1_Spathaspora_passalidarum_v2.0.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000223485.1-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
@@ -514,8 +545,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/bbi/GCF_000223485.1_Spathaspora_passalidarum_v2.0.xenoRefGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/223/485/GCF_000223485.1/bbi/GCF_000223485.1_Spathaspora_passalidarum_v2.0.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000223485.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

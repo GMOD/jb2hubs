@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_965221665.1",
           "ucsc": {
             "genome": "GCF_965221665.1",
             "taxId": "426481",
@@ -37,6 +38,11 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/221/665/GCF_965221665.1/GCF_965221665.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CBDCSN010000002.1": 11,
+        "NZ_CBDCSN010000003.1": 11,
+        "NZ_CBDCSN010000001.1": 11
       }
     }
   ],
@@ -204,8 +210,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/221/665/GCF_965221665.1/bbi/GCF_965221665.1_odCliDeli1.Tenacibaculum_aiptasiae_1.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/221/665/GCF_965221665.1/bbi/GCF_965221665.1_odCliDeli1.Tenacibaculum_aiptasiae_1.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_965221665.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

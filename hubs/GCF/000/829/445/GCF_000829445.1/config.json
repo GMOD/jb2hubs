@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000829445.1",
           "ucsc": {
             "genome": "GCF_000829445.1",
             "taxId": "135826",
@@ -37,6 +38,35 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/829/445/GCF_000829445.1/GCF_000829445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JXRQ01000029.1": 11,
+        "NZ_JXRQ01000002.1": 11,
+        "NZ_JXRQ01000031.1": 11,
+        "NZ_JXRQ01000024.1": 11,
+        "NZ_JXRQ01000017.1": 11,
+        "NZ_JXRQ01000012.1": 11,
+        "NZ_JXRQ01000005.1": 11,
+        "NZ_JXRQ01000027.1": 11,
+        "NZ_JXRQ01000022.1": 11,
+        "NZ_JXRQ01000015.1": 11,
+        "NZ_JXRQ01000008.1": 11,
+        "NZ_JXRQ01000010.1": 11,
+        "NZ_JXRQ01000003.1": 11,
+        "NZ_JXRQ01000032.1": 11,
+        "NZ_JXRQ01000025.1": 11,
+        "NZ_JXRQ01000018.1": 11,
+        "NZ_JXRQ01000020.1": 11,
+        "NZ_JXRQ01000028.1": 11,
+        "NZ_JXRQ01000030.1": 11,
+        "NZ_JXRQ01000016.1": 11,
+        "NZ_JXRQ01000009.1": 11,
+        "NZ_JXRQ01000011.1": 11,
+        "NZ_JXRQ01000026.1": 11,
+        "NZ_JXRQ01000019.1": 11,
+        "NZ_JXRQ01000021.1": 11,
+        "NZ_JXRQ01000014.1": 11,
+        "NZ_JXRQ01000007.1": 11
       }
     }
   ],
@@ -204,8 +234,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/829/445/GCF_000829445.1/bbi/GCF_000829445.1_ASM82944v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/829/445/GCF_000829445.1/bbi/GCF_000829445.1_ASM82944v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000829445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

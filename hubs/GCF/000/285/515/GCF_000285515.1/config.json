@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000285515.1",
           "ucsc": {
             "genome": "GCF_000285515.1",
             "taxId": "1033743",
@@ -37,6 +38,65 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/285/515/GCF_000285515.1/GCF_000285515.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAES01000138.1": 11,
+        "NZ_CAES01000123.1": 11,
+        "NZ_CAES01000144.1": 11,
+        "NZ_CAES01000161.1": 11,
+        "NZ_CAES01000150.1": 11,
+        "NZ_HE610957.1": 11,
+        "NZ_HE610963.1": 11,
+        "NZ_CAES01000128.1": 11,
+        "NZ_CAES01000149.1": 11,
+        "NZ_CAES01000134.1": 11,
+        "NZ_CAES01000155.1": 11,
+        "NZ_CAES01000140.1": 11,
+        "NZ_HE610968.1": 11,
+        "NZ_HE610974.1": 11,
+        "NZ_CAES01000139.1": 11,
+        "NZ_CAES01000124.1": 11,
+        "NZ_CAES01000145.1": 11,
+        "NZ_CAES01000162.1": 11,
+        "NZ_CAES01000151.1": 11,
+        "NZ_HE610958.1": 11,
+        "NZ_HE610964.1": 11,
+        "NZ_HE610970.1": 11,
+        "NZ_CAES01000135.1": 11,
+        "NZ_CAES01000120.1": 11,
+        "NZ_CAES01000156.1": 11,
+        "NZ_CAES01000141.1": 11,
+        "NZ_CAES01000173.1": 11,
+        "NZ_HE610969.1": 11,
+        "NZ_HE610960.1": 11,
+        "NZ_CAES01000125.1": 11,
+        "NZ_CAES01000146.1": 11,
+        "NZ_CAES01000131.1": 11,
+        "NZ_CAES01000163.1": 11,
+        "NZ_CAES01000152.1": 11,
+        "NZ_HE610959.1": 11,
+        "NZ_HE610965.1": 11,
+        "NZ_CAES01000136.1": 11,
+        "NZ_CAES01000121.1": 11,
+        "NZ_CAES01000168.1": 11,
+        "NZ_CAES01000157.1": 11,
+        "NZ_CAES01000142.1": 11,
+        "NZ_HE610961.1": 11,
+        "NZ_CAES01000126.1": 11,
+        "NZ_CAES01000132.1": 11,
+        "NZ_CAES01000153.1": 11,
+        "NZ_CAES01000170.1": 11,
+        "NZ_HE610966.1": 11,
+        "NZ_HE610972.1": 11,
+        "NZ_CAES01000137.1": 11,
+        "NZ_CAES01000122.1": 11,
+        "NZ_CAES01000143.1": 11,
+        "NZ_HE610962.1": 11,
+        "NZ_CAES01000127.1": 11,
+        "NZ_CAES01000148.1": 11,
+        "NZ_CAES01000133.1": 11,
+        "NZ_HE610967.1": 11,
+        "NZ_HE610973.1": 11
       }
     }
   ],
@@ -252,8 +312,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/285/515/GCF_000285515.1/bbi/GCF_000285515.1_ASM28551v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/285/515/GCF_000285515.1/bbi/GCF_000285515.1_ASM28551v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000285515.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

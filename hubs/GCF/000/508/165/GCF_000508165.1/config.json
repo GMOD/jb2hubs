@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000508165.1",
           "ucsc": {
             "genome": "GCF_000508165.1",
             "taxId": "1208321",
@@ -37,6 +38,59 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/508/165/GCF_000508165.1/GCF_000508165.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AYOZ01000061.1": 11,
+        "NZ_AYOZ01000007.1": 11,
+        "NZ_AYOZ01000028.1": 11,
+        "NZ_AYOZ01000013.1": 11,
+        "NZ_AYOZ01000045.1": 11,
+        "NZ_AYOZ01000034.1": 11,
+        "NZ_AYOZ01000051.1": 11,
+        "NZ_AYOZ01000018.1": 11,
+        "NZ_AYOZ01000003.1": 11,
+        "NZ_AYOZ01000039.1": 11,
+        "NZ_AYOZ01000024.1": 11,
+        "NZ_AYOZ01000056.1": 11,
+        "NZ_AYOZ01000041.1": 11,
+        "NZ_AYOZ01000062.1": 11,
+        "NZ_AYOZ01000008.1": 11,
+        "NZ_AYOZ01000029.1": 11,
+        "NZ_AYOZ01000014.1": 11,
+        "NZ_AYOZ01000035.1": 11,
+        "NZ_AYOZ01000020.1": 11,
+        "NZ_AYOZ01000052.1": 11,
+        "NZ_AYOZ01000019.1": 11,
+        "NZ_AYOZ01000004.1": 11,
+        "NZ_AYOZ01000025.1": 11,
+        "NZ_AYOZ01000010.1": 11,
+        "NZ_AYOZ01000057.1": 11,
+        "NZ_AYOZ01000042.1": 11,
+        "NZ_AYOZ01000009.1": 11,
+        "NZ_AYOZ01000015.1": 11,
+        "NZ_AYOZ01000047.1": 11,
+        "NZ_AYOZ01000021.1": 11,
+        "NZ_AYOZ01000053.1": 11,
+        "NZ_AYOZ01000005.1": 11,
+        "NZ_AYOZ01000026.1": 11,
+        "NZ_AYOZ01000011.1": 11,
+        "NZ_AYOZ01000032.1": 11,
+        "NZ_AYOZ01000016.1": 11,
+        "NZ_AYOZ01000001.1": 11,
+        "NZ_AYOZ01000048.1": 11,
+        "NZ_AYOZ01000037.1": 11,
+        "NZ_AYOZ01000022.1": 11,
+        "NZ_AYOZ01000060.1": 11,
+        "NZ_AYOZ01000006.1": 11,
+        "NZ_AYOZ01000027.1": 11,
+        "NZ_AYOZ01000012.1": 11,
+        "NZ_AYOZ01000033.1": 11,
+        "NZ_AYOZ01000017.1": 11,
+        "NZ_AYOZ01000002.1": 11,
+        "NZ_AYOZ01000049.1": 11,
+        "NZ_AYOZ01000023.1": 11,
+        "NZ_AYOZ01000055.1": 11,
+        "NZ_AYOZ01000040.1": 11
       }
     }
   ],
@@ -204,8 +258,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/508/165/GCF_000508165.1/bbi/GCF_000508165.1_SOAPdenovo_for_version_v2.01_of_the_Marinomonas_sp._D104_genome.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/508/165/GCF_000508165.1/bbi/GCF_000508165.1_SOAPdenovo_for_version_v2.01_of_the_Marinomonas_sp._D104_genome.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000508165.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

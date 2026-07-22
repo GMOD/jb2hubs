@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_964307465.1",
           "ucsc": {
             "genome": "GCF_964307465.1",
             "taxId": "2173",
@@ -37,6 +38,26 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/465/GCF_964307465.1/GCF_964307465.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAYBBN010000030.1": 11,
+        "NZ_CAYBBN010000023.1": 11,
+        "NZ_CAYBBN010000017.1": 11,
+        "NZ_CAYBBN010000026.1": 11,
+        "NZ_CAYBBN010000005.1": 11,
+        "NZ_CAYBBN010000029.1": 11,
+        "NZ_CAYBBN010000024.1": 11,
+        "NZ_CAYBBN010000010.1": 11,
+        "NZ_CAYBBN010000018.1": 11,
+        "NZ_CAYBBN010000027.1": 11,
+        "NZ_CAYBBN010000013.1": 11,
+        "NZ_CAYBBN010000022.1": 11,
+        "NZ_CAYBBN010000009.1": 11,
+        "NZ_CAYBBN010000025.1": 11,
+        "NZ_CAYBBN010000004.1": 11,
+        "NZ_CAYBBN010000020.1": 11,
+        "NZ_CAYBBN010000019.1": 11,
+        "NZ_CAYBBN010000028.1": 11
       }
     }
   ],
@@ -204,8 +225,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/465/GCF_964307465.1/bbi/GCF_964307465.1_EST-A-0024_Methanobrevibacter_A-smithii.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/964/307/465/GCF_964307465.1/bbi/GCF_964307465.1_EST-A-0024_Methanobrevibacter_A-smithii.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_964307465.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

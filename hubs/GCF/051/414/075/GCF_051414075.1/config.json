@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_051414075.1",
           "ucsc": {
             "genome": "GCF_051414075.1",
             "taxId": "3396620",
@@ -37,6 +38,18 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/051/414/075/GCF_051414075.1/GCF_051414075.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JBLKNY010000007.1": 11,
+        "NZ_JBLKNY010000002.1": 11,
+        "NZ_JBLKNY010000005.1": 11,
+        "NZ_JBLKNY010000008.1": 11,
+        "NZ_JBLKNY010000003.1": 11,
+        "NZ_JBLKNY010000006.1": 11,
+        "NZ_JBLKNY010000001.1": 11,
+        "NZ_JBLKNY010000009.1": 11,
+        "NZ_JBLKNY010000011.1": 11,
+        "NZ_JBLKNY010000004.1": 11
       }
     }
   ],
@@ -178,8 +191,8 @@
       "metadata": {
         "ucsc": {
           "track": "ncbiGene",
-          "longLabel": "NCBI gene predictions",
-          "shortLabel": "NCBI Genes",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
           "visibility": "pack",
           "color": "0,80,150",
           "altColor": "150,80,0",
@@ -191,21 +204,31 @@
           "searchIndex": "name",
           "searchTrix": "ixIxx/GCF_051414075.1_ASM5141407v1.ncbiGene.ix",
           "urlLabel": "Entrez gene:",
-          "labelFields": "name,geneName,geneName2",
+          "labelFields": "geneName,geneName2",
           "defaultLabelFields": "geneName2",
           "group": "genes"
         }
       },
       "category": ["Genes and Gene Predictions"],
       "trackId": "GCF_051414075.1-ncbiGene",
-      "description": "NCBI gene predictions",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
       "assemblyNames": ["GCF_051414075.1"],
-      "name": "NCBI Genes",
+      "name": "NCBI GenBank",
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/051/414/075/GCF_051414075.1/bbi/GCF_051414075.1_ASM5141407v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/051/414/075/GCF_051414075.1/bbi/GCF_051414075.1_ASM5141407v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_051414075.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

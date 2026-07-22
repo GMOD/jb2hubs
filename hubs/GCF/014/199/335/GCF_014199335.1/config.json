@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014199335.1",
           "ucsc": {
             "genome": "GCF_014199335.1",
             "taxId": "463200",
@@ -37,6 +38,32 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/199/335/GCF_014199335.1/GCF_014199335.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JACIJI010000011.1": 11,
+        "NZ_JACIJI010000004.1": 11,
+        "NZ_JACIJI010000019.1": 11,
+        "NZ_JACIJI010000021.1": 11,
+        "NZ_JACIJI010000014.1": 11,
+        "NZ_JACIJI010000007.1": 11,
+        "NZ_JACIJI010000002.1": 11,
+        "NZ_JACIJI010000024.1": 11,
+        "NZ_JACIJI010000017.1": 11,
+        "NZ_JACIJI010000012.1": 11,
+        "NZ_JACIJI010000005.1": 11,
+        "NZ_JACIJI010000022.1": 11,
+        "NZ_JACIJI010000015.1": 11,
+        "NZ_JACIJI010000008.1": 11,
+        "NZ_JACIJI010000010.1": 11,
+        "NZ_JACIJI010000003.1": 11,
+        "NZ_JACIJI010000018.1": 11,
+        "NZ_JACIJI010000020.1": 11,
+        "NZ_JACIJI010000013.1": 11,
+        "NZ_JACIJI010000006.1": 11,
+        "NZ_JACIJI010000001.1": 11,
+        "NZ_JACIJI010000023.1": 11,
+        "NZ_JACIJI010000016.1": 11,
+        "NZ_JACIJI010000009.1": 11
       }
     }
   ],
@@ -204,8 +231,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/199/335/GCF_014199335.1/bbi/GCF_014199335.1_ASM1419933v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/199/335/GCF_014199335.1/bbi/GCF_014199335.1_ASM1419933v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014199335.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

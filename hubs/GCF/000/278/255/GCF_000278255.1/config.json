@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000278255.1",
           "ucsc": {
             "genome": "GCF_000278255.1",
             "taxId": "1094557",
@@ -37,6 +38,21 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/278/255/GCF_000278255.1/GCF_000278255.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH725092.1": 11,
+        "NZ_JH725085.1": 11,
+        "NZ_JH725088.1": 11,
+        "NZ_JH725090.1": 11,
+        "NZ_JH725083.1": 11,
+        "NZ_JH725093.1": 11,
+        "NZ_JH725086.1": 11,
+        "NZ_JH725081.1": 11,
+        "NZ_JH725089.1": 11,
+        "NZ_JH725091.1": 11,
+        "NZ_JH725084.1": 11,
+        "NZ_JH725087.1": 11,
+        "NZ_JH725082.1": 11
       }
     }
   ],
@@ -252,8 +268,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/278/255/GCF_000278255.1/bbi/GCF_000278255.1_Bart_melo_K-2C_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/278/255/GCF_000278255.1/bbi/GCF_000278255.1_Bart_melo_K-2C_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000278255.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

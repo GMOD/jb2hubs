@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_965263415.1",
           "ucsc": {
             "genome": "GCF_965263415.1",
             "taxId": "2024843",
@@ -37,6 +38,11 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/263/415/GCF_965263415.1/GCF_965263415.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CBDHHI010000001.1": 11,
+        "NZ_OZ253671.1": 11,
+        "NZ_CBDHHI010000002.1": 11
       }
     }
   ],
@@ -204,8 +210,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/263/415/GCF_965263415.1/bbi/GCF_965263415.1_jsCotTube1.Nitrosopumilus_sp_2.1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/965/263/415/GCF_965263415.1/bbi/GCF_965263415.1_jsCotTube1.Nitrosopumilus_sp_2.1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_965263415.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

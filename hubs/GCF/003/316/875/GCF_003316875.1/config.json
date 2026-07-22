@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_003316875.1",
           "ucsc": {
             "genome": "GCF_003316875.1",
             "taxId": "2249428",
@@ -37,6 +38,29 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/316/875/GCF_003316875.1/GCF_003316875.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_QMIL01000053.1": 11,
+        "NZ_QMIL01000027.1": 11,
+        "NZ_QMIL01000006.1": 11,
+        "NZ_QMIL01000001.1": 11,
+        "NZ_QMIL01000051.1": 11,
+        "NZ_QMIL01000044.1": 11,
+        "NZ_QMIL01000009.1": 11,
+        "NZ_QMIL01000004.1": 11,
+        "NZ_QMIL01000020.1": 11,
+        "NZ_QMIL01000035.1": 11,
+        "NZ_QMIL01000007.1": 11,
+        "NZ_QMIL01000030.1": 11,
+        "NZ_QMIL01000016.1": 11,
+        "NZ_QMIL01000002.1": 11,
+        "NZ_QMIL01000040.1": 11,
+        "NZ_QMIL01000033.1": 11,
+        "NZ_QMIL01000019.1": 11,
+        "NZ_QMIL01000005.1": 11,
+        "NZ_QMIL01000029.1": 11,
+        "NZ_QMIL01000008.1": 11,
+        "NZ_QMIL01000003.1": 11
       }
     }
   ],
@@ -204,8 +228,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/316/875/GCF_003316875.1/bbi/GCF_003316875.1_ASM331687v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/003/316/875/GCF_003316875.1/bbi/GCF_003316875.1_ASM331687v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_003316875.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

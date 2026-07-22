@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_943193095.1",
           "ucsc": {
             "genome": "GCF_943193095.1",
             "taxId": "2565572",
@@ -37,6 +38,77 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/943/193/095/GCF_943193095.1/GCF_943193095.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CALPCV010000063.1": 11,
+        "NZ_CALPCV010000052.1": 11,
+        "NZ_CALPCV010000009.1": 11,
+        "NZ_CALPCV010000015.1": 11,
+        "NZ_CALPCV010000036.1": 11,
+        "NZ_CALPCV010000021.1": 11,
+        "NZ_CALPCV010000068.1": 11,
+        "NZ_CALPCV010000057.1": 11,
+        "NZ_CALPCV010000042.1": 11,
+        "NZ_CALPCV010000005.1": 11,
+        "NZ_CALPCV010000026.1": 11,
+        "NZ_CALPCV010000011.1": 11,
+        "NZ_CALPCV010000047.1": 11,
+        "NZ_CALPCV010000032.1": 11,
+        "NZ_CALPCV010000053.1": 11,
+        "NZ_CALPCV010000070.1": 11,
+        "NZ_CALPCV010000016.1": 11,
+        "NZ_CALPCV010000001.1": 11,
+        "NZ_CALPCV010000037.1": 11,
+        "NZ_CALPCV010000022.1": 11,
+        "NZ_CALPCV010000069.1": 11,
+        "NZ_CALPCV010000043.1": 11,
+        "NZ_CALPCV010000060.1": 11,
+        "NZ_CALPCV010000006.1": 11,
+        "NZ_CALPCV010000027.1": 11,
+        "NZ_CALPCV010000012.1": 11,
+        "NZ_CALPCV010000048.1": 11,
+        "NZ_CALPCV010000033.1": 11,
+        "NZ_CALPCV010000065.1": 11,
+        "NZ_CALPCV010000054.1": 11,
+        "NZ_CALPCV010000071.1": 11,
+        "NZ_CALPCV010000017.1": 11,
+        "NZ_CALPCV010000002.1": 11,
+        "NZ_CALPCV010000038.1": 11,
+        "NZ_CALPCV010000023.1": 11,
+        "NZ_CALPCV010000059.1": 11,
+        "NZ_CALPCV010000044.1": 11,
+        "NZ_CALPCV010000050.1": 11,
+        "NZ_CALPCV010000007.1": 11,
+        "NZ_CALPCV010000028.1": 11,
+        "NZ_CALPCV010000013.1": 11,
+        "NZ_CALPCV010000049.1": 11,
+        "NZ_CALPCV010000034.1": 11,
+        "NZ_CALPCV010000066.1": 11,
+        "NZ_CALPCV010000055.1": 11,
+        "NZ_CALPCV010000040.1": 11,
+        "NZ_CALPCV010000072.1": 11,
+        "NZ_CALPCV010000018.1": 11,
+        "NZ_CALPCV010000003.1": 11,
+        "NZ_CALPCV010000039.1": 11,
+        "NZ_CALPCV010000024.1": 11,
+        "NZ_CALPCV010000045.1": 11,
+        "NZ_CALPCV010000030.1": 11,
+        "NZ_CALPCV010000062.1": 11,
+        "NZ_CALPCV010000051.1": 11,
+        "NZ_CALPCV010000008.1": 11,
+        "NZ_CALPCV010000029.1": 11,
+        "NZ_CALPCV010000014.1": 11,
+        "NZ_CALPCV010000035.1": 11,
+        "NZ_CALPCV010000020.1": 11,
+        "NZ_CALPCV010000067.1": 11,
+        "NZ_CALPCV010000056.1": 11,
+        "NZ_CALPCV010000041.1": 11,
+        "NZ_CALPCV010000019.1": 11,
+        "NZ_CALPCV010000004.1": 11,
+        "NZ_CALPCV010000025.1": 11,
+        "NZ_CALPCV010000010.1": 11,
+        "NZ_CALPCV010000046.1": 11,
+        "NZ_CALPCV010000031.1": 11
       }
     }
   ],
@@ -204,8 +276,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/943/193/095/GCF_943193095.1/bbi/GCF_943193095.1_Parasutterella_sp_nov_DSM111000.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/943/193/095/GCF_943193095.1/bbi/GCF_943193095.1_Parasutterella_sp_nov_DSM111000.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_943193095.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

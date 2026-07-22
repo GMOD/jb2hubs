@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002094855.1",
           "ucsc": {
             "genome": "GCF_002094855.1",
             "taxId": "1185767",
@@ -37,6 +38,90 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/094/855/GCF_002094855.1/GCF_002094855.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_ARYN01000085.1": 11,
+        "NZ_ARYN01000070.1": 11,
+        "NZ_ARYN01000016.1": 11,
+        "NZ_ARYN01000001.1": 11,
+        "NZ_ARYN01000048.1": 11,
+        "NZ_ARYN01000037.1": 11,
+        "NZ_ARYN01000022.1": 11,
+        "NZ_ARYN01000069.1": 11,
+        "NZ_ARYN01000054.1": 11,
+        "NZ_ARYN01000075.1": 11,
+        "NZ_ARYN01000060.1": 11,
+        "NZ_ARYN01000006.1": 11,
+        "NZ_ARYN01000012.1": 11,
+        "NZ_ARYN01000027.1": 11,
+        "NZ_ARYN01000059.1": 11,
+        "NZ_ARYN01000044.1": 11,
+        "NZ_ARYN01000033.1": 11,
+        "NZ_ARYN01000065.1": 11,
+        "NZ_ARYN01000050.1": 11,
+        "NZ_ARYN01000086.1": 11,
+        "NZ_ARYN01000071.1": 11,
+        "NZ_ARYN01000017.1": 11,
+        "NZ_ARYN01000002.1": 11,
+        "NZ_ARYN01000049.1": 11,
+        "NZ_ARYN01000038.1": 11,
+        "NZ_ARYN01000023.1": 11,
+        "NZ_ARYN01000055.1": 11,
+        "NZ_ARYN01000040.1": 11,
+        "NZ_ARYN01000076.1": 11,
+        "NZ_ARYN01000061.1": 11,
+        "NZ_ARYN01000082.1": 11,
+        "NZ_ARYN01000007.1": 11,
+        "NZ_ARYN01000028.1": 11,
+        "NZ_ARYN01000013.1": 11,
+        "NZ_ARYN01000045.1": 11,
+        "NZ_ARYN01000034.1": 11,
+        "NZ_ARYN01000066.1": 11,
+        "NZ_ARYN01000051.1": 11,
+        "NZ_ARYN01000072.1": 11,
+        "NZ_ARYN01000018.1": 11,
+        "NZ_ARYN01000003.1": 11,
+        "NZ_ARYN01000039.1": 11,
+        "NZ_ARYN01000024.1": 11,
+        "NZ_ARYN01000056.1": 11,
+        "NZ_ARYN01000030.1": 11,
+        "NZ_ARYN01000083.1": 11,
+        "NZ_ARYN01000008.1": 11,
+        "NZ_ARYN01000029.1": 11,
+        "NZ_ARYN01000014.1": 11,
+        "NZ_ARYN01000046.1": 11,
+        "NZ_ARYN01000035.1": 11,
+        "NZ_ARYN01000020.1": 11,
+        "NZ_ARYN01000067.1": 11,
+        "NZ_ARYN01000052.1": 11,
+        "NZ_ARYN01000088.1": 11,
+        "NZ_ARYN01000073.1": 11,
+        "NZ_ARYN01000019.1": 11,
+        "NZ_ARYN01000004.1": 11,
+        "NZ_ARYN01000025.1": 11,
+        "NZ_ARYN01000010.1": 11,
+        "NZ_ARYN01000057.1": 11,
+        "NZ_ARYN01000042.1": 11,
+        "NZ_ARYN01000031.1": 11,
+        "NZ_ARYN01000078.1": 11,
+        "NZ_ARYN01000063.1": 11,
+        "NZ_ARYN01000009.1": 11,
+        "NZ_ARYN01000015.1": 11,
+        "NZ_ARYN01000047.1": 11,
+        "NZ_ARYN01000036.1": 11,
+        "NZ_ARYN01000021.1": 11,
+        "NZ_ARYN01000068.1": 11,
+        "NZ_ARYN01000053.1": 11,
+        "NZ_ARYN01000089.1": 11,
+        "NZ_ARYN01000074.1": 11,
+        "NZ_ARYN01000005.1": 11,
+        "NZ_ARYN01000026.1": 11,
+        "NZ_ARYN01000011.1": 11,
+        "NZ_ARYN01000058.1": 11,
+        "NZ_ARYN01000043.1": 11,
+        "NZ_ARYN01000032.1": 11,
+        "NZ_ARYN01000079.1": 11,
+        "NZ_ARYN01000064.1": 11
       }
     }
   ],
@@ -204,8 +289,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/094/855/GCF_002094855.1/bbi/GCF_002094855.1_ASM209485v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/094/855/GCF_002094855.1/bbi/GCF_002094855.1_ASM209485v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002094855.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

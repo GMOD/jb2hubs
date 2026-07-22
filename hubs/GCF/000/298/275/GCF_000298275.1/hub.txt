@@ -20,6 +20,7 @@ htmlPath html/GCF_000298275.1_OryAfe1.0.description.html
 blat dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1
 transBlat dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1
 isPcr dynablat-01.soe.ucsc.edu 4041 dynamic GCF/000/298/275/GCF_000298275.1
+liftOver.GCF_048772815.1 liftOver/GCF_000298275.1ToGCF_048772815.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -253,6 +254,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_000298275.1_OryAfe1.0.xenoRefGene.ix
 html html/GCF_000298275.1_OryAfe1.0.xenoRefGene
+
+##############################################################################
+# GCF_048772815.1 - golden-mantled ground squirrel - Callospermophilus lateralis - taxId: 76772
+##############################################################################
+track chainNetGCF_048772815.1
+compositeTrack on
+shortLabel golden-mantled ground squirrel Chain/Net
+longLabel golden-mantled ground squirrel (2025-03-21), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_048772815.1
+html html/GCF_000298275.1_OryAfe1.0.chainNet
+
+    track chainNetGCF_048772815.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_048772815.1
+    spectrum on
+
+        track chainGCF_048772815.1
+        parent chainNetGCF_048772815.1Viewchain
+        subGroups view=chain
+        shortLabel golden-mantled ground squirrel Chain
+        longLabel golden-mantled ground squirrel (2025-03-21) Chained Alignments
+        type bigChain GCF_048772815.1
+        bigDataUrl bbi/GCF_000298275.1_OryAfe1.0.chainGCF_048772815.1.bb
+        linkDataUrl bbi/GCF_000298275.1_OryAfe1.0.chainGCF_048772815.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_048772815.1
+        parent chainNetGCF_048772815.1Viewchain
+        subGroups view=chain
+        shortLabel golden-mantled ground squirrel loChain
+        longLabel golden-mantled ground squirrel (2025-03-21) Lift Over Chained Alignments
+        type bigChain GCF_048772815.1
+        bigDataUrl bbi/GCF_000298275.1_OryAfe1.0.chainLiftOverGCF_048772815.1.bb
+        linkDataUrl bbi/GCF_000298275.1_OryAfe1.0.chainLiftOverGCF_048772815.1Link.bb
+        priority 2
 
 
 track Tiberius

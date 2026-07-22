@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_016862695.1",
           "ucsc": {
             "genome": "GCF_016862695.1",
             "taxId": "264297",
@@ -37,6 +38,61 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/862/695/GCF_016862695.1/GCF_016862695.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BONL01000017.1": 11,
+        "NZ_BONL01000002.1": 11,
+        "NZ_BONL01000038.1": 11,
+        "NZ_BONL01000023.1": 11,
+        "NZ_BONL01000007.1": 11,
+        "NZ_BONL01000028.1": 11,
+        "NZ_BONL01000013.1": 11,
+        "NZ_BONL01000049.1": 11,
+        "NZ_BONL01000034.1": 11,
+        "NZ_BONL01000051.1": 11,
+        "NZ_BONL01000040.1": 11,
+        "NZ_BONL01000018.1": 11,
+        "NZ_BONL01000003.1": 11,
+        "NZ_BONL01000039.1": 11,
+        "NZ_BONL01000024.1": 11,
+        "NZ_BONL01000045.1": 11,
+        "NZ_BONL01000030.1": 11,
+        "NZ_BONL01000008.1": 11,
+        "NZ_BONL01000014.1": 11,
+        "NZ_BONL01000029.1": 11,
+        "NZ_BONL01000035.1": 11,
+        "NZ_BONL01000020.1": 11,
+        "NZ_BONL01000052.1": 11,
+        "NZ_BONL01000041.1": 11,
+        "NZ_BONL01000019.1": 11,
+        "NZ_BONL01000004.1": 11,
+        "NZ_BONL01000025.1": 11,
+        "NZ_BONL01000010.1": 11,
+        "NZ_BONL01000046.1": 11,
+        "NZ_BONL01000031.1": 11,
+        "NZ_BONL01000009.1": 11,
+        "NZ_BONL01000015.1": 11,
+        "NZ_BONL01000021.1": 11,
+        "NZ_BONL01000036.1": 11,
+        "NZ_BONL01000053.1": 11,
+        "NZ_BONL01000042.1": 11,
+        "NZ_BONL01000005.1": 11,
+        "NZ_BONL01000026.1": 11,
+        "NZ_BONL01000011.1": 11,
+        "NZ_BONL01000047.1": 11,
+        "NZ_BONL01000032.1": 11,
+        "NZ_BONL01000016.1": 11,
+        "NZ_BONL01000001.1": 11,
+        "NZ_BONL01000037.1": 11,
+        "NZ_BONL01000022.1": 11,
+        "NZ_BONL01000054.1": 11,
+        "NZ_BONL01000043.1": 11,
+        "NZ_BONL01000006.1": 11,
+        "NZ_BONL01000027.1": 11,
+        "NZ_BONL01000012.1": 11,
+        "NZ_BONL01000048.1": 11,
+        "NZ_BONL01000033.1": 11,
+        "NZ_BONL01000050.1": 11
       }
     }
   ],
@@ -204,8 +260,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/862/695/GCF_016862695.1/bbi/GCF_016862695.1_ASM1686269v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/862/695/GCF_016862695.1/bbi/GCF_016862695.1_ASM1686269v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_016862695.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

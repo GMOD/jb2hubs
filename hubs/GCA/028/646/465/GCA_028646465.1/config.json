@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCA_028646465.1",
           "ucsc": {
             "genome": "GCA_028646465.1",
             "taxId": "9809",
@@ -187,7 +188,8 @@
           "group": "varRep",
           "bigDataUrl": "bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.rmsk.bb",
           "xrefDataUrl": "bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.rmsk.align.bb",
-          "maxWindowToDraw": "5000000"
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/html/GCA_028646465.1_Rhinoceros_unicornis_HiC.repeatMasker\">html/GCA_028646465.1_Rhinoceros_unicornis_HiC.repeatMasker</a>"
         }
       },
       "category": ["Variation and Repeats"],
@@ -199,6 +201,32 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.rmsk.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "repeatModeler",
+          "shortLabel": "RepeatModeler",
+          "longLabel": "RepeatModeler Repetitive Elements",
+          "type": "bigRmsk 9 +",
+          "visibility": "hide",
+          "group": "varRep",
+          "bigDataUrl": "bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.rModel.bb",
+          "xrefDataUrl": "bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.rModel.align.bb",
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/html/GCA_028646465.1_Rhinoceros_unicornis_HiC.repeatModeler\">html/GCA_028646465.1_Rhinoceros_unicornis_HiC.repeatModeler</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_028646465.1-repeatModeler",
+      "description": "RepeatModeler Repetitive Elements",
+      "assemblyNames": ["GCA_028646465.1"],
+      "name": "RepeatModeler",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.rModel.bb"
       }
     },
     {
@@ -372,7 +400,45 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/bbi/GCA_028646465.1_Rhinoceros_unicornis_HiC.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_028646465.1-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "Tiberius",
+          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
+          "shortLabel": "Tiberius genes",
+          "longLabel": "Tiberius ab initio gene prediction",
+          "type": "bigGenePred",
+          "visibility": "pack",
+          "color": "0,102,204",
+          "noScoreFilter": "on",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
+          "group": "genes",
+          "dataVersion": "Tiberius version 2025-11-10",
+          "baseColorDefault": "genomicCodons"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_028646465.1-Tiberius",
+      "description": "Tiberius ab initio gene prediction",
+      "assemblyNames": ["GCA_028646465.1"],
+      "name": "Tiberius genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/028/646/465/GCA_028646465.1/contrib/tiberius/tiberius.bigGenePred.bb"
       }
     }
   ],

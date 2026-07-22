@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_907165045.1",
           "ucsc": {
             "genome": "GCF_907165045.1",
             "taxId": "2823330",
@@ -37,6 +38,33 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/907/165/045/GCF_907165045.1/GCF_907165045.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAJRAU010000022.1": 11,
+        "NZ_CAJRAU010000001.1": 11,
+        "NZ_CAJRAU010000016.1": 11,
+        "NZ_CAJRAU010000009.1": 11,
+        "NZ_CAJRAU010000025.1": 11,
+        "NZ_CAJRAU010000011.1": 11,
+        "NZ_CAJRAU010000004.1": 11,
+        "NZ_CAJRAU010000014.1": 11,
+        "NZ_CAJRAU010000007.1": 11,
+        "NZ_CAJRAU010000023.1": 11,
+        "NZ_CAJRAU010000002.1": 11,
+        "NZ_CAJRAU010000017.1": 11,
+        "NZ_CAJRAU010000026.1": 11,
+        "NZ_CAJRAU010000012.1": 11,
+        "NZ_CAJRAU010000005.1": 11,
+        "NZ_CAJRAU010000021.1": 11,
+        "NZ_CAJRAU010000015.1": 11,
+        "NZ_CAJRAU010000008.1": 11,
+        "NZ_CAJRAU010000024.1": 11,
+        "NZ_CAJRAU010000010.1": 11,
+        "NZ_CAJRAU010000003.1": 11,
+        "NZ_CAJRAU010000018.1": 11,
+        "NZ_CAJRAU010000027.1": 11,
+        "NZ_CAJRAU010000013.1": 11,
+        "NZ_CAJRAU010000006.1": 11
       }
     }
   ],
@@ -204,8 +232,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/907/165/045/GCF_907165045.1/bbi/GCF_907165045.1_Dyadobacter_CECT9623.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/907/165/045/GCF_907165045.1/bbi/GCF_907165045.1_Dyadobacter_CECT9623.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_907165045.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001488575.1",
           "ucsc": {
             "genome": "GCF_001488575.1",
             "taxId": "1407499",
@@ -37,6 +38,12 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/488/575/GCF_001488575.1/GCF_001488575.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN831302.1": 11,
+        "NZ_LN831305.1": 11,
+        "NZ_LN831303.1": 11,
+        "NZ_LN831304.1": 11
       }
     }
   ],
@@ -204,8 +211,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/488/575/GCF_001488575.1/bbi/GCF_001488575.1_Halobacterium_hubeiense_JI20-1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/488/575/GCF_001488575.1/bbi/GCF_001488575.1_Halobacterium_hubeiense_JI20-1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001488575.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001742345.1",
           "ucsc": {
             "genome": "GCF_001742345.1",
             "taxId": "488731",
@@ -37,6 +38,88 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/742/345/GCF_001742345.1/GCF_001742345.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LAEU01000019.1": 11,
+        "NZ_LAEU01000004.1": 11,
+        "NZ_LAEU01000036.1": 11,
+        "NZ_LAEU01000025.1": 11,
+        "NZ_LAEU01000010.1": 11,
+        "NZ_LAEU01000057.1": 11,
+        "NZ_LAEU01000042.1": 11,
+        "NZ_LAEU01000078.1": 11,
+        "NZ_LAEU01000063.1": 11,
+        "NZ_LAEU01000084.1": 11,
+        "NZ_LAEU01000009.1": 11,
+        "NZ_LAEU01000015.1": 11,
+        "NZ_LAEU01000047.1": 11,
+        "NZ_LAEU01000032.1": 11,
+        "NZ_LAEU01000021.1": 11,
+        "NZ_LAEU01000068.1": 11,
+        "NZ_LAEU01000053.1": 11,
+        "NZ_LAEU01000074.1": 11,
+        "NZ_LAEU01000080.1": 11,
+        "NZ_LAEU01000005.1": 11,
+        "NZ_LAEU01000037.1": 11,
+        "NZ_LAEU01000026.1": 11,
+        "NZ_LAEU01000011.1": 11,
+        "NZ_LAEU01000058.1": 11,
+        "NZ_LAEU01000043.1": 11,
+        "NZ_LAEU01000001.1": 11,
+        "NZ_LAEU01000016.1": 11,
+        "NZ_LAEU01000048.1": 11,
+        "NZ_LAEU01000033.1": 11,
+        "NZ_LAEU01000022.1": 11,
+        "NZ_LAEU01000069.1": 11,
+        "NZ_LAEU01000054.1": 11,
+        "NZ_LAEU01000075.1": 11,
+        "NZ_LAEU01000060.1": 11,
+        "NZ_LAEU01000081.1": 11,
+        "NZ_LAEU01000006.1": 11,
+        "NZ_LAEU01000038.1": 11,
+        "NZ_LAEU01000027.1": 11,
+        "NZ_LAEU01000012.1": 11,
+        "NZ_LAEU01000059.1": 11,
+        "NZ_LAEU01000044.1": 11,
+        "NZ_LAEU01000065.1": 11,
+        "NZ_LAEU01000050.1": 11,
+        "NZ_LAEU01000071.1": 11,
+        "NZ_LAEU01000017.1": 11,
+        "NZ_LAEU01000002.1": 11,
+        "NZ_LAEU01000049.1": 11,
+        "NZ_LAEU01000034.1": 11,
+        "NZ_LAEU01000023.1": 11,
+        "NZ_LAEU01000055.1": 11,
+        "NZ_LAEU01000040.1": 11,
+        "NZ_LAEU01000076.1": 11,
+        "NZ_LAEU01000061.1": 11,
+        "NZ_LAEU01000082.1": 11,
+        "NZ_LAEU01000007.1": 11,
+        "NZ_LAEU01000039.1": 11,
+        "NZ_LAEU01000028.1": 11,
+        "NZ_LAEU01000013.1": 11,
+        "NZ_LAEU01000045.1": 11,
+        "NZ_LAEU01000030.1": 11,
+        "NZ_LAEU01000051.1": 11,
+        "NZ_LAEU01000072.1": 11,
+        "NZ_LAEU01000018.1": 11,
+        "NZ_LAEU01000003.1": 11,
+        "NZ_LAEU01000035.1": 11,
+        "NZ_LAEU01000024.1": 11,
+        "NZ_LAEU01000056.1": 11,
+        "NZ_LAEU01000041.1": 11,
+        "NZ_LAEU01000077.1": 11,
+        "NZ_LAEU01000062.1": 11,
+        "NZ_LAEU01000083.1": 11,
+        "NZ_LAEU01000008.1": 11,
+        "NZ_LAEU01000029.1": 11,
+        "NZ_LAEU01000014.1": 11,
+        "NZ_LAEU01000046.1": 11,
+        "NZ_LAEU01000031.1": 11,
+        "NZ_LAEU01000020.1": 11,
+        "NZ_LAEU01000067.1": 11,
+        "NZ_LAEU01000052.1": 11,
+        "NZ_LAEU01000073.1": 11
       }
     }
   ],
@@ -204,8 +287,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/742/345/GCF_001742345.1/bbi/GCF_001742345.1_ASM174234v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/742/345/GCF_001742345.1/bbi/GCF_001742345.1_ASM174234v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001742345.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

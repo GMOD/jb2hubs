@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001457415.1",
           "ucsc": {
             "genome": "GCF_001457415.1",
             "taxId": "1689269",
@@ -37,6 +38,15 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/457/415/GCF_001457415.1/GCF_001457415.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN881724.1": 11,
+        "NZ_LN881722.1": 11,
+        "NZ_LN881718.1": 11,
+        "NZ_LN881720.1": 11,
+        "NZ_LN881723.1": 11,
+        "NZ_LN881719.1": 11,
+        "NZ_LN881721.1": 11
       }
     }
   ],
@@ -252,8 +262,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/457/415/GCF_001457415.1/bbi/GCF_001457415.1_Gorillibacterium_timonense.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/457/415/GCF_001457415.1/bbi/GCF_001457415.1_Gorillibacterium_timonense.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001457415.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

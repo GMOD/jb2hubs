@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014651015.1",
           "ucsc": {
             "genome": "GCF_014651015.1",
             "taxId": "68285",
@@ -37,6 +38,84 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/651/015/GCF_014651015.1/GCF_014651015.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BMWB01000027.1": 11,
+        "NZ_BMWB01000012.1": 11,
+        "NZ_BMWB01000001.1": 11,
+        "NZ_BMWB01000048.1": 11,
+        "NZ_BMWB01000033.1": 11,
+        "NZ_BMWB01000065.1": 11,
+        "NZ_BMWB01000054.1": 11,
+        "NZ_BMWB01000071.1": 11,
+        "NZ_BMWB01000017.1": 11,
+        "NZ_BMWB01000006.1": 11,
+        "NZ_BMWB01000038.1": 11,
+        "NZ_BMWB01000023.1": 11,
+        "NZ_BMWB01000059.1": 11,
+        "NZ_BMWB01000044.1": 11,
+        "NZ_BMWB01000076.1": 11,
+        "NZ_BMWB01000061.1": 11,
+        "NZ_BMWB01000050.1": 11,
+        "NZ_BMWB01000028.1": 11,
+        "NZ_BMWB01000013.1": 11,
+        "NZ_BMWB01000002.1": 11,
+        "NZ_BMWB01000049.1": 11,
+        "NZ_BMWB01000034.1": 11,
+        "NZ_BMWB01000066.1": 11,
+        "NZ_BMWB01000055.1": 11,
+        "NZ_BMWB01000040.1": 11,
+        "NZ_BMWB01000018.1": 11,
+        "NZ_BMWB01000007.1": 11,
+        "NZ_BMWB01000039.1": 11,
+        "NZ_BMWB01000024.1": 11,
+        "NZ_BMWB01000045.1": 11,
+        "NZ_BMWB01000030.1": 11,
+        "NZ_BMWB01000077.1": 11,
+        "NZ_BMWB01000062.1": 11,
+        "NZ_BMWB01000051.1": 11,
+        "NZ_BMWB01000029.1": 11,
+        "NZ_BMWB01000014.1": 11,
+        "NZ_BMWB01000003.1": 11,
+        "NZ_BMWB01000035.1": 11,
+        "NZ_BMWB01000020.1": 11,
+        "NZ_BMWB01000067.1": 11,
+        "NZ_BMWB01000056.1": 11,
+        "NZ_BMWB01000041.1": 11,
+        "NZ_BMWB01000073.1": 11,
+        "NZ_BMWB01000019.1": 11,
+        "NZ_BMWB01000008.1": 11,
+        "NZ_BMWB01000025.1": 11,
+        "NZ_BMWB01000010.1": 11,
+        "NZ_BMWB01000046.1": 11,
+        "NZ_BMWB01000031.1": 11,
+        "NZ_BMWB01000078.1": 11,
+        "NZ_BMWB01000063.1": 11,
+        "NZ_BMWB01000052.1": 11,
+        "NZ_BMWB01000015.1": 11,
+        "NZ_BMWB01000004.1": 11,
+        "NZ_BMWB01000036.1": 11,
+        "NZ_BMWB01000021.1": 11,
+        "NZ_BMWB01000057.1": 11,
+        "NZ_BMWB01000042.1": 11,
+        "NZ_BMWB01000074.1": 11,
+        "NZ_BMWB01000009.1": 11,
+        "NZ_BMWB01000026.1": 11,
+        "NZ_BMWB01000011.1": 11,
+        "NZ_BMWB01000047.1": 11,
+        "NZ_BMWB01000032.1": 11,
+        "NZ_BMWB01000079.1": 11,
+        "NZ_BMWB01000064.1": 11,
+        "NZ_BMWB01000053.1": 11,
+        "NZ_BMWB01000070.1": 11,
+        "NZ_BMWB01000016.1": 11,
+        "NZ_BMWB01000005.1": 11,
+        "NZ_BMWB01000037.1": 11,
+        "NZ_BMWB01000022.1": 11,
+        "NZ_BMWB01000058.1": 11,
+        "NZ_BMWB01000043.1": 11,
+        "NZ_BMWB01000075.1": 11,
+        "NZ_BMWB01000060.1": 11
       }
     }
   ],
@@ -204,8 +283,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/651/015/GCF_014651015.1/bbi/GCF_014651015.1_ASM1465101v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/651/015/GCF_014651015.1/bbi/GCF_014651015.1_ASM1465101v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014651015.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

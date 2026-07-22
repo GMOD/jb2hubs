@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900197775.1",
           "ucsc": {
             "genome": "GCF_900197775.1",
             "taxId": "56878",
@@ -37,6 +38,78 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/197/775/GCF_900197775.1/GCF_900197775.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FZMA01000005.1": 11,
+        "NZ_FZMA01000026.1": 11,
+        "NZ_FZMA01000011.1": 11,
+        "NZ_FZMA01000058.1": 11,
+        "NZ_FZMA01000047.1": 11,
+        "NZ_FZMA01000032.1": 11,
+        "NZ_FZMA01000064.1": 11,
+        "NZ_FZMA01000070.1": 11,
+        "NZ_FZMA01000016.1": 11,
+        "NZ_FZMA01000001.1": 11,
+        "NZ_FZMA01000037.1": 11,
+        "NZ_FZMA01000022.1": 11,
+        "NZ_FZMA01000069.1": 11,
+        "NZ_FZMA01000054.1": 11,
+        "NZ_FZMA01000043.1": 11,
+        "NZ_FZMA01000060.1": 11,
+        "NZ_FZMA01000006.1": 11,
+        "NZ_FZMA01000027.1": 11,
+        "NZ_FZMA01000012.1": 11,
+        "NZ_FZMA01000059.1": 11,
+        "NZ_FZMA01000048.1": 11,
+        "NZ_FZMA01000033.1": 11,
+        "NZ_FZMA01000065.1": 11,
+        "NZ_FZMA01000050.1": 11,
+        "NZ_FZMA01000071.1": 11,
+        "NZ_FZMA01000017.1": 11,
+        "NZ_FZMA01000002.1": 11,
+        "NZ_FZMA01000038.1": 11,
+        "NZ_FZMA01000023.1": 11,
+        "NZ_FZMA01000055.1": 11,
+        "NZ_FZMA01000044.1": 11,
+        "NZ_FZMA01000061.1": 11,
+        "NZ_FZMA01000007.1": 11,
+        "NZ_FZMA01000028.1": 11,
+        "NZ_FZMA01000013.1": 11,
+        "NZ_FZMA01000049.1": 11,
+        "NZ_FZMA01000034.1": 11,
+        "NZ_FZMA01000066.1": 11,
+        "NZ_FZMA01000051.1": 11,
+        "NZ_FZMA01000040.1": 11,
+        "NZ_FZMA01000072.1": 11,
+        "NZ_FZMA01000018.1": 11,
+        "NZ_FZMA01000003.1": 11,
+        "NZ_FZMA01000039.1": 11,
+        "NZ_FZMA01000024.1": 11,
+        "NZ_FZMA01000056.1": 11,
+        "NZ_FZMA01000045.1": 11,
+        "NZ_FZMA01000030.1": 11,
+        "NZ_FZMA01000062.1": 11,
+        "NZ_FZMA01000008.1": 11,
+        "NZ_FZMA01000029.1": 11,
+        "NZ_FZMA01000014.1": 11,
+        "NZ_FZMA01000035.1": 11,
+        "NZ_FZMA01000067.1": 11,
+        "NZ_FZMA01000052.1": 11,
+        "NZ_FZMA01000041.1": 11,
+        "NZ_FZMA01000019.1": 11,
+        "NZ_FZMA01000004.1": 11,
+        "NZ_FZMA01000025.1": 11,
+        "NZ_FZMA01000010.1": 11,
+        "NZ_FZMA01000057.1": 11,
+        "NZ_FZMA01000046.1": 11,
+        "NZ_FZMA01000031.1": 11,
+        "NZ_FZMA01000009.1": 11,
+        "NZ_FZMA01000015.1": 11,
+        "NZ_FZMA01000036.1": 11,
+        "NZ_FZMA01000021.1": 11,
+        "NZ_FZMA01000068.1": 11,
+        "NZ_FZMA01000053.1": 11,
+        "NZ_FZMA01000042.1": 11
       }
     }
   ],
@@ -229,8 +302,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/197/775/GCF_900197775.1/bbi/GCF_900197775.1_56878_6.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/197/775/GCF_900197775.1/bbi/GCF_900197775.1_56878_6.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900197775.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

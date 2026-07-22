@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001261775.1",
           "ucsc": {
             "genome": "GCF_001261775.1",
             "taxId": "1673717",
@@ -37,6 +38,20 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/261/775/GCF_001261775.1/GCF_001261775.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_LN868531.1": 11,
+        "NZ_LN868534.1": 11,
+        "NZ_LN868528.1": 11,
+        "NZ_LN868537.1": 11,
+        "NZ_LN868532.1": 11,
+        "NZ_LN868535.1": 11,
+        "NZ_LN868530.1": 11,
+        "NZ_LN868529.1": 11,
+        "NZ_LN868538.1": 11,
+        "NZ_LN868533.1": 11,
+        "NZ_LN868527.1": 11,
+        "NZ_LN868536.1": 11
       }
     }
   ],
@@ -252,8 +267,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/261/775/GCF_001261775.1/bbi/GCF_001261775.1_Anaeromassilibacillus_senegalense.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/261/775/GCF_001261775.1/bbi/GCF_001261775.1_Anaeromassilibacillus_senegalense.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001261775.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

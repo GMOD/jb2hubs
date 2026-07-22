@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000231035.2",
           "ucsc": {
             "genome": "GCF_000231035.2",
             "taxId": "882084",
@@ -37,6 +38,90 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/231/035/GCF_000231035.2/GCF_000231035.2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_KI912227.1": 11,
+        "NZ_KI912197.1": 11,
+        "NZ_KI912212.1": 11,
+        "NZ_KI912201.1": 11,
+        "NZ_KI912248.1": 11,
+        "NZ_KI912233.1": 11,
+        "NZ_KI912254.1": 11,
+        "NZ_KI912260.1": 11,
+        "NZ_KI912217.1": 11,
+        "NZ_KI912187.1": 11,
+        "NZ_KI912206.1": 11,
+        "NZ_KI912238.1": 11,
+        "NZ_KI912223.1": 11,
+        "NZ_KI912193.1": 11,
+        "NZ_KI912259.1": 11,
+        "NZ_KI912244.1": 11,
+        "NZ_KI912265.1": 11,
+        "NZ_KI912250.1": 11,
+        "NZ_KI912228.1": 11,
+        "NZ_KI912198.1": 11,
+        "NZ_KI912213.1": 11,
+        "NZ_KI912202.1": 11,
+        "NZ_KI912249.1": 11,
+        "NZ_KI912234.1": 11,
+        "NZ_KI912255.1": 11,
+        "NZ_KI912240.1": 11,
+        "NZ_KI912261.1": 11,
+        "NZ_KI912218.1": 11,
+        "NZ_KI912188.1": 11,
+        "NZ_KI912207.1": 11,
+        "NZ_KI912239.1": 11,
+        "NZ_KI912224.1": 11,
+        "NZ_KI912194.1": 11,
+        "NZ_KI912245.1": 11,
+        "NZ_KI912230.1": 11,
+        "NZ_KI912251.1": 11,
+        "NZ_KI912229.1": 11,
+        "NZ_KI912199.1": 11,
+        "NZ_KI912214.1": 11,
+        "NZ_KI912184.1": 11,
+        "NZ_KI912203.1": 11,
+        "NZ_KI912235.1": 11,
+        "NZ_KI912220.1": 11,
+        "NZ_KI912190.1": 11,
+        "NZ_KI912256.1": 11,
+        "NZ_KI912241.1": 11,
+        "NZ_KI912262.1": 11,
+        "NZ_KI912189.1": 11,
+        "NZ_KI912219.1": 11,
+        "NZ_KI912208.1": 11,
+        "NZ_KI912225.1": 11,
+        "NZ_KI912195.1": 11,
+        "NZ_KI912210.1": 11,
+        "NZ_KI912246.1": 11,
+        "NZ_KI912231.1": 11,
+        "NZ_KI912252.1": 11,
+        "NZ_KI912215.1": 11,
+        "NZ_KI912185.1": 11,
+        "NZ_KI912204.1": 11,
+        "NZ_KI912236.1": 11,
+        "NZ_KI912221.1": 11,
+        "NZ_KI912191.1": 11,
+        "NZ_KI912257.1": 11,
+        "NZ_KI912242.1": 11,
+        "NZ_KI912263.1": 11,
+        "NZ_KI912209.1": 11,
+        "NZ_KI912226.1": 11,
+        "NZ_KI912196.1": 11,
+        "NZ_KI912211.1": 11,
+        "NZ_KI912200.1": 11,
+        "NZ_KI912247.1": 11,
+        "NZ_KI912232.1": 11,
+        "NZ_KI912253.1": 11,
+        "NZ_KI912216.1": 11,
+        "NZ_KI912186.1": 11,
+        "NZ_KI912205.1": 11,
+        "NZ_KI912237.1": 11,
+        "NZ_KI912222.1": 11,
+        "NZ_KI912192.1": 11,
+        "NZ_KI912258.1": 11,
+        "NZ_KI912243.1": 11,
+        "NZ_KI912264.1": 11
       }
     }
   ],
@@ -252,8 +337,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/231/035/GCF_000231035.2/bbi/GCF_000231035.2_ASM23103v3.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/231/035/GCF_000231035.2/bbi/GCF_000231035.2_ASM23103v3.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000231035.2-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

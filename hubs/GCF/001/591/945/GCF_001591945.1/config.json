@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_001591945.1",
           "ucsc": {
             "genome": "GCF_001591945.1",
             "taxId": "1220588",
@@ -37,6 +38,54 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/591/945/GCF_001591945.1/GCF_001591945.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BCVW01000016.1": 11,
+        "NZ_BCVW01000001.1": 11,
+        "NZ_BCVW01000037.1": 11,
+        "NZ_BCVW01000022.1": 11,
+        "NZ_BCVW01000006.1": 11,
+        "NZ_BCVW01000027.1": 11,
+        "NZ_BCVW01000012.1": 11,
+        "NZ_BCVW01000033.1": 11,
+        "NZ_BCVW01000017.1": 11,
+        "NZ_BCVW01000002.1": 11,
+        "NZ_BCVW01000038.1": 11,
+        "NZ_BCVW01000023.1": 11,
+        "NZ_BCVW01000040.1": 11,
+        "NZ_BCVW01000007.1": 11,
+        "NZ_BCVW01000028.1": 11,
+        "NZ_BCVW01000013.1": 11,
+        "NZ_BCVW01000045.1": 11,
+        "NZ_BCVW01000034.1": 11,
+        "NZ_BCVW01000018.1": 11,
+        "NZ_BCVW01000003.1": 11,
+        "NZ_BCVW01000039.1": 11,
+        "NZ_BCVW01000024.1": 11,
+        "NZ_BCVW01000041.1": 11,
+        "NZ_BCVW01000030.1": 11,
+        "NZ_BCVW01000008.1": 11,
+        "NZ_BCVW01000029.1": 11,
+        "NZ_BCVW01000014.1": 11,
+        "NZ_BCVW01000046.1": 11,
+        "NZ_BCVW01000035.1": 11,
+        "NZ_BCVW01000020.1": 11,
+        "NZ_BCVW01000052.1": 11,
+        "NZ_BCVW01000004.1": 11,
+        "NZ_BCVW01000019.1": 11,
+        "NZ_BCVW01000025.1": 11,
+        "NZ_BCVW01000010.1": 11,
+        "NZ_BCVW01000042.1": 11,
+        "NZ_BCVW01000031.1": 11,
+        "NZ_BCVW01000009.1": 11,
+        "NZ_BCVW01000015.1": 11,
+        "NZ_BCVW01000036.1": 11,
+        "NZ_BCVW01000021.1": 11,
+        "NZ_BCVW01000005.1": 11,
+        "NZ_BCVW01000011.1": 11,
+        "NZ_BCVW01000026.1": 11,
+        "NZ_BCVW01000043.1": 11,
+        "NZ_BCVW01000032.1": 11
       }
     }
   ],
@@ -204,8 +253,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/591/945/GCF_001591945.1/bbi/GCF_001591945.1_ASM159194v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/591/945/GCF_001591945.1/bbi/GCF_001591945.1_ASM159194v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_001591945.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

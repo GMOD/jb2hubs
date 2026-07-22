@@ -256,12 +256,12 @@ searchTrix ixIxx/GCF_001595765.1_Mnat.v1.xenoRefGene.ix
 html html/GCF_001595765.1_Mnat.v1.xenoRefGene
 
 ##############################################################################
-# GCF_014108245.1 - bats - Miniopterus natalensis - taxId: 291302
+# GCF_014108245.1 - Kuhl's pipistrelle - Pipistrellus kuhlii - taxId: 59472
 ##############################################################################
 track chainNetGCF_014108245.1
 compositeTrack on
-shortLabel bats Chain/Net
-longLabel bats (2016-03-22), Chain and Net Alignments
+shortLabel Kuhl's pipistrelle Chain/Net
+longLabel Kuhl's pipistrelle (2020-08-07), Chain and Net Alignments
 subGroup1 view Views chain=Chain net=Net
 dragAndDrop subTracks
 visibility hide
@@ -284,8 +284,8 @@ html html/GCF_001595765.1_Mnat.v1.chainNet
         track chainGCF_014108245.1
         parent chainNetGCF_014108245.1Viewchain
         subGroups view=chain
-        shortLabel bats Chain
-        longLabel bats (2016-03-22) Chained Alignments
+        shortLabel Kuhl's pipistrelle Chain
+        longLabel Kuhl's pipistrelle (2020-08-07) Chained Alignments
         type bigChain GCF_014108245.1
         bigDataUrl bbi/GCF_001595765.1_Mnat.v1.chainGCF_014108245.1.bb
         linkDataUrl bbi/GCF_001595765.1_Mnat.v1.chainGCF_014108245.1Link.bb
@@ -294,24 +294,90 @@ html html/GCF_001595765.1_Mnat.v1.chainNet
         track chainLiftOverGCF_014108245.1
         parent chainNetGCF_014108245.1Viewchain
         subGroups view=chain
-        shortLabel bats loChain
-        longLabel bats (2016-03-22) Lift Over Chained Alignments
+        shortLabel Kuhl's pipistrelle loChain
+        longLabel Kuhl's pipistrelle (2020-08-07) Lift Over Chained Alignments
         type bigChain GCF_014108245.1
         bigDataUrl bbi/GCF_001595765.1_Mnat.v1.chainLiftOverGCF_014108245.1.bb
         linkDataUrl bbi/GCF_001595765.1_Mnat.v1.chainLiftOverGCF_014108245.1Link.bb
         priority 2
 
-track HLTOGAannotvHg38v1
-bigDataUrl bbi/HLTOGAannotVsHg38v1.bb
-shortLabel TOGA vs. hg38
-longLabel TOGA annotations using human/hg38 as reference
+
+track TOGAv2
+shortLabel TOGA V2
+longLabel TOGA 2.0 annotations, multiple reference
 group genes
-visibility pack
-itemRgb on
-type bigBed 12
-searchIndex name
-searchTrix  ixIxx/HLTOGAannotVsHg38v1.ix
-html html/TOGAannotation
+visibility hide
+type bigBed 12 +
+superTrack on
+html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLbosTau10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvBosTau10v2/HLTOGAannotVsHLbosTau10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsMm10v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvMm10v2/HLTOGAannotVsMm10v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHLeleMaxInd3Av2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvGCF_024166365.1v2/HLTOGAannotVsHLeleMaxInd3Av2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
+
+    track HLTOGAannotvsHg38v2
+    parent TOGAv2
+    shortLabel TOGA2 zebrafinch annotations
+    longLabel TOGA 2.0 annotations using zebrafinch taeGut5 as reference
+    group genes
+    priority 3
+    visibility pack
+    itemRgb on
+    type bigBed 12 +
+    bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.bb
+    labelFields name
+    searchIndex name
+    searchTrix contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvHg38v2/HLTOGAannotVsHg38v2.decorator.bb
+    decorator.default.maxLabelBases 5000
+    html contrib/TOGAv2/TOGAv2
 
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb

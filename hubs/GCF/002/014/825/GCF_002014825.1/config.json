@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_002014825.1",
           "ucsc": {
             "genome": "GCF_002014825.1",
             "taxId": "470453",
@@ -37,6 +38,57 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/014/825/GCF_002014825.1/GCF_002014825.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_MUYU01000017.1": 11,
+        "NZ_MUYU01000006.1": 11,
+        "NZ_MUYU01000038.1": 11,
+        "NZ_MUYU01000023.1": 11,
+        "NZ_MUYU01000044.1": 11,
+        "NZ_MUYU01000050.1": 11,
+        "NZ_MUYU01000028.1": 11,
+        "NZ_MUYU01000013.1": 11,
+        "NZ_MUYU01000002.1": 11,
+        "NZ_MUYU01000049.1": 11,
+        "NZ_MUYU01000034.1": 11,
+        "NZ_MUYU01000040.1": 11,
+        "NZ_MUYU01000018.1": 11,
+        "NZ_MUYU01000007.1": 11,
+        "NZ_MUYU01000039.1": 11,
+        "NZ_MUYU01000045.1": 11,
+        "NZ_MUYU01000030.1": 11,
+        "NZ_MUYU01000029.1": 11,
+        "NZ_MUYU01000014.1": 11,
+        "NZ_MUYU01000003.1": 11,
+        "NZ_MUYU01000035.1": 11,
+        "NZ_MUYU01000020.1": 11,
+        "NZ_MUYU01000041.1": 11,
+        "NZ_MUYU01000019.1": 11,
+        "NZ_MUYU01000008.1": 11,
+        "NZ_MUYU01000025.1": 11,
+        "NZ_MUYU01000010.1": 11,
+        "NZ_MUYU01000046.1": 11,
+        "NZ_MUYU01000031.1": 11,
+        "NZ_MUYU01000015.1": 11,
+        "NZ_MUYU01000004.1": 11,
+        "NZ_MUYU01000036.1": 11,
+        "NZ_MUYU01000021.1": 11,
+        "NZ_MUYU01000042.1": 11,
+        "NZ_MUYU01000009.1": 11,
+        "NZ_MUYU01000026.1": 11,
+        "NZ_MUYU01000011.1": 11,
+        "NZ_MUYU01000047.1": 11,
+        "NZ_MUYU01000032.1": 11,
+        "NZ_MUYU01000016.1": 11,
+        "NZ_MUYU01000005.1": 11,
+        "NZ_MUYU01000037.1": 11,
+        "NZ_MUYU01000022.1": 11,
+        "NZ_MUYU01000043.1": 11,
+        "NZ_MUYU01000027.1": 11,
+        "NZ_MUYU01000012.1": 11,
+        "NZ_MUYU01000001.1": 11,
+        "NZ_MUYU01000048.1": 11,
+        "NZ_MUYU01000033.1": 11
       }
     }
   ],
@@ -204,8 +256,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/014/825/GCF_002014825.1/bbi/GCF_002014825.1_ASM201482v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/014/825/GCF_002014825.1/bbi/GCF_002014825.1_ASM201482v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_002014825.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_900111445.1",
           "ucsc": {
             "genome": "GCF_900111445.1",
             "taxId": "930131",
@@ -37,6 +38,58 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/111/445/GCF_900111445.1/GCF_900111445.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_FOHE01000027.1": 11,
+        "NZ_FOHE01000016.1": 11,
+        "NZ_FOHE01000001.1": 11,
+        "NZ_FOHE01000048.1": 11,
+        "NZ_FOHE01000033.1": 11,
+        "NZ_FOHE01000006.1": 11,
+        "NZ_FOHE01000038.1": 11,
+        "NZ_FOHE01000023.1": 11,
+        "NZ_FOHE01000012.1": 11,
+        "NZ_FOHE01000044.1": 11,
+        "NZ_FOHE01000050.1": 11,
+        "NZ_FOHE01000028.1": 11,
+        "NZ_FOHE01000017.1": 11,
+        "NZ_FOHE01000002.1": 11,
+        "NZ_FOHE01000049.1": 11,
+        "NZ_FOHE01000034.1": 11,
+        "NZ_FOHE01000040.1": 11,
+        "NZ_FOHE01000007.1": 11,
+        "NZ_FOHE01000039.1": 11,
+        "NZ_FOHE01000024.1": 11,
+        "NZ_FOHE01000013.1": 11,
+        "NZ_FOHE01000045.1": 11,
+        "NZ_FOHE01000030.1": 11,
+        "NZ_FOHE01000029.1": 11,
+        "NZ_FOHE01000003.1": 11,
+        "NZ_FOHE01000018.1": 11,
+        "NZ_FOHE01000035.1": 11,
+        "NZ_FOHE01000020.1": 11,
+        "NZ_FOHE01000041.1": 11,
+        "NZ_FOHE01000008.1": 11,
+        "NZ_FOHE01000025.1": 11,
+        "NZ_FOHE01000014.1": 11,
+        "NZ_FOHE01000046.1": 11,
+        "NZ_FOHE01000031.1": 11,
+        "NZ_FOHE01000019.1": 11,
+        "NZ_FOHE01000004.1": 11,
+        "NZ_FOHE01000036.1": 11,
+        "NZ_FOHE01000021.1": 11,
+        "NZ_FOHE01000010.1": 11,
+        "NZ_FOHE01000042.1": 11,
+        "NZ_FOHE01000009.1": 11,
+        "NZ_FOHE01000026.1": 11,
+        "NZ_FOHE01000015.1": 11,
+        "NZ_FOHE01000047.1": 11,
+        "NZ_FOHE01000032.1": 11,
+        "NZ_FOHE01000005.1": 11,
+        "NZ_FOHE01000037.1": 11,
+        "NZ_FOHE01000022.1": 11,
+        "NZ_FOHE01000011.1": 11,
+        "NZ_FOHE01000043.1": 11
       }
     }
   ],
@@ -204,8 +257,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/111/445/GCF_900111445.1/bbi/GCF_900111445.1_IMG-taxon_2654587897_annotated_assembly.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/111/445/GCF_900111445.1/bbi/GCF_900111445.1_IMG-taxon_2654587897_annotated_assembly.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_900111445.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

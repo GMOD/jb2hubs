@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000439375.1",
           "ucsc": {
             "genome": "GCF_000439375.1",
             "taxId": "480813",
@@ -37,6 +38,61 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/439/375/GCF_000439375.1/GCF_000439375.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_ATMI01000046.1": 11,
+        "NZ_ATMI01000035.1": 11,
+        "NZ_ATMI01000020.1": 11,
+        "NZ_ATMI01000052.1": 11,
+        "NZ_ATMI01000019.1": 11,
+        "NZ_ATMI01000004.1": 11,
+        "NZ_ATMI01000025.1": 11,
+        "NZ_ATMI01000010.1": 11,
+        "NZ_ATMI01000042.1": 11,
+        "NZ_ATMI01000031.1": 11,
+        "NZ_ATMI01000009.1": 11,
+        "NZ_ATMI01000015.1": 11,
+        "NZ_ATMI01000047.1": 11,
+        "NZ_ATMI01000036.1": 11,
+        "NZ_ATMI01000021.1": 11,
+        "NZ_ATMI01000053.1": 11,
+        "NZ_ATMI01000005.1": 11,
+        "NZ_ATMI01000026.1": 11,
+        "NZ_ATMI01000011.1": 11,
+        "NZ_ATMI01000043.1": 11,
+        "NZ_ATMI01000032.1": 11,
+        "NZ_ATMI01000016.1": 11,
+        "NZ_ATMI01000001.1": 11,
+        "NZ_ATMI01000048.1": 11,
+        "NZ_ATMI01000037.1": 11,
+        "NZ_ATMI01000022.1": 11,
+        "NZ_ATMI01000054.1": 11,
+        "NZ_ATMI01000006.1": 11,
+        "NZ_ATMI01000027.1": 11,
+        "NZ_ATMI01000012.1": 11,
+        "NZ_ATMI01000044.1": 11,
+        "NZ_ATMI01000050.1": 11,
+        "NZ_ATMI01000017.1": 11,
+        "NZ_ATMI01000002.1": 11,
+        "NZ_ATMI01000049.1": 11,
+        "NZ_ATMI01000038.1": 11,
+        "NZ_ATMI01000023.1": 11,
+        "NZ_ATMI01000055.1": 11,
+        "NZ_ATMI01000040.1": 11,
+        "NZ_ATMI01000007.1": 11,
+        "NZ_ATMI01000028.1": 11,
+        "NZ_ATMI01000013.1": 11,
+        "NZ_ATMI01000045.1": 11,
+        "NZ_ATMI01000034.1": 11,
+        "NZ_ATMI01000051.1": 11,
+        "NZ_ATMI01000003.1": 11,
+        "NZ_ATMI01000039.1": 11,
+        "NZ_ATMI01000024.1": 11,
+        "NZ_ATMI01000056.1": 11,
+        "NZ_ATMI01000041.1": 11,
+        "NZ_ATMI01000030.1": 11,
+        "NZ_ATMI01000008.1": 11,
+        "NZ_ATMI01000014.1": 11
       }
     }
   ],
@@ -204,8 +260,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/439/375/GCF_000439375.1/bbi/GCF_000439375.1_06-3099_v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/439/375/GCF_000439375.1/bbi/GCF_000439375.1_06-3099_v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000439375.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

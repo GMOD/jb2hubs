@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_014197055.1",
           "ucsc": {
             "genome": "GCF_014197055.1",
             "taxId": "395930",
@@ -37,6 +38,36 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/197/055/GCF_014197055.1/GCF_014197055.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JACIEW010000026.1": 11,
+        "NZ_JACIEW010000019.1": 11,
+        "NZ_JACIEW010000005.1": 11,
+        "NZ_JACIEW010000021.1": 11,
+        "NZ_JACIEW010000014.1": 11,
+        "NZ_JACIEW010000029.1": 11,
+        "NZ_JACIEW010000008.1": 11,
+        "NZ_JACIEW010000024.1": 11,
+        "NZ_JACIEW010000017.1": 11,
+        "NZ_JACIEW010000003.1": 11,
+        "NZ_JACIEW010000012.1": 11,
+        "NZ_JACIEW010000027.1": 11,
+        "NZ_JACIEW010000006.1": 11,
+        "NZ_JACIEW010000022.1": 11,
+        "NZ_JACIEW010000015.1": 11,
+        "NZ_JACIEW010000001.1": 11,
+        "NZ_JACIEW010000010.1": 11,
+        "NZ_JACIEW010000009.1": 11,
+        "NZ_JACIEW010000025.1": 11,
+        "NZ_JACIEW010000018.1": 11,
+        "NZ_JACIEW010000004.1": 11,
+        "NZ_JACIEW010000013.1": 11,
+        "NZ_JACIEW010000028.1": 11,
+        "NZ_JACIEW010000007.1": 11,
+        "NZ_JACIEW010000023.1": 11,
+        "NZ_JACIEW010000016.1": 11,
+        "NZ_JACIEW010000002.1": 11,
+        "NZ_JACIEW010000011.1": 11
       }
     }
   ],
@@ -204,8 +235,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/197/055/GCF_014197055.1/bbi/GCF_014197055.1_ASM1419705v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/014/197/055/GCF_014197055.1/bbi/GCF_014197055.1_ASM1419705v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_014197055.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

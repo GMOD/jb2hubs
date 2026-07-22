@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_947489045.1",
           "ucsc": {
             "genome": "GCF_947489045.1",
             "taxId": "1849719",
@@ -37,6 +38,66 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/489/045/GCF_947489045.1/GCF_947489045.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CANLCN010000017.1": 11,
+        "NZ_CANLCN010000002.1": 11,
+        "NZ_CANLCN010000049.1": 11,
+        "NZ_CANLCN010000034.1": 11,
+        "NZ_CANLCN010000023.1": 11,
+        "NZ_CANLCN010000040.1": 11,
+        "NZ_CANLCN010000007.1": 11,
+        "NZ_CANLCN010000039.1": 11,
+        "NZ_CANLCN010000028.1": 11,
+        "NZ_CANLCN010000013.1": 11,
+        "NZ_CANLCN010000045.1": 11,
+        "NZ_CANLCN010000030.1": 11,
+        "NZ_CANLCN010000018.1": 11,
+        "NZ_CANLCN010000003.1": 11,
+        "NZ_CANLCN010000035.1": 11,
+        "NZ_CANLCN010000024.1": 11,
+        "NZ_CANLCN010000056.1": 11,
+        "NZ_CANLCN010000041.1": 11,
+        "NZ_CANLCN010000083.1": 11,
+        "NZ_CANLCN010000008.1": 11,
+        "NZ_CANLCN010000029.1": 11,
+        "NZ_CANLCN010000014.1": 11,
+        "NZ_CANLCN010000046.1": 11,
+        "NZ_CANLCN010000031.1": 11,
+        "NZ_CANLCN010000020.1": 11,
+        "NZ_CANLCN010000052.1": 11,
+        "NZ_CANLCN010000019.1": 11,
+        "NZ_CANLCN010000004.1": 11,
+        "NZ_CANLCN010000036.1": 11,
+        "NZ_CANLCN010000025.1": 11,
+        "NZ_CANLCN010000010.1": 11,
+        "NZ_CANLCN010000057.1": 11,
+        "NZ_CANLCN010000042.1": 11,
+        "NZ_CANLCN010000009.1": 11,
+        "NZ_CANLCN010000015.1": 11,
+        "NZ_CANLCN010000047.1": 11,
+        "NZ_CANLCN010000032.1": 11,
+        "NZ_CANLCN010000021.1": 11,
+        "NZ_CANLCN010000053.1": 11,
+        "NZ_CANLCN010000005.1": 11,
+        "NZ_CANLCN010000037.1": 11,
+        "NZ_CANLCN010000026.1": 11,
+        "NZ_CANLCN010000011.1": 11,
+        "NZ_CANLCN010000043.1": 11,
+        "NZ_CANLCN010000079.1": 11,
+        "NZ_CANLCN010000064.1": 11,
+        "NZ_CANLCN010000016.1": 11,
+        "NZ_CANLCN010000001.1": 11,
+        "NZ_CANLCN010000048.1": 11,
+        "NZ_CANLCN010000033.1": 11,
+        "NZ_CANLCN010000022.1": 11,
+        "NZ_CANLCN010000060.1": 11,
+        "NZ_CANLCN010000006.1": 11,
+        "NZ_CANLCN010000038.1": 11,
+        "NZ_CANLCN010000027.1": 11,
+        "NZ_CANLCN010000012.1": 11,
+        "NZ_CANLCN010000044.1": 11,
+        "NZ_CANLCN010000050.1": 11
       }
     }
   ],
@@ -204,8 +265,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/489/045/GCF_947489045.1/bbi/GCF_947489045.1_1431.fasta.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/947/489/045/GCF_947489045.1/bbi/GCF_947489045.1_1431.fasta.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_947489045.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

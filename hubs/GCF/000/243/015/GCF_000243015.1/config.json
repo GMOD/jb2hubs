@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000243015.1",
           "ucsc": {
             "genome": "GCF_000243015.1",
             "taxId": "999422",
@@ -37,6 +38,28 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/015/GCF_000243015.1/GCF_000243015.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JH594517.1": 11,
+        "NZ_JH594512.1": 11,
+        "NZ_JH594505.1": 11,
+        "NZ_JH594500.1": 11,
+        "NZ_JH594515.1": 11,
+        "NZ_JH594508.1": 11,
+        "NZ_JH594510.1": 11,
+        "NZ_JH594503.1": 11,
+        "NZ_JH594518.1": 11,
+        "NZ_JH594513.1": 11,
+        "NZ_JH594506.1": 11,
+        "NZ_JH594501.1": 11,
+        "NZ_JH594516.1": 11,
+        "NZ_JH594509.1": 11,
+        "NZ_JH594511.1": 11,
+        "NZ_JH594504.1": 11,
+        "NZ_JH594519.1": 11,
+        "NZ_JH594514.1": 11,
+        "NZ_JH594507.1": 11,
+        "NZ_JH594502.1": 11
       }
     }
   ],
@@ -252,8 +275,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/015/GCF_000243015.1/bbi/GCF_000243015.1_Prev_macu_OT_289_V1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/243/015/GCF_000243015.1/bbi/GCF_000243015.1_Prev_macu_OT_289_V1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000243015.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

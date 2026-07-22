@@ -254,17 +254,6 @@ searchIndex name
 searchTrix ixIxx/GCF_001715985.3_ASM171598v3.xenoRefGene.ix
 html html/GCF_001715985.3_ASM171598v3.xenoRefGene
 
-track HLTOGAannotvGalGal6v1
-bigDataUrl bbi/HLTOGAannotVsGalGal6v1.bb
-shortLabel TOGA vs. galGal6
-longLabel TOGA annotations using chicken/galGal6 as reference
-group genes
-visibility pack
-itemRgb on
-type bigBed 12
-searchIndex name
-searchTrix  ixIxx/HLTOGAannotVsGalGal6v1.ix
-html html/TOGAannotation
 
 track TOGAv2
 shortLabel TOGA V2
@@ -352,10 +341,23 @@ html contrib/TOGAv2/TOGAv2
     visibility pack
     itemRgb on
     type bigBed 12 +
-    bigDataUrl contrib/TOGAv2/TOGAvGalGal7/HLTOGAannotVsHLgalGal7v2.bb
+    bigDataUrl contrib/TOGAv2/TOGAvGCF_016699485.2v2/HLTOGAannotVsHLgalGal7v2.bb
     labelFields name
     searchIndex name
-    searchTrix contrib/TOGAv2/TOGAvGalGal7/HLTOGAannotVsHLgalGal7v2.ix
-    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvGalGal7/HLTOGAannotVsHLgalGal7v2.decorator.bb
+    searchTrix contrib/TOGAv2/TOGAvGCF_016699485.2v2/HLTOGAannotVsHLgalGal7v2.ix
+    decorator.default.bigDataUrl contrib/TOGAv2/TOGAvGCF_016699485.2v2/HLTOGAannotVsHLgalGal7v2.decorator.bb
     decorator.default.maxLabelBases 5000
     html contrib/TOGAv2/TOGAv2
+
+track Tiberius
+bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb
+shortLabel Tiberius genes
+longLabel Tiberius ab initio gene prediction
+type bigGenePred
+visibility pack
+color 0,102,204
+noScoreFilter on
+html contrib/tiberius/Tiberius.html
+group genes
+dataVersion Tiberius version 2025-11-10
+baseColorDefault genomicCodons

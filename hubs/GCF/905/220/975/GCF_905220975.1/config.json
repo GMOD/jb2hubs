@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_905220975.1",
           "ucsc": {
             "genome": "GCF_905220975.1",
             "taxId": "2793077",
@@ -37,6 +38,81 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/905/220/975/GCF_905220975.1/GCF_905220975.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_CAJNBK010000063.1": 11,
+        "NZ_CAJNBK010000009.1": 11,
+        "NZ_CAJNBK010000015.1": 11,
+        "NZ_CAJNBK010000036.1": 11,
+        "NZ_CAJNBK010000021.1": 11,
+        "NZ_CAJNBK010000068.1": 11,
+        "NZ_CAJNBK010000053.1": 11,
+        "NZ_CAJNBK010000042.1": 11,
+        "NZ_CAJNBK010000074.1": 11,
+        "NZ_CAJNBK010000005.1": 11,
+        "NZ_CAJNBK010000026.1": 11,
+        "NZ_CAJNBK010000011.1": 11,
+        "NZ_CAJNBK010000058.1": 11,
+        "NZ_CAJNBK010000047.1": 11,
+        "NZ_CAJNBK010000032.1": 11,
+        "NZ_CAJNBK010000064.1": 11,
+        "NZ_CAJNBK010000070.1": 11,
+        "NZ_CAJNBK010000016.1": 11,
+        "NZ_CAJNBK010000001.1": 11,
+        "NZ_CAJNBK010000037.1": 11,
+        "NZ_CAJNBK010000022.1": 11,
+        "NZ_CAJNBK010000069.1": 11,
+        "NZ_CAJNBK010000054.1": 11,
+        "NZ_CAJNBK010000043.1": 11,
+        "NZ_CAJNBK010000060.1": 11,
+        "NZ_CAJNBK010000006.1": 11,
+        "NZ_CAJNBK010000012.1": 11,
+        "NZ_CAJNBK010000027.1": 11,
+        "NZ_CAJNBK010000048.1": 11,
+        "NZ_CAJNBK010000033.1": 11,
+        "NZ_CAJNBK010000065.1": 11,
+        "NZ_CAJNBK010000050.1": 11,
+        "NZ_CAJNBK010000071.1": 11,
+        "NZ_CAJNBK010000017.1": 11,
+        "NZ_CAJNBK010000002.1": 11,
+        "NZ_CAJNBK010000038.1": 11,
+        "NZ_CAJNBK010000023.1": 11,
+        "NZ_CAJNBK010000055.1": 11,
+        "NZ_CAJNBK010000044.1": 11,
+        "NZ_CAJNBK010000076.1": 11,
+        "NZ_CAJNBK010000061.1": 11,
+        "NZ_CAJNBK010000007.1": 11,
+        "NZ_CAJNBK010000028.1": 11,
+        "NZ_CAJNBK010000013.1": 11,
+        "NZ_CAJNBK010000049.1": 11,
+        "NZ_CAJNBK010000034.1": 11,
+        "NZ_CAJNBK010000066.1": 11,
+        "NZ_CAJNBK010000051.1": 11,
+        "NZ_CAJNBK010000040.1": 11,
+        "NZ_CAJNBK010000072.1": 11,
+        "NZ_CAJNBK010000018.1": 11,
+        "NZ_CAJNBK010000003.1": 11,
+        "NZ_CAJNBK010000039.1": 11,
+        "NZ_CAJNBK010000024.1": 11,
+        "NZ_CAJNBK010000056.1": 11,
+        "NZ_CAJNBK010000045.1": 11,
+        "NZ_CAJNBK010000030.1": 11,
+        "NZ_CAJNBK010000062.1": 11,
+        "NZ_CAJNBK010000008.1": 11,
+        "NZ_CAJNBK010000029.1": 11,
+        "NZ_CAJNBK010000014.1": 11,
+        "NZ_CAJNBK010000035.1": 11,
+        "NZ_CAJNBK010000020.1": 11,
+        "NZ_CAJNBK010000067.1": 11,
+        "NZ_CAJNBK010000052.1": 11,
+        "NZ_CAJNBK010000041.1": 11,
+        "NZ_CAJNBK010000073.1": 11,
+        "NZ_CAJNBK010000019.1": 11,
+        "NZ_CAJNBK010000004.1": 11,
+        "NZ_CAJNBK010000025.1": 11,
+        "NZ_CAJNBK010000010.1": 11,
+        "NZ_CAJNBK010000046.1": 11,
+        "NZ_CAJNBK010000031.1": 11
       }
     }
   ],
@@ -204,8 +280,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/905/220/975/GCF_905220975.1/bbi/GCF_905220975.1_LMG_31837.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/905/220/975/GCF_905220975.1/bbi/GCF_905220975.1_LMG_31837.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_905220975.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

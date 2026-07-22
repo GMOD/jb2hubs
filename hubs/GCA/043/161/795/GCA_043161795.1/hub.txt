@@ -21,6 +21,7 @@ htmlPath html/GCA_043161795.1_mMacNem.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/043/161/795/GCA_043161795.1
+liftOver.GCF_043159975.1 liftOver/GCA_043161795.1ToGCF_043159975.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -185,6 +186,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_043161795.1_mMacNem.hap2.xenoRefGene.ix
 html html/GCA_043161795.1_mMacNem.hap2.xenoRefGene
+
+##############################################################################
+# GCF_043159975.1 - pig-tailed macaque - Macaca nemestrina - taxId: 9545
+##############################################################################
+track chainNetGCF_043159975.1
+compositeTrack on
+shortLabel pig-tailed macaque Chain/Net
+longLabel pig-tailed macaque (2024-10-15), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_043159975.1
+html html/GCA_043161795.1_mMacNem.hap2.chainNet
+
+    track chainNetGCF_043159975.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_043159975.1
+    spectrum on
+
+        track chainGCF_043159975.1
+        parent chainNetGCF_043159975.1Viewchain
+        subGroups view=chain
+        shortLabel pig-tailed macaque Chain
+        longLabel pig-tailed macaque (2024-10-15) Chained Alignments
+        type bigChain GCF_043159975.1
+        bigDataUrl bbi/GCA_043161795.1_mMacNem.hap2.chainGCF_043159975.1.bb
+        linkDataUrl bbi/GCA_043161795.1_mMacNem.hap2.chainGCF_043159975.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_043159975.1
+        parent chainNetGCF_043159975.1Viewchain
+        subGroups view=chain
+        shortLabel pig-tailed macaque loChain
+        longLabel pig-tailed macaque (2024-10-15) Lift Over Chained Alignments
+        type bigChain GCF_043159975.1
+        bigDataUrl bbi/GCA_043161795.1_mMacNem.hap2.chainLiftOverGCF_043159975.1.bb
+        linkDataUrl bbi/GCA_043161795.1_mMacNem.hap2.chainLiftOverGCF_043159975.1Link.bb
+        priority 2
 
 
 track Tiberius

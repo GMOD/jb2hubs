@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_023347575.1",
           "ucsc": {
             "genome": "GCF_023347575.1",
             "taxId": "2914984",
@@ -37,6 +38,61 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/347/575/GCF_023347575.1/GCF_023347575.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_JAKPCB010000046.1": 11,
+        "NZ_JAKPCB010000078.1": 11,
+        "NZ_JAKPCB010000099.1": 11,
+        "NZ_JAKPCB010000084.1": 11,
+        "NZ_JAKPCB010000090.1": 11,
+        "NZ_JAKPCB010000015.1": 11,
+        "NZ_JAKPCB010000089.1": 11,
+        "NZ_JAKPCB010000074.1": 11,
+        "NZ_JAKPCB010000063.1": 11,
+        "NZ_JAKPCB010000095.1": 11,
+        "NZ_JAKPCB010000080.1": 11,
+        "NZ_JAKPCB010000047.1": 11,
+        "NZ_JAKPCB010000079.1": 11,
+        "NZ_JAKPCB010000100.1": 11,
+        "NZ_JAKPCB010000085.1": 11,
+        "NZ_JAKPCB010000070.1": 11,
+        "NZ_JAKPCB010000091.1": 11,
+        "NZ_JAKPCB010000022.1": 11,
+        "NZ_JAKPCB010000075.1": 11,
+        "NZ_JAKPCB010000096.1": 11,
+        "NZ_JAKPCB010000081.1": 11,
+        "NZ_JAKPCB010000012.1": 11,
+        "NZ_JAKPCB010000033.1": 11,
+        "NZ_JAKPCB010000069.1": 11,
+        "NZ_JAKPCB010000101.1": 11,
+        "NZ_JAKPCB010000071.1": 11,
+        "NZ_JAKPCB010000086.1": 11,
+        "NZ_JAKPCB010000060.1": 11,
+        "NZ_JAKPCB010000092.1": 11,
+        "NZ_JAKPCB010000023.1": 11,
+        "NZ_JAKPCB010000044.1": 11,
+        "NZ_JAKPCB010000076.1": 11,
+        "NZ_JAKPCB010000097.1": 11,
+        "NZ_JAKPCB010000082.1": 11,
+        "NZ_JAKPCB010000002.1": 11,
+        "NZ_JAKPCB010000049.1": 11,
+        "NZ_JAKPCB010000034.1": 11,
+        "NZ_JAKPCB010000102.1": 11,
+        "NZ_JAKPCB010000087.1": 11,
+        "NZ_JAKPCB010000072.1": 11,
+        "NZ_JAKPCB010000061.1": 11,
+        "NZ_JAKPCB010000093.1": 11,
+        "NZ_JAKPCB010000007.1": 11,
+        "NZ_JAKPCB010000077.1": 11,
+        "NZ_JAKPCB010000066.1": 11,
+        "NZ_JAKPCB010000098.1": 11,
+        "NZ_JAKPCB010000083.1": 11,
+        "NZ_JAKPCB010000056.1": 11,
+        "NZ_JAKPCB010000103.1": 11,
+        "NZ_JAKPCB010000088.1": 11,
+        "NZ_JAKPCB010000073.1": 11,
+        "NZ_JAKPCB010000062.1": 11,
+        "NZ_JAKPCB010000094.1": 11
       }
     }
   ],
@@ -204,8 +260,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/347/575/GCF_023347575.1/bbi/GCF_023347575.1_ASM2334757v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/023/347/575/GCF_023347575.1/bbi/GCF_023347575.1_ASM2334757v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_023347575.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

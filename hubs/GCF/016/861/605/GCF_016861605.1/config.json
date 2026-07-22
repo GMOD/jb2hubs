@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_016861605.1",
           "ucsc": {
             "genome": "GCF_016861605.1",
             "taxId": "2799566",
@@ -37,6 +38,62 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/861/605/GCF_016861605.1/GCF_016861605.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_BOLM01000031.1": 11,
+        "NZ_BOLM01000009.1": 11,
+        "NZ_BOLM01000015.1": 11,
+        "NZ_BOLM01000047.1": 11,
+        "NZ_BOLM01000036.1": 11,
+        "NZ_BOLM01000021.1": 11,
+        "NZ_BOLM01000053.1": 11,
+        "NZ_BOLM01000005.1": 11,
+        "NZ_BOLM01000026.1": 11,
+        "NZ_BOLM01000011.1": 11,
+        "NZ_BOLM01000043.1": 11,
+        "NZ_BOLM01000032.1": 11,
+        "NZ_BOLM01000016.1": 11,
+        "NZ_BOLM01000001.1": 11,
+        "NZ_BOLM01000048.1": 11,
+        "NZ_BOLM01000037.1": 11,
+        "NZ_BOLM01000022.1": 11,
+        "NZ_BOLM01000054.1": 11,
+        "NZ_BOLM01000006.1": 11,
+        "NZ_BOLM01000012.1": 11,
+        "NZ_BOLM01000027.1": 11,
+        "NZ_BOLM01000044.1": 11,
+        "NZ_BOLM01000033.1": 11,
+        "NZ_BOLM01000050.1": 11,
+        "NZ_BOLM01000017.1": 11,
+        "NZ_BOLM01000002.1": 11,
+        "NZ_BOLM01000049.1": 11,
+        "NZ_BOLM01000038.1": 11,
+        "NZ_BOLM01000023.1": 11,
+        "NZ_BOLM01000055.1": 11,
+        "NZ_BOLM01000040.1": 11,
+        "NZ_BOLM01000007.1": 11,
+        "NZ_BOLM01000028.1": 11,
+        "NZ_BOLM01000013.1": 11,
+        "NZ_BOLM01000045.1": 11,
+        "NZ_BOLM01000034.1": 11,
+        "NZ_BOLM01000051.1": 11,
+        "NZ_BOLM01000018.1": 11,
+        "NZ_BOLM01000003.1": 11,
+        "NZ_BOLM01000039.1": 11,
+        "NZ_BOLM01000024.1": 11,
+        "NZ_BOLM01000056.1": 11,
+        "NZ_BOLM01000030.1": 11,
+        "NZ_BOLM01000008.1": 11,
+        "NZ_BOLM01000029.1": 11,
+        "NZ_BOLM01000014.1": 11,
+        "NZ_BOLM01000046.1": 11,
+        "NZ_BOLM01000035.1": 11,
+        "NZ_BOLM01000020.1": 11,
+        "NZ_BOLM01000052.1": 11,
+        "NZ_BOLM01000019.1": 11,
+        "NZ_BOLM01000004.1": 11,
+        "NZ_BOLM01000025.1": 11,
+        "NZ_BOLM01000010.1": 11
       }
     }
   ],
@@ -204,8 +261,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/861/605/GCF_016861605.1/bbi/GCF_016861605.1_ASM1686160v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/861/605/GCF_016861605.1/bbi/GCF_016861605.1_ASM1686160v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_016861605.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {

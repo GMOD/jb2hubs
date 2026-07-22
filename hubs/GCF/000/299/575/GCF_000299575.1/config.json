@@ -6,6 +6,7 @@
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
+          "blatDb": "GCF_000299575.1",
           "ucsc": {
             "genome": "GCF_000299575.1",
             "taxId": "1231392",
@@ -37,6 +38,75 @@
           "refNameColumnHeaderName": "ucsc",
           "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/299/575/GCF_000299575.1/GCF_000299575.1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "NZ_AMGO01000045.1": 11,
+        "NZ_AMGO01000030.1": 11,
+        "NZ_AMGO01000066.1": 11,
+        "NZ_AMGO01000051.1": 11,
+        "NZ_AMGO01000029.1": 11,
+        "NZ_AMGO01000014.1": 11,
+        "NZ_AMGO01000003.1": 11,
+        "NZ_AMGO01000035.1": 11,
+        "NZ_AMGO01000020.1": 11,
+        "NZ_AMGO01000056.1": 11,
+        "NZ_AMGO01000041.1": 11,
+        "NZ_AMGO01000062.1": 11,
+        "NZ_AMGO01000019.1": 11,
+        "NZ_AMGO01000008.1": 11,
+        "NZ_AMGO01000025.1": 11,
+        "NZ_AMGO01000010.1": 11,
+        "NZ_AMGO01000046.1": 11,
+        "NZ_AMGO01000031.1": 11,
+        "NZ_AMGO01000067.1": 11,
+        "NZ_AMGO01000052.1": 11,
+        "NZ_AMGO01000015.1": 11,
+        "NZ_AMGO01000004.1": 11,
+        "NZ_AMGO01000036.1": 11,
+        "NZ_AMGO01000021.1": 11,
+        "NZ_AMGO01000068.1": 11,
+        "NZ_AMGO01000057.1": 11,
+        "NZ_AMGO01000042.1": 11,
+        "NZ_AMGO01000063.1": 11,
+        "NZ_AMGO01000009.1": 11,
+        "NZ_AMGO01000011.1": 11,
+        "NZ_AMGO01000026.1": 11,
+        "NZ_AMGO01000047.1": 11,
+        "NZ_AMGO01000032.1": 11,
+        "NZ_AMGO01000053.1": 11,
+        "NZ_AMGO01000016.1": 11,
+        "NZ_AMGO01000005.1": 11,
+        "NZ_AMGO01000037.1": 11,
+        "NZ_AMGO01000022.1": 11,
+        "NZ_AMGO01000058.1": 11,
+        "NZ_AMGO01000043.1": 11,
+        "NZ_AMGO01000064.1": 11,
+        "NZ_AMGO01000027.1": 11,
+        "NZ_AMGO01000012.1": 11,
+        "NZ_AMGO01000001.1": 11,
+        "NZ_AMGO01000033.1": 11,
+        "NZ_AMGO01000054.1": 11,
+        "NZ_AMGO01000060.1": 11,
+        "NZ_AMGO01000017.1": 11,
+        "NZ_AMGO01000006.1": 11,
+        "NZ_AMGO01000038.1": 11,
+        "NZ_AMGO01000023.1": 11,
+        "NZ_AMGO01000059.1": 11,
+        "NZ_AMGO01000044.1": 11,
+        "NZ_AMGO01000065.1": 11,
+        "NZ_AMGO01000050.1": 11,
+        "NZ_AMGO01000028.1": 11,
+        "NZ_AMGO01000013.1": 11,
+        "NZ_AMGO01000002.1": 11,
+        "NZ_AMGO01000049.1": 11,
+        "NZ_AMGO01000034.1": 11,
+        "NZ_AMGO01000055.1": 11,
+        "NZ_AMGO01000040.1": 11,
+        "NZ_AMGO01000061.1": 11,
+        "NZ_AMGO01000018.1": 11,
+        "NZ_AMGO01000007.1": 11,
+        "NZ_AMGO01000039.1": 11,
+        "NZ_AMGO01000024.1": 11
       }
     }
   ],
@@ -229,8 +299,18 @@
       "type": "FeatureTrack",
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/299/575/GCF_000299575.1/bbi/GCF_000299575.1_ASM29957v1.ncbiGene.bb"
-      }
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/299/575/GCF_000299575.1/bbi/GCF_000299575.1_ASM29957v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000299575.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
     },
     {
       "metadata": {
