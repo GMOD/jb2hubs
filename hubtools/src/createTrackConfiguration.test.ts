@@ -21,6 +21,15 @@ function build(data: Record<string, string>) {
   })
 }
 
+function aggregateFieldOf(
+  conf: ReturnType<typeof createTrackConfiguration>,
+) {
+  const adapter = conf?.adapter
+  return adapter && 'aggregateField' in adapter
+    ? adapter.aggregateField
+    : undefined
+}
+
 describe('createTrackConfiguration aggregateField derivation', () => {
   it('sets aggregateField from defaultLabelFields for bigGenePred', () => {
     const conf = build({
@@ -31,7 +40,7 @@ describe('createTrackConfiguration aggregateField derivation', () => {
       labelFields: 'name2,geneName,geneName2',
       defaultLabelFields: 'name2',
     })
-    assert.equal(conf?.adapter.aggregateField, 'name2')
+    assert.equal(aggregateFieldOf(conf), 'name2')
   })
 
   it('falls back to first labelFields when no default', () => {
@@ -42,7 +51,7 @@ describe('createTrackConfiguration aggregateField derivation', () => {
       shortLabel: 'RefSeq All',
       labelFields: 'geneName,geneName2',
     })
-    assert.equal(conf?.adapter.aggregateField, 'geneName')
+    assert.equal(aggregateFieldOf(conf), 'geneName')
   })
 
   it('leaves aggregateField unset for non-bigGenePred big tracks', () => {
@@ -53,6 +62,6 @@ describe('createTrackConfiguration aggregateField derivation', () => {
       shortLabel: 'Some bigBed',
       defaultLabelFields: 'name',
     })
-    assert.equal(conf?.adapter.aggregateField, undefined)
+    assert.equal(aggregateFieldOf(conf), undefined)
   })
 })
