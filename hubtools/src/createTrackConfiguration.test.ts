@@ -21,9 +21,7 @@ function build(data: Record<string, string>) {
   })
 }
 
-function aggregateFieldOf(
-  conf: ReturnType<typeof createTrackConfiguration>,
-) {
+function aggregateFieldOf(conf: ReturnType<typeof createTrackConfiguration>) {
   const adapter = conf?.adapter
   return adapter && 'aggregateField' in adapter
     ? adapter.aggregateField

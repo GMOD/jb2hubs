@@ -50,17 +50,19 @@ agent can pick them up.
    (`--skip-download` still implies it); `run.sh` gained `--all` and forwards
    the shared flags to both pipelines. Covered by tests in `common.test.sh`.
    - Option (a)'s two extras were deliberately **not** added, because both
-     duplicate existing workflows rather than enabling new ones: `--only
-     genark|ucsc` is `./ucsc2jbrowse/make.sh && ./run.sh --upload-only`, and a
-     `--skip-download` passthrough has no coherent meaning for genark, whose
-     download phase produces the new-hub list its incremental mode runs on.
+     duplicate existing workflows rather than enabling new ones:
+     `--only genark|ucsc` is `./ucsc2jbrowse/make.sh && ./run.sh --upload-only`,
+     and a `--skip-download` passthrough has no coherent meaning for genark,
+     whose download phase produces the new-hub list its incremental mode runs
+     on.
 
 6. **Two near-duplicate `downloadNcbiGff.sh`** (genark + ucsc). Different
    downloaders (`wget -N` vs `datasets download`) but now-identical re-download
    gate (`FETCH_UPDATES` / file-existence). They will drift. Minimum: a
    cross-reference comment; better: extract the gate decision into `common.sh`.
-   (The three-way scope-file duplication *within* genark is gone — see
-   `list_scoped_gz` in `genark2jbrowse/common.sh` — but these two are untouched.)
+   (The three-way scope-file duplication _within_ genark is gone — see
+   `list_scoped_gz` in `genark2jbrowse/common.sh` — but these two are
+   untouched.)
 
 7. **Error swallowing conflates outcomes.** `git commit … || echo "No changes"`
    (run.sh lines ~153 and ~209) reports _any_ commit failure as "nothing to
