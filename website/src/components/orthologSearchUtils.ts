@@ -80,7 +80,15 @@ export function accessionToJbrowseUrl(
     ? `/ucsc/${ucscDb}/config.json`
     : `/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`
   const assembly = ucscDb ?? accession
-  const url = `https://jbrowse.org/code/jb2/latest/?config=${config}&assembly=${encodeURIComponent(assembly)}`
+  // GenArk configs carry a defaultSession with no tracks, so a bare launch lands
+  // on an empty browser — ask for the NCBI RefSeq GFF gene track by id (every
+  // GCF GenArk hub has `<accession>-ncbiGff`). UCSC configs already open a gene
+  // track in their generated defaultSession, whose id varies per db
+  // (ncbiRefSeq/refGene/ensGene/…), so those are left alone.
+  const tracks = ucscDb
+    ? ''
+    : `&tracks=${encodeURIComponent(`${accession}-ncbiGff`)}`
+  const url = `https://jbrowse.org/code/jb2/latest/?config=${config}&assembly=${encodeURIComponent(assembly)}${tracks}`
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 
