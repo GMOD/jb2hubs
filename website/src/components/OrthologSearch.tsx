@@ -60,6 +60,13 @@ export default function OrthologSearch() {
     }
     setGeneInput(query)
     setTaxId(tax)
+    // Keep the address bar in sync with what's on screen so a search is
+    // shareable/bookmarkable — the mount effect below reads these back.
+    window.history.replaceState(
+      null,
+      '',
+      `?gene=${encodeURIComponent(query)}&ref=${tax}`,
+    )
     setLoading(true)
     setError('')
     setResults(null)
@@ -182,6 +189,19 @@ export default function OrthologSearch() {
           {loading ? 'Searching…' : 'Search'}
         </button>
       </div>
+
+      <p className="orthologs-hint">
+        Try an example:{' '}
+        <button
+          onClick={() => {
+            void runSearch('BRCA1', 9606)
+          }}
+          disabled={!store || loading}
+          className="orthologs-chip"
+        >
+          BRCA1
+        </button>
+      </p>
 
       {!store && <p className="orthologs-hint">Loading assembly index…</p>}
 

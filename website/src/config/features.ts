@@ -8,8 +8,8 @@ export const features = {
   // The /synteny comparison browser, including its cross-species ortholog gene
   // picker (which is additionally gated on ortholog data being present).
   synteny: staging,
-  // The /orthologs gene-first search page (NCBI-backed).
-  orthologs: staging,
+  // The /orthologs gene-first search page (NCBI-backed). Live in production.
+  orthologs: true,
   // The /conserved-gene-order view: tree-ordered ortholog neighborhood showing
   // conserved gene order (microsynteny) across species.
   multiSynteny: staging,

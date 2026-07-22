@@ -2,12 +2,6 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import OrthologSearch from '../../components/OrthologSearch.tsx'
-import { features } from '../../config/features.ts'
-
-// Staging-only while the ortholog browser is in development; see synteny/index.astro.
-if (!features.orthologs) {
-  return Astro.redirect('/')
-}
 ---
 
 <Layout title="Ortholog Browser">
@@ -97,6 +91,28 @@ if (!features.orthologs) {
   .orthologs-hint {
     color: #666;
     font-size: 14px;
+  }
+
+  .orthologs-chip {
+    padding: 3px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0b69d4;
+    background: #eaf3fd;
+    border: 1px solid #cfe3f8;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .orthologs-chip:hover:not(:disabled) {
+    background: #d9eafc;
+  }
+
+  .orthologs-chip:disabled {
+    color: #999;
+    background: #f0f0f0;
+    border-color: #ddd;
+    cursor: not-allowed;
   }
 
   .orthologs-error {
