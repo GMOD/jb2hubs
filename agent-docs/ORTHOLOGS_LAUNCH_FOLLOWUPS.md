@@ -14,7 +14,7 @@ hidden, and `conserved-gene-order.astro` / `protein-alignment.astro` redirect to
 should ship alongside orthologs or stay held back.
 
 Note the per-row **Synteny** and **Launch multi-species synteny view** links in
-`OrthologResultsTable.tsx` are deliberately *not* gated: they build JBrowse
+`OrthologResultsTable.tsx` are deliberately _not_ gated: they build JBrowse
 `specUrl`s directly (`jbrowseLinks.ts`) instead of routing through the gated
 `/synteny` page, so they work in production as-is.
 
@@ -25,8 +25,8 @@ reachable — no longer a link into a redirect.
 
 `website/src/components/ncbiFetch.ts` reads `NCBI_API_KEY` from `process.env`,
 which is always undefined in the client bundle. `OrthologSearch` is a
-`client:load` island, so every visitor runs the unkeyed path (350 ms minimum gap,
-429/5xx backoff) from their own IP. Fine for individuals; users sharing an
+`client:load` island, so every visitor runs the unkeyed path (350 ms minimum
+gap, 429/5xx backoff) from their own IP. Fine for individuals; users sharing an
 institutional NAT will collide and lean on the retry backoff.
 
 The file's own header comment describes the intended fix — a server-side

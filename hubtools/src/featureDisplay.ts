@@ -21,10 +21,7 @@ export function firstField(value: unknown) {
 // the text can't terminate the template, and $ so stray label text like "${" is
 // never read as an interpolation. jexl's _unescapeTemplateString reverses these.
 function escapeTemplateStatic(s: string) {
-  return s
-    .replace(/\\/g, '\\\\')
-    .replace(/`/g, '\\`')
-    .replace(/\$/g, '\\$&')
+  return s.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$&')
 }
 
 // The BED/BigBed adapter consumes the three standard positional columns and
