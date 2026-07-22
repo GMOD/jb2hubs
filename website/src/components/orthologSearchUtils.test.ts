@@ -7,6 +7,7 @@ import {
   buildMultiSyntenyUrl,
   buildOrthologResults,
   planMultiSynteny,
+  refLabel,
 } from './orthologSearchUtils.ts'
 
 import type {
@@ -303,4 +304,11 @@ test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel'
     // begin - flank clamps at 1 rather than going negative
     { assembly: 'A', loc: 'NC_1:1-150500' },
   ])
+})
+
+test('refLabel names known model organisms and passes anything else through', () => {
+  assert.equal(refLabel('9606'), 'Human')
+  // free-text references (any species NCBI taxonomy knows) round-trip unchanged
+  assert.equal(refLabel('8296'), '8296')
+  assert.equal(refLabel('axolotl'), 'axolotl')
 })

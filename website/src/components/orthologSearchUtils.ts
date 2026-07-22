@@ -26,6 +26,12 @@ export const COMMON_TAX_RANK = new Map(
   COMMON_SPECIES.map((s, i) => [s.taxId, i]),
 )
 
+// Display text for a reference-species field whose value may be a taxon id (as
+// carried in ?ref=) or free text; known model organisms show as their label.
+export function refLabel(ref: string) {
+  return COMMON_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
+}
+
 // NCBI Datasets API response shapes
 interface NcbiGene {
   gene_id: string

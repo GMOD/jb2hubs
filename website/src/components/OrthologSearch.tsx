@@ -2,14 +2,16 @@ import { useEffect, useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
+import OrthologHelpDialog from './OrthologHelpDialog.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
 import { fetchOrthologReports, ncbiJson } from './ncbiFetch.ts'
 import {
   COMMON_SPECIES,
   buildOrthologResults,
   createStore,
+  refLabel,
 } from './orthologSearchUtils.ts'
-import { resolveGeneId } from './orthologSet.ts'
+import { resolveGeneId, resolveRefTaxon } from './orthologSet.ts'
 import { features } from '../config/features.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 
@@ -30,13 +32,14 @@ interface ResolvedGene {
 // through the shared throttled client (ncbiJson) instead.
 export default function OrthologSearch() {
   const [geneInput, setGeneInput] = useState('')
-  const [taxId, setTaxId] = useState(9606)
+  const [refInput, setRefInput] = useState('Human')
   const [resolved, setResolved] = useState<ResolvedGene | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [results, setResults] = useState<OrthologResult[] | null>(null)
   const [totalOrthologs, setTotalOrthologs] = useState(0)
   const [initialized, setInitialized] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
 
   const { data: indexData } = useSWRImmutable(
     '/ortholog_index.json',
@@ -53,24 +56,30 @@ export default function OrthologSearch() {
     [indexData],
   )
 
-  async function runSearch(rawQuery: string, tax: number) {
+  async function runSearch(rawQuery: string, rawRef: string) {
     const query = rawQuery.trim()
-    if (!query || !store) {
+    if (!query || !rawRef.trim() || !store) {
       return
     }
     setGeneInput(query)
-    setTaxId(tax)
-    // Keep the address bar in sync with what's on screen so a search is
-    // shareable/bookmarkable — the mount effect below reads these back.
-    window.history.replaceState(
-      null,
-      '',
-      `?gene=${encodeURIComponent(query)}&ref=${tax}`,
-    )
+    setRefInput(rawRef)
     setLoading(true)
     setError('')
     setResults(null)
     try {
+      // Free text — a name or a taxon id — so the reference organism isn't
+      // limited to the suggested model organisms. Throws when NCBI taxonomy
+      // knows no such organism, which surfaces in the error line below.
+      const tax = await resolveRefTaxon(rawRef)
+      // Keep the address bar in sync with what's on screen so a search is
+      // shareable/bookmarkable — the mount effect below reads these back. The
+      // resolved taxon id goes in the URL, not the typed text, so the link means
+      // the same thing later.
+      window.history.replaceState(
+        null,
+        '',
+        `?gene=${encodeURIComponent(query)}&ref=${tax}`,
+      )
       const geneId = await resolveGeneId(query, tax)
       if (!geneId) {
         setError(
@@ -115,9 +124,9 @@ export default function OrthologSearch() {
       setInitialized(true)
       const p = new URLSearchParams(window.location.search)
       const g = p.get('gene')?.trim()
-      const r = Number(p.get('ref'))
+      const r = p.get('ref')?.trim()
       if (g) {
-        void runSearch(g, r > 0 ? r : taxId)
+        void runSearch(g, r ? refLabel(r) : refInput)
       }
     }
   }, [store, initialized])
@@ -145,7 +154,7 @@ export default function OrthologSearch() {
             }}
             onKeyDown={e => {
               if (e.key === 'Enter') {
-                void runSearch(geneInput, taxId)
+                void runSearch(geneInput, refInput)
               }
             }}
             placeholder="e.g. BRCA1 or 672"
@@ -155,46 +164,72 @@ export default function OrthologSearch() {
         </div>
         <div className="orthologs-field">
           <label
-            htmlFor="species-select"
+            htmlFor="species-input"
             className="orthologs-label"
           >
             Reference species
           </label>
-          <select
-            id="species-select"
-            value={taxId}
+          <input
+            id="species-input"
+            type="text"
+            list="ortholog-ref-species"
+            value={refInput}
             onChange={e => {
-              setTaxId(Number(e.target.value))
+              setRefInput(e.target.value)
             }}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                void runSearch(geneInput, refInput)
+              }
+            }}
+            placeholder="Species name or taxid"
+            title="Any species name or NCBI taxon id — common model organisms are suggested"
             disabled={!store || loading}
             className="orthologs-select"
-          >
+          />
+          <datalist id="ortholog-ref-species">
             {COMMON_SPECIES.map(s => (
               <option
                 key={s.taxId}
-                value={s.taxId}
-              >
-                {s.label}
-              </option>
+                value={s.label}
+              />
             ))}
-          </select>
+          </datalist>
         </div>
         <button
           onClick={() => {
-            void runSearch(geneInput, taxId)
+            void runSearch(geneInput, refInput)
           }}
-          disabled={!store || loading || !geneInput.trim()}
+          disabled={!store || loading || !geneInput.trim() || !refInput.trim()}
           className="orthologs-search-btn"
         >
           {loading ? 'Searching…' : 'Search'}
         </button>
+        <button
+          onClick={() => {
+            setHelpOpen(true)
+          }}
+          className="orthologs-help-btn"
+          title="How this search works"
+          aria-label="How this search works"
+        >
+          ?
+        </button>
       </div>
+
+      {helpOpen && (
+        <OrthologHelpDialog
+          onClose={() => {
+            setHelpOpen(false)
+          }}
+        />
+      )}
 
       <p className="orthologs-hint">
         Try an example:{' '}
         <button
           onClick={() => {
-            void runSearch('BRCA1', 9606)
+            void runSearch('BRCA1', 'Human')
           }}
           disabled={!store || loading}
           className="orthologs-chip"

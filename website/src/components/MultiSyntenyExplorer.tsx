@@ -5,7 +5,7 @@ import useSWRImmutable from 'swr/immutable'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { type Neighborhood } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
-import { COMMON_SPECIES } from './orthologSearchUtils.ts'
+import { COMMON_SPECIES, refLabel } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
 import { features } from '../config/features.ts'
 
@@ -63,12 +63,6 @@ const FLANK_CHOICES = [
   { label: '±500 kb', bp: 500_000 },
 ]
 
-// A friendly label for a reference stored as a bare taxid, so the input shows
-// "Human" rather than "9606" when arriving from a taxid URL.
-function labelForRef(ref: string) {
-  return COMMON_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
-}
-
 // Initial gene/reference come from the URL (?gene=BRCA1&ref=9606) so a view is
 // shareable/bookmarkable; this is a client:only island, so window is available.
 function paramsFromUrl(): Query {
@@ -86,7 +80,7 @@ function paramsFromUrl(): Query {
 export default function MultiSyntenyExplorer() {
   const [initial] = useState(paramsFromUrl)
   const [geneInput, setGeneInput] = useState(initial.gene)
-  const [refInput, setRefInput] = useState(() => labelForRef(initial.ref))
+  const [refInput, setRefInput] = useState(() => refLabel(initial.ref))
   const [anchors, setAnchors] = useState(initial.maxAnchors)
   const [flankBp, setFlankBp] = useState(initial.flankBp)
   const [query, setQuery] = useState<Query>(initial)
