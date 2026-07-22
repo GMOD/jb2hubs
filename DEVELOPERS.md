@@ -26,8 +26,21 @@ automatically and fails fast with a build hint if it's missing.
 ./run.sh                 # Full pipeline: build + upload + deploy (default, incremental)
 ./run.sh --dry-run       # Build only, no upload or deploy
 ./run.sh --upload-only    # Upload + deploy only, skip build (run after --dry-run)
+./run.sh --all           # Build every assembly/hub, not just new/changed ones
 ./run.sh --reprocess-all # Re-derive every config from cached downloads
 ./run.sh --staging       # Build + deploy website to staging only (no S3 upload / git push)
+```
+
+`--all`, `--reprocess-all` and `--help` mean the same thing in all three entry
+points (`run.sh` and both `make.sh`) and are parsed by one `parse_flags` helper
+in `common.sh`; `run.sh` forwards them to both pipelines. Each script adds its
+own flags on top (`--dry-run`/`--upload-only`/`--staging` for `run.sh`,
+`--skip-download` for `ucsc2jbrowse`).
+
+To rebuild one pipeline only, run its `make.sh` directly and then ship:
+
+```bash
+./ucsc2jbrowse/make.sh && ./run.sh --upload-only
 ```
 
 Two env vars force work past the incremental gates (canonical description in
@@ -45,7 +58,7 @@ cd genark2jbrowse
 yarn
 ./make.sh              # Process only new hubs (default, fastest)
 ./make.sh --all        # Process all hubs
-./make.sh --reprocess-all  # Re-download and reprocess everything
+./make.sh --reprocess-all  # Re-derive everything from cached downloads
 # optionally review git diff
 ./uploadAll.sh
 ```
@@ -55,9 +68,10 @@ yarn
 ```bash
 cd ucsc2jbrowse
 yarn
-./make.sh                  # Download + process (default)
-./make.sh --skip-download  # Skip download, just process existing data
-./make.sh --reprocess-all  # Force reprocess everything
+./make.sh                  # Download, then process assemblies whose trackDb changed
+./make.sh --all            # Process every assembly, not just changed ones
+./make.sh --skip-download  # Skip the rsync, process what's on disk (implies --all)
+./make.sh --reprocess-all  # Re-derive everything from cached downloads
 # optionally review git diff
 ./uploadAll.sh
 ```

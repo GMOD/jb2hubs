@@ -9,6 +9,7 @@
 #                           # Incremental: only new/changed assemblies rebuilt.
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
+#   ./run.sh --all          # Build every assembly/hub, not just new/changed ones
 #   ./run.sh --reprocess-all # Reprocess genark2jbrowse + ucsc2jbrowse from
 #                           # cached downloads (re-derives all configs; does not
 #                           # re-pull NCBI GFFs unless FETCH_UPDATES=1)
@@ -18,60 +19,38 @@
 #
 
 set -euo pipefail
-export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarning"
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "$SCRIPT_DIR/common.sh"
 cd "$SCRIPT_DIR"
 
-# Parse arguments
+# Parse arguments. --all, --reprocess-all and --help are handled by parse_flags.
 DRY_RUN=false
 UPLOAD_ONLY=false
-REPROCESS_ALL=false
 STAGING=false
-for arg in "$@"; do
-  case $arg in
-  --dry-run)
-    DRY_RUN=true
-    ;;
-  --upload-only)
-    UPLOAD_ONLY=true
-    ;;
-  --reprocess-all)
-    REPROCESS_ALL=true
-    ;;
-  --staging)
-    STAGING=true
-    ;;
-  --help | -h)
-    echo "Usage: $0 [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  (default)        Full pipeline: build + upload + deploy."
-    echo "                   Builds are incremental: only new/changed assemblies"
-    echo "                   are reprocessed."
-    echo "  --dry-run        Build only, no upload or deploy"
-    echo "  --upload-only    Upload + deploy only, skip build (run after --dry-run)"
-    echo "  --reprocess-all  Reprocess genark2jbrowse + ucsc2jbrowse from cached"
-    echo "                   downloads (re-derives every config). Use after changing"
-    echo "                   converter code/templates. Does not re-pull NCBI GFFs"
-    echo "                   unless FETCH_UPDATES=1."
-    echo "  --staging        Build, then deploy the website to staging only."
-    echo "                   Skips S3 data upload and git commit/push; the"
-    echo "                   staging site reads the same production S3 data."
-    echo "  --help, -h       Show this help message"
-    echo ""
-    echo "Env vars (see common.sh):"
-    echo "  REPROCESS=1      Re-derive from cached downloads (implied by --reprocess-all)"
-    echo "  FETCH_UPDATES=1  Re-pull upstream NCBI GFFs in both pipelines"
-    exit 0
-    ;;
-  *)
-    echo "Unknown option: $arg"
-    echo "Use --help for usage information"
-    exit 1
-    ;;
+PROCESS_ALL=false
+USAGE="Usage: $0 [OPTIONS]
+
+Options:
+  (default)        Full pipeline: build + upload + deploy. Builds are
+                   incremental: only new/changed assemblies are reprocessed.
+  --dry-run        Build only, no upload or deploy
+  --upload-only    Upload + deploy only, skip build (run after --dry-run)
+  --staging        Build, then deploy the website to staging only. Skips S3
+                   data upload and git commit/push; the staging site reads the
+                   same production S3 data.
+
+To rebuild one pipeline only, run its make.sh directly and then ship:
+  ./ucsc2jbrowse/make.sh && ./run.sh --upload-only"
+handle_flag() {
+  case "$1" in
+  --dry-run) DRY_RUN=true ;;
+  --upload-only) UPLOAD_ONLY=true ;;
+  --staging) STAGING=true ;;
+  *) return 1 ;;
   esac
-done
+}
+parse_flags "$@"
 
 # Validate options
 if [ "$DRY_RUN" = true ] && [ "$UPLOAD_ONLY" = true ]; then
@@ -84,10 +63,19 @@ if [ "$STAGING" = true ] && [ "$DRY_RUN" = true ]; then
   exit 1
 fi
 
-# --upload-only skips the build, so --reprocess-all would silently do nothing.
-if [ "$UPLOAD_ONLY" = true ] && [ "$REPROCESS_ALL" = true ]; then
-  echo "Error: --upload-only skips the build, so it cannot be combined with --reprocess-all"
+# --upload-only skips the build, so a flag that only shapes the build would
+# silently do nothing.
+if [ "$UPLOAD_ONLY" = true ] && [ "$PROCESS_ALL" = true ]; then
+  echo "Error: --upload-only skips the build, so it cannot be combined with --all or --reprocess-all"
   exit 1
+fi
+
+# Flags to forward to both make.sh scripts, which accept the same vocabulary.
+BUILD_FLAGS=()
+if [ -n "${REPROCESS:-}" ]; then
+  BUILD_FLAGS+=(--reprocess-all)
+elif [ "$PROCESS_ALL" = true ]; then
+  BUILD_FLAGS+=(--all)
 fi
 
 # --- Setup logging ---
@@ -111,23 +99,17 @@ trap 'echo "Script terminated by SIGTERM at $(date)"; exit 143' TERM
 # --- Phase 1: Build ---
 
 if [ "$UPLOAD_ONLY" = false ]; then
-  if [ "$REPROCESS_ALL" = true ]; then
-    echo "Running genark2jbrowse/make.sh --reprocess-all..."
-    ./genark2jbrowse/make.sh --reprocess-all
+  # With no build flags this is an incremental build: genark processes only
+  # new/changed hubs; ucsc only assemblies whose trackDb hash changed. Existing
+  # hubs would regenerate byte-identical from cached inputs, so reprocessing
+  # them is wasted work -- use --reprocess-all to re-apply converter changes.
+  build_description="${BUILD_FLAGS[*]:-incremental}"
 
-    echo "Running ucsc2jbrowse/make.sh --reprocess-all..."
-    ./ucsc2jbrowse/make.sh --reprocess-all
-  else
-    # Incremental build: genark processes only new/changed hubs; ucsc processes
-    # only assemblies whose trackDb hash changed. Existing hubs are regenerated
-    # from cached inputs and would be byte-identical, so reprocessing them is
-    # wasted work. Use --reprocess-all to re-apply converter code changes.
-    echo "Running genark2jbrowse/make.sh (incremental)..."
-    ./genark2jbrowse/make.sh
+  echo "Running genark2jbrowse/make.sh ($build_description)..."
+  ./genark2jbrowse/make.sh ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
 
-    echo "Running ucsc2jbrowse/make.sh (incremental)..."
-    ./ucsc2jbrowse/make.sh
-  fi
+  echo "Running ucsc2jbrowse/make.sh ($build_description)..."
+  ./ucsc2jbrowse/make.sh ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
 
   echo "Extracting SyntenyTrack datasets..."
   node extractSyntenyTracks.ts

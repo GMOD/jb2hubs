@@ -31,6 +31,67 @@ export PARALLEL_OPTS
 # scripts don't each hardcode the id.
 export CLOUDFRONT_DISTRIBUTION_ID="E13LGELJOT4GQO"
 
+# --- Shared flag parsing -----------------------------------------------------
+#
+# Every entry point (run.sh and both make.sh) accepts the same core flags with
+# the same meaning. parse_flags owns those; a script handles its own extra flags
+# by defining handle_flag, which returns non-zero for anything it doesn't know:
+#
+#   USAGE="Usage: $0 [OPTIONS]
+#
+#   Options:
+#     --my-flag        Does the thing"
+#   handle_flag() {
+#     case "$1" in
+#     --my-flag) MY_FLAG=true ;;
+#     *) return 1 ;;
+#     esac
+#   }
+#   parse_flags "$@"
+#
+# Shared help text lives here rather than in each script so the three --help
+# outputs can't drift apart.
+#
+# shellcheck disable=SC2034 # PROCESS_ALL is read by the calling script
+parse_flags() {
+  local arg
+  for arg in "$@"; do
+    case "$arg" in
+    --all)
+      # Process every assembly/hub, not just new or changed ones. Derived
+      # outputs are still skipped when their inputs are unchanged; use
+      # --reprocess-all to force those too.
+      PROCESS_ALL=true
+      ;;
+    --reprocess-all)
+      PROCESS_ALL=true
+      export REPROCESS=true
+      ;;
+    --help | -h)
+      printf '%s\n' "$USAGE"
+      printf '%s\n' "
+  --all            Process every assembly/hub, not just new/changed ones
+  --reprocess-all  Re-derive every output from cached downloads (implies --all).
+                   Use after changing converter code or templates. Does not
+                   re-pull NCBI GFFs unless FETCH_UPDATES=1.
+  --help, -h       Show this help message
+
+Env vars (canonical description in common.sh; they compose):
+  REPROCESS=1      Re-derive outputs from cached downloads (implied by --reprocess-all)
+  FETCH_UPDATES=1  Re-pull upstream NCBI GFFs in both pipelines"
+      exit 0
+      ;;
+    *)
+      if ! handle_flag "$arg"; then
+        echo "Unknown option: $arg" >&2
+        echo "Use --help for usage information" >&2
+        exit 1
+      fi
+      ;;
+    esac
+  done
+}
+
 # Logs a message with a timestamp.
 log() {
   echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1"

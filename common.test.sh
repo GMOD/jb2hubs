@@ -2,7 +2,8 @@
 #
 # common.test.sh
 #
-# Tests for helpers in common.sh (currently make_file_listing).
+# Tests for helpers in common.sh: make_file_listing, parse_flags, needs_rebuild
+# / save_rebuild_stamp, and rclone_sync_with_indexes.
 # Run: ./common.test.sh
 #
 
@@ -100,6 +101,50 @@ fi
 check "missing directory preserves the listing" "$before_missing" "$(cat "$listing")"
 
 rm -rf "$work"
+
+# --- parse_flags ---
+
+USAGE="Usage: fake [OPTIONS]"
+handle_flag() {
+  case "$1" in
+  --extra) EXTRA=true ;;
+  *) return 1 ;;
+  esac
+}
+
+# Each case runs in a subshell: parse_flags exits the shell on --help and on an
+# unknown flag, and exports REPROCESS.
+probe_flags() (
+  PROCESS_ALL=false EXTRA=false
+  parse_flags "$@"
+  echo "all=$PROCESS_ALL extra=$EXTRA reprocess=${REPROCESS:-}"
+)
+
+check "no flags leaves everything off" "all=false extra=false reprocess=" "$(probe_flags)"
+check "--all sets PROCESS_ALL" "all=true extra=false reprocess=" "$(probe_flags --all)"
+check "--reprocess-all implies --all" "all=true extra=false reprocess=true" "$(probe_flags --reprocess-all)"
+check "script-specific flags reach handle_flag" "all=false extra=true reprocess=" "$(probe_flags --extra)"
+check "flags compose" "all=true extra=true reprocess=true" "$(probe_flags --extra --reprocess-all)"
+
+(probe_flags --nope) >/dev/null 2>&1
+check "unknown flag exits non-zero" "1" "$?"
+check "unknown flag reports on stderr" "Unknown option: --nope" \
+  "$( (probe_flags --nope) 2>&1 >/dev/null | head -1)"
+
+help_out=$( (probe_flags --help) 2>/dev/null)
+check "--help prints the caller's usage" "Usage: fake [OPTIONS]" "$(echo "$help_out" | head -1)"
+case "$help_out" in
+*--reprocess-all*FETCH_UPDATES*)
+  echo "ok   - --help appends the shared flag and env-var help"
+  ;;
+*)
+  echo "FAIL - --help omitted the shared help block"
+  fail=1
+  ;;
+esac
+
+unset -f handle_flag
+unset USAGE
 
 # --- needs_rebuild / save_rebuild_stamp ---
 

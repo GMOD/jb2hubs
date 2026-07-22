@@ -16,42 +16,28 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 cd "$SCRIPT_DIR"
 
-# Parse arguments
+# Parse arguments. --all, --reprocess-all and --help are handled by parse_flags;
+# this pipeline has no extra flags of its own.
+PROCESS_ALL=false
+USAGE="Usage: $0 [OPTIONS]
+
+Every run also re-fetches the oldest slice of stale NCBI metadata, so upstream
+changes trickle in without a full --reprocess-all.
+
+Options:
+  (default)        Process only new hubs (fastest)"
+handle_flag() { return 1; }
+parse_flags "$@"
+
+# "new" | "all" | "reprocess", for logging and for the phases that only skip
+# work in the default incremental mode.
 MODE="new"
-for arg in "$@"; do
-  case $arg in
-  --all)
-    MODE="all"
-    ;;
-  --reprocess-all)
-    MODE="reprocess"
-    export REPROCESS=true
-    ;;
-  --help | -h)
-    echo "Usage: $0 [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  (default)        Process only new hubs (fastest)"
-    echo "  --all            Process all hubs"
-    echo "  --reprocess-all  Re-download and reprocess everything"
-    echo "  --help, -h       Show this help message"
-    echo ""
-    echo "Every run also re-fetches the oldest slice of stale NCBI metadata so"
-    echo "upstream changes trickle in without a full --reprocess-all."
-    echo ""
-    echo "Environment variables:"
-    echo "  FETCH_UPDATES=1  Re-check NCBI and re-download GFFs changed in place"
-    echo "                   (wget -N); regeneration then cascades by timestamp"
-    echo "  REPROCESS=1      Force re-derivation of outputs regardless of timestamps"
-    exit 0
-    ;;
-  *)
-    echo "Unknown option: $arg"
-    echo "Use --help for usage information"
-    exit 1
-    ;;
-  esac
-done
+if [ "$PROCESS_ALL" = true ]; then
+  MODE="all"
+fi
+if [ -n "${REPROCESS:-}" ]; then
+  MODE="reprocess"
+fi
 
 # Temp files for intermediate data (used in new-only mode)
 NEW_HUBS_FILE=$(mktemp)

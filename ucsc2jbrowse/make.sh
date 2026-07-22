@@ -5,8 +5,9 @@
 # Main build script for ucsc2jbrowse.
 #
 # Usage:
-#   ./make.sh                  # Download + process (default)
-#   ./make.sh --skip-download  # Skip download, just process
+#   ./make.sh                  # Download + process changed assemblies (default)
+#   ./make.sh --all            # Process every assembly, not just changed ones
+#   ./make.sh --skip-download  # Skip the rsync, just process (implies --all)
 #   ./make.sh --reprocess-all  # Force reprocess everything from cached downloads
 #
 # --reprocess-all re-derives every config from already-downloaded data; it does
@@ -20,34 +21,25 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 cd "$SCRIPT_DIR"
 
-# Parse arguments
+# Parse arguments. --all, --reprocess-all and --help are handled by parse_flags.
 SKIP_DOWNLOAD=false
-for arg in "$@"; do
-  case $arg in
+PROCESS_ALL=false
+USAGE="Usage: $0 [OPTIONS]
+
+Options:
+  (default)        Download, then process assemblies whose trackDb changed
+  --skip-download  Skip the UCSC rsync and process what is already on disk
+                   (implies --all, since there are no fresh hashes to compare)"
+handle_flag() {
+  case "$1" in
   --skip-download)
     SKIP_DOWNLOAD=true
+    PROCESS_ALL=true
     ;;
-  --reprocess-all)
-    export REPROCESS=true
-    ;;
-  --help | -h)
-    echo "Usage: $0 [OPTIONS]"
-    echo ""
-    echo "Options:"
-    echo "  (default)          Download and process all assemblies"
-    echo "  --skip-download    Skip download, just process existing data"
-    echo "  --reprocess-all    Reprocess everything from cached downloads"
-    echo "                     (ignores cached hashes; FETCH_UPDATES=1 re-pulls GFFs)"
-    echo "  --help, -h         Show this help message"
-    exit 0
-    ;;
-  *)
-    echo "Unknown option: $arg"
-    echo "Use --help for usage information"
-    exit 1
-    ;;
+  *) return 1 ;;
   esac
-done
+}
+parse_flags "$@"
 
 # --- Configuration ---
 
@@ -111,15 +103,14 @@ fi
 # and need to go through the full processing pipeline.  Unchanged assemblies
 # keep their existing built outputs from the previous run.
 #
-# Skip change detection when --skip-download or --reprocess-all is active so
-# those modes continue to process everything as before.
+# Skip change detection when --all (or anything implying it) is active so those
+# modes process everything.
 
 CHANGED_DL_DIRS=()
 CHANGED_BUILT_DIRS=()
 
-if [ "$SKIP_DOWNLOAD" = true ] || [ -n "${REPROCESS:-}" ]; then
-  # Process all assemblies (skip-download or reprocess-all mode)
-  log "Processing all assemblies (skip-download or reprocess-all mode)..."
+if [ "$PROCESS_ALL" = true ]; then
+  log "Processing all assemblies (--all)..."
   while IFS= read -r assembly_data_dir; do
     assembly=$(basename "$assembly_data_dir")
     CHANGED_DL_DIRS+=("$assembly_data_dir")
