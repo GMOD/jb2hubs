@@ -25,7 +25,8 @@
           "accession": "danRer10",
           "commonName": "Zebrafish",
           "jbrowseConfig": "https://jbrowse.org/ucsc/danRer10/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/danRer10/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/danRer10/minimal.json",
+          "blatDb": "danRer10"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/danRer10/bigZips/danRer10.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -69,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "danRer10-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "danRer10-ncbiRefSeqGenomicDiff",

@@ -25,18 +25,13 @@
           "accession": "saiBol1",
           "commonName": "Squirrel monkey",
           "jbrowseConfig": "https://jbrowse.org/ucsc/saiBol1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/saiBol1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/saiBol1/minimal.json",
+          "blatDb": "saiBol1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/saiBol1/bigZips/saiBol1.2bit",
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/saiBol1/bigZips/saiBol1.chrom.sizes"
-        }
-      },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/saiBol1/bigZips/saiBol1.chromAlias.txt"
         }
       }
     }
@@ -69,7 +64,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "saiBol1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "saiBol1-ncbiRefSeqGenomicDiff",

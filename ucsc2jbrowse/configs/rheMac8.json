@@ -25,7 +25,8 @@
           "accession": "rheMac8",
           "commonName": "Rhesus",
           "jbrowseConfig": "https://jbrowse.org/ucsc/rheMac8/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rheMac8/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rheMac8/minimal.json",
+          "blatDb": "rheMac8"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -39,11 +40,8 @@
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rheMac8/bigZips/rheMac8.chromAlias.txt"
         }
       },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rheMac8/database/cytoBandIdeo.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -82,7 +80,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rheMac8-evaSnp5",
@@ -117,7 +122,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rheMac8-evaSnp6",
@@ -152,7 +164,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rheMac8-evaSnp7",
@@ -187,7 +206,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rheMac8-ncbiRefSeqOther",
@@ -217,7 +243,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "rheMac8-evaSnp8",
@@ -254,7 +289,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rheMac8-ncbiRefSeqGenomicDiff",

@@ -25,7 +25,8 @@
           "accession": "geoFor1",
           "commonName": "Medium ground finch",
           "jbrowseConfig": "https://jbrowse.org/ucsc/geoFor1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/geoFor1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/geoFor1/minimal.json",
+          "blatDb": "geoFor1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -153,7 +154,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "geoFor1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "geoFor1-unipLocTransMemb",

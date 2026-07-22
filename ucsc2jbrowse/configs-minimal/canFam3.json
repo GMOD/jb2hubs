@@ -25,7 +25,8 @@
           "accession": "canFam3",
           "commonName": "Dog",
           "jbrowseConfig": "https://jbrowse.org/ucsc/canFam3/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/canFam3/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/canFam3/minimal.json",
+          "blatDb": "canFam3"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/canFam3/bigZips/canFam3.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -69,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "canFam3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "canFam3-ncbiRefSeqGenomicDiff",

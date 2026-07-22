@@ -25,7 +25,8 @@
           "accession": "anoCar2",
           "commonName": "Lizard",
           "jbrowseConfig": "https://jbrowse.org/ucsc/anoCar2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/anoCar2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/anoCar2/minimal.json",
+          "blatDb": "anoCar2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/anoCar2/bigZips/anoCar2.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -69,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "anoCar2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "anoCar2-ncbiRefSeqGenomicDiff",

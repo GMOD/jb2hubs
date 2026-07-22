@@ -25,7 +25,8 @@
           "accession": "nomLeu3",
           "commonName": "Gibbon",
           "jbrowseConfig": "https://jbrowse.org/ucsc/nomLeu3/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/nomLeu3/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/nomLeu3/minimal.json",
+          "blatDb": "nomLeu3"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -37,12 +38,6 @@
         "adapter": {
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/nomLeu3/bigZips/nomLeu3.chromAlias.txt"
-        }
-      },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/nomLeu3/database/cytoBandIdeo.txt.gz"
         }
       }
     }
@@ -159,7 +154,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "nomLeu3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "nomLeu3-unipLocTransMemb",

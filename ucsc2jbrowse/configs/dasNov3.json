@@ -25,7 +25,8 @@
           "accession": "dasNov3",
           "commonName": "Armadillo",
           "jbrowseConfig": "https://jbrowse.org/ucsc/dasNov3/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/dasNov3/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/dasNov3/minimal.json",
+          "blatDb": "dasNov3"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,11 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/dasNov3/bigZips/dasNov3.chrom.sizes"
         }
       },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/dasNov3/bigZips/dasNov3.chromAlias.txt"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -153,7 +151,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dasNov3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "dasNov3-unipLocTransMemb",

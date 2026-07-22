@@ -25,7 +25,8 @@
           "accession": "panPan2",
           "commonName": "Bonobo",
           "jbrowseConfig": "https://jbrowse.org/ucsc/panPan2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/panPan2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/panPan2/minimal.json",
+          "blatDb": "panPan2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -39,11 +40,8 @@
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/panPan2/bigZips/panPan2.chromAlias.txt"
         }
       },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/panPan2/database/cytoBandIdeo.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "panPan2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "panPan2-ncbiRefSeqGenomicDiff",

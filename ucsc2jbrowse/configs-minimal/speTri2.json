@@ -25,7 +25,8 @@
           "accession": "speTri2",
           "commonName": "Squirrel",
           "jbrowseConfig": "https://jbrowse.org/ucsc/speTri2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/speTri2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/speTri2/minimal.json",
+          "blatDb": "speTri2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -69,7 +70,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "speTri2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "speTri2-ncbiRefSeqGenomicDiff",

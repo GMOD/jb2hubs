@@ -25,18 +25,13 @@
           "accession": "sorAra2",
           "commonName": "Shrew",
           "jbrowseConfig": "https://jbrowse.org/ucsc/sorAra2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/sorAra2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/sorAra2/minimal.json",
+          "blatDb": "sorAra2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/sorAra2/bigZips/sorAra2.2bit",
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/sorAra2/bigZips/sorAra2.chrom.sizes"
-        }
-      },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/sorAra2/bigZips/sorAra2.chromAlias.txt"
         }
       }
     }
@@ -69,7 +64,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sorAra2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "sorAra2-ncbiRefSeqGenomicDiff",

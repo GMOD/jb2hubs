@@ -25,18 +25,13 @@
           "accession": "wuhCor1",
           "commonName": "SARS-CoV-2",
           "jbrowseConfig": "https://jbrowse.org/ucsc/wuhCor1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/wuhCor1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/wuhCor1/minimal.json",
+          "blatDb": "wuhCor1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.2bit",
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.chrom.sizes"
-        }
-      },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/wuhCor1/bigZips/wuhCor1.chromAlias.txt"
         }
       }
     }
@@ -387,7 +382,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/ncbi/genes.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/ncbi/genes.bb",
+        "aggregateField": "geneName2"
       },
       "metadata": {
         "ucsc": {
@@ -412,7 +408,17 @@
         }
       },
       "description": "NCBI Genes from NC_045512.2",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-ncbiGeneBGP-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          },
+          "mouseover": "jexl:get(feature,'note')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-ncbiProducts",
@@ -421,7 +427,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/ncbi/peptides.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/bbi/ncbi/peptides.bb",
+        "aggregateField": "geneName"
       },
       "metadata": {
         "ucsc": {
@@ -446,7 +453,17 @@
         }
       },
       "description": "NCBI Proteins: annotated mature peptide products",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-ncbiProducts-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          },
+          "mouseover": "jexl:get(feature,'note')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-Negative_Selection",
@@ -578,7 +595,8 @@
       "assemblyNames": ["wuhCor1"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipFullSeqCoV2.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/wuhCor1/uniprot/unipFullSeqCoV2.bb",
+        "aggregateField": "protShortNames"
       },
       "metadata": {
         "ucsc": {
@@ -602,7 +620,17 @@
         }
       },
       "description": "UniProt Precursor Proteins (before cleavage into protein products)",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2FullSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'protShortNames')"
+          },
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-SHAPE",
@@ -1088,7 +1116,14 @@
         }
       },
       "description": "UniProt Protein Products (Polypeptide Chains, after cleavage)",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Chain-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-Entropy",
@@ -1321,7 +1356,14 @@
         }
       },
       "description": "UniProt highlighted \"Regions of Interest\"",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Interest-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-Kim_RNAs",
@@ -1477,7 +1519,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2LocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-varskip2",
@@ -2244,7 +2293,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2LocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igm_COVID_404",
@@ -2295,7 +2351,14 @@
         }
       },
       "description": "Crowd-sourced data: annotations contributed via bit.ly/cov2annots",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-publicAnnots-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'extraField0')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igg_Ctrl_NC65",
@@ -2878,7 +2941,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2DisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-I_bind_avg",
@@ -3027,7 +3097,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Domain-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-iggAllSum",
@@ -3156,7 +3233,14 @@
         }
       },
       "description": "UniProt Amino Acid Glycosylation/Phosphorylation sites",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Modif-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-K_bind_avg",
@@ -3356,7 +3440,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.4 between 2021-10-05 and 2022-01-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ1Ay-4-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ3Ay-4",
@@ -3383,7 +3474,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.4 between 2021-04-05 and 2021-07-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ3Ay-4-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ2Ay-4",
@@ -3410,7 +3508,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.4 between 2021-07-05 and 2021-10-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ2Ay-4-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ0Ba-2",
@@ -3437,7 +3542,14 @@
         }
       },
       "description": "Mutations (amino acid level) in BA.2 between 2022-01-05 and 2022-03-12",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ0Ba-2-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igm_COVID_416",
@@ -3611,7 +3723,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Mut-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-variantNucMuts_B_1_1_529",
@@ -3714,7 +3833,14 @@
         }
       },
       "description": "Human Interacting Proteins from Gordon et al. (* = druggable)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-gordon2-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'drug')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igm_Ctrl_LC177",
@@ -3891,7 +4017,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Other-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-unipCov2Struct",
@@ -3919,7 +4052,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Struct-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-CHX_5hr_1",
@@ -4126,7 +4266,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-unipCov2Repeat-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-CHX_5hr_2",
@@ -5432,7 +5579,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.4.2 between 2021-10-05 and 2022-01-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ1Ay-4-2-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ2Ay-5",
@@ -5459,7 +5613,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.5 between 2021-07-05 and 2021-10-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ2Ay-5-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ3B-1-1-7",
@@ -5486,7 +5647,14 @@
         }
       },
       "description": "Mutations (amino acid level) in B.1.1.7 between 2021-04-05 and 2021-07-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ3B-1-1-7-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ0Ba-1-1",
@@ -5513,7 +5681,14 @@
         }
       },
       "description": "Mutations (amino acid level) in BA.1.1 between 2022-01-05 and 2022-03-06",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ0Ba-1-1-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-problematicSitesCaution",
@@ -7059,7 +7234,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.6 between 2021-07-05 and 2021-10-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ2Ay-6-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ3B-1-617-2",
@@ -7086,7 +7268,14 @@
         }
       },
       "description": "Mutations (amino acid level) in B.1.617.2 between 2021-04-05 and 2021-07-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ3B-1-617-2-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ1Ba-1-17",
@@ -7113,7 +7302,14 @@
         }
       },
       "description": "Mutations (amino acid level) in BA.1.17 between 2021-10-05 and 2022-01-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ1Ba-1-17-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ0Ba-1-17",
@@ -7140,7 +7336,14 @@
         }
       },
       "description": "Mutations (amino acid level) in BA.1.17 between 2022-01-05 and 2022-03-01",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ0Ba-1-17-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igg_COVID_408",
@@ -7354,7 +7557,14 @@
         }
       },
       "description": "Bloom Lab: Strong S RBD-mutation antibody escape - positions with max score > 0.18 - shading = number of samples where found",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-bloomEscTop-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-A_120Max",
@@ -8211,7 +8421,14 @@
         }
       },
       "description": "Potential contact residues in PDB structures of viral proteins",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-contacts-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-H_152Total",
@@ -8758,7 +8975,14 @@
         }
       },
       "description": "Whelan lab: RBD Mutations that lead to escape from 21 monoclonal antibodies (click to show mutation details)",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-escape-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-rappuoli",
@@ -8811,7 +9035,14 @@
         }
       },
       "description": "McCoy lab: S Mutation impact on neutralization by serum and mAbs",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-mccoy-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'description')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igg_COVID_436",
@@ -9560,7 +9791,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.120 between 2021-07-05 and 2021-10-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ2Ay-120-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ1Ay-43",
@@ -9587,7 +9825,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.43 between 2021-10-05 and 2022-01-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ1Ay-43-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ3Ay-5",
@@ -9614,7 +9859,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.5 between 2021-04-05 and 2021-07-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ3Ay-5-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ0Ba-1",
@@ -9641,7 +9893,14 @@
         }
       },
       "description": "Mutations (amino acid level) in BA.1 between 2022-01-05 and 2022-03-09",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ0Ba-1-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-cas13Crispr",
@@ -11176,7 +11435,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.122 between 2021-07-05 and 2021-10-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ2Ay-122-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ1Ay-4-2-2",
@@ -11203,7 +11469,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.4.2.2 between 2021-10-05 and 2022-01-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ1Ay-4-2-2-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ3Ay-9",
@@ -11230,7 +11503,14 @@
         }
       },
       "description": "Mutations (amino acid level) in AY.9 between 2021-04-05 and 2021-07-05",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ3Ay-9-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-galaxyEnaQ0Ba-1-1-11",
@@ -11257,7 +11537,14 @@
         }
       },
       "description": "Mutations (amino acid level) in BA.1.1.11 between 2022-01-05 and 2022-03-09",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-galaxyEnaQ0Ba-1-1-11-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'gene')+':'+get(feature,'name')+' | Nuc change: '+get(feature,'nucChange')+' | '+get(feature,'lineage')+' Frequency (this quarter): '+get(feature,'withinLineageFrequency')+' | Intrasample AF (this quarter): '+get(feature,'medianAF')+' ('+get(feature,'q25AF')+' - '+get(feature,'q75AF')+') | First observed (ever): '+get(feature,'earliestDateseen')+' ('+get(feature,'earliestCountryseen')+')'"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-igm_COVID_605",
@@ -12709,7 +12996,14 @@
         }
       },
       "description": "Mutations that confer drug resistance (Anna Niewiadomska, BV-BRC)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-resist-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-nextstrainGene",
@@ -12787,7 +13081,14 @@
         }
       },
       "description": "RECON HLA-I epitopes",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-poranHla1-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'name2')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-poranHla2",
@@ -12813,7 +13114,14 @@
         }
       },
       "description": "RECON HLA-II epitopes",
-      "category": ["immu"]
+      "category": ["immu"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-poranHla2-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'name2')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-potPathoIndel",
@@ -12862,7 +13170,14 @@
         }
       },
       "description": "Mutations that may confer drug resistance - from Coronavirus3d.org (label: count of GISAID sequences with mutation, Feb 2022)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-resistPred-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'changeFreq')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-unipProtease",
@@ -12947,7 +13262,14 @@
         }
       },
       "description": "Spike protein mutations from community annotation (Feb 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "wuhCor1-spikeMuts-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'name')+' '+get(feature,'clinicalNotes')"
+        }
+      ]
     },
     {
       "trackId": "wuhCor1-iedb",

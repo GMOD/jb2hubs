@@ -25,7 +25,8 @@
           "accession": "felCat9",
           "commonName": "Cat",
           "jbrowseConfig": "https://jbrowse.org/ucsc/felCat9/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/felCat9/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/felCat9/minimal.json",
+          "blatDb": "felCat9"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/felCat9/database/cytoBandIdeo.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -81,7 +85,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 3",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-evaSnp-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-evaSnp4",
@@ -117,7 +128,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-evaSnp5",
@@ -152,7 +170,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipLocSignal",
@@ -181,7 +206,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "felCat9-evaSnp6",
@@ -216,7 +248,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipLocExtra",
@@ -245,7 +284,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipInterest",
@@ -273,7 +319,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "felCat9-ncbiRefSeqOther",
@@ -303,7 +356,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "felCat9-evaSnp7",
@@ -338,7 +400,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipLocTransMemb",
@@ -367,7 +436,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipLocCytopl",
@@ -396,7 +472,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-evaSnp8",
@@ -433,7 +516,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-ncbiRefSeqGenomicDiff",
@@ -487,7 +577,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipDisulfBond",
@@ -514,7 +611,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipDomain",
@@ -542,7 +646,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipModif",
@@ -570,7 +681,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipMut",
@@ -597,7 +715,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipOther",
@@ -625,7 +750,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipStruct",
@@ -654,7 +786,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipRepeat",
@@ -682,7 +821,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-unipConflict",
@@ -710,7 +856,14 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "felCat9-HLTOGAannotvHg38v1",

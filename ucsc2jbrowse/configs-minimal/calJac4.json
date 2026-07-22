@@ -25,7 +25,8 @@
           "accession": "calJac4",
           "commonName": "Marmoset",
           "jbrowseConfig": "https://jbrowse.org/ucsc/calJac4/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calJac4/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calJac4/minimal.json",
+          "blatDb": "calJac4"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/calJac4/database/cytoBandIdeo.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +79,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "calJac4-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

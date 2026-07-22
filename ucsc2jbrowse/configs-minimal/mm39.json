@@ -25,7 +25,8 @@
           "accession": "mm39",
           "commonName": "Mouse",
           "jbrowseConfig": "https://jbrowse.org/ucsc/mm39/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm39/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm39/minimal.json",
+          "blatDb": "mm39"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm39/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +79,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-ncbiRefSeqGenomicDiff",
@@ -302,6 +315,26 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "mm39-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm39.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mm39.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["mm39"]
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "mm39-gencodeComp",
       "name": "GENCODE VM38 - Comprehensive gene annotation",
       "adapter": {
@@ -413,26 +446,6 @@
         "index": {
           "location": {
             "uri": "gencode.vM38.tRNAs.sorted.gff3.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "assemblyNames": ["mm39"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm39-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "mm39.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "mm39.gff.gz.csi",
             "locationType": "UriLocation"
           },
           "indexType": "CSI"

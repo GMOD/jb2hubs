@@ -25,7 +25,8 @@
           "accession": "rn5",
           "commonName": "Rat",
           "jbrowseConfig": "https://jbrowse.org/ucsc/rn5/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rn5/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rn5/minimal.json",
+          "blatDb": "rn5"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,17 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/rn5/bigZips/rn5.chrom.sizes"
         }
       },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rn5/bigZips/rn5.chromAlias.txt"
-        }
-      },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rn5/database/cytoBand.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -82,7 +74,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn5-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rn5-evaSnp5",
@@ -117,7 +116,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn5-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rn5-evaSnp6",
@@ -152,7 +158,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn5-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rn5-evaSnp7",
@@ -187,7 +200,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn5-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "rn5-evaSnp8",
@@ -224,7 +244,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rn5-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

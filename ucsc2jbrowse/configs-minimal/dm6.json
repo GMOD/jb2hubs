@@ -25,7 +25,8 @@
           "accession": "dm6",
           "commonName": "D. melanogaster",
           "jbrowseConfig": "https://jbrowse.org/ucsc/dm6/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/dm6/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/dm6/minimal.json",
+          "blatDb": "dm6"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/dm6/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 5
       }
     }
   ],
@@ -75,7 +79,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "dm6-ncbiRefSeqGenomicDiff",
@@ -252,6 +265,25 @@
       "assemblyNames": ["dm6"]
     }
   ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "dm6-index",
+      "ixFilePath": {
+        "uri": "trix/dm6.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/dm6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/dm6_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["dm6"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",
@@ -282,25 +314,6 @@
       }
     }
   },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "dm6-index",
-      "ixFilePath": {
-        "uri": "trix/dm6.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/dm6.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/dm6_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["dm6"]
-    }
-  ],
   "defaultSession": {
     "name": "dm6 Aug. 2014 (BDGP Release 6 + ISO1 MT/dm6)",
     "views": [

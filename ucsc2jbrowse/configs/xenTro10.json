@@ -25,7 +25,8 @@
           "accession": "xenTro10",
           "commonName": "X. tropicalis",
           "jbrowseConfig": "https://jbrowse.org/ucsc/xenTro10/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/xenTro10/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/xenTro10/minimal.json",
+          "blatDb": "xenTro10"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,11 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/xenTro10/bigZips/xenTro10.chrom.sizes"
         }
       },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/xenTro10/bigZips/xenTro10.chromAlias.txt"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -153,7 +151,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "xenTro10-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "xenTro10-unipLocTransMemb",
@@ -1100,6 +1107,27 @@
       },
       "description": "Non-X. tropicalis RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "xenTro10_to_galGal6_liftOver",
+      "name": "xenTro10 to Chicken (galGal6) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["xenTro10", "galGal6"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "xenTro10",
+        "queryAssembly": "galGal6",
+        "pifGzLocation": {
+          "uri": "liftOver/xenTro10ToGalGal6.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/xenTro10ToGalGal6.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",

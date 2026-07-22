@@ -25,7 +25,8 @@
           "accession": "caeJap1",
           "commonName": "C. japonica",
           "jbrowseConfig": "https://jbrowse.org/ucsc/caeJap1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/caeJap1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/caeJap1/minimal.json",
+          "blatDb": "caeJap1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -445,7 +446,14 @@
         }
       },
       "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "caeJap1-spMut-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

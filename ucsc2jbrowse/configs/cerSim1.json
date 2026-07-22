@@ -25,7 +25,8 @@
           "accession": "cerSim1",
           "commonName": "White rhinoceros",
           "jbrowseConfig": "https://jbrowse.org/ucsc/cerSim1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/cerSim1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/cerSim1/minimal.json",
+          "blatDb": "cerSim1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/cerSim1/bigZips/cerSim1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -153,7 +157,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "cerSim1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "cerSim1-unipLocTransMemb",

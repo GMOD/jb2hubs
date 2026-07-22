@@ -25,7 +25,8 @@
           "accession": "felCat9",
           "commonName": "Cat",
           "jbrowseConfig": "https://jbrowse.org/ucsc/felCat9/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/felCat9/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/felCat9/minimal.json",
+          "blatDb": "felCat9"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/felCat9/database/cytoBandIdeo.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +79,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat9-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "felCat9-ncbiRefSeqGenomicDiff",

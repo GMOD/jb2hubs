@@ -25,7 +25,8 @@
           "accession": "felCat8",
           "commonName": "Cat",
           "jbrowseConfig": "https://jbrowse.org/ucsc/felCat8/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/felCat8/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/felCat8/minimal.json",
+          "blatDb": "felCat8"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,17 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/felCat8/bigZips/felCat8.chrom.sizes"
         }
       },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/felCat8/bigZips/felCat8.chromAlias.txt"
-        }
-      },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/felCat8/database/cytoBandIdeo.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -82,7 +74,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat8-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat8-evaSnp5",
@@ -117,7 +116,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat8-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat8-evaSnp6",
@@ -152,7 +158,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat8-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat8-evaSnp7",
@@ -187,7 +200,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat8-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat8-ncbiRefSeqOther",
@@ -217,7 +237,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat8-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "felCat8-evaSnp8",
@@ -254,7 +283,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "felCat8-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "felCat8-ncbiRefSeqGenomicDiff",

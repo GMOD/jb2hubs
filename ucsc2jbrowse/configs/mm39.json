@@ -25,7 +25,8 @@
           "accession": "mm39",
           "commonName": "Mouse",
           "jbrowseConfig": "https://jbrowse.org/ucsc/mm39/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm39/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/mm39/minimal.json",
+          "blatDb": "mm39"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm39/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -81,7 +85,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 3",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-evaSnp-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm39-knownGene",
@@ -90,7 +101,8 @@
       "assemblyNames": ["mm39"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/gencode/gencodeVM38.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/gencode/gencodeVM38.bb",
+        "aggregateField": "geneName"
       },
       "metadata": {
         "ucsc": {
@@ -117,7 +129,16 @@
         }
       },
       "description": "GENCODE VM38",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-knownGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-jaspar2026",
@@ -149,7 +170,16 @@
         }
       },
       "description": "JASPAR CORE 2026 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-jaspar2026-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-ReMapDensity",
@@ -206,7 +236,16 @@
         }
       },
       "description": "JASPAR CORE 2024 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-jaspar2024-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-evaSnp4",
@@ -242,7 +281,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm39-jaspar2022",
@@ -270,7 +316,16 @@
         }
       },
       "description": "JASPAR CORE 2022 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-jaspar2022-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-xenoMRnas",
@@ -279,7 +334,8 @@
       "assemblyNames": ["mm39"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/xenoRefGene/mm39.xenoRefGene.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/xenoRefGene/mm39.xenoRefGene.bb",
+        "aggregateField": "name"
       },
       "metadata": {
         "ucsc": {
@@ -299,7 +355,16 @@
         }
       },
       "description": "RefSeq mRNAs mapped to this assembly",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-xenoMRnas-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-ReMapTFs",
@@ -338,7 +403,16 @@
         }
       },
       "description": "ReMap Atlas of Regulatory Regions",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-ReMapTFs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-evaSnp5",
@@ -373,7 +447,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipLocSignal",
@@ -402,7 +483,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "mm39-evaSnp6",
@@ -437,7 +525,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipLocExtra",
@@ -466,7 +561,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipInterest",
@@ -494,7 +596,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "mm39-ncbiRefSeqOther",
@@ -524,7 +633,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "mm39-chainGCF_003668045.3",
@@ -585,7 +703,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipLocTransMemb",
@@ -614,7 +739,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-netGCF_003668045.3",
@@ -674,7 +806,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-evaSnp8",
@@ -711,7 +850,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "mm39-ncbiRefSeqGenomicDiff",
@@ -765,7 +911,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipDisulfBond",
@@ -792,7 +945,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipDomain",
@@ -820,7 +980,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipModif",
@@ -848,7 +1015,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-ncbiOrtho",
@@ -879,7 +1053,17 @@
         }
       },
       "description": "NCBI Gene Orthologs",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-ncbiOrtho-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'hugo')"
+          },
+          "mouseover": "jexl:get(feature,'url')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipMut",
@@ -906,7 +1090,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipOther",
@@ -934,7 +1125,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipStruct",
@@ -963,7 +1161,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipRepeat",
@@ -991,7 +1196,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-unipConflict",
@@ -1019,7 +1231,14 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "mm39-cytoBandIdeo",
@@ -1097,7 +1316,14 @@
         }
       },
       "description": "VISTA Enhancers",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-vistaEnhancersBb-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'patternExpression')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1645,6 +1871,24 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "mm39-mm39",
+      "name": "mm39",
+      "assemblyNames": ["mm39"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm39.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "mm39.gff.gz.csi"
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "mm39-ncbiRefSeq",
       "name": "NCBI RefSeq - RefSeq All",
       "assemblyNames": ["mm39"],
@@ -1849,6 +2093,27 @@
       },
       "description": "Non-Mouse RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm39-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm39.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mm39.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["mm39"]
     },
     {
       "type": "SyntenyTrack",
@@ -2776,6 +3041,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "mm39_to_GCF_049354715.1_liftOver",
+      "name": "mm39 to white-tufted-ear marmoset (240 primary hap 2025) (GCF_049354715.1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["mm39", "GCF_049354715.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "mm39",
+        "queryAssembly": "GCF_049354715.1",
+        "pifGzLocation": {
+          "uri": "liftOver/mm39ToGCF_049354715.1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/mm39ToGCF_049354715.1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "mm39_to_GCF_900094665.2_liftOver",
       "name": "mm39 to Ryukyu mouse (v2 2017) (GCF_900094665.2) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -3543,27 +3829,6 @@
         "index": {
           "location": {
             "uri": "gencode.vM38.tRNAs.sorted.gff3.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["mm39"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm39-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "mm39.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "mm39.gff.gz.csi",
             "locationType": "UriLocation"
           },
           "indexType": "CSI"

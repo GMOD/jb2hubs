@@ -25,7 +25,8 @@
           "accession": "gorGor6",
           "commonName": "Gorilla",
           "jbrowseConfig": "https://jbrowse.org/ucsc/gorGor6/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/gorGor6/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/gorGor6/minimal.json",
+          "blatDb": "gorGor6"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,11 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/gorGor6/bigZips/gorGor6.chrom.sizes"
         }
       },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/gorGor6/bigZips/gorGor6.chromAlias.txt"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -69,7 +67,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "gorGor6-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

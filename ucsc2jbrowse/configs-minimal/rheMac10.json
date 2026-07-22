@@ -25,7 +25,8 @@
           "accession": "rheMac10",
           "commonName": "Rhesus",
           "jbrowseConfig": "https://jbrowse.org/ucsc/rheMac10/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rheMac10/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rheMac10/minimal.json",
+          "blatDb": "rheMac10"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -39,11 +40,8 @@
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rheMac10/bigZips/rheMac10.chromAlias.txt"
         }
       },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rheMac10/database/cytoBandIdeo.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac10-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

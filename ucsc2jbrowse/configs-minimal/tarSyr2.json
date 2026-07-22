@@ -25,7 +25,8 @@
           "accession": "tarSyr2",
           "commonName": "Tarsier",
           "jbrowseConfig": "https://jbrowse.org/ucsc/tarSyr2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/tarSyr2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/tarSyr2/minimal.json",
+          "blatDb": "tarSyr2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -69,7 +70,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "tarSyr2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "tarSyr2-ncbiRefSeqGenomicDiff",

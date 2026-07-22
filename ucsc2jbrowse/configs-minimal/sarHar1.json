@@ -25,7 +25,8 @@
           "accession": "sarHar1",
           "commonName": "Tasmanian devil",
           "jbrowseConfig": "https://jbrowse.org/ucsc/sarHar1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/sarHar1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/sarHar1/minimal.json",
+          "blatDb": "sarHar1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -69,7 +70,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sarHar1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "sarHar1-ncbiRefSeqGenomicDiff",

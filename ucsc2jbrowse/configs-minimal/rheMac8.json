@@ -25,7 +25,8 @@
           "accession": "rheMac8",
           "commonName": "Rhesus",
           "jbrowseConfig": "https://jbrowse.org/ucsc/rheMac8/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rheMac8/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/rheMac8/minimal.json",
+          "blatDb": "rheMac8"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -39,11 +40,8 @@
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rheMac8/bigZips/rheMac8.chromAlias.txt"
         }
       },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/rheMac8/database/cytoBandIdeo.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac8-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "rheMac8-ncbiRefSeqGenomicDiff",

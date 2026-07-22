@@ -25,7 +25,8 @@
           "accession": "calJac4",
           "commonName": "Marmoset",
           "jbrowseConfig": "https://jbrowse.org/ucsc/calJac4/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calJac4/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calJac4/minimal.json",
+          "blatDb": "calJac4"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/calJac4/database/cytoBandIdeo.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -55,7 +59,8 @@
       "assemblyNames": ["calJac4"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/calJac4/catV2/consensus.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/calJac4/catV2/consensus.bb",
+        "aggregateField": "name"
       },
       "metadata": {
         "ucsc": {
@@ -76,7 +81,16 @@
         }
       },
       "description": "CAT Gene Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "calJac4-catV2-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "trackId": "calJac4-uwIsoSeq_SRR11734396_2",
@@ -313,7 +327,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "calJac4-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "calJac4-uwIsoSeq_SRR11734138_1",

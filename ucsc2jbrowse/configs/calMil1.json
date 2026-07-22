@@ -25,7 +25,8 @@
           "accession": "calMil1",
           "commonName": "Elephant shark",
           "jbrowseConfig": "https://jbrowse.org/ucsc/calMil1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calMil1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calMil1/minimal.json",
+          "blatDb": "calMil1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/calMil1/bigZips/calMil1.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -153,7 +157,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "calMil1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "calMil1-unipLocTransMemb",

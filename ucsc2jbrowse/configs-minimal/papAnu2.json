@@ -25,7 +25,8 @@
           "accession": "papAnu2",
           "commonName": "Baboon",
           "jbrowseConfig": "https://jbrowse.org/ucsc/papAnu2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/papAnu2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/papAnu2/minimal.json",
+          "blatDb": "papAnu2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -69,7 +70,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "papAnu2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "papAnu2-ncbiRefSeqGenomicDiff",

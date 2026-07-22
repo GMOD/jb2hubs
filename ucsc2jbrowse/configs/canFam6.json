@@ -25,7 +25,8 @@
           "accession": "canFam6",
           "commonName": "Dog",
           "jbrowseConfig": "https://jbrowse.org/ucsc/canFam6/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/canFam6/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/canFam6/minimal.json",
+          "blatDb": "canFam6"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/canFam6/bigZips/canFam6.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -153,7 +157,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "canFam6-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "canFam6-unipLocTransMemb",
@@ -373,7 +386,17 @@
         }
       },
       "description": "NCBI Gene Orthologs",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "canFam6-ncbiOrtho-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'hugo')"
+          },
+          "mouseover": "jexl:get(feature,'url')"
+        }
+      ]
     },
     {
       "trackId": "canFam6-unipOther",
@@ -1268,6 +1291,27 @@
         "index": {
           "location": {
             "uri": "liftOver/canFam6ToMm39.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "canFam6_to_susScr11_liftOver",
+      "name": "canFam6 to Pig (susScr11) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["canFam6", "susScr11"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "canFam6",
+        "queryAssembly": "susScr11",
+        "pifGzLocation": {
+          "uri": "liftOver/canFam6ToSusScr11.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/canFam6ToSusScr11.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }

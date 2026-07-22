@@ -1,0 +1,340 @@
+{
+  "assemblies": [
+    {
+      "name": "GCF_029289425.2",
+      "displayName": "bonobo (v2 primary hap 2024 refseq)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "metadata": {
+          "blatDb": "GCF_029289425.2",
+          "ucsc": {
+            "genome": "GCF_029289425.2",
+            "taxId": "9597",
+            "groups": "groups.txt",
+            "description": "bonobo (v2 primary hap 2024 refseq)",
+            "twoBitPath": "GCF_029289425.2.2bit",
+            "twoBitBptUrl": "GCF_029289425.2.2bit.bpt",
+            "chromSizes": "GCF_029289425.2.chrom.sizes.txt",
+            "chromAliasBb": "GCF_029289425.2.chromAlias.bb",
+            "chromAuthority": "ucsc",
+            "organism": "NHGRI_mPanPan1-v2.0_pri Jan. 2024",
+            "defaultPos": "NC_073249.2:75901684-75911684",
+            "scientificName": "Pan paniscus",
+            "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/html/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.description.html\">html/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.description.html</a>",
+            "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/029/289/425/GCF_029289425.2",
+            "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/029/289/425/GCF_029289425.2",
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/029/289/425/GCF_029289425.2"
+          }
+        },
+        "trackId": "GCF_029289425.2-ReferenceSequenceTrack",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/GCF_029289425.2.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/GCF_029289425.2.chrom.sizes.txt"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "refNameColumnHeaderName": "ucsc",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/GCF_029289425.2.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gapOverlap",
+          "parent": "tanDups on",
+          "shortLabel": "Gap Overlaps",
+          "longLabel": "Paired exactly identical sequence on each side of a gap",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.gapOverlap.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "trackId": "GCF_029289425.2-gapOverlap",
+      "description": "Paired exactly identical sequence on each side of a gap",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "Tandem Dups - Gap Overlaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.gapOverlap.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeq",
+          "parent": "refSeqComposite on",
+          "color": "12,12,120",
+          "shortLabel": "RefSeq All",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeq.ix",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeq.bb",
+          "longLabel": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "1"
+        }
+      },
+      "trackId": "GCF_029289425.2-ncbiRefSeq",
+      "description": "NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "NCBI RefSeq - RefSeq All",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeq.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029289425.2-ncbiRefSeq-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqCurated",
+          "color": "12,12,120",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Curated",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqCurated.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqCurated.bb",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "2"
+        }
+      },
+      "trackId": "GCF_029289425.2-ncbiRefSeqCurated",
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029289425.2-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqPredicted",
+          "color": "12,12,120",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Predicted",
+          "longLabel": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqPredicted.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqPredicted.bb",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "3"
+        }
+      },
+      "trackId": "GCF_029289425.2-ncbiRefSeqPredicted",
+      "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "NCBI RefSeq - RefSeq Predicted",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqPredicted.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029289425.2-ncbiRefSeqPredicted-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name2')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqOther",
+          "color": "32,32,32",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Other",
+          "longLabel": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+          "priority": "4",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqOther.ix",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqOther.bb",
+          "type": "bigBed 12 +",
+          "labelFields": "name",
+          "skipEmptyFields": "on",
+          "urls": "GeneID=\"https://www.ncbi.nlm.nih.gov/gene/$$\" MIM=\"https://www.ncbi.nlm.nih.gov/omim/$$\" HGNC=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$\" FlyBase=\"http://flybase.org/reports/$$\" WormBase=\"http://www.wormbase.org/db/gene/gene?name=$$\" RGD=\"https://rgd.mcw.edu/rgdweb/search/search.html?term=$$\" SGD=\"https://www.yeastgenome.org/locus/$$\" miRBase=\"http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$\" ZFIN=\"https://zfin.org/$$\" MGI=\"http://www.informatics.jax.org/marker/$$\""
+        }
+      },
+      "trackId": "GCF_029289425.2-ncbiRefSeqOther",
+      "description": "NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "NCBI RefSeq - RefSeq Other",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.ncbiRefSeqOther.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_029289425.2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqPsl",
+          "priority": "5",
+          "parent": "refSeqComposite off",
+          "shortLabel": "RefSeq Alignments",
+          "longLabel": "RefSeq Alignments of RNAs",
+          "type": "bigPsl",
+          "searchIndex": "name",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.bigPsl.bb",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "10000.0",
+          "showCdsMaxZoom": "10000.0",
+          "showCdsAllScales": ".",
+          "baseColorDefault": "diffCodons",
+          "pslSequence": "no",
+          "baseColorUseSequence": "lfExtra",
+          "baseColorUseCds": "table given",
+          "color": "0,0,0"
+        }
+      },
+      "trackId": "GCF_029289425.2-ncbiRefSeqPsl",
+      "description": "RefSeq Alignments of RNAs",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "NCBI RefSeq - RefSeq Alignments",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.bigPsl.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "allGaps",
+          "shortLabel": "All Gaps",
+          "longLabel": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+          "group": "map",
+          "visibility": "hide",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.allGaps.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/html/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.allGaps\">html/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.allGaps</a>"
+        }
+      },
+      "trackId": "GCF_029289425.2-allGaps",
+      "description": "All gaps of unknown nucleotides (N's), including AGP annotated gaps",
+      "assemblyNames": ["GCF_029289425.2"],
+      "name": "All Gaps",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/029/289/425/GCF_029289425.2/bbi/GCF_029289425.2_NHGRI_mPanPan1-v2.0_pri.allGaps.bb"
+      }
+    }
+  ],
+  "defaultSession": {
+    "name": "mPanPan1_v2.0 Jan. 2024 (mPanPan1-v2.0/GCF_029289425.2)",
+    "views": [
+      {
+        "id": "main",
+        "type": "LinearGenomeView",
+        "init": {
+          "loc": "NC_073249.2:75901684-75911684",
+          "assembly": "mPanPan1_v2.0",
+          "tracks": ["mPanPan1_v2.0-ncbiRefSeq"]
+        }
+      }
+    ],
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "main"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    }
+  },
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

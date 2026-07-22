@@ -25,18 +25,13 @@
           "accession": "thaSir1",
           "commonName": "Garter snake",
           "jbrowseConfig": "https://jbrowse.org/ucsc/thaSir1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/thaSir1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/thaSir1/minimal.json",
+          "blatDb": "thaSir1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/thaSir1/bigZips/thaSir1.2bit",
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/thaSir1/bigZips/thaSir1.chrom.sizes"
-        }
-      },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/thaSir1/bigZips/thaSir1.chromAlias.txt"
         }
       }
     }
@@ -153,7 +148,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "thaSir1-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "thaSir1-unipLocTransMemb",

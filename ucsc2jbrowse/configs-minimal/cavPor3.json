@@ -25,7 +25,8 @@
           "accession": "cavPor3",
           "commonName": "Guinea pig",
           "jbrowseConfig": "https://jbrowse.org/ucsc/cavPor3/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/cavPor3/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/cavPor3/minimal.json",
+          "blatDb": "cavPor3"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/cavPor3/bigZips/cavPor3.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -69,7 +73,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "cavPor3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "cavPor3-ncbiRefSeqGenomicDiff",

@@ -25,24 +25,13 @@
           "accession": "hg19",
           "commonName": "Human",
           "jbrowseConfig": "https://jbrowse.org/ucsc/hg19/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg19/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg19/minimal.json",
+          "blatDb": "hg19"
         },
         "adapter": {
           "type": "TwoBitAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit",
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes"
-        }
-      },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chromAlias.txt"
-        }
-      },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/database/cytoBand.txt.gz"
         }
       },
       "geneticCodes": {
@@ -78,7 +67,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg19-ncbiRefSeqGenomicDiff",

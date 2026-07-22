@@ -25,7 +25,8 @@
           "accession": "calJac3",
           "commonName": "Marmoset",
           "jbrowseConfig": "https://jbrowse.org/ucsc/calJac3/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calJac3/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/calJac3/minimal.json",
+          "blatDb": "calJac3"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -75,7 +76,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "calJac3-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "calJac3-ncbiRefSeqGenomicDiff",

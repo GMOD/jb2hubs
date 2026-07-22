@@ -25,7 +25,8 @@
           "accession": "dm6",
           "commonName": "D. melanogaster",
           "jbrowseConfig": "https://jbrowse.org/ucsc/dm6/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/dm6/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/dm6/minimal.json",
+          "blatDb": "dm6"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/dm6/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 5
       }
     }
   ],
@@ -81,7 +85,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 3",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-evaSnp-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "dm6-jaspar2026",
@@ -112,7 +123,16 @@
         }
       },
       "description": "JASPAR CORE 2026 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-jaspar2026-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "dm6-ReMapDensity",
@@ -174,7 +194,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 4",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-evaSnp4-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "dm6-ReMapTFs",
@@ -217,7 +244,16 @@
         }
       },
       "description": "ReMap Atlas of Regulatory Regions",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-ReMapTFs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "trackId": "dm6-evaSnp5",
@@ -252,7 +288,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 5",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-evaSnp5-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipLocSignal",
@@ -281,7 +324,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "dm6-evaSnp6",
@@ -316,7 +366,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 6",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-evaSnp6-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipLocExtra",
@@ -345,7 +402,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipInterest",
@@ -373,7 +437,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "dm6-ncbiRefSeqOther",
@@ -403,7 +474,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "dm6-evaSnp7",
@@ -438,7 +518,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 7",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-evaSnp7-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipLocTransMemb",
@@ -467,7 +554,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipLocCytopl",
@@ -496,7 +590,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-evaSnp8",
@@ -533,7 +634,14 @@
         }
       },
       "description": "Short Genetic Variants from European Variant Archive Release 8",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-evaSnp8-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+        }
+      ]
     },
     {
       "trackId": "dm6-ncbiRefSeqGenomicDiff",
@@ -587,7 +695,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipDisulfBond",
@@ -614,7 +729,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipDomain",
@@ -642,7 +764,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipModif",
@@ -670,7 +799,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipMut",
@@ -697,7 +833,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipOther",
@@ -725,7 +868,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipStruct",
@@ -754,7 +904,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipRepeat",
@@ -782,7 +939,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-unipConflict",
@@ -810,7 +974,14 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "dm6-spMut",
@@ -840,7 +1011,14 @@
         }
       },
       "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "dm6-spMut-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -1458,6 +1636,24 @@
     },
     {
       "type": "FeatureTrack",
+      "trackId": "dm6-dm6",
+      "name": "dm6",
+      "assemblyNames": ["dm6"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "dm6.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "dm6.gff.gz.csi"
+          }
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
       "trackId": "dm6-ensGene",
       "name": "Ensembl Genes",
       "assemblyNames": ["dm6"],
@@ -1657,6 +1853,27 @@
       },
       "description": "Non-D. melanogaster RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "dm6-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "dm6.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "dm6.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["dm6"]
     },
     {
       "type": "SyntenyTrack",
@@ -1884,6 +2101,27 @@
         "index": {
           "location": {
             "uri": "liftOver/dm6ToDroVir3.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "dm6_to_GCA_000181055.3_liftOver",
+      "name": "dm6 to bugs R.prolixus (2015) (GCA_000181055.3) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["dm6", "GCA_000181055.3"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "dm6",
+        "queryAssembly": "GCA_000181055.3",
+        "pifGzLocation": {
+          "uri": "liftOver/dm6ToGCA_000181055.3.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/dm6ToGCA_000181055.3.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -2833,26 +3071,24 @@
           "indexType": "CSI"
         }
       }
-    },
+    }
+  ],
+  "aggregateTextSearchAdapters": [
     {
-      "type": "FeatureTrack",
-      "trackId": "dm6-ncbiRefSeqGff",
-      "name": "NCBI RefSeq - RefSeq All (GFF)",
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "dm6.gff.gz",
-          "locationType": "UriLocation"
-        },
-        "index": {
-          "location": {
-            "uri": "dm6.gff.gz.csi",
-            "locationType": "UriLocation"
-          },
-          "indexType": "CSI"
-        }
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "dm6-index",
+      "ixFilePath": {
+        "uri": "trix/dm6.ix",
+        "locationType": "UriLocation"
       },
-      "category": ["Genes and Gene Predictions"],
+      "ixxFilePath": {
+        "uri": "trix/dm6.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/dm6_meta.json",
+        "locationType": "UriLocation"
+      },
       "assemblyNames": ["dm6"]
     }
   ],
@@ -2886,25 +3122,6 @@
       }
     }
   },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "dm6-index",
-      "ixFilePath": {
-        "uri": "trix/dm6.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/dm6.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/dm6_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["dm6"]
-    }
-  ],
   "defaultSession": {
     "name": "dm6 Aug. 2014 (BDGP Release 6 + ISO1 MT/dm6)",
     "views": [

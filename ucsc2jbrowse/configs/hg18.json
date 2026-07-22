@@ -25,7 +25,8 @@
           "accession": "hg18",
           "commonName": "Human",
           "jbrowseConfig": "https://jbrowse.org/ucsc/hg18/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg18/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg18/minimal.json",
+          "blatDb": "hg18"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,11 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
         }
       },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/database/cytoBand.txt.gz"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -68,7 +66,14 @@
         }
       },
       "description": "GeneReviews",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg18-geneReviews-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'name')+' disease(s): '+get(feature,'diseases')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

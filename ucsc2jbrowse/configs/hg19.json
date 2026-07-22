@@ -25,24 +25,13 @@
           "accession": "hg19",
           "commonName": "Human",
           "jbrowseConfig": "https://jbrowse.org/ucsc/hg19/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg19/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/hg19/minimal.json",
+          "blatDb": "hg19"
         },
         "adapter": {
           "type": "TwoBitAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.2bit",
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes"
-        }
-      },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chromAlias.txt"
-        }
-      },
-      "cytobands": {
-        "adapter": {
-          "type": "CytobandAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/database/cytoBand.txt.gz"
         }
       },
       "geneticCodes": {
@@ -300,7 +289,14 @@
         }
       },
       "description": "ClinGen Dosage Sensitivity Map - Haploinsufficiency",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinGenHaplo-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'name')+'<br> <b>Haploinsufficiency score</b>: '+get(feature,'haploScore')+'<br> <b>Dosage Sensitivity Evidence</b>: '+get(feature,'haploDescription')"
+        }
+      ]
     },
     {
       "trackId": "hg19-clinvarMain",
@@ -348,7 +344,17 @@
         }
       },
       "description": "ClinVar Short Nucleotide Variants < 50bp",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinvarMain-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'_label')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbSnp153Common",
@@ -557,7 +563,14 @@
         }
       },
       "description": "Database of Genomic Variants: Structural Var Regions (CNV, Inversion, In/del)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-dgvMerged-LinearBasicDisplay",
+          "mouseover": "jexl:'ID:'+get(feature,'name')+'; Position; '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'; Size:'+get(feature,'_size')+'; Type:'+get(feature,'varType')+'; Affected genes:'+get(feature,'genes')"
+        }
+      ]
     },
     {
       "trackId": "hg19-exacRegions",
@@ -622,7 +635,16 @@
         }
       },
       "description": "GENCODE V49lift37",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-knownGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadSvFull",
@@ -657,7 +679,14 @@
         }
       },
       "description": "gnomAD Structural Variants All",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadSvFull-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-pliByGene",
@@ -691,7 +720,17 @@
         }
       },
       "description": "gnomAD Predicted Loss of Function Constraint Metrics By Gene (pLI) v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-pliByGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-jarvis",
@@ -810,7 +849,14 @@
         }
       },
       "description": "MITOMAP Control and Coding Variants",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-mitoMapVars-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-mutScoreA",
@@ -978,7 +1024,17 @@
         }
       },
       "description": "Non-Simons Simplex Collection samples from denovo-db",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-denovoDbnon-ssc-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'variant')"
+          },
+          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Variant</b>: '+get(feature,'variant')+'<br> <b>Primary Phenotype</b>: '+get(feature,'primaryPhenotype')+'<br> <b>Validation</b>: '+get(feature,'validation')+'<br> <b>Transcript</b>: '+get(feature,'transcript')"
+        }
+      ]
     },
     {
       "trackId": "hg19-panelAppGenes",
@@ -1014,7 +1070,17 @@
         }
       },
       "description": "Genomics England PanelApp Genes",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-panelAppGenes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneSymbol')"
+          },
+          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+        }
+      ]
     },
     {
       "trackId": "hg19-pHaplo",
@@ -1046,7 +1112,14 @@
         }
       },
       "description": "Probability of haploinsufficiency",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-pHaplo-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>pHaplo</b>: '+get(feature,'pHaplo')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensGene')"
+        }
+      ]
     },
     {
       "trackId": "hg19-prsEmergeAsthma",
@@ -1198,7 +1271,14 @@
         }
       },
       "description": "SNPedia all SNPs (including empty pages)",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-snpediaAll-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'note')"
+        }
+      ]
     },
     {
       "trackId": "hg19-comments",
@@ -1226,7 +1306,14 @@
         }
       },
       "description": "UCSC unusual regions on assembly structure (manually annotated)",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-comments-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'note')"
+        }
+      ]
     },
     {
       "trackId": "hg19-jaspar2024",
@@ -1257,7 +1344,16 @@
         }
       },
       "description": "JASPAR CORE 2024 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-jaspar2024-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg19-tgpPhase3AccessibilityStrictCriteria",
@@ -1310,7 +1406,14 @@
         }
       },
       "description": "ClinGen Dosage Sensitivity Map - Triplosensitivity",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinGenTriplo-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'name')+'<br> <b>Triplosensitivity score</b>: '+get(feature,'triploScore')+'<br> <b>Dosage Sensitivity Evidence</b>: '+get(feature,'triploDescription')"
+        }
+      ]
     },
     {
       "trackId": "hg19-clinvarCnv",
@@ -1353,7 +1456,14 @@
         }
       },
       "description": "ClinVar Copy Number Variants >= 50bp",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinvarCnv-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbSnp155ClinVar",
@@ -1487,7 +1597,14 @@
         }
       },
       "description": "Database of Genomic Variants: Supporting Structural Var (CNV, Inversion, In/del)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-dgvSupporting-LinearBasicDisplay",
+          "mouseover": "jexl:'ID:'+get(feature,'name')+'; Position; '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'; Size:'+get(feature,'_size')+'; Type:'+get(feature,'varType')+'; Affected genes:'+get(feature,'genes')"
+        }
+      ]
     },
     {
       "trackId": "hg19-encBlacklist",
@@ -1545,7 +1662,14 @@
         }
       },
       "description": "gnomAD Structural Variants Controls Only",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadSvControls-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-missenseByGene",
@@ -1578,7 +1702,17 @@
         }
       },
       "description": "gnomAD Predicted Missense Constraint Metrics By Gene (Z-scores) v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-missenseByGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-pliByTranscript",
@@ -1611,7 +1745,17 @@
         }
       },
       "description": "gnomAD Predicted Loss of Function Constraint Metrics By Transcript (pLI) v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-pliByTranscript-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-missenseByTranscript",
@@ -1644,7 +1788,17 @@
         }
       },
       "description": "gnomAD Predicted Missense Constraint Metrics By Transcript (Z-scores) v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-missenseByTranscript-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-hmc",
@@ -1750,7 +1904,16 @@
         }
       },
       "description": "JASPAR CORE 2022 - Predicted Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-jaspar2022-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'TFName')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg19-mcapC",
@@ -1836,7 +1999,14 @@
         }
       },
       "description": "MITOMAP Disease Mutations",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-mitoMapDiseaseMuts-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-mutScoreC",
@@ -2032,7 +2202,14 @@
         }
       },
       "description": "Probability of triplosensitivity",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-pTriplo-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>pTriplo</b>: '+get(feature,'pTriplo')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensGene')"
+        }
+      ]
     },
     {
       "trackId": "hg19-ReMapTFs",
@@ -2072,7 +2249,16 @@
         }
       },
       "description": "ReMap Atlas of Regulatory Regions",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-ReMapTFs-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadExomes5XPercentage",
@@ -2149,7 +2335,17 @@
         }
       },
       "description": "Simons Simplex Collection samples from denovo-db",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-denovoDbssc-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'variant')"
+          },
+          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Variant</b>: '+get(feature,'variant')+'<br> <b>Primary Phenotype</b>: '+get(feature,'primaryPhenotype')+'<br> <b>Validation</b>: '+get(feature,'validation')+'<br> <b>Transcript</b>: '+get(feature,'transcript')"
+        }
+      ]
     },
     {
       "trackId": "hg19-covidMuts",
@@ -2179,7 +2375,17 @@
         }
       },
       "description": "Rare variants underlying COVID-19 severity and susceptibility from the COVID Human Genetics Effort",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-covidMuts-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          },
+          "mouseover": "jexl:get(feature,'gene')+' '+get(feature,'name')+' '+get(feature,'rsId')+' Genotype: '+get(feature,'genotype')+'; Zygosity: '+get(feature,'zygo')+' ; Inheritance: '+get(feature,'inhMode')"
+        }
+      ]
     },
     {
       "trackId": "hg19-metaDome",
@@ -2276,7 +2482,14 @@
         }
       },
       "description": "ClinGen Gene-Disease Validity Classification",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinGenGeneDisease-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'geneSymbol')+'<br> <b>Disease(s)</b>: '+get(feature,'name')+'<br> <b>Classification</b>: '+get(feature,'Classification')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbSnp153Mult",
@@ -2360,7 +2573,14 @@
         }
       },
       "description": "gnomAD Structural Variants Non-neuro Only",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadSvNonneuro-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadMissense",
@@ -2392,7 +2612,17 @@
         }
       },
       "description": "gnomAD Predicted Regional Missense Constraint Metrics (O/E scores from ExAc Dataset) v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadMissense-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-jaspar2020",
@@ -2701,7 +2931,17 @@
         }
       },
       "description": "Genomics England PanelApp Short Tandem Repeats",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-panelAppTandRep-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'hgncSymbol')"
+          },
+          "mouseover": "jexl:'<b>Gene name:</b> '+get(feature,'geneName')+'<br><b>Panel:</b> '+get(feature,'name')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+        }
+      ]
     },
     {
       "trackId": "hg19-prsBrCancer",
@@ -2803,7 +3043,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "hg19-giabSv",
@@ -2832,7 +3079,14 @@
         }
       },
       "description": "Genome in a Bottle Structural Variants (dbVar nstd175)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-giabSv-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-covidHgiGwasR4PvalC1",
@@ -2987,7 +3241,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "hg19-unipInterest",
@@ -3015,7 +3276,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "hg19-jaspar2018",
@@ -3306,7 +3574,17 @@
         }
       },
       "description": "PanelApp Australia Genes Panels",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-panelAppAusGenes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneSymbol')"
+          },
+          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+        }
+      ]
     },
     {
       "trackId": "hg19-prsChKidneyDis",
@@ -3359,7 +3637,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadExomes15XPercentage",
@@ -3588,7 +3875,14 @@
         }
       },
       "description": "REVEL: Positions with >1 score due to overlapping transcripts (mouseover for details)",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-revelOverlaps-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadExomes20XPercentage",
@@ -3667,7 +3961,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-unipLocCytopl",
@@ -3696,7 +3997,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbVar_common_byrska_bishop",
@@ -3808,7 +4116,17 @@
         }
       },
       "description": "PanelApp Australia Short Tandem Repeats",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-panelAppAusTandRep-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'hgncSymbol')"
+          },
+          "mouseover": "jexl:'<b>Gene name:</b> '+get(feature,'geneName')+'<br><b>Panel:</b> '+get(feature,'name')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+        }
+      ]
     },
     {
       "trackId": "hg19-prsHypercholest",
@@ -3935,7 +4253,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-filterSSE",
@@ -4087,7 +4412,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-unipDomain",
@@ -4115,7 +4447,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-noAFmutT",
@@ -4243,7 +4582,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-filterHapNoVar",
@@ -4378,7 +4724,14 @@
         }
       },
       "description": "MTR -  Missense Tolerance Ratio Scores all annotations",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-mtrBed-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'ref')+'>'+get(feature,'alt')+' '+get(feature,'MTR')+' '+get(feature,'MTR_centile')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbVar_common_global",
@@ -4487,7 +4840,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbVar_common_african",
@@ -4566,7 +4926,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-unipStruct",
@@ -4595,7 +4962,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbVar_common_american",
@@ -4674,7 +5048,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbVar_common_east_asian",
@@ -4753,7 +5134,14 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dbVar_common_european",
@@ -4896,7 +5284,14 @@
         }
       },
       "description": "Aberrant Splicing Prediction Scores",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-abSplice-LinearBasicDisplay",
+          "mouseover": "jexl:'change: '+get(feature,'name')+' <br> gene: '+get(feature,'ENSGid')+' <br> max score: '+get(feature,'spliceABscore')+' <br> '+get(feature,'maxScore')"
+        }
+      ]
     },
     {
       "trackId": "hg19-avada",
@@ -4926,7 +5321,14 @@
         }
       },
       "description": "Avada Variants extracted from full text publications",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-avada-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Variant</b>: '+get(feature,'variant')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensId')+'<br> <b>Title of Publication</b>: '+get(feature,'title')+'<br> <b>Reference</b>: '+get(feature,'ref')+'<br> <b>Authors</b>: '+get(feature,'authors')+'<br> <b>Pubmed ID</b>: '+get(feature,'pmid')"
+        }
+      ]
     },
     {
       "trackId": "hg19-caddDel",
@@ -4955,7 +5357,14 @@
         }
       },
       "description": "CADD 1.6 Score: Deletions - label is length of deletion",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-caddDel-LinearBasicDisplay",
+          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+        }
+      ]
     },
     {
       "trackId": "hg19-caddIns",
@@ -4984,7 +5393,14 @@
         }
       },
       "description": "CADD 1.6 Score: Insertions - label is length of insertion",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-caddIns-LinearBasicDisplay",
+          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+        }
+      ]
     },
     {
       "trackId": "hg19-cadd1_7_Del",
@@ -5013,7 +5429,14 @@
         }
       },
       "description": "CADD 1.7 Score: Deletions - label is length of deletion",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-cadd1_7_Del-LinearBasicDisplay",
+          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+        }
+      ]
     },
     {
       "trackId": "hg19-cadd1_7_Ins",
@@ -5042,7 +5465,14 @@
         }
       },
       "description": "CADD 1.7 Score: Insertions - label is length of insertion",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-cadd1_7_Ins-LinearBasicDisplay",
+          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+        }
+      ]
     },
     {
       "trackId": "hg19-civic",
@@ -5067,7 +5497,14 @@
         }
       },
       "description": "CIViC - Expert & crowd-sourced cancer variant interpretation",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-civic-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'mouseOverHTML')"
+        }
+      ]
     },
     {
       "trackId": "hg19-clinGenCspec",
@@ -5093,7 +5530,14 @@
         }
       },
       "description": "Clingen CSpec Variant Interpretation VCEP Specifications",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinGenCspec-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Disease:</b> '+get(feature,'disease')+' <br><b>Panel:</b> '+get(feature,'panel')+' <br><b>Status:</b> '+get(feature,'status')"
+        }
+      ]
     },
     {
       "trackId": "hg19-clinvarSubLolly",
@@ -5136,7 +5580,14 @@
         }
       },
       "description": "ClinVar SNVs submitted interpretations and evidence",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-clinvarSubLolly-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-dgvGold",
@@ -5162,7 +5613,14 @@
         }
       },
       "description": "Database of Genomic Variants: Gold Standard Variants",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-dgvGold-LinearBasicDisplay",
+          "mouseover": "jexl:'ID:'+get(feature,'name')+'; Position; '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'; Type:'+get(feature,'variant_sub_type')+'; Frequency:'+get(feature,'Frequency')"
+        }
+      ]
     },
     {
       "trackId": "hg19-varChat",
@@ -5197,7 +5655,14 @@
         }
       },
       "description": "enGenome VarChat: Literature match and variant's summary",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-varChat-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "trackId": "hg19-g2p",
@@ -5224,7 +5689,14 @@
         }
       },
       "description": "Gene2Phenotype Project",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-g2p-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>G2P ID:</b> '+get(feature,'g2p_id')+' <br> <b>Variant Consequence:</b> '+get(feature,'variant_consequence')+' <br> <b>Disease Name:</b> '+get(feature,'disease_name')+' <br> <b>Pubmed IDs:</b> '+get(feature,'publications')+' <br> <b>Molecular Mechanism:</b> '+get(feature,'molecular_mechanism')+' <br> <b>Allelic Requirements:</b> '+get(feature,'allelic_requirement')+' <br> <b>Date of Last Review:</b> '+get(feature,'date_of_last_review')"
+        }
+      ]
     },
     {
       "trackId": "hg19-genCC",
@@ -5254,7 +5726,14 @@
         }
       },
       "description": "GenCC: The Gene Curation Coalition Annotations",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-genCC-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Disease title:</b> '+get(feature,'disease_title')+'<br><b>Classification:</b> '+get(feature,'classification_title')+'<br><b>MOI:</b> '+get(feature,'moi_title')+'<br><b>Submitter:</b> '+get(feature,'sub_submitter_name')"
+        }
+      ]
     },
     {
       "trackId": "hg19-interactions",
@@ -5313,7 +5792,14 @@
         }
       },
       "description": "GeneReviews",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-geneReviews-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>Count</b>: '+get(feature,'diseaseCount')+'<br> <b>Disease(s)</b>: '+get(feature,'diseases')+'<br>'"
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadExomes",
@@ -5359,7 +5845,17 @@
         }
       },
       "description": "Genome Aggregation Database (gnomAD) Exome Variants v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadExomes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'_displayName')"
+          },
+          "mouseover": "jexl:'Position: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+'); Genes: '+get(feature,'genes')+'; Type: '+get(feature,'annot')+'; Tag: '+get(feature,'FILTER')+'; Allele Frequency: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')'"
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadGenomes",
@@ -5402,7 +5898,17 @@
         }
       },
       "description": "Genome Aggregation Database (gnomAD) Genome Variants v2.1.1",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadGenomes-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'_displayName')"
+          },
+          "mouseover": "jexl:'Position: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+'); Genes: '+get(feature,'genes')+'; Type: '+get(feature,'annot')+'; Tag: '+get(feature,'FILTER')+'; Allele Frequency: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')'"
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadMpc",
@@ -5430,7 +5936,14 @@
         }
       },
       "description": "gnomAD Missense Deleteriousness Prediction by Constraint (MPC)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-gnomadMpc-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>Transcript:</b> '+get(feature,'trans')+'<br><b>Obs/Exp (OE):</b> '+get(feature,'oe')+'<br><b>Chi-square:</b> '+get(feature,'chisq')+'<br><b>P-val:</b> '+get(feature,'pval')"
+        }
+      ]
     },
     {
       "trackId": "hg19-decipherHaploIns",
@@ -5457,7 +5970,14 @@
         }
       },
       "description": "Haploinsufficiency predictions for genes from DECIPHER",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-decipherHaploIns-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'name')+', HI: '+get(feature,'quantile')"
+        }
+      ]
     },
     {
       "trackId": "hg19-hgmd",
@@ -5489,7 +6009,14 @@
         }
       },
       "description": "Human Gene Mutation Database - Public Version 2025",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-hgmd-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'variantType')"
+        }
+      ]
     },
     {
       "trackId": "hg19-hgnc",
@@ -5523,7 +6050,17 @@
         }
       },
       "description": "HUGO Gene Nomenclature",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-hgnc-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'symbol')"
+          },
+          "mouseover": "jexl:'<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+get(feature,'symbol')+'\">'+get(feature,'symbol')+'</a><br> <b>ID</b>: '+get(feature,'name')+'<br> <b>Alias symbol</b>: '+get(feature,'alias_symbol')+'<br> <b>Previous symbols</b>: '+get(feature,'prev_symbol')"
+        }
+      ]
     },
     {
       "trackId": "hg19-gnomadGenomesMeanCoverage",
@@ -5654,7 +6191,14 @@
         }
       },
       "description": "Orphadata: Aggregated Data From Orphanet",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-orphadata-LinearBasicDisplay",
+          "mouseover": "jexl:'Gene: '+get(feature,'geneSymbol')+', Disorder: '+get(feature,'disorder')+', Inheritance(s): '+get(feature,'inheritance')+', Onset: '+get(feature,'onsetList')"
+        }
+      ]
     },
     {
       "trackId": "hg19-pubtator",
@@ -5683,7 +6227,14 @@
         }
       },
       "description": "dbSNP variants and other genetic variants grounded to dbSNP by tmVar; collected by PubTator3",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-pubtator-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'name')+' found in '+get(feature,'numPubmedIds')+' PubMed articles'"
+        }
+      ]
     },
     {
       "trackId": "hg19-targetScanMiRnaSitesV72",
@@ -5742,7 +6293,14 @@
         }
       },
       "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-spMut-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "trackId": "hg19-varaico",
@@ -5772,7 +6330,14 @@
         }
       },
       "description": "Varaico Variants extracted from full text publications, titles, and abstracts",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-varaico-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>'+get(feature,'hgncSymbol')+' '+get(feature,'variantOrigStrs')+'</b> in: '+get(feature,'author')+' ('+get(feature,'journal')+', '+get(feature,'year')+') - '+get(feature,'title')+' <br> <b>Number of publications:</b> '+get(feature,'articlesCount')+' <br> <b>Variant Effect:</b> '+get(feature,'variantEffect')"
+        }
+      ]
     },
     {
       "trackId": "hg19-varaicoSuppl",
@@ -5802,7 +6367,14 @@
         }
       },
       "description": "Varaico Variants extracted from Supplementary Data",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-varaicoSuppl-LinearBasicDisplay",
+          "mouseover": "jexl:'<b>'+get(feature,'hgncSymbol')+' '+get(feature,'variantOrigStrs')+'</b> in: '+get(feature,'author')+' ('+get(feature,'journal')+', '+get(feature,'year')+') - '+get(feature,'title')+' <br> <b>Number of publications:</b> '+get(feature,'articlesCount')+' <br> <b>Variant Effect:</b> '+get(feature,'variantEffect')"
+        }
+      ]
     },
     {
       "trackId": "hg19-vistaEnhancersBb",
@@ -5829,7 +6401,14 @@
         }
       },
       "description": "VISTA Enhancers",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg19-vistaEnhancersBb-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'patternExpression')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

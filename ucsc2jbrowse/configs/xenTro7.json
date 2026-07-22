@@ -25,7 +25,8 @@
           "accession": "xenTro7",
           "commonName": "X. tropicalis",
           "jbrowseConfig": "https://jbrowse.org/ucsc/xenTro7/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/xenTro7/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/xenTro7/minimal.json",
+          "blatDb": "xenTro7"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -38,6 +39,9 @@
           "type": "RefNameAliasAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/xenTro7/bigZips/xenTro7.chromAlias.txt"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -70,7 +74,16 @@
         }
       },
       "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "xenTro7-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "xenTro7-ncbiRefSeqGenomicDiff",

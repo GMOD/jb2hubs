@@ -25,7 +25,8 @@
           "accession": "xenLae2",
           "commonName": "African clawed frog",
           "jbrowseConfig": "https://jbrowse.org/ucsc/xenLae2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/xenLae2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/xenLae2/minimal.json",
+          "blatDb": "xenLae2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -33,11 +34,8 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/xenLae2/bigZips/xenLae2.chrom.sizes"
         }
       },
-      "refNameAliases": {
-        "adapter": {
-          "type": "RefNameAliasAdapter",
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/xenLae2/bigZips/xenLae2.chromAlias.txt"
-        }
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -69,7 +67,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "xenLae2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "trackId": "xenLae2-ncbiRefSeqGenomicDiff",

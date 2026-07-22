@@ -25,7 +25,8 @@
           "accession": "chlSab2",
           "commonName": "Green monkey",
           "jbrowseConfig": "https://jbrowse.org/ucsc/chlSab2/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/chlSab2/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/chlSab2/minimal.json",
+          "blatDb": "chlSab2"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -44,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/chlSab2/database/cytoBandIdeo.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -75,7 +79,16 @@
           "html": ""
         }
       },
-      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)"
+      "description": "NCBI RefSeq Other Annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "chlSab2-ncbiRefSeqOther-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'gene')"
+          }
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

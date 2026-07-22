@@ -25,7 +25,8 @@
           "accession": "priPac1",
           "commonName": "P. pacificus",
           "jbrowseConfig": "https://jbrowse.org/ucsc/priPac1/config.json",
-          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/priPac1/minimal.json"
+          "jbrowseMinimalConfig": "https://jbrowse.org/ucsc/priPac1/minimal.json",
+          "blatDb": "priPac1"
         },
         "adapter": {
           "type": "TwoBitAdapter",
@@ -445,7 +446,14 @@
         }
       },
       "description": "UniProt/SwissProt Amino Acid Substitutions",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "priPac1-spMut-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'comments')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
