@@ -263,6 +263,9 @@ fi
 log "Download and add GENCODE tracks"
 ./downloadGencode.sh
 
+log "Ensuring refNameAliases/cytobands are present for all golden-path assemblies..."
+node src/ensureAssemblyAliasesAndCytobands.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
+
 log "Ensuring UCSC db names are aliased on GenArk-backed hub assemblies..."
 node src/ensureUcscAssemblyNames.ts "$UCSC_BUILT_DIR"
 

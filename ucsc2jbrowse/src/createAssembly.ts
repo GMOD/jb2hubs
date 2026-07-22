@@ -1,58 +1,26 @@
 /* eslint-disable no-console */
-import { gunzipSync } from 'node:zlib'
-
 import { readJSON, requireArg } from './util.ts'
+import {
+  getCytobands,
+  getRefNameAliases,
+} from './utils/assemblyAliasesAndCytobands.ts'
 
-if (process.argv.length !== 4) {
-  console.error('Usage: node createAssembly.ts <assemblyName> <listJsonPath>')
+if (process.argv.length !== 5) {
+  console.error(
+    'Usage: node createAssembly.ts <assemblyName> <listJsonPath> <dbDir>',
+  )
   process.exit(1)
 }
 
 const assemblyName = requireArg(process.argv[2], 'assemblyName is required')
 const list = requireArg(process.argv[3], 'listJsonPath is required')
+const dbDir = requireArg(process.argv[4], 'dbDir is required')
 
 const getBigDataLink = (j: string) =>
   `https://hgdownload.soe.ucsc.edu/goldenPath/${assemblyName}/bigZips/${j}`
 
-const getCytoBandLink = () =>
-  `https://hgdownload.soe.ucsc.edu/goldenPath/${assemblyName}/database/cytoBand.txt.gz`
-
-const getCytoBandIdeoLink = () =>
-  `https://hgdownload.soe.ucsc.edu/goldenPath/${assemblyName}/database/cytoBandIdeo.txt.gz`
-
-let hasAliases = false
-try {
-  const res = await fetch(getBigDataLink(`${assemblyName}.chromAlias.txt`))
-  if (!res.ok) {
-    throw new Error('Error fetching chromAlias')
-  }
-  hasAliases = true
-} catch (_e) {}
-
-let cytoLink = undefined
-try {
-  // Prefer cytoBand (curated banding); fall back to cytoBandIdeo. Whichever
-  // resolves, drop it when every band is 'gneg' — a placeholder ideogram with no
-  // real banding information, not worth wiring up as a cytobands adapter.
-  const cytoTxtLink = getCytoBandLink()
-  const cytoIdeoLink = getCytoBandIdeoLink()
-  const primaryRes = await fetch(cytoTxtLink)
-  const [link, res] = primaryRes.ok
-    ? [cytoTxtLink, primaryRes]
-    : [cytoIdeoLink, await fetch(cytoIdeoLink)]
-  if (!res.ok) {
-    throw new Error('Error fetching cytobands')
-  }
-  const txt = new TextDecoder().decode(
-    gunzipSync(Buffer.from(await res.arrayBuffer())),
-  )
-  const allGneg = txt
-    .split('\n')
-    .map(f => f.trim())
-    .filter(f => !!f)
-    .every(line => line.split('\t')[4] === 'gneg')
-  cytoLink = allGneg ? undefined : link
-} catch (_e) {}
+const refNameAliases = getRefNameAliases(assemblyName, dbDir)
+const cytobands = getCytobands(assemblyName, dbDir)
 
 interface GenomeRecord {
   organism: string
@@ -80,26 +48,8 @@ console.log(
               chromSizes: getBigDataLink(`${assemblyName}.chrom.sizes`),
             },
           },
-          ...(hasAliases
-            ? {
-                refNameAliases: {
-                  adapter: {
-                    type: 'RefNameAliasAdapter',
-                    uri: getBigDataLink(`${assemblyName}.chromAlias.txt`),
-                  },
-                },
-              }
-            : {}),
-          ...(cytoLink
-            ? {
-                cytobands: {
-                  adapter: {
-                    type: 'CytobandAdapter',
-                    uri: cytoLink,
-                  },
-                },
-              }
-            : {}),
+          ...(refNameAliases ? { refNameAliases } : {}),
+          ...(cytobands ? { cytobands } : {}),
         },
       ],
       tracks: [],
