@@ -128,6 +128,19 @@ ensure_dir() {
 }
 export -f ensure_dir
 
+# Reports how many days ago a stamp file was touched, assigning it to the named
+# variable. Returns non-zero when the stamp does not exist, so callers can treat
+# "never run" and "run recently" distinctly.
+# Usage: if stamp_age_days age "$stamp" && [ "$age" -lt 30 ]; then ...
+stamp_age_days() {
+  local -n _stamp_age_out=$1
+  if [ ! -f "$2" ]; then
+    return 1
+  fi
+  _stamp_age_out=$((($(date +%s) - $(stat -c %Y "$2")) / 86400))
+}
+export -f stamp_age_days
+
 # Decides whether a derived output needs (re)building from a source file, using
 # the source's XXH3 content hash as the change stamp recorded in a hash file.
 # (Byte size was cheaper but missed same-size content changes — a re-published
@@ -155,64 +168,76 @@ save_rebuild_stamp() {
 }
 export -f save_rebuild_stamp
 
-# Incrementally updates a hash listing file using XXH3.
-# Re-hashes files newer than the listing plus any file missing from it; handles
-# additions and deletions.
+# Hashes the newline-separated paths on stdin, emitting "hash<TAB>path" rows.
+# xxhsum's native output is BSD-style "XXH3 (path) = hash"; converting once here
+# means the rest of make_file_listing can treat the listing as plain TSV instead
+# of re-parsing that format at every step.
+_hash_paths() {
+  xargs -d '\n' -r xxhsum -H3 |
+    sed -E 's/^XXH3 \((.*)\) = ([0-9a-f]+)$/\2\t\1/'
+}
+export -f _hash_paths
+
+# Incrementally updates a hash listing file using XXH3. Rows are "hash<TAB>path"
+# sorted by path, under a format-tag header line. Re-hashes files newer than the
+# listing plus any file missing from it; additions, modifications and deletions
+# are all reflected. Changing the tag retires older listings automatically: they
+# fail the header check and get rebuilt from scratch.
 # Usage: make_file_listing <listing> <find_dir> [extra_find_args...]
 make_file_listing() {
   local listing="$1" find_dir="$2"
   shift 2
   local extra_args=("$@")
-  local algo="-H3"
-  local algo_tag="# algo=xxh3"
-  local tmp_new tmp_cur tmp_listed tmp_new_paths tmp_keep
-  tmp_new=$(mktemp)
-  tmp_cur=$(mktemp)
-  tmp_listed=$(mktemp)
-  tmp_new_paths=$(mktemp)
-  tmp_keep=$(mktemp)
-  local clean=("$tmp_new" "$tmp_cur" "$tmp_listed" "$tmp_new_paths" "$tmp_keep" "${listing}.tmp")
-
-  if [[ ! -f "$listing" ]] || ! head -1 "$listing" | grep -qF "$algo_tag"; then
-    find "$find_dir" -type f "${extra_args[@]}" -exec xxhsum "$algo" {} + | sort -k2,2 >"${listing}.tmp"
-    {
-      echo "$algo_tag"
-      cat "${listing}.tmp"
-    } >"$listing"
-    rm -f "${clean[@]}"
-    return 0
-  fi
+  local algo_tag="# algo=xxh3-tsv"
 
   if [[ ! -d "$find_dir" ]]; then
     echo "ERROR: $find_dir does not exist or is not mounted, aborting to preserve existing listing" >&2
-    rm -f "${clean[@]}"
     return 1
   fi
 
-  # Re-hash files modified since the previous listing was written...
-  find "$find_dir" -type f "${extra_args[@]}" -newer "$listing" -exec xxhsum "$algo" {} + >"$tmp_new"
+  local tmp_cur tmp_new
+  tmp_cur=$(mktemp)
+  tmp_new=$(mktemp)
+
   find "$find_dir" -type f "${extra_args[@]}" | sort >"$tmp_cur"
 
-  # ...and also hash any file that exists now but is absent from the listing.
-  # -newer only matches files modified after the previous run finished, so
-  # write-once files (e.g. *.gff.gz) created earlier would otherwise never be
-  # recorded. Compare current paths against the paths already in the listing.
-  tail -n +2 "$listing" | sed -E 's/^XXH3 \((.*)\) = [0-9a-f]+$/\1/' | sort >"$tmp_listed"
-  comm -23 "$tmp_cur" "$tmp_listed" | tr '\n' '\0' | xargs -0 -r xxhsum "$algo" >>"$tmp_new"
-  sort -u -o "$tmp_new" "$tmp_new"
+  # No listing yet, or one in an older format: hash everything.
+  if [[ ! -f "$listing" ]] || ! head -1 "$listing" | grep -qF "$algo_tag"; then
+    {
+      echo "$algo_tag"
+      _hash_paths <"$tmp_cur" | sort -t $'\t' -k2,2
+    } >"$listing"
+    rm -f "$tmp_cur" "$tmp_new"
+    return 0
+  fi
 
-  # Keep cached entries for files that still exist and were not re-hashed, then
-  # add the freshly hashed entries. Done with comm/join (keyed on path) rather
-  # than a two-pass awk, which silently drops everything when tmp_new is empty.
-  sed -E 's/^XXH3 \((.*)\) = [0-9a-f]+$/\1/' "$tmp_new" | sort >"$tmp_new_paths"
-  comm -23 "$tmp_cur" "$tmp_new_paths" |
-    join -t $'\t' - <(tail -n +2 "$listing" | sed -E 's/^XXH3 \((.*)\) = [0-9a-f]+$/\1\t&/' | sort -t $'\t' -k1,1) |
-    cut -f2- >"$tmp_keep"
+  # Nothing left to list. Handled separately because the merge below relies on
+  # its first input being non-empty (see the awk comment).
+  if [[ ! -s "$tmp_cur" ]]; then
+    echo "$algo_tag" >"$listing"
+    rm -f "$tmp_cur" "$tmp_new"
+    return 0
+  fi
 
+  # Hash files modified since the previous listing was written, plus any file
+  # absent from it. The second half matters because -newer only matches files
+  # modified after the previous run finished, so a write-once file (e.g.
+  # *.gff.gz) created earlier would otherwise never be recorded.
+  {
+    find "$find_dir" -type f "${extra_args[@]}" -newer "$listing"
+    comm -23 "$tmp_cur" <(tail -n +2 "$listing" | cut -f2- | sort)
+  } | sort -u | _hash_paths >"$tmp_new"
+
+  # Merge: a freshly hashed row wins over the cached one for the same path, and
+  # a cached row survives only while its file still exists. tmp_cur is
+  # guaranteed non-empty here, which is what makes the NR==FNR pass safe -- an
+  # empty first input would make awk read the second file as the path set.
   {
     echo "$algo_tag"
-    cat "$tmp_keep" "$tmp_new" | sort -k2,2
-  } >"$listing"
-  rm -f "${clean[@]}"
+    awk -F'\t' 'NR==FNR{cur[$0];next} ($2 in cur) && !seen[$2]++' \
+      "$tmp_cur" "$tmp_new" <(tail -n +2 "$listing") | sort -t $'\t' -k2,2
+  } >"${listing}.tmp"
+  mv "${listing}.tmp" "$listing"
+  rm -f "$tmp_cur" "$tmp_new"
 }
 export -f make_file_listing

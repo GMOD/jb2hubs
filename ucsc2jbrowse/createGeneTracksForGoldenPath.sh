@@ -21,32 +21,22 @@ if [ ! -x "$BED2GFF" ]; then
 fi
 export BED2GFF
 
-# --- Functions ---
+process_assembly() {
+  # shellcheck disable=SC2034 # assembly_paths sets all three; declaring them
+  # keeps the ones this script does not read from leaking out as globals
+  local assembly_name assembly_results_dir db_dir
+  assembly_paths "$1"
 
-# Processes gene tracks for a single assembly.
-# $1: The tracks.json file for the assembly.
-# $2: The database directory for the assembly.
-# $3: The results directory for the assembly.
-process_gene_tracks() {
-  # GNU parallel runs exported functions in a fresh bash that does NOT inherit
-  # the parent's `set -euo pipefail`. Without this, a failing derivation step
-  # (geneLike, bed2gff, bgzip, tabix, ...) would be ignored and the run would
-  # still reach save_rebuild_stamp below, permanently caching a broken track.
-  # Fail fast instead so the stamp is never written and the track rebuilds next
-  # run; the caller's parallel invocation tolerates and reports the failed job.
-  set -eo pipefail
-  local tracks_json=$1
-  local db_dir=$2
-  local outdir=$3
+  mkdir -p "$assembly_results_dir"
 
   # Use jq to extract gene prediction tracks
-  jq -r 'to_entries | .[] | select(.value.type | startswith("genePred")) | .key' "$tracks_json" | while read -r key; do
+  jq -r 'to_entries | .[] | select(.value.type | startswith("genePred")) | .key' "$assembly_results_dir/tracks.json" | while read -r key; do
     if is_skipped_track "$key"; then
       continue
     fi
 
     local infile="$db_dir/$key"
-    local outfile="$outdir/$key"
+    local outfile="$assembly_results_dir/$key"
 
     if [ -f "${infile}.sql" ]; then
       mkdir -p "$(dirname "$outfile")"
@@ -73,30 +63,6 @@ process_gene_tracks() {
     fi
   done
 }
-
-# Processes a single assembly.
-# $1: The assembly directory in the data folder.
-process_assembly() {
-  local assembly_data_dir=$1
-  local assembly_name
-  assembly_name=$(basename "$assembly_data_dir")
-  local assembly_results_dir="$UCSC_BUILT_DIR/$assembly_name"
-  local db_dir="$assembly_data_dir/$assembly_name/database"
-
-  mkdir -p "$assembly_results_dir"
-  process_gene_tracks "$assembly_results_dir/tracks.json" "$db_dir" "$assembly_results_dir"
-}
-
 export -f process_assembly
-export -f process_gene_tracks
-export UCSC_BUILT_DIR
 
-# --- Main Script ---
-
-if [ $# -eq 0 ]; then
-  echo "Usage: $0 <assembly_data_dir1> [assembly_data_dir2] ..."
-  exit 1
-fi
-
-parallel $PARALLEL_OPTS process_assembly ::: "$@" ||
-  echo "WARNING: parallel reported failures while creating gene tracks (exit $?)" >&2
+run_for_assemblies_lenient process_assembly "creating gene tracks" "$@"

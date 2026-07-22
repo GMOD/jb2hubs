@@ -8,23 +8,6 @@ source "$(dirname "$0")/common.sh"
 # work to. When omitted, every processed GFF under bgz/ is considered.
 SCOPE_FILE="${1:-}"
 
-# Lists the bgz GFFs to add: either every file under bgz/, or just those
-# belonging to the scoped accessions.
-list_bgz_inputs() {
-  if [ -n "$SCOPE_FILE" ]; then
-    while IFS= read -r acc; do
-      [ -n "$acc" ] || continue
-      for f in bgz/"$acc"_*.gz; do
-        if [ -f "$f" ]; then
-          echo "$f"
-        fi
-      done
-    done <"$SCOPE_FILE"
-  else
-    find bgz -name "*.gz"
-  fi
-}
-
 # Reads a GFF on stdin and prints, per sequence, the dominant non-standard NCBI
 # genetic code as "seqid<TAB>code". Pure (no I/O). The standard code (1) and
 # sequences without a CDS transl_table are omitted, so the typical nuclear
@@ -134,5 +117,5 @@ export -f extract_genetic_codes
 # Skip when sourced (e.g. by the test script) so only the function
 # definitions above are loaded.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  list_bgz_inputs | parallel -j16 $PARALLEL_OPTS add_track_and_text_index || true
+  list_scoped_gz bgz "$SCOPE_FILE" | parallel -j16 $PARALLEL_OPTS add_track_and_text_index || true
 fi

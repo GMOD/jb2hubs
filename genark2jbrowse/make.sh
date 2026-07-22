@@ -209,14 +209,12 @@ fi
 MOUSE_STRAIN_STAMP=".mouse_strain_stamp"
 MOUSE_STRAIN_MAX_AGE_DAYS=30
 run_mouse_strains=true
+age_days=0 # set by stamp_age_days below
 
-if [ -z "${REPROCESS:-}" ] && [ -f "$MOUSE_STRAIN_STAMP" ]; then
-  age_seconds=$(($(date +%s) - $(stat -c %Y "$MOUSE_STRAIN_STAMP")))
-  age_days=$((age_seconds / 86400))
-  if [ "$age_days" -lt "$MOUSE_STRAIN_MAX_AGE_DAYS" ]; then
-    log "Skipping mouse strain processing (last run ${age_days} day(s) ago, threshold: ${MOUSE_STRAIN_MAX_AGE_DAYS} days)"
-    run_mouse_strains=false
-  fi
+if [ -z "${REPROCESS:-}" ] && stamp_age_days age_days "$MOUSE_STRAIN_STAMP" &&
+  [ "$age_days" -lt "$MOUSE_STRAIN_MAX_AGE_DAYS" ]; then
+  log "Skipping mouse strain processing (last run ${age_days} day(s) ago, threshold: ${MOUSE_STRAIN_MAX_AGE_DAYS} days)"
+  run_mouse_strains=false
 fi
 
 if [ "$run_mouse_strains" = true ]; then

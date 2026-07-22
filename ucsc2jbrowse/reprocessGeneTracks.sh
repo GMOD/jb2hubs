@@ -47,8 +47,8 @@ for arg in "$@"; do
   esac
 done
 
-# Same assembly set make.sh processes (hgFixed and cb1 are not real assemblies).
-mapfile -t dl_dirs < <(find "$UCSC_DOWNLOADS_DIR" -mindepth 1 -maxdepth 1 -type d ! -name hgFixed ! -name cb1 | sort)
+# Same assembly set make.sh processes.
+mapfile -t dl_dirs < <(list_assembly_dirs)
 
 if [ "${#dl_dirs[@]}" -eq 0 ]; then
   log "No assemblies found under $UCSC_DOWNLOADS_DIR; nothing to do."

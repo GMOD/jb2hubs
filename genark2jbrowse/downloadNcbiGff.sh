@@ -29,6 +29,7 @@ echo "Phase 1: Building queue of GFF files to download..."
 # everything and let wget -N decide per file; otherwise only queue files we
 # don't already have. Output: url|common_name|filename
 QUEUE_FILE=$(mktemp)
+trap 'rm -f "$QUEUE_FILE"' EXIT
 jq -r --argjson accs "$SCOPE_ACCESSIONS" '
   .[] | select(. != null)
   | select(.ncbiGff != null) | select(.ncbiGff | test("GCF_"))
@@ -46,7 +47,6 @@ TOTAL=$(wc -l <"$QUEUE_FILE")
 
 if [ "$TOTAL" -eq 0 ]; then
   echo "No GFF files need downloading"
-  rm "$QUEUE_FILE"
   exit 0
 fi
 
@@ -83,8 +83,5 @@ export -f download_ncbi_gff
 # Process the queue serially to avoid overwhelming FTP servers
 # Use :::: to read from file for better --bar support
 parallel -j1 $PARALLEL_OPTS download_ncbi_gff :::: "$QUEUE_FILE"
-
-# Clean up
-rm "$QUEUE_FILE"
 
 echo "GFF download complete"

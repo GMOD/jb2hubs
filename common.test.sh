@@ -21,7 +21,7 @@ check() {
 }
 
 count_entries() { tail -n +2 "$1" 2>/dev/null | grep -c . || true; }
-hash_of() { grep -F "($1)" "$2" | sed -E 's/.* = ([0-9a-f]+)$/\1/'; }
+hash_of() { awk -F'\t' -v p="$1" '$2 == p {print $1}' "$2"; }
 
 work=$(mktemp -d)
 data="$work/data"
@@ -65,8 +65,39 @@ else
 fi
 
 # No duplicate entries for any path.
-dupes=$(tail -n +2 "$listing" | sed -E 's/^XXH3 \((.*)\) = .*/\1/' | sort | uniq -d)
+dupes=$(tail -n +2 "$listing" | cut -f2- | sort | uniq -d)
 check "no duplicate path entries" "" "$dupes"
+
+# A path containing spaces stays on one row and round-trips through the merge.
+echo spaced >"$data/has space.txt"
+make_file_listing "$listing" "$data"
+check "path with spaces is recorded" 3 "$(count_entries "$listing")"
+spaced_hash=$(hash_of "$data/has space.txt" "$listing")
+make_file_listing "$listing" "$data"
+check "path with spaces survives a re-run" "$spaced_hash" "$(hash_of "$data/has space.txt" "$listing")"
+
+# A listing in a retired format is rebuilt from scratch rather than merged.
+printf '# algo=xxh3\nXXH3 (%s) = deadbeef\n' "$data/b.txt" >"$listing"
+make_file_listing "$listing" "$data"
+check "stale-format listing is rebuilt" 3 "$(count_entries "$listing")"
+check "stale-format listing gets the new header" "# algo=xxh3-tsv" "$(head -1 "$listing")"
+
+# An empty directory empties the listing instead of preserving stale rows.
+rm -f "$data"/*
+make_file_listing "$listing" "$data"
+check "empty directory yields an empty listing" 0 "$(count_entries "$listing")"
+
+# A missing directory is refused, leaving the previous listing untouched.
+echo keep >"$data/keep.txt"
+make_file_listing "$listing" "$data"
+before_missing=$(cat "$listing")
+if make_file_listing "$listing" "$work/not-a-dir" 2>/dev/null; then
+  echo "FAIL - missing directory should return non-zero"
+  fail=1
+else
+  echo "ok   - missing directory returns non-zero"
+fi
+check "missing directory preserves the listing" "$before_missing" "$(cat "$listing")"
 
 rm -rf "$work"
 

@@ -3,45 +3,29 @@
 #
 # enhanceConfigs.sh
 #
-# Enhances all JBrowse config files by adding plugins and hierarchical configuration.
+# Enhances JBrowse config files by adding plugins and hierarchical configuration.
+# Takes built directories, not download directories; with no arguments, every
+# assembly under UCSC_BUILT_DIR is processed.
 #
 
 set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
-# --- Functions ---
-
-# Processes a single assembly.
-# $1: The assembly directory in the results folder.
 process_assembly() {
-  local assembly_results_dir=$1
-  local assembly_name
-  assembly_name=$(basename "$assembly_results_dir")
-
-  # Skip non-assembly directories
-  if [[ "$assembly_name" == "trix" ]]; then
-    return 0
-  fi
-
-  local config_path="$assembly_results_dir/config.json"
+  local assembly_dir=$1
+  local config_path="$assembly_dir/config.json"
 
   if [ ! -f "$config_path" ]; then
-    echo "Warning: config.json not found for $assembly_name, skipping..."
-    return
+    echo "Warning: config.json not found for $(basename "$assembly_dir"), skipping..."
+  else
+    node src/enhanceConfig.ts "$config_path"
   fi
-
-  node src/enhanceConfig.ts "$config_path"
 }
-
 export -f process_assembly
-export UCSC_BUILT_DIR
 
-# --- Main Script ---
-
-# If specific dirs are provided as args, process those; otherwise process all.
 if [ $# -gt 0 ]; then
-  parallel $PARALLEL_OPTS process_assembly ::: "$@"
+  run_for_assemblies process_assembly "$@"
 else
-  parallel $PARALLEL_OPTS process_assembly ::: "$UCSC_BUILT_DIR"/*
+  run_for_assemblies process_assembly "$UCSC_BUILT_DIR"/*
 fi

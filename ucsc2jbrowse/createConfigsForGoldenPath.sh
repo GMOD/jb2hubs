@@ -10,20 +10,11 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
-# --- Functions ---
-
-# Processes a single assembly.
-# $1: The assembly directory in the data folder.
 process_assembly() {
-  # GNU parallel runs exported functions in a fresh bash without the parent's
-  # `set -euo pipefail`; fail fast so a failed track-adding step doesn't leave a
-  # half-written config.json (a reprocess rebuilds config.json from scratch, so
-  # aborting here is self-healing).
-  set -eo pipefail
-  local assembly_data_dir=$1
-  local assembly_name
-  assembly_name=$(basename "$assembly_data_dir")
-  local assembly_results_dir="$UCSC_BUILT_DIR/$assembly_name"
+  # shellcheck disable=SC2034 # assembly_paths sets all three; declaring them
+  # keeps the ones this script does not read from leaking out as globals
+  local assembly_name assembly_results_dir db_dir
+  assembly_paths "$1"
   local config="$assembly_results_dir/config.json"
 
   # nullglob so an assembly with no bed/gff tracks yields an empty list rather
@@ -44,16 +35,6 @@ process_assembly() {
   # Optional: remove older copies of tracks, e.g. older dbSnp, older GENCODE, etc.
   node src/removeEverythingButLatest.ts "$config"
 }
-
 export -f process_assembly
-export UCSC_BUILT_DIR
 
-# --- Main Script ---
-
-if [ $# -eq 0 ]; then
-  echo "Usage: $0 <assembly_data_dir1> [assembly_data_dir2] ..."
-  exit 1
-fi
-
-# Run the process_assembly function in parallel for each input directory.
-parallel $PARALLEL_OPTS process_assembly ::: "$@"
+run_for_assemblies process_assembly "$@"

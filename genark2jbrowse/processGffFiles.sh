@@ -8,23 +8,6 @@ source "$(dirname "$0")/common.sh"
 # processing to. When omitted, every downloaded GFF is considered.
 SCOPE_FILE="${1:-}"
 
-# Lists the candidate input GFFs (NUL-separated): either every file under gff/,
-# or just those belonging to the scoped accessions.
-list_gff_inputs() {
-  if [ -n "$SCOPE_FILE" ]; then
-    while IFS= read -r acc; do
-      [ -n "$acc" ] || continue
-      for f in gff/"$acc"_*.gz; do
-        if [ -f "$f" ]; then
-          printf '%s\0' "$f"
-        fi
-      done
-    done <"$SCOPE_FILE"
-  else
-    find gff -name "*.gz" -print0
-  fi
-}
-
 echo "Phase 1: Building queue of GFF files to process..."
 
 # These are cheap per-file stat checks; a single inline pass is faster than a
@@ -34,19 +17,18 @@ echo "Phase 1: Building queue of GFF files to process..."
 # when REPROCESS forces it.
 QUEUE_FILE=$(mktemp)
 trap 'rm -f "$QUEUE_FILE"' EXIT
-while IFS= read -r -d '' input_file; do
+while IFS= read -r input_file; do
   output_bgz_file="bgz/${input_file##*/}"
   if [ ! -f "$output_bgz_file" ] || [ "$input_file" -nt "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
     printf '%s\n' "$input_file"
   fi
-done < <(list_gff_inputs) >"$QUEUE_FILE"
+done < <(list_scoped_gz gff "$SCOPE_FILE") >"$QUEUE_FILE"
 
 # Count how many files need processing
 TOTAL=$(wc -l <"$QUEUE_FILE")
 
 if [ "$TOTAL" -eq 0 ]; then
   echo "No GFF files need processing"
-  rm "$QUEUE_FILE"
   exit 0
 fi
 
@@ -83,8 +65,5 @@ export -f process_gff_file
 # Use :::: to read from file for better --bar support
 parallel -j8 $PARALLEL_OPTS process_gff_file :::: "$QUEUE_FILE" ||
   echo "WARNING: parallel reported failures while processing GFF files (exit $?)" >&2
-
-# Clean up
-rm "$QUEUE_FILE"
 
 echo "GFF processing complete"

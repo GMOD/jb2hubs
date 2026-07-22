@@ -65,15 +65,16 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
   log "Starting UCSC data download."
 
   log "Fetching latest UCSC genome list..."
-  curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_BUILT_DIR/list.json"
+  curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_BUILT_DIR/list.json.raw"
 
   # hg19, hg38, mm39, rn6 are synced every run; everything else at most once per month.
   FREQUENT_ASSEMBLIES="hg19 hg38 mm39 rn6"
   RSYNC_MONTHLY_DAYS=30
+  age_days=0 # set by stamp_age_days below
 
   log "Downloading non-hub assemblies..."
-  jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:") | not)) | .key' "$UCSC_BUILT_DIR/list.json" | while read -r assembly; do
-    if [ "$assembly" = "cb1" ]; then
+  jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:") | not)) | .key' "$UCSC_BUILT_DIR/list.json.raw" | while read -r assembly; do
+    if ! is_assembly_db "$assembly"; then
       log "Skipping $assembly genome."
       continue
     fi
@@ -82,12 +83,9 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
 
     # For infrequent assemblies, skip rsync if synced within the last month
     if [ -z "${REPROCESS:-}" ] && ! echo "$FREQUENT_ASSEMBLIES" | grep -qw "$assembly"; then
-      if [ -f "$sync_stamp" ]; then
-        age_days=$((($(date +%s) - $(stat -c %Y "$sync_stamp")) / 86400))
-        if [ "$age_days" -lt "$RSYNC_MONTHLY_DAYS" ]; then
-          log "Skipping rsync for $assembly (synced ${age_days}d ago)"
-          continue
-        fi
+      if stamp_age_days age_days "$sync_stamp" && [ "$age_days" -lt "$RSYNC_MONTHLY_DAYS" ]; then
+        log "Skipping rsync for $assembly (synced ${age_days}d ago)"
+        continue
       fi
     fi
 
@@ -126,7 +124,7 @@ if [ "$SKIP_DOWNLOAD" = true ] || [ -n "${REPROCESS:-}" ]; then
     assembly=$(basename "$assembly_data_dir")
     CHANGED_DL_DIRS+=("$assembly_data_dir")
     CHANGED_BUILT_DIRS+=("$UCSC_BUILT_DIR/$assembly")
-  done < <(find "$UCSC_DOWNLOADS_DIR" -mindepth 1 -maxdepth 1 -type d ! -name hgFixed ! -name cb1 | sort)
+  done < <(list_assembly_dirs)
 else
   log "Detecting changed assemblies..."
   while IFS= read -r assembly_data_dir; do
@@ -149,7 +147,7 @@ else
 
     CHANGED_DL_DIRS+=("$assembly_data_dir")
     CHANGED_BUILT_DIRS+=("$built_dir")
-  done < <(find "$UCSC_DOWNLOADS_DIR" -mindepth 1 -maxdepth 1 -type d ! -name hgFixed ! -name cb1 | sort)
+  done < <(list_assembly_dirs)
 
   if [ "${#CHANGED_DL_DIRS[@]}" -eq 0 ]; then
     log "No UCSC assemblies have changed."
@@ -170,19 +168,18 @@ ensure_dir "configs"
 # Clear old merged files (they will be regenerated)
 rm -f blockedFiles.txt blockedFiles.json removedTracks.json
 
-# Only fetch list.json if we skipped download (otherwise it's already fresh)
+# The download phase already wrote list.json.raw; fetch it here only if we
+# skipped that phase.
 if [ "$SKIP_DOWNLOAD" = true ]; then
   log "Fetching latest UCSC genome list..."
   curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_BUILT_DIR/list.json.raw"
-
-  log "Transforming genome list to array format..."
-  node src/transformGenomeList.ts "$UCSC_BUILT_DIR/list.json.raw" "$UCSC_BUILT_DIR/list.json"
-else
-  log "Transforming genome list to array format..."
-  # Use the list.json from download phase
-  cp "$UCSC_BUILT_DIR/list.json" "$UCSC_BUILT_DIR/list.json.raw"
-  node src/transformGenomeList.ts "$UCSC_BUILT_DIR/list.json.raw" "$UCSC_BUILT_DIR/list.json"
 fi
+
+# Keeps the ucscGenomes object shape (later phases and
+# generateJBrowseConfigForAssemblyHub.sh both jq '.ucscGenomes | to_entries[]'
+# over it), adding per-genome fields the website needs.
+log "Enriching genome list..."
+node src/transformGenomeList.ts "$UCSC_BUILT_DIR/list.json.raw" "$UCSC_BUILT_DIR/list.json"
 
 log "Creating a copy for the website..."
 cp "$UCSC_BUILT_DIR/list.json" "$SCRIPT_DIR/../website/src/list.json"
@@ -249,19 +246,10 @@ done < <(jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null
 
 if [ "${#POST_PROCESS_DIRS[@]}" -gt 0 ]; then
   log "Adding metadata to tracks..."
-  add_metadata_for_dir() {
-    local dir="$1"
-    local config="$dir/config.json"
-    local tracks="$dir/tracks.json"
-    if [ -f "$config" ] && [ -f "$tracks" ]; then
-      node src/addMetadata.ts "$config" "$tracks"
-    fi
-  }
-  export -f add_metadata_for_dir
-  parallel $PARALLEL_OPTS add_metadata_for_dir ::: "${POST_PROCESS_DIRS[@]}" || true
+  ./addMetadata.sh "${POST_PROCESS_DIRS[@]}"
 
   log "Adding original assembly to track name..."
-  printf '%s/config.json\n' "${POST_PROCESS_DIRS[@]}" | parallel $PARALLEL_OPTS -j1 node src/addOrigAssemblyToTrackName.ts {} || true
+  ./addOrigAssemblyToAllTrackNames.sh "${POST_PROCESS_DIRS[@]}"
 
   log "Renaming some tracks..."
   node src/rewriteUcscTrackNames.ts "$UCSC_BUILT_DIR"

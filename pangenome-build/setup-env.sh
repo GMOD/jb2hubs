@@ -26,9 +26,12 @@ fi
 
 echo "Checking sandbox tools..."
 for tool in pggb wfmash impg; do
-  singularity exec "$PGGB_SANDBOX" "$tool" --version >/dev/null 2>&1 \
-    || singularity exec "$PGGB_SANDBOX" "$tool" --help >/dev/null 2>&1 \
-    || { echo "ERROR: '$tool' not found in sandbox $PGGB_SANDBOX" >&2; exit 1; }
+  singularity exec "$PGGB_SANDBOX" "$tool" --version >/dev/null 2>&1 ||
+    singularity exec "$PGGB_SANDBOX" "$tool" --help >/dev/null 2>&1 ||
+    {
+      echo "ERROR: '$tool' not found in sandbox $PGGB_SANDBOX" >&2
+      exit 1
+    }
   echo "  $tool: OK (via singularity)"
 done
 

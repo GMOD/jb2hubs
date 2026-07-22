@@ -21,7 +21,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 # Prepend local shims (pggb, wfmash, impg via singularity) to PATH.
-export PATH="$(pwd)/bin:$PATH"
+PATH="$PWD/bin:$PATH"
+export PATH
 export PGGB_SANDBOX="${PGGB_SANDBOX:-$HOME/pggb_sandbox}"
 
 PANEL="${PANEL:-mouse-strains.tsv}"
@@ -34,15 +35,27 @@ DO_GRAPH=false
 for arg in "$@"; do
   case "$arg" in
   --graph) DO_GRAPH=true ;;
-  -h | --help) sed -n '2,30p' "$0"; exit 0 ;;
-  *) echo "unknown arg: $arg" >&2; exit 1 ;;
+  -h | --help)
+    sed -n '2,30p' "$0"
+    exit 0
+    ;;
+  *)
+    echo "unknown arg: $arg" >&2
+    exit 1
+    ;;
   esac
 done
 
 command -v datasets >/dev/null ||
-  { echo "ERROR: 'datasets' not on PATH. Install ncbi-datasets-cli (conda/mamba or https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)." >&2; exit 1; }
+  {
+    echo "ERROR: 'datasets' not on PATH. Install ncbi-datasets-cli (conda/mamba or https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)." >&2
+    exit 1
+  }
 [[ -d "$PGGB_SANDBOX" ]] ||
-  { echo "ERROR: pggb sandbox not found at $PGGB_SANDBOX. Run ./setup-env.sh first." >&2; exit 1; }
+  {
+    echo "ERROR: pggb sandbox not found at $PGGB_SANDBOX. Run ./setup-env.sh first." >&2
+    exit 1
+  }
 
 # 1-3. Download + PanSN concat + all-vs-all align + impg index.
 ./build.sh "$PANEL" "$OUT" "$THREADS"
@@ -83,7 +96,8 @@ while IFS=$'\t' read -r id gene flank_kb _; do
   acc="${coords%%:*}"
   range="${coords#*:}"
   flank=$((${flank_kb:-50} * 1000))
-  start=$((${range%-*} - flank)); ((start < 1)) && start=1
+  start=$((${range%-*} - flank))
+  ((start < 1)) && start=1
   end=$((${range#*-} + flank))
   ./query.sh "$PAF" "$id" "${REF_SAMPLE}#1#${acc}:${start}-${end}" "$MERGE_BP" "$OUT"
 done <"$LOCI"

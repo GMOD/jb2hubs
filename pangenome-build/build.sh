@@ -39,7 +39,10 @@ WFMASH_PARAMS="${WFMASH_PARAMS:--s 10000 -p 95 -l 50000}"
 MIN_SEQ_LEN="${MIN_SEQ_LEN:-5000000}"
 
 for tool in datasets samtools wfmash impg awk; do
-  command -v "$tool" >/dev/null || { echo "ERROR: '$tool' not on PATH" >&2; exit 1; }
+  command -v "$tool" >/dev/null || {
+    echo "ERROR: '$tool' not on PATH" >&2
+    exit 1
+  }
 done
 
 mkdir -p "$OUT/fasta"
@@ -50,13 +53,13 @@ PAN="$OUT/panel.pansn.fa"
 # append to one combined FASTA. PanSN-prefixed names are what wfmash/impg use to
 # attribute alignments back to a sample.
 while IFS=$'\t' read -r acc sample; do
-  case "$acc" in ''|\#*) continue ;; esac
+  case "$acc" in '' | \#*) continue ;; esac
   fa="$OUT/fasta/${sample}.fa"
   if [ ! -s "$fa" ]; then
     echo ">> downloading $acc ($sample)"
     for attempt in 1 2 3; do
       if datasets download genome accession "$acc" \
-          --include genome --filename "$OUT/$acc.zip"; then
+        --include genome --filename "$OUT/$acc.zip"; then
         break
       fi
       echo ">> attempt $attempt failed, retrying..."
@@ -77,10 +80,10 @@ samtools faidx "$PAN"
 PAN_MAJOR="$OUT/panel.major.pansn.fa"
 if [ ! -s "$PAN_MAJOR" ]; then
   echo ">> filtering to sequences >= ${MIN_SEQ_LEN}bp -> $PAN_MAJOR"
-  awk -v min="$MIN_SEQ_LEN" '$2 >= min {print $1}' "$PAN.fai" \
-    | xargs samtools faidx "$PAN" > "$PAN_MAJOR"
+  awk -v min="$MIN_SEQ_LEN" '$2 >= min {print $1}' "$PAN.fai" |
+    xargs samtools faidx "$PAN" >"$PAN_MAJOR"
   samtools faidx "$PAN_MAJOR"
-  seq_count=$(wc -l < "$PAN_MAJOR.fai")
+  seq_count=$(wc -l <"$PAN_MAJOR.fai")
   echo ">> kept $seq_count sequences"
 fi
 
@@ -89,8 +92,8 @@ fi
 # ==1, not a regex) tolerates '.' or other metacharacters in sample names.
 extract_sample() {
   local sample="$1" out="$2"
-  awk -v s="$sample" 'index($1, s "#") == 1 {print $1}' "$PAN_MAJOR.fai" \
-    | xargs -r samtools faidx "$PAN_MAJOR" >"$out"
+  awk -v s="$sample" 'index($1, s "#") == 1 {print $1}' "$PAN_MAJOR.fai" |
+    xargs -r samtools faidx "$PAN_MAJOR" >"$out"
   samtools faidx "$out"
 }
 
@@ -105,7 +108,7 @@ REF_SAMPLE=""
 REF_FA="$OUT/ref.pansn.fa"
 
 while IFS=$'\t' read -r acc sample; do
-  case "$acc" in ''|\#*) continue ;; esac
+  case "$acc" in '' | \#*) continue ;; esac
   if [ -z "$REF_SAMPLE" ]; then
     REF_SAMPLE="$sample"
     echo ">> reference sample: $REF_SAMPLE"
@@ -117,12 +120,12 @@ while IFS=$'\t' read -r acc sample; do
     STRAIN_FA="$OUT/${sample}.pansn.fa"
     extract_sample "$sample" "$STRAIN_FA"
     echo ">> wfmash $sample -> $REF_SAMPLE ($THREADS threads)"
-    wfmash $WFMASH_PARAMS -t "$THREADS" "$REF_FA" "$STRAIN_FA" > "$STRAIN_PAF"
+    wfmash $WFMASH_PARAMS -t "$THREADS" "$REF_FA" "$STRAIN_FA" >"$STRAIN_PAF"
     rm -f "$STRAIN_FA" "$STRAIN_FA.fai"
   else
     echo ">> $STRAIN_PAF exists, skipping"
   fi
-  cat "$STRAIN_PAF" >> "$PAF"
+  cat "$STRAIN_PAF" >>"$PAF"
 done <"$PANEL"
 
 # Build the impg index (impg index -a <paf> -i <index>); query/partition reuse it.

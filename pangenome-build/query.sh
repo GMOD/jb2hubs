@@ -22,7 +22,10 @@ PAN="$(dirname "$PAF")/panel.major.pansn.fa"
 INDEX="${PAF%.paf}.impg"
 
 for tool in impg samtools abpoa; do
-  command -v "$tool" >/dev/null || { echo "ERROR: '$tool' not on PATH" >&2; exit 1; }
+  command -v "$tool" >/dev/null || {
+    echo "ERROR: '$tool' not on PATH" >&2
+    exit 1
+  }
 done
 
 mkdir -p "$OUT/msa" "$OUT/tmp"

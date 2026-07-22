@@ -24,6 +24,28 @@ accession_to_hub_dir() {
 }
 export -f accession_to_hub_dir
 
+# Lists the files in a directory that belong to a run's scope: every *.gz under
+# the directory, or -- when a scope file listing accessions (one per line) is
+# given -- only the files for those accessions. Shared by the download, process
+# and load stages, which all take the same optional scope-file argument.
+# Usage: list_scoped_gz <dir> [scope_file]
+list_scoped_gz() {
+  local dir="$1" scope_file="${2:-}"
+  if [ -z "$scope_file" ]; then
+    find "$dir" -name "*.gz"
+  else
+    while IFS= read -r acc; do
+      [ -n "$acc" ] || continue
+      for f in "$dir/$acc"_*.gz; do
+        if [ -f "$f" ]; then
+          echo "$f"
+        fi
+      done
+    done <"$scope_file"
+  fi
+}
+export -f list_scoped_gz
+
 # Adds the trix text search adapter entry to config.json via jq
 # Usage: add_trix_adapter <accession> <config_file>
 add_trix_adapter() {
