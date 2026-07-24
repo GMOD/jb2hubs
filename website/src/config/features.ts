@@ -16,6 +16,10 @@ export const features = {
   // The /protein-alignment view: ortholog protein MSA (EBI Clustal Omega) with
   // NCBI CDD conserved-domain overlay, rendered in react-msaview.
   proteinMsa: staging,
+  // The /protein-browser view ("proteins in the genome browser"): gene ->
+  // connected JBrowse session (collapsed-intron genome + AlphaFold 3D + on-demand
+  // ortholog alignment), all synthesized live.
+  proteinBrowser: staging,
   // The /pangenome HPRC pangenome explorer (curated divergence loci + JBrowse /
   // react-msaview launches).
   pangenome: staging,

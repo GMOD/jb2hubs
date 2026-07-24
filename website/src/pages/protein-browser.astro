@@ -1,0 +1,197 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Container from '../components/Container.astro'
+import ProteinBrowser from '../components/ProteinBrowser.tsx'
+import { features } from '../config/features.ts'
+
+if (!features.proteinBrowser) {
+  return Astro.redirect('/')
+}
+---
+
+<Layout title="Protein browser">
+  <Container>
+    <h1>Protein browser</h1>
+    <p>
+      Proteins in the genome browser. Pick a species and a gene: this resolves
+      the gene live from NCBI, then builds a connected JBrowse session with the
+      gene on its <strong>genome</strong> (introns collapsed so the coding exons
+      sit side by side), its <strong>AlphaFold 3D structure</strong>, and — on
+      demand — a cross-species protein <strong>alignment</strong>. All the views
+      link up: hover or select in any one and the others light up the matching
+      residue. The genome comes from a UCSC GenArk assembly, the structure from
+      AlphaFold, and the alignment from NCBI orthologs aligned at EBI Clustal
+      Omega — nothing is precomputed per gene. Residue-level complement to the
+      <a href="/protein-alignment">protein alignment</a> view.
+    </p>
+    <ProteinBrowser client:only="react" />
+  </Container>
+</Layout>
+
+<style is:global>
+  .msv-form {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 1.25rem 0;
+    flex-wrap: wrap;
+  }
+  .msv-form input,
+  .msv-form select {
+    padding: 7px 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .msv-form input {
+    min-width: 240px;
+  }
+  .msv-form button {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .msv-form button:disabled {
+    background: #f0f0f0;
+    color: #999;
+    border-color: #ddd;
+    cursor: not-allowed;
+  }
+  .msv-hint {
+    color: #666;
+    font-size: 14px;
+  }
+  .msv-error {
+    color: #b00020;
+    font-size: 14px;
+  }
+  .msv-examples {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0 0 1rem;
+    font-size: 13px;
+    color: #666;
+  }
+  .msv-example-chip {
+    padding: 4px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #0b69d4;
+    border-radius: 999px;
+    background: #0b69d4;
+    color: white;
+    cursor: pointer;
+  }
+  .msv-example-chip:hover:not(:disabled) {
+    background: #0a5cba;
+    border-color: #0a5cba;
+  }
+  .msv-example-chip:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .msv-note {
+    color: #8a6d3b;
+    font-size: 13px;
+    margin: 0.5rem 0;
+  }
+
+  .msv-result {
+    border: 1px solid #dce0e6;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin-top: 1rem;
+    max-width: 640px;
+  }
+  .msv-result h2 {
+    margin: 0 0 0.15rem;
+    font-size: 1.25rem;
+  }
+  .msv-sub {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #666;
+  }
+  .msv-meta {
+    margin: 0 0 0.6rem;
+    font-size: 13px;
+    color: #666;
+  }
+  .msv-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 0.9rem;
+  }
+  .msv-chip {
+    padding: 2px 10px;
+    font-size: 12px;
+    color: #33475b;
+    background: #eef1f5;
+    border: 1px solid #dce0e6;
+    border-radius: 999px;
+  }
+  .msv-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .msv-open {
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border-radius: 4px;
+    text-decoration: none;
+  }
+  .msv-open:hover {
+    background: #0a5cba;
+  }
+  .msv-collapse {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #444;
+  }
+  .msv-advanced {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin: 1rem 0 0;
+  }
+  .msv-advanced-btn {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0b69d4;
+    background: white;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .msv-advanced-btn:hover:not(:disabled) {
+    background: #eaf3fd;
+  }
+  .msv-advanced-btn:disabled {
+    color: #999;
+    background: #f0f0f0;
+    border-color: #ddd;
+    cursor: progress;
+  }
+  .msv-advanced-note {
+    font-size: 12px;
+    color: #999;
+    max-width: 42ch;
+  }
+</style>
