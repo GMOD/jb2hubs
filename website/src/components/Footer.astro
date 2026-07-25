@@ -1,88 +1,52 @@
----
-import { features } from '../config/features.ts'
----
-
 <footer class="footer">
   <div class="footerInner">
-    <div class="footerGroup">
-      <h2>Browse</h2>
-      <a href="/search">Search all genomes</a>
-      <a href="/ucsc">UCSC genome browsers</a>
-      <a href="/recently-updated">Recently added</a>
-      {features.orthologs && <a href="/orthologs">Ortholog search</a>}
-    </div>
-    <div class="footerGroup">
-      <h2>About</h2>
-      <a href="/about">How this site is built</a>
-      <a href="/about#citing-resources">How to cite</a>
-      <a href="/unavailableTracks">Tracks we don't host</a>
-      <a href="/blog">Blog</a>
-    </div>
-    <div class="footerGroup">
-      <h2>Data sources</h2>
-      <a href="https://hgdownload.soe.ucsc.edu/hubs/">UCSC GenArk</a>
-      <a href="https://genome.ucsc.edu/">UCSC Genome Browser</a>
-      <a href="https://www.ncbi.nlm.nih.gov/datasets/">NCBI Datasets</a>
-    </div>
-    <div class="footerGroup">
-      <h2>JBrowse</h2>
-      <a href="https://jbrowse.org/jb2">JBrowse 2</a>
-      <a href="https://github.com/GMOD/jb2hubs">Source for this site</a>
-      <a href="https://jbrowse.org/jb2/contact/">Contact us</a>
-    </div>
+    <nav class="footerLinks">
+      <a href="/about">About</a>
+      <a href="https://github.com/GMOD/jb2hubs">Source</a>
+      <a href="https://jbrowse.org/jb2/contact/">Contact</a>
+    </nav>
+    <p class="footerNote">
+      Assembly metadata and tracks from <a
+        href="https://hgdownload.soe.ucsc.edu/hubs/">UCSC</a
+      > and <a href="https://www.ncbi.nlm.nih.gov/datasets/">NCBI</a>. Genome
+      browsers are generated automatically; if a track looks wrong, please <a
+        href="https://github.com/GMOD/jb2hubs/issues">open an issue</a
+      >.
+    </p>
   </div>
-  <p class="footerNote">
-    Assembly metadata from NCBI and UCSC. Genome browsers are generated
-    automatically; if a track looks wrong, please <a
-      href="https://github.com/GMOD/jb2hubs"
-      >open an issue</a
-    >.
-  </p>
 </footer>
 
 <style>
   .footer {
     margin-top: 4rem;
-    padding: 2rem 1rem 1.5rem;
+    padding: 1.5rem 1rem;
     border-top: 1px solid #e7e7e7;
     background: #fafafa;
     font-size: 0.875rem;
   }
 
   .footerInner {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.5rem;
     max-width: 60rem;
     margin: 0 auto;
   }
 
-  .footerGroup {
+  .footerLinks {
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    flex-wrap: wrap;
+    gap: 1.25rem;
   }
 
-  .footerGroup h2 {
-    margin: 0 0 0.25rem;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #666;
-  }
-
-  .footerGroup a {
+  .footerLinks a {
     color: #2563eb;
     text-decoration: none;
   }
 
-  .footerGroup a:hover {
+  .footerLinks a:hover {
     text-decoration: underline;
   }
 
   .footerNote {
-    max-width: 60rem;
-    margin: 1.5rem auto 0;
+    margin: 0.75rem 0 0;
     color: #666;
   }
 </style>
