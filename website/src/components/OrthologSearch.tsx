@@ -273,14 +273,14 @@ export default function OrthologSearch() {
               (the ortholog neighborhood, drawn as gene-order ribbons)
             </p>
           )}
-          {resolved && features.proteinMsa && (
+          {resolved && features.proteinBrowser && (
             <p className="orthologs-summary">
               <a
-                href={`/protein-alignment?gene=${encodeURIComponent(resolved.symbol)}&ref=${resolved.refTaxId}`}
+                href={`/protein-browser?gene=${encodeURIComponent(resolved.symbol)}&ref=${resolved.refTaxId}`}
               >
-                View the ortholog protein alignment for {resolved.symbol} →
+                View the ortholog protein browser for {resolved.symbol} →
               </a>{' '}
-              (residue conservation + conserved-domain architecture)
+              (domain architecture, residue alignment, and 3D structure)
             </p>
           )}
           {results.length === 0 ? (

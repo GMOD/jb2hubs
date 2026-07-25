@@ -13,16 +13,18 @@ if (!features.proteinBrowser) {
   <Container>
     <h1>Protein browser</h1>
     <p>
-      Proteins in the genome browser. Pick a species and a gene: this resolves
-      the gene live from NCBI, then builds a connected JBrowse session with the
-      gene on its <strong>genome</strong> (introns collapsed so the coding exons sit
-      side by side), its <strong>AlphaFold 3D structure</strong>, and — on
-      demand — a cross-species protein <strong>alignment</strong>. All the views
-      link up: hover or select in any one and the others light up the matching
-      residue. The genome comes from a UCSC GenArk assembly, the structure from
-      AlphaFold, and the alignment from NCBI orthologs aligned at EBI Clustal
-      Omega — nothing is precomputed per gene. Residue-level complement to the
-      <a href="/protein-alignment">protein alignment</a> view.
+      Enter a gene and reference organism: this resolves the gene's NCBI
+      orthologs live and draws each protein's NCBI CDD conserved domains as a
+      domain-architecture cartoon — the quick view of whether the orthologs
+      share the same domains — while in parallel building a connected JBrowse
+      session with the gene on its <strong>genome</strong> (introns collapsed so the
+      coding exons sit side by side) and its <strong
+        >AlphaFold 3D structure</strong
+      >. Add the cross-species protein <strong>alignment</strong>
+      on demand — it aligns the orthologs at EBI Clustal Omega, overlays the domains
+      in an embedded react-msaview panel, and rides along in the JBrowse session as
+      a connected view: hover or select in any one and the others light up the matching
+      residue. Nothing is precomputed per gene.
     </p>
     <ProteinBrowser client:only="react" />
   </Container>
@@ -97,10 +99,85 @@ if (!features.proteinBrowser) {
     opacity: 0.5;
     cursor: not-allowed;
   }
+  .msv-scope {
+    color: #666;
+    font-size: 13px;
+    margin: 0 0 1rem;
+    max-width: 60ch;
+  }
   .msv-note {
     color: #8a6d3b;
     font-size: 13px;
     margin: 0.5rem 0;
+  }
+
+  /* Domain-architecture cartoon (ProteinDomainCartoon) */
+  .pdc {
+    margin: 0.75rem 0 1rem;
+  }
+  .pdc-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .pdc-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pdc-name {
+    flex: 0 0 140px;
+    font-size: 13px;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pdc-track {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .pdc-bar {
+    position: relative;
+    height: 16px;
+    background: #eef1f5;
+    border: 1px solid #dce0e6;
+    border-radius: 3px;
+  }
+  .pdc-domain {
+    position: absolute;
+    top: -1px;
+    height: 16px;
+    border-radius: 3px;
+    opacity: 0.9;
+  }
+  .pdc-len {
+    flex: 0 0 auto;
+    font-size: 11px;
+    color: #999;
+    font-variant-numeric: tabular-nums;
+  }
+  .pdc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #444;
+  }
+  .pdc-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .pdc-swatch {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    display: inline-block;
   }
 
   .msv-result {

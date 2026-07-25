@@ -20,12 +20,10 @@ export const features = {
   // The /conserved-gene-order view: tree-ordered ortholog neighborhood showing
   // conserved gene order (microsynteny) across species.
   multiSynteny: staging,
-  // The /protein-alignment view: ortholog protein MSA (EBI Clustal Omega) with
-  // NCBI CDD conserved-domain overlay, rendered in react-msaview.
-  proteinMsa: staging,
-  // The /protein-browser view ("proteins in the genome browser"): gene ->
-  // connected JBrowse session (collapsed-intron genome + AlphaFold 3D + on-demand
-  // ortholog alignment), all synthesized live.
+  // The /protein-browser view: gene -> ortholog domain-architecture cartoon,
+  // connected JBrowse session (collapsed-intron genome + AlphaFold 3D), and an
+  // on-demand cross-species alignment (EBI Clustal Omega) overlaid with CDD
+  // domains — all synthesized live.
   proteinBrowser: staging,
   // The /pangenome HPRC pangenome explorer (curated divergence loci + JBrowse /
   // react-msaview launches).

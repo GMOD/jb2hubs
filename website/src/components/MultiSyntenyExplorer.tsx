@@ -248,13 +248,13 @@ export default function MultiSyntenyExplorer() {
           >
             View the full ortholog table for {nb.query.symbol} →
           </a>
-          {features.proteinMsa && (
+          {features.proteinBrowser && (
             <>
               {' · '}
               <a
-                href={`/protein-alignment?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
+                href={`/protein-browser?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
               >
-                protein alignment & domains →
+                protein browser →
               </a>
             </>
           )}
