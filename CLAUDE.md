@@ -22,6 +22,27 @@ change tracks on a UCSC assembly, edit the source-controlled extension file
 `tracks[]` are merged into the generated config by the pipeline; then regenerate
 and re-upload the configs.
 
+## multiWig composites, table-backed big files, and ENCODE
+
+A UCSC `container multiWig` composite converts to a single
+`MultiQuantitativeTrack` whose `MultiWiggleAdapter` has one subadapter per
+subtrack, rather than to N tracks (`ucsc2jbrowse/src/mergeMultiWigTracks.ts`).
+
+A `type big*` track with no `bigDataUrl` keeps its file path in the golden-path
+table named by its `table` setting, which `src/resolveTableBigFile.ts` reads
+from the rsynced `database/` dir (`createTracksJsonForGoldenPath.sh` passes
+`db_dir` to `mergeBigFileTracks.ts` for this). Without it the legacy ENCODE
+regulation composites never convert, which on hg19 means no regulation signal
+tracks at all, since ENCODE 4 is hg38-only. The aggregate carries
+`metadata.multiWigContainer`, which exempts it from the too-many-tracks drop
+rules in `getTrackModifications.ts` — it is one track, and for the ENCODE ones
+its trackId would otherwise match the `wgEncode*` rule.
+
+ENCODE's individual-experiment composites (12,729 subtracks on hg38) stay
+dropped. `agent-docs/ENCODE_TRACKS.md` records why, what was measured, and what
+would have to come first (UCSC's own faceted metadata TSVs) if they are ever
+loaded as connections.
+
 ## Key website internals
 
 - `src/components/SearchPage.tsx` — client-side search over

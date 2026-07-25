@@ -1,6 +1,8 @@
 import { dedupe, firstField } from 'hubtools'
 
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
+import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
+import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
 import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
 
 import type { TrackDbEntry } from './types.ts'
@@ -9,6 +11,9 @@ interface BigDataTrack {
   tableName: string
   settings: {
     bigDataUrl?: string
+    // names the golden-path table holding the file path, when there is no
+    // bigDataUrl; often a different name than the track's own
+    table?: string
     type?: string
     longLabel?: string
     speciesLabels?: string
@@ -97,7 +102,9 @@ function parseBigFileTracks(tracksJsonPath: string): BigDataTracksJson {
 
 async function addBigDataTracks(
   bigDataEntries: BigDataTracksJson,
+  tracksDb: Record<string, TrackDbEntry>,
   configPath: string,
+  dbDir: string | undefined,
 ) {
   const config = readConfig(configPath)
   const baseUrl = 'https://hgdownload.soe.ucsc.edu'
@@ -123,11 +130,35 @@ async function addBigDataTracks(
     /* do nothing */
   }
 
+  // Tracks that name no bigDataUrl keep their file path in a golden-path table
+  const resolveTable = dbDir
+    ? makeTableFileResolver({ dbDir, baseUrl })
+    : noTableFiles
+
+  // multiWig composites become one MultiQuantitativeTrack each, so their
+  // subtracks are skipped below rather than emitted as unrelated tracks
+  const { tracks: multiWigTracks, consumed } = buildMultiWigTracks({
+    tracksDb,
+    assemblyName,
+    baseUrl,
+    resolveTable,
+  })
   const newTracks = []
   for (const entry of Object.values(bigDataEntries)) {
     const { settings, tableName } = entry
-    const { type, speciesLabels, bigDataUrl } = settings
+    const { type, speciesLabels } = settings
     const trackId = `${assemblyName}-${tableName}`
+
+    if (consumed.has(tableName)) {
+      continue
+    }
+
+    // A resolved table path stands in for a missing bigDataUrl, so the branches
+    // below (bigBed vs bam vs bigWig) don't each need to know where it came
+    // from. It is already absolute, hence the baseUrl-prefixing below is a no-op
+    // for it.
+    const bigDataUrl =
+      settings.bigDataUrl ?? resolveTable(settings.table ?? tableName)
 
     if (bigDataUrl) {
       const uri = bigDataUrl.startsWith(baseUrl)
@@ -211,7 +242,7 @@ async function addBigDataTracks(
   writeJSON(configPath, {
     ...config,
     tracks: dedupe(
-      [...config.tracks, ...newTracks],
+      [...config.tracks, ...multiWigTracks, ...newTracks],
       track => track.trackId,
     ).map(r => {
       const mixin = (mixinTracks as Record<string, Record<string, unknown>>)[
@@ -222,12 +253,19 @@ async function addBigDataTracks(
   })
 }
 
-if (process.argv.length !== 4) {
-  console.error('Usage: node mergeBigFileTracks.ts <tracks.json> <config.json>')
+if (process.argv.length < 4) {
+  console.error(
+    'Usage: node mergeBigFileTracks.ts <tracks.json> <config.json> [databaseDir]',
+  )
   process.exit(1)
 }
 
 const tracksJsonPath = process.argv[2]!
 const configPath = process.argv[3]!
 
-await addBigDataTracks(parseBigFileTracks(tracksJsonPath), configPath)
+await addBigDataTracks(
+  parseBigFileTracks(tracksJsonPath),
+  readJSON<Record<string, TrackDbEntry>>(tracksJsonPath),
+  configPath,
+  process.argv[4],
+)

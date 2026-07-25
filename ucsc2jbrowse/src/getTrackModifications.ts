@@ -103,6 +103,7 @@ export function getTrackModifications<
     metadata?: {
       ucsc?: Record<string, unknown>
       addedByJBrowseTeam?: boolean
+      multiWigContainer?: boolean
     }
     name: string
     category?: string[]
@@ -112,6 +113,14 @@ export function getTrackModifications<
   const { name, assemblyNames, metadata } = track
   const { ucsc } = metadata ?? {}
   const assembly = assemblyNames[0]!
+
+  // A multiWig aggregate (mergeMultiWigTracks.ts) is one track carrying its
+  // subtracks as rows, so the rules below, which exist to keep track *counts*
+  // down, don't apply to it. Its trackId is the composite's, which for the
+  // ENCODE ones would otherwise match the wgEncode rule.
+  if (metadata?.multiWigContainer) {
+    return track
+  }
 
   if (assembly === 'hs1') {
     let reason: string | null = null
