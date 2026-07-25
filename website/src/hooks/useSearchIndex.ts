@@ -2,17 +2,20 @@ import useSWRImmutable from 'swr/immutable'
 
 import { fetchJson } from '../lib/fetchJson.ts'
 
-// [accession, commonName, scientificName, ncbiAssemblyName, assemblyStatus, source, taxonId, ncbiStatus]
-// ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
+// Compact rows produced by generateSearchIndex.ts — see there for how each field
+// is derived.
 export type IndexEntry = [
-  string, // accession
+  string, // accession (a UCSC db name for source 'ucsc')
   string, // commonName
   string, // scientificName
-  string, // ncbiAssemblyName
+  string, // assemblyName
   string, // assemblyStatus
-  string, // source
+  string, // source ('ucsc', or the GenArk category)
   number, // taxonId
-  number, // ncbiStatus
+  number, // ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
+  number, // year the assembly was released, 0 if unknown
+  number, // UCSC's preference order within the species (1 = first), 0 = unranked
+  string, // altAccession: the GC[AF] accession of a UCSC db, '' for GenArk
 ]
 
 export function useSearchIndex() {

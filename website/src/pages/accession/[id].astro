@@ -6,9 +6,13 @@ import RedX from '../../components/RedX.tsx'
 import {
   loadAccessionMap,
   buildUcscMapping,
+  buildSiblingIndex,
   loadNcbiDetails,
   tryAndReadJSON,
 } from '../../utils/accessionData.ts'
+import { jbrowseUrl, genarkConfigPath } from '../../config/jbrowse.ts'
+import { bareCommonName } from '../../utils/names.ts'
+import { features } from '../../config/features.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
 import syntenyAccessions from '../../syntenyAccessions.json'
@@ -20,30 +24,40 @@ import path from 'path'
 const syntenyAssemblies = new Set<string>(syntenyAccessions)
 
 export async function getStaticPaths() {
+  // Astro extracts getStaticPaths into its own module and tree-shakes the rest of
+  // the frontmatter away, so everything it needs has to come from an import.
   const accessions = loadAccessionMap()
   const ucscMappings = buildUcscMapping(accessions)
+  const siblingIndex = buildSiblingIndex(accessions)
+  const maxSiblings = 8
+
   return [...accessions.entries()]
     .filter(([id]) => !!id)
-    .map(([id, data]) => ({
-      params: { id },
-      props: {
-        data,
-        pairedAssemblyData: data.pairedAccession
-          ? accessions.get(data.pairedAccession)
-          : undefined,
-        ucscDbName: ucscMappings.get(id),
-      },
-    }))
+    .map(([id, data]) => {
+      const siblings = siblingIndex.get(id) ?? []
+      return {
+        params: { id },
+        props: {
+          data,
+          pairedAssemblyData: data.pairedAccession
+            ? accessions.get(data.pairedAccession)
+            : undefined,
+          ucscDbName: ucscMappings.get(id),
+          siblings: siblings.slice(0, maxSiblings),
+          siblingCount: siblings.length,
+        },
+      }
+    })
 }
 
-const { data, pairedAssemblyData, ucscDbName } = Astro.props
+const { data, pairedAssemblyData, ucscDbName, siblings, siblingCount } =
+  Astro.props
 
 const {
   accession,
   scientificName,
   ncbiAssemblyName,
   commonName,
-  jbrowseLink,
   igvBrowserLink,
   ncbiBrowserLink,
   ucscBrowserLink,
@@ -108,6 +122,43 @@ const buscoBreakdown = annotationInfo?.busco
     ].filter(Boolean)
   : []
 
+// These 50K pages are the site's main entry point from a search engine, and until
+// now they carried only a bare scientific-name title — identical across every
+// assembly of the same species — and no description at all.
+const assemblyLabel = [ncbiAssemblyName, accession].filter(Boolean).join(' ')
+const pageTitle = `${scientificName} — ${assemblyLabel}`
+// The bare common name: GenArk's own already repeats the assembly and year, which
+// the label beside it states outright.
+const organism = bareCommonName(commonName)
+const pageDescription = [
+  `${scientificName}${organism ? ` (${organism})` : ''} genome assembly`,
+  `${assemblyLabel}.`,
+  'Open it in the JBrowse 2 genome browser, see assembly statistics and',
+  'annotation, and follow links to NCBI and UCSC.',
+].join(' ')
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: pageTitle,
+  description: pageDescription,
+  identifier: accession,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  sameAs: ncbiLink,
+  ...(seqReleaseDate ? { datePublished: seqReleaseDate } : {}),
+  ...(submitterOrg ? { creator: { '@type': 'Organization', name: submitterOrg } } : {}),
+  keywords: [scientificName, organism, accession, ncbiAssemblyName].filter(
+    Boolean,
+  ),
+  about: {
+    '@type': 'Taxon',
+    name: scientificName,
+    ...(organism ? { alternateName: organism } : {}),
+    identifier: `NCBI:txid${taxonId}`,
+    sameAs: `https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`,
+  },
+}
+
 const hasAssemblyStats =
   stats?.total_length ||
   stats?.chromosome_count ||
@@ -118,7 +169,11 @@ const hasAssemblyStats =
   sequencingTech
 ---
 
-<Layout frontmatter={{ title: scientificName }}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  jsonLd={jsonLd}
+>
   <Container>
     <div>
       <h1>{scientificName}</h1>
@@ -167,14 +222,14 @@ const hasAssemblyStats =
         ncbiRefSeqCategory === 'reference genome' ? (
           <div>
             <b>NCBI assembly status:</b> Designated Reference{' '}
-            <OrangeStar client:load />
+            <OrangeStar />
           </div>
         ) : null
       }
       {
         suppressed ? (
           <div>
-            <b>NCBI assembly status:</b> RefSeq Suppressed <RedX client:load />
+            <b>NCBI assembly status:</b> RefSeq Suppressed <RedX />
             {suppressionReason ? (
               <div>
                 <b>Reason:</b> {suppressionReason}
@@ -225,7 +280,7 @@ const hasAssemblyStats =
             {pairedAssemblyStatus === 'suppressed' ? (
               <>
                 {' '}
-                <RedX client:load />
+                <RedX />
               </>
             ) : null}
             {pairedAssemblyDifferences ? (
@@ -431,9 +486,11 @@ const hasAssemblyStats =
       <ul>
         <li>
           <a
-            href={ucscDbName
-              ? `https://jbrowse.org/code/jb2/latest/?config=/ucsc/${ucscDbName}/config.json`
-              : jbrowseLink}>JBrowse</a
+            href={jbrowseUrl(
+              ucscDbName
+                ? `/ucsc/${ucscDbName}/config.json`
+                : genarkConfigPath(accession),
+            )}>JBrowse</a
           >
         </li>
         <li>
@@ -446,6 +503,87 @@ const hasAssemblyStats =
           <a href={ucscBrowserLink}>UCSC browser</a>
         </li>
       </ul>
+    </div>
+    <div>
+      <h2>Compare with other genomes</h2>
+      <ul>
+        <li>
+          <a href={`/orthologs?ref=${taxonId}`}>
+            Find a gene and its orthologs
+          </a> across the other species we host
+        </li>
+        {
+          features.synteny && syntenyAssemblies.has(accession) ? (
+            <li>
+              <a href={`/synteny?assembly=${accession}`}>
+                Open a synteny view against an aligned assembly
+              </a>
+            </li>
+          ) : null
+        }
+        {
+          features.multiSynteny ? (
+            <li>
+              <a href="/conserved-gene-order">
+                Compare gene order around a gene across species
+              </a>
+            </li>
+          ) : null
+        }
+        <li>
+          <a href={`/taxonomy/${taxonId}`}>
+            Browse every assembly we host for this taxon
+          </a>
+        </li>
+      </ul>
+      {
+        siblings.length ? (
+          <>
+            <h3>
+              Other assemblies for {scientificName}
+              {siblingCount > siblings.length
+                ? ` (${siblings.length} of ${siblingCount})`
+                : null}
+            </h3>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Accession</th>
+                  <th scope="col">Assembly name</th>
+                  <th scope="col">Assembly status</th>
+                  <th scope="col">Release date</th>
+                  <th scope="col">NCBI status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {siblings.map(sibling => (
+                  <tr>
+                    <td>
+                      <a href={`/accession/${sibling.accession}`}>
+                        {sibling.accession}
+                      </a>
+                    </td>
+                    <td>{sibling.ncbiAssemblyName}</td>
+                    <td>{sibling.assemblyStatus}</td>
+                    <td>{sibling.seqReleaseDate.replace('00:00', '')}</td>
+                    <td>
+                      {sibling.isReference ? <OrangeStar /> : null}
+                      {sibling.suppressed ? <RedX /> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {siblingCount > siblings.length ? (
+              <p>
+                <a href={`/taxonomy/${taxonId}`}>
+                  See all {siblingCount + 1} assemblies for this taxon
+                </a>
+              </p>
+            ) : null}
+          </>
+        ) : null
+      }
     </div>
     <div>
       <h2>Portals/data downloads</h2>

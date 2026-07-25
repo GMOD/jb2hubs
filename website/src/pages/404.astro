@@ -5,9 +5,73 @@ import Container from '../components/Container.astro'
 
 <Layout title="Not found">
   <Container>
-    <div>
-      This page was not found, we periodically rebuild the site to get updates.
-      Please contact us if you are not finding a page you expected to find.
-    </div>
+    <h1>Page not found</h1>
+    <p>
+      We rebuild this site periodically to pick up new assemblies, so a page for
+      a very recently released genome may not exist yet.
+    </p>
+    <h2>Find a genome</h2>
+    <form
+      action="/search"
+      method="get"
+      role="search"
+      class="notFoundSearch"
+    >
+      <label for="notfound-q">Search by name, species, or accession</label>
+      <div class="notFoundRow">
+        <input
+          id="notfound-q"
+          type="search"
+          name="q"
+          placeholder="e.g. human, zebrafish, GCF_000001405"
+          autocomplete="off"
+        />
+        <button type="submit">Search</button>
+      </div>
+    </form>
+    <ul>
+      <li><a href="/ucsc">All UCSC genome browsers</a></li>
+      <li><a href="/recently-updated">Recently added GenArk assemblies</a></li>
+      <li><a href="/orthologs">Ortholog gene search</a></li>
+      <li>
+        <a href="https://jbrowse.org/jb2/contact/">Contact us</a> if a page you
+        expected is missing
+      </li>
+    </ul>
   </Container>
 </Layout>
+
+<style>
+  .notFoundSearch label {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  .notFoundRow {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 32rem;
+  }
+
+  .notFoundRow input {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .notFoundRow button {
+    padding: 7px 16px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: #0b69d4;
+    border: 1px solid #0b69d4;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+</style>

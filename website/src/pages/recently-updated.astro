@@ -10,9 +10,9 @@ import {
   linkEntries,
 } from '../lib/recentlyUpdated.ts'
 
-const data = recentlyUpdated as HubEntry[]
+const data = recentlyUpdated as (HubEntry & { createdTimestamp: number })[]
 
-// Sort all data by created date
+// Newest first
 const sortedData = [...data].sort(
   (a, b) => b.createdTimestamp - a.createdTimestamp,
 )
@@ -20,27 +20,44 @@ const sortedData = [...data].sort(
 // Get unique sources
 const sources = [...new Set(sortedData.map(h => h.source))].sort()
 
-// Get top 500 for "All" view
-const allRecent = sortedData.slice(0, 500)
+const PER_CATEGORY = 500
 
-// Pre-compute top 500 for each source
+// Every category's rows are inlined so the dropdown can switch without a
+// round-trip, which means each row is paid for once per category it appears in —
+// keep them to the columns the table renders.
+function trim(hub: HubEntry): HubEntry {
+  return {
+    accession: hub.accession,
+    createdDate: hub.createdDate,
+    scientificName: hub.scientificName,
+    commonName: hub.commonName,
+    source: hub.source,
+  }
+}
+
+const allRecent = sortedData.slice(0, PER_CATEGORY).map(trim)
+
 const dataBySource: Record<string, HubEntry[]> = {
   '': allRecent, // Empty string = "All"
 }
 for (const source of sources) {
   dataBySource[source] = sortedData
     .filter(h => h.source === source)
-    .slice(0, 500)
+    .slice(0, PER_CATEGORY)
+    .map(trim)
 }
+
+// This is when the site was last built, which is when the hub listing was last
+// re-scanned.
+const builtAt = formatDate(new Date().toISOString())
 ---
 
 <Layout title="Recently Added Genomes">
   <Container wide>
     <h1>Recently Added Genomes</h1>
     <p>
-      This page shows the most recently added UCSC GenArk assemblies. Last scan: {
-        formatDate(new Date().toISOString())
-      }
+      This page shows the {PER_CATEGORY} most recently added UCSC GenArk
+      assemblies per category. Site last built: {builtAt}
     </p>
 
     <div>

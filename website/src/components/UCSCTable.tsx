@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
 
+import { jbrowseUrl } from '../config/jbrowse.ts'
 import list from '../list.json'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
+import styles from './UCSCTable.module.css'
+import { useUrlState } from '../hooks/useUrlState.ts'
 import Container from './ui/react-wrappers/Container.tsx'
 import StyledLink from './ui/react-wrappers/StyledLink.tsx'
 
@@ -36,6 +39,7 @@ const columns = [
 
 export default function UCSCTable() {
   const { sortId: rawSortId, sortDesc, handleSort } = useTableSort()
+  const [search, setSearch] = useUrlState('search', '')
   // Validate the URL-supplied sort against the known columns so `sortId` stays
   // a typed ColId (or '') without a cast.
   const sortId = columns.find(col => col.id === rawSortId)?.id ?? ''
@@ -47,19 +51,30 @@ export default function UCSCTable() {
         scientificName: val.scientificName,
         organism: val.organism,
         description: val.description,
-        jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/ucsc/${key}/config.json`,
+        jbrowseLink: jbrowseUrl(`/ucsc/${key}/config.json`),
         ucscLink: `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`,
         orderKey: val.orderKey,
       }))
       .sort((a, b) => a.orderKey - b.orderKey)
   }, [])
 
+  const matchingRows = useMemo(() => {
+    const query = search.trim().toLowerCase()
+    return query
+      ? data.filter(row =>
+          `${row.name} ${row.scientificName} ${row.organism} ${row.description}`
+            .toLowerCase()
+            .includes(query),
+        )
+      : data
+  }, [data, search])
+
   const sortedRows = useMemo(
     () =>
       sortId
-        ? data.toSorted(makeComparator(row => row[sortId], sortDesc))
-        : data,
-    [data, sortId, sortDesc],
+        ? matchingRows.toSorted(makeComparator(row => row[sortId], sortDesc))
+        : matchingRows,
+    [matchingRows, sortId, sortDesc],
   )
 
   return (
@@ -71,11 +86,28 @@ export default function UCSCTable() {
           UCSC genome browser, converted into a format that JBrowse 2 can load
         </p>
         <p>
-          <StyledLink href="https://jbrowse.org/code/jb2/latest/?config=/ucsc/all.json">
+          <StyledLink href={jbrowseUrl('/ucsc/all.json')}>
             Click here
           </StyledLink>{' '}
           for single JBrowse 2 instance containing ALL the species
         </p>
+      </div>
+      <div className={styles.searchRow}>
+        <input
+          type="search"
+          value={search}
+          placeholder="Filter by db name, species, or description…"
+          aria-label="Filter genomes"
+          className={styles.searchInput}
+          onChange={e => {
+            setSearch(e.target.value)
+          }}
+        />
+        <span className={styles.count}>
+          {sortedRows.length === data.length
+            ? `${data.length} genomes`
+            : `${sortedRows.length} of ${data.length} genomes`}
+        </span>
       </div>
       <table>
         <thead>
@@ -83,9 +115,25 @@ export default function UCSCTable() {
             {columns.map(col => (
               <th
                 key={col.id}
+                scope="col"
                 className="cursor-pointer"
+                tabIndex={0}
+                role="button"
+                aria-sort={
+                  sortId === col.id
+                    ? sortDesc
+                      ? 'descending'
+                      : 'ascending'
+                    : 'none'
+                }
                 onClick={() => {
                   handleSort(col.id)
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleSort(col.id)
+                  }
                 }}
               >
                 {col.header} {sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}

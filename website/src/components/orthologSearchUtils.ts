@@ -1,5 +1,6 @@
 import { syntenyViewUrl } from './jbrowseLinks.ts'
 import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
+import { JBROWSE_BASE, genarkConfigPath } from '../config/jbrowse.ts'
 
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
 
@@ -77,14 +78,9 @@ export function accessionToJbrowseUrl(
   loc?: string,
   ucscDb?: string,
 ) {
-  const [base = '', rest = ''] = accession.split('_')
-  const digits = rest.replace(/\.\d+$/, '')
-  const b1 = digits.slice(0, 3)
-  const b2 = digits.slice(3, 6)
-  const b3 = digits.slice(6, 9)
   const config = ucscDb
     ? `/ucsc/${ucscDb}/config.json`
-    : `/hubs/genark/${base}/${b1}/${b2}/${b3}/${accession}/config.json`
+    : genarkConfigPath(accession)
   const assembly = ucscDb ?? accession
   // GenArk configs carry a defaultSession with no tracks, so a bare launch lands
   // on an empty browser — ask for the NCBI RefSeq GFF gene track by id (every
@@ -94,7 +90,7 @@ export function accessionToJbrowseUrl(
   const tracks = ucscDb
     ? ''
     : `&tracks=${encodeURIComponent(`${accession}-ncbiGff`)}`
-  const url = `https://jbrowse.org/code/jb2/latest/?config=${config}&assembly=${encodeURIComponent(assembly)}${tracks}`
+  const url = `${JBROWSE_BASE}/?config=${config}&assembly=${encodeURIComponent(assembly)}${tracks}`
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 

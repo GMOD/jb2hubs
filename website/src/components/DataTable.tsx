@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
+import useSWRImmutable from 'swr/immutable'
 
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import TableBody from './DataTable/components/TableBody.tsx'
@@ -10,24 +11,45 @@ import { useColumnVisibility } from './DataTable/hooks/useColumnVisibility.ts'
 import { useSearchFilter } from './DataTable/hooks/useSearchFilter.ts'
 import { useTableColumns } from './DataTable/hooks/useTableColumns.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
+import { decodeHubRow } from './DataTable/hubRow.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import styles from './DataTable.module.css'
 import Pagination from './Pagination.tsx'
 import TableOptions from './TableOptions.tsx'
+import { fetchJson } from '../lib/fetchJson.ts'
 import { paginate } from '../utils/paginate.ts'
 
-import type { RowData } from './DataTable/hooks/useTableColumns.tsx'
+import type { HubRow, HubTableData } from './DataTable/hubRow.ts'
 
-import '../styles/common-table.css'
+export type TableProps = HubTableData
 
-export interface TableProps {
-  rows: RowData[]
+async function loadRows(dataUrls: string[], accessions?: string[]) {
+  const files = await Promise.all(dataUrls.map(url => fetchJson<HubRow[]>(url)))
+  const rows = files.flat().map(decodeHubRow)
+  if (!accessions) {
+    return rows
+  }
+  const wanted = new Set(accessions)
+  return rows.filter(row => wanted.has(row.accession))
 }
 
-export default function DataTable({ rows }: TableProps) {
+export default function DataTable({
+  initialRows,
+  dataUrls,
+  accessions,
+  totalRows,
+}: TableProps) {
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(200)
   const tableRef = useRef<HTMLDivElement>(null)
+
+  const { data: allRows } = useSWRImmutable(dataUrls.join(','), () =>
+    loadRows(dataUrls, accessions),
+  )
+  // Until the full set lands, searching and sorting would silently apply to only
+  // the first page, so the controls stay disabled and these rows are shown as-is.
+  const loading = !allRows
+  const rows = allRows ?? initialRows
 
   const {
     filterOption,
@@ -71,8 +93,9 @@ export default function DataTable({ rows }: TableProps) {
           />
           <input
             type="text"
-            placeholder="Search by common name, scientific name, NCBI assembly name, or accession number..."
+            placeholder="Search by common name, scientific name, NCBI assembly name, or accession..."
             value={searchQuery}
+            disabled={loading}
             onChange={e => {
               setSearchQuery(e.target.value)
             }}
@@ -91,6 +114,11 @@ export default function DataTable({ rows }: TableProps) {
             </button>
           )}
         </div>
+        {loading && (
+          <span className={styles.loadingNote}>
+            Loading all {totalRows.toLocaleString()} assemblies…
+          </span>
+        )}
       </div>
 
       <TableOptions
@@ -98,6 +126,7 @@ export default function DataTable({ rows }: TableProps) {
         setFilterOption={setFilterOption}
         showAllColumns={showAllColumns}
         setShowAllColumns={setShowAllColumns}
+        disabled={loading}
       />
 
       <div ref={tableRef}>
@@ -107,6 +136,7 @@ export default function DataTable({ rows }: TableProps) {
             handleSort={handleSort}
             sortId={sortId}
             sortDesc={sortDesc}
+            sortable={!loading}
           />
           <TableBody
             columns={columns}
@@ -119,13 +149,14 @@ export default function DataTable({ rows }: TableProps) {
         pageIndex={clampedPageIndex}
         pageSize={pageSize}
         pageCount={pageCount}
-        totalRows={sortedRows.length}
+        totalRows={loading ? totalRows : sortedRows.length}
         rowsOnPage={pagedRows.length}
         onPageChange={setPageIndex}
         onPageSizeChange={size => {
           setPageSize(size)
           setPageIndex(0)
         }}
+        disabled={loading}
       />
     </>
   )

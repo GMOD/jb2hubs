@@ -45,14 +45,21 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
       </a>
       <div class="primary-nav desktop-nav">
         <div class="dropdown">
-          <span
+          <button
+            type="button"
+            id="explore-toggle"
+            aria-expanded="false"
+            aria-controls="explore-menu"
             class:list={[
               'navLink',
               'dropdownToggle',
               { active: exploreActive },
-            ]}>Explore ▾</span
+            ]}>Explore ▾</button
           >
-          <div class="dropdownMenu">
+          <div
+            id="explore-menu"
+            class="dropdownMenu"
+          >
             {
               exploreItems.map(item => (
                 <a
@@ -69,6 +76,47 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
           </div>
         </div>
       </div>
+      {/* A plain GET form, so search works with no JS and is one interaction
+          away from every page rather than two clicks into a dropdown. */}
+      <form
+        class="headerSearch"
+        action="/search"
+        method="get"
+        role="search"
+      >
+        <label
+          class="visuallyHidden"
+          for="header-search-input">Search genomes</label
+        >
+        <svg
+          class="headerSearchIcon"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle
+            cx="11"
+            cy="11"
+            r="8"></circle>
+          <line
+            x1="21"
+            y1="21"
+            x2="16.65"
+            y2="16.65"></line>
+        </svg>
+        <input
+          id="header-search-input"
+          type="search"
+          name="q"
+          placeholder="Search genomes…"
+          autocomplete="off"
+        />
+      </form>
     </div>
 
     <div class="right">
@@ -249,12 +297,17 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
       })
     }
 
-    const toggle = document.querySelector('.dropdownToggle')
-    const menu = document.querySelector('.dropdownMenu')
+    const toggle = document.getElementById('explore-toggle')
+    const menu = document.getElementById('explore-menu')
 
     if (toggle && menu) {
+      const setOpen = (open: boolean) => {
+        menu.classList.toggle('open', open)
+        toggle.setAttribute('aria-expanded', String(open))
+      }
+
       toggle.addEventListener('click', () => {
-        menu.classList.toggle('open')
+        setOpen(!menu.classList.contains('open'))
       })
 
       document.addEventListener('click', e => {
@@ -262,7 +315,14 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
           !toggle.contains(e.target as Node) &&
           !menu.contains(e.target as Node)
         ) {
-          menu.classList.remove('open')
+          setOpen(false)
+        }
+      })
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) {
+          setOpen(false)
+          toggle.focus()
         }
       })
     }
@@ -291,6 +351,53 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
   .right {
     display: flex;
     align-items: center;
+    min-width: 0;
+  }
+
+  .left {
+    flex: 1;
+  }
+
+  .headerSearch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    max-width: 320px;
+    margin-left: 1rem;
+  }
+
+  .headerSearchIcon {
+    position: absolute;
+    left: 8px;
+    color: #666;
+    pointer-events: none;
+  }
+
+  .headerSearch input {
+    width: 100%;
+    min-width: 0;
+    padding: 5px 8px 5px 30px;
+    font: inherit;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+  }
+
+  .headerSearch input:focus {
+    border-color: #0b69d4;
+    outline: none;
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
   }
 
   .logoLink {
@@ -347,6 +454,14 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
   .dropdownToggle {
     cursor: pointer;
     user-select: none;
+    background: none;
+    border: none;
+    font: inherit;
+    font-weight: 500;
+  }
+
+  .dropdownToggle.active {
+    font-weight: 700;
   }
 
   .dropdownMenu {

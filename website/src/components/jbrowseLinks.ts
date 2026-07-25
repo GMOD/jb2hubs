@@ -3,7 +3,8 @@
 // on load. Used by every "open in JBrowse" path (multi-synteny drill-downs, the
 // pangenome explorer, the ortholog results table) so the encoding lives once.
 
-const JBROWSE = 'https://jbrowse.org/code/jb2/main'
+import { JBROWSE_BASE } from '../config/jbrowse.ts'
+
 const MERGE_API = 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge'
 
 // config + spec session of one or more views. `sessionTracks` carries full track
@@ -19,7 +20,7 @@ export function specUrl(
   const session = JSON.stringify(
     sessionTracks?.length ? { views, sessionTracks } : { views },
   )
-  return `${JBROWSE}/?config=${encodeURIComponent(config)}&session=spec-${encodeURIComponent(session)}`
+  return `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}&session=spec-${encodeURIComponent(session)}`
 }
 
 // The merge API stitches several hosted hubs into one config.

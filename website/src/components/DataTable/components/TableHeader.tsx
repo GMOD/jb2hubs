@@ -9,6 +9,8 @@ interface TableHeaderProps {
   handleSort: (id: string) => void
   sortId: string
   sortDesc: boolean
+  // Sorting a partially-loaded table would silently reorder only the first page.
+  sortable?: boolean
 }
 
 function getAriaSortValue(
@@ -27,6 +29,7 @@ export default function TableHeader({
   handleSort,
   sortId,
   sortDesc,
+  sortable = true,
 }: TableHeaderProps) {
   const handleKeyDown = (e: KeyboardEvent, colId: string) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -39,7 +42,7 @@ export default function TableHeader({
     <thead>
       <tr>
         {columns.map(col => {
-          const canSort = col.enableSorting !== false
+          const canSort = sortable && col.enableSorting !== false
           return (
             <th
               key={col.id}

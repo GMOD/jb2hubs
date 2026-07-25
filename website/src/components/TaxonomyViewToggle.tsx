@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react'
 
-import ClientOnlyDataTable from './ClientOnlyDataTable.tsx'
+import DataTable from './DataTable.tsx'
 import { useUrlState } from '../hooks/useUrlState.ts'
 
-import type { RowData } from './DataTable/hooks/useTableColumns.tsx'
+import type { TableProps } from './DataTable.tsx'
 
 interface Props {
-  rows: RowData[]
+  table: TableProps
   treeContainerId: string
   accessionCount: number
 }
 
 export default function TaxonomyViewToggle({
-  rows,
+  table,
   treeContainerId,
   accessionCount,
 }: Props) {
@@ -63,7 +63,7 @@ export default function TaxonomyViewToggle({
         <div style={{ color: '#6b7280' }}>{accessionCount} accessions</div>
       </div>
 
-      {view === 'table' ? <ClientOnlyDataTable rows={rows} /> : null}
+      {view === 'table' ? <DataTable {...table} /> : null}
     </div>
   )
 }

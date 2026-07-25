@@ -29,7 +29,7 @@ function stripVersion(accession: string) {
 }
 
 function version(accession: string) {
-  const m = accession.match(/\.(\d+)$/)
+  const m = /\.(\d+)$/.exec(accession)
   return m ? Number(m[1]) : 0
 }
 

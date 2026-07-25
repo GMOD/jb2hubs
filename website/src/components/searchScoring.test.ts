@@ -14,6 +14,9 @@ interface EntryOverrides {
   source?: string
   taxonId?: number
   ncbiStatus?: number
+  year?: number
+  rank?: number
+  altAccession?: string
 }
 
 function entry(o: EntryOverrides = {}) {
@@ -26,6 +29,9 @@ function entry(o: EntryOverrides = {}) {
     o.source ?? 'genark',
     o.taxonId ?? 0,
     o.ncbiStatus ?? 0,
+    o.year ?? 0,
+    o.rank ?? 0,
+    o.altAccession ?? '',
   ]
   return e
 }
@@ -71,6 +77,44 @@ describe('scoreEntry', () => {
     const ucsc = entry({ commonName: 'human', source: 'ucsc' })
     assert.ok(scoreEntry(reference, ['human']) > scoreEntry(plain, ['human']))
     assert.ok(scoreEntry(ucsc, ['human']) > scoreEntry(plain, ['human']))
+  })
+
+  it('ranks a newer assembly above a retired one for the same species', () => {
+    const mm39 = entry({ commonName: 'Mouse', source: 'ucsc', year: 2020 })
+    const mm7 = entry({ commonName: 'Mouse', source: 'ucsc', year: 2005 })
+    assert.ok(scoreEntry(mm39, ['mouse']) > scoreEntry(mm7, ['mouse']))
+  })
+
+  it('ranks a curated assembly above a newer uncurated one', () => {
+    // hg38 (2013, a UCSC browser) must beat an HPRC haplotype (2024, neither a
+    // UCSC db nor an NCBI reference) for the query "human".
+    const hg38 = entry({ commonName: 'Human', source: 'ucsc', year: 2013 })
+    const haplotype = entry({
+      commonName: 'human (HG00097 hap1 2024)',
+      year: 2024,
+    })
+    assert.ok(scoreEntry(hg38, ['human']) > scoreEntry(haplotype, ['human']))
+  })
+
+  it('breaks a same-year tie on UCSC preference order', () => {
+    const first = entry({ commonName: 'Human', source: 'ucsc', rank: 1 })
+    const second = entry({ commonName: 'Human', source: 'ucsc', rank: 2 })
+    assert.ok(scoreEntry(first, ['human']) > scoreEntry(second, ['human']))
+  })
+
+  it('finds a ucsc db by either accession prefix', () => {
+    // hg38's sourceName records the GenBank accession, but users paste the
+    // RefSeq one at least as often.
+    const hg38 = entry({
+      accession: 'hg38',
+      commonName: 'Human',
+      source: 'ucsc',
+      altAccession: 'GCA_000001405.15',
+    })
+    assert.ok(scoreEntry(hg38, ['gca_000001405']) >= 0)
+    assert.ok(scoreEntry(hg38, ['gcf_000001405']) >= 0)
+    assert.ok(scoreEntry(hg38, ['000001405']) >= 0)
+    assert.equal(scoreEntry(hg38, ['gcf_999999999']), -1)
   })
 })
 

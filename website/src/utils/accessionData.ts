@@ -117,6 +117,67 @@ export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
   return mapping
 }
 
+// What the accession page's "other assemblies for this species" table needs,
+// trimmed because it ships as props on 50K pages.
+export interface SiblingAssembly {
+  accession: string
+  ncbiAssemblyName: string
+  assemblyStatus: string
+  seqReleaseDate: string
+  isReference: boolean
+  suppressed: boolean
+}
+
+function toSibling(data: AssemblyData): SiblingAssembly {
+  return {
+    accession: data.accession,
+    ncbiAssemblyName: data.ncbiAssemblyName,
+    assemblyStatus: data.assemblyStatus ?? '',
+    seqReleaseDate: data.seqReleaseDate ?? '',
+    isReference: data.ncbiRefSeqCategory === 'reference genome',
+    suppressed: !!data.suppressed,
+  }
+}
+
+// Reference genome first, then unsuppressed, then newest, so the top row is the
+// one to use.
+function bySuitability(a: SiblingAssembly, b: SiblingAssembly) {
+  return (
+    Number(b.isReference) - Number(a.isReference) ||
+    Number(a.suppressed) - Number(b.suppressed) ||
+    b.seqReleaseDate.localeCompare(a.seqReleaseDate)
+  )
+}
+
+// 2.7K of the 42K taxa we host have more than one assembly, and choosing between
+// them is exactly the question an accession page should answer. Maps each
+// accession to the other assemblies of the same taxon, best first. The paired
+// GenBank/RefSeq record is excluded — the page already links that separately.
+export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
+  const byTaxon = new Map<number, AssemblyData[]>()
+  for (const data of accessions.values()) {
+    const group = byTaxon.get(data.taxonId) ?? []
+    group.push(data)
+    byTaxon.set(data.taxonId, group)
+  }
+
+  const index = new Map<string, SiblingAssembly[]>()
+  for (const [accession, data] of accessions) {
+    index.set(
+      accession,
+      (byTaxon.get(data.taxonId) ?? [])
+        .filter(
+          other =>
+            other.accession !== accession &&
+            other.accession !== data.pairedAccession,
+        )
+        .map(toSibling)
+        .sort(bySuitability),
+    )
+  }
+  return index
+}
+
 export function loadNcbiDetails(accession: string): NcbiDetails {
   const chunks = accessionChunks(accession)
   if (!chunks) {

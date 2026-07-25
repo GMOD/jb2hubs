@@ -10,13 +10,22 @@ import {
   collectAccessions,
 } from '../../utils/taxonomyCache'
 import type { FlatNodeData } from '../../utils/taxonomyCache'
-import type { RowData } from '../../components/DataTable/hooks/useTableColumns.tsx'
+import {
+  categoryTable,
+  subtreeTable,
+} from '../../components/DataTable/hubRow.ts'
+import type {
+  HubSource,
+  HubTableData,
+} from '../../components/DataTable/hubRow.ts'
 import { notEmpty } from '../../components/DataTable/utils.ts'
 import fs from 'fs'
 import path from 'path'
 
 interface Props {
-  rows: RowData[]
+  table: HubTableData
+  rowCount: number
+  speciesData: HubSource[]
   isCategory: boolean
   taxonId?: string
   precomputedSubtree?: FlatNodeData | null
@@ -34,12 +43,17 @@ export async function getStaticPaths() {
   const modules = import.meta.glob('../../../processedHubJson/*.json')
   const categoryPaths = await Promise.all(
     Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = (await resolver()) as { default: Props['rows'] }
+      const { default: data } = (await resolver()) as { default: HubSource[] }
       const slug = filepath.split('/').pop()!.replace('.json', '')
       return slug !== 'all'
         ? {
             params: { slug },
-            props: { rows: data, isCategory: true },
+            props: {
+              table: categoryTable(slug, data),
+              rowCount: data.length,
+              speciesData: data,
+              isCategory: true,
+            },
           }
         : undefined
     }),
@@ -64,7 +78,7 @@ export async function getStaticPaths() {
   try {
     const newickData = fs.readFileSync(newickPath, 'utf-8')
     const allJson = (await import('../../../processedHubJson/all.json')) as {
-      default: RowData[]
+      default: HubSource[]
     }
 
     // Extract all unique taxonIds from the newick data using regex
@@ -88,7 +102,7 @@ export async function getStaticPaths() {
     const fullTree = getCachedTree('all')
 
     // Create a map of all species data for fast lookup
-    const allSpeciesMap = new Map<string, RowData>(
+    const allSpeciesMap = new Map<string, HubSource>(
       allJson.default.map(species => [species.accession, species]),
     )
 
@@ -116,7 +130,9 @@ export async function getStaticPaths() {
         paths.push({
           params: { slug: taxonId },
           props: {
-            rows: filteredSpecies,
+            table: subtreeTable(filteredSpecies),
+            rowCount: filteredSpecies.length,
+            speciesData: filteredSpecies,
             isCategory: false,
             taxonId,
             precomputedSubtree: subtree,
@@ -137,8 +153,15 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params
-const { rows, isCategory, taxonId, precomputedSubtree, precomputedLineage } =
-  Astro.props
+const {
+  table,
+  rowCount,
+  speciesData,
+  isCategory,
+  taxonId,
+  precomputedSubtree,
+  precomputedLineage,
+} = Astro.props
 
 let title: string
 let description: string
@@ -233,14 +256,14 @@ if (isCategory) {
     }
 
     <TaxonomyViewToggle
-      rows={rows}
+      table={table}
       treeContainerId="taxonomy-tree-container"
-      accessionCount={rows.length}
+      accessionCount={rowCount}
       client:load
     />
     <TaxonomyTree
       category={category}
-      speciesData={rows}
+      speciesData={speciesData}
       filterTaxonId={isCategory ? undefined : taxonId}
       precomputedSubtree={precomputedSubtree}
       containerId="taxonomy-tree-container"

@@ -1,20 +1,22 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
-import ClientOnlyDataTable from '../../components/ClientOnlyDataTable.tsx'
-import type { RowData } from '../../components/DataTable/hooks/useTableColumns.tsx'
+import DataTable from '../../components/DataTable.tsx'
+import { categoryTable } from '../../components/DataTable/hubRow.ts'
+import type { HubSource } from '../../components/DataTable/hubRow.ts'
 
+// Only the first page is rendered into the document; the rest arrives from
+// public/hubData/<slug>.json (generateHubData.ts). Serializing whole categories as
+// island props made this page 43MB for bacteria and showed a spinner until all of
+// it had parsed.
 export async function getStaticPaths() {
   const modules = import.meta.glob('../../../processedHubJson/*.json')
   const paths = await Promise.all(
     Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = (await resolver()) as { default: RowData[] }
+      const { default: data } = (await resolver()) as { default: HubSource[] }
       const slug = filepath.split('/').pop()!.replace('.json', '')
       return slug !== 'all'
-        ? {
-            params: { slug },
-            props: { rows: data },
-          }
+        ? { params: { slug }, props: { table: categoryTable(slug, data) } }
         : undefined
     }),
   )
@@ -22,7 +24,7 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params
-const { rows } = Astro.props
+const { table } = Astro.props
 
 const title = slug.charAt(0).toUpperCase() + slug.slice(1)
 ---
@@ -38,8 +40,8 @@ const title = slug.charAt(0).toUpperCase() + slug.slice(1)
         View taxonomy tree for GenArk {title}
       </a>
     </div>
-    <ClientOnlyDataTable
-      rows={rows}
+    <DataTable
+      {...table}
       client:load
     />
   </Container>

@@ -7,6 +7,7 @@ interface TableOptionsProps {
   setFilterOption: (option: string) => void
   showAllColumns: boolean
   setShowAllColumns: (show: boolean) => void
+  disabled?: boolean
 }
 
 export default function TableOptions({
@@ -14,6 +15,7 @@ export default function TableOptions({
   setFilterOption,
   showAllColumns,
   setShowAllColumns,
+  disabled = false,
 }: TableOptionsProps) {
   return (
     <div>
@@ -29,6 +31,7 @@ export default function TableOptions({
               type="radio"
               name="databaseFilter"
               value={key}
+              disabled={disabled}
               checked={filterOption === key}
               onChange={() => {
                 setFilterOption(key)
@@ -48,6 +51,7 @@ export default function TableOptions({
             type="radio"
             name="columnVisibility"
             checked={!showAllColumns}
+            disabled={disabled}
             onChange={() => {
               setShowAllColumns(false)
             }}
@@ -63,6 +67,7 @@ export default function TableOptions({
             type="radio"
             name="columnVisibility"
             checked={showAllColumns}
+            disabled={disabled}
             onChange={() => {
               setShowAllColumns(true)
             }}

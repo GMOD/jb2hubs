@@ -1,14 +1,17 @@
 ---
 import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
 import '../styles/global.css'
 
 interface Props {
   title?: string
   description?: string
   frontmatter?: { title?: string; description?: string }
+  // schema.org JSON-LD for the page, emitted verbatim.
+  jsonLd?: object
 }
 
-const { frontmatter, title, description } = Astro.props
+const { frontmatter, title, description, jsonLd } = Astro.props
 const pageTitle = title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'
 const pageDescription = description ?? frontmatter?.description
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
@@ -81,11 +84,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
       property="og:image"
       content="/1.png"
     />
+    {
+      jsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
   </head>
   <body>
     <Header />
     <main>
       <slot />
     </main>
+    <Footer />
   </body>
 </html>

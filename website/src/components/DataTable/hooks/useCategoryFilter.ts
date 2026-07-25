@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 
 import { useUrlState } from '../../../hooks/useUrlState.ts'
+import { IS_REFERENCE, IS_SUPPRESSED } from '../hubRow.ts'
 import { filterCategories } from '../utils/filterCategories.ts'
 import { notEmpty } from '../utils.ts'
 
-import type { RowData } from './useTableColumns.tsx'
+import type { RowData } from '../hubRow.ts'
 
 export function useCategoryFilter(rows: RowData[]) {
   const [raw, setRaw] = useUrlState('filter', 'all')
@@ -18,11 +19,9 @@ export function useCategoryFilter(rows: RowData[]) {
       case 'genbank':
         return validRows.filter(r => r.accession.startsWith('GCA_'))
       case 'designatedReference':
-        return validRows.filter(
-          r => r.ncbiRefSeqCategory === 'reference genome',
-        )
+        return validRows.filter(r => r.ncbiStatus & IS_REFERENCE)
       case 'hidesuppressed':
-        return validRows.filter(r => !r.suppressed)
+        return validRows.filter(r => !(r.ncbiStatus & IS_SUPPRESSED))
       default:
         return validRows
     }

@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import hprcSamples from '../../hprcSamples.json'
 import { features } from '../../config/features.ts'
+import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
 import { graphBrowserUrl } from '../../components/pangenomeLinks.ts'
 import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
 import '../../styles/common-table.css'
@@ -183,14 +184,14 @@ const pangenomeGraphs = [
               <td>{s.hap1?.year ?? s.hap2?.year ?? ''}</td>
               <td>
                 {s.hap1 ? (
-                  <a href={s.hap1.jbrowseLink}>{s.hap1.accession}</a>
+                  <a href={retargetJbrowseUrl(s.hap1.jbrowseLink)}>{s.hap1.accession}</a>
                 ) : (
                   '—'
                 )}
               </td>
               <td>
                 {s.hap2 ? (
-                  <a href={s.hap2.jbrowseLink}>{s.hap2.accession}</a>
+                  <a href={retargetJbrowseUrl(s.hap2.jbrowseLink)}>{s.hap2.accession}</a>
                 ) : (
                   '—'
                 )}

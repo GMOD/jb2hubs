@@ -19,10 +19,12 @@ import { deflate } from 'pako-esm2'
 
 import { mergeConfig } from './jbrowseLinks.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
+import { JBROWSE_BASE } from '../config/jbrowse.ts'
 
-// webgl-poc merged into main, so the hosted build now bundles the msaview +
-// protein3d plugins and reads params from the URL hash.
-const JBROWSE = 'https://jbrowse.org/code/jb2/main'
+// This view needs a build that bundles the msaview + protein3d plugins and reads
+// params from the URL hash — true of `main` since webgl-poc merged. It is why
+// /protein-browser stays staging-gated (config/features.ts), where JBROWSE_BASE
+// resolves to `main`.
 const UNIPROT = 'https://rest.uniprot.org/uniprotkb'
 
 export interface Exon {
@@ -465,6 +467,6 @@ export function buildSessionUrl({
       : {}),
   }
   const config = mergeConfig([assemblyAccession])
-  const url = `${JBROWSE}/#config=${encodeURIComponent(config)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
+  const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(config)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
   return { session, url }
 }

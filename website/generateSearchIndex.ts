@@ -17,6 +17,7 @@ interface HubRecord {
   assemblyStatus: string | null
   source: string | null
   taxonId: number | null
+  seqReleaseDate?: string | null
   ncbiRefSeqCategory?: string | null
   suppressed?: boolean | null
 }
@@ -25,17 +26,78 @@ interface UcscGenome {
   organism: string | null
   scientificName: string | null
   description: string | null
+  sourceName?: string | null
+  orderKey?: number | null
   id: string | null
   taxId: number | null
 }
 
 const allHubs: HubRecord[] = JSON.parse(fs.readFileSync(allHubsPath, 'utf-8'))
 const list = JSON.parse(fs.readFileSync(listPath, 'utf-8'))
+const ucscGenomes = list.ucscGenomes as Record<string, UcscGenome>
+
+// Assemblies are overwhelmingly disambiguated by their year — a query for "mouse"
+// must not rank mm7 (2005) alongside mm39 (2020) — so every row carries one.
+function yearOf(text: string | null | undefined) {
+  const match = /\b(?:19|20)\d{2}\b/.exec(text ?? '')
+  return match ? Number(match[0]) : 0
+}
+
+// UCSC packs "<date> (<assembly>/<db>)" into `description`, e.g.
+// "Dec. 2013 (GRCh38/hg38)". The assembly name is the last parenthetical up to
+// its final slash, which also covers the dateless viral entries
+// ("MPXV-… (MT903340.1/GCF_014621545.1)" -> MT903340.1).
+function ucscAssemblyName(description: string | null | undefined) {
+  // The trailing [^(]* anchors this to the *last* parenthetical.
+  const inner = /\(([^)]*)\)[^(]*$/.exec(description ?? '')?.[1] ?? ''
+  const slash = inner.lastIndexOf('/')
+  return slash > 0 ? inner.slice(0, slash) : inner
+}
+
+// UCSC's own `orderKey` ranks every db it serves in one global list, so it is
+// only meaningful within a species. Densify it per organism into 1 = the db UCSC
+// puts first (hs1 for human, mm39 for mouse), which is what the search needs as
+// a last-resort tiebreak between same-year dbs. 0 means "unranked" (GenArk).
+function buildUcscRanks() {
+  const byOrganism = new Map<string, { db: string; orderKey: number }[]>()
+  for (const [db, genome] of Object.entries(ucscGenomes)) {
+    const organism = genome.organism ?? db
+    const group = byOrganism.get(organism) ?? []
+    group.push({ db, orderKey: genome.orderKey ?? Number.MAX_SAFE_INTEGER })
+    byOrganism.set(organism, group)
+  }
+  const ranks = new Map<string, number>()
+  for (const group of byOrganism.values()) {
+    group.sort((a, b) => a.orderKey - b.orderKey)
+    group.forEach(({ db }, i) => ranks.set(db, i + 1))
+  }
+  return ranks
+}
+
+const ucscRanks = buildUcscRanks()
 
 // Compact format: array of arrays to avoid repeating key names 50K times
-// [accession, commonName, scientificName, ncbiAssemblyName, assemblyStatus, source, taxonId, ncbiStatus]
+// [accession, commonName, scientificName, assemblyName, assemblyStatus, source,
+//  taxonId, ncbiStatus, year, rank, altAccession]
 // ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
-const index = allHubs
+// rank: UCSC's preference order within the species (1 = first), 0 = unranked
+// altAccession: for a UCSC db, the GC[AF] accession its sourceName records, so
+//               the db is reachable by accession search; '' for GenArk
+type Entry = [
+  string,
+  string,
+  string,
+  string,
+  string,
+  string,
+  number,
+  number,
+  number,
+  number,
+  string,
+]
+
+const index: Entry[] = allHubs
   .filter(h => h.accession)
   .map(h => {
     let ncbiStatus = 0
@@ -54,21 +116,29 @@ const index = allHubs
       h.source ?? '',
       h.taxonId ?? 0,
       ncbiStatus,
+      // GenArk rows carry an ISO release date; commonName repeats the year in a
+      // parenthetical ("aardvark (SDZICR_OR568_19922 2012 Broad)") for the few
+      // that don't.
+      yearOf(h.seqReleaseDate) || yearOf(h.commonName),
+      0,
+      '',
     ]
   })
 
 // Add UCSC genomes (hg38, mm39, etc.)
-const ucscGenomes = list.ucscGenomes as Record<string, UcscGenome>
 for (const [id, genome] of Object.entries(ucscGenomes)) {
   index.push([
     id,
     genome.organism ?? '',
     genome.scientificName ?? '',
-    genome.description ?? '',
+    ucscAssemblyName(genome.description),
     '',
     'ucsc',
     genome.taxId ?? 0,
     0,
+    yearOf(genome.description),
+    ucscRanks.get(id) ?? 0,
+    /GC[AF]_\d+(?:\.\d+)?/.exec(genome.sourceName ?? '')?.[0] ?? '',
   ])
 }
 

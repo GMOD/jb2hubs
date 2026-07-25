@@ -8,6 +8,7 @@ interface PaginationProps {
   rowsOnPage: number
   onPageChange: (index: number) => void
   onPageSizeChange: (size: number) => void
+  disabled?: boolean
 }
 
 export default function Pagination({
@@ -18,6 +19,7 @@ export default function Pagination({
   rowsOnPage,
   onPageChange,
   onPageSizeChange,
+  disabled = false,
 }: PaginationProps) {
   return (
     <div className={styles.paginationContainer}>
@@ -26,7 +28,7 @@ export default function Pagination({
         onClick={() => {
           onPageChange(0)
         }}
-        disabled={pageIndex === 0}
+        disabled={disabled || pageIndex === 0}
         aria-label="First page"
       >
         {'<<'}
@@ -36,7 +38,7 @@ export default function Pagination({
         onClick={() => {
           onPageChange(pageIndex - 1)
         }}
-        disabled={pageIndex === 0}
+        disabled={disabled || pageIndex === 0}
         aria-label="Previous page"
       >
         {'<'}
@@ -52,7 +54,7 @@ export default function Pagination({
         onClick={() => {
           onPageChange(pageIndex + 1)
         }}
-        disabled={pageIndex >= pageCount - 1}
+        disabled={disabled || pageIndex >= pageCount - 1}
         aria-label="Next page"
       >
         {'>'}
@@ -62,7 +64,7 @@ export default function Pagination({
         onClick={() => {
           onPageChange(pageCount - 1)
         }}
-        disabled={pageIndex >= pageCount - 1}
+        disabled={disabled || pageIndex >= pageCount - 1}
         aria-label="Last page"
       >
         {'>>'}
@@ -76,6 +78,7 @@ export default function Pagination({
             onPageSizeChange(Number(e.target.value))
           }}
           className={styles.pageSizeSelect}
+          disabled={disabled}
         >
           <option value={100}>100</option>
           <option value={200}>200</option>

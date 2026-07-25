@@ -1,24 +1,15 @@
 import { useMemo } from 'react'
 
 import styles from './useTableColumns.module.css'
+import { genarkConfigPath, jbrowseUrl } from '../../../config/jbrowse.ts'
 import OrangeStar from '../../OrangeStar.tsx'
 import RedX from '../../RedX.tsx'
+import { IS_REFERENCE, IS_SUPPRESSED } from '../hubRow.ts'
 import { statusOrder } from '../utils.ts'
 
-export interface RowData {
-  commonName: string
-  accession: string
-  ncbiRefSeqCategory: string
-  suppressed: boolean
-  jbrowseLink: string
-  assemblyStatus: string
-  seqReleaseDate: string
-  scientificName: string
-  ncbiAssemblyName: string
-  taxonId: string
-  submitterOrg: string
-  _searchText?: string
-}
+import type { RowData } from '../hubRow.ts'
+
+export type { RowData }
 
 export interface ColumnDef {
   id: string
@@ -52,21 +43,17 @@ export function useTableColumns({
         id: 'ncbiStatus',
         header: 'NCBI status',
         enableSorting: true,
+        // Reference genomes first, suppressed last.
         sortValue: row => {
-          if (row.ncbiRefSeqCategory === 'reference genome') {
+          if (row.ncbiStatus & IS_REFERENCE) {
             return 2
           }
-          if (row.suppressed) {
-            return 0
-          }
-          return 1
+          return row.ncbiStatus & IS_SUPPRESSED ? 0 : 1
         },
         cell: row => (
           <>
-            {row.ncbiRefSeqCategory === 'reference genome' ? (
-              <OrangeStar />
-            ) : null}
-            {row.suppressed ? <RedX /> : null}
+            {row.ncbiStatus & IS_REFERENCE ? <OrangeStar /> : null}
+            {row.ncbiStatus & IS_SUPPRESSED ? <RedX /> : null}
           </>
         ),
       },
@@ -74,7 +61,9 @@ export function useTableColumns({
         id: 'jbrowseLink',
         header: 'JBrowse',
         enableSorting: false,
-        cell: row => <a href={row.jbrowseLink}>JBrowse</a>,
+        cell: row => (
+          <a href={jbrowseUrl(genarkConfigPath(row.accession))}>JBrowse</a>
+        ),
       },
       {
         id: 'assemblyStatus',
@@ -119,11 +108,7 @@ export function useTableColumns({
         enableSorting: true,
         sortValue: row => row.taxonId,
         meta: { extra: true },
-        cell: row => (
-          <a href={`https://genomes.jbrowse.org/taxonomy/${row.taxonId}/`}>
-            {row.taxonId}
-          </a>
-        ),
+        cell: row => <a href={`/taxonomy/${row.taxonId}`}>{row.taxonId}</a>,
       },
       {
         id: 'submitterOrg',

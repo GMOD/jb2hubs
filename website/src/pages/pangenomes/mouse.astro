@@ -4,6 +4,7 @@ import Container from '../../components/Container.astro'
 import mouseStrains from '../../mouseStrains.json'
 import ensemblMouseStrains from '../../ensemblMouseStrains.json'
 import { features } from '../../config/features.ts'
+import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
 
@@ -87,7 +88,7 @@ if (!features.pangenome) {
               </td>
               <td>{strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}</td>
               <td>
-                <a href={strain.jbrowseLink}>JBrowse</a>
+                <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
               </td>
             </tr>
           ))
@@ -122,7 +123,7 @@ if (!features.pangenome) {
               <td>{strain.organism}</td>
               <td>{strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}</td>
               <td>
-                <a href={strain.jbrowseLink}>JBrowse</a>
+                <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
               </td>
             </tr>
           ))
