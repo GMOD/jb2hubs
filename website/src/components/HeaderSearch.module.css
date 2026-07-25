@@ -1,0 +1,111 @@
+.form {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.icon {
+  position: absolute;
+  left: 8px;
+  color: #666;
+  pointer-events: none;
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  padding: 5px 8px 5px 30px;
+  font: inherit;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+
+.input:focus {
+  border-color: #0b69d4;
+  outline: none;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.list {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  /* Wider than the input, which is too narrow for an accession plus an assembly
+     name; anchored on the left so it still lines up with the box. */
+  min-width: 24rem;
+  max-width: 90vw;
+  max-height: 70vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  background: white;
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  z-index: 300;
+}
+
+.option {
+  display: block;
+  padding: 4px 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.option.on {
+  background: #f0f4fa;
+}
+
+.title {
+  display: block;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  display: block;
+  font-size: 0.75rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empty {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.allResults {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  margin-top: 4px;
+  border: none;
+  border-top: 1px solid #e7e7e7;
+  background: none;
+  font: inherit;
+  font-size: 0.8rem;
+  color: #0b69d4;
+  text-align: left;
+  cursor: pointer;
+}
+
+.allResults:hover {
+  background: #f5f5f5;
+}

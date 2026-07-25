@@ -18,9 +18,14 @@ export type IndexEntry = [
   string, // altAccession: the GC[AF] accession of a UCSC db, '' for GenArk
 ]
 
-export function useSearchIndex() {
+// `enabled` gates the fetch, so a component that only sometimes needs the index
+// (the header typeahead, which is on every page) can defer the several-megabyte
+// download until the user actually engages with it. The SWR key is shared, so a
+// page that loads the index eagerly and one that defers it hit the same cache
+// entry and download it once.
+export function useSearchIndex(enabled = true) {
   const { data, isLoading } = useSWRImmutable(
-    '/searchIndex.json',
+    enabled ? '/searchIndex.json' : null,
     fetchJson<IndexEntry[]>,
   )
   return { index: data ?? [], loading: isLoading }
