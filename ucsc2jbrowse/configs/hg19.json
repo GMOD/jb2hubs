@@ -34,9 +34,6 @@
           "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.chrom.sizes"
         }
       },
-      "geneticCodes": {
-        "chrM": 2
-      },
       "refNameAliases": {
         "adapter": {
           "type": "RefNameAliasAdapter",
@@ -48,6 +45,9 @@
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -306,7 +306,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinGenHaplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'name')+'<br> <b>Haploinsufficiency score</b>: '+get(feature,'haploScore')+'<br> <b>Dosage Sensitivity Evidence</b>: '+get(feature,'haploDescription')"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Haploinsufficiency score</b>: ${get(feature,'haploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'haploDescription')}`"
         }
       ]
     },
@@ -580,7 +580,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-dgvMerged-LinearBasicDisplay",
-          "mouseover": "jexl:'ID:'+get(feature,'name')+'; Position; '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'; Size:'+get(feature,'_size')+'; Type:'+get(feature,'varType')+'; Affected genes:'+get(feature,'genes')"
+          "mouseover": "jexl:`ID:${get(feature,'name')}; Position; ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}; Size:${get(feature,'_size')}; Type:${get(feature,'varType')}; Affected genes:${get(feature,'genes')}`"
         }
       ]
     },
@@ -1044,7 +1044,7 @@
           "labels": {
             "name": "jexl:get(feature,'variant')"
           },
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Variant</b>: '+get(feature,'variant')+'<br> <b>Primary Phenotype</b>: '+get(feature,'primaryPhenotype')+'<br> <b>Validation</b>: '+get(feature,'validation')+'<br> <b>Transcript</b>: '+get(feature,'transcript')"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Variant</b>: ${get(feature,'variant')}<br> <b>Primary Phenotype</b>: ${get(feature,'primaryPhenotype')}<br> <b>Validation</b>: ${get(feature,'validation')}<br> <b>Transcript</b>: ${get(feature,'transcript')}`"
         }
       ]
     },
@@ -1090,7 +1090,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -1129,7 +1129,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-pHaplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>pHaplo</b>: '+get(feature,'pHaplo')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensGene')"
+          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`"
         }
       ]
     },
@@ -1423,7 +1423,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinGenTriplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'name')+'<br> <b>Triplosensitivity score</b>: '+get(feature,'triploScore')+'<br> <b>Dosage Sensitivity Evidence</b>: '+get(feature,'triploDescription')"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Triplosensitivity score</b>: ${get(feature,'triploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'triploDescription')}`"
         }
       ]
     },
@@ -1614,7 +1614,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-dgvSupporting-LinearBasicDisplay",
-          "mouseover": "jexl:'ID:'+get(feature,'name')+'; Position; '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'; Size:'+get(feature,'_size')+'; Type:'+get(feature,'varType')+'; Affected genes:'+get(feature,'genes')"
+          "mouseover": "jexl:`ID:${get(feature,'name')}; Position; ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}; Size:${get(feature,'_size')}; Type:${get(feature,'varType')}; Affected genes:${get(feature,'genes')}`"
         }
       ]
     },
@@ -2219,7 +2219,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-pTriplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>pTriplo</b>: '+get(feature,'pTriplo')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensGene')"
+          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`"
         }
       ]
     },
@@ -2355,7 +2355,7 @@
           "labels": {
             "name": "jexl:get(feature,'variant')"
           },
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Variant</b>: '+get(feature,'variant')+'<br> <b>Primary Phenotype</b>: '+get(feature,'primaryPhenotype')+'<br> <b>Validation</b>: '+get(feature,'validation')+'<br> <b>Transcript</b>: '+get(feature,'transcript')"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Variant</b>: ${get(feature,'variant')}<br> <b>Primary Phenotype</b>: ${get(feature,'primaryPhenotype')}<br> <b>Validation</b>: ${get(feature,'validation')}<br> <b>Transcript</b>: ${get(feature,'transcript')}`"
         }
       ]
     },
@@ -2395,7 +2395,7 @@
           "labels": {
             "name": "jexl:get(feature,'gene')"
           },
-          "mouseover": "jexl:get(feature,'gene')+' '+get(feature,'name')+' '+get(feature,'rsId')+' Genotype: '+get(feature,'genotype')+'; Zygosity: '+get(feature,'zygo')+' ; Inheritance: '+get(feature,'inhMode')"
+          "mouseover": "jexl:`${get(feature,'gene')} ${get(feature,'name')} ${get(feature,'rsId')} Genotype: ${get(feature,'genotype')}; Zygosity: ${get(feature,'zygo')} ; Inheritance: ${get(feature,'inhMode')}`"
         }
       ]
     },
@@ -2499,7 +2499,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinGenGeneDisease-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'geneSymbol')+'<br> <b>Disease(s)</b>: '+get(feature,'name')+'<br> <b>Classification</b>: '+get(feature,'Classification')"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`"
         }
       ]
     },
@@ -2951,7 +2951,7 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene name:</b> '+get(feature,'geneName')+'<br><b>Panel:</b> '+get(feature,'name')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -3060,7 +3060,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipLocSignal-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -3258,7 +3258,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipLocExtra-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -3293,7 +3293,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipInterest-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -3594,7 +3594,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -3978,7 +3978,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipLocTransMemb-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4014,7 +4014,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipLocCytopl-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4136,7 +4136,7 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene name:</b> '+get(feature,'geneName')+'<br><b>Panel:</b> '+get(feature,'name')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -4270,7 +4270,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipChain-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4429,7 +4429,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipDisulfBond-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4464,7 +4464,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipDomain-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4599,7 +4599,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipModif-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4741,7 +4741,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-mtrBed-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'ref')+'>'+get(feature,'alt')+' '+get(feature,'MTR')+' '+get(feature,'MTR_centile')"
+          "mouseover": "jexl:`${get(feature,'ref')}>${get(feature,'alt')} ${get(feature,'MTR')} ${get(feature,'MTR_centile')}`"
         }
       ]
     },
@@ -4857,7 +4857,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipMut-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4943,7 +4943,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipOther-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -4979,7 +4979,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipStruct-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -5065,7 +5065,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipRepeat-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -5151,7 +5151,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-unipConflict-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -5301,7 +5301,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-abSplice-LinearBasicDisplay",
-          "mouseover": "jexl:'change: '+get(feature,'name')+' <br> gene: '+get(feature,'ENSGid')+' <br> max score: '+get(feature,'spliceABscore')+' <br> '+get(feature,'maxScore')"
+          "mouseover": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`"
         }
       ]
     },
@@ -5338,7 +5338,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-avada-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Variant</b>: '+get(feature,'variant')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensId')+'<br> <b>Title of Publication</b>: '+get(feature,'title')+'<br> <b>Reference</b>: '+get(feature,'ref')+'<br> <b>Authors</b>: '+get(feature,'authors')+'<br> <b>Pubmed ID</b>: '+get(feature,'pmid')"
+          "mouseover": "jexl:`<b>Variant</b>: ${get(feature,'variant')}<br> <b>Ensembl ID</b>: ${get(feature,'ensId')}<br> <b>Title of Publication</b>: ${get(feature,'title')}<br> <b>Reference</b>: ${get(feature,'ref')}<br> <b>Authors</b>: ${get(feature,'authors')}<br> <b>Pubmed ID</b>: ${get(feature,'pmid')}`"
         }
       ]
     },
@@ -5374,7 +5374,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-caddDel-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -5410,7 +5410,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-caddIns-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -5446,7 +5446,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-cadd1_7_Del-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -5482,7 +5482,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-cadd1_7_Ins-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -5547,7 +5547,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-clinGenCspec-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Disease:</b> '+get(feature,'disease')+' <br><b>Panel:</b> '+get(feature,'panel')+' <br><b>Status:</b> '+get(feature,'status')"
+          "mouseover": "jexl:`<b>Disease:</b> ${get(feature,'disease')} <br><b>Panel:</b> ${get(feature,'panel')} <br><b>Status:</b> ${get(feature,'status')}`"
         }
       ]
     },
@@ -5630,7 +5630,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-dgvGold-LinearBasicDisplay",
-          "mouseover": "jexl:'ID:'+get(feature,'name')+'; Position; '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'; Type:'+get(feature,'variant_sub_type')+'; Frequency:'+get(feature,'Frequency')"
+          "mouseover": "jexl:`ID:${get(feature,'name')}; Position; ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}; Type:${get(feature,'variant_sub_type')}; Frequency:${get(feature,'Frequency')}`"
         }
       ]
     },
@@ -5706,7 +5706,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-g2p-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>G2P ID:</b> '+get(feature,'g2p_id')+' <br> <b>Variant Consequence:</b> '+get(feature,'variant_consequence')+' <br> <b>Disease Name:</b> '+get(feature,'disease_name')+' <br> <b>Pubmed IDs:</b> '+get(feature,'publications')+' <br> <b>Molecular Mechanism:</b> '+get(feature,'molecular_mechanism')+' <br> <b>Allelic Requirements:</b> '+get(feature,'allelic_requirement')+' <br> <b>Date of Last Review:</b> '+get(feature,'date_of_last_review')"
+          "mouseover": "jexl:`<b>G2P ID:</b> ${get(feature,'g2p_id')} <br> <b>Variant Consequence:</b> ${get(feature,'variant_consequence')} <br> <b>Disease Name:</b> ${get(feature,'disease_name')} <br> <b>Pubmed IDs:</b> ${get(feature,'publications')} <br> <b>Molecular Mechanism:</b> ${get(feature,'molecular_mechanism')} <br> <b>Allelic Requirements:</b> ${get(feature,'allelic_requirement')} <br> <b>Date of Last Review:</b> ${get(feature,'date_of_last_review')}`"
         }
       ]
     },
@@ -5743,7 +5743,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-genCC-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Disease title:</b> '+get(feature,'disease_title')+'<br><b>Classification:</b> '+get(feature,'classification_title')+'<br><b>MOI:</b> '+get(feature,'moi_title')+'<br><b>Submitter:</b> '+get(feature,'sub_submitter_name')"
+          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`"
         }
       ]
     },
@@ -5809,7 +5809,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-geneReviews-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>Count</b>: '+get(feature,'diseaseCount')+'<br> <b>Disease(s)</b>: '+get(feature,'diseases')+'<br>'"
+          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>Count</b>: ${get(feature,'diseaseCount')}<br> <b>Disease(s)</b>: ${get(feature,'diseases')}<br>`"
         }
       ]
     },
@@ -5865,7 +5865,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:'Position: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+'); Genes: '+get(feature,'genes')+'; Type: '+get(feature,'annot')+'; Tag: '+get(feature,'FILTER')+'; Allele Frequency: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')'"
+          "mouseover": "jexl:`Position: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')}); Genes: ${get(feature,'genes')}; Type: ${get(feature,'annot')}; Tag: ${get(feature,'FILTER')}; Allele Frequency: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})`"
         }
       ]
     },
@@ -5918,7 +5918,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:'Position: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+'); Genes: '+get(feature,'genes')+'; Type: '+get(feature,'annot')+'; Tag: '+get(feature,'FILTER')+'; Allele Frequency: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')'"
+          "mouseover": "jexl:`Position: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')}); Genes: ${get(feature,'genes')}; Type: ${get(feature,'annot')}; Tag: ${get(feature,'FILTER')}; Allele Frequency: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})`"
         }
       ]
     },
@@ -5953,7 +5953,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-gnomadMpc-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Transcript:</b> '+get(feature,'trans')+'<br><b>Obs/Exp (OE):</b> '+get(feature,'oe')+'<br><b>Chi-square:</b> '+get(feature,'chisq')+'<br><b>P-val:</b> '+get(feature,'pval')"
+          "mouseover": "jexl:`<b>Transcript:</b> ${get(feature,'trans')}<br><b>Obs/Exp (OE):</b> ${get(feature,'oe')}<br><b>Chi-square:</b> ${get(feature,'chisq')}<br><b>P-val:</b> ${get(feature,'pval')}`"
         }
       ]
     },
@@ -5987,7 +5987,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-decipherHaploIns-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'name')+', HI: '+get(feature,'quantile')"
+          "mouseover": "jexl:`${get(feature,'name')}, HI: ${get(feature,'quantile')}`"
         }
       ]
     },
@@ -6070,7 +6070,7 @@
           "labels": {
             "name": "jexl:get(feature,'symbol')"
           },
-          "mouseover": "jexl:'<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+get(feature,'symbol')+'\">'+get(feature,'symbol')+'</a><br> <b>ID</b>: '+get(feature,'name')+'<br> <b>Alias symbol</b>: '+get(feature,'alias_symbol')+'<br> <b>Previous symbols</b>: '+get(feature,'prev_symbol')"
+          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`"
         }
       ]
     },
@@ -6208,7 +6208,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-orphadata-LinearBasicDisplay",
-          "mouseover": "jexl:'Gene: '+get(feature,'geneSymbol')+', Disorder: '+get(feature,'disorder')+', Inheritance(s): '+get(feature,'inheritance')+', Onset: '+get(feature,'onsetList')"
+          "mouseover": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`"
         }
       ]
     },
@@ -6244,7 +6244,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-pubtator-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'name')+' found in '+get(feature,'numPubmedIds')+' PubMed articles'"
+          "mouseover": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`"
         }
       ]
     },
@@ -6347,7 +6347,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-varaico-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'hgncSymbol')+' '+get(feature,'variantOrigStrs')+'</b> in: '+get(feature,'author')+' ('+get(feature,'journal')+', '+get(feature,'year')+') - '+get(feature,'title')+' <br> <b>Number of publications:</b> '+get(feature,'articlesCount')+' <br> <b>Variant Effect:</b> '+get(feature,'variantEffect')"
+          "mouseover": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
         }
       ]
     },
@@ -6384,7 +6384,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-varaicoSuppl-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'hgncSymbol')+' '+get(feature,'variantOrigStrs')+'</b> in: '+get(feature,'author')+' ('+get(feature,'journal')+', '+get(feature,'year')+') - '+get(feature,'title')+' <br> <b>Number of publications:</b> '+get(feature,'articlesCount')+' <br> <b>Variant Effect:</b> '+get(feature,'variantEffect')"
+          "mouseover": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
         }
       ]
     },
@@ -9825,24 +9825,6 @@
       },
       "description": "Exoniphy Human/Mouse/Rat/Dog",
       "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg19-hg19",
-      "name": "hg19",
-      "assemblyNames": ["hg19"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "hg19.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "hg19.gff.gz.csi"
-          }
-        }
-      }
     },
     {
       "type": "FeatureTrack",

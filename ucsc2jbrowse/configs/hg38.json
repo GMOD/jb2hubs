@@ -874,7 +874,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenHaplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'name')+'<br> <b>Haploinsufficiency score</b>: '+get(feature,'haploScore')+'<br> <b>Dosage Sensitivity Evidence</b>: '+get(feature,'haploDescription')"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Haploinsufficiency score</b>: ${get(feature,'haploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'haploDescription')}`"
         }
       ]
     },
@@ -1022,7 +1022,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-colorsDbSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AF</b>: '+get(feature,'AF')+'<br><b>AC</b>: '+get(feature,'AC')+'/'+get(feature,'AN')+' (Hom '+get(feature,'acHom')+', Het '+get(feature,'acHet')+', Hemi '+get(feature,'acHemi')+')<br><b>Samples</b>: '+get(feature,'NS')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')} (Hom ${get(feature,'acHom')}, Het ${get(feature,'acHet')}, Hemi ${get(feature,'acHemi')})<br><b>Samples</b>: ${get(feature,'NS')}`"
         }
       ]
     },
@@ -1238,7 +1238,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-dgvMerged-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>ID</b>: '+get(feature,'name')+'<br> <b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Size</b>: '+get(feature,'_size')+'<br> <b>Type</b>: '+get(feature,'varType')"
+          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
         }
       ]
     },
@@ -1276,7 +1276,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cCREregistry-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=GRCh38&accessions='+get(feature,'name')+'\">'+get(feature,'name')+'</a><br><b>Class:</b> '+get(feature,'cCRE_class')+'<br><b>DNase Max-Z:</b> '+get(feature,'DNase_maxZ')+'<br><b>H3K4me3 Max-Z:</b> '+get(feature,'H3K4me3_maxZ')+'<br><b>H3K27ac Max-Z:</b> '+get(feature,'H3K27ac_maxZ')+'<br><b>CTCF Max-Z:</b> '+get(feature,'CTCF_maxZ')"
+          "mouseover": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=GRCh38&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase Max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 Max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac Max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF Max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
         }
       ]
     },
@@ -1398,7 +1398,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneName')"
           },
-          "mouseover": "jexl:'LOEUF: '+get(feature,'_loeuf')+'<br> pLI: '+get(feature,'_pli')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'pLoF')"
+          "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`"
         }
       ]
     },
@@ -1454,7 +1454,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+')<br> <b>TotalAF</b>: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')<br> <b>Genes</b>: '+get(feature,'genes')+'<br> <b>Annotation</b>: '+get(feature,'annot')+'<br> <b>FILTER</b>: '+get(feature,'FILTER')+'<br> <b>PopMaxAF</b>: '+get(feature,'grpmax')+'<br> <b>Homozygous Individuals</b>: '+get(feature,'nhomalt')+'<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: '+get(feature,'nhemi')"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`"
         }
       ]
     },
@@ -1506,7 +1506,7 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:'<b>Split read count</b>: '+get(feature,'readcount')+'<br><b>Splice donor</b>: '+get(feature,'donor')+'<br><b>Splice acceptor</b>: '+get(feature,'acceptor')+'<br><b>Intron size</b>: '+get(feature,'size')+' bp<br><b>Strand</b>: '+get(feature,'strand')"
+          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
         }
       ]
     },
@@ -1550,7 +1550,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlCaviar-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'name')+'; CPP: '+get(feature,'cpp')"
+          "mouseover": "jexl:`${get(feature,'name')}; CPP: ${get(feature,'cpp')}`"
         }
       ]
     },
@@ -1731,7 +1731,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'<b>Element</b>: '+get(feature,'name')+'<br><b>Cell line</b>: '+get(feature,'cell_line')+'<br><b>Assay</b>: '+get(feature,'assay')+'<br><b>Raw score</b>: '+get(feature,'raw_score')+'<br><b>Percentile rank</b>: '+get(feature,'percentile_rank')+'<br><b>Citation</b>: '+get(feature,'citation')"
+          "mouseover": "jexl:`<b>Element</b>: ${get(feature,'name')}<br><b>Cell line</b>: ${get(feature,'cell_line')}<br><b>Assay</b>: ${get(feature,'assay')}<br><b>Raw score</b>: ${get(feature,'raw_score')}<br><b>Percentile rank</b>: ${get(feature,'percentile_rank')}<br><b>Citation</b>: ${get(feature,'citation')}`"
         }
       ]
     },
@@ -1811,7 +1811,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -1850,7 +1850,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pHaplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>pHaplo</b>: '+get(feature,'pHaplo')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensGene')"
+          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pHaplo</b>: ${get(feature,'pHaplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`"
         }
       ]
     },
@@ -1892,7 +1892,7 @@
           "labels": {
             "name": "jexl:get(feature,'hugo')"
           },
-          "mouseover": "jexl:'<b>Gene type</b>: '+get(feature,'geneType')+' <br> <b> ID</b>: '+get(feature,'name')+' <br> <b>Pseudogene position</b>: '+get(feature,'url')"
+          "mouseover": "jexl:`<b>Gene type</b>: ${get(feature,'geneType')} <br> <b> ID</b>: ${get(feature,'name')} <br> <b>Pseudogene position</b>: ${get(feature,'url')}`"
         }
       ]
     },
@@ -2465,7 +2465,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSv1kgOnt-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>Type</b>: '+get(feature,'insType')+'<br><b>Family</b>: '+get(feature,'family')+'<br><b>AC</b>: '+get(feature,'AC')+'<br><b>AF</b>: '+get(feature,'alleleFreq')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Type</b>: ${get(feature,'insType')}<br><b>Family</b>: ${get(feature,'family')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}`"
         }
       ]
     },
@@ -2528,7 +2528,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenTriplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'name')+'<br> <b>Triplosensitivity score</b>: '+get(feature,'triploScore')+'<br> <b>Dosage Sensitivity Evidence</b>: '+get(feature,'triploDescription')"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'name')}<br> <b>Triplosensitivity score</b>: ${get(feature,'triploScore')}<br> <b>Dosage Sensitivity Evidence</b>: ${get(feature,'triploDescription')}`"
         }
       ]
     },
@@ -2746,7 +2746,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-dgvSupporting-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>ID</b>: '+get(feature,'name')+'<br> <b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Size</b>: '+get(feature,'_size')+'<br> <b>Type</b>: '+get(feature,'varType')"
+          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size</b>: ${get(feature,'_size')}<br> <b>Type</b>: ${get(feature,'varType')}`"
         }
       ]
     },
@@ -2840,7 +2840,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'Z: '+get(feature,'_zscore')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'missense')"
+          "mouseover": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`"
         }
       ]
     },
@@ -2896,7 +2896,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+')<br> <b>TotalAF</b>: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')<br> <b>Genes</b>: '+get(feature,'genes')+'<br> <b>Annotation</b>: '+get(feature,'annot')+'<br> <b>FILTER</b>: '+get(feature,'FILTER')+'<br> <b>PopMaxAF</b>: '+get(feature,'grpmax')+'<br> <b>Homozygous Individuals</b>: '+get(feature,'nhomalt')+'<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: '+get(feature,'nhemi')"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>TotalAF</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>PopMaxAF</b>: ${get(feature,'grpmax')}<br> <b>Homozygous Individuals</b>: ${get(feature,'nhomalt')}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${get(feature,'nhemi')}`"
         }
       ]
     },
@@ -2941,7 +2941,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gtexEqtlDapg-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'name')+'; SNP PIP: '+get(feature,'pip')+'; Cluster PIP: '+get(feature,'clusterPip')"
+          "mouseover": "jexl:`${get(feature,'name')}; SNP PIP: ${get(feature,'pip')}; Cluster PIP: ${get(feature,'clusterPip')}`"
         }
       ]
     },
@@ -3191,7 +3191,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'<b>Variant</b>: '+get(feature,'name')+'<br><b>Ref/Alt</b>: '+get(feature,'ref')+'/'+get(feature,'alt')+'<br><b>Cell line</b>: '+get(feature,'cellLine')+'<br><b>Disease/Trait</b>: '+get(feature,'disease')+'<br><b>log2FC</b>: '+get(feature,'_mouseOverLog2FC')+'<br><b>p-value</b>: '+get(feature,'_mouseOverPvalue')+'<br><b>FDR</b>: '+get(feature,'_mouseOverFdr')"
+          "mouseover": "jexl:`<b>Variant</b>: ${get(feature,'name')}<br><b>Ref/Alt</b>: ${get(feature,'ref')}/${get(feature,'alt')}<br><b>Cell line</b>: ${get(feature,'cellLine')}<br><b>Disease/Trait</b>: ${get(feature,'disease')}<br><b>log2FC</b>: ${get(feature,'_mouseOverLog2FC')}<br><b>p-value</b>: ${get(feature,'_mouseOverPvalue')}<br><b>FDR</b>: ${get(feature,'_mouseOverFdr')}`"
         }
       ]
     },
@@ -3298,7 +3298,7 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -3340,7 +3340,7 @@
           "labels": {
             "name": "jexl:get(feature,'pgenehugo')"
           },
-          "mouseover": "jexl:'<b>Pseudogene type</b>: '+get(feature,'pgeneType')+' <br> <b>Parent gene ID</b>: '+get(feature,'parenthugo')+' <br> <b>Parent transcript ID</b>: '+get(feature,'enstxurl')"
+          "mouseover": "jexl:`<b>Pseudogene type</b>: ${get(feature,'pgeneType')} <br> <b>Parent gene ID</b>: ${get(feature,'parenthugo')} <br> <b>Parent transcript ID</b>: ${get(feature,'enstxurl')}`"
         }
       ]
     },
@@ -3379,7 +3379,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pTriplo-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>pTriplo</b>: '+get(feature,'pTriplo')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensGene')"
+          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>pTriplo</b>: ${get(feature,'pTriplo')}<br> <b>Ensembl ID</b>: ${get(feature,'ensGene')}`"
         }
       ]
     },
@@ -3581,7 +3581,7 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:'<b>Split read count</b>: '+get(feature,'readcount')+'<br><b>Splice donor</b>: '+get(feature,'donor')+'<br><b>Splice acceptor</b>: '+get(feature,'acceptor')+'<br><b>Intron size</b>: '+get(feature,'size')+' bp<br><b>Strand</b>: '+get(feature,'strand')"
+          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
         }
       ]
     },
@@ -3625,7 +3625,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'LOEUF: '+get(feature,'_loeuf')+'<br> pLI: '+get(feature,'_pli')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'pLoF')"
+          "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`"
         }
       ]
     },
@@ -3669,7 +3669,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'LOEUF: '+get(feature,'_loeuf')+'<br> pLI: '+get(feature,'_pli')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'pLoF')"
+          "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`"
         }
       ]
     },
@@ -3713,7 +3713,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'LOEUF: '+get(feature,'_loeuf')+'<br> pLI: '+get(feature,'_pli')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'pLoF')"
+          "mouseover": "jexl:`LOEUF: ${get(feature,'_loeuf')}<br> pLI: ${get(feature,'_pli')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}`"
         }
       ]
     },
@@ -3756,7 +3756,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'Z: '+get(feature,'_zscore')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'missense')"
+          "mouseover": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`"
         }
       ]
     },
@@ -3799,7 +3799,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'Z: '+get(feature,'_zscore')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'missense')"
+          "mouseover": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`"
         }
       ]
     },
@@ -3842,7 +3842,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'Z: '+get(feature,'_zscore')+'<br> '+get(feature,'synonymous')+'<br> '+get(feature,'missense')"
+          "mouseover": "jexl:`Z: ${get(feature,'_zscore')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}`"
         }
       ]
     },
@@ -3908,7 +3908,7 @@
           "labels": {
             "name": "jexl:get(feature,'gene')"
           },
-          "mouseover": "jexl:get(feature,'gene')+' '+get(feature,'name')+' '+get(feature,'rsId')+' Genotype: '+get(feature,'genotype')+'; Zygosity: '+get(feature,'zygo')+' ; Inheritance: '+get(feature,'inhMode')"
+          "mouseover": "jexl:`${get(feature,'gene')} ${get(feature,'name')} ${get(feature,'rsId')} Genotype: ${get(feature,'genotype')}; Zygosity: ${get(feature,'zygo')} ; Inheritance: ${get(feature,'inhMode')}`"
         }
       ]
     },
@@ -3958,7 +3958,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gustafsonSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AC</b>: '+get(feature,'AC')+'<br><b>Samples</b>: '+get(feature,'sampleCount')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`"
         }
       ]
     },
@@ -4030,7 +4030,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenGeneDisease-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene/ISCA ID</b>: '+get(feature,'geneSymbol')+'<br> <b>Disease(s)</b>: '+get(feature,'name')+'<br> <b>Classification</b>: '+get(feature,'Classification')"
+          "mouseover": "jexl:`<b>Gene/ISCA ID</b>: ${get(feature,'geneSymbol')}<br> <b>Disease(s)</b>: ${get(feature,'name')}<br> <b>Classification</b>: ${get(feature,'Classification')}`"
         }
       ]
     },
@@ -4337,7 +4337,7 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene name:</b> '+get(feature,'geneName')+'<br><b>Panel:</b> '+get(feature,'name')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -4451,7 +4451,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocSignal-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -4526,7 +4526,7 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:'<b>Split read count</b>: '+get(feature,'readcount')+'<br><b>Splice donor</b>: '+get(feature,'donor')+'<br><b>Splice acceptor</b>: '+get(feature,'acceptor')+'<br><b>Intron size</b>: '+get(feature,'size')+' bp<br><b>Strand</b>: '+get(feature,'strand')"
+          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
         }
       ]
     },
@@ -4671,7 +4671,7 @@
           "labels": {
             "name": "jexl:get(feature,'_displayName')"
           },
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+')<br> <b>rsId</b>: '+get(feature,'rsId')+'<br> <b>Genes</b>: '+get(feature,'genes')+'<br> <b>Annotation</b>: '+get(feature,'annot')+'<br> <b>FILTER</b>: '+get(feature,'FILTER')+'<br> <b>Var type</b>: '+get(feature,'variation_type')"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Annotation</b>: ${get(feature,'annot')}<br> <b>FILTER</b>: ${get(feature,'FILTER')}<br> <b>Var type</b>: ${get(feature,'variation_type')}`"
         }
       ]
     },
@@ -4725,7 +4725,7 @@
           "labels": {
             "name": "jexl:get(feature,'name')"
           },
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+' ('+get(feature,'ref')+'/'+get(feature,'alt')+')<br> <b>rsId</b>: '+get(feature,'rsId')+'<br> <b>Genes</b>: '+get(feature,'genes')+'<br> <b>Type</b>: '+get(feature,'annot')+'<br> <b>Tag</b>: '+get(feature,'FILTER')+'<br> <b>Allele Frequency</b>: '+get(feature,'AF')+' ('+get(feature,'AC')+'/'+get(feature,'AN')+')'"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')} (${get(feature,'ref')}/${get(feature,'alt')})<br> <b>rsId</b>: ${get(feature,'rsId')}<br> <b>Genes</b>: ${get(feature,'genes')}<br> <b>Type</b>: ${get(feature,'annot')}<br> <b>Tag</b>: ${get(feature,'FILTER')}<br> <b>Allele Frequency</b>: ${get(feature,'AF')} (${get(feature,'AC')}/${get(feature,'AN')})`"
         }
       ]
     },
@@ -4982,7 +4982,7 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:'<b>Split read count</b>: '+get(feature,'readcount')+'<br><b>Splice donor</b>: '+get(feature,'donor')+'<br><b>Splice acceptor</b>: '+get(feature,'acceptor')+'<br><b>Intron size</b>: '+get(feature,'size')+' bp<br><b>Strand</b>: '+get(feature,'strand')"
+          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
         }
       ]
     },
@@ -5044,7 +5044,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocExtra-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -5105,7 +5105,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipInterest-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -5270,7 +5270,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -6970,7 +6970,7 @@
           "labels": {
             "name": "jexl:get(feature,'entityName')"
           },
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'entityName')+'<br><b>Panel:</b> '+get(feature,'panelName')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'entityName')}<br><b>Panel:</b> ${get(feature,'panelName')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -7114,7 +7114,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocTransMemb-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -7226,7 +7226,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipLocCytopl-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -7296,7 +7296,7 @@
           "labels": {
             "name": "jexl:get(feature,'hgncSymbol')"
           },
-          "mouseover": "jexl:'<b>Gene name:</b> '+get(feature,'geneName')+'<br><b>Panel:</b> '+get(feature,'name')+'<br><b>MOI:</b> '+get(feature,'modeOfInheritance')+'<br><b>Phenotypes: </b> '+get(feature,'phenotypes')+'<br><b>Confidence level:</b> '+get(feature,'confidenceLevel')"
+          "mouseover": "jexl:`<b>Gene name:</b> ${get(feature,'geneName')}<br><b>Panel:</b> ${get(feature,'name')}<br><b>MOI:</b> ${get(feature,'modeOfInheritance')}<br><b>Phenotypes: </b> ${get(feature,'phenotypes')}<br><b>Confidence level:</b> ${get(feature,'confidenceLevel')}`"
         }
       ]
     },
@@ -7538,7 +7538,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipChain-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -7706,7 +7706,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipDisulfBond-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -7741,7 +7741,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipDomain-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -7903,7 +7903,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipModif-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -8122,7 +8122,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipMut-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -8163,7 +8163,7 @@
           "labels": {
             "name": "jexl:get(feature,'hugo')"
           },
-          "mouseover": "jexl:get(feature,'url')"
+          "mouseover": "jexl:`${get(feature,'url')}`"
         }
       ]
     },
@@ -8302,7 +8302,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipOther-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -8338,7 +8338,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipStruct-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -8449,7 +8449,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipRepeat-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -8533,7 +8533,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-unipConflict-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -8651,7 +8651,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-viennaVntr-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Avg motif:</b> '+get(feature,'ruLenAvg')+' bp <br> <b>Median repeat units:</b> '+get(feature,'medianRus')+' (range: '+get(feature,'minRus')+'-'+get(feature,'maxRus')+') <br> <b>Unique alleles:</b> '+get(feature,'numUniqueVntrs')+' <br> <b>Heterozygosity:</b> '+get(feature,'het')"
+          "mouseover": "jexl:`<b>Avg motif:</b> ${get(feature,'ruLenAvg')} bp <br> <b>Median repeat units:</b> ${get(feature,'medianRus')} (range: ${get(feature,'minRus')}-${get(feature,'maxRus')}) <br> <b>Unique alleles:</b> ${get(feature,'numUniqueVntrs')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`"
         }
       ]
     },
@@ -8692,7 +8692,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-abSplice-LinearBasicDisplay",
-          "mouseover": "jexl:'change: '+get(feature,'name')+' <br> gene: '+get(feature,'ENSGid')+' <br> max score: '+get(feature,'spliceABscore')+' <br> '+get(feature,'maxScore')"
+          "mouseover": "jexl:`change: ${get(feature,'name')} <br> gene: ${get(feature,'ENSGid')} <br> max score: ${get(feature,'spliceABscore')} <br> ${get(feature,'maxScore')}`"
         }
       ]
     },
@@ -8753,7 +8753,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-lrSvAll-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>Sources</b>: '+get(feature,'sources')+'<br><b>AF range</b>: '+get(feature,'minAF')+'-'+get(feature,'maxAF')+'<br><b>AC</b>: '+get(feature,'AC')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Sources</b>: ${get(feature,'sources')}<br><b>AF range</b>: ${get(feature,'minAF')}-${get(feature,'maxAF')}<br><b>AC</b>: ${get(feature,'AC')}`"
         }
       ]
     },
@@ -8808,7 +8808,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-aou1kSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AC (approx)</b>: '+get(feature,'AC')+'<br><b>AF (African)</b>: '+get(feature,'afAfr')+'<br><b>AF (European)</b>: '+get(feature,'afEur')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}`"
         }
       ]
     },
@@ -8857,7 +8857,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-aprSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AC</b>: '+get(feature,'AC')+'/'+get(feature,'alleleNumber')+'<br><b>AF</b>: '+get(feature,'alleleFreq')+'<br><b>Samples</b>: '+get(feature,'numSamples')+'<br><b>Alts</b>: '+get(feature,'numAlts')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`"
         }
       ]
     },
@@ -8894,7 +8894,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-avada-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Variant</b>: '+get(feature,'variant')+'<br> <b>Ensembl ID</b>: '+get(feature,'ensId')+'<br> <b>Title of Publication</b>: '+get(feature,'title')+'<br> <b>Reference</b>: '+get(feature,'ref')+'<br> <b>Authors</b>: '+get(feature,'authors')+'<br> <b>Pubmed ID</b>: '+get(feature,'pmid')"
+          "mouseover": "jexl:`<b>Variant</b>: ${get(feature,'variant')}<br> <b>Ensembl ID</b>: ${get(feature,'ensId')}<br> <b>Title of Publication</b>: ${get(feature,'title')}<br> <b>Reference</b>: ${get(feature,'ref')}<br> <b>Authors</b>: ${get(feature,'authors')}<br> <b>Pubmed ID</b>: ${get(feature,'pmid')}`"
         }
       ]
     },
@@ -10768,7 +10768,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-caddDel-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -10804,7 +10804,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-caddIns-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -10840,7 +10840,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cadd1_7_Del-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -10876,7 +10876,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cadd1_7_Ins-LinearBasicDisplay",
-          "mouseover": "jexl:'Mutation: '+get(feature,'change')+' CADD Phred score: '+get(feature,'phred')"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
         }
       ]
     },
@@ -10941,7 +10941,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-clinGenCspec-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Disease:</b> '+get(feature,'disease')+' <br><b>Panel:</b> '+get(feature,'panel')+' <br><b>Status:</b> '+get(feature,'status')"
+          "mouseover": "jexl:`<b>Disease:</b> ${get(feature,'disease')} <br><b>Panel:</b> ${get(feature,'panel')} <br><b>Status:</b> ${get(feature,'status')}`"
         }
       ]
     },
@@ -11040,7 +11040,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-cpc1Sv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AC</b>: '+get(feature,'AC')+'/'+get(feature,'alleleNumber')+'<br><b>AF</b>: '+get(feature,'alleleFreq')+'<br><b>Samples</b>: '+get(feature,'numSamples')+'<br><b>Alts</b>: '+get(feature,'numAlts')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`"
         }
       ]
     },
@@ -11083,7 +11083,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-decodeSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}`"
         }
       ]
     },
@@ -11116,7 +11116,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-dgvGold-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>ID</b>: '+get(feature,'name')+'<br> <b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>CNV subtype</b>: '+get(feature,'variant_sub_type')+'<br> <b>Frequency</b>: '+get(feature,'Frequency')"
+          "mouseover": "jexl:`<b>ID</b>: ${get(feature,'name')}<br> <b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>CNV subtype</b>: ${get(feature,'variant_sub_type')}<br> <b>Frequency</b>: ${get(feature,'Frequency')}`"
         }
       ]
     },
@@ -11192,7 +11192,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-g2p-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>G2P ID:</b> '+get(feature,'g2p_id')+' <br> <b>Variant Consequence:</b> '+get(feature,'variant_consequence')+' <br> <b>Disease Name:</b> '+get(feature,'disease_name')+' <br> <b>Pubmed IDs:</b> '+get(feature,'publications')+' <br> <b>Molecular Mechanism:</b> '+get(feature,'molecular_mechanism')+' <br> <b>Allelic Requirements:</b> '+get(feature,'allelic_requirement')+' <br> <b>Date of Last Review:</b> '+get(feature,'date_of_last_review')"
+          "mouseover": "jexl:`<b>G2P ID:</b> ${get(feature,'g2p_id')} <br> <b>Variant Consequence:</b> ${get(feature,'variant_consequence')} <br> <b>Disease Name:</b> ${get(feature,'disease_name')} <br> <b>Pubmed IDs:</b> ${get(feature,'publications')} <br> <b>Molecular Mechanism:</b> ${get(feature,'molecular_mechanism')} <br> <b>Allelic Requirements:</b> ${get(feature,'allelic_requirement')} <br> <b>Date of Last Review:</b> ${get(feature,'date_of_last_review')}`"
         }
       ]
     },
@@ -11244,7 +11244,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-ga4kSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AC (approx)</b>: '+get(feature,'AC')+'<br><b>AF</b>: '+get(feature,'alleleFreq')+'<br><b>Carriers</b>: '+get(feature,'carrierCount')+'/'+get(feature,'sampleTotal')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC (approx)</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Carriers</b>: ${get(feature,'carrierCount')}/${get(feature,'sampleTotal')}`"
         }
       ]
     },
@@ -11281,7 +11281,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-genCC-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Disease title:</b> '+get(feature,'disease_title')+'<br><b>Classification:</b> '+get(feature,'classification_title')+'<br><b>MOI:</b> '+get(feature,'moi_title')+'<br><b>Submitter:</b> '+get(feature,'sub_submitter_name')"
+          "mouseover": "jexl:`<b>Disease title:</b> ${get(feature,'disease_title')}<br><b>Classification:</b> ${get(feature,'classification_title')}<br><b>MOI:</b> ${get(feature,'moi_title')}<br><b>Submitter:</b> ${get(feature,'sub_submitter_name')}`"
         }
       ]
     },
@@ -11323,7 +11323,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsComprehensive-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> in <b>'+get(feature,'geneName2')+'</b> ('+get(feature,'geneType')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')'"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`"
         }
       ]
     },
@@ -11365,7 +11365,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gencNcOrfsPrimary-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> in <b>'+get(feature,'geneName2')+'</b> ('+get(feature,'geneType')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')'"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})`"
         }
       ]
     },
@@ -11431,7 +11431,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-geneReviews-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene</b>: '+get(feature,'name')+'<br> <b>Count</b>: '+get(feature,'diseaseCount')+'<br> <b>Disease(s)</b>: '+get(feature,'diseases')+'<br>'"
+          "mouseover": "jexl:`<b>Gene</b>: ${get(feature,'name')}<br> <b>Count</b>: ${get(feature,'diseaseCount')}<br> <b>Disease(s)</b>: ${get(feature,'diseases')}<br>`"
         }
       ]
     },
@@ -11471,7 +11471,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadCopyNumberVariants-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Position</b>: '+get(feature,'chrom')+':'+get(feature,'chromStart')+'-'+get(feature,'chromEnd')+'<br> <b>Size of variant</b>: '+get(feature,'svlen')+'<br> <b>Genes impacted by variant</b>: '+get(feature,'genes')+'<br> <b>Site frequency (non-neuro control samples)</b>: '+get(feature,'sf')"
+          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>Size of variant</b>: ${get(feature,'svlen')}<br> <b>Genes impacted by variant</b>: ${get(feature,'genes')}<br> <b>Site frequency (non-neuro control samples)</b>: ${get(feature,'sf')}`"
         }
       ]
     },
@@ -11509,7 +11509,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-gnomadStr-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'gene')+'<br> <b>Repeat Motif(s):</b> '+get(feature,'motif')+'<br> <b>Number of samples:</b> '+get(feature,'nSamples')+' <br> <b>Passing quality filter:</b> '+get(feature,'nPass')+' <br> <b>Population sample counts:</b> '+get(feature,'populations')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')}<br> <b>Repeat Motif(s):</b> ${get(feature,'motif')}<br> <b>Number of samples:</b> ${get(feature,'nSamples')} <br> <b>Passing quality filter:</b> ${get(feature,'nPass')} <br> <b>Population sample counts:</b> ${get(feature,'populations')}`"
         }
       ]
     },
@@ -11616,7 +11616,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-han945Sv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AF</b>: '+get(feature,'alleleFreq')+'<br><b>AC</b>: '+get(feature,'AC')+'<br><b>Samples</b>: '+get(feature,'sampleCount')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>Samples</b>: ${get(feature,'sampleCount')}`"
         }
       ]
     },
@@ -11660,7 +11660,7 @@
           "labels": {
             "name": "jexl:get(feature,'symbol')"
           },
-          "mouseover": "jexl:'<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/'+get(feature,'symbol')+'\">'+get(feature,'symbol')+'</a><br> <b>ID</b>: '+get(feature,'name')+'<br> <b>Alias symbol</b>: '+get(feature,'alias_symbol')+'<br> <b>Previous symbols</b>: '+get(feature,'prev_symbol')"
+          "mouseover": "jexl:`<b>Symbol</b>: <a href=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${get(feature,'symbol')}\">${get(feature,'symbol')}</a><br> <b>ID</b>: ${get(feature,'name')}<br> <b>Alias symbol</b>: ${get(feature,'alias_symbol')}<br> <b>Previous symbols</b>: ${get(feature,'prev_symbol')}`"
         }
       ]
     },
@@ -11716,7 +11716,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hgsvc2Sv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>Samples</b>: '+get(feature,'sampleCount')+'<br><b>AC</b>: '+get(feature,'AC')+'<br><b>AF</b>: '+get(feature,'popAllAf')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'popAllAf')}`"
         }
       ]
     },
@@ -11772,7 +11772,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hgsvc3Sv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>Samples</b>: '+get(feature,'sampleCount')+'<br><b>AC</b>: '+get(feature,'AC')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}`"
         }
       ]
     },
@@ -11825,7 +11825,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-hprc2v21Sv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AF</b>: '+get(feature,'alleleFreq')+'<br><b>AC</b>: '+get(feature,'AC')+'/'+get(feature,'alleleNumber')+'<br><b>Samples</b>: '+get(feature,'nSamples')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>Samples</b>: ${get(feature,'nSamples')}`"
         }
       ]
     },
@@ -11871,7 +11871,7 @@
           "labels": {
             "name": "jexl:get(feature,'geneName2')"
           },
-          "mouseover": "jexl:get(feature,'ncbiId')+', '+get(feature,'name')"
+          "mouseover": "jexl:`${get(feature,'ncbiId')}, ${get(feature,'name')}`"
         }
       ]
     },
@@ -11913,7 +11913,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-metamorf-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> ('+get(feature,'type')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')<br> <b>Transcripts</b>: '+get(feature,'transcripts')+'<br> <b>Cell types</b>: '+get(feature,'cell_types')"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> (${get(feature,'type')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Transcripts</b>: ${get(feature,'transcripts')}<br> <b>Cell types</b>: ${get(feature,'cell_types')}`"
         }
       ]
     },
@@ -11959,7 +11959,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-nuorfdb-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> in <b>'+get(feature,'geneName2')+'</b> ('+get(feature,'geneType')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')<br> <b>Predictor</b>: '+get(feature,'predictorType')+'<br> <b>Plot type</b>: '+get(feature,'plotType')"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'geneType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Predictor</b>: ${get(feature,'predictorType')}<br> <b>Plot type</b>: ${get(feature,'plotType')}`"
         }
       ]
     },
@@ -12006,7 +12006,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprot-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> in <b>'+get(feature,'geneName2')+'</b> ('+get(feature,'type')+', '+get(feature,'localization')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')<br> <b>MS score</b>: '+get(feature,'msScore')+' <b>TE score</b>: '+get(feature,'teScore')+' <b>Domains</b>: '+get(feature,'domains')"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`"
         }
       ]
     },
@@ -12053,7 +12053,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-openprotMs-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> in <b>'+get(feature,'geneName2')+'</b> ('+get(feature,'type')+', '+get(feature,'localization')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')<br> <b>MS score</b>: '+get(feature,'msScore')+' <b>TE score</b>: '+get(feature,'teScore')+' <b>Domains</b>: '+get(feature,'domains')"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> in <b>${get(feature,'geneName2')}</b> (${get(feature,'type')}, ${get(feature,'localization')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>MS score</b>: ${get(feature,'msScore')} <b>TE score</b>: ${get(feature,'teScore')} <b>Domains</b>: ${get(feature,'domains')}`"
         }
       ]
     },
@@ -12095,7 +12095,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-orphadata-LinearBasicDisplay",
-          "mouseover": "jexl:'Gene: '+get(feature,'geneSymbol')+', Disorder: '+get(feature,'disorder')+', Inheritance(s): '+get(feature,'inheritance')+', Onset: '+get(feature,'onsetList')"
+          "mouseover": "jexl:`Gene: ${get(feature,'geneSymbol')}, Disorder: ${get(feature,'disorder')}, Inheritance(s): ${get(feature,'inheritance')}, Onset: ${get(feature,'onsetList')}`"
         }
       ]
     },
@@ -12156,7 +12156,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-pubtator-LinearBasicDisplay",
-          "mouseover": "jexl:get(feature,'name')+' found in '+get(feature,'numPubmedIds')+' PubMed articles'"
+          "mouseover": "jexl:`${get(feature,'name')} found in ${get(feature,'numPubmedIds')} PubMed articles`"
         }
       ]
     },
@@ -12266,7 +12266,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-strchive-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Gene:</b> '+get(feature,'gene')+' <br> <b>Motif:</b> '+get(feature,'referenceMotif')+' <br> <b>Minimum pathogenic repeat:</b> '+get(feature,'pathogenicMin')+' <br> <b>Mode of inheritance:</b> '+get(feature,'inheritance')+' <br> <b>Associated disease(s):</b> '+get(feature,'disease')"
+          "mouseover": "jexl:`<b>Gene:</b> ${get(feature,'gene')} <br> <b>Motif:</b> ${get(feature,'referenceMotif')} <br> <b>Minimum pathogenic repeat:</b> ${get(feature,'pathogenicMin')} <br> <b>Mode of inheritance:</b> ${get(feature,'inheritance')} <br> <b>Associated disease(s):</b> ${get(feature,'disease')}`"
         }
       ]
     },
@@ -12312,7 +12312,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-chirmade101Sv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>Genes</b>: '+get(feature,'geneCount')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Genes</b>: ${get(feature,'geneCount')}`"
         }
       ]
     },
@@ -12361,7 +12361,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoJpSv-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Var</b>: '+get(feature,'name')+' ('+get(feature,'svType')+')<br><b>SV len</b>: '+get(feature,'svLen')+'<br><b>Ins len</b>: '+get(feature,'insLen')+'<br><b>AF</b>: '+get(feature,'alleleFreq')+'<br><b>AC</b>: '+get(feature,'AC')"
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}`"
         }
       ]
     },
@@ -12400,7 +12400,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-tommoStr-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Motif:</b> '+get(feature,'motif')+' ('+get(feature,'period')+' bp) <br> <b>Ref copies:</b> '+get(feature,'numCopies')+' <br> <b>Mean:</b> '+get(feature,'mean')+', <b>Median:</b> '+get(feature,'median')+' <br> <b>Heterozygosity:</b> '+get(feature,'het')"
+          "mouseover": "jexl:`<b>Motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Ref copies:</b> ${get(feature,'numCopies')} <br> <b>Mean:</b> ${get(feature,'mean')}, <b>Median:</b> ${get(feature,'median')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`"
         }
       ]
     },
@@ -12441,7 +12441,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-trexplorer-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Motif:</b> '+get(feature,'referenceMotif')+' ('+get(feature,'motifSize')+' bp) <br> <b>Copies in ref:</b> '+get(feature,'numRepeats')+' <br> <b>Purity:</b> '+get(feature,'repeatPurity')+' <br> <b>Heterozygosity:</b> '+get(feature,'het')+' <br> <b>Gene:</b> '+get(feature,'geneName')+' ('+get(feature,'geneRegion')+')'"
+          "mouseover": "jexl:`<b>Motif:</b> ${get(feature,'referenceMotif')} (${get(feature,'motifSize')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numRepeats')} <br> <b>Purity:</b> ${get(feature,'repeatPurity')} <br> <b>Heterozygosity:</b> ${get(feature,'het')} <br> <b>Gene:</b> ${get(feature,'geneName')} (${get(feature,'geneRegion')})`"
         }
       ]
     },
@@ -12522,7 +12522,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-utrAnnotUorfs-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'name')+'</b> uORF ('+get(feature,'uorfType')+')<br> <b>Start codon</b>: '+get(feature,'startCodon')+'<br> <b>Kozak</b>: '+get(feature,'kozakStrength')+' (TE '+get(feature,'kozakTE')+')<br> <b>Host transcript</b>: '+get(feature,'intronsSource')"
+          "mouseover": "jexl:`<b>${get(feature,'name')}</b> uORF (${get(feature,'uorfType')})<br> <b>Start codon</b>: ${get(feature,'startCodon')}<br> <b>Kozak</b>: ${get(feature,'kozakStrength')} (TE ${get(feature,'kozakTE')})<br> <b>Host transcript</b>: ${get(feature,'intronsSource')}`"
         }
       ]
     },
@@ -12559,7 +12559,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-varaico-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'hgncSymbol')+' '+get(feature,'variantOrigStrs')+'</b> in: '+get(feature,'author')+' ('+get(feature,'journal')+', '+get(feature,'year')+') - '+get(feature,'title')+' <br> <b>Number of publications:</b> '+get(feature,'articlesCount')+' <br> <b>Variant Effect:</b> '+get(feature,'variantEffect')"
+          "mouseover": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
         }
       ]
     },
@@ -12596,7 +12596,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-varaicoSuppl-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>'+get(feature,'hgncSymbol')+' '+get(feature,'variantOrigStrs')+'</b> in: '+get(feature,'author')+' ('+get(feature,'journal')+', '+get(feature,'year')+') - '+get(feature,'title')+' <br> <b>Number of publications:</b> '+get(feature,'articlesCount')+' <br> <b>Variant Effect:</b> '+get(feature,'variantEffect')"
+          "mouseover": "jexl:`<b>${get(feature,'hgncSymbol')} ${get(feature,'variantOrigStrs')}</b> in: ${get(feature,'author')} (${get(feature,'journal')}, ${get(feature,'year')}) - ${get(feature,'title')} <br> <b>Number of publications:</b> ${get(feature,'articlesCount')} <br> <b>Variant Effect:</b> ${get(feature,'variantEffect')}`"
         }
       ]
     },
@@ -12676,7 +12676,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg38-webstr-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Repeat motif:</b> '+get(feature,'motif')+' ('+get(feature,'period')+' bp) <br> <b>Copies in ref:</b> '+get(feature,'numCopies')+' <br> <b>Heterozygosity:</b> '+get(feature,'het')"
+          "mouseover": "jexl:`<b>Repeat motif:</b> ${get(feature,'motif')} (${get(feature,'period')} bp) <br> <b>Copies in ref:</b> ${get(feature,'numCopies')} <br> <b>Heterozygosity:</b> ${get(feature,'het')}`"
         }
       ]
     },
@@ -12840,7 +12840,7 @@
           "labels": {
             "name": "jexl:get(feature,'label')"
           },
-          "mouseover": "jexl:'# genomes in HPRC with duplication: '+get(feature,'label')"
+          "mouseover": "jexl:`# genomes in HPRC with duplication: ${get(feature,'label')}`"
         }
       ]
     },
@@ -14955,24 +14955,6 @@
       },
       "description": "Consensus CDS",
       "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "hg38-hg38",
-      "name": "hg38",
-      "assemblyNames": ["hg38"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "hg38.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "hg38.gff.gz.csi"
-          }
-        }
-      }
     },
     {
       "type": "FeatureTrack",
@@ -17102,6 +17084,48 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "hg38_to_GCA_054883195.1_liftOver",
+      "name": "hg38 to human (H9 T2T hap1 2026) (GCA_054883195.1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "GCA_054883195.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "GCA_054883195.1",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToGCA_054883195.1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToGCA_054883195.1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg38_to_GCA_054883265.1_liftOver",
+      "name": "hg38 to human (H9 T2T hap2 2026) (GCA_054883265.1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "GCA_054883265.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "GCA_054883265.1",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToGCA_054883265.1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToGCA_054883265.1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "hg38_to_GCA_905319845.1_liftOver",
       "name": "hg38 to gray wolf (alternate hap 2021) (GCA_905319845.1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -17305,6 +17329,27 @@
         "index": {
           "location": {
             "uri": "liftOver/hg38ToGCF_001704415.1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg38_to_GCF_001704415.2_liftOver",
+      "name": "hg38 to goat (v2 San Clemente 2016 USDA) (GCF_001704415.2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "GCF_001704415.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "GCF_001704415.2",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToGCF_001704415.2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToGCF_001704415.2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -17669,6 +17714,27 @@
     },
     {
       "type": "SyntenyTrack",
+      "trackId": "hg38_to_GCF_029281585.2_liftOver",
+      "name": "hg38 to gorilla (v2.1 KB3781 2024 refseq) (GCF_029281585.2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "GCF_029281585.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "GCF_029281585.2",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToGCF_029281585.2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToGCF_029281585.2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
       "trackId": "hg38_to_GCF_030867095.1_liftOver",
       "name": "hg38 to American alligator (2023 refseq) (GCF_030867095.1) liftOver",
       "category": ["Pairwise alignments", "liftOver"],
@@ -17746,6 +17812,27 @@
         "index": {
           "location": {
             "uri": "liftOver/hg38ToGCF_048773025.1.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hg38_to_GCF_049354715.1_liftOver",
+      "name": "hg38 to white-tufted-ear marmoset (240 primary hap 2025) (GCF_049354715.1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hg38", "GCF_049354715.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hg38",
+        "queryAssembly": "GCF_049354715.1",
+        "pifGzLocation": {
+          "uri": "liftOver/hg38ToGCF_049354715.1.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hg38ToGCF_049354715.1.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }
@@ -20333,111 +20420,6 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["hg38"]
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "hg38_to_GCA_054883195.1_liftOver",
-      "name": "hg38 to human (H9 T2T hap1 2026) (GCA_054883195.1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg38", "GCA_054883195.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg38",
-        "queryAssembly": "GCA_054883195.1",
-        "pifGzLocation": {
-          "uri": "liftOver/hg38ToGCA_054883195.1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg38ToGCA_054883195.1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "hg38_to_GCA_054883265.1_liftOver",
-      "name": "hg38 to human (H9 T2T hap2 2026) (GCA_054883265.1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg38", "GCA_054883265.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg38",
-        "queryAssembly": "GCA_054883265.1",
-        "pifGzLocation": {
-          "uri": "liftOver/hg38ToGCA_054883265.1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg38ToGCA_054883265.1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "hg38_to_GCF_001704415.2_liftOver",
-      "name": "hg38 to goat (v2 San Clemente 2016 USDA) (GCF_001704415.2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg38", "GCF_001704415.2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg38",
-        "queryAssembly": "GCF_001704415.2",
-        "pifGzLocation": {
-          "uri": "liftOver/hg38ToGCF_001704415.2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg38ToGCF_001704415.2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "hg38_to_GCF_029281585.2_liftOver",
-      "name": "hg38 to gorilla (v2.1 KB3781 2024 refseq) (GCF_029281585.2) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg38", "GCF_029281585.2"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg38",
-        "queryAssembly": "GCF_029281585.2",
-        "pifGzLocation": {
-          "uri": "liftOver/hg38ToGCF_029281585.2.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg38ToGCF_029281585.2.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
-    },
-    {
-      "type": "SyntenyTrack",
-      "trackId": "hg38_to_GCF_049354715.1_liftOver",
-      "name": "hg38 to white-tufted-ear marmoset (240 primary hap 2025) (GCF_049354715.1) liftOver",
-      "category": ["Pairwise alignments", "liftOver"],
-      "assemblyNames": ["hg38", "GCF_049354715.1"],
-      "adapter": {
-        "type": "PairwiseIndexedPAFAdapter",
-        "targetAssembly": "hg38",
-        "queryAssembly": "GCF_049354715.1",
-        "pifGzLocation": {
-          "uri": "liftOver/hg38ToGCF_049354715.1.over.pif.gz"
-        },
-        "index": {
-          "location": {
-            "uri": "liftOver/hg38ToGCF_049354715.1.over.pif.gz.csi"
-          },
-          "indexType": "CSI"
-        }
-      }
     }
   ],
   "aggregateTextSearchAdapters": [

@@ -40,14 +40,14 @@
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/bigZips/mm10.chromAlias.txt"
         }
       },
-      "geneticCodes": {
-        "chrM": 2
-      },
       "cytobands": {
         "adapter": {
           "type": "CytobandAdapter",
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/mm10/database/cytoBand.txt.gz"
         }
+      },
+      "geneticCodes": {
+        "chrM": 2
       }
     }
   ],
@@ -125,7 +125,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-cCREregistry-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=mm10&accessions='+get(feature,'name')+'\">'+get(feature,'name')+'</a><br><b>Class:</b> '+get(feature,'cCRE_class')+'<br><b>DNase max-Z:</b> '+get(feature,'DNase_maxZ')+'<br><b>H3K4me3 max-Z:</b> '+get(feature,'H3K4me3_maxZ')+'<br><b>H3K27ac max-Z:</b> '+get(feature,'H3K27ac_maxZ')+'<br><b>CTCF max-Z:</b> '+get(feature,'CTCF_maxZ')"
+          "mouseover": "jexl:`<b>ID:</b> <a target=\"_blank\" href=\"https://screen.wenglab.org/search?assembly=mm10&accessions=${get(feature,'name')}\">${get(feature,'name')}</a><br><b>Class:</b> ${get(feature,'cCRE_class')}<br><b>DNase max-Z:</b> ${get(feature,'DNase_maxZ')}<br><b>H3K4me3 max-Z:</b> ${get(feature,'H3K4me3_maxZ')}<br><b>H3K27ac max-Z:</b> ${get(feature,'H3K27ac_maxZ')}<br><b>CTCF max-Z:</b> ${get(feature,'CTCF_maxZ')}`"
         }
       ]
     },
@@ -216,7 +216,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
         }
       ]
     },
@@ -378,7 +378,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp4-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
         }
       ]
     },
@@ -551,7 +551,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp5-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
         }
       ]
     },
@@ -614,7 +614,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocSignal-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt record name</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -679,7 +679,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp6-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
         }
       ]
     },
@@ -715,7 +715,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocExtra-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -750,7 +750,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipInterest-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')+'<br>'"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
         }
       ]
     },
@@ -854,7 +854,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp7-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
         }
       ]
     },
@@ -890,7 +890,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocTransMemb-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -926,7 +926,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipLocCytopl-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -969,7 +969,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-evaSnp8-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>Ref/Alt allele(s)</b>: '+get(feature,'ref')+'>'+get(feature,'alt')+'<br> <b>Var type</b>: '+get(feature,'ucscClass')+'<br> <b>AA change</b>: '+get(feature,'aaChange')"
+          "mouseover": "jexl:`<b>Ref/Alt allele(s)</b>: ${get(feature,'ref')}>${get(feature,'alt')}<br> <b>Var type</b>: ${get(feature,'ucscClass')}<br> <b>AA change</b>: ${get(feature,'aaChange')}`"
         }
       ]
     },
@@ -1076,7 +1076,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipChain-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1133,7 +1133,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipDisulfBond-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1168,7 +1168,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipDomain-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1203,7 +1203,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipModif-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1237,7 +1237,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipMut-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>UniProt variant</b>: '+get(feature,'variationId')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1272,7 +1272,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipOther-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1308,7 +1308,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipStruct-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1343,7 +1343,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipRepeat-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1378,7 +1378,7 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "mm10-unipConflict-LinearBasicDisplay",
-          "mouseover": "jexl:'<b>UniProt record</b>: '+get(feature,'uniProtId')+'<br> <b>Position</b>: '+get(feature,'position')+'<br> <b>UniProt status</b>: '+get(feature,'status')"
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
     },
@@ -1490,7 +1490,7 @@
           "labels": {
             "name": "jexl:''"
           },
-          "mouseover": "jexl:'<b>Split read count</b>: '+get(feature,'readcount')+'<br><b>Splice donor</b>: '+get(feature,'donor')+'<br><b>Splice acceptor</b>: '+get(feature,'acceptor')+'<br><b>Intron size</b>: '+get(feature,'size')+' bp<br><b>Strand</b>: '+get(feature,'strand')"
+          "mouseover": "jexl:`<b>Split read count</b>: ${get(feature,'readcount')}<br><b>Splice donor</b>: ${get(feature,'donor')}<br><b>Splice acceptor</b>: ${get(feature,'acceptor')}<br><b>Intron size</b>: ${get(feature,'size')} bp<br><b>Strand</b>: ${get(feature,'strand')}`"
         }
       ]
     },
@@ -2720,24 +2720,6 @@
       },
       "description": "Previous Version of UCSC Genes",
       "category": ["Genes and Gene Predictions"]
-    },
-    {
-      "type": "FeatureTrack",
-      "trackId": "mm10-mm10",
-      "name": "mm10",
-      "assemblyNames": ["mm10"],
-      "adapter": {
-        "type": "Gff3TabixAdapter",
-        "gffGzLocation": {
-          "uri": "mm10.gff.gz"
-        },
-        "index": {
-          "indexType": "CSI",
-          "location": {
-            "uri": "mm10.gff.gz.csi"
-          }
-        }
-      }
     },
     {
       "type": "FeatureTrack",
