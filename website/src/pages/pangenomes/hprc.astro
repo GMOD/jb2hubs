@@ -184,14 +184,18 @@ const pangenomeGraphs = [
               <td>{s.hap1?.year ?? s.hap2?.year ?? ''}</td>
               <td>
                 {s.hap1 ? (
-                  <a href={retargetJbrowseUrl(s.hap1.jbrowseLink)}>{s.hap1.accession}</a>
+                  <a href={retargetJbrowseUrl(s.hap1.jbrowseLink)}>
+                    {s.hap1.accession}
+                  </a>
                 ) : (
                   '—'
                 )}
               </td>
               <td>
                 {s.hap2 ? (
-                  <a href={retargetJbrowseUrl(s.hap2.jbrowseLink)}>{s.hap2.accession}</a>
+                  <a href={retargetJbrowseUrl(s.hap2.jbrowseLink)}>
+                    {s.hap2.accession}
+                  </a>
                 ) : (
                   '—'
                 )}

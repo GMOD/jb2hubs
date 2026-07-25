@@ -275,7 +275,9 @@ export async function fetchGeneStructure(
 }
 
 async function fetchUniProtSeq(uniprotId: string) {
-  const res = await fetch(`${UNIPROT}/${uniprotId}.fasta`).catch(() => undefined)
+  const res = await fetch(`${UNIPROT}/${uniprotId}.fasta`).catch(
+    () => undefined,
+  )
   if (!res?.ok) {
     return undefined
   }
@@ -384,7 +386,11 @@ export interface SessionOptions {
 
 type Feature = ReturnType<typeof connectedFeature>
 
-function linearGenomeView(transcript: Transcript, assembly: string, collapse: boolean) {
+function linearGenomeView(
+  transcript: Transcript,
+  assembly: string,
+  collapse: boolean,
+) {
   return {
     id: `lgv-${transcript.geneName}`,
     type: 'LinearGenomeView',
@@ -393,7 +399,12 @@ function linearGenomeView(transcript: Transcript, assembly: string, collapse: bo
   }
 }
 
-function msaView(transcript: Transcript, feature: Feature, msa: InlineMsa, uniprotId?: string) {
+function msaView(
+  transcript: Transcript,
+  feature: Feature,
+  msa: InlineMsa,
+  uniprotId?: string,
+) {
   return {
     id: `msa-${transcript.geneName}`,
     type: 'MsaView',
@@ -448,7 +459,8 @@ export function buildSessionUrl({
   collapse = true,
   inlineMsa,
 }: SessionOptions) {
-  const { transcript, assemblyAccession, uniprotId, proteinSequence } = structure
+  const { transcript, assemblyAccession, uniprotId, proteinSequence } =
+    structure
   const feature = connectedFeature(transcript)
   const lgv = linearGenomeView(transcript, assemblyAccession, collapse)
   const msa = inlineMsa
@@ -463,7 +475,12 @@ export function buildSessionUrl({
     name: `Gene explorer: ${transcript.geneName}`,
     views: [lgv, ...(msa ? [msa] : []), ...(protein ? [protein] : [])],
     ...(protein
-      ? { init: sideBySideLayout([lgv.id, ...(msa ? [msa.id] : [])], protein.id) }
+      ? {
+          init: sideBySideLayout(
+            [lgv.id, ...(msa ? [msa.id] : [])],
+            protein.id,
+          ),
+        }
       : {}),
   }
   const config = mergeConfig([assemblyAccession])

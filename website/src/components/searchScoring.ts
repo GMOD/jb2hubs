@@ -36,9 +36,7 @@ export function scoreEntry(entry: IndexEntry, terms: string[]) {
   const accessionText = `${accessions} ${withoutAccessionPrefix(accessions)}`
   const all = `${accessionText} ${commonName} ${scientificName} ${assemblyName}`
 
-  if (
-    !terms.every(term => all.includes(withoutAccessionPrefix(term.trim())))
-  ) {
+  if (!terms.every(term => all.includes(withoutAccessionPrefix(term.trim())))) {
     return -1
   }
 

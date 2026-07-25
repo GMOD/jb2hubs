@@ -5,7 +5,10 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { byCommonName, encodeHubRow } from './src/components/DataTable/hubRow.ts'
+import {
+  byCommonName,
+  encodeHubRow,
+} from './src/components/DataTable/hubRow.ts'
 
 import type { HubSource } from './src/components/DataTable/hubRow.ts'
 

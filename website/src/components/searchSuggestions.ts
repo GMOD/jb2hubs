@@ -50,7 +50,11 @@ export function suggestionMeta(entry: IndexEntry) {
   const common = bareCommonName(entry[1])
   const scientific = entry[2]
   let meta = scientific || common
-  if (scientific && common && common.toLowerCase() !== scientific.toLowerCase()) {
+  if (
+    scientific &&
+    common &&
+    common.toLowerCase() !== scientific.toLowerCase()
+  ) {
     meta = `${scientific} (${common})`
   }
   return meta

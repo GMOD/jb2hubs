@@ -146,7 +146,9 @@ const jsonLd = {
   url: new URL(Astro.url.pathname, Astro.site).href,
   sameAs: ncbiLink,
   ...(seqReleaseDate ? { datePublished: seqReleaseDate } : {}),
-  ...(submitterOrg ? { creator: { '@type': 'Organization', name: submitterOrg } } : {}),
+  ...(submitterOrg
+    ? { creator: { '@type': 'Organization', name: submitterOrg } }
+    : {}),
   keywords: [scientificName, organism, accession, ncbiAssemblyName].filter(
     Boolean,
   ),
@@ -221,8 +223,7 @@ const hasAssemblyStats =
       {
         ncbiRefSeqCategory === 'reference genome' ? (
           <div>
-            <b>NCBI assembly status:</b> Designated Reference{' '}
-            <OrangeStar />
+            <b>NCBI assembly status:</b> Designated Reference <OrangeStar />
           </div>
         ) : null
       }

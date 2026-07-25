@@ -103,10 +103,7 @@ describe('suggestion labels', () => {
   it('leads with the assembly, which is what differs between rows', () => {
     assert.equal(suggestionTitle(hg19), 'hg19 · GRCh37')
     assert.equal(suggestionTitle(hg38), 'hg38 · GRCh38')
-    assert.equal(
-      suggestionTitle(genarkHuman),
-      'GCF_000001405.40 · GRCh38.p14',
-    )
+    assert.equal(suggestionTitle(genarkHuman), 'GCF_000001405.40 · GRCh38.p14')
   })
 
   it('does not repeat the accession when it is also the assembly name', () => {

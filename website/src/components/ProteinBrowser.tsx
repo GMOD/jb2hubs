@@ -65,15 +65,21 @@ export default function ProteinBrowser() {
     setAligning(true)
     setError('')
     try {
-      const panel: ProteinPanel = await assembleProteinPanel(s.symbol, s.taxId, {
-        onProgress: setStatus,
-      })
+      const panel: ProteinPanel = await assembleProteinPanel(
+        s.symbol,
+        s.taxId,
+        {
+          onProgress: setStatus,
+        },
+      )
       const queryRow =
         panel.rows.find(r => r.taxId === s.taxId) ?? panel.rows[0]
       if (!queryRow) {
         throw new Error('no ortholog rows to align')
       }
-      const alignment = await alignProteinPanel(panel, { onProgress: setStatus })
+      const alignment = await alignProteinPanel(panel, {
+        onProgress: setStatus,
+      })
       setInlineMsa({
         fasta: alignment.fasta,
         newick: alignment.newick,
@@ -107,7 +113,10 @@ export default function ProteinBrowser() {
           disabled={loading}
         >
           {COMMON_SPECIES.map(s => (
-            <option key={s.taxId} value={s.taxId}>
+            <option
+              key={s.taxId}
+              value={s.taxId}
+            >
               {s.label}
             </option>
           ))}
@@ -209,8 +218,7 @@ function ResultCard({
   return (
     <div className="msv-result">
       <h2>
-        {transcript.geneName}{' '}
-        <span className="msv-sub">{transcript.name}</span>
+        {transcript.geneName} <span className="msv-sub">{transcript.name}</span>
       </h2>
       <p className="msv-meta">
         {assemblyAccession} · {transcript.refName}{' '}
@@ -218,14 +226,22 @@ function ResultCard({
       </p>
       <div className="msv-chips">
         {chips.map(c => (
-          <span key={c} className="msv-chip">
+          <span
+            key={c}
+            className="msv-chip"
+          >
             {c}
           </span>
         ))}
       </div>
 
       <div className="msv-actions">
-        <a className="msv-open" href={url} target="_blank" rel="noopener noreferrer">
+        <a
+          className="msv-open"
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Open in JBrowse ↗
         </a>
         <label className="msv-collapse">
@@ -242,8 +258,8 @@ function ResultCard({
 
       {inlineMsa ? (
         <p className="msv-note">
-          Cross-species alignment ({alignRows} species) added — it&apos;s part of
-          the session, connected to the genome and structure.
+          Cross-species alignment ({alignRows} species) added — it&apos;s part
+          of the session, connected to the genome and structure.
         </p>
       ) : (
         <div className="msv-advanced">
@@ -257,8 +273,9 @@ function ResultCard({
             {aligning ? status || 'Aligning…' : 'Add cross-species alignment'}
           </button>
           <span className="msv-advanced-note">
-            Aligns orthologs across model species (NCBI + EBI Clustal Omega, with
-            CDD domains) and adds a connected alignment view — can take a minute.
+            Aligns orthologs across model species (NCBI + EBI Clustal Omega,
+            with CDD domains) and adds a connected alignment view — can take a
+            minute.
           </span>
         </div>
       )}
