@@ -10,8 +10,12 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // the JBrowsePluginBlat UMD global.
 //
 // As of 2026-07-26 two of the three preconditions are met:
-//   - the UMD build is published:
-//     https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/jbrowse-plugin-blat.umd.production.min.js
+//   - the UMD build is published, at a VERSIONED path:
+//     https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js
+//     v1 keeps receiving compatible updates, so a config that names it picks
+//     those up; a change needing a newer JBrowse than some host runs gets a v2
+//     instead of breaking the configs already out there. Use the versioned URL,
+//     never a bare .../dist/ one.
 //   - the CORS/apiKey proxy is live at https://api.jbrowse.org/ucsc/v1/{blat,ispcr},
 //     and is what the plugin defaults to in a browser
 //
