@@ -6,10 +6,21 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // The BLAT plugin pairs with the sequence.metadata.blatDb stamp (createAssembly /
 // generateJBrowseConfigForAssemblyHub). It is opt-in via BLAT_PLUGIN_URL because
 // a plugin url that 404s hard-fails the whole web session (PluginLoader.load runs
-// Promise.all over every entry), and web BLAT queries only work once the
-// CORS/apiKey proxy is live. Set BLAT_PLUGIN_URL for a rebuild only after the UMD
-// build is published and the proxy is deployed. The name must be 'Blat' so
-// PluginLoader finds the JBrowsePluginBlat UMD global.
+// Promise.all over every entry). The name must be 'Blat' so PluginLoader finds
+// the JBrowsePluginBlat UMD global.
+//
+// As of 2026-07-26 two of the three preconditions are met:
+//   - the UMD build is published:
+//     https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/jbrowse-plugin-blat.umd.production.min.js
+//   - the CORS/apiKey proxy is live at https://api.jbrowse.org/ucsc/v1/{blat,ispcr},
+//     and is what the plugin defaults to in a browser
+//
+// The third is a JBrowse RELEASE. A BLAT hit is added as an AlignmentsTrack over
+// a SamAdapter, and SamAdapter landed after v4.3.0 — so on JBROWSE_BASE
+// `.../jb2/latest` the plugin loads, the query runs, and the result track then
+// fails as an unknown adapter type. Enable this only once the release that
+// carries SamAdapter is what `latest` serves (or, for a staging-only rebuild,
+// once configs are no longer shared with production).
 const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
   ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
   : []
