@@ -9,7 +9,7 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // Promise.all over every entry). The name must be 'Blat' so PluginLoader finds
 // the JBrowsePluginBlat UMD global.
 //
-// As of 2026-07-26 two of the three preconditions are met:
+// As of 2026-07-26 the pieces are in place:
 //   - the UMD build is published, at a VERSIONED path:
 //     https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js
 //     v1 keeps receiving compatible updates, so a config that names it picks
@@ -18,13 +18,15 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 //     never a bare .../dist/ one.
 //   - the CORS/apiKey proxy is live at https://api.jbrowse.org/ucsc/v1/{blat,ispcr},
 //     and is what the plugin defaults to in a browser
+//   - results degrade on an older host. They are drawn as an AlignmentsTrack
+//     over a SamAdapter, which postdates v4.3.0 and so is absent from whatever
+//     `.../jb2/latest` currently serves; the plugin checks and falls back to a
+//     plain feature track there, rather than adding one that cannot resolve its
+//     adapter. So this no longer waits on a release.
 //
-// The third is a JBrowse RELEASE. A BLAT hit is added as an AlignmentsTrack over
-// a SamAdapter, and SamAdapter landed after v4.3.0 — so on JBROWSE_BASE
-// `.../jb2/latest` the plugin loads, the query runs, and the result track then
-// fails as an unknown adapter type. Enable this only once the release that
-// carries SamAdapter is what `latest` serves (or, for a staging-only rebuild,
-// once configs are no longer shared with production).
+// It is deliberately NOT in the JBrowse plugin store: the store implies plug and
+// play, and BLAT is only zero-config for genomes UCSC hosts (elsewhere it wants
+// a db set in advanced settings). Hence a plain hosted URL.
 const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
   ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
   : []
