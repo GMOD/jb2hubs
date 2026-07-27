@@ -11,6 +11,7 @@
     "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write .",
     "format:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shfmt -w -i 2",
     "typecheck": "tsc --noEmit",
+    "check-config-compat": "node scripts/checkConfigCompat.mjs",
     "build:bed2gff": "cargo build --release --manifest-path bed2gff/Cargo.toml"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.7.0",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^0.14.1",
+    "puppeteer-core": "^25.3.0"
   }
 }

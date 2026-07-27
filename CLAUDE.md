@@ -22,6 +22,53 @@ change tracks on a UCSC assembly, edit the source-controlled extension file
 `tracks[]` are merged into the generated config by the pipeline; then regenerate
 and re-upload the configs.
 
+## Staging a config-level feature
+
+`features.staging` (`website/src/config/features.ts`) only gates website pages
+and which hosted JBrowse build links target — the configs themselves are one
+tree served to both sites, so regenerating `config.json` publishes to production
+too.
+
+To stage something that lives in the config (a plugin, a track), have
+`ucsc2jbrowse/stageConfigs.sh` write it into a **sibling** `config-staging.json`
+(and `all-staging.json`), and read the filename through `ucscConfigPath` /
+`ucscAllConfigPath` in `website/src/config/jbrowse.ts`. It has to be a sibling,
+not a `/ucsc-staging/` tree: a UCSC config names ~600 of its files relatively
+(`centromeres.bed.gz`, `ncbiRefSeq.gff.gz`, `trix/*`) and jbrowse-web resolves
+those against the config's own URL, so only a file in the same directory reaches
+the data production serves. `enhanceConfig` is idempotent, so the staging pass
+is just a copy plus a re-run with the extra env set, cheap enough to run alone.
+
+GenArk hubs are not staged (thousands of configs, nothing staged so far is
+GenArk-specific), so a staged feature reaches `/ucsc/*` launches only.
+
+Neither website serves configs — jbrowse-web resolves `?config=/ucsc/…` against
+its own origin, so they always come from the jbrowse.org bucket
+(`ucsc2jbrowse/uploadAll.sh`), which both sites read. **Upload the staged
+configs before deploying the staging website:** a staging build links to
+`config-staging.json`, and every launch fails to fetch its config until that
+file is in the bucket. The reverse order is safe — an uploaded staging config
+that nothing links to is inert.
+
+## Old JBrowse versions read these configs
+
+A hub config lives at one permanent url that desktop installs and published
+links keep naming, so a regenerated config has to keep booting on hosts years
+older than the one we develop against. **`plugins[].url` is the only field that
+can kill a whole session** (`PluginLoader`'s `Promise.all` — one dead url and
+the app is an error page). Content is forward-tolerant, measured on v4.0.4 and
+main: an unknown track, adapter, or display type, and the `displayDefaults`
+shorthand, all boot fine and cost the old host that one track at most. So
+modernizing config content is not the risk it looks like; the plugin url is.
+
+`pnpm check-config-compat` loads the shipped configs into every hosted release
+and fails when one breaks; run it before shipping regenerated configs. The
+support floor is the oldest version in its `HOST_VERSIONS` list. Reach for a
+staging sibling (above) only when losing the new content on old hosts is itself
+unacceptable — not as routine protection. Full reasoning, including why the
+config urls are deliberately **not** versioned:
+`agent-docs/architectural-decision-records/0002-config-compat-across-jbrowse-versions.md`.
+
 ## multiWig composites, table-backed big files, and ENCODE
 
 A UCSC `container multiWig` composite converts to a single
