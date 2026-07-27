@@ -14,6 +14,17 @@ function runOnConfig(tracks: unknown[]) {
   return JSON.parse(fs.readFileSync(file, 'utf8')).tracks
 }
 
+function runOnPlugins(
+  config: unknown,
+  plugins: { name: string; url: string }[],
+) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'enhance-'))
+  const file = path.join(dir, 'config.json')
+  fs.writeFileSync(file, JSON.stringify(config))
+  enhanceConfig(file, plugins)
+  return JSON.parse(fs.readFileSync(file, 'utf8')).plugins
+}
+
 describe('enhanceConfig feature display derivation', () => {
   it('derives a display for a FeatureTrack from metadata.ucsc', () => {
     const [t] = runOnConfig([
@@ -50,5 +61,26 @@ describe('enhanceConfig feature display derivation', () => {
     ])
     assert.equal(variant.displays, undefined)
     assert.equal(plain.displays, undefined)
+  })
+})
+
+describe('enhanceConfig plugins', () => {
+  it('rewrites the url of a plugin the config already names', () => {
+    const plugins = runOnPlugins(
+      { tracks: [], plugins: [{ name: 'Protein3d', url: 'old' }] },
+      [{ name: 'Protein3d', url: 'new' }],
+    )
+    assert.deepEqual(plugins, [{ name: 'Protein3d', url: 'new' }])
+  })
+
+  it('appends a plugin the config does not name', () => {
+    const plugins = runOnPlugins(
+      { tracks: [], plugins: [{ name: 'Hubs', url: 'hubs' }] },
+      [{ name: 'Protein3d', url: 'p3d' }],
+    )
+    assert.deepEqual(plugins, [
+      { name: 'Hubs', url: 'hubs' },
+      { name: 'Protein3d', url: 'p3d' },
+    ])
   })
 })

@@ -27,26 +27,38 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // It is deliberately NOT in the JBrowse plugin store: the store implies plug and
 // play, and BLAT is only zero-config for genomes UCSC hosts (elsewhere it wants
 // a db set in advanced settings). Hence a plain hosted URL.
+//
+// Setting BLAT_PLUGIN_URL for the pipeline's own enhanceConfigs pass would put
+// BLAT in the config.json production serves. ucsc2jbrowse/stageConfigs.sh sets it
+// for a second pass over a COPY instead, so staging gets it and production does
+// not — see that script for why the copy is a sibling file.
 const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
   ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
   : []
 
+// Every url is the plugin store's version-agnostic `latest/` path, which the
+// store's upload sets no-cache so a publish reaches these configs. The bare
+// `<pkg>/dist/<umd>` path these used to name is the store's v1 layout, no longer
+// republished: it was serving protein3d 0.4.1 against a published 0.8.0, which is
+// how the protein view came to sit on a perpetual "Loading pairwise alignment"
+// and to reject the short-form (uniprotId + transcriptId) declarative launch.
+// Never name the bare path here.
 const defaultPlugins: JBrowsePlugin[] = [
   {
     name: 'MafViewer',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js',
   },
   {
     name: 'Hubs',
-    url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js',
+    url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js',
   },
   {
     name: 'Protein3d',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js',
   },
   {
     name: 'MsaView',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
   },
   ...blatPlugin,
 ]
@@ -82,8 +94,16 @@ export function enhanceConfig(
 
   config.plugins ??= []
 
+  // Upsert by name rather than skip-if-present: enhanceConfigs.sh re-runs over
+  // already-enhanced built configs, so a name match that kept its old entry meant
+  // a changed url never reached any config built before the change (the stale
+  // protein3d bundle outlived four plugin releases that way). Rewriting the url
+  // is what makes a re-run publish it.
   for (const plugin of plugins) {
-    if (!config.plugins.some(p => p.name === plugin.name)) {
+    const existing = config.plugins.find(p => p.name === plugin.name)
+    if (existing) {
+      existing.url = plugin.url
+    } else {
       config.plugins.push(plugin)
     }
   }
