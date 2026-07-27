@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import list from '../../list.json'
-import { jbrowseUrl } from '../../config/jbrowse.ts'
+import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
 
 export async function getStaticPaths() {
   const genomes = list.ucscGenomes
@@ -41,7 +41,7 @@ const title = id
       <h2>Genome browsers</h2>
       <ul>
         <li>
-          <a href={jbrowseUrl(`/ucsc/${id}/config.json`)}> JBrowse </a>
+          <a href={jbrowseUrl(ucscConfigPath(id))}> JBrowse </a>
         </li>
         <li>
           <a href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=${id}`}>

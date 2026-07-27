@@ -284,6 +284,10 @@ fd "config.json$" "$UCSC_BUILT_DIR"/ | parallel $PARALLEL_OPTS -I {} "cp {} conf
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts
 
+# After mergeAll, so all-staging.json is derived from a fresh all.json.
+log "Writing staging-only config siblings..."
+./stageConfigs.sh
+
 log "Merging blocked files caches..."
 node src/mergeBlockedFiles.ts
 

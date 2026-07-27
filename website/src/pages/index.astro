@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
 import GenArk from '../components/GenArk.astro'
 import { features } from '../config/features.ts'
-import { jbrowseUrl } from '../config/jbrowse.ts'
+import { jbrowseUrl, ucscConfigPath } from '../config/jbrowse.ts'
 
 import list from '../list.json'
 import '../styles/common-table.css'
@@ -41,7 +41,7 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
                   <td>{val.organism}</td>
                   <td>{val.description}</td>
                   <td>
-                    <a href={jbrowseUrl(`/ucsc/${key}/config.json`)}>JBrowse</a>
+                    <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
                   </td>
                   <td>
                     <a

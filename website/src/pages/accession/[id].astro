@@ -10,7 +10,11 @@ import {
   loadNcbiDetails,
   tryAndReadJSON,
 } from '../../utils/accessionData.ts'
-import { jbrowseUrl, genarkConfigPath } from '../../config/jbrowse.ts'
+import {
+  jbrowseUrl,
+  genarkConfigPath,
+  ucscConfigPath,
+} from '../../config/jbrowse.ts'
 import { bareCommonName } from '../../utils/names.ts'
 import { features } from '../../config/features.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
@@ -489,7 +493,7 @@ const hasAssemblyStats =
           <a
             href={jbrowseUrl(
               ucscDbName
-                ? `/ucsc/${ucscDbName}/config.json`
+                ? ucscConfigPath(ucscDbName)
                 : genarkConfigPath(accession),
             )}>JBrowse</a
           >

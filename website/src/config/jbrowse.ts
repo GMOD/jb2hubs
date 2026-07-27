@@ -15,9 +15,33 @@ export function jbrowseUrl(config: string) {
   return `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}`
 }
 
+// Staging launches a SIBLING config file (config.json -> config-staging.json),
+// written by ucsc2jbrowse/stageConfigs.sh, carrying the plugins that are staging
+// only — today the BLAT plugin. Regenerating config.json publishes to production
+// and staging alike, so a sibling is what makes a config-level feature stageable
+// at all.
+//
+// A sibling rather than a /ucsc-staging/ tree because a UCSC config names most of
+// its data relatively and jbrowse-web resolves those against the config's own
+// URL: only a file in the same directory reaches the data production serves.
+export function stagingSibling(file: string, staging: boolean) {
+  return staging ? file.replace(/\.json$/, '-staging.json') : file
+}
+
+export function ucscConfigPath(db: string) {
+  return `/ucsc/${db}/${stagingSibling('config.json', features.staging)}`
+}
+
+// The merged all-species config, a sibling of the per-assembly ones.
+export function ucscAllConfigPath() {
+  return `/ucsc/${stagingSibling('all.json', features.staging)}`
+}
+
 // GenArk hub configs are sharded by the accession's digits, so the config path is
 // derivable from the accession alone — no need to ship a URL per row:
 // GCF_000298275.1 -> /hubs/genark/GCF/000/298/275/GCF_000298275.1/config.json
+// Not staged: there are thousands of them, and nothing staged so far is
+// GenArk-specific.
 export function genarkConfigPath(accession: string) {
   const [prefix = '', rest = ''] = accession.split('_')
   const digits = rest.replace(/\.\d+$/, '')

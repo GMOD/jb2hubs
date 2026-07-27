@@ -6,6 +6,7 @@
 // component internals. The components and link builders read only this shape.
 
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
+import { ucscConfigPath } from '../config/jbrowse.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -63,7 +64,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   label: 'HPRC minigraph-cactus v1.1',
   reference: {
     assembly: 'hg38',
-    configUrl: 'https://jbrowse.org/ucsc/hg38/config.json',
+    configUrl: ucscConfigPath('hg38'),
     label: 'GRCh38',
     geneTrackId: 'hg38-ncbiRefSeq',
     taxonId: 9606,

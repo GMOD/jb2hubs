@@ -1,6 +1,10 @@
 import { syntenyViewUrl } from './jbrowseLinks.ts'
 import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
-import { JBROWSE_BASE, genarkConfigPath } from '../config/jbrowse.ts'
+import {
+  JBROWSE_BASE,
+  genarkConfigPath,
+  ucscConfigPath,
+} from '../config/jbrowse.ts'
 
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
 
@@ -78,9 +82,7 @@ export function accessionToJbrowseUrl(
   loc?: string,
   ucscDb?: string,
 ) {
-  const config = ucscDb
-    ? `/ucsc/${ucscDb}/config.json`
-    : genarkConfigPath(accession)
+  const config = ucscDb ? ucscConfigPath(ucscDb) : genarkConfigPath(accession)
   const assembly = ucscDb ?? accession
   // GenArk configs carry a defaultSession with no tracks, so a bare launch lands
   // on an empty browser — ask for the NCBI RefSeq GFF gene track by id (every

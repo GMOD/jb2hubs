@@ -1,6 +1,10 @@
 import { useMemo } from 'react'
 
-import { jbrowseUrl } from '../config/jbrowse.ts'
+import {
+  jbrowseUrl,
+  ucscAllConfigPath,
+  ucscConfigPath,
+} from '../config/jbrowse.ts'
 import list from '../list.json'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
@@ -51,7 +55,7 @@ export default function UCSCTable() {
         scientificName: val.scientificName,
         organism: val.organism,
         description: val.description,
-        jbrowseLink: jbrowseUrl(`/ucsc/${key}/config.json`),
+        jbrowseLink: jbrowseUrl(ucscConfigPath(key)),
         ucscLink: `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`,
         orderKey: val.orderKey,
       }))
@@ -86,7 +90,7 @@ export default function UCSCTable() {
           UCSC genome browser, converted into a format that JBrowse 2 can load
         </p>
         <p>
-          <StyledLink href={jbrowseUrl('/ucsc/all.json')}>
+          <StyledLink href={jbrowseUrl(ucscAllConfigPath())}>
             Click here
           </StyledLink>{' '}
           for single JBrowse 2 instance containing ALL the species

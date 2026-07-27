@@ -11,6 +11,7 @@ import {
   flankLoc,
 } from './orthologSearchUtils.ts'
 import { type PairIndex, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
+import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
@@ -28,7 +29,7 @@ export interface RefAlignment {
 export const REF_ALIGNMENTS: Record<number, RefAlignment> = {
   9606: {
     ucscDb: 'hg38',
-    configUrl: 'https://jbrowse.org/ucsc/hg38/config.json',
+    configUrl: ucscConfigPath('hg38'),
     alignmentTrackId: 'hg38-cactus447way',
     alignmentLabel: '447-way Cactus alignment (Zoonomia)',
   },

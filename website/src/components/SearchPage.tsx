@@ -6,7 +6,11 @@ import OrangeStar from './OrangeStar.tsx'
 import RedX from './RedX.tsx'
 import styles from './SearchPage.module.css'
 import { entryHref, isCurated, scoreEntry } from './searchScoring.ts'
-import { genarkConfigPath, jbrowseUrl } from '../config/jbrowse.ts'
+import {
+  genarkConfigPath,
+  jbrowseUrl,
+  ucscConfigPath,
+} from '../config/jbrowse.ts'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import {
@@ -37,9 +41,7 @@ const statusLegend = (
 // accession.
 function launchUrl(entry: IndexEntry) {
   return jbrowseUrl(
-    entry[5] === 'ucsc'
-      ? `/ucsc/${entry[0]}/config.json`
-      : genarkConfigPath(entry[0]),
+    entry[5] === 'ucsc' ? ucscConfigPath(entry[0]) : genarkConfigPath(entry[0]),
   )
 }
 
