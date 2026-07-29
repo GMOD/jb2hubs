@@ -53,6 +53,403 @@
   ],
   "tracks": [
     {
+      "trackId": "hg19-wgEncodeRegTxn",
+      "name": "Transcription",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg19"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "allButtonPair": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subTracks",
+          "longLabel": "Transcription Levels Assayed by RNA-seq on 9 Cell Lines from ENCODE",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.1",
+          "shortLabel": "Transcription",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg hide",
+          "track": "wgEncodeRegTxn",
+          "transformFunc": "LOG",
+          "type": "bigWig 0 65500",
+          "viewLimits": "0:8",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n<p>\nThis track shows transcription levels for several cell types as assayed by high-throughput\nsequencing of polyadenylated RNA (RNA-seq).\nAdditional views of this dataset and additional documentation on the methods used\nfor this track are available at the\n<A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeCaltechRnaSeq target=_BLANK>ENCODE Caltech RNA-seq</A> \npage.  The data shown here are derived from the <i>Raw Signal</i> view from the paired \n75-mer 200 bp insert size reads.  The two replicates of the signal were pooled and normalized\nso that the total genome-wide signal sums to 10 billion.\n</p>\n<H2>Display Conventions and Configuration</H2>\n<p>By default, this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor and these cell line colors are consistent across all tracks that are part of the\n<A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the <A href=http://woldlab.caltech.edu target=_BLANK>Wold Lab at Caltech</A>,\nas part of the ENCODE Project Consortium. \n</p>\n<h2>Release Notes</h2>\n<p>\nThis is release 2 (July 2012) of this track which includes two new subtracks for HeLa-S3 and HepG2.\n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "GM12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqGm12878R2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1-hESC",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqH1hescR2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HeLa-S3",
+            "color": "rgb(227,255,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqHelas3R2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HepG2",
+            "color": "rgb(128,255,149)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqHepg2R2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(128,255,242)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqHsmmR2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,199,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqHuvecR2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(149,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqK562R2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(227,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqNhekR2x75Il200SigPooled.bw"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeRegTxnCaltechRnaSeqNhlfR2x75Il200SigPooled.bw"
+            }
+          }
+        ]
+      },
+      "description": "Transcription Levels Assayed by RNA-seq on 9 Cell Lines from ENCODE"
+    },
+    {
+      "trackId": "hg19-wgEncodeRegMarkH3k4me1",
+      "name": "Layered H3K4Me1",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg19"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "allButtonPair": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subtracks",
+          "longLabel": "H3K4Me1 Mark (Often Found Near Regulatory Elements) on 7 cell lines from ENCODE",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.2",
+          "shortLabel": "Layered H3K4Me1",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg hide",
+          "track": "wgEncodeRegMarkH3k4me1",
+          "type": "bigWig 0 10000",
+          "viewLimits": "0:50",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<p>\nChemical modifications (e.g. methylation and acylation) to the histone proteins\npresent in chromatin influence gene expression by changing how\naccessible the chromatin is to transcription. A specific modification of\na specific histone protein is called a histone mark.\nThis track shows the levels of enrichment of the H3K4Me1 histone mark across the genome as determined by a\nChIP-seq assay.  The H3K4me1 histone mark is the mono-methylation of lysine 4\nof the H3 histone protein, and it is associated with enhancers and with DNA regions downstream of transcription\nstarts.  Additional histone marks and other chromatin associated ChIP-seq data is available at\nthe <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeBroadHistone>Broad Histone</A> page.\n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that\nare part of the <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Bernstein Lab at the Broad Institute. The Bernstein lab is part of \nthe ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "GM12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneGm12878H3k4me1StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1-hESC",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneH1hescH3k4me1StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(120,235,204)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneHsmmH3k4me1StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneHuvecH3k4me1StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneK562H3k4me1StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneNhekH3k4me1StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneNhlfH3k4me1StdSig.bigWig"
+            }
+          }
+        ]
+      },
+      "description": "H3K4Me1 Mark (Often Found Near Regulatory Elements) on 7 cell lines from ENCODE"
+    },
+    {
+      "trackId": "hg19-wgEncodeRegMarkH3k4me3",
+      "name": "Layered H3K4Me3",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg19"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "allButtonPair": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subtracks",
+          "longLabel": "H3K4Me3 Mark (Often Found Near Promoters) on 7 cell lines from ENCODE",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.3",
+          "shortLabel": "Layered H3K4Me3",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg hide",
+          "track": "wgEncodeRegMarkH3k4me3",
+          "type": "bigWig 0 10000",
+          "viewLimits": "0:150",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<p>\nChemical modifications (e.g. methylation and acylation) to the histone proteins\npresent in chromatin influence gene expression by changing how\naccessible the chromatin is to transcription. A specific modification of\na specific histone protein is called a histone mark.\nThis track shows the levels of enrichment of the H3K4Me3 histone mark across the genome as determined by a\nChIP-seq assay. The H3K4Me3 histone mark is the tri-methylation of lysine 4 of the H3 histone protein,\nand it is associated with promoters that are active or poised to be\nactivated.  Additional histone marks and other chromatin associated ChIP-seq data is available at \nthe <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeBroadHistone>Broad Histone</A> page.  \n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that\nare part of the <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Bernstein Lab at the Broad Institute. The Bernstein lab is part of \nthe ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "GM12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneGm12878H3k4me3StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1-hESC",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneH1hescH3k4me3StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(120,235,204)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneHsmmH3k4me3StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneHuvecH3k4me3StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneK562H3k4me3StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneNhekH3k4me3StdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneNhlfH3k4me3StdSig.bigWig"
+            }
+          }
+        ]
+      },
+      "description": "H3K4Me3 Mark (Often Found Near Promoters) on 7 cell lines from ENCODE"
+    },
+    {
+      "trackId": "hg19-wgEncodeRegMarkH3k27ac",
+      "name": "Layered H3K27Ac",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg19"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "allButtonPair": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subtracks",
+          "longLabel": "H3K27Ac Mark (Often Found Near Active Regulatory Elements) on 7 cell lines from ENCODE",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.4",
+          "shortLabel": "Layered H3K27Ac",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg full",
+          "track": "wgEncodeRegMarkH3k27ac",
+          "type": "bigWig 0 10000",
+          "viewLimits": "0:100",
+          "visibility": "full",
+          "html": "<H2>Description</H2>\n<p>\nChemical modifications (e.g. methylation and acylation) to the histone proteins\npresent in chromatin influence gene expression by changing how\naccessible the chromatin is to transcription. A specific modification of\na specific histone protein is called a histone mark.\nThis track shows the levels of enrichment of the H3K27Ac histone mark across the genome as determined by a\nChIP-seq assay.  The H3K27Ac histone mark is the acetylation of lysine 27 of the H3 histone\nprotein, and it is thought to enhance transcription possibly by blocking the\nspread of the repressive histone mark H3K27Me3.  Additional histone marks and other chromatin \nassociated ChIP-seq data is available at the \n<A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeBroadHistone>Broad Histone</A> page.  \n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that\nare part of the <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Bernstein Lab at the Broad Institute. The Bernstein lab is part of \nthe ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "GM12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneGm12878H3k27acStdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1-hESC",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneH1hescH3k27acStdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(120,235,204)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneHsmmH3k27acStdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneHuvecH3k27acStdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneK562H3k27acStdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneNhekH3k27acStdSig.bigWig"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg19/bbi/wgEncodeBroadHistoneNhlfH3k27acStdSig.bigWig"
+            }
+          }
+        ]
+      },
+      "description": "H3K27Ac Mark (Often Found Near Active Regulatory Elements) on 7 cell lines from ENCODE"
+    },
+    {
       "trackId": "hg19-ncbiRefSeqOther",
       "name": "NCBI RefSeq - RefSeq Other",
       "type": "FeatureTrack",
@@ -505,19 +902,19 @@
   "plugins": [
     {
       "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
     },
     {
       "name": "Hubs",
-      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
