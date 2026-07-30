@@ -34,7 +34,11 @@ export function parseAssemblyEntry({
     assembly: asmId || '',
     scientificName: sciName || '',
     commonName: comName || '',
-    taxonId: taxId || '',
+    // not `taxId || ''`: that widened a numeric field to number|string, which
+    // every consumer types as number and guards with `?? 0` — a guard an empty
+    // string slips straight through. No current entry has a falsy taxId, so
+    // the emitted json is unchanged.
+    taxonId: taxId,
     jbrowseLink: `https://jbrowse.org/code/jb2/latest/?config=/hubs/genark/${hubPath}/config.json`,
     jbrowseConfig: `https://jbrowse.org/hubs/genark/${hubPath}/config.json`,
     ncbiGff: `https://ftp.ncbi.nlm.nih.gov/genomes/all/${base}/${b1}/${b2}/${b3}/${asmId}/${asmId}_genomic.gff.gz`,
