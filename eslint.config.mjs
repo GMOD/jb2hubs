@@ -37,6 +37,18 @@ export default tseslint.config(
     },
   },
 
+  // Node globals for the plain-.mjs CLI scripts. TS files get no-undef switched
+  // off by typescript-eslint, but these are .mjs, so without this every
+  // console/process reference reads as undefined.
+  {
+    files: ['*.mjs', 'scripts/*.mjs', 'website/*.mjs'],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+  },
+
   // Browser globals for website folder
   {
     files: ['website/**/*'],

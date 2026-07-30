@@ -57,18 +57,11 @@ jobs:
               echo "urls exit=$?"
               echo
               echo "### config compat matrix"
-              # --floor v4.0.0: still PROBE every version in HOST_VERSIONS and
-              # print the results, but only alert on v4.0.0 and newer. The UCSC
-              # configs have two breakages older than that which long predate
-              # this workflow and are not regressions:
-              #   v2.15.0, v3.0.0 -- MsaView's UMD global is undefined there,
-              #     true of 3.4.11 as well, so no plugin version we ship fixes it
-              #   v3.7.0 -- mobx-state-tree rejects a FeatureTrack union, i.e.
-              #     config CONTENT, not a plugin
-              # Alerting on a known-broken state every 6h is how a canary gets
-              # muted, and a muted canary is worse than none. Lower the floor as
-              # those are fixed; that is the only thing that should move it.
-              node scripts/checkConfigCompat.mjs --floor v4.0.0
+              # No --floor: HOST_VERSIONS now starts at v4.0.0, so its oldest
+              # entry IS the support floor again, which is the invariant the
+              # script's own comment describes. Pre-v4 was dropped deliberately
+              # rather than muted -- see HOST_VERSIONS for what was failing there.
+              node scripts/checkConfigCompat.mjs
               echo "compat exit=$?"
             } 2>&1
           }
