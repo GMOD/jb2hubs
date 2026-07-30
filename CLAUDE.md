@@ -84,7 +84,12 @@ structurally cannot see it. Hence:
 - `.github/workflows/config-canary.yml` — cron, every 6h, boots production on
   the whole version matrix and files one rolling `config-canary` issue. This is
   the layer that catches a throwing plugin. A failure must survive a retry
-  before it alerts, because a canary that reports CDN blips gets muted.
+  before it alerts, because a canary that reports CDN blips gets muted. It
+  probes every version but alerts only at **`--floor v4.0.0`**: the UCSC configs
+  are already broken below that, on MsaView's global (v2.15.0, v3.0.0 — true of
+  every msaview we ship) and on a mobx-state-tree union rejection over config
+  content (v3.7.0). So v4.0.0, not the oldest entry in `HOST_VERSIONS`, is the
+  honest support floor today. Lowering it again means fixing those two first.
 - `run.sh` gates the upload on `check-plugin-urls` +
   `check-config-compat --local` before either `uploadAll.sh` runs. `--local`
   serves the working-tree configs to the real hosted app via request
