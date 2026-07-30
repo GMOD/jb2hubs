@@ -1,0 +1,133 @@
+name: Config canary
+
+# The configs we ship are consumed by hosts we do not control and depend on
+# plugin bundles published from a DIFFERENT repo (jbrowse-plugin-list rehosts
+# them to jbrowse.org/plugins, and the `latest/` paths are no-cache so a publish
+# reaches configs we shipped months ago). So the interesting failures arrive
+# without anyone pushing here, and push-triggered CI structurally cannot see
+# them. This watches production on a timer instead and opens an issue.
+#
+# It caught its reason for existing on day one: the Hubs plugin's `latest` build
+# began calling appendToMenu('File'), which every released core rejects, and
+# hg38/hg19/mm39/hs1 were error pages on v4.0.0 through latest with nothing
+# reporting it.
+
+on:
+  schedule:
+    # every 6h. GitHub disables scheduled workflows after 60 days of repo
+    # inactivity, which this repo's regeneration cadence keeps clear of.
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: config-canary
+  cancel-in-progress: false
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - run: pnpm install
+
+      - name: Probe production
+        id: probe
+        env:
+          # preinstalled on the ubuntu runner image, so no browser action and no
+          # Chromium download
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          set +e
+          probe() {
+            {
+              echo "### plugin urls"
+              node scripts/checkPluginUrls.mjs
+              echo "urls exit=$?"
+              echo
+              echo "### config compat matrix"
+              node scripts/checkConfigCompat.mjs
+              echo "compat exit=$?"
+            } 2>&1
+          }
+
+          probe >canary.log
+          if grep -qE '^(urls|compat) exit=[^0]' canary.log; then
+            # One retry before alerting. A canary that reports a transient CDN
+            # blip as an outage gets muted, and a muted canary is worse than
+            # none, so a failure has to survive twice to count.
+            echo "first pass failed, retrying once to rule out a transient" \
+              >>canary.log
+            sleep 120
+            probe >canary-retry.log
+            cat canary-retry.log >>canary.log
+            if grep -qE '^(urls|compat) exit=[^0]' canary-retry.log; then
+              echo "status=broken" >>"$GITHUB_OUTPUT"
+            else
+              echo "status=flaky" >>"$GITHUB_OUTPUT"
+            fi
+          else
+            echo "status=ok" >>"$GITHUB_OUTPUT"
+          fi
+          cat canary.log
+
+      - name: Open or update the alert issue
+        if: steps.probe.outputs.status == 'broken'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+        run: |
+          # One rolling issue, not one per run: a new issue every 6h for the same
+          # outage trains you to ignore the label.
+          existing=$(gh issue list --label config-canary --state open \
+            --json number --jq '.[0].number')
+          {
+            echo "A shipped config is failing to boot on a hosted JBrowse release."
+            echo
+            echo "Run: $RUN_URL"
+            echo
+            echo '```'
+            tail -c 60000 canary.log
+            echo '```'
+          } >body.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file body.md
+          else
+            gh issue create --title 'Config canary: a shipped config is broken' \
+              --label config-canary --body-file body.md
+          fi
+
+      - name: Close the alert issue on recovery
+        if: steps.probe.outputs.status == 'ok'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --label config-canary --state open \
+            --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" \
+              --comment 'Canary is green again; closing automatically.'
+          fi
+
+      - name: Fail the run when broken
+        if: steps.probe.outputs.status == 'broken'
+        run: exit 1
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: canary-log
+          path: canary*.log

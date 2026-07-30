@@ -124,16 +124,61 @@ fi
 
 # --- Phase 2: Deploy ---
 
+# Refuse to publish configs that cannot boot. Regenerating rewrites every
+# config's plugins[] from hubtools' defaultPlugins, so one bad plugin url turns
+# all ~50900 configs into error pages at once -- and those urls are published
+# from another repo, so the working tree can look untouched while what it names
+# has already broken. --local feeds these exact files to real hosted releases
+# before they become public.
+#
+# Escape hatch on purpose: a gate that cannot be bypassed gets deleted the first
+# time it is wrong during an urgent ship. SKIP_CONFIG_GATE=1 to override.
+gate_configs() {
+  if [ -n "${SKIP_CONFIG_GATE:-}" ]; then
+    echo "SKIP_CONFIG_GATE set; skipping the pre-upload config gate."
+    return 0
+  fi
+  echo "Pre-upload gate: checking every plugin url the configs name..."
+  if ! node scripts/checkPluginUrls.mjs; then
+    echo "Gate failed: a plugin url is broken. Uploading would error-page every"
+    echo "config that names it. Fix the url (or the plugin publish) first, or"
+    echo "re-run with SKIP_CONFIG_GATE=1 if you accept that."
+    return 1
+  fi
+  echo "Pre-upload gate: booting working-tree configs on hosted releases..."
+  if ! node scripts/checkConfigCompat.mjs --local; then
+    echo "Gate failed: a working-tree config does not boot on a hosted JBrowse"
+    echo "release. These configs live at permanent urls that old desktop installs"
+    echo "and published links keep naming, so this would break them. Re-run with"
+    echo "SKIP_CONFIG_GATE=1 if you accept that."
+    return 1
+  fi
+  echo "Pre-upload gate passed."
+}
+
 if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
   # Staging deploys only the website. Data is shared with production (the site
   # references jbrowse.org S3 via absolute URLs), so there is no S3 upload, and
   # staging must not commit/push to main. The website is built with
   # --mode staging (PUBLIC_STAGING=true) which enables in-progress pages.
   echo "Staging mode: skipping S3 data upload and git commit/push."
+  # A staging build links every launch at config-staging.json, and neither site
+  # serves configs -- jbrowse-web resolves ?config= against its own origin, so
+  # they come from the jbrowse.org bucket. Deploy staging before that file is
+  # uploaded and every staging launch 404s its config. Cheap to just check.
+  staging_config="https://jbrowse.org/ucsc/hg38/config-staging.json"
+  if [ "$(curl -s -o /dev/null -w '%{http_code}' -L "$staging_config")" != "200" ]; then
+    echo "Error: $staging_config is not in the bucket."
+    echo "Run ./ucsc2jbrowse/stageConfigs.sh and upload before deploying staging,"
+    echo "or every staging launch fails to fetch its config."
+    exit 1
+  fi
   echo "Deploying website to staging..."
   pnpm --filter website2 run deploy:staging
   echo "Staging deploy complete"
 elif [ "$DRY_RUN" = false ]; then
+  gate_configs
+
   echo "Uploading genark data..."
   ./genark2jbrowse/uploadAll.sh
 

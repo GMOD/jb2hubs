@@ -41,6 +41,12 @@ jobs:
       - name: ShellCheck
         run: pnpm lint:sh
 
+      # Seconds, no browser, and the failure it catches error-pages every config
+      # that names the url. The full boot matrix needs Chrome and minutes, so it
+      # runs in config-canary.yml on a timer instead.
+      - name: Plugin urls
+        run: pnpm check-plugin-urls
+
   test:
     runs-on: ubuntu-latest
     steps:

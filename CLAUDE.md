@@ -69,6 +69,39 @@ unacceptable — not as routine protection. Full reasoning, including why the
 config urls are deliberately **not** versioned:
 `agent-docs/architectural-decision-records/0002-config-compat-across-jbrowse-versions.md`.
 
+### Three places this is checked, because the breakage comes from elsewhere
+
+The plugin bundles are published from **another repo** (jbrowse-plugin-list
+rehosts them to jbrowse.org/plugins, and `latest/` is uploaded no-cache so a
+publish reaches configs shipped months ago). So a config that booted yesterday
+can be an error page today with nothing pushed here — push-triggered CI
+structurally cannot see it. Hence:
+
+- `pnpm check-plugin-urls` — seconds, no browser. Every `plugins[].url` the
+  configs name: reachable, javascript, and actually defines
+  `JBrowsePlugin<Name>`. Runs in `lint.yml`. It canNOT see a bundle that loads
+  and then throws from `configure()`, which is also fatal.
+- `.github/workflows/config-canary.yml` — cron, every 6h, boots production on
+  the whole version matrix and files one rolling `config-canary` issue. This is
+  the layer that catches a throwing plugin. A failure must survive a retry
+  before it alerts, because a canary that reports CDN blips gets muted.
+- `run.sh` gates the upload on `check-plugin-urls` +
+  `check-config-compat --local` before either `uploadAll.sh` runs. `--local`
+  serves the working-tree configs to the real hosted app via request
+  interception, so an unpublished regeneration is tested before it becomes
+  public. `SKIP_CONFIG_GATE=1` overrides.
+
+`--plugin Name=path` does the same substitution for a candidate plugin build, so
+"does this bundle error-page the app" is answerable before publishing it rather
+than after. Use it on every hubs/msaview/protein3d build that these configs
+name.
+
+2026-07-29 is why all of the above exists: `@cmdcolin/jbrowse-plugin-hubs` 1.0.9
+began calling `appendToMenu('File')`, which every released core rejects (the
+File menu is a thunk; `menuItems.push` throws), and hg38/hg19/mm39/hs1 were
+error pages on v4.0.0 through latest. `check-plugin-urls` passed the whole time
+— the url was fine.
+
 ## multiWig composites, table-backed big files, and ENCODE
 
 A UCSC `container multiWig` composite converts to a single
