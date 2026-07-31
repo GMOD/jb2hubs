@@ -115,18 +115,24 @@ export default function OrthologSearch() {
     }
   }
 
-  // Honour a shared/bookmarked link (?gene=BRCA1&ref=9606) — e.g. the back-link
-  // from the conserved-gene-order view — by auto-searching once the assembly
-  // index (store) is ready. Client-only: this island is client:load, so window
-  // is unavailable until mount.
+  // Honour a shared/bookmarked link once the assembly index (store) is ready.
+  // ?ref= alone is the accession page's "orthologs for this species" link: it
+  // sets the reference and waits for a gene, rather than being ignored and
+  // leaving the box on its Human default. ?gene= additionally runs the search
+  // (the back-link from the conserved-gene-order and protein-browser views).
+  // Client-only: this island is client:load, so window is unavailable until mount.
   useEffect(() => {
     if (store && !initialized) {
       setInitialized(true)
       const p = new URLSearchParams(window.location.search)
       const g = p.get('gene')?.trim()
       const r = p.get('ref')?.trim()
+      const ref = r ? refLabel(r) : refInput
+      if (r) {
+        setRefInput(ref)
+      }
       if (g) {
-        void runSearch(g, r ? refLabel(r) : refInput)
+        void runSearch(g, ref)
       }
     }
   }, [store, initialized])
