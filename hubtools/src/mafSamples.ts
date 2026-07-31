@@ -5,9 +5,14 @@
  * mapping is provenance, not a name lookup: only the hub that built the
  * alignment knows which assembly each row's coordinates are in.
  */
+export interface UriLocation {
+  uri: string
+  locationType: 'UriLocation'
+}
+
 export interface SampleAssembly {
   assemblyName: string
-  assemblyConfigUrl: string
+  assemblyConfigLocation: UriLocation
 }
 
 export type SampleAssemblyResolver = (
@@ -18,7 +23,7 @@ export interface MafSample {
   id: string
   label: string
   assemblyName?: string
-  assemblyConfigUrl?: string
+  assemblyConfigLocation?: UriLocation
 }
 
 /**
@@ -48,7 +53,9 @@ export function mafSamplesFromSpeciesOrder({
     .trim()
     .split(/\s+/)
     .filter(id => !!id)
-  return [
-    ...new Set([referenceGenome, ...ids]),
-  ].map(id => ({ id, label: id, ...resolveSampleAssembly?.(id) }))
+  return [...new Set([referenceGenome, ...ids])].map(id => ({
+    id,
+    label: id,
+    ...resolveSampleAssembly?.(id),
+  }))
 }

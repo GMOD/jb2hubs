@@ -11,7 +11,7 @@ its own view. The portal is the natural home for it because it already has the
 genomes loaded.
 
 **Built and shipped for mouseStrains.** A sample entry takes an optional
-`assemblyName` + `assemblyConfigUrl`; rows that have them get "Open
+`assemblyName` + `assemblyConfigLocation`; rows that have them get "Open
 &lt;species&gt; chr:start-end in new view" in the drag-selection right-click
 menu, and clicking fetches that assembly out of its own hosted config and adds
 it as a session assembly. Nothing changes for tracks that don't set the fields.
@@ -51,12 +51,12 @@ until someone has the Hiller assembly table.
   `AKR_J.chr1`, `WSB_EiJ.chr1`, … — the ids from `speciesOrder` exactly.
 - `annotationAdapter` from `frames` (the `mafFrames.bb` UCSC ships next to the
   alignment), lighting up codon view and codon conservation.
-- `assemblyName`/`assemblyConfigUrl` per sample, from the resolver
+- `assemblyName`/`assemblyConfigLocation` per sample, from the resolver
   `genark2jbrowse/src/processMouseStrainsHub.ts` passes in: strains →
   `https://jbrowse.org/hubs/genark/mouseStrains/<strain>/config.json`, mm10/rn6
-  → `https://jbrowse.org/ucsc/<db>/config.json`. Absolute, because the MAF
-  display fetches these itself rather than jbrowse-web resolving them against
-  the config it loaded.
+  → `https://jbrowse.org/ucsc/<db>/config.json`. A `UriLocation`, so relative
+  uris would resolve against the config being written; these are absolute anyway
+  because a strain's config sits in a sibling directory, not under it.
 
 Configs regenerated (`processMouseStrainsHub.ts` then
 `createMouseStrainsChainTracks.ts` — the second re-adds the synteny tracks the
@@ -83,7 +83,7 @@ causes, both since addressed:
   the config first and stays silent when there is nothing there, so a name it
   cannot place costs nothing. Teaching it the GenArk strain layout
   (`/hubs/genark/<hub>/<strain>/config.json`, which does serve these) would need
-  a hub index to know `<hub>`; the MAF configs carry `assemblyConfigUrl`
+  a hub index to know `<hub>`; the MAF configs carry `assemblyConfigLocation`
   precisely so navigation does not depend on that.
 
 ## Bugs found while measuring

@@ -26,13 +26,16 @@ const UCSC_SPECIES = new Set(['mm10', 'rn6'])
 
 // Every row of the MAF is one of this hub's own strains or one of those two, so
 // the alignment's `speciesOrder` resolves exactly — the sample ids ARE the
-// assembly names. Absolute URLs because the MAF display fetches these itself,
-// rather than jbrowse-web resolving them against the config it loaded.
+// assembly names. Absolute, because a strain's config sits under a sibling
+// directory of the one being written, not under it.
 function resolveSampleAssembly(sampleId: string) {
-  const configUrl = UCSC_SPECIES.has(sampleId)
+  const uri = UCSC_SPECIES.has(sampleId)
     ? `${SITE}/ucsc/${sampleId}/config.json`
     : `${SITE}${CONFIG_BASE}/${sampleId}/config.json`
-  return { assemblyName: sampleId, assemblyConfigUrl: configUrl }
+  return {
+    assemblyName: sampleId,
+    assemblyConfigLocation: { uri, locationType: 'UriLocation' as const },
+  }
 }
 
 console.log('Fetching mouseStrains hub...')
