@@ -1,10 +1,6 @@
 ---
 import TreeNode from './TreeNode.astro'
-import {
-  getCachedTree,
-  extractSubtreeByTaxonId,
-  type FlatNodeData,
-} from '../utils/taxonomyCache'
+import { getCachedTree, type FlatNodeData } from '../utils/taxonomyCache'
 
 interface SpeciesData {
   accession: string
@@ -38,58 +34,36 @@ speciesData.forEach(species => {
   speciesDataMap.set(species.accession, species)
 })
 
-// Get tree - use precomputed data if available (for taxonomy pages)
-let tree: FlatNodeData | null = null
-let error: string | null = null
-
-try {
-  if (precomputedSubtree !== undefined) {
-    // Use precomputed data (for taxonomy ID pages)
-    tree = precomputedSubtree
-
-    if (!tree) {
-      error = `No subtree found for taxonomy ID: ${filterTaxonId}`
-    }
-  } else {
-    // Fallback to dynamic loading (for category pages)
-    tree = getCachedTree(category)
-
-    if (!tree) {
-      error = `Failed to load taxonomy tree for category: ${category}`
-    } else if (filterTaxonId) {
-      // If filterTaxonId is provided, extract the subtree for that taxonId
-      tree = extractSubtreeByTaxonId(tree, filterTaxonId)
-      if (!tree) {
-        error = `No subtree found for taxonomy ID: ${filterTaxonId}`
-      }
-    }
-  }
-} catch (err) {
-  error = `Error loading tree: ${err}`
-  console.error('Tree loading error:', err)
-}
+// A taxonomy-ID page hands its subtree down already extracted (the page indexes
+// the tree once for all 74K of them); a category page names a whole tree of its
+// own. getCachedTree reports a read/parse failure as null.
+const tree: FlatNodeData | null =
+  precomputedSubtree === undefined
+    ? getCachedTree(category)
+    : precomputedSubtree
+const error = tree
+  ? null
+  : filterTaxonId
+    ? `No subtree found for taxonomy ID: ${filterTaxonId}`
+    : `Failed to load taxonomy tree for category: ${category}`
 ---
 
 <div id={containerId}>
   <div id="taxonomy-tree-content">
     {
-      error ? (
-        <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
-          <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
-            Error loading taxonomy
-          </h3>
-          <p style="color: #dc2626;">{error}</p>
-        </div>
-      ) : !tree ? (
-        <div style="padding: 16px; border: 1px solid #d1d5db; background-color: #f9fafb; border-radius: 4px;">
-          <p>Loading taxonomy...</p>
-        </div>
-      ) : (
+      tree ? (
         <div>
           <TreeNode
             node={tree}
             speciesDataMap={speciesDataMap}
           />
+        </div>
+      ) : (
+        <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
+          <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+            Error loading taxonomy
+          </h3>
+          <p style="color: #dc2626;">{error}</p>
         </div>
       )
     }

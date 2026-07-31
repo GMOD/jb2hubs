@@ -132,7 +132,10 @@ export async function assembleNeighborhood(
   const neighborIds = await searchNeighborIds(
     refTaxonId,
     queryRef.chromosome,
-    queryRef.start - flankBp,
+    // Clamped to 1 (coordinates are 1-based): a gene within flankBp of the
+    // chromosome start would otherwise ask NCBI for a negative Base Position,
+    // which matches nothing and leaves the view with the query gene alone.
+    Math.max(1, queryRef.start - flankBp),
     queryRef.end + flankBp,
   )
   const queryMid = (queryRef.start + queryRef.end) / 2

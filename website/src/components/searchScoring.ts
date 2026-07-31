@@ -95,6 +95,27 @@ export function scoreEntry(entry: IndexEntry, terms: string[]) {
   return score
 }
 
+// Best-first ranking over the whole index, shared by the search page and the
+// header typeahead so both order results the same way. `include` narrows the
+// candidates before scoring (the page's clade / reference-only filters).
+export function rankEntries(
+  index: IndexEntry[],
+  terms: string[],
+  include?: (entry: IndexEntry) => boolean,
+) {
+  const scored: { entry: IndexEntry; score: number }[] = []
+  for (const entry of index) {
+    if (!include || include(entry)) {
+      const score = scoreEntry(entry, terms)
+      if (score >= 0) {
+        scored.push({ entry, score })
+      }
+    }
+  }
+  scored.sort((a, b) => b.score - a.score)
+  return scored.map(s => s.entry)
+}
+
 // Someone deliberately designated this assembly as *the* one for its species —
 // either UCSC built a browser for it or NCBI marked it a reference genome. Also
 // drives the "Reference assemblies only" filter, which is how a user cuts the

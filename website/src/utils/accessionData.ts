@@ -73,6 +73,33 @@ export function tryAndReadJSON<T>(filePath: string): T | null {
   }
 }
 
+// The generated hub tree sits at the repo root, one level above the website
+// package Astro builds from — so every read of it is '../hubs', not 'hubs'.
+// Sharded by the accession's digits: hubs/GCF/000/001/405/GCF_000001405.40/.
+function hubFile(accession: string, file: string) {
+  const chunks = accessionChunks(accession)
+  return chunks
+    ? path.join(
+        '..',
+        'hubs',
+        chunks.base,
+        chunks.b1,
+        chunks.b2,
+        chunks.b3,
+        accession,
+        file,
+      )
+    : undefined
+}
+
+// The GenArk assembly gallery image, scraped alongside the hub.
+export function loadHubImage(accession: string) {
+  const file = hubFile(accession, 'image.json')
+  return file
+    ? tryAndReadJSON<{ imageUrl?: string; pageUrl?: string }>(file)
+    : null
+}
+
 export function loadAccessionMap() {
   return new Map<string, AssemblyData>(
     (
@@ -149,6 +176,14 @@ function bySuitability(a: SiblingAssembly, b: SiblingAssembly) {
   )
 }
 
+export interface SiblingEntry {
+  siblings: SiblingAssembly[]
+  // Every assembly we host for the taxon, this one included — what the "see all"
+  // link leads to. Not siblings.length + 1: a paired GenBank/RefSeq record is
+  // left out of the siblings but is still a row on the taxonomy page.
+  taxonCount: number
+}
+
 // 2.7K of the 42K taxa we host have more than one assembly, and choosing between
 // them is exactly the question an accession page should answer. Maps each
 // accession to the other assemblies of the same taxon, best first. The paired
@@ -161,11 +196,11 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
     byTaxon.set(data.taxonId, group)
   }
 
-  const index = new Map<string, SiblingAssembly[]>()
+  const index = new Map<string, SiblingEntry>()
   for (const [accession, data] of accessions) {
-    index.set(
-      accession,
-      (byTaxon.get(data.taxonId) ?? [])
+    const group = byTaxon.get(data.taxonId) ?? []
+    index.set(accession, {
+      siblings: group
         .filter(
           other =>
             other.accession !== accession &&
@@ -173,18 +208,17 @@ export function buildSiblingIndex(accessions: Map<string, AssemblyData>) {
         )
         .map(toSibling)
         .sort(bySuitability),
-    )
+      taxonCount: group.length,
+    })
   }
   return index
 }
 
 export function loadNcbiDetails(accession: string): NcbiDetails {
-  const chunks = accessionChunks(accession)
-  if (!chunks) {
+  const ncbiPath = hubFile(accession, 'ncbi.json')
+  if (!ncbiPath) {
     return {}
   }
-  const { base, b1, b2, b3 } = chunks
-  const ncbiPath = path.join('hubs', base, b1, b2, b3, accession, 'ncbi.json')
   const raw = tryAndReadJSON<{
     reports?: {
       assembly_info?: {

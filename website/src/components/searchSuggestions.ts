@@ -1,4 +1,4 @@
-import { scoreEntry } from './searchScoring.ts'
+import { rankEntries } from './searchScoring.ts'
 import { bareCommonName } from '../utils/names.ts'
 
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
@@ -17,21 +17,9 @@ export function suggestEntries(
 ) {
   const trimmed = query.trim()
   const terms = trimmed.toLowerCase().split(/\s+/).filter(Boolean)
-  const suggestions: IndexEntry[] = []
-  if (trimmed.length >= MIN_SUGGEST_LENGTH && terms.length > 0) {
-    const scored: { entry: IndexEntry; score: number }[] = []
-    for (const entry of index) {
-      const score = scoreEntry(entry, terms)
-      if (score >= 0) {
-        scored.push({ entry, score })
-      }
-    }
-    scored.sort((a, b) => b.score - a.score)
-    for (const { entry } of scored.slice(0, limit)) {
-      suggestions.push(entry)
-    }
-  }
-  return suggestions
+  return trimmed.length >= MIN_SUGGEST_LENGTH && terms.length > 0
+    ? rankEntries(index, terms).slice(0, limit)
+    : []
 }
 
 // The assembly leads rather than the species: a query names one organism far

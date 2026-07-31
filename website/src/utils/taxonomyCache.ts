@@ -212,79 +212,61 @@ export function getCachedTree(category: string): FlatNodeData | null {
   }
 }
 
-/**
- * Extract subtree for a specific taxonId
- */
-export function extractSubtreeByTaxonId(
-  node: FlatNodeData | null,
-  targetTaxonId: string,
-): FlatNodeData | null {
-  if (!node) {
-    return null
-  }
-
-  // Check if current node matches the taxonId
-  if (node.taxonId === targetTaxonId) {
-    return node
-  }
-
-  // Check if any child matches
-  if (node.children) {
-    for (const child of node.children) {
-      const result = extractSubtreeByTaxonId(child, targetTaxonId)
-      if (result) {
-        return result
-      }
-    }
-  }
-
-  return null
+export interface TaxonomyIndex {
+  // The node a taxonomy page is rooted at, or null when the tree has no such
+  // taxon.
+  subtree: (taxonId: string) => FlatNodeData | null
+  // Root-to-node path, inclusive; empty when the tree has no such taxon.
+  lineage: (taxonId: string) => FlatNodeData[]
 }
 
-/**
- * Extract lineage (path from root to target node)
- */
-export function extractLineageByTaxonId(
-  node: FlatNodeData | null,
-  targetTaxonId: string,
-): FlatNodeData[] {
-  if (!node) {
-    return []
-  }
+// One DFS answers both lookups for every taxon. Rescanning the tree per page
+// instead cost ~6ms each, which over the 74K taxonomy pages was ~7 minutes of
+// every build. A taxonId occurring at more than one node resolves to the first
+// in pre-order, as a from-the-root search did.
+function buildTaxonomyIndex(root: FlatNodeData): TaxonomyIndex {
+  const nodes = new Map<string, FlatNodeData>()
+  const parents = new Map<FlatNodeData, FlatNodeData>()
 
-  // Check if current node matches the taxonId
-  if (node.taxonId === targetTaxonId) {
-    return [node]
-  }
-
-  // Check if any child's lineage contains the target
-  if (node.children) {
-    for (const child of node.children) {
-      const childLineage = extractLineageByTaxonId(child, targetTaxonId)
-      if (childLineage.length > 0) {
-        // Found it! Prepend current node to the lineage
-        return [node, ...childLineage]
-      }
+  function visit(node: FlatNodeData, parent: FlatNodeData | undefined) {
+    if (node.taxonId !== undefined && !nodes.has(node.taxonId)) {
+      nodes.set(node.taxonId, node)
+    }
+    if (parent) {
+      parents.set(node, parent)
+    }
+    for (const child of node.children ?? []) {
+      visit(child, node)
     }
   }
+  visit(root, undefined)
 
-  return []
+  return {
+    subtree: taxonId => nodes.get(taxonId) ?? null,
+    lineage: taxonId => {
+      const path: FlatNodeData[] = []
+      let node = nodes.get(taxonId)
+      while (node) {
+        path.push(node)
+        node = parents.get(node)
+      }
+      return path.reverse()
+    },
+  }
 }
 
-/**
- * Count accessions in a tree
- */
-export function countAccessions(node: FlatNodeData | null): number {
-  if (!node) {
-    return 0
-  }
-  let count = node.accession ? 1 : 0
-  if (node.children) {
-    for (const child of node.children) {
-      count += countAccessions(child)
+const indexCache = new Map<string, TaxonomyIndex>()
+
+export function getTaxonomyIndex(category: string): TaxonomyIndex | null {
+  let index = indexCache.get(category) ?? null
+  if (!index) {
+    const tree = getCachedTree(category)
+    if (tree) {
+      index = buildTaxonomyIndex(tree)
+      indexCache.set(category, index)
     }
   }
-  return count
+  return index
 }
 
 /**

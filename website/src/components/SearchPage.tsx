@@ -5,7 +5,7 @@ import { Search, X } from 'lucide-react'
 import OrangeStar from './OrangeStar.tsx'
 import RedX from './RedX.tsx'
 import styles from './SearchPage.module.css'
-import { entryHref, isCurated, scoreEntry } from './searchScoring.ts'
+import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
 import {
   genarkConfigPath,
   jbrowseUrl,
@@ -63,23 +63,16 @@ export default function SearchPage() {
 
   const results = useMemo(() => {
     const terms = trimmedQuery.toLowerCase().split(/\s+/).filter(Boolean)
-    if (terms.length === 0) {
-      return []
-    }
     const cladeSet = clade && cladeSets ? cladeSets.get(clade) : undefined
-    const scored: { entry: IndexEntry; score: number }[] = []
-    for (const entry of index) {
-      const outsideClade = !!cladeSet && !cladeSet.has(entry[6])
-      const uncurated = !!curatedOnly && !isCurated(entry)
-      if (!outsideClade && !uncurated) {
-        const score = scoreEntry(entry, terms)
-        if (score >= 0) {
-          scored.push({ entry, score })
-        }
-      }
-    }
-    scored.sort((a, b) => b.score - a.score)
-    return scored.map(s => s.entry)
+    return terms.length === 0
+      ? []
+      : rankEntries(
+          index,
+          terms,
+          entry =>
+            (!cladeSet || cladeSet.has(entry[6])) &&
+            (!curatedOnly || isCurated(entry)),
+        )
   }, [index, trimmedQuery, clade, curatedOnly, cladeSets])
 
   const {

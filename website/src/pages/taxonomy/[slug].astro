@@ -3,12 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
-import {
-  getCachedTree,
-  extractSubtreeByTaxonId,
-  extractLineageByTaxonId,
-  collectAccessions,
-} from '../../utils/taxonomyCache'
+import { getTaxonomyIndex, collectAccessions } from '../../utils/taxonomyCache'
 import type { FlatNodeData } from '../../utils/taxonomyCache'
 import {
   categoryTable,
@@ -98,8 +93,9 @@ export async function getStaticPaths() {
       taxonIds.add(match[1]) // match[1] is the taxonId
     }
 
-    // Load and parse the tree once for all taxonomy pages
-    const fullTree = getCachedTree('all')
+    // Parse the tree once and index it, so each page is a map lookup rather than
+    // its own walk from the root.
+    const taxonomy = getTaxonomyIndex('all')
 
     // Create a map of all species data for fast lookup
     const allSpeciesMap = new Map<string, HubSource>(
@@ -112,12 +108,8 @@ export async function getStaticPaths() {
         seenSlugs.add(taxonId)
 
         // Pre-compute subtree and lineage for this taxonId
-        const subtree = fullTree
-          ? extractSubtreeByTaxonId(fullTree, taxonId)
-          : null
-        const lineage = fullTree
-          ? extractLineageByTaxonId(fullTree, taxonId)
-          : []
+        const subtree = taxonomy ? taxonomy.subtree(taxonId) : null
+        const lineage = taxonomy ? taxonomy.lineage(taxonId) : []
 
         // Collect accessions from the subtree
         const relevantAccessions = subtree ? collectAccessions(subtree) : []
