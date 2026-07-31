@@ -1,8 +1,10 @@
 import { categoryMap } from './const.ts'
 import { firstField } from './featureDisplay.ts'
+import { mafSamplesFromSpeciesOrder } from './mafSamples.ts'
 import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
 import { resolve } from './util.ts'
 
+import type { SampleAssemblyResolver } from './mafSamples.ts'
 import type { Adapter } from './types.ts'
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
 
@@ -12,6 +14,8 @@ function makeAdapterConf(
   sequenceAdapter: Adapter,
   data: RaStanza['data'],
   trackDbUrl: string,
+  assemblyName: string,
+  resolveSampleAssembly?: SampleAssemblyResolver,
 ) {
   if (baseTrackType === 'bam') {
     return { type: 'AlignmentsTrack', adapter: { type: 'BamAdapter', uri } }
@@ -29,16 +33,35 @@ function makeAdapterConf(
     const summaryUri = data.summary
       ? resolve(data.summary, trackDbUrl)
       : undefined
+    // UCSC ships the CDS reading frames next to the alignment (mafFrames.bb);
+    // without it the codon view and codon conservation have nothing to draw
+    const framesUri = data.frames ? resolve(data.frames, trackDbUrl) : undefined
+    const samples = data.speciesOrder
+      ? mafSamplesFromSpeciesOrder({
+          speciesOrder: data.speciesOrder,
+          referenceGenome: assemblyName,
+          resolveSampleAssembly,
+        })
+      : undefined
     return {
       type: 'MafTrack',
       adapter: {
         type: 'BigMafAdapter',
         bigBedLocation: { uri },
+        ...(samples ? { samples } : {}),
         ...(summaryUri
           ? {
               summaryAdapter: {
                 type: 'BigBedAdapter',
                 bigBedLocation: { uri: summaryUri },
+              },
+            }
+          : {}),
+        ...(framesUri
+          ? {
+              annotationAdapter: {
+                type: 'BigBedAdapter',
+                bigBedLocation: { uri: framesUri },
               },
             }
           : {}),
@@ -79,6 +102,7 @@ export function createTrackConfiguration({
   trackDbUrl,
   sequenceAdapter,
   assemblyName,
+  resolveSampleAssembly,
 }: {
   track: RaStanza
   trackName: string
@@ -86,6 +110,7 @@ export function createTrackConfiguration({
   trackDbUrl: string
   sequenceAdapter: Adapter
   assemblyName: string
+  resolveSampleAssembly?: SampleAssemblyResolver
 }) {
   const conf = makeTrackConfig({
     track,
@@ -93,6 +118,7 @@ export function createTrackConfiguration({
     trackDb,
     sequenceAdapter,
     assemblyName,
+    resolveSampleAssembly,
   })
   const { data } = track
   const { group, html } = data
@@ -131,12 +157,14 @@ function makeTrackConfig({
   trackDb,
   sequenceAdapter,
   assemblyName,
+  resolveSampleAssembly,
 }: {
   track: RaStanza
   trackDbUrl: string
   trackDb: TrackDbFile
   sequenceAdapter: Adapter
   assemblyName: string
+  resolveSampleAssembly?: SampleAssemblyResolver
 }) {
   const { data } = track
   const parent = data.parent ?? ''
@@ -162,6 +190,8 @@ function makeTrackConfig({
     sequenceAdapter,
     data,
     trackDbUrl,
+    assemblyName,
+    resolveSampleAssembly,
   )
   if (!adapterConf) {
     console.error('Unknown track:', name, baseTrackType)

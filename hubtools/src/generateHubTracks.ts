@@ -6,6 +6,7 @@ import {
   isMetaTrack,
 } from './trackUtils.ts'
 
+import type { SampleAssemblyResolver } from './mafSamples.ts'
 import type { Adapter } from './types.ts'
 import type { TrackDbFile } from '@gmod/ucsc-hub'
 
@@ -14,11 +15,13 @@ export function generateHubTracks({
   trackDbUrl,
   assemblyName,
   sequenceAdapter,
+  resolveSampleAssembly,
 }: {
   trackDb: TrackDbFile
   trackDbUrl: string
   assemblyName: string
   sequenceAdapter: Adapter
+  resolveSampleAssembly?: SampleAssemblyResolver
 }) {
   return Object.entries(trackDb.data)
     .map(([trackName, track]) => {
@@ -36,6 +39,7 @@ export function generateHubTracks({
         trackDbUrl,
         sequenceAdapter,
         assemblyName,
+        resolveSampleAssembly,
       })
     })
     .filter(notEmpty)

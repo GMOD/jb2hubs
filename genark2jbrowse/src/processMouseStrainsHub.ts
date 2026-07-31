@@ -16,10 +16,29 @@ const MOUSE_STRAINS_HUB_URL =
 
 const JBROWSE_BASE = 'https://jbrowse.org/code/jb2/latest/?config='
 const CONFIG_BASE = '/hubs/genark/mouseStrains'
+const SITE = 'https://jbrowse.org'
+
+// The strains this hub builds a config for, plus the two UCSC dbs the cactus
+// alignment includes but the hub does not host (mm10, rn6 have no twoBitPath in
+// its genomes file, so generateJBrowseConfigsForMultiGenomeHub skips them and
+// ucsc2jbrowse publishes them instead).
+const UCSC_SPECIES = new Set(['mm10', 'rn6'])
+
+// Every row of the MAF is one of this hub's own strains or one of those two, so
+// the alignment's `speciesOrder` resolves exactly — the sample ids ARE the
+// assembly names. Absolute URLs because the MAF display fetches these itself,
+// rather than jbrowse-web resolving them against the config it loaded.
+function resolveSampleAssembly(sampleId: string) {
+  const configUrl = UCSC_SPECIES.has(sampleId)
+    ? `${SITE}/ucsc/${sampleId}/config.json`
+    : `${SITE}${CONFIG_BASE}/${sampleId}/config.json`
+  return { assemblyName: sampleId, assemblyConfigUrl: configUrl }
+}
 
 console.log('Fetching mouseStrains hub...')
 const configs = await generateJBrowseConfigsForMultiGenomeHub(
   MOUSE_STRAINS_HUB_URL,
+  { resolveSampleAssembly },
 )
 
 const metadata = configs.map(

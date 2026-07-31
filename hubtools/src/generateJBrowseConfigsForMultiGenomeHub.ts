@@ -4,6 +4,8 @@ import { generateHubTracks } from './generateHubTracks.ts'
 import { createHtmlLink } from './trackUtils.ts'
 import { makeDefaultSession, myfetchtext, resolve } from './util.ts'
 
+import type { SampleAssemblyResolver } from './mafSamples.ts'
+
 // Fetches a trackDb file and recursively resolves `include` directives,
 // returning the concatenated text of all included files.
 async function fetchTrackDbWithIncludes(trackDbUrl: string): Promise<string> {
@@ -25,7 +27,20 @@ async function fetchTrackDbWithIncludes(trackDbUrl: string): Promise<string> {
   return [text, ...parts].join('\n\n')
 }
 
-export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
+export async function generateJBrowseConfigsForMultiGenomeHub(
+  hubUrl: string,
+  {
+    resolveSampleAssembly,
+  }: {
+    /**
+     * Maps a MAF sample id (a genome id from the hub's `speciesOrder`) to the
+     * assembly + hosted config the portal serves it as, making that row
+     * navigable. Supplied by the caller because only it knows where the
+     * generated configs are published to.
+     */
+    resolveSampleAssembly?: SampleAssemblyResolver
+  } = {},
+) {
   const hubFileText = await myfetchtext(hubUrl)
   const hub = new HubFile(hubFileText)
 
@@ -93,6 +108,7 @@ export async function generateJBrowseConfigsForMultiGenomeHub(hubUrl: string) {
       trackDbUrl,
       assemblyName: genomeName,
       sequenceAdapter,
+      resolveSampleAssembly,
     })
 
     const config = {
