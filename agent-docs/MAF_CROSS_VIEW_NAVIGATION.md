@@ -69,12 +69,22 @@ Loaded the regenerated AKR_J config in a local jbrowse-web build: 18 rows in
 clicking `Open SPRET_EiJ chr1:3129040-3129126` loaded the SPRET_EiJ assembly and
 opened a second LGV there.
 
-One rough edge, pre-existing and not from this change: the Hubs plugin these
-configs load (`@cmdcolin/jbrowse-plugin-hubs`) reacts to a newly added session
-assembly by opening `conn_<name>` against
-`https://jbrowse.org/ucsc/<name>/config.json`. A GenArk strain has no `/ucsc/`
-path, so the user gets a red 404 snackbar even though the navigation worked.
-Worth teaching that plugin the GenArk layout (or scoping the auto-connect).
+The red 404 snackbar this first showed alongside the second view is fixed. Two
+causes, both since addressed:
+
+- `openSampleInNewView` asked "do we have this assembly?" with
+  `assemblyManager.get()`, and `get()` on an unknown name is exactly what
+  reports it to `Core-handleUnrecognizedAssembly`. So the click told the Hubs
+  plugin to go resolve `SPRET_EiJ` a moment before the MAF display supplied it
+  itself. `assemblyManager.has()` (jbrowse-components) is the non-reporting
+  probe; the two hub connections' `doConnect` had the same bug.
+- `@cmdcolin/jbrowse-plugin-hubs` guessed `https://jbrowse.org/ucsc/<name>/` for
+  any non-accession name, and a GenArk strain has no `/ucsc/` path. It now HEADs
+  the config first and stays silent when there is nothing there, so a name it
+  cannot place costs nothing. Teaching it the GenArk strain layout
+  (`/hubs/genark/<hub>/<strain>/config.json`, which does serve these) would need
+  a hub index to know `<hub>`; the MAF configs carry `assemblyConfigUrl`
+  precisely so navigation does not depend on that.
 
 ## Bugs found while measuring
 
