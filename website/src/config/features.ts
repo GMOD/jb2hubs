@@ -28,4 +28,8 @@ export const features = {
   // The /pangenome HPRC pangenome explorer (curated divergence loci + JBrowse /
   // react-msaview launches).
   pangenome: staging,
+  // "Open in Desktop" beside a launch link. Staged until JBrowse Desktop 5.0
+  // ships: the jbrowse:// handler landed after v4.2.1, so on every install in
+  // the wild today the link silently does nothing.
+  desktopLinks: staging,
 }

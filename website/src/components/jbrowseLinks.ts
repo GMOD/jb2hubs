@@ -23,6 +23,19 @@ export function specUrl(
   return `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}&session=spec-${encodeURIComponent(session)}`
 }
 
+// A launch url wrapped as the jbrowse:// link that opens it in an installed
+// JBrowse Desktop (5.0+, which is where the handler lands). The whole url is
+// carried as one encoded parameter rather than by copying its query, so a config
+// named relatively still resolves against the web instance the link points at.
+//
+// Mirrors Desktop's own `toProtocolUrl`
+// (products/jbrowse-desktop/electron/launchTarget.ts). The two are separate
+// repos and cannot share the function, so `desktopLinks.test.ts` asserts the
+// property that matters: the wrapper round-trips the exact url back out.
+export function desktopUrl(webUrl: string) {
+  return `jbrowse://open?url=${encodeURIComponent(webUrl)}`
+}
+
 // The merge API stitches several hosted hubs into one config.
 export const mergeConfig = (hubIds: string[]) =>
   `${MERGE_API}?hubIds=${hubIds.join(',')}`

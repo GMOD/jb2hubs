@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
+import OpenInDesktop from './OpenInDesktop.tsx'
 import { syntenyViewUrl } from './jbrowseLinks.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
@@ -311,14 +312,20 @@ export default function SyntenySelector({ data }: Props) {
 
       <div className="synteny-actions">
         {launchUrl ? (
-          <a
-            href={launchUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="synteny-launch"
-          >
-            Open synteny view →
-          </a>
+          <>
+            <a
+              href={launchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="synteny-launch"
+            >
+              Open synteny view →
+            </a>
+            <OpenInDesktop
+              className="synteny-launch synteny-launch-secondary"
+              webUrl={launchUrl}
+            />
+          </>
         ) : (
           <button
             className="synteny-launch"
