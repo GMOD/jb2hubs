@@ -1,11 +1,13 @@
 import useSWRImmutable from 'swr/immutable'
 
+import OpenInDesktop from './OpenInDesktop.tsx'
 import PangeneMatrix from './PangeneMatrix.tsx'
 import PangenomeBarChart from './PangenomeBarChart.tsx'
 import PangenomeMsaSection from './PangenomeMsaSection.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import {
   crossSpeciesGeneOrderUrl,
+  graphLocusUrl,
   graphVcfLgvUrl,
   referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
@@ -41,6 +43,8 @@ export default function PangenomeLocusDashboard({
   )
   const gene = syntenyGene(locus)
   const syntenyUrl = referenceSyntenyUrl(dataset, locus)
+  const variantsUrl = graphVcfLgvUrl(dataset, locus)
+  const graphUrl = graphLocusUrl(dataset, locus)
 
   return (
     <div className="pg-dashboard">
@@ -70,12 +74,26 @@ export default function PangenomeLocusDashboard({
       <div className="pg-launch-bar">
         <a
           className="pg-launch-btn"
-          href={graphVcfLgvUrl(dataset, locus)}
+          href={variantsUrl}
           target="_blank"
           rel="noreferrer"
         >
           Browse {dataset.label} variants + structural variation in JBrowse →
         </a>
+        {graphUrl && (
+          <a
+            className="pg-launch-btn"
+            href={graphUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Draw {gene} as a pangenome graph →
+          </a>
+        )}
+        <OpenInDesktop
+          className="pg-launch-btn pg-launch-secondary"
+          webUrl={variantsUrl}
+        />
         {syntenyUrl && dataset.syntenyTarget && (
           <a
             className="pg-launch-btn pg-launch-secondary"
@@ -105,9 +123,8 @@ export default function PangenomeLocusDashboard({
       {summary && (
         <>
           <p className="pg-hint pg-provenance">
-            From the {summary.source} VCF ({summary.sampleBurden.length} samples
-            in the graph cohort — a different set from the 232-assembly GenArk
-            listing), a reference-projected decomposition of the graph onto{' '}
+            From the {summary.source} VCF ({summary.sampleBurden.length}{' '}
+            samples), a reference-projected decomposition of the graph onto{' '}
             {summary.ref}; classes per <code>vcfwave</code>.
           </p>
           <div className="pg-charts">

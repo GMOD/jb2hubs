@@ -27,7 +27,7 @@ const OUT_DIR = path.join(__dirname, 'public/pangenome/msa')
 const TABIX_OPTS = { cwd: os.tmpdir() }
 
 const VCF_URL =
-  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.vcfbub.a100k.wave.vcf.gz'
+  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz'
 const UCSC_API = 'https://api.genome.ucsc.edu'
 const WINDOW = 800
 // Skip windows containing a single insertion longer than this: the column-locked

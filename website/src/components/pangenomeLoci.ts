@@ -30,6 +30,25 @@ export interface PangenomeLocus {
   // a matrix. Omitted where gene-level copy number isn't relevant (e.g. an
   // intragenic VNTR). Names match the lh3/pangene human100 graph.
   pangeneGenes?: string[]
+  // Narrower window for the graph launch, when the display window above is too
+  // wide to draw as one (see MAX_GRAPH_WINDOW_BP).
+  graphWindow?: { start: number; end: number }
+}
+
+// A graph draws a window at a time, and the layout scales itself to a target
+// node size — so ten times the nodes is the same ink at a tenth the size, and a
+// megabase-wide locus draws as one unreadable thread rather than as loops. The
+// cap is the widest window the JBrowse pangenome tutorial draws (AMY1, 145 kb).
+// Past it a locus needs an explicit `graphWindow` or it gets no graph launch.
+export const MAX_GRAPH_WINDOW_BP = 150_000
+
+/** The window to cut a subgraph from, or undefined if this locus has none. */
+export function graphWindow(locus: PangenomeLocus) {
+  return locus.graphWindow
+    ? locus.graphWindow
+    : locus.end - locus.start <= MAX_GRAPH_WINDOW_BP
+      ? { start: locus.start, end: locus.end }
+      : undefined
 }
 
 export const VARIATION_LABELS: Record<VariationClass, string> = {
@@ -50,6 +69,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr6',
     start: 28_510_000,
     end: 33_480_000,
+    // The classical class III stretch around C4, which is where the graph's
+    // structure is legible; the full 5 Mb MHC is a linear view's job.
+    graphWindow: { start: 32_500_000, end: 32_560_000 },
     variation: ['hyperdiversity', 'cnv'],
     pangeneGenes: [
       'HLA-A',
@@ -75,6 +97,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 103_540_000,
     end: 103_830_000,
+    graphWindow: { start: 103_600_000, end: 103_745_000 },
     variation: ['cnv'],
     pangeneGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
   },

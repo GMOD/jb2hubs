@@ -25,7 +25,7 @@ const OUT_DIR = path.join(__dirname, 'public/pangenome')
 const TABIX_OPTS = { cwd: os.tmpdir() }
 
 const VCF_URL =
-  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.vcfbub.a100k.wave.vcf.gz'
+  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz'
 
 interface Bin {
   label: string
@@ -33,8 +33,11 @@ interface Bin {
 }
 
 // AF and size bins are fixed edges so every locus is directly comparable.
-// 45 samples → ~89 alleles, so the rarest observable AF is ~1.1%; bins split the
-// rare end (where most pangenome variants sit) rather than a dead <1% bucket.
+// Release 2 is 232 samples → up to 464 haplotypes, so the rarest observable AF is
+// ~0.2% and the ≤2% bin now holds roughly the first nine haplotypes rather than
+// the first one. Edges are unchanged from release 1 on purpose: they are what
+// makes summaries comparable across loci, and the rare end is still where most
+// pangenome variants sit.
 const AF_BINS: { label: string; max: number }[] = [
   { label: '≤2%', max: 0.02 },
   { label: '2–5%', max: 0.05 },
@@ -196,7 +199,7 @@ async function summarizeLocus(
     gene: locus.gene,
     region,
     ref: 'GRCh38',
-    source: 'HPRC minigraph-cactus v1.1',
+    source: 'HPRC minigraph-cactus v2.0 (release 2)',
     variantCount,
     typeCounts,
     afHistogram: AF_BINS.map((b, i) => ({

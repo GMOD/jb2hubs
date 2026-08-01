@@ -5,10 +5,15 @@
 // CORS-open VCF — the launch works without first baking the track into the config.
 
 import { mergeConfig, specUrl } from './jbrowseLinks.ts'
-import { locusRegion, syntenyGene } from './pangenomeLoci.ts'
+import { graphWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
+
+// Pins the linear view's id so the graph can name it as its hover-sync partner.
+// A session spec may set a view id (LaunchLinearGenomeView takes one for exactly
+// this), and both views come from the same spec, so the constant is safe.
+const LGV_ID = 'pangenome-locus-lgv'
 
 // The graph VCF as an inline session track (public, CORS-open, tabix-indexed).
 function graphVcfTrack(dataset: PangenomeDataset) {
@@ -53,6 +58,48 @@ export function graphVcfLgvUrl(
   locus: PangenomeLocus,
 ) {
   return referenceLgvUrl(dataset, locusRegion(locus))
+}
+
+// The locus drawn as the graph itself, under a linear view of the same window.
+// `loadedTrackId`/`loadedRegion` are plain persisted view props, so the graph
+// opens on the region directly rather than the user rubberbanding to it; the
+// shared `id`/`connectedViewId` pairs the two panels for hover sync.
+//
+// Undefined when the dataset has no hosted graph, or when the locus is too wide
+// to draw as one graph and has picked no narrower window.
+export function graphLocusUrl(
+  dataset: PangenomeDataset,
+  locus: PangenomeLocus,
+) {
+  const graph = dataset.graphBrowser
+  const window = graphWindow(locus)
+  return graph && window
+    ? specUrl(graph.configUrl, [
+        {
+          type: 'LinearGenomeView',
+          id: LGV_ID,
+          assembly: dataset.reference.assembly,
+          loc: `${locus.chrom}:${window.start.toLocaleString()}-${window.end.toLocaleString()}`,
+          tracks: [
+            graph.geneTrackId,
+            graph.bubblesTrackId,
+            graph.segmentsTrackId,
+          ],
+        },
+        {
+          type: 'GraphGenomeView',
+          displayName: `${locus.gene} graph`,
+          loadedTrackId: graph.segmentsTrackId,
+          loadedRegion: {
+            refName: locus.chrom,
+            assemblyName: dataset.reference.assembly,
+            start: window.start,
+            end: window.end,
+          },
+          connectedViewId: LGV_ID,
+        },
+      ])
+    : undefined
 }
 
 // Internal cross-link into the conserved-gene-order view for the locus's marker

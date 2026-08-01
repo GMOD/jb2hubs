@@ -39,9 +39,22 @@ export interface PangenomeSyntenyTarget {
   label: string
 }
 
+// The hosted config that can draw the graph itself, as opposed to its
+// reference-projected VCF. Deliberately a different config from
+// `reference.configUrl`: the GraphGenomeView plugin is declared only here, so a
+// dead plugin url costs the graph launch rather than every launch on the site
+// (a config's `plugins[]` is the one field that can error-page a whole session).
+export interface PangenomeGraphBrowser {
+  configUrl: string
+  // rGFA segments track the subgraph is cut from
+  segmentsTrackId: string
+  bubblesTrackId: string
+  geneTrackId: string
+}
+
 export interface PangenomeDataset {
   id: string
-  // Human-readable graph label, e.g. 'HPRC minigraph-cactus v1.1'.
+  // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.0'.
   label: string
   reference: PangenomeReference
   graphVcf: PangenomeGraphVcf
@@ -54,14 +67,18 @@ export interface PangenomeDataset {
   dataPrefix: string
   // Whole-graph landing region for the "browse everything" launch.
   landingRegion: string
+  // Omitted where a dataset has no hosted graph projection to draw.
+  graphBrowser?: PangenomeGraphBrowser
   loci: PangenomeLocus[]
 }
 
-// The HPRC minigraph-cactus v1.1 graph projected onto GRCh38 — the one dataset
-// the explorer ships today.
+// The HPRC minigraph-cactus v2.0 (release 2) graph projected onto GRCh38 — the
+// one dataset the explorer ships today. Release 2 is 232 samples against release
+// 1's 45, so every precomputed summary under `dataPrefix` has to be regenerated
+// alongside a change to `graphVcf` (`node generatePangenomeData.ts`).
 export const HPRC_DATASET: PangenomeDataset = {
-  id: 'hprc-mc-v1.1-grch38',
-  label: 'HPRC minigraph-cactus v1.1',
+  id: 'hprc-mc-v2.0-grch38',
+  label: 'HPRC minigraph-cactus v2.0',
   reference: {
     assembly: 'hg38',
     configUrl: ucscConfigPath('hg38'),
@@ -70,9 +87,9 @@ export const HPRC_DATASET: PangenomeDataset = {
     taxonId: 9606,
   },
   graphVcf: {
-    trackId: 'hprc-v1.1-mc-grch38-pangenome-vcf',
-    name: 'HPRC pangenome variants (minigraph-cactus v1.1, GRCh38)',
-    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.vcfbub.a100k.wave.vcf.gz',
+    trackId: 'hprc-v2.0-mc-grch38-pangenome-vcf',
+    name: 'HPRC pangenome variants (minigraph-cactus v2.0, GRCh38)',
+    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz',
   },
   svTrackIds: [
     'hg38-hprcInsertsV1',
@@ -87,5 +104,11 @@ export const HPRC_DATASET: PangenomeDataset = {
   },
   dataPrefix: '/pangenome',
   landingRegion: 'chr6:29,700,000-33,500,000',
+  graphBrowser: {
+    configUrl: 'https://jbrowse.org/demos/hprc/config.json',
+    segmentsTrackId: 'hprc_minigraph_segments',
+    bubblesTrackId: 'hprc_minigraph_bubbles',
+    geneTrackId: 'hg38_ncbiRefSeq_ucsc',
+  },
   loci: PANGENOME_LOCI,
 }

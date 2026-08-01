@@ -5,6 +5,7 @@ import hprcSamples from '../../hprcSamples.json'
 import { features } from '../../config/features.ts'
 import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
 import { graphBrowserUrl } from '../../components/pangenomeLinks.ts'
+import OpenInDesktop from '../../components/OpenInDesktop.tsx'
 import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
@@ -16,53 +17,38 @@ if (!features.pangenome) {
 
 const browserUrl = graphBrowserUrl(HPRC_DATASET)
 
+const RELEASE2 =
+  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2'
+
+// Sizes are stated because the spread is four orders of magnitude: the
+// base-level GFA is ~60 GB and the SV-resolution rGFA beside it is under one.
+// Release 2 publishes no plain-minigraph graph, and its PGGB graph is
+// per-chromosome under a different naming scheme, so neither has a row.
 const pangenomeGraphs = [
   {
-    name: 'Minigraph-Cactus v1.1',
-    description:
-      'Base-level pangenome graph (recommended). Covers non-centromeric regions. Suitable for short- and long-read mapping.',
+    name: 'Minigraph-Cactus v2.0',
     refs: [
       {
         ref: 'GRCh38',
-        vcf: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.vcfbub.a100k.wave.vcf.gz',
-        gbz: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-grch38/hprc-v1.1-mc-grch38.gbz',
+        vcf: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz`,
+        vcfSize: '2.2 GB',
+        gbz: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-grch38.gbz`,
+        gbzSize: '5.1 GB',
+        gfa: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-grch38.gfa.gz`,
+        gfaSize: '59 GB',
+        svGfa: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-grch38.sv.gfa.gz`,
+        svGfaSize: '803 MB',
       },
       {
         ref: 'CHM13',
-        vcf: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-chm13/hprc-v1.1-mc-chm13.vcfbub.a100k.wave.vcf.gz',
-        gbz: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph-cactus/hprc-v1.1-mc-chm13/hprc-v1.1-mc-chm13.gbz',
-      },
-    ],
-  },
-  {
-    name: 'Minigraph v1.0',
-    description:
-      'Reference-based graph capturing structural variants >50nt. Fastest for long-read mapping.',
-    refs: [
-      {
-        ref: 'GRCh38',
-        vcf: null,
-        gbz: null,
-        gfa: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph/hprc-v1.0-minigraph-grch38.gfa.gz',
-      },
-      {
-        ref: 'CHM13',
-        vcf: null,
-        gbz: null,
-        gfa: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/minigraph/hprc-v1.0-minigraph-chm13.gfa.gz',
-      },
-    ],
-  },
-  {
-    name: 'PGGB v1.0',
-    description:
-      'All-vs-all symmetric graph including centromeric and mitochondrial regions. Most comprehensive coverage.',
-    refs: [
-      {
-        ref: 'GRCh38',
-        vcf: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/pggb/vcfs/hprc-v1.0-pggb.grch38.vcfbub.a100k.wave.vcf.gz',
-        gbz: null,
-        gfa: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/freeze1/pggb/hprc-v1.0-pggb.gfa.gz',
+        vcf: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-chm13.wave.vcf.gz`,
+        vcfSize: '2.3 GB',
+        gbz: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-chm13.gbz`,
+        gbzSize: '5.4 GB',
+        gfa: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-chm13.gfa.gz`,
+        gfaSize: '60 GB',
+        svGfa: `${RELEASE2}/minigraph-cactus/hprc-v2.0-mc-chm13.sv.gfa.gz`,
+        svGfaSize: '856 MB',
       },
     ],
   },
@@ -108,6 +94,10 @@ const pangenomeGraphs = [
         >
           Browse the pangenome in JBrowse →
         </a>
+        <OpenInDesktop
+          className="portal-btn portal-btn-ghost"
+          webUrl={browserUrl}
+        />
         <a
           class="portal-btn portal-btn-ghost"
           href="https://humanpangenome.org/"
@@ -128,9 +118,7 @@ const pangenomeGraphs = [
 
     <h2>Pangenome Graphs</h2>
     <p>
-      Three pangenome graph strategies were applied to the Year 1 assemblies.
-      The graphs are available as GFA, GBZ, and decomposed VCF files hosted on
-      AWS S3 (<a
+      Release 2's minigraph-cactus graph, against both references (<a
         href="https://github.com/human-pangenomics/hpp_pangenome_resources"
         >full file listing</a
       >).
@@ -142,6 +130,7 @@ const pangenomeGraphs = [
           <th>Reference</th>
           <th>VCF</th>
           <th>GBZ</th>
+          <th>SV GFA</th>
           <th>GFA</th>
         </tr>
       </thead>
@@ -152,9 +141,18 @@ const pangenomeGraphs = [
               <tr>
                 <td>{g.name}</td>
                 <td>{r.ref}</td>
-                <td>{r.vcf ? <a href={r.vcf}>VCF</a> : '—'}</td>
-                <td>{'gbz' in r && r.gbz ? <a href={r.gbz}>GBZ</a> : '—'}</td>
-                <td>{'gfa' in r && r.gfa ? <a href={r.gfa}>GFA</a> : '—'}</td>
+                <td>
+                  <a href={r.vcf}>VCF</a> <small>{r.vcfSize}</small>
+                </td>
+                <td>
+                  <a href={r.gbz}>GBZ</a> <small>{r.gbzSize}</small>
+                </td>
+                <td>
+                  <a href={r.svGfa}>SV GFA</a> <small>{r.svGfaSize}</small>
+                </td>
+                <td>
+                  <a href={r.gfa}>GFA</a> <small>{r.gfaSize}</small>
+                </td>
               </tr>
             )),
           )
