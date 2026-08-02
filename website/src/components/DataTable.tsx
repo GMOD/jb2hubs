@@ -21,6 +21,8 @@ import { paginate } from '../utils/paginate.ts'
 
 import type { HubRow, HubTableData } from './DataTable/hubRow.ts'
 
+import '../styles/common-table.css'
+
 export type TableProps = HubTableData
 
 async function loadRows(dataUrls: string[], accessions?: string[]) {
@@ -129,7 +131,10 @@ export default function DataTable({
         disabled={loading}
       />
 
-      <div ref={tableRef}>
+      <div
+        className="table-scroll"
+        ref={tableRef}
+      >
         <table>
           <TableHeader
             columns={columns}
