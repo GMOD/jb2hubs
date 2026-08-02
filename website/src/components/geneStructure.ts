@@ -17,9 +17,9 @@
 
 import { deflate } from 'pako-esm2'
 
+import { JBROWSE_BASE } from '../config/jbrowse.ts'
 import { mergeConfig } from './jbrowseLinks.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
-import { JBROWSE_BASE } from '../config/jbrowse.ts'
 
 // This view needs a build that bundles the msaview + protein3d plugins and reads
 // params from the URL hash — true of `main` since webgl-poc merged. It is why

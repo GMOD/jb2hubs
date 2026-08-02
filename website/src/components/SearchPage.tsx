@@ -2,11 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Search, X } from 'lucide-react'
 
-import OrangeStar from './OrangeStar.tsx'
-import Pagination from './Pagination.tsx'
-import RedX from './RedX.tsx'
-import styles from './SearchPage.module.css'
-import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
 import {
   genarkConfigPath,
   jbrowseUrl,
@@ -20,6 +15,11 @@ import {
 } from '../hooks/useTaxonomyFilter.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { paginate } from '../utils/paginate.ts'
+import OrangeStar from './OrangeStar.tsx'
+import Pagination from './Pagination.tsx'
+import RedX from './RedX.tsx'
+import styles from './SearchPage.module.css'
+import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
 
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
 

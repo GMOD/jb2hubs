@@ -1,9 +1,14 @@
+import '../styles/common-table.css'
+
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Search } from 'lucide-react'
 import useSWRImmutable from 'swr/immutable'
 
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
+import { fetchJson } from '../lib/fetchJson.ts'
+import { paginate } from '../utils/paginate.ts'
+import styles from './DataTable.module.css'
 import TableBody from './DataTable/components/TableBody.tsx'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useCategoryFilter } from './DataTable/hooks/useCategoryFilter.ts'
@@ -13,15 +18,10 @@ import { useTableColumns } from './DataTable/hooks/useTableColumns.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { decodeHubRow } from './DataTable/hubRow.ts'
 import { makeComparator } from './DataTable/utils.ts'
-import styles from './DataTable.module.css'
 import Pagination from './Pagination.tsx'
 import TableOptions from './TableOptions.tsx'
-import { fetchJson } from '../lib/fetchJson.ts'
-import { paginate } from '../utils/paginate.ts'
 
 import type { HubRow, HubTableData } from './DataTable/hubRow.ts'
-
-import '../styles/common-table.css'
 
 export type TableProps = HubTableData
 

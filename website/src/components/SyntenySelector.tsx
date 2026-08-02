@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
 
-import Autocomplete from './Autocomplete.tsx'
-import OpenInDesktop from './OpenInDesktop.tsx'
-import { syntenyViewUrl } from './jbrowseLinks.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
 import { orthologSymbol, searchGenes } from '../orthologs/ncbiOrthologs.ts'
+import Autocomplete from './Autocomplete.tsx'
+import OpenInDesktop from './OpenInDesktop.tsx'
+import { syntenyViewUrl } from './jbrowseLinks.ts'
 
 import type {
   SyntenyAssembly,

@@ -5,8 +5,8 @@
 // mouse/plant one — is a matter of adding another PangenomeDataset, not editing
 // component internals. The components and link builders read only this shape.
 
-import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 import { ucscConfigPath } from '../config/jbrowse.ts'
+import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 

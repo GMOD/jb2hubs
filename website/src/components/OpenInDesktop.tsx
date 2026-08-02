@@ -1,5 +1,5 @@
-import { desktopUrl } from './jbrowseLinks.ts'
 import { features } from '../config/features.ts'
+import { desktopUrl } from './jbrowseLinks.ts'
 
 // The tooltip is the whole pre-5.0 story: an install without the handler does
 // nothing at all when this is clicked, with no way for the page to detect it, so

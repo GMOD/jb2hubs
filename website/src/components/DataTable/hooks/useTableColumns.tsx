@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
-import styles from './useTableColumns.module.css'
 import { genarkConfigPath, jbrowseUrl } from '../../../config/jbrowse.ts'
 import OrangeStar from '../../OrangeStar.tsx'
 import RedX from '../../RedX.tsx'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../hubRow.ts'
 import { statusOrder } from '../utils.ts'
+import styles from './useTableColumns.module.css'
 
 import type { RowData } from '../hubRow.ts'
 

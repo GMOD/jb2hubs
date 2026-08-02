@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
+import { useUrlState } from '../hooks/useUrlState.ts'
 import DataTable from './DataTable.tsx'
 import styles from './TaxonomyViewToggle.module.css'
-import { useUrlState } from '../hooks/useUrlState.ts'
 
 import type { TableProps } from './DataTable.tsx'
 

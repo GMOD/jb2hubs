@@ -1,5 +1,5 @@
-import { rankEntries } from './searchScoring.ts'
 import { bareCommonName } from '../utils/names.ts'
+import { rankEntries } from './searchScoring.ts'
 
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
 

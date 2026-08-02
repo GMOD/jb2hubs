@@ -1,6 +1,6 @@
-import type { KeyboardEvent } from 'react'
-
 import styles from './TableHeader.module.css'
+
+import type { KeyboardEvent } from 'react'
 
 // Only what the header itself reads, so any table with sortable columns can use
 // this — the full ColumnDef (which also carries `cell`/`sortValue`) satisfies it.

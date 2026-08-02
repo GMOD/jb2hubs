@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect } from 'react'
+
 import type { RefObject } from 'react'
 
 const HIGHLIGHT_NAME = 'search-result'

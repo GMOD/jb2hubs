@@ -1,3 +1,5 @@
+import '../styles/common-table.css'
+
 import { useMemo } from 'react'
 
 import {
@@ -5,14 +7,12 @@ import {
   ucscAllConfigPath,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
+import { useUrlState } from '../hooks/useUrlState.ts'
 import list from '../list.json'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import styles from './UCSCTable.module.css'
-import { useUrlState } from '../hooks/useUrlState.ts'
-
-import '../styles/common-table.css'
 
 interface RowData {
   name: string

@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { useUrlState } from '../../../hooks/useUrlState.ts'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../hubRow.ts'
-import { filterCategories } from '../utils/filterCategories.ts'
 import { notEmpty } from '../utils.ts'
+import { filterCategories } from '../utils/filterCategories.ts'
 
 import type { RowData } from '../hubRow.ts'
 

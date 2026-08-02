@@ -6,11 +6,13 @@
   "private": true,
   "packageManager": "pnpm@11.9.0",
   "scripts": {
-    "lint": "eslint --report-unused-disable-directives --max-warnings 0",
+    "lint": "oxlint --type-aware --deny-warnings",
+    "lint:fast": "oxlint --deny-warnings",
     "lint:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shellcheck",
-    "format": "PRETTIER_EXPERIMENTAL_CLI=1 prettier --write .",
+    "format": "oxfmt . && prettier --write \"**/*.astro\"",
+    "check-format": "oxfmt --check . && prettier --check \"**/*.astro\"",
     "format:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shfmt -w -i 2",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "pnpm --filter website2 exec astro sync && tsc --noEmit",
     "check-config-compat": "node scripts/checkConfigCompat.mjs",
     "check-plugin-urls": "node scripts/checkPluginUrls.mjs",
     "build:bed2gff": "cargo build --release --manifest-path bed2gff/Cargo.toml"
@@ -20,21 +22,16 @@
     "@types/node": "^25.9.4",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^10.6.0",
-    "eslint-plugin-unicorn": "^65.0.1",
     "fast-deep-equal": "^3.1.3",
     "glob": "^13.0.6",
     "node-sql-parser": "^5.4.0",
     "prettier": "^3.9.4",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.1"
+    "typescript": "^7.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint-plugin-import-x": "^4.17.1",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "globals": "^17.7.0",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
+    "oxlint-tsgolint": "^7.0.2001",
     "prettier-plugin-astro": "^0.14.1",
     "puppeteer-core": "^25.3.0"
   }

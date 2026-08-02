@@ -167,12 +167,14 @@ function placeOrdinal(
 ) {
   const slotW = trackWidth / Math.max(1, slots)
   const ascending = [...genes].sort((a, b) => a.start - b.start)
-  return ascending.map((g, i): GeneBox => ({
-    ...g,
-    x: trackLeft + i * slotW + slotW * 0.1,
-    width: slotW * 0.8,
-    drawStrand: g.strand,
-  }))
+  return ascending.map(
+    (g, i): GeneBox => ({
+      ...g,
+      x: trackLeft + i * slotW + slotW * 0.1,
+      width: slotW * 0.8,
+      drawStrand: g.strand,
+    }),
+  )
 }
 
 // Decide whether a row's locus is inverted relative to the reference from the
@@ -224,11 +226,13 @@ function mirrorRow(genes: GeneBox[]): GeneBox[] {
   }
   const min = Math.min(...genes.map(g => g.x))
   const max = Math.max(...genes.map(g => g.x + g.width))
-  return genes.map((g): GeneBox => ({
-    ...g,
-    x: min + max - (g.x + g.width),
-    drawStrand: g.drawStrand > 0 ? -1 : 1,
-  }))
+  return genes.map(
+    (g): GeneBox => ({
+      ...g,
+      x: min + max - (g.x + g.width),
+      drawStrand: g.drawStrand > 0 ? -1 : 1,
+    }),
+  )
 }
 
 // Cladogram (rectangular): rows are the vertical axis (a leaf sits at its row y),

@@ -125,4 +125,4 @@ async function fetchConfigs(urls: string[]): Promise<JBrowseConfig[]> {
 
 export { mergeConfigs } from './merger.ts'
 export { addRelativeUris, idToConfigUrl }
-export * from './types.ts'
+export type * from './types.ts'

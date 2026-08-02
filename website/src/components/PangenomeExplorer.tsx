@@ -1,10 +1,10 @@
 import useSWRImmutable from 'swr/immutable'
 
+import { useUrlState } from '../hooks/useUrlState.ts'
+import { fetchJson } from '../lib/fetchJson.ts'
 import PangenomeLocusDashboard from './PangenomeLocusDashboard.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import { VARIATION_LABELS } from './pangenomeLoci.ts'
-import { useUrlState } from '../hooks/useUrlState.ts'
-import { fetchJson } from '../lib/fetchJson.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeLocus, VariationClass } from './pangenomeLoci.ts'

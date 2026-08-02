@@ -4,6 +4,8 @@
 //  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
 //  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
 
+import { ucscConfigPath } from '../config/jbrowse.ts'
+import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import {
   SYNTENY_FLANK_BP,
@@ -11,8 +13,6 @@ import {
   flankLoc,
 } from './orthologSearchUtils.ts'
 import { type PairIndex, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
-import { ucscConfigPath } from '../config/jbrowse.ts'
-import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
 

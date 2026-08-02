@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import styles from './HeaderSearch.module.css'
 import { entryHref } from './searchScoring.ts'
 import {
@@ -8,7 +9,6 @@ import {
   suggestionMeta,
   suggestionTitle,
 } from './searchSuggestions.ts'
-import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 
 const LISTBOX_ID = 'header-search-listbox'
 

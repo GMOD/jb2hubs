@@ -21,17 +21,21 @@ jobs:
 
       - run: pnpm install
 
-      - name: Astro sync
-        run: cd website && pnpm astro sync
-
-      - name: Astro check
-        run: cd website && pnpm astro check
-
+      # Runs `astro sync` first (website/.astro/types.d.ts is in the root
+      # tsconfig's include).
       - name: TypeScript type check
         run: pnpm typecheck
 
-      - name: ESLint
+      # Untyped pass first: it is seconds, so a plain syntactic mistake reports
+      # before the type-aware pass spends time building programs.
+      - name: Lint (oxlint)
+        run: pnpm lint:fast
+
+      - name: Type-aware lint (oxlint + tsgolint)
         run: pnpm lint
+
+      - name: Format check (oxfmt + prettier for .astro)
+        run: pnpm check-format
 
       - name: Install shfmt
         run: |

@@ -1,5 +1,6 @@
 import useSWRImmutable from 'swr/immutable'
 
+import { fetchJson } from '../lib/fetchJson.ts'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import PangeneMatrix from './PangeneMatrix.tsx'
 import PangenomeBarChart from './PangenomeBarChart.tsx'
@@ -12,7 +13,6 @@ import {
   referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
 import { locusRegion, syntenyGene } from './pangenomeLoci.ts'
-import { fetchJson } from '../lib/fetchJson.ts'
 
 import type { LocusSummary } from './pangenomeData.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
