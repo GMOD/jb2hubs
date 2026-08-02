@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { readConfig, writeJSON } from './util.ts'
 
 import type { JBrowseConfig } from './types.ts'
@@ -75,7 +74,7 @@ async function mapWithConcurrency<T, U>(
   limit: number,
   fn: (item: T) => Promise<U>,
 ): Promise<U[]> {
-  const results = new Array<U>(items.length)
+  const results: U[] = Array.from({ length: items.length })
   let next = 0
   async function worker() {
     while (next < items.length) {

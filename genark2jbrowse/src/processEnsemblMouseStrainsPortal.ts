@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'fs'
 
 import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'

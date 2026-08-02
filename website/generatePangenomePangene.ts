@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Precompute per-locus gene copy-number matrices from the lh3/pangene human100
 // graph (Zenodo 10.5281/zenodo.8118576). Each W-line is one *haplotype* walk
 // (PanSN `sample hapIdx …`), so counting how often a marker gene appears in a

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { readJSON, requireArg } from './util.ts'
 import {
   getCytobands,

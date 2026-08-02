@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'fs'
 
 import { getColNames } from './utils/getColNames.ts'

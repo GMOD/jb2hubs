@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'fs'
 import path from 'path'
 
@@ -44,7 +43,7 @@ function makeUcscExtensions(targetDir: string) {
           // this specifically mixes in properties of the assembly for
           // cytobands, seen in the ucscExtensions/hs1.json
           ...existingConfig.assemblies[0]!,
-          ...(extensionConfig.assemblies[0] ?? {}),
+          ...extensionConfig.assemblies[0],
         },
       ],
       tracks: (() => {

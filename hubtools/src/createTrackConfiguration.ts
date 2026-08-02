@@ -1,4 +1,4 @@
-import { categoryMap } from './const.ts'
+import { categoryLabel } from './const.ts'
 import { firstField } from './featureDisplay.ts'
 import { mafSamplesFromSpeciesOrder } from './mafSamples.ts'
 import { createHtmlLink, extractParentTracks } from './trackUtils.ts'
@@ -134,10 +134,7 @@ export function createTrackConfiguration({
             ...(html ? { html: createHtmlLink(html, trackDbUrl) } : {}),
           },
         },
-        category: [effectiveGroup]
-          .filter(f => !!f)
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          .map(f => categoryMap[f as keyof typeof categoryMap] ?? f),
+        category: effectiveGroup ? [categoryLabel(effectiveGroup)] : [],
         ...conf,
         name: [
           ...new Set([

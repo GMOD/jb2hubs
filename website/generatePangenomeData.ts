@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Precompute per-locus HPRC pangenome variant summaries for the /pangenome
 // explorer. Streams `tabix` over the remote HPRC minigraph-cactus GRCh38 VCF for
 // each curated region and writes a compact JSON summary (allele-frequency

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Build a per-locus multi-haplotype DNA alignment (FASTA) + exon overlay (GFF)
 // for the react-msaview panel, from the HPRC minigraph-cactus GRCh38 VCF.
 //

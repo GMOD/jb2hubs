@@ -30,7 +30,6 @@ for (const file of fs.readdirSync(inputDir)) {
     const outputPath = path.join(outputDir, file)
     fs.writeFileSync(outputPath, JSON.stringify(encoded))
     const sizeMB = (fs.statSync(outputPath).size / 1e6).toFixed(2)
-    // eslint-disable-next-line no-console
     console.log(`hubData/${file}: ${encoded.length} rows, ${sizeMB} MB`)
   }
 }

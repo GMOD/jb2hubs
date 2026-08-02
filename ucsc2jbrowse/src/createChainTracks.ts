@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from 'fs'
 import { parseArgs } from 'node:util'
 import path from 'path'

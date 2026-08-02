@@ -1,6 +1,6 @@
 import path from 'path'
 
-import { categoryMap, notEmpty } from 'hubtools'
+import { categoryLabel, notEmpty } from 'hubtools'
 
 import {
   getTrackModifications,
@@ -78,10 +78,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
               ...new Set(
                 [
                   ...currentCategories,
-                  ...(grp
-                    ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                      [categoryMap[grp as keyof typeof categoryMap] ?? grp]
-                    : []),
+                  ...(grp ? [categoryLabel(grp)] : []),
                 ].filter(Boolean),
               ),
             ],

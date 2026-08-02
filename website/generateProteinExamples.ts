@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 // Precomputes the protein-alignment example genes (the chips on
 // /protein-alignment) so a chip click renders the domain cartoon AND the full
 // react-msaview alignment instantly, instead of waiting on live NCBI + EBI.

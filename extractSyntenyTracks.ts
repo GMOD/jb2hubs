@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable no-console */
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 

@@ -146,7 +146,6 @@ fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 fs.writeFileSync(outputPath, JSON.stringify(index))
 
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)
-// eslint-disable-next-line no-console
 console.log(
   `Search index: ${index.length} entries (${allHubs.length} genark + ${Object.keys(ucscGenomes).length} ucsc), ${sizeKB} KB`,
 )

@@ -4,9 +4,14 @@
 // (genomes.jbrowse.org). Production builds leave PUBLIC_STAGING unset.
 // Astro types `import.meta.env` as always present, but it only exists under Vite —
 // the node test runner imports these modules directly, where it is undefined, so
-// every test that transitively pulls in a feature flag would crash on it.
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-const staging = import.meta.env?.PUBLIC_STAGING === 'true'
+// every test that transitively pulls in a feature flag would crash on it. Hence
+// the widened return type: it says what is actually true at runtime, and going
+// through a function keeps that from being narrowed straight back away.
+function importMetaEnv(): ImportMetaEnv | undefined {
+  return import.meta.env
+}
+
+const staging = importMetaEnv()?.PUBLIC_STAGING === 'true'
 
 export const features = {
   // Exposed so non-feature build differences (e.g. which hosted JBrowse build

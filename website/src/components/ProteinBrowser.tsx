@@ -1,5 +1,10 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 
+import useSWRImmutable from 'swr/immutable'
+
+import { loadJsonOnce } from '../lib/fetchJson.ts'
+import { LIVE_QUERY } from '../lib/swr.ts'
+import ErrorMessage from './ErrorMessage.tsx'
 import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import {
   type GeneStructure,
@@ -8,14 +13,13 @@ import {
   fetchGeneStructure,
   geneStats,
 } from './geneStructure.ts'
-import { COMMON_SPECIES } from './orthologSearchUtils.ts'
+import { COMMON_SPECIES, geneUrl, syncGeneUrl } from './orthologSearchUtils.ts'
 import {
   type ProteinAlignment,
   type ProteinPanel,
   alignProteinPanel,
   assembleProteinPanel,
 } from './proteinMsa.ts'
-import { loadJsonOnce } from '../lib/fetchJson.ts'
 
 // react-msaview pulls in @jbrowse/core + MUI + mobx and renders to canvas, so it
 // only runs client-side; lazy-loading keeps it off the first paint and out of
@@ -54,96 +58,55 @@ function paramsFromUrl() {
   return { gene: p.get('gene')?.trim() ?? '', ref: ref > 0 ? ref : 9606 }
 }
 
-export default function ProteinBrowser() {
-  const [gene, setGene] = useState(() => paramsFromUrl().gene)
-  const [taxId, setTaxId] = useState(() => paramsFromUrl().ref)
-  const [loading, setLoading] = useState(false)
-  const [status, setStatus] = useState('')
-  const [error, setError] = useState('')
-  const [structure, setStructure] = useState<GeneStructure | null>(null)
-  const [collapse, setCollapse] = useState(true)
-  const [panel, setPanel] = useState<ProteinPanel | null>(null)
+// Phase 1: the gene's own genome/AlphaFold structure and the ortholog domain
+// panel, resolved together. Example genes take the panel side from the
+// precomputed cache instantly; everything else resolves live from NCBI.
+async function resolveGene(
+  sym: string,
+  ref: number,
+  onProgress: (s: string) => void,
+) {
+  const cached = (await loadExampleCache())[cacheKey(sym, ref)]
+  const [structure, panel] = await Promise.all([
+    fetchGeneStructure(sym, ref),
+    cached
+      ? Promise.resolve(cached.panel)
+      : assembleProteinPanel(sym, ref, { onProgress }),
+  ])
   // Precomputed alignment for an example gene, used to skip EBI when the user
   // asks for the full alignment.
-  const [precomputed, setPrecomputed] = useState<ProteinAlignment | null>(null)
-  const [alignment, setAlignment] = useState<ProteinAlignment | null>(null)
-  const [aligning, setAligning] = useState(false)
+  return { structure, panel, precomputed: cached?.alignment }
+}
 
-  // Phase 1: the gene's own genome/AlphaFold structure and the ortholog domain
-  // panel, resolved together. Example genes take the panel side from the
-  // precomputed cache instantly; everything else resolves live from NCBI.
-  const run = async (query: string, ref: number) => {
-    const sym = query.trim()
+export default function ProteinBrowser() {
+  // The submitted query, as opposed to what is currently in the boxes: it is the
+  // SWR key, so it changes only on Explore/Enter/an example chip. Seeded from the
+  // page url, which is what makes a shared ?gene=&ref= link resolve on mount —
+  // this island is client:only, so window is readable during the first render.
+  const [query, setQuery] = useState(paramsFromUrl)
+  const [gene, setGene] = useState(query.gene)
+  const [taxId, setTaxId] = useState(query.ref)
+  const [status, setStatus] = useState('')
+
+  const {
+    data,
+    error,
+    isLoading: loading,
+  } = useSWRImmutable(
+    query.gene ? (['protein-gene', query.gene, query.ref] as const) : null,
+    ([, sym, ref]) => resolveGene(sym, ref, setStatus),
+    LIVE_QUERY,
+  )
+
+  const run = (rawQuery: string, ref: number) => {
+    const sym = rawQuery.trim()
     if (sym) {
       setGene(sym)
       setTaxId(ref)
-      setError('')
-      setStructure(null)
-      setPanel(null)
-      setPrecomputed(null)
-      setAlignment(null)
-      const params = new URLSearchParams({ gene: sym, ref: String(ref) })
-      window.history.replaceState(null, '', `?${params.toString()}`)
-      setLoading(true)
-      try {
-        const cached = (await loadExampleCache())[cacheKey(sym, ref)]
-        const [structureResult, panelResult] = await Promise.all([
-          fetchGeneStructure(sym, ref),
-          cached
-            ? Promise.resolve(cached.panel)
-            : assembleProteinPanel(sym, ref, { onProgress: setStatus }),
-        ])
-        setStructure(structureResult)
-        setPanel(panelResult)
-        if (cached) {
-          setPrecomputed(cached.alignment)
-        }
-      } catch (e) {
-        setError(e instanceof Error ? e.message : String(e))
-      } finally {
-        setLoading(false)
-      }
+      setQuery({ gene: sym, ref })
+      syncGeneUrl(sym, ref)
     }
   }
-
-  // Phase 2: the full alignment (EBI Clustal Omega, with CDD domains). Built
-  // once and shared: it drives the embedded react-msaview panel below and
-  // rides along in the JBrowse session as a connected MsaView.
-  const buildAlignment = async (p: ProteinPanel) => {
-    if (precomputed) {
-      setAlignment(precomputed)
-    } else {
-      setAligning(true)
-      setError('')
-      try {
-        setAlignment(await alignProteinPanel(p, { onProgress: setStatus }))
-      } catch (e) {
-        setError(e instanceof Error ? e.message : String(e))
-      } finally {
-        setAligning(false)
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (gene) {
-      void run(gene, taxId)
-    }
-  }, [])
-
-  const found = new Set(panel?.rows.map(r => r.taxId))
-  const missing = COMMON_SPECIES.filter(s => !found.has(s.taxId))
-  const queryRow =
-    panel && (panel.rows.find(r => r.taxId === taxId) ?? panel.rows[0])
-  const inlineMsa: InlineMsa | undefined =
-    alignment && queryRow
-      ? {
-          fasta: alignment.fasta,
-          newick: alignment.newick,
-          gff: alignment.gff,
-          querySeqName: queryRow.label,
-        }
-      : undefined
 
   return (
     <div>
@@ -155,7 +118,7 @@ export default function ProteinBrowser() {
           }}
           onKeyDown={e => {
             if (e.key === 'Enter') {
-              void run(gene, taxId)
+              run(gene, taxId)
             }
           }}
           placeholder="Gene symbol, e.g. TP53"
@@ -179,7 +142,7 @@ export default function ProteinBrowser() {
         </select>
         <button
           onClick={() => {
-            void run(gene, taxId)
+            run(gene, taxId)
           }}
           disabled={loading || !gene.trim()}
         >
@@ -195,7 +158,7 @@ export default function ProteinBrowser() {
             className="msv-example-chip"
             disabled={loading}
             onClick={() => {
-              void run(g, taxId)
+              run(g, taxId)
             }}
           >
             {g}
@@ -211,79 +174,136 @@ export default function ProteinBrowser() {
       </p>
 
       {loading && <p className="msv-hint">{status || 'Resolving…'}</p>}
-      {error && <p className="msv-error">{error}</p>}
+      <ErrorMessage
+        error={error}
+        className="msv-error"
+      />
 
-      {panel && !loading && (
-        <>
-          <p className="msv-hint">
-            {panel.rows.length} of {COMMON_SPECIES.length} model species ·{' '}
-            <a
-              href={`/orthologs?gene=${encodeURIComponent(panel.query.symbol)}&ref=${panel.query.refTaxonId}`}
-            >
-              ortholog table
-            </a>{' '}
-            ·{' '}
-            <a
-              href={`/conserved-gene-order?gene=${encodeURIComponent(panel.query.symbol)}&ref=${panel.query.refTaxonId}`}
-            >
-              conserved gene order
-            </a>
-          </p>
-          {missing.length > 0 && (
-            <p className="msv-note">
-              No annotated ortholog in: {missing.map(s => s.label).join(', ')}
-            </p>
-          )}
-
-          <ProteinDomainCartoon rows={panel.rows} />
-
-          {alignment ? (
-            <Suspense
-              fallback={<p className="msv-hint">Loading alignment viewer…</p>}
-            >
-              <MSAViewer
-                msa={alignment.fasta}
-                tree={alignment.newick}
-                gff={alignment.gff}
-                colorScheme="clustalx_protein_dynamic"
-                height={520}
-              />
-            </Suspense>
-          ) : (
-            <div className="msv-advanced">
-              <button
-                className="msv-advanced-btn"
-                disabled={aligning}
-                onClick={() => {
-                  void buildAlignment(panel)
-                }}
-              >
-                {aligning
-                  ? status || 'Aligning…'
-                  : 'Add cross-species alignment'}
-              </button>
-              <span className="msv-advanced-note">
-                Residue-level alignment + guide tree, overlaid with the domains
-                above and added to the JBrowse session below
-                {precomputed
-                  ? ' (precomputed)'
-                  : ' — via EBI Clustal Omega, can take up to a minute'}
-                .
-              </span>
-            </div>
-          )}
-        </>
-      )}
-
-      {structure && !loading && (
-        <ResultCard
-          structure={structure}
-          collapse={collapse}
-          onToggleCollapse={setCollapse}
-          inlineMsa={inlineMsa}
+      {data && (
+        // Remounted per query, which is what drops a previous gene's alignment
+        // request back to the cartoon without an effect to reset it.
+        <GeneResults
+          key={`${query.gene}:${query.ref}`}
+          {...data}
+          taxId={query.ref}
+          status={status}
+          onProgress={setStatus}
         />
       )}
     </div>
+  )
+}
+
+// Everything downstream of a resolved gene: the domain cartoon, the on-demand
+// full alignment, and the JBrowse session card the alignment rides along in.
+function GeneResults({
+  structure,
+  panel,
+  precomputed,
+  taxId,
+  status,
+  onProgress,
+}: {
+  structure: GeneStructure
+  panel: ProteinPanel
+  precomputed: ProteinAlignment | undefined
+  taxId: number
+  status: string
+  onProgress: (s: string) => void
+}) {
+  const { symbol, refTaxonId } = panel.query
+  const [collapse, setCollapse] = useState(true)
+  const [wantAlignment, setWantAlignment] = useState(false)
+
+  // Phase 2: the full alignment (EBI Clustal Omega, with CDD domains). Built
+  // once and shared: it drives the embedded react-msaview panel below and
+  // rides along in the JBrowse session as a connected MsaView.
+  const {
+    data: alignment,
+    error,
+    isLoading: aligning,
+  } = useSWRImmutable(
+    wantAlignment && ['protein-alignment', symbol, taxId],
+    () => precomputed ?? alignProteinPanel(panel, { onProgress }),
+    LIVE_QUERY,
+  )
+
+  const found = new Set(panel.rows.map(r => r.taxId))
+  const missing = COMMON_SPECIES.filter(s => !found.has(s.taxId))
+  const queryRow = panel.rows.find(r => r.taxId === taxId) ?? panel.rows[0]
+  const inlineMsa: InlineMsa | undefined =
+    alignment && queryRow
+      ? {
+          fasta: alignment.fasta,
+          newick: alignment.newick,
+          gff: alignment.gff,
+          querySeqName: queryRow.label,
+        }
+      : undefined
+
+  return (
+    <>
+      <p className="msv-hint">
+        {panel.rows.length} of {COMMON_SPECIES.length} model species ·{' '}
+        <a href={geneUrl('/orthologs', symbol, refTaxonId)}>ortholog table</a> ·{' '}
+        <a href={geneUrl('/conserved-gene-order', symbol, refTaxonId)}>
+          conserved gene order
+        </a>
+      </p>
+      {missing.length > 0 && (
+        <p className="msv-note">
+          No annotated ortholog in: {missing.map(s => s.label).join(', ')}
+        </p>
+      )}
+
+      <ProteinDomainCartoon rows={panel.rows} />
+
+      <ErrorMessage
+        error={error}
+        className="msv-error"
+      />
+
+      {alignment ? (
+        <Suspense
+          fallback={<p className="msv-hint">Loading alignment viewer…</p>}
+        >
+          <MSAViewer
+            msa={alignment.fasta}
+            tree={alignment.newick}
+            gff={alignment.gff}
+            colorScheme="clustalx_protein_dynamic"
+            height={520}
+          />
+        </Suspense>
+      ) : (
+        <div className="msv-advanced">
+          <button
+            className="msv-advanced-btn"
+            disabled={aligning}
+            onClick={() => {
+              setWantAlignment(true)
+            }}
+          >
+            {aligning ? status || 'Aligning…' : 'Add cross-species alignment'}
+          </button>
+          <span className="msv-advanced-note">
+            Residue-level alignment + guide tree, overlaid with the domains
+            above and added to the JBrowse session below
+            {precomputed
+              ? ' (precomputed)'
+              : ' — via EBI Clustal Omega, can take up to a minute'}
+            .
+          </span>
+        </div>
+      )}
+
+      <ResultCard
+        structure={structure}
+        collapse={collapse}
+        onToggleCollapse={setCollapse}
+        inlineMsa={inlineMsa}
+      />
+    </>
   )
 }
 

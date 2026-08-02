@@ -1,15 +1,15 @@
-import { syntenyViewUrl } from './jbrowseLinks.ts'
-import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 import {
   JBROWSE_BASE,
   genarkConfigPath,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
+import { syntenyViewUrl } from './jbrowseLinks.ts'
+import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
 
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
 
 export type { Assembly, AssemblyIndex, AssemblyStore } from './orthologDb.ts'
-export { assemblyLabel, createStore } from './orthologDb.ts'
+export { assemblyLabel, createStore, loadStore } from './orthologDb.ts'
 
 export const COMMON_SPECIES = [
   { label: 'Human', taxId: 9606 },
@@ -35,6 +35,19 @@ export const COMMON_TAX_RANK = new Map(
 // carried in ?ref=) or free text; known model organisms show as their label.
 export function refLabel(ref: string) {
   return COMMON_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
+}
+
+// The ?gene=&ref= link shape the gene-first pages (/orthologs,
+// /conserved-gene-order, /protein-browser) all read back on mount.
+export function geneUrl(path: string, symbol: string, taxId: number) {
+  return `${path}?gene=${encodeURIComponent(symbol)}&ref=${taxId}`
+}
+
+// The same shape written onto the current page, so what is on screen stays
+// shareable and bookmarkable. Takes the resolved taxon id rather than whatever
+// was typed, so the link still means the same thing later.
+export function syncGeneUrl(symbol: string, taxId: number) {
+  window.history.replaceState(null, '', geneUrl('', symbol, taxId))
 }
 
 // NCBI Datasets API response shapes

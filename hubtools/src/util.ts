@@ -17,7 +17,6 @@ export async function myfetchtext(url: string) {
   return res.text()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function readJSON<T = unknown>(filePath: string): T {
   return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T
 }

@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
+import { features } from '../config/features.ts'
+import { LIVE_QUERY } from '../lib/swr.ts'
+import ErrorMessage from './ErrorMessage.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import { type Neighborhood } from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
 import { COMMON_SPECIES, refLabel } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
-import { features } from '../config/features.ts'
 
 // Rows with too few anchors carry little synteny signal and just lengthen the
 // view, so the explorer keeps the most informative species (tree order intact).
@@ -97,11 +99,7 @@ export default function MultiSyntenyExplorer() {
         maxAnchors,
         flankBp: flank,
       }),
-    {
-      keepPreviousData: true,
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
-    },
+    { ...LIVE_QUERY, keepPreviousData: true, revalidateOnFocus: false },
   )
   const trimmed = useMemo(() => (data ? trim(data) : null), [data])
   const nb = trimmed?.nb ?? null
@@ -227,11 +225,10 @@ export default function MultiSyntenyExplorer() {
           Querying NCBI orthologs + neighbors across species…
         </p>
       )}
-      {error && (
-        <p className="msv-error">
-          {error instanceof Error ? error.message : String(error)}
-        </p>
-      )}
+      <ErrorMessage
+        error={error}
+        className="msv-error"
+      />
       {nb?.species.length === 0 && !loading && (
         <p className="msv-hint">No informative ortholog neighborhoods found.</p>
       )}

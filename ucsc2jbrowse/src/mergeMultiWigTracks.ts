@@ -16,10 +16,9 @@ import type { TrackDbEntry } from './types.ts'
  * tracks and the thing a reader wants: signal across tissues at a locus.
  */
 
-// A type alias rather than an interface (which the lint rule would prefer):
-// only an alias gets TypeScript's implicit index signature, which mergeBigFileTracks
-// needs to hand these tracks to its `Record<string, unknown>` mixin merge.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+// A type alias rather than an interface: only an alias gets TypeScript's implicit
+// index signature, which mergeBigFileTracks needs to hand these tracks to its
+// `Record<string, unknown>` mixin merge.
 export type MultiWigTrack = {
   trackId: string
   name: string

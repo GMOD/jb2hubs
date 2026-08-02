@@ -64,7 +64,6 @@ export interface NcbiDetails {
   ncbiDownloadedAt?: number
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function tryAndReadJSON<T>(filePath: string): T | null {
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T

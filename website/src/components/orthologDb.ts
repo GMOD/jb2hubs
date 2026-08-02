@@ -1,3 +1,5 @@
+import { loadJsonOnce } from '../lib/fetchJson.ts'
+
 export interface Assembly {
   accession: string
   commonName: string
@@ -70,3 +72,15 @@ export function createStore(data: AssemblyIndex) {
 }
 
 export type AssemblyStore = ReturnType<typeof createStore>
+
+// The store, fetched and built at most once per page from the (~4 MB) index.
+// Async callers take it from here rather than being handed one, so a search can
+// start before the index has landed and simply await it.
+let storePromise: Promise<AssemblyStore> | undefined
+
+export function loadStore() {
+  storePromise ??= loadJsonOnce<AssemblyIndex>('/ortholog_index.json').then(
+    createStore,
+  )
+  return storePromise
+}
