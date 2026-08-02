@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
@@ -10,7 +10,6 @@ import { orthologSymbol, searchGenes } from '../orthologs/ncbiOrthologs.ts'
 import type {
   SyntenyAssembly,
   SyntenyCatalogData,
-  SyntenyTrackSummary,
 } from '../lib/syntenyCatalog.ts'
 
 interface Props {
@@ -41,10 +40,6 @@ export default function SyntenySelector({ data }: Props) {
   // Status under the gene box while resolving / when no ortholog exists.
   const [geneNote, setGeneNote] = useState('')
 
-  const [assemblies, setAssemblies] = useState<SyntenyAssembly[]>([])
-  const [partners, setPartners] = useState<SyntenyAssembly[]>([])
-  const [tracks, setTracks] = useState<SyntenyTrackSummary[]>([])
-
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = useMemo(
     () => ({ ucsc: showUcsc, genark: showGenark }),
@@ -52,58 +47,23 @@ export default function SyntenySelector({ data }: Props) {
   )
   const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
 
-  useEffect(() => {
-    let active = true
-    void catalog.listAssemblies(filter).then(result => {
-      if (active) {
-        setAssemblies(result)
-        if (species1 && !result.some(a => a.id === species1)) {
-          setSpecies1('')
-          setSpecies2('')
-        }
-      }
-    })
-    return () => {
-      active = false
-    }
-  }, [catalog, filter, species1])
-
-  useEffect(() => {
-    let active = true
-    if (species1) {
-      void catalog.listPartners(species1, filter).then(result => {
-        if (active) {
-          setPartners(result)
-          if (species2 && !result.some(a => a.id === species2)) {
-            setSpecies2('')
-          }
-        }
-      })
-    } else {
-      setPartners([])
-    }
-    return () => {
-      active = false
-    }
-  }, [catalog, species1, species2, filter])
-
-  useEffect(() => {
-    let active = true
-    if (species1 && species2) {
-      void catalog.listTracks(species1, species2, filter).then(result => {
-        if (active) {
-          setTracks(result)
-          setTrackOverride('')
-        }
-      })
-    } else {
-      setTracks([])
-      setTrackOverride('')
-    }
-    return () => {
-      active = false
-    }
-  }, [catalog, species1, species2, filter])
+  // Every list is a filter over the blob the page already handed us, so it is
+  // derived during render rather than mirrored into state by an effect.
+  const assemblies = useMemo(
+    () => catalog.listAssemblies(filter),
+    [catalog, filter],
+  )
+  const partners = useMemo(
+    () => (species1 ? catalog.listPartners(species1, filter) : []),
+    [catalog, species1, filter],
+  )
+  const tracks = useMemo(
+    () =>
+      species1 && species2
+        ? catalog.listTracks(species1, species2, filter)
+        : [],
+    [catalog, species1, species2, filter],
+  )
 
   const taxon1 = data.assemblyInfo[species1]?.taxonId
   const taxon2 = data.assemblyInfo[species2]?.taxonId
@@ -172,15 +132,39 @@ export default function SyntenySelector({ data }: Props) {
     resetGene()
   }
 
-  const selectedTrack = useMemo(() => {
-    if (tracks.length === 0) {
-      return null
+  // Unticking a source can strip the current selection out of the lists it was
+  // picked from, so the pair is re-validated here, where the change happens,
+  // rather than by an effect watching the lists afterwards.
+  const setSources = (ucsc: boolean, genark: boolean) => {
+    setShowUcsc(ucsc)
+    setShowGenark(genark)
+    const next = { ucsc, genark }
+    if (
+      species1 &&
+      !catalog.listAssemblies(next).some(a => a.id === species1)
+    ) {
+      setSpecies1('')
+      setSpecies2('')
+      resetGene()
+    } else if (
+      species2 &&
+      !catalog.listPartners(species1, next).some(a => a.id === species2)
+    ) {
+      setSpecies2('')
+      resetGene()
     }
-    if (trackOverride) {
-      return tracks.find(t => t.trackId === trackOverride) ?? null
-    }
-    return pickDefaultTrack(tracks, species1)
-  }, [tracks, trackOverride, species1])
+  }
+
+  // A track override left over from a previous pair isn't in this pair's list,
+  // so it falls back to the default rather than leaving the launch disabled —
+  // which is why changing the pair needs no reset.
+  const selectedTrack = useMemo(
+    () =>
+      tracks.find(t => t.trackId === trackOverride) ??
+      pickDefaultTrack(tracks, species1) ??
+      null,
+    [tracks, trackOverride, species1],
+  )
 
   const launchUrl = useMemo(() => {
     if (!species1 || !species2 || !selectedTrack) {
@@ -366,8 +350,8 @@ export default function SyntenySelector({ data }: Props) {
               <input
                 type="checkbox"
                 checked={showUcsc}
-                onChange={() => {
-                  setShowUcsc(!showUcsc)
+                onChange={e => {
+                  setSources(e.target.checked, showGenark)
                 }}
               />
               UCSC
@@ -376,8 +360,8 @@ export default function SyntenySelector({ data }: Props) {
               <input
                 type="checkbox"
                 checked={showGenark}
-                onChange={() => {
-                  setShowGenark(!showGenark)
+                onChange={e => {
+                  setSources(showUcsc, e.target.checked)
                 }}
               />
               NCBI/GenArk

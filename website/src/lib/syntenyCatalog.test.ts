@@ -96,20 +96,20 @@ describe('pickDefaultTrack', () => {
 describe('createStaticCatalog over the real blob', () => {
   const catalog = createStaticCatalog(data)
 
-  it('lists launchable assemblies', async () => {
-    const assemblies = await catalog.listAssemblies(filter)
+  it('lists launchable assemblies', () => {
+    const assemblies = catalog.listAssemblies(filter)
     assert.ok(
       assemblies.length > 0,
       'expected at least one launchable assembly',
     )
   })
 
-  it('finds partners and shared tracks for a launchable pair', async () => {
-    const assemblies = await catalog.listAssemblies(filter)
+  it('finds partners and shared tracks for a launchable pair', () => {
+    const assemblies = catalog.listAssemblies(filter)
     const first = assemblies[0]!
-    const partners = await catalog.listPartners(first.id, filter)
+    const partners = catalog.listPartners(first.id, filter)
     assert.ok(partners.length > 0, `expected partners for ${first.id}`)
-    const tracks = await catalog.listTracks(first.id, partners[0]!.id, filter)
+    const tracks = catalog.listTracks(first.id, partners[0]!.id, filter)
     assert.ok(
       tracks.length > 0,
       `expected shared tracks for ${first.id} / ${partners[0]!.id}`,

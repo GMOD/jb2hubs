@@ -2,10 +2,16 @@ import type { KeyboardEvent } from 'react'
 
 import styles from './TableHeader.module.css'
 
-import type { ColumnDef } from '../hooks/useTableColumns.tsx'
+// Only what the header itself reads, so any table with sortable columns can use
+// this — the full ColumnDef (which also carries `cell`/`sortValue`) satisfies it.
+export interface SortableColumn {
+  id: string
+  header: string
+  enableSorting?: boolean
+}
 
 interface TableHeaderProps {
-  columns: ColumnDef[]
+  columns: SortableColumn[]
   handleSort: (id: string) => void
   sortId: string
   sortDesc: boolean
@@ -46,6 +52,7 @@ export default function TableHeader({
           return (
             <th
               key={col.id}
+              scope="col"
               className={canSort ? styles.cursorPointer : ''}
               onClick={
                 canSort

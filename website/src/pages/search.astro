@@ -8,6 +8,11 @@ import '../styles/common-table.css'
 <Layout title="Search all genomes">
   <Container wide>
     <h1>Search all genomes</h1>
-    <SearchPage client:only="react" />
+    {
+      /* client:load, not client:only: the controls render on the server so the
+        page has a search box before the bundle arrives, instead of a blank
+        document. Everything below them is empty until a query is typed anyway. */
+    }
+    <SearchPage client:load />
   </Container>
 </Layout>

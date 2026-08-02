@@ -1,9 +1,10 @@
 // The synteny catalog is the set of assemblies and synteny tracks that the
-// /synteny page lets you browse. Today it is backed by the build-time
-// `syntenyTracks.json` blob, but the UI only ever talks to the SyntenyCatalog
-// interface below. Swapping the static backing for an API/DB-backed catalog
-// (e.g. createApiCatalog(endpoint)) is then a one-line change in the component
-// and requires no changes to the selector logic.
+// /synteny page lets you browse, backed by the build-time `syntenyTracks.json`
+// blob that the page already holds in its props. The queries below are
+// synchronous because the data is: an earlier Promise-returning version bought
+// nothing but forced the selector to mirror every list into state behind an
+// effect. Should this ever move behind an API, the component swaps its useMemos
+// for SWR calls — the same one-line-per-query change either way.
 
 export type AssemblySource = 'ucsc' | 'genark' | 'legacy'
 
@@ -38,18 +39,15 @@ export interface SourceFilter {
 
 export interface SyntenyCatalog {
   // Assemblies that participate in at least one launchable track.
-  listAssemblies(filter: SourceFilter): Promise<SyntenyAssembly[]>
+  listAssemblies(filter: SourceFilter): SyntenyAssembly[]
   // Assemblies that have a synteny track in common with `assemblyId`.
-  listPartners(
-    assemblyId: string,
-    filter: SourceFilter,
-  ): Promise<SyntenyAssembly[]>
+  listPartners(assemblyId: string, filter: SourceFilter): SyntenyAssembly[]
   // Synteny tracks linking the two given assemblies.
   listTracks(
     assembly1: string,
     assembly2: string,
     filter: SourceFilter,
-  ): Promise<SyntenyTrackSummary[]>
+  ): SyntenyTrackSummary[]
 }
 
 export interface SyntenyCatalogData {
@@ -133,7 +131,7 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
           ids.add(name)
         }
       }
-      return Promise.resolve(sortedAssemblies(ids))
+      return sortedAssemblies(ids)
     },
 
     listPartners(assemblyId, filter) {
@@ -150,16 +148,14 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
           }
         }
       }
-      return Promise.resolve(sortedAssemblies(ids))
+      return sortedAssemblies(ids)
     },
 
     listTracks(assembly1, assembly2, filter) {
-      return Promise.resolve(
-        launchableTracks(filter).filter(
-          track =>
-            track.assemblyNames.includes(assembly1) &&
-            track.assemblyNames.includes(assembly2),
-        ),
+      return launchableTracks(filter).filter(
+        track =>
+          track.assemblyNames.includes(assembly1) &&
+          track.assemblyNames.includes(assembly2),
       )
     },
   }

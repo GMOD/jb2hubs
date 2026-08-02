@@ -183,6 +183,8 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
         <button
           id="hamburger-button"
           aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -262,7 +264,12 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
 
     if (hamburgerButton && mobileMenu) {
       hamburgerButton.addEventListener('click', () => {
-        mobileMenu.classList.toggle('show')
+        const open = mobileMenu.classList.toggle('show')
+        hamburgerButton.setAttribute('aria-expanded', String(open))
+        hamburgerButton.setAttribute(
+          'aria-label',
+          open ? 'Close menu' : 'Open menu',
+        )
       })
     }
 

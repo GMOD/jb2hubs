@@ -17,55 +17,55 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
 
     <div>
       <h2>Main genome browsers</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Scientific name</th>
-            <th>Organism</th>
-            <th>Description</th>
-            <th>JBrowse</th>
-            <th>UCSC</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            Object.entries(list.ucscGenomes)
-              .filter(([key]) => s.has(key))
-              .map(([key, val]) => (
-                <tr>
-                  <td>
-                    {key} (<a href={`/ucsc/${key}`}>info</a>)
-                  </td>
-                  <td>{val.scientificName}</td>
-                  <td>{val.organism}</td>
-                  <td>{val.description}</td>
-                  <td>
-                    <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
-                  </td>
-                  <td>
-                    <a
-                      href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`}
-                    >
-                      UCSC
-                    </a>
-                  </td>
-                </tr>
-              ))
-          }
-        </tbody>
-      </table>
-      <>
-        <ul>
-          <li>
-            <a href="/ucsc">Click here</a> for a more complete listing
-          </li>
-        </ul>
-        <p>
-          Note that some tracks that are available at UCSC are not yet available
-          here, see <a href="/unavailableTracks">here</a> for more info.
-        </p>
-      </>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Scientific name</th>
+              <th scope="col">Organism</th>
+              <th scope="col">Description</th>
+              <th scope="col">JBrowse</th>
+              <th scope="col">UCSC</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              Object.entries(list.ucscGenomes)
+                .filter(([key]) => s.has(key))
+                .map(([key, val]) => (
+                  <tr>
+                    <td>
+                      {key} (<a href={`/ucsc/${key}`}>info</a>)
+                    </td>
+                    <td>{val.scientificName}</td>
+                    <td>{val.organism}</td>
+                    <td>{val.description}</td>
+                    <td>
+                      <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
+                    </td>
+                    <td>
+                      <a
+                        href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`}
+                      >
+                        UCSC
+                      </a>
+                    </td>
+                  </tr>
+                ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <ul>
+        <li>
+          <a href="/ucsc">Click here</a> for a more complete listing
+        </li>
+      </ul>
+      <p>
+        Note that some tracks that are available at UCSC are not yet available
+        here, see <a href="/unavailableTracks">here</a> for more info.
+      </p>
     </div>
 
     <div>

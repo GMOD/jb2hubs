@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
 
 import OrangeStar from './OrangeStar.tsx'
+import Pagination from './Pagination.tsx'
 import RedX from './RedX.tsx'
 import styles from './SearchPage.module.css'
 import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
@@ -21,8 +22,6 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { paginate } from '../utils/paginate.ts'
 
 import type { IndexEntry } from '../hooks/useSearchIndex.ts'
-
-const PAGE_SIZE = 100
 
 const EXAMPLE_QUERIES = ['human', 'mouse', 'zebrafish', 'GCF_000001405']
 
@@ -52,7 +51,8 @@ export default function SearchPage() {
   const [clade, setClade] = useUrlState('clade', '')
   const [curatedOnly, setCuratedOnly] = useUrlState('curated', '')
   const [page, setPage] = useState(0)
-  const tableRef = useRef<HTMLTableElement>(null)
+  const [pageSize, setPageSize] = useState(100)
+  const tableRef = useRef<HTMLDivElement>(null)
   useSearchHighlight(tableRef, query)
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function SearchPage() {
     pageCount,
     clampedPage,
     pageRows: pagedResults,
-  } = paginate(results, page, PAGE_SIZE)
+  } = paginate(results, page, pageSize)
 
   return (
     <div>
@@ -187,67 +187,63 @@ export default function SearchPage() {
         </div>
       )}
       {results.length > 0 && (
-        <table ref={tableRef}>
-          <thead>
-            <tr>
-              <th scope="col">Scientific name</th>
-              <th scope="col">Common name</th>
-              <th scope="col">Accession</th>
-              <th scope="col">Assembly name</th>
-              <th scope="col">Year</th>
-              <th scope="col">Assembly status</th>
-              <th scope="col">Category</th>
-              <th scope="col">NCBI status</th>
-              <th scope="col">Browse</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pagedResults.map(entry => (
-              <tr key={`${entry[5]}-${entry[0]}`}>
-                <td>
-                  <a href={entryHref(entry)}>{entry[2]}</a>
-                </td>
-                <td>{entry[1]}</td>
-                <td>{entry[0]}</td>
-                <td>{entry[3]}</td>
-                <td>{entry[8] || ''}</td>
-                <td>{entry[4]}</td>
-                <td>{entry[5]}</td>
-                <td>
-                  {entry[7] & 1 ? <OrangeStar /> : null}
-                  {entry[7] & 2 ? <RedX /> : null}
-                </td>
-                <td>
-                  <a href={launchUrl(entry)}>JBrowse</a>
-                </td>
+        <div
+          className="table-scroll"
+          ref={tableRef}
+        >
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Scientific name</th>
+                <th scope="col">Common name</th>
+                <th scope="col">Accession</th>
+                <th scope="col">Assembly name</th>
+                <th scope="col">Year</th>
+                <th scope="col">Assembly status</th>
+                <th scope="col">Category</th>
+                <th scope="col">NCBI status</th>
+                <th scope="col">Browse</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {pagedResults.map(entry => (
+                <tr key={`${entry[5]}-${entry[0]}`}>
+                  <td>
+                    <a href={entryHref(entry)}>{entry[2]}</a>
+                  </td>
+                  <td>{entry[1]}</td>
+                  <td>{entry[0]}</td>
+                  <td>{entry[3]}</td>
+                  <td>{entry[8] || ''}</td>
+                  <td>{entry[4]}</td>
+                  <td>{entry[5]}</td>
+                  <td>
+                    {entry[7] & 1 ? <OrangeStar /> : null}
+                    {entry[7] & 2 ? <RedX /> : null}
+                  </td>
+                  <td>
+                    <a href={launchUrl(entry)}>JBrowse</a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
       {results.length > 0 && statusLegend}
-      {pageCount > 1 && results.length > 0 && (
-        <div className={styles.pagination}>
-          <button
-            onClick={() => {
-              setPage(clampedPage - 1)
-            }}
-            disabled={clampedPage === 0}
-          >
-            Previous
-          </button>
-          <span>
-            Page {clampedPage + 1} of {pageCount}
-          </span>
-          <button
-            onClick={() => {
-              setPage(clampedPage + 1)
-            }}
-            disabled={clampedPage >= pageCount - 1}
-          >
-            Next
-          </button>
-        </div>
+      {results.length > 0 && (
+        <Pagination
+          pageIndex={clampedPage}
+          pageSize={pageSize}
+          pageCount={pageCount}
+          totalRows={results.length}
+          rowsOnPage={pagedResults.length}
+          onPageChange={setPage}
+          onPageSizeChange={size => {
+            setPageSize(size)
+            setPage(0)
+          }}
+        />
       )}
     </div>
   )

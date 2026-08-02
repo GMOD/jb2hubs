@@ -260,6 +260,19 @@ if (isCategory) {
       precomputedSubtree={precomputedSubtree}
       containerId="taxonomy-tree-container"
     />
+    {
+      /* The toggle island reads ?view= after it hydrates, so a ?view=table link
+        would paint the whole tree and then hide it. This runs while the parser
+        is still on this element, before the tree has been painted once. */
+    }
+    <script is:inline>
+      if (new URLSearchParams(location.search).get('view') === 'table') {
+        var tree = document.getElementById('taxonomy-tree-container')
+        if (tree) {
+          tree.style.display = 'none'
+        }
+      }
+    </script>
   </Container>
 </Layout>
 

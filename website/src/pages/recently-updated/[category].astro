@@ -1,0 +1,18 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import RecentlyUpdatedTable from '../../components/RecentlyUpdatedTable.astro'
+import { categories } from '../../lib/recentlyUpdatedData.ts'
+
+export function getStaticPaths() {
+  return categories.map(category => ({ params: { category } }))
+}
+
+const { category } = Astro.params
+---
+
+<Layout title={`Recently Added Genomes - ${category}`}>
+  <Container wide>
+    <RecentlyUpdatedTable category={category} />
+  </Container>
+</Layout>

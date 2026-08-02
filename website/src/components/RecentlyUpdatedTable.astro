@@ -1,0 +1,139 @@
+---
+import { formatDate, linkEntries } from '../lib/recentlyUpdated.ts'
+import {
+  ALL,
+  PER_CATEGORY,
+  categories,
+  recentFor,
+} from '../lib/recentlyUpdatedData.ts'
+import '../styles/common-table.css'
+
+interface Props {
+  category: string
+}
+
+const { category } = Astro.props
+const rows = recentFor(category)
+
+// One static page per category rather than every category's rows inlined into
+// one document behind a dropdown: that shipped 1.2MB of JSON to everybody to
+// re-render a table the server had already rendered, and left each category
+// unlinkable. These are plain links, so they need no JavaScript, and each
+// category is its own crawlable URL.
+const tabs = [
+  { slug: ALL, label: 'All categories' },
+  ...categories.map(source => ({ slug: source, label: source })),
+]
+
+// This is when the site was last built, which is when the hub listing was last
+// re-scanned.
+const builtAt = formatDate(new Date().toISOString())
+
+const href = (slug: string) =>
+  slug === ALL ? '/recently-updated' : `/recently-updated/${slug}`
+---
+
+<h1>Recently Added Genomes</h1>
+<p>
+  This page shows the {PER_CATEGORY} most recently added UCSC GenArk assemblies per
+  category. Site last built: {builtAt}
+</p>
+
+<nav
+  class="categories"
+  aria-label="Filter by category"
+>
+  {
+    tabs.map(tab => (
+      <a
+        href={href(tab.slug)}
+        class:list={['category', { active: tab.slug === category }]}
+        aria-current={tab.slug === category ? 'page' : undefined}
+      >
+        {tab.label}
+      </a>
+    ))
+  }
+</nav>
+
+<p class="count">Showing {rows.length} genomes</p>
+
+<div class="table-scroll">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Accession</th>
+        <th scope="col">Common Name</th>
+        <th scope="col">Scientific Name</th>
+        <th scope="col">Added</th>
+        <th scope="col">Category</th>
+        <th scope="col">Links</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map(hub => (
+          <tr>
+            <td>
+              <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
+            </td>
+            <td>{hub.commonName}</td>
+            <td>
+              <em>{hub.scientificName}</em>
+            </td>
+            <td>{formatDate(hub.createdDate)}</td>
+            <td>{hub.source}</td>
+            <td>
+              {linkEntries(hub).map(([url, label], i) => (
+                <Fragment key={url}>
+                  {i > 0 ? ' | ' : ''}
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {label}
+                  </a>
+                </Fragment>
+              ))}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+
+  .category {
+    background: #f0f4ff;
+    border: 1px solid #d0dbff;
+    border-radius: 999px;
+    padding: 2px 12px;
+    font-size: 0.85rem;
+    color: #2563eb;
+    text-decoration: none;
+  }
+
+  .category:hover {
+    background: #e0e8ff;
+  }
+
+  .category.active {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: white;
+  }
+
+  .count {
+    color: #666;
+    font-size: 0.875rem;
+  }
+</style>

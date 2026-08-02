@@ -6,12 +6,11 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import list from '../list.json'
+import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import styles from './UCSCTable.module.css'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import Container from './ui/react-wrappers/Container.tsx'
-import StyledLink from './ui/react-wrappers/StyledLink.tsx'
 
 import '../styles/common-table.css'
 
@@ -32,21 +31,25 @@ interface UCSCGenome {
   orderKey: number
 }
 
+// The two link columns render the same word in every row, so sorting by them
+// only shuffles ties.
 const columns = [
-  { id: 'name', header: 'Name' },
-  { id: 'scientificName', header: 'Scientific name' },
-  { id: 'organism', header: 'Organism' },
-  { id: 'description', header: 'Description' },
-  { id: 'jbrowseLink', header: 'JBrowse' },
-  { id: 'ucscLink', header: 'UCSC' },
+  { id: 'name', header: 'Name', enableSorting: true },
+  { id: 'scientificName', header: 'Scientific name', enableSorting: true },
+  { id: 'organism', header: 'Organism', enableSorting: true },
+  { id: 'description', header: 'Description', enableSorting: true },
+  { id: 'jbrowseLink', header: 'JBrowse', enableSorting: false },
+  { id: 'ucscLink', header: 'UCSC', enableSorting: false },
 ] as const
 
 export default function UCSCTable() {
   const { sortId: rawSortId, sortDesc, handleSort } = useTableSort()
   const [search, setSearch] = useUrlState('search', '')
-  // Validate the URL-supplied sort against the known columns so `sortId` stays
-  // a typed ColId (or '') without a cast.
-  const sortId = columns.find(col => col.id === rawSortId)?.id ?? ''
+  // Validate the URL-supplied sort against the sortable columns so `sortId`
+  // stays a typed ColId (or '') without a cast, and ?sort=jbrowseLink can't
+  // order the table by a column whose header refuses to sort it.
+  const sortId =
+    columns.find(col => col.id === rawSortId && col.enableSorting)?.id ?? ''
 
   const data = useMemo<RowData[]>(() => {
     return Object.entries(list.ucscGenomes as Record<string, UCSCGenome>)
@@ -82,7 +85,7 @@ export default function UCSCTable() {
   )
 
   return (
-    <Container>
+    <>
       <h1>Main genome browsers</h1>
       <div>
         <p>
@@ -90,10 +93,8 @@ export default function UCSCTable() {
           UCSC genome browser, converted into a format that JBrowse 2 can load
         </p>
         <p>
-          <StyledLink href={jbrowseUrl(ucscAllConfigPath())}>
-            Click here
-          </StyledLink>{' '}
-          for single JBrowse 2 instance containing ALL the species
+          <a href={jbrowseUrl(ucscAllConfigPath())}>Click here</a> for single
+          JBrowse 2 instance containing ALL the species
         </p>
       </div>
       <div className={styles.searchRow}>
@@ -113,58 +114,34 @@ export default function UCSCTable() {
             : `${sortedRows.length} of ${data.length} genomes`}
         </span>
       </div>
-      <table>
-        <thead>
-          <tr>
-            {columns.map(col => (
-              <th
-                key={col.id}
-                scope="col"
-                className="cursor-pointer"
-                tabIndex={0}
-                role="button"
-                aria-sort={
-                  sortId === col.id
-                    ? sortDesc
-                      ? 'descending'
-                      : 'ascending'
-                    : 'none'
-                }
-                onClick={() => {
-                  handleSort(col.id)
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleSort(col.id)
-                  }
-                }}
-              >
-                {col.header} {sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}
-              </th>
+      <div className="table-scroll">
+        <table>
+          <TableHeader
+            columns={[...columns]}
+            handleSort={handleSort}
+            sortId={sortId}
+            sortDesc={sortDesc}
+          />
+          <tbody>
+            {sortedRows.map(row => (
+              <tr key={row.name}>
+                <td>
+                  {row.name} (<a href={`/ucsc/${row.name}`}>info</a>)
+                </td>
+                <td>{row.scientificName}</td>
+                <td>{row.organism}</td>
+                <td>{row.description}</td>
+                <td>
+                  <a href={row.jbrowseLink}>JBrowse</a>
+                </td>
+                <td>
+                  <a href={row.ucscLink}>UCSC</a>
+                </td>
+              </tr>
             ))}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedRows.map(row => (
-            <tr key={row.name}>
-              <td>
-                {row.name} (
-                <StyledLink href={`/ucsc/${row.name}`}>info</StyledLink>)
-              </td>
-              <td>{row.scientificName}</td>
-              <td>{row.organism}</td>
-              <td>{row.description}</td>
-              <td>
-                <StyledLink href={row.jbrowseLink}>JBrowse</StyledLink>
-              </td>
-              <td>
-                <StyledLink href={row.ucscLink}>UCSC</StyledLink>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Container>
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }

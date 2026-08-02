@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 import DataTable from './DataTable.tsx'
+import styles from './TaxonomyViewToggle.module.css'
 import { useUrlState } from '../hooks/useUrlState.ts'
 
 import type { TableProps } from './DataTable.tsx'
@@ -18,6 +19,9 @@ export default function TaxonomyViewToggle({
 }: Props) {
   const [viewParam, setView] = useUrlState('view', 'tree')
   const view = viewParam === 'table' ? 'table' : 'tree'
+  // The tree is server-rendered Astro markup outside this island, so showing and
+  // hiding it means reaching for the node. The page hides it inline before first
+  // paint when ?view=table, which is what keeps this from flashing the tree.
   useEffect(() => {
     const treeContainer = document.getElementById(treeContainerId)
     if (treeContainer) {
@@ -26,18 +30,10 @@ export default function TaxonomyViewToggle({
   }, [view, treeContainerId])
 
   return (
-    <div style={{ marginBottom: '16px' }}>
-      <div
-        style={{
-          marginBottom: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '16px',
-          flexWrap: 'wrap',
-        }}
-      >
+    <div className={styles.toggle}>
+      <div className={styles.controls}>
         <div>
-          <label style={{ marginRight: '15px' }}>
+          <label className={styles.option}>
             <input
               type="radio"
               name="taxonomyView"
@@ -48,7 +44,7 @@ export default function TaxonomyViewToggle({
             />
             Tree view
           </label>
-          <label style={{ marginRight: '15px' }}>
+          <label className={styles.option}>
             <input
               type="radio"
               name="taxonomyView"
@@ -60,7 +56,7 @@ export default function TaxonomyViewToggle({
             Table view
           </label>
         </div>
-        <div style={{ color: '#6b7280' }}>{accessionCount} accessions</div>
+        <div className={styles.count}>{accessionCount} accessions</div>
       </div>
 
       {view === 'table' ? <DataTable {...table} /> : null}

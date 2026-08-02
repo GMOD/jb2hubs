@@ -1,8 +1,7 @@
 import { genarkConfigPath, jbrowseUrl } from '../config/jbrowse.ts'
 
-// Every field here is inlined into the page for each of the ~500 rows per
-// category, so it holds only what the table shows. The three outbound links are
-// all derivable from the accession.
+// What the recently-updated table renders. The three outbound links are all
+// derivable from the accession, so no row carries a URL.
 export interface HubEntry {
   accession: string
   createdDate: string
@@ -21,8 +20,7 @@ export function formatDate(isoString: string): string {
   return dateFormatter.format(new Date(isoString))
 }
 
-// Ordered [href, label] pairs for the links cell, so the server render and the
-// client re-render share one definition.
+// Ordered [href, label] pairs for the links cell.
 export function linkEntries(hub: HubEntry): [string, string][] {
   return [
     [jbrowseUrl(genarkConfigPath(hub.accession)), 'JBrowse'],

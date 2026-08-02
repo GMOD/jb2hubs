@@ -43,6 +43,9 @@ export default function Autocomplete({
   disabled = false,
   id,
 }: Props) {
+  // Ties the input to its listbox for aria-controls / aria-activedescendant.
+  // Two selectors on one page (the synteny pair) must not share option ids.
+  const listboxId = `${id ?? 'autocomplete'}-listbox`
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState(0)
@@ -174,6 +177,8 @@ export default function Autocomplete({
     inputRef.current?.focus()
   }
 
+  const showList = isOpen && !disabled
+
   return (
     <div
       className="autocomplete"
@@ -193,6 +198,15 @@ export default function Autocomplete({
           placeholder={placeholder}
           disabled={disabled}
           autoComplete="off"
+          role="combobox"
+          aria-expanded={showList}
+          aria-controls={listboxId}
+          aria-autocomplete="list"
+          aria-activedescendant={
+            showList && filteredOptions.length > 0
+              ? `${listboxId}-option-${highlightedIndex}`
+              : undefined
+          }
           className="autocomplete-input"
         />
         {value && !disabled && (
@@ -207,9 +221,11 @@ export default function Autocomplete({
           </button>
         )}
       </div>
-      {isOpen && !disabled && (
+      {showList && (
         <ul
+          id={listboxId}
           className="autocomplete-list"
+          role="listbox"
           ref={listRef}
         >
           {filteredOptions.length === 0 ? (
@@ -218,6 +234,9 @@ export default function Autocomplete({
             filteredOptions.map((option, index) => (
               <li
                 key={option.value}
+                id={`${listboxId}-option-${index}`}
+                role="option"
+                aria-selected={index === highlightedIndex}
                 className={`autocomplete-option ${index === highlightedIndex ? 'highlighted' : ''} ${option.value === value ? 'selected' : ''}`}
                 onClick={() => {
                   handleSelect(option)

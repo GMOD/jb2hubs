@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Container from '../../components/Container.astro'
+import RecentlyUpdatedTable from '../../components/RecentlyUpdatedTable.astro'
+import { ALL, categories } from '../../lib/recentlyUpdatedData.ts'
+---
+
+<Layout title="Recently Added Genomes">
+  <Container wide>
+    <RecentlyUpdatedTable category={ALL} />
+  </Container>
+</Layout>
+
+<script define:vars={{ categories }}>
+  // The category used to be a ?category= param this page read in JavaScript.
+  // Each category is its own page now, so honour the old links rather than
+  // silently dropping them onto the unfiltered list.
+  const legacy = new URLSearchParams(window.location.search).get('category')
+  if (legacy && categories.includes(legacy)) {
+    window.location.replace(`/recently-updated/${legacy}`)
+  }
+</script>

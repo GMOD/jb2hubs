@@ -80,9 +80,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
         />
       )
     }
+    {
+      /* Absolute: og:image is fetched by scrapers that have no page context to
+        resolve a site-relative path against, so a bare "/1.png" yields no card
+        on most of them. */
+    }
     <meta
       property="og:image"
-      content="/1.png"
+      content={new URL('/1.png', Astro.site)}
+    />
+    <meta
+      name="twitter:card"
+      content="summary_large_image"
     />
     {
       jsonLd && (
