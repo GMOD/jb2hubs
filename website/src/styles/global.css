@@ -1,6 +1,3 @@
-@import '@fontsource/roboto/400.css'; /* Weight 400 */
-@import '@fontsource/roboto/700.css'; /* Weight 700 */
-
 *,
 *::before,
 *::after {
@@ -11,9 +8,21 @@ body {
   margin: 0;
 }
 
+/* No webfont. Roboto was costing 55KB of woff2 plus 23KB of @font-face rules on
+   every page — 82% of the stylesheet — for a face the platform already has a
+   good equivalent of. Roboto stays first in the stack, so Android and ChromeOS
+   render exactly as before and everywhere else uses its own UI font, with text
+   painting on the first byte instead of after a font fetch. */
 html,
 :host {
   line-height: 1.5;
-  font-family: 'Roboto', sans-serif;
+  font-family:
+    Roboto,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Helvetica,
+    Arial,
+    sans-serif;
   font-weight: 400;
 }

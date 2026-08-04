@@ -1,5 +1,5 @@
 ---
-import HeaderSearch from './HeaderSearch.tsx'
+import HeaderSearch from './HeaderSearch.astro'
 import Logo from '../logo.astro'
 import { features } from '../config/features.ts'
 
@@ -79,12 +79,12 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
         </div>
       </div>
       {
-        /* Server-rendered as a plain GET form, so search works with no JS and is
-          one interaction away from every page rather than two clicks into a
-          dropdown. Hydrating adds the typeahead on top of that. */
+        /* A plain GET form, so search works with no JS and is one interaction
+          away from every page rather than two clicks into a dropdown. The
+          typeahead is layered on in headerSearch.ts. */
       }
       <div class="headerSearchSlot">
-        <HeaderSearch client:idle />
+        <HeaderSearch />
       </div>
     </div>
 
@@ -334,8 +334,8 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     flex: 1;
   }
 
-  /* Sizes the island wrapper; the form inside it fills this box and owns the
-     rest of the search styling (HeaderSearch.module.css). */
+  /* Sizes the search slot; the form inside it fills this box and owns the rest
+     of the search styling (headerSearch.css). */
   .headerSearchSlot {
     flex: 1;
     min-width: 0;
