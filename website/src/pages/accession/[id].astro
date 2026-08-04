@@ -115,9 +115,6 @@ const pageUrl = imageData?.pageUrl
 const comments = usefulComments(rawComments)
 
 const ncbiTaxonomyUrl = `https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`
-// GenArk carries a lot of organisms obscure enough that the fastest way to learn
-// what one even is happens to be an AI overview of the scientific name.
-const speciesOverviewUrl = `https://www.google.com/search?q=${encodeURIComponent(scientificName)}&udm=50`
 
 const buscoBreakdown = annotationInfo?.busco
   ? [
@@ -238,7 +235,7 @@ const hasAssemblyDetails =
         <b>TaxonID:</b>
         <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a
           href={ncbiTaxonomyUrl}>NCBI taxonomy</a
-        >, <a href={speciesOverviewUrl}>Google AI overview</a>
+        >
       </div>
       {
         seqReleaseDate ? (
