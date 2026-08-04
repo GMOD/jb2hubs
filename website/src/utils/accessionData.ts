@@ -91,12 +91,18 @@ function hubFile(accession: string, file: string) {
     : undefined
 }
 
-// The GenArk assembly gallery image, scraped alongside the hub.
+// The GenArk assembly gallery image, scraped alongside the hub. The scraped
+// pageUrl holds the article title verbatim, spaces and all
+// ("https://wikipedia.org/wiki/Homo sapiens"), so it is encoded here rather than
+// emitted into 50K pages as a malformed href.
 export function loadHubImage(accession: string) {
   const file = hubFile(accession, 'image.json')
-  return file
+  const image = file
     ? tryAndReadJSON<{ imageUrl?: string; pageUrl?: string }>(file)
     : null
+  return image?.pageUrl
+    ? { ...image, pageUrl: encodeURI(image.pageUrl) }
+    : image
 }
 
 export function loadAccessionMap() {

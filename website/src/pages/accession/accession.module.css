@@ -1,20 +1,26 @@
+/* Contains the float, so the GenArk photo cannot spill past the identity block
+   into the launch links below it. */
+.identity {
+  display: flow-root;
+}
+
 .statsTable {
   display: grid;
   grid-template-columns: max-content 1fr;
   column-gap: 1.5rem;
 }
 
-.imageContainer {
-  float: right;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
-  max-width: 20rem;
-}
-
+/* Sized so the photo is about as tall as the identity block beside it — at the
+   old 20rem it overhung the text by half its height, and the contained float
+   turned that overhang into dead space above the launch links. */
 .figure {
-  margin: 0;
+  float: right;
+  margin: 0 0 1rem 1.5rem;
+  max-width: 14rem;
 }
 
+/* The aspect-ratio reserves the box before the image loads; object-fit keeps the
+   portrait ones (most of the GenArk gallery) from being stretched into it. */
 .image {
   max-width: 100%;
   aspect-ratio: 4 / 3;
@@ -23,4 +29,8 @@
 
 .comments {
   white-space: pre-wrap;
+}
+
+.disclosure {
+  margin: 1rem 0;
 }

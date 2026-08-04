@@ -16,6 +16,7 @@ import {
   ucscConfigPath,
 } from '../../config/jbrowse.ts'
 import { bareCommonName } from '../../utils/names.ts'
+import { usefulComments } from '../../utils/comments.ts'
 import { features } from '../../config/features.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
@@ -93,7 +94,7 @@ const {
   genomeNotes,
   suppressionReason,
   infraspecificNames,
-  comments,
+  comments: rawComments,
   gcPercent,
   genomeCoverage,
   sequencingTech,
@@ -110,6 +111,13 @@ const pairedLabel = pairedAccession?.startsWith('GCF')
 const imageData = loadHubImage(accession)
 const imageUrl = imageData?.imageUrl
 const pageUrl = imageData?.pageUrl
+
+const comments = usefulComments(rawComments)
+
+const ncbiTaxonomyUrl = `https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`
+// GenArk carries a lot of organisms obscure enough that the fastest way to learn
+// what one even is happens to be an AI overview of the scientific name.
+const speciesOverviewUrl = `https://www.google.com/search?q=${encodeURIComponent(scientificName)}&udm=50`
 
 const buscoBreakdown = annotationInfo?.busco
   ? [
@@ -163,18 +171,22 @@ const jsonLd = {
     name: scientificName,
     ...(organism ? { alternateName: organism } : {}),
     identifier: `NCBI:txid${taxonId}`,
-    sameAs: `https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`,
+    sameAs: ncbiTaxonomyUrl,
   },
 }
 
-const hasAssemblyStats =
+const hasAssemblyDetails =
   stats?.total_length ||
   stats?.chromosome_count ||
   stats?.scaffold_count ||
   stats?.contig_count ||
   gcPercent !== undefined ||
   genomeCoverage ||
-  sequencingTech
+  sequencingTech ||
+  submitterOrg ||
+  bioprojectAccession ||
+  pairedAccession ||
+  (infraspecificNames && Object.keys(infraspecificNames).length)
 ---
 
 <Layout
@@ -183,7 +195,7 @@ const hasAssemblyStats =
   jsonLd={jsonLd}
 >
   <Container>
-    <div>
+    <div class={styles.identity}>
       <h1>{scientificName}</h1>
       {
         ncbiMissing ? (
@@ -193,6 +205,21 @@ const hasAssemblyStats =
               may be missing.
             </em>
           </p>
+        ) : null
+      }
+      {
+        imageUrl ? (
+          <figure class={styles.figure}>
+            <img
+              src={imageUrl}
+              class={styles.image}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>
+              {pageUrl ? <a href={pageUrl}>(source)</a> : null}
+            </figcaption>
+          </figure>
         ) : null
       }
       <div>
@@ -205,11 +232,13 @@ const hasAssemblyStats =
       </div>
       <div>
         <b>Common name:</b>
-        {commonName}
+        {organism}
       </div>
       <div>
         <b>TaxonID:</b>
-        <a href={`/taxonomy/${taxonId}`}>{taxonId}</a>
+        <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a
+          href={ncbiTaxonomyUrl}>NCBI taxonomy</a
+        >, <a href={speciesOverviewUrl}>Google AI overview</a>
       </div>
       {
         seqReleaseDate ? (
@@ -237,101 +266,139 @@ const hasAssemblyStats =
         suppressed ? (
           <div>
             <b>NCBI assembly status:</b> RefSeq Suppressed <RedX />
-            {suppressionReason ? (
-              <div>
-                <b>Reason:</b> {suppressionReason}
-              </div>
-            ) : null}
-          </div>
-        ) : null
-      }
-      {genomeNotes?.length ? <div>{genomeNotes.join('; ')}</div> : null}
-      {
-        infraspecificNames && Object.keys(infraspecificNames).length ? (
-          <div>
-            <b>Specimen:</b>{' '}
-            {Object.entries(infraspecificNames)
-              .map(([k, v]) => `${k}: ${v}`)
-              .join(', ')}
+            {suppressionReason ? <> — {suppressionReason}</> : null}
           </div>
         ) : null
       }
       {
-        pairedAccession ? (
+        genomeNotes?.length ? (
           <div>
-            <b>
-              {pairedLabel}
-              <span
-                class={tooltipStyles.tooltip}
-                data-tooltip="Same assembly submitted to both GenBank and RefSeq"
-                style="cursor:help;font-size:0.75em"
-              >
-                {' '}
-                ?
-              </span>
-              :
-            </b>{' '}
-            {pairedAssemblyData ? (
-              <a href={`/accession/${pairedAccession}`}>{pairedAccession}</a>
-            ) : (
-              <>
-                {pairedAccession} (
-                <a
-                  href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
-                >
-                  NCBI
-                </a>
-                )
-              </>
-            )}
-            {pairedAssemblyStatus === 'suppressed' ? (
-              <>
-                {' '}
-                <RedX />
-              </>
-            ) : null}
-            {pairedAssemblyDifferences ? (
-              <> — {pairedAssemblyDifferences}</>
-            ) : null}
-          </div>
-        ) : null
-      }
-
-      {
-        submitterOrg ? (
-          <div>
-            <b>Submitter:</b> {submitterOrg}
-          </div>
-        ) : null
-      }
-      {
-        bioprojectAccession ? (
-          <div>
-            <b>BioProject:</b>{' '}
-            <a
-              href={`https://www.ncbi.nlm.nih.gov/bioproject/${bioprojectAccession}`}
-            >
-              {bioprojectAccession}
-            </a>
+            <b>NCBI quality notes:</b> {genomeNotes.join('; ')}
           </div>
         ) : null
       }
     </div>
+    <div>
+      <h2>Genome browsers</h2>
+      {
+        ucscDbName && (
+          <p>
+            See <a href={`/ucsc/${ucscDbName}`}>{ucscDbName}</a> for our full
+            JBrowse instance of this assembly.
+          </p>
+        )
+      }
+      <ul>
+        <li>
+          <a
+            href={jbrowseUrl(
+              ucscDbName
+                ? ucscConfigPath(ucscDbName)
+                : genarkConfigPath(accession),
+            )}>JBrowse</a
+          >
+        </li>
+        <li>
+          <a href={igvBrowserLink}>IGV.js</a>
+        </li>
+        <li>
+          <a href={ncbiBrowserLink}>NCBI browser (GDV)</a>
+        </li>
+        <li>
+          <a href={ucscBrowserLink}>UCSC browser</a>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2>Compare with other genomes</h2>
+      <ul>
+        <li>
+          <a href={`/orthologs?ref=${taxonId}`}>Find a gene and its orthologs</a
+          >
+          across the other species we host
+        </li>
+        {
+          features.synteny && syntenyAssemblies.has(accession) ? (
+            <li>
+              <a href={`/synteny?assembly=${accession}`}>
+                Open a synteny view against an aligned assembly
+              </a>
+            </li>
+          ) : null
+        }
+        {
+          features.multiSynteny ? (
+            <li>
+              <a href="/conserved-gene-order">
+                Compare gene order around a gene across species
+              </a>
+            </li>
+          ) : null
+        }
+        <li>
+          <a href={`/taxonomy/${taxonId}`}>
+            Browse every assembly we host for this taxon
+          </a>
+        </li>
+      </ul>
+      {
+        siblings.length ? (
+          <details class={styles.disclosure}>
+            <summary>
+              Other assemblies for {scientificName}
+              {siblingCount > siblings.length
+                ? ` (${siblings.length} of ${siblingCount} shown)`
+                : ` (${siblingCount})`}
+            </summary>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Accession</th>
+                  <th scope="col">Assembly name</th>
+                  <th scope="col">Assembly status</th>
+                  <th scope="col">Release date</th>
+                  <th scope="col">NCBI status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {siblings.map(sibling => (
+                  <tr>
+                    <td>
+                      <a href={`/accession/${sibling.accession}`}>
+                        {sibling.accession}
+                      </a>
+                    </td>
+                    <td>{sibling.ncbiAssemblyName}</td>
+                    <td>{sibling.assemblyStatus}</td>
+                    <td>{sibling.seqReleaseDate.replace('00:00', '')}</td>
+                    <td>
+                      {sibling.isReference ? <OrangeStar /> : null}
+                      {sibling.suppressed ? <RedX /> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {siblingCount > siblings.length ? (
+              <p>
+                <a href={`/taxonomy/${taxonId}`}>
+                  See all {taxonCount} assemblies for this taxon
+                </a>
+              </p>
+            ) : null}
+          </details>
+        ) : null
+      }
+    </div>
     {
-      hasAssemblyStats ? (
+      hasAssemblyDetails ? (
         <div>
-          <h2>Assembly statistics</h2>
+          <h2>Assembly details</h2>
           <dl class={styles.statsTable}>
             {stats?.total_length ? (
               <>
                 <dt>Total length</dt>
                 <dd>{Number(stats.total_length).toLocaleString()} bp</dd>
-              </>
-            ) : null}
-            {stats?.ungapped_length ? (
-              <>
-                <dt>Ungapped length</dt>
-                <dd>{Number(stats.ungapped_length).toLocaleString()} bp</dd>
               </>
             ) : null}
             {stats?.chromosome_count ? (
@@ -349,13 +416,12 @@ const hasAssemblyStats =
             {stats?.scaffold_n50 ? (
               <>
                 <dt>Scaffold N50</dt>
-                <dd>{Number(stats.scaffold_n50).toLocaleString()}</dd>
-              </>
-            ) : null}
-            {stats?.scaffold_l50 ? (
-              <>
-                <dt>Scaffold L50</dt>
-                <dd>{Number(stats.scaffold_l50).toLocaleString()}</dd>
+                <dd>
+                  {Number(stats.scaffold_n50).toLocaleString()}
+                  {stats.scaffold_l50
+                    ? ` (L50 ${Number(stats.scaffold_l50).toLocaleString()})`
+                    : null}
+                </dd>
               </>
             ) : null}
             {stats?.contig_count ? (
@@ -367,13 +433,12 @@ const hasAssemblyStats =
             {stats?.contig_n50 ? (
               <>
                 <dt>Contig N50</dt>
-                <dd>{Number(stats.contig_n50).toLocaleString()}</dd>
-              </>
-            ) : null}
-            {stats?.contig_l50 ? (
-              <>
-                <dt>Contig L50</dt>
-                <dd>{Number(stats.contig_l50).toLocaleString()}</dd>
+                <dd>
+                  {Number(stats.contig_n50).toLocaleString()}
+                  {stats.contig_l50
+                    ? ` (L50 ${Number(stats.contig_l50).toLocaleString()})`
+                    : null}
+                </dd>
               </>
             ) : null}
             {gcPercent !== undefined ? (
@@ -392,6 +457,75 @@ const hasAssemblyStats =
               <>
                 <dt>Sequencing</dt>
                 <dd>{sequencingTech}</dd>
+              </>
+            ) : null}
+            {infraspecificNames && Object.keys(infraspecificNames).length ? (
+              <>
+                <dt>Specimen</dt>
+                <dd>
+                  {Object.entries(infraspecificNames)
+                    .map(([k, v]) => `${k}: ${v}`)
+                    .join(', ')}
+                </dd>
+              </>
+            ) : null}
+            {submitterOrg ? (
+              <>
+                <dt>Submitter</dt>
+                <dd>{submitterOrg}</dd>
+              </>
+            ) : null}
+            {bioprojectAccession ? (
+              <>
+                <dt>BioProject</dt>
+                <dd>
+                  <a
+                    href={`https://www.ncbi.nlm.nih.gov/bioproject/${bioprojectAccession}`}
+                  >
+                    {bioprojectAccession}
+                  </a>
+                </dd>
+              </>
+            ) : null}
+            {pairedAccession ? (
+              <>
+                <dt>
+                  {pairedLabel}
+                  <span
+                    class={tooltipStyles.tooltip}
+                    data-tooltip="Same assembly submitted to both GenBank and RefSeq"
+                    style="cursor:help;font-size:0.75em"
+                  >
+                    {' '}
+                    ?
+                  </span>
+                </dt>
+                <dd>
+                  {pairedAssemblyData ? (
+                    <a href={`/accession/${pairedAccession}`}>
+                      {pairedAccession}
+                    </a>
+                  ) : (
+                    <>
+                      {pairedAccession} (
+                      <a
+                        href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
+                      >
+                        NCBI
+                      </a>
+                      )
+                    </>
+                  )}
+                  {pairedAssemblyStatus === 'suppressed' ? (
+                    <>
+                      {' '}
+                      <RedX />
+                    </>
+                  ) : null}
+                  {pairedAssemblyDifferences ? (
+                    <> — {pairedAssemblyDifferences}</>
+                  ) : null}
+                </dd>
               </>
             ) : null}
           </dl>
@@ -450,185 +584,20 @@ const hasAssemblyStats =
         </div>
       ) : null
     }
-    <div>
-      {
-        comments ? (
-          <div>
-            <b>Comments:</b>
-            <div class={styles.comments}>{comments}</div>
-          </div>
-        ) : null
-      }
-      {
-        imageUrl ? (
-          <div class={styles.imageContainer}>
-            <figure class={styles.figure}>
-              <img
-                src={imageUrl}
-                class={styles.image}
-                loading="lazy"
-                decoding="async"
-              />
-              <figcaption>
-                {pageUrl ? <a href={pageUrl}>(source)</a> : null}
-              </figcaption>
-            </figure>
-          </div>
-        ) : null
-      }
-    </div>
-    <div>
-      <h2>Genome browsers</h2>
-      {
-        ucscDbName && (
-          <p>
-            See{' '}
-            <a href={`/ucsc/${ucscDbName}`}>
-              <b>{ucscDbName}</b>
-            </a>{' '}
-            for our full JBrowse instance of this assembly.
-          </p>
-        )
-      }
-      <ul>
-        <li>
-          <a
-            href={jbrowseUrl(
-              ucscDbName
-                ? ucscConfigPath(ucscDbName)
-                : genarkConfigPath(accession),
-            )}>JBrowse</a
-          >
-        </li>
-        <li>
-          <a href={igvBrowserLink}>IGV.js</a>
-        </li>
-        <li>
-          <a href={ncbiBrowserLink}>NCBI browser (GDV)</a>
-        </li>
-        <li>
-          <a href={ucscBrowserLink}>UCSC browser</a>
-        </li>
-      </ul>
-    </div>
-    <div>
-      <h2>Compare with other genomes</h2>
-      <ul>
-        <li>
-          <a href={`/orthologs?ref=${taxonId}`}>
-            Find a gene and its orthologs
-          </a> across the other species we host
-        </li>
-        {
-          features.synteny && syntenyAssemblies.has(accession) ? (
-            <li>
-              <a href={`/synteny?assembly=${accession}`}>
-                Open a synteny view against an aligned assembly
-              </a>
-            </li>
-          ) : null
-        }
-        {
-          features.multiSynteny ? (
-            <li>
-              <a href="/conserved-gene-order">
-                Compare gene order around a gene across species
-              </a>
-            </li>
-          ) : null
-        }
-        <li>
-          <a href={`/taxonomy/${taxonId}`}>
-            Browse every assembly we host for this taxon
-          </a>
-        </li>
-      </ul>
-      {
-        siblings.length ? (
-          <>
-            <h3>
-              Other assemblies for {scientificName}
-              {siblingCount > siblings.length
-                ? ` (${siblings.length} of ${siblingCount})`
-                : null}
-            </h3>
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">Accession</th>
-                  <th scope="col">Assembly name</th>
-                  <th scope="col">Assembly status</th>
-                  <th scope="col">Release date</th>
-                  <th scope="col">NCBI status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {siblings.map(sibling => (
-                  <tr>
-                    <td>
-                      <a href={`/accession/${sibling.accession}`}>
-                        {sibling.accession}
-                      </a>
-                    </td>
-                    <td>{sibling.ncbiAssemblyName}</td>
-                    <td>{sibling.assemblyStatus}</td>
-                    <td>{sibling.seqReleaseDate.replace('00:00', '')}</td>
-                    <td>
-                      {sibling.isReference ? <OrangeStar /> : null}
-                      {sibling.suppressed ? <RedX /> : null}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {siblingCount > siblings.length ? (
-              <p>
-                <a href={`/taxonomy/${taxonId}`}>
-                  See all {taxonCount} assemblies for this taxon
-                </a>
-              </p>
-            ) : null}
-          </>
-        ) : null
-      }
-    </div>
-    <div>
-      <h2>Portals/data downloads</h2>
-      <ul>
-        <li>
-          <a href={ucscDataLink}>UCSC data folder</a>
-        </li>
-        <li>
-          <a href={ncbiLink}>NCBI assembly page</a>
-        </li>
-        <li>
-          <a
-            href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`}
-          >
-            NCBI taxonomy page
-          </a>
-        </li>
-        <li>
-          <a
-            href={`https://www.google.com/search?q=${encodeURIComponent(scientificName)}`}
-          >
-            Google
-          </a>
-        </li>
-        <li>
-          <a
-            href={`https://www.google.com/search?q=${encodeURIComponent(scientificName)}&udm=50`}
-          >
-            Google AI overview
-          </a>
-        </li>
-      </ul>
-    </div>
+    {
+      comments ? (
+        <details class={styles.disclosure}>
+          <summary>Submitter comments</summary>
+          <div class={styles.comments}>{comments}</div>
+        </details>
+      ) : null
+    }
     <div>
       <small>
-        Assembly data from{' '}
-        <a href={ncbiLink}>NCBI</a> and{' '}
-        <a href={ucscDataLink}>UCSC GenArk</a>.
+        Assembly data from the <a href={ncbiLink}>NCBI assembly page</a> and the{
+          ' '
+        }
+        <a href={ucscDataLink}>UCSC GenArk data folder</a>.
         {
           ncbiDownloadedAt
             ? ` NCBI data retrieved ${new Date(ncbiDownloadedAt * 1000).toLocaleDateString()}.`
