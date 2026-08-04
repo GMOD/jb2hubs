@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 import { readConfig, writeJSON } from './util.ts'
 
@@ -11,16 +12,30 @@ const MINIMAL_TRACK_PATTERNS = [
   'ncbirefseq', // NCBI RefSeq tracks
   'gencode', // GENCODE tracks
   'rmsk', // RepeatMasker tracks
-  'gap', // Gap tracks (gap, allGaps, gapOverlap)
+  'gap', // Gap tracks (gap, gapOverlap)
+  'allgaps', // also a gap track, but not under the `gap` name
 ]
 
 /**
- * Checks if a track should be included in the minimal config
- * based on its trackId matching any of the minimal track patterns.
+ * Whether a track belongs in the minimal config.
+ *
+ * A pattern has to match a whole trackId segment, not any substring of one.
+ * These trackIds are `<db>-<ucscTrackName>`, so anchoring at the start or just
+ * after a dash names the track group and nothing else.
+ *
+ * As a bare substring, `gencode` also matched every ENCODE regulation track,
+ * because `hg38-wgEncodeReg4Dnase` lowercases to `hg38-wgencodereg4dnase` and
+ * `wgencode` contains `gencode`. That put 11 of hg38's 33 minimal tracks -- and
+ * 82% of its bytes -- into a file whose whole purpose is to be small: 241KB
+ * against 43KB without them, on the artifact the hubs plugin now fetches to
+ * resolve a genome on demand. `gap` collected `veGAPseudogene` and `cGAPSage`
+ * the same way.
  */
-function shouldIncludeTrack(trackId: string): boolean {
-  const lowerTrackId = trackId.toLowerCase()
-  return MINIMAL_TRACK_PATTERNS.some(pattern => lowerTrackId.includes(pattern))
+export function shouldIncludeTrack(trackId: string): boolean {
+  const lower = trackId.toLowerCase()
+  return MINIMAL_TRACK_PATTERNS.some(
+    pattern => lower.startsWith(pattern) || lower.includes(`-${pattern}`),
+  )
 }
 
 /**
@@ -93,28 +108,32 @@ function processAssemblyDirs(resultsDir: string) {
 }
 
 // CLI
-if (process.argv.length < 3) {
-  console.error('Usage: node createMinimalConfig.ts <resultsDir>')
-  console.error(
-    '  resultsDir: Path to UCSC results directory containing assembly folders',
-  )
-  console.error('  Each assembly folder should contain a config.json file')
-  console.error(
-    '  Minimal configs will be created as minimal.json in each folder',
-  )
-  process.exit(1)
+// same guard as removeEverythingButLatest.ts, so the track filter can be
+// imported and tested without the CLI running on import
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  if (process.argv.length < 3) {
+    console.error('Usage: node createMinimalConfig.ts <resultsDir>')
+    console.error(
+      '  resultsDir: Path to UCSC results directory containing assembly folders',
+    )
+    console.error('  Each assembly folder should contain a config.json file')
+    console.error(
+      '  Minimal configs will be created as minimal.json in each folder',
+    )
+    process.exit(1)
+  }
+
+  const resultsDir = process.argv[2]!
+
+  if (!fs.existsSync(resultsDir)) {
+    console.error(`Error: Results directory does not exist: ${resultsDir}`)
+    process.exit(1)
+  }
+
+  if (!fs.statSync(resultsDir).isDirectory()) {
+    console.error(`Error: Path is not a directory: ${resultsDir}`)
+    process.exit(1)
+  }
+
+  processAssemblyDirs(resultsDir)
 }
-
-const resultsDir = process.argv[2]!
-
-if (!fs.existsSync(resultsDir)) {
-  console.error(`Error: Results directory does not exist: ${resultsDir}`)
-  process.exit(1)
-}
-
-if (!fs.statSync(resultsDir).isDirectory()) {
-  console.error(`Error: Path is not a directory: ${resultsDir}`)
-  process.exit(1)
-}
-
-processAssemblyDirs(resultsDir)
