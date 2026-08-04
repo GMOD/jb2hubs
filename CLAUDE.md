@@ -67,6 +67,40 @@ change tracks on a UCSC assembly, edit the source-controlled extension file
 `tracks[]` are merged into the generated config by the pipeline; then regenerate
 and re-upload the configs.
 
+## What belongs in `configs-minimal/`
+
+`minimal.json` is a second, small config published beside every UCSC
+`config.json` and named in the genome list as `jbrowseMinimalConfig`
+(`src/transformGenomeList.ts`). `@cmdcolin/jbrowse-plugin-hubs` fetches it to
+resolve a genome a synteny track references, so it is what the mate panel opens
+with, and it is on the latency path of every cross-assembly launch. It is worth
+keeping small — but small is a track-selection problem, not a metadata problem;
+the trackDb prose in `metadata.ucsc.html` is 90% of its bytes and stays, because
+it is what the track's About dialog shows.
+
+`createMinimalConfig.ts` selects on two rules:
+
+- **`MINIMAL_TRACK_PATTERNS`**, matched against a whole `trackId` segment —
+  anchored at the start or just after a dash, never as a bare substring.
+  Substring matching is what put every ENCODE regulation track in (`wgEncode`
+  contains `gencode`, 82% of hg38's bytes), and what pulled `veGAPseudogene` and
+  `cGAPSage` in under `gap`. `allGaps` needs its own entry because it is not a
+  `gap` prefix; `dbSnp155ClinVar` is correctly **not** a `clinvar` one.
+- **whatever the config's own `defaultSession` opens.** Not an extra pattern —
+  the exception is derived from the session so the two cannot drift.
+  `generateDefaultSessions.ts` picks the best gene track an assembly actually
+  has (`ncbiRefSeq`, `ncbiRefSeqCurated`, `ncbiGene`, `refGene`, `ensGene`,
+  `augustusGene`, `xenoRefGene`), and only the first three are names the
+  patterns know. Every assembly predating ncbiRefSeq therefore used to open a
+  track its minimal config had dropped — 134 of the 238, booting to an empty
+  view: hg18/mm9 named `refGene`, danRer4 `ensGene`, the invertebrates
+  `augustusGene` or `xenoRefGene`. Order matters in `make.sh`:
+  `generateDefaultSessions.sh` runs before `createMinimalConfigs.sh`.
+
+Four configs are still legitimately empty — `cb1`, `hgFixed`, `renames`,
+`enhLutNer1` have no annotation to include (the first two are not assemblies at
+all; `common.sh`'s `is_assembly_db` already knows this).
+
 ## Staging a config-level feature
 
 `features.staging` (`website/src/config/features.ts`) only gates website pages

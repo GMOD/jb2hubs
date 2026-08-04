@@ -40,7 +40,49 @@
       }
     }
   ],
-  "tracks": [],
+  "tracks": [
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiGene",
+          "type": "bigGenePred",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/hubs/public/ncbiGene.html\">ncbiGene.html</a>",
+          "visibility": "pack",
+          "shortLabel": "NCBI Genes",
+          "group": "genes",
+          "searchIndex": "name",
+          "labelFields": "geneName,geneName2",
+          "searchTrix": "/gbdb/mpxvRivers/ixIxx/GCF_014621545.1_ASM1462154v1.ncbiGene.ix",
+          "bigDataUrl": "/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb",
+          "altColor": "150,80,0",
+          "color": "0,80,150",
+          "urlLabel": "Entrez gene",
+          "defaultLabelFields": "geneName2",
+          "longLabel": "NCBI gene predictions",
+          "url": "https://www.ncbi.nlm.nih.gov/gene/?term=$$"
+        }
+      },
+      "trackId": "mpxvRivers-ncbiGene",
+      "description": "NCBI gene predictions",
+      "assemblyNames": ["mpxvRivers"],
+      "name": "NCBI Genes",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mpxvRivers-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'geneName2')"
+          }
+        }
+      ]
+    }
+  ],
   "defaultSession": {
     "name": "mpxvRivers MPXV-M5312_HM12_Rivers (MT903340.1/GCF_014621545.1)",
     "views": [

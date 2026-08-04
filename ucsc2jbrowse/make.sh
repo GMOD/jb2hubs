@@ -275,7 +275,7 @@ node src/ensureTextSearchAdapters.ts "$UCSC_BUILT_DIR"
 log "Generating default sessions for all assemblies..."
 ./generateDefaultSessions.sh
 
-log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps only)..."
+log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps, and the defaultSession's gene track)..."
 ./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
 
 log "Copying generated config files to the local 'configs' directory..."

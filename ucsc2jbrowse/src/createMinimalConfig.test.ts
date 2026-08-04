@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { shouldIncludeTrack } from './createMinimalConfig.ts'
+import { minimalTracks, shouldIncludeTrack } from './createMinimalConfig.ts'
+
+import type { JBrowseConfig } from './types'
 
 // minimal.json is what @cmdcolin/jbrowse-plugin-hubs fetches to resolve a genome
 // a synteny track references, so what this predicate lets through is both the
 // size of that fetch and what the mate panel opens with.
 describe('shouldIncludeTrack', () => {
-  it('keeps the four track groups minimal configs are for', () => {
+  it('keeps the track groups minimal configs are for', () => {
     for (const id of [
       'hg38-ncbiRefSeq',
       'hg38-ncbiRefSeqCurated',
@@ -19,6 +21,10 @@ describe('shouldIncludeTrack', () => {
       'hg38-gap',
       'hg38-gapOverlap',
       'hg38-allGaps',
+      'hg38-clinvarMain',
+      'hg38-clinvarCnv',
+      'mm10-clinvarLift',
+      'hs1-clinVar20220313',
     ]) {
       assert.equal(shouldIncludeTrack(id), true, id)
     }
@@ -46,6 +52,7 @@ describe('shouldIncludeTrack', () => {
       'hg19-cgapSage', // c[gap]sage
       'hg38-nmdEscGencode', // nmdesc[gencode]
       'hg38-nmdEscNcbiRefSeq',
+      'hg19-dbSnp155ClinVar', // dbsnp155[clinvar]
     ]) {
       assert.equal(shouldIncludeTrack(id), false, id)
     }
@@ -54,5 +61,82 @@ describe('shouldIncludeTrack', () => {
   it('matches an unprefixed trackId too', () => {
     assert.equal(shouldIncludeTrack('gencodeComp'), true)
     assert.equal(shouldIncludeTrack('wgEncodeRegTxn'), false)
+  })
+})
+
+function config(trackIds: string[], sessionTrackId?: string): JBrowseConfig {
+  return {
+    assemblies: [{ name: 'db' }],
+    tracks: trackIds.map(trackId => ({
+      trackId,
+      name: trackId,
+      assemblyNames: ['db'],
+      category: ['Genes'],
+      adapter: {},
+    })),
+    defaultSession: {
+      name: 'db',
+      views: [
+        {
+          id: 'main',
+          type: 'LinearGenomeView',
+          init: {
+            loc: 'chr1',
+            assembly: 'db',
+            tracks: sessionTrackId ? [sessionTrackId] : [],
+          },
+        },
+      ],
+      widgets: {
+        hierarchicalTrackSelector: {
+          id: 'hierarchicalTrackSelector',
+          type: 'HierarchicalTrackSelectorWidget',
+          view: 'main',
+        },
+      },
+      activeWidgets: {
+        hierarchicalTrackSelector: 'hierarchicalTrackSelector',
+      },
+    },
+  }
+}
+
+describe('minimalTracks', () => {
+  // A minimal config that drops the track its own defaultSession opens boots to
+  // an empty view. Pre-ncbiRefSeq assemblies open refGene/ensGene/augustusGene/
+  // xenoRefGene, none of which the patterns match, and that was 134 of 238.
+  it('keeps the track the defaultSession opens', () => {
+    const tracks = minimalTracks(
+      config(['hg18-refGene', 'hg18-knownGene'], 'hg18-refGene'),
+    )
+    assert.deepEqual(
+      tracks.map(t => t.trackId),
+      ['hg18-refGene'],
+    )
+  })
+
+  it('does not keep a gene track the session did not name', () => {
+    const tracks = minimalTracks(
+      config(['danRer4-ensGene', 'danRer4-xenoRefGene'], 'danRer4-ensGene'),
+    )
+    assert.deepEqual(
+      tracks.map(t => t.trackId),
+      ['danRer4-ensGene'],
+    )
+  })
+
+  it('still applies the patterns when the session names nothing', () => {
+    const tracks = minimalTracks(
+      config(['hg38-ncbiRefSeq', 'hg38-cpgIslandExt']),
+    )
+    assert.deepEqual(
+      tracks.map(t => t.trackId),
+      ['hg38-ncbiRefSeq'],
+    )
+  })
+
+  it('drops the category, which the full config keeps', () => {
+    const [track] = minimalTracks(config(['hg38-ncbiRefSeq']))
+    assert.equal(track && 'category' in track, false)
   })
 })

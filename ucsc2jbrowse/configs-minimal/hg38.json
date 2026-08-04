@@ -53,6 +53,112 @@
   ],
   "tracks": [
     {
+      "trackId": "hg38-clinvarMain",
+      "name": "ClinVar Variants - ClinVar SNVs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/clinvar/clinvarMain.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/bbi/clinvar/clinvarMain.bb",
+          "decorator.default.bigDataUrl": "/gbdb/hg38/bbi/clinvar/clinvarMainDecor.bb",
+          "decorator.default.blockMode": "hide",
+          "decorator.default.glyphMode": "hide",
+          "filter._varLen": "0",
+          "filterByRange._varLen": "on",
+          "filterLabel._originCode": "Alelle Origin",
+          "filterLimits._varLen": "0:49",
+          "filterType._allTypeCode": "multiple",
+          "filterType._clinSignCode": "multiple",
+          "filterType._originCode": "multiple",
+          "filterValues._allTypeCode": "SUBST|single nucleotide variant - SUBST,STRUCT|translocation and fusion - STRUCT,LOSS|deletion and copy loss - LOSS,GAIN|duplication and copy gain - GAIN,INS|indel and insertion - INS,INV|inversion - INV,SEQALT|undetermined - SEQALT,SEQLEN|repeat change - SEQLEN",
+          "filterValues._clinSignCode": "BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,RF|risk factor,OT|other,VUS|vus",
+          "filterValues._originCode": "GERM|germline,SOM|somatic,GERMSOM|germline/somatic,UNK|unknown",
+          "filterValues.molConseq": "genic downstream transcript variant|genic downstream transcript variant,no sequence alteration|no sequence alteration,inframe indel|inframe indel,stop lost|stop lost,genic upstream transcript variant|genic upstream transcript variant,initiatior codon variant|initiatior codon variant,inframe insertion|inframe insertion,inframe deletion|inframe deletion,splice acceptor variant|splice acceptor variant,splice donor variant|splice donor variant,5 prime UTR variant|5 prime UTR variant,nonsense|nonsense,non-coding transcript variant|non-coding transcript variant,3 prime UTR variant|3 prime UTR variant,frameshift variant|frameshift variant,intron variant|intron variant,synonymous variant|synonymous variant,missense variant|missense variant,|unknown,initiator codon variant|initiator codon variant",
+          "group": "phenDis",
+          "itemRgb": "on",
+          "labelFields": "_label",
+          "longLabel": "ClinVar Short Nucleotide Variants < 50bp",
+          "maxWindowCoverage": "10000000",
+          "mouseOverField": "_mouseOver",
+          "noScoreFilter": "on",
+          "parent": "clinvar",
+          "priority": "1",
+          "searchIndex": "_dbVarSsvId,snpId,vcvId",
+          "shortLabel": "ClinVar SNVs",
+          "showCfg": "on",
+          "track": "clinvarMain",
+          "type": "bigBed 12 +",
+          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "visibility": "hide",
+          "html": ""
+        }
+      },
+      "description": "ClinVar Short Nucleotide Variants < 50bp",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-clinvarMain-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'_label')"
+          },
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
+    },
+    {
+      "trackId": "hg38-clinvarCnv",
+      "name": "ClinVar Variants - ClinVar CNVs",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/clinvar/clinvarCnv.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/bbi/clinvar/clinvarCnv.bb",
+          "filter._varLen": "50:999999999",
+          "filterByRange._varLen": "on",
+          "filterLabel._originCode": "Alelle Origin",
+          "filterLimits._varLen": "50:999999999",
+          "filterType._allTypeCode": "multiple",
+          "filterType._clinSignCode": "multiple",
+          "filterType._originCode": "multiple",
+          "filterValues._allTypeCode": "SUBST|single nucleotide variant - SUBST,STRUCT|translocation and fusion - STRUCT,LOSS|deletion and copy loss - LOSS,GAIN|duplication and copy gain - GAIN,INS|indel and insertion - INS,INV|inversion - INV,SEQALT|undetermined - SEQALT,SEQLEN|repeat change - SEQLEN",
+          "filterValues._clinSignCode": "BN|benign,LB|likely benign,CF|conflicting,PG|pathogenic,LP|likely pathogenic,UC|uncertain,OT|other",
+          "filterValues._originCode": "GERM|germline,SOM|somatic,GERMSOM|germline/somatic,NOVO|de novo,UNK|unknown",
+          "group": "phenDis",
+          "itemRgb": "on",
+          "longLabel": "ClinVar Copy Number Variants >= 50bp",
+          "mergeSpannedItems": "on",
+          "mouseOverField": "_mouseOver",
+          "noScoreFilter": "on",
+          "parent": "clinvar",
+          "priority": "2",
+          "searchIndex": "_dbVarSsvId,snpId,vcvId",
+          "shortLabel": "ClinVar CNVs",
+          "skipFields": "rcvAcc",
+          "track": "clinvarCnv",
+          "type": "bigBed 12 +",
+          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "visibility": "hide",
+          "html": ""
+        }
+      },
+      "description": "ClinVar Copy Number Variants >= 50bp",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-clinvarCnv-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
+    },
+    {
       "trackId": "hg38-ncbiRefSeqOther",
       "name": "NCBI RefSeq - RefSeq Other",
       "type": "FeatureTrack",
@@ -114,6 +220,55 @@
         }
       },
       "description": "Differences between NCBI RefSeq Transcripts and the Reference Genome"
+    },
+    {
+      "trackId": "hg38-clinvarSubLolly",
+      "name": "ClinVar Variants - ClinVar interp",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/clinvarSubLolly/clinvarSubLolly.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/clinvarSubLolly/clinvarSubLolly.bb",
+          "configurable": "off",
+          "filterLabel.score": "Filter by variant classification",
+          "filterType.score": "multiple",
+          "filterValues.score": "5|Pathogenic,4|Likely Pathogenic,3|Variant of Unknown Significance,2|Likely Benign,1|Benign,0|Others",
+          "group": "phenDis",
+          "lollyMaxSize": "10",
+          "lollyNoStems": "on",
+          "lollySizeField": "10",
+          "longLabel": "ClinVar SNVs submitted interpretations and evidence",
+          "mouseOverField": "_mouseOver",
+          "parent": "clinvar",
+          "shortLabel": "ClinVar interp",
+          "skipFields": "reviewStatus",
+          "track": "clinvarSubLolly",
+          "type": "bigLolly",
+          "urls": "rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/snp/$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "viewLimits": "0:5",
+          "xrefDataUrl": "/gbdb/hg38/clinvarSubLolly/clinvarSub.bb",
+          "yAxisLabel.0": "0 on 150,150,150 OTH",
+          "yAxisLabel.1": "1 on 150,150,150 B",
+          "yAxisLabel.2": "2 on 150,150,150 LB",
+          "yAxisLabel.3": "3 on 150,150,150 VUS",
+          "yAxisLabel.4": "4 on 150,150,150 LP",
+          "yAxisLabel.5": "5 on 150,150,150 P",
+          "yAxisNumLabels": "off",
+          "html": ""
+        }
+      },
+      "description": "ClinVar SNVs submitted interpretations and evidence",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-clinvarSubLolly-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",

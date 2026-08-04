@@ -72,6 +72,41 @@
         }
       },
       "description": "Gap Locations"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "eboVir3-ncbiGene",
+      "name": "NCBI Genes",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ncbiGene.gff.gz"
+        },
+        "index": {
+          "indexType": "CSI",
+          "location": {
+            "uri": "ncbiGene.gff.gz.csi"
+          }
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "baseColorDefault": "genomicCodons",
+          "baseColorUseCds": "given",
+          "color": "12,12,120",
+          "group": "genes",
+          "itemDetailsHtmlTable": "geneDesc",
+          "longLabel": "NCBI Genes from KM034562 GenBank Record",
+          "priority": "1",
+          "shortLabel": "NCBI Genes",
+          "track": "ncbiGene",
+          "type": "genePred",
+          "visibility": "pack",
+          "html": "<h2>Description</h2>\n<p>\nThis track contains genes extracted from the GenBank nuccore entry for\n<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/KM034562\" target=\"_blank\">KM034562.1</a>.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nThis track follows the display conventions for\n<a href=\"/goldenPath/help/hgTracksHelp.html#GeneDisplay\" target=\"_blank\">\ngene prediction tracks</a>.\n</p>\n\n<h2>Methods</h2>\n<p>\nWe downloaded the GenBank record for\n<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/KM034562\" target=\"_blank\">KM034562.1</a>,\nextracted the entries for each gene and then loaded them into the UCSC database. Additional\nentries were added for the various forms of the GP gene.\n</p>\n"
+        }
+      },
+      "description": "NCBI Genes from KM034562 GenBank Record"
     }
   ],
   "plugins": [

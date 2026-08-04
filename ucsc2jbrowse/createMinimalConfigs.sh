@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Script to create minimal versions of UCSC configs in their assembly directories
-# Minimal configs include only: ncbiRefSeq, gencode, repeatMasker, clinvar, and gaps
+# Minimal configs include only: ncbiRefSeq, gencode, repeatMasker, clinvar, gaps,
+# and whatever track the config's own defaultSession opens -- which on assemblies
+# predating ncbiRefSeq is a refGene/ensGene/augustusGene/xenoRefGene the patterns
+# above would not have matched. Run after generateDefaultSessions.sh.
 
 set -euo pipefail
 
