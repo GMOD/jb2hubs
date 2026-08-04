@@ -192,18 +192,79 @@ const hasAssemblyDetails =
   jsonLd={jsonLd}
 >
   <Container>
+    <h1>{scientificName}</h1>
+    {
+      ncbiMissing ? (
+        <p>
+          <em>
+            NCBI metadata not yet available for this assembly. Some details may
+            be missing.
+          </em>
+        </p>
+      ) : null
+    }
     <div class={styles.identity}>
-      <h1>{scientificName}</h1>
-      {
-        ncbiMissing ? (
-          <p>
-            <em>
-              NCBI metadata not yet available for this assembly. Some details
-              may be missing.
-            </em>
-          </p>
-        ) : null
-      }
+      <dl class={styles.statsTable}>
+        <dt>Accession</dt>
+        <dd>{accession}</dd>
+        <dt>Assembly name</dt>
+        <dd>{ncbiAssemblyName}</dd>
+        <dt>Common name</dt>
+        <dd>{organism}</dd>
+        <dt>TaxonID</dt>
+        <dd>
+          <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a
+            href={ncbiTaxonomyUrl}>NCBI taxonomy</a
+          >
+        </dd>
+        {
+          seqReleaseDate ? (
+            <>
+              <dt>Release date</dt>
+              <dd>{seqReleaseDate}</dd>
+            </>
+          ) : null
+        }
+        {
+          assemblyStatus || assemblyType ? (
+            <>
+              <dt>Assembly</dt>
+              <dd>
+                {[assemblyStatus, assemblyType].filter(Boolean).join(', ')}
+              </dd>
+            </>
+          ) : null
+        }
+        {
+          ncbiRefSeqCategory === 'reference genome' ? (
+            <>
+              <dt>NCBI assembly status</dt>
+              <dd>
+                Designated Reference <OrangeStar />
+              </dd>
+            </>
+          ) : null
+        }
+        {
+          suppressed ? (
+            <>
+              <dt>NCBI assembly status</dt>
+              <dd>
+                RefSeq Suppressed <RedX />
+                {suppressionReason ? <> — {suppressionReason}</> : null}
+              </dd>
+            </>
+          ) : null
+        }
+        {
+          genomeNotes?.length ? (
+            <>
+              <dt>NCBI quality notes</dt>
+              <dd>{genomeNotes.join('; ')}</dd>
+            </>
+          ) : null
+        }
+      </dl>
       {
         imageUrl ? (
           <figure class={styles.figure}>
@@ -217,61 +278,6 @@ const hasAssemblyDetails =
               {pageUrl ? <a href={pageUrl}>(source)</a> : null}
             </figcaption>
           </figure>
-        ) : null
-      }
-      <div>
-        <b>Accession:</b>
-        {accession}
-      </div>
-      <div>
-        <b>Assembly name:</b>
-        {ncbiAssemblyName}
-      </div>
-      <div>
-        <b>Common name:</b>
-        {organism}
-      </div>
-      <div>
-        <b>TaxonID:</b>
-        <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a
-          href={ncbiTaxonomyUrl}>NCBI taxonomy</a
-        >
-      </div>
-      {
-        seqReleaseDate ? (
-          <div>
-            <b>Release date:</b> {seqReleaseDate}
-          </div>
-        ) : null
-      }
-      {
-        assemblyStatus || assemblyType ? (
-          <div>
-            <b>Assembly:</b>{' '}
-            {[assemblyStatus, assemblyType].filter(Boolean).join(', ')}
-          </div>
-        ) : null
-      }
-      {
-        ncbiRefSeqCategory === 'reference genome' ? (
-          <div>
-            <b>NCBI assembly status:</b> Designated Reference <OrangeStar />
-          </div>
-        ) : null
-      }
-      {
-        suppressed ? (
-          <div>
-            <b>NCBI assembly status:</b> RefSeq Suppressed <RedX />
-            {suppressionReason ? <> — {suppressionReason}</> : null}
-          </div>
-        ) : null
-      }
-      {
-        genomeNotes?.length ? (
-          <div>
-            <b>NCBI quality notes:</b> {genomeNotes.join('; ')}
-          </div>
         ) : null
       }
     </div>
