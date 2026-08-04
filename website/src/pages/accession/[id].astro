@@ -395,8 +395,8 @@ const hasAssemblyDetails =
     </div>
     {
       hasAssemblyDetails ? (
-        <div>
-          <h2>Assembly details</h2>
+        <details class={styles.disclosure}>
+          <summary>Assembly details</summary>
           <dl class={styles.statsTable}>
             {stats?.total_length ? (
               <>
@@ -532,13 +532,13 @@ const hasAssemblyDetails =
               </>
             ) : null}
           </dl>
-        </div>
+        </details>
       ) : null
     }
     {
       annotationInfo ? (
-        <div>
-          <h2>Annotation</h2>
+        <details class={styles.disclosure}>
+          <summary>Annotation</summary>
           <dl class={styles.statsTable}>
             {annotationInfo.name ? (
               <>
@@ -584,7 +584,7 @@ const hasAssemblyDetails =
               </>
             ) : null}
           </dl>
-        </div>
+        </details>
       ) : null
     }
     {
