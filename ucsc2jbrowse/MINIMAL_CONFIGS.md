@@ -29,50 +29,34 @@ and the rest of the variant tracks) are excluded from minimal configs.
 
 ## Usage
 
-### Generate minimal configs for all assemblies
+Minimal configs are not generated on their own. `createMinimalConfig` is the
+last of the six steps in `src/finalizeConfigs.ts`, which `make.sh` runs as one
+walk over `$UCSC_BUILT_DIR`:
 
 ```bash
-./createMinimalConfigs.sh
+node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 ```
 
-This will process all assembly directories in `$UCSC_BUILT_DIR` (set in
-`common.sh`). For each assembly folder containing a `config.json` file, it
-creates:
+It has to be last, or at least after `generateDefaultSessions`: the filter keeps
+whatever gene track the config's own `defaultSession` opens, so running it
+against a config without a session yet drops that track. That ordering
+constraint is spelled out beside the `STEPS` array.
 
-1. A `minimal.json` file in that assembly's directory
-2. A copy in `configs-minimal/<assembly>.json`
-
-### Specify custom results directory
-
-```bash
-./createMinimalConfigs.sh /path/to/ucscResults
-```
+For each assembly directory containing a `config.json`, the step writes a
+`minimal.json` beside it. `make.sh` then copies those to
+`configs-minimal/<assembly>.json` alongside the equivalent copy of `config.json`
+into `configs/`.
 
 ## Output
 
-The script will:
-
-1. Process each assembly directory containing a config.json file
-2. Create minimal.json in each assembly directory
-3. Copy all minimal configs to configs-minimal/
-4. Print statistics showing how many tracks were included vs excluded
-5. Display a summary with totals
-
-Example output (the shape, not current numbers — as of 2026-08 the run covers
-238 assemblies, and hg38 keeps 33 of its 595 tracks):
+`finalizeConfigs.ts` prints one summary line per step. The minimal-config line
+reports the totals across every assembly (the shape, not current numbers — as of
+2026-08 the run covers 238 assemblies, and hg38 keeps 33 of its 595 tracks):
 
 ```
-hg38: 33 tracks included, 562 tracks excluded
-mm10: 12 tracks included, 249 tracks excluded
-
---- Summary ---
-Total assemblies processed: 238
-Total tracks included: …
-Total tracks excluded: …
-
-Done! Minimal configs created:
-  - In each assembly directory as minimal.json
-  - In configs-minimal/ as <assembly>.json
+Finalized 238 of 238 configs
+  …
+  minimal configs: 1033 tracks kept, 9563 tracks dropped
 ```
 
 ## Adding or removing track categories
@@ -94,6 +78,8 @@ patterns as needed.
 
 ## Files
 
-- `src/createMinimalConfig.ts` - Core TypeScript script that filters tracks
-- `createMinimalConfigs.sh` - Shell script wrapper for easy execution
+- `src/createMinimalConfig.ts` - the track filter, and the finalize step that
+  writes `minimal.json`
+- `src/finalizeConfigs.ts` - the single walk that runs it last, after the
+  default sessions it depends on
 - `MINIMAL_CONFIGS.md` - This documentation file

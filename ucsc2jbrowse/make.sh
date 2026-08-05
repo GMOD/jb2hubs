@@ -263,26 +263,20 @@ fi
 log "Download and add GENCODE tracks"
 ./downloadGencode.sh
 
-log "Ensuring refNameAliases/cytobands are present for all golden-path assemblies..."
-node src/ensureAssemblyAliasesAndCytobands.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
-
-log "Mirroring assembly sidecar files (chrom.sizes, chromAlias, cytoBand)..."
-node src/mirrorAssemblySidecars.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
-
-log "Ensuring UCSC db names are aliased on GenArk-backed hub assemblies..."
-node src/ensureUcscAssemblyNames.ts "$UCSC_BUILT_DIR"
-
-log "Ensuring text search adapters are present for all assemblies with trix files..."
-node src/ensureTextSearchAdapters.ts "$UCSC_BUILT_DIR"
-
-log "Generating default sessions for all assemblies..."
-./generateDefaultSessions.sh
-
-log "Creating minimal configs (NCBI, GENCODE, RepeatMasker, ClinVar, Gaps, and the defaultSession's gene track)..."
-./createMinimalConfigs.sh "$UCSC_BUILT_DIR"
+# One walk over every built assembly, applying the six finalize steps in the
+# order src/finalizeConfigs.ts declares: refNameAliases/cytobands backfill,
+# sidecar mirroring, UCSC db-name aliases, text search adapters, default
+# sessions, minimal configs. Two of those adjacencies are load-bearing and the
+# reasons are recorded beside the array, not here.
+log "Finalizing configs..."
+node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 
 log "Copying generated config files to the local 'configs' directory..."
 fd "config.json$" "$UCSC_BUILT_DIR"/ | parallel $PARALLEL_OPTS -I {} "cp {} configs/\$(basename \$(dirname {})).json"
+
+log "Copying minimal configs to the local 'configs-minimal' directory..."
+mkdir -p configs-minimal
+fd "minimal.json$" "$UCSC_BUILT_DIR"/ | parallel $PARALLEL_OPTS -I {} "cp {} configs-minimal/\$(basename \$(dirname {})).json"
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts

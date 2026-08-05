@@ -38,12 +38,16 @@ export interface JBrowseConfig {
   }[]
   assemblies: {
     name: string
+    displayName?: string
+    aliases?: string[]
     sequence?: {
       type: string
       trackId: string
       metadata?: Record<string, unknown>
       adapter: Record<string, unknown> // This is the sequence adapter
     }
+    refNameAliases?: { adapter: Record<string, unknown> }
+    cytobands?: { adapter: Record<string, unknown> }
     geneticCodes?: Record<string, number>
   }[]
   plugins?: { name: string }[]
@@ -51,6 +55,19 @@ export interface JBrowseConfig {
     string,
     unknown
   >)[]
+}
+
+/** An entry of list.json's `ucscGenomes`, as served by api.genome.ucsc.edu. */
+export interface UcscGenome {
+  id: string
+  description: string
+  defaultPos: string
+  organism?: string
+  [key: string]: unknown
+}
+
+export interface UcscGenomeList {
+  ucscGenomes: Record<string, UcscGenome>
 }
 
 export type BlockedFileCache = Record<

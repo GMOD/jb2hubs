@@ -2,11 +2,9 @@ import fs from 'fs'
 import { gunzipSync } from 'node:zlib'
 import path from 'path'
 
-import { mapWithConcurrency, mirrorAssemblySidecars } from 'hubtools'
+import { mirrorAssemblySidecars as mirrorSidecars } from 'hubtools'
 
-import { readJSON, requireArg, writeJSON } from './util.ts'
-
-import type { AssemblySidecarTarget } from 'hubtools'
+import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 //
 // Copies each assembly's chrom.sizes / chromAlias / cytoBand next to its
@@ -33,27 +31,10 @@ import type { AssemblySidecarTarget } from 'hubtools'
 // run does no network I/O at all.
 //
 
-if (process.argv.length !== 4) {
-  console.error(
-    'Usage: node mirrorAssemblySidecars.ts <UCSC_BUILT_DIR> <UCSC_DOWNLOADS_DIR>',
-  )
-  process.exit(1)
-}
-
-const builtDir = requireArg(process.argv[2], 'UCSC_BUILT_DIR is required')
-const downloadsDir = requireArg(
-  process.argv[3],
-  'UCSC_DOWNLOADS_DIR is required',
-)
-
 // REPROCESS re-derives outputs from cached downloads; FETCH_UPDATES re-pulls
 // upstream files even when a local copy exists. Only the latter should make us
 // re-download a sidecar we already have.
 const force = !!process.env.FETCH_UPDATES
-
-interface Config {
-  assemblies?: AssemblySidecarTarget[]
-}
 
 /**
  * Serves a sidecar out of the assembly's rsync'd database/ dir when the local
@@ -87,51 +68,31 @@ function localProvider(dbDir: string) {
   }
 }
 
-const assemblyDirs = fs
-  .readdirSync(builtDir, { withFileTypes: true })
-  .filter(entry => entry.isDirectory() && entry.name !== 'trix')
-  .map(entry => entry.name)
-  .filter(name => fs.existsSync(path.join(builtDir, name, 'config.json')))
+export const mirrorAssemblySidecars: FinalizeStep = {
+  name: 'assembly sidecars',
+  run: async ({ assemblyName, dir, dbDir, config }) => {
+    const counts: Record<string, number> = {}
+    const assembly = config.assemblies[0]
 
-let mirrored = 0
-let failed = 0
-let dropped = 0
+    if (assembly) {
+      const result = await mirrorSidecars({
+        assembly,
+        dir,
+        force,
+        provideLocal: fs.existsSync(dbDir) ? localProvider(dbDir) : undefined,
+      })
+      if (result.mirrored.length > 0) {
+        counts.mirrored = 1
+        console.warn(`Mirrored ${assemblyName}: ${result.mirrored.join(', ')}`)
+      }
+      if (result.failed.length > 0) {
+        counts['left pointing upstream'] = 1
+      }
+      if (result.dropped.length > 0) {
+        counts['dropped because upstream 404s'] = 1
+      }
+    }
 
-// Low concurrency on purpose: the only fetches left are the chromAlias files,
-// and hgdownload drops connections under bursts.
-await mapWithConcurrency(assemblyDirs, 4, async assemblyName => {
-  const dir = path.join(builtDir, assemblyName)
-  const configPath = path.join(dir, 'config.json')
-  const config = readJSON<Config>(configPath)
-  const assembly = config.assemblies?.[0]
-  if (!assembly) {
-    return
-  }
-  const dbDir = path.join(downloadsDir, assemblyName, assemblyName, 'database')
-  const result = await mirrorAssemblySidecars({
-    assembly,
-    dir,
-    force,
-    provideLocal: fs.existsSync(dbDir) ? localProvider(dbDir) : undefined,
-  })
-  if (result.mirrored.length > 0) {
-    mirrored++
-    console.warn(`Mirrored ${assemblyName}: ${result.mirrored.join(', ')}`)
-  }
-  if (result.failed.length > 0) {
-    failed++
-  }
-  if (result.dropped.length > 0) {
-    dropped++
-  }
-  if (result.changed) {
-    writeJSON(configPath, config)
-  }
-})
-
-console.warn(
-  `\nMirrored sidecars for ${mirrored} assemblies (${failed} with at least one sidecar left pointing upstream, ` +
-    `${dropped} with one removed because upstream 404s)`,
-)
-
-export {}
+    return counts
+  },
+}

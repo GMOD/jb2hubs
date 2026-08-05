@@ -1,10 +1,9 @@
-import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 
-import { readConfig, writeJSON } from './util.ts'
+import { writeJSON } from './util.ts'
 
-import type { JBrowseConfig } from './types'
+import type { JBrowseConfig } from './types.ts'
+import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 /**
  * Track categories to include in minimal configs.
@@ -70,96 +69,21 @@ export function minimalTracks(config: JBrowseConfig) {
 }
 
 /**
- * Creates a minimal version of a config file by filtering tracks
- * to only include those matching the minimal track patterns.
+ * Writes minimal.json beside config.json: the same assemblies, plugins,
+ * configuration and defaultSession, with the track list filtered down.
+ *
+ * The only step here that does not mutate ctx.config — it derives a second
+ * artifact from it, which is why it has to come last, after the defaultSession
+ * whose gene track it is obliged to keep.
  */
-function createMinimalConfig(inputPath: string, outputPath: string) {
-  const config = readConfig(inputPath)
-
-  const originalTrackCount = config.tracks.length
-  config.tracks = minimalTracks(config)
-  const newTrackCount = config.tracks.length
-
-  writeJSON(outputPath, config)
-
-  return {
-    included: newTrackCount,
-    excluded: originalTrackCount - newTrackCount,
-  }
-}
-
-/**
- * Processes all assembly directories in the results directory
- */
-function processAssemblyDirs(resultsDir: string) {
-  const entries = fs.readdirSync(resultsDir, { withFileTypes: true })
-  const assemblyDirs = entries.filter(entry => entry.isDirectory())
-
-  let totalIncluded = 0
-  let totalExcluded = 0
-  let processedCount = 0
-
-  for (const dir of assemblyDirs) {
-    // Skip non-assembly directories
-    if (dir.name === 'trix') {
-      continue
+export const createMinimalConfig: FinalizeStep = {
+  name: 'minimal configs',
+  run: ({ dir, config }) => {
+    const tracks = minimalTracks(config)
+    writeJSON(path.join(dir, 'minimal.json'), { ...config, tracks })
+    return {
+      'tracks kept': tracks.length,
+      'tracks dropped': config.tracks.length - tracks.length,
     }
-
-    const assemblyPath = path.join(resultsDir, dir.name)
-    const configPath = path.join(assemblyPath, 'config.json')
-    const minimalPath = path.join(assemblyPath, 'minimal.json')
-
-    // Skip if config.json doesn't exist
-    if (!fs.existsSync(configPath)) {
-      continue
-    }
-
-    try {
-      const stats = createMinimalConfig(configPath, minimalPath)
-      totalIncluded += stats.included
-      totalExcluded += stats.excluded
-      processedCount++
-      console.log(
-        `${dir.name}: ${stats.included} tracks included, ${stats.excluded} tracks excluded`,
-      )
-    } catch (e) {
-      console.error(`Error processing ${dir.name}:`, e)
-    }
-  }
-
-  console.log('\n--- Summary ---')
-  console.log(`Total assemblies processed: ${processedCount}`)
-  console.log(`Total tracks included: ${totalIncluded}`)
-  console.log(`Total tracks excluded: ${totalExcluded}`)
-}
-
-// CLI
-// same guard as removeEverythingButLatest.ts, so the track filter can be
-// imported and tested without the CLI running on import
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  if (process.argv.length < 3) {
-    console.error('Usage: node createMinimalConfig.ts <resultsDir>')
-    console.error(
-      '  resultsDir: Path to UCSC results directory containing assembly folders',
-    )
-    console.error('  Each assembly folder should contain a config.json file')
-    console.error(
-      '  Minimal configs will be created as minimal.json in each folder',
-    )
-    process.exit(1)
-  }
-
-  const resultsDir = process.argv[2]!
-
-  if (!fs.existsSync(resultsDir)) {
-    console.error(`Error: Results directory does not exist: ${resultsDir}`)
-    process.exit(1)
-  }
-
-  if (!fs.statSync(resultsDir).isDirectory()) {
-    console.error(`Error: Path is not a directory: ${resultsDir}`)
-    process.exit(1)
-  }
-
-  processAssemblyDirs(resultsDir)
+  },
 }

@@ -124,6 +124,33 @@ change tracks on a UCSC assembly, edit the source-controlled extension file
 `tracks[]` are merged into the generated config by the pipeline; then regenerate
 and re-upload the configs.
 
+## The tail of `ucsc2jbrowse/make.sh` is one walk, not six
+
+`src/finalizeConfigs.ts` reads each built `config.json` once, applies the six
+steps in its `STEPS` array in order, and writes it back once. They used to be
+six separate `node src/…` lines in `make.sh`, each doing its own full-tree walk.
+Fusing them saved almost nothing (~0.6s on hg38, the worst config) — the reason
+to do it was that the order had become an accident of line numbering, and two of
+those adjacencies are load-bearing:
+
+- `generateDefaultSessions` before `createMinimalConfig` (see below)
+- `ensureAssemblyAliasesAndCytobands` before `mirrorAssemblySidecars`, which
+  mirrors the urls the first one adds
+
+Both reasons are written beside the array. **Add a step by putting it in
+`STEPS`, and say whether its position matters.** A step takes a
+`FinalizeContext` (`src/utils/finalizeStep.ts`), mutates `ctx.config` in place,
+and returns counters for the run summary; it never reads or writes `config.json`
+itself. The one exception is `createMinimalConfig`, which derives a second file
+— `minimal.json` — rather than mutating anything, which is exactly why it goes
+last.
+
+Verified byte-identical to the six-pass version over all 238 built assemblies
+(476 files, `config.json` and `minimal.json`) on 2026-08-05. Re-verify the same
+way after touching this: snapshot `$UCSC_BUILT_DIR/*/config.json` and
+`minimal.json`, re-run, `diff -rq`. It is idempotent on a warm tree, so a
+nonempty diff is a real finding.
+
 ## What belongs in `configs-minimal/`
 
 `minimal.json` is a second, small config published beside every UCSC
@@ -151,8 +178,9 @@ it is what the track's About dialog shows.
   patterns know. Every assembly predating ncbiRefSeq therefore used to open a
   track its minimal config had dropped — 134 of the 238, booting to an empty
   view: hg18/mm9 named `refGene`, danRer4 `ensGene`, the invertebrates
-  `augustusGene` or `xenoRefGene`. Order matters in `make.sh`:
-  `generateDefaultSessions.sh` runs before `createMinimalConfigs.sh`.
+  `augustusGene` or `xenoRefGene`. The ordering that prevents this is now
+  explicit: `generateDefaultSessions` precedes `createMinimalConfig` in the
+  `STEPS` array in `src/finalizeConfigs.ts`, which documents why.
 
 Four configs are still legitimately empty — `cb1`, `hgFixed`, `renames`,
 `enhLutNer1` have no annotation to include (the first two are not assemblies at
@@ -259,7 +287,10 @@ one rejection fails the entire assembly** — which is why a UCSC outage read as
 from `chromInfo.txt.gz`, cytoBand copied straight from `database/`, so only
 chromAlias is fetched). It sweeps every assembly every build, because a
 regenerated config comes back naming upstream urls. A sidecar that can't be
-fetched is left pointing upstream and retried next run.
+fetched is left pointing upstream and retried next run. It is one of the six
+steps in `src/finalizeConfigs.ts` (below), and must run **after**
+`ensureAssemblyAliasesAndCytobands`, which is what adds the `refNameAliases` and
+`cytobands` urls it mirrors.
 
 **GenArk is deliberately not mirrored** — it was, briefly, and was reverted on
 2026-08-05. The UCSC sweep is 400 objects; the same sweep over GenArk was

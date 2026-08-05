@@ -1,67 +1,49 @@
 import fs from 'fs'
 import path from 'path'
 
-import { readJSON, writeJSON } from 'hubtools'
+import type { FinalizeStep } from './utils/finalizeStep.ts'
 
-const resultsDir = process.argv[2]
-if (!resultsDir) {
-  console.error('Usage: node ensureTextSearchAdapters.ts <UCSC_BUILT_DIR>')
-  process.exit(1)
+//
+// Wires up the trix index an assembly already has on disk. The same
+// aggregateTextSearchAdapters node is built by add_trix_adapter (jq) in
+// genark2jbrowse/common.sh, so the two have to stay in step.
+//
+
+export const ensureTextSearchAdapters: FinalizeStep = {
+  name: 'text search adapters',
+  run: ({ assemblyName, dir, config }) => {
+    const counts: Record<string, number> = {}
+    const ixPath = path.join(dir, 'trix', `${assemblyName}.ix`)
+
+    if (fs.existsSync(ixPath)) {
+      const adapterId = `${assemblyName}-index`
+      const existing = config.aggregateTextSearchAdapters
+
+      if (!existing?.some(a => a.textSearchAdapterId === adapterId)) {
+        config.aggregateTextSearchAdapters = [
+          ...(existing ?? []),
+          {
+            type: 'TrixTextSearchAdapter',
+            textSearchAdapterId: adapterId,
+            ixFilePath: {
+              uri: `trix/${assemblyName}.ix`,
+              locationType: 'UriLocation',
+            },
+            ixxFilePath: {
+              uri: `trix/${assemblyName}.ixx`,
+              locationType: 'UriLocation',
+            },
+            metaFilePath: {
+              uri: `trix/${assemblyName}_meta.json`,
+              locationType: 'UriLocation',
+            },
+            assemblyNames: [assemblyName],
+          },
+        ]
+        counts.added = 1
+      }
+    }
+
+    return counts
+  },
 }
-
-let fixed = 0
-let skipped = 0
-
-for (const entry of fs.readdirSync(resultsDir, { withFileTypes: true })) {
-  if (!entry.isDirectory() || entry.name === 'trix') {
-    continue
-  }
-
-  const assemblyName = entry.name
-  const configPath = path.join(resultsDir, assemblyName, 'config.json')
-  const trixDir = path.join(resultsDir, assemblyName, 'trix')
-  const ixPath = path.join(trixDir, `${assemblyName}.ix`)
-
-  if (!fs.existsSync(configPath) || !fs.existsSync(ixPath)) {
-    skipped++
-    continue
-  }
-
-  const config = readJSON<Record<string, unknown>>(configPath)
-  const existing = config.aggregateTextSearchAdapters as
-    | { textSearchAdapterId?: string }[]
-    | undefined
-
-  const adapterId = `${assemblyName}-index`
-  if (existing?.some(a => a.textSearchAdapterId === adapterId)) {
-    continue
-  }
-
-  const adapter = {
-    type: 'TrixTextSearchAdapter',
-    textSearchAdapterId: adapterId,
-    ixFilePath: {
-      uri: `trix/${assemblyName}.ix`,
-      locationType: 'UriLocation',
-    },
-    ixxFilePath: {
-      uri: `trix/${assemblyName}.ixx`,
-      locationType: 'UriLocation',
-    },
-    metaFilePath: {
-      uri: `trix/${assemblyName}_meta.json`,
-      locationType: 'UriLocation',
-    },
-    assemblyNames: [assemblyName],
-  }
-
-  config.aggregateTextSearchAdapters = [...(existing ?? []), adapter]
-
-  writeJSON(configPath, config)
-  fixed++
-  console.warn(`Fixed: ${assemblyName}`)
-}
-
-console.warn(
-  `\nEnsured text search adapters: ${fixed} fixed, ${skipped} skipped`,
-)
