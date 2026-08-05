@@ -36,6 +36,10 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   lookup (implemented) and the taxonomy-walk follow-up
 - [SHELL_HARDENING_HANDOFF.md](SHELL_HARDENING_HANDOFF.md) —
   orchestration-script integrity review; items 5–7 still open
+- [PIPELINE_SIMPLIFICATION_HANDOFF.md](PIPELINE_SIMPLIFICATION_HANDOFF.md) —
+  converter-pipeline simplification; five changes shipped unverified against a
+  real build tree, what to run on the lab server, and the config-walker fusion
+  still to do
 - [OTHER_IDEAS.md](OTHER_IDEAS.md) — keeping JBrowse Desktop in sync with this
   portal's content
 
