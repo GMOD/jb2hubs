@@ -98,12 +98,6 @@ node src/generateCategoriesJson.ts
 # only work needed; everything below is per-hub generation for new hubs, so skip
 # it (the same point the old "nothing to process" early-exit reached).
 if [ "$MODE" = "new" ] && [ "$NEW_HUB_COUNT" -eq 0 ]; then
-  # Still sweep the sidecars: the backfill across already-built hubs has to make
-  # progress on quiet days too, and it retries whatever hgdownload refused last
-  # run.
-  log "Mirroring assembly sidecar files (chrom.sizes, chromAlias)..."
-  ./mirrorSidecars.sh
-
   log "No new hubs; refreshed stale metadata and regenerated all.json. Done."
   exit 0
 fi
@@ -224,13 +218,6 @@ if [ "$run_mouse_strains" = true ]; then
 
   touch "$MOUSE_STRAIN_STAMP"
 fi
-
-# --- Phase 8: Sidecar mirroring ---
-# Last, so it sees every config this run wrote (including the mouse strain ones)
-# and leaves each one naming the local copies.
-
-log "Mirroring assembly sidecar files (chrom.sizes, chromAlias)..."
-./mirrorSidecars.sh
 
 # --- Done ---
 

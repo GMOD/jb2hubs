@@ -1,11 +1,11 @@
 # ADR 0003 — Mirror the assembly sidecar files onto our own bucket
 
-- **Status:** Accepted
+- **Status:** Accepted for UCSC; **amended 2026-08-05 to exclude GenArk** (see
+  the amendment at the end)
 - **Date:** 2026-08-05
 - **Affected:** `hubtools/src/mirrorSidecars.ts`,
-  `ucsc2jbrowse/src/mirrorAssemblySidecars.ts`,
-  `genark2jbrowse/src/mirrorSidecarsBatch.ts`, every generated `config.json`,
-  the `jbrowse.org` bucket
+  `ucsc2jbrowse/src/mirrorAssemblySidecars.ts`, every generated UCSC
+  `config.json`, the `jbrowse.org` bucket
 
 ## Context
 
@@ -90,7 +90,8 @@ GenArk hubs have no rsynced `database/` dir and no cytoband file, so both of
 their sidecars are fetched — once. The first sweep over ~51,000 hubs is the
 expensive run; afterwards a mirrored file is reused and a stamp file
 (`.sidecars-mirrored`, invalidated by a newer `config.json`) keeps the steady
-state at two stats per hub.
+state at two stats per hub. **(Superseded — the GenArk sweep was reverted; see
+the amendment below.)**
 
 ### Failure is not fatal, and not sticky
 
@@ -126,3 +127,58 @@ mirroring passes run over **every** assembly on every build, like
 - Anything that reads `chromSizes` out of a generated config has to accept a
   relative value now. `addGeneticCodes.ts` was the only such consumer, and it
   reads the mirrored file off disk instead — the same bytes, minus a fetch.
+
+## Amendment, 2026-08-05 — GenArk reverted, UCSC kept
+
+The GenArk half of this decision was rolled back the same day it shipped. The
+reasoning above is unchanged and still holds for UCSC; what it got wrong was the
+sentence "Sidecars are kilobytes". Measured after the first full sweep:
+
+|        | assemblies | mirrored objects | bytes         | mean object |
+| ------ | ---------- | ---------------- | ------------- | ----------- |
+| UCSC   | ~240       | 400              | 533 MB        | 1.3 MB      |
+| GenArk | 50,700     | **101,384**      | **17,630 MB** | 174 KB      |
+
+Sidecars are not kilobytes on either side: `chromAlias` carries a row per
+scaffold per naming authority, so a fragmented assembly's runs to megabytes
+(`bisBis1.chromAlias.txt` is 22MB, and that is a UCSC one). What makes UCSC fine
+and GenArk not is the object count — 400 against 101,384. The GenArk cost is not
+mainly storage, it is 101k extra objects in every `rclone sync` listing, 50,700
+rewritten `config.json` files churning the git tree each run, and a
+`/hubs/genark/*` CloudFront invalidation on runs that otherwise changed nothing.
+
+What was reverted: `genark2jbrowse/mirrorSidecars.sh`,
+`genark2jbrowse/src/mirrorSidecarsBatch.ts`, both `make.sh` call sites, the
+`.sidecars-mirrored` upload exclude, the `.gitignore` patterns, the local files,
+and the config rewrites (all 101,384 values went back to the
+`hgdownload.soe.ucsc.edu` urls they were generated with — verified before the
+checkout that the working tree held no other change to those configs). The
+bucket objects are removed by the next `uploadAll.sh`: `rclone sync` defaults to
+`--delete-after`, so the upstream-url configs land before their sidecars go
+away, never the reverse.
+
+`hubtools/src/mirrorSidecars.ts` is untouched and stays generic — it is
+`ucsc2jbrowse/src/mirrorAssemblySidecars.ts`'s library, and it is what a future
+GenArk pass would be built on again.
+
+### Consequence accepted
+
+A GenArk assembly still fails **whole** during an hgdownload outage, for the
+`Promise.all` reason this ADR opens with. UCSC does not. That asymmetry is
+intentional: it buys back 17.6GB and 101k objects on the 99.5% of our assemblies
+that get the least traffic, and GenArk's 2bit is on hgdownload regardless, so
+even a mirrored GenArk assembly opens to a broken sequence track during an
+outage.
+
+### If this needs revisiting
+
+Cheaper options than the sweep, roughly in order of appeal:
+
+- Mirror only the GenArk assemblies that actually get traffic (the ones UCSC
+  aliases, e.g. `rn8`, already get a UCSC-side config that **is** mirrored).
+- Mirror `chrom.sizes` only and drop `refNameAliases` from the GenArk configs
+  entirely rather than pointing it upstream — an assembly with no
+  `refNameAliases` node loads; one with an unreachable one does not. That trades
+  alias lookups for outage-independence at roughly 1/4 the bytes.
+- Serve the sidecars through a CloudFront origin that proxies hgdownload, so
+  nothing is stored and the cache absorbs the outage.
