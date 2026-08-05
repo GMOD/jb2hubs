@@ -60,7 +60,11 @@ requires it. One consequence worth knowing before "upgrading" anything else:
   only thing left holding a TS 6. Cost: `.astro` **frontmatter is no longer
   typechecked** — `tsc` can't parse `.astro`, so root `pnpm typecheck` covers
   `.ts`/`.tsx` only. Anything type-sensitive belongs in a `.ts`/`.tsx` module
-  the page imports, not in the frontmatter.
+  the page imports, not in the frontmatter. One catch when you do move code out:
+  a frontmatter import of a **generated, gitignored** JSON was invisible to
+  `tsc`, and becomes a hard `TS2307` the moment it lands in a `.ts`. That is how
+  CI's typecheck broke for four days from 2026-08-02. Declare such a module in
+  `website/src/global.d.ts` rather than teaching CI to generate the file.
 
 `hubtools` used to pin 6.x, because `tsdown --dts` goes through
 `rolldown-plugin-dts`, which failed on TS 7 with
