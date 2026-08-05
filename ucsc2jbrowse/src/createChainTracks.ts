@@ -1,6 +1,7 @@
 import fs from 'fs'
 import { parseArgs } from 'node:util'
 import path from 'path'
+import * as readline from 'readline'
 
 import { isAccession, normalizeAssemblyName } from 'hubtools'
 
@@ -9,32 +10,51 @@ import { readJSON, writeJSON } from './util.ts'
 import type { JBrowseConfig } from './types.ts'
 import type { ChainTrack } from 'hubtools'
 
-// Pre-load lookup tables once instead of re-reading per PIF file
-const allJsonIndex = new Map<string, string>()
-try {
-  const allJson = readJSON<{ accession: string; commonName?: string }[]>(
-    '../genark2jbrowse/processedHubJson/all.json',
-  )
-  for (const entry of allJson) {
-    if (entry.accession && entry.commonName) {
-      allJsonIndex.set(entry.accession, entry.commonName)
+// Display-name lookups, loaded at most once per process and only when a PIF
+// filename actually needs one. Both files are large -- genark's all.json is
+// ~73MB -- and a typical UCSC assembly's liftOver targets are all UCSC db names,
+// so the accession table is usually never touched at all. This used to be a
+// module-level load in a script invoked once per assembly, which parsed all.json
+// ~250 times per build (1.7s and 326MB apiece) to build the same small map.
+let allJsonIndex: Map<string, string> | undefined
+
+function getAccessionCommonName(accession: string) {
+  if (!allJsonIndex) {
+    allJsonIndex = new Map()
+    try {
+      const allJson = readJSON<{ accession: string; commonName?: string }[]>(
+        '../genark2jbrowse/processedHubJson/all.json',
+      )
+      for (const entry of allJson) {
+        if (entry.accession && entry.commonName) {
+          allJsonIndex.set(entry.accession, entry.commonName)
+        }
+      }
+    } catch {
+      console.warn('Warning: could not load genark processedHubJson/all.json')
     }
   }
-} catch {
-  console.warn('Warning: could not load genark processedHubJson/all.json')
+  return allJsonIndex.get(accession) ?? ''
 }
 
-const ucscListJson: Record<string, { organism?: string }> = {}
-try {
-  const ucscResultsDir = process.env.UCSC_BUILT_DIR
-  if (ucscResultsDir) {
-    const listJson = readJSON<{
-      ucscGenomes: Record<string, { organism?: string }>
-    }>(path.join(ucscResultsDir, 'list.json'))
-    Object.assign(ucscListJson, listJson.ucscGenomes)
+let ucscListJson: Record<string, { organism?: string }> | undefined
+
+function getUcscOrganism(assembly: string) {
+  if (!ucscListJson) {
+    ucscListJson = {}
+    try {
+      const ucscResultsDir = process.env.UCSC_BUILT_DIR
+      if (ucscResultsDir) {
+        const listJson = readJSON<{
+          ucscGenomes: Record<string, { organism?: string }>
+        }>(path.join(ucscResultsDir, 'list.json'))
+        Object.assign(ucscListJson, listJson.ucscGenomes)
+      }
+    } catch {
+      console.warn('Warning: could not load ucsc list.json')
+    }
   }
-} catch {
-  console.warn('Warning: could not load ucsc list.json')
+  return ucscListJson[assembly]?.organism ?? ''
 }
 
 function createChainTrackConfig({
@@ -73,8 +93,8 @@ function createChainTrackConfig({
   const trackSrcDir = isChainBridge ? `${srcDir}_chainBridge` : srcDir
 
   const commonName = isAccession(targetAssemblyOrig)
-    ? (allJsonIndex.get(targetAssemblyOrig) ?? '')
-    : (ucscListJson[targetAssembly]?.organism ?? '')
+    ? getAccessionCommonName(targetAssemblyOrig)
+    : getUcscOrganism(targetAssembly)
 
   const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`
   const trackName = commonName
@@ -100,28 +120,15 @@ function createChainTrackConfig({
   }
 }
 
-function main() {
-  const { values } = parseArgs({
-    args: process.argv.slice(2),
-    options: {
-      assembly: { type: 'string', short: 'a' },
-      source: { type: 'string', short: 's' },
-      output: {
-        type: 'string',
-        short: 'o',
-        default: process.env.UCSC_BUILT_DIR,
-      },
-    },
-  })
-
-  const sourceAssembly = values.assembly
-  const outDir = values.output
-  const srcDir = values.source
-
-  if (!sourceAssembly || !outDir || !srcDir) {
-    throw new Error('--assembly, --source, and --output are required')
-  }
-
+function processAssembly({
+  sourceAssembly,
+  outDir,
+  srcDir,
+}: {
+  sourceAssembly: string
+  outDir: string
+  srcDir: string
+}) {
   // Skip non-assembly directories
   if (sourceAssembly === 'trix') {
     return
@@ -177,4 +184,59 @@ function main() {
   })
 }
 
-main()
+// Reads the assembly names to process: either the single --assembly given on
+// the command line, or one name per line on stdin. The stdin form is what
+// makePifs.sh uses, so the whole build is one process rather than one per
+// assembly re-reading the same lookup tables.
+async function readAssemblyNames(single: string | undefined) {
+  if (single) {
+    return [single]
+  }
+  const names: string[] = []
+  const rl = readline.createInterface({ input: process.stdin })
+  for await (const line of rl) {
+    const trimmed = line.trim()
+    if (trimmed) {
+      names.push(trimmed)
+    }
+  }
+  return names
+}
+
+async function main() {
+  const { values } = parseArgs({
+    args: process.argv.slice(2),
+    options: {
+      assembly: { type: 'string', short: 'a' },
+      source: { type: 'string', short: 's' },
+      output: {
+        type: 'string',
+        short: 'o',
+        default: process.env.UCSC_BUILT_DIR,
+      },
+    },
+  })
+
+  const outDir = values.output
+  const srcDir = values.source
+
+  if (!outDir || !srcDir) {
+    throw new Error('--source and --output are required')
+  }
+
+  const assemblies = await readAssemblyNames(values.assembly)
+
+  let processed = 0
+  for (const sourceAssembly of assemblies) {
+    try {
+      processAssembly({ sourceAssembly, outDir, srcDir })
+      processed++
+    } catch (error) {
+      console.error(`Error processing ${sourceAssembly}: ${error}`)
+    }
+  }
+
+  console.error(`Added chain tracks for ${processed} assemblies`)
+}
+
+await main()
