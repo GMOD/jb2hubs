@@ -266,6 +266,9 @@ log "Download and add GENCODE tracks"
 log "Ensuring refNameAliases/cytobands are present for all golden-path assemblies..."
 node src/ensureAssemblyAliasesAndCytobands.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 
+log "Mirroring assembly sidecar files (chrom.sizes, chromAlias, cytoBand)..."
+node src/mirrorAssemblySidecars.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
+
 log "Ensuring UCSC db names are aliased on GenArk-backed hub assemblies..."
 node src/ensureUcscAssemblyNames.ts "$UCSC_BUILT_DIR"
 

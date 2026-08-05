@@ -56,6 +56,14 @@ trix
 *.gff.gz
 *.csi
 
+# assembly sidecars mirrored next to each config by mirrorSidecars.sh so a UCSC
+# outage can't take an assembly down. Generated data that lives in the hub dirs
+# and ships to the bucket with everything else, same as the gff/trix files above
+*.chrom.sizes
+*.chrom.sizes.txt
+*.chromAlias.txt
+.sidecars-mirrored
+
 output.log
 
 .aws-sam

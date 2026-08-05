@@ -12,6 +12,9 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   — cache headers for bgzf data and its indexes
 - [architectural-decision-records/0002-config-compat-across-jbrowse-versions.md](architectural-decision-records/0002-config-compat-across-jbrowse-versions.md)
   — why config URLs are unversioned, and what that costs
+- [architectural-decision-records/0003-mirror-assembly-sidecars.md](architectural-decision-records/0003-mirror-assembly-sidecars.md)
+  — why chrom.sizes/chromAlias/cytoBand are served from our bucket, and why all
+  three had to be
 - [ENCODE_TRACKS.md](ENCODE_TRACKS.md) — which ENCODE content is converted,
   which is dropped, and the numbers behind that split
 

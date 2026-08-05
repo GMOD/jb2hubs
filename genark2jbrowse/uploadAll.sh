@@ -41,6 +41,7 @@ hub_changed=$(rclone_sync_with_indexes \
   --exclude "*ncbi.json" \
   --exclude "*.notfound" \
   --exclude "*.checked" \
+  --exclude ".sidecars-mirrored" \
   --exclude "image.json" \
   --exclude "hub.txt")
 

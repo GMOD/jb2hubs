@@ -7,6 +7,12 @@ import type { JBrowseConfig } from './types.ts'
 
 const CONFIGS_BASE_DIR = 'configs'
 
+// Keys whose string value is a file location. `chromSizes` is TwoBitAdapter's
+// shorthand -- a bare string rather than a { uri } node -- so it needs naming
+// here explicitly or the sidecar mirrored next to a config would resolve
+// against /ucsc/ instead of /ucsc/<assembly>/ once merged.
+const LOCATION_KEYS = new Set(['uri', 'chromSizes'])
+
 /**
  * Recursively adds relative URIs to a JBrowse configuration object.
  * This function modifies the config object in place.
@@ -20,7 +26,7 @@ function addRelativeUris(node: unknown, baseUrl: string) {
       const val = obj[key]
       if (typeof val === 'object' && val !== null) {
         addRelativeUris(val, baseUrl)
-      } else if (key === 'uri' && typeof val === 'string') {
+      } else if (LOCATION_KEYS.has(key) && typeof val === 'string') {
         if (!val.startsWith('http') && !val.startsWith('/')) {
           obj[key] = `${baseUrl}/${val}`
         }

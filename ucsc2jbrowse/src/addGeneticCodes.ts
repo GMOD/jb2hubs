@@ -1,3 +1,6 @@
+import fs from 'fs'
+import path from 'path'
+
 import { readConfig, writeJSON } from './util.ts'
 
 import type { JBrowseConfig } from './types.ts'
@@ -54,19 +57,32 @@ async function fetchMitoCodes(taxIds: number[]): Promise<Map<number, number>> {
   return result
 }
 
+function mitoContigsFromChromSizes(text: string) {
+  return text.split('\n').flatMap(line => {
+    const name = line.split('\t')[0]
+    return name !== undefined && /^chrM(T)?$/.test(name) ? [name] : []
+  })
+}
+
 // Returns the mito contig names actually present in the assembly (chrM/chrMT),
 // read from its chrom.sizes. undefined means chrom.sizes was unavailable, which
 // the caller treats as "assume the conventional chrM" rather than "no mito".
+//
+// Once mirrorAssemblySidecars has run, chromSizes is a file name relative to
+// the config rather than a url, and the mirrored copy sitting next to the
+// config is what to read -- the same bytes, without the fetch.
 async function fetchMitoContigs(
-  chromSizesUrl: string,
+  chromSizes: string,
+  configPath: string,
 ): Promise<string[] | undefined> {
-  const res = await fetch(chromSizesUrl)
-  return res.ok
-    ? (await res.text()).split('\n').flatMap(line => {
-        const name = line.split('\t')[0]
-        return name !== undefined && /^chrM(T)?$/.test(name) ? [name] : []
-      })
-    : undefined
+  if (!/^https?:\/\//.test(chromSizes)) {
+    const local = path.join(path.dirname(configPath), chromSizes)
+    return fs.existsSync(local)
+      ? mitoContigsFromChromSizes(fs.readFileSync(local, 'utf8'))
+      : undefined
+  }
+  const res = await fetch(chromSizes)
+  return res.ok ? mitoContigsFromChromSizes(await res.text()) : undefined
 }
 
 async function mapWithConcurrency<T, U>(
@@ -92,7 +108,7 @@ interface Entry {
   configPath: string
   config: JBrowseConfig
   taxId: number
-  chromSizesUrl?: string
+  chromSizes?: string
 }
 
 const configPaths = process.argv.slice(2)
@@ -108,8 +124,7 @@ const entries = configPaths.flatMap<Entry>(configPath => {
           configPath,
           config,
           taxId,
-          chromSizesUrl:
-            typeof chromSizes === 'string' ? chromSizes : undefined,
+          chromSizes: typeof chromSizes === 'string' ? chromSizes : undefined,
         },
       ]
     : []
@@ -120,8 +135,8 @@ const mitoCodes = await fetchMitoCodes([...new Set(entries.map(e => e.taxId))])
 await mapWithConcurrency(entries, 8, async entry => {
   const code = mitoCodes.get(entry.taxId)
   if (code !== undefined && code !== STANDARD_CODE) {
-    const present = entry.chromSizesUrl
-      ? await fetchMitoContigs(entry.chromSizesUrl)
+    const present = entry.chromSizes
+      ? await fetchMitoContigs(entry.chromSizes, entry.configPath)
       : undefined
     // undefined = chrom.sizes unavailable, fall back to the UCSC convention;
     // [] = assembly genuinely has no mito contig, so emit nothing.

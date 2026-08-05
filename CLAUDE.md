@@ -159,6 +159,34 @@ File menu is a thunk; `menuItems.push` throws), and hg38/hg19/mm39/hs1 were
 error pages on v4.0.0 through latest. `check-plugin-urls` passed the whole time
 — the url was fine.
 
+## Assembly sidecars are mirrored, and all three of them matter
+
+An assembly's `chrom.sizes`, `chromAlias` and `cytoBand` are copied next to the
+`config.json` that names them and referenced relatively, so a UCSC outage costs
+the sequence track (the 2bit is still hgdownload's) instead of the whole
+session. The reason it is all three and not just `chrom.sizes`: jbrowse-core's
+`assembly.loadPre()` fetches sequence regions, `refNameAliases`, `cytobands` and
+genetic codes in one `Promise.all`, and **any one rejection fails the entire
+assembly** — which is why a UCSC outage read as "the app won't load" rather than
+"a track is missing".
+
+`hubtools/src/mirrorSidecars.ts` owns the rewrite;
+`ucsc2jbrowse/src/mirrorAssemblySidecars.ts` (local-first: chrom.sizes from
+`chromInfo.txt.gz`, cytoBand copied straight from `database/`) and
+`genark2jbrowse/mirrorSidecars.sh` drive it. Both sweep every assembly every
+build, because a regenerated config comes back naming upstream urls. A sidecar
+that can't be fetched is left pointing upstream and retried next run.
+
+Two things that will bite a change here:
+
+- `chromSizes` is a **bare string** on TwoBitAdapter, not a `{ uri }` node, so
+  anything that rewrites relative locations has to name it explicitly —
+  `mergeAll.ts` does, or `all.json` would resolve it against `/ucsc/`.
+- Relative is safe back to the v4.0.0 support floor only because jbrowse-web
+  stamps `baseUri` beside the adapter's `uri` and TwoBitAdapter's
+  `preProcessSnapshot` forwards it to `chromSizesLocation`. Full reasoning:
+  `agent-docs/architectural-decision-records/0003-mirror-assembly-sidecars.md`.
+
 ## multiWig composites, table-backed big files, and ENCODE
 
 A UCSC `container multiWig` composite converts to a single
