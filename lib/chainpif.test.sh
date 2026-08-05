@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# chainpif.test.sh
+# lib/chainpif.test.sh
 #
-# Tests for the pure (network-free) helpers in chainpif.sh.
-# Run: ./chainpif.test.sh
+# Tests for the pure (network-free) helpers in lib/chainpif.sh.
+# Run: ./lib/chainpif.test.sh
 #
 
 set -uo pipefail

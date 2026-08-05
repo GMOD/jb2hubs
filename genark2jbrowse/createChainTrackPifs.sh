@@ -25,7 +25,7 @@ GENARK_PIFS_DIR="${GENARK_PIFS_DIR:-/mnt/sdb/cdiesh/genark_pifs}"
 
 # Be polite to the hub server between downloads.
 export CHAINPIF_DOWNLOAD_DELAY=0.5
-source "$SCRIPT_DIR/../chainpif.sh"
+source "$SCRIPT_DIR/../lib/chainpif.sh"
 
 usage() {
   echo "Usage: $0 <meta_json_path>"

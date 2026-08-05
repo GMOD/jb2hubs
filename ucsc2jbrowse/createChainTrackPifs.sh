@@ -26,7 +26,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 UCSC_CHAINS_DIR="${UCSC_CHAINS_DIR:-/mnt/sdb/cdiesh/chains}"
 UCSC_PIFS_DIR="${UCSC_PIFS_DIR:-/mnt/sdb/cdiesh/pifs}"
 
-source "$SCRIPT_DIR/../chainpif.sh"
+source "$SCRIPT_DIR/../lib/chainpif.sh"
 
 # --- Global Variables ---
 declare -g CONFIG_DIR SOURCE ASSEMBLY OUTDIR LIFTOVER_BASE_URL

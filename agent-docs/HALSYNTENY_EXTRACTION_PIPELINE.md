@@ -68,7 +68,7 @@ GCF_A_to_GCF_B_halSynteny.pif.gz (+ .tbi/.gzi)
   │  createTrackConfiguration  (existing hubtools)
   ▼
 SyntenyTrack { adapter: PairwiseIndexedPAFAdapter, assemblyNames:[GCF_A,GCF_B] }
-  │  extractSyntenyTracks.ts  (existing catalog scan)
+  │  scripts/extractSyntenyTracks.ts  (catalog scan)
   ▼
 synteny_pairs.json:  "GCF_A,GCF_B" -> "GCF_A_to_GCF_B_halSynteny"
 ```
@@ -85,8 +85,8 @@ testable pieces**:
   `targetAssembly` and the output files. A HAL genome with no hosted GenArk
   assembly is skipped (logged), so it never produces an unlaunchable track.
 - **catalog-append** — write `"GCF_A,GCF_B" -> trackId` into the synteny pairs
-  index. Folds into `extractSyntenyTracks.ts` if the track configs are emitted
-  into the per-assembly hub configs it already scans.
+  index. Folds into `scripts/extractSyntenyTracks.ts` if the track configs are
+  emitted into the per-assembly hub configs it already scans.
 
 ## trackId convention
 

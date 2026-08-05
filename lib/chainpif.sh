@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# chainpif.sh
+# lib/chainpif.sh
 #
 # Shared helpers for downloading UCSC/GenArk chain files and converting them to
 # PIF (Pairwise Indexed PAF). Sourced by the createChainTrackPifs.sh scripts.

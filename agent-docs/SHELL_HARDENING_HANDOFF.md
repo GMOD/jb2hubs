@@ -1,12 +1,12 @@
-# Handoff: run.sh / common.sh shell hardening
+# Handoff: run.sh / lib/common.sh shell hardening
 
 ## Where this stands
 
 An integrity review of the orchestration scripts (`run.sh`, both `make.sh`, the
-three `common.sh` layers) produced 7 ranked gaps. Items **1–4 are done** (commit
-`abc3ad93462` on branch `derive`, "harden run.sh deploy path"; docs updated in
-`DEVELOPERS.md`). Items **5–7 are deferred** and described below so the next
-agent can pick them up.
+three `common.sh` layers — `lib/` plus one per pipeline) produced 7 ranked gaps.
+Items **1–4 are done** (commit `abc3ad93462` on branch `derive`, "harden run.sh
+deploy path"; docs updated in `DEVELOPERS.md`). Items **5–7 are deferred** and
+described below so the next agent can pick them up.
 
 ## What shipped (items 1–4)
 
@@ -34,21 +34,21 @@ agent can pick them up.
      change vs. `git add .`.
 
 4. **`REPROCESS` / `FETCH_UPDATES` control plane documented canonically** in
-   root `common.sh` (the single file both pipelines source) and surfaced in
+   `lib/common.sh` (the single file both pipelines source) and surfaced in
    `run.sh --help` + `DEVELOPERS.md`. The model: `REPROCESS` re-derives from
    cached downloads; `FETCH_UPDATES` re-pulls upstream NCBI GFFs; they are
    independent and compose.
 
 ## Deferred (items 5–7) — the real follow-up refactor
 
-5. **DONE** (option b). `parse_flags` in root `common.sh` owns `--all`,
+5. **DONE** (option b). `parse_flags` in `lib/common.sh` owns `--all`,
    `--reprocess-all` and `--help` for all three entry points; a script adds its
    own flags by defining `handle_flag`, which returns non-zero for anything it
    doesn't recognise. The shared help text (common flags plus the `REPROCESS` /
    `FETCH_UPDATES` control plane) is printed by `parse_flags`, so the three
    `--help` outputs can't drift. `ucsc` gained `--all` as a first-class flag
    (`--skip-download` still implies it); `run.sh` gained `--all` and forwards
-   the shared flags to both pipelines. Covered by tests in `common.test.sh`.
+   the shared flags to both pipelines. Covered by tests in `lib/common.test.sh`.
    - Option (a)'s two extras were deliberately **not** added, because both
      duplicate existing workflows rather than enabling new ones:
      `--only genark|ucsc` is `./ucsc2jbrowse/make.sh && ./run.sh --upload-only`,
@@ -59,9 +59,9 @@ agent can pick them up.
 6. **Two near-duplicate `downloadNcbiGff.sh`** (genark + ucsc). Different
    downloaders (`wget -N` vs `datasets download`) but now-identical re-download
    gate (`FETCH_UPDATES` / file-existence). They will drift. Minimum: a
-   cross-reference comment; better: extract the gate decision into `common.sh`.
-   (The three-way scope-file duplication _within_ genark is gone — see
-   `list_scoped_gz` in `genark2jbrowse/common.sh` — but these two are
+   cross-reference comment; better: extract the gate decision into
+   `lib/common.sh`. (The three-way scope-file duplication _within_ genark is
+   gone — see `list_scoped_gz` in `genark2jbrowse/common.sh` — but these two are
    untouched.)
 
 7. **Error swallowing conflates outcomes.** `git commit … || echo "No changes"`
@@ -84,5 +84,5 @@ regardless of the `git add` scoping. A `git update-index --really-refresh` (or
 ## Files touched
 
 - `run.sh` — items 1, 2, 3, 4 (help text)
-- `common.sh` — item 4 (control-plane doc block)
+- `lib/common.sh` — item 4 (control-plane doc block)
 - `DEVELOPERS.md` — "Do everything" section: flags + env vars

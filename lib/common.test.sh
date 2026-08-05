@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# common.test.sh
+# lib/common.test.sh
 #
-# Tests for helpers in common.sh: make_file_listing, parse_flags, needs_rebuild
+# Tests for helpers in lib/common.sh: make_file_listing, parse_flags, needs_rebuild
 # / save_rebuild_stamp, and rclone_sync_with_indexes.
-# Run: ./common.test.sh
+# Run: ./lib/common.test.sh
 #
 
 set -uo pipefail

@@ -1,11 +1,22 @@
+# Developing jb2hubs
+
+What the repo contains and how the pieces fit together is in
+[README.md](README.md); the invariants worth reading before changing a pipeline
+are in [CLAUDE.md](CLAUDE.md). This file is how to run things.
+
 ## Pre-requisites
 
+- node.js and [pnpm](https://pnpm.io) — `pnpm install` at the repo root installs
+  every workspace (`website`, `ucsc2jbrowse`, `genark2jbrowse`, `hubtools`,
+  `aws/*`)
+- `npm install -g @jbrowse/cli`
 - Rust toolchain (cargo) — to build the vendored `bed2gff` (see below)
 - hck
 - fdfind aka fd
-- node.js, yarn, and npm install -g @jbrowse/cli
 - rclone
-- ncbi "datasets" cli
+- ncbi `datasets` cli
+- xxhash (`xxhsum`, the incremental gates' hashing) and pigz (parallel gzip in
+  the GFF/BED/chain steps) — also needed by the shell tests
 
 ### Build bed2gff
 
@@ -25,7 +36,7 @@ automatically and fails fast with a build hint if it's missing.
 ```bash
 ./run.sh                 # Full pipeline: build + upload + deploy (default, incremental)
 ./run.sh --dry-run       # Build only, no upload or deploy
-./run.sh --upload-only    # Upload + deploy only, skip build (run after --dry-run)
+./run.sh --upload-only   # Upload + deploy only, skip build (run after --dry-run)
 ./run.sh --all           # Build every assembly/hub, not just new/changed ones
 ./run.sh --reprocess-all # Re-derive every config from cached downloads
 ./run.sh --staging       # Build + deploy website to staging only (no S3 upload / git push)
@@ -33,8 +44,8 @@ automatically and fails fast with a build hint if it's missing.
 
 `--all`, `--reprocess-all` and `--help` mean the same thing in all three entry
 points (`run.sh` and both `make.sh`) and are parsed by one `parse_flags` helper
-in `common.sh`; `run.sh` forwards them to both pipelines. Each script adds its
-own flags on top (`--dry-run`/`--upload-only`/`--staging` for `run.sh`,
+in `lib/common.sh`; `run.sh` forwards them to both pipelines. Each script adds
+its own flags on top (`--dry-run`/`--upload-only`/`--staging` for `run.sh`,
 `--skip-download` for `ucsc2jbrowse`).
 
 To rebuild one pipeline only, run its `make.sh` directly and then ship:
@@ -44,7 +55,7 @@ To rebuild one pipeline only, run its `make.sh` directly and then ship:
 ```
 
 Two env vars force work past the incremental gates (canonical description in
-`common.sh`; they compose):
+`lib/common.sh`; they compose):
 
 ```bash
 REPROCESS=1 ./run.sh      # re-derive outputs from cached downloads (implied by --reprocess-all)
@@ -55,9 +66,8 @@ FETCH_UPDATES=1 ./run.sh  # re-pull upstream NCBI GFFs in both pipelines
 
 ```bash
 cd genark2jbrowse
-yarn
-./make.sh              # Process only new hubs (default, fastest)
-./make.sh --all        # Process all hubs
+./make.sh                  # Process only new hubs (default, fastest)
+./make.sh --all            # Process all hubs
 ./make.sh --reprocess-all  # Re-derive everything from cached downloads
 # optionally review git diff
 ./uploadAll.sh
@@ -67,7 +77,6 @@ yarn
 
 ```bash
 cd ucsc2jbrowse
-yarn
 ./make.sh                  # Download, then process assemblies whose trackDb changed
 ./make.sh --all            # Process every assembly, not just changed ones
 ./make.sh --skip-download  # Skip the rsync, process what's on disk (implies --all)
@@ -86,13 +95,44 @@ cd ucsc2jbrowse
 ./uploadAll.sh
 ```
 
-## Deploy website
+## Website
 
 ```bash
 cd website
-yarn
-yarn deploy
+pnpm run dev          # local dev server (predev pulls processedHubJson from S3)
+pnpm run build        # static build into dist/
+pnpm run deploy       # build, rsync to the server, invalidate CloudFront
 ```
+
+Use `pnpm run deploy`, not `pnpm deploy` — the latter is pnpm's own built-in
+command.
+
+`.astro` frontmatter is **not** typechecked (`astro check` was dropped with the
+move to TypeScript 7), so anything type-sensitive belongs in a `.ts`/`.tsx`
+module the page imports. See CLAUDE.md for the full toolchain notes.
+
+## Checks
+
+```bash
+pnpm lint:fast            # oxlint, syntactic
+pnpm lint                 # oxlint --type-aware (tsgolint)
+pnpm typecheck            # astro sync + tsc --noEmit
+pnpm check-format         # oxfmt + prettier for *.astro   (pnpm format to fix)
+pnpm lint:sh              # shellcheck        (pnpm format:sh to fix with shfmt)
+pnpm --recursive run test # vitest / node:test suites
+./lib/common.test.sh      # shell unit tests
+./lib/chainpif.test.sh
+```
+
+Before publishing regenerated configs:
+
+```bash
+pnpm check-plugin-urls                 # plugins[].url reachability — seconds, no browser
+pnpm check-config-compat --local       # boot the working-tree configs in every hosted release
+```
+
+`run.sh` runs both gates for you before either `uploadAll.sh`;
+`SKIP_CONFIG_GATE=1` overrides.
 
 ## Nginx configuration
 
@@ -121,22 +161,6 @@ redirects (not directly by URL).
 
 We started with Next.js, but it was slow and did not have reproducible builds,
 making bulk export to AWS S3 slow and even costly (uploading thousands of files)
-
-## What is in this repo
-
-- Scripts that ingest the UCSC goldenPath database dumps, and converts them into
-  jbrowse configs (the ucsc2jbrowse folder)
-- Scripts that convert the UCSC GenArk hubs, and converts them into jbrowse
-  configs (the genark2jbrowse folder)
-- Astro-based website for statically generating lots of pages (the website
-  folder)
-
-## Note
-
-This repo was written with the aid of AI tools including Claude and avante.nvim
-
-A huge thank you to UCSC team for their generous data sharing policy and work on
-these resources
 
 ## Rclone config
 

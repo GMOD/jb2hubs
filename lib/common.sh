@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# common.sh
+# lib/common.sh
 #
 # Shared configuration for all scripts.
-# Source this file at the top of other scripts: source "$(dirname "$0")/../common.sh"
+# Source this file at the top of other scripts: source "$(dirname "$0")/../lib/common.sh"
 #
 # Control plane (both pipelines, incremental by default). Two independent env
 # axes that compose:
@@ -76,7 +76,7 @@ parse_flags() {
                    re-pull NCBI GFFs unless FETCH_UPDATES=1.
   --help, -h       Show this help message
 
-Env vars (canonical description in common.sh; they compose):
+Env vars (canonical description in lib/common.sh; they compose):
   REPROCESS=1      Re-derive outputs from cached downloads (implied by --reprocess-all)
   FETCH_UPDATES=1  Re-pull upstream NCBI GFFs in both pipelines"
       exit 0

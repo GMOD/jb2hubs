@@ -6,8 +6,8 @@
 # Source this file at the top of other scripts: source "$(dirname "$0")/common.sh"
 #
 
-# Source the root common.sh for shared utilities
-source "$(dirname "$0")/../common.sh"
+# Source the shared lib/common.sh for utilities common to both pipelines
+source "$(dirname "$0")/../lib/common.sh"
 
 # Converts an accession (e.g., GCF_000896435.1) to its hub directory path
 # Usage: hub_dir=$(accession_to_hub_dir "GCF_000896435.1")

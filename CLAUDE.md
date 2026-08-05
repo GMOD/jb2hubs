@@ -11,6 +11,13 @@ and serves them via a static website.
 - `ucsc2jbrowse/` — scripts + TS that convert UCSC track hubs into JBrowse
   configs
 - `hubtools/` — shared TS library used by the converter packages
+- `lib/` — shell libraries both pipelines source: `common.sh` (control plane,
+  `parse_flags`, incremental gates, rclone sync) and `chainpif.sh` (chain →
+  PIF), each with a `*.test.sh` beside it that CI runs
+- `scripts/` — repo-level node utilities (`checkConfigCompat.mjs`,
+  `checkPluginUrls.mjs`, `extractSyntenyTracks.ts`) invoked from `package.json`
+  and `run.sh`
+- `agent-docs/` — design notes, surveys and ADRs, indexed by its own `README.md`
 
 ## Lint, format, typecheck (oxc toolchain)
 

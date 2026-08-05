@@ -6,8 +6,8 @@
 # Source this file at the top of other scripts: source "$(dirname "$0")/common.sh"
 #
 
-# Source the root common.sh for shared utilities
-source "$(dirname "$0")/../common.sh"
+# Source the shared lib/common.sh for utilities common to both pipelines
+source "$(dirname "$0")/../lib/common.sh"
 
 # Set the root directories for UCSC data and results.
 # Can be overridden by setting environment variables.

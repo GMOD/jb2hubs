@@ -21,7 +21,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/lib/common.sh"
 cd "$SCRIPT_DIR"
 
 # Parse arguments. --all, --reprocess-all and --help are handled by parse_flags.
@@ -112,7 +112,7 @@ if [ "$UPLOAD_ONLY" = false ]; then
   ./ucsc2jbrowse/make.sh ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
 
   echo "Extracting SyntenyTrack datasets..."
-  node extractSyntenyTracks.ts
+  node scripts/extractSyntenyTracks.ts
 
   echo "Formatting codebase..."
   pnpm run format
