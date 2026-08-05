@@ -1,20 +1,53 @@
+/* The photo sits beside the identity list rather than floating into it: a float
+   only shortens line boxes, and the list is a grid, whose items would have run
+   underneath the image instead of beside it. Wrapping drops the photo below the
+   list once the two no longer fit. */
+.identity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
 .statsTable {
   display: grid;
   grid-template-columns: max-content 1fr;
   column-gap: 1.5rem;
 }
 
-.imageContainer {
-  float: right;
-  margin-left: 1.5rem;
-  margin-bottom: 1rem;
-  max-width: 20rem;
+/* Stacked once the two columns stop fitting: at 390px the label column took
+   nearly half the width, and the longer values came out as towers of two-word
+   lines. The label carries the weight instead of the column position. */
+@media (max-width: 36rem) {
+  .statsTable {
+    grid-template-columns: 1fr;
+  }
+
+  .statsTable dt {
+    font-weight: 700;
+  }
+
+  .statsTable dd {
+    margin: 0 0 0.5rem;
+  }
 }
 
+/* Takes the leftover width beside the photo, and is what wraps first. */
+.identity .statsTable {
+  flex: 1 1 22rem;
+}
+
+/* Sized so the photo is about as tall as the list beside it — at the old 20rem
+   it overhung by half its height, which became dead space above the launch
+   links. */
 .figure {
   margin: 0;
+  flex: 0 0 auto;
+  max-width: 14rem;
 }
 
+/* The aspect-ratio reserves the box before the image loads; object-fit keeps the
+   portrait ones (most of the GenArk gallery) from being stretched into it. */
 .image {
   max-width: 100%;
   aspect-ratio: 4 / 3;
@@ -23,4 +56,8 @@
 
 .comments {
   white-space: pre-wrap;
+}
+
+.disclosure {
+  margin: 1rem 0;
 }

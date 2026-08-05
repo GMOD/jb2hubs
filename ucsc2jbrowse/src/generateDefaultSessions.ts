@@ -10,6 +10,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import type { DefaultSession } from './types'
+
 interface UcscGenome {
   description: string
   defaultPos: string
@@ -20,29 +22,6 @@ interface UcscGenome {
 
 interface ListJson {
   ucscGenomes: Record<string, UcscGenome>
-}
-
-interface DefaultSession {
-  name: string
-  views: {
-    id: string
-    type: string
-    init: {
-      loc: string
-      assembly: string
-      tracks: string[]
-    }
-  }[]
-  widgets: {
-    hierarchicalTrackSelector: {
-      id: string
-      type: string
-      view: string
-    }
-  }
-  activeWidgets: {
-    hierarchicalTrackSelector: string
-  }
 }
 
 interface Config {
@@ -74,7 +53,7 @@ function generateDefaultSession(
     `${assemblyName}-ncbiGene`,
     `${assemblyName}-refGene`,
     `${assemblyName}-ensGene`,
-    `${assemblyName}-augustus`,
+    `${assemblyName}-augustusGene`,
     `${assemblyName}-xenoRefGene`,
   ]
   const trackId = candidates.find(t => trackIds.has(t))

@@ -1,5 +1,29 @@
+export interface DefaultSession {
+  name: string
+  views: {
+    id: string
+    type: string
+    init: {
+      loc: string
+      assembly: string
+      tracks: string[]
+    }
+  }[]
+  widgets: {
+    hierarchicalTrackSelector: {
+      id: string
+      type: string
+      view: string
+    }
+  }
+  activeWidgets: {
+    hierarchicalTrackSelector: string
+  }
+}
+
 export interface JBrowseConfig {
   configuration?: Record<string, unknown>
+  defaultSession?: DefaultSession
   tracks: {
     category?: string[]
     assemblyNames: string[]

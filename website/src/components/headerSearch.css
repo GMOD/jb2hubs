@@ -1,18 +1,22 @@
-.form {
+/* Plain global classes rather than a CSS module: the suggestion rows are built
+   at runtime by headerSearch.ts, so their class names have to be knowable
+   outside the bundler. The header-search- prefix keeps that from mattering. */
+
+.header-search {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.icon {
+.header-search-icon {
   position: absolute;
   left: 8px;
   color: #666;
   pointer-events: none;
 }
 
-.input {
+.header-search-input {
   width: 100%;
   min-width: 0;
   padding: 5px 8px 5px 30px;
@@ -23,12 +27,12 @@
   background: white;
 }
 
-.input:focus {
+.header-search-input:focus {
   border-color: #0b69d4;
   outline: none;
 }
 
-.visuallyHidden {
+.header-search-label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -37,7 +41,7 @@
   white-space: nowrap;
 }
 
-.list {
+.header-search-list {
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
@@ -53,22 +57,26 @@
   background: white;
   border: 1px solid #e7e7e7;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 8%);
   z-index: 300;
 }
 
-.option {
+.header-search-list[hidden] {
+  display: none;
+}
+
+.header-search-option {
   display: block;
   padding: 4px 10px;
   text-decoration: none;
   color: black;
 }
 
-.option.on {
+.header-search-option.on {
   background: #f0f4fa;
 }
 
-.title {
+.header-search-title {
   display: block;
   font-size: 0.9rem;
   white-space: nowrap;
@@ -76,7 +84,7 @@
   text-overflow: ellipsis;
 }
 
-.meta {
+.header-search-meta {
   display: block;
   font-size: 0.75rem;
   color: #666;
@@ -85,13 +93,13 @@
   text-overflow: ellipsis;
 }
 
-.empty {
+.header-search-empty {
   padding: 4px 10px;
   font-size: 0.85rem;
   color: #666;
 }
 
-.allResults {
+.header-search-all {
   display: block;
   width: 100%;
   padding: 6px 10px;
@@ -106,6 +114,6 @@
   cursor: pointer;
 }
 
-.allResults:hover {
+.header-search-all:hover {
   background: #f5f5f5;
 }

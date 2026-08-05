@@ -91,6 +91,40 @@
       ]
     },
     {
+      "trackId": "rheMac10-clinvarLift",
+      "name": "ClinVar Lift",
+      "type": "FeatureTrack",
+      "assemblyNames": ["rheMac10"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/rheMac10/bbi/clinvarLift.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/rheMac10/bbi/clinvarLift.bb",
+          "group": "compGeno",
+          "itemRgb": "on",
+          "longLabel": "Human ClinVar variants lifted to Rhesus",
+          "mouseOverField": "_mouseOver",
+          "scoreLabel": "ClinVar Star-Rating (0-4)",
+          "shortLabel": "ClinVar Lift",
+          "track": "clinvarLift",
+          "type": "bigBed 12 +",
+          "urls": "origPos=\"/cgi-bin/hgTracks?position=$$\" rcvAcc=\"https://www.ncbi.nlm.nih.gov/clinvar/$$/\" geneId=\"https://www.ncbi.nlm.nih.gov/gene/$$\" snpId=\"https://www.ncbi.nlm.nih.gov/projects/SNP/snp_ref.cgi?rs=$$\" nsvId=\"https://www.ncbi.nlm.nih.gov/dbvar/variants/$$/\" origName=\"https://www.ncbi.nlm.nih.gov/clinvar/variation/$$/\"",
+          "visibility": "hide",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows human clinically relevant variants from the \n<a href=\"https://www.ncbi.nlm.nih.gov/clinvar/\" target=\"_blank\">ClinVar database</a>,\nmapped from hg38 to the rheMac10 genome. The mapping uses UCSC's whole-genome alignments and the \ntool <a href=\"https://genome.ucsc.edu/cgi-bin/hgLiftOver\" target=_blank>LiftOver</a>. \nThe annotations are somewhat speculative, \nas LiftOver is not meant to be used for cross-organism mapping. Among others, \nLiftOver has no notion of phylogenetic trees or protein orthology, so the \nexact protein to which they are mapped may not be the annotated ortholog.\nIn areas with protein repeats it may have been mapped to the wrong exon. When the \ngenome nucleotide in rheMac10 is different from hg38, the corresponding position \ncould be several basepairs away. Generally, the more different the gene, the harder the\nmapping. Before planning assays on these data, a manual alignment and annotation \nof the human and rheMac10 nucleotide or amino acid sequences is recommended.\n\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nGenomic locations of ClinVar variants are labeled with the human ClinVar variant\ndescriptions. For example, the label \"C&gt;G\" usually means that in human, the cDNA \nnucleotide change is from C&gt;T. On a transcript on the reverse strand, the human\ngenome nucleotide on the forward strand would be G. In rheMac10, the genome may not\nbe G at this position. Zoom in to see the nucleotide in rheMac10, or click the\nvariant to show the human position and nucleotide and the rheMac10 nucleotide.</p>\n\n<p>All ClinVar information related to each is variant is shown on that\nvariant's details page.  Hold the mouse over a feature\nto show the clinical significance of a variant in humans.\n</p>\n\n<p>Only short variants with a length &lt; 10 bp on the human genome were\nlifted. A few variants that after lifting result in rheMac10 annotations longer than\n30bp were filtered out, too. This can happen in repetitive regions that are\nhard to align.</p>\n\n<p>\nAnnotations are shaded by clinical annotation:\n<b><font color=\"red\">red for pathogenic</font></b>,\n<B><font color=\"#888\">dark grey for uncertain significance or not provided</font></b> and\n<B><font color=\"green\">green for benign</font></b>.\n</p>\n\n<p>\nThe score of the variants is the number of \"stars\" in ClinVar. On the track configuration \npage (above), you can filter the track to show only variants with more than a certain \nnumber of stars. For more information on the star rating, see the \n<a href=\"https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/\"\ntarget=\"_blank\">ClinVar documentation</a>.\n</p>\n\n<h2>Data updates</h2>\nClinVar is updated every month, but these mappings are not updated yet on a regular schedule.\nPlease contact us if you are interested in regular updates.\n</p>\n\n<H2>Data access</H2>\n<p>\nThe raw data can be explored interactively with the \n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a>\nor the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\n\n<p>\nFor automated download and analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/rheMac10/bbi/\" target=\"_blank\">our download server</a>.\nThe files for this track are called <tt>clinvarLift.bb</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tool can also be used to obtain only features within a given range, e.g. \n<tt>bigBedToBed http://hgdownload.soe.ucsc.edu/gbdb/rheMac10/bbi/clinvarLift.bb -chrom=chr1 -start=0 -end=100000000 stdout</tt></p>\n</p>\n\n<h2>Methods</h2>\n\n<p>\nThe hg38 ClinvarMain track was annotated with nucleotides and positions, lifted to rheMac10,\nfiltered again for variants &lt; 30bp\nand annotated with nucleotides again. The output was converted to the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/bigBed.html\">bigBed</a> format.\nThe program that performs the mapping is available on\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/utils/doClinvarLift\"\ntarget=\"_blank\">Github</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to NCBI for making the ClinVar data available on their FTP site as a tab-separated file.\n</p>\n\n<h2>References</h2>\n<p>\nLandrum MJ, Lee JM, Benson M, Brown G, Chao C, Chitipiralla S, Gu B, Hart J, Hoffman D, Hoover J\n<em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/44/D1/D862/2502702/ClinVar-public-archive-of-interpretations-of\" target=\"_blank\">\nClinVar: public archive of interpretations of clinically relevant variants</a>.\n<em>Nucleic Acids Res</em>. 2016 Jan 4;44(D1):D862-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26582918\" target=\"_blank\">26582918</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4702865/\" target=\"_blank\">PMC4702865</a>\n</p>\n"
+        }
+      },
+      "description": "Human ClinVar variants lifted to Rhesus",
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "rheMac10-clinvarLift-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "rheMac10-gap",
       "name": "Gap",
