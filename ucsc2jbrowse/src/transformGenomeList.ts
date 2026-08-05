@@ -1,52 +1,45 @@
 import fs from 'fs'
 
-interface GenomeEntry {
-  organism: string
-  [key: string]: unknown
-}
+import { readJSON, writeJSON } from './util.ts'
 
-interface MainGenomesData {
-  ucscGenomes: Record<string, GenomeEntry>
-}
+import type { UcscGenome, UcscGenomeList, UcscGenomeRaw } from './types.ts'
 
 /**
- * Transforms the UCSC genomes list by converting the ucscGenomes object
- * into an array with enhanced metadata for each genome.
+ * Enriches each entry of UCSC's genome list in place.
+ *
+ * The object shape is deliberately preserved: later phases and
+ * generateJBrowseConfigForAssemblyHub.sh both `jq '.ucscGenomes | to_entries[]'`
+ * over the result. (An older docstring here claimed this converted the object
+ * into an array, which it has never done.)
+ *
+ * What it adds is the entry's own key -- the raw API response identifies a
+ * genome only by its position in the object, so an entry passed around on its
+ * own could not say which db it was -- plus the two config urls the website and
+ * the hubs plugin resolve a genome through.
  */
 function transformGenomeList(inputPath: string, outputPath: string): void {
-  // Read the input file
-  const mainGenomesData = JSON.parse(
-    fs.readFileSync(inputPath, 'utf8'),
-  ) as MainGenomesData
+  const { ucscGenomes } = readJSON<{
+    ucscGenomes: Record<string, UcscGenomeRaw>
+  }>(inputPath)
 
-  // Transform the data
-
-  // Convert back to object format
-
-  // Write the transformed data back
-  fs.writeFileSync(
-    outputPath,
-    JSON.stringify(
-      {
-        ucscGenomes: Object.fromEntries(
-          Object.entries(mainGenomesData.ucscGenomes).map(([key, value]) => [
-            key,
-            {
-              ...value,
-              id: key,
-              name: key,
-              accession: key,
-              commonName: value.organism,
-              jbrowseConfig: `https://jbrowse.org/ucsc/${key}/config.json`,
-              jbrowseMinimalConfig: `https://jbrowse.org/ucsc/${key}/minimal.json`,
-            },
-          ]),
-        ),
-      },
-      null,
-      2,
+  const transformed: UcscGenomeList = {
+    ucscGenomes: Object.fromEntries(
+      Object.entries(ucscGenomes).map(([key, value]): [string, UcscGenome] => [
+        key,
+        {
+          ...value,
+          id: key,
+          name: key,
+          accession: key,
+          commonName: value.organism,
+          jbrowseConfig: `https://jbrowse.org/ucsc/${key}/config.json`,
+          jbrowseMinimalConfig: `https://jbrowse.org/ucsc/${key}/minimal.json`,
+        },
+      ]),
     ),
-  )
+  }
+
+  writeJSON(outputPath, transformed)
 }
 
 // CLI

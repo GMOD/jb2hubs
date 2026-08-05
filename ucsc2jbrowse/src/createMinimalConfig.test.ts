@@ -139,4 +139,19 @@ describe('minimalTracks', () => {
     const [track] = minimalTracks(config(['hg38-ncbiRefSeq']))
     assert.equal(track && 'category' in track, false)
   })
+
+  // hubtools' makeDefaultSession -- what generateJBrowseConfigForAssemblyHub
+  // and generateJBrowseConfigsForMultiGenomeHub write -- emits an init with no
+  // `tracks` key, and generateDefaultSessions.ts only rewrites the sessions of
+  // assemblies named in list.json. Iterating view.init.tracks unguarded threw
+  // TypeError, and processAssemblyDirs catches per assembly, so the whole
+  // symptom was one "Error processing <db>" line and no minimal.json.
+  it('handles a session whose init has no tracks key at all', () => {
+    const c = config(['hg38-ncbiRefSeq', 'hg38-cpgIslandExt'])
+    delete c.defaultSession!.views[0]!.init.tracks
+    assert.deepEqual(
+      minimalTracks(c).map(t => t.trackId),
+      ['hg38-ncbiRefSeq'],
+    )
+  })
 })

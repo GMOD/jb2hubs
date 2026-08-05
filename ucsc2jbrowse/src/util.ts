@@ -8,10 +8,10 @@ export {
   splitOnFirst,
   writeJSON,
 } from 'hubtools'
-import fs from 'fs'
+import { readJSON } from 'hubtools'
 
 import type { JBrowseConfig } from './types'
 
 export function readConfig(configPath: string): JBrowseConfig {
-  return JSON.parse(fs.readFileSync(configPath, 'utf8'))
+  return readJSON<JBrowseConfig>(configPath)
 }

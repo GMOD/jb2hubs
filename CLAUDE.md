@@ -182,9 +182,27 @@ it is what the track's About dialog shows.
   explicit: `generateDefaultSessions` precedes `createMinimalConfig` in the
   `STEPS` array in `src/finalizeConfigs.ts`, which documents why.
 
-Four configs are still legitimately empty — `cb1`, `hgFixed`, `renames`,
-`enhLutNer1` have no annotation to include (the first two are not assemblies at
-all; `common.sh`'s `is_assembly_db` already knows this).
+Three configs are still legitimately empty — `cb1`, `hgFixed`, `enhLutNer1` have
+no annotation to include (the first two are not assemblies at all; `common.sh`'s
+`is_assembly_db` already knows this).
+
+`renames` used to be counted as a fourth, and was not an assembly at all: it was
+a stray copy of `ucscRenames/hg38.json` (the trackId → new-name map, `"DELETE"`
+sentinel and all) that had been swept up and processed as a config, leaving
+`assemblies: [{}]` and four `unpkg.com` plugin urls frozen since 2025-08-11.
+Deleted 2026-08-05. Two things let it persist, both now addressed — but the
+first is structural and still worth knowing:
+
+- **`configs/` is an append-only mirror.** `make.sh` copies
+  `$UCSC_BUILT_DIR/<db>/config.json` to `configs/<db>.json` and never prunes, so
+  a db that disappears upstream leaves a config behind forever, still feeding
+  `mergeAll`, `checkPluginUrls` and `checkConfigCompat`. Compare `configs/`
+  against `api.genome.ucsc.edu/list/ucscGenomes` when something looks stale;
+  `hgFixed` is the one legitimate extra (make.sh rsyncs it deliberately).
+- **`mergeAll` deduped plugins on whole-object identity**, so the same plugin
+  under two urls was two entries. `all.json` was asking PluginLoader to install
+  each of the four plugins three times over. It now dedupes by name, preferring
+  the canonical `latest/` path — see `mergePlugins` in `src/mergeAll.ts`.
 
 ## Staging a config-level feature
 

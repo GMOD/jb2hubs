@@ -1,9 +1,10 @@
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 import { readConfig, writeJSON } from './util.ts'
 
-import type { JBrowseConfig } from './types.ts'
+import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
 
 const CONFIGS_BASE_DIR = 'configs'
 
@@ -36,6 +37,41 @@ function addRelativeUris(node: unknown, baseUrl: string) {
 }
 
 /**
+ * The plugin list for the merged config, one entry per plugin NAME.
+ *
+ * Deduping on whole-object identity (the old `JSON.stringify(plugin)` key) made
+ * two entries for the same plugin distinct whenever their urls differed, and
+ * they routinely do: a config that has not been regenerated since the plugin
+ * urls moved still names the old path. all.json ended up carrying every plugin
+ * two or three times over -- the frozen v1 store path, `latest/`, and, via a
+ * stale config that no regeneration reaches, unpkg.
+ *
+ * That is not a cosmetic duplicate. PluginLoader fetches all of them and each
+ * bundle assigns the same `JBrowsePlugin<Name>` global, so the config asks the
+ * app to install one plugin several times over. plugins[].url is the field that
+ * error-pages a whole session rather than costing a single track, which is why
+ * this dedupes rather than trusting every config in the tree to be current.
+ *
+ * The canonical `latest/` store path wins when a name appears more than once:
+ * it is what hubtools' enhanceConfig writes today, and the store uploads it
+ * no-cache so it keeps receiving publishes. Anything else is a frozen snapshot.
+ */
+export function mergePlugins(configs: JBrowseConfig[]): JBrowsePlugin[] {
+  const isCanonical = (plugin: JBrowsePlugin) =>
+    plugin.url?.includes('/latest/dist/') ?? false
+  const merged = new Map<string, JBrowsePlugin>()
+  for (const config of configs) {
+    for (const plugin of config.plugins ?? []) {
+      const existing = merged.get(plugin.name)
+      if (!existing || (!isCanonical(existing) && isCanonical(plugin))) {
+        merged.set(plugin.name, plugin)
+      }
+    }
+  }
+  return [...merged.values()]
+}
+
+/**
  * Merges multiple JBrowse configuration files into a single 'all.json' file.
  * It reads all config.json files from the 'configs' directory, processes their URIs,
  * and combines their assemblies, tracks, and aggregate text search adapters.
@@ -55,15 +91,6 @@ function mergeAllConfigs() {
     return config
   })
 
-  const mergedPlugins = new Map<string, { name: string }>()
-  for (const config of allConfigs) {
-    if (config.plugins) {
-      for (const plugin of config.plugins) {
-        mergedPlugins.set(JSON.stringify(plugin), plugin)
-      }
-    }
-  }
-
   const mergedConfig: JBrowseConfig = {
     assemblies: allConfigs
       .flatMap(config => config.assemblies)
@@ -72,7 +99,7 @@ function mergeAllConfigs() {
     aggregateTextSearchAdapters: allConfigs.flatMap(
       config => config.aggregateTextSearchAdapters ?? [],
     ),
-    plugins: [...mergedPlugins.values()],
+    plugins: mergePlugins(allConfigs),
   }
 
   const ucscResultsDir = process.env.UCSC_BUILT_DIR
@@ -83,4 +110,8 @@ function mergeAllConfigs() {
   console.log(`All configurations merged into ${ucscResultsDir}/all.json`)
 }
 
-mergeAllConfigs()
+// same guard as createMinimalConfig.ts, so mergePlugins can be imported and
+// tested without the CLI running (and reading ./configs) on import
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  mergeAllConfigs()
+}

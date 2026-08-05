@@ -3,9 +3,9 @@ import path from 'path'
 
 import { dedupe } from 'hubtools'
 
-import { readConfig, writeJSON } from './util.ts'
+import { readConfig, readJSON, writeJSON } from './util.ts'
 
-import type { JBrowseConfig } from './types.ts'
+import type { ConfigExtension, JBrowseConfig } from './types.ts'
 
 const BASE_EXTENSION_DIR = 'ucscExtensions'
 
@@ -33,24 +33,42 @@ function makeUcscExtensions(targetDir: string) {
       existingConfig = { assemblies: [], tracks: [] }
     }
 
-    const extensionConfig = readConfig(path.join(BASE_EXTENSION_DIR, item))
+    // An extension is a patch, not a config: read it as one, or a tracks-only
+    // extension file throws on `.assemblies[0]` and a file with no `tracks`
+    // throws on `.tracks.map`. See ConfigExtension in types.ts.
+    const extensionConfig = readJSON<ConfigExtension>(
+      path.join(BASE_EXTENSION_DIR, item),
+    )
+
+    // Mixing the two together is what carries an extension's assembly-level
+    // additions (the cytobands in ucscExtensions/hs1.json). An assembly with no
+    // `name` is not a config with no assemblies, it is an assembly jbrowse
+    // cannot load, so drop it and say so: spreading two absent assemblies used
+    // to emit `[{}]`, and configs/renames.json is what that looked like once it
+    // reached the tree and got merged into all.json.
+    const mergedAssembly = {
+      ...existingConfig.assemblies[0],
+      ...extensionConfig.assemblies?.[0],
+    }
+    const { name: assemblyName } = mergedAssembly
+    if (assemblyName === undefined) {
+      console.warn(
+        `${accession}: no named assembly in either the existing config or the extension; writing a config with no assemblies`,
+      )
+    }
 
     const mergedConfig: JBrowseConfig = {
       ...existingConfig,
       ...extensionConfig,
-      assemblies: [
-        {
-          // this specifically mixes in properties of the assembly for
-          // cytobands, seen in the ucscExtensions/hs1.json
-          ...existingConfig.assemblies[0]!,
-          ...extensionConfig.assemblies[0],
-        },
-      ],
+      assemblies:
+        assemblyName === undefined
+          ? []
+          : [{ ...mergedAssembly, name: assemblyName }],
       tracks: (() => {
         const existingByTrackId = new Map(
           existingConfig.tracks.map(t => [t.trackId, t]),
         )
-        const extensionTracks = extensionConfig.tracks.map(t => {
+        const extensionTracks = (extensionConfig.tracks ?? []).map(t => {
           const existing = existingByTrackId.get(t.trackId)
           return {
             ...existing,

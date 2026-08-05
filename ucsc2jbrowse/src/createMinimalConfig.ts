@@ -56,7 +56,11 @@ export function shouldIncludeTrack(trackId: string) {
 export function minimalTracks(config: JBrowseConfig) {
   const sessionTrackIds = new Set<string>()
   for (const view of config.defaultSession?.views ?? []) {
-    for (const trackId of view.init.tracks) {
+    // `?? []` because a session built by hubtools' makeDefaultSession has no
+    // `tracks` key -- see the note on DefaultSession in types.ts. Iterating it
+    // directly threw, and finalizeConfigs catches per assembly, so the only
+    // symptom was one error line and a missing minimal.json.
+    for (const trackId of view.init.tracks ?? []) {
       sessionTrackIds.add(trackId)
     }
   }
