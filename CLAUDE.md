@@ -251,6 +251,18 @@ is megabytes on either side. GenArk configs therefore still name
 assembly down whole. That is the accepted trade: don't "fix" it by re-enabling
 the sweep. See the amendment in ADR 0003 for the options if it needs revisiting.
 
+A sidecar whose upstream url **404s** is removed from the config rather than
+left pointing at a dead url — `refNameAliases` and `cytobands` only, since those
+nodes are optional and an assembly without one loads fine while one naming a 404
+does not. `chromSizes` is never dropped (nothing here demonstrates TwoBitAdapter
+accepts its absence back to the v4.0.0 floor). The 404/transient distinction is
+load-bearing: a timeout or 5xx must leave the url alone, or an hgdownload blip
+would delete a working alias file that nothing would then name to fetch back.
+`pnpm check-sidecar-urls` is the pre-upload guard, in `gate_configs` beside
+`check-plugin-urls` — it is what would have caught `mpxvRivers`, which named a
+`chromAlias.txt` that 404s and was unopenable in production while
+`check-plugin-urls` and the canary both passed.
+
 Two things that will bite a change here:
 
 - `chromSizes` is a **bare string** on TwoBitAdapter, not a `{ uri }` node, so

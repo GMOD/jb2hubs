@@ -6,7 +6,9 @@ import { describe, it } from 'node:test'
 
 import {
   assemblySidecars,
+  downloadToFile,
   mirrorAssemblySidecars,
+  SidecarGoneError,
   sidecarFileName,
 } from './mirrorSidecars.ts'
 
@@ -136,6 +138,48 @@ describe('mirrorAssemblySidecars', () => {
     assert.match(assembly.refNameAliases.adapter.uri, /^https:\/\/hgdownload/)
     assert.match(assembly.cytobands.adapter.uri, /^https:\/\/hgdownload/)
     assert.equal(warnings.length, 2)
+    // an outage must never be read as "upstream removed this file"
+    assert.deepEqual(result.dropped, [])
+  })
+
+  // 404 is upstream saying the file does not exist. Leaving the url in place
+  // would fail loadPre()'s Promise.all forever, and that fails the whole
+  // assembly rather than this one file -- which is what made mpxvRivers
+  // unopenable. Without the node, the assembly loads.
+  it('drops an optional sidecar that upstream no longer has', async () => {
+    const dir = tmpdir()
+    const assembly = makeAssembly()
+    const warnings: string[] = []
+    const result = await mirrorAssemblySidecars({
+      assembly,
+      dir,
+      provideLocal: ({ file }) =>
+        file === 'hg38.chrom.sizes' ? Buffer.from('chr1\t1\n') : undefined,
+      download: url => Promise.reject(new SidecarGoneError(`${url}: HTTP 404`)),
+      onWarn: msg => warnings.push(msg),
+    })
+    assert.deepEqual(result.dropped, ['refNameAliases', 'cytobands'])
+    assert.deepEqual(result.failed, [])
+    assert.equal(result.changed, true)
+    assert.equal(assembly.refNameAliases, undefined)
+    assert.equal(assembly.cytobands, undefined)
+    // and what remains is a loadable assembly, not a stripped one
+    assert.equal(assembly.sequence.adapter.chromSizes, 'hg38.chrom.sizes')
+    assert.match(assembly.sequence.adapter.uri, /^https:\/\/hgdownload/)
+  })
+
+  it('never drops chromSizes, even when upstream 404s', async () => {
+    const dir = tmpdir()
+    const assembly = makeAssembly()
+    const result = await mirrorAssemblySidecars({
+      assembly,
+      dir,
+      download: url => Promise.reject(new SidecarGoneError(`${url}: HTTP 404`)),
+      onWarn: () => {},
+    })
+    assert.deepEqual(result.failed, ['chromSizes'])
+    assert.ok(!result.dropped.includes('chromSizes'))
+    assert.match(assembly.sequence.adapter.chromSizes, /^https:\/\/hgdownload/)
   })
 
   it('is idempotent over an already-mirrored config', async () => {
@@ -151,5 +195,50 @@ describe('mirrorAssemblySidecars', () => {
     const second = await mirrorAssemblySidecars(opts)
     assert.equal(JSON.stringify(assembly), first)
     assert.deepEqual(second.failed, [])
+  })
+})
+
+describe('downloadToFile', () => {
+  it('reports a 404 as gone, without retrying it', async () => {
+    const dir = tmpdir()
+    const original = globalThis.fetch
+    let calls = 0
+    globalThis.fetch = () => {
+      calls++
+      return Promise.resolve(new Response('not found', { status: 404 }))
+    }
+    try {
+      await assert.rejects(
+        () =>
+          downloadToFile('https://x/hg38.chromAlias.txt', path.join(dir, 'f')),
+        SidecarGoneError,
+      )
+    } finally {
+      globalThis.fetch = original
+    }
+    assert.equal(calls, 1)
+  })
+
+  it('retries a 500, and does not report it as gone', async () => {
+    const dir = tmpdir()
+    const original = globalThis.fetch
+    let calls = 0
+    globalThis.fetch = () => {
+      calls++
+      return Promise.resolve(new Response('boom', { status: 500 }))
+    }
+    try {
+      await assert.rejects(
+        () =>
+          downloadToFile('https://x/hg38.chromAlias.txt', path.join(dir, 'f'), {
+            retries: 2,
+            timeoutMs: 1000,
+          }),
+        (e: unknown) => e instanceof Error && !(e instanceof SidecarGoneError),
+      )
+    } finally {
+      globalThis.fetch = original
+    }
+    assert.equal(calls, 2)
   })
 })

@@ -96,11 +96,13 @@ the amendment below.)**
 ### Failure is not fatal, and not sticky
 
 A sidecar that can't be fetched is left pointing at its upstream URL: exactly as
-good as before, and retried next run. The config is only ever rewritten to name
-a file that exists on disk at that moment, and downloads land via a temp file
-plus rename, so a truncated fetch can't become a config target — a half-written
-`chrom.sizes` would load as a valid assembly with missing contigs, which is
-worse than a failed load.
+good as before, and retried next run — **unless upstream answers 404**, in which
+case the node is removed from the config instead (`refNameAliases` and
+`cytobands` only; see "Gone is not the same as unreachable" below). The config
+is only ever rewritten to name a file that exists on disk at that moment, and
+downloads land via a temp file plus rename, so a truncated fetch can't become a
+config target — a half-written `chrom.sizes` would load as a valid assembly with
+missing contigs, which is worse than a failed load.
 
 Because a regenerated `config.json` comes back naming upstream URLs, both
 mirroring passes run over **every** assembly on every build, like
@@ -127,6 +129,48 @@ mirroring passes run over **every** assembly on every build, like
 - Anything that reads `chromSizes` out of a generated config has to accept a
   relative value now. `addGeneticCodes.ts` was the only such consumer, and it
   reads the mirrored file off disk instead — the same bytes, minus a fetch.
+
+## Amendment, 2026-08-05 — Gone is not the same as unreachable
+
+"Left pointing upstream" is the right answer for a file we could not fetch _this
+time_. It is the wrong answer for one upstream does not have at all: the url
+fails `loadPre()`'s `Promise.all` on every load, forever, and that fails the
+**whole assembly**, not the one file. `mpxvRivers` was the proof — its
+`refNameAliases` named a `chromAlias.txt` that 404s at every path variant, so
+the assembly could not be opened in production, and had not been for as long as
+the url had been wrong.
+
+So a **404 or 410** now removes the node from the config, while every other
+failure keeps the old behavior. The distinction is load-bearing in one
+direction: a 404 is a fact about the file, but a timeout, a 429 or a 5xx is a
+fact about the moment, and hgdownload produces plenty of those under
+concurrency. Reading a blip as "upstream removed this" would delete a working
+alias file during exactly the outage this ADR exists for — and once the config
+stops naming it, nothing fetches it back. Hence `SidecarGoneError`, thrown only
+on those two statuses and never retried, since retrying a definitive answer is
+only a slower way to reach it.
+
+Only `refNameAliases` and `cytobands` are droppable, because those nodes are
+optional — an assembly without one loads fine. `chromSizes` is never dropped:
+that would move sequence-region derivation onto the 2bit header, and nothing in
+this repo demonstrates TwoBitAdapter accepts its absence back to the v4.0.0
+floor (all 237 configs carry one). The only two assemblies whose `chrom.sizes`
+404s are `hgFixed` and `cb1`, which `is_assembly_db` already excludes — and
+`cb1`'s **2bit** 404s as well, so its config is dead at the sequence adapter
+where no sidecar decision reaches.
+
+### The guard this needed
+
+Nothing checked sidecar reachability, which is why `mpxvRivers` sat broken.
+`check-plugin-urls` only looks at `plugins[]`; `checkConfigCompat` keys on fatal
+page errors, plugin globals and track count, and a failed assembly trips none of
+them — this ADR said as much in its own Consequences and the implication was
+missed. `pnpm check-sidecar-urls` closes it, in `gate_configs` beside
+`check-plugin-urls`: relative refs must exist on disk next to the config,
+absolute ones must be reachable. Once an assembly is mirrored every ref is
+relative, so the steady-state run touches the network zero times. It is UCSC
+only, deliberately — probing GenArk's ~101k upstream refs is the road straight
+back to the sweep the amendment below reverts.
 
 ## Amendment, 2026-08-05 — GenArk reverted, UCSC kept
 

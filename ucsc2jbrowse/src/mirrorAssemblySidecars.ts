@@ -95,6 +95,7 @@ const assemblyDirs = fs
 
 let mirrored = 0
 let failed = 0
+let dropped = 0
 
 // Low concurrency on purpose: the only fetches left are the chromAlias files,
 // and hgdownload drops connections under bursts.
@@ -120,13 +121,17 @@ await mapWithConcurrency(assemblyDirs, 4, async assemblyName => {
   if (result.failed.length > 0) {
     failed++
   }
+  if (result.dropped.length > 0) {
+    dropped++
+  }
   if (result.changed) {
     writeJSON(configPath, config)
   }
 })
 
 console.warn(
-  `\nMirrored sidecars for ${mirrored} assemblies (${failed} with at least one sidecar left pointing upstream)`,
+  `\nMirrored sidecars for ${mirrored} assemblies (${failed} with at least one sidecar left pointing upstream, ` +
+    `${dropped} with one removed because upstream 404s)`,
 )
 
 export {}

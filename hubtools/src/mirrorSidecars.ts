@@ -48,6 +48,20 @@ interface Sidecar {
   value: string
   /** rewrites the config field to the mirrored file name */
   localize: (file: string) => void
+  /**
+   * Removes the whole node from the assembly, for the case where upstream no
+   * longer has the file at all. Defined only for the two that are optional:
+   * an assembly with no `refNameAliases`/`cytobands` loads fine, while one
+   * naming a 404 does not, so dropping is strictly better than leaving it.
+   *
+   * `chromSizes` deliberately has none. Dropping it would move sequence-region
+   * derivation onto the 2bit header, and whether TwoBitAdapter accepts its
+   * absence back to the v4.0.0 support floor is not something the configs in
+   * this repo demonstrate -- all 237 carry one. The only assemblies whose
+   * chrom.sizes 404s are hgFixed and cb1, which `is_assembly_db` already knows
+   * are not assemblies, so there is nothing to buy here.
+   */
+  drop?: () => void
 }
 
 /**
@@ -67,16 +81,17 @@ export function assemblySidecars(assembly: AssemblySidecarTarget): Sidecar[] {
       },
     })
   }
-  for (const [label, adapter] of [
-    ['refNameAliases', assembly.refNameAliases?.adapter],
-    ['cytobands', assembly.cytobands?.adapter],
-  ] as const) {
+  for (const key of ['refNameAliases', 'cytobands'] as const) {
+    const adapter = assembly[key]?.adapter
     if (adapter && typeof adapter.uri === 'string') {
       out.push({
-        label,
+        label: key,
         value: adapter.uri,
         localize: file => {
           adapter.uri = file
+        },
+        drop: () => {
+          delete assembly[key]
         },
       })
     }
@@ -115,6 +130,17 @@ const delay = (ms: number) =>
   })
 
 /**
+ * Thrown when upstream does not have the file at all, as opposed to not having
+ * it right now. The distinction decides whether the config gets rewritten: a
+ * 404 is a fact about the file, while a timeout, a 429 or a 5xx is a fact about
+ * the moment, and hgdownload produces plenty of the latter under concurrency.
+ * Reading a blip as "this assembly has no chromAlias" would delete a working
+ * alias file from the config during exactly the outage this feature exists for
+ * -- and once dropped, nothing names it to fetch it back.
+ */
+export class SidecarGoneError extends Error {}
+
+/**
  * Downloads a url to a file, retrying with backoff. hgdownload drops
  * connections under concurrency (see assemblyAliasesAndCytobands.ts), and an
  * outage is exactly the case this whole feature exists for, so a single failed
@@ -132,6 +158,9 @@ export async function downloadToFile(
     }
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) })
+      if (res.status === 404 || res.status === 410) {
+        throw new SidecarGoneError(`${url}: HTTP ${res.status}`)
+      }
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}`)
       }
@@ -142,6 +171,11 @@ export async function downloadToFile(
       writeAtomic(dest, buf)
       return
     } catch (e) {
+      // a definitive answer, so retrying it is only a way to be slower about
+      // reaching the same conclusion
+      if (e instanceof SidecarGoneError) {
+        throw e
+      }
       lastError = e
     }
   }
@@ -171,7 +205,10 @@ export interface MirrorResult {
   changed: boolean
   mirrored: string[]
   reused: string[]
+  /** left pointing upstream, to be retried next run */
   failed: string[]
+  /** removed from the config because upstream no longer has the file */
+  dropped: string[]
 }
 
 /**
@@ -195,6 +232,7 @@ export async function mirrorAssemblySidecars({
     mirrored: [],
     reused: [],
     failed: [],
+    dropped: [],
   }
   for (const sidecar of assemblySidecars(assembly)) {
     const { label, value, localize } = sidecar
@@ -228,10 +266,22 @@ export async function mirrorAssemblySidecars({
       result.changed = true
       result.mirrored.push(label)
     } catch (e) {
-      // left pointing upstream: still works whenever UCSC is up, and retried
-      // on the next run
-      onWarn(`${assembly.name}: could not mirror ${label} (${value}): ${e}`)
-      result.failed.push(label)
+      if (e instanceof SidecarGoneError && sidecar.drop) {
+        // Upstream does not have it, so leaving the url in place would keep
+        // failing loadPre()'s Promise.all forever -- and that fails the whole
+        // assembly, not this one file. Without the node the assembly loads.
+        sidecar.drop()
+        result.changed = true
+        result.dropped.push(label)
+        onWarn(
+          `${assembly.name}: ${label} is gone upstream (${value}); removed it from the config`,
+        )
+      } else {
+        // left pointing upstream: still works whenever UCSC is up, and retried
+        // on the next run
+        onWarn(`${assembly.name}: could not mirror ${label} (${value}): ${e}`)
+        result.failed.push(label)
+      }
     }
   }
   return result

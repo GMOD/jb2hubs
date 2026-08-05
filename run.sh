@@ -145,6 +145,17 @@ gate_configs() {
     echo "re-run with SKIP_CONFIG_GATE=1 if you accept that."
     return 1
   fi
+  # The other field that fails a whole session rather than one track: loadPre()
+  # fetches the sidecars in one Promise.all, so a dead chromAlias url is "this
+  # assembly does not open". Cheap -- once mirrored these are all local, so it
+  # is an on-disk existence check. Not in lint.yml: it needs the built dir.
+  echo "Pre-upload gate: checking every assembly sidecar the configs name..."
+  if ! node scripts/checkSidecarUrls.mjs; then
+    echo "Gate failed: a config names a sidecar that does not resolve. Each one"
+    echo "fails its whole assembly, not just that file. Re-run with"
+    echo "SKIP_CONFIG_GATE=1 if you accept that."
+    return 1
+  fi
   echo "Pre-upload gate: booting working-tree configs on hosted releases..."
   if ! node scripts/checkConfigCompat.mjs --local; then
     echo "Gate failed: a working-tree config does not boot on a hosted JBrowse"
@@ -193,10 +204,15 @@ elif [ "$DRY_RUN" = false ]; then
   # success. An empty index is the one outcome that is not an error, and it is
   # exactly what `git diff --cached --quiet` detects; anything else exits
   # non-zero under `set -e` and stops the deploy.
-  if git diff --cached --quiet; then
+  # Scoped to hubs/, for the same reason the commit below is scoped: `git
+  # commit` takes the whole index, not the paths just added, so anything else
+  # already staged in the working tree rides along to origin under "Update
+  # hubs". That is not hypothetical -- a staged `git rm` of two pipeline scripts
+  # shipped this way on 2026-08-05, leaving make.sh calling a deleted file.
+  if git diff --cached --quiet -- hubs/; then
     echo "No hub changes to commit"
   else
-    git commit -m "Update hubs"
+    git commit -m "Update hubs" -- hubs/
   fi
 
   # Decide whether the website needs rebuilding/redeploying. The site is a
