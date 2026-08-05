@@ -8,8 +8,6 @@ import {
   writeJSON,
 } from 'hubtools'
 
-const CONCURRENCY = 16
-
 function processOne(metaPath: string) {
   const configPath = metaPath.replace('meta.json', 'config.json')
 
@@ -63,31 +61,27 @@ if (process.argv[2]) {
   }
 }
 
-console.error(
-  `Processing ${paths.length} configs (concurrency: ${CONCURRENCY})...`,
-)
+console.error(`Processing ${paths.length} configs...`)
 
 let completed = 0
 const total = paths.length
 
-function worker(queue: string[]) {
-  while (queue.length > 0) {
-    const metaPath = queue.pop()!
-    try {
-      processOne(metaPath)
-    } catch (error) {
-      console.error(`Failed: ${metaPath}: ${error}`)
-    }
-    completed++
-    if (completed % 1000 === 0) {
-      console.error(`  ${completed}/${total}`)
-    }
+// processOne is entirely synchronous (readFileSync/writeFileSync), so this is a
+// plain sequential loop and is written as one. It used to hand the same queue to
+// N "workers" via Array.from, which only ever ran sequentially -- the first call
+// drained the queue before the second was invoked -- while logging a concurrency
+// figure that was never real. Making it genuinely parallel needs worker_threads
+// or child processes, not a different loop shape.
+for (const metaPath of paths) {
+  try {
+    processOne(metaPath)
+  } catch (error) {
+    console.error(`Failed: ${metaPath}: ${error}`)
+  }
+  completed++
+  if (completed % 1000 === 0) {
+    console.error(`  ${completed}/${total}`)
   }
 }
-
-const queue = [...paths]
-Array.from({ length: CONCURRENCY }, () => {
-  worker(queue)
-})
 
 console.error(`Done: ${completed} configs processed`)
