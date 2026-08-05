@@ -33,6 +33,15 @@ how `no-console` is handled — off for the CLI/build-script trees
 (`genark2jbrowse/src`, `ucsc2jbrowse/src`, `website/generate*.ts`, `scripts/`),
 where stdout _is_ the output, and on everywhere else.
 
+One thing `.oxfmtrc.json` must keep ignoring: `**/.*-uploaded.json`, the
+`upload_if_changed` stamps (currently just
+`genark2jbrowse/.categories-uploaded.json`). A stamp is a **byte-exact** copy of
+the file it tracks, compared with `diff -q`, and the generated
+`categoryIndex/categories.json` ends without a trailing newline — so letting
+oxfmt add one would make every later run see a change that isn't there and
+re-upload plus invalidate CloudFront forever. Format it and you break change
+detection, not just the diff.
+
 `pnpm format` / `pnpm check-format` is `oxfmt` for everything it parses
 (ts/tsx/js/json/md/css) **plus prettier for `**/*.astro` only** — oxfmt has no
 astro parser, which is the only reason prettier and `.prettierrc.json` are still
@@ -40,8 +49,9 @@ here. Keep `.oxfmtrc.json` and `.prettierrc.json` in sync (same
 `semi`/`singleQuote`/`trailingComma`/`arrowParens`/`singleAttributePerLine`) or
 JSX drifts between `.tsx` and `.astro`.
 
-Root `typescript` is **7.x** (the native compiler) — type-aware oxlint requires
-it. Two consequences worth knowing before "upgrading" anything else:
+Every `typescript` in the tree is now **7.x** (the native compiler) — root and
+`hubtools` both `^7.0.2`, and nothing else declares one. Type-aware oxlint
+requires it. One consequence worth knowing before "upgrading" anything else:
 
 - `astro check` is **gone**, and with it `@astrojs/check` /
   `@astrojs/language-server` and website's own TypeScript pin. The language
@@ -51,10 +61,16 @@ it. Two consequences worth knowing before "upgrading" anything else:
   typechecked** — `tsc` can't parse `.astro`, so root `pnpm typecheck` covers
   `.ts`/`.tsx` only. Anything type-sensitive belongs in a `.ts`/`.tsx` module
   the page imports, not in the frontmatter.
-- `hubtools` still pins **6.x**: `tsdown --dts` goes through
-  `rolldown-plugin-dts`, which fails the same way on TS 7
-  (`Cannot read properties of undefined (reading 'useCaseSensitiveFileNames')`).
-  Verify with `cd hubtools && pnpm build` before touching that pin.
+
+`hubtools` used to pin 6.x, because `tsdown --dts` goes through
+`rolldown-plugin-dts`, which failed on TS 7 with
+`Cannot read properties of undefined (reading 'useCaseSensitiveFileNames')`.
+That was lifted on 2026-08-03 (`a0a9f8c2a2e`) and verified on 2026-08-05:
+`pnpm build` emits with typescript@7.0.2, every export lands in
+`dist/index.d.mts` with real types, and that file typechecks clean under
+`tsc --strict --types node`. Re-run those three if `tsdown` or
+`rolldown-plugin-dts` is bumped — a dts emitter degrades quietly, so "the build
+passed" alone does not prove the types survived.
 
 `pnpm typecheck` runs `astro sync` first, because the root tsconfig includes
 `website/.astro/types.d.ts`.
