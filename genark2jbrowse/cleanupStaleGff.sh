@@ -15,7 +15,12 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ALL_JSON="$SCRIPT_DIR/processedHubJson/all.json"
-LOG_FILE="$SCRIPT_DIR/CLEANED.md"
+# What a run deleted is a log, not source: it goes to the gitignored logs/ dir
+# at the repo root, one timestamped file per run, the same convention run.sh
+# uses. (This used to overwrite a committed genark2jbrowse/CLEANED.md, which
+# put a few hundred lines of churn into every diff and lost the prior run.)
+LOG_DIR="$SCRIPT_DIR/../logs"
+LOG_FILE="$LOG_DIR/cleanupStaleGff_$(date -u '+%Y-%m-%d_%H-%M-%S').md"
 DRY_RUN=true
 
 if [ "${1:-}" = "--exec" ]; then
@@ -63,6 +68,7 @@ is_known() {
 }
 
 if ! $DRY_RUN; then
+  mkdir -p "$LOG_DIR"
   echo "# Cleanup log ($(date -u '+%Y-%m-%d %H:%M UTC'))" >"$LOG_FILE"
   echo "" >>"$LOG_FILE"
 fi

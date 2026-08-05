@@ -187,7 +187,17 @@ elif [ "$DRY_RUN" = false ]; then
 
   echo "Committing hub changes before generating recently updated..."
   git add hubs/
-  git commit -m "Update hubs" || echo "No hub changes to commit"
+  # Silence only the genuinely-empty case. `git commit || echo "no changes"`
+  # reports a hook, lock or index failure as "nothing to commit", so a run that
+  # uploads to S3 and then fails to record what it generated looks like a quiet
+  # success. An empty index is the one outcome that is not an error, and it is
+  # exactly what `git diff --cached --quiet` detects; anything else exits
+  # non-zero under `set -e` and stops the deploy.
+  if git diff --cached --quiet; then
+    echo "No hub changes to commit"
+  else
+    git commit -m "Update hubs"
+  fi
 
   # Decide whether the website needs rebuilding/redeploying. The site is a
   # function of: genark data (uploaded above), ucsc data (uploaded above), and
@@ -233,7 +243,13 @@ elif [ "$DRY_RUN" = false ]; then
     ucsc2jbrowse/blockedFiles ucsc2jbrowse/removedTracks \
     ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
     ucsc2jbrowse/fileListing.txt 'website/src/*.json'
-  git commit -m "Updates" || echo "No additional changes to commit"
+  # Same reasoning as the hubs commit above: an empty index is fine, a failed
+  # commit is not, and this is the last chance to notice before `git push`.
+  if git diff --cached --quiet; then
+    echo "No additional changes to commit"
+  else
+    git commit -m "Updates"
+  fi
   git push
 
   echo "Deploy phase complete"
