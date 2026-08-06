@@ -20,10 +20,21 @@ echo ""
 # Sync data + tabix/CSI indexes (see rclone_sync_with_indexes for the
 # cache-control rationale). The ucsc-results-hashed remote caches MD5 hashes to
 # avoid slow re-hashing.
+#
+# The two dotted stamps are local build state, and `*.hash` does not match
+# either of them (both end in `_hash`, not `.hash`) -- .trackdb_hash has been
+# shipping to the bucket since 2025. Excluding them is not tidiness: the object
+# count this sync reports is what decides both the CloudFront invalidation and
+# whether run.sh rebuilds and redeploys the 4.7GB website. .pipeline_hash
+# changes on every converter edit including ones that leave every config
+# byte-identical, so syncing it would turn a comment-only change to a .ts file
+# into 238 "changed" objects and a full site redeploy.
 echo "Syncing files (data + indexes via rclone hasher)..."
 total_changed=$(rclone_sync_with_indexes \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
   --exclude "*.hash" \
+  --exclude ".trackdb_hash" \
+  --exclude ".pipeline_hash" \
   --exclude "*.xxh" \
   --exclude "*.checked" \
   --exclude "*_meta.json" \

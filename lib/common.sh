@@ -235,6 +235,36 @@ save_rebuild_stamp() {
 }
 export -f save_rebuild_stamp
 
+# Deterministic content hash of a source tree: the code a derived output is a
+# function of, as opposed to the data it was derived from. needs_rebuild covers
+# the data half of that; this covers the half an incremental build otherwise
+# cannot see, so a converter change invalidates outputs built by the old one.
+#
+# Hashes every regular file under the given paths, keyed by path relative to
+# `root`, so the same tree at a different checkout location hashes the same
+# while a rename inside it does not. `*.test.*` is excluded: a test cannot
+# change what a build emits. A path that does not exist is an error rather than
+# an empty contribution -- a caller whose source layout moved must fail loudly
+# instead of quietly dropping that tree from the stamp and calling stale output
+# fresh.
+# Usage: hash=$(source_tree_hash <root> <path-relative-to-root>...)
+source_tree_hash() {
+  local root="$1"
+  shift
+  local p
+  for p in "$@"; do
+    if [ ! -e "$root/$p" ]; then
+      echo "source_tree_hash: no such path: $root/$p" >&2
+      return 1
+    fi
+  done
+  (
+    cd "$root" || exit 1
+    find "$@" -type f ! -name '*.test.*' -print0 | sort -z | xargs -0 -r xxhsum -H3
+  ) | xxhsum -H3 | awk '{print $NF}'
+}
+export -f source_tree_hash
+
 # Hashes the newline-separated paths on stdin, emitting "hash<TAB>path" rows.
 # xxhsum's native output is BSD-style "XXH3 (path) = hash"; converting once here
 # means the rest of make_file_listing can treat the listing as plain TSV instead

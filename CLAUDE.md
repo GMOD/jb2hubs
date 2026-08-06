@@ -124,6 +124,48 @@ change tracks on a UCSC assembly, edit the source-controlled extension file
 `tracks[]` are merged into the generated config by the pipeline; then regenerate
 and re-upload the configs.
 
+## A converter change invalidates every UCSC config, and make.sh knows it
+
+`ucsc2jbrowse/make.sh`'s incremental gate stamps **two** hashes per built
+assembly, and reprocesses when either differs: `.trackdb_hash` (the content of
+`trackDb.txt.gz`, i.e. the data) and `.pipeline_hash` (`source_tree_hash` over
+the converter itself, i.e. the code). Only the first existed until 2026-08-06.
+
+That is not a theoretical gap. `getTrackModifications` runs inside
+`addMetadata.ts`, which make.sh only invokes for assemblies the gate marked
+changed — so `24cbca057b6`, which exempted hg19's CRG/Duke mappability bigWigs
+from the `wgEncode` drop rule, was followed by a `./run.sh` that logged
+`No UCSC assemblies have changed`, regenerated nothing, and shipped the same
+configs. The line reads like success, which is what made it cost a day. There is
+no downstream gate that could have caught it either: `check-plugin-urls`,
+`check-sidecar-urls` and `check-config-compat` all validate the config that
+exists, not the one the current code would produce.
+
+Two things to know when changing this:
+
+- **The `PIPELINE_SOURCES` list in make.sh is deliberately broad** — every
+  `ucsc2jbrowse/*.sh`, `src/`, `ucscExtensions/`, `ucscRenames/`, `lib/` and
+  `hubtools/src`. The error directions are not symmetric. Over-invalidating
+  costs one reprocess, and a reprocess is cheap on a warm tree: the per-file
+  derivations are `needs_rebuild`-gated, so only the configs are actually
+  re-derived. Measured 2026-08-06 by reprocessing hg19 alone, the worst
+  assembly: 2m40s for the whole `make.sh` run, of which hg19's own Phase 2 was
+  67s and the two text-index passes (`textIndexGoldenPath.sh`, then
+  `downloadNcbiGff.sh` overwriting it) were 10s and 23s. Under-invalidating
+  ships wrong configs indefinitely. Add new inputs to the list rather than
+  reasoning about whether they matter.
+- **`.pipeline_hash` is written on every mode**, including `--reprocess-all` and
+  `--skip-download`, unlike `.trackdb_hash`. Whatever else those modes skip, the
+  code that just built the configs is the code in the tree; not recording it
+  would make the next incremental run reprocess all 238 again.
+
+`source_tree_hash` lives in `lib/common.sh` (tested by `lib/common.test.sh`) and
+is generic on purpose — genark2jbrowse has the same structural gap and could use
+it. It keys on paths relative to the repo root so the hash survives a different
+checkout location, excludes `*.test.*` (a test cannot change what a build
+emits), and errors on a path that does not exist so a rename fails loudly
+instead of silently dropping a tree from the hash.
+
 ## The tail of `ucsc2jbrowse/make.sh` is one walk, not six
 
 `src/finalizeConfigs.ts` reads each built `config.json` once, applies the six

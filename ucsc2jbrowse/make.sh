@@ -49,6 +49,28 @@ export TMPDIR="${TMPDIR:-/mnt/sdb/cdiesh/tmp}"
 # Ensure the script's path is in the PATH for tool access.
 export PATH="$SCRIPT_DIR:$PATH"
 
+# A built config is a function of two things: the trackDb it was built from, and
+# the converter that built it. Only the first used to be stamped, so an
+# incremental run after a converter fix reported "No UCSC assemblies have
+# changed" and shipped the old configs -- silently, since that line reads like
+# success. That is what happened to hg19's mappability tracks on 2026-08-06:
+# 24cbca057b6 exempted them from the wgEncode drop rule, ./run.sh was re-run,
+# and nothing regenerated because getTrackModifications runs inside addMetadata,
+# which only visits assemblies the trackDb stamp marked changed.
+#
+# The path list is deliberately broad -- every shell script, every src/*.ts, the
+# extension/rename data, lib/ and hubtools/src -- because the two error
+# directions are not symmetric. Over-invalidating costs one reprocess of cached
+# inputs (a few minutes; the per-file derivations are needs_rebuild-gated and
+# only the configs are actually re-derived). Under-invalidating ships wrong
+# configs indefinitely, and nothing downstream can tell. Add new inputs here
+# rather than trying to work out whether they matter.
+PIPELINE_SOURCES=(lib hubtools/src ucsc2jbrowse/src ucsc2jbrowse/ucscExtensions ucsc2jbrowse/ucscRenames)
+for sh_file in "$SCRIPT_DIR"/*.sh; do
+  PIPELINE_SOURCES+=("ucsc2jbrowse/$(basename "$sh_file")")
+done
+PIPELINE_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${PIPELINE_SOURCES[@]}")
+
 # --- Phase 1: Download ---
 
 ensure_dir "$UCSC_BUILT_DIR"
@@ -98,10 +120,12 @@ fi
 
 # --- Phase 1b: Detect changed assemblies ---
 #
-# For each assembly, compare the size of trackDb.txt.gz against a stored hash.
-# Assemblies where the hash differs (or no config.json exists yet) are "changed"
-# and need to go through the full processing pipeline.  Unchanged assemblies
-# keep their existing built outputs from the previous run.
+# For each assembly, compare the content hash of trackDb.txt.gz and the hash of
+# the converter sources (PIPELINE_HASH above) against the stamps recorded when
+# the assembly was last built. Assemblies where either differs (or that have no
+# config.json yet) are "changed" and need to go through the full processing
+# pipeline. Unchanged assemblies keep their existing built outputs from the
+# previous run.
 #
 # Skip change detection when --all (or anything implying it) is active so those
 # modes process everything.
@@ -118,12 +142,14 @@ if [ "$PROCESS_ALL" = true ]; then
   done < <(list_assembly_dirs)
 else
   log "Detecting changed assemblies..."
+  stale_code_count=0
   while IFS= read -r assembly_data_dir; do
     assembly=$(basename "$assembly_data_dir")
     db_dir="$assembly_data_dir/$assembly/database"
     trackdb="$db_dir/trackDb.txt.gz"
     built_dir="$UCSC_BUILT_DIR/$assembly"
     hash_file="$built_dir/.trackdb_hash"
+    pipeline_hash_file="$built_dir/.pipeline_hash"
 
     if [ ! -f "$trackdb" ]; then
       continue
@@ -131,9 +157,16 @@ else
 
     current_hash=$(xxhsum -H3 "$trackdb" | awk '{print $NF}')
     stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+    stored_pipeline_hash=$(cat "$pipeline_hash_file" 2>/dev/null || echo "")
+
+    if [ "$current_hash" = "$stored_hash" ] &&
+      [ "$PIPELINE_HASH" = "$stored_pipeline_hash" ] &&
+      [ -f "$built_dir/config.json" ]; then
+      continue # unchanged
+    fi
 
     if [ "$current_hash" = "$stored_hash" ] && [ -f "$built_dir/config.json" ]; then
-      continue # unchanged
+      stale_code_count=$((stale_code_count + 1))
     fi
 
     CHANGED_DL_DIRS+=("$assembly_data_dir")
@@ -146,6 +179,12 @@ else
     changed_names=()
     for d in "${CHANGED_DL_DIRS[@]}"; do changed_names+=("$(basename "$d")"); done
     log "${#CHANGED_DL_DIRS[@]} changed assembly/assemblies: ${changed_names[*]}"
+    # Called out separately because it is the surprising reason to see a large
+    # rebuild on a run that pulled no new data: the converter changed, so every
+    # config built by the old one is stale regardless of its trackDb.
+    if [ "$stale_code_count" -gt 0 ]; then
+      log "$stale_code_count of those have an unchanged trackDb and are being reprocessed because the converter sources changed."
+    fi
   fi
 fi
 
@@ -293,15 +332,27 @@ node src/mergeRemovedTracks.ts
 
 log "Hashing output files for integrity checking..."
 make_file_listing fileListing.txt "$UCSC_BUILT_DIR" \
-  ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp"
+  ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" \
+  ! -name ".pipeline_hash" ! -name ".sync_stamp"
 
-# Write updated hashes for assemblies we just processed
-if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ] && [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ]; then
+# Write updated hashes for assemblies we just processed.
+#
+# The converter stamp is written on every mode, including --reprocess-all and
+# --skip-download: whatever else those modes skip, the code that just built
+# these configs is the code in the working tree, and recording it is what stops
+# the next incremental run from reprocessing all 238 again. The trackDb stamp
+# keeps its narrower condition -- --skip-download may have processed a copy
+# older than upstream, and REPROCESS ignores the stamp anyway.
+if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
   for assembly_data_dir in "${CHANGED_DL_DIRS[@]}"; do
     assembly=$(basename "$assembly_data_dir")
-    trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
-    if [ -f "$trackdb" ]; then
-      xxhsum -H3 "$trackdb" | awk '{print $NF}' >"$UCSC_BUILT_DIR/$assembly/.trackdb_hash"
+    built_dir="$UCSC_BUILT_DIR/$assembly"
+    if [ -d "$built_dir" ]; then
+      printf '%s\n' "$PIPELINE_HASH" >"$built_dir/.pipeline_hash"
+      trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
+      if [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ] && [ -f "$trackdb" ]; then
+        xxhsum -H3 "$trackdb" | awk '{print $NF}' >"$built_dir/.trackdb_hash"
+      fi
     fi
   done
 fi

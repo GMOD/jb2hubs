@@ -3,7 +3,7 @@
 # lib/common.test.sh
 #
 # Tests for helpers in lib/common.sh: make_file_listing, parse_flags, needs_rebuild
-# / save_rebuild_stamp, and rclone_sync_with_indexes.
+# / save_rebuild_stamp, source_tree_hash, and rclone_sync_with_indexes.
 # Run: ./lib/common.test.sh
 #
 
@@ -229,6 +229,76 @@ out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
 check "rclone_sync_with_indexes reports 0 when nothing changed" 0 "$out"
 
 rm -rf "$rc"
+
+# --- source_tree_hash ---
+# This is the stamp that makes a converter change invalidate built configs, so
+# every property below is load-bearing: a miss ships stale output silently, and
+# a spurious change reprocesses hundreds of assemblies for nothing.
+st=$(mktemp -d)
+mkdir -p "$st/src/nested" "$st/data"
+echo one >"$st/src/a.ts"
+echo two >"$st/src/nested/b.ts"
+echo three >"$st/data/c.json"
+
+base=$(source_tree_hash "$st" src data)
+check "stable across runs" "$base" "$(source_tree_hash "$st" src data)"
+
+# The whole point: an edit anywhere in the tree changes the hash.
+echo edited >"$st/src/nested/b.ts"
+if [[ "$base" != "$(source_tree_hash "$st" src data)" ]]; then
+  echo "ok   - content edit changes the hash"
+else
+  echo "FAIL - content edit changes the hash"
+  fail=1
+fi
+echo two >"$st/src/nested/b.ts"
+check "reverting an edit restores the hash" "$base" "$(source_tree_hash "$st" src data)"
+
+# Paths are hashed too, so moving a file is a change even when no byte of any
+# file differs -- which for a converter it is.
+mv "$st/src/a.ts" "$st/src/renamed.ts"
+if [[ "$base" != "$(source_tree_hash "$st" src data)" ]]; then
+  echo "ok   - rename changes the hash"
+else
+  echo "FAIL - rename changes the hash"
+  fail=1
+fi
+mv "$st/src/renamed.ts" "$st/src/a.ts"
+
+# Tests cannot change what a build emits; reprocessing every assembly because a
+# test file moved would be pure cost.
+echo t >"$st/src/a.test.ts"
+check "test files are excluded" "$base" "$(source_tree_hash "$st" src data)"
+rm "$st/src/a.test.ts"
+
+# Keyed on paths relative to the root, so a different checkout location (or the
+# same tree copied elsewhere) produces the same stamp.
+st2=$(mktemp -d)
+cp -r "$st/src" "$st/data" "$st2/"
+check "same tree at another path hashes the same" "$base" "$(source_tree_hash "$st2" src data)"
+rm -rf "$st2"
+
+# A path that does not exist must fail loudly. Silently contributing nothing is
+# how a renamed source directory would drop out of the stamp and start shipping
+# stale configs again.
+if source_tree_hash "$st" src nonexistent >/dev/null 2>&1; then
+  echo "FAIL - missing path is an error"
+  fail=1
+else
+  echo "ok   - missing path is an error"
+fi
+
+# An empty tree still yields a hash rather than an empty string (an empty stamp
+# would compare equal to a missing stamp file).
+mkdir -p "$st/empty"
+if [[ -n "$(source_tree_hash "$st" empty)" ]]; then
+  echo "ok   - empty tree still yields a hash"
+else
+  echo "FAIL - empty tree still yields a hash"
+  fail=1
+fi
+
+rm -rf "$st"
 
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail
