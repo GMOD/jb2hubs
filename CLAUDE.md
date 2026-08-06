@@ -159,12 +159,57 @@ Two things to know when changing this:
   code that just built the configs is the code in the tree; not recording it
   would make the next incremental run reprocess all 238 again.
 
-`source_tree_hash` lives in `lib/common.sh` (tested by `lib/common.test.sh`) and
-is generic on purpose — genark2jbrowse has the same structural gap and could use
-it. It keys on paths relative to the repo root so the hash survives a different
+`source_tree_hash` lives in `lib/common.sh` (tested by `lib/common.test.sh`). It
+keys on paths relative to the repo root so the hash survives a different
 checkout location, excludes `*.test.*` (a test cannot change what a build
 emits), and errors on a path that does not exist so a rename fails loudly
 instead of silently dropping a tree from the hash.
+
+### The same blind spot exists one level down, in `needs_rebuild`
+
+`needs_rebuild` stamps the source _table_, so it cannot see a change to the code
+that converts it. `encodeGffAttribute` learned to escape control characters and
+dm6's and droPer1's `ncbiRefSeq.gff.gz` sailed through a full reprocess still
+holding raw carriage returns, because their golden-path tables had not moved;
+both had to be cleared by hand. `DERIVATION_HASH` in `ucsc2jbrowse/make.sh`
+closes it: when it differs from `$UCSC_BUILT_DIR/.derivation_hash`, make.sh
+exports `REDERIVE=1` and `needs_rebuild` rebuilds regardless of the table.
+
+Two properties hold this together, and breaking either is silent:
+
+- **`DERIVATION_SOURCES` must stay a subset of `PIPELINE_SOURCES`.** A change to
+  the derivation code therefore also moves `PIPELINE_HASH`, which marks every
+  assembly changed, which is what actually puts the derivation scripts in front
+  of every file. Without that containment `REDERIVE` could fire on a run that
+  visits only some assemblies, and the stamp written at the end would claim the
+  rest were re-derived too. This is why `bed2gff/src` is in **both** lists.
+- **An absent stamp bootstraps rather than re-deriving.** The code that produced
+  what is already on disk is unknowable, and assuming the worst would spend
+  hours re-deriving every bed/gff/rmsk file on an unrelated run. Recording the
+  current hash makes every _later_ change detectable, which is the property that
+  was missing. The cost of the bootstrap is one blind spot for outputs built
+  before 2026-08-06; the alternative was a permanent one.
+
+### genark2jbrowse escalates the mode instead of stamping each hub
+
+Same gap, different shape: genark's "new" means "this accession has no hub.txt
+yet", so an existing hub's config is never regenerated and a converter change
+reaches none of the 50,701 until someone remembers `--reprocess-all`.
+
+It gets **one repo-level stamp** (`genark2jbrowse/.pipeline_hash`), not the
+per-assembly stamps ucsc2jbrowse uses — there the unit of work is ~240
+directories, here it is 50,701, and a stamp beside each would be 50,701 files
+answering a question with one answer. When it differs, `MODE` escalates from
+`new` to `all`, which is already exactly "every hub is stale".
+
+`save_pipeline_stamp` refuses to write on an incremental run: `new` mode touched
+only new hubs, so recording the current hash would claim the other 50,700 are
+current and swallow the next change. The lone exception is the same bootstrap as
+above — an absent stamp has to start somewhere.
+
+Both stamps are gitignored. They describe the built tree **on this machine**; a
+checkout whose stamp disagreed with its own `hubs/` would either skip a rebuild
+it needs or force one it does not.
 
 ## The tail of `ucsc2jbrowse/make.sh` is one walk, not six
 

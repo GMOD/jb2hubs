@@ -212,13 +212,24 @@ export -f stamp_age_days
 # the source's XXH3 content hash as the change stamp recorded in a hash file.
 # (Byte size was cheaper but missed same-size content changes — a re-published
 # UCSC table that changes content but keeps its compressed size.)
-# Returns 0 (needs rebuild) when REPROCESS is set, the output or hash file is
-# missing, or the source's hash differs from the recorded stamp; else 1.
+# Returns 0 (needs rebuild) when REPROCESS or REDERIVE is set, the output or
+# hash file is missing, or the source's hash differs from the recorded stamp;
+# else 1.
+#
+# REDERIVE is the code half of the same question. This stamp only ever tracked
+# the source *data*, so a change to the converter that derives the file left
+# every existing output stale with nothing to notice — the same blind spot the
+# per-assembly gate had, one level down. It cost a real bug: encodeGffAttribute
+# started escaping control characters and dm6/droPer1's gff.gz kept their raw
+# carriage returns, because their golden-path tables had not moved. The caller
+# sets REDERIVE when its derivation sources changed (see make.sh); this does not
+# hash anything itself, so the common path stays one xxhsum.
 # Usage: if needs_rebuild out.bed.gz in.txt.gz out.hash; then ...; fi
 needs_rebuild() {
   local output="$1" source="$2" hash_file="$3"
   local rebuild=0
-  if [ -z "${REPROCESS:-}" ] && [ -f "$output" ] && [ -f "$hash_file" ]; then
+  if [ -z "${REPROCESS:-}" ] && [ -z "${REDERIVE:-}" ] &&
+    [ -f "$output" ] && [ -f "$hash_file" ]; then
     if [ "$(xxhsum -H3 "$source" | awk '{print $NF}')" = "$(cat "$hash_file")" ]; then
       rebuild=1
     fi

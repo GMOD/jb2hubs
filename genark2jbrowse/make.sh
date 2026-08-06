@@ -39,6 +39,47 @@ if [ -n "${REPROCESS:-}" ]; then
   MODE="reprocess"
 fi
 
+# "new" means "this accession has no hub.txt yet", so an existing hub's config is
+# never regenerated -- and a converter change therefore reaches none of the
+# 50,701 of them until someone remembers --reprocess-all. That is the same gap
+# ucsc2jbrowse had, where it silently shipped stale configs after a fix (see the
+# converter-stamp section in CLAUDE.md).
+#
+# One repo-level stamp rather than the per-assembly stamps ucsc2jbrowse uses:
+# there the unit of work is ~240 directories, here it is 50,701, and a stamp
+# beside each would be 50,701 files to answer a question that has one answer.
+# So the stamp escalates the mode instead: changed code means every hub is
+# stale, which is exactly what "all" already does.
+#
+# An absent stamp bootstraps rather than escalating, for the same reason the
+# ucsc derivation stamp does: the code that built what is on disk is unknown,
+# and assuming the worst would turn an unrelated first run into a full 50,701
+# hub rebuild. From the next change onward it is caught.
+PIPELINE_SOURCES=(lib hubtools/src genark2jbrowse/src)
+for sh_file in "$SCRIPT_DIR"/*.sh; do
+  PIPELINE_SOURCES+=("genark2jbrowse/$(basename "$sh_file")")
+done
+PIPELINE_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${PIPELINE_SOURCES[@]}")
+PIPELINE_STAMP="$SCRIPT_DIR/.pipeline_hash"
+stored_pipeline_hash=$(cat "$PIPELINE_STAMP" 2>/dev/null || echo "")
+
+if [ "$MODE" = "new" ] && [ -n "$stored_pipeline_hash" ] &&
+  [ "$stored_pipeline_hash" != "$PIPELINE_HASH" ]; then
+  log "Converter sources changed since the last full build; processing all hubs rather than only new ones."
+  MODE="all"
+fi
+
+# Records the code that built the current hub tree. Called on every successful
+# exit, and deliberately refuses to write on an incremental run: "new" mode
+# touched only new hubs, so claiming the other 50,700 are current would be a
+# lie, and the next converter change would go undetected. The one exception is
+# the bootstrap above -- an absent stamp has to start somewhere.
+save_pipeline_stamp() {
+  if [ "$MODE" != "new" ] || [ -z "$stored_pipeline_hash" ]; then
+    printf '%s\n' "$PIPELINE_HASH" >"$PIPELINE_STAMP"
+  fi
+}
+
 # Temp files for intermediate data (used in new-only mode)
 NEW_HUBS_FILE=$(mktemp)
 NEW_ACCESSIONS_FILE=$(mktemp)
@@ -99,6 +140,7 @@ node src/generateCategoriesJson.ts
 # it (the same point the old "nothing to process" early-exit reached).
 if [ "$MODE" = "new" ] && [ "$NEW_HUB_COUNT" -eq 0 ]; then
   log "No new hubs; refreshed stale metadata and regenerated all.json. Done."
+  save_pipeline_stamp
   exit 0
 fi
 
@@ -220,6 +262,8 @@ if [ "$run_mouse_strains" = true ]; then
 fi
 
 # --- Done ---
+
+save_pipeline_stamp
 
 if [ "$MODE" = "new" ]; then
   log "Done processing $NEW_HUB_COUNT new hub(s)"

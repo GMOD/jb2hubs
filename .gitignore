@@ -71,6 +71,14 @@ website/public/taxonomyFilter.json
 # upload change-detection flags written by uploadAll.sh
 */.upload-changed
 
+# converter-source stamps: which code built the tree that is on this machine.
+# Not committed, because they describe a local built tree -- a checkout whose
+# stamp disagreed with its own hubs/ would either skip a rebuild it needs or
+# force one it does not. The ucsc equivalents live under UCSC_BUILT_DIR and are
+# outside the repo already.
+*/.pipeline_hash
+*/.derivation_hash
+
 # pending-deploy marker written by run.sh
 /.deploy-pending
 

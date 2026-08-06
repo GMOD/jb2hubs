@@ -35,6 +35,7 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "*.hash" \
   --exclude ".trackdb_hash" \
   --exclude ".pipeline_hash" \
+  --exclude ".derivation_hash" \
   --exclude "*.xxh" \
   --exclude "*.checked" \
   --exclude "*_meta.json" \

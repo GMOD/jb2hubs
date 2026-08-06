@@ -199,6 +199,23 @@ if needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when hash file
   fail=1
 fi
 
+# REDERIVE forces a rebuild even when the source stamp matches: the stamp tracks
+# the source data only, so it cannot see a change in the code deriving the file.
+# Skipping here is what left dm6/droPer1's gff.gz holding raw carriage returns
+# after encodeGffAttribute was fixed, since their tables had not moved.
+printf 'stable' >"$src"
+save_rebuild_stamp "$src" "$hash"
+if needs_rebuild "$out" "$src" "$hash"; then
+  echo "FAIL - skip when stamp matches and REDERIVE unset"
+  fail=1
+else
+  echo "ok   - skip when stamp matches and REDERIVE unset"
+fi
+if REDERIVE=1 needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when REDERIVE set"; else
+  echo "FAIL - rebuild when REDERIVE set"
+  fail=1
+fi
+
 rm -rf "$rb"
 
 # --- rclone_sync_with_indexes ---

@@ -65,15 +65,58 @@ export PATH="$SCRIPT_DIR:$PATH"
 # only the configs are actually re-derived). Under-invalidating ships wrong
 # configs indefinitely, and nothing downstream can tell. Add new inputs here
 # rather than trying to work out whether they matter.
-PIPELINE_SOURCES=(lib hubtools/src ucsc2jbrowse/src ucsc2jbrowse/ucscExtensions ucsc2jbrowse/ucscRenames)
+PIPELINE_SOURCES=(lib hubtools/src bed2gff/src ucsc2jbrowse/src ucsc2jbrowse/ucscExtensions ucsc2jbrowse/ucscRenames)
 for sh_file in "$SCRIPT_DIR"/*.sh; do
   PIPELINE_SOURCES+=("ucsc2jbrowse/$(basename "$sh_file")")
 done
 PIPELINE_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${PIPELINE_SOURCES[@]}")
 
+# The same question one level down. PIPELINE_HASH decides which assemblies get
+# reprocessed; this decides whether the per-file derivations inside that
+# reprocess actually re-run, because needs_rebuild stamps only the source table
+# and so cannot see a change to the code that converts it.
+#
+# That gap was not hypothetical: when encodeGffAttribute started percent-encoding
+# control characters, dm6's and droPer1's ncbiRefSeq.gff.gz kept their raw
+# carriage returns through a full reprocess -- their golden-path tables had not
+# moved, so needs_rebuild skipped them -- and both had to be cleared by hand.
+#
+# This list MUST stay a subset of PIPELINE_SOURCES above. The guarantee it buys:
+# a change here also changes PIPELINE_HASH, which marks every assembly changed,
+# which is what puts the derivation scripts in front of every file. Drop that
+# containment and REDERIVE would fire on a run that visits only some assemblies,
+# and the stamp written at the end would claim the rest were re-derived too.
+DERIVATION_SOURCES=(
+  lib/common.sh
+  bed2gff/src
+  ucsc2jbrowse/src/utils
+  ucsc2jbrowse/src/bedLike.ts
+  ucsc2jbrowse/src/rmskLike.ts
+  ucsc2jbrowse/src/geneLike.ts
+  ucsc2jbrowse/src/fixupIsoforms.ts
+  ucsc2jbrowse/src/enhanceGffWithLinkTable.ts
+  ucsc2jbrowse/createBedTracksForGoldenPath.sh
+  ucsc2jbrowse/createRmskTracksForGoldenPath.sh
+  ucsc2jbrowse/createGeneTracksForGoldenPath.sh
+)
+DERIVATION_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${DERIVATION_SOURCES[@]}")
+DERIVATION_STAMP="$UCSC_BUILT_DIR/.derivation_hash"
+
 # --- Phase 1: Download ---
 
 ensure_dir "$UCSC_BUILT_DIR"
+
+# An absent stamp bootstraps rather than re-deriving. We cannot know which
+# version of the converter produced the outputs already on disk, and assuming
+# the worst would spend hours re-deriving every bed/gff/rmsk file on an
+# unrelated run -- disproportionate to a gap that, from the next change onward,
+# is closed. Recording the current hash makes every later change detectable,
+# which is the property that was missing.
+stored_derivation_hash=$(cat "$DERIVATION_STAMP" 2>/dev/null || echo "")
+if [ -n "$stored_derivation_hash" ] && [ "$stored_derivation_hash" != "$DERIVATION_HASH" ]; then
+  log "Derivation sources changed; re-deriving per-file track outputs (bed/gff/rmsk) even where the golden-path table is unchanged."
+  export REDERIVE=1
+fi
 
 if [ "$SKIP_DOWNLOAD" = false ]; then
   log "Starting UCSC data download."
@@ -333,7 +376,7 @@ node src/mergeRemovedTracks.ts
 log "Hashing output files for integrity checking..."
 make_file_listing fileListing.txt "$UCSC_BUILT_DIR" \
   ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" \
-  ! -name ".pipeline_hash" ! -name ".sync_stamp"
+  ! -name ".pipeline_hash" ! -name ".derivation_hash" ! -name ".sync_stamp"
 
 # Write updated hashes for assemblies we just processed.
 #
@@ -356,5 +399,12 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
     fi
   done
 fi
+
+# Only written once the run has completed, so an interrupted re-derivation is
+# retried rather than recorded as done. Safe to write unconditionally here: it
+# either bootstraps a missing stamp, is already equal, or REDERIVE was set --
+# and REDERIVE implies PIPELINE_HASH moved too, which means every assembly was
+# reprocessed and every derived file was therefore visited.
+printf '%s\n' "$DERIVATION_HASH" >"$DERIVATION_STAMP"
 
 log "Pipeline finished successfully!"
