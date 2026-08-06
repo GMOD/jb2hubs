@@ -5,6 +5,7 @@ import {
   buildTaxonomyIndex,
   collectAccessions,
   parseTaxonomyNewick,
+  taxonIdsIn,
 } from './taxonomyCache.ts'
 
 import type { TaxonomyNode } from './taxonomyCache.ts'
@@ -125,4 +126,29 @@ test('a repeated taxonId resolves to its first node in pre-order', () => {
     ],
   }
   assert.equal(buildTaxonomyIndex(root).subtree('42')?.name, 'first')
+})
+
+// This drives getStaticPaths for the ~74K taxonomy pages, so missing a form here
+// means those pages are simply never built.
+test('taxonIdsIn collects both node forms, deduped', () => {
+  assert.deepEqual([...taxonIdsIn(NEWICK)].sort(), [
+    '10090',
+    '40674',
+    '9598',
+    '9604',
+    '9606',
+  ])
+})
+
+test('taxonIdsIn ignores an accession-only leaf, which names no taxon', () => {
+  assert.deepEqual([...taxonIdsIn('(Foo[GCA_000000001.1])Bar{7};')], ['7'])
+})
+
+test('taxonIdsIn does not let a bracket swallow the one after it', () => {
+  // A greedy [^|]+ would run "a]x[b" together and read one pair off the tail.
+  assert.deepEqual([...taxonIdsIn('(A[GCA_1|11],B[GCA_2|22])C{33};')].sort(), [
+    '11',
+    '22',
+    '33',
+  ])
 })

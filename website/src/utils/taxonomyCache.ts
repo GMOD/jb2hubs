@@ -158,6 +158,26 @@ function toTaxonomyTree(root: ParsedNode): TaxonomyNode {
   return traverse(root, 0)
 }
 
+// Every taxon the tree names, in both node forms it writes: leaves as
+// Name[accession|taxonId] and internal nodes as Name{taxonId}. Read off the text
+// rather than walked out of the parsed tree, since that is also how the tree is
+// written, so the two stay in step.
+//
+// It lives here rather than in the frontmatter of the page that calls it because
+// Astro extracts getStaticPaths into a module of its own and tree-shakes the
+// rest of the frontmatter away — a helper defined beside it is a ReferenceError
+// at build time, and the route silently produces no paths at all.
+export function taxonIdsIn(newick: string) {
+  const ids = new Set<string>()
+  for (const [, id] of newick.matchAll(/\[[^|\]]+\|(\d+)\]/g)) {
+    ids.add(id!)
+  }
+  for (const [, id] of newick.matchAll(/\{(\d+)\}/g)) {
+    ids.add(id!)
+  }
+  return ids
+}
+
 // Newick text -> the tree the pages render. Exported as the pure seam the tests
 // drive: everything else here either reads a file or memoizes, and the parse
 // rules (the two bracket forms, the collapse, the depths) are the part with
