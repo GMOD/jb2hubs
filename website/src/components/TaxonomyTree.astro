@@ -1,21 +1,15 @@
 ---
 import TreeNode from './TreeNode.astro'
-import { getCachedTree, type FlatNodeData } from '../utils/taxonomyCache'
-
-interface SpeciesData {
-  accession: string
-  commonName?: string | null
-  scientificName?: string | null
-  ncbiRefSeqCategory?: string | null
-  suppressed?: boolean | null
-  [key: string]: unknown
-}
+import { getCachedTree, type TaxonomyNode } from '../utils/taxonomyCache'
+import type { HubSource } from './DataTable/hubRow.ts'
 
 interface Props {
   category?: string
-  speciesData?: SpeciesData[]
+  // The same rows the hub table gets, so the tree can annotate a leaf with its
+  // common name and NCBI status.
+  speciesData?: HubSource[]
   filterTaxonId?: string
-  precomputedSubtree?: FlatNodeData | null
+  precomputedSubtree?: TaxonomyNode | null
   containerId?: string
 }
 
@@ -27,17 +21,16 @@ const {
   containerId = 'taxonomy-tree-container',
 } = Astro.props
 
-// Create a lookup map for species data by accession
-// Note: speciesData is now pre-filtered for taxonomy pages, so this Map is much smaller
-const speciesDataMap = new Map<string, SpeciesData>()
-speciesData.forEach(species => {
-  speciesDataMap.set(species.accession, species)
-})
+// Accession -> row, for the leaf annotations. Pre-filtered to the subtree on a
+// taxonomy-ID page, so this is small there and whole-category only on /taxonomy/<category>.
+const speciesDataMap = new Map(
+  speciesData.map(species => [species.accession, species]),
+)
 
 // A taxonomy-ID page hands its subtree down already extracted (the page indexes
 // the tree once for all 74K of them); a category page names a whole tree of its
 // own. getCachedTree reports a read/parse failure as null.
-const tree: FlatNodeData | null =
+const tree: TaxonomyNode | null =
   precomputedSubtree === undefined
     ? getCachedTree(category)
     : precomputedSubtree

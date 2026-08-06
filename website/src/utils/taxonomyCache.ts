@@ -1,30 +1,31 @@
 import fs from 'fs'
 import path from 'path'
 
-interface TreeNode {
+// A node exactly as it comes out of the Newick text, before the display pass.
+interface ParsedNode {
   name?: string
   accession?: string
   taxonId?: string
-  children?: TreeNode[]
+  children?: ParsedNode[]
   branchLength?: number
 }
 
-interface FlatNodeData {
-  id: string
+// What TreeNode.astro renders. The only thing it adds to the parse is `depth`,
+// which the renderer zebra-stripes by; the tree is otherwise passed through.
+export interface TaxonomyNode {
   name?: string
   accession?: string
   taxonId?: string
   branchLength?: number
-  children?: FlatNodeData[]
+  children?: TaxonomyNode[]
   depth: number
-  isLeaf: boolean
 }
 
 // In-memory cache for parsed trees
-const treeCache = new Map<string, FlatNodeData>()
+const treeCache = new Map<string, TaxonomyNode>()
 
 // Simple Newick parser
-function parseNewick(newick: string): TreeNode | null {
+function parseNewick(newick: string): ParsedNode | null {
   const cleanNewick = newick.trim().replace(/;$/, '')
   if (!cleanNewick) {
     return null
@@ -32,14 +33,14 @@ function parseNewick(newick: string): TreeNode | null {
 
   let index = 0
 
-  function parseNode(): TreeNode {
-    const node: TreeNode = { children: [] }
+  function parseNode(): ParsedNode {
+    const children: ParsedNode[] = []
+    const node: ParsedNode = { children }
 
     if (cleanNewick[index] === '(') {
       index++ // skip '('
       while (index < cleanNewick.length && cleanNewick[index] !== ')') {
-        const child = parseNode()
-        node.children!.push(child)
+        children.push(parseNode())
         if (cleanNewick[index] === ',') {
           index++ // skip ','
         }
@@ -114,62 +115,47 @@ function parseNewick(newick: string): TreeNode | null {
   try {
     return parseNode()
   } catch (error) {
+    // parseNode recurses once per level of nesting, so a pathologically deep
+    // tree throws a RangeError here rather than taking the whole build down.
     console.error('Error parsing Newick string:', error)
     return null
   }
 }
 
-// Convert TreeNode to hierarchical structure with IDs
-function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
-  let nodeCounter = 0
-
-  function traverse(n: TreeNode, depth: number): FlatNodeData {
-    const id = `node_${nodeCounter++}`
-
-    // Check if this node should be collapsed:
-    // If it has exactly one child that is a leaf with the same name, skip the
-    // intermediate node
-    if (n.children?.length === 1) {
-      const firstChild = n.children[0]!
-      if (
-        (!firstChild.children || firstChild.children.length === 0) &&
-        n.name === firstChild.name &&
-        firstChild.accession
-      ) {
-        return {
-          id,
-          name: n.name,
-          accession: firstChild.accession,
-          taxonId: firstChild.taxonId,
-          branchLength: firstChild.branchLength,
-          children: undefined,
-          depth,
-          isLeaf: true,
-        }
+// Resolve each node's depth for rendering, collapsing the one redundancy the
+// generated trees contain: an internal node whose single child is a leaf of the
+// same name, which would otherwise draw the species twice, once as a collapsible
+// group wrapping itself.
+function toTaxonomyTree(root: ParsedNode): TaxonomyNode {
+  function traverse(n: ParsedNode, depth: number): TaxonomyNode {
+    const firstChild = n.children?.length === 1 ? n.children[0] : undefined
+    if (
+      firstChild?.accession &&
+      !firstChild.children?.length &&
+      n.name === firstChild.name
+    ) {
+      return {
+        name: n.name,
+        accession: firstChild.accession,
+        taxonId: firstChild.taxonId,
+        branchLength: firstChild.branchLength,
+        children: undefined,
+        depth,
       }
     }
 
-    // Normal case: process children
-    const childNodes: FlatNodeData[] = []
-    if (n.children && n.children.length > 0) {
-      for (const child of n.children) {
-        childNodes.push(traverse(child, depth + 1))
-      }
-    }
-
+    const children = (n.children ?? []).map(child => traverse(child, depth + 1))
     return {
-      id,
       name: n.name,
       accession: n.accession,
       taxonId: n.taxonId,
       branchLength: n.branchLength,
-      children: childNodes.length > 0 ? childNodes : undefined,
+      children: children.length > 0 ? children : undefined,
       depth,
-      isLeaf: !n.children || n.children.length === 0,
     }
   }
 
-  return traverse(node, 0)
+  return traverse(root, 0)
 }
 
 /**
@@ -177,10 +163,11 @@ function convertToHierarchicalTree(node: TreeNode): FlatNodeData {
  * This function is called during build time and caches the parsed tree structure
  * in memory to avoid re-parsing for every page
  */
-export function getCachedTree(category: string): FlatNodeData | null {
+export function getCachedTree(category: string): TaxonomyNode | null {
   // Check if we already have it cached
-  if (treeCache.has(category)) {
-    return treeCache.get(category)!
+  const cached = treeCache.get(category)
+  if (cached) {
+    return cached
   }
 
   // Not cached, so read and parse it
@@ -200,7 +187,7 @@ export function getCachedTree(category: string): FlatNodeData | null {
       return null
     }
 
-    const tree = convertToHierarchicalTree(parsedTree)
+    const tree = toTaxonomyTree(parsedTree)
 
     // Cache it for future use
     treeCache.set(category, tree)
@@ -215,20 +202,20 @@ export function getCachedTree(category: string): FlatNodeData | null {
 export interface TaxonomyIndex {
   // The node a taxonomy page is rooted at, or null when the tree has no such
   // taxon.
-  subtree: (taxonId: string) => FlatNodeData | null
+  subtree: (taxonId: string) => TaxonomyNode | null
   // Root-to-node path, inclusive; empty when the tree has no such taxon.
-  lineage: (taxonId: string) => FlatNodeData[]
+  lineage: (taxonId: string) => TaxonomyNode[]
 }
 
 // One DFS answers both lookups for every taxon. Rescanning the tree per page
 // instead cost ~6ms each, which over the 74K taxonomy pages was ~7 minutes of
 // every build. A taxonId occurring at more than one node resolves to the first
 // in pre-order, as a from-the-root search did.
-function buildTaxonomyIndex(root: FlatNodeData): TaxonomyIndex {
-  const nodes = new Map<string, FlatNodeData>()
-  const parents = new Map<FlatNodeData, FlatNodeData>()
+function buildTaxonomyIndex(root: TaxonomyNode): TaxonomyIndex {
+  const nodes = new Map<string, TaxonomyNode>()
+  const parents = new Map<TaxonomyNode, TaxonomyNode>()
 
-  function visit(node: FlatNodeData, parent: FlatNodeData | undefined) {
+  function visit(node: TaxonomyNode, parent: TaxonomyNode | undefined) {
     if (node.taxonId !== undefined && !nodes.has(node.taxonId)) {
       nodes.set(node.taxonId, node)
     }
@@ -244,7 +231,7 @@ function buildTaxonomyIndex(root: FlatNodeData): TaxonomyIndex {
   return {
     subtree: taxonId => nodes.get(taxonId) ?? null,
     lineage: taxonId => {
-      const path: FlatNodeData[] = []
+      const path: TaxonomyNode[] = []
       let node = nodes.get(taxonId)
       while (node) {
         path.push(node)
@@ -272,25 +259,20 @@ export function getTaxonomyIndex(category: string): TaxonomyIndex | null {
 /**
  * Collect all accessions from a subtree
  */
-export function collectAccessions(node: FlatNodeData | null): string[] {
-  if (!node) {
-    return []
-  }
+export function collectAccessions(node: TaxonomyNode | null): string[] {
   const accessions: string[] = []
 
-  function traverse(n: FlatNodeData) {
+  function traverse(n: TaxonomyNode) {
     if (n.accession) {
       accessions.push(n.accession)
     }
-    if (n.children) {
-      for (const child of n.children) {
-        traverse(child)
-      }
+    for (const child of n.children ?? []) {
+      traverse(child)
     }
   }
 
-  traverse(node)
+  if (node) {
+    traverse(node)
+  }
   return accessions
 }
-
-export type { FlatNodeData }

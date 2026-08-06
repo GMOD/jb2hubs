@@ -1,34 +1,19 @@
 ---
 import OrangeStar from './OrangeStar.tsx'
 import RedX from './RedX.tsx'
+import type { TaxonomyNode } from '../utils/taxonomyCache'
+import type { HubSource } from './DataTable/hubRow.ts'
 
-interface SpeciesData {
-  accession: string
-  commonName?: string
-  scientificName?: string
-  ncbiRefSeqCategory?: string
-  suppressed?: boolean
-  [key: string]: unknown
-}
-
-interface FlatNodeData {
-  id: string
-  name?: string
-  accession?: string
-  taxonId?: string
-  branchLength?: number
-  children?: FlatNodeData[]
-  depth: number
-  isLeaf: boolean
-}
-
+// Both types are imported rather than restated. Astro frontmatter is not
+// typechecked (tsc cannot parse .astro), so a local copy of either would drift
+// from the real shape with nothing to catch it.
 interface Props {
-  node: FlatNodeData
-  speciesDataMap: Map<string, SpeciesData>
+  node: TaxonomyNode
+  speciesDataMap: Map<string, HubSource>
 }
 
 const { node, speciesDataMap } = Astro.props
-const hasChildren = node.children && node.children.length > 0
+const children = node.children ?? []
 const indent = 20
 const speciesInfo = node.accession
   ? speciesDataMap.get(node.accession)
@@ -36,7 +21,7 @@ const speciesInfo = node.accession
 ---
 
 {
-  hasChildren ? (
+  children.length > 0 ? (
     <details
       class="tree-node"
       open
@@ -83,7 +68,7 @@ const speciesInfo = node.accession
           ) : null}
         </div>
       </summary>
-      {node.children!.map(child => (
+      {children.map(child => (
         <Astro.self
           node={child}
           speciesDataMap={speciesDataMap}

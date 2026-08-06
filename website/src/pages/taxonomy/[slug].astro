@@ -4,7 +4,7 @@ import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
 import { getTaxonomyIndex, collectAccessions } from '../../utils/taxonomyCache'
-import type { FlatNodeData } from '../../utils/taxonomyCache'
+import type { TaxonomyNode } from '../../utils/taxonomyCache'
 import {
   categoryTable,
   subtreeTable,
@@ -23,8 +23,8 @@ interface Props {
   speciesData: HubSource[]
   isCategory: boolean
   taxonId?: string
-  precomputedSubtree?: FlatNodeData | null
-  precomputedLineage?: FlatNodeData[]
+  precomputedSubtree?: TaxonomyNode | null
+  precomputedLineage?: TaxonomyNode[]
 }
 
 export async function getStaticPaths() {
