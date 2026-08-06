@@ -138,14 +138,30 @@ function carriesAlt(gt: string) {
 
 // One record is one variant site here, and no de-duplication is needed — which
 // is worth stating, because the obvious reading of this file says otherwise.
-// Most records carry LV>0 (over a measured 20 kb of MHC, 1,454 of 2,522), and
-// `LV`/`PS` do describe vg's snarl tree, so it looks as though a nested child
-// sits beside a parent record that also describes it. It does not: vcfwave
-// REPLACES a complex record with its decomposition, keeping `PS` as provenance,
-// and the parent is not written. Measured over 60 kb of MHC — 6,168 records —
-// there is exactly one distinct `PS` value in the whole window and no record
-// carries it as an ID. So filtering to `LV==0` here would not remove duplicates,
-// it would delete real variants: over SMN it leaves 1 site of 11,553.
+// `LV`/`PS` do describe vg's snarl tree, and plenty of records carry LV>0, so it
+// looks as though a nested child sits beside a parent record that also describes
+// it. It does not: vcfwave REPLACES a complex record with its decomposition,
+// keeping `PS` as provenance, and the parent is not written.
+//
+// The decisive measurement is not the `PS`→`ID` join, which can only ever fail
+// to find something. It is that LV=0 and LV>0 records are spatially DISJOINT.
+// Over the tutorial's own figure window, chr6:32,450,000-32,650,000 (14,321
+// records: 11,630 at LV=0, 2,688 at LV=1, 3 with no LV), every LV=1 record falls
+// in one contiguous 22 kb stretch, 32,570,542-32,592,610 — and that stretch
+// holds ZERO LV=0 records. Not one LV=1 record shares even a position with an
+// LV=0 record, let alone a position/REF/ALT. There is no parent, and no
+// decomposed remnant of one, anywhere near the children.
+//
+// The join agrees, for what it is worth: all 2,688 LV=1 records carry the same
+// single `PS` (`>161053263>161069024`), which matches no record's ID — including
+// after stripping the `_N` suffix vcfwave appends to decomposed records, which
+// is the one way that join could plausibly have been a false negative.
+//
+// So filtering to `LV==0` here would not remove duplicates, it would delete real
+// variants: over SMN it leaves 1 site of 11,553. Note this contradicts the
+// stated rationale in the JBrowse HPRC tutorial ("the panel paints some events
+// twice at two positions"), which appears to describe vg deconstruct's nested
+// output rather than the vcfwave file it is applied to. Re-measured 2026-08-06.
 async function summarizeLocus(
   locus: (typeof PANGENOME_LOCI)[number],
   samples: string[],

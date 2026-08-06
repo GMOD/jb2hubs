@@ -122,16 +122,27 @@ export const HPRC_DATASET: PangenomeDataset = {
   // nothing here fails at build time if one is renamed. `pangenomeLinks.test.ts`
   // pins the shape; the ids themselves are checked by opening the launch.
   //
-  // STAGING ONLY, and not by our choice: that config pins a content-addressed
-  // GraphGenomeView bundle that boots on `main` and error-pages the whole app on
-  // the released `latest` (`TypeError: (0,N.createSvgIcon) is not a function`,
-  // measured 2026-08-06 — loading the bare config with no session spec fails the
-  // same way, so it is the plugin against that host, nothing we send it). Fine
-  // today because `features.pangenome` is staging and staging targets `main`.
-  // Before flipping that flag, re-check this launch on `latest`, or the graph
-  // button ships as an error page. Fixing it is the plugin's job, not this
-  // repo's — this is the `plugins[].url` failure mode CLAUDE.md describes, one
-  // dead-or-throwing bundle taking down the session.
+  // STAGING ONLY until JBrowse v5 ships, and the reason is settled rather than
+  // open. The GraphGenomeView bundle boots on `main` and error-pages the whole
+  // app on the released `latest` (`TypeError: (0,N.createSvgIcon) is not a
+  // function`) because it reads `createSvgIcon` off the host's re-export map,
+  // and core only started exposing it there in GMOD/jbrowse-components#5607
+  // (merged to main 2026-07-23). v4.3.0 shipped 2026-05-21, so no released host
+  // has it — `git tag --contains` on that merge finds no tag, and v4.3.0's
+  // `ReExports/modules.ts` has no `@mui/material/SvgIcon` entry at all, only the
+  // generic lazyMap sweep that exposes the component and no named exports.
+  //
+  // The host is the variable, not the bundle: both the content-addressed url
+  // pinned here and the unversioned one the HPRC tutorial tells readers to paste
+  // read the util from `JBrowseExports["@mui/material/SvgIcon"]`, so they behave
+  // identically on a given host. Nothing in this repo or in the plugin needs to
+  // change — the graph launch deliberately targets v5+ only.
+  //
+  // So this is NOT held to the v4.0.0 floor in CLAUDE.md's "Old JBrowse versions
+  // read these configs": that floor is about the `/ucsc/*` configs on the hosted
+  // app, and this is a different config on a host we choose per-deploy. Flipping
+  // `features.pangenome` to production is gated on `latest` being v5, and on
+  // nothing else.
   graphBrowser: {
     configUrl: 'https://jbrowse.org/demos/hprc/config.json',
     segmentsTrackId: 'hprc_minigraph_segments',

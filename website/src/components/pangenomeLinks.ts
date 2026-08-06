@@ -31,6 +31,18 @@ const LGV_ID = 'pangenome-locus-lgv'
 // `generatePangenomeData.ts` explains at length why LV>0 records here are real
 // variants rather than duplicates of a parent record, and filtering them out of
 // a summary deletes data (over SMN it would leave 1 site of 11,553).
+//
+// Know what the LV half costs on the lane, too, because it is not free and the
+// worst case is our headline locus. LV=0 and LV>0 records in this file are
+// spatially DISJOINT, so filtering does not thin a region — it blanks the
+// regions that are nested. Measured over the MHC detail window
+// (chr6:32,510,000-32,600,000) on 2026-08-06: of 182 records with a >=50 bp
+// allele, 160 survive and 22 are dropped, and all 2,688 nested records in that
+// window fall in one 22 kb stretch, 32,570,542-32,592,610. That stretch is
+// HLA-DRB1 (32,578,775-32,589,848), whose SV tier is 4 records, all nested — so
+// the filter renders DRB1 empty, in a window widened specifically to reach it
+// (see the `mhc-hla` detailWindow comment). Kept anyway, to stay the tutorial's
+// filter verbatim; drop the LV half if the DRB1 hole matters more than that.
 const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 
 // The graph VCF as an inline session track (public, CORS-open, tabix-indexed).

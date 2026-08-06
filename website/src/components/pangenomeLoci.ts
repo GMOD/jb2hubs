@@ -310,9 +310,19 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 206_190_000,
     end: 206_470_000,
-    // The 5' end of SRGAP2 (206,203,541-206,464,436) — the F-BAR portion the
-    // human-specific SRGAP2B/C copies are truncated duplicates of. The gene is
-    // 261 kb, so no window holds all of it.
+    // The 5' end of SRGAP2 (NM_015326.5, chr1:206,203,540-206,464,436, `+`
+    // strand — so 5' really is the low coordinate). The gene is 261 kb and no
+    // window holds all of it.
+    //
+    // Be precise about what this covers, because the obvious description
+    // overstates it: SRGAP2B/C are truncated copies of exons 1-9, which span
+    // 206,203,540-206,405,248 — about 202 kb, corroborated by SRGAP2C's own
+    // 208 kb span at chr1:121,184,975-121,392,874. This window holds exons 1-3
+    // of those 9, i.e. the 5' third of the duplicated segment, not the whole of
+    // it. Covering all nine would need ~210 kb and blow past
+    // MAX_DETAIL_WINDOW_BP (which `detailWindow()` does not actually enforce on
+    // an explicit window, so that would be a deliberate exception, not a
+    // typo). Exon coordinates from UCSC ncbiRefSeqSelect, checked 2026-08-06.
     detailWindow: { start: 206_190_000, end: 206_330_000 },
     variation: ['cnv', 'pav'],
     pangeneGenes: ['SRGAP2', 'SRGAP2B', 'SRGAP2C'],
