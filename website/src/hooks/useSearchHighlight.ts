@@ -1,6 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react'
-
-import type { RefObject } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 
 const HIGHLIGHT_NAME = 'search-result'
 
@@ -43,12 +41,17 @@ function applyHighlight(container: Element, query: string) {
   CSS.highlights.set(HIGHLIGHT_NAME, highlight)
 }
 
-export function useSearchHighlight(
-  containerRef: RefObject<HTMLElement | null>,
-  query: string,
-) {
+// Returns a callback ref to put on the element whose text should be highlighted.
+// A ref object would not work: the results table is mounted conditionally, so on
+// a search page that currently shows nothing the ref is still null when the
+// effect runs, and only a change to `query` would run it again. Filtering from
+// zero matches back to some (clearing a clade, unticking "reference only") keeps
+// the query identical, so the table would mount unhighlighted and stay that way.
+// A callback ref makes the node itself a dependency, so mounting re-attaches.
+export function useSearchHighlight(query: string) {
+  const [container, setContainer] = useState<HTMLElement | null>(null)
+
   useIsomorphicLayoutEffect(() => {
-    const container = containerRef.current
     if (SUPPORTED && container) {
       applyHighlight(container, query)
       const observer = new MutationObserver(() => {
@@ -60,5 +63,9 @@ export function useSearchHighlight(
         CSS.highlights.delete(HIGHLIGHT_NAME)
       }
     }
-  }, [query])
+  }, [container, query])
+
+  // A useState setter is referentially stable, so React never detaches and
+  // re-attaches this ref on a re-render.
+  return setContainer
 }

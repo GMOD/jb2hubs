@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Search, X } from 'lucide-react'
 
@@ -9,11 +9,9 @@ import {
 } from '../config/jbrowse.ts'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
-import {
-  CURATED_CLADES,
-  useTaxonomyFilter,
-} from '../hooks/useTaxonomyFilter.ts'
+import { useTaxonomyFilter } from '../hooks/useTaxonomyFilter.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { CURATED_CLADES, cladeDisplay } from '../lib/taxonomyClades.ts'
 import { paginate } from '../utils/paginate.ts'
 import OrangeStar from './OrangeStar.tsx'
 import Pagination from './Pagination.tsx'
@@ -52,8 +50,7 @@ export default function SearchPage() {
   const [curatedOnly, setCuratedOnly] = useUrlState('curated', '')
   const [page, setPage] = useState(0)
   const [pageSize, setPageSize] = useState(100)
-  const tableRef = useRef<HTMLDivElement>(null)
-  useSearchHighlight(tableRef, query)
+  const highlightRef = useSearchHighlight(query)
 
   useEffect(() => {
     setPage(0)
@@ -122,12 +119,12 @@ export default function SearchPage() {
           className={styles.categorySelect}
         >
           <option value="">All clades</option>
-          {CURATED_CLADES.map(({ label, display }) => (
+          {CURATED_CLADES.map(clade => (
             <option
-              key={label}
-              value={label}
+              key={clade.label}
+              value={clade.label}
             >
-              {display}
+              {cladeDisplay(clade)}
             </option>
           ))}
         </select>
@@ -189,7 +186,7 @@ export default function SearchPage() {
       {results.length > 0 && (
         <div
           className="table-scroll"
-          ref={tableRef}
+          ref={highlightRef}
         >
           <table>
             <thead>

@@ -1,6 +1,6 @@
 import '../styles/common-table.css'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { Search } from 'lucide-react'
 import useSWRImmutable from 'swr/immutable'
@@ -25,14 +25,14 @@ import type { HubRow, HubTableData } from './DataTable/hubRow.ts'
 
 export type TableProps = HubTableData
 
-async function loadRows(dataUrls: string[], accessions?: string[]) {
+// The whole of each named category file. Narrowing to a subtree is deliberately
+// NOT done here: it would make the cache entry specific to one page while the
+// key (the urls) is not, so two subtrees of the same category would serve each
+// other's rows out of the shared SWR cache. Cached this way, they share the one
+// download instead, and each narrows it below.
+async function loadRows(dataUrls: string[]) {
   const files = await Promise.all(dataUrls.map(url => fetchJson<HubRow[]>(url)))
-  const rows = files.flat().map(decodeHubRow)
-  if (!accessions) {
-    return rows
-  }
-  const wanted = new Set(accessions)
-  return rows.filter(row => wanted.has(row.accession))
+  return files.flat().map(decodeHubRow)
 }
 
 export default function DataTable({
@@ -43,15 +43,23 @@ export default function DataTable({
 }: TableProps) {
   const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(200)
-  const tableRef = useRef<HTMLDivElement>(null)
 
-  const { data: allRows } = useSWRImmutable(dataUrls.join(','), () =>
-    loadRows(dataUrls, accessions),
-  )
+  const { data: allRows } = useSWRImmutable(dataUrls, () => loadRows(dataUrls))
   // Until the full set lands, searching and sorting would silently apply to only
   // the first page, so the controls stay disabled and these rows are shown as-is.
   const loading = !allRows
-  const rows = allRows ?? initialRows
+  // `accessions` is set when this table shows a taxonomic subtree rather than a
+  // whole category, so the fetched category files get narrowed to it.
+  const rows = useMemo(() => {
+    if (!allRows) {
+      return initialRows
+    }
+    if (!accessions) {
+      return allRows
+    }
+    const wanted = new Set(accessions)
+    return allRows.filter(row => wanted.has(row.accession))
+  }, [allRows, accessions, initialRows])
 
   const {
     filterOption,
@@ -64,7 +72,7 @@ export default function DataTable({
   const { sortId, sortDesc, handleSort } = useTableSort()
   const { showAllColumns, setShowAllColumns } = useColumnVisibility()
   const { columns } = useTableColumns({ showAllColumns })
-  useSearchHighlight(tableRef, searchQuery)
+  const highlightRef = useSearchHighlight(searchQuery)
 
   useEffect(() => {
     setPageIndex(0)
@@ -133,7 +141,7 @@ export default function DataTable({
 
       <div
         className="table-scroll"
-        ref={tableRef}
+        ref={highlightRef}
       >
         <table>
           <TableHeader
