@@ -9,6 +9,24 @@ export const JBROWSE_BASE = features.staging
   ? 'https://jbrowse.org/code/jb2/main'
   : 'https://jbrowse.org/code/jb2/latest'
 
+// Does the build JBROWSE_BASE points at have LinearMultiSampleVariantDisplay?
+//
+// This is a capability of the HOST, not a feature of the site, and it is one a
+// launch cannot degrade gracefully over: a `displays[]` entry naming a display
+// type the host does not have fails the track config's MST union, which takes
+// down the whole spec session — the launch lands on "Select a view to launch"
+// with an error, rather than on the view minus one display. Measured 2026-08-06
+// against both hosted builds with the same probe: on `main` the display builds
+// with `renderingMode`/`jexlFilters` intact; on `latest` every form of the
+// declaration is rejected, including the bare `{ type, displayId }`, so it is
+// the type that is missing rather than a slot.
+//
+// Keyed on the same flag as the base url because that is what decides which
+// build is asked. DELETE this and inline the declaration once a released
+// `latest` carries the display — re-run the probe rather than assuming, since
+// the failure is silent from this side.
+export const HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY = features.staging
+
 // `config` is either site-relative (/ucsc/hg38/config.json) or an absolute URL
 // (a hosted hub config, or the merge API).
 export function jbrowseUrl(config: string) {

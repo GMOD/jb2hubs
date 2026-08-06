@@ -121,6 +121,17 @@ export const HPRC_DATASET: PangenomeDataset = {
   // jbrowse-components repo's demos/hprc/config.json — a different repo, so
   // nothing here fails at build time if one is renamed. `pangenomeLinks.test.ts`
   // pins the shape; the ids themselves are checked by opening the launch.
+  //
+  // STAGING ONLY, and not by our choice: that config pins a content-addressed
+  // GraphGenomeView bundle that boots on `main` and error-pages the whole app on
+  // the released `latest` (`TypeError: (0,N.createSvgIcon) is not a function`,
+  // measured 2026-08-06 — loading the bare config with no session spec fails the
+  // same way, so it is the plugin against that host, nothing we send it). Fine
+  // today because `features.pangenome` is staging and staging targets `main`.
+  // Before flipping that flag, re-check this launch on `latest`, or the graph
+  // button ships as an error page. Fixing it is the plugin's job, not this
+  // repo's — this is the `plugins[].url` failure mode CLAUDE.md describes, one
+  // dead-or-throwing bundle taking down the session.
   graphBrowser: {
     configUrl: 'https://jbrowse.org/demos/hprc/config.json',
     segmentsTrackId: 'hprc_minigraph_segments',

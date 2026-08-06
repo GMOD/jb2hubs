@@ -4,6 +4,7 @@
 // we attach it inline via `sessionTracks` (see specUrl) pointing at the public,
 // CORS-open VCF — the launch works without first baking the track into the config.
 
+import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { mergeConfig, specUrl } from './jbrowseLinks.ts'
 import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
@@ -33,6 +34,26 @@ const LGV_ID = 'pangenome-locus-lgv'
 const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 
 // The graph VCF as an inline session track (public, CORS-open, tabix-indexed).
+//
+// The matrix display is declared HERE, in the track's own config, rather than
+// requested from the view's `tracks` entry. A VariantTrack's default display is
+// LinearVariantDisplay, which draws one squashed row for what is a 232-sample /
+// 464-haplotype callset, so something has to say otherwise — and the two ways of
+// saying it are not equally portable. A session-spec track init carrying inline
+// display props relies on core folding them into the display snapshot, which the
+// hosted builds ignore: measured against `latest`, that form booted the launch
+// with LinearVariantDisplay and the too-much-data banner up, silently. A
+// `displays[]` array on the track config is plain configuration, is what the
+// HPRC tutorial's own config uses for this exact file, and is what `main`
+// honours — verified building the display with `renderingMode`/`jexlFilters`
+// intact.
+//
+// `phased` splits each sample into its two haplotypes — 464 rows rather than 232
+// — which is the only form co-inherited blocks are visible in.
+//
+// Omitted entirely where the host lacks the display, because this declaration
+// has no graceful degradation: see HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY. Without
+// it the launch still opens, on the single-row display.
 function graphVcfTrack(dataset: PangenomeDataset) {
   return {
     type: 'VariantTrack',
@@ -40,23 +61,19 @@ function graphVcfTrack(dataset: PangenomeDataset) {
     name: dataset.graphVcf.name,
     assemblyNames: [dataset.reference.assembly],
     adapter: { type: 'VcfTabixAdapter', uri: dataset.graphVcf.url },
-  }
-}
-
-// The callset lane. A VariantTrack's default display is LinearVariantDisplay,
-// which draws one squashed row for what is a 232-sample / 464-haplotype matrix,
-// so the display type is requested explicitly; `phased` splits each sample into
-// its two haplotypes, which is the only form co-inherited blocks are visible in.
-// A session spec's track entry folds any non-reserved key into the display
-// snapshot (core's `normalizeTrackInit`), so this needs no change to the hosted
-// config.
-function graphVcfLane(dataset: PangenomeDataset) {
-  return {
-    trackId: dataset.graphVcf.trackId,
-    type: 'LinearMultiSampleVariantDisplay',
-    renderingMode: 'phased',
-    jexlFilters: SV_FILTER,
-    height: 340,
+    ...(HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY
+      ? {
+          displays: [
+            {
+              type: 'LinearMultiSampleVariantDisplay',
+              displayId: `${dataset.graphVcf.trackId}-multisample`,
+              renderingMode: 'phased',
+              jexlFilters: SV_FILTER,
+              height: 340,
+            },
+          ],
+        }
+      : {}),
   }
 }
 
@@ -73,7 +90,7 @@ function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
         loc,
         tracks: [
           dataset.reference.geneTrackId,
-          graphVcfLane(dataset),
+          dataset.graphVcf.trackId,
           ...dataset.svTrackIds,
         ],
       },

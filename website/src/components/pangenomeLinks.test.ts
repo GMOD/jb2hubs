@@ -1,6 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
 import {
   crossSpeciesGeneOrderUrl,
@@ -46,29 +47,11 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
   assert.equal(view.loc, `${locus.chrom}:${window.start}-${window.end}`)
 
   // Reference genes, the graph VCF, then every SV track — in that order.
-  const [genes, vcf, ...sv] = view.tracks as (
-    | string
-    | Record<string, unknown>
-  )[]
-  assert.equal(genes, HPRC_DATASET.reference.geneTrackId)
-  assert.deepEqual(sv, HPRC_DATASET.svTrackIds)
-
-  // The callset must request the matrix display explicitly — a VariantTrack's
-  // default is the single-row LinearVariantDisplay, which is not what a
-  // 464-haplotype callset should open as.
-  assert.equal(
-    (vcf as Record<string, unknown>).trackId,
+  assert.deepEqual(view.tracks, [
+    HPRC_DATASET.reference.geneTrackId,
     HPRC_DATASET.graphVcf.trackId,
-  )
-  assert.equal(
-    (vcf as Record<string, unknown>).type,
-    'LinearMultiSampleVariantDisplay',
-  )
-  assert.equal((vcf as Record<string, unknown>).renderingMode, 'phased')
-  // Both halves of the standard pangenome-VCF filter.
-  const filters = (vcf as Record<string, unknown>).jexlFilters as string[]
-  assert.ok(filters.some(f => f.includes('LV[0]==0')))
-  assert.ok(filters.some(f => f.includes('alleleLength(feature)>=50')))
+    ...HPRC_DATASET.svTrackIds,
+  ])
 
   // The graph VCF isn't in the hosted config, so it must ride along as a session
   // track pointing at the real data URL.
@@ -78,6 +61,31 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
     type: 'VcfTabixAdapter',
     uri: HPRC_DATASET.graphVcf.url,
   })
+})
+
+test('the callset declares the matrix display exactly where the host has it', () => {
+  const { spec } = parseLaunch(graphVcfLgvUrl(HPRC_DATASET, locus))
+  const displays = spec.sessionTracks?.[0]?.displays as
+    | Record<string, unknown>[]
+    | undefined
+
+  if (!HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY) {
+    // Naming a display the host lacks fails the track config's MST union and
+    // takes the whole spec session down, so the launch must carry none at all
+    // and fall back to the single-row display.
+    assert.equal(displays, undefined)
+    return
+  }
+
+  // A VariantTrack's default display is the single-row LinearVariantDisplay,
+  // which is not what a 232-sample / 464-haplotype callset should open as.
+  const display = displays?.[0]
+  assert.equal(display?.type, 'LinearMultiSampleVariantDisplay')
+  assert.equal(display?.renderingMode, 'phased')
+  // Both halves of the standard pangenome-VCF filter.
+  const filters = display?.jexlFilters as string[]
+  assert.ok(filters.some(f => f.includes('LV[0]==0')))
+  assert.ok(filters.some(f => f.includes('alleleLength(feature)>=50')))
 })
 
 test('graphBrowserUrl lands on the dataset landing region', () => {
