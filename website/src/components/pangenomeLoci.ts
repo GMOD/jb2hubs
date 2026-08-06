@@ -30,23 +30,46 @@ export interface PangenomeLocus {
   // a matrix. Omitted where gene-level copy number isn't relevant (e.g. an
   // intragenic VNTR). Names match the lh3/pangene human100 graph.
   pangeneGenes?: string[]
-  // Narrower window for the graph launch, when the display window above is too
-  // wide to draw as one (see MAX_GRAPH_WINDOW_BP).
-  graphWindow?: { start: number; end: number }
+  // Narrower window for the two launches that draw per-haplotype data — the
+  // graph and the 464-row genotype matrix — when the display span above is too
+  // wide for either (see MAX_DETAIL_WINDOW_BP). Where the JBrowse HPRC tutorial
+  // states a window for this locus, it is that window verbatim.
+  detailWindow?: { start: number; end: number }
+  // Set where minigraph is known to collapse this locus, so no graph launch is
+  // offered however narrow the window. The HPRC tutorial's "The Layout dropdown"
+  // names the class: near-identical segmental duplications merge onto one path,
+  // "which rules this graph out for the whole class of genes defined by one:
+  // SMN1/SMN2, RHD/RHCE, PMS2/PMS2CL and the CYP clusters among them". A quiet
+  // window there means collapsed, not checked-and-invariant, so a graph button
+  // would open a bare thread and read as an empty result.
+  graphCollapsed?: boolean
 }
 
-// A graph draws a window at a time, and the layout scales itself to a target
-// node size — so ten times the nodes is the same ink at a tenth the size, and a
-// megabase-wide locus draws as one unreadable thread rather than as loops. The
-// cap is the widest window the JBrowse pangenome tutorial draws (AMY1, 145 kb).
-// Past it a locus needs an explicit `graphWindow` or it gets no graph launch.
-export const MAX_GRAPH_WINDOW_BP = 150_000
+// Two different limits that land in the same place, which is why one constant
+// serves both launches:
+//
+// - A graph draws a window at a time, and the layout scales itself to a target
+//   node size — so ten times the nodes is the same ink at a tenth the size, and
+//   a megabase-wide locus draws as one unreadable thread rather than as loops.
+// - The 464-haplotype callset is fetched per view: over this locus set the wave
+//   VCF runs ~200 bytes/bp of VCF text, so a multi-Mb window is past both the
+//   adapter's `fetchSizeLimit` and the feature-density gate, and the lane opens
+//   behind the "too much data" banner instead of drawing.
+//
+// The tutorial's own windows run 70–130 kb (its widest is LPA's KIV-2 repeat at
+// 130 kb); 150 kb is the ceiling allowed here. Past it a locus needs an explicit
+// `detailWindow`, or it gets no graph launch and its variants open on the full
+// span.
+export const MAX_DETAIL_WINDOW_BP = 150_000
 
-/** The window to cut a subgraph from, or undefined if this locus has none. */
-export function graphWindow(locus: PangenomeLocus) {
-  return locus.graphWindow
-    ? locus.graphWindow
-    : locus.end - locus.start <= MAX_GRAPH_WINDOW_BP
+/**
+ * The window to cut a subgraph from and to open the genotype matrix on, or
+ * undefined if this locus is too wide and names none.
+ */
+export function detailWindow(locus: PangenomeLocus) {
+  return locus.detailWindow
+    ? locus.detailWindow
+    : locus.end - locus.start <= MAX_DETAIL_WINDOW_BP
       ? { start: locus.start, end: locus.end }
       : undefined
 }
@@ -69,9 +92,13 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr6',
     start: 28_510_000,
     end: 33_480_000,
-    // The classical class III stretch around C4, which is where the graph's
-    // structure is legible; the full 5 Mb MHC is a linear view's job.
-    graphWindow: { start: 32_500_000, end: 32_560_000 },
+    // The class II stretch, which is where the graph's structure is legible; the
+    // full 5 Mb MHC is a linear view's job. The tutorial's MHC class II window
+    // verbatim — it covers HLA-DRB5 (32,517,353-32,530,287) *and* HLA-DRB1
+    // (32,578,775-32,589,848), where the window this used to carry
+    // (32,500,000-32,560,000) stopped 19 kb short of DRB1. C4 is not in here at
+    // all: C4A is chr6:31,982,057-32,002,681, which is the separate `c4` locus.
+    detailWindow: { start: 32_510_000, end: 32_600_000 },
     variation: ['hyperdiversity', 'cnv'],
     pangeneGenes: [
       'HLA-A',
@@ -97,7 +124,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 103_540_000,
     end: 103_830_000,
-    graphWindow: { start: 103_600_000, end: 103_745_000 },
+    // The tutorial's AMY1 window verbatim.
+    detailWindow: { start: 103_690_000, end: 103_780_000 },
     variation: ['cnv'],
     pangeneGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
   },
@@ -110,6 +138,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr6',
     start: 31_950_000,
     end: 32_080_000,
+    // The tutorial's C4 window verbatim; covers C4A (31,982,057-32,002,681) and
+    // C4B (32,014,795-32,035,418).
+    detailWindow: { start: 31_980_000, end: 32_050_000 },
     variation: ['cnv', 'pav'],
     pangeneGenes: ['C4A', 'C4B'],
   },
@@ -122,6 +153,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr6',
     start: 160_500_000,
     end: 160_700_000,
+    // The tutorial's LPA KIV-2 window verbatim — the repeat inside LPA
+    // (160,531,482-160,664,275), and the widest window it draws as a graph.
+    detailWindow: { start: 160_525_000, end: 160_655_000 },
     variation: ['vntr'],
   },
   {
@@ -133,6 +167,10 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 25_250_000,
     end: 25_460_000,
+    // RHD (25,272,509-25,330,445) with flanks. No graph: RHD/RHCE is one of the
+    // paralog pairs the tutorial names as collapsed.
+    detailWindow: { start: 25_260_000, end: 25_345_000 },
+    graphCollapsed: true,
     variation: ['pav'],
     pangeneGenes: ['RHD', 'RHCE'],
   },
@@ -145,6 +183,11 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr5',
     start: 70_040_000,
     end: 70_960_000,
+    // SMN1 (70,925,087-70,953,015) with flanks. No graph: the tutorial queries
+    // chr5:70,925,000-70,954,000 against the allele inventory and gets nothing
+    // back, because minigraph merged SMN1 and SMN2 onto one path.
+    detailWindow: { start: 70_910_000, end: 70_970_000 },
+    graphCollapsed: true,
     variation: ['cnv', 'pav'],
     pangeneGenes: ['SMN1'],
   },
@@ -157,6 +200,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr19',
     start: 54_720_000,
     end: 54_870_000,
+    // The tutorial's KIR window verbatim, inside the KIR3DL3..KIR3DL2 span
+    // (54,724,442-54,867,207) the display window covers whole.
+    detailWindow: { start: 54_750_000, end: 54_840_000 },
     variation: ['hyperdiversity', 'pav'],
     pangeneGenes: [
       'KIR3DL3',
@@ -185,6 +231,10 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr8',
     start: 6_900_000,
     end: 7_900_000,
+    // The defensin cluster itself, DEFB103A (7,881,392-7,882,663) through DEFB4A
+    // (7,894,677-7,896,716), with flanks; the flanking inversion is the megabase
+    // display window's subject.
+    detailWindow: { start: 7_850_000, end: 7_930_000 },
     variation: ['cnv', 'inversion'],
     pangeneGenes: [
       'DEFB103A',
@@ -204,6 +254,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 161_500_000,
     end: 161_700_000,
+    // FCGR2A (161,505,457-161,519,829) through FCGR3B (161,623,196-161,631,176),
+    // i.e. the whole low-affinity receptor cluster.
+    detailWindow: { start: 161_495_000, end: 161_640_000 },
     variation: ['cnv', 'pav'],
     pangeneGenes: ['FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
   },
@@ -228,6 +281,11 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr22',
     start: 42_120_000,
     end: 42_140_000,
+    // No graph: CYP2D6/CYP2D7 is a CYP cluster, which the tutorial names among
+    // the paralog pairs minigraph collapses onto one path. The window is small
+    // enough to draw, which is exactly why the button has to be suppressed
+    // explicitly rather than by the width rule.
+    graphCollapsed: true,
     variation: ['cnv', 'hyperdiversity'],
     pangeneGenes: ['CYP2D6', 'CYP2D7'],
   },
@@ -252,6 +310,10 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 206_190_000,
     end: 206_470_000,
+    // The 5' end of SRGAP2 (206,203,541-206,464,436) — the F-BAR portion the
+    // human-specific SRGAP2B/C copies are truncated duplicates of. The gene is
+    // 261 kb, so no window holds all of it.
+    detailWindow: { start: 206_190_000, end: 206_330_000 },
     variation: ['cnv', 'pav'],
     pangeneGenes: ['SRGAP2', 'SRGAP2B', 'SRGAP2C'],
   },
@@ -264,6 +326,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr4',
     start: 143_860_000,
     end: 144_150_000,
+    // GYPB (143,996,104-144,019,380) through GYPA (144,109,303-144,140,718) —
+    // the pair the hybrid alleles recombine between.
+    detailWindow: { start: 143_990_000, end: 144_140_000 },
     variation: ['pav', 'cnv'],
     pangeneGenes: ['GYPA', 'GYPB', 'GYPE'],
   },
@@ -276,6 +341,11 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 196_640_000,
     end: 197_020_000,
+    // The CFHR3–CFHR1 deletion the tutorial's CFHR figure is built on: the wave
+    // VCF writes it as one record at chr1:196,753,075 with an 84,684 bp REF, so
+    // this window holds the whole event plus CFHR3 (196,774,840-196,795,407) and
+    // CFHR1 (196,819,731-196,832,189) with flanks.
+    detailWindow: { start: 196_740_000, end: 196_850_000 },
     variation: ['pav', 'cnv'],
     pangeneGenes: ['CFH', 'CFHR1', 'CFHR2', 'CFHR3', 'CFHR4', 'CFHR5'],
   },

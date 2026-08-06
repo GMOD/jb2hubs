@@ -50,6 +50,12 @@ export interface PangenomeGraphBrowser {
   segmentsTrackId: string
   bubblesTrackId: string
   geneTrackId: string
+  // Optional allele-inventory track: one row per allele the graph holds, stated
+  // against the reference span it replaces. It carries a CIGAR, so an
+  // AlignmentsTrack draws each insertion at its real magnitude rather than as a
+  // 1 bp box — which is what makes an allele's size readable beside the graph
+  // node it belongs to. Omitted where a graph has no such projection built.
+  allelesTrackId?: string
 }
 
 export interface PangenomeDataset {
@@ -75,7 +81,9 @@ export interface PangenomeDataset {
 // The HPRC minigraph-cactus v2.0 (release 2) graph projected onto GRCh38 — the
 // one dataset the explorer ships today. Release 2 is 232 samples against release
 // 1's 45, so every precomputed summary under `dataPrefix` has to be regenerated
-// alongside a change to `graphVcf` (`node generatePangenomeData.ts`).
+// alongside a change to `graphVcf` (`node generatePangenomeData.ts`). The three
+// generators read `graphVcf.url` from here rather than restating it, so that
+// sentence stays true: a changed url can no longer leave them on the old file.
 export const HPRC_DATASET: PangenomeDataset = {
   id: 'hprc-mc-v2.0-grch38',
   label: 'HPRC minigraph-cactus v2.0',
@@ -103,12 +111,22 @@ export const HPRC_DATASET: PangenomeDataset = {
     label: 'CHM13',
   },
   dataPrefix: '/pangenome',
+  // A deliberate wide overview of the MHC — the SV tracks are its subject and
+  // they draw across all 3.8 Mb. The callset lane opens gated at this width and
+  // releases on zoom-in, which is ordinary JBrowse behaviour for an overview;
+  // the per-locus launches open on a window the callset can actually draw (see
+  // graphVcfLgvUrl).
   landingRegion: 'chr6:29,700,000-33,500,000',
+  // Track ids from jbrowse.org/demos/hprc/config.json, which is the
+  // jbrowse-components repo's demos/hprc/config.json — a different repo, so
+  // nothing here fails at build time if one is renamed. `pangenomeLinks.test.ts`
+  // pins the shape; the ids themselves are checked by opening the launch.
   graphBrowser: {
     configUrl: 'https://jbrowse.org/demos/hprc/config.json',
     segmentsTrackId: 'hprc_minigraph_segments',
     bubblesTrackId: 'hprc_minigraph_bubbles',
     geneTrackId: 'hg38_ncbiRefSeq_ucsc',
+    allelesTrackId: 'hprc_minigraph_alleles',
   },
   loci: PANGENOME_LOCI,
 }

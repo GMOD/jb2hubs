@@ -5,7 +5,7 @@
 // CORS-open VCF — the launch works without first baking the track into the config.
 
 import { mergeConfig, specUrl } from './jbrowseLinks.ts'
-import { graphWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
+import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
@@ -14,6 +14,23 @@ import type { PangenomeLocus } from './pangenomeLoci.ts'
 // A session spec may set a view id (LaunchLinearGenomeView takes one for exactly
 // this), and both views come from the same spec, so the constant is safe.
 const LGV_ID = 'pangenome-locus-lgv'
+
+// The two halves of the standard pangenome-VCF filter, which the HPRC tutorial
+// argues belong together and which this file applies wherever it opens the
+// callset:
+//
+// - `alleleLength(feature)>=50` is the structural tier, the tier the graph
+//   itself records. `end - start` would not do: an insertion consumes no
+//   reference, so a span filter keeps only deletions.
+// - `INFO.LV[0]==0` keeps the top level of vg's snarl tree, which is the tier
+//   the graph's own bubbles are.
+//
+// The tutorial's filter verbatim, deliberately: it is what its published figures
+// of this callset use. Do not carry the reasoning over to a count, though —
+// `generatePangenomeData.ts` explains at length why LV>0 records here are real
+// variants rather than duplicates of a parent record, and filtering them out of
+// a summary deletes data (over SMN it would leave 1 site of 11,553).
+const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 
 // The graph VCF as an inline session track (public, CORS-open, tabix-indexed).
 function graphVcfTrack(dataset: PangenomeDataset) {
@@ -26,8 +43,26 @@ function graphVcfTrack(dataset: PangenomeDataset) {
   }
 }
 
+// The callset lane. A VariantTrack's default display is LinearVariantDisplay,
+// which draws one squashed row for what is a 232-sample / 464-haplotype matrix,
+// so the display type is requested explicitly; `phased` splits each sample into
+// its two haplotypes, which is the only form co-inherited blocks are visible in.
+// A session spec's track entry folds any non-reserved key into the display
+// snapshot (core's `normalizeTrackInit`), so this needs no change to the hosted
+// config.
+function graphVcfLane(dataset: PangenomeDataset) {
+  return {
+    trackId: dataset.graphVcf.trackId,
+    type: 'LinearMultiSampleVariantDisplay',
+    renderingMode: 'phased',
+    jexlFilters: SV_FILTER,
+    height: 340,
+  }
+}
+
 // Reference LinearGenomeView open at `loc`: reference genes, the graph VCF
-// (inlined), and the dataset's structural-variation tracks.
+// (inlined) as a haplotype matrix, and the dataset's structural-variation
+// tracks.
 function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
   return specUrl(
     dataset.reference.configUrl,
@@ -38,7 +73,7 @@ function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
         loc,
         tracks: [
           dataset.reference.geneTrackId,
-          dataset.graphVcf.trackId,
+          graphVcfLane(dataset),
           ...dataset.svTrackIds,
         ],
       },
@@ -53,11 +88,23 @@ export function graphBrowserUrl(dataset: PangenomeDataset) {
 }
 
 // The graph variants (plus SV tracks) open at a specific catalog locus.
+//
+// The window is the locus's detail window, not its display span. The callset is
+// fetched per view and runs ~200 bytes/bp of VCF text over these loci, so a
+// multi-Mb span (MHC's is 4.97 Mb, holding 109,988 records) opens the lane
+// behind the "too much data" banner — the button's own subject, undrawn. Every
+// window the tutorial draws this callset on is 70–130 kb.
 export function graphVcfLgvUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
-  return referenceLgvUrl(dataset, locusRegion(locus))
+  const window = detailWindow(locus)
+  return referenceLgvUrl(
+    dataset,
+    window
+      ? `${locus.chrom}:${window.start}-${window.end}`
+      : locusRegion(locus),
+  )
 }
 
 // The locus drawn as the graph itself, under a linear view of the same window.
@@ -65,25 +112,37 @@ export function graphVcfLgvUrl(
 // opens on the region directly rather than the user rubberbanding to it; the
 // shared `id`/`connectedViewId` pairs the two panels for hover sync.
 //
-// Undefined when the dataset has no hosted graph, or when the locus is too wide
-// to draw as one graph and has picked no narrower window.
+// `colorScheme` is the one thing that ties the two panels together under the
+// default force layout, which has no axis to share: the ramp runs red at the
+// start of the loaded window to magenta at its end, and a segment with no
+// reference coordinate comes off the ramp as charcoal. The alleles lane beside
+// it states each allele's size against the reference span it replaces.
+//
+// Undefined when the dataset has no hosted graph, when the locus is too wide to
+// draw as one graph and has picked no narrower window, or when the graph is
+// known to collapse the locus (`graphCollapsed`).
 export function graphLocusUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
   const graph = dataset.graphBrowser
-  const window = graphWindow(locus)
-  return graph && window
+  const window = detailWindow(locus)
+  return graph && window && !locus.graphCollapsed
     ? specUrl(graph.configUrl, [
         {
           type: 'LinearGenomeView',
           id: LGV_ID,
           assembly: dataset.reference.assembly,
-          loc: `${locus.chrom}:${window.start.toLocaleString()}-${window.end.toLocaleString()}`,
+          // Bare digits: this runs in the visitor's browser, and JBrowse's
+          // locstring parser strips commas only, so a locale that groups with
+          // '.' or a space (de-DE, fr-FR, ru-RU) would produce a region no view
+          // can navigate to.
+          loc: `${locus.chrom}:${window.start}-${window.end}`,
           tracks: [
             graph.geneTrackId,
             graph.bubblesTrackId,
             graph.segmentsTrackId,
+            ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
           ],
         },
         {
@@ -97,6 +156,7 @@ export function graphLocusUrl(
             end: window.end,
           },
           connectedViewId: LGV_ID,
+          colorScheme: 'reference-position',
         },
       ])
     : undefined
