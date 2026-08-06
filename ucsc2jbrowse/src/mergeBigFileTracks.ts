@@ -1,5 +1,6 @@
 import { dedupe, firstField } from 'hubtools'
 
+import { buildBigMafTrack } from './buildBigMafTrack.ts'
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
@@ -19,6 +20,11 @@ interface BigDataTrack {
     speciesLabels?: string
     labelFields?: string
     defaultLabelFields?: string
+    // bigMaf only: the zoom-reduced summary (bigMafSummary.bb) and the
+    // per-species CDS reading frames (mafFrames.bb) UCSC ships beside the
+    // alignment. Either may be an hgdownload path rather than a full url.
+    summary?: string
+    frames?: string
   }
 }
 
@@ -46,21 +52,6 @@ function mergeDeep(
       result[key] = srcVal
     }
   }
-  return result
-}
-
-function parseSpeciesString(str: string) {
-  const regex = /(\w+)="([^"]+)"/g
-  const result = []
-  let match
-
-  while ((match = regex.exec(str)) !== null) {
-    result.push({
-      id: match[1],
-      label: match[2] ?? match[1],
-    })
-  }
-
   return result
 }
 
@@ -146,7 +137,7 @@ async function addBigDataTracks(
   const newTracks = []
   for (const entry of Object.values(bigDataEntries)) {
     const { settings, tableName } = entry
-    const { type, speciesLabels } = settings
+    const { type } = settings
     const trackId = `${assemblyName}-${tableName}`
 
     if (consumed.has(tableName)) {
@@ -176,20 +167,16 @@ async function addBigDataTracks(
         })
         if (fileAccessible) {
           if (type === 'bigMaf') {
-            const samples = speciesLabels
-              ? parseSpeciesString(speciesLabels)
-              : []
-            newTracks.push({
-              trackId,
-              name: tableName,
-              type: 'MafTrack',
-              assemblyNames: [assemblyName],
-              adapter: {
-                type: 'BigMafAdapter',
-                samples,
-                bigBedLocation: { uri: bigDataUrl },
-              },
-            })
+            newTracks.push(
+              await buildBigMafTrack({
+                trackId,
+                tableName,
+                assemblyName,
+                uri,
+                baseUrl,
+                settings,
+              }),
+            )
           } else {
             // bigGenePred groups transcripts into genes; UCSC's own
             // defaultLabelFields (fallback labelFields) names the gene field to

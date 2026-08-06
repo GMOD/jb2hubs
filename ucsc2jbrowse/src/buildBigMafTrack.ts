@@ -1,0 +1,121 @@
+import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
+
+/**
+ * Turn an optional trackDb sidecar setting into a url the config can name, or
+ * undefined. A sidecar path is relative to hgdownload's root when it doesn't
+ * name a host — cactus241way's summary is `/gbdb/hg38/...` while multiz470way's
+ * is a full `https://hgdownload...` url, and both appear in the same trackDb.
+ *
+ * An unreachable one is dropped rather than left pointing at a 404, because a
+ * sidecar is load-bearing when present: a `summaryAdapter` that 404s fails the
+ * fetch at exactly the zoom the summary exists to make cheap, which is worse
+ * than not having the tier at all. Same reachability gate the alignment itself
+ * goes through, so it is a no-op unless CHECK_404 is set (make.sh sets it).
+ */
+async function resolveSidecar({
+  path,
+  baseUrl,
+  trackName,
+}: {
+  path: string | undefined
+  baseUrl: string
+  trackName: string
+}) {
+  if (!path) {
+    return undefined
+  }
+  const url = path.startsWith('http') ? path : `${baseUrl}${path}`
+  return (await checkIfFileAccessible({ url, trackName })) ? url : undefined
+}
+
+function parseSpeciesString(str: string) {
+  const regex = /(\w+)="([^"]+)"/g
+  const result = []
+  let match
+
+  while ((match = regex.exec(str)) !== null) {
+    result.push({
+      id: match[1],
+      label: match[2] ?? match[1],
+    })
+  }
+
+  return result
+}
+
+/**
+ * The `type bigMaf` branch of the big-file walk, as its own module so it can be
+ * tested — `mergeBigFileTracks.ts` parses argv and exits at import, so nothing
+ * defined inside it is reachable from a test.
+ *
+ * UCSC ships two sidecars beside a multiz/cactus alignment and names them in the
+ * same trackDb stanza as the alignment. Both slots are optional on the adapter,
+ * and leaving them off is not cosmetic on a deep alignment:
+ *
+ * - `summary` (bigMafSummary.bb) is the zoom-reduced tier `LinearMafDisplay`
+ *   swaps to past 20kb. Without it a 470-way has no cheap path at any zoom, so
+ *   the whole zoomed-out range is a force-load prompt — and force-load is a
+ *   track-wide, session-long approval, so one click there commits the user to
+ *   downloading the full alignment everywhere they navigate afterwards.
+ * - `frames` (mafFrames.bb) is the per-species CDS reading frames; the codon
+ *   view and codon conservation have nothing to draw without it.
+ *
+ * `hubtools`' `createTrackConfiguration` already does this for the hub path;
+ * this is the golden-path twin, which had only ever wired `bigBedLocation`.
+ */
+export async function buildBigMafTrack({
+  trackId,
+  tableName,
+  assemblyName,
+  uri,
+  baseUrl,
+  settings,
+}: {
+  trackId: string
+  tableName: string
+  assemblyName: string
+  uri: string
+  baseUrl: string
+  settings: {
+    longLabel?: string
+    speciesLabels?: string
+    summary?: string
+    frames?: string
+  }
+}) {
+  const trackName = settings.longLabel ?? tableName
+  const [summaryUri, framesUri] = await Promise.all(
+    [settings.summary, settings.frames].map(path =>
+      resolveSidecar({ path, baseUrl, trackName }),
+    ),
+  )
+  return {
+    trackId,
+    name: tableName,
+    type: 'MafTrack',
+    assemblyNames: [assemblyName],
+    adapter: {
+      type: 'BigMafAdapter',
+      samples: settings.speciesLabels
+        ? parseSpeciesString(settings.speciesLabels)
+        : [],
+      bigBedLocation: { uri },
+      ...(summaryUri
+        ? {
+            summaryAdapter: {
+              type: 'BigBedAdapter',
+              bigBedLocation: { uri: summaryUri },
+            },
+          }
+        : {}),
+      ...(framesUri
+        ? {
+            annotationAdapter: {
+              type: 'BigBedAdapter',
+              bigBedLocation: { uri: framesUri },
+            },
+          }
+        : {}),
+    },
+  }
+}
