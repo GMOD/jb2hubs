@@ -194,9 +194,14 @@ function attach(
         render()
       }
     } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      highlighted = Math.max(highlighted - 1, -1)
-      paintHighlight()
+      // Only while the list is up. Unconditionally preventing default would eat
+      // the keystroke in a closed box, where ArrowUp is the browser's own "jump
+      // to the start of the input" and nothing here has a use for it.
+      if (shown()) {
+        e.preventDefault()
+        highlighted = Math.max(highlighted - 1, -1)
+        paintHighlight()
+      }
     } else if (e.key === 'Enter') {
       // Only an arrowed-to suggestion hijacks Enter; otherwise the form submits
       // to /search normally, which is also the no-JS path.
