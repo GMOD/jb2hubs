@@ -158,6 +158,15 @@ function toTaxonomyTree(root: ParsedNode): TaxonomyNode {
   return traverse(root, 0)
 }
 
+// Newick text -> the tree the pages render. Exported as the pure seam the tests
+// drive: everything else here either reads a file or memoizes, and the parse
+// rules (the two bracket forms, the collapse, the depths) are the part with
+// behaviour worth pinning down.
+export function parseTaxonomyNewick(newick: string): TaxonomyNode | null {
+  const parsed = parseNewick(newick)
+  return parsed ? toTaxonomyTree(parsed) : null
+}
+
 /**
  * Get parsed tree from cache or parse and cache it
  * This function is called during build time and caches the parsed tree structure
@@ -179,15 +188,12 @@ export function getCachedTree(category: string): TaxonomyNode | null {
   )
 
   try {
-    const newickData = fs.readFileSync(newickPath, 'utf-8')
-    const parsedTree = parseNewick(newickData)
+    const tree = parseTaxonomyNewick(fs.readFileSync(newickPath, 'utf-8'))
 
-    if (!parsedTree) {
+    if (!tree) {
       console.error(`Failed to parse Newick data for category: ${category}`)
       return null
     }
-
-    const tree = toTaxonomyTree(parsedTree)
 
     // Cache it for future use
     treeCache.set(category, tree)
@@ -207,11 +213,12 @@ export interface TaxonomyIndex {
   lineage: (taxonId: string) => TaxonomyNode[]
 }
 
-// One DFS answers both lookups for every taxon. Rescanning the tree per page
+// Exported for the tests, which would otherwise have to go through a file read
+// to reach it. One DFS answers both lookups for every taxon. Rescanning the tree per page
 // instead cost ~6ms each, which over the 74K taxonomy pages was ~7 minutes of
 // every build. A taxonId occurring at more than one node resolves to the first
 // in pre-order, as a from-the-root search did.
-function buildTaxonomyIndex(root: TaxonomyNode): TaxonomyIndex {
+export function buildTaxonomyIndex(root: TaxonomyNode): TaxonomyIndex {
   const nodes = new Map<string, TaxonomyNode>()
   const parents = new Map<TaxonomyNode, TaxonomyNode>()
 
