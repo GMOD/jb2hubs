@@ -315,10 +315,25 @@ steps in `src/finalizeConfigs.ts` (below), and must run **after**
 **101,384 objects and 17.6GB** in the bucket, plus 50,700 rewritten configs
 churning the git tree and a CloudFront invalidation on every run. It is the
 object count that decides it, not the bytes — a fragmented assembly's chromAlias
-is megabytes on either side. GenArk configs therefore still name
-`hgdownload.soe.ucsc.edu` for both sidecars, and a UCSC outage takes a GenArk
-assembly down whole. That is the accepted trade: don't "fix" it by re-enabling
-the sweep. See the amendment in ADR 0003 for the options if it needs revisiting.
+is megabytes on either side.
+
+GenArk configs therefore still name `hgdownload.soe.ucsc.edu`. **Two** sidecars,
+not the three above: a GenArk hub has no cytoBand, so its assembly node carries
+`chromSizes` and `refNameAliases` and nothing else (measured over a 403-config
+sample of the 50,701 — chromSizes on every one, refNameAliases on all but one,
+cytobands on none). Both being remote is exactly why a UCSC outage takes a
+GenArk assembly down whole rather than costing it a track: `loadPre()` needs the
+sequence regions and the aliases in the same `Promise.all`.
+
+That is the accepted trade: don't "fix" it by re-enabling the sweep. Note also
+that nothing checks those ~101k urls — `check-sidecar-urls` is UCSC-only on
+purpose, because probing them in bulk is the road back to the sweep — so the
+`mpxvRivers` failure mode (a config naming a sidecar that 404s, unopenable in
+production, invisible to every gate) is unguarded on the GenArk side. See the
+amendment in ADR 0003 for the options if it needs revisiting;
+`hubtools/src/mirrorSidecars.ts` is deliberately kept as the library a future
+GenArk pass would be rebuilt on, which is why it lives in the shared package
+despite having only one caller today.
 
 A sidecar whose upstream url **404s** is removed from the config rather than
 left pointing at a dead url — `refNameAliases` and `cytobands` only, since those
