@@ -1,6 +1,9 @@
 ---
 title: Site launch
 date: '2025-11-07'
+description: >-
+  genomes.jbrowse.org launches alongside JBrowse v3.7.0, with ready-to-use
+  JBrowse 2 instances for thousands of UCSC GenArk and NCBI assemblies.
 ---
 
 We launched [genomes.jbrowse.org](https://genomes.jbrowse.org) alongside the

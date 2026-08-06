@@ -1,6 +1,9 @@
 ---
 title: Accurate translation tables
 date: '2026-06-20'
+description: >-
+  Each contig now translates with its correct genetic code, so mitochondrial
+  sequence is no longer read with the standard table.
 ---
 
 Genomes now translate each contig with its correct genetic code. Mitochondrial

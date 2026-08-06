@@ -11,7 +11,10 @@ export function getStaticPaths() {
 const { category } = Astro.params
 ---
 
-<Layout title={`Recently Added Genomes - ${category}`}>
+<Layout
+  title={`Recently Added Genomes - ${category}`}
+  description={`The most recently added UCSC GenArk ${category} assemblies, newest first, with links into JBrowse 2, UCSC and NCBI.`}
+>
   <Container wide>
     <RecentlyUpdatedTable category={category} />
   </Container>

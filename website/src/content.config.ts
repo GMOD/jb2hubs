@@ -7,6 +7,10 @@ const blog = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),
+    // Rendered as the page's meta + og:description, so a shared link previews
+    // with something. Optional: a post without one just has no description,
+    // exactly as before.
+    description: z.string().optional(),
   }),
 })
 

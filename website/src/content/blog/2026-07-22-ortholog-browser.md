@@ -1,6 +1,10 @@
 ---
 title: Ortholog browser
 date: '2026-07-22'
+description: >-
+  The ortholog browser goes live: search a gene in a reference species and get
+  its orthologs across other species, each with coordinates and a direct JBrowse
+  2 link.
 ---
 
 The [ortholog browser](/orthologs) is now live. Search for a gene in a reference
