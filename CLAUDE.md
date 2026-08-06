@@ -347,6 +347,25 @@ would delete a working alias file that nothing would then name to fetch back.
 `chromAlias.txt` that 404s and was unopenable in production while
 `check-plugin-urls` and the canary both passed.
 
+It also enforces **outage-independence**, which is a stronger property than
+reachability and the reason the mirroring exists at all. `MUST_BE_LOCAL` in that
+script (`hg38`, `hg19`, `mm39`, `mm10`, `hs1`) may not name an upstream sidecar
+even when upstream answers: a config that regressed to
+`hgdownload…/hg38.chrom.sizes` passes every reachability check while UCSC is up,
+and the protection is silently gone until the outage that needed it. Mirroring
+is one step in `finalizeConfigs.ts`; if it throws or leaves `STEPS`, this is
+what notices. Other assemblies are reported rather than failed, because a
+sidecar whose fetch failed is deliberately left upstream and retried next run —
+making that fatal everywhere would turn one blip into a blocked deploy.
+
+As of 2026-08-05 all 235 real UCSC assemblies are fully mirrored; the only
+upstream `chromSizes` are `cb1` and `hgFixed`, which are not assemblies and
+whose files 404 anyway. For hg19/hg38 specifically, all three sidecars are
+served from our bucket and verified live, so `loadPre()` touches only
+jbrowse.org — a UCSC outage costs the sequence track (the 2bit is still theirs,
+too big to mirror) and the individual tracks that name hgdownload, but the
+assembly still opens.
+
 Two things that will bite a change here:
 
 - `chromSizes` is a **bare string** on TwoBitAdapter, not a `{ uri }` node, so

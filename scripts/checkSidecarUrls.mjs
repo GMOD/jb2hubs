@@ -67,6 +67,26 @@ const NOT_ASSEMBLIES = new Set(['hgFixed', 'cb1'])
 const isRemote = value =>
   value.startsWith('http://') || value.startsWith('https://')
 
+// The assemblies we promise stay open when hgdownload does not.
+//
+// Reachability is NOT that promise, and the checks below only prove
+// reachability: a config that regressed to naming
+// hgdownload.soe.ucsc.edu/…/hg38.chrom.sizes passes every one of them while UCSC
+// is up, and the outage protection is silently gone. Mirroring is applied by one
+// step in finalizeConfigs.ts; if that step throws, gets dropped from STEPS, or
+// simply finds nothing to do, nothing else notices.
+//
+// So these have to be LOCAL, not merely fetchable. loadPre() resolves the
+// sequence regions, refNameAliases and cytobands in one Promise.all, so a single
+// upstream url among them is the difference between "the sequence track is
+// broken" and "hg38 does not open".
+//
+// A named set rather than every assembly, deliberately: a sidecar whose fetch
+// failed is left pointing upstream on purpose and retried next run, so making
+// that fatal everywhere would turn one obscure assembly's transient blip into a
+// blocked deploy. Everything outside this set is reported instead.
+const MUST_BE_LOCAL = new Set(['hg38', 'hg19', 'mm39', 'mm10', 'hs1'])
+
 // Same three fields mirrorSidecars.ts walks, in the same order. chromSizes is a
 // bare string on the TwoBitAdapter; the other two are `uri` on their adapters.
 function sidecarsOf(assembly) {
@@ -150,8 +170,26 @@ for (const ref of remotes) {
   }
 }
 
+// A reachable upstream url is fine for most assemblies and a regression for the
+// flagship ones — see MUST_BE_LOCAL. Flagged after the fetches so a ref that is
+// both remote AND dead still reports the more urgent problem.
+for (const ref of refs) {
+  if (!ref.problem && isRemote(ref.value) && MUST_BE_LOCAL.has(ref.db)) {
+    ref.problem =
+      `${ref.db} must serve this from our own bucket, but it names upstream. ` +
+      `It is reachable now, so this is not an outage — it means mirroring did ` +
+      `not run. During an hgdownload outage ${ref.db} would not open at all.`
+  }
+}
+
 const broken = refs.filter(ref => ref.problem)
 const localCount = refs.length - remotes.length
+
+// Drift outside the enforced set: not fatal (these retry next run), but silence
+// here is how a slow slide back to upstream would go unnoticed.
+const remoteElsewhere = remotes.filter(
+  ref => !MUST_BE_LOCAL.has(ref.db) && !ref.problem,
+)
 
 console.log(
   `checked ${refs.length} sidecar refs across ${new Set(refs.map(r => r.db)).size} assemblies ` +
@@ -159,6 +197,21 @@ console.log(
 )
 if (skipped.length > 0) {
   console.log(`skipped ${skipped.join(', ')} (not assemblies; is_assembly_db)`)
+}
+{
+  const enforced = [...MUST_BE_LOCAL].filter(db =>
+    refs.some(ref => ref.db === db),
+  )
+  console.log(
+    `outage-independence enforced on: ${enforced.join(', ') || '(none present)'}`,
+  )
+}
+if (remoteElsewhere.length > 0) {
+  console.log(
+    `note: ${remoteElsewhere.length} sidecar ref(s) on other assemblies still ` +
+      `point upstream and will retry next run: ` +
+      [...new Set(remoteElsewhere.map(r => `${r.db}/${r.label}`))].join(', '),
+  )
 }
 for (const ref of broken) {
   console.log(
