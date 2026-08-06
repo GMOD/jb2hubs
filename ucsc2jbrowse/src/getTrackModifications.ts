@@ -33,6 +33,29 @@ const specializedParents = new Set([
 
 const specializedTypes = new Set(['pgSnp', 'bigPsl'])
 
+// Kept despite the `wgEncode` prefix rule below. That rule is there to stop
+// ENCODE's individual-experiment composites (12,729 subtracks on hg38 alone)
+// from swamping a config, and these are not experiments — they are the CRG GEM
+// alignability and Duke uniqueness annotations, i.e. hg19's only mappability
+// tracks, which say whether a read can be placed at a locus at all. hg38 keeps
+// the same layer without needing an exemption, because its Umap/Bismap
+// replacements are not `wgEncode`-prefixed; the effect of the blanket rule was
+// therefore that hg19 alone had no mappability at all, while still carrying the
+// blacklist, segdup and problematic-region tracks such a lane is read against.
+//
+// Eight tracks on one assembly (hg19 removedTracks holds 12,711 entries in
+// total), so this does not move what the rule is for.
+const keptDespiteEncodePrefix = new Set([
+  'wgEncodeCrgMapabilityAlign24mer',
+  'wgEncodeCrgMapabilityAlign36mer',
+  'wgEncodeCrgMapabilityAlign40mer',
+  'wgEncodeCrgMapabilityAlign50mer',
+  'wgEncodeCrgMapabilityAlign75mer',
+  'wgEncodeCrgMapabilityAlign100mer',
+  'wgEncodeDukeMapabilityUniqueness20bp',
+  'wgEncodeDukeMapabilityUniqueness35bp',
+])
+
 const specializedTrackIds = new Set([
   'gtexGene',
   'gtexGeneV8',
@@ -155,7 +178,10 @@ export function getTrackModifications<
       reason = `Parent starts with pgSnp: ${trackParent}`
     } else if (specializedTrackIds.has(trackId)) {
       reason = `Specialized track ID: ${trackId}`
-    } else if (trackId.startsWith('encode') || trackId.startsWith('wgEncode')) {
+    } else if (
+      (trackId.startsWith('encode') || trackId.startsWith('wgEncode')) &&
+      !keptDespiteEncodePrefix.has(trackId)
+    ) {
       reason = `Track ID starts with encode or wgEncode`
     } else if (
       typeof ucsc.bigDataUrl === 'string' &&
