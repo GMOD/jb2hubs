@@ -14,6 +14,7 @@ import type {
   HubTableData,
 } from '../../components/DataTable/hubRow.ts'
 import { notEmpty } from '../../components/DataTable/utils.ts'
+import { ncbiTaxonomyUrl } from '../../lib/externalLinks.ts'
 import fs from 'fs'
 import path from 'path'
 
@@ -218,7 +219,7 @@ if (isCategory) {
         <div class="taxonomy-info-container">
           <div class="taxonomy-info-label">Taxonomy information:</div>
           <a
-            href={`https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`}
+            href={ncbiTaxonomyUrl(taxonId)}
             target="_blank"
             rel="noopener noreferrer"
             class="taxonomy-info-link"

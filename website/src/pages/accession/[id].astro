@@ -17,6 +17,11 @@ import {
 } from '../../config/jbrowse.ts'
 import { bareCommonName } from '../../utils/names.ts'
 import { usefulComments } from '../../utils/comments.ts'
+import {
+  ncbiBioProjectUrl,
+  ncbiGenomeUrl,
+  ncbiTaxonomyUrl,
+} from '../../lib/externalLinks.ts'
 import { features } from '../../config/features.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
@@ -114,7 +119,7 @@ const pageUrl = imageData?.pageUrl
 
 const comments = usefulComments(rawComments)
 
-const ncbiTaxonomyUrl = `https://www.ncbi.nlm.nih.gov/datasets/taxonomy/${taxonId}/`
+const taxonomyUrl = ncbiTaxonomyUrl(taxonId)
 
 const buscoBreakdown = annotationInfo?.busco
   ? [
@@ -168,7 +173,7 @@ const jsonLd = {
     name: scientificName,
     ...(organism ? { alternateName: organism } : {}),
     identifier: `NCBI:txid${taxonId}`,
-    sameAs: ncbiTaxonomyUrl,
+    sameAs: taxonomyUrl,
   },
 }
 
@@ -213,8 +218,8 @@ const hasAssemblyDetails =
         <dd>{organism}</dd>
         <dt>TaxonID</dt>
         <dd>
-          <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a
-            href={ncbiTaxonomyUrl}>NCBI taxonomy</a
+          <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a href={taxonomyUrl}
+            >NCBI taxonomy</a
           >
         </dd>
         {
@@ -483,9 +488,7 @@ const hasAssemblyDetails =
               <>
                 <dt>BioProject</dt>
                 <dd>
-                  <a
-                    href={`https://www.ncbi.nlm.nih.gov/bioproject/${bioprojectAccession}`}
-                  >
+                  <a href={ncbiBioProjectUrl(bioprojectAccession)}>
                     {bioprojectAccession}
                   </a>
                 </dd>
@@ -512,12 +515,7 @@ const hasAssemblyDetails =
                   ) : (
                     <>
                       {pairedAccession} (
-                      <a
-                        href={`https://www.ncbi.nlm.nih.gov/datasets/genome/${pairedAccession}/`}
-                      >
-                        NCBI
-                      </a>
-                      )
+                      <a href={ncbiGenomeUrl(pairedAccession)}>NCBI</a>)
                     </>
                   )}
                   {pairedAssemblyStatus === 'suppressed' ? (

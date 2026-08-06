@@ -1,3 +1,5 @@
+import { useId } from 'react'
+
 import styles from './DataTable.module.css'
 
 interface PaginationProps {
@@ -21,6 +23,10 @@ export default function Pagination({
   onPageSizeChange,
   disabled = false,
 }: PaginationProps) {
+  // The label/select pair needs a document-unique id, which a literal is not:
+  // two paginated tables on one page would give the browser two "pageSize"
+  // elements and the label would point at whichever came first.
+  const pageSizeId = useId()
   return (
     <div className={styles.paginationContainer}>
       <button
@@ -70,9 +76,9 @@ export default function Pagination({
         {'>>'}
       </button>
       <div className={styles.pageSizeSelector}>
-        <label htmlFor="pageSize">Show:</label>
+        <label htmlFor={pageSizeId}>Show:</label>
         <select
-          id="pageSize"
+          id={pageSizeId}
           value={pageSize}
           onChange={e => {
             onPageSizeChange(Number(e.target.value))

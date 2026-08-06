@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { features } from '../config/features.ts'
+import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
@@ -310,7 +311,7 @@ function SearchResults({
         {species ? ` (${species})` : ''}
         {' · '}
         <a
-          href={`https://www.ncbi.nlm.nih.gov/gene/${geneId}`}
+          href={ncbiGeneUrl(geneId)}
           target="_blank"
           rel="noreferrer"
         >

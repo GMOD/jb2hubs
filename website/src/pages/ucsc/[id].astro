@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import list from '../../list.json'
 import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
+import { ucscBrowserUrl, ucscGatewayUrl } from '../../lib/externalLinks.ts'
 
 export async function getStaticPaths() {
   const genomes = list.ucscGenomes
@@ -15,10 +16,22 @@ export async function getStaticPaths() {
 const { id } = Astro.params
 const { ret } = Astro.props
 
-const title = id
+// These ~250 pages carried the bare db name as their whole <title> and no
+// description at all, so a search result for "hg38" read as just "hg38" with
+// whatever text the crawler scraped. Same treatment the accession pages got:
+// name the organism and the assembly, and say what the page offers.
+const pageTitle = `${ret.scientificName} — UCSC ${id}`
+const pageDescription = [
+  `${ret.scientificName}${ret.organism ? ` (${ret.organism})` : ''}, UCSC genome`,
+  `browser assembly ${id}${ret.description ? ` — ${ret.description}` : ''}.`,
+  'Open it in the JBrowse 2 genome browser, or follow through to UCSC.',
+].join(' ')
 ---
 
-<Layout title={title}>
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+>
   <Container>
     <div class="relative">
       <h1>{ret.scientificName}</h1>
@@ -44,9 +57,7 @@ const title = id
           <a href={jbrowseUrl(ucscConfigPath(id))}> JBrowse </a>
         </li>
         <li>
-          <a href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=${id}`}>
-            UCSC
-          </a>
+          <a href={ucscBrowserUrl(id)}>UCSC</a>
         </li>
       </ul>
     </div>
@@ -55,9 +66,7 @@ const title = id
       <h2>Portals/data downloads</h2>
       <ul>
         <li>
-          <a href={`https://genome.ucsc.edu/cgi-bin/hgGateway?db=${id}`}>
-            UCSC assembly info
-          </a>
+          <a href={ucscGatewayUrl(id)}>UCSC assembly info</a>
         </li>
       </ul>
     </div>

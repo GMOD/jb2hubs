@@ -1,4 +1,4 @@
-import React from 'react'
+import { useId } from 'react'
 
 import { filterCategories } from './DataTable/utils/filterCategories.ts'
 
@@ -17,6 +17,11 @@ export default function TableOptions({
   setShowAllColumns,
   disabled = false,
 }: TableOptionsProps) {
+  // Radio groups are scoped by `name` across the whole document, so a literal
+  // would fuse the two tables' filters if a page ever rendered both: picking
+  // "RefSeq only" in one would clear the other's selection.
+  const filterName = useId()
+  const columnsName = useId()
   return (
     <div>
       <div>
@@ -29,7 +34,7 @@ export default function TableOptions({
           >
             <input
               type="radio"
-              name="databaseFilter"
+              name={filterName}
               value={key}
               disabled={disabled}
               checked={filterOption === key}
@@ -49,7 +54,7 @@ export default function TableOptions({
         >
           <input
             type="radio"
-            name="columnVisibility"
+            name={columnsName}
             checked={!showAllColumns}
             disabled={disabled}
             onChange={() => {
@@ -65,7 +70,7 @@ export default function TableOptions({
         >
           <input
             type="radio"
-            name="columnVisibility"
+            name={columnsName}
             checked={showAllColumns}
             disabled={disabled}
             onChange={() => {

@@ -1,4 +1,5 @@
 import { genarkConfigPath, jbrowseUrl } from '../config/jbrowse.ts'
+import { ncbiGenomeUrl, ucscGenArkUrl } from './externalLinks.ts'
 
 // What the recently-updated table renders. The three outbound links are all
 // derivable from the accession, so no row carries a URL.
@@ -33,7 +34,7 @@ export function formatDate(isoString: string): string {
 export function linkEntries(hub: HubEntry): [string, string][] {
   return [
     [jbrowseUrl(genarkConfigPath(hub.accession)), 'JBrowse'],
-    [`https://genome.ucsc.edu/h/${hub.accession}`, 'UCSC'],
-    [`https://www.ncbi.nlm.nih.gov/datasets/genome/${hub.accession}/`, 'NCBI'],
+    [ucscGenArkUrl(hub.accession), 'UCSC'],
+    [ncbiGenomeUrl(hub.accession), 'NCBI'],
   ]
 }

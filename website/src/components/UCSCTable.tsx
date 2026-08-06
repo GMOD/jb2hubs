@@ -8,6 +8,7 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { ucscBrowserUrl } from '../lib/externalLinks.ts'
 import list from '../list.json'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
@@ -59,7 +60,7 @@ export default function UCSCTable() {
         organism: val.organism,
         description: val.description,
         jbrowseLink: jbrowseUrl(ucscConfigPath(key)),
-        ucscLink: `https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`,
+        ucscLink: ucscBrowserUrl(key),
         orderKey: val.orderKey,
       }))
       .sort((a, b) => a.orderKey - b.orderKey)

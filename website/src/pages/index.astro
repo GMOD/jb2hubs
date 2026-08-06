@@ -4,11 +4,13 @@ import Container from '../components/Container.astro'
 import GenArk from '../components/GenArk.astro'
 import { features } from '../config/features.ts'
 import { jbrowseUrl, ucscConfigPath } from '../config/jbrowse.ts'
+import { ucscBrowserUrl } from '../lib/externalLinks.ts'
 
 import list from '../list.json'
 import '../styles/common-table.css'
 
-const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
+// The handful worth putting on the front page; /ucsc lists all ~250.
+const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
 ---
 
 <Layout>
@@ -32,7 +34,7 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
           <tbody>
             {
               Object.entries(list.ucscGenomes)
-                .filter(([key]) => s.has(key))
+                .filter(([key]) => FEATURED_DBS.has(key))
                 .map(([key, val]) => (
                   <tr>
                     <td>
@@ -45,11 +47,7 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
                       <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
                     </td>
                     <td>
-                      <a
-                        href={`https://genome.ucsc.edu/cgi-bin/hgTracks?db=${key}`}
-                      >
-                        UCSC
-                      </a>
+                      <a href={ucscBrowserUrl(key)}>UCSC</a>
                     </td>
                   </tr>
                 ))
@@ -142,8 +140,10 @@ const s = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
 </Layout>
 
 <script>
-  // Check if user visited https://jbrowse.org/jb2hubs and redirect to genomes.jbrowse.org
-  if (window.location.href.includes('/jb2hubs')) {
-    window.location.href = 'https://genomes.jbrowse.org'
+  // This site used to live at jbrowse.org/jb2hubs; send anyone still landing
+  // there to its own domain. Matched on the path, not the whole href, so a
+  // query or hash that happens to contain the old name isn't a redirect.
+  if (window.location.pathname.startsWith('/jb2hubs')) {
+    window.location.replace('https://genomes.jbrowse.org')
   }
 </script>

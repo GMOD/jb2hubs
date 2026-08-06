@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import {
   COMMON_TAX_RANK,
   assemblyLabel,
@@ -27,7 +28,7 @@ function ResultRow({ result: r, isRef, syntenyUrl }: ResultRowProps) {
       </td>
       <td>
         <a
-          href={`https://www.ncbi.nlm.nih.gov/gene/${r.geneId}`}
+          href={ncbiGeneUrl(r.geneId)}
           target="_blank"
           rel="noreferrer"
         >
