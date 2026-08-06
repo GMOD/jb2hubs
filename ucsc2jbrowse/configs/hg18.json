@@ -47,6 +47,1663 @@
   ],
   "tracks": [
     {
+      "trackId": "hg18-wgEncodeRegTxn",
+      "name": "Transcription",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "configurable": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subTracks",
+          "longLabel": "ENCODE Transcription Levels Assayed by RNA-seq on 6 Cell Lines",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.1",
+          "shortLabel": "Transcription",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg hide",
+          "track": "wgEncodeRegTxn",
+          "transformFunc": "LOG",
+          "type": "wig 0.00 2716.04",
+          "viewLimits": "0:4",
+          "visibility": "full",
+          "html": "<h2>Description</h2>\n<p>\nThis track shows transcription levels for several cell types as assayed by high throughput\nsequencing of polyadenylated RNA (RNA-seq).\nAdditional views of this dataset and additional documentation on the methods used\nfor this track are available at the\n<A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeCaltechRnaSeq>ENCODE Caltech RNA-seq</A> page.  The <i>Raw \nSignal</i> view derived from the paired 75-mer reads is shown here.\n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that are part of the\n<A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Wold Lab at Cal Tech, part of the ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "Gm12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeCaltechRnaSeqRawSignalRep1Gm12878CellLongpolyaBb12x75.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1 ES",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeCaltechRnaSeqRawSignalRep1H1hescCellPapBb2R2x75.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HepG2",
+            "color": "rgb(212,255,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeCaltechRnaSeqRawSignalRep2Hepg2CellPapBb2R2x75.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeCaltechRnaSeqRawSignalRep1HuvecCellPapBb2R2x75.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeCaltechRnaSeqRawSignalRep1K562CellLongpolyaBb12x75.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeCaltechRnaSeqRawSignalRep1NhekCellPapBb2R2x75.wib"
+            }
+          }
+        ]
+      },
+      "description": "ENCODE Transcription Levels Assayed by RNA-seq on 6 Cell Lines",
+      "category": ["Regulation"]
+    },
+    {
+      "trackId": "hg18-wgEncodeRegMarkEnhH3k4me1",
+      "name": "Layered H3K4Me1",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "configurable": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subTracks",
+          "longLabel": "ENCODE Enhancer- and Promoter-Associated Histone Mark (H3K4Me1) on 8 Cell Lines",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.2",
+          "shortLabel": "Layered H3K4Me1",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg full",
+          "track": "wgEncodeRegMarkEnhH3k4me1",
+          "type": "wig 0 10000",
+          "viewLimits": "0:50",
+          "visibility": "full",
+          "html": "<H2>Description</H2>\n<p>\nChemical modifications (e.g. methylation and acylation) to the histone proteins\npresent in chromatin influence gene expression by changing how\naccessible the chromatin is to transcription. A specific modification of\na specific histone protein is called a histone mark.\nThis track shows the levels of enrichment of the H3K4Me1 histone mark across the genome as determined by a\nChIP-seq assay.  The H3K4me1 histone mark is the mono-methylation of lysine 4\nof the H3 histone protein, and it is associated with enhancers and with DNA regions downstream of transcription\nstarts.  Additional histone marks and other chromatin associated ChIP-seq data is available at\nthe <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeBroadChipSeq>Broad Histone</A> page.\n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that\nare part of the <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Bernstein Lab at the Broad Institute. The Bernstein lab is part of \nthe ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "Gm12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalGm12878H3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1 ES",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalH1hescH3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HMEC",
+            "color": "rgb(120,235,120)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHmecH3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(120,235,204)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHsmmH3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHuvecH3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalK562H3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalNhekH3k4me1.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalNhlfH3k4me1.wib"
+            }
+          }
+        ]
+      },
+      "description": "ENCODE Enhancer- and Promoter-Associated Histone Mark (H3K4Me1) on 8 Cell Lines",
+      "category": ["Regulation"]
+    },
+    {
+      "trackId": "hg18-wgEncodeRegMarkEnhH3k27ac",
+      "name": "Enhanced H3K27Ac",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "configurable": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subTracks",
+          "longLabel": "ENCODE Enhancer- and Promoter-Associated Histone Mark (H3K27Ac) on 8 Cell Lines",
+          "maxHeightPixels": "100:30:11",
+          "noInherit": "on",
+          "priority": "1.3",
+          "shortLabel": "Enhanced H3K27Ac",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg hide",
+          "track": "wgEncodeRegMarkEnhH3k27ac",
+          "type": "wig 0 10000",
+          "viewLimits": "0:50",
+          "visibility": "full",
+          "html": "<H2>Description</H2>\n<p>\nChemical modifications (e.g. methylation and acylation) to the histone proteins\npresent in chromatin influence gene expression by changing how\naccessible the chromatin is to transcription. A specific modification of\na specific histone protein is called a histone mark.\nThis track shows the levels of enrichment of the H3K27Ac histone mark across the genome as determined by a\nChIP-seq assay.  The H3K27Ac histone mark is the acetylation of lysine 27 of the H3 histone\nprotein, and it is thought to enhance transcription possibly by blocking the\nspread of the repressive histone mark H3K27Me3.  Additional histone marks and other chromatin \nassociated ChIP-seq data is available at the \n<A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeBroadChipSeq>Broad Histone</A> page.  \n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that\nare part of the <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Bernstein Lab at the Broad Institute. The Bernstein lab is part of \nthe ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "Gm12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalGm12878H3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HepG2",
+            "color": "rgb(212,255,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHepg2H3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HMEC",
+            "color": "rgb(120,235,120)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHmecH3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(120,235,204)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHsmmH3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHuvecH3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalK562H3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalNhekH3k27ac.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalNhlfH3k27ac.wib"
+            }
+          }
+        ]
+      },
+      "description": "ENCODE Enhancer- and Promoter-Associated Histone Mark (H3K27Ac) on 8 Cell Lines",
+      "category": ["Regulation"]
+    },
+    {
+      "trackId": "hg18-wgEncodeRegMarkPromoter",
+      "name": "Layered H3K4Me3",
+      "type": "MultiQuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "metadata": {
+        "multiWigContainer": true,
+        "ucsc": {
+          "aggregate": "transparentOverlay",
+          "configurable": "on",
+          "container": "multiWig",
+          "dragAndDrop": "subTracks",
+          "html": "<H2>Description</H2>\n<p>\nChemical modifications (e.g. methylation and acylation) to the histone proteins\npresent in chromatin influence gene expression by changing how\naccessible the chromatin is to transcription. A specific modification of\na specific histone protein is called a histone mark.\nThis track shows the levels of enrichment of the H3K4Me3 histone mark across the genome as determined by a\nChIP-seq assay. The H3K4Me3 histone mark is the tri-methylation of lysine 4 of the H3 histone protein,\nand it is associated with promoters that are active or poised to be\nactivated.  Additional histone marks and other chromatin associated ChIP-seq data is available at \nthe <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeBroadChipSeq>Broad Histone</A> page.  \n</p>\n<H2>Display conventions</H2>\n<p>By default this track uses a transparent overlay method of displaying data from a number of cell \nlines in the same vertical space.  Each of the cell lines in this track is associated with a particular\ncolor, and these cell line colors are consistent across all tracks that\nare part of the <A HREF=https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=wgEncodeReg>ENCODE Regulation</a> supertrack.\nThese colors are relatively light and saturated so as to work best with the transparent overlay.  \nUnfortunately, outside the ENCODE Regulation tracks, older cell line\ncolor conventions are used that don't match the cell line colors used in\nthe ENCODE Regulation tracks. The older colors were not used in the\nENCODE Regulation tracks because they were too dark for the transparent\noverlay.\n</p>\n<h2>Credits</h2>\n<p>\nThis track shows data from the Bernstein Lab at the Broad Institute. The Bernstein lab is part of \nthe ENCODE consortium. \n</p>\n<H2> Data Release Policy </H2>\n<P>Data users may freely use ENCODE data, but may not, without prior\nconsent, submit publications that use an unpublished ENCODE dataset until\nnine months following the release of the dataset.  This date is listed in\nthe <EM>Restricted Until</EM> column, above.  The full data release policy\nfor ENCODE is available\n<A TARGET=_BLANK HREF=\"https://genome.ucsc.edu/ENCODE/terms.html\" TARGET=_BLANK>here</A>.</P>\n\n",
+          "longLabel": "ENCODE Promoter-Associated Histone Mark (H3K4Me3) on 9 Cell Lines",
+          "maxHeightPixels": "100:30:11",
+          "priority": "1.4",
+          "shortLabel": "Layered H3K4Me3",
+          "showSubtrackColorOnUi": "on",
+          "superTrack": "wgEncodeReg full",
+          "track": "wgEncodeRegMarkPromoter",
+          "type": "wig 0 30000",
+          "viewLimits": "0:100",
+          "visibility": "full",
+          "windowingFunction": "mean"
+        }
+      },
+      "displays": [
+        {
+          "type": "MultiLinearWiggleDisplay",
+          "defaultRendering": "multixyplot"
+        }
+      ],
+      "adapter": {
+        "type": "MultiWiggleAdapter",
+        "subadapters": [
+          {
+            "type": "BigWigAdapter",
+            "name": "Gm12878",
+            "color": "rgb(255,128,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalGm12878H3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "H1 ES",
+            "color": "rgb(255,212,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalH1hescH3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HepG2",
+            "color": "rgb(212,255,128)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHepg2H3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HMEC",
+            "color": "rgb(120,235,120)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHmecH3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HSMM",
+            "color": "rgb(120,235,204)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHsmmH3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "HUVEC",
+            "color": "rgb(128,212,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalHuvecH3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "K562",
+            "color": "rgb(128,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalK562H3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHEK",
+            "color": "rgb(212,128,255)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalNhekH3k4me3.wib"
+            }
+          },
+          {
+            "type": "BigWigAdapter",
+            "name": "NHLF",
+            "color": "rgb(255,128,212)",
+            "bigWigLocation": {
+              "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/wib/wgEncodeBroadChipSeqSignalNhlfH3k4me3.wib"
+            }
+          }
+        ]
+      },
+      "description": "ENCODE Promoter-Associated Histone Mark (H3K4Me3) on 9 Cell Lines",
+      "category": ["Regulation"]
+    },
+    {
+      "trackId": "hg18-bamAll",
+      "name": "Neandertal Cntgs - All",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/all-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Contigs Generated from All Data",
+          "parent": "ntSeqContigs on",
+          "shortLabel": "All",
+          "subGroups": "sample=All",
+          "track": "bamAll",
+          "html": ""
+        }
+      },
+      "description": "Contigs Generated from All Data",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-ceuBcellRNASeqBW",
+      "name": "B-Cell Transcriptome - B-Cell Coverage",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/ceuBcellRNASeqBW.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "autoScale": "on",
+          "configurable": "on",
+          "html": "<h2>Description</h2>\n\n<p>This track represents RNA-Seq data (Toung, et al. 2011) of cultured human B-cells from 20 unrelated individuals from\nthe <a href=\"https://cephb.fr/en/index.php\" target=\"_blank\">Center d'Etude du Polymorphisme Humain (CEPH)</a> \ncollection (Dausset, et al. 1990). RNA-Seq is a high-throughput sequencing-based method for \ncharacterizing and quantifying transcriptomes. Briefly, the mRNA population of RNA by poly(A)+ \nselection was isolated, converted to a library of cDNA fragments with adaptors attached, and \nsequenced the cDNA library using Illumina 1G Genome Analyzer to a depth of approximately 40 million \n50 base-pair reads per sample. To characterize the overall gene expression landscape, all sequences \nwere pooled to create an 879 million read dataset.</p>\n\n<p>Reads were mapped to the human genome using Bowtie (Langmead, et al. 2009) and splice junctions \nwere detected using Tophat (Trapnell, et al. 2009). The coverage or number of reads aligning to each\nbase in the genome is displayed on one track. Splice junctions are also denoted on a separate track.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>This track is a multi-view composite track that contains multiple data types (views). For each \nview, there are multiple subtracks that display individually on the browser. Instructions for \nconfiguring multi-view tracks are <a href=\"/goldenPath/help/multiView.html\">\nhere</a>. The following views are in this track:</p>\n\n<p><em>Coverage</em></p>\n\n<ul> \n <li>Density graph (wiggle) of coverage or reads per base.</li> \n</ul>\n\n<p><em>Junction Reads</em></p>\n\n<ul> \n <li>Alignment positions of junction sites.</li>\n</ul>\n\n<h2>Methods</h2>\n\n<p>Immortalized B cell lines for 20 European-derived individuals from the Utah pedigrees of the\n<a href=\"https://cephb.fr/en/index.php\" target=\"_blank\">Center d'Etude du Polymorphisme Humain (CEPH)</a> \ncollection were obtained from Coriell Cell Repositories. No individuals were known to be blood \nrelatives, and there is no known history of major medical illness. Specifically, the individuals are\nGM06985, GM07000, GM07034, GM07055, GM07056, GM07345, GM11832, GM11839, GM11992, GM11993, GM11994, \nGM12056, GM12145, GM12155, GM12716, GM12717, GM12750, GM12813, GM12872 and GM12891. The dataset \nconsists of 10 men and 10 women.</p>\n\n<p>Cells were grown to a density of 5x105 cells/mL in RPMI 1640 supplemented with 15% fetal bovine\nserum, 100 units/mL penicillin-streptomycin, and 2 mM L-glutamine. Cells were harvested 24 hours\nafter addition of fresh medium. Total RNA was extracted from cell pellets using the RNeasy Mini-Kit\nwith DNase treatment (Qiagen).</p>\n\n<p>RNA-Seq was performed as recommended by the manufacturer (Illumina). Briefly, polyA mRNA was\nfragmented and first strand cDNA prepared using random hexamers. Following second strand cDNA\nsynthesis, end repair, addition of a single A base, adaptor ligation, agarose gel isolation of ~200\nbase-pair cDNA and PCR amplification of the ~200 base-pair cDNA, the samples were sequenced using\nthe Illumina 1G Genome Analyzer to a coverage of approximately 40 million reads per sample.</p>\n\n<p>Across the 20 samples, 43,819,745 + 8,194,875 (mean + standard deviation) reads were obtained.\nAll reads from each sample were pooled to form a dataset consisting of 878,668,290 random reads.\nSequence reads were mapped to the reference human genome sequence (NCBI36.1/hg18 assembly) using\nBowtie (Langmead, et al. 2009) and Tophat (Trapnell, et al. 2009).</p>\n\n<h2>Verification</h2>\n\n<p>Correlation to microarray data R = 0.59</p>\n\n<h2>Credits</h2>\n\n<p>Cheung Lab: Jonathan M. Toung, Michael Morley, Mingyao Li, Vivian G. Cheung, Alan Bruzel, Denis\nSmirnov.</p>\n\n<p>Contact: Jonathan M. Toung.</p>\n\n<h2>References</h2>\n\n<p>Dausset J, Cann H, Cohen D, Lathrop M, Lalouel JM, White R.\n<a href=\"https://www.sciencedirect.com/science/article/pii/088875439090491C\" target=_blank>\nCentre d'etude du polymorphisme humain (CEPH): collaborative\ngenetic mapping of the human genome</a>. <i>Genomics</i>. 1990 Mar;6(3):575-7.</p>\n\n<p>Langmead B, Trapnell C, Pop M, Salzberg SL. <a href=\"https://genomebiology.biomedcentral.com/articles/10.1186/gb-2009-10-3-r25\"\ntarget=_blank>\nUltrafast and memory-efficient alignment of short DNA sequences to the human genome</a>. <i>Genome \nBiol</i>. 2009 Mar 4;10(3):R25.</p>\n\n<p>Toung JM, Morley M, Li M, Cheung VG. <a href=\"https://genome.cshlp.org/content/21/6/991\"\ntarget=_blank>\nRNA-sequence analysis of human B-cells.</a> \n<i>Genome Res.</i> 2011 Jun;21(6):991-8.</p>\n\n<p>Trapnell C, Pachter L, Salzberg SL.\n<a href=\"https://academic.oup.com/bioinformatics/article/25/9/1105/203994\"\ntarget=_blank>TopHat: discovering splice junctions with RNA-Seq</a>. <i>Bioinformatics</i>. \n2009 May 1;25(9):1105-11.</p>\n\n",
+          "longLabel": "B-Cell RNA-Seq Coverage",
+          "maxHeightPixels": "200:100:20",
+          "parent": "ceuBcellComposite",
+          "priority": "1",
+          "shortLabel": "B-Cell Coverage",
+          "track": "ceuBcellRNASeqBW",
+          "type": "bigWig 0 716249"
+        }
+      },
+      "description": "B-Cell RNA-Seq Coverage",
+      "category": ["Expression"]
+    },
+    {
+      "trackId": "hg18-bamSLFeld1",
+      "name": "Neandertal Seq - Feld1 Sequence",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/SLFeld1.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Feld1 Sequence Reads",
+          "parent": "ntSeqReads",
+          "shortLabel": "Feld1 Sequence",
+          "subGroups": "sample=Feld1",
+          "track": "bamSLFeld1",
+          "html": ""
+        }
+      },
+      "description": "Feld1 Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamMMS9MbutiPygmy",
+      "name": "Modern Human Seq - Mbuti Pygmy",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS9_HGDP00456_Mbuti_Pygmy.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Mbuti Pygmy (HGDP00456) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Mbuti Pygmy",
+          "subGroups": "sample=b2MPygmy",
+          "track": "bamMMS9MbutiPygmy",
+          "html": ""
+        }
+      },
+      "description": "Mbuti Pygmy (HGDP00456) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamMMS7",
+      "name": "Modern Human Seq - San Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/humans/MMS7_HGDP01029_San.paired.qualfilt.rmdup.entropy1.0.sort.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "San (HGDP01029) Sequence Reads",
+          "parent": "ntModernHumans",
+          "shortLabel": "San Seq",
+          "subGroups": "sample=a1San",
+          "track": "bamMMS7",
+          "html": ""
+        }
+      },
+      "description": "San (HGDP01029) Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-decodeSexAveraged",
+      "name": "Sex Avg",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/SexAveraged.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "109,51,43",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, sex-average",
+          "parent": "avgView",
+          "priority": "1",
+          "shortLabel": "Sex Avg",
+          "subGroups": "view=avg",
+          "track": "decodeSexAveraged",
+          "type": "bigWig 0.0 108.804",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, sex-average",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-wgEncodeCrgMapabilityAlign36mer",
+      "name": "CRG GEM Alignability - CRG Align 36",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/wgEncodeCrgMapabilityAlign36mer.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "longLabel": "Mappability - CRG GEM Alignability of 36mers with no more than 2 mismatches",
+          "parent": "wgEncodeMapabilityViewCRGMAP",
+          "shortLabel": "CRG Align 36",
+          "subGroups": "view=CRGMAP win=w036",
+          "track": "wgEncodeCrgMapabilityAlign36mer",
+          "type": "bigWig 0.00 1.00",
+          "html": ""
+        }
+      },
+      "description": "Mappability - CRG GEM Alignability of 36mers with no more than 2 mismatches",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamFeld1",
+      "name": "Neandertal Cntgs - Feld1 Contigs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/Feld1-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Feld1 Contigs",
+          "parent": "ntSeqContigs off",
+          "shortLabel": "Feld1 Contigs",
+          "subGroups": "sample=Feld1",
+          "track": "bamFeld1",
+          "html": ""
+        }
+      },
+      "description": "Feld1 Contigs",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-phastBiasPosteriors3",
+      "name": "Posteriors - human posterior",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/phastBiasPosteriors3.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "phastBias gBGC posterior probability on human branch",
+          "parent": "phastBiasPosteriors",
+          "priority": "2",
+          "shortLabel": "human posterior",
+          "subGroups": "view=POST",
+          "track": "phastBiasPosteriors3",
+          "html": ""
+        }
+      },
+      "description": "phastBias gBGC posterior probability on human branch",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "hg18-bamMMS12Melanesian",
+      "name": "Modern Human Seq - Melanesian Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS12_HGDP00491_Melanesian.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Melanesian (HGDP00491) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Melanesian Seq",
+          "subGroups": "sample=c3Mel",
+          "track": "bamMMS12Melanesian",
+          "html": ""
+        }
+      },
+      "description": "Melanesian (HGDP00491) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamSLMez1",
+      "name": "Neandertal Seq - Mez1 Sequence",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/SLMez1.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Mez1 Sequence Reads",
+          "parent": "ntSeqReads",
+          "shortLabel": "Mez1 Sequence",
+          "subGroups": "sample=Mez1",
+          "track": "bamSLMez1",
+          "html": ""
+        }
+      },
+      "description": "Mez1 Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-decodeSexAveragedCarrier",
+      "name": "Sex Avg - Sex Avg Carry",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/SexAveragedCarrier.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "209,45,51",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, sex-average carrier",
+          "parent": "avgView off",
+          "priority": "2",
+          "shortLabel": "Sex Avg Carry",
+          "subGroups": "view=avg",
+          "track": "decodeSexAveragedCarrier",
+          "type": "bigWig 0.0 76.046",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, sex-average carrier",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamMMS6",
+      "name": "Modern Human Seq - Yoruba Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/humans/MMS6_HGDP00927_Yoruba.paired.qualfilt.rmdup.entropy1.0.sort.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Yoruba (HGDP00927) Sequence Reads",
+          "parent": "ntModernHumans",
+          "shortLabel": "Yoruba Seq",
+          "subGroups": "sample=b2Yoruba",
+          "track": "bamMMS6",
+          "html": ""
+        }
+      },
+      "description": "Yoruba (HGDP00927) Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-wgEncodeCrgMapabilityAlign40mer",
+      "name": "CRG GEM Alignability - CRG Align 40",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/wgEncodeCrgMapabilityAlign40mer.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "longLabel": "Mappability - CRG GEM Alignability of 40mers with no more than 2 mismatches",
+          "parent": "wgEncodeMapabilityViewCRGMAP",
+          "shortLabel": "CRG Align 40",
+          "subGroups": "view=CRGMAP win=w040",
+          "track": "wgEncodeCrgMapabilityAlign40mer",
+          "type": "bigWig 0.00 1.00",
+          "html": ""
+        }
+      },
+      "description": "Mappability - CRG GEM Alignability of 40mers with no more than 2 mismatches",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamMMS4",
+      "name": "Modern Human Seq - Han Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/humans/MMS4_HGDP00778_Han.paired.qualfilt.rmdup.entropy1.0.sort.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Han (HGDP00778) Sequence Reads",
+          "parent": "ntModernHumans",
+          "shortLabel": "Han Seq",
+          "subGroups": "sample=c3Han",
+          "track": "bamMMS4",
+          "html": ""
+        }
+      },
+      "description": "Han (HGDP00778) Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamMez1",
+      "name": "Neandertal Cntgs - Mez1 Contigs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/Mez1-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Mez1 Contigs",
+          "parent": "ntSeqContigs off",
+          "shortLabel": "Mez1 Contigs",
+          "subGroups": "sample=Mez1",
+          "track": "bamMez1",
+          "html": ""
+        }
+      },
+      "description": "Mez1 Contigs",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamMMS16Papuan",
+      "name": "Modern Human Seq - Papuan Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS16_HGDP00551_Papuan.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Papuan (HGDP00551) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Papuan Seq",
+          "subGroups": "sample=d4Papuan",
+          "track": "bamMMS16Papuan",
+          "html": ""
+        }
+      },
+      "description": "Papuan (HGDP00551) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-decodeSexAveragedNonCarrier",
+      "name": "Sex Avg - Sex Avg Non-carry",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/SexAveragedNonCarrier.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "252,79,89",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, sex-average non-carrier",
+          "parent": "avgView off",
+          "priority": "3",
+          "shortLabel": "Sex Avg Non-carry",
+          "subGroups": "view=avg",
+          "track": "decodeSexAveragedNonCarrier",
+          "type": "bigWig 0.0 113.023",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, sex-average non-carrier",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamSLSid1253",
+      "name": "Neandertal Seq - Sid1253 Sequence",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/SLSid1253.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Sid1253 Sequence Reads",
+          "parent": "ntSeqReads",
+          "shortLabel": "Sid1253 Sequence",
+          "subGroups": "sample=Sid1253",
+          "track": "bamSLSid1253",
+          "html": ""
+        }
+      },
+      "description": "Sid1253 Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-wgEncodeCrgMapabilityAlign50mer",
+      "name": "CRG GEM Alignability - CRG Align 50",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/wgEncodeCrgMapabilityAlign50mer.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "longLabel": "Mappability - CRG GEM Alignability of 50mers with no more than 2 mismatches",
+          "parent": "wgEncodeMapabilityViewCRGMAP",
+          "shortLabel": "CRG Align 50",
+          "subGroups": "view=CRGMAP win=w050",
+          "track": "wgEncodeCrgMapabilityAlign50mer",
+          "type": "bigWig 0.00 1.00",
+          "html": ""
+        }
+      },
+      "description": "Mappability - CRG GEM Alignability of 50mers with no more than 2 mismatches",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-decodeFemale",
+      "name": "Female",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/Female.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "200,60,200",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, female",
+          "parent": "femaleView",
+          "priority": "4",
+          "shortLabel": "Female",
+          "subGroups": "view=female",
+          "track": "decodeFemale",
+          "type": "bigWig 0.0 90.808",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, female",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamMMS5",
+      "name": "Modern Human Seq - Papuan Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/humans/MMS5_HGDP00542_Papuan.paired.qualfilt.rmdup.entropy1.0.sort.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Papuan (HGDP00542) Sequence Reads",
+          "parent": "ntModernHumans",
+          "shortLabel": "Papuan Seq",
+          "subGroups": "sample=d4Papuan",
+          "track": "bamMMS5",
+          "html": ""
+        }
+      },
+      "description": "Papuan (HGDP00542) Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamMMS11Sardinian",
+      "name": "Modern Human Seq - Sardinian Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS11_HGDP00665_Sardinian.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Sardinian (HGDP00665) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Sardinian Seq",
+          "subGroups": "sample=e5Sar",
+          "track": "bamMMS11Sardinian",
+          "html": ""
+        }
+      },
+      "description": "Sardinian (HGDP00665) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamSid1253",
+      "name": "Neandertal Cntgs - Sid1253 Contigs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/Sid1253-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Sid1253 Contigs",
+          "parent": "ntSeqContigs off",
+          "shortLabel": "Sid1253 Contigs",
+          "subGroups": "sample=Sid1253",
+          "track": "bamSid1253",
+          "html": ""
+        }
+      },
+      "description": "Sid1253 Contigs",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamSLVi33dot16",
+      "name": "Neandertal Seq - Vi33.16 Sequence",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/SLVi33.16.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Vi33.16 Sequence Reads",
+          "parent": "ntSeqReads",
+          "shortLabel": "Vi33.16 Sequence",
+          "subGroups": "sample=Vi33dot16",
+          "track": "bamSLVi33dot16",
+          "html": ""
+        }
+      },
+      "description": "Vi33.16 Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamMMS13Cambodian",
+      "name": "Modern Human Seq - Cambodian Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS13_HGDP00711_Cambodian.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Cambodian (HGDP00711) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Cambodian Seq",
+          "subGroups": "sample=f6Cam",
+          "track": "bamMMS13Cambodian",
+          "html": ""
+        }
+      },
+      "description": "Cambodian (HGDP00711) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-wgEncodeCrgMapabilityAlign75mer",
+      "name": "CRG GEM Alignability - CRG Align 75",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/wgEncodeCrgMapabilityAlign75mer.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "longLabel": "Mappability - CRG GEM Alignability of 75mers with no more than 2 mismatches",
+          "parent": "wgEncodeMapabilityViewCRGMAP",
+          "shortLabel": "CRG Align 75",
+          "subGroups": "view=CRGMAP win=w075",
+          "track": "wgEncodeCrgMapabilityAlign75mer",
+          "type": "bigWig 0.00 1.00",
+          "html": ""
+        }
+      },
+      "description": "Mappability - CRG GEM Alignability of 75mers with no more than 2 mismatches",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-decodeFemaleCarrier",
+      "name": "Female - Female Carry",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/FemaleCarrier.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "187,102,255",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, female carrier",
+          "parent": "femaleView",
+          "priority": "5",
+          "shortLabel": "Female Carry",
+          "subGroups": "view=female",
+          "track": "decodeFemaleCarrier",
+          "type": "bigWig 0.0 77.704",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, female carrier",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamMMS8",
+      "name": "Modern Human Seq - French Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/humans/MMS8_HGDP00521_French.paired.qualfilt.rmdup.entropy1.0.sort.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "French (HGDP00521) Sequence Reads",
+          "parent": "ntModernHumans",
+          "shortLabel": "French Seq",
+          "subGroups": "sample=e5French",
+          "track": "bamMMS8",
+          "html": ""
+        }
+      },
+      "description": "French (HGDP00521) Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamVi33dot16",
+      "name": "Neandertal Cntgs - Vi33.16 Contigs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/Vi33.16-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Vi33.16 Contigs",
+          "parent": "ntSeqContigs off",
+          "shortLabel": "Vi33.16 Contigs",
+          "subGroups": "sample=Vi33dot16",
+          "track": "bamVi33dot16",
+          "html": ""
+        }
+      },
+      "description": "Vi33.16 Contigs",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamSLVi33dot25",
+      "name": "Neandertal Seq - Vi33.25 Sequence",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/SLVi33.25.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Vi33.25 Sequence Reads",
+          "parent": "ntSeqReads",
+          "shortLabel": "Vi33.25 Sequence",
+          "subGroups": "sample=Vi33dot25",
+          "track": "bamSLVi33dot25",
+          "html": ""
+        }
+      },
+      "description": "Vi33.25 Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-wgEncodeCrgMapabilityAlign100mer",
+      "name": "CRG GEM Alignability - CRG Align 100",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/wgEncodeCrgMapabilityAlign100mer.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,0",
+          "longLabel": "Mappability - CRG GEM Alignability of 100mers with no more than 2 mismatches",
+          "parent": "wgEncodeMapabilityViewCRGMAP",
+          "shortLabel": "CRG Align 100",
+          "subGroups": "view=CRGMAP win=w100",
+          "track": "wgEncodeCrgMapabilityAlign100mer",
+          "type": "bigWig 0.00 1.00",
+          "html": ""
+        }
+      },
+      "description": "Mappability - CRG GEM Alignability of 100mers with no more than 2 mismatches",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-decodeFemaleNonCarrier",
+      "name": "Female - Female Non-carry",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/FemaleNonCarrier.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "148,128,200",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, female non-carrier",
+          "parent": "femaleView",
+          "priority": "6",
+          "shortLabel": "Female Non-carry",
+          "subGroups": "view=female",
+          "track": "decodeFemaleNonCarrier",
+          "type": "bigWig 0.0 93.929",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, female non-carrier",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamMMS10NativeAmerican",
+      "name": "Modern Human Seq - Native American",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS10_HGDP00998_NativeAmerican.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Native American (HGDP00998) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Native American",
+          "subGroups": "sample=g7NativeAm",
+          "track": "bamMMS10NativeAmerican",
+          "html": ""
+        }
+      },
+      "description": "Native American (HGDP00998) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamVi33dot25",
+      "name": "Neandertal Cntgs - Vi33.25 Contigs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/Vi33.25-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Vi33.25 Contigs",
+          "parent": "ntSeqContigs off",
+          "shortLabel": "Vi33.25 Contigs",
+          "subGroups": "sample=Vi33dot25",
+          "track": "bamVi33dot25",
+          "html": ""
+        }
+      },
+      "description": "Vi33.25 Contigs",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamSLVi33dot26",
+      "name": "Neandertal Seq - Vi33.26 Sequence",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/SLVi33.26.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Vi33.26 Sequence Reads",
+          "parent": "ntSeqReads",
+          "shortLabel": "Vi33.26 Sequence",
+          "subGroups": "sample=Vi33dot26",
+          "track": "bamSLVi33dot26",
+          "html": ""
+        }
+      },
+      "description": "Vi33.26 Sequence Reads",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-decodeMale",
+      "name": "Male",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/Male.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,81,200",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, male",
+          "parent": "maleView",
+          "priority": "7",
+          "shortLabel": "Male",
+          "subGroups": "view=male",
+          "track": "decodeMale",
+          "type": "bigWig 0.0 144.958",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, male",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamMMS14Mongolian",
+      "name": "Modern Human Seq - Mongolian Seq",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/modernHumanSeq/MMS14_HGDP01224_Mongolian.q30_ec1.0_rmdup.hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Mongolian (HGDP01224) Sequence Reads",
+          "parent": "denisovaModernHumans",
+          "shortLabel": "Mongolian Seq",
+          "subGroups": "sample=h8Mon",
+          "track": "bamMMS14Mongolian",
+          "html": ""
+        }
+      },
+      "description": "Mongolian (HGDP01224) Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-bamVi33dot26",
+      "name": "Neandertal Cntgs - Vi33.26 Contigs",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/seqAlis/Vi33.26-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "Vi33.26 Contigs",
+          "parent": "ntSeqContigs off",
+          "shortLabel": "Vi33.26 Contigs",
+          "subGroups": "sample=Vi33dot26",
+          "track": "bamVi33dot26",
+          "html": ""
+        }
+      },
+      "description": "Vi33.26 Contigs",
+      "category": ["Neandertal Assembly and Analysis"]
+    },
+    {
+      "trackId": "hg18-phastBiasChimpPosteriors3",
+      "name": "Posteriors - chimp posterior",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/bbi/phastBiasChimpPosteriors3.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "longLabel": "phastBias gBGC posterior probability on chimp branch",
+          "parent": "phastBiasPosteriors",
+          "priority": "8",
+          "shortLabel": "chimp posterior",
+          "subGroups": "view=POST",
+          "track": "phastBiasChimpPosteriors3",
+          "html": ""
+        }
+      },
+      "description": "phastBias gBGC posterior probability on chimp branch",
+      "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "hg18-decodeMaleCarrier",
+      "name": "Male - Male Carry",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/MaleCarrier.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,100,180",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, male carrier",
+          "parent": "maleView",
+          "priority": "8",
+          "shortLabel": "Male Carry",
+          "subGroups": "view=male",
+          "track": "decodeMaleCarrier",
+          "type": "bigWig 0.0 204.214",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, male carrier",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-decodeMaleNonCarrier",
+      "name": "Male - Male Non-carry",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/MaleNonCarrier.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "0,128,140",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, male non-carrier",
+          "parent": "maleView",
+          "priority": "9",
+          "shortLabel": "Male Non-carry",
+          "subGroups": "view=male",
+          "track": "decodeMaleNonCarrier",
+          "type": "bigWig 0.0 151.353",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, male non-carrier",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-decodeMaleFemaleDifference",
+      "name": "Male-Female - Sex Difference",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/MaleFemaleDifference.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,0,0",
+          "color": "0,0,128",
+          "configurable": "on",
+          "longLabel": "deCODE recombination map, male minus female difference",
+          "parent": "diffView",
+          "priority": "10",
+          "shortLabel": "Sex Difference",
+          "subGroups": "view=diff",
+          "track": "decodeMaleFemaleDifference",
+          "type": "bigWig -65 94",
+          "viewLimits": "-20:20",
+          "html": ""
+        }
+      },
+      "description": "deCODE recombination map, male minus female difference",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-hapMapRelease24CombinedRecombMap",
+      "name": "HapMap",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/hapMapRelease24CombinedRecombMap.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "50,50,50",
+          "configurable": "on",
+          "longLabel": "HapMap Release 24 combined recombination map",
+          "parent": "otherMaps",
+          "priority": "13",
+          "shortLabel": "HapMap",
+          "subGroups": "view=other",
+          "track": "hapMapRelease24CombinedRecombMap",
+          "type": "bigWig -1.0 91.6",
+          "html": ""
+        }
+      },
+      "description": "HapMap Release 24 combined recombination map",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-hapMapRelease24CEURecombMap",
+      "name": "HapMap - HapMap CEU",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/hapMapRelease24CEURecombMap.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "80,80,80",
+          "configurable": "on",
+          "longLabel": "HapMap Release 24 CEU recombination map",
+          "parent": "otherMaps",
+          "priority": "14",
+          "shortLabel": "HapMap CEU",
+          "subGroups": "view=other",
+          "track": "hapMapRelease24CEURecombMap",
+          "type": "bigWig 0.0 111.0",
+          "html": ""
+        }
+      },
+      "description": "HapMap Release 24 CEU recombination map",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-hapMapRelease24YRIRecombMap",
+      "name": "HapMap - HapMap YRI",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/decode/hapMapRelease24YRIRecombMap.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "color": "110,110,110",
+          "configurable": "on",
+          "longLabel": "HapMap Release 24 YRI recombination map",
+          "parent": "otherMaps",
+          "priority": "15",
+          "shortLabel": "HapMap YRI",
+          "subGroups": "view=other",
+          "track": "hapMapRelease24YRIRecombMap",
+          "type": "bigWig 0.0 72.21",
+          "html": ""
+        }
+      },
+      "description": "HapMap Release 24 YRI recombination map",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg18-bamSLDenisova",
+      "name": "Denisova",
+      "type": "AlignmentsTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BamAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/SL3003_SL3004_100122-hg18.bam",
+        "sequenceAdapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/goldenPath/hg18/bigZips/hg18.chrom.sizes"
+        }
+      },
+      "metadata": {
+        "ucsc": {
+          "aliQualRange": "0:60",
+          "bamColorMode": "gray",
+          "bamGrayMode": "aliQual",
+          "baseColorDefault": "diffBases",
+          "baseColorUseSequence": "lfExtra",
+          "group": "denisova",
+          "indelDoubleInsert": "on",
+          "indelQueryInsert": "on",
+          "longLabel": "Denisova Sequence Reads",
+          "maxWindowToDraw": "1000000",
+          "noColorTag": ".",
+          "pairEndsByName": "on",
+          "shortLabel": "Denisova",
+          "showDiffBasesAllScales": ".",
+          "showDiffBasesMaxZoom": "100",
+          "showNames": "off",
+          "track": "bamSLDenisova",
+          "type": "bam",
+          "visibility": "hide",
+          "html": "<!-- Display image in righthand corner -->\n<TABLE ALIGN=RIGHT BORDER=0 WIDTH=441 HEIGHT=655>\n  <TR><TD ALIGN=RIGHT>\n    <IMG SRC=\"https://genome.ucsc.edu/images/denisovaCave.jpg\" WIDTH=426 HEIGHT=640\n ALT=\"Denisova cave\">\n  </TD></TR>\n  <TR><TD ALIGN=RIGHT>\n    <FONT SIZE=-1>Denisova cave entrance in the Altai Mountains\n of Siberia, Russia where the bones were found from which\n DNA was sequenced\n    </FONT>\n    <FONT SIZE=-2> (Copyright (C) 2010, Johannes Krause)\n    </FONT>\n  </TD></TR>\n</TABLE>\n\n<H2>Description</H2>\n<P>\nThe Denisova track shows Denisova sequence reads mapped to the\nhuman genome. The Denisova sequence was generated from a phalanx bone\nexcavated from Denisova Cave in the Altai Mountains in southern\nSiberia.\n</P>\n\n<H2>Methods</H2>\n<P>\nDenisova sequence libraries were prepared by treating DNA extracted\nfrom a single phalanx bone with two enzymes: uracil-DNA-glycosylase,\nwhich removes uracil residues from DNA to leave abasic sites, and\nendonuclease VIII, which cuts DNA at the 59 and 39 sides of abasic\nsites. Subsequent incubation with T4 polynucleotide kinase and T4 DNA\npolymerase was used to generate phosphorylated blunt ends that are\namenable to adaptor ligation. Because the great majority of uracil\nresidues occur close to the ends of ancient DNA molecules, this\nprocedure leads to only a moderate reduction in average length of the\nmolecules in the library, but a several-fold reduction in\nuracil-derived nucleotide misincorporation. Reads were aligned\nto human sequence Mar. 2006 (NCBI36/hg18) using the\n<A HREF=\"https://bio-bwa.sourceforge.net/\"\nTARGET=_blank>Burrows-Wheeler Aligner.</A>\n</P>\n<P>\n<A HREF=\"ftp://hgdownload.soe.ucsc.edu/gbdb/hg18/denisova/\">Download</A> the \nDenisova track data sets from the Genome Browser downloads server.\n</P>\n\n<H2>References</H2>\n<P>\nBriggs A.W., Stenzel U., Meyer M., Krause J., Kircher M., P&#228;&#228;bo S. \n<A HREF=\"https://academic.oup.com/nar/article/38/6/e87/3112544\"\nTARGET=_blank> Removal of deaminated cytosines and detection of in vivo\nmethylation in ancient DNA</A>.\n<EM>Nucleic Acids Res.</EM> 2009 Dec 22:38(6) e87.\n</P>\n<P>\nReich D., Green R.E., Kircher M., Krause J., Patterson N., Durand E.Y., Viola B., \nBriggs A.W., Stenzel U., Johnson P.L.F. <EM>et al</EM>.\n<A HREF=\"https://www.nature.com/articles/nature09710\"\nTARGET=_blank>\nGenetic history of an archaic hominin group from Denisova Cave in Siberia</A>.\n<EM>Nature.</EM> 2010 Dec 23;468:1053-1060.\n</P>\n\n<H2>Credits</H2>\n<P>\nThis track was produced at UCSC using data generated by the Max Planck\nInstitute for Evolutionary Anthropology.\n</P>\n"
+        }
+      },
+      "description": "Denisova Sequence Reads",
+      "category": ["Denisova Assembly and Analysis"]
+    },
+    {
       "trackId": "hg18-geneReviews",
       "name": "GeneReviews",
       "type": "FeatureTrack",
@@ -80,6 +1737,36 @@
           "mouseover": "jexl:`${get(feature,'name')} disease(s): ${get(feature,'diseases')}`"
         }
       ]
+    },
+    {
+      "trackId": "hg18-ntSssZScorePMVar",
+      "name": "Sel Swp Scan (S)",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg18"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg18/neandertal/bbi/ntSssZScorePMVar.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "autoScale": "off",
+          "chromosomes": "chr1,chr2,chr3,chr4,chr5,chr6,chr7,chr8,chr9,chr10,chr11,chr12,chr13,chr14,chr15,chr16,chr17,chr18,chr19,chr20,chr21,chr22,chrX",
+          "group": "neandertal",
+          "longLabel": "Selective Sweep Scan (S) on Neandertal vs. Human Polymorphisms (Z-Score +- Variance)",
+          "maxHeightPixels": "128:32:11",
+          "shortLabel": "Sel Swp Scan (S)",
+          "track": "ntSssZScorePMVar",
+          "type": "bigWig -8.8332 33.637199",
+          "viewLimits": "-5:1",
+          "visibility": "hide",
+          "windowingFunction": "mean",
+          "yLineMark": "-2",
+          "yLineOnOff": "on",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows the S score (Z-score +- variance) for positive selection in humans within a 100 kb\nwindow surrounding each polymorphic position in the five modern human\nsequences and the human reference genome as described in Green <em>et al.</em>,\nSupplemental Online Material Text 13, Burbano <em>et al.</em>. \nA positive score indicates more derived alleles in Neandertal than\nexpected, given the frequency of derived alleles in human. A negative\nscore indicates fewer derived alleles in Neandertal, and may indicate an \nepisode of positive selection in early humans.\n</P>\n<P>\nTo view the polymorphic sites on which the S score was computed, open\nthe <A HREF=\"https://genome.ucsc.edu/cgi-bin/hgTracks?db=hg18&ntSssSnps=pack\">S\nSNPs</A> track.</P>\n\n<H2>Methods</H2>\n<P>\nGreen <em>et al.</em> identified single-base sites that are\npolymorphic among five modern human genomes of diverse ancestry\n(in the \n<A HREF=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?&c=chr1&g=ntModernHumanSeq\">Modern Human Seq</A> \ntrack) plus the human reference\ngenome.  CpG sites were excluded because of the higher mutation rate\nat CpG sites.\nThe ancestral or derived state of each single nucleotide polymorphism\n(SNP) was determined by comparison with the chimpanzee genome.\nThe SNPs are displayed in the \n<A HREF=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?&c=chr1&g=ntSssSnps\">S SNPs</A> track.\nThe fact that SNPs with higher frequencies of the derived\nallele in modern humans were more likely to show the derived allele in\nNeandertals was used to calculate the expected number of derived alleles in\nNeandertal within a given region of the human genome.\nThe observed numbers of derived alleles were compared to the expected\nnumbers to identify regions where the Neandertals carry fewer\nderived alleles than expected given the human allelic states.  The\nscore assigned to each SNP is\nthe <A HREF=\"https://en.wikipedia.org/wiki/Z-score\"\nTARGET=_BLANK>z-score</A> of the observed and expected counts relative\nto the variance in the number of the expected counts of derived\nalleles within the 100,000-base window around the SNP.\n</P>\n<P>\n<B>Note:</B> In order to display both the score and the variance within\nthe same track in the UCSC Genome Browser, the scores were modified as\nfollows: at the SNP position, the value displayed is the score plus\nthe variance.  At the position following the SNP position, the score\nminus the variance is displayed.  When viewing large regions (at least\n100,000 bases), the default mean+whiskers condensation of the scores\nprovides an indication of the range covered by the variance.\n</P>\n\n<H2>Reference</H2>\n<p>\nGreen RE, Krause J, Briggs AW, Maricic T, Stenzel U, Kircher M, Patterson N, Li H, Zhai W, Fritz MH\n<em>et al</em>.\n<a href=\"https://science.sciencemag.org/content/328/5979/710\" target=\"_blank\">\nA draft sequence of the Neandertal genome</a>.\n<em>Science</em>. 2010 May 7;328(5979):710-22.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/20448178\" target=\"_blank\">20448178</a>\n</p>\n"
+        }
+      },
+      "description": "Selective Sweep Scan (S) on Neandertal vs. Human Polymorphisms (Z-Score +- Variance)",
+      "category": ["Neandertal Assembly and Analysis"]
     },
     {
       "type": "FeatureTrack",
@@ -6780,19 +8467,19 @@
   "plugins": [
     {
       "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
     },
     {
       "name": "Hubs",
-      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

@@ -41,6 +41,73 @@
   ],
   "tracks": [
     {
+      "trackId": "criGri1-crisprTargets",
+      "name": "CRISPR - CRISPR Targets",
+      "type": "FeatureTrack",
+      "assemblyNames": ["criGri1"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/criGri1/crispr/crispr.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "detailsTabUrls": "_offset=/gbdb/$db/crispr/crisprDetails.tab",
+          "html": "<h2>Description</h2>\n\n<p>\nThis track shows regions of the genome within transcribed regions plus 200 bp on both sides \nand potential DNA sequences targetable by CRISPR RNA guides using the Cas9 enzyme\nfrom <em>S. pyogenes</em> (PAM: NGG).\nCRISPR target sites were annotated with predicted specificity\n(off-target effects) and predicted efficiency (on-target cleavage) by various\nalgorithms through the <a href=\"http://crispor.gi.ucsc.edu/\"\ntarget=_blank>CRISPOR</a> tool.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n\n<p>\nThe track &quot;CRISPR Regions&quot; shows the regions of the genome where target\nsites were analyzed, i.e. within transcribed regions plus 200 bp on both sides as annotated by\nOther RefSeq transcript models.</p>\n\n<p>\nThe track &quot;CRISPR Targets&quot; shows the potential target sites in these regions.\nThe target sequence of the guide is shown with a thick bar (same thickness\nas exons in gene tracks). The PAM\nmotif match (NGG) is shown with a thinner bar (same thickness as UTRs in gene tracks). Guides\nare colored to reflect both predicted specificity and efficiency. Specificity\nreflects the &quot;uniqueness&quot; of a 20-mer sequence in the genome; the less unique a\nsequence is, the more likely it is to cleave other locations of the genome\n(off-target effects). Shades of gray are used for items that are not very specific\n(MIT Specificity Score &lt;= 50). Guides that are specific (MIT Specificity &gt; 50) are \nthen color-coded by their efficiency: the frequency of cleavage at the target site \nas determined by the Doench/Fusi 2016 score (on-target efficiency). </p>\n\n<p>Shades of gray represent the sites that are hard to target specifically, as the\n20-mer is common throughout the genome:</p>\n<table class=\"stdTbl\" style=\"width:100%\">\n<tr><td style=\"width:50px; background-color:#969696\"></td><td>impossible to target: target site has at least one identical copy in the genome and was not scored</td></tr>\n<tr><td style=\"width:50px; background-color:#787878\"></td><td>hard to target: many similar sequences in the genome that alignment stopped, repeat?</td></tr>\n<tr><td style=\"width:50px; background-color:#505050\"></td><td>hard to target: target site was aligned but results in a low specificity score &lt;= 50 (see below)</td></tr>\n</table>\n\n<p>\nThe track supports filtering on the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?g=crisprTargets\">configuration\npage</a> using  MIT Specificity score, but not the Doench/Fusi 2016 score.</p>\n\n<p>Colors highlight targets that are specific in the genome (MIT specificity &gt; 50) but have different predicted efficiencies:</p>\n<table class=\"stdTbl\" style=\"width:100%\">\n<tr><td style=\"width:50px; background-color:#FF7070\"></td><td>low predicted cleavage: Doench/Fusi 2016 Efficiency percentile &lt;= 30</td></tr>\n<tr><td style=\"width:50px; background-color:#FFFF00\"></td><td>medium predicted cleavage: Doench/Fusi 2016 Efficiency percentile &gt; 30 and &lt; 55</td></tr>\n<tr><td style=\"width:50px; background-color:#00b300\"></td><td>high predicted cleavage: Doench/Fusi 2016 Efficiency &gt; 55</td></tr>\n</table><BR>\n\n<p>\nMouse-over a target site to show predicted specificity and efficiency scores:<br>\n<ol>\n<li>The MIT Specificity score summarizes all off-targets into a single number from\n0-100. The higher the number, the fewer off-target effects are expected. We\nrecommend guides with an MIT specificity &gt; 50.</li>\n<li>The efficiency score tries to predict if a guide leads to rather strong or\nweak cleavage. According to <a href=\"#References\">(Haeussler et al. 2016)</a>, the <a\nhref=\"https://portals.broadinstitute.org/gpp/public/analysis-tools/sgrna-design\" target=\"_blank\">\nDoench 2016 Efficiency score</a> should be used to select the guide with the highest\ncleavage efficiency when expressing guides from RNA Pol III Promoters such as\nU6. Scores are given as percentiles, e.g. &quot;70%&quot; means that 70% of mammalian\nguides have a score equal or lower than this guide. The raw score number is\nalso shown in parentheses after the percentile.</li>\n<li>The <a\nhref=\"https://www.crisprscan.org/\" target=\"_blank\">Moreno-Mateos 2015 Efficiency\nscore</a> should be used instead of the Doench 2016 score when transcribing the\nguide in vitro with a T7 promoter, e.g. for injections in mouse, zebrafish or\nXenopus embryos. The Moreno-Mateos score is given in percentiles and the raw value in parentheses, see the note above.</li> </ol>\n</p>\n\n<p>Click onto features to show all scores and predicted off-targets with up to\nfour mismatches. The Out-of-Frame score by <a href=\"#References\">Bae et al. 2014</a>\nis correlated with\nthe probability that mutations induced by the guide RNA will disrupt the open\nreading frame. The authors recommend out-of-frame scores &gt; 66 to create\nknock-outs with a single guide efficiently.<p>\n\n<p>Off-target sites are sorted by the CFD score (<a href=\"#References\">Doench et al. 2016</a>).\nThe higher the CFD score, the more likely there is off-target cleavage at that site. The\nlarge majority of predicted off-targets with CFD scores &lt; 0.02 were\nfalse-positives.</p>\n\n<h2>Methods</h2>\n\n<h3>Relationship between predictions and experimental data</h3>\n\n<p>\nLike most algorithms, the MIT specificity score is not always a perfect\npredictor of off-target effects. Despite low scores, many tested guides \ncaused few and/or weak off-target cleavage when tested with whole-genome assays\n(Figure 2 from <a href=\"#References\">Haeussler\net al. 2016</a>), as shown below, and the published data contains few data points\nwith high specificity scores. Overall though, the assays showed that the higher\nthe specificity score, the lower the off-target effects.</p>\n\n<img src=\"https://genome.ucsc.edu/images/crisprFig_mitScore.png\">\n\n<p>Similarly, efficiency scoring is not very accurate: guides with low\nscores can be efficient and vice versa. As a general rule, however, the higher\nthe score, the less likely that a guide is very inefficient. The\nfollowing histograms illustrate, for each type of score, how the share of\ninefficient guides drops with increasing efficiency scores:\n</p>\n\n<img src=\"https://genome.ucsc.edu/images/crisprFig_effScores.png\">\n\n<p>When reading this plot, keep in mind that both scores were evaluated on\ntheir own training data. Especially for the Moreno-Mateos score, the\nresults are too optimistic, due to overfitting. When evaluated on independent\ndatasets, the correlation of the prediction with other assays was around 25%\nlower, see <a href=\"#References\">Haeussler et al. 2016</a>. At the time of writing, there is no\nindependent dataset available yet to determine the Moreno-Mateos accuracy for\neach score percentile range.</p>\n\n<h3>Track methods</h3>\n<p>\nExons as predicted by Other RefSeq gene models were used, extended by 200 base pairs\non each side, and searched for the -NGG motif. Flanking 20-mer guide sequences were\naligned to the genome with BWA and scored with MIT Specificity scores using the\ncommand-line version of CRISPOR. Non-unique guide sequences were skipped.\nFlanking sequences were extracted from the genome and input for CRISPOR\nefficiency scoring, available from the <a href=\"http://crispor.gi.ucsc.edu/downloads/\"\ntarget=\"_blank\">CRISPOR downloads page</a>, which\nincludes the Doench 2016, Moreno-Mateos 2015 and Bae\n2014 algorithms, among others.\n</p>\n\n<H2>Data Access</H2>\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\"\ntarget=\"_blank\">Table Browser</a>.\nFor automated analysis, the genome annotation is stored in a bigBed file that\ncan be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/criGri1/crispr/\" target=\"_blank\">our download server</a>.\nThe files for this track are called <tt>crispr.bb</tt> and <tt>crisprDetails.tab</tt>. Individual\nregions or the whole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>,\nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">\nhere</a>. The tool\ncan also be used to obtain only features within a given range, e.g. <tt>bigBedToBed\nhttp://hgdownload.soe.ucsc.edu/gbdb/criGri1/crispr/crispr.bb -chrom=KE382941\n-start=0 -end=1000000 stdout</tt> </p>\n\n<h2>Credits</h2>\n\n<p>\nTrack created by Maximilian Haeussler, with helpful input from Jean-Paul Concordet (MNHN Paris) and\nAlberto Stolfi (NYU).\n</p>\n<a name=\"References\"></a>\n<h2>References</h2>\n\n<p>\nBae S, Kweon J, Kim HS, Kim JS.\n<a href=\"https://www.nature.com/articles/nmeth.3015\" target=\"_blank\">\nMicrohomology-based choice of Cas9 nuclease target sites</a>.\n<em>Nat Methods</em>. 2014 Jul;11(7):705-6.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24972169\" target=\"_blank\">24972169</a>\n</p>\n\n<p>\nDoench JG, Fusi N, Sullender M, Hegde M, Vaimberg EW, Donovan KF, Smith I, Tothova Z, Wilen C,\nOrchard R <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nbt.3437\" target=\"_blank\">\nOptimized sgRNA design to maximize activity and minimize off-target effects of CRISPR-Cas9</a>.\n<em>Nat Biotechnol</em>. 2016 Feb;34(2):184-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26780180\" target=\"_blank\">26780180</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4744125/\" target=\"_blank\">PMC4744125</a>\n</p>\n\n<p>\nHaeussler M, Sch&#246;nig K, Eckert H, Eschstruth A, Miann&#233; J, Renaud JB, Schneider-Maunoury S,\nShkumatava A, Teboul L, Kent J <em>et al</em>.\n<a href=\"https://genomebiology.biomedcentral.com/articles/10.1186/s13059-016-1012-2\"\ntarget=\"_blank\">Evaluation of off-target and on-target scoring algorithms and integration into the\nguide RNA selection tool CRISPOR</a>.\n<em>Genome Biol</em>. 2016 Jul 5;17(1):148.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27380939\" target=\"_blank\">27380939</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4934014/\" target=\"_blank\">PMC4934014</a>\n</p>\n\n<p>\nHsu PD, Scott DA, Weinstein JA, Ran FA, Konermann S, Agarwala V, Li Y, Fine EJ, Wu X, Shalem O\n<em>et al</em>.\n<a href=\"https://www.nature.com/articles/nbt.2647\" target=\"_blank\">\nDNA targeting specificity of RNA-guided Cas9 nucleases</a>.\n<em>Nat Biotechnol</em>. 2013 Sep;31(9):827-32.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/23873081\" target=\"_blank\">23873081</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3969858/\" target=\"_blank\">PMC3969858</a>\n</p>\n\n<p>\nMoreno-Mateos MA, Vejnar CE, Beaudoin JD, Fernandez JP, Mis EK, Khokha MK, Giraldez AJ.\n<a href=\"https://www.nature.com/articles/nmeth.3543\" target=\"_blank\">\nCRISPRscan: designing highly efficient sgRNAs for CRISPR-Cas9 targeting in vivo</a>.\n<em>Nat Methods</em>. 2015 Oct;12(10):982-8.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/26322839\" target=\"_blank\">26322839</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4589495/\" target=\"_blank\">PMC4589495</a>\n</p>\n",
+          "itemRgb": "on",
+          "longLabel": "CRISPR/Cas9 -NGG Targets",
+          "mouseOverField": "_mouseOver",
+          "parent": "crispr",
+          "scoreLabel": "MIT Guide Specificity Score",
+          "shortLabel": "CRISPR Targets",
+          "track": "crisprTargets",
+          "type": "bigBed 9 +",
+          "url": "http://crispor.gi.ucsc.edu/crispor.py?org=$D&pos=$S:${&pam=NGG",
+          "urlLabel": "Click here to show this guide on Crispor.org, with expression oligos, validation primers and more",
+          "visibility": "dense"
+        }
+      },
+      "description": "CRISPR/Cas9 -NGG Targets",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "criGri1-crisprTargets-LinearBasicDisplay",
+          "mouseover": "jexl:get(feature,'_mouseOver')"
+        }
+      ]
+    },
+    {
+      "trackId": "criGri1-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["criGri1"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/criGri1/bbi/gc5BaseBw/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "html": "<h2>Description</h2>\n<p>\nThe GC percent track shows the percentage of G (guanine) and C (cytosine) bases\nin 5-base windows.  High GC content is typically associated with\ngene-rich areas.\n</p>\n<p>\nThis track may be configured in a variety of ways to highlight different\napsects of the displayed information. Click the\n&quot;Graph configuration help&quot;\nlink for an explanation of the configuration options.\n\n<h2>Credits</h2>\n<p> The data and presentation of this graph were prepared by\n<a href=\"mailto:&#104;&#105;&#114;a&#109;&#64;&#115;&#111;&#101;\n.&#117;&#99;&#115;&#99;.&#101;&#100;u\">Hiram Clawson</a>.\n</p>\n\n",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "full",
+          "windowingFunction": "Mean"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "criGri1-cpgIslandExt",
       "name": "CpG Islands",
@@ -621,19 +688,19 @@
   "plugins": [
     {
       "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
     },
     {
       "name": "Hubs",
-      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

@@ -1115,6 +1115,62 @@
       ]
     },
     {
+      "trackId": "danRer11-gc5BaseBw",
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["danRer11"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer11/bbi/gc5BaseBw/gc5Base.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "altColor": "128,128,128",
+          "autoScale": "Off",
+          "color": "0,0,0",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "group": "map",
+          "html": "<h2>Description</h2>\n<p>\nThe GC percent track shows the percentage of G (guanine) and C (cytosine) bases\nin 5-base windows.  High GC content is typically associated with\ngene-rich areas.\n</p>\n<p>\nThis track may be configured in a variety of ways to highlight different\napsects of the displayed information. Click the\n&quot;Graph configuration help&quot;\nlink for an explanation of the configuration options.\n\n<h2>Credits</h2>\n<p> The data and presentation of this graph were prepared by\n<a href=\"mailto:&#104;&#105;&#114;a&#109;&#64;&#115;&#111;&#101;\n.&#117;&#99;&#115;&#99;.&#101;&#100;u\">Hiram Clawson</a>.\n</p>\n\n",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "maxHeightPixels": "128:36:16",
+          "shortLabel": "GC Percent",
+          "track": "gc5BaseBw",
+          "type": "bigWig 0 100",
+          "viewLimits": "30:70",
+          "visibility": "hide",
+          "windowingFunction": "Mean"
+        }
+      },
+      "description": "GC Percent in 5-Base Windows",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "danRer11-grcIncidentDb",
+      "name": "GRC Incident",
+      "type": "FeatureTrack",
+      "assemblyNames": ["danRer11"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/danRer11/bbi/grcIncidentDb/danRer11.grcIncidentDb.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "group": "map",
+          "longLabel": "GRC Incident Database",
+          "shortLabel": "GRC Incident",
+          "track": "grcIncidentDb",
+          "type": "bigBed 4 +",
+          "url": "https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/issue_detail.cgi?id=$$",
+          "urlLabel": "GRC Incident:",
+          "visibility": "hide",
+          "html": "<H2>Description</H2>\n<P>\nThis track shows locations in the zebrafish assembly where assembly\nproblems have been noted or resolved, as reported by the\n<A HREF=\"https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/index.shtml\"\nTARGET=\"_blank\">Genome Reference Consortium</A> (GRC). \n</P>\n<P>\nIf you would like to report an assembly problem, please use the GRC\n<A HREF=\"https://www.ncbi.nlm.nih.gov/projects/genome/assembly/grc/ReportAnIssue.shtml\"\nTARGET=\"_blank\">issue reporting system</A>.\n</P>\n\n<H2>Methods</H2>\n<P>\nData for this track are extracted from the GRC\n<A HREF=\"ftp://ftp.ncbi.nlm.nih.gov/pub/grc/\" TARGET=\"_blank\">incident database</A> from the specific species *_issues.gff3 file.\nThe track is synchronized once daily to incorporate new updates. \n</P>\n\n<H2>Credits</H2>\n<P> The data and presentation of this track were prepared by\n<A HREF=\"mailto:&#104;&#105;&#114;a&#109;&#64;&#115;&#111;&#101;\n.&#117;&#99;&#115;&#99;.&#101;&#100;u\">Hiram Clawson</A>.\n</P>\n"
+        }
+      },
+      "description": "GRC Incident Database",
+      "category": ["Mapping and Sequencing"]
+    },
+    {
       "type": "FeatureTrack",
       "trackId": "danRer11-cpgIslandExt",
       "name": "CpG Islands",
@@ -1978,19 +2034,19 @@
   "plugins": [
     {
       "name": "MafViewer",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
     },
     {
       "name": "Hubs",
-      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/dist/jbrowse-plugin-hubs.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
     },
     {
       "name": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
