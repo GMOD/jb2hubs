@@ -15,7 +15,10 @@ import path from 'path'
 import readline from 'readline'
 import { fileURLToPath } from 'url'
 
+import { HPRC_DATASET } from './src/components/pangenomeDataset.ts'
 import { PANGENOME_LOCI, locusRegion } from './src/components/pangenomeLoci.ts'
+
+import type { LocusSummary } from './src/components/pangenomeData.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUT_DIR = path.join(__dirname, 'public/pangenome')
@@ -23,13 +26,9 @@ const OUT_DIR = path.join(__dirname, 'public/pangenome')
 // tabix caches the downloaded remote .tbi into its cwd; keep that out of the repo.
 const TABIX_OPTS = { cwd: os.tmpdir() }
 
-const VCF_URL =
-  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz'
-
-interface Bin {
-  label: string
-  count: number
-}
+// Read from the dataset rather than restated, so the url the site launches and
+// the url these summaries describe cannot drift apart.
+const VCF_URL = HPRC_DATASET.graphVcf.url
 
 // AF and size bins are fixed edges so every locus is directly comparable.
 // Release 2 is 232 samples → up to 464 haplotypes, so the rarest observable AF is
@@ -127,19 +126,26 @@ async function getSamples(): Promise<string[]> {
   })
 }
 
-interface LocusSummary {
-  id: string
-  gene: string
-  region: string
-  ref: string
-  source: string
-  variantCount: number
-  typeCounts: Record<string, number>
-  afHistogram: Bin[]
-  sizeHistogram: Bin[]
-  sampleBurden: { sample: string; count: number }[]
+// Does this GT carry any non-reference allele? Allele indices run past 9 here
+// (one measured MHC record has 47 ALTs), so parse the fields rather than looking
+// for a nonzero digit.
+function carriesAlt(gt: string) {
+  return gt
+    .split(':')[0]!
+    .split(/[|/]/)
+    .some(a => a !== '.' && parseInt(a) > 0)
 }
 
+// One record is one variant site here, and no de-duplication is needed — which
+// is worth stating, because the obvious reading of this file says otherwise.
+// Most records carry LV>0 (over a measured 20 kb of MHC, 1,454 of 2,522), and
+// `LV`/`PS` do describe vg's snarl tree, so it looks as though a nested child
+// sits beside a parent record that also describes it. It does not: vcfwave
+// REPLACES a complex record with its decomposition, keeping `PS` as provenance,
+// and the parent is not written. Measured over 60 kb of MHC — 6,168 records —
+// there is exactly one distinct `PS` value in the whole window and no record
+// carries it as an ID. So filtering to `LV==0` here would not remove duplicates,
+// it would delete real variants: over SMN it leaves 1 site of 11,553.
 async function summarizeLocus(
   locus: (typeof PANGENOME_LOCI)[number],
   samples: string[],
@@ -150,6 +156,7 @@ async function summarizeLocus(
   const typeCounts: Record<string, number> = {}
   const burden = samples.map(() => 0)
   let variantCount = 0
+  let alleleCount = 0
 
   const proc = spawn('tabix', [VCF_URL, region], TABIX_OPTS)
   const rl = readline.createInterface({ input: proc.stdout })
@@ -162,26 +169,42 @@ async function summarizeLocus(
     const cols = line.split('\t')
     const info = cols[7] ?? ''
     const ref = cols[3] ?? ''
-    // First ALT allele; the wave VCF is biallelic per record so this is the variant.
-    const alt = (cols[4] ?? '').split(',')[0] ?? ''
     variantCount++
 
-    const af = parseFloat(infoValue(info, 'AF')?.split(',')[0] ?? '0')
-    if (!Number.isNaN(af)) {
-      bump(afCounts, binIndex(AF_BINS, af))
-    }
+    // Every ALT, not just the first. This file is NOT biallelic per record, as
+    // this loop used to assume: 222 of 2,522 records over a measured 20 kb of
+    // MHC are multi-allelic, and one of them carries 47 ALTs whose LEN runs from
+    // 270 bp to a 5,829 bp deletion — of which the old `[0]` indexing binned one
+    // insertion and dropped the other 46 alleles. AF/LEN/TYPE are per-ALT arrays
+    // (Number=A), so each is indexed alongside its own allele.
+    const afs = infoValue(info, 'AF')?.split(',') ?? []
+    const lens = infoValue(info, 'LEN')?.split(',') ?? []
+    const types = infoValue(info, 'TYPE')?.split(',') ?? []
 
-    const lenStr = infoValue(info, 'LEN')?.split(',')[0]
-    const len = lenStr === undefined ? undefined : Math.abs(parseInt(lenStr))
-    bump(sizeCounts, binIndex(SIZE_BINS, variantSize(ref, alt, len)))
+    ;(cols[4] ?? '').split(',').forEach((alt, ai) => {
+      if (!alt || alt === '.' || alt === '*') {
+        return
+      }
+      alleleCount++
 
-    const cls = variantClass(ref, alt, infoValue(info, 'TYPE')?.split(',')[0])
-    typeCounts[cls] = (typeCounts[cls] ?? 0) + 1
+      const af = parseFloat(afs[ai] ?? '0')
+      if (!Number.isNaN(af)) {
+        bump(afCounts, binIndex(AF_BINS, af))
+      }
 
-    // Per-sample carrier count: any non-ref, non-missing allele in the GT.
+      const lenStr = lens[ai]
+      const len = lenStr === undefined ? undefined : Math.abs(parseInt(lenStr))
+      bump(sizeCounts, binIndex(SIZE_BINS, variantSize(ref, alt, len)))
+
+      const cls = variantClass(ref, alt, types[ai])
+      typeCounts[cls] = (typeCounts[cls] ?? 0) + 1
+    })
+
+    // Per-sample carriage: any non-ref, non-missing allele in the GT, counted
+    // once per site whether het or hom.
     for (let i = 9; i < cols.length; i++) {
       const gt = cols[i] ?? ''
-      if (gt && gt !== '.' && /[1-9]/.test(gt.split(':')[0] ?? '')) {
+      if (gt && gt !== '.' && carriesAlt(gt)) {
         bump(burden, i - 9)
       }
     }
@@ -200,6 +223,7 @@ async function summarizeLocus(
     ref: 'GRCh38',
     source: 'HPRC minigraph-cactus v2.0 (release 2)',
     variantCount,
+    alleleCount,
     typeCounts,
     afHistogram: AF_BINS.map((b, i) => ({
       label: b.label,
@@ -234,7 +258,7 @@ async function main() {
       gene: locus.gene,
       variantCount: summary.variantCount,
     })
-    console.log(`${summary.variantCount} variants`)
+    console.log(`${summary.variantCount} sites, ${summary.alleleCount} alleles`)
   }
 
   fs.writeFileSync(

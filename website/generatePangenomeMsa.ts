@@ -19,14 +19,16 @@ import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { HPRC_DATASET } from './src/components/pangenomeDataset.ts'
 import { PANGENOME_LOCI } from './src/components/pangenomeLoci.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUT_DIR = path.join(__dirname, 'public/pangenome/msa')
 const TABIX_OPTS = { cwd: os.tmpdir() }
 
-const VCF_URL =
-  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz'
+// Read from the dataset rather than restated, so a changed url cannot leave the
+// generators reconstructing haplotypes from a different file than the site opens.
+const VCF_URL = HPRC_DATASET.graphVcf.url
 const UCSC_API = 'https://api.genome.ucsc.edu'
 const WINDOW = 800
 // Skip windows containing a single insertion longer than this: the column-locked
@@ -206,6 +208,7 @@ function buildMsa(
   winStart: number,
   rows: VcfRow[],
   haps: { sample: string; allele: number }[],
+  indexOfSample: Map<string, number>,
 ) {
   const W = ref.length
   const cells = haps.map(() => ref.split(''))
@@ -278,12 +281,10 @@ function buildMsa(
   return { refRow, seqs }
 }
 
-let indexOfSample: Map<string, number>
-
 async function main() {
   fs.mkdirSync(OUT_DIR, { recursive: true })
   const samples = await getSamples()
-  indexOfSample = new Map(samples.map((s, i) => [s, i]))
+  const indexOfSample = new Map(samples.map((s, i) => [s, i]))
 
   for (const locus of PANGENOME_LOCI) {
     process.stdout.write(`  ${locus.id} … `)
@@ -306,7 +307,7 @@ async function main() {
       }
     }
 
-    const { refRow, seqs } = buildMsa(ref, winStart, rows, haps)
+    const { refRow, seqs } = buildMsa(ref, winStart, rows, haps, indexOfSample)
     const labels = ['GRCh38', ...haps.map(h => `${h.sample}.${h.allele + 1}`)]
     const allSeqs = [refRow, ...seqs]
     const fasta = labels.map((l, i) => `>${l}\n${allSeqs[i]}`).join('\n')

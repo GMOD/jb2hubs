@@ -60,7 +60,8 @@ export default function PangenomeLocusDashboard({
             {summary && (
               <>
                 {' · '}
-                {summary.variantCount.toLocaleString()} pangenome variants ·{' '}
+                {summary.variantCount.toLocaleString()} pangenome variant sites
+                · {summary.alleleCount.toLocaleString()} alleles ·{' '}
                 {summary.sampleBurden.length} samples
               </>
             )}
@@ -89,6 +90,14 @@ export default function PangenomeLocusDashboard({
           >
             Draw {gene} as a pangenome graph →
           </a>
+        )}
+        {locus.graphCollapsed && (
+          <p className="pg-hint pg-launch-note">
+            No graph launch: minigraph collapses this locus&rsquo;s
+            near-identical paralogs onto a single path, so the graph holds no
+            alternative route to draw here. The variant and copy-number views
+            below are unaffected.
+          </p>
         )}
         <OpenInDesktop
           className="pg-launch-btn pg-launch-secondary"
@@ -125,7 +134,9 @@ export default function PangenomeLocusDashboard({
           <p className="pg-hint pg-provenance">
             From the {summary.source} VCF ({summary.sampleBurden.length}{' '}
             samples), a reference-projected decomposition of the graph onto{' '}
-            {summary.ref}; classes per <code>vcfwave</code>.
+            {summary.ref}; classes per <code>vcfwave</code>. One bar per ALT
+            allele rather than per site, so a multi-allelic site contributes
+            each of its alleles at its own size and frequency.
           </p>
           <div className="pg-charts">
             <PangenomeBarChart

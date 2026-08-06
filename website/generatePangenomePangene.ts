@@ -89,7 +89,18 @@ async function main() {
     if (!locus.pangeneGenes?.length) {
       continue
     }
-    const genes = locus.pangeneGenes.filter(g => targetGenes.has(g))
+    // Genes the pangene graph actually holds. `targetGenes` was built from these
+    // very lists, so filtering against it was a tautology; what is worth
+    // dropping is a marker no walk in the graph visits, whose row would
+    // otherwise draw fully red and read as "absent from every haplotype" rather
+    // than "this graph does not know this name".
+    const genes = locus.pangeneGenes.filter(g => counts.get(g)!.size > 0)
+    const missing = locus.pangeneGenes.filter(g => !genes.includes(g))
+    if (missing.length) {
+      console.log(
+        `  ${locus.id}: not in the graph, dropped: ${missing.join(', ')}`,
+      )
+    }
     const matrix = genes.map(g => {
       const gc = counts.get(g)!
       return orderedHaplotypes.map(h => gc.get(h) ?? 0)
