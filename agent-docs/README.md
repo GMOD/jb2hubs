@@ -34,12 +34,6 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   per-assembly bundles for JBrowse Desktop
 - [genark-taxon-images-prd.md](genark-taxon-images-prd.md) — taxon-level image
   lookup (implemented) and the taxonomy-walk follow-up
-- [SHELL_HARDENING_HANDOFF.md](SHELL_HARDENING_HANDOFF.md) —
-  orchestration-script integrity review; items 5–7 still open
-- [PIPELINE_SIMPLIFICATION_HANDOFF.md](PIPELINE_SIMPLIFICATION_HANDOFF.md) —
-  converter-pipeline simplification, done: six changes, all verified
-  byte-identical against the real built tree, plus how to re-prove the
-  config-walker fusion and what is still deferred
 - [OTHER_IDEAS.md](OTHER_IDEAS.md) — keeping JBrowse Desktop in sync with this
   portal's content
 
@@ -47,8 +41,6 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
 
 - [ncbi-gff-feature-type-survey.md](ncbi-gff-feature-type-survey.md) — feature
   types and parent/child structure across the full RefSeq corpus
-- [NCBI_GFF_FEATURE_TYPE_SURVEY_HANDOFF.md](NCBI_GFF_FEATURE_TYPE_SURVEY_HANDOFF.md)
-  — the brief that produced it
 
 ## Other
 
