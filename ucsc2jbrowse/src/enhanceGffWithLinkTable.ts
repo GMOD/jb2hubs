@@ -2,15 +2,8 @@ import fs from 'fs'
 import readline from 'readline'
 import zlib from 'zlib'
 
+import { encodeGffAttribute } from './utils/encodeGffAttribute.ts'
 import { getColNames } from './utils/getColNames.ts'
-
-function encode(s: string) {
-  return s
-    .replaceAll(';', '%3B')
-    .replaceAll('=', '%3D')
-    .replaceAll('&', '%26')
-    .replaceAll(',', '%2C')
-}
 
 export async function enhanceGffWithLinkTable(
   gffFile: string,
@@ -88,7 +81,10 @@ export async function enhanceGffWithLinkTable(
           strand,
           phase,
           Object.entries({ ...col9attrs, ...r0 })
-            .map(([key, val]) => [key, val.map(r => encode(r)).join(',')])
+            .map(([key, val]) => [
+              key,
+              val.map(r => encodeGffAttribute(r)).join(','),
+            ])
             .filter(([_key, val]) => !!val)
             .map(([key, val]) => `${key}=${val}`)
             .join(';'),
