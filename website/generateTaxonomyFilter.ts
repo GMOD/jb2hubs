@@ -4,27 +4,14 @@ import path from 'path'
 import readline from 'readline'
 import { fileURLToPath } from 'url'
 
+import { CURATED_CLADES } from './src/lib/taxonomyClades.ts'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const NODES_DMP_PATH = path.join(__dirname, 'taxonomyBuilder', 'nodes.dmp')
 const SEARCH_INDEX_PATH = path.join(__dirname, 'public', 'searchIndex.json')
 const OUTPUT_PATH = path.join(__dirname, 'public', 'taxonomyFilter.json')
-
-// Ordered from specific to broad for display purposes
-const CURATED_CLADES = [
-  { label: 'Mammalia', taxonId: 40674 },
-  { label: 'Aves', taxonId: 8782 },
-  { label: 'Actinopterygii', taxonId: 7898 },
-  { label: 'Vertebrata', taxonId: 7742 },
-  { label: 'Arthropoda', taxonId: 6656 },
-  { label: 'Metazoa', taxonId: 33208 },
-  { label: 'Viridiplantae', taxonId: 33090 },
-  { label: 'Fungi', taxonId: 4751 },
-  { label: 'Bacteria', taxonId: 2 },
-  { label: 'Archaea', taxonId: 2157 },
-  { label: 'Viruses', taxonId: 10239 },
-]
 
 function ensureNodesDmp() {
   if (fs.existsSync(NODES_DMP_PATH)) {
