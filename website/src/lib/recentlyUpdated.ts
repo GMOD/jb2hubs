@@ -10,6 +10,15 @@ export interface HubEntry {
   source: string
 }
 
+// The wire shape of the generated src/recentlyUpdated.json: a rendered row plus
+// the key it is ordered by. generateRecentlyUpdated.ts is the only writer and
+// emits exactly these fields — it used to also carry a modified date and three
+// baked-in URLs that nothing read, which was two thirds of a 31MB file — so a
+// field added here has to be added there to exist at all.
+export interface HubRecord extends HubEntry {
+  createdTimestamp: number
+}
+
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
