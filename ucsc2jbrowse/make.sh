@@ -237,8 +237,9 @@ log "Starting the UCSC to JBrowse data processing pipeline."
 
 ensure_dir "configs"
 
-# Clear the old blocked files text format. Keep blockedFiles/ directory to preserve timestamps.
-# Clear old merged files (they will be regenerated)
+# Clear the merged reports (regenerated below). The fileAccessCache/ directory
+# itself is kept: it holds the per-URL lastChecked stamps that suppress
+# re-probing hgdownload for 90 days.
 rm -f blockedFiles.txt blockedFiles.json removedTracks.json
 
 # The download phase already wrote list.json.raw; fetch it here only if we
@@ -367,8 +368,8 @@ node src/mergeAll.ts
 log "Writing staging-only config siblings..."
 ./stageConfigs.sh
 
-log "Merging blocked files caches..."
-node src/mergeBlockedFiles.ts
+log "Merging file access caches..."
+node src/mergeFileAccessCache.ts
 
 log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts

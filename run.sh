@@ -256,7 +256,7 @@ elif [ "$DRY_RUN" = false ]; then
     genark2jbrowse/hubs genark2jbrowse/taxon_images \
     genark2jbrowse/processedHubJson genark2jbrowse/speciesDescriptions \
     ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal \
-    ucsc2jbrowse/blockedFiles ucsc2jbrowse/removedTracks \
+    ucsc2jbrowse/fileAccessCache ucsc2jbrowse/removedTracks \
     ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
     ucsc2jbrowse/fileListing.txt 'website/src/*.json'
   # Same reasoning as the hubs commit above: an empty index is fine, a failed

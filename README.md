@@ -103,8 +103,9 @@ Generated — regeneration clobbers hand edits:
 
 - `hubs/**` and
   `genark2jbrowse/{hubJson,processedHubJson,speciesDescriptions,taxon_images,categoryIndex}`
-- `ucsc2jbrowse/{configs,configs-minimal,removedTracks,blockedFiles}` and the
-  merged `removedTracks.json` / `blockedFiles.json`
+- `ucsc2jbrowse/{configs,configs-minimal,removedTracks,fileAccessCache}` and the
+  merged `removedTracks.json` / `blockedFiles.json` (the latter is the
+  blocked-only subset of `fileAccessCache/`)
 - `website/{processedHubJson,public/searchIndex.json,src/recentlyUpdated.json}`
 
 Source-controlled inputs that steer the output — edit these instead:

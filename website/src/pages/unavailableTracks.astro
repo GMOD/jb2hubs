@@ -5,7 +5,9 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import '../styles/common-table.css'
 
-// Read blockedFiles.json from project root
+// Read blockedFiles.json from project root (a symlink to
+// ucsc2jbrowse/blockedFiles.json, which mergeFileAccessCache.ts writes with the
+// blocked entries only — the accessible ones stay in ucsc2jbrowse/fileAccessCache/)
 const blockedFilesPath = join(process.cwd(), 'blockedFiles.json')
 const blockedData = JSON.parse(
   await readFile(blockedFilesPath, 'utf-8'),
@@ -14,7 +16,8 @@ const blockedData = JSON.parse(
   { blocked: boolean; lastChecked: number; trackName?: string }
 >
 
-// Filter only blocked files and include timestamp and trackName
+// The blocked filter is redundant against a freshly merged file, but a checkout
+// whose blockedFiles.json predates the split still holds accessible entries
 const files = Object.entries(blockedData)
   .filter(([_, value]) => value.blocked)
   .map(([url, value]) => ({

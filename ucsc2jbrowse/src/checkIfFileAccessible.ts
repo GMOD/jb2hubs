@@ -1,11 +1,11 @@
 import fs from 'fs'
 
-import type { BlockedFileCache } from './types.ts'
+import type { FileAccessCache } from './types.ts'
 
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 
 // Cache per assembly to avoid contention between parallel processes
-const cacheByAssembly = new Map<string, BlockedFileCache>()
+const cacheByAssembly = new Map<string, FileAccessCache>()
 
 /**
  * Extracts the assembly name from a URL.
@@ -22,8 +22,8 @@ function getAssemblyFromUrl(url: string): string | null {
  * Gets the cache filename for a specific assembly.
  */
 function getCacheFilename(assembly: string): string {
-  // Ensure blockedFiles directory exists
-  const dir = 'blockedFiles'
+  // Ensure fileAccessCache directory exists
+  const dir = 'fileAccessCache'
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
@@ -31,15 +31,15 @@ function getCacheFilename(assembly: string): string {
 }
 
 /**
- * Loads the blocked files cache for a specific assembly from disk.
+ * Loads the file access cache for a specific assembly from disk.
  */
-function loadBlockedFilesCache(assembly: string): BlockedFileCache {
+function loadFileAccessCache(assembly: string): FileAccessCache {
   if (cacheByAssembly.has(assembly)) {
     return cacheByAssembly.get(assembly)!
   }
 
   const cacheFile = getCacheFilename(assembly)
-  let cache: BlockedFileCache = {}
+  let cache: FileAccessCache = {}
 
   try {
     if (fs.existsSync(cacheFile)) {
@@ -47,7 +47,7 @@ function loadBlockedFilesCache(assembly: string): BlockedFileCache {
       cache = JSON.parse(data)
     }
   } catch (error) {
-    console.error(`Error loading blocked files cache for ${assembly}: ${error}`)
+    console.error(`Error loading file access cache for ${assembly}: ${error}`)
   }
 
   cacheByAssembly.set(assembly, cache)
@@ -57,13 +57,13 @@ function loadBlockedFilesCache(assembly: string): BlockedFileCache {
 /**
  * Saves a blocked file to the cache with a timestamp.
  */
-function saveBlockedFile(
+function saveCheckResult(
   assembly: string,
   url: string,
   blocked: boolean,
   trackName?: string,
 ) {
-  const cache = loadBlockedFilesCache(assembly)
+  const cache = loadFileAccessCache(assembly)
   cache[url] = {
     lastChecked: Date.now(),
     blocked,
@@ -74,7 +74,7 @@ function saveBlockedFile(
     const cacheFile = getCacheFilename(assembly)
     fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2))
   } catch (error) {
-    console.error(`Error saving blocked files cache for ${assembly}: ${error}`)
+    console.error(`Error saving file access cache for ${assembly}: ${error}`)
   }
 }
 
@@ -103,7 +103,7 @@ export async function checkIfFileAccessible({
     }
 
     // Check if we have a cached result for this assembly
-    const cache = loadBlockedFilesCache(assembly)
+    const cache = loadFileAccessCache(assembly)
     const cachedEntry = cache[url]
 
     if (cachedEntry) {
@@ -126,15 +126,15 @@ export async function checkIfFileAccessible({
         console.error(
           `File not accessible (status: ${response.status}): ${url}`,
         )
-        saveBlockedFile(assembly, url, true, trackName)
+        saveCheckResult(assembly, url, true, trackName)
         return false
       }
       // File is accessible, update cache to mark as not blocked
-      saveBlockedFile(assembly, url, false, trackName)
+      saveCheckResult(assembly, url, false, trackName)
       return true
     } catch (error) {
       console.error(`Error checking file accessibility for ${url}: ${error}`)
-      saveBlockedFile(assembly, url, true, trackName)
+      saveCheckResult(assembly, url, true, trackName)
       return false
     }
   }

@@ -124,7 +124,9 @@ export interface UcscGenomeList {
   ucscGenomes: Record<string, UcscGenome>
 }
 
-export type BlockedFileCache = Record<
+// One entry per URL we have HEAD'd, blocked and accessible alike — an
+// accessible entry is what suppresses the re-probe for 90 days.
+export type FileAccessCache = Record<
   string,
   {
     lastChecked: number
