@@ -65,6 +65,24 @@ const isLegacy = url => LEGACY_PATH.test(url) && !url.includes('/latest/dist/')
 // makes a publish reach configs we already shipped.
 const isOffStore = url => !url.startsWith('https://jbrowse.org/plugins/')
 
+// A file in `configs/` that is not an assembly config at all. `configs/` is an
+// append-only mirror of the built dir, so anything that ever got swept into it
+// stays forever, still feeding mergeAll and both gates.
+//
+// This is not hypothetical: `ucscRenames/hg38.json` (a trackId -> new-name map,
+// `DELETE` sentinels and all) was processed as a config once and left
+// `renames.json` behind in both trees, `assemblies: [{}]`, carrying four
+// unpkg.com plugin urls frozen since 2025-08-11. It was deleted 2026-08-05 and
+// came back, because deleting the file treats the symptom while
+// `$UCSC_BUILT_DIR/renames` on the build machine is what recreates it.
+//
+// The check above cannot catch it: those four urls fetched fine and defined
+// their globals, so the plugin gate passed the whole time. An unnamed assembly
+// is the discriminator, since every real config has exactly one and names it.
+function namesAnAssembly(config) {
+  return Boolean(config?.assemblies?.[0]?.name)
+}
+
 function pluginsOf(config) {
   return Array.isArray(config.plugins) ? config.plugins : []
 }
@@ -84,6 +102,8 @@ function collectFromDisk() {
   // escape, not the literal byte it used to be -- a NUL in the first 8000 bytes
   // makes git call this file binary and refuse to diff it.
   const found = new Map() // `${name}\0${url}` -> Set of sources
+  const orphans = [] // files in configs/ that are not assembly configs
+  let ucscCount = 0
   const add = (name, url, source) => {
     const key = `${name}\0${url}`
     const sources = found.get(key) ?? new Set()
@@ -95,7 +115,12 @@ function collectFromDisk() {
     const abs = path.join(root, dir)
     if (fs.existsSync(abs)) {
       for (const f of fs.readdirSync(abs).filter(f => f.endsWith('.json'))) {
-        for (const p of pluginsOf(readJson(path.join(abs, f)))) {
+        ucscCount++
+        const config = readJson(path.join(abs, f))
+        if (!namesAnAssembly(config)) {
+          orphans.push(`${dir}/${f}`)
+        }
+        for (const p of pluginsOf(config)) {
           add(p.name, p.url, dir)
         }
       }
@@ -115,7 +140,7 @@ function collectFromDisk() {
     }
   }
 
-  return { found, genarkCount: genarkConfigs.length }
+  return { found, genarkCount: genarkConfigs.length, orphans, ucscCount }
 }
 
 async function collectFromRemote(found) {
@@ -173,9 +198,14 @@ async function checkUrl(name, url) {
   return result
 }
 
-const { found, genarkCount } = collectFromDisk()
+// Counted, not written down. It read `scanned 476 ucsc configs` while the walk
+// was actually reading 478, because the two stray renames.json files were in the
+// count and nothing compared the two numbers. 476 is what 238 assemblies x
+// {configs, configs-minimal} should be, so the literal was the intent and the
+// disagreement with it was the only visible symptom of the stray.
+const { found, genarkCount, orphans, ucscCount } = collectFromDisk()
 console.log(
-  `scanned 476 ucsc configs + ${genarkCount} genark configs (sampled every ${Math.max(
+  `scanned ${ucscCount} ucsc configs + ${genarkCount} genark configs (sampled every ${Math.max(
     1,
     Math.floor(genarkCount / Number(values['genark-sample'])),
   )})`,
@@ -248,8 +278,18 @@ if (values.json) {
   )
 }
 
+if (orphans.length > 0) {
+  console.error(
+    `\n${orphans.length} file(s) in configs/ name no assembly, so they are not ` +
+      `configs and nothing should be reading them:\n` +
+      orphans.map(o => `  ${o}`).join('\n') +
+      `\nDelete them here, and delete the matching directory under ` +
+      `$UCSC_BUILT_DIR too or the copy step puts them straight back.`,
+  )
+}
+
 const broken = results.filter(r => r.problem)
-if (broken.length > 0 || configFailures.length > 0) {
+if (broken.length > 0 || configFailures.length > 0 || orphans.length > 0) {
   console.error(
     `\n${broken.length} plugin url(s) and ${configFailures.length} config url(s) are broken. ` +
       `A bad plugin url error-pages every config that names it.`,

@@ -84,5 +84,18 @@ is left, in the order I'd do them.
 - Run `pnpm check-config-compat`. `mergeAll` now emits a deduped plugin list (4
   entries where it used to emit 12), and that has been verified structurally and
   by unit test but never booted in a real browser.
-- `rm -rf "$UCSC_BUILT_DIR/renames"` on the build machine, or the copy step
-  restores `configs/renames.json` on the next run.
+- **`rm -rf "$UCSC_BUILT_DIR/renames"` on the build machine.** This is the one
+  that matters, and it has not been done: the 2026-08-05 deletion treated the
+  symptom, and by 2026-08-08 `renames.json` was back in **both** trees
+  (`configs/` and `configs-minimal/`). Deleted again, but nothing stops a third
+  return except this line.
+
+  It no longer comes back silently, at least. `checkPluginUrls.mjs` now fails on
+  any file in those directories whose `assemblies[0]` has no name, which is what
+  a swept-up `ucscRenames/hg38.json` looks like, and it is in `gate_configs` so
+  it runs before every upload. The plugin check alone could never catch it: all
+  four of its unpkg.com urls fetched fine and defined their globals.
+
+  The only visible symptom for a year was that the script logged
+  `scanned 476 ucsc configs` while walking 478. That number is now counted
+  rather than written down.
