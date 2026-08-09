@@ -11,6 +11,16 @@ function track(trackId: string, name = trackId, assembly = 'hg19') {
   }
 }
 
+// UCSC types both a multiz/cactus alignment and a chainNet net `bigMaf`, so the
+// rules that tell them apart only fire on this type.
+function bigMaf(trackId: string, assembly = 'hg38') {
+  return {
+    name: trackId,
+    assemblyNames: [assembly],
+    metadata: { ucsc: { track: trackId, type: 'bigMaf' } },
+  }
+}
+
 describe('getTrackModifications', () => {
   it('drops an ENCODE experiment track by its prefix', () => {
     assert.equal(
@@ -49,6 +59,37 @@ describe('getTrackModifications', () => {
       getTrackModifications(track('wgEncodeDukeMapabilityRegionsExcludable')),
       undefined,
     )
+  })
+
+  // Dropped for the file's block granularity, not for its depth: the other two
+  // hg38 bigMafs are deeper (445 and 319 species against 217) and both stay,
+  // because they open at base zoom and hand over to their summary tier further
+  // out. Asserting all three together is the point of the test, since a rule
+  // that quietly widened to "deep alignment" would take the working ones too.
+  it('drops the bigMaf that opens at no zoom, and keeps the two that do', () => {
+    assert.equal(getTrackModifications(bigMaf('cactus241wayBM')), undefined)
+    for (const id of ['multiz470way', 'cactus447way']) {
+      assert.equal(getTrackModifications(bigMaf(id))?.name, id, id)
+    }
+  })
+
+  // UCSC types a chainNet net `bigMaf` too, so the only thing separating a
+  // pairwise net from a real multiple alignment is the subtrack name. Both
+  // families are asserted together because a rule keyed on "bigMaf" alone would
+  // take multiz/cactus with it, and one keyed too loosely on "net" would not.
+  it('drops chainNet nets typed bigMaf, keeping the real alignments', () => {
+    for (const id of [
+      'netGCF_016699485.2',
+      'rbestNetGCF_016699485.2',
+      'synNetGCF_016699485.2',
+      'netGCF_003668045.3',
+      'netHg38',
+    ]) {
+      assert.equal(getTrackModifications(bigMaf(id)), undefined, id)
+    }
+    for (const id of ['multiz470way', 'cactus447way']) {
+      assert.equal(getTrackModifications(bigMaf(id))?.name, id, id)
+    }
   })
 
   it('prefixes gnomAD track names', () => {

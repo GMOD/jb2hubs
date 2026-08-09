@@ -1,9 +1,21 @@
 - check that aws create-invalidation run less
 - optimize lint and format speed somehow
-- MAF tracks: `createTrackConfiguration.ts` drops `data.frames`, never emits
-  `samples`/`nhLocation`; 4 chainNet `.net.bb` tracks are mistyped as MafTrack.
-  Fixing the sample wiring is also step one for MAF row → genome navigation —
-  `agent-docs/MAF_CROSS_VIEW_NAVIGATION.md`
+- MAF tracks. Re-checked 2026-08-08 and most of this item was already stale, so
+  what is actually left is smaller than it read:
+  - **Done:** the 4 chainNet `.net.bb` tracks mistyped as MafTrack are dropped
+    (`getTrackModifications.ts`, `CHAIN_NET_SUBTRACK`). They were pairwise nets
+    typed `bigMaf` by UCSC, converted into one-row MafTracks with sample lists
+    parsed out of a setting that is not a species list.
+  - **Already true:** `createTrackConfiguration.ts` does emit `samples` (via
+    `mafSamplesFromSpeciesOrder`) and does resolve `data.frames` into
+    `annotationAdapter`, as does the golden-path twin `buildBigMafTrack.ts`.
+  - **Still open:** `nhLocation` is emitted by neither builder. hg38's three
+    trees are hand-written in `ucscMixins/hg38.json`, so every other assembly's
+    MAF track has no tree sidebar and no way to get one. UCSC ships the `.nh`
+    next to the alignment under a predictable name, so this is derivable in both
+    builders rather than a per-assembly mixin.
+  - Sample wiring is step one for MAF row → genome navigation,
+    `agent-docs/MAF_CROSS_VIEW_NAVIGATION.md`
 
 Left over from the shell-hardening review, whose handoff doc is gone now that
 items 1–5 have shipped (`run.sh` `set -euo pipefail`, the `--upload-only` +
