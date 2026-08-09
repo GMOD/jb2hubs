@@ -1,6 +1,12 @@
 import fs from 'fs'
 import { readFile } from 'fs/promises'
 
+// The configs these scripts read are JSON of a shape nothing validates, so the
+// nested reads all start from `unknown`.
+export function isRecord(x: unknown): x is Record<string, unknown> {
+  return typeof x === 'object' && x !== null
+}
+
 export function resolve(uri: string, baseUri: string | URL) {
   return new URL(uri, baseUri).href
 }

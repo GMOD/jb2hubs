@@ -308,8 +308,25 @@ those against the config's own URL, so only a file in the same directory reaches
 the data production serves. `enhanceConfig` is idempotent, so the staging pass
 is just a copy plus a re-run with the extra env set, cheap enough to run alone.
 
+Two things are staged this way today, both env-gated in `enhanceConfig` and both
+set by `stageConfigs.sh`: `BLAT_PLUGIN_URL` (the BLAT plugin) and
+`RMSK_MULTIROW_DISPLAY` (the RepeatMasker track's split-by-class multi-row
+display, `hubtools/src/repeatClassDisplay.ts`). The second is waiting on a
+release rather than on a decision — delete its gate and call
+`addRepeatClassDisplay` unconditionally once a released `latest` carries
+`LinearMultiRowFeatureDisplay`, which is also what the website's
+`HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY` is waiting on. Re-run the probe rather
+than assuming, since from this side the failure is silent.
+
 GenArk hubs are not staged (thousands of configs, nothing staged so far is
-GenArk-specific), so a staged feature reaches `/ucsc/*` launches only.
+GenArk-specific), so a staged feature reaches `/ucsc/*` launches only. That is
+the one gap in the repeat display: `addRepeatClassDisplay` handles a GenArk
+`-repeatMasker` track too (its `bigRmskBed` has no class column, so the class is
+derived off the name suffix `L1HS#LINE/L1` with a jexl `partitionField`), and it
+matches ~16% of GenArk configs — 78 of a 500-config sample, one track each — but
+nothing sets `RMSK_MULTIROW_DISPLAY` for the GenArk pipeline, so that branch is
+written and tested rather than live. Enabling it means either staging GenArk or
+waiting for the release, and the release is coming either way.
 
 Neither website serves configs — jbrowse-web resolves `?config=/ucsc/…` against
 its own origin, so they always come from the jbrowse.org bucket
@@ -325,10 +342,28 @@ A hub config lives at one permanent url that desktop installs and published
 links keep naming, so a regenerated config has to keep booting on hosts years
 older than the one we develop against. **`plugins[].url` is the only field that
 can kill a whole session** (`PluginLoader`'s `Promise.all` — one dead url and
-the app is an error page). Content is forward-tolerant, measured on v4.0.4 and
-main: an unknown track, adapter, or display type, and the `displayDefaults`
-shorthand, all boot fine and cost the old host that one track at most. So
-modernizing config content is not the risk it looks like; the plugin url is.
+the app is an error page). Content is otherwise forward-tolerant, measured on
+v4.0.4 and main: an unknown track type, an unknown adapter, and the
+`displayDefaults` shorthand all boot fine and cost the old host that one track
+at most. So modernizing config content is not the risk it looks like; the plugin
+url is.
+
+**An unknown display type is the exception, and it is not scoped to its track.**
+A `displays[]` entry naming a type the host lacks fails the track config's MST
+union, so the config hydrates and then the app renders "Fatal error ...
+[mobx-state-tree] No matching type for union" the moment something opens that
+track. Measured 2026-08-09 on v4.0.0, v4.3.0 and main with
+`LinearMultiRowFeatureDisplay` on `hg38-rmsk`: fatal on both released hosts,
+fine on main, and declaring a `LinearBasicDisplay` entry ahead of it does not
+help. The website side had already found this independently for
+`LinearMultiSampleVariantDisplay` (`website/src/config/jbrowse.ts`,
+`HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY`, measured 2026-08-06).
+
+So a display type newer than the oldest supported release is a **staging-only**
+config change until it ships in `latest` — see below. It is also the one kind of
+content change `check-config-compat` cannot catch on its own, because the fatal
+needs the track to be **opened**: the probe loads a config and a session, and a
+track nothing opens hydrates clean.
 
 `pnpm check-config-compat` loads the shipped configs into every hosted release
 and fails when one breaks; run it before shipping regenerated configs. The

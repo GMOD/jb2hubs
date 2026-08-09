@@ -1,5 +1,6 @@
 import { getUcscFeatureDisplay } from './featureDisplay.ts'
-import { readJSON, writeJSON } from './util.ts'
+import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
+import { isRecord, readJSON, writeJSON } from './util.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 
@@ -63,10 +64,6 @@ const defaultPlugins: JBrowsePlugin[] = [
   ...blatPlugin,
 ]
 
-function isRecord(x: unknown): x is Record<string, unknown> {
-  return typeof x === 'object' && x !== null
-}
-
 // Labels/tooltips bigBed FeatureTracks from the columns UCSC's trackDb intends
 // (e.g. gnomAD _displayName, ncbiGene geneName2), leaving any hand-authored
 // display untouched.
@@ -108,7 +105,25 @@ export function enhanceConfig(
     }
   }
 
-  config.tracks = config.tracks?.map(deriveFeatureDisplay)
+  // Opt-in for the same reason BLAT is, and a sharper one: a `displays[]` entry
+  // naming a display type the host does not have fails the track config's MST
+  // union, and the failure is not scoped to the track. Measured 2026-08-09
+  // against jbrowse.org/code/jb2/{v4.0.0,v4.3.0,main} with the multi-row entry
+  // on hg38-rmsk: the config hydrates on every host, and then OPENING the track
+  // renders "Fatal error ... [mobx-state-tree] No matching type for union" on
+  // v4.0.0 and v4.3.0 (= today's `latest`), whichever order the entries are
+  // declared in. Only `main` has LinearMultiRowFeatureDisplay, which landed
+  // 2026-06-20, after v4.3.0.
+  //
+  // So ucsc2jbrowse/stageConfigs.sh sets this for its pass over a COPY, and
+  // staging (which launches code/jb2/main) gets the display while production
+  // does not. Drop the gate and call it unconditionally once a released
+  // `latest` carries the display — the same promotion
+  // HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY in the website is waiting on.
+  const withRepeatClass = process.env.RMSK_MULTIROW_DISPLAY
+    ? addRepeatClassDisplay
+    : (track: Track) => track
+  config.tracks = config.tracks?.map(deriveFeatureDisplay).map(withRepeatClass)
 
   config.configuration ??= {}
   config.configuration.hierarchical = {

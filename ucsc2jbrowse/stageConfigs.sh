@@ -36,6 +36,14 @@ source "$(dirname "$0")/common.sh"
 : "${BLAT_PLUGIN_URL:=https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js}"
 export BLAT_PLUGIN_URL
 
+# The RepeatMasker track's "split by repeat class" multi-row display. Staged
+# rather than shipped because LinearMultiRowFeatureDisplay landed after v4.3.0,
+# and a displays[] entry naming a type the host lacks is a fatal error when the
+# track is opened, not a degraded track. Staging launches code/jb2/main, which
+# has it. See hubtools/src/repeatClassDisplay.ts.
+: "${RMSK_MULTIROW_DISPLAY:=1}"
+export RMSK_MULTIROW_DISPLAY
+
 # Absolute, rather than cd'ing, so this stays runnable from anywhere without
 # breaking a relative assembly dir passed as an argument.
 STAGE_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

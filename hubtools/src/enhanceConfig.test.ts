@@ -64,6 +64,47 @@ describe('enhanceConfig feature display derivation', () => {
   })
 })
 
+describe('enhanceConfig repeat-class display gate', () => {
+  const rmsk = {
+    trackId: 'hg38-rmsk',
+    type: 'FeatureTrack',
+    adapter: { type: 'BedTabixAdapter', bedGzLocation: { uri: 'rmsk.bed.gz' } },
+  }
+  function withEnv<T>(value: string | undefined, fn: () => T) {
+    const before = process.env.RMSK_MULTIROW_DISPLAY
+    if (value === undefined) {
+      delete process.env.RMSK_MULTIROW_DISPLAY
+    } else {
+      process.env.RMSK_MULTIROW_DISPLAY = value
+    }
+    try {
+      return fn()
+    } finally {
+      if (before === undefined) {
+        delete process.env.RMSK_MULTIROW_DISPLAY
+      } else {
+        process.env.RMSK_MULTIROW_DISPLAY = before
+      }
+    }
+  }
+
+  // The gate is the whole point: an unreleased display type in `displays[]` is a
+  // fatal MST union error on every host that lacks it, so the production pass
+  // must not write one. See the comment in enhanceConfig.ts.
+  it('writes no display without the env var', () => {
+    const [t] = withEnv(undefined, () => runOnConfig([rmsk]))
+    assert.equal(t.displays, undefined)
+  })
+
+  it('writes the by-class display with it', () => {
+    const [t] = withEnv('1', () => runOnConfig([rmsk]))
+    assert.deepEqual(
+      t.displays.map((d: { type: string }) => d.type),
+      ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
+    )
+  })
+})
+
 describe('enhanceConfig plugins', () => {
   it('rewrites the url of a plugin the config already names', () => {
     const plugins = runOnPlugins(
