@@ -56,6 +56,18 @@ test('desktopUrl round-trips the launch url unchanged', () => {
   )
 })
 
+// The round trip above holds for any self-consistent wrapper, including ones
+// Desktop would not recognize — it only proves this file agrees with itself.
+// What has to hold is that the bytes match Desktop's `toProtocolUrl`, which
+// lives in another repo and cannot be imported, so pin the exact form instead:
+// the scheme, the `open` authority, and a single fully-encoded `url` parameter.
+test('desktopUrl emits the exact form Desktop parses', () => {
+  assert.equal(
+    desktopUrl('https://jbrowse.org/x/?a=1&b=2'),
+    'jbrowse://open?url=https%3A%2F%2Fjbrowse.org%2Fx%2F%3Fa%3D1%26b%3D2',
+  )
+})
+
 test('desktopUrl produces a link Desktop will accept', () => {
   const url = new URL(desktopUrl('https://jbrowse.org/code/jb2/main/?x=1'))
   // Desktop rejects any inner protocol that is not http(s) — a wrapped file://

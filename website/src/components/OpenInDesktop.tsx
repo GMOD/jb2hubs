@@ -4,8 +4,15 @@ import { desktopUrl } from './jbrowseLinks.ts'
 // The tooltip is the whole pre-5.0 story: an install without the handler does
 // nothing at all when this is clicked, with no way for the page to detect it, so
 // the fallback has to be stated up front rather than surfaced after the failure.
+//
+// The fallback names THIS link rather than the sibling "open in JBrowse" one,
+// because Desktop's link parser unwraps a jbrowse:// url to the web url inside
+// it — so either one pastes. Same release as the handler itself, so a build that
+// can act on the link can also accept it pasted. Kept as a right-click rather
+// than a copy button: hprc.astro renders this island without a client directive,
+// so nothing here hydrates.
 const HINT =
-  'Opens in JBrowse Desktop 5.0 or newer. If nothing happens, copy the JBrowse link and use File → Session → Open JBrowse Web link...'
+  'Opens in JBrowse Desktop 5.0 or newer. If nothing happens, copy this link (right-click → Copy link address) and use File → Session → Open JBrowse Web link...'
 
 /**
  * Companion to an "open in JBrowse" link: the same session, in an installed
