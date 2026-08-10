@@ -68,11 +68,19 @@ test('desktopUrl emits the exact form Desktop parses', () => {
   )
 })
 
-test('desktopUrl produces a link Desktop will accept', () => {
+// Renamed off "produces a link Desktop will accept", which claimed more than it
+// checks. Only the scheme is something Desktop reads, and it matches that
+// case-insensitively off the bare `jbrowse:` prefix, so even the `//` is ours to
+// choose. `open` is not read AT ALL: it sits in the hostname slot of a url that
+// has no host, and Desktop takes `jbrowse://anything?url=…` identically — see
+// parseProtocolUrl in products/jbrowse-desktop/electron/launchTarget.ts, which
+// explains why checking it would be a mistake rather than an oversight.
+//
+// Asserted anyway, because a future second action goes in a query param beside
+// `url=` rather than in this slot. That makes the word `open` permanent, so a
+// change to it is a change of mind and worth failing on.
+test('desktopUrl keeps the scheme, and the vestigial open authority', () => {
   const url = new URL(desktopUrl('https://jbrowse.org/code/jb2/main/?x=1'))
-  // Desktop rejects any inner protocol that is not http(s) — a wrapped file://
-  // would turn a link click into a local-file read — and matches the scheme
-  // case-insensitively off the bare `jbrowse:` prefix.
   assert.equal(url.protocol, 'jbrowse:')
   assert.equal(url.host, 'open')
 })
