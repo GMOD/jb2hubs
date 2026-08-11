@@ -1,6 +1,11 @@
 import fs from 'fs'
 import path from 'path'
 
+import {
+  buildStrainMafTrack,
+  buildStrainSyntenyTrack,
+} from './buildStrainAlignmentTracks.ts'
+
 const PANGENOME_OUT_DIR =
   process.env.PANGENOME_OUT_DIR ?? '/mnt/sdb/cdiesh/mousePangenome/out'
 
@@ -98,38 +103,12 @@ for (const [acc, strainName] of Object.entries(STRAIN_NAMES)) {
   let added = 0
 
   if (hasPif && !existingIds.has(`${acc}_to_mm39_synteny`)) {
-    config.tracks.push({
-      type: 'SyntenyTrack',
-      trackId: `${acc}_to_mm39_synteny`,
-      name: `${strainName} to mm39 alignments`,
-      category: ['Pairwise alignments'],
-      assemblyNames: [acc, 'mm39'],
-      adapter: {
-        type: 'PairwiseIndexedPAFAdapter',
-        targetAssembly: acc,
-        queryAssembly: 'mm39',
-        pifGzLocation: { uri: `liftOver/${pifFile}` },
-        index: {
-          location: { uri: `liftOver/${pifFile}.csi` },
-          indexType: 'CSI',
-        },
-      },
-    })
+    config.tracks.push(buildStrainSyntenyTrack({ acc, strainName, pifFile }))
     added++
   }
 
   if (hasMaf && !existingIds.has(`${acc}_to_mm39_maf`)) {
-    config.tracks.push({
-      type: 'MafTrack',
-      trackId: `${acc}_to_mm39_maf`,
-      name: `${strainName} vs mm39 (MAF)`,
-      category: ['Pairwise alignments'],
-      assemblyNames: [acc, 'mm39'],
-      adapter: {
-        type: 'BigMafAdapter',
-        bigMafLocation: { uri: `liftOver/${bigMafFile}` },
-      },
-    })
+    config.tracks.push(buildStrainMafTrack({ acc, strainName, bigMafFile }))
     added++
   }
 
