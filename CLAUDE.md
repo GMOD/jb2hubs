@@ -359,6 +359,17 @@ displayless. That is the assertion protecting the shipped file, and it is shaped
 like the real configs: `<acc>-repeatMasker`, `BigBedAdapter`, and no `displays`
 key, checked against `GCF_000001215.4` and 32 siblings.
 
+`pnpm check-display-types` is the whole-corpus version of that question, and it
+is worth running before promoting any display type because the answer is
+narrower than the machinery suggests. Measured 2026-08-12 over **50,957** config
+files, both arms: exactly two types are named anywhere — `LinearBasicDisplay`
+(1,130 UCSC / 66,200 GenArk) and `MultiLinearWiggleDisplay` (39 UCSC / 0
+GenArk). Both exist in **v4.0.0**, the oldest entry in `checkConfigCompat.mjs`'s
+`HOST_VERSIONS`, so nothing currently shipped can hit the union fatal on any
+supported host. That is also why the check is cheap: promoting a display type
+means adding a third name to a vocabulary of two, and the script tells you the
+moment one appears where you did not intend it.
+
 Neither website serves configs — jbrowse-web resolves `?config=/ucsc/…` against
 its own origin, so they always come from the jbrowse.org bucket
 (`ucsc2jbrowse/uploadAll.sh`), which both sites read. **Upload the staged
