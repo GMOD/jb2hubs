@@ -103,6 +103,50 @@ describe('enhanceConfig repeat-class display gate', () => {
       ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
     )
   })
+
+  // The GenArk half of the gate, which the two cases above do not reach: they
+  // use the UCSC shape (a `-rmsk` BedTabixAdapter with a real `repClass`
+  // column), and the branch that matters for GenArk is the other one. Shaped
+  // like the configs actually shipped — trackId `<acc>-repeatMasker`, a
+  // BigBedAdapter, and NO `displays` key at all, checked against
+  // hubs/GCF/000/001/215/GCF_000001215.4/config.json and 32 of its siblings.
+  //
+  // That absent key is load-bearing twice over. `addRepeatClassDisplay` reads
+  // it to decide whether to hold the default position with an explicit bare
+  // LinearBasicDisplay, so a config whose repeatMasker track declared `[]`
+  // instead would get the painting as its DEFAULT view. And it is what the
+  // production assertion below is really about.
+  const genark = {
+    trackId: 'GCF_000001215.4-repeatMasker',
+    type: 'FeatureTrack',
+    adapter: {
+      type: 'BigBedAdapter',
+      uri: 'https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/215/GCF_000001215.4/bbi/x.rmsk.bb',
+    },
+  }
+
+  // The one that guards a shipped file. GenArk hubs are NOT staged — their
+  // config.json is what production serves and what old hosts read — and an
+  // unreleased display type there is a fatal MST union error the moment someone
+  // opens the track. Nothing else pins that the production pass leaves a GenArk
+  // repeatMasker track alone; the equivalent above only says it for UCSC.
+  it('leaves a GenArk repeatMasker track alone without the env var', () => {
+    const [t] = withEnv(undefined, () => runOnConfig([genark]))
+    assert.equal(t.displays, undefined)
+  })
+
+  it('derives the class from the name for GenArk with it', () => {
+    const [t] = withEnv('1', () => runOnConfig([genark]))
+    assert.deepEqual(
+      t.displays.map((d: { type: string }) => d.type),
+      ['LinearBasicDisplay', 'LinearMultiRowFeatureDisplay'],
+    )
+    // the jexl form, not `repClass`: a bigRmskBed has no class column
+    assert.equal(
+      t.displays[1].partitionField,
+      "jexl:split(split(feature.name,'#')[1],'/')[0]",
+    )
+  })
 })
 
 describe('enhanceConfig plugins', () => {

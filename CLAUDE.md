@@ -342,8 +342,22 @@ the one gap in the repeat display: `addRepeatClassDisplay` handles a GenArk
 derived off the name suffix `L1HS#LINE/L1` with a jexl `partitionField`), and it
 matches ~16% of GenArk configs — 78 of a 500-config sample, one track each — but
 nothing sets `RMSK_MULTIROW_DISPLAY` for the GenArk pipeline, so that branch is
-written and tested rather than live. Enabling it means either staging GenArk or
-waiting for the release, and the release is coming either way.
+written and tested rather than live.
+
+**A release does not by itself unblock GenArk**, and this is the part worth not
+mis-remembering: a GenArk `config.json` is the production file, at a permanent
+url, that old hosts and old Desktop installs read. Keeping it booting on those
+is a standing requirement, not a wait — so v5 shipping makes `latest` safe while
+leaving every pinned v4 host exactly as fatal as before. Enabling GenArk means
+staging it the way `ucsc2jbrowse` is staged, and the cost of that (a sibling
+file per hub, thousands of them) is the actual open question, not the release.
+
+The gate's GenArk half is pinned at the pipeline level in
+`hubtools/src/enhanceConfig.test.ts` — including, deliberately, that the
+production pass with the env UNSET leaves a GenArk `-repeatMasker` track
+displayless. That is the assertion protecting the shipped file, and it is shaped
+like the real configs: `<acc>-repeatMasker`, `BigBedAdapter`, and no `displays`
+key, checked against `GCF_000001215.4` and 32 siblings.
 
 Neither website serves configs — jbrowse-web resolves `?config=/ucsc/…` against
 its own origin, so they always come from the jbrowse.org bucket
