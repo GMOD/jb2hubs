@@ -318,6 +318,23 @@ release rather than on a decision — delete its gate and call
 `HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY` is waiting on. Re-run the probe rather
 than assuming, since from this side the failure is silent.
 
+For **this** question the probe is not the cheapest instrument, and the browser
+one cannot answer it at all — the fatal needs the track opened. What decides it
+is whether a release has happened since the display landed, which a
+jbrowse-components checkout answers outright:
+
+```
+git ls-remote --tags origin | grep -o 'v4\.[0-9]*\.[0-9]*$' | sort -V | tail -1
+git cat-file -e <newest-tag>:plugins/canvas/src/LinearMultiRowFeatureDisplay/model.ts
+```
+
+`ls-remote`, not local tags, or a checkout that has not fetched in a while says
+"no release yet" forever. Measured 2026-08-12: newest tag `v4.3.0` (2026-05-21),
+which predates both displays — `LinearMultiSampleVariantDisplay` landed
+2026-06-03, `LinearMultiRowFeatureDisplay` 2026-06-20, and both are absent from
+`v4.3.0`. So both gates are still correctly closed, and neither is waiting on
+anything either repo can do.
+
 GenArk hubs are not staged (thousands of configs, nothing staged so far is
 GenArk-specific), so a staged feature reaches `/ucsc/*` launches only. That is
 the one gap in the repeat display: `addRepeatClassDisplay` handles a GenArk
