@@ -4,6 +4,7 @@ import { describe, it } from 'node:test'
 import {
   getUcscFeatureDisplay,
   mouseOverTemplateToJexl,
+  ucscDefaultFilters,
 } from './featureDisplay.ts'
 
 describe('mouseOverTemplateToJexl', () => {
@@ -99,5 +100,104 @@ describe('getUcscFeatureDisplay', () => {
 
   it('returns no display when there are no relevant settings', () => {
     assert.deepEqual(getUcscFeatureDisplay('t', { track: 'foo' }), {})
+  })
+
+  it('carries a derived filter, with the JBrowse default kept ahead of it', () => {
+    const d = getUcscFeatureDisplay('t', {
+      'filter.score': '400',
+      'filterByRange.score': '0:1000',
+    })
+    assert.deepEqual(d.displays?.[0]?.jexlFilters, [
+      "get(feature,'gbkey')!='Src'",
+      "get(feature,'score') >= 400",
+    ])
+  })
+
+  it('sets no jexlFilters when nothing was derived', () => {
+    const d = getUcscFeatureDisplay('t', { defaultLabelFields: 'geneName2' })
+    assert.equal('jexlFilters' in (d.displays?.[0] ?? {}), false)
+  })
+})
+
+// The settings below are transcribed from hg38's own converted tracks (the
+// trackIds are named), because the corpus is what decides whether a rule here is
+// narrow enough: 70 hg38 tracks carry a `filter.*` and only a handful of them
+// mean anything.
+describe('ucscDefaultFilters', () => {
+  it('reads a scalar cutoff as a minimum (hg38-jaspar2026)', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter.score': '400',
+        'filterByRange.score': '0:1000',
+      }),
+      ["get(feature,'score') >= 400"],
+    )
+  })
+
+  it('takes only the end of a range that differs from the limits (recount3)', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter.readcount': '10000:2000000000',
+        'filterLimits.readcount': '0:2000000000',
+        'filterByRange.readcount': 'on',
+      }),
+      ["get(feature,'readcount') >= 10000"],
+    )
+  })
+
+  it('skips a default sitting at the full limits (hg38-clinvarCnv)', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter._varLen': '50:999999999',
+        'filterLimits._varLen': '50:999999999',
+        'filterByRange._varLen': 'on',
+      }),
+      [],
+    )
+  })
+
+  it('skips a zero floor (hg38-clinvarMain, hg38-gnomad*)', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter.AF': '0.0',
+        'filterByRange.AF': 'on',
+      }),
+      [],
+    )
+  })
+
+  it('skips a bare range with no limits to compare against', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter.svLen': '0:101381',
+        'filterByRange.svLen': 'on',
+      }),
+      [],
+    )
+  })
+
+  it('skips a field UCSC does not range-filter (hg38-panelAppGenes)', () => {
+    assert.deepEqual(ucscDefaultFilters({ 'filter.panelVersion': '1' }), [])
+  })
+
+  it('skips a categorical multi-select', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter.FILTER': 'PASS',
+        'filterByRange.FILTER': 'on',
+        'filterValues.FILTER': 'PASS,AC0',
+      }),
+      [],
+    )
+  })
+
+  it('renames the three positional columns the adapter re-emits', () => {
+    assert.deepEqual(
+      ucscDefaultFilters({
+        'filter.chromStart': '100',
+        'filterByRange.chromStart': 'on',
+      }),
+      ["get(feature,'start') >= 100"],
+    )
   })
 })

@@ -50,6 +50,56 @@ describe('enhanceConfig feature display derivation', () => {
     assert.deepEqual(t.displays, existing)
   })
 
+  it('refreshes the entry it wrote on a previous run', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-jaspar',
+        type: 'FeatureTrack',
+        displays: [
+          {
+            type: 'LinearBasicDisplay',
+            displayId: 'a-jaspar-LinearBasicDisplay',
+            labels: { name: "jexl:get(feature,'TFName')" },
+            height: 200,
+          },
+        ],
+        metadata: {
+          ucsc: {
+            defaultLabelFields: 'TFName',
+            'filter.score': '400',
+            'filterByRange.score': '0:1000',
+          },
+        },
+      },
+    ])
+    assert.deepEqual(t.displays[0].jexlFilters, [
+      "get(feature,'gbkey')!='Src'",
+      "get(feature,'score') >= 400",
+    ])
+    // a key this deriver does not own survives the refresh
+    assert.equal(t.displays[0].height, 200)
+  })
+
+  it('drops a derived key whose trackDb setting has gone away', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-x',
+        type: 'FeatureTrack',
+        displays: [
+          {
+            type: 'LinearBasicDisplay',
+            displayId: 'a-x-LinearBasicDisplay',
+            labels: { name: "jexl:get(feature,'old')" },
+            jexlFilters: ["get(feature,'score') >= 400"],
+          },
+        ],
+        metadata: { ucsc: { defaultLabelFields: 'new' } },
+      },
+    ])
+    assert.equal(t.displays[0].labels.name, "jexl:get(feature,'new')")
+    assert.equal('jexlFilters' in t.displays[0], false)
+  })
+
   it('skips non-FeatureTracks and tracks without ucsc metadata', () => {
     const [variant, plain] = runOnConfig([
       {
