@@ -17,6 +17,45 @@ export function firstField(value: unknown) {
   return typeof value === 'string' ? value.split(',')[0]! : undefined
 }
 
+/**
+ * The `formatDetails.feature` jexl that hides UCSC's out-of-line detail
+ * plumbing from the feature-details panel, or undefined when a track has none.
+ *
+ * `detailsTabUrls` names a column holding an offset into a sidecar file, which
+ * hgc reads to build the tables `detailsDynamicTable` lists. JBrowse does not
+ * follow it, so the columns reach the panel as-is: on gnomAD v4.1 that is
+ * `_dataOffset` (a twelve-digit number) and its `_dataLen` companion, two rows
+ * of file plumbing among the variant's real fields. Measured 2026-08-13: three
+ * hg38 tracks carry the setting, all gnomAD.
+ *
+ * The data itself is reachable -- the sidecar is bgzip'd with a published
+ * `.gzi`, and `_dataOffset` is an uncompressed-stream offset, so the record
+ * decodes to the VEP consequences and the per-ancestry frequency table. Serving
+ * that needs an adapter that fetches a sidecar by offset; hiding two useless
+ * rows does not, and is what this does.
+ *
+ * A jexl callback returning `undefined` for a key removes that row (see
+ * FormatDetails in the JBrowse config docs).
+ */
+export function ucscHiddenDetailFields(ucsc: Record<string, unknown>) {
+  const setting = ucsc.detailsTabUrls
+  if (typeof setting !== 'string') {
+    return undefined
+  }
+  // "_dataOffset=/gbdb/…,_other=/gbdb/…" -> the column names on the left
+  const fields = setting
+    .split(',')
+    .map(s => s.split('=')[0]!.trim())
+    .filter(Boolean)
+  if (fields.length === 0) {
+    return undefined
+  }
+  // `_dataLen` is the length companion of an offset column and is never named
+  // by the setting itself
+  const all = [...new Set([...fields, '_dataLen'])]
+  return `jexl:{${all.map(f => `${f}:undefined`).join(',')}}`
+}
+
 // Escapes literal text destined for the static portion of a jexl template
 // literal (backtick-delimited, ${...} interpolation): backslash and backtick so
 // the text can't terminate the template, and $ so stray label text like "${" is

@@ -1,4 +1,7 @@
-import { getUcscFeatureDisplay } from './featureDisplay.ts'
+import {
+  getUcscFeatureDisplay,
+  ucscHiddenDetailFields,
+} from './featureDisplay.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
 
@@ -88,15 +91,26 @@ function deriveFeatureDisplay(track: Track): Track {
   if (track.type !== 'FeatureTrack' || ucsc === undefined) {
     return track
   }
-  const derived = getUcscFeatureDisplay(track.trackId, ucsc).displays?.[0]
-  if (track.displays === undefined) {
-    return derived ? { ...track, displays: [derived] } : track
+  // Track-level rather than display-level, so it rides both branches below.
+  // Left alone when the track already carries a hand-authored formatDetails.
+  const hidden = ucscHiddenDetailFields(ucsc)
+  const base: Track =
+    hidden !== undefined && track.formatDetails === undefined
+      ? { ...track, formatDetails: { feature: hidden } }
+      : track
+
+  const derived = getUcscFeatureDisplay(base.trackId, ucsc).displays?.[0]
+  if (derived === undefined) {
+    return base
   }
-  const displayId = `${track.trackId}-LinearBasicDisplay`
-  return derived !== undefined && Array.isArray(track.displays)
+  if (base.displays === undefined) {
+    return { ...base, displays: [derived] }
+  }
+  const displayId = `${base.trackId}-LinearBasicDisplay`
+  return Array.isArray(base.displays)
     ? {
-        ...track,
-        displays: track.displays.map(d => {
+        ...base,
+        displays: base.displays.map(d => {
           if (!isRecord(d) || d.displayId !== displayId) {
             return d
           }
@@ -108,7 +122,7 @@ function deriveFeatureDisplay(track: Track): Track {
           return { ...kept, ...derived }
         }),
       }
-    : track
+    : base
 }
 
 /**

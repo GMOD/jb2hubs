@@ -100,6 +100,47 @@ describe('enhanceConfig feature display derivation', () => {
     assert.equal('jexlFilters' in t.displays[0], false)
   })
 
+  it('hides the sidecar offset columns a detailsTabUrls track carries', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-gnomad',
+        type: 'FeatureTrack',
+        metadata: {
+          ucsc: { detailsTabUrls: '_dataOffset=/gbdb/hg38/x/details.tab.gz' },
+        },
+      },
+    ])
+    assert.equal(
+      t.formatDetails.feature,
+      'jexl:{_dataOffset:undefined,_dataLen:undefined}',
+    )
+  })
+
+  it('leaves a hand-authored formatDetails alone', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-gnomad',
+        type: 'FeatureTrack',
+        formatDetails: { feature: 'jexl:{mine:1}' },
+        metadata: {
+          ucsc: { detailsTabUrls: '_dataOffset=/gbdb/hg38/x/details.tab.gz' },
+        },
+      },
+    ])
+    assert.equal(t.formatDetails.feature, 'jexl:{mine:1}')
+  })
+
+  it('sets no formatDetails on a track with no detailsTabUrls', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-x',
+        type: 'FeatureTrack',
+        metadata: { ucsc: { defaultLabelFields: 'name' } },
+      },
+    ])
+    assert.equal('formatDetails' in t, false)
+  })
+
   it('skips non-FeatureTracks and tracks without ucsc metadata', () => {
     const [variant, plain] = runOnConfig([
       {
