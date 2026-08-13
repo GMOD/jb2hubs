@@ -155,7 +155,11 @@
           "displayId": "galGal6-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          }
+          },
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 400"
+          ]
         }
       ]
     },
@@ -331,47 +335,6 @@
       ]
     },
     {
-      "trackId": "galGal6-netGCF_016699485.2",
-      "name": "Net - Chicken net",
-      "type": "MafTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigMafAdapter",
-        "samples": [
-          {
-            "id": "2",
-            "label": "Chicken/GRCg7b"
-          }
-        ],
-        "bigBedLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.net.bb"
-        },
-        "summaryAdapter": {
-          "type": "BigBedAdapter",
-          "bigBedLocation": {
-            "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.net.summary.bb"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.net.bb",
-          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Net Alignment",
-          "parent": "mafNetGCF_016699485.2Viewnet",
-          "shortLabel": "Chicken net",
-          "speciesLabels": "GCF_016699485.2=\"Chicken/GRCg7b\"",
-          "speciesOrder": "GCF_016699485.2",
-          "subGroups": "view=net",
-          "summary": "/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.net.summary.bb",
-          "track": "netGCF_016699485.2",
-          "type": "bigMaf",
-          "html": ""
-        }
-      },
-      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Net Alignment",
-      "category": ["Comparative Genomics"]
-    },
-    {
       "trackId": "galGal6-evaSnp6",
       "name": "EVA SNP - EVA SNP Release 6",
       "type": "FeatureTrack",
@@ -526,47 +489,6 @@
       ]
     },
     {
-      "trackId": "galGal6-rbestNetGCF_016699485.2",
-      "name": "Net - Chicken rbestNet",
-      "type": "MafTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigMafAdapter",
-        "samples": [
-          {
-            "id": "2",
-            "label": "Chicken/GRCg7b"
-          }
-        ],
-        "bigBedLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.rbestNet.bb"
-        },
-        "summaryAdapter": {
-          "type": "BigBedAdapter",
-          "bigBedLocation": {
-            "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.rbestNet.summary.bb"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.rbestNet.bb",
-          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Reciprocal Best Net Alignment",
-          "parent": "mafNetGCF_016699485.2Viewnet",
-          "shortLabel": "Chicken rbestNet",
-          "speciesLabels": "GCF_016699485.2=\"Chicken/GRCg7b\"",
-          "speciesOrder": "GCF_016699485.2",
-          "subGroups": "view=net",
-          "summary": "/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.rbestNet.summary.bb",
-          "track": "rbestNetGCF_016699485.2",
-          "type": "bigMaf",
-          "html": ""
-        }
-      },
-      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Reciprocal Best Net Alignment",
-      "category": ["Comparative Genomics"]
-    },
-    {
       "trackId": "galGal6-evaSnp7",
       "name": "EVA SNP - EVA SNP Release 7",
       "type": "FeatureTrack",
@@ -643,47 +565,6 @@
           "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
-    },
-    {
-      "trackId": "galGal6-synNetGCF_016699485.2",
-      "name": "Net - Chicken synNet",
-      "type": "MafTrack",
-      "assemblyNames": ["galGal6"],
-      "adapter": {
-        "type": "BigMafAdapter",
-        "samples": [
-          {
-            "id": "2",
-            "label": "Chicken/GRCg7b"
-          }
-        ],
-        "bigBedLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.synNet.bb"
-        },
-        "summaryAdapter": {
-          "type": "BigBedAdapter",
-          "bigBedLocation": {
-            "uri": "https://hgdownload.soe.ucsc.edu/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.synNet.summary.bb"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.synNet.bb",
-          "longLabel": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Syntenic Net Alignment",
-          "parent": "mafNetGCF_016699485.2Viewnet",
-          "shortLabel": "Chicken synNet",
-          "speciesLabels": "GCF_016699485.2=\"Chicken/GRCg7b\"",
-          "speciesOrder": "GCF_016699485.2",
-          "subGroups": "view=net",
-          "summary": "/gbdb/galGal6/bbi/chainNet/galGal6.GCF_016699485.2.synNet.summary.bb",
-          "track": "synNetGCF_016699485.2",
-          "type": "bigMaf",
-          "html": ""
-        }
-      },
-      "description": "Chicken (Jan. 2021 (GRCg7b/GCF_016699485.2)) Syntenic Net Alignment",
-      "category": ["Comparative Genomics"]
     },
     {
       "trackId": "galGal6-unipLocCytopl",
@@ -1134,6 +1015,9 @@
       },
       "description": "CRISPR/Cas9 -NGG Targets (exons +/- 10,000 bp)",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{_offset:undefined,_dataLen:undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",

@@ -124,7 +124,11 @@
           "displayId": "ce11-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          }
+          },
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 400"
+          ]
         }
       ]
     },
@@ -758,6 +762,9 @@
       },
       "description": "CRISPR/Cas9 -NGG Targets",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{_offset:undefined,_dataLen:undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",

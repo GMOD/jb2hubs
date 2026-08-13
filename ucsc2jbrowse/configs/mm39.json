@@ -177,7 +177,11 @@
           "displayId": "mm39-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          }
+          },
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 400"
+          ]
         }
       ]
     },
@@ -243,7 +247,11 @@
           "displayId": "mm39-jaspar2024-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          }
+          },
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 400"
+          ]
         }
       ]
     },
@@ -747,43 +755,6 @@
           "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
         }
       ]
-    },
-    {
-      "trackId": "mm39-netGCF_003668045.3",
-      "name": "Nets - Chinese hamster mafNet",
-      "type": "MafTrack",
-      "assemblyNames": ["mm39"],
-      "adapter": {
-        "type": "BigMafAdapter",
-        "samples": [],
-        "bigBedLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/bbi/chainNet/mm39.GCF_003668045.3.net.bb"
-        },
-        "summaryAdapter": {
-          "type": "BigBedAdapter",
-          "bigBedLocation": {
-            "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/bbi/chainNet/mm39.GCF_003668045.3.net.summary.bb"
-          }
-        }
-      },
-      "metadata": {
-        "ucsc": {
-          "bigDataUrl": "/gbdb/mm39/bbi/chainNet/mm39.GCF_003668045.3.net.bb",
-          "itemFirstCharCase": "noChange",
-          "longLabel": "Chinese hamster (Jun. 2020 GCF_003668045.3_CriGri-PICRH-1.0) mafNet Alignment",
-          "otherDb": "GCF_003668045.3",
-          "parent": "mm39ChainNetViewnet off",
-          "shortLabel": "Chinese hamster mafNet",
-          "speciesOrder": "GCF_003668045.3",
-          "subGroups": "view=net species=s002 clade=c00",
-          "summary": "/gbdb/mm39/bbi/chainNet/mm39.GCF_003668045.3.net.summary.bb",
-          "track": "netGCF_003668045.3",
-          "type": "bigMaf",
-          "html": ""
-        }
-      },
-      "description": "Chinese hamster (Jun. 2020 GCF_003668045.3_CriGri-PICRH-1.0) mafNet Alignment",
-      "category": ["Comparative Genomics"]
     },
     {
       "trackId": "mm39-unipLocCytopl",

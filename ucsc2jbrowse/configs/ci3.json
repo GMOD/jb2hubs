@@ -125,7 +125,11 @@
           "displayId": "ci3-jaspar2026-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          }
+          },
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 400"
+          ]
         }
       ]
     },

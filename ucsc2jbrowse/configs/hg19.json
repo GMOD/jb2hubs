@@ -2113,7 +2113,11 @@
           "displayId": "hg19-jaspar2024-LinearBasicDisplay",
           "labels": {
             "name": "jexl:get(feature,'TFName')"
-          }
+          },
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 400"
+          ]
         }
       ]
     },
@@ -6915,7 +6919,12 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-mtrBed-LinearBasicDisplay",
-          "mouseover": "jexl:`${get(feature,'ref')}>${get(feature,'alt')} ${get(feature,'MTR')} ${get(feature,'MTR_centile')}`"
+          "mouseover": "jexl:`${get(feature,'ref')}>${get(feature,'alt')} ${get(feature,'MTR')} ${get(feature,'MTR_centile')}`",
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'MTR_centile') >= 0.001",
+            "get(feature,'MTR_centile') <= 25"
+          ]
         }
       ]
     },
@@ -8981,7 +8990,11 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-caddDel-LinearBasicDisplay",
-          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 10"
+          ]
         }
       ]
     },
@@ -9017,7 +9030,11 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-caddIns-LinearBasicDisplay",
-          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 10"
+          ]
         }
       ]
     },
@@ -9053,7 +9070,11 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-cadd1_7_Del-LinearBasicDisplay",
-          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 10"
+          ]
         }
       ]
     },
@@ -9089,7 +9110,11 @@
         {
           "type": "LinearBasicDisplay",
           "displayId": "hg19-cadd1_7_Ins-LinearBasicDisplay",
-          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`"
+          "mouseover": "jexl:`Mutation: ${get(feature,'change')} CADD Phred score: ${get(feature,'phred')}`",
+          "jexlFilters": [
+            "get(feature,'gbkey')!='Src'",
+            "get(feature,'score') >= 10"
+          ]
         }
       ]
     },
