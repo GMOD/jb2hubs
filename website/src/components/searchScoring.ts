@@ -68,8 +68,17 @@ export function scoreEntry(entry: IndexEntry, terms: string[]) {
   // species. UCSC building a full browser for a db and NCBI designating a
   // reference genome are the two such signals we have, and both must outweigh
   // recency — otherwise the 464 HPRC haplotypes (2024) bury hg38 and GRCh38.
+  //
+  // TWO BANDS, not one, because the two signals do not buy a user the same
+  // thing: a UCSC db opens with that genome's whole track catalog, a GenArk
+  // accession with whatever its hub carries. Flat at 0.03 each they tied, and
+  // "human" then came down to recency — which put GCF_000001405.40 (GRCh38.p14,
+  // an NCBI reference, 2022) above hg38 (2013) and hs1, i.e. the sparser browser
+  // first. The gap here (0.03) is wider than recency can ever be (0.02), so a
+  // UCSC db outranks a GenArk reference of the same genome at every pair of
+  // years.
   if (entry[5] === 'ucsc') {
-    score += 0.03
+    score += 0.06
   }
   if (entry[7] & 1) {
     score += 0.03
@@ -79,7 +88,10 @@ export function scoreEntry(entry: IndexEntry, terms: string[]) {
   // a species: mm39 (2020) over mm7 (2005), danRer11 (2017) over danRer3 (2005).
   score += 0.02 * recency(entry[8])
 
-  // Prefer more complete assemblies.
+  // Prefer more complete assemblies. Note this band never fires for a UCSC db:
+  // those rows carry an empty assemblyStatus, so it is a small standing bonus
+  // for GenArk rows rather than a comparison between the two sources. It sits
+  // an order of magnitude below recency, so nothing above it turns on this.
   const status = entry[4].toLowerCase()
   if (status === 'chromosome') {
     score += 0.002

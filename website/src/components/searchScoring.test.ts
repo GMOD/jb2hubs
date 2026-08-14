@@ -96,6 +96,34 @@ describe('scoreEntry', () => {
     assert.ok(scoreEntry(hg38, ['human']) > scoreEntry(haplotype, ['human']))
   })
 
+  it('ranks a UCSC db above the GenArk reference of the same genome', () => {
+    // The real rows, verbatim from searchIndex.json. "human" matches both
+    // common names identically, so this is decided entirely on the tiebreakers
+    // — and while UCSC and NCBI-reference were one flat band the newer GenArk
+    // accession won on recency, putting the sparser browser first.
+    const genark = entry({
+      accession: 'GCF_000001405.40',
+      commonName: 'human (GRCh38.p14 2022)',
+      scientificName: 'Homo sapiens',
+      assemblyName: 'GRCh38.p14',
+      assemblyStatus: 'Chromosome',
+      source: 'uncategorized',
+      ncbiStatus: 1,
+      year: 2022,
+    })
+    const hg38 = entry({
+      accession: 'hg38',
+      commonName: 'Human',
+      scientificName: 'Homo sapiens',
+      assemblyName: 'GRCh38',
+      source: 'ucsc',
+      year: 2013,
+      rank: 2,
+      altAccession: 'GCA_000001405.15',
+    })
+    assert.ok(scoreEntry(hg38, ['human']) > scoreEntry(genark, ['human']))
+  })
+
   it('breaks a same-year tie on UCSC preference order', () => {
     const first = entry({ commonName: 'Human', source: 'ucsc', rank: 1 })
     const second = entry({ commonName: 'Human', source: 'ucsc', rank: 2 })
