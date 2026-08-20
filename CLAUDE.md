@@ -285,7 +285,12 @@ first is structural and still worth knowing:
   a db that disappears upstream leaves a config behind forever, still feeding
   `mergeAll`, `checkPluginUrls` and `checkConfigCompat`. Compare `configs/`
   against `api.genome.ucsc.edu/list/ucscGenomes` when something looks stale;
-  `hgFixed` is the one legitimate extra (make.sh rsyncs it deliberately).
+  `hgFixed` is the one legitimate extra (make.sh rsyncs it deliberately). It no
+  longer accretes non-assemblies, at least: both walks over `$UCSC_BUILT_DIR` —
+  make.sh's copy step and `src/finalizeConfigs.ts` — now iterate the genome
+  list's own keys plus `hgFixed` rather than whatever directories happen to be
+  there, so a stray `renames` can't become a config again. Pruning a db that
+  really did disappear upstream is still manual.
 - **`mergeAll` deduped plugins on whole-object identity**, so the same plugin
   under two urls was two entries. `all.json` was asking PluginLoader to install
   each of the four plugins three times over. It now dedupes by name, preferring

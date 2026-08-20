@@ -62,10 +62,17 @@ const { ucscGenomes } = readJSON<UcscGenomeList>(
   path.join(builtDir, 'list.json'),
 )
 
+// Restricted to names the current UCSC genome list actually recognizes (plus
+// hgFixed, rsynced separately and never in that list) so a stray leftover
+// build directory doesn't get finalized. ucsc2jbrowse/configs/renames.json was
+// exactly this: a `renames` directory under UCSC_BUILT_DIR that was once
+// mistakenly processed as an assembly and kept reappearing because nothing
+// checked it was a real one. make.sh's copy step filters the same way.
 const assemblyNames = fs
   .readdirSync(builtDir, { withFileTypes: true })
   .filter(entry => entry.isDirectory() && entry.name !== 'trix')
   .map(entry => entry.name)
+  .filter(name => name === 'hgFixed' || Object.hasOwn(ucscGenomes, name))
   .filter(name => fs.existsSync(path.join(builtDir, name, 'config.json')))
 
 const totals = new Map<string, Map<string, number>>()

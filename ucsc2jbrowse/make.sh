@@ -354,12 +354,27 @@ log "Download and add GENCODE tracks"
 log "Finalizing configs..."
 node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 
-log "Copying generated config files to the local 'configs' directory..."
-fd "config.json$" "$UCSC_BUILT_DIR"/ | parallel $PARALLEL_OPTS -I {} "cp {} configs/\$(basename \$(dirname {})).json"
-
-log "Copying minimal configs to the local 'configs-minimal' directory..."
-mkdir -p configs-minimal
-fd "minimal.json$" "$UCSC_BUILT_DIR"/ | parallel $PARALLEL_OPTS -I {} "cp {} configs-minimal/\$(basename \$(dirname {})).json"
+# Only names the current UCSC genome list recognizes, plus hgFixed, which is
+# rsynced deliberately and never appears in that list. UCSC_BUILT_DIR is not
+# guaranteed to hold only assemblies -- configs/renames.json was a `renames`
+# directory that got swept up and processed as one -- and configs/ never
+# prunes, so an unfiltered walk mirrors that mistake forever.
+# src/finalizeConfigs.ts applies the same rule to decide what to finalize;
+# these are two separate walks and each needs it.
+log "Copying generated configs to the local 'configs' and 'configs-minimal' directories..."
+mkdir -p configs configs-minimal
+while IFS= read -r name; do
+  d="$UCSC_BUILT_DIR/$name"
+  if [ -f "$d/config.json" ]; then
+    cp "$d/config.json" "configs/$name.json"
+  fi
+  if [ -f "$d/minimal.json" ]; then
+    cp "$d/minimal.json" "configs-minimal/$name.json"
+  fi
+done < <(
+  jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json"
+  echo hgFixed
+)
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts
