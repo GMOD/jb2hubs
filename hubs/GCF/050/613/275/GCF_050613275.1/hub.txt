@@ -1,0 +1,141 @@
+hub GCF_050613275.1 genome assembly
+shortLabel Anoxybacillus dikiliensis (2025)
+longLabel Anoxybacillus dikiliensis (2025)/Anoxybacillus dikiliensis/GCF_050613275.1_D404 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_050613275.1_D404.description.html
+
+genome GCF_050613275.1
+taxId 575112
+groups groups.txt
+description Anoxybacillus dikiliensis (2025)
+twoBitPath GCF_050613275.1.2bit
+twoBitBptUrl GCF_050613275.1.2bit.bpt
+chromSizes GCF_050613275.1.chrom.sizes.txt
+chromAliasBb GCF_050613275.1.chromAlias.bb
+organism D404 May 2025
+defaultPos NZ_CP187112.1:929128-939128
+scientificName Anoxybacillus dikiliensis
+htmlPath html/GCF_050613275.1_D404.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/050/613/275/GCF_050613275.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/050/613/275/GCF_050613275.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/050/613/275/GCF_050613275.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_050613275.1_D404.assembly.bb
+type bigBed 6
+html html/GCF_050613275.1_D404.assembly
+searchIndex name
+searchTrix ixIxx/GCF_050613275.1_D404.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_050613275.1_D404.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCF_050613275.1_D404.gc5Base.bw
+html html/GCF_050613275.1_D404.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCF_050613275.1_D404.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCF_050613275.1_D404.tandemDups.bb
+    type bigBed 12
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_050613275.1_D404.simpleRepeat.bb
+html html/GCF_050613275.1_D404.simpleRepeat
+
+track ncbiGene
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
+visibility pack
+color 0,80,150
+altColor 150,80,0
+colorByStrand 0,80,150 150,80,0
+bigDataUrl bbi/GCF_050613275.1_D404.ncbiGene.bb
+type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+html html/GCF_050613275.1_D404.ncbiGene
+searchIndex name
+searchTrix ixIxx/GCF_050613275.1_D404.ncbiGene.ix
+urlLabel Entrez gene:
+labelFields geneName,geneName2
+defaultLabelFields geneName2
+group genes
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_050613275.1_D404.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_050613275.1_D404.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_050613275.1_D404.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_050613275.1_D404.windowMasker.bb
+html html/GCF_050613275.1_D404.windowMasker
+
