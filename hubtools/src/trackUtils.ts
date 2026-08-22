@@ -2,8 +2,23 @@ import { resolve } from './util.ts'
 
 import type { RaStanza, TrackDbFile } from '@gmod/ucsc-hub'
 
+const htmlEscapes: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+}
+
+function escapeHTML(str: string) {
+  return str.replaceAll(/[&<>"']/g, c => htmlEscapes[c]!)
+}
+
+// `html` is hub-supplied text going into markup that ends up in a published
+// config, so it is escaped on both sides of the tag rather than relying on
+// whatever sanitizer happens to sit at the far end of a reader
 export function createHtmlLink(html: string, trackDbUrl: string): string {
-  return `<a href="${resolve(html, trackDbUrl)}">${html}</a>`
+  return `<a href="${escapeHTML(resolve(html, trackDbUrl))}">${escapeHTML(html)}</a>`
 }
 
 export function extractParentTracks(
