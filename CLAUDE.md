@@ -545,6 +545,109 @@ Two things that will bite a change here:
   `preProcessSnapshot` forwards it to `chromSizesLocation`. Full reasoning:
   `agent-docs/architectural-decision-records/0003-mirror-assembly-sidecars.md`.
 
+## Track data files get the same treatment, on a request budget
+
+`pnpm check-track-urls` (`scripts/checkTrackUrls.mjs`) is the sidecar check's
+sibling for the other several thousand references: track adapters, their tabix
+indexes, multiWig subadapters, the sequence 2bit. A dead sidecar costs a whole
+assembly, which is why `checkSidecarUrls.mjs` fails the deploy; a dead track
+file costs one track, which is exactly why nothing watched them and three broke
+for months. All three were invisible to every existing layer —
+`check-plugin-urls` looks at plugins, and `check-config-compat` hydrates an
+unopened broken track perfectly cleanly:
+
+- **`rn3-refseq`** named `goldenPath/rn3/bigZips/rn3.2bit`, which does not
+  exist. rn3 is nib-era (`nibPath: /gbdb/rn3/nib`), UCSC never built it a
+  bigZips 2bit, and its real one is at `/gbdb/rn3/rn3.2bit`. `createAssembly.ts`
+  derived the url from a template and never asked whether it resolved — no
+  caller checked assembly-node urls at all. It now probes bigZips, falls back to
+  `/gbdb`, and keeps bigZips on a _transient_ failure so a blip cannot rewrite a
+  good config.
+- **`hg38-promoterAi{A,C,G,T}`** named `/gbdb/hg38/_promoterAi/{a,c,g,t}.bw`, a
+  directory hgdownload does not publish. `checkIfFileAccessible` ran on
+  `.bb`/`.bigBed`/`.bigMaf` only, so the same composite's `overlaps.bb` was
+  caught (it is in `blockedFiles.json`) and the four bigWigs beside it were not.
+  The check now runs on every branch: whether a file exists has nothing to do
+  with its extension.
+- **`hg38-cactus447way`** shipped as
+  `https://hgdownload.soe.ucsc.eduhttps://hgdownload-test.gi.ucsc.edu/…` — a
+  trackDb `bigDataUrl` naming a full url on a _different_ host, concatenated
+  onto the base because the guard asked `startsWith(baseUrl)` rather than "is
+  absolute". `resolveBigDataUri.ts` is now the one copy of that rule, which
+  `buildBigMafTrack.ts` had always had right and `mergeBigFileTracks.ts` had
+  wrong.
+
+Two properties of `checkIfFileAccessible` are load-bearing, and both were
+broken:
+
+- **The caller passes the assembly.** It used to guess with a regex over seven
+  families (`hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+`) and return
+  `true` _unchecked_ for anything that missed — most of the 238. rn3, galGal6,
+  bosTau9 and wuhCor1 were never probed.
+- **Only a 404/410 counts as blocked.** `!response.ok` treated a 5xx as "the
+  file is gone", recorded it, and then declined to re-check for 90 days. One
+  hgdownload wobble mid-run would have stripped tracks off every assembly it
+  touched and kept them off for a quarter. A timeout or 5xx now keeps the track
+  and caches nothing. `checkIfFileAccessible.test.ts` pins this.
+
+### The budget is the point, not a limitation
+
+hgdownload is a research file server and the same host our users pull from. A
+full sweep is 5,484 distinct urls, so the default is **not** a sweep: a
+`--budget` of 300 per run spent oldest-first, `--rps 1`, and a state file
+(`ucsc2jbrowse/.trackUrlCheck.json`, gitignored) that rests a url for `--ttl` 30
+days once it answers. Never-checked urls sort first, so a config regenerated
+yesterday is probed tonight while the stable corpus rotates behind it over ~3
+weeks. What the budget skipped is always printed — a cap reporting "all clear"
+over an unchecked corpus is worse than no check.
+
+That default came out of measurement, and the measurement is worth keeping
+because the conclusion is _not_ the obvious one. One unthrottled sweep at
+concurrency 14 completed (5,474/5,484 answered), and minutes later hgdownload
+stopped serving this host in a very specific way: **the TCP handshake still
+completes in ~120ms, the TLS Client Hello goes out, and no Server Hello ever
+comes back**, while hgdownload2 and genome.ucsc.edu answered normally. That is
+the signature of an exhausted worker pool, _not_ of an IP block — a block drops
+SYNs or sends RST. But a connection-limiting module stalls identically, and from
+one vantage point there is no distinguishing "we exhausted it" from "it is
+exhausted for everyone". So do not record this as proven throttling. The budget
+is what makes the question moot: at 300 requests a day nothing here can be the
+cause, and the canary stays a canary instead of a suspect.
+
+Worth knowing for its own sake: hgdownload failing by _stalling_ means client
+timeouts rather than fast errors, so a session pointed at it hangs instead of
+reporting a broken track.
+
+### Where it runs, and why the two places check different things
+
+- **`run.sh`'s `gate_configs`** runs `--offline`, which fetches nothing. It
+  verifies only the _relative_ refs — those name our own bucket, so it is an
+  on-disk existence check that catches a config about to name a file we are not
+  uploading. `--offline` **errors without a built dir** rather than passing
+  vacuously, since relative refs are all it can check.
+- **`.github/workflows/track-url-canary.yml`**, daily at 04:20 UTC, does the
+  budgeted network rotation and files one rolling `track-url-canary` issue. It
+  needs no retry-before-alerting (unlike `config-canary.yml`) because 404 and
+  transient are already separated: only 404/410 reach the exit code. Its
+  rotation state lives in the actions cache, and a cache miss costs a restarted
+  rotation, not a wrong answer.
+
+`hgdownload2.soe.ucsc.edu` is used for one narrow purpose: when the primary
+fails, the same path is tried there, and if the mirror serves it the finding is
+reported as **primary-only** rather than as a dead reference — deleting the
+track would be the wrong fix. Verified 2026-08-25 as a byte-identical drop-in
+for both `/goldenPath/` and `/hubs/` paths, `Accept-Ranges: bytes` and
+`Access-Control-Allow-Origin: *` on both, from a different UCSC address block
+(169.233.10.x vs 128.114.119.x). Nothing in the shipped configs names it, and
+only failures reach it, so it adds no load in the normal case.
+
+Two scope decisions to leave alone. **Track prose is out of scope**: the configs
+carry UCSC's trackDb html, which links ncbi, ebi, ensembl and a long tail of lab
+pages — ~700 urls that are documentation, and a rotted citation is not a broken
+track. **GenArk is out of scope**, for the reason the sidecar check is: 50,703
+configs naming ~150k upstream files, and probing them in bulk is the road back
+to the reverted mirroring sweep.
+
 ## multiWig composites, table-backed big files, and ENCODE
 
 A UCSC `container multiWig` composite converts to a single

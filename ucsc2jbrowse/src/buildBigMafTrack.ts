@@ -1,4 +1,5 @@
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
+import { resolveBigDataUri } from './resolveBigDataUri.ts'
 
 /**
  * Turn an optional trackDb sidecar setting into a url the config can name, or
@@ -15,17 +16,21 @@ import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 async function resolveSidecar({
   path,
   baseUrl,
+  assembly,
   trackName,
 }: {
   path: string | undefined
   baseUrl: string
+  assembly: string
   trackName: string
 }) {
   if (!path) {
     return undefined
   }
-  const url = path.startsWith('http') ? path : `${baseUrl}${path}`
-  return (await checkIfFileAccessible({ url, trackName })) ? url : undefined
+  const url = resolveBigDataUri({ bigDataUrl: path, baseUrl })
+  return (await checkIfFileAccessible({ url, assembly, trackName }))
+    ? url
+    : undefined
 }
 
 function parseSpeciesString(str: string) {
@@ -86,7 +91,7 @@ export async function buildBigMafTrack({
   const trackName = settings.longLabel ?? tableName
   const [summaryUri, framesUri] = await Promise.all(
     [settings.summary, settings.frames].map(path =>
-      resolveSidecar({ path, baseUrl, trackName }),
+      resolveSidecar({ path, baseUrl, assembly: assemblyName, trackName }),
     ),
   )
   return {

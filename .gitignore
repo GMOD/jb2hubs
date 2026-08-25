@@ -82,6 +82,13 @@ website/public/taxonomyFilter.json
 # pending-deploy marker written by run.sh
 /.deploy-pending
 
+# checkTrackUrls.mjs's rotation state: when each track url last answered, so a
+# budgeted run knows which few thousand it still owes a probe. Local to whoever
+# ran it, and committing it would churn the tree on every pass. CI keeps its own
+# copy in the actions cache -- a miss there costs a restarted rotation, nothing
+# more.
+ucsc2jbrowse/.trackUrlCheck.json
+
 # vendored bed2gff Rust build output (source is committed, binary is not)
 /bed2gff/target/
 

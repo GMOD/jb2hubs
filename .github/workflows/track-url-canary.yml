@@ -1,0 +1,147 @@
+name: Track URL canary
+
+# The other canary asks "does a shipped config still boot". This asks the
+# cheaper, narrower question it cannot: "do the files the configs name still
+# exist". A track whose bigDataUrl 404s costs one track, so it trips no page
+# error, no plugin global and no track count -- checkConfigCompat.mjs hydrates
+# it clean. rn3's sequence and hg38's four promoterAi bigWigs shipped that way
+# for months.
+#
+# Daily, not 6-hourly, and budgeted. hgdownload is a research file server and
+# the same host our users pull from, so a nightly 300-request pass at one request
+# a second keeps this small enough that it can never be the reason hgdownload
+# stops answering. checkTrackUrls.mjs records what a full unthrottled sweep
+# looked like from this end, and why that is a question worth not having.
+#
+# Never-checked urls are probed first, so a config regenerated yesterday is
+# covered tonight. The rest of the corpus rotates behind it over ~3 weeks.
+
+on:
+  schedule:
+    # 04:20 UTC daily -- off the hour, since everyone's cron lands on :00.
+    - cron: '20 4 * * *'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description:
+          'assemblies to check (comma-separated), or blank for the budgeted
+          rotation'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: track-url-canary
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      # The rotation state is what keeps this incremental: without it every run
+      # restarts at the same first 300 urls and the rest of the corpus is never
+      # reached. A cache miss is safe -- it costs a restarted rotation, not a
+      # wrong answer -- so the key is deliberately coarse and the restore-keys
+      # accept any previous day's.
+      - uses: actions/cache@640a1c2554105b57832a23eea0b4672fc7a790d5 # v4.2.3
+        with:
+          path: ucsc2jbrowse/.trackUrlCheck.json
+          key: track-url-state-${{ github.run_id }}
+          restore-keys: |
+            track-url-state-
+
+      - run: pnpm install
+
+      - name: Probe the urls the configs name
+        id: probe
+        # Through the environment, not interpolated into the script: a
+        # workflow_dispatch input is attacker-controlled text as far as the
+        # runner shell is concerned.
+        env:
+          SCOPE: ${{ inputs.scope }}
+        run: |
+          set +e
+          if [ -n "$SCOPE" ]; then
+            node scripts/checkTrackUrls.mjs --db "$SCOPE" \
+              --json report.json >probe.log 2>&1
+          else
+            node scripts/checkTrackUrls.mjs --json report.json >probe.log 2>&1
+          fi
+          echo "exit=$?" >>"$GITHUB_OUTPUT"
+          cat probe.log
+
+      # A 404 is not weather -- checkTrackUrls.mjs already separates the two, and
+      # only counts 404/410 toward the exit code -- so unlike the config canary
+      # this needs no retry to avoid crying wolf. A file upstream deleted is
+      # still deleted in two minutes.
+      - name: Open or update the alert issue
+        if: steps.probe.outputs.exit != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
+            github.run_id }}
+        run: |
+          # gh issue create fails outright on a label that does not exist, so the
+          # first real alert would be lost to a setup error. --force makes this
+          # idempotent.
+          gh label create track-url-canary --force \
+            --color B60205 \
+            --description 'A shipped config names a data file that 404s'
+          existing=$(gh issue list --label track-url-canary --state open \
+            --json number --jq '.[0].number')
+          {
+            echo "A shipped config names a data file that no longer resolves."
+            echo
+            echo "Each one is a track that cannot open. Fix it at the source --"
+            echo "the configs are generated -- then regenerate and re-upload."
+            echo
+            echo "Run: $RUN_URL"
+            echo
+            echo '```'
+            tail -c 60000 probe.log
+            echo '```'
+          } >body.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file body.md
+          else
+            gh issue create \
+              --title 'Track URL canary: a config names a file that 404s' \
+              --label track-url-canary --body-file body.md
+          fi
+
+      - name: Close the alert issue on recovery
+        if: steps.probe.outputs.exit == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --label track-url-canary --state open \
+            --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" \
+              --comment 'Every probed reference resolves again; closing automatically.'
+          fi
+
+      - name: Fail the run when a reference is gone
+        if: steps.probe.outputs.exit != '0'
+        run: exit 1
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: track-url-report
+          path: |
+            probe.log
+            report.json

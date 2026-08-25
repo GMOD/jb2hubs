@@ -8,17 +8,6 @@ const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 const cacheByAssembly = new Map<string, FileAccessCache>()
 
 /**
- * Extracts the assembly name from a URL.
- */
-function getAssemblyFromUrl(url: string): string | null {
-  // Match assembly names like hg19, hg38, mm39, mm10, etc.
-  const match = /\/(hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+)\//.exec(
-    url,
-  )
-  return match ? match[1]! : null
-}
-
-/**
  * Gets the cache filename for a specific assembly.
  */
 function getCacheFilename(assembly: string): string {
@@ -79,32 +68,43 @@ function saveCheckResult(
 }
 
 /**
- * Checks if a given URL is accessible by making a HEAD request.
- * If the URL is not accessible and contains 'hg19', 'hg38', 'mm39', or 'mm10', it logs the URL to cache.
- * URLs that were blocked within the last 3 months will not be re-checked.
- * @param url The URL to check.
- * @param trackName Optional track name to store with the file entry.
- * @returns A promise that resolves to true if the file is accessible, false otherwise.
+ * HEADs a URL and remembers the answer, so a file upstream does not publish
+ * becomes a track we drop rather than a track that 404s in production.
+ *
+ * The caller passes the assembly rather than this deriving it from the url. It
+ * used to guess, with a regex over seven assembly families
+ * (hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+), and returned `true`
+ * unchecked for anything that missed — which was most of the 238. rn3, galGal6,
+ * bosTau9, wuhCor1 and the rest were never probed at all. Every caller already
+ * knows the assembly it is building, so guessing bought nothing and silently
+ * exempted the majority.
+ *
+ * A blocked result sticks for 90 days; an accessible one suppresses the re-probe
+ * for the same window. Both are recorded, which is what lets a file that comes
+ * back get picked up on the next sweep.
+ *
+ * The whole thing is a no-op unless CHECK_404 is set (make.sh sets it), so the
+ * unit tests exercise their callers' logic without the network.
  */
 export async function checkIfFileAccessible({
   url,
+  assembly,
   trackName,
 }: {
   url: string
+  assembly: string
   trackName?: string
 }) {
-  // Only perform HEAD request for UCSC-related URLs
   if (process.env.CHECK_404) {
-    // Extract assembly from URL to use assembly-specific cache
-    const assembly = getAssemblyFromUrl(url)
-    if (!assembly) {
-      // Can't determine assembly, skip caching
-      return true
-    }
+    // One key per file, whichever spelling the caller had. Callers pass a bare
+    // /gbdb path in some places and a full url in others, and caching the two
+    // separately meant the same file could be probed twice and recorded twice.
+    const key = url.startsWith('http')
+      ? url
+      : `https://hgdownload.soe.ucsc.edu${url}`
 
-    // Check if we have a cached result for this assembly
     const cache = loadFileAccessCache(assembly)
-    const cachedEntry = cache[url]
+    const cachedEntry = cache[key]
 
     if (cachedEntry) {
       const timeSinceLastCheck = Date.now() - cachedEntry.lastChecked
@@ -115,29 +115,37 @@ export async function checkIfFileAccessible({
     }
 
     try {
-      const response = await fetch(
-        url.startsWith('https') ? url : `https://hgdownload.soe.ucsc.edu${url}`,
-        {
-          method: 'HEAD',
-        },
-      )
+      const response = await fetch(key, { method: 'HEAD' })
 
-      if (!response.ok) {
-        console.error(
-          `File not accessible (status: ${response.status}): ${url}`,
-        )
-        saveCheckResult(assembly, url, true, trackName)
+      if (response.ok) {
+        saveCheckResult(assembly, key, false, trackName)
+        return true
+      }
+
+      // Only upstream saying the file is not there counts as blocked. A 5xx or
+      // a rate limit is upstream having a bad day, and recording it would drop
+      // the track and then decline to re-check for 90 days — so a single
+      // hgdownload outage during a pipeline run would quietly strip tracks off
+      // every assembly it touched and keep them off for a quarter. The same
+      // 404-vs-transient distinction mirrorSidecars.ts draws, for the same
+      // reason.
+      if (response.status === 404 || response.status === 410) {
+        console.error(`File not published (${response.status}): ${url}`)
+        saveCheckResult(assembly, key, true, trackName)
         return false
       }
-      // File is accessible, update cache to mark as not blocked
-      saveCheckResult(assembly, url, false, trackName)
+
+      console.error(
+        `Inconclusive (${response.status}), keeping the track and not caching: ${url}`,
+      )
       return true
     } catch (error) {
-      console.error(`Error checking file accessibility for ${url}: ${error}`)
-      saveCheckResult(assembly, url, true, trackName)
-      return false
+      // A timeout or a refused connection says nothing about the file.
+      console.error(
+        `Could not reach upstream, keeping the track and not caching: ${url} (${error})`,
+      )
+      return true
     }
   }
-  // For non-UCSC URLs, assume accessibility or handle elsewhere
   return true
 }

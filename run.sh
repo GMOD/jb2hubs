@@ -156,6 +156,19 @@ gate_configs() {
     echo "SKIP_CONFIG_GATE=1 if you accept that."
     return 1
   fi
+  # Track data files, the other several thousand references. Only the relative
+  # ones -- those name our own bucket, so this is an on-disk existence check with
+  # no network at all, and it catches a config about to name a file we are not
+  # uploading. Hunting upstream 404s is the daily track-url canary's job: that
+  # question moves on upstream's timetable, not ours, and a blocking gate is the
+  # wrong place to spend hgdownload's patience.
+  echo "Pre-upload gate: checking every relative track file the configs name..."
+  if ! node scripts/checkTrackUrls.mjs --offline; then
+    echo "Gate failed: a config names a track file that is not in the built tree."
+    echo "That track would 404 from our own bucket. Re-run with"
+    echo "SKIP_CONFIG_GATE=1 if you accept that."
+    return 1
+  fi
   echo "Pre-upload gate: booting working-tree configs on hosted releases..."
   if ! node scripts/checkConfigCompat.mjs --local; then
     echo "Gate failed: a working-tree config does not boot on a hosted JBrowse"

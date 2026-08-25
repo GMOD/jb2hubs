@@ -3,6 +3,7 @@ import { dedupe, firstField } from 'hubtools'
 import { buildBigMafTrack } from './buildBigMafTrack.ts'
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
+import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
 import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
 
@@ -152,53 +153,64 @@ async function addBigDataTracks(
       settings.bigDataUrl ?? resolveTable(settings.table ?? tableName)
 
     if (bigDataUrl) {
-      const uri = bigDataUrl.startsWith(baseUrl)
-        ? bigDataUrl
-        : `${baseUrl}${bigDataUrl}`
+      const uri = resolveBigDataUri({ bigDataUrl, baseUrl })
+
+      // Every track, not only the bigBed-shaped ones. This guarded
+      // .bb/.bigBed/.bigMaf alone, so hg38's promoterAi composite lost its
+      // overlaps.bb to the check and kept the four bigWigs beside it — all four
+      // naming /gbdb/hg38/_promoterAi/, a directory hgdownload does not publish,
+      // all four shipped as 404s. Whether a file exists has nothing to do with
+      // its extension.
+      //
+      // Probe `uri`, not `bigDataUrl`: the latter is often a bare /gbdb path,
+      // and prefixing it inside the check is how the mangled url above stayed
+      // invisible.
+      const fileAccessible = await checkIfFileAccessible({
+        url: uri,
+        assembly: assemblyName,
+        trackName: settings.longLabel ?? tableName,
+      })
+      if (!fileAccessible) {
+        continue
+      }
 
       if (
         bigDataUrl.endsWith('.bb') ||
         bigDataUrl.endsWith('.bigBed') ||
         bigDataUrl.endsWith('.bigMaf')
       ) {
-        const fileAccessible = await checkIfFileAccessible({
-          url: bigDataUrl,
-          trackName: settings.longLabel ?? tableName,
-        })
-        if (fileAccessible) {
-          if (type === 'bigMaf') {
-            newTracks.push(
-              await buildBigMafTrack({
-                trackId,
-                tableName,
-                assemblyName,
-                uri,
-                baseUrl,
-                settings,
-              }),
-            )
-          } else {
-            // bigGenePred groups transcripts into genes; UCSC's own
-            // defaultLabelFields (fallback labelFields) names the gene field to
-            // aggregate on, e.g. name2 for ncbiRefSeq, rather than the adapter's
-            // fixed geneName2 default
-            const aggregateField =
-              type === 'bigGenePred'
-                ? (firstField(settings.defaultLabelFields) ??
-                  firstField(settings.labelFields))
-                : undefined
-            newTracks.push({
+        if (type === 'bigMaf') {
+          newTracks.push(
+            await buildBigMafTrack({
               trackId,
-              name: tableName,
-              type: 'FeatureTrack',
-              assemblyNames: [assemblyName],
-              adapter: {
-                type: 'BigBedAdapter',
-                uri,
-                ...(aggregateField ? { aggregateField } : {}),
-              },
-            })
-          }
+              tableName,
+              assemblyName,
+              uri,
+              baseUrl,
+              settings,
+            }),
+          )
+        } else {
+          // bigGenePred groups transcripts into genes; UCSC's own
+          // defaultLabelFields (fallback labelFields) names the gene field to
+          // aggregate on, e.g. name2 for ncbiRefSeq, rather than the adapter's
+          // fixed geneName2 default
+          const aggregateField =
+            type === 'bigGenePred'
+              ? (firstField(settings.defaultLabelFields) ??
+                firstField(settings.labelFields))
+              : undefined
+          newTracks.push({
+            trackId,
+            name: tableName,
+            type: 'FeatureTrack',
+            assemblyNames: [assemblyName],
+            adapter: {
+              type: 'BigBedAdapter',
+              uri,
+              ...(aggregateField ? { aggregateField } : {}),
+            },
+          })
         }
       } else if (bigDataUrl.endsWith('.bam')) {
         if (!sequenceAdapter) {
