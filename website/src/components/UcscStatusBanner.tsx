@@ -58,12 +58,15 @@ export default function UcscStatusBanner() {
           ? "UCSC's download server is not responding"
           : `UCSC's download server is responding slowly (${seconds}s)`}
       </p>
+      {/* The clause continues past the host name rather than ending on it: an
+          inline <code> carries padding, so a period straight after one renders
+          detached from it, as "edu ." */}
       <p>
         This site is fine, but most track data is served from{' '}
-        <code>hgdownload.soe.ucsc.edu</code>.{' '}
+        <code>hgdownload.soe.ucsc.edu</code>
         {data.verdict === 'stalled'
-          ? 'It is accepting connections without answering them, so data requests hang instead of failing — a track will sit on a loading spinner rather than show an error.'
-          : 'Tracks may take a very long time to load, or appear to hang.'}
+          ? ', which is accepting connections without answering them — so data requests hang instead of failing, and a track will sit on a loading spinner rather than show an error.'
+          : ', which is answering far slower than usual. Tracks may take a very long time to load, or appear to hang.'}
       </p>
       <ul className={styles.list}>
         {consequences(data.verdict).map(line => (
