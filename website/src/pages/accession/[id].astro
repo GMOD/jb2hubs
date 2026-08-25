@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
+import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
 import {
@@ -197,6 +198,7 @@ const hasAssemblyDetails =
   jsonLd={jsonLd}
 >
   <Container>
+    <UcscStatusBanner client:idle />
     <h1>{scientificName}</h1>
     {
       ncbiMissing ? (

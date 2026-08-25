@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
+import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 import list from '../../list.json'
 import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
 import { ucscBrowserUrl, ucscGatewayUrl } from '../../lib/externalLinks.ts'
@@ -33,6 +34,7 @@ const pageDescription = [
   description={pageDescription}
 >
   <Container>
+    <UcscStatusBanner client:idle />
     <div class="relative">
       <h1>{ret.scientificName}</h1>
 

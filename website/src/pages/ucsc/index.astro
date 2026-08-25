@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import UCSCTable from '../../components/UCSCTable.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 ---
 
 <Layout
@@ -9,6 +10,7 @@ import UCSCTable from '../../components/UCSCTable.tsx'
   description="Every main assembly from the UCSC genome browser, converted to a JBrowse 2 config — search by db name, species or description, or open all of them in one instance."
 >
   <Container wide>
+    <UcscStatusBanner client:idle />
     <UCSCTable client:load />
   </Container>
 </Layout>

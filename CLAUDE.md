@@ -656,6 +656,56 @@ track. **GenArk is out of scope**, for the reason the sidecar check is: 50,703
 configs naming ~150k upstream files, and probing them in bulk is the road back
 to the reverted mirroring sweep.
 
+### Readers get told, because a stall reports nothing on its own
+
+`UcscStatusBanner` (`website/src/components/`, logic in
+`website/src/lib/ucscLiveness.ts`) warns on the launch pages when hgdownload is
+not answering. It exists because the stall described above is **completely
+silent to the reader**: jbrowse-core sets no timeout on those fetches, so
+nothing rejects and nothing is reported. A track sits on a loading spinner
+forever, and `loadPre()`'s `Promise.all` never settles — the browser is "still
+loading" indefinitely with no way to learn that a server elsewhere is the
+reason.
+
+The real fix is in the session, and it is **not reachable from this repo**: the
+hang lives in the hosted jbrowse-web build and in
+`@cmdcolin/jbrowse-plugin-hubs`, and a fix in either would not reach the pinned
+older hosts our permanent config urls still serve. So this warns one step
+earlier, on the page the reader launches from. Treat it as a consolation prize,
+not the cure — the cure is a fetch deadline in core or in the Hubs plugin, which
+every one of the 239 UCSC configs loads.
+
+**It measures a difference, not a timeout.** A dropped wifi link times out
+against hgdownload exactly as a stalled hgdownload does, and so does a tracking
+blocker or a corporate proxy; `navigator.onLine` reports the interface, not
+whether packets arrive. So each probe is two parallel bodiless HEADs —
+hgdownload's `hg38.chrom.sizes` and a same-origin control (`/favicon.ico`) — and
+only the combination is evidence. Control slow or failing ⇒ `unknown`, say
+nothing. Control fast + UCSC timeout ⇒ `stalled`. Control fast + UCSC over 2.5s
+⇒ `slow`. Anything else ⇒ nothing. A non-timeout error status is deliberately
+`unknown` too: a 5xx is upstream having a bad day, and describing it as the hang
+would describe the wrong failure. `ucscLiveness.test.ts` pins every one of those
+branches, the false-alarm ones especially.
+
+Three things not to undo:
+
+- **The probe's hard deadline.** The failure being detected is a connection that
+  never answers, so a probe without `AbortSignal.timeout` would hang exactly
+  like the thing it is diagnosing and the banner would never appear during the
+  outage it exists for.
+- **The banner names the consequence per arm, not just "UCSC is down".** A UCSC
+  assembly still opens (its sidecars are mirrored) and loses the sequence track
+  plus UCSC-served tracks; a GenArk assembly does not open at all, because its
+  `chromSizes` and `refNameAliases` are both remote and both in that same
+  `Promise.all`. That distinction is the actionable part.
+- **Mounted on launch pages only** (`accession/[id]`, `ucsc/[id]`,
+  `ucsc/index`), `client:idle`, with the verdict shared across tabs and page
+  views in `localStorage` for 2 minutes. Cost to UCSC therefore scales with
+  distinct readers per window rather than with page views, and one bodiless HEAD
+  is a rounding error beside the hundreds of range requests the session that
+  reader is about to launch makes against the same host. Putting it in
+  `Layout.astro` would be simpler and would probe from the blog.
+
 ## multiWig composites, table-backed big files, and ENCODE
 
 A UCSC `container multiWig` composite converts to a single
