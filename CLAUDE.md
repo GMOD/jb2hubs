@@ -614,6 +614,14 @@ exhausted for everyone". So do not record this as proven throttling. The budget
 is what makes the question moot: at 300 requests a day nothing here can be the
 cause, and the canary stays a canary instead of a suspect.
 
+It recovered on its own ~15 minutes later with nothing done from this end, and
+recovered _gradually_: the first success completed its TLS handshake in
+**6.9s**, against 1.0s before the sweep and 0.2s on hgdownload2. A policy block
+does not ease back in over seconds of handshake latency; a saturated server
+does. So the weight of the evidence is on general overload rather than on us
+being singled out — which is a better reason to stay small, not a lesser one.
+Overload is the condition these configs live in permanently.
+
 Worth knowing for its own sake: hgdownload failing by _stalling_ means client
 timeouts rather than fast errors, so a session pointed at it hangs instead of
 reporting a broken track.

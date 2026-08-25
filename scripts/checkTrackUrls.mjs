@@ -55,10 +55,17 @@
 // everybody". That question needs a probe from an address that has not been
 // sweeping, which is exactly what nobody has when they need it.
 //
-// So the budget below is not a proven remedy for a proven cause. It is what
-// makes the question moot: at 300 requests a day nothing here can be the reason
-// hgdownload stops answering, and the daily canary stays a canary instead of
-// becoming a suspect.
+// The recovery is the most discriminating datapoint. It came back ~15 minutes
+// later with nothing done from this end, and came back GRADUALLY: the first
+// success completed its TLS handshake in 6.9s, against 1.0s before the sweep and
+// 0.2s on hgdownload2. A policy block does not ease off over seconds of
+// handshake latency; a saturated server does. So the weight of the evidence is
+// general overload, not us being singled out.
+//
+// Either way the budget below is not a proven remedy for a proven cause. It is
+// what makes the question moot: at 300 requests a day nothing here can be the
+// reason hgdownload stops answering, and the daily canary stays a canary instead
+// of becoming a suspect.
 //
 // The stall is also worth knowing for its own sake. hgdownload failing this way
 // means client-side timeouts rather than fast errors, so a JBrowse session
