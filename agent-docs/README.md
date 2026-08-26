@@ -28,6 +28,9 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   `/orthologs` knowingly left behind at launch
 - [MOUSE_PANGENOME_PLAN.md](MOUSE_PANGENOME_PLAN.md) — mm39 analog of the HPRC
   pangenome explorer
+- [ucsc-ncbi-gff-detection-handoff.md](ucsc-ncbi-gff-detection-handoff.md) —
+  running the pipeline after NCBI GFF tracks became detected rather than listed,
+  and what the first run should show
 - [MAF_CROSS_VIEW_NAVIGATION.md](MAF_CROSS_VIEW_NAVIGATION.md) — MAF row → other
   genome navigation, portal half
 - [OFFLINE_BUNDLES_DESIGN.md](OFFLINE_BUNDLES_DESIGN.md) — self-contained
