@@ -871,6 +871,55 @@ dropped. `agent-docs/ENCODE_TRACKS.md` records why, what was measured, and what
 would have to come first (UCSC's own faceted metadata TSVs) if they are ever
 loaded as connections.
 
+## The website deploy is a symlink swap, and the old one was a scheduled outage
+
+`website/deploy.sh` (`pnpm run deploy`, `pnpm run deploy:staging`) unpacks the
+build into `/var/www/releases/<target>/<utc-timestamp>/`, verifies it, and then
+`mv -T`s the `/var/www/html` symlink onto it — one `rename(2)`, so a request is
+served entirely by the old release or entirely by the new one.
+
+What it replaced was a single npm-script line:
+
+```
+tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/html/* && tar -xzf - -C /var/www/html'
+```
+
+That is not a bad failure mode, it is a **guaranteed** one. The tree is 5.4GB in
+128,963 files, and unpacking it takes ~4 minutes — during which the webroot has
+already been emptied, so genomes.jbrowse.org 404s for the whole window and
+CloudFront caches those 404s past the end of it. That is what "the EC2 server is
+showing 404" was on 2026-08-26 at 20:22–20:26 UTC; nothing had failed, a deploy
+was simply in flight. A stream that _does_ die leaves the site broken with no
+copy of it left anywhere.
+
+Three properties are load-bearing:
+
+- **Nothing is deleted until the new release serves traffic.** Old releases are
+  pruned at the _start_ of the next deploy, not the end of this one, so peak
+  disk is two releases (11GB of the 34GB free) rather than three.
+  `KEEP_RELEASES=2` is therefore "current plus one rollback", and the prune
+  keeps `keep - 1` because the incoming release does not exist yet — an
+  off-by-one here silently costs 5.4GB per target.
+- **Both guards must run before the swap.** A local failure is invisible to a
+  pipeline (its exit status is the last command, so a truncated archive with a
+  healthy `ssh` exits 0 — that is how the old line could have invalidated
+  CloudFront over a half-uploaded site). So the remote side runs under
+  `set -euo pipefail`, and the file count is compared against the local one
+  before the symlink moves. Both were tested by injecting a truncated stream and
+  a short archive: both abort with the previous release still serving.
+- **`/var/www` is owned by `ubuntu`** and the webroots are symlinks. Without the
+  first the swap cannot happen unprivileged; without the second `mv -T` refuses.
+  The script migrates a real-directory webroot on its own, so a rebuilt server
+  needs only the `chown`.
+
+**tar+zstd, not rsync**, and the reason is `prebuild`: it runs `pnpm clean`, so
+every one of the 129k files has a fresh mtime on every build. rsync's quick
+check is size+mtime, so it would consider the entire tree changed and round-trip
+per file — which is what "rsync was slow" was. Making rsync worthwhile means
+`--checksum` (reading 5.4GB on both ends) plus `--link-dest` against the
+previous release to hardlink what did not change; that is a real option if
+deploys need to get faster, but it is a different trade, not a drop-in.
+
 ## Key website internals
 
 - `src/components/SearchPage.tsx` — client-side search over

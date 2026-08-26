@@ -101,11 +101,30 @@ cd ucsc2jbrowse
 cd website
 pnpm run dev          # local dev server (predev pulls processedHubJson from S3)
 pnpm run build        # static build into dist/
-pnpm run deploy       # build, rsync to the server, invalidate CloudFront
+pnpm run deploy       # build, publish to the server, invalidate CloudFront
+pnpm run rollback     # point the webroot back at the previous release
 ```
 
 Use `pnpm run deploy`, not `pnpm deploy` — the latter is pnpm's own built-in
 command.
+
+### How the publish works
+
+`website/deploy.sh` unpacks the build into a fresh timestamped directory under
+`/var/www/releases/<production|staging>/`, verifies it, and only then moves the
+`/var/www/html` symlink onto it with `mv -T` (one `rename(2)`, atomic). Nothing
+is deleted until the new release is serving traffic, so a failed or truncated
+transfer leaves the live site exactly as it was, and any request is served
+entirely by one release or entirely by the other.
+
+`--rollback` re-points the symlink at the previous release, which is why
+`KEEP_RELEASES=2` — the tree is 5.4GB, and old releases are pruned _before_ the
+next transfer so a deploy never needs three on disk at once.
+
+The webroots are symlinks and `/var/www` is owned by `ubuntu`; both were set up
+on 2026-08-26 and the script re-does the migration by itself against a webroot
+that is still a real directory. nginx sets no `disable_symlinks`, so it follows
+them and resolves the path per request — the swap takes effect immediately.
 
 `.astro` frontmatter is **not** typechecked (`astro check` was dropped with the
 move to TypeScript 7), so anything type-sensitive belongs in a `.ts`/`.tsx`

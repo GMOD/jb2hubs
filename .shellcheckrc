@@ -9,3 +9,10 @@ source-path=SCRIPTDIR
 # argument and break every call site. Arrays aren't an option either: these are
 # exported to child scripts, and bash cannot export arrays.
 disable=SC2086
+
+# website/deploy.sh builds the remote release path locally (a constant root plus
+# a UTC timestamp) and interpolates it into the ssh command string on purpose --
+# the remote side has no way to know which release this run created, and the two
+# calls that do it stream a tar into it, so their stdin is taken and they cannot
+# take the path over a `bash -s --` heredoc like the other remote steps do.
+disable=SC2029

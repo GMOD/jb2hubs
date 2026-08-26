@@ -26,10 +26,12 @@
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test 'src/**/*.test.ts'",
     "deploy": "pnpm sync",
     "predeploy": "pnpm build",
-    "sync": "tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/html/* && tar -xzf - -C /var/www/html' && aws cloudfront create-invalidation --distribution-id E12EBG02P68TDO --paths '/*'",
+    "sync": "./deploy.sh",
     "deploy:staging": "pnpm sync:staging",
+    "rollback": "./deploy.sh --rollback",
+    "rollback:staging": "./deploy.sh --staging --rollback",
     "predeploy:staging": "pnpm build:staging",
-    "sync:staging": "tar -czf - -C dist . | ssh myserver 'rm -rf /var/www/staging/* && tar -xzf - -C /var/www/staging' && aws cloudfront create-invalidation --distribution-id E3IPPUV528KQIX --paths '/*'",
+    "sync:staging": "./deploy.sh --staging",
     "format": "oxfmt . && prettier --write \"**/*.astro\""
   },
   "dependencies": {
