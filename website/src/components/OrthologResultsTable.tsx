@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 
+import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { groupByClade } from './orthologClades.ts'
 import { speciesLabel } from './orthologDb.ts'
@@ -9,6 +10,7 @@ import {
   formatNumber,
   matchesQuery,
   orthoSyntenyUrl,
+  orthologsToTsv,
   planMultiSynteny,
 } from './orthologSearchUtils.ts'
 import { syntenyLink } from './syntenyPairIndex.ts'
@@ -233,6 +235,18 @@ export default function OrthologResultsTable({
             ? `${results.length} species`
             : `${filtered.length} of ${results.length} species`}
         </span>
+        <button
+          className="orthologs-download"
+          onClick={() => {
+            downloadText(
+              `${refResult?.geneSymbol ?? 'gene'}_orthologs.tsv`,
+              orthologsToTsv(filtered),
+            )
+          }}
+          title="The rows currently shown, as a tab-separated file"
+        >
+          Download TSV
+        </button>
       </div>
 
       {filtered.length === 0 ? (

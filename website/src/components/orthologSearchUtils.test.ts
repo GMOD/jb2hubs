@@ -8,6 +8,7 @@ import {
   buildOrthologResults,
   matchesQuery,
   orthologSearchUrl,
+  orthologsToTsv,
   planMultiSynteny,
   refLabel,
 } from './orthologSearchUtils.ts'
@@ -364,4 +365,31 @@ test('orthologSearchUrl carries a non-default scope only', () => {
     orthologSearchUrl('BRCA1', 9606, 'mammals'),
     '?gene=BRCA1&ref=9606&scope=mammals',
   )
+})
+
+// Tab-separated, because the common names carry commas and nothing here can
+// carry a tab — so the export needs no quoting rules to stay parseable.
+test('orthologsToTsv emits a header plus one line per row', () => {
+  const row = res('GCF_000001635.27', 10090, 100, 200, 'NC_000077.7')
+  row.assembly.scientificName = 'Mus musculus'
+  row.assembly.commonName = 'house mouse (GRCm39, 2020)'
+  row.geneSymbol = 'Brca1'
+  const lines = orthologsToTsv([row]).split('\n')
+  assert.equal(lines.length, 2)
+  assert.equal(lines[0]?.split('\t')[0], 'scientific_name')
+  assert.deepEqual(lines[1]?.split('\t').slice(0, 9), [
+    'Mus musculus',
+    'house mouse (GRCm39, 2020)',
+    '10090',
+    'Brca1',
+    '1',
+    'GCF_000001635.27',
+    'NC_000077.7',
+    'c',
+    '100',
+  ])
+})
+
+test('orthologsToTsv over no rows is the header alone', () => {
+  assert.equal(orthologsToTsv([]).split('\n').length, 1)
 })

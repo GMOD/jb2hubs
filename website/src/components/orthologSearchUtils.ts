@@ -280,6 +280,43 @@ export function formatNumber(n: number) {
   return n.toLocaleString('en-US')
 }
 
+// The rows as a spreadsheet, which is where a set of ortholog coordinates
+// usually ends up. Tab-separated rather than comma, because assembly common
+// names carry commas ("cattle (Hereford L1 Dominette 01449 …, USDA)") and no
+// field here can contain a tab, so this needs no quoting rules. Takes whatever
+// the caller has on screen, so the filter and the clade scope carry through.
+export function orthologsToTsv(results: OrthologResult[]) {
+  const header = [
+    'scientific_name',
+    'common_name',
+    'taxon_id',
+    'gene_symbol',
+    'gene_id',
+    'assembly',
+    'refname',
+    'chromosome',
+    'begin',
+    'end',
+    'jbrowse_url',
+  ]
+  const rows = results.map(r =>
+    [
+      r.assembly.scientificName,
+      r.assembly.commonName,
+      r.assembly.taxonId,
+      r.geneSymbol,
+      r.geneId,
+      r.assembly.accession,
+      r.locStr.split(':')[0] ?? r.chromosome,
+      r.chromosome,
+      r.begin,
+      r.end,
+      r.jbrowseUrl,
+    ].join('\t'),
+  )
+  return [header.join('\t'), ...rows].join('\n')
+}
+
 // Free-text row filter over the four things a reader would actually type at a
 // table of several hundred species: either species name, the ortholog's own
 // symbol (which often differs from the query's — an uncharacterised locus reads
