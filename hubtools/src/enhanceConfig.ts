@@ -52,12 +52,15 @@ const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
 // jbrowse-plugin-list ADR 0008.
 //
 // The url stays because a host that predates ref support ignores the unknown
-// key and loads it — `plugins` is `types.array(types.frozen())`, so an extra
-// field passes validation on every released JBrowse. Drop the urls only when no
-// such host is left in the wild. It must be the `latest/` path and never the
-// bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished: that is how
-// protein3d served 0.4.1 against a published 0.8.0, leaving the protein view on
-// a perpetual "Loading pairwise alignment".
+// key and loads it. Measured rather than argued — a paired boot matrix over
+// v2.1.0..latest and the cross-origin trust gate, every row identical with and
+// without the key, written up in jbrowse-plugin-list
+// agent-docs/2026-08-26-store-plugin-refs-older-clients.md and gated by
+// `check-plugins.ts --hybrid`. Drop the urls only when no such host is left in
+// the wild. It must be the `latest/` path and never the bare `<pkg>/dist/<umd>`
+// v1 layout, which is no longer republished: that is how protein3d served 0.4.1
+// against a published 0.8.0, leaving the protein view on a perpetual "Loading
+// pairwise alignment".
 //
 // MafViewer names no package on purpose. Core vendors it now, so it was removed
 // from the store's plugins.json and a ref to it cannot resolve; jbrowse-web
@@ -168,6 +171,12 @@ export function enhanceConfig(
   // version did, and it would have left every already-enhanced config without
   // the `storePlugin` this run adds — which is the same class of bug as the one
   // above, on a field that did not exist yet when it was fixed.
+  //
+  // Replacing the entry also drops anything else it held. Every plugin entry in
+  // the tree is exactly `{ name, url }` — 208,344 across 52,086 genark configs,
+  // 956 across 239 in ucsc2jbrowse/configs, checked 2026-08-26 — so there is
+  // nothing to drop. A generator that starts writing a fifth field has to
+  // revisit this.
   for (const plugin of plugins) {
     const index = config.plugins.findIndex(p => p.name === plugin.name)
     if (index === -1) {
