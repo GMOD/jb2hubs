@@ -5,8 +5,10 @@ import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
 import {
   crossSpeciesGeneOrderUrl,
+  externalGraphUrl,
   graphBrowserUrl,
   graphLocusUrl,
+  graphRegionUrl,
   graphVcfLgvUrl,
   referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
@@ -151,6 +153,43 @@ test('graphLocusUrl opens the graph on the locus, paired with a linear view', ()
     start: 32_510_000,
     end: 32_600_000,
   })
+})
+
+test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
+  const region = { chrom: 'chr1', start: 100, end: 5_100, label: 'anywhere' }
+  const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region)!)
+  const [lgv, graph] = spec.views
+  assert.equal(lgv!.loc, 'chr1:100-5100')
+  assert.equal(graph!.displayName, 'anywhere graph')
+  assert.deepEqual(graph!.loadedRegion, {
+    refName: 'chr1',
+    assemblyName: 'hg38',
+    start: 100,
+    end: 5_100,
+  })
+  assert.equal(
+    graphRegionUrl({ ...HPRC_DATASET, graphBrowser: undefined }, region),
+    undefined,
+  )
+})
+
+test('externalGraphUrl deep-links by a 1-based hash', () => {
+  const url = externalGraphUrl(HPRC_DATASET, {
+    chrom: 'chr6',
+    start: 32_510_000,
+    end: 32_600_000,
+  })
+  assert.equal(
+    url,
+    `${HPRC_DATASET.externalGraphBrowser!.baseUrl}#chr6:32510001-32600000`,
+  )
+  assert.equal(
+    externalGraphUrl(
+      { ...HPRC_DATASET, externalGraphBrowser: undefined },
+      { chrom: 'chr6', start: 0, end: 1 },
+    ),
+    undefined,
+  )
 })
 
 test('graphLocusUrl is undefined without a hosted graph', () => {

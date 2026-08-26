@@ -58,6 +58,18 @@ export interface PangenomeGraphBrowser {
   allelesTrackId?: string
 }
 
+// An external graph browser that deep-links by reference coordinate, for the
+// scale the in-browser cut cannot reach: PangyPlot precomputes an odgi layout
+// and LOD tiers server-side, so it draws a whole chromosome where the
+// GraphGenomeView draws a 5 Mb window at most. Its instance carries its own
+// graph build, which is why `graphLabel` is stated beside the url — the
+// coordinates line up only because both are on the same reference.
+export interface PangenomeExternalGraphBrowser {
+  name: string
+  baseUrl: string
+  graphLabel: string
+}
+
 export interface PangenomeDataset {
   id: string
   // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.0'.
@@ -75,6 +87,7 @@ export interface PangenomeDataset {
   landingRegion: string
   // Omitted where a dataset has no hosted graph projection to draw.
   graphBrowser?: PangenomeGraphBrowser
+  externalGraphBrowser?: PangenomeExternalGraphBrowser
   loci: PangenomeLocus[]
 }
 
@@ -149,6 +162,14 @@ export const HPRC_DATASET: PangenomeDataset = {
     bubblesTrackId: 'hprc_minigraph_bubbles',
     geneTrackId: 'hg38_ncbiRefSeq_ucsc',
     allelesTrackId: 'hprc_minigraph_alleles',
+  },
+  // SickKids' public instance, verified answering 2026-08-26. It serves the
+  // v1.1 graph, not release 2, so a locus can differ in detail from the graph
+  // launch above; GRCh38 coordinates are the same on both.
+  externalGraphBrowser: {
+    name: 'PangyPlot',
+    baseUrl: 'https://pangyplot.research.sickkids.ca/',
+    graphLabel: 'HPRC minigraph-cactus v1.1',
   },
   loci: PANGENOME_LOCI,
 }

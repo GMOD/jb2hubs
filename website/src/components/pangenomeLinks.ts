@@ -136,7 +136,7 @@ export function graphVcfLgvUrl(
   )
 }
 
-// The locus drawn as the graph itself, under a linear view of the same window.
+// A region drawn as the graph itself, under a linear view of the same window.
 // `loadedTrackId`/`loadedRegion` are plain persisted view props, so the graph
 // opens on the region directly rather than the user rubberbanding to it; the
 // shared `id`/`connectedViewId` pairs the two panels for hover sync.
@@ -147,16 +147,19 @@ export function graphVcfLgvUrl(
 // reference coordinate comes off the ramp as charcoal. The alleles lane beside
 // it states each allele's size against the reference span it replaces.
 //
-// Undefined when the dataset has no hosted graph, when the locus is too wide to
-// draw as one graph and has picked no narrower window, or when the graph is
-// known to collapse the locus (`graphCollapsed`).
-export function graphLocusUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
+// Undefined when the dataset has no hosted graph. Width is the caller's
+// concern: `graphLocusUrl` applies the catalog's rules, and the HPRC page's
+// region form applies `MAX_GRAPH_REGION_BP`.
+export interface GraphRegion {
+  chrom: string
+  start: number
+  end: number
+  label: string
+}
+
+export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
-  const window = detailWindow(locus)
-  return graph && window && !locus.graphCollapsed
+  return graph
     ? specUrl(graph.configUrl, [
         {
           type: 'LinearGenomeView',
@@ -166,7 +169,7 @@ export function graphLocusUrl(
           // locstring parser strips commas only, so a locale that groups with
           // '.' or a space (de-DE, fr-FR, ru-RU) would produce a region no view
           // can navigate to.
-          loc: `${locus.chrom}:${window.start}-${window.end}`,
+          loc: `${region.chrom}:${region.start}-${region.end}`,
           tracks: [
             graph.geneTrackId,
             graph.bubblesTrackId,
@@ -176,18 +179,48 @@ export function graphLocusUrl(
         },
         {
           type: 'GraphGenomeView',
-          displayName: `${locus.gene} graph`,
+          displayName: `${region.label} graph`,
           loadedTrackId: graph.segmentsTrackId,
           loadedRegion: {
-            refName: locus.chrom,
+            refName: region.chrom,
             assemblyName: dataset.reference.assembly,
-            start: window.start,
-            end: window.end,
+            start: region.start,
+            end: region.end,
           },
           connectedViewId: LGV_ID,
           colorScheme: 'reference-position',
         },
       ])
+    : undefined
+}
+
+// The same region in the dataset's external graph browser, which navigates by
+// a `#chrom:start-end` hash (1-based, like a typed locstring). Undefined when
+// the dataset names none.
+export function externalGraphUrl(
+  dataset: PangenomeDataset,
+  region: Omit<GraphRegion, 'label'>,
+) {
+  const ext = dataset.externalGraphBrowser
+  return ext
+    ? `${ext.baseUrl}#${region.chrom}:${region.start + 1}-${region.end}`
+    : undefined
+}
+
+// A catalog locus as the graph. Undefined when the locus is too wide to draw as
+// one graph and has picked no narrower window, or when the graph is known to
+// collapse the locus (`graphCollapsed`).
+export function graphLocusUrl(
+  dataset: PangenomeDataset,
+  locus: PangenomeLocus,
+) {
+  const window = detailWindow(locus)
+  return window && !locus.graphCollapsed
+    ? graphRegionUrl(dataset, {
+        ...window,
+        chrom: locus.chrom,
+        label: locus.gene,
+      })
     : undefined
 }
 
