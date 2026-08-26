@@ -771,6 +771,85 @@ Three things not to undo:
   reader is about to launch makes against the same host. Putting it in
   `Layout.astro` would be simpler and would probe from the blog.
 
+## Which UCSC assemblies are NCBI-derived is derived, not listed
+
+A `<db>-ncbiRefSeqGff` track is the full-resolution NCBI RefSeq GFF3 — gene →
+mRNA → CDS/exon with the real attributes — beside UCSC's own genePred-derived
+`ncbiRefSeq` bigBeds. `downloadNcbiGff.sh` builds it, and until 2026-08-26 it
+read a hand-written list of 11 dbs.
+
+That list could only ever be stale, because the UCSC genome list is fetched
+**live** on every `make.sh` run: a new assembly arrives with no repo change, and
+so with no GFF. rn8 (GRCr8) is the case that showed it. It is a GenArk-backed
+alias whose own `nibPath` spells out `GCF_036323735.1`, its refNames already
+**are** that assembly's RefSeq accessions (`NC_086019.1`), and its GenArk twin
+at `/hubs/genark/GCF/036/323/735/GCF_036323735.1/config.json` has carried a
+`-ncbiGff` track since the day it was built. Nothing was hard about rn8; nobody
+was prompted to edit the file.
+
+`src/deriveNcbiAccessions.ts` answers the question instead, from three sources,
+strongest first. Measured over the 238 assemblies in the live list on
+2026-08-26:
+
+- **`nibPath`** — a GenArk-backed alias names its own RefSeq accession
+  (`hub:/gbdb/genark/GCF/036/323/735/GCF_036323735.1`). 16 dbs. Not a claim
+  about an equivalent assembly; it _is_ the assembly the hub was built from, and
+  all 16 have RefSeq-accession refNames.
+- **`description`** — a native hub spelling it in prose. 1 db, `mpxvRivers`.
+- **`hgFixed.asmEquivalent`** — UCSC's own equivalence table, which is already
+  on disk (make.sh rsyncs all of `goldenPath/hgFixed/database`). 58 dbs,
+  including the old golden-path assemblies that predate GenArk.
+
+Union: 75, every one of which has an NCBI annotation (checked against
+`datasets summary`; 42 are `suppressed`, which is normal for a superseded
+assembly and does not stop the download). 1.35GB of GFF for the whole set.
+
+**Only a GCF counts.** 55 entries name a `GCA_` in `sourceName` — hg38's is
+`GRCh38 … (GCA_000001405.15)` — and that is the GenBank submission, whose seqids
+(`CM000663.2`) are not the ones a RefSeq GFF uses. Reading it would attach an
+annotation that resolves to nothing.
+
+### The curated file is now the override layer, and four of its rows are load-bearing
+
+`ncbiRefSeqAccessions.tsv` still wins over anything derived, and `-` as the
+accession turns a db off. Deleting it would not be a no-op: **hg38, hg19, mm39
+and hs1 have no `ucsc`↔`refseq` row in `asmEquivalent` at all**, and the only
+accession their genome-list entry names is the GCA. Nothing detects them; the
+four assemblies people actually open would lose their GFF. The other seven rows
+(ce11, danRer11, dm6, mm10, rn6, rn7, sacCer3) are recovered by `asmEquivalent`
+and kept only because a curated pick should beat a derived one where they ever
+disagree — today they agree on every one.
+
+### Two gates, because a GFF whose seqids resolve to nothing is worse than no GFF
+
+A track that loads and draws nothing reads as "this assembly has no NCBI
+annotation". Both gates are local reads; neither costs a request.
+
+- **Addressability, before the download** (`hasRefSeqAliases`). The GFF's
+  `NC_`/`NW_` seqids reach refNames only through the assembly's chromAlias, and
+  `database/chromAlias.txt.gz` says outright whether UCSC knows the RefSeq names
+  — it is `(alias, chrom, source)` triples and the source column reads `refseq`,
+  `ensembl`, `genbank,ensembl`. cavPor3 has a refseq row; **oryCun2, musFur1 and
+  loxAfr3 do not**, and are dropped despite being in `asmEquivalent`. `aptMan1`
+  is dropped too, for a different reason worth knowing: its refNames _are_
+  RefSeq accessions, under UCSC's dot-to-`v` mangling (`NW_013995860v1`), and it
+  publishes no alias table to undo that with. Hub assemblies skip this gate —
+  they have no rsync'd `database/` dir and do not need one.
+- **Overlap, after the download** (`seqids_resolve` in `downloadNcbiGff.sh`).
+  `tabix -l` against the assembly's refNames and aliases, which answers the
+  question a _partial_ `asmEquivalent` match leaves open — galGal6 matches 455
+  of 464 sequences, rn6 and oryCun2 less. Zero overlap skips the add-track; the
+  GFF stays cached, so the next run re-checks it for free.
+
+Not being able to answer is deliberately not the same as answering no. A hub
+assembly on a cold tree has nothing mirrored beside its config yet, and refusing
+there would withhold the track from every GenArk-backed alias on its first build
+— the exact case the detection exists to serve. It says so and proceeds.
+
+`<db>-ncbiRefSeqGff` matches `ncbirefseq` in `MINIMAL_TRACK_PATTERNS`, so a
+newly detected assembly's GFF lands in its `minimal.json` as well. That is the
+existing behaviour for the 11, not a new decision.
+
 ## multiWig composites, table-backed big files, and ENCODE
 
 A UCSC `container multiWig` composite converts to a single

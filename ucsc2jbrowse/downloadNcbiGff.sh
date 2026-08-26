@@ -3,8 +3,8 @@
 #
 # downloadNcbiGff.sh
 #
-# Downloads the source NCBI RefSeq GFF3 for each UCSC assembly listed in
-# ncbiRefSeqAccessions.tsv and adds it as a <db>-ncbiRefSeqGff FeatureTrack.
+# Downloads the source NCBI RefSeq GFF3 for each NCBI-derived UCSC assembly and
+# adds it as a <db>-ncbiRefSeqGff FeatureTrack.
 #
 # This is the full-resolution NCBI annotation (rich GFF3 gene -> mRNA -> CDS/exon
 # structure), complementary to UCSC's own genePred-derived ncbiRefSeq tracks. The
@@ -13,8 +13,13 @@
 # with no seqid rewriting. Per-contig genetic codes are handled separately by
 # addGeneticCodes.ts in the post-processing phase.
 #
+# Which assemblies get one is derived, not listed: src/deriveNcbiAccessions.ts
+# reads the live genome list plus hgFixed's asmEquivalent table and answers it
+# per db, with ncbiRefSeqAccessions.tsv overriding. See that file for the three
+# evidence sources and the addressability gate they all pass through.
+#
 # Usage:
-#   ./downloadNcbiGff.sh             # every db in ncbiRefSeqAccessions.tsv
+#   ./downloadNcbiGff.sh             # every detected db
 #   ./downloadNcbiGff.sh hg38 mm39   # only the named dbs
 #
 # By default we only fetch a GFF we don't already have, so a --reprocess-all
@@ -28,14 +33,69 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
 GFF_DIR="$SCRIPT_DIR/gff"
-ACC_TSV="$SCRIPT_DIR/ncbiRefSeqAccessions.tsv"
+CURATED_TSV="$SCRIPT_DIR/ncbiRefSeqAccessions.tsv"
 mkdir -p "$GFF_DIR"
+
+ACC_TSV=$(mktemp)
+trap 'rm -f "$ACC_TSV"' EXIT
+node "$SCRIPT_DIR/src/deriveNcbiAccessions.ts" \
+  "$UCSC_BUILT_DIR/list.json" "$UCSC_DOWNLOADS_DIR" "$CURATED_TSV" >"$ACC_TSV"
+log "$(wc -l <"$ACC_TSV") assemblies detected as NCBI-derived."
 
 # Restrict to dbs named on the command line, when any are given.
 declare -A WANT
 for a in "$@"; do
   WANT["$a"]=1
 done
+
+# Every name this assembly can resolve a GFF seqid to: its own refNames, plus
+# every alias of one. Golden-path assemblies answer from the rsync'd tables, so
+# this needs no network and no prior build; a hub assembly has no database dir
+# and answers from whatever a previous run mirrored beside its config.
+resolvable_names() {
+  local db_dir="$1" built_dir="$2"
+  {
+    if [ -f "$db_dir/chromInfo.txt.gz" ]; then
+      zcat "$db_dir/chromInfo.txt.gz" | cut -f1
+    fi
+    if [ -f "$db_dir/chromAlias.txt.gz" ]; then
+      zcat "$db_dir/chromAlias.txt.gz" | cut -f1,2
+    fi
+    cat "$built_dir"/*.chrom.sizes "$built_dir"/*.chrom.sizes.txt \
+      "$built_dir"/*.chromAlias.txt 2>/dev/null | cut -f1-6
+  } 2>/dev/null | tr '\t' '\n' | grep -v '^[[:space:]]*$' | sort -u
+}
+
+# Whether this GFF's seqids reach this assembly at all.
+#
+# deriveNcbiAccessions.ts already asked whether RefSeq names are addressable
+# here; this asks whether *these* RefSeq names are, which is the question a
+# partial asmEquivalent match (galGal6, rn6) leaves open. Zero overlap means a
+# track that loads and draws nothing, which is worse than no track: it reads as
+# "this assembly has no NCBI annotation".
+#
+# Not being able to answer is not the same as answering no. A hub assembly on a
+# cold tree has nothing mirrored yet, and refusing there would withhold the
+# track from every GenArk-backed alias on its first build -- the exact case this
+# whole detection pass exists to serve. Say so and proceed.
+seqids_resolve() {
+  local db="$1" gff="$2" names seqids matched total
+  names=$(resolvable_names \
+    "$UCSC_DOWNLOADS_DIR/$db/$db/database" "$UCSC_BUILT_DIR/$db")
+  if [ -z "$names" ]; then
+    log "$db: no local chrom tables to check GFF seqids against; adding unverified"
+    return 0
+  fi
+  seqids=$(tabix -l "$gff" | sort -u)
+  total=$(printf '%s' "$seqids" | grep -c '' || true)
+  matched=$(comm -12 <(printf '%s\n' "$seqids") <(printf '%s\n' "$names") | grep -c '' || true)
+  if [ "$matched" -eq 0 ]; then
+    log "Skipping $db: none of its $total GFF seqids resolve to a refName or alias"
+    return 1
+  fi
+  log "$db: $matched/$total GFF seqids resolve"
+  return 0
+}
 
 # Downloads, sorts, bgzips and indexes one assembly's NCBI RefSeq GFF, then adds
 # it as a track and text-indexes it.
@@ -63,7 +123,7 @@ process_db() {
 
     if grep -q "\"$track_id\"" "$config"; then
       log "$db GFF track already present, skipping add-track."
-    else
+    elif seqids_resolve "$db" "$gff"; then
       log "Adding $track_id track..."
       jbrowse add-track "$gff" --force --trackId "$track_id" \
         --name "NCBI RefSeq - RefSeq All (GFF)" \
@@ -77,7 +137,7 @@ process_db() {
   fi
 }
 
-while IFS=$'\t' read -r db acc _assembly_name; do
+while IFS=$'\t' read -r db acc _assembly_name _source; do
   case "$db" in
   '' | '#'*) continue ;;
   esac

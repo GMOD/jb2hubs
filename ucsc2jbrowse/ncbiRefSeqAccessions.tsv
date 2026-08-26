@@ -1,10 +1,23 @@
-# UCSC db -> NCBI RefSeq accession, used by downloadNcbiGff.sh to add the source
-# NCBI RefSeq GFF3 as a <db>-ncbiRefSeqGff track.
+# UCSC db -> NCBI RefSeq accession: the OVERRIDE layer over the detection in
+# src/deriveNcbiAccessions.ts, which is what downloadNcbiGff.sh actually reads.
 #
 # Columns: db <tab> accession <tab> assemblyName
 #   db           UCSC golden-path / hub assembly name
-#   accession    GCF_ RefSeq accession whose annotation to download
+#   accession    GCF_ RefSeq accession whose annotation to download,
+#                or `-` to build no GFF for this db at all
 #   assemblyName human-readable note only (not parsed)
+#
+# A row here wins over anything derived, so add one when detection is wrong or
+# absent -- not to record an answer detection already gets right.
+#
+# Four of the rows below are load-bearing rather than redundant. hg38, hg19,
+# mm39 and hs1 have no ucsc<->refseq row in hgFixed.asmEquivalent, and the only
+# accession their genome-list entry names is the GenBank submission
+# (GCA_000001405.15 for hg38), whose seqids a RefSeq GFF never uses. Detection
+# finds nothing for them; delete these rows and the four assemblies people
+# actually open lose their GFF. The rest (ce11, danRer11, dm6, mm10, rn6, rn7,
+# sacCer3) are recovered by asmEquivalent and kept only because a curated pick
+# beats a derived one when the two ever disagree.
 #
 # Policy: each accession is the latest RefSeq annotation on the SAME assembly as
 # the UCSC db (not merely the same species), so the GFF's RefSeq seqids match the
@@ -12,7 +25,7 @@
 # GCA_000001405.*, mm10/mm39 both GCA_000001635.*, etc. -- only the assembly
 # differs. The assembly's refNameAliases (UCSC chromAlias.txt) maps the GFF's
 # RefSeq accession seqids (NC_000001.11) to UCSC names (chr1) at load time, so the
-# GFF is used as-is with no seqid rewriting. Add a row to enable another assembly.
+# GFF is used as-is with no seqid rewriting.
 hs1	GCF_009914755.1	T2T-CHM13v2.0
 hg38	GCF_000001405.40	GRCh38.p14
 hg19	GCF_000001405.25	GRCh37.p13
