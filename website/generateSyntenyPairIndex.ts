@@ -26,6 +26,13 @@ const data: SyntenyData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
 // of its assemblies are rows the ortholog table can show.
 // Entry: [commonName, scientificName, taxonId, ucscDb?].
 type IndexEntry = [string, string, number] | [string, string, number, string]
+if (!fs.existsSync(orthologIndexPath)) {
+  // Left silent, this would emit a plausible-looking file with every UCSC-named
+  // track dropped — the exact bug this script was fixed for.
+  throw new Error(
+    `${orthologIndexPath} is missing; run \`pnpm generate-ortholog-index\` first (\`pnpm generate\` does both, in order)`,
+  )
+}
 const orthologIndex: Record<string, IndexEntry> = JSON.parse(
   fs.readFileSync(orthologIndexPath, 'utf-8'),
 )
