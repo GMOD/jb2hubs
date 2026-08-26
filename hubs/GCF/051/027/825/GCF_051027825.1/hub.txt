@@ -1,0 +1,116 @@
+hub GCF_051027825.1 genome assembly
+shortLabel Yushu Rhabd tick virus 2 (TIGMIC 1 2026)
+longLabel Yushu Rhabd tick virus 2 (TIGMIC 1 2026)/Yushu Rhabd tick virus 2/GCF_051027825.1_ASM5102782v1 genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_051027825.1_ASM5102782v1.description.html
+
+genome GCF_051027825.1
+taxId 2972332
+groups groups.txt
+description Yushu Rhabd tick virus 2 (TIGMIC 1 2026)
+twoBitPath GCF_051027825.1.2bit
+twoBitBptUrl GCF_051027825.1.2bit.bpt
+chromSizes GCF_051027825.1.chrom.sizes.txt
+chromAliasBb GCF_051027825.1.chromAlias.bb
+organism ASM5102782v1 Mar. 2026
+defaultPos NC_138289.1:3485-10456
+scientificName Yushu Rhabd tick virus 2
+htmlPath html/GCF_051027825.1_ASM5102782v1.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/027/825/GCF_051027825.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/027/825/GCF_051027825.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/027/825/GCF_051027825.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.assembly.bb
+type bigBed 6
+html html/GCF_051027825.1_ASM5102782v1.assembly
+searchIndex name
+searchTrix ixIxx/GCF_051027825.1_ASM5102782v1.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.gc5Base.bw
+html html/GCF_051027825.1_ASM5102782v1.gc5Base
+
+track ncbiGene
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
+visibility pack
+color 0,80,150
+altColor 150,80,0
+colorByStrand 0,80,150 150,80,0
+bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.ncbiGene.bb
+type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+html html/GCF_051027825.1_ASM5102782v1.ncbiGene
+searchIndex name
+searchTrix ixIxx/GCF_051027825.1_ASM5102782v1.ncbiGene.ix
+urlLabel Entrez gene:
+labelFields geneName,geneName2
+defaultLabelFields geneName2
+group genes
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_051027825.1_ASM5102782v1.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_051027825.1_ASM5102782v1.windowMasker.bb
+html html/GCF_051027825.1_ASM5102782v1.windowMasker
+

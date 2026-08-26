@@ -1,0 +1,160 @@
+hub GCA_050000025.2 genome assembly
+shortLabel yellow-spotted Amazon River turtle (alternate hap 2026)
+longLabel yellow-spotted Amazon River turtle (alternate hap 2026)/Podocnemis unifilis/GCA_050000025.2_rPodUni1.alt genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_050000025.2_rPodUni1.alt.description.html
+
+genome GCA_050000025.2
+taxId 227871
+groups groups.txt
+description yellow-spotted Amazon River turtle (alternate hap 2026)
+twoBitPath GCA_050000025.2.2bit
+twoBitBptUrl GCA_050000025.2.2bit.bpt
+chromSizes GCA_050000025.2.chrom.sizes.txt
+chromAliasBb GCA_050000025.2.chromAlias.bb
+organism rPodUni1.alt Mar. 2026
+defaultPos JBNCFK020001682.1:6235750-6245750
+scientificName Podocnemis unifilis
+htmlPath html/GCA_050000025.2_rPodUni1.alt.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/000/025/GCA_050000025.2
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/000/025/GCA_050000025.2
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/050/000/025/GCA_050000025.2
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.assembly.bb
+type bigBed 6
+html html/GCA_050000025.2_rPodUni1.alt.assembly
+searchIndex name
+searchTrix ixIxx/GCA_050000025.2_rPodUni1.alt.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.gc5Base.bw
+html html/GCA_050000025.2_rPodUni1.alt.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_050000025.2_rPodUni1.alt.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.rmsk.bb
+xrefDataUrl bbi/GCA_050000025.2_rPodUni1.alt.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_050000025.2_rPodUni1.alt.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.simpleRepeat.bb
+html html/GCA_050000025.2_rPodUni1.alt.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_050000025.2_rPodUni1.alt.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.windowMasker.bb
+html html/GCA_050000025.2_rPodUni1.alt.windowMasker
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.augustus.bb
+html html/GCA_050000025.2_rPodUni1.alt.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_050000025.2_rPodUni1.alt.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_050000025.2_rPodUni1.alt.xenoRefGene.ix
+html html/GCA_050000025.2_rPodUni1.alt.xenoRefGene
+
