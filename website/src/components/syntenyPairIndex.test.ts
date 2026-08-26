@@ -130,3 +130,21 @@ test('a dropped level does not poison the level after it', () => {
   assert.deepEqual(names, ['GCF_000000009.9', 'hg38', 'canFam3'])
   assert.deepEqual(tracks, [[], ['hg38_to_canFam3']])
 })
+
+// public/synteny_pairs.json is generated on every build, so this is a dev-tree
+// condition only — but a bare trackId string destructured by array pattern
+// yields its first three characters, which would put a track called "G" into a
+// launch URL rather than dropping the link.
+test('an entry in the pre-names format is skipped, not mangled', () => {
+  const index = buildPairIndex({
+    'GCF_1.1,GCF_2.1': 'old_style_trackid' as unknown as [
+      string,
+      string,
+      string,
+    ],
+    'GCF_3.1,GCF_4.1': ['t34', 'GCF_3.1', 'GCF_4.1'],
+  })
+  assert.equal(index.size, 1)
+  assert.equal(syntenyLink(index, 'GCF_1.1', 'GCF_2.1'), undefined)
+  assert.equal(syntenyLink(index, 'GCF_3.1', 'GCF_4.1')?.trackId, 't34')
+})

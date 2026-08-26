@@ -36,14 +36,28 @@ export function accessionBase(accession: string) {
 
 export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
   const index: PairIndex = new Map()
-  for (const [key, [trackId, nameA, nameB]] of Object.entries(pairs)) {
+  let stale = 0
+  for (const [key, entry] of Object.entries(pairs)) {
     const [a, b] = key.split(',')
-    if (a && b) {
+    // Entries were bare trackId strings until the names were added. A stale
+    // public/synteny_pairs.json is a dev-tree condition, not a shipped one
+    // (`pnpm generate` rewrites it every build) — but destructuring a string by
+    // array pattern yields its first three characters, so skipping is the
+    // difference between no synteny links and links naming a track called "G".
+    if (!Array.isArray(entry)) {
+      stale += 1
+    } else if (a && b) {
+      const [trackId, nameA, nameB] = entry
       index.set(`${accessionBase(a)}|${accessionBase(b)}`, {
         trackId,
         names: [nameA, nameB],
       })
     }
+  }
+  if (stale > 0) {
+    console.warn(
+      `synteny_pairs.json has ${stale} entries in the pre-names format; run \`pnpm generate\` in website/`,
+    )
   }
   return index
 }
