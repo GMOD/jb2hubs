@@ -163,7 +163,18 @@ gate_configs() {
   # question moves on upstream's timetable, not ours, and a blocking gate is the
   # wrong place to spend hgdownload's patience.
   echo "Pre-upload gate: checking every relative track file the configs name..."
-  if ! node scripts/checkTrackUrls.mjs --offline; then
+  # Exit 2 is "the check could not run" (no built tree to resolve relative refs
+  # against), not "a ref is broken". Both still block -- a gate that cannot run
+  # has verified nothing -- but reporting the first as the second sends the
+  # reader looking for a bad config that does not exist.
+  track_url_rc=0
+  node scripts/checkTrackUrls.mjs --offline || track_url_rc=$?
+  if [ "$track_url_rc" -eq 2 ]; then
+    echo "Gate failed to run: checkTrackUrls could not find the built tree, so it"
+    echo "checked nothing. Set UCSC_BUILT_DIR or pass --built-dir, or re-run with"
+    echo "SKIP_CONFIG_GATE=1 to upload unchecked."
+    return 1
+  elif [ "$track_url_rc" -ne 0 ]; then
     echo "Gate failed: a config names a track file that is not in the built tree."
     echo "That track would 404 from our own bucket. Re-run with"
     echo "SKIP_CONFIG_GATE=1 if you accept that."

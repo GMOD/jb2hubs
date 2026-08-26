@@ -37,6 +37,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
+import { DEFAULT_BUILT_DIR, resolveBuiltDir } from './builtDir.mjs'
+
 const { values } = parseArgs({
   options: {
     'built-dir': { type: 'string' },
@@ -44,10 +46,9 @@ const { values } = parseArgs({
   },
 })
 
-const builtDir =
-  values['built-dir'] ??
-  process.env.UCSC_BUILT_DIR ??
-  '/mnt/sdb/cdiesh/jb2hubs/ucscBuilt'
+// Nothing here can be checked without the built tree, so fall back to naming
+// the default in the error below rather than to a vaguer one.
+const builtDir = resolveBuiltDir(values['built-dir']) ?? DEFAULT_BUILT_DIR
 
 if (!fs.existsSync(builtDir)) {
   console.error(

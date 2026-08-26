@@ -130,6 +130,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
+import { resolveBuiltDir } from './builtDir.mjs'
+
 const { values } = parseArgs({
   options: {
     'configs-dir': { type: 'string' },
@@ -174,7 +176,7 @@ const MIRROR = 'hgdownload2.soe.ucsc.edu'
 const STATE_FILE =
   values.state ?? path.join('ucsc2jbrowse', '.trackUrlCheck.json')
 
-const builtDir = values['built-dir'] ?? process.env.UCSC_BUILT_DIR
+const builtDir = resolveBuiltDir(values['built-dir'])
 
 // Relative refs are the only thing --offline can check, and they resolve against
 // the built tree. Without one there is nothing left to do, and the run would
