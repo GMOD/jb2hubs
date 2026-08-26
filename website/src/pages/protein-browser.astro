@@ -16,18 +16,19 @@ if (!features.proteinBrowser) {
   <Container>
     <h1>Protein browser</h1>
     <p>
-      Enter a gene and reference organism: this resolves the gene's NCBI
-      orthologs live and draws each protein's NCBI CDD conserved domains as a
+      Enter a gene and reference organism: this resolves the gene's orthologs
+      live and draws each protein's NCBI CDD conserved domains as a
       domain-architecture cartoon — the quick view of whether the orthologs
       share the same domains — while in parallel building a connected JBrowse
       session with the gene on its <strong>genome</strong> (introns collapsed so the
-      coding exons sit side by side) and its <strong
+      coding exons sit side by side, under that assembly's gene track) and its <strong
         >AlphaFold 3D structure</strong
       >. Add the cross-species protein <strong>alignment</strong>
-      on demand — it aligns the orthologs at EBI Clustal Omega, overlays the domains
-      in an embedded react-msaview panel, and rides along in the JBrowse session as
-      a connected view: hover or select in any one and the others light up the matching
-      residue. Nothing is precomputed per gene.
+      and it rides along in the session as a connected view: hover or select in any
+      one and the others light up the matching residue. Human genes can take that
+      alignment from the hosted <strong>100-vertebrate</strong> set instantly, or
+      build a domain-annotated one across the model organisms at EBI Clustal Omega.
+      Nothing is precomputed per gene.
     </p>
     <ProteinBrowser client:only="react" />
   </Container>
@@ -50,6 +51,158 @@ if (!features.proteinBrowser) {
   }
   .msv-form input {
     min-width: 240px;
+  }
+  /* The gene box and its suggestion list; positioned so the listbox overlays
+     what follows instead of pushing the examples row down as you type. */
+  .msv-combobox {
+    position: relative;
+  }
+  .msv-listbox {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 2px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    max-height: 260px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+  }
+  .msv-option {
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .msv-option.highlighted {
+    background: var(--accent-wash);
+  }
+  .msv-icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #666;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .msv-icon-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* Which of the two alignments to show, offered only where both exist. */
+  .msv-source {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 1rem;
+    margin: 1rem 0 0.5rem;
+    font-size: 13px;
+  }
+  .msv-source-label {
+    font-weight: 600;
+    color: #444;
+  }
+  .msv-source-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #333;
+    cursor: pointer;
+  }
+  .msv-source-note {
+    color: #999;
+    font-size: 12px;
+  }
+
+  /* An alignment is a wide matrix, and the article measure (60rem) shows a
+     sliver of it. Break out to the window width: the content box is centered in
+     the viewport, so offsetting by half the difference recentres the wider box
+     on the same axis. Capped so an ultrawide monitor does not stretch the tree
+     gutter across a metre of desk. */
+  .msv-align {
+    --msv-align-width: min(96vw, 1800px);
+    width: var(--msv-align-width);
+    margin: 1rem 0 1rem calc(50% - var(--msv-align-width) / 2);
+  }
+  @media (max-width: 767px) {
+    .msv-align {
+      --msv-align-width: 100%;
+      margin-left: 0;
+    }
+  }
+
+  /* Expanded: the whole viewport, since that is the point of expanding. */
+  .msv-align-dialog {
+    width: 96vw;
+    max-width: 96vw;
+    height: 94vh;
+    max-height: 94vh;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #dce0e6;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .msv-align-dialog::backdrop {
+    background: rgb(0 0 0 / 45%);
+  }
+
+  .msv-align-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+  .msv-align-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  .msv-options {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin-top: 0.75rem;
+  }
+  .msv-dialog {
+    max-width: 64ch;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .msv-dialog h3 {
+    margin: 1.25rem 0 0.35rem;
+    font-size: 1rem;
+  }
+  .msv-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+  .msv-code {
+    margin: 0.5rem 0;
+    padding: 0.6rem 0.75rem;
+    font-size: 12px;
+    background: #f6f7f9;
+    border: 1px solid #e3e6ea;
+    border-radius: 4px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .msv-code-scroll {
+    max-height: 280px;
+    overflow-y: auto;
+    font-size: 11px;
   }
   .msv-form button {
     padding: 8px 18px;

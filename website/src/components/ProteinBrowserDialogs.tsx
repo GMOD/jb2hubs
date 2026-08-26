@@ -20,7 +20,7 @@ function Modal({
 }) {
   return (
     <dialog
-      className="orthologs-dialog"
+      className="msv-dialog"
       ref={el => {
         // showModal() throws if the dialog is already open, which a StrictMode
         // ref re-attach would do.

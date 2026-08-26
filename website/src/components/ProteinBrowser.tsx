@@ -509,26 +509,10 @@ function GeneResults({
       />
 
       {alignment ? (
-        <Suspense
-          fallback={<p className="msv-hint">Loading alignment viewer…</p>}
-        >
-          <MSAViewer
-            msa={alignment.fasta}
-            {...(alignment.newick ? { tree: alignment.newick } : {})}
-            {...(alignment.treeUri
-              ? {
-                  treeFilehandle: {
-                    uri: alignment.treeUri,
-                    locationType: 'UriLocation',
-                  },
-                }
-              : {})}
-            {...(alignment.gff ? { gff: alignment.gff } : {})}
-            colorScheme="clustalx_protein_dynamic"
-            treeAreaWidth={200}
-            height={520}
-          />
-        </Suspense>
+        <AlignmentPanel
+          alignment={alignment}
+          gene={symbol}
+        />
       ) : source === 'live' && panel ? (
         <div className="msv-advanced">
           <button
@@ -563,6 +547,114 @@ function GeneResults({
       />
     </>
   )
+}
+
+// The embedded viewer. An alignment is the one thing on this page that cannot
+// live inside the article's measure — it is a hundred rows of a wide matrix, and
+// at 60rem you read a sliver of it — so inline it breaks out to the window width
+// (see .msv-align in the page styles), and Expand hands it the whole viewport.
+//
+// MSAViewer builds its MST model once, from the props it first mounts with, so
+// changing the height means a new instance: `key` makes the remount deliberate
+// rather than something React decides. It costs nothing here — both alignments
+// are already strings in memory, so nothing is re-fetched — but it does reset
+// scroll position, which is the trade for not reaching into the model.
+function AlignmentPanel({
+  alignment,
+  gene,
+}: {
+  alignment: LoadedAlignment
+  gene: string
+}) {
+  const [expanded, setExpanded] = useState(false)
+  const height = useViewportHeight(expanded)
+
+  const viewer = (
+    <Suspense fallback={<p className="msv-hint">Loading alignment viewer…</p>}>
+      <MSAViewer
+        key={expanded ? 'expanded' : 'inline'}
+        msa={alignment.fasta}
+        {...(alignment.newick ? { tree: alignment.newick } : {})}
+        {...(alignment.treeUri
+          ? {
+              treeFilehandle: {
+                uri: alignment.treeUri,
+                locationType: 'UriLocation',
+              },
+            }
+          : {})}
+        {...(alignment.gff ? { gff: alignment.gff } : {})}
+        colorScheme="clustalx_protein_dynamic"
+        treeAreaWidth={200}
+        height={height}
+      />
+    </Suspense>
+  )
+
+  const toolbar = (
+    <div className="msv-align-bar">
+      <span className="msv-align-title">
+        {gene} · {alignment.rowCount} rows
+      </span>
+      <button
+        className="msv-advanced-btn"
+        onClick={() => {
+          setExpanded(!expanded)
+        }}
+      >
+        {expanded ? 'Close' : 'Expand ⤢'}
+      </button>
+    </div>
+  )
+
+  if (expanded) {
+    return (
+      <dialog
+        className="msv-align-dialog"
+        ref={el => {
+          // showModal() throws if the dialog is already open, which a StrictMode
+          // ref re-attach would do
+          if (el && !el.open) {
+            el.showModal()
+          }
+        }}
+        onClose={() => {
+          setExpanded(false)
+        }}
+      >
+        {toolbar}
+        {viewer}
+      </dialog>
+    )
+  }
+  return (
+    <div className="msv-align">
+      {toolbar}
+      {viewer}
+    </div>
+  )
+}
+
+// Pixel height for the viewer, which takes a number rather than a CSS length.
+// Expanded fills the viewport bar the dialog's own chrome; inline is a fixed
+// panel. Tracks resize so a rotated phone or a dragged window does not leave the
+// canvas the wrong size.
+const INLINE_HEIGHT = 520
+
+function useViewportHeight(expanded: boolean) {
+  const [viewport, setViewport] = useState(() =>
+    typeof window === 'undefined' ? 900 : window.innerHeight,
+  )
+  useEffect(() => {
+    const onResize = () => {
+      setViewport(window.innerHeight)
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+  return expanded ? Math.max(360, viewport - 120) : INLINE_HEIGHT
 }
 
 // The hosted 100-way for one gene: the alignment block, and the transcript it

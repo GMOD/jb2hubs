@@ -84,35 +84,38 @@ an `outDir` needs an explicit `rootDir`, and `moduleResolution: node` (node10)
 is rejected outright. A tsconfig error there fails `pnpm lint` before any rule
 runs.
 
-## TODO: drop the react-msaview patch once @jbrowse/core catches up
+## The react-msaview patch is gone, and the reason it existed is worth keeping
 
-`patches/react-msaview@5.6.3.patch` (wired up via `patchedDependencies` in
-`pnpm-workspace.yaml`) exists for one reason: react-msaview 5.6.x is built
-against **unreleased** `@jbrowse/core`. Its `dist/fetchUtils.js` imports
-`statusMessageText`, added to jbrowse-components on 2026-06-17 (`7e576348e8`,
-"More robust concept of progress") — after `@jbrowse/core@4.3.0` was published
-on 2026-05-21, and 4.3.0 is still `latest` on npm. Without the patch,
-`astro build` dies with `[MISSING_EXPORT] "statusMessageText" is not exported`,
-which fails `pnpm build` and therefore `run.sh`'s `predeploy`.
+`patches/react-msaview@5.6.3.patch` existed because 5.6.x was built against
+**unreleased** `@jbrowse/core`: its `dist/fetchUtils.js` imported
+`statusMessageText`, added to jbrowse-components on 2026-06-17 (`7e576348e8`)
+— after `@jbrowse/core@4.3.0` shipped on 2026-05-21, and 4.3.0 is still
+`latest`. Without the patch, `astro build` died with
+`[MISSING_EXPORT] "statusMessageText" is not exported`, failing `pnpm build`
+and so `run.sh`'s `predeploy`.
 
-The patch inlines the function rather than importing it. That is exact, not
-approximate: on 4.3.0 `BaseOptions.statusCallback` is still
-`(message: string) => void`, so a status is always a plain string and the shim
-returns it unchanged. `statusMessageText` is the **only** missing symbol — every
-other `@jbrowse/core/*` module and named import in 5.6.3's dist resolves against
-4.3.0.
+**react-msaview 6.2.0 upstreamed the same fix** — `fetchUtils.ts` now inlines
+the one-liner, with a comment giving our reasoning (an external
+`@jbrowse/core/util` in the UMD build resolves against whatever core the host
+ships, so the import lands as `undefined` on an older host). Verified in the
+published 6.2.0 tarball on 2026-08-26: `statusMessageText` is defined locally
+and the only `@jbrowse/core` import in that module is `fetchAndMaybeUnzipText`.
+So the patch, the `patchedDependencies` block and `patches/` are all deleted.
 
-**Delete the patch** (`patches/`, the `patchedDependencies` block, then
-`pnpm install`) as soon as a `@jbrowse/core` exporting `statusMessageText`
-ships, or react-msaview publishes a build that stops importing it. Nothing
-silently rots in the meantime: `patchedDependencies` pins the exact version
-`react-msaview@5.6.3`, so the next msaview bump fails the install loudly.
+The general shape is what to remember, because it will recur: **react-msaview
+is released from a repo that develops against jbrowse-components `main`**, so a
+fresh msaview can import a core symbol no published `@jbrowse/core` exports,
+and the failure is a build-time `MISSING_EXPORT` rather than anything subtle.
+When bumping it, grep the tarball's `dist/` for `@jbrowse/core` named imports
+and check them against the installed core before trusting a green install:
 
-Why not just pin react-msaview to 5.5.0, the last version that builds? Because
-5.5.0 → 5.6.3 is 62 changed source files (column stats, overlay colors, header
-refactor, mouseover rework), and msaview's peer range is
-`@jbrowse/core ">=2.0.0"` either way — so the downgrade buys nothing but lost
-work, and pnpm would not warn when the same trap reappears.
+```
+npm pack react-msaview@<version> && tar xzf react-msaview-<version>.tgz
+grep -rhoE "from ['\"]@jbrowse/core[^'\"]*['\"]" package/dist/ | sort -u
+```
+
+A patch is the right answer again if one turns up; pinning to the last working
+version is not, since pnpm gives no warning when the same trap reappears.
 
 ## Generated files — do not hand-edit
 

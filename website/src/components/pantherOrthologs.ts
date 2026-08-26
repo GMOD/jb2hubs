@@ -39,7 +39,8 @@ interface GenomesResponse {
 // `supportedgenomes` -> the code<->taxon map every other parse needs, since
 // PANTHER names organisms by code alone in ortholog results.
 export function parseGenomes(json: unknown): PantherGenome[] {
-  const list = (json as GenomesResponse).search?.output?.genomes?.genome ?? []
+  const list =
+    (json as GenomesResponse | null)?.search?.output?.genomes?.genome ?? []
   return list.flatMap(g =>
     g.short_name && g.taxon_id
       ? [
@@ -98,7 +99,7 @@ export function parseMatches(json: unknown): {
   queryAccession?: string
   hits: PantherHit[]
 } {
-  const mapping = (json as MatchResponse).search?.mapping
+  const mapping = (json as MatchResponse | null)?.search?.mapping
   const mapped = mapping?.mapped
   const rows = Array.isArray(mapped) ? mapped : mapped ? [mapped] : []
   const hits: PantherHit[] = []
@@ -144,7 +145,7 @@ interface UniProtResponse {
 // `uniprotkb/accessions` -> accession -> sequence
 export function parseSequences(json: unknown): Map<string, string> {
   const map = new Map<string, string>()
-  for (const r of (json as UniProtResponse).results ?? []) {
+  for (const r of (json as UniProtResponse | null)?.results ?? []) {
     if (r.primaryAccession && r.sequence?.value) {
       map.set(r.primaryAccession, r.sequence.value)
     }
