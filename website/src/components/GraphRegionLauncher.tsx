@@ -1,6 +1,10 @@
 import { useState } from 'react'
 
-import { externalGraphUrl, graphRegionUrl } from './pangenomeLinks.ts'
+import {
+  externalGraphUrl,
+  graphChromosomeUrl,
+  graphRegionUrl,
+} from './pangenomeLinks.ts'
 import { detailWindow } from './pangenomeLoci.ts'
 import { formatRegion, parseRegion } from './pangenomeRegion.ts'
 
@@ -39,6 +43,9 @@ export default function GraphRegionLauncher({
     : undefined
   const ext = dataset.externalGraphBrowser
   const externalUrl = parsed.ok ? externalGraphUrl(dataset, parsed) : undefined
+  const chromosomes = dataset.graphBrowser?.tierTrackId
+    ? (dataset.graphBrowser.chromosomes ?? [])
+    : []
 
   return (
     <div className="graph-launcher">
@@ -102,6 +109,28 @@ export default function GraphRegionLauncher({
           </button>
         ))}
       </div>
+      {chromosomes.length > 0 && (
+        <>
+          <p className="graph-launcher-note">
+            Or a whole chromosome at bubble resolution — one node per top-level
+            bubble, a few hundred nodes for the longest, beside a curve of how
+            many segments each bubble holds:
+          </p>
+          <div className="graph-launcher-presets">
+            {chromosomes.map(c => (
+              <a
+                key={c.name}
+                className="pg-filter"
+                href={graphChromosomeUrl(dataset, c.name)}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {c.name.replace(/^chr/, '')}
+              </a>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 }

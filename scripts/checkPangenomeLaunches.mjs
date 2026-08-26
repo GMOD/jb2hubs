@@ -84,7 +84,7 @@ const TIMEOUT = Number(values.timeout)
 // against the host actually being tested rather than imported wholesale.
 const { HPRC_DATASET } =
   await import('../website/src/components/pangenomeDataset.ts')
-const { graphLocusUrl, graphVcfLgvUrl } =
+const { graphChromosomeUrl, graphLocusUrl, graphVcfLgvUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
 
 const wantStagingDisplay = values.host !== 'latest'
@@ -146,6 +146,18 @@ for (const locus of loci) {
       expectView: 'GraphGenomeView',
     })
   }
+}
+
+// One whole-chromosome launch off the bubble tier. chr21 is the shortest
+// autosome, so it is the cheapest proof that the tier track resolves and the
+// raised maxRegionBp is honoured; --loci filtering does not apply to it.
+const chromosome = graphChromosomeUrl(HPRC_DATASET, 'chr21')
+if (chromosome && !wanted) {
+  launches.push({
+    name: 'chr21: whole-chromosome tier graph',
+    url: retarget(chromosome),
+    expectView: 'GraphGenomeView',
+  })
 }
 
 const browser = await launch({

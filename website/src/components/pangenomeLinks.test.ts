@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
 import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
@@ -7,6 +8,7 @@ import {
   crossSpeciesGeneOrderUrl,
   externalGraphUrl,
   graphBrowserUrl,
+  graphChromosomeUrl,
   graphLocusUrl,
   graphRegionUrl,
   graphVcfLgvUrl,
@@ -171,6 +173,51 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
     graphRegionUrl({ ...HPRC_DATASET, graphBrowser: undefined }, region),
     undefined,
   )
+})
+
+test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp raised', () => {
+  const url = graphChromosomeUrl(HPRC_DATASET, 'chr21')
+  assert.ok(url)
+  const { config, spec } = parseLaunch(url)
+  assert.equal(config, HPRC_DATASET.graphBrowser!.configUrl)
+  const [lgv, graph] = spec.views
+  assert.equal(lgv!.loc, 'chr21:1-46709983')
+  assert.deepEqual(lgv!.tracks, [
+    'hg38_ncbiRefSeq_ucsc',
+    'hprc_bubble_score',
+    'hprc_tier',
+  ])
+  assert.equal(graph!.loadedTrackId, 'hprc_tier')
+  // the 5 Mb default would refuse the cut outright
+  assert.equal(graph!.maxRegionBp, 46_709_983)
+  assert.equal(graph!.connectedViewId, lgv!.id)
+  assert.equal(graphChromosomeUrl(HPRC_DATASET, 'chrM'), undefined)
+  const noTier = {
+    ...HPRC_DATASET,
+    graphBrowser: { ...HPRC_DATASET.graphBrowser!, tierTrackId: undefined },
+  }
+  assert.equal(graphChromosomeUrl(noTier, 'chr21'), undefined)
+})
+
+test('the owned graph config names every track the launches open', () => {
+  const config = JSON.parse(
+    readFileSync(
+      new URL('../../pangenome-config/hprc-grch38.json', import.meta.url),
+      'utf8',
+    ),
+  ) as { tracks: { trackId: string }[] }
+  const ids = new Set(config.tracks.map(t => t.trackId))
+  const g = HPRC_DATASET.graphBrowser!
+  for (const id of [
+    g.segmentsTrackId,
+    g.bubblesTrackId,
+    g.geneTrackId,
+    g.allelesTrackId,
+    g.tierTrackId,
+    g.bubbleScoreTrackId,
+  ]) {
+    assert.ok(id && ids.has(id), `${id} is in hprc-grch38.json`)
+  }
 })
 
 test('externalGraphUrl deep-links by a 1-based hash', () => {

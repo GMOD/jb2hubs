@@ -194,6 +194,51 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
     : undefined
 }
 
+// A whole chromosome drawn from the bubble tier: one node per top-level
+// bubble, so 249 Mb is a few hundred nodes and lays out in milliseconds. The
+// linear view above it gets the tier, the variability curve and genes rather
+// than the segment-level lanes, which would draw nothing useful at this width.
+//
+// `maxRegionBp` is the one setting that has to move: the view refuses a cut
+// over 5 Mb as a proxy for node count, and a tier breaks the proxy.
+// `maxGraphNodes` stays as the real ceiling.
+//
+// Undefined when the dataset has no tier, or no such chromosome.
+export function graphChromosomeUrl(dataset: PangenomeDataset, chrom: string) {
+  const graph = dataset.graphBrowser
+  const entry = graph?.chromosomes?.find(c => c.name === chrom)
+  if (!graph?.tierTrackId || !entry) {
+    return undefined
+  }
+  return specUrl(graph.configUrl, [
+    {
+      type: 'LinearGenomeView',
+      id: LGV_ID,
+      assembly: dataset.reference.assembly,
+      loc: `${chrom}:1-${entry.length}`,
+      tracks: [
+        graph.geneTrackId,
+        ...(graph.bubbleScoreTrackId ? [graph.bubbleScoreTrackId] : []),
+        graph.tierTrackId,
+      ],
+    },
+    {
+      type: 'GraphGenomeView',
+      displayName: `${chrom} graph (bubble tier)`,
+      loadedTrackId: graph.tierTrackId,
+      loadedRegion: {
+        refName: chrom,
+        assemblyName: dataset.reference.assembly,
+        start: 0,
+        end: entry.length,
+      },
+      maxRegionBp: entry.length,
+      connectedViewId: LGV_ID,
+      colorScheme: 'reference-position',
+    },
+  ])
+}
+
 // The same region in the dataset's external graph browser, which navigates by
 // a `#chrom:start-end` hash (1-based, like a typed locstring). Undefined when
 // the dataset names none.

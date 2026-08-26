@@ -56,6 +56,16 @@ export interface PangenomeGraphBrowser {
   // 1 bp box — which is what makes an allele's size readable beside the graph
   // node it belongs to. Omitted where a graph has no such projection built.
   allelesTrackId?: string
+  // Optional level-of-detail tier: one node per top-level bubble, which draws a
+  // whole chromosome in a few hundred nodes. Enables the chromosome launches.
+  tierTrackId?: string
+  // Optional segments-per-bubble curve, drawn beside the tier as where the
+  // graph varies and by how much.
+  bubbleScoreTrackId?: string
+  // Chromosomes the tier can draw whole, with their lengths — the view's
+  // `maxRegionBp` has to be raised to the span, so the length is needed up
+  // front.
+  chromosomes?: { name: string; length: number }[]
 }
 
 // An external graph browser that deep-links by reference coordinate, for the
@@ -130,10 +140,19 @@ export const HPRC_DATASET: PangenomeDataset = {
   // the per-locus launches open on a window the callset can actually draw (see
   // graphVcfLgvUrl).
   landingRegion: 'chr6:29,700,000-33,500,000',
-  // Track ids from jbrowse.org/demos/hprc/config.json, which is the
-  // jbrowse-components repo's demos/hprc/config.json — a different repo, so
-  // nothing here fails at build time if one is renamed. `pangenomeLinks.test.ts`
-  // pins the shape; the ids themselves are checked by opening the launch.
+  // The config is ours: `website/pangenome-config/hprc-grch38.json`, published
+  // by `upload.sh` beside it to the jbrowse.org bucket (our own site sends no
+  // CORS headers, and jbrowse-web fetches the config from the visitor's
+  // browser). It was seeded from jbrowse.org/demos/hprc/config.json and keeps
+  // that file's track ids, plus the bubble tier and variability curve the HPRC
+  // tutorial builds but the demo omits. The data files stay in the demos
+  // bucket, built in the jbrowse-components repo. Upload before deploying
+  // staging, or every graph launch fails to fetch its config.
+  //
+  // The plugin url is the unversioned entry point, deliberately not one of the
+  // content-hashed builds beside it: the plugin links an unreleased
+  // @jbrowse/render-core, so an old bundle stops booting as `main` moves, and
+  // the unversioned one is what gets rebuilt to follow it.
   //
   // STAGING ONLY until JBrowse v5 ships, and the reason is settled rather than
   // open. The GraphGenomeView bundle boots on `main` and error-pages the whole
@@ -157,11 +176,41 @@ export const HPRC_DATASET: PangenomeDataset = {
   // `features.pangenome` to production is gated on `latest` being v5, and on
   // nothing else.
   graphBrowser: {
-    configUrl: 'https://jbrowse.org/demos/hprc/config.json',
+    configUrl: 'https://jbrowse.org/pangenome/hprc-grch38/config.json',
     segmentsTrackId: 'hprc_minigraph_segments',
     bubblesTrackId: 'hprc_minigraph_bubbles',
     geneTrackId: 'hg38_ncbiRefSeq_ucsc',
     allelesTrackId: 'hprc_minigraph_alleles',
+    tierTrackId: 'hprc_tier',
+    bubbleScoreTrackId: 'hprc_bubble_score',
+    // hg38.chrom.sizes, primary chromosomes only: the graph's rGFA has no
+    // alts or unplaced contigs to draw.
+    chromosomes: [
+      { name: 'chr1', length: 248_956_422 },
+      { name: 'chr2', length: 242_193_529 },
+      { name: 'chr3', length: 198_295_559 },
+      { name: 'chr4', length: 190_214_555 },
+      { name: 'chr5', length: 181_538_259 },
+      { name: 'chr6', length: 170_805_979 },
+      { name: 'chr7', length: 159_345_973 },
+      { name: 'chr8', length: 145_138_636 },
+      { name: 'chr9', length: 138_394_717 },
+      { name: 'chr10', length: 133_797_422 },
+      { name: 'chr11', length: 135_086_622 },
+      { name: 'chr12', length: 133_275_309 },
+      { name: 'chr13', length: 114_364_328 },
+      { name: 'chr14', length: 107_043_718 },
+      { name: 'chr15', length: 101_991_189 },
+      { name: 'chr16', length: 90_338_345 },
+      { name: 'chr17', length: 83_257_441 },
+      { name: 'chr18', length: 80_373_285 },
+      { name: 'chr19', length: 58_617_616 },
+      { name: 'chr20', length: 64_444_167 },
+      { name: 'chr21', length: 46_709_983 },
+      { name: 'chr22', length: 50_818_468 },
+      { name: 'chrX', length: 156_040_895 },
+      { name: 'chrY', length: 57_227_415 },
+    ],
   },
   // SickKids' public instance, verified answering 2026-08-26. It serves the
   // v1.1 graph, not release 2, so a locus can differ in detail from the graph
