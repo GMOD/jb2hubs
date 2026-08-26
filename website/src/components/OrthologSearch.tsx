@@ -419,7 +419,7 @@ function SearchResults({
   scope: OrthologScope
   syntenyPairs: Record<string, PairEntry> | undefined
 }) {
-  const { symbol, refTaxId } = resolved
+  const { symbol, refTaxId, geneId } = resolved
   const refResult = results.find(r => r.assembly.taxonId === refTaxId)
 
   // Root-to-taxon lineages for the species in this answer, which is what lets
@@ -448,6 +448,14 @@ function SearchResults({
           present in our collection
         </p>
       )}
+      {results.length > 0 && !refResult && scope.taxa.length > 0 && (
+        <p className="orthologs-note">
+          {resolved.species || 'Your reference species'} is outside{' '}
+          {scope.label.toLowerCase()}, so these rows have no reference row to
+          mark and no synteny links — those compare each ortholog against the
+          reference. Search every species to get them back.
+        </p>
+      )}
       {features.multiSynteny && (
         <CrossLink
           href={geneUrl('/conserved-gene-order', symbol, refTaxId)}
@@ -470,7 +478,11 @@ function SearchResults({
           {scope.taxa.length > 0 ? ` within ${scope.label.toLowerCase()}` : ''}.
         </p>
       ) : (
+        // Remounted per search, which is what drops the previous gene's filter
+        // text and open clades. Carrying them over would silently narrow the new
+        // answer to whatever the last one was being looked at through.
         <OrthologResultsTable
+          key={`${geneId}:${scope.id}`}
           results={results}
           refResult={refResult}
           pairIndex={pairIndex}

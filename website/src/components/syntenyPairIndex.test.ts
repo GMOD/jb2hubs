@@ -115,3 +115,18 @@ test('a level with no catalog entry keeps its empty slot', () => {
   assert.deepEqual(names, ['GCF_000000001.1', 'GCF_000000002.1'])
   assert.deepEqual(tracks, [[]])
 })
+
+// A genome whose own level was dropped still carries its accession in `names`,
+// so comparing against that would read as a conflict and cascade the drop down
+// the stack — the middle genome here has claimed no panel yet.
+test('a dropped level does not poison the level after it', () => {
+  const index = buildPairIndex({
+    'GCF_000001405.40,GCF_000002285.5': ['hg38_to_canFam3', 'hg38', 'canFam3'],
+  })
+  const { names, tracks } = resolveStackNames(
+    ['GCF_000000009.9', 'GCF_000001405.40', 'GCF_000002285.5'],
+    index,
+  )
+  assert.deepEqual(names, ['GCF_000000009.9', 'hg38', 'canFam3'])
+  assert.deepEqual(tracks, [[], ['hg38_to_canFam3']])
+})

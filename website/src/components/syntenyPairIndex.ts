@@ -57,16 +57,22 @@ export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
 // slot, since JBrowse binds tracks to levels by array position.
 export function resolveStackNames(accessions: string[], index: PairIndex) {
   const names = accessions.slice()
+  // Which panels a kept link has already named. Comparing against names[i - 1]
+  // alone would not do: a genome whose own level was dropped still holds its
+  // accession there, and that reads as a conflict with the next link even
+  // though nothing has claimed the panel yet.
+  const settled = new Set<number>()
   const tracks: string[][] = []
   for (let i = 1; i < accessions.length; i++) {
     const a = accessions[i - 1]
     const b = accessions[i]
     const link = a && b ? syntenyLink(index, a, b) : undefined
-    // names[i - 1] is settled once a previous level used it; names[i] is still
-    // its own accession at this point, so only the left end can conflict.
-    if (link && (i === 1 || names[i - 1] === link.names[0])) {
+    // Only the left end can conflict: the right end is claimed for the first
+    // time by whichever level reaches it first.
+    if (link && (!settled.has(i - 1) || names[i - 1] === link.names[0])) {
       names[i - 1] = link.names[0]
       names[i] = link.names[1]
+      settled.add(i - 1).add(i)
       tracks.push([link.trackId])
     } else {
       tracks.push([])
