@@ -235,6 +235,10 @@ export function graphChromosomeUrl(dataset: PangenomeDataset, chrom: string) {
       maxRegionBp: entry.length,
       connectedViewId: LGV_ID,
       colorScheme: 'reference-position',
+      // Anchored: every x is a reference coordinate, so the backbone runs left
+      // to right under the linear view instead of bending into the arc the
+      // force layout makes of a few hundred nodes in a chain.
+      layoutMode: 'auto',
     },
   ])
 }

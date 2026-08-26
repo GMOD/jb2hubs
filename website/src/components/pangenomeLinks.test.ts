@@ -190,6 +190,7 @@ test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp
   assert.equal(graph!.loadedTrackId, 'hprc_tier')
   // the 5 Mb default would refuse the cut outright
   assert.equal(graph!.maxRegionBp, 46_709_983)
+  assert.equal(graph!.layoutMode, 'auto')
   assert.equal(graph!.connectedViewId, lgv!.id)
   assert.equal(graphChromosomeUrl(HPRC_DATASET, 'chrM'), undefined)
   const noTier = {
