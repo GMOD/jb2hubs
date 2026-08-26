@@ -67,16 +67,16 @@ const isOffStore = url => !url.startsWith('https://jbrowse.org/plugins/')
 
 // The published store listing. A config entry naming `storePlugin` is asking
 // the host to resolve the build against this at load time (jbrowse-plugin-list
-// ADR 0008), so the package has to be IN it — a ref to something the store does
-// not list resolves to nothing, and only the fallback url keeps that config
-// working. Checking the pair here is what stops a rename or a retirement from
-// quietly demoting every config that refs it back to a frozen url.
+// ADR 0008), so the store's `name` has to be IN it — a ref to something the
+// store does not list resolves to nothing, and only the fallback url keeps that
+// config working. Checking the pair here is what stops a rename or a retirement
+// from quietly demoting every config that refs it back to a frozen url.
 const PLUGIN_STORE_URL = 'https://jbrowse.org/plugin-store/v2/plugins.json'
 
 // `${name}\0${storePlugin}\0${url}` -> Set of sources, for entries that name a
-// package. Kept beside `found` rather than folded into it: `found` is keyed for
-// the fetch-every-distinct-url pass, and a ref adds a dimension that pass does
-// not care about.
+// store entry. Kept beside `found` rather than folded into it: `found` is keyed
+// for the fetch-every-distinct-url pass, and a ref adds a dimension that pass
+// does not care about.
 const refs = new Map()
 const addRef = (plugin, source) => {
   if (plugin.storePlugin === undefined) {
@@ -317,9 +317,12 @@ if (orphans.length > 0) {
 // Every `storePlugin` a config names, against what the store actually
 // publishes. Three ways this goes wrong, and each demotes the ref to its
 // fallback url without anything else noticing:
-//   - the package is not listed (renamed, or retired per ADR 0007)
-//   - the store's UMD name disagrees with the config's, so a host that resolves
-//     the ref and one that loads the url install it under different names
+//   - the name is not listed (renamed, or retired per ADR 0007)
+//   - the entry's own `name` disagrees with its ref. Both are the store's
+//     `name`, so they should be the same string — and when they are not, the
+//     ref and the fallback describe different plugins: a host that resolves the
+//     ref gets the store's name, one that loads the url looks up
+//     `JBrowsePlugin<name>` and finds nothing.
 //   - the fallback url is not the store's `latestUrl`, i.e. hand-composed and
 //     therefore able to be the stale v1 shape again
 const refProblems = []
@@ -329,24 +332,24 @@ if (refs.size > 0) {
     refProblems.push(`plugin store unreachable: HTTP ${res.status}`)
   } else {
     const { plugins: storePlugins } = await res.json()
-    const byPackage = new Map(storePlugins.map(p => [p.packageName, p]))
+    const byName = new Map(storePlugins.map(p => [p.name, p]))
     console.log(`\nstore refs (${refs.size} distinct):`)
     for (const key of [...refs.keys()].sort()) {
-      const [name, pkg, url] = key.split('\0')
-      const entry = byPackage.get(pkg)
+      const [name, ref, url] = key.split('\0')
+      const entry = byName.get(ref)
       const problems = []
       if (!entry) {
-        problems.push(`"${pkg}" is not in the plugin store`)
+        problems.push(`"${ref}" is not in the plugin store`)
       } else {
-        if (entry.name !== name) {
-          problems.push(`store calls it "${entry.name}", config says "${name}"`)
+        if (ref !== name) {
+          problems.push(`ref is "${ref}" but the entry's name is "${name}"`)
         }
         if (url && entry.latestUrl && url !== entry.latestUrl) {
           problems.push(`fallback url is not the store's latestUrl`)
         }
       }
       console.log(
-        `  ${name.padEnd(12)} ${(problems.length > 0 ? 'FAIL' : 'ok').padEnd(6)} ${pkg}`,
+        `  ${name.padEnd(12)} ${(problems.length > 0 ? 'FAIL' : 'ok').padEnd(6)} ${entry?.packageName ?? ref}`,
       )
       for (const problem of problems) {
         console.log(`      ${problem}`)

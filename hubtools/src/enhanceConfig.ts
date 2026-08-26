@@ -40,16 +40,23 @@ const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
   ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
   : []
 
-// Each entry names the plugin store PACKAGE, and carries the store's
+// Each entry names the plugin store ENTRY, and carries the store's
 // version-agnostic `latest/` url as a fallback.
 //
-// The package is the durable half. A url in a config is an answer computed the
-// day the config was generated, and these configs are never revisited — so the
-// only url that keeps working is `latest/`, which carries no integrity hash and
+// The ref is the durable half. A url in a config is an answer computed the day
+// the config was generated, and these configs are never revisited — so the only
+// url that keeps working is `latest/`, which carries no integrity hash and
 // serves the same bytes to every host. `storePlugin` defers both decisions to
 // load time: the host reads plugin-store/v2/plugins.json and gets the pinned,
 // integrity-carrying build for the JBrowse version it actually is. See
 // jbrowse-plugin-list ADR 0008.
+//
+// Its value is the store's `name`, which is why it repeats `name` here. NOT the
+// npm package: npm and the plugin's author own that string and can rescope it,
+// which would strand every config that had named it — the same failure as
+// naming a url, one level up. The store owns its `name` and can repoint it at a
+// different package without touching a config. The repetition expires with the
+// url; a config that has stopped carrying one is just `{ storePlugin: 'MsaView' }`.
 //
 // The url stays because a host that predates ref support ignores the unknown
 // key and loads it. Measured rather than argued — a paired boot matrix over
@@ -62,8 +69,8 @@ const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
 // against a published 0.8.0, leaving the protein view on a perpetual "Loading
 // pairwise alignment".
 //
-// MafViewer names no package on purpose. Core vendors it now, so it was removed
-// from the store's plugins.json and a ref to it cannot resolve; jbrowse-web
+// MafViewer names no store entry on purpose. Core vendors it now, so it was
+// removed from the store's plugins.json and a ref to it cannot resolve; jbrowse-web
 // drops the entry before loading anyway (`vendoredPluginNames`), and the url is
 // only there for hosts old enough not to bundle it. BLAT is absent for a
 // different reason — deliberately not in the store, see above.
@@ -74,17 +81,17 @@ const defaultPlugins: JBrowsePlugin[] = [
   },
   {
     name: 'Hubs',
-    storePlugin: '@cmdcolin/jbrowse-plugin-hubs',
+    storePlugin: 'Hubs',
     url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js',
   },
   {
     name: 'Protein3d',
-    storePlugin: 'jbrowse-plugin-protein3d',
+    storePlugin: 'Protein3d',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js',
   },
   {
     name: 'MsaView',
-    storePlugin: 'jbrowse-plugin-msaview',
+    storePlugin: 'MsaView',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
   },
   ...blatPlugin,

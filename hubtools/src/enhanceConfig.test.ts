@@ -6,6 +6,8 @@ import { describe, it } from 'node:test'
 
 import { enhanceConfig } from './enhanceConfig.ts'
 
+import type { JBrowsePlugin } from './types.ts'
+
 function runOnConfig(tracks: unknown[]) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'enhance-'))
   const file = path.join(dir, 'config.json')
@@ -14,10 +16,7 @@ function runOnConfig(tracks: unknown[]) {
   return JSON.parse(fs.readFileSync(file, 'utf8')).tracks
 }
 
-function runOnPlugins(
-  config: unknown,
-  plugins: { name: string; url: string }[],
-) {
+function runOnPlugins(config: unknown, plugins: JBrowsePlugin[]) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'enhance-'))
   const file = path.join(dir, 'config.json')
   fs.writeFileSync(file, JSON.stringify(config))
@@ -267,10 +266,10 @@ describe('enhanceConfig plugins', () => {
   it('adds a field the existing entry predates', () => {
     const plugins = runOnPlugins(
       { tracks: [], plugins: [{ name: 'MsaView', url: 'old' }] },
-      [{ name: 'MsaView', url: 'new', storePlugin: 'jbrowse-plugin-msaview' }],
+      [{ name: 'MsaView', url: 'new', storePlugin: 'MsaView' }],
     )
     assert.deepEqual(plugins, [
-      { name: 'MsaView', url: 'new', storePlugin: 'jbrowse-plugin-msaview' },
+      { name: 'MsaView', url: 'new', storePlugin: 'MsaView' },
     ])
   })
 
@@ -280,7 +279,7 @@ describe('enhanceConfig plugins', () => {
     const plugins = runOnPlugins(
       {
         tracks: [],
-        plugins: [{ name: 'MafViewer', url: 'old', storePlugin: 'gone' }],
+        plugins: [{ name: 'MafViewer', url: 'old', storePlugin: 'Gone' }],
       },
       [{ name: 'MafViewer', url: 'new' }],
     )

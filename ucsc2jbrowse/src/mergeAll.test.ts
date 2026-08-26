@@ -79,7 +79,7 @@ describe('mergePlugins', () => {
 describe('mergePlugins with store refs', () => {
   const REF = {
     name: 'MsaView',
-    storePlugin: 'jbrowse-plugin-msaview',
+    storePlugin: 'MsaView',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
   }
   const LATEST_ONLY = {

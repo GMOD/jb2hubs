@@ -92,11 +92,15 @@ export interface NCBIDatasetsResponse {
 export interface JBrowsePlugin {
   name: string
   url?: string
-  // The plugin store package, resolved by the host against
-  // plugin-store/v2/plugins.json at load time. Emitted ALONGSIDE `url`, not
-  // instead of it: a host that predates ref support ignores the unknown key and
-  // loads the url, so a config carrying both works everywhere. The url is the
-  // half that goes away once every host in the wild resolves refs.
+  // The plugin store entry, by the store's `name`, resolved by the host against
+  // plugin-store/v2/plugins.json at load time. Not the npm package — the store
+  // owns `name` and npm owns the package, and a config at a permanent url has
+  // to name something that cannot be renamed out from under it.
+  //
+  // Emitted ALONGSIDE `url`, not instead of it: a host that predates ref
+  // support ignores the unknown key and loads the url, so a config carrying
+  // both works everywhere. The url is the half that goes away once every host
+  // in the wild resolves refs.
   storePlugin?: string
 }
 
