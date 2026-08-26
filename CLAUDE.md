@@ -633,6 +633,19 @@ reporting a broken track.
   on-disk existence check that catches a config about to name a file we are not
   uploading. `--offline` **errors without a built dir** rather than passing
   vacuously, since relative refs are all it can check.
+
+  Which is exactly how it failed on 2026-08-26, the first time it ever ran:
+  `UCSC_BUILT_DIR` is exported by `ucsc2jbrowse/common.sh`, and **run.sh does
+  not source that file** — it sources `lib/common.sh` and runs `make.sh` as a
+  subprocess — so the gate saw no built dir at all. `checkSidecarUrls.mjs` had
+  survived the same hole by hardcoding the path. Both now resolve it through
+  `scripts/builtDir.mjs`, which takes an explicit `--built-dir`/env as given and
+  falls back to the built-in default **only when it exists**: CI has no built
+  tree, and a default that hard-errored there would take the daily canary down.
+  run.sh also distinguishes the check's exit 2 (could not run) from exit 1
+  (found a broken ref) — reporting the first as the second is what made this
+  cost an afternoon.
+
 - **`.github/workflows/track-url-canary.yml`**, daily at 04:20 UTC, does the
   budgeted network rotation and files one rolling `track-url-canary` issue. It
   needs no retry-before-alerting (unlike `config-canary.yml`) because 404 and
@@ -648,6 +661,58 @@ for both `/goldenPath/` and `/hubs/` paths, `Accept-Ranges: bytes` and
 `Access-Control-Allow-Origin: *` on both, from a different UCSC address block
 (169.233.10.x vs 128.114.119.x). Nothing in the shipped configs names it, and
 only failures reach it, so it adds no load in the normal case.
+
+### What the gate caught once it could run
+
+Three broken references across the 239 UCSC configs, all invisible to every
+other layer and each a different shape:
+
+- **`criGriChoV1-xenoRefGene` named a `.csi` that was never written.** The 80MB
+  `xenoRefGene.gff.gz` was fine; `tabix -C` had refused it with
+  `Invalid record on sequence #7587: end 1 < begin 4294967295`. One GFF line out
+  of millions, and the cause is a `u32` underflow in **bed2gff**: `last_codon`
+  computes `max(cds_start, cds_end - 3)`, which wraps for a CDS ending within
+  3bp of the contig start — criGriChoV1's xenoRefGene alignment of NM_207404 is
+  truncated at scaffold NW_003684908v1's edge, `cdsStart=0 cdsEnd=1`. What made
+  it reach the file rather than being caught is that the **same wrap passes the
+  completeness gate**: `codon_complete` computed `1 - 4294967294`, which wraps
+  to exactly 3. So `cds_end.saturating_sub(3)` alone is not the whole fix —
+  `codon_complete` uses `checked_sub` now, so an inverted interval is refused
+  rather than laundered into a valid-looking length. `bed2gff/src/codon.rs` has
+  all three cases pinned.
+
+  Note the failure mode, because it is the general one here: the pipeline
+  produced a file it could not index, `run_for_assemblies_lenient` warned and
+  moved on, `needs_rebuild`'s stamp was never written so every later run redid
+  the same broken work, and the config shipped naming an index that did not
+  exist. Nothing in the tree asked "did the index get written". The cheap
+  whole-tree version of that question is worth keeping in mind:
+  `find $UCSC_BUILT_DIR \( -name '*.gff.gz' -o -name '*.bed.gz' \)` and check
+  each for a `.csi`/`.tbi` beside it — 5,793 files, seconds, and as of
+  2026-08-26 all of them have one.
+
+  That sweep is also why `.derivation_hash` was **advanced by hand** on
+  2026-08-26 (`1e38bbbeb16ba674` → `9a0a9f50214e5de1`) instead of letting the
+  fix re-derive all 238 assemblies, and the reasoning is the part to keep: a
+  wrapped record makes tabix reject the _whole file_, so any output the fix
+  would change necessarily has no index. Every one of the 5,793 had an index
+  once criGriChoV1 was rebuilt, and bed2gff feeds only the gene tracks — so
+  re-deriving would have reproduced byte-identical output everywhere, for hours.
+  Advancing the stamp is only ever sound with an argument of that shape,
+  covering the whole corpus rather than a spot check; absent one, take the
+  re-derivation.
+
+- **`cb1-*` and `hgFixed-*`**, `Gff3TabixAdapter` on a literal `*.gff.gz`: the
+  residue of a shell loop that ran with nullglob off over a directory with
+  nothing to match. `createConfigsForGoldenPath.sh` grew its `shopt -s nullglob`
+  long ago, but **a fix at the source only reaches a config that is
+  regenerated**, and these two are the repo's only non-assemblies —
+  `is_assembly_db` excludes them from every derivation pass, so their `tracks[]`
+  was frozen from 2025-05-13 and no amount of rebuilding would have cleared it.
+  Finalization is the one pass that does visit them, so `dropGlobTracks` (first
+  in `finalizeConfigs.ts`'s `STEPS`, ahead of everything that reads `tracks[]`)
+  is both the cleanup and the standing guard: a glob character in a location is
+  never a key our bucket has.
 
 Two scope decisions to leave alone. **Track prose is out of scope**: the configs
 carry UCSC's trackDb html, which links ncbi, ebi, ensembl and a long tail of lab
