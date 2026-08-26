@@ -4,6 +4,7 @@ import path from 'path'
 import { mapWithConcurrency } from 'hubtools'
 
 import { createMinimalConfig } from './createMinimalConfig.ts'
+import { dropGlobTracks } from './dropGlobTracks.ts'
 import { ensureAssemblyAliasesAndCytobands } from './ensureAssemblyAliasesAndCytobands.ts'
 import { ensureTextSearchAdapters } from './ensureTextSearchAdapters.ts'
 import { ensureUcscAssemblyNames } from './ensureUcscAssemblyNames.ts'
@@ -15,7 +16,7 @@ import type { JBrowseConfig, UcscGenomeList } from './types.ts'
 import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
 
 //
-// The tail of the pipeline: six passes that each used to readdir UCSC_BUILT_DIR,
+// The tail of the pipeline: passes that each used to readdir UCSC_BUILT_DIR,
 // re-read every config.json, mutate it and write it back. They are one walk
 // now, which matters less for the ~0.6s it saves on the worst config than for
 // what the array below says out loud. The order used to be a run of adjacent
@@ -32,11 +33,16 @@ import type { FinalizeContext, FinalizeStep } from './utils/finalizeStep.ts'
 //   which mirrors the refNameAliases and cytobands urls the first one adds.
 //   Backwards, a freshly backfilled alias file stays pointed at hgdownload
 //   until the next build.
+// - dropGlobTracks goes FIRST, and that is load-bearing in the weak sense: it
+//   removes tracks that name a file we do not publish, and every later step
+//   reads tracks[] -- generateDefaultSessions picks one, createMinimalConfig
+//   copies a subset. Running it last would leave the garbage in minimal.json.
 // - the other adjacencies are accident. They are kept in their historical order
 //   anyway, so fusing the passes could be proven byte-identical against a real
 //   built tree.
 //
 const STEPS: FinalizeStep[] = [
+  dropGlobTracks,
   ensureAssemblyAliasesAndCytobands,
   mirrorAssemblySidecars,
   ensureUcscAssemblyNames,
