@@ -11,13 +11,17 @@ export interface Assembly {
   ucscDb?: string
 }
 
-// Common name for display, falling back to the scientific name. commonName is ""
-// (not absent) in the index when unknown, so this tests emptiness, not nullishness.
-export function assemblyLabel(a: {
-  commonName: string
-  scientificName: string
-}) {
-  return a.commonName ? a.commonName : a.scientificName
+// The species part of an index common name. 43,828 of the 44,685 entries are
+// really "<display name> (<strain/version/year/source>)" — "cattle (Hereford L1
+// Dominette 01449 42190680 v1.3 2018 USDA)" — and beside a scientific name in a
+// table of several hundred rows that trailing detail is what makes the column
+// unreadable. Only a parenthetical that ENDS the string is dropped, and only
+// when something is left, so a name that is nothing but parentheses survives.
+// The assembly is still identified in its own column; callers keep the full
+// string as a tooltip.
+export function speciesLabel(commonName: string) {
+  const trimmed = commonName.replace(/\s*\([^()]*\)$/, '').trim()
+  return trimmed || commonName
 }
 
 // Compact wire format for ortholog_index.json — kept small for the download.

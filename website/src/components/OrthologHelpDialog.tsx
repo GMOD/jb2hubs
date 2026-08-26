@@ -43,8 +43,17 @@ export default function OrthologHelpDialog({
       <p>
         Any species name or NCBI taxon id works — the suggestions are just
         common model organisms. Entering a numeric <strong>NCBI GeneID</strong>{' '}
-        in the gene box (e.g. <code>672</code>) skips this step entirely, since
-        the id already identifies one gene in one organism.
+        in the gene box (e.g. <code>672</code>) skips this step, since the id
+        already identifies one gene in one organism; the reference then follows
+        the gene rather than whatever the box says.
+      </p>
+
+      <h3>Limit to</h3>
+      <p>
+        A well-studied gene has hundreds of orthologs. Picking a clade asks NCBI
+        for that clade only, which is a smaller and faster answer than every
+        species — not a filter applied afterwards, so the &ldquo;N of M&rdquo;
+        count below is counted within it.
       </p>
 
       <h3>What has orthologs</h3>
@@ -64,11 +73,17 @@ export default function OrthologHelpDialog({
         alignment between that assembly and the reference, and opens both
         genomes side by side around the gene.
       </p>
+      <h3>Reading the results</h3>
       <p>
-        Results are ordered with model organisms first (above the rule), then
-        everything else alphabetically. The count reads &ldquo;N of M&rdquo;
-        because M is every ortholog NCBI knows and N is how many we have a
-        genome for.
+        Rows are grouped by clade — primates, rodents, birds — in NCBI&rsquo;s
+        own taxonomy, with the reference&rsquo;s own clade open first and the
+        rest one click away. Within a group, model organisms come first and
+        everything else is alphabetical. The filter box matches either species
+        name, the ortholog&rsquo;s own symbol or the accession, and{' '}
+        <strong>With synteny</strong> narrows to the species we host an
+        alignment against the reference for. The count reads &ldquo;N of
+        M&rdquo; because M is every ortholog NCBI knows and N is how many we
+        have a genome for.
       </p>
 
       <form method="dialog">

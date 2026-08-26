@@ -6,12 +6,15 @@ import {
   accessionToJbrowseUrl,
   buildMultiSyntenyUrl,
   buildOrthologResults,
+  matchesQuery,
+  orthologSearchUrl,
   planMultiSynteny,
   refLabel,
 } from './orthologSearchUtils.ts'
+import { buildPairIndex } from './syntenyPairIndex.ts'
 
+import type { AssemblyIndex } from './orthologDb.ts'
 import type {
-  AssemblyIndex,
   NcbiOrthologReport,
   OrthologResult,
 } from './orthologSearchUtils.ts'
@@ -246,6 +249,19 @@ function res(
   }
 }
 
+// A catalog whose assembly names are just the accessions, which is the common
+// case; the UCSC-db-named ones are covered in syntenyPairIndex.test.ts.
+function pairs(entries: Record<string, string>) {
+  return buildPairIndex(
+    Object.fromEntries(
+      Object.entries(entries).map(([key, trackId]) => {
+        const [a, b] = key.split(',')
+        return [key, [trackId, a ?? '', b ?? ''] as [string, string, string]]
+      }),
+    ),
+  )
+}
+
 // results arrive pre-sorted by proximity to the reference: REF, A, B, C.
 const REF = res('REF', 9606)
 const A = res('A', 10090)
@@ -253,11 +269,11 @@ const B = res('B', 10116)
 const C = res('C', 7955)
 
 test('planMultiSynteny chains a path-shaped catalog top-to-bottom', () => {
-  const plan = planMultiSynteny([REF, A, B, C], 'REF', {
-    'REF,A': 'tREF_A',
-    'A,B': 'tA_B',
-    'B,C': 'tB_C',
-  })
+  const plan = planMultiSynteny(
+    [REF, A, B, C],
+    'REF',
+    pairs({ 'REF,A': 'tREF_A', 'A,B': 'tA_B', 'B,C': 'tB_C' }),
+  )
   assert.deepEqual(
     plan?.rows.map(r => r.assembly.accession),
     ['REF', 'A', 'B', 'C'],
@@ -268,11 +284,11 @@ test('planMultiSynteny chains a path-shaped catalog top-to-bottom', () => {
 test('planMultiSynteny flanks the reference with its two nearest partners for a star catalog', () => {
   // every ortholog links only to REF, so REF lands in the middle flanked by A
   // (nearest) and B (next); C cannot be placed without repeating REF.
-  const plan = planMultiSynteny([REF, A, B, C], 'REF', {
-    'REF,A': 'tREF_A',
-    'REF,B': 'tREF_B',
-    'REF,C': 'tREF_C',
-  })
+  const plan = planMultiSynteny(
+    [REF, A, B, C],
+    'REF',
+    pairs({ 'REF,A': 'tREF_A', 'REF,B': 'tREF_B', 'REF,C': 'tREF_C' }),
+  )
   assert.deepEqual(
     plan?.rows.map(r => r.assembly.accession),
     ['B', 'REF', 'A'],
@@ -281,20 +297,29 @@ test('planMultiSynteny flanks the reference with its two nearest partners for a 
 })
 
 test('planMultiSynteny matches a track regardless of pair key order', () => {
-  const plan = planMultiSynteny([REF, A], 'REF', { 'A,REF': 'tA_REF' })
+  const plan = planMultiSynteny([REF, A], 'REF', pairs({ 'A,REF': 'tA_REF' }))
   assert.deepEqual(plan?.tracks, ['tA_REF'])
 })
 
 test('planMultiSynteny returns null when nothing chains to the reference', () => {
-  assert.equal(planMultiSynteny([REF, A, B], 'REF', { 'A,B': 'tA_B' }), null)
-  assert.equal(planMultiSynteny([REF, A], 'MISSING', { 'REF,A': 't' }), null)
+  assert.equal(
+    planMultiSynteny([REF, A, B], 'REF', pairs({ 'A,B': 'tA_B' })),
+    null,
+  )
+  assert.equal(
+    planMultiSynteny([REF, A], 'MISSING', pairs({ 'REF,A': 't' })),
+    null,
+  )
 })
 
 test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel', () => {
   const r0 = res('REF', 9606, 300_000, 300_500)
   const r1 = res('A', 10090, 50_000, 50_500)
   const spec = specOf(
-    buildMultiSyntenyUrl({ rows: [r0, r1], tracks: ['tREF_A'] }, 100_000),
+    buildMultiSyntenyUrl(
+      { rows: [r0, r1], names: ['REF', 'A'], tracks: ['tREF_A'] },
+      100_000,
+    ),
   )
   assert.equal(spec.type, 'LinearSyntenyView')
   // per-level tracks are 2D: one single-track level for the one adjacency
@@ -311,4 +336,32 @@ test('refLabel names known model organisms and passes anything else through', ()
   // free-text references (any species NCBI taxonomy knows) round-trip unchanged
   assert.equal(refLabel('8296'), '8296')
   assert.equal(refLabel('axolotl'), 'axolotl')
+})
+
+// A reader at a table of several hundred species types a species or a symbol;
+// ANDing the terms is what makes a second word narrow rather than widen.
+test('matchesQuery ANDs terms across species, symbol and accession', () => {
+  const row = res('GCF_000001635.27', 10090)
+  row.assembly.scientificName = 'Mus musculus'
+  row.assembly.commonName = 'house mouse'
+  row.geneSymbol = 'Brca1'
+
+  assert.equal(matchesQuery(row, ''), true)
+  assert.equal(matchesQuery(row, '   '), true)
+  assert.equal(matchesQuery(row, 'MUS'), true)
+  assert.equal(matchesQuery(row, 'brca'), true)
+  assert.equal(matchesQuery(row, 'GCF_000001635'), true)
+  assert.equal(matchesQuery(row, 'mus brca'), true)
+  assert.equal(matchesQuery(row, 'mus rattus'), false)
+})
+
+// The scope rides in the url so a shared link reproduces the same answer, but
+// the default is left off — the other gene-first pages read ?gene=&ref= and a
+// third param on every link would be noise.
+test('orthologSearchUrl carries a non-default scope only', () => {
+  assert.equal(orthologSearchUrl('BRCA1', 9606, 'all'), '?gene=BRCA1&ref=9606')
+  assert.equal(
+    orthologSearchUrl('BRCA1', 9606, 'mammals'),
+    '?gene=BRCA1&ref=9606&scope=mammals',
+  )
 })

@@ -26,6 +26,9 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   sourcing pairwise synteny from a Cactus/HAL alignment as a pipeline stage
 - [ORTHOLOGS_LAUNCH_FOLLOWUPS.md](ORTHOLOGS_LAUNCH_FOLLOWUPS.md) — what
   `/orthologs` knowingly left behind at launch
+- [SYNTENY_PAIR_NAMES.md](SYNTENY_PAIR_NAMES.md) — why a synteny pair carries
+  assembly names as well as accessions, and the silent bug that came of not
+  doing so
 - [MOUSE_PANGENOME_PLAN.md](MOUSE_PANGENOME_PLAN.md) — mm39 analog of the HPRC
   pangenome explorer
 - [ucsc-ncbi-gff-detection-handoff.md](ucsc-ncbi-gff-detection-handoff.md) —

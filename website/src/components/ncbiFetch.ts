@@ -70,9 +70,19 @@ export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
 
 // The NCBI Datasets orthologs endpoint (full report). Centralized so the URL and
 // its params live in one place; each caller supplies the response shape it reads.
-export function fetchOrthologReports<T>(geneId: string): Promise<T> {
+//
+// `taxa` scopes the answer to those clades. The endpoint takes `taxon_filter`
+// repeatedly and UNIONS the values, which is what lets one request ask for three
+// sibling reptile clades; an empty list asks for every species. A filter naming
+// a clade the gene has no ortholog in comes back as `{}` — no `reports`, no
+// `total_count` — so callers must treat both as optional.
+export function fetchOrthologReports<T>(
+  geneId: string,
+  taxa: number[] = [],
+): Promise<T> {
+  const filters = taxa.map(t => `&taxon_filter=${t}`).join('')
   return ncbiJson<T>(
-    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE`,
+    `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE${filters}`,
   )
 }
 

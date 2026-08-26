@@ -11,10 +11,11 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
   <Container>
     <h1>Ortholog Gene Search</h1>
     <p>
-      Search a gene and see its orthologs across species, with exact genomic
-      locations and one-click links into JBrowse 2 — including a synteny view
-      whenever the two assemblies have an alignment. Ortholog relationships come
-      live from the <a
+      Search a gene and see its orthologs across species, grouped by clade, with
+      exact genomic locations and one-click links into JBrowse 2 — including a
+      synteny view wherever we host a whole-genome alignment between the two
+      assemblies. Narrow the search to one clade, or filter the results in
+      place. Ortholog relationships come live from the <a
         href="https://www.ncbi.nlm.nih.gov/datasets/"
         target="_blank"
         rel="noreferrer"
@@ -191,9 +192,112 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
     border-radius: 3px;
   }
 
-  .orthologs-divider td {
-    border-bottom: 2px solid #ddd;
-    padding: 0;
-    height: 0;
+  .orthologs-model-label {
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+
+  /* What the gene actually is, above the species table: a symbol on its own
+     doesn't tell a reader whether they got the gene they meant. */
+  .orthologs-gene-card {
+    margin: 1.5rem 0 0.5rem;
+    padding: 12px 14px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .orthologs-gene-title {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .orthologs-gene-desc {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .orthologs-gene-meta,
+  .orthologs-gene-aliases {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .orthologs-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .orthologs-filter {
+    flex: 1 1 260px;
+    min-width: 200px;
+  }
+
+  .orthologs-toggle,
+  .orthologs-count {
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .orthologs-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* One collapsible clade section. The heading is the whole click target, so a
+     several-hundred-row answer opens a group at a time. */
+  .orthologs-group + .orthologs-group {
+    margin-top: 0.5rem;
+  }
+
+  .orthologs-group-head {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .orthologs-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 4px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--text);
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  .orthologs-group-btn:hover {
+    color: var(--accent);
+  }
+
+  .orthologs-caret {
+    width: 1em;
+    color: var(--muted);
+  }
+
+  .orthologs-group-count {
+    padding: 0 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-alt);
+    border-radius: 999px;
   }
 </style>

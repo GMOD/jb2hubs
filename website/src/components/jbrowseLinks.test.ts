@@ -5,6 +5,7 @@ import { mergeConfig, specUrl } from './jbrowseLinks.ts'
 import { orthoSyntenyUrl } from './orthologSearchUtils.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
+import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 // Pull the decoded session object back out of a launch URL.
 function sessionOf(url: string) {
@@ -53,10 +54,14 @@ const refResult: OrthologResult = {
   locStr: 'NC_REF:5-9',
 }
 
+const link: SyntenyLink = {
+  trackId: 'track1',
+  names: ['GCF_ORTHO', 'GCF_REF'],
+}
+
 test('orthoSyntenyUrl windows both panels around their genes', () => {
-  const views = sessionOf(
-    orthoSyntenyUrl('GCF_REF', result, 'track1', refResult, 10),
-  ).views[0].views
+  const views = sessionOf(orthoSyntenyUrl(result, link, refResult, 10)).views[0]
+    .views
   assert.deepEqual(views, [
     { assembly: 'GCF_ORTHO', loc: 'NC_1:90-210' },
     // begin - flank clamps at 1 rather than going negative
@@ -65,8 +70,25 @@ test('orthoSyntenyUrl windows both panels around their genes', () => {
 })
 
 test('orthoSyntenyUrl leaves the reference panel unnavigated when no ref row', () => {
-  const views = sessionOf(
-    orthoSyntenyUrl('GCF_REF', result, 'track1', undefined),
-  ).views[0].views
+  const views = sessionOf(orthoSyntenyUrl(result, link, undefined)).views[0]
+    .views
   assert.deepEqual(views[1], { assembly: 'GCF_REF' })
+})
+
+// The panels are named by the link, not by the accessions: the human half of a
+// comparison lives in /ucsc/hg38/config.json under the name hg38, and merging
+// GCF_000001405.40 instead would fetch a hub the track is not in.
+test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
+  const views = sessionOf(
+    orthoSyntenyUrl(
+      result,
+      { trackId: 'canFam3_to_hg38_liftOver', names: ['canFam3', 'hg38'] },
+      refResult,
+      10,
+    ),
+  ).views[0].views
+  assert.deepEqual(views, [
+    { assembly: 'canFam3', loc: 'NC_1:90-210' },
+    { assembly: 'hg38', loc: 'NC_REF:1-19' },
+  ])
 })

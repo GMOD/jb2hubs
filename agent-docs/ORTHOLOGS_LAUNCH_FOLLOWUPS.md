@@ -18,6 +18,10 @@ Note the per-row **Synteny** and **Launch multi-species synteny view** links in
 `specUrl`s directly (`jbrowseLinks.ts`) instead of routing through the gated
 `/synteny` page, so they work in production as-is.
 
+They also never appeared on a default search until 2026-08-26, which is worth
+knowing before trusting a "this feature works" claim about them — see
+`SYNTENY_PAIR_NAMES.md`.
+
 `conserved-gene-order.astro` links back to `/orthologs`, which is now always
 reachable — no longer a link into a redirect.
 
@@ -34,12 +38,35 @@ assembler that holds the rate budget once and caches — but there is no
 `website/src/pages/api` route, so this page doesn't use it. Worth revisiting if
 real traffic produces 429s.
 
+## Grouping costs one taxonomy request per search
+
+The clade groups come from NCBI's `taxonomy/filtered_subtree` over the result
+taxa — one POST, ~55 KB gzipped and ~1.5 s for a 549-species answer, issued
+_after_ the rows are already on screen (`SearchResults` in
+`OrthologSearch.tsx`). Until it lands the table is one flat group, which renders
+identically minus the headings, and a failure is silent for the same reason:
+nothing the reader asked for is missing.
+
+The alternative was baking a taxon → clade map into `ortholog_index.json` at
+build time. That is 41,517 distinct taxa to classify, so it means a ~4-minute
+NCBI dependency inside `pnpm generate` and a new way for CI to fail, to save a
+request that overlaps with reading the first group. Revisit only if the runtime
+call becomes a rate-limit problem.
+
+`CLADE_LADDER` in `orthologClades.ts` is a hand-picked list of ~28 taxon ids,
+most-specific first, and each broad "other" entry only mops up what its narrower
+siblings above did not take. Adding a clade is one line; the tests pin the
+fall-through, so a new entry inserted in the wrong place fails rather than
+silently emptying its neighbour.
+
 ## Smaller
 
-- The example chip is hard-coded to BRCA1 / taxon 9606 and forces the reference
-  species select to human. Fine as an example; would need rethinking if we add
-  several chips across species.
-- `runSearch` syncs `?gene=&ref=` with `history.replaceState`, so searches are
-  shareable but don't create back-button history entries. Intentional — a search
-  isn't really navigation — but `pushState` is the alternative if users expect
-  back to undo a search.
+- `runSearch` syncs `?gene=&ref=&scope=` with `history.replaceState`, so
+  searches are shareable but don't create back-button history entries.
+  Intentional — a search isn't really navigation — but `pushState` is the
+  alternative if users expect back to undo a search.
+- The clade sections open the reference's own clade and collapse the rest. There
+  is no "expand all"; with 549 rows across 18 groups it would mostly be a way to
+  make the page long again, but it is the obvious next control if people ask.
+- Sorting is fixed (model organisms first, then alphabetical, within a clade).
+  Sortable columns are the other obvious next control.

@@ -4,12 +4,11 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { syntenyViewUrl } from './jbrowseLinks.ts'
-import { buildPairIndex, trackFor } from './syntenyPairIndex.ts'
+import { DEFAULT_SCOPE } from './orthologClades.ts'
+import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
 import type { Assembly, AssemblyStore } from './orthologDb.ts'
-
-export type { Assembly, AssemblyIndex, AssemblyStore } from './orthologDb.ts'
-export { assemblyLabel, createStore, loadStore } from './orthologDb.ts'
+import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
 
 export const COMMON_SPECIES = [
   { label: 'Human', taxId: 9606 },
@@ -48,6 +47,18 @@ export function geneUrl(path: string, symbol: string, taxId: number) {
 // was typed, so the link still means the same thing later.
 export function syncGeneUrl(symbol: string, taxId: number) {
   window.history.replaceState(null, '', geneUrl('', symbol, taxId))
+}
+
+// The ortholog page's own link, which additionally carries the clade the search
+// was scoped to. The default scope is left out so the common link stays the
+// same shape the other gene-first pages read.
+export function orthologSearchUrl(
+  symbol: string,
+  taxId: number,
+  scopeId: string,
+) {
+  const base = geneUrl('', symbol, taxId)
+  return scopeId === DEFAULT_SCOPE.id ? base : `${base}&scope=${scopeId}`
 }
 
 // NCBI Datasets API response shapes
@@ -135,29 +146,34 @@ function windowedLoc(r: OrthologResult, flankBp: number) {
 
 // Pairwise reference-vs-ortholog synteny launch. Both panels land on the
 // neighborhood window around their gene; the reference panel is left unnavigated
-// only when the reference ortholog row is unknown.
+// only when the reference ortholog row is unknown. The panel assemblies come
+// from the link, not from the accessions, because the track lives in a config
+// that may know a genome as `hg38` rather than as GCF_000001405.40 — naming the
+// accession there merges a hub without the track in it.
 export function orthoSyntenyUrl(
-  refAccession: string,
   r: OrthologResult,
-  trackId: string,
+  link: SyntenyLink,
   ref: OrthologResult | undefined,
   flankBp = SYNTENY_FLANK_BP,
 ) {
   return syntenyViewUrl(
     [
-      { assembly: r.assembly.accession, loc: windowedLoc(r, flankBp) },
+      { assembly: link.names[0], loc: windowedLoc(r, flankBp) },
       {
-        assembly: refAccession,
+        assembly: link.names[1],
         ...(ref ? { loc: windowedLoc(ref, flankBp) } : {}),
       },
     ],
-    [trackId],
+    [link.trackId],
   )
 }
 
 export interface MultiSyntenyPlan {
   // top-to-bottom row order
   rows: OrthologResult[]
+  // names[i] is the assembly name rows[i]'s panel opens under — see
+  // orthoSyntenyUrl on why that is not always the accession
+  names: string[]
   // tracks[i] is the synteny track linking rows[i] and rows[i + 1]
   tracks: string[]
 }
@@ -176,70 +192,72 @@ export interface MultiSyntenyPlan {
 export function planMultiSynteny(
   results: OrthologResult[],
   refAccession: string,
-  syntenyPairs: Record<string, string>,
+  index: PairIndex,
 ): MultiSyntenyPlan | null {
   const ref = results.find(r => r.assembly.accession === refAccession)
+  if (!ref) {
+    return null
+  }
   // results arrive pre-sorted by evolutionary proximity to the reference, so a
   // row's index doubles as a "closeness" rank for tie-breaking chain extension.
   const rank = new Map(results.map((r, i) => [r.assembly.accession, i]))
-  const index = buildPairIndex(syntenyPairs)
+  const used = new Set([refAccession])
+  const chain = [ref]
+  // The assembly name each chained row's panel opens under, fixed by the link
+  // that placed it. A genome our catalog knows under two names (UCSC dm6 and
+  // the GenArk accession both appear) can only be one panel, so an extension
+  // whose link disagrees with the name already assigned is not a valid step —
+  // taking it would name a panel the neighbouring track cannot bind to.
+  const names = new Map<string, string>()
 
-  let plan: MultiSyntenyPlan | null = null
-  if (ref) {
-    const used = new Set([refAccession])
-    const chain = [ref]
-
-    function bestNeighbor(node: string) {
-      let best: { result: OrthologResult; track: string } | undefined
-      let bestRank = Infinity
-      for (const r of results) {
-        const acc = r.assembly.accession
-        const track = used.has(acc) ? undefined : trackFor(index, node, acc)
-        const rk = rank.get(acc) ?? Infinity
-        if (track && rk < bestRank) {
-          best = { result: r, track }
-          bestRank = rk
-        }
-      }
-      return best
-    }
-
-    let extended = true
-    while (extended) {
-      extended = false
-      const tail = chain.at(-1)
-      const next = tail && bestNeighbor(tail.assembly.accession)
-      if (next) {
-        chain.push(next.result)
-        used.add(next.result.assembly.accession)
-        extended = true
-      } else {
-        const head = chain.at(0)
-        const prev = head && bestNeighbor(head.assembly.accession)
-        if (prev) {
-          chain.unshift(prev.result)
-          used.add(prev.result.assembly.accession)
-          extended = true
-        }
+  function bestNeighbor(node: OrthologResult) {
+    const nodeAcc = node.assembly.accession
+    let best: { result: OrthologResult; link: SyntenyLink } | undefined
+    let bestRank = Infinity
+    for (const r of results) {
+      const acc = r.assembly.accession
+      const link = used.has(acc) ? undefined : syntenyLink(index, nodeAcc, acc)
+      const settled = names.get(nodeAcc)
+      const rk = rank.get(acc) ?? Infinity
+      if (link && rk < bestRank && (!settled || settled === link.names[0])) {
+        best = { result: r, link }
+        bestRank = rk
       }
     }
-
-    if (chain.length >= 2) {
-      const tracks: string[] = []
-      for (let i = 1; i < chain.length; i++) {
-        const a = chain[i - 1]
-        const b = chain[i]
-        // every adjacency was added through an edge, so this is always defined
-        const track =
-          a && b && trackFor(index, a.assembly.accession, b.assembly.accession)
-        if (track) {
-          tracks.push(track)
-        }
-      }
-      plan = { rows: chain, tracks }
-    }
+    return best
   }
-  return plan
+
+  function extend(end: 'head' | 'tail') {
+    const node = end === 'tail' ? chain.at(-1) : chain.at(0)
+    const next = node && bestNeighbor(node)
+    if (next) {
+      names.set(node.assembly.accession, next.link.names[0])
+      names.set(next.result.assembly.accession, next.link.names[1])
+      used.add(next.result.assembly.accession)
+      if (end === 'tail') {
+        chain.push(next.result)
+      } else {
+        chain.unshift(next.result)
+      }
+    }
+    return !!next
+  }
+
+  while (extend('tail') || extend('head')) {
+    // grow the tail as far as it goes, then the head
+  }
+
+  if (chain.length < 2) {
+    return null
+  }
+  // Every adjacency was added through a link whose name agreed, so the resolver
+  // reproduces those names and drops nothing; going through it rather than
+  // reading `names` keeps one copy of the panel-naming rule.
+  const stack = resolveStackNames(
+    chain.map(r => r.assembly.accession),
+    index,
+  )
+  return { rows: chain, names: stack.names, tracks: stack.tracks.flat() }
 }
 
 // Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row
@@ -250,8 +268,8 @@ export function buildMultiSyntenyUrl(
   flankBp = SYNTENY_FLANK_BP,
 ) {
   return syntenyViewUrl(
-    plan.rows.map(r => ({
-      assembly: r.assembly.accession,
+    plan.rows.map((r, i) => ({
+      assembly: plan.names[i] ?? r.assembly.accession,
       loc: windowedLoc(r, flankBp),
     })),
     plan.tracks.map(t => [t]),
@@ -260,6 +278,27 @@ export function buildMultiSyntenyUrl(
 
 export function formatNumber(n: number) {
   return n.toLocaleString('en-US')
+}
+
+// Free-text row filter over the four things a reader would actually type at a
+// table of several hundred species: either species name, the ortholog's own
+// symbol (which often differs from the query's — an uncharacterised locus reads
+// LOC…), and the assembly accession. Whitespace-separated terms are ANDed, so
+// "mus brca" narrows rather than widening.
+export function matchesQuery(r: OrthologResult, query: string) {
+  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+  if (terms.length === 0) {
+    return true
+  }
+  const haystack = [
+    r.assembly.scientificName,
+    r.assembly.commonName,
+    r.geneSymbol,
+    r.assembly.accession,
+  ]
+    .join(' ')
+    .toLowerCase()
+  return terms.every(t => haystack.includes(t))
 }
 
 export function buildOrthologResults(
@@ -272,32 +311,29 @@ export function buildOrthologResults(
     // First hosted annotation carrying any placed location. Scans every location
     // (not just [0]) so an annotation whose first location lacks a range still
     // resolves off a later placed one, matching locate() in orthologSet.ts.
-    const hit = (gene.annotations ?? [])
-      .map(ann => ({
-        assembly: store.find(ann.assembly_accession),
-        loc: ann.genomic_locations?.find(l => l.genomic_range),
-      }))
-      .find(({ assembly, loc }) => assembly && loc?.genomic_range)
-    const assembly = hit?.assembly
-    const loc = hit?.loc
-    if (assembly && loc?.genomic_range) {
-      const begin = parseInt(loc.genomic_range.begin)
-      const end = parseInt(loc.genomic_range.end)
-      const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
-      results.push({
-        assembly,
-        geneSymbol: gene.symbol,
-        geneId: gene.gene_id,
-        chromosome: loc.sequence_name,
-        begin,
-        end,
-        locStr,
-        jbrowseUrl: accessionToJbrowseUrl(
-          assembly.accession,
+    for (const ann of gene.annotations ?? []) {
+      const assembly = store.find(ann.assembly_accession)
+      const loc = ann.genomic_locations?.find(l => l.genomic_range)
+      if (assembly && loc?.genomic_range) {
+        const begin = parseInt(loc.genomic_range.begin)
+        const end = parseInt(loc.genomic_range.end)
+        const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
+        results.push({
+          assembly,
+          geneSymbol: gene.symbol,
+          geneId: gene.gene_id,
+          chromosome: loc.sequence_name,
+          begin,
+          end,
           locStr,
-          assembly.ucscDb,
-        ),
-      })
+          jbrowseUrl: accessionToJbrowseUrl(
+            assembly.accession,
+            locStr,
+            assembly.ucscDb,
+          ),
+        })
+        break
+      }
     }
   }
 

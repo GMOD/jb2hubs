@@ -27,7 +27,9 @@ test('subtreeSyntenyUrl needs at least two genomes', () => {
 // chain must occupy its own empty slot — otherwise later tracks slide up onto the
 // wrong pair of genomes (the bug this guards against).
 test('tracks are one per level, empty where no chain exists', () => {
-  const index = buildPairIndex({ 'GCF_1.9,GCF_2.9': 'track_1_2' })
+  const index = buildPairIndex({
+    'GCF_1.9,GCF_2.9': ['track_1_2', 'GCF_1.9', 'GCF_2.9'],
+  })
   const url = subtreeSyntenyUrl(
     [leaf('GCF_1.1'), leaf('GCF_2.1'), leaf('GCF_3.1')],
     index,
@@ -40,8 +42,8 @@ test('tracks are one per level, empty where no chain exists', () => {
 
 test('a fully-chained subtree yields one track slot per level', () => {
   const index = buildPairIndex({
-    'GCF_1,GCF_2': 't12',
-    'GCF_2,GCF_3': 't23',
+    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2'],
+    'GCF_2,GCF_3': ['t23', 'GCF_2', 'GCF_3'],
   })
   const url = subtreeSyntenyUrl(
     [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],

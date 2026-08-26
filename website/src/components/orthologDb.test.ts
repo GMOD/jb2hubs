@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { assemblyLabel, createStore } from './orthologDb.ts'
+import { createStore, speciesLabel } from './orthologDb.ts'
 
 import type { AssemblyIndex } from './orthologDb.ts'
 
@@ -42,15 +42,26 @@ test('the fourth slot is absent for GenArk-only assemblies', () => {
   assert.equal(createStore(index).find('GCA_009914755.4')?.ucscDb, undefined)
 })
 
-// commonName is "" rather than absent in the index, so a nullish check would
-// display the empty string.
-test('assemblyLabel falls back to the scientific name on an empty common name', () => {
+// 43,828 of the 44,685 index entries carry an assembly parenthetical on the
+// common name, which is what makes the species column unreadable at several
+// hundred rows.
+test('speciesLabel drops a trailing assembly parenthetical', () => {
   assert.equal(
-    assemblyLabel({ commonName: '', scientificName: 'Homo sapiens' }),
-    'Homo sapiens',
+    speciesLabel('cattle (Hereford L1 Dominette 42190680 v1.3 2018 USDA)'),
+    'cattle',
   )
+  assert.equal(speciesLabel('Pyrobaculum sp. (DRTY-1 2024)'), 'Pyrobaculum sp.')
+  assert.equal(speciesLabel('human'), 'human')
+  assert.equal(speciesLabel(''), '')
+})
+
+// Only a parenthetical that ends the string goes, and only when a name is left
+// — otherwise the cell would render blank for a species whose whole common name
+// is parenthesised.
+test('speciesLabel leaves an interior or whole-string parenthetical alone', () => {
   assert.equal(
-    assemblyLabel({ commonName: 'human', scientificName: 'Homo sapiens' }),
-    'human',
+    speciesLabel('frog (X. tropicalis) western clawed'),
+    'frog (X. tropicalis) western clawed',
   )
+  assert.equal(speciesLabel('(unnamed 2019)'), '(unnamed 2019)')
 })

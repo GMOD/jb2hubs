@@ -16,7 +16,7 @@ export interface TaxonNode {
 
 // Shape of the `edges` map in the filtered_subtree response: parent taxon id ->
 // its children + display metadata. The tree is rooted at taxon id 1 ("root").
-interface SubtreeEdge {
+export interface SubtreeEdge {
   visible_children?: number[]
   scientific_name?: string
   curator_common_name?: string
@@ -83,6 +83,21 @@ export function leafOrder(node: TaxonNode): number[] {
     : node.children.flatMap(leafOrder)
 }
 
+// The induced subtree's raw edges for a taxon set, or undefined when the API
+// returns none. Both consumers below start here: the drawn tree, and the
+// root-to-taxon lineages the ortholog table groups its rows by.
+async function fetchSubtreeEdges(unique: number[]) {
+  const res = await ncbiFetch(FILTERED_SUBTREE, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ taxons: unique.map(String) }),
+  })
+  if (!res.ok) {
+    throw new Error(`taxonomy subtree request failed (${res.status})`)
+  }
+  return ((await res.json()) as SubtreeResponse).edges
+}
+
 // Fetch + build the induced, pruned, chain-collapsed tree for a taxon set. A
 // taxon the API omits simply won't appear in the tree; the caller still renders
 // its row (sorted after the tree-ordered ones), so no species is dropped.
@@ -93,15 +108,49 @@ export async function fetchInducedTree(
   if (unique.length === 0) {
     return undefined
   }
-  const res = await ncbiFetch(FILTERED_SUBTREE, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ taxons: unique.map(String) }),
-  })
-  if (!res.ok) {
-    throw new Error(`taxonomy subtree request failed (${res.status})`)
-  }
-  const json = (await res.json()) as SubtreeResponse
-  const raw = json.edges ? buildInducedTree(json.edges, unique) : undefined
+  const edges = await fetchSubtreeEdges(unique)
+  const raw = edges ? buildInducedTree(edges, unique) : undefined
   return raw ? collapseChains(raw) : undefined
+}
+
+// taxonId -> the set of taxa on its root-to-leaf path, itself included. The
+// subtree is rooted at taxon 1 and every edge names its visible children, so
+// inverting that gives each taxon one parent and walking up gives the lineage —
+// which is what lets a caller ask "is this species inside Primates" with an id
+// test rather than a name match. Unlike the drawn tree this keeps the requested
+// taxa as interior points too, so a taxon that is an ancestor of another still
+// gets its own entry.
+export function buildAncestors(
+  edges: Record<string, SubtreeEdge>,
+  taxonIds: number[],
+): Map<number, Set<number>> {
+  const parent = new Map<number, number>()
+  for (const [id, edge] of Object.entries(edges)) {
+    for (const child of edge.visible_children ?? []) {
+      parent.set(child, Number(id))
+    }
+  }
+  const ancestors = new Map<number, Set<number>>()
+  for (const taxonId of taxonIds) {
+    const path = new Set([taxonId])
+    let up = parent.get(taxonId)
+    // The root has no parent, so this terminates. The membership test is for a
+    // cyclic or self-parented edge, which would otherwise hang the page.
+    while (up !== undefined && !path.has(up)) {
+      path.add(up)
+      up = parent.get(up)
+    }
+    ancestors.set(taxonId, path)
+  }
+  return ancestors
+}
+
+// Root-to-taxon lineages for a taxon set. Every requested taxon gets an entry;
+// one the API omits from the subtree comes back as a lineage of just itself,
+// which lands it in whatever "other" bucket the caller ends its ladder with
+// rather than dropping the row.
+export async function fetchTaxonAncestors(taxonIds: number[]) {
+  const unique = [...new Set(taxonIds)]
+  const edges = unique.length > 0 ? await fetchSubtreeEdges(unique) : undefined
+  return edges ? buildAncestors(edges, unique) : new Map<number, Set<number>>()
 }

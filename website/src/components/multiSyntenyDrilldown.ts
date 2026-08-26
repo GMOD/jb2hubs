@@ -12,9 +12,16 @@ import {
   accessionToJbrowseUrl,
   flankLoc,
 } from './orthologSearchUtils.ts'
-import { type PairIndex, buildPairIndex, trackFor } from './syntenyPairIndex.ts'
+import {
+  type PairEntry,
+  type PairIndex,
+  buildPairIndex,
+  resolveStackNames,
+  syntenyLink,
+} from './syntenyPairIndex.ts'
 
 import type { PlacedGene } from './neighborhood.ts'
+import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 // taxId -> a hosted whole-genome alignment for that reference; add entries as
 // references gain one. First slice of the GCF<->UCSC-db registry in
@@ -68,27 +75,28 @@ export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
 // failure degrades to an empty index — the click falls back to single-genome —
 // and a later drill-down retries.
 function loadPairs(): Promise<PairIndex> {
-  return loadJsonOnce<Record<string, string>>('/synteny_pairs.json').then(
+  return loadJsonOnce<Record<string, PairEntry>>('/synteny_pairs.json').then(
     buildPairIndex,
-    () => new Map<string, string>(),
+    () => new Map(),
   )
 }
 
+// The panel assemblies are the link's names rather than the accessions: a
+// comparison against human lives in /ucsc/hg38/config.json and knows that genome
+// as `hg38`, so merging by accession would fetch a hub without the track.
 function pairwiseSyntenyUrl(
-  refAccession: string,
-  orthoAccession: string,
+  link: SyntenyLink,
   loc: string,
-  trackId: string,
   refLoc: string | undefined,
 ) {
   return syntenyViewUrl(
     [
-      { assembly: orthoAccession, loc },
+      { assembly: link.names[0], loc },
       // Land the reference panel on the orthologous locus too, so both genomes
       // open at the gene rather than leaving the reference unnavigated.
-      { assembly: refAccession, ...(refLoc ? { loc: refLoc } : {}) },
+      { assembly: link.names[1], ...(refLoc ? { loc: refLoc } : {}) },
     ],
-    [trackId],
+    [link.trackId],
     { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
   )
 }
@@ -113,12 +121,12 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
   if (picked.length < 2) {
     return undefined
   }
-  const tracks = picked.slice(0, -1).map((leaf, i) => {
-    const trackId = trackFor(index, leaf.assembly, picked[i + 1]!.assembly)
-    return trackId ? [trackId] : []
-  })
+  const { names, tracks } = resolveStackNames(
+    picked.map(p => p.assembly),
+    index,
+  )
   return syntenyViewUrl(
-    picked.map(p => ({ assembly: p.assembly, loc: p.loc })),
+    picked.map((p, i) => ({ assembly: names[i] ?? p.assembly, loc: p.loc })),
     tracks,
     { drawCurves: true },
   )
@@ -147,28 +155,25 @@ export async function openGeneDrilldown(
   refGene: PlacedGene | undefined,
 ) {
   const index = await loadPairs()
-  const trackId =
+  const link =
     refAccession && gene.assembly !== refAccession
-      ? trackFor(index, gene.assembly, refAccession)
+      ? syntenyLink(index, gene.assembly, refAccession)
       : undefined
-  const url =
-    trackId && refAccession
-      ? pairwiseSyntenyUrl(
-          refAccession,
-          gene.assembly,
-          flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
-          trackId,
-          refGene &&
-            flankLoc(
-              refGene.refName,
-              refGene.start,
-              refGene.end,
-              SYNTENY_FLANK_BP,
-            ),
-        )
-      : accessionToJbrowseUrl(
-          gene.assembly,
-          `${gene.refName}:${gene.start}-${gene.end}`,
-        )
+  const url = link
+    ? pairwiseSyntenyUrl(
+        link,
+        flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
+        refGene &&
+          flankLoc(
+            refGene.refName,
+            refGene.start,
+            refGene.end,
+            SYNTENY_FLANK_BP,
+          ),
+      )
+    : accessionToJbrowseUrl(
+        gene.assembly,
+        `${gene.refName}:${gene.start}-${gene.end}`,
+      )
   window.open(url, '_blank', 'noopener')
 }

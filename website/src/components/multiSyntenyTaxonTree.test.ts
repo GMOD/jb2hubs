@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  buildAncestors,
   buildInducedTree,
   collapseChains,
   leafOrder,
@@ -64,4 +65,34 @@ test('leafOrder is a left-to-right DFS', () => {
 
 test('buildInducedTree returns undefined when no requested taxon is present', () => {
   assert.equal(buildInducedTree(edges, [99999]), undefined)
+})
+
+// The clade grouping asks "is this species inside Primates" with an id test, so
+// the lineage has to run all the way to the root and include the taxon itself.
+test('buildAncestors returns each taxon plus its whole root-ward path', () => {
+  const lineages = buildAncestors(edges, [9606, 10090])
+  assert.deepEqual(
+    [...(lineages.get(9606) ?? [])].sort((a, b) => a - b),
+    [1, 2, 3, 9606],
+  )
+  assert.deepEqual(
+    [...(lineages.get(10090) ?? [])].sort((a, b) => a - b),
+    [1, 2, 10090],
+  )
+})
+
+// A taxon the API left out of the subtree still gets a row in the table, so it
+// gets a lineage of just itself rather than being absent from the map.
+test('buildAncestors gives an unknown taxon a lineage of itself', () => {
+  assert.deepEqual([...(buildAncestors(edges, [4242]).get(4242) ?? [])], [4242])
+})
+
+// A cyclic edge is not something NCBI sends, but walking one would hang the
+// page rather than fail visibly, which is the worst way for it to go wrong.
+test('buildAncestors terminates on a cyclic edge', () => {
+  const cyclic = {
+    '1': { visible_children: [2] },
+    '2': { visible_children: [1] },
+  }
+  assert.deepEqual([...(buildAncestors(cyclic, [2]).get(2) ?? [])], [2, 1])
 })
