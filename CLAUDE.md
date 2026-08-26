@@ -920,6 +920,31 @@ per file — which is what "rsync was slow" was. Making rsync worthwhile means
 previous release to hardlink what did not change; that is a real option if
 deploys need to get faster, but it is a different trade, not a drop-in.
 
+## The pangenome graph config is ours, and it lives in the bucket
+
+`website/pangenome-config/hprc-grch38.json` is the config every graph launch on
+`/pangenomes/*` opens (`graphBrowser.configUrl` in
+`website/src/components/pangenomeDataset.ts`). It is published to
+`s3://jbrowse.org/pangenome/hprc-grch38/config.json` by `upload.sh` beside it,
+with an `upload_if_changed` stamp, because jbrowse-web fetches `?config=` from
+the visitor's browser and genomes.jbrowse.org sends no CORS headers — only the
+bucket does. **Run `website/pangenome-config/upload.sh` before deploying a
+change that touches it**; a launch naming a config the bucket lacks fails to
+fetch. The data it names stays under `jbrowse.org/demos/hprc/`, built in the
+jbrowse-components repo (its README there says how).
+
+The plugin url is the unversioned `demos/graphgenomeviewer/…esm.js` entry point,
+not a content-hashed sibling: the plugin links an unreleased
+`@jbrowse/render-core`, so an old bundle stops booting as `main` moves. It
+error-pages every released host (`createSvgIcon` — re-measured 2026-08-26 on
+`latest` = v4.3.0), which is why `features.pangenome` stays staging until v5.
+
+`pnpm check-pangenome-launches` boots every launch on `main`, including one
+whole-chromosome tier launch; run it after touching `pangenome*` or the config.
+The genomes.jbrowse.org side of the JBrowse docs
+(`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) describes
+this page, so a visible change here should be reflected there.
+
 ## Key website internals
 
 - `src/components/SearchPage.tsx` — client-side search over
