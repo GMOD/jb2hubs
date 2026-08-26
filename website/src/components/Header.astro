@@ -307,8 +307,8 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
 
 <style>
   .nav {
-    background: white;
-    border-bottom: 1px solid #e7e7e7;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
     padding: 0 1rem;
     height: 60px;
     position: sticky;
@@ -348,7 +348,7 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
-    color: black;
+    color: var(--text);
     font-size: 1rem;
     font-weight: 700;
     flex-shrink: 0;
@@ -357,15 +357,21 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
 
   .navLink {
     text-decoration: none;
-    color: black;
+    color: var(--text);
     font-size: 1rem;
     font-weight: 500;
     padding: 4px 12px;
+    border-radius: 4px;
     white-space: nowrap;
+  }
+
+  .navLink:hover {
+    background: var(--surface-alt);
   }
 
   .navLink.active {
     font-weight: 700;
+    color: var(--accent);
   }
 
   .externalLink {
@@ -374,7 +380,7 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     gap: 6px;
     padding: 4px 12px;
     text-decoration: none;
-    color: black;
+    color: var(--text);
     white-space: nowrap;
   }
 
@@ -382,7 +388,12 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     display: inline-flex;
     align-items: center;
     padding: 4px 8px;
-    color: black;
+    color: var(--muted);
+  }
+
+  .externalLink:hover,
+  .socialLink:hover {
+    color: var(--accent);
   }
 
   .icon {
@@ -412,8 +423,8 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     position: absolute;
     top: 100%;
     left: 0;
-    background: white;
-    border: 1px solid #e7e7e7;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     min-width: 130px;
@@ -429,14 +440,14 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     display: block;
     padding: 6px 12px;
     text-decoration: none;
-    color: black;
+    color: var(--text);
     font-weight: 500;
     font-size: 0.9rem;
     white-space: nowrap;
   }
 
   .dropdownItem:hover {
-    background: #f5f5f5;
+    background: var(--surface-alt);
   }
 
   .dropdownItem.active {
@@ -451,7 +462,7 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     background: none;
     border: none;
     cursor: pointer;
-    color: black;
+    color: var(--text);
   }
 
   .mobile-menu {
@@ -460,9 +471,9 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     top: 100%;
     left: 0;
     right: 0;
-    background: white;
+    background: var(--surface);
     padding: 1rem;
-    border-top: 1px solid #e7e7e7;
+    border-top: 1px solid var(--border);
     flex-direction: column;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
   }
