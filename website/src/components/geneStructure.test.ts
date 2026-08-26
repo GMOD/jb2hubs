@@ -77,10 +77,24 @@ const transcript = {
 
 test('collapsedLoc: one region per exon collapsed, whole-gene when not', () => {
   assert.equal(
-    collapsedLoc(transcript, true),
+    collapsedLoc(transcript),
     'NC_000077.7:61-240 NC_000077.7:961-1120',
   )
-  assert.equal(collapsedLoc(transcript, false), 'NC_000077.7:101-1080')
+  assert.equal(
+    collapsedLoc(transcript, { collapse: false }),
+    'NC_000077.7:101-1080',
+  )
+})
+
+test('collapsedLoc: flipping reverses the order and marks each region', () => {
+  assert.equal(
+    collapsedLoc(transcript, { flip: true }),
+    'NC_000077.7:961-1120[rev] NC_000077.7:61-240[rev]',
+  )
+  assert.equal(
+    collapsedLoc(transcript, { collapse: false, flip: true }),
+    'NC_000077.7:101-1080[rev]',
+  )
 })
 
 test('geneStats: sums CDS length and the collapse ratio', () => {
@@ -91,34 +105,132 @@ test('geneStats: sums CDS length and the collapse ratio', () => {
   })
 })
 
-test('buildSessionUrl: assembly from merge API, connected genome + structure', () => {
-  const structure: GeneStructure = {
-    symbol: 'Test',
-    geneId: '1',
-    taxId: 10090,
-    assemblyAccession: 'GCF_000001635.27',
-    uniprotId: 'P02340',
-    proteinSequence: 'MEEP',
-    transcript,
-  }
+// A stand-in for a resolved hosted config: names the gene track the session
+// should open, and renames NCBI's accession to what that config calls the
+// sequence — the rename buildSessionUrl has to apply everywhere at once.
+const target = {
+  configUrl: '/hubs/genark/GCF/000/001/635/GCF_000001635.27/config.json',
+  assemblyName: 'GCF_000001635.27',
+  geneTrackId: 'GCF_000001635.27-ncbiRefSeqSelect',
+  canonicalRefName: (refName: string) =>
+    refName === 'NC_000077.7' ? 'chr11' : refName,
+}
+
+const structure: GeneStructure = {
+  symbol: 'Test',
+  geneId: '1',
+  taxId: 10090,
+  assemblyAccession: 'GCF_000001635.27',
+  target,
+  uniprotId: 'P02340',
+  proteinSequence: 'MEEP',
+  transcript,
+}
+
+interface SessionView {
+  id: string
+  type: string
+  init?: { assembly?: string; loc?: string; tracks?: string[] }
+  connectedFeature?: { refName: string }
+  structures?: { connectedViewId: string }[]
+}
+
+function viewsOf(session: object) {
+  return (session as unknown as { views: SessionView[] }).views
+}
+
+test('buildSessionUrl: opens the target config with its gene track', () => {
   const { session, url } = buildSessionUrl({ structure })
-  // the config URL is encodeURIComponent'd, so hubIds= reads as hubIds%3D
-  assert.match(url, /hubIds%3DGCF_000001635\.27/)
+  assert.match(
+    url,
+    /#config=%2Fhubs%2Fgenark%2FGCF%2F000%2F001%2F635%2FGCF_000001635\.27%2Fconfig\.json/,
+  )
   assert.match(url, /session=encoded-/)
-  const views = (
-    session as unknown as {
-      views: {
-        id: string
-        type: string
-        init?: { assembly?: string }
-        structures?: { connectedViewId: string }[]
-      }[]
-    }
-  ).views
+  const views = viewsOf(session)
   const lgv = views[0]!
   const protein = views.find(v => v.type === 'ProteinView')!
   assert.equal(lgv.type, 'LinearGenomeView')
   assert.equal(lgv.init?.assembly, 'GCF_000001635.27')
+  // without this the collapsed exons render over an empty view
+  assert.deepEqual(lgv.init?.tracks, ['GCF_000001635.27-ncbiRefSeqSelect'])
   // structure links back to the genome view
   assert.equal(protein.structures?.[0]?.connectedViewId, lgv.id)
+})
+
+// Displayed-region matching is exact and does not alias-resolve, so the loc and
+// the connectedFeature must BOTH carry the config's own name for the sequence.
+// One of the two left on NCBI's accession is the silent-no-highlight failure.
+test('buildSessionUrl: renames the sequence everywhere the session names it', () => {
+  const views = viewsOf(buildSessionUrl({ structure }).session)
+  const lgv = views[0]!
+  const protein = views.find(v => v.type === 'ProteinView')!
+  assert.equal(lgv.init?.loc, 'chr11:61-240 chr11:961-1120')
+  assert.equal(
+    protein.structures?.[0] &&
+      (protein as unknown as { structures: { feature: { refName: string } }[] })
+        .structures[0]!.feature.refName,
+    'chr11',
+  )
+})
+
+// The session-level `init: {direction, children}` layout stopped being read when
+// the workspace became an MST tree; a session still emitting it stacks its views
+// in one column instead of tiling them.
+test('buildSessionUrl: emits the workspace layout tree, not the dropped init', () => {
+  const { session } = buildSessionUrl({ structure })
+  const s = session as unknown as {
+    init?: unknown
+    useWorkspaces?: boolean
+    layout?: {
+      direction: string
+      children: { size: number; tabs: { viewIds: string[] }[] }[]
+    }
+  }
+  assert.equal(s.init, undefined)
+  assert.equal(s.useWorkspaces, true)
+  assert.equal(s.layout?.direction, 'row')
+  assert.deepEqual(
+    s.layout?.children.map(c => c.tabs[0]!.viewIds),
+    [['lgv-Test'], ['protein-Test']],
+  )
+  assert.deepEqual(s.layout?.children.map(c => c.size), [58, 42])
+})
+
+test('buildSessionUrl: an indexed alignment is named, not carried', () => {
+  const { session } = buildSessionUrl({
+    structure,
+    indexedMsa: {
+      msaUri: 'https://example.org/100way.fa.gz',
+      treeUri: 'https://example.org/100way.nh',
+      msaName: 'Test',
+      querySeqName: 'hg38',
+    },
+  })
+  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
+    init?: { msaIndexedLocation?: { uri: string }; msaName?: string }
+    data?: unknown
+  }
+  assert.equal(msa.init?.msaIndexedLocation?.uri, 'https://example.org/100way.fa.gz')
+  assert.equal(msa.init?.msaName, 'Test')
+  // the alignment stays out of the URL, which is what keeps it small
+  assert.equal(msa.data, undefined)
+})
+
+test('buildSessionUrl: an inline alignment rides in the session with its domains', () => {
+  const { session } = buildSessionUrl({
+    structure,
+    inlineMsa: {
+      fasta: '>mouse\nMEEP',
+      newick: '(mouse);',
+      gff: '##gff-version 3',
+      querySeqName: 'mouse',
+    },
+  })
+  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
+    data?: { msa: string; tree: string; gff?: string }
+    init?: unknown
+  }
+  assert.equal(msa.data?.msa, '>mouse\nMEEP')
+  assert.equal(msa.data?.gff, '##gff-version 3')
+  assert.equal(msa.init, undefined)
 })

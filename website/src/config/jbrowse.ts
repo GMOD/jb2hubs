@@ -33,6 +33,17 @@ export function jbrowseUrl(config: string) {
   return `${JBROWSE_BASE}/?config=${encodeURIComponent(config)}`
 }
 
+// Neither website serves the configs: a site-relative `?config=/ucsc/…` works
+// because jbrowse-web resolves it against ITS origin, the jbrowse.org bucket.
+// The website's own code reading one of those files gets no such favour — its
+// origin is genomes.jbrowse.org — so anything fetched here needs the bucket
+// spelled out. The bucket sends `access-control-allow-origin: *`.
+const HOSTED_DATA_ORIGIN = 'https://jbrowse.org'
+
+export function hostedUrl(sitePath: string) {
+  return `${HOSTED_DATA_ORIGIN}${sitePath}`
+}
+
 // Staging launches a SIBLING config file (config.json -> config-staging.json),
 // written by ucsc2jbrowse/stageConfigs.sh, carrying the plugins that are staging
 // only — today the BLAT plugin. Regenerating config.json publishes to production

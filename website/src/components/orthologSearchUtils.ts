@@ -22,13 +22,22 @@ export const COMMON_SPECIES = [
   { label: 'Frog (X. tropicalis)', taxId: 8364 },
   { label: 'Fruitfly', taxId: 7227 },
   { label: 'C. elegans', taxId: 6239 },
-  { label: 'Yeast (S. cerevisiae)', taxId: 4932 },
+  // S288C, the reference strain — NOT the species taxon 4932, which NCBI files
+  // no gene records under: every symbol lookup against it comes back empty, and
+  // the ortholog and genome reports name 559292 too.
+  { label: 'Yeast (S. cerevisiae)', taxId: 559292 },
   { label: 'Arabidopsis', taxId: 3702 },
 ]
 
 export const COMMON_TAX_RANK = new Map(
   COMMON_SPECIES.map((s, i) => [s.taxId, i]),
 )
+
+// A curated gene chip: the symbol, and why someone might want to look at it.
+export interface Example {
+  symbol: string
+  note: string
+}
 
 // Display text for a reference-species field whose value may be a taxon id (as
 // carried in ?ref=) or free text; known model organisms show as their label.

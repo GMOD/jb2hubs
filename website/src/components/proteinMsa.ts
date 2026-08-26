@@ -1,10 +1,13 @@
 // Assembles an ortholog protein comparison in two phases so the cheap view can
 // render before the slow one:
-//   Phase 1 — assembleProteinPanel (NCBI only, a few seconds):
-//     1. resolve the query gene -> its NCBI orthologs (one gene per species)
-//     2. pick a representative protein per gene (MANE Select, else longest)
-//     3. fetch protein sequences (efetch FASTA) + CDD conserved domains
-//        (efetch GenPept Region features)
+//   Phase 1 — assembleProteinPanel (a few seconds):
+//     1. resolve the query gene -> its orthologs, one per species, from NCBI or
+//        from PANTHER where NCBI's vertebrate/insect sets cannot reach (see
+//        OrthologSource below)
+//     2. pick a representative protein per gene (MANE Select, else longest;
+//        PANTHER's reference proteomes already carry one per gene)
+//     3. fetch protein sequences + CDD conserved domains (efetch GenPept Region
+//        features)
 //     -> rows carrying sequence, length and domains: enough to draw the
 //        domain-architecture cartoon without aligning anything.
 //   Phase 2 — alignProteinPanel (EBI Clustal Omega, up to minutes):
@@ -26,14 +29,17 @@ import {
 } from './ncbiFetch.ts'
 import { COMMON_SPECIES, COMMON_TAX_RANK } from './orthologSearchUtils.ts'
 import { resolveGeneId } from './orthologSet.ts'
+import { fetchPantherOrthologs } from './pantherOrthologs.ts'
 
 export interface ProteinMsaRow {
   taxId: number
   label: string // single-token id used in FASTA / tree / gff
   scientificName: string
   commonName?: string
-  geneId: string
-  protein: string // accession.version
+  // NCBI GeneID, absent on PANTHER rows — it keys nothing downstream, and
+  // PANTHER identifies a gene by its UniProt accession instead
+  geneId?: string
+  protein: string // accession.version (NCBI) or UniProt accession (PANTHER)
 }
 
 // A panel row carries everything the domain cartoon needs without any alignment.
@@ -45,8 +51,29 @@ export interface ProteinPanelRow extends ProteinMsaRow {
 
 // Phase 1 output: the curated ortholog set with sequences + domains.
 export interface ProteinPanel {
-  query: { symbol: string; refTaxonId: number }
+  query: { symbol: string; refTaxonId: number; source: OrthologSource }
   rows: ProteinPanelRow[]
+}
+
+// Where the ortholog set comes from. NCBI's sets are vertebrate- and
+// insect-scoped, so a reference gene outside that span finds nothing to compare
+// against — measured 2026-08-25, yeast CDC28 returns three orthologs, all yeast.
+// PANTHER's 144 reference proteomes cover every species this page offers. See
+// pantherOrthologs.ts for the measurements behind the pick.
+export type OrthologSource = 'ncbi' | 'panther'
+
+// Reference species whose orthologs NCBI cannot supply across this panel.
+// Drosophila is in the list despite being an insect: NCBI finds it 108
+// orthologs and every one is another insect, so the panel would be fly alone.
+const PANTHER_ONLY_TAXA = new Set([
+  7227, // Drosophila melanogaster
+  6239, // Caenorhabditis elegans
+  559292, // Saccharomyces cerevisiae S288C
+  3702, // Arabidopsis thaliana
+])
+
+export function defaultOrthologSource(taxId: number): OrthologSource {
+  return PANTHER_ONLY_TAXA.has(taxId) ? 'panther' : 'ncbi'
 }
 
 // Phase 2 output: a column-locked alignment + guide tree + per-row domain gff,
@@ -59,6 +86,7 @@ export interface ProteinAlignment {
 
 export interface ProteinPanelOptions {
   taxa?: number[] // species to include; defaults to the common-species set
+  source?: OrthologSource // defaults per reference species
   onProgress?: (message: string) => void
 }
 
@@ -321,35 +349,39 @@ export function buildDomainGff(
   return lines.join('\n')
 }
 
-// Phase 1: resolve the ortholog panel and fetch sequences + domains from NCBI.
-// Fast enough to drive the domain cartoon; no EBI alignment.
-export async function assembleProteinPanel(
+// What both ortholog sources reduce to before the shared tail (labels, domains,
+// row assembly) runs. `protein` is whatever accession the sequence came under,
+// which is also the accession CDD domains are fetched by.
+interface SourcedProtein {
+  taxId: number
+  scientificName: string
+  commonName?: string
+  geneId?: string
+  protein: string
+  sequence: string
+}
+
+// NCBI: orthologs by GeneID, a representative protein per gene, then one efetch
+// for the sequences.
+async function ncbiProteins(
   query: string,
   refTaxonId: number,
-  { taxa, onProgress = () => undefined }: ProteinPanelOptions = {},
-): Promise<ProteinPanel> {
+  wanted: Set<number>,
+  onProgress: (message: string) => void,
+): Promise<SourcedProtein[]> {
   onProgress('Resolving orthologs across species…')
   const queryGeneId = await resolveGeneId(query, refTaxonId)
   if (!queryGeneId) {
     throw new Error(`no gene found for "${query}"`)
   }
-
-  const wanted = new Set(taxa ?? COMMON_SPECIES.map(s => s.taxId))
-  wanted.add(refTaxonId)
-  // One ortholog per species, restricted to the wanted set, ordered by the
-  // common-species rank (reference and close relatives first) so the panel is a
-  // readable, curated set rather than hundreds of rows.
+  // One ortholog per species, restricted to the wanted set.
   const byTaxon = new Map<number, OrthologGene>()
   for (const g of await fetchOrthologGenes(queryGeneId)) {
     if (wanted.has(g.taxId) && !byTaxon.has(g.taxId)) {
       byTaxon.set(g.taxId, g)
     }
   }
-  const genes = [...byTaxon.values()].sort(
-    (a, b) =>
-      (COMMON_TAX_RANK.get(a.taxId) ?? Infinity) -
-      (COMMON_TAX_RANK.get(b.taxId) ?? Infinity),
-  )
+  const genes = [...byTaxon.values()]
   if (genes.length < 2) {
     throw new Error(
       `need at least two species with orthologs to compare (found ${genes.length})`,
@@ -360,51 +392,123 @@ export async function assembleProteinPanel(
   const proteinByGene = await fetchRepresentativeProteins(
     genes.map(g => g.geneId),
   )
-
-  // Labels are shared across FASTA / tree / gff so the three line up.
   const withProtein = genes.filter(g => proteinByGene.has(g.geneId))
-  const labels = dedupeLabels(
-    withProtein.map(g => g.commonName ?? g.scientificName),
-  )
   if (withProtein.length < 2) {
     throw new Error(
       'could not resolve representative proteins for the orthologs',
     )
   }
 
-  onProgress('Fetching protein sequences and conserved domains…')
+  onProgress('Fetching protein sequences…')
   const accessions = withProtein.map(g => proteinByGene.get(g.geneId)!)
-  const [seqById, domainsByAcc] = await Promise.all([
-    ncbiText(
-      `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=fasta&retmode=text`,
-    ).then(parseFasta),
-    ncbiText(
-      `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=gp&retmode=text`,
-    ).then(parseAllDomains),
-  ])
+  const seqById = await ncbiText(
+    `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=fasta&retmode=text`,
+  ).then(parseFasta)
 
-  const rows = withProtein
-    .map((g, i) => {
-      const protein = proteinByGene.get(g.geneId)!
-      const sequence = seqById.get(protein) ?? ''
-      return {
-        taxId: g.taxId,
-        label: labels[i]!,
-        scientificName: g.scientificName,
-        commonName: g.commonName,
-        geneId: g.geneId,
-        protein,
-        sequence,
-        length: sequence.length,
-        domains: domainsByAcc.get(protein) ?? [],
-      }
-    })
-    .filter(r => r.sequence)
+  return withProtein.flatMap(g => {
+    const protein = proteinByGene.get(g.geneId)!
+    const sequence = seqById.get(protein)
+    return sequence
+      ? [
+          {
+            taxId: g.taxId,
+            scientificName: g.scientificName,
+            commonName: g.commonName,
+            geneId: g.geneId,
+            protein,
+            sequence,
+          },
+        ]
+      : []
+  })
+}
+
+// PANTHER: one call maps the gene to a UniProt accession per target proteome and
+// a second returns the sequences, so there is no per-gene isoform pick to make —
+// a reference proteome has one protein per gene by construction.
+async function pantherProteins(
+  query: string,
+  refTaxonId: number,
+  wanted: Set<number>,
+  onProgress: (message: string) => void,
+): Promise<SourcedProtein[]> {
+  onProgress('Resolving orthologs at PANTHER…')
+  const rows = await fetchPantherOrthologs({
+    symbol: query,
+    taxId: refTaxonId,
+    taxa: [...wanted],
+  })
+  if (rows.length < 2) {
+    throw new Error(
+      `need at least two species with orthologs to compare (found ${rows.length})`,
+    )
+  }
+  return rows.map(r => ({
+    taxId: r.taxId,
+    scientificName: r.scientificName,
+    commonName: r.commonName,
+    protein: r.accession,
+    sequence: r.sequence,
+  }))
+}
+
+// Phase 1: resolve the ortholog panel and fetch its sequences + domains. Fast
+// enough to drive the domain cartoon; no EBI alignment.
+export async function assembleProteinPanel(
+  query: string,
+  refTaxonId: number,
+  {
+    taxa,
+    source = defaultOrthologSource(refTaxonId),
+    onProgress = () => undefined,
+  }: ProteinPanelOptions = {},
+): Promise<ProteinPanel> {
+  const wanted = new Set(taxa ?? COMMON_SPECIES.map(s => s.taxId))
+  wanted.add(refTaxonId)
+  const proteins = await (source === 'panther'
+    ? pantherProteins(query, refTaxonId, wanted, onProgress)
+    : ncbiProteins(query, refTaxonId, wanted, onProgress))
+
+  // Ordered by the common-species rank (reference and close relatives first) so
+  // the panel reads as a curated set rather than whatever order a source used.
+  const ordered = [...proteins].sort(
+    (a, b) =>
+      (COMMON_TAX_RANK.get(a.taxId) ?? Infinity) -
+      (COMMON_TAX_RANK.get(b.taxId) ?? Infinity),
+  )
+  // Labels are shared across FASTA / tree / gff so the three line up.
+  const labels = dedupeLabels(
+    ordered.map(p => p.commonName ?? p.scientificName),
+  )
+
+  onProgress('Fetching conserved domains…')
+  const domainsByAcc = await fetchDomains(ordered.map(p => p.protein))
+
+  const rows = ordered.map((p, i) => ({
+    ...p,
+    label: labels[i]!,
+    length: p.sequence.length,
+    domains: domainsByAcc.get(p.protein) ?? [],
+  }))
   if (rows.length < 2) {
     throw new Error('could not fetch protein sequences for the orthologs')
   }
 
-  return { query: { symbol: query, refTaxonId }, rows }
+  return { query: { symbol: query, refTaxonId, source }, rows }
+}
+
+// CDD domains for a batch of accessions, best-effort: they decorate the cartoon
+// and the alignment, and a panel without them still answers the main question.
+// efetch serves a Swiss-Prot accession as a GenPept record with CDD Regions just
+// as it serves a RefSeq one, and answers a TrEMBL accession with HTTP 400 — a
+// mixed batch returns what it can, so PANTHER rows get domains wherever the
+// accession is reviewed, and an all-TrEMBL batch costs the domains, not the run.
+async function fetchDomains(accessions: string[]) {
+  return ncbiText(
+    `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=gp&retmode=text`,
+  )
+    .then(parseAllDomains)
+    .catch(() => new Map<string, Domain[]>())
 }
 
 // Phase 2: align the panel's sequences at EBI Clustal Omega and emit the

@@ -7,19 +7,24 @@
 //                    Swiss-Prot accession
 //  - NCBI E-utils  : the `gene_table` flat file -> the canonical transcript's
 //                    genomic exon/CDS structure (parsed here)
-//  - UCSC GenArk   : the assembly, pulled in via the merge API by accession, so
-//                    the LinearGenomeView has a genome without a config change
+//  - a hosted config: the genome the session opens on, plus the name that config
+//                    gives the gene's sequence and the gene track to draw under
+//                    the exons — see genomeTarget.ts, which picks between the
+//                    UCSC and GenArk configs and reads the chromAlias
 //  - UniProt       : the Swiss-Prot accession when NCBI omits it (invertebrates,
 //                    plants, fungi), so the AlphaFold 3D view still resolves
 //
-// The alignment, when built, comes from proteinMsa.ts (NCBI orthologs + EBI
-// Clustal Omega) and rides inline in the session.
+// The alignment is either built live in proteinMsa.ts (NCBI or PANTHER orthologs
+// + EBI Clustal Omega) and carried inline, or named for the msaview plugin to
+// read from the hosted 100-way file (hundredWay.ts).
 
 import { deflate } from 'pako-esm2'
 
 import { JBROWSE_BASE } from '../config/jbrowse.ts'
-import { mergeConfig } from './jbrowseLinks.ts'
+import { resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
+
+import type { GenomeTarget } from './genomeTarget.ts'
 
 // This view needs a build that bundles the msaview + protein3d plugins and reads
 // params from the URL hash — true of `main` since webgl-poc merged. It is why
@@ -35,7 +40,10 @@ export interface CDS extends Exon {
   phase: number
 }
 export interface Transcript {
-  refName: string // e.g. NC_000077.7 — matches the GenArk assembly's seq names
+  // as the source names it: an NCBI accession (NC_000077.7) off the gene_table,
+  // or a UCSC name off the 100-way sidecar. buildSessionUrl renames it to
+  // whatever the target config calls that sequence.
+  refName: string
   strand: 1 | -1
   name: string // RefSeq mRNA accession
   geneName: string
@@ -47,6 +55,8 @@ export interface GeneStructure {
   geneId: string
   taxId: number
   assemblyAccession: string
+  // the genome this gene's session opens on, resolved from the accession
+  target: GenomeTarget
   transcript: Transcript
   uniprotId?: string
   // UniProt canonical sequence — what AlphaFold aligns to, and the isoform the
@@ -73,29 +83,62 @@ interface DatasetsGeneReport {
   }[]
 }
 
-function pickAnnotation(
+export interface PlacedAnnotation {
+  assemblyAccession: string
+  refName: string
+  strand: 1 | -1
+}
+
+// EVERY assembly NCBI places the gene on, in its order — not just the first.
+// NCBI annotates several assemblies per species and leads with the newest, which
+// is routinely one nothing here hosts yet: as of 2026-08-26 it places zebrafish
+// genes on GCF_052040795.1, which has no GenArk hub and no entry in the assembly
+// index, while GRCz11 beside it has both. Taking annotations[0] therefore
+// stranded a whole species. The caller walks these in order and keeps the first
+// it can open.
+export function placedAnnotations(
   gene: NonNullable<DatasetsGeneReport['reports']>[number]['gene'],
-) {
-  return gene?.annotations
-    ?.map(a => ({
-      a,
-      loc: a.genomic_locations?.find(l => l.genomic_range?.begin),
-    }))
-    .find(({ loc }) => loc)
+): PlacedAnnotation[] {
+  return (gene?.annotations ?? []).flatMap(a => {
+    const loc = a.genomic_locations?.find(l => l.genomic_range?.begin)
+    return a.assembly_accession && loc?.genomic_accession_version
+      ? [
+          {
+            assemblyAccession: a.assembly_accession,
+            refName: loc.genomic_accession_version,
+            strand:
+              loc.genomic_range?.orientation === 'minus'
+                ? (-1 as const)
+                : (1 as const),
+          },
+        ]
+      : []
+  })
 }
 
 interface ResolvedGene {
   symbol: string
   geneId: string
-  assemblyAccession: string
-  refName: string
-  strand: 1 | -1
+  placements: PlacedAnnotation[]
   uniprotId?: string
 }
 
-// Gene symbol + taxon -> GeneID, assembly, refName, strand, Swiss-Prot. The
-// coordinates are relative to the annotation NCBI reports, which is the same
-// coordinate space the GenArk 2bit uses.
+// The symbol endpoint answers with near matches as well as the exact one, and
+// not exact-first: `TTN` in human returns TTR (transthyretin) ahead of titin.
+// Taking reports[0] therefore opens a different gene than the one asked for,
+// silently and with a plausible-looking result. Match the symbol first.
+function pickReport(json: DatasetsGeneReport, symbol: string) {
+  const reports = json.reports ?? []
+  const wanted = symbol.trim().toLowerCase()
+  return (
+    reports.find(r => r.gene?.symbol?.toLowerCase() === wanted)?.gene ??
+    reports[0]?.gene
+  )
+}
+
+// Gene symbol + taxon -> GeneID, its placements, and Swiss-Prot. The coordinates
+// are relative to the annotation NCBI reports, which is the coordinate space the
+// matching assembly's 2bit uses.
 export async function resolveGene(
   symbol: string,
   taxId: number,
@@ -103,17 +146,15 @@ export async function resolveGene(
   const json = await ncbiJson<DatasetsGeneReport>(
     `${DATASETS}/gene/symbol/${encodeURIComponent(symbol)}/taxon/${taxId}`,
   )
-  const gene = json.reports?.[0]?.gene
-  const hit = pickAnnotation(gene)
-  if (!gene?.gene_id || !hit?.loc?.genomic_range?.begin) {
+  const gene = pickReport(json, symbol)
+  const placements = placedAnnotations(gene)
+  if (!gene?.gene_id || placements.length === 0) {
     throw new Error(`No placed locus for "${symbol}" in taxon ${taxId}`)
   }
   return {
     symbol: gene.symbol ?? symbol,
     geneId: gene.gene_id,
-    assemblyAccession: hit.a.assembly_accession ?? '',
-    refName: hit.loc.genomic_accession_version ?? '',
-    strand: hit.loc.genomic_range.orientation === 'minus' ? -1 : 1,
+    placements,
     uniprotId: gene.swiss_prot_accessions?.[0],
   }
 }
@@ -237,11 +278,38 @@ function pickCanonical(
 
 // --- assembling a GeneStructure ----------------------------------------------
 
+// The first of the gene's placements whose genome we can actually open, with the
+// coordinates NCBI reported against THAT assembly — a fallback that kept the
+// locus from the newest annotation would be a locus in the wrong coordinate
+// space.
+async function firstHostedPlacement(
+  symbol: string,
+  placements: PlacedAnnotation[],
+) {
+  for (const placement of placements) {
+    const target = await resolveGenomeTarget(placement.assemblyAccession).catch(
+      () => undefined,
+    )
+    if (target) {
+      return { placement, target }
+    }
+  }
+  throw new Error(
+    `No hosted genome for "${symbol}": NCBI places it on ${placements
+      .map(p => p.assemblyAccession)
+      .join(', ')}, none of which this site serves`,
+  )
+}
+
 export async function fetchGeneStructure(
   symbol: string,
   taxId: number,
 ): Promise<GeneStructure> {
   const gene = await resolveGene(symbol, taxId)
+  const { placement, target } = await firstHostedPlacement(
+    symbol,
+    gene.placements,
+  )
   const uniprotId =
     gene.uniprotId ?? (await fetchUniProtAccession(symbol, taxId))
   const proteinSequence = uniprotId
@@ -251,7 +319,7 @@ export async function fetchGeneStructure(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
   )
   const picked = pickCanonical(
-    parseGeneTableBlocks(text, gene.strand),
+    parseGeneTableBlocks(text, placement.strand),
     proteinSequence?.length,
   )
   if (!picked) {
@@ -261,12 +329,13 @@ export async function fetchGeneStructure(
     symbol: gene.symbol,
     geneId: gene.geneId,
     taxId,
-    assemblyAccession: gene.assemblyAccession,
+    assemblyAccession: placement.assemblyAccession,
+    target,
     uniprotId,
     proteinSequence,
     transcript: {
-      refName: gene.refName,
-      strand: gene.strand,
+      refName: placement.refName,
+      strand: placement.strand,
       name: picked.mrna,
       geneName: gene.symbol,
       cds: picked.cds,
@@ -296,31 +365,43 @@ function blockBounds(blocks: Exon[]) {
   }
 }
 
+export interface LocOptions {
+  // false shows the whole coding span (introns intact) as a single region
+  collapse?: boolean
+  padding?: number
+  // list the regions last-to-first, each reversed, so a minus-strand gene reads
+  // 5'->3' left to right
+  flip?: boolean
+}
+
 // Expand each CDS by padding, merge overlaps, then emit one locstring per merged
 // block. Giving the LGV these as space-separated regions squeezes the introns
 // out (there is no collapseIntrons option — this IS how it's done declaratively).
+// Flipping adds core's `[rev]` suffix to each region and reverses their order,
+// which is how the CollapseIntronsDialog makes a minus-strand gene read 5'->3'.
 export function collapsedLoc(
   transcript: Transcript,
-  collapse: boolean,
-  padding = DEFAULT_PADDING,
+  { collapse = true, padding = DEFAULT_PADDING, flip = false }: LocOptions = {},
 ) {
   const { refName, cds } = transcript
-  if (!collapse) {
-    const { start, end } = blockBounds(cds)
-    return `${refName}:${start + 1}-${end}`
-  }
   const merged: Exon[] = []
-  for (const c of [...cds].sort((a, b) => a.start - b.start)) {
-    const start = Math.max(0, c.start - padding)
-    const end = c.end + padding
-    const last = merged.at(-1)
-    if (last && start <= last.end) {
-      last.end = Math.max(last.end, end)
-    } else {
-      merged.push({ start, end })
+  if (collapse) {
+    for (const c of [...cds].sort((a, b) => a.start - b.start)) {
+      const start = Math.max(0, c.start - padding)
+      const end = c.end + padding
+      const last = merged.at(-1)
+      if (last && start <= last.end) {
+        last.end = Math.max(last.end, end)
+      } else {
+        merged.push({ start, end })
+      }
     }
+  } else {
+    merged.push(blockBounds(cds))
   }
-  return merged.map(e => `${refName}:${e.start + 1}-${e.end}`).join(' ')
+  const suffix = flip ? '[rev]' : ''
+  const locs = merged.map(e => `${refName}:${e.start + 1}-${e.end}${suffix}`)
+  return (flip ? locs.reverse() : locs).join(' ')
 }
 
 export interface GeneStats {
@@ -371,6 +452,8 @@ function toUrlSafeB64(str: string) {
   return b64.replace(/=+$/, '').replaceAll('+', '-').replaceAll('/', '_')
 }
 
+// An alignment carried in the session itself — small enough to ride in the URL,
+// and the only way to ship the per-row domain overlay, which no hosted file has.
 export interface InlineMsa {
   fasta: string
   newick: string
@@ -378,10 +461,27 @@ export interface InlineMsa {
   querySeqName: string
 }
 
+// An alignment the msaview plugin reads for itself at launch, named rather than
+// carried: one block of an indexed bgzip file, keyed by gene name.
+export interface IndexedMsa {
+  msaUri: string
+  treeUri: string
+  msaName: string
+  querySeqName: string
+}
+
 export interface SessionOptions {
+  // carries its own target: which config the session opens on, what that config
+  // calls the gene's sequence, and which gene track to draw under the exons.
+  // Swap `transcript`/`proteinSequence` on the way in to launch the same gene
+  // against a different coordinate source (see the 100-way path).
   structure: GeneStructure
   collapse?: boolean
+  flip?: boolean
   inlineMsa?: InlineMsa
+  // a hosted alignment the msaview plugin reads by name at launch, instead of
+  // the inline one
+  indexedMsa?: IndexedMsa
 }
 
 type Feature = ReturnType<typeof connectedFeature>
@@ -389,20 +489,23 @@ type Feature = ReturnType<typeof connectedFeature>
 function linearGenomeView(
   transcript: Transcript,
   assembly: string,
-  collapse: boolean,
+  loc: LocOptions,
+  tracks: string[],
 ) {
   return {
     id: `lgv-${transcript.geneName}`,
     type: 'LinearGenomeView',
     colorByCDS: true,
-    init: { assembly, loc: collapsedLoc(transcript, collapse), tracks: [] },
+    init: { assembly, loc: collapsedLoc(transcript, loc), tracks },
   }
 }
 
-function msaView(
+// Fields every MsaView carries regardless of where its alignment comes from.
+// uniprotId is what MsaView.autoConnectStructures matches against the AlphaFold
+// url's accession, which is how the alignment and the 3D view find each other.
+function msaViewBase(
   transcript: Transcript,
   feature: Feature,
-  msa: InlineMsa,
   uniprotId?: string,
 ) {
   return {
@@ -414,8 +517,40 @@ function msaView(
     colorSchemeName: 'percent_identity_dynamic',
     labelsAlignRight: true,
     treeAreaWidth: 200,
+  }
+}
+
+// The alignment we built here, carried in the session itself.
+function msaViewInline(
+  transcript: Transcript,
+  feature: Feature,
+  msa: InlineMsa,
+  uniprotId?: string,
+) {
+  return {
+    ...msaViewBase(transcript, feature, uniprotId),
     querySeqName: msa.querySeqName,
     data: { msa: msa.fasta, tree: msa.newick, gff: msa.gff },
+  }
+}
+
+// The hosted 100-way: the session names the file and the gene, and the msaview
+// plugin random-reads that block itself (the .gzi/.idx are found by suffix). The
+// alignment stays out of the URL, which is what keeps a 100-row session small.
+function msaViewIndexed(
+  transcript: Transcript,
+  feature: Feature,
+  msa: IndexedMsa,
+  uniprotId?: string,
+) {
+  return {
+    ...msaViewBase(transcript, feature, uniprotId),
+    treeFilehandle: { uri: msa.treeUri, locationType: 'UriLocation' },
+    init: {
+      msaIndexedLocation: { uri: msa.msaUri },
+      msaName: msa.msaName,
+      querySeqName: msa.querySeqName,
+    },
   }
 }
 
@@ -441,31 +576,76 @@ function proteinView(
   }
 }
 
+// The workspace tree a session restores: a `row` branch of panels, each holding
+// tabs of view ids, with sizes as weights (app-core's WorkspaceLayoutMixin).
+// Genome + alignment stacked in the left cell, the 3D structure in the right.
+// `useWorkspaces` turns the tiled layout on for this session without touching
+// the reader's own preference.
+//
+// This is NOT the older session-level `init: {direction, children}` shape, which
+// jbrowse-components dropped when the workspace became an MST tree — a session
+// still emitting that one silently stacks its views in one column instead of
+// tiling them, which is what this page did until the layout was ported over from
+// react-msaview's gene explorer, where the regression was first caught.
+// Ids only need to be unique within the tree; the ones jbrowse mints later are
+// random, so fixed names cannot collide with them.
 function sideBySideLayout(leftIds: string[], rightId: string) {
   return {
-    direction: 'horizontal' as const,
-    children: [
-      { viewIds: leftIds, size: 58 },
-      { viewIds: [rightId], size: 42 },
-    ],
+    useWorkspaces: true,
+    activePanelId: 'panel-left',
+    layout: {
+      id: 'branch-root',
+      direction: 'row' as const,
+      size: 1,
+      children: [
+        {
+          id: 'panel-left',
+          size: 58,
+          tabs: [{ id: 'tab-left', viewIds: leftIds }],
+          activeTabId: 'tab-left',
+        },
+        {
+          id: 'panel-right',
+          size: 42,
+          tabs: [{ id: 'tab-right', viewIds: [rightId] }],
+          activeTabId: 'tab-right',
+        },
+      ],
+    },
   }
 }
 
-// A connected genome + AlphaFold (+ optional alignment) session. The assembly
-// comes from the merge API by accession; the session rides in the URL hash
-// (never sent to the server, so no request-line 414) deflated via toUrlSafeB64.
+// A connected genome + AlphaFold (+ optional alignment) session. The session
+// rides in the URL hash (never sent to the server, so no request-line 414)
+// deflated via toUrlSafeB64.
 export function buildSessionUrl({
   structure,
   collapse = true,
+  flip = false,
   inlineMsa,
+  indexedMsa,
 }: SessionOptions) {
-  const { transcript, assemblyAccession, uniprotId, proteinSequence } =
-    structure
+  const { target, uniprotId, proteinSequence } = structure
+  // The config's own name for the sequence, not NCBI's. Displayed-region
+  // matching is exact and does not alias-resolve, so the connectedFeature and
+  // the LGV's regions have to agree on the name or nothing highlights.
+  const transcript = {
+    ...structure.transcript,
+    refName: target.canonicalRefName(structure.transcript.refName),
+  }
   const feature = connectedFeature(transcript)
-  const lgv = linearGenomeView(transcript, assemblyAccession, collapse)
-  const msa = inlineMsa
-    ? msaView(transcript, feature, inlineMsa, uniprotId)
-    : undefined
+  const lgv = linearGenomeView(
+    transcript,
+    target.assemblyName,
+    { collapse, flip },
+    target.geneTrackId ? [target.geneTrackId] : [],
+  )
+  // One alignment at most: the hosted 100-way, else the one built here.
+  const msa = indexedMsa
+    ? msaViewIndexed(transcript, feature, indexedMsa, uniprotId)
+    : inlineMsa
+      ? msaViewInline(transcript, feature, inlineMsa, uniprotId)
+      : undefined
   const protein =
     uniprotId && proteinSequence
       ? proteinView(transcript, feature, uniprotId, proteinSequence)
@@ -475,15 +655,9 @@ export function buildSessionUrl({
     name: `Gene explorer: ${transcript.geneName}`,
     views: [lgv, ...(msa ? [msa] : []), ...(protein ? [protein] : [])],
     ...(protein
-      ? {
-          init: sideBySideLayout(
-            [lgv.id, ...(msa ? [msa.id] : [])],
-            protein.id,
-          ),
-        }
+      ? sideBySideLayout([lgv.id, ...(msa ? [msa.id] : [])], protein.id)
       : {}),
   }
-  const config = mergeConfig([assemblyAccession])
-  const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(config)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
+  const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
   return { session, url }
 }
