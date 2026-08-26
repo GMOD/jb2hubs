@@ -71,3 +71,33 @@ describe('mergePlugins', () => {
     )
   })
 })
+
+// A config regenerated since refs landed and one that predates them both name
+// MsaView, and both look "canonical" by the old /latest/dist/ test — so the one
+// seen first kept the slot, which for a tree where most configs are old means
+// the ref-bearing entry usually lost.
+describe('mergePlugins with store refs', () => {
+  const REF = {
+    name: 'MsaView',
+    storePlugin: 'jbrowse-plugin-msaview',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
+  }
+  const LATEST_ONLY = {
+    name: 'MsaView',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
+  }
+  const config = (...plugins: unknown[]): JBrowseConfig => ({
+    assemblies: [],
+    tracks: [],
+    plugins: plugins as JBrowseConfig['plugins'],
+  })
+
+  it('prefers a ref over a latest-only entry, whichever is seen first', () => {
+    assert.deepEqual(mergePlugins([config(LATEST_ONLY), config(REF)]), [REF])
+    assert.deepEqual(mergePlugins([config(REF), config(LATEST_ONLY)]), [REF])
+  })
+
+  it('still emits one entry per name', () => {
+    assert.equal(mergePlugins([config(REF, LATEST_ONLY)]).length, 1)
+  })
+})

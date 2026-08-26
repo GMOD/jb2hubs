@@ -40,13 +40,30 @@ const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
   ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
   : []
 
-// Every url is the plugin store's version-agnostic `latest/` path, which the
-// store's upload sets no-cache so a publish reaches these configs. The bare
-// `<pkg>/dist/<umd>` path these used to name is the store's v1 layout, no longer
-// republished: it was serving protein3d 0.4.1 against a published 0.8.0, which is
-// how the protein view came to sit on a perpetual "Loading pairwise alignment"
-// and to reject the short-form (uniprotId + transcriptId) declarative launch.
-// Never name the bare path here.
+// Each entry names the plugin store PACKAGE, and carries the store's
+// version-agnostic `latest/` url as a fallback.
+//
+// The package is the durable half. A url in a config is an answer computed the
+// day the config was generated, and these configs are never revisited — so the
+// only url that keeps working is `latest/`, which carries no integrity hash and
+// serves the same bytes to every host. `storePlugin` defers both decisions to
+// load time: the host reads plugin-store/v2/plugins.json and gets the pinned,
+// integrity-carrying build for the JBrowse version it actually is. See
+// jbrowse-plugin-list ADR 0008.
+//
+// The url stays because a host that predates ref support ignores the unknown
+// key and loads it — `plugins` is `types.array(types.frozen())`, so an extra
+// field passes validation on every released JBrowse. Drop the urls only when no
+// such host is left in the wild. It must be the `latest/` path and never the
+// bare `<pkg>/dist/<umd>` v1 layout, which is no longer republished: that is how
+// protein3d served 0.4.1 against a published 0.8.0, leaving the protein view on
+// a perpetual "Loading pairwise alignment".
+//
+// MafViewer names no package on purpose. Core vendors it now, so it was removed
+// from the store's plugins.json and a ref to it cannot resolve; jbrowse-web
+// drops the entry before loading anyway (`vendoredPluginNames`), and the url is
+// only there for hosts old enough not to bundle it. BLAT is absent for a
+// different reason — deliberately not in the store, see above.
 const defaultPlugins: JBrowsePlugin[] = [
   {
     name: 'MafViewer',
@@ -54,14 +71,17 @@ const defaultPlugins: JBrowsePlugin[] = [
   },
   {
     name: 'Hubs',
+    storePlugin: '@cmdcolin/jbrowse-plugin-hubs',
     url: 'https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js',
   },
   {
     name: 'Protein3d',
+    storePlugin: 'jbrowse-plugin-protein3d',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js',
   },
   {
     name: 'MsaView',
+    storePlugin: 'jbrowse-plugin-msaview',
     url: 'https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js',
   },
   ...blatPlugin,
@@ -141,14 +161,19 @@ export function enhanceConfig(
   // Upsert by name rather than skip-if-present: enhanceConfigs.sh re-runs over
   // already-enhanced built configs, so a name match that kept its old entry meant
   // a changed url never reached any config built before the change (the stale
-  // protein3d bundle outlived four plugin releases that way). Rewriting the url
+  // protein3d bundle outlived four plugin releases that way). Rewriting the entry
   // is what makes a re-run publish it.
+  //
+  // The whole entry, not just `url`. Assigning one field is what the url-only
+  // version did, and it would have left every already-enhanced config without
+  // the `storePlugin` this run adds — which is the same class of bug as the one
+  // above, on a field that did not exist yet when it was fixed.
   for (const plugin of plugins) {
-    const existing = config.plugins.find(p => p.name === plugin.name)
-    if (existing) {
-      existing.url = plugin.url
-    } else {
+    const index = config.plugins.findIndex(p => p.name === plugin.name)
+    if (index === -1) {
       config.plugins.push(plugin)
+    } else {
+      config.plugins[index] = plugin
     }
   }
 

@@ -259,4 +259,31 @@ describe('enhanceConfig plugins', () => {
       { name: 'Protein3d', url: 'p3d' },
     ])
   })
+
+  // enhanceConfigs.sh re-runs over already-enhanced configs, so almost every
+  // entry this loop sees is one it wrote before storePlugin existed. Assigning
+  // `existing.url` alone — which is what it used to do — would have left the
+  // whole installed base without a ref no matter how many times it re-ran.
+  it('adds a field the existing entry predates', () => {
+    const plugins = runOnPlugins(
+      { tracks: [], plugins: [{ name: 'MsaView', url: 'old' }] },
+      [{ name: 'MsaView', url: 'new', storePlugin: 'jbrowse-plugin-msaview' }],
+    )
+    assert.deepEqual(plugins, [
+      { name: 'MsaView', url: 'new', storePlugin: 'jbrowse-plugin-msaview' },
+    ])
+  })
+
+  // and the other direction: a field the new entry drops must not survive on
+  // the old one, or a config keeps a ref after the pipeline stops emitting it
+  it('drops a field the replacement does not name', () => {
+    const plugins = runOnPlugins(
+      {
+        tracks: [],
+        plugins: [{ name: 'MafViewer', url: 'old', storePlugin: 'gone' }],
+      },
+      [{ name: 'MafViewer', url: 'new' }],
+    )
+    assert.deepEqual(plugins, [{ name: 'MafViewer', url: 'new' }])
+  })
 })

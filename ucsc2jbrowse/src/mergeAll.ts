@@ -52,18 +52,28 @@ function addRelativeUris(node: unknown, baseUrl: string) {
  * error-pages a whole session rather than costing a single track, which is why
  * this dedupes rather than trusting every config in the tree to be current.
  *
- * The canonical `latest/` store path wins when a name appears more than once:
- * it is what hubtools' enhanceConfig writes today, and the store uploads it
- * no-cache so it keeps receiving publishes. Anything else is a frozen snapshot.
+ * The most current entry wins when a name appears more than once, ranked rather
+ * than tested yes/no — because there are now three tiers, not two, and a plain
+ * boolean let whichever of the top two was seen first keep the slot:
+ *
+ *   2. names `storePlugin`, so the host resolves the build for its own JBrowse
+ *      version against the store manifest (jbrowse-plugin-list ADR 0008)
+ *   1. names the `latest/` store path, which the store uploads no-cache so it
+ *      keeps receiving publishes
+ *   0. anything else — a frozen snapshot: the v1 store layout, or unpkg
  */
 export function mergePlugins(configs: JBrowseConfig[]): JBrowsePlugin[] {
-  const isCanonical = (plugin: JBrowsePlugin) =>
-    plugin.url?.includes('/latest/dist/') ?? false
+  const rank = (plugin: JBrowsePlugin) =>
+    plugin.storePlugin !== undefined
+      ? 2
+      : (plugin.url?.includes('/latest/dist/') ?? false)
+        ? 1
+        : 0
   const merged = new Map<string, JBrowsePlugin>()
   for (const config of configs) {
     for (const plugin of config.plugins ?? []) {
       const existing = merged.get(plugin.name)
-      if (!existing || (!isCanonical(existing) && isCanonical(plugin))) {
+      if (!existing || rank(plugin) > rank(existing)) {
         merged.set(plugin.name, plugin)
       }
     }

@@ -65,6 +65,29 @@ const isLegacy = url => LEGACY_PATH.test(url) && !url.includes('/latest/dist/')
 // makes a publish reach configs we already shipped.
 const isOffStore = url => !url.startsWith('https://jbrowse.org/plugins/')
 
+// The published store listing. A config entry naming `storePlugin` is asking
+// the host to resolve the build against this at load time (jbrowse-plugin-list
+// ADR 0008), so the package has to be IN it — a ref to something the store does
+// not list resolves to nothing, and only the fallback url keeps that config
+// working. Checking the pair here is what stops a rename or a retirement from
+// quietly demoting every config that refs it back to a frozen url.
+const PLUGIN_STORE_URL = 'https://jbrowse.org/plugin-store/v2/plugins.json'
+
+// `${name}\0${storePlugin}\0${url}` -> Set of sources, for entries that name a
+// package. Kept beside `found` rather than folded into it: `found` is keyed for
+// the fetch-every-distinct-url pass, and a ref adds a dimension that pass does
+// not care about.
+const refs = new Map()
+const addRef = (plugin, source) => {
+  if (plugin.storePlugin === undefined) {
+    return
+  }
+  const key = `${plugin.name}\0${plugin.storePlugin}\0${plugin.url ?? ''}`
+  const sources = refs.get(key) ?? new Set()
+  sources.add(source)
+  refs.set(key, sources)
+}
+
 // A file in `configs/` that is not an assembly config at all. `configs/` is an
 // append-only mirror of the built dir, so anything that ever got swept into it
 // stays forever, still feeding mergeAll and both gates.
@@ -122,6 +145,7 @@ function collectFromDisk() {
         }
         for (const p of pluginsOf(config)) {
           add(p.name, p.url, dir)
+          addRef(p, dir)
         }
       }
     }
@@ -137,6 +161,7 @@ function collectFromDisk() {
   for (let i = 0; i < genarkConfigs.length; i += stride) {
     for (const p of pluginsOf(readJson(genarkConfigs[i]))) {
       add(p.name, p.url, 'genark (sampled)')
+      addRef(p, 'genark (sampled)')
     }
   }
 
@@ -154,6 +179,7 @@ async function collectFromRemote(found) {
         const sources = found.get(key) ?? new Set()
         sources.add(url)
         found.set(key, sources)
+        addRef(p, url)
       }
     } else {
       failures.push({ url, status: res.status })
@@ -288,11 +314,60 @@ if (orphans.length > 0) {
   )
 }
 
+// Every `storePlugin` a config names, against what the store actually
+// publishes. Three ways this goes wrong, and each demotes the ref to its
+// fallback url without anything else noticing:
+//   - the package is not listed (renamed, or retired per ADR 0007)
+//   - the store's UMD name disagrees with the config's, so a host that resolves
+//     the ref and one that loads the url install it under different names
+//   - the fallback url is not the store's `latestUrl`, i.e. hand-composed and
+//     therefore able to be the stale v1 shape again
+const refProblems = []
+if (refs.size > 0) {
+  const res = await fetch(PLUGIN_STORE_URL)
+  if (!res.ok) {
+    refProblems.push(`plugin store unreachable: HTTP ${res.status}`)
+  } else {
+    const { plugins: storePlugins } = await res.json()
+    const byPackage = new Map(storePlugins.map(p => [p.packageName, p]))
+    console.log(`\nstore refs (${refs.size} distinct):`)
+    for (const key of [...refs.keys()].sort()) {
+      const [name, pkg, url] = key.split('\0')
+      const entry = byPackage.get(pkg)
+      const problems = []
+      if (!entry) {
+        problems.push(`"${pkg}" is not in the plugin store`)
+      } else {
+        if (entry.name !== name) {
+          problems.push(`store calls it "${entry.name}", config says "${name}"`)
+        }
+        if (url && entry.latestUrl && url !== entry.latestUrl) {
+          problems.push(`fallback url is not the store's latestUrl`)
+        }
+      }
+      console.log(
+        `  ${name.padEnd(12)} ${(problems.length > 0 ? 'FAIL' : 'ok').padEnd(6)} ${pkg}`,
+      )
+      for (const problem of problems) {
+        console.log(`      ${problem}`)
+        console.log(`      named by: ${[...refs.get(key)].join(', ')}`)
+        refProblems.push(`${name}: ${problem}`)
+      }
+    }
+  }
+}
+
 const broken = results.filter(r => r.problem)
-if (broken.length > 0 || configFailures.length > 0 || orphans.length > 0) {
+if (
+  broken.length > 0 ||
+  configFailures.length > 0 ||
+  orphans.length > 0 ||
+  refProblems.length > 0
+) {
   console.error(
-    `\n${broken.length} plugin url(s) and ${configFailures.length} config url(s) are broken. ` +
-      `A bad plugin url error-pages every config that names it.`,
+    `\n${broken.length} plugin url(s), ${configFailures.length} config url(s) and ` +
+      `${refProblems.length} store ref(s) are broken. A bad plugin url error-pages ` +
+      `every config that names it; a bad ref silently demotes one to its fallback.`,
   )
   process.exit(1)
 }
