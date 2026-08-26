@@ -61,8 +61,8 @@ process_assembly() {
   local assembly_dir=$1
   local config_path="$assembly_dir/config.json"
 
-  # The no-arg glob also picks up the loose json files at the top of the built
-  # dir (all.json, renames.json), which are not assemblies and not a warning.
+  # Only reachable via explicit arguments now: the no-arg path below hands over
+  # names it has already confirmed have a config.
   if [ -d "$assembly_dir" ]; then
     if [ ! -f "$config_path" ]; then
       echo "Warning: config.json not found for $(basename "$assembly_dir"), skipping..."
@@ -76,7 +76,27 @@ export -f process_assembly
 if [ $# -gt 0 ]; then
   run_for_assemblies process_assembly "$@"
 else
-  run_for_assemblies process_assembly "$UCSC_BUILT_DIR"/*
+  # The same rule make.sh's copy step and src/finalizeConfigs.ts already use:
+  # names the current UCSC genome list recognizes, plus hgFixed, which is
+  # rsynced deliberately and never appears in it. UCSC_BUILT_DIR holds more than
+  # assemblies -- a bare `$UCSC_BUILT_DIR/*` hands over the top-level `trix`
+  # directory, which is where "config.json not found for trix" came from, and it
+  # is the same unfiltered walk that once processed a stray `renames` directory
+  # into a published config. Three walks over this tree, one rule.
+  if [ ! -f "$UCSC_BUILT_DIR/list.json" ]; then
+    echo "ERROR: $UCSC_BUILT_DIR/list.json is missing; run make.sh first" >&2
+    exit 1
+  fi
+  staged_dirs=()
+  while IFS= read -r name; do
+    if [ -f "$UCSC_BUILT_DIR/$name/config.json" ]; then
+      staged_dirs+=("$UCSC_BUILT_DIR/$name")
+    fi
+  done < <(
+    jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json"
+    echo hgFixed
+  )
+  run_for_assemblies process_assembly "${staged_dirs[@]}"
 fi
 
 # all.json is merged after the per-assembly configs, and rewrites their relative
