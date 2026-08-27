@@ -56,13 +56,31 @@ export function panelTracks(trackId: string) {
   return trackId ? { tracks: [trackId] } : {}
 }
 
-// LaunchView init options the LinearSyntenyView reads on first load; builds that
-// predate any of them just ignore the extra field.
+// LaunchView init options for the LinearSyntenyView.
+//
+// None of these reach the view on the production host, and that is not a bug we
+// can fix from here. Measured 2026-08-27 by booting a launch on both hosts and
+// reading the view model back: on `latest` (v4.3.0) `LaunchLinearSyntenyView`
+// forwards `views` and `tracks` and nothing else, so `drawCurves` set to true
+// comes back false; on `main` the launcher forwards every declared view property
+// verbatim and both `drawCurves` and `cigarMode` land. Unknown keys are ignored
+// rather than rejected on either, so passing them costs nothing and they start
+// working the day v5 publishes — which is why this is not gated behind
+// `features.staging` the way a config-level feature would be.
 export interface SyntenyViewOptions {
   colorBy?: string
   drawCurves?: boolean
   autoDiagonalize?: boolean
+  // 'full' colors indel wedges, 'matches' leaves them see-through, 'off' draws
+  // blocks only.
+  cigarMode?: 'full' | 'matches' | 'off'
 }
+
+// Applied to every synteny launch unless a caller says otherwise. The indel
+// wedges are noise at the scales these launches open at: an ortholog window is
+// ~200kb across six genome panels, where what a reader is checking is whether
+// the block is there and how it is oriented, not where a 40bp gap falls.
+const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = { cigarMode: 'off' }
 
 // A launch URL for a LinearSyntenyView over a stack of genome panels. `tracks`
 // is either a flat list (JBrowse binds each track to its level by matching
@@ -74,6 +92,12 @@ export function syntenyViewUrl(
   options: SyntenyViewOptions = {},
 ) {
   return specUrl(mergeConfig(views.map(v => v.assembly)), [
-    { type: 'LinearSyntenyView', views, tracks, ...options },
+    {
+      type: 'LinearSyntenyView',
+      views,
+      tracks,
+      ...SYNTENY_VIEW_DEFAULTS,
+      ...options,
+    },
   ])
 }

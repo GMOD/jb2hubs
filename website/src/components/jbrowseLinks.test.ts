@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { mergeConfig, specUrl } from './jbrowseLinks.ts'
+import { mergeConfig, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { orthoSyntenyUrl } from './orthologSearchUtils.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
@@ -103,4 +103,25 @@ test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
     { assembly: 'canFam3', loc: 'NC_1:90-210', tracks: ['canFam3-ncbiRefSeq'] },
     { assembly: 'hg38', loc: 'NC_REF:1-19', tracks: ['hg38-ncbiRefSeq'] },
   ])
+})
+
+// The indel wedges are noise at ortholog-window scale. Ignored outright by the
+// released host's launcher (measured 2026-08-27), which is why it is passed
+// unconditionally rather than gated — it starts working when v5 publishes.
+test('every synteny launch turns CIGAR indels off by default', () => {
+  const spec = sessionOf(
+    syntenyViewUrl([{ assembly: 'hg38' }, { assembly: 'mm39' }], ['t']),
+  ).views[0]
+  assert.equal(spec.cigarMode, 'off')
+})
+
+test('a caller can override the default', () => {
+  const spec = sessionOf(
+    syntenyViewUrl([{ assembly: 'hg38' }, { assembly: 'mm39' }], ['t'], {
+      cigarMode: 'full',
+      drawCurves: true,
+    }),
+  ).views[0]
+  assert.equal(spec.cigarMode, 'full')
+  assert.equal(spec.drawCurves, true)
 })
