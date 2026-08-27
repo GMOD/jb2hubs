@@ -3,7 +3,8 @@
 //   Phase 1 — assembleProteinPanel (a few seconds):
 //     1. resolve the query gene -> its orthologs, one per species, from NCBI or
 //        from PANTHER where NCBI's vertebrate/insect sets cannot reach (see
-//        OrthologSource below)
+//        OrthologSource below) — every species the source has, capped at
+//        MAX_PANEL_ROWS
 //     2. pick a representative protein per gene (MANE Select, else longest;
 //        PANTHER's reference proteomes already carry one per gene)
 //     3. fetch protein sequences + CDD conserved domains (efetch GenPept Region
@@ -11,7 +12,8 @@
 //     -> rows carrying sequence, length and domains: enough to draw the
 //        domain-architecture cartoon without aligning anything.
 //   Phase 2 — alignProteinPanel (EBI Clustal Omega, up to minutes):
-//     4. align the panel's sequences -> column-locked FASTA + guide tree
+//     4. align the panel's first MAX_ALIGN_ROWS rows -> column-locked FASTA +
+//        guide tree
 //     5. emit { fasta, newick, gff } — gff domains are per-row (seq_id = label)
 //        in ungapped protein coordinates, which react-msaview projects onto
 //        columns.
@@ -27,9 +29,9 @@ import {
   ncbiJson,
   ncbiText,
 } from './ncbiFetch.ts'
-import { COMMON_SPECIES, COMMON_TAX_RANK } from './orthologSearchUtils.ts'
+import { COMMON_TAX_RANK } from './orthologSearchUtils.ts'
 import { resolveGeneId } from './orthologSet.ts'
-import { fetchPantherOrthologs } from './pantherOrthologs.ts'
+import { fetchGenomes, fetchPantherOrthologs } from './pantherOrthologs.ts'
 
 export interface ProteinMsaRow {
   taxId: number
@@ -49,9 +51,16 @@ export interface ProteinPanelRow extends ProteinMsaRow {
   domains: Domain[] // CDD conserved domains, ungapped protein coords
 }
 
-// Phase 1 output: the curated ortholog set with sequences + domains.
+// Phase 1 output: the ortholog set with sequences + domains. `total` is how many
+// species the source had before the row cap, so the page can say what it left
+// out; it is absent on a panel built before the field existed.
 export interface ProteinPanel {
-  query: { symbol: string; refTaxonId: number; source: OrthologSource }
+  query: {
+    symbol: string
+    refTaxonId: number
+    source: OrthologSource
+    total?: number
+  }
   rows: ProteinPanelRow[]
 }
 
@@ -84,15 +93,61 @@ export interface ProteinAlignment {
   gff: string
 }
 
+// How many species a panel carries when the caller names no set. Breadth is what
+// the domain cartoon is for and it costs nothing to ask for — the request count
+// is the same either way, and NCBI's ortholog report already comes back
+// model-organism-first and broadening outward, so the first 60 need no
+// phylogenetic sampling. Measured 2026-08-27 across 18 genes on 9 reference
+// species: filtering to the 13 COMMON_SPECIES resolved 7-9 rows every single
+// time (no vertebrate gene has a fly, worm, yeast AND plant ortholog in NCBI's
+// set), while the same call unfiltered resolved 60 — MYC in 2.3s against the
+// curated set's 3.2s.
+export const MAX_PANEL_ROWS = 60
+
+// How many of those rows the EBI alignment gets, which is deliberately fewer.
+// The cartoon improves with breadth; the residue alignment does not, and Clustal
+// Omega's cost climbs with row count and protein length together. Measured
+// 2026-08-27 on the eight example panels at 60 rows: SOD1 and TP53 finish in
+// 10s, EGFR and COL1A1 and PAX6 in ~30s, NOTCH1 in 81s, DMD in 146s — and BRCA2
+// takes 209s and 211s on two runs, past clustalOmega's 180s deadline both times,
+// so the shipped BRCA2 chip's own alignment button was failing. The same panels
+// cut to 24 rows: BRCA2 63s, DMD 90s, NOTCH1 45s. Rows are ranked
+// model-organism-first before the cut, so 24 keeps every model organism the
+// panel found plus the next dozen.
+export const MAX_ALIGN_ROWS = 24
+
 export interface ProteinPanelOptions {
-  taxa?: number[] // species to include; defaults to the common-species set
+  taxa?: number[] // species to include; defaults to every species the source has
+  maxRows?: number // defaults to MAX_PANEL_ROWS
   source?: OrthologSource // defaults per reference species
   onProgress?: (message: string) => void
 }
 
 export interface ProteinAlignOptions {
   email?: string
+  maxRows?: number // defaults to MAX_ALIGN_ROWS
   onProgress?: (message: string) => void // staged status for the slow EBI step
+}
+
+// The first `max` of the source's own order, with the reference species kept
+// whatever its position — a panel that dropped the gene being compared against
+// is not a comparison. Both sources put it near the front (measured 2026-08-27,
+// index 0-10 of several hundred for every reference species the page offers), so
+// this is a guard rather than a reordering.
+export function capRows<T extends { taxId: number }>(
+  rows: T[],
+  refTaxonId: number,
+  max: number,
+): T[] {
+  if (rows.length <= max) {
+    return rows
+  }
+  const kept = rows.slice(0, max)
+  if (kept.some(r => r.taxId === refTaxonId)) {
+    return kept
+  }
+  const ref = rows.find(r => r.taxId === refTaxonId)
+  return ref ? [ref, ...kept.slice(0, max - 1)] : kept
 }
 
 interface OrthologGene {
@@ -397,27 +452,40 @@ interface SourcedProtein {
   sequence: string
 }
 
+// …plus how many species the source knew of before the cap, which the page shows
+// so a capped panel says what it left out rather than reading as the whole set.
+interface Sourced {
+  proteins: SourcedProtein[]
+  total: number
+}
+
 // NCBI: orthologs by GeneID, a representative protein per gene, then one efetch
-// for the sequences.
+// for the sequences. The row cap is applied here rather than after, because
+// every later call carries one id per gene: TP53's full set of 658 would be
+// seven pages of product_report and a GenPept efetch of 658 flatfiles, which on
+// a titin-sized protein is hundreds of megabytes to reach 60 drawn rows.
 async function ncbiProteins(
   query: string,
   refTaxonId: number,
-  wanted: Set<number>,
+  wanted: Set<number> | undefined,
+  maxRows: number,
   onProgress: (message: string) => void,
-): Promise<SourcedProtein[]> {
+): Promise<Sourced> {
   onProgress('Resolving orthologs across species…')
   const queryGeneId = await resolveGeneId(query, refTaxonId)
   if (!queryGeneId) {
     throw new Error(`no gene found for "${query}"`)
   }
-  // One ortholog per species, restricted to the wanted set.
+  // One ortholog per species, in the report's own order.
+  const orthologs = await fetchOrthologGenes(queryGeneId)
+  const total = new Set(orthologs.map(g => g.taxId)).size
   const byTaxon = new Map<number, OrthologGene>()
-  for (const g of await fetchOrthologGenes(queryGeneId)) {
-    if (wanted.has(g.taxId) && !byTaxon.has(g.taxId)) {
+  for (const g of orthologs) {
+    if ((!wanted || wanted.has(g.taxId)) && !byTaxon.has(g.taxId)) {
       byTaxon.set(g.taxId, g)
     }
   }
-  const genes = [...byTaxon.values()]
+  const genes = capRows([...byTaxon.values()], refTaxonId, maxRows)
   if (genes.length < 2) {
     throw new Error(
       `need at least two species with orthologs to compare (found ${genes.length})`,
@@ -441,7 +509,7 @@ async function ncbiProteins(
     `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=fasta&retmode=text`,
   ).then(parseFasta)
 
-  return withProtein.flatMap(g => {
+  const proteins = withProtein.flatMap(g => {
     const protein = proteinByGene.get(g.geneId)!
     const sequence = seqById.get(protein)
     return sequence
@@ -457,35 +525,50 @@ async function ncbiProteins(
         ]
       : []
   })
+  return { proteins, total }
 }
 
 // PANTHER: one call maps the gene to a UniProt accession per target proteome and
 // a second returns the sequences, so there is no per-gene isoform pick to make —
 // a reference proteome has one protein per gene by construction.
+// Naming no set means every reference proteome PANTHER has, which is the broad
+// answer here — 144 genomes spanning the kingdoms, against the 13 the page's
+// species menu offers. The cap comes after the call rather than before it: the
+// cost is one matchortho and one UniProt read whatever the target list, so
+// asking for all of them and keeping the first 60 is cheaper than choosing
+// first. The target list is ranked model-organism-first, since PANTHER answers
+// in that order and the cap takes the head of it.
 async function pantherProteins(
   query: string,
   refTaxonId: number,
-  wanted: Set<number>,
+  wanted: Set<number> | undefined,
+  maxRows: number,
   onProgress: (message: string) => void,
-): Promise<SourcedProtein[]> {
+): Promise<Sourced> {
   onProgress('Resolving orthologs at PANTHER…')
+  const taxa = wanted
+    ? [...wanted]
+    : (await fetchGenomes()).map(g => g.taxId).sort(byCommonRank)
   const rows = await fetchPantherOrthologs({
     symbol: query,
     taxId: refTaxonId,
-    taxa: [...wanted],
+    taxa,
   })
   if (rows.length < 2) {
     throw new Error(
       `need at least two species with orthologs to compare (found ${rows.length})`,
     )
   }
-  return rows.map(r => ({
-    taxId: r.taxId,
-    scientificName: r.scientificName,
-    commonName: r.commonName,
-    protein: r.accession,
-    sequence: r.sequence,
-  }))
+  return {
+    total: rows.length,
+    proteins: capRows(rows, refTaxonId, maxRows).map(r => ({
+      taxId: r.taxId,
+      scientificName: r.scientificName,
+      commonName: r.commonName,
+      protein: r.accession,
+      sequence: r.sequence,
+    })),
+  }
 }
 
 // Phase 1: resolve the ortholog panel and fetch its sequences + domains. Fast
@@ -495,23 +578,23 @@ export async function assembleProteinPanel(
   refTaxonId: number,
   {
     taxa,
+    maxRows = MAX_PANEL_ROWS,
     source = defaultOrthologSource(refTaxonId),
     onProgress = () => undefined,
   }: ProteinPanelOptions = {},
 ): Promise<ProteinPanel> {
-  const wanted = new Set(taxa ?? COMMON_SPECIES.map(s => s.taxId))
-  wanted.add(refTaxonId)
-  const proteins = await (source === 'panther'
-    ? pantherProteins(query, refTaxonId, wanted, onProgress)
-    : ncbiProteins(query, refTaxonId, wanted, onProgress))
+  // No `taxa` asks the source for everything it has; naming one still scopes the
+  // panel to it, and the reference species is in either way.
+  const wanted = taxa ? new Set([...taxa, refTaxonId]) : undefined
+  const { proteins, total } = await (source === 'panther'
+    ? pantherProteins(query, refTaxonId, wanted, maxRows, onProgress)
+    : ncbiProteins(query, refTaxonId, wanted, maxRows, onProgress))
 
   // Ordered by the common-species rank (reference and close relatives first) so
   // the panel reads as a curated set rather than whatever order a source used.
-  const ordered = [...proteins].sort(
-    (a, b) =>
-      (COMMON_TAX_RANK.get(a.taxId) ?? Infinity) -
-      (COMMON_TAX_RANK.get(b.taxId) ?? Infinity),
-  )
+  // It is also what makes the alignment's own cap meaningful, since that takes
+  // the head of this list.
+  const ordered = [...proteins].sort((a, b) => byCommonRank(a.taxId, b.taxId))
   // Labels are shared across FASTA / tree / gff so the three line up.
   const labels = dedupeLabels(
     ordered.map(p => p.commonName ?? p.scientificName),
@@ -530,7 +613,15 @@ export async function assembleProteinPanel(
     throw new Error('could not fetch protein sequences for the orthologs')
   }
 
-  return { query: { symbol: query, refTaxonId, source }, rows }
+  return { query: { symbol: query, refTaxonId, source, total }, rows }
+}
+
+// Model organisms first, then whatever order the source used. Species outside
+// COMMON_SPECIES all rank Infinity, so a stable sort leaves them as they came.
+function byCommonRank(a: number, b: number) {
+  return (
+    (COMMON_TAX_RANK.get(a) ?? Infinity) - (COMMON_TAX_RANK.get(b) ?? Infinity)
+  )
 }
 
 // CDD domains for a batch of accessions, best-effort: they decorate the cartoon
@@ -547,22 +638,37 @@ async function fetchDomains(accessions: string[]) {
     .catch(() => new Map<string, Domain[]>())
 }
 
+// Which of a panel's rows the alignment covers — the head of the panel's own
+// model-organism-first order. Exported so the page can say how many before the
+// job runs rather than after.
+export function alignedRows(panel: ProteinPanel, maxRows = MAX_ALIGN_ROWS) {
+  return capRows(panel.rows, panel.query.refTaxonId, maxRows)
+}
+
 // Phase 2: align the panel's sequences at EBI Clustal Omega and emit the
 // column-locked alignment, guide tree, and per-row domain gff for react-msaview.
 export async function alignProteinPanel(
   panel: ProteinPanel,
-  { email = EBI_EMAIL, onProgress = () => undefined }: ProteinAlignOptions = {},
+  {
+    email = EBI_EMAIL,
+    maxRows = MAX_ALIGN_ROWS,
+    onProgress = () => undefined,
+  }: ProteinAlignOptions = {},
 ): Promise<ProteinAlignment> {
-  onProgress('Aligning proteins at EBI Clustal Omega…')
-  const seqById = new Map(panel.rows.map(r => [r.protein, r.sequence]))
-  const domainsByAcc = new Map(panel.rows.map(r => [r.protein, r.domains]))
+  // The gff comes off the same rows as the fasta: react-msaview keys domains to
+  // alignment rows by label, so a domain for a row that was not aligned has
+  // nothing to land on.
+  const rows = alignedRows(panel, maxRows)
+  onProgress(`Aligning ${rows.length} proteins at EBI Clustal Omega…`)
+  const seqById = new Map(rows.map(r => [r.protein, r.sequence]))
+  const domainsByAcc = new Map(rows.map(r => [r.protein, r.domains]))
   const { aligned, newick } = await clustalOmega(
-    buildInputFasta(panel.rows, seqById),
+    buildInputFasta(rows, seqById),
     { email },
   )
   return {
     fasta: unwrapFasta(aligned),
     newick,
-    gff: buildDomainGff(panel.rows, domainsByAcc),
+    gff: buildDomainGff(rows, domainsByAcc),
   }
 }

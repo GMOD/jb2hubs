@@ -3,8 +3,11 @@ import { test } from 'node:test'
 
 import {
   type Domain,
+  type ProteinPanel,
+  alignedRows,
   buildDomainGff,
   buildInputFasta,
+  capRows,
   dedupeLabels,
   parseAllDomains,
   parseFasta,
@@ -106,6 +109,62 @@ test('buildInputFasta uses row labels as headers and drops missing sequences', (
   ]
   const seqs = new Map([['NP_1.1', 'MKTA']])
   assert.equal(buildInputFasta(rows, seqs), '>human\nMKTA')
+})
+
+// A panel's rows arrive ordered model-organism-first, so the row caps take the
+// head of that order — with one exception, pinned below.
+const panelOf = (taxa: number[], refTaxonId: number): ProteinPanel => ({
+  query: { symbol: 'TP53', refTaxonId, source: 'ncbi' },
+  rows: taxa.map(taxId => ({
+    taxId,
+    label: `t${taxId}`,
+    scientificName: `sp ${taxId}`,
+    protein: `NP_${taxId}.1`,
+    sequence: 'MKT',
+    length: 3,
+    domains: [],
+  })),
+})
+
+test('capRows leaves a list that is already within the cap alone', () => {
+  const rows = [{ taxId: 1 }, { taxId: 2 }]
+  assert.equal(capRows(rows, 1, 60), rows)
+})
+
+test('capRows takes the head of the order', () => {
+  assert.deepEqual(capRows([{ taxId: 1 }, { taxId: 2 }, { taxId: 3 }], 1, 2), [
+    { taxId: 1 },
+    { taxId: 2 },
+  ])
+})
+
+// A panel that dropped the gene being compared against is not a comparison, and
+// the alignment names its reference row as querySeqName.
+test('capRows keeps the reference species from beyond the cap', () => {
+  assert.deepEqual(capRows([{ taxId: 1 }, { taxId: 2 }, { taxId: 9 }], 9, 2), [
+    { taxId: 9 },
+    { taxId: 1 },
+  ])
+})
+
+test('capRows caps a list with no reference row at all', () => {
+  assert.deepEqual(capRows([{ taxId: 1 }, { taxId: 2 }, { taxId: 3 }], 99, 2), [
+    { taxId: 1 },
+    { taxId: 2 },
+  ])
+})
+
+// The alignment is deliberately narrower than the cartoon: Clustal Omega on all
+// 60 rows misses its own deadline on the longest example panels.
+test('alignedRows narrows a broad panel and keeps the reference', () => {
+  assert.deepEqual(
+    alignedRows(panelOf([10, 20, 30, 40, 9606], 9606), 3).map(r => r.taxId),
+    [9606, 10, 20],
+  )
+})
+
+test('alignedRows is the whole panel when the panel is under the cap', () => {
+  assert.equal(alignedRows(panelOf([9606, 10090], 9606), 24).length, 2)
 })
 
 test('buildDomainGff emits per-row protein_match features in protein coords', () => {
