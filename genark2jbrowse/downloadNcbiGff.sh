@@ -25,9 +25,10 @@ echo "Phase 1: Building queue of GFF files to download..."
 # accessions (an empty list means "no restriction").
 #
 # The per-file decision is a cheap stat check, so a single inline pass beats a
-# parallel fan-out (one shell spawn per line). With FETCH_UPDATES we queue
-# everything and let wget -N decide per file; otherwise only queue files we
-# don't already have. Output: url|common_name|filename
+# parallel fan-out (one shell spawn per line). needs_gff_fetch (lib/common.sh)
+# is the same gate ucsc2jbrowse/downloadNcbiGff.sh applies per db: with
+# FETCH_UPDATES we queue everything and let wget -N decide per file, otherwise
+# only files we don't already have. Output: url|common_name|filename
 QUEUE_FILE=$(mktemp)
 trap 'rm -f "$QUEUE_FILE"' EXIT
 jq -r --argjson accs "$SCOPE_ACCESSIONS" '
@@ -37,7 +38,7 @@ jq -r --argjson accs "$SCOPE_ACCESSIONS" '
   | "\(.ncbiGff)\t\(.commonName)"' processedHubJson/all.json |
   while IFS=$'\t' read -r url common_name; do
     filename=${url##*/}
-    if [ -n "${FETCH_UPDATES:-}" ] || [ ! -f "gff/$filename" ]; then
+    if needs_gff_fetch "gff/$filename"; then
       printf '%s|%s|%s\n' "$url" "$common_name" "$filename"
     fi
   done >"$QUEUE_FILE"

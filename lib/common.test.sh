@@ -2,9 +2,9 @@
 #
 # lib/common.test.sh
 #
-# Tests for helpers in lib/common.sh: make_file_listing, parse_flags, needs_rebuild
-# / save_rebuild_stamp, source_tree_hash, rclone_sync_with_indexes and
-# run_parallel_reporting.
+# Tests for helpers in lib/common.sh: make_file_listing, parse_flags,
+# needs_gff_fetch, needs_rebuild / save_rebuild_stamp, source_tree_hash,
+# rclone_sync_with_indexes and run_parallel_reporting.
 # Run: ./lib/common.test.sh
 #
 
@@ -146,6 +146,46 @@ esac
 
 unset -f handle_flag
 unset USAGE
+
+# --- needs_gff_fetch ---
+# The witness is whatever file proves the caller's last fetch finished: the
+# download itself in genark, the .csi in ucsc, where bgzip and tabix follow it.
+
+gf=$(mktemp -d)
+witness="$gf/hg38.gff.gz.csi"
+
+if needs_gff_fetch "$witness"; then echo "ok   - fetch when the witness is missing"; else
+  echo "FAIL - fetch when the witness is missing"
+  fail=1
+fi
+
+touch "$witness"
+if needs_gff_fetch "$witness"; then
+  echo "FAIL - skip when the witness exists"
+  fail=1
+else echo "ok   - skip when the witness exists"; fi
+
+# FETCH_UPDATES re-pulls a GFF we already hold: NCBI can re-annotate in place
+# under the same accession, which nothing local would otherwise notice.
+if FETCH_UPDATES=1 needs_gff_fetch "$witness"; then echo "ok   - fetch when FETCH_UPDATES set"; else
+  echo "FAIL - fetch when FETCH_UPDATES set"
+  fail=1
+fi
+
+# Status only: a caller reading it inside a command substitution gets nothing.
+check "the gate prints nothing" "" "$(FETCH_UPDATES=1 needs_gff_fetch "$witness" 2>&1)"
+
+# set -e is the mode both downloaders run under, and a skip is the common case.
+check "a skip does not abort a set -e caller" "skip" "$(
+  set -e
+  if needs_gff_fetch "$witness"; then echo fetch; else echo skip; fi
+)"
+
+# Exported, so the parallel jobs both downloaders export can call it.
+check "the gate is exported to child shells" "fetch" \
+  "$(bash -c 'if needs_gff_fetch /nonexistent/gff.gz.csi; then echo fetch; else echo skip; fi')"
+
+rm -rf "$gf"
 
 # --- needs_rebuild / save_rebuild_stamp ---
 

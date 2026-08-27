@@ -109,7 +109,10 @@ process_db() {
   if [ ! -f "$config" ]; then
     log "Skipping $db: no config.json (assembly not built)"
   else
-    if [ ! -f "$gff.csi" ] || [ -n "${FETCH_UPDATES:-}" ]; then
+    # Shared with genark2jbrowse/downloadNcbiGff.sh; the .csi rather than the
+    # .gff.gz is the witness, since a run that died between bgzip and tabix
+    # leaves the latter behind. See needs_gff_fetch in lib/common.sh.
+    if needs_gff_fetch "$gff.csi"; then
       log "Downloading $db NCBI RefSeq GFF ($acc)..."
       local zip="$GFF_DIR/$db.ncbi_dataset.zip"
       local extract="$GFF_DIR/$db.ncbi_dataset"

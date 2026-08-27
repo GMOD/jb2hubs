@@ -279,6 +279,37 @@ stamp_age_days() {
 }
 export -f stamp_age_days
 
+# Decides whether to hand an NCBI GFF to the downloader, given the local file
+# whose existence proves the last fetch ran to completion. Returns 0 (fetch)
+# when FETCH_UPDATES is set or that file is missing, else 1. This is the
+# FETCH_UPDATES half of the control plane, as needs_rebuild below is the
+# REPROCESS half.
+#
+# It is shared because both pipelines make this exact decision — genark's
+# downloadNcbiGff.sh once per url while it builds its queue, ucsc's once per db
+# — and neither could see the other drift. What differs stays with each caller,
+# deliberately outside the gate:
+#
+#   - The witness file. genark names the download itself; ucsc names the .csi,
+#     because its fetch also sorts, bgzips and indexes, and a run that died
+#     mid-derivation leaves a .gff.gz no index answers for. Accepting that
+#     .gff.gz as proof would ship an unindexable file indefinitely.
+#   - What FETCH_UPDATES then does. genark hands the url to `wget -N`, a
+#     conditional revalidation that re-pulls only when Last-Modified moved;
+#     ucsc re-downloads outright, `datasets download` having no conditional
+#     form. Both are "re-pull upstream NCBI GFFs", as --help says.
+#
+# Sets a status and prints nothing, so it is safe as an `if` condition under
+# `set -e`, in a command substitution, and inside an exported parallel job.
+# Usage: if needs_gff_fetch "$gff.csi"; then ...; fi
+needs_gff_fetch() {
+  if [ -n "${FETCH_UPDATES:-}" ] || [ ! -f "$1" ]; then
+    return 0
+  fi
+  return 1
+}
+export -f needs_gff_fetch
+
 # Decides whether a derived output needs (re)building from a source file, using
 # the source's XXH3 content hash as the change stamp recorded in a hash file.
 # (Byte size was cheaper but missed same-size content changes — a re-published
