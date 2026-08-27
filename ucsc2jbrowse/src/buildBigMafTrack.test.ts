@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { describe, it } from 'node:test'
+import { afterEach, describe, it } from 'node:test'
 
 import { buildBigMafTrack } from './buildBigMafTrack.ts'
 
@@ -87,5 +87,68 @@ describe('buildBigMafTrack', () => {
       { id: 'HLnomLeu4', label: 'northern white-cheeked gibbon' },
       { id: 'HLmacFas6', label: 'crab-eating macaque' },
     ])
+  })
+
+  it('leaves nhLocation off without CHECK_404, where the lookup cannot run', async () => {
+    const { adapter } = await build(multiz470way)
+    assert.equal('nhLocation' in adapter, false)
+  })
+})
+
+// The tree is the one sidecar the trackDb does not name, so it costs a request:
+// one autoindex read of the alignment's own directory. hg38 is the only UCSC
+// assembly with real bigMaf alignments (hs1's 27 and galGal6's 3 are all
+// chainNet, which the lookup skips outright), so a full ucsc2jbrowse build
+// spends three of these and an incremental build that leaves hg38 alone spends
+// none.
+describe('buildBigMafTrack species tree', () => {
+  const realFetch = globalThis.fetch
+  let calls: string[] = []
+
+  function stubFetch(reply: (target: string) => Promise<unknown>) {
+    calls = []
+    globalThis.fetch = ((target: unknown) => {
+      calls.push(String(target))
+      return reply(String(target))
+    }) as unknown as typeof globalThis.fetch
+  }
+
+  const autoindex = (names: string[]) => () =>
+    Promise.resolve({
+      ok: true,
+      status: 200,
+      text: () =>
+        Promise.resolve(
+          names.map(name => `<a href="${name}">${name}</a>`).join('\n'),
+        ),
+    })
+
+  afterEach(() => {
+    globalThis.fetch = realFetch
+    delete process.env.CHECK_404
+  })
+
+  it('wires the tree hgdownload ships beside the alignment', async () => {
+    process.env.CHECK_404 = 'true'
+    stubFetch(
+      autoindex([
+        'hg38.470way.commonNames.nh',
+        'hg38.470way.nh',
+        'hg38.470way.scientificNames.nh',
+        'multiz470way.bigMaf',
+      ]),
+    )
+    const { adapter } = await build(multiz470way)
+    assert.deepEqual(adapter.nhLocation, {
+      uri: `${baseUrl}/goldenPath/hg38/multiz470way/hg38.470way.nh`,
+    })
+    assert.deepEqual(calls, [`${baseUrl}/goldenPath/hg38/multiz470way/`])
+  })
+
+  it('omits nhLocation rather than naming a file upstream does not publish', async () => {
+    process.env.CHECK_404 = 'true'
+    stubFetch(() => Promise.resolve({ ok: false, status: 404 }))
+    const { adapter } = await build(multiz470way)
+    assert.equal('nhLocation' in adapter, false)
   })
 })

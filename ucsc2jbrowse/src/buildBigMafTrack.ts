@@ -1,5 +1,6 @@
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { resolveBigDataUri } from './resolveBigDataUri.ts'
+import { resolveSpeciesTreeUri } from './resolveSpeciesTree.ts'
 
 /**
  * Turn an optional trackDb sidecar setting into a url the config can name, or
@@ -67,6 +68,19 @@ function parseSpeciesString(str: string) {
  *
  * `hubtools`' `createTrackConfiguration` already does this for the hub path;
  * this is the golden-path twin, which had only ever wired `bigBedLocation`.
+ *
+ * The third sidecar, the newick species tree behind `nhLocation`, is the one no
+ * trackDb names, so `resolveSpeciesTree.ts` discovers it on hgdownload instead
+ * — and says why that takes a directory listing rather than a filename
+ * template. It is golden-path only, and that is a finding rather than an
+ * omission: measured 2026-08-27, **no hub publishes a tree at all**. All three
+ * hub MAF families were listed on hgdownload and none has a `.nh` anywhere
+ * beneath it — VGP's `vgp577way` (21 GenArk hubs, `/hubs/VGP/vgp577way/` holds
+ * `bbi/` and `maf/` and nothing else), `mouseStrains` (16 hubs), and the Lowe
+ * lab's archaeal `contrib/lowelab/multiz.bb` (18 hubs). Their hub.txt stanzas
+ * name `summary`, `frames` and `speciesOrder` and never a tree; hgTracks draws
+ * the hub-side tree from `treeImage`, a PNG. So probing per MAF track in the
+ * genark pipeline would spend requests to learn nothing, 55 times over.
  */
 export async function buildBigMafTrack({
   trackId,
@@ -89,11 +103,14 @@ export async function buildBigMafTrack({
   }
 }) {
   const trackName = settings.longLabel ?? tableName
-  const [summaryUri, framesUri] = await Promise.all(
-    [settings.summary, settings.frames].map(path =>
-      resolveSidecar({ path, baseUrl, assembly: assemblyName, trackName }),
+  const [[summaryUri, framesUri], nhUri] = await Promise.all([
+    Promise.all(
+      [settings.summary, settings.frames].map(path =>
+        resolveSidecar({ path, baseUrl, assembly: assemblyName, trackName }),
+      ),
     ),
-  )
+    resolveSpeciesTreeUri({ alignmentUri: uri }),
+  ])
   return {
     trackId,
     name: tableName,
@@ -105,6 +122,7 @@ export async function buildBigMafTrack({
         ? parseSpeciesString(settings.speciesLabels)
         : [],
       bigBedLocation: { uri },
+      ...(nhUri ? { nhLocation: { uri: nhUri } } : {}),
       ...(summaryUri
         ? {
             summaryAdapter: {
