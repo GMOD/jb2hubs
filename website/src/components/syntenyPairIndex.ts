@@ -14,15 +14,24 @@
 // id, and the caller uses them for both the merged hubs and the panel assembly
 // names.
 
-// One catalog entry as generateSyntenyPairIndex.ts writes it:
-// [trackId, name of the key's first half, name of its second half].
-export type PairEntry = [string, string, string]
+// One catalog entry as generateSyntenyPairIndex.ts writes it: [trackId, name of
+// the key's first half, name of its second half, and the gene track each of
+// those two panels should open]. A gene track is '' when the generator could not
+// resolve one. The last two are optional in the type because a dev tree can
+// hold a `synteny_pairs.json` written before they existed: names and trackIds
+// are still usable there, so those entries degrade to the old empty-panel launch
+// rather than being dropped.
+export type PairEntry = [string, string, string, string?, string?]
 
 export interface SyntenyLink {
   trackId: string
   // Assembly names oriented to the caller's argument order: names[0] belongs to
   // the first accession asked about, names[1] to the second.
   names: [string, string]
+  // The gene track each panel opens, in the same order as `names`, and '' for a
+  // genome with none. A synteny sub-view carries no defaultSession, so a panel
+  // launched without one is an empty browser at the right locus.
+  geneTracks: [string, string]
 }
 
 export type PairIndex = Map<string, SyntenyLink>
@@ -47,10 +56,13 @@ export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
     if (!Array.isArray(entry)) {
       stale += 1
     } else if (a && b) {
-      const [trackId, nameA, nameB] = entry
+      const [trackId, nameA, nameB, geneA, geneB] = entry
       index.set(`${accessionBase(a)}|${accessionBase(b)}`, {
         trackId,
         names: [nameA, nameB],
+        // A pre-gene-tracks file still has usable names and trackIds, so it
+        // degrades to the old empty-panel launch rather than being skipped.
+        geneTracks: [geneA ?? '', geneB ?? ''],
       })
     }
   }
@@ -62,8 +74,9 @@ export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
   return index
 }
 
-// Panel assembly names + per-level tracks for an ordered stack of genomes, the
-// shape a LinearSyntenyView launch needs. A level's track is kept only when both
+// Panel assembly names, the gene track each panel opens, and the per-level
+// synteny tracks for an ordered stack of genomes — the shape a LinearSyntenyView
+// launch needs. A level's track is kept only when both
 // of its ends agree with the names already fixed by earlier levels: a genome our
 // catalog holds under two names (UCSC `dm6` and the GenArk accession both
 // appear) can open as only one panel, and naming the other would leave the
@@ -77,6 +90,9 @@ export function resolveStackNames(accessions: string[], index: PairIndex) {
   // though nothing has claimed the panel yet.
   const settled = new Set<number>()
   const tracks: string[][] = []
+  // Fixed by the same link that fixes the panel's name, so a panel can never be
+  // handed a gene track from the config it did not open under.
+  const geneTracks = accessions.map(() => '')
   for (let i = 1; i < accessions.length; i++) {
     const a = accessions[i - 1]
     const b = accessions[i]
@@ -86,13 +102,15 @@ export function resolveStackNames(accessions: string[], index: PairIndex) {
     if (link && (!settled.has(i - 1) || names[i - 1] === link.names[0])) {
       names[i - 1] = link.names[0]
       names[i] = link.names[1]
+      geneTracks[i - 1] = link.geneTracks[0]
+      geneTracks[i] = link.geneTracks[1]
       settled.add(i - 1).add(i)
       tracks.push([link.trackId])
     } else {
       tracks.push([])
     }
   }
-  return { names, tracks }
+  return { names, geneTracks, tracks }
 }
 
 export function syntenyLink(index: PairIndex, a: string, b: string) {
@@ -105,6 +123,10 @@ export function syntenyLink(index: PairIndex, a: string, b: string) {
     ? {
         trackId: reverse.trackId,
         names: [reverse.names[1], reverse.names[0]] as [string, string],
+        geneTracks: [reverse.geneTracks[1], reverse.geneTracks[0]] as [
+          string,
+          string,
+        ],
       }
     : undefined
 }

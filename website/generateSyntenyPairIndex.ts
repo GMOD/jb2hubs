@@ -7,6 +7,7 @@ const __dirname = path.dirname(__filename)
 
 const inputPath = path.join(__dirname, 'src/syntenyTracks.json')
 const orthologIndexPath = path.join(__dirname, 'public/ortholog_index.json')
+const ucscConfigDir = path.join(__dirname, '../ucsc2jbrowse/configs')
 const outputPath = path.join(__dirname, 'public/synteny_pairs.json')
 
 interface Track {
@@ -71,9 +72,47 @@ function toAccession(name: string) {
   )
 }
 
-// "<accession1>,<accession2>" -> [trackId, name1, name2], the names in the same
-// order as the key. Storing the key in assemblyNames order lets the consumer
-// choose which assembly is the synteny "target" by controlling the lookup order.
+// The gene track a launched panel should open for one genome, under whichever
+// name that genome's synteny track calls it. A LinearSyntenyView sub-view gets
+// no defaultSession, so a panel with no explicit track is an empty browser —
+// which is what every synteny launch used to be: right locus, nothing drawn.
+//
+// GenArk hubs carry `<accession>-ncbiGff` without exception (checked against all
+// 170 GenArk names in this catalog on 2026-08-27), the same id the single-genome
+// launch in accessionToJbrowseUrl asks for. A UCSC db is not a convention: three
+// of the 26 here have no `ncbiRefSeq` track at all (xenTro3 and bosTau6 are
+// refGene, melGal1 is ensGene). Its own defaultSession already names the best
+// gene track it has — generateDefaultSessions picked it — so read that rather
+// than re-implementing the preference order in a second place.
+interface UcscConfig {
+  defaultSession?: {
+    views?: { init?: { tracks?: string[] } }[]
+  }
+}
+const geneTrackCache = new Map<string, string | undefined>()
+function geneTrackFor(name: string) {
+  if (/^GC[AF]_/.test(name)) {
+    return `${name}-ncbiGff`
+  }
+  if (!geneTrackCache.has(name)) {
+    const file = path.join(ucscConfigDir, `${name}.json`)
+    const config: UcscConfig | undefined = fs.existsSync(file)
+      ? JSON.parse(fs.readFileSync(file, 'utf-8'))
+      : undefined
+    geneTrackCache.set(
+      name,
+      config?.defaultSession?.views?.[0]?.init?.tracks?.[0],
+    )
+  }
+  return geneTrackCache.get(name)
+}
+
+// "<accession1>,<accession2>" -> [trackId, name1, name2, geneTrack1,
+// geneTrack2], the names in the same order as the key. Storing the key in
+// assemblyNames order lets the consumer choose which assembly is the synteny
+// "target" by controlling the lookup order. A gene track we could not resolve is
+// written as an empty string, which the client reads as "open this panel with no
+// track" rather than as a trackId.
 //
 // Both liftOver directions of a comparison are kept, as two keys. What is
 // dropped is a track whose halves are the same genome under two names — UCSC
@@ -81,11 +120,12 @@ function toAccession(name: string) {
 // Arabidopsis. The client matches on the version-stripped base, so those would
 // answer a "is A syntenic with A" lookup and offer a row a synteny link to
 // itself.
-const pairs: Record<string, [string, string, string]> = {}
+const pairs: Record<string, [string, string, string, string, string]> = {}
 const base = (accession: string) => accession.replace(/\.\d+$/, '')
 let viaUcscDb = 0
 let selfPairs = 0
 let collisions = 0
+const noGeneTrack = new Set<string>()
 for (const track of data.tracks) {
   const [name1, name2] = track.assemblyNames
   const acc1 = name1 ? toAccession(name1) : undefined
@@ -98,7 +138,15 @@ for (const track of data.tracks) {
       if (pairs[key]) {
         collisions += 1
       }
-      pairs[key] = [track.trackId, name1, name2]
+      const gene1 = geneTrackFor(name1) ?? ''
+      const gene2 = geneTrackFor(name2) ?? ''
+      if (!gene1) {
+        noGeneTrack.add(name1)
+      }
+      if (!gene2) {
+        noGeneTrack.add(name2)
+      }
+      pairs[key] = [track.trackId, name1, name2, gene1, gene2]
       if (acc1 !== name1 || acc2 !== name2) {
         viaUcscDb += 1
       }
@@ -115,3 +163,11 @@ console.log(
     `(${viaUcscDb} named by UCSC db rather than accession), ${sizeKB} KB; ` +
     `skipped ${selfPairs} same-genome pairs, ${collisions} duplicate keys`,
 )
+if (noGeneTrack.size > 0) {
+  // A panel with no gene track opens on the right locus with nothing drawn,
+  // which reads as "this genome has no annotation" — worth naming rather than
+  // leaving to be noticed in a browser.
+  console.warn(
+    `No gene track resolved for ${noGeneTrack.size} assemblies; their synteny panels will open empty: ${[...noGeneTrack].join(', ')}`,
+  )
+}

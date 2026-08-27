@@ -3,7 +3,7 @@ import {
   genarkConfigPath,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
-import { syntenyViewUrl } from './jbrowseLinks.ts'
+import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
@@ -173,8 +173,9 @@ function windowedLoc(r: OrthologResult, flankBp: number) {
 }
 
 // Pairwise reference-vs-ortholog synteny launch. Both panels land on the
-// neighborhood window around their gene; the reference panel is left unnavigated
-// only when the reference ortholog row is unknown. The panel assemblies come
+// neighborhood window around their gene and open that genome's gene track, so
+// the ortholog is drawn rather than merely centered; the reference panel is left
+// unnavigated only when the reference ortholog row is unknown. The panel assemblies come
 // from the link, not from the accessions, because the track lives in a config
 // that may know a genome as `hg38` rather than as GCF_000001405.40 — naming the
 // accession there merges a hub without the track in it.
@@ -186,10 +187,15 @@ export function orthoSyntenyUrl(
 ) {
   return syntenyViewUrl(
     [
-      { assembly: link.names[0], loc: windowedLoc(r, flankBp) },
+      {
+        assembly: link.names[0],
+        loc: windowedLoc(r, flankBp),
+        ...panelTracks(link.geneTracks[0]),
+      },
       {
         assembly: link.names[1],
         ...(ref ? { loc: windowedLoc(ref, flankBp) } : {}),
+        ...panelTracks(link.geneTracks[1]),
       },
     ],
     [link.trackId],
@@ -202,6 +208,9 @@ export interface MultiSyntenyPlan {
   // names[i] is the assembly name rows[i]'s panel opens under — see
   // orthoSyntenyUrl on why that is not always the accession
   names: string[]
+  // geneTracks[i] is the gene track rows[i]'s panel opens, '' where the catalog
+  // knows none
+  geneTracks: string[]
   // tracks[i] is the synteny track linking rows[i] and rows[i + 1]
   tracks: string[]
 }
@@ -285,12 +294,19 @@ export function planMultiSynteny(
     chain.map(r => r.assembly.accession),
     index,
   )
-  return { rows: chain, names: stack.names, tracks: stack.tracks.flat() }
+  return {
+    rows: chain,
+    names: stack.names,
+    geneTracks: stack.geneTracks,
+    tracks: stack.tracks.flat(),
+  }
 }
 
 // Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row
 // pair becomes a level carrying its single synteny track; every panel lands on
-// its ortholog's neighborhood window.
+// its ortholog's neighborhood window with that genome's gene track open, which
+// is what makes the launch show the gene in every genome rather than a stack of
+// empty browsers at the right coordinates.
 export function buildMultiSyntenyUrl(
   plan: MultiSyntenyPlan,
   flankBp = SYNTENY_FLANK_BP,
@@ -299,6 +315,7 @@ export function buildMultiSyntenyUrl(
     plan.rows.map((r, i) => ({
       assembly: plan.names[i] ?? r.assembly.accession,
       loc: windowedLoc(r, flankBp),
+      ...panelTracks(plan.geneTracks[i] ?? ''),
     })),
     plan.tracks.map(t => [t]),
   )

@@ -19,6 +19,7 @@ import type {
   NcbiOrthologReport,
   OrthologResult,
 } from './orthologSearchUtils.ts'
+import type { PairEntry } from './syntenyPairIndex.ts'
 
 const indexData: AssemblyIndex = {
   schema: 'ortholog-index/2',
@@ -341,7 +342,10 @@ function pairs(entries: Record<string, string>) {
     Object.fromEntries(
       Object.entries(entries).map(([key, trackId]) => {
         const [a, b] = key.split(',')
-        return [key, [trackId, a ?? '', b ?? ''] as [string, string, string]]
+        return [
+          key,
+          [trackId, a ?? '', b ?? '', `${a}-gene`, `${b}-gene`] as PairEntry,
+        ]
       }),
     ),
   )
@@ -364,6 +368,7 @@ test('planMultiSynteny chains a path-shaped catalog top-to-bottom', () => {
     ['REF', 'A', 'B', 'C'],
   )
   assert.deepEqual(plan?.tracks, ['tREF_A', 'tA_B', 'tB_C'])
+  assert.deepEqual(plan?.geneTracks, ['REF-gene', 'A-gene', 'B-gene', 'C-gene'])
 })
 
 test('planMultiSynteny flanks the reference with its two nearest partners for a star catalog', () => {
@@ -402,17 +407,24 @@ test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel'
   const r1 = res('A', 10090, 50_000, 50_500)
   const spec = specOf(
     buildMultiSyntenyUrl(
-      { rows: [r0, r1], names: ['REF', 'A'], tracks: ['tREF_A'] },
+      {
+        rows: [r0, r1],
+        names: ['REF', 'A'],
+        geneTracks: ['REF-gene', 'A-gene'],
+        tracks: ['tREF_A'],
+      },
       100_000,
     ),
   )
   assert.equal(spec.type, 'LinearSyntenyView')
   // per-level tracks are 2D: one single-track level for the one adjacency
   assert.deepEqual(spec.tracks, [['tREF_A']])
+  // each panel opens its own gene track, or it lands on the right locus with
+  // nothing drawn
   assert.deepEqual(spec.views, [
-    { assembly: 'REF', loc: 'NC_1:200000-400500' },
+    { assembly: 'REF', loc: 'NC_1:200000-400500', tracks: ['REF-gene'] },
     // begin - flank clamps at 1 rather than going negative
-    { assembly: 'A', loc: 'NC_1:1-150500' },
+    { assembly: 'A', loc: 'NC_1:1-150500', tracks: ['A-gene'] },
   ])
 })
 

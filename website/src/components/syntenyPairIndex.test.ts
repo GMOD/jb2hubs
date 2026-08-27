@@ -8,6 +8,8 @@ import {
   syntenyLink,
 } from './syntenyPairIndex.ts'
 
+import type { PairEntry } from './syntenyPairIndex.ts'
+
 test('accessionBase strips version and assembly-name suffix', () => {
   assert.equal(accessionBase('GCF_000001405.40'), 'GCF_000001405')
   assert.equal(accessionBase('GCF_000001735.4_TAIR10.1'), 'GCF_000001735')
@@ -72,15 +74,81 @@ test('resolveStackNames takes each panel name from its own link', () => {
       'canFam3_to_hg38_liftOver',
       'canFam3',
       'hg38',
+      'canFam3-ncbiRefSeq',
+      'hg38-ncbiRefSeq',
     ],
-    'GCF_000001405.40,GCF_000001635.26': ['hg38_to_mm39', 'hg38', 'mm39'],
+    'GCF_000001405.40,GCF_000001635.26': [
+      'hg38_to_mm39',
+      'hg38',
+      'mm39',
+      'hg38-ncbiRefSeq',
+      'mm39-ncbiRefSeq',
+    ],
   })
-  const { names, tracks } = resolveStackNames(
+  const { names, geneTracks, tracks } = resolveStackNames(
     ['GCF_000002285.5', 'GCF_000001405.40', 'GCF_000001635.26'],
     index,
   )
   assert.deepEqual(names, ['canFam3', 'hg38', 'mm39'])
+  // the gene track comes from the same link that fixed the panel name, so it is
+  // always an id the config that panel opened under actually has
+  assert.deepEqual(geneTracks, [
+    'canFam3-ncbiRefSeq',
+    'hg38-ncbiRefSeq',
+    'mm39-ncbiRefSeq',
+  ])
   assert.deepEqual(tracks, [['canFam3_to_hg38_liftOver'], ['hg38_to_mm39']])
+})
+
+// A panel whose level was dropped opens under its accession, so handing it the
+// gene track the contradicting link named would name a track in a config it did
+// not open.
+test('resolveStackNames leaves a dropped panel with no gene track', () => {
+  const index = buildPairIndex({
+    'GCF_000001405.40,GCF_000002285.5': [
+      'hg38_to_canFam3',
+      'hg38',
+      'canFam3',
+      'hg38-ncbiRefSeq',
+      'canFam3-ncbiRefSeq',
+    ],
+  })
+  const { geneTracks } = resolveStackNames(
+    ['GCF_000000009.9', 'GCF_000001405.40', 'GCF_000002285.5'],
+    index,
+  )
+  assert.deepEqual(geneTracks, ['', 'hg38-ncbiRefSeq', 'canFam3-ncbiRefSeq'])
+})
+
+// The names are swapped for a reversed lookup, and the gene tracks have to
+// follow or each panel opens the other genome's annotation.
+test('a reversed lookup swaps the gene tracks with the names', () => {
+  const index = buildPairIndex({
+    'GCF_000002285.5,GCF_000001405.40': [
+      'canFam3_to_hg38_liftOver',
+      'canFam3',
+      'hg38',
+      'canFam3-ncbiRefSeq',
+      'hg38-ncbiRefSeq',
+    ],
+  })
+  assert.deepEqual(
+    syntenyLink(index, 'GCF_000001405.40', 'GCF_000002285.5')?.geneTracks,
+    ['hg38-ncbiRefSeq', 'canFam3-ncbiRefSeq'],
+  )
+})
+
+// A dev tree can hold a synteny_pairs.json written before the gene tracks
+// existed. Its names and trackIds are still right, so the launch degrades to the
+// empty panels it always had rather than being dropped entirely.
+test('an entry without gene tracks still yields a usable link', () => {
+  const index = buildPairIndex({
+    'GCF_3.1,GCF_4.1': ['t34', 'GCF_3.1', 'GCF_4.1'],
+  })
+  assert.deepEqual(syntenyLink(index, 'GCF_3.1', 'GCF_4.1')?.geneTracks, [
+    '',
+    '',
+  ])
 })
 
 // One genome, two names in the catalog: dm6 and its own GenArk accession. Only
@@ -137,11 +205,7 @@ test('a dropped level does not poison the level after it', () => {
 // launch URL rather than dropping the link.
 test('an entry in the pre-names format is skipped, not mangled', () => {
   const index = buildPairIndex({
-    'GCF_1.1,GCF_2.1': 'old_style_trackid' as unknown as [
-      string,
-      string,
-      string,
-    ],
+    'GCF_1.1,GCF_2.1': 'old_style_trackid' as unknown as PairEntry,
     'GCF_3.1,GCF_4.1': ['t34', 'GCF_3.1', 'GCF_4.1'],
   })
   assert.equal(index.size, 1)

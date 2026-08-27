@@ -51,3 +51,33 @@ test('a fully-chained subtree yields one track slot per level', () => {
   )!
   assert.deepEqual(viewOf(url).tracks, [['t12'], ['t23']])
 })
+
+// A synteny sub-view has no defaultSession, so a panel launched without a track
+// draws nothing at the locus it was sent to.
+test('each panel opens the gene track its own link names', () => {
+  const index = buildPairIndex({
+    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2', 'GCF_1-ncbiGff', 'GCF_2-ncbiGff'],
+    'GCF_2,GCF_3': ['t23', 'GCF_2', 'GCF_3', 'GCF_2-ncbiGff', 'GCF_3-ncbiGff'],
+  })
+  const url = subtreeSyntenyUrl(
+    [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],
+    index,
+  )!
+  assert.deepEqual(
+    viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
+    [['GCF_1-ncbiGff'], ['GCF_2-ncbiGff'], ['GCF_3-ncbiGff']],
+  )
+})
+
+// A catalog with no gene tracks (a pre-gene-tracks synteny_pairs.json) launches
+// the panels bare rather than naming a track that does not exist.
+test('a panel with no known gene track carries no tracks field', () => {
+  const index = buildPairIndex({
+    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2'],
+  })
+  const url = subtreeSyntenyUrl([leaf('GCF_1.4'), leaf('GCF_2.7')], index)!
+  assert.deepEqual(
+    viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
+    [undefined, undefined],
+  )
+})

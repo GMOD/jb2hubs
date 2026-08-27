@@ -57,22 +57,30 @@ const refResult: OrthologResult = {
 const link: SyntenyLink = {
   trackId: 'track1',
   names: ['GCF_ORTHO', 'GCF_REF'],
+  geneTracks: ['GCF_ORTHO-ncbiGff', 'GCF_REF-ncbiGff'],
 }
 
 test('orthoSyntenyUrl windows both panels around their genes', () => {
   const views = sessionOf(orthoSyntenyUrl(result, link, refResult, 10)).views[0]
     .views
   assert.deepEqual(views, [
-    { assembly: 'GCF_ORTHO', loc: 'NC_1:90-210' },
+    {
+      assembly: 'GCF_ORTHO',
+      loc: 'NC_1:90-210',
+      tracks: ['GCF_ORTHO-ncbiGff'],
+    },
     // begin - flank clamps at 1 rather than going negative
-    { assembly: 'GCF_REF', loc: 'NC_REF:1-19' },
+    { assembly: 'GCF_REF', loc: 'NC_REF:1-19', tracks: ['GCF_REF-ncbiGff'] },
   ])
 })
 
 test('orthoSyntenyUrl leaves the reference panel unnavigated when no ref row', () => {
   const views = sessionOf(orthoSyntenyUrl(result, link, undefined)).views[0]
     .views
-  assert.deepEqual(views[1], { assembly: 'GCF_REF' })
+  assert.deepEqual(views[1], {
+    assembly: 'GCF_REF',
+    tracks: ['GCF_REF-ncbiGff'],
+  })
 })
 
 // The panels are named by the link, not by the accessions: the human half of a
@@ -82,13 +90,17 @@ test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
   const views = sessionOf(
     orthoSyntenyUrl(
       result,
-      { trackId: 'canFam3_to_hg38_liftOver', names: ['canFam3', 'hg38'] },
+      {
+        trackId: 'canFam3_to_hg38_liftOver',
+        names: ['canFam3', 'hg38'],
+        geneTracks: ['canFam3-ncbiRefSeq', 'hg38-ncbiRefSeq'],
+      },
       refResult,
       10,
     ),
   ).views[0].views
   assert.deepEqual(views, [
-    { assembly: 'canFam3', loc: 'NC_1:90-210' },
-    { assembly: 'hg38', loc: 'NC_REF:1-19' },
+    { assembly: 'canFam3', loc: 'NC_1:90-210', tracks: ['canFam3-ncbiRefSeq'] },
+    { assembly: 'hg38', loc: 'NC_REF:1-19', tracks: ['hg38-ncbiRefSeq'] },
   ])
 })

@@ -40,10 +40,20 @@ export function desktopUrl(webUrl: string) {
 export const mergeConfig = (hubIds: string[]) =>
   `${MERGE_API}?hubIds=${hubIds.join(',')}`
 
-// One genome panel in a stacked LinearSyntenyView, optionally pre-navigated.
+// One genome panel in a stacked LinearSyntenyView, optionally pre-navigated and
+// carrying the tracks it opens. A sub-view gets no defaultSession of its own, so
+// a panel launched with no `tracks` is an empty browser at the right locus.
 export interface SyntenySubView {
   assembly: string
   loc?: string
+  tracks?: string[]
+}
+
+// The `tracks` field for one panel, or nothing at all when the catalog resolved
+// no gene track for that genome — an absent field and an empty array launch the
+// same, and omitting it keeps the spec the shape older hosts already read.
+export function panelTracks(trackId: string) {
+  return trackId ? { tracks: [trackId] } : {}
 }
 
 // LaunchView init options the LinearSyntenyView reads on first load; builds that

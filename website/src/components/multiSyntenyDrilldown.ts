@@ -6,7 +6,7 @@
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
-import { specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
+import { panelTracks, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import {
   SYNTENY_FLANK_BP,
   accessionToJbrowseUrl,
@@ -83,7 +83,9 @@ function loadPairs(): Promise<PairIndex> {
 
 // The panel assemblies are the link's names rather than the accessions: a
 // comparison against human lives in /ucsc/hg38/config.json and knows that genome
-// as `hg38`, so merging by accession would fetch a hub without the track.
+// as `hg38`, so merging by accession would fetch a hub without the track. Each
+// panel also opens its own gene track — a synteny sub-view has no defaultSession,
+// so without one the panel is an empty browser at the right locus.
 function pairwiseSyntenyUrl(
   link: SyntenyLink,
   loc: string,
@@ -91,10 +93,14 @@ function pairwiseSyntenyUrl(
 ) {
   return syntenyViewUrl(
     [
-      { assembly: link.names[0], loc },
+      { assembly: link.names[0], loc, ...panelTracks(link.geneTracks[0]) },
       // Land the reference panel on the orthologous locus too, so both genomes
       // open at the gene rather than leaving the reference unnavigated.
-      { assembly: link.names[1], ...(refLoc ? { loc: refLoc } : {}) },
+      {
+        assembly: link.names[1],
+        ...(refLoc ? { loc: refLoc } : {}),
+        ...panelTracks(link.geneTracks[1]),
+      },
     ],
     [link.trackId],
     { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
@@ -111,7 +117,7 @@ export interface SubtreeLeaf {
 export const MAX_SUBTREE_GENOMES = 15
 
 // Build a stacked, tree-ordered LinearSyntenyView URL for a subtree, each genome
-// navigated to its ortholog locus, with a synteny track between adjacent genomes
+// navigated to its ortholog locus with its gene track open, with a synteny track between adjacent genomes
 // where a chain exists. JBrowse binds tracks to a level by array position, NOT by
 // assemblyNames, so tracks is one slot per level (the gap between picked[i] and
 // picked[i+1]); a level with no chain gets an empty slot to keep the rest aligned.
@@ -121,12 +127,16 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
   if (picked.length < 2) {
     return undefined
   }
-  const { names, tracks } = resolveStackNames(
+  const { names, geneTracks, tracks } = resolveStackNames(
     picked.map(p => p.assembly),
     index,
   )
   return syntenyViewUrl(
-    picked.map((p, i) => ({ assembly: names[i] ?? p.assembly, loc: p.loc })),
+    picked.map((p, i) => ({
+      assembly: names[i] ?? p.assembly,
+      loc: p.loc,
+      ...panelTracks(geneTracks[i] ?? ''),
+    })),
     tracks,
     { drawCurves: true },
   )
