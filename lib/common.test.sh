@@ -3,7 +3,8 @@
 # lib/common.test.sh
 #
 # Tests for helpers in lib/common.sh: make_file_listing, parse_flags, needs_rebuild
-# / save_rebuild_stamp, source_tree_hash, and rclone_sync_with_indexes.
+# / save_rebuild_stamp, source_tree_hash, rclone_sync_with_indexes and
+# run_parallel_reporting.
 # Run: ./lib/common.test.sh
 #
 
@@ -316,6 +317,92 @@ else
 fi
 
 rm -rf "$st"
+
+# --- run_parallel_reporting / _report_parallel_joblog ---
+# The reporting half is tested against synthetic job logs, so it runs whether or
+# not GNU parallel is installed; the end-to-end case below needs the real thing.
+pj=$(mktemp -d)
+joblog="$pj/joblog"
+write_joblog() {
+  printf 'Seq\tHost\tStarttime\tJobRuntime\tSend\tReceive\tExitval\tSignal\tCommand\n' >"$joblog"
+  printf '%s\n' "$@" >>"$joblog"
+}
+job_row() { printf '%s\t:\t1700000000.000\t0.01\t0\t0\t%s\t%s\t%s' "$1" "$2" "$3" "$4"; }
+
+write_joblog "$(job_row 1 0 0 'run one')" "$(job_row 2 3 0 'run two')" "$(job_row 3 0 0 'run three')"
+report=$(_report_parallel_joblog 'probe' "$joblog" 3 2>&1)
+check "reporting a failure returns non-zero" 1 "$?"
+check "failure count names the total" "WARNING: probe: 1 of 3 jobs failed" "$(echo "$report" | head -1)"
+check "the failing argument is printed" "  exit 3: run two" "$(echo "$report" | sed -n 2p)"
+case "$report" in
+*"full job log: $joblog"*) echo "ok   - the report names the job log" ;;
+*)
+  echo "FAIL - the report omitted the job log path"
+  fail=1
+  ;;
+esac
+
+# A job killed by a signal records Exitval 0, so Signal has to be read too.
+write_joblog "$(job_row 1 0 9 'killed one')"
+report=$(_report_parallel_joblog 'probe' "$joblog" 1 2>&1)
+check "a signalled job counts as failed" "  signal 9: killed one" "$(echo "$report" | sed -n 2p)"
+
+# Every job succeeded: silence, and a zero return so the caller drops the log.
+write_joblog "$(job_row 1 0 0 'run one')" "$(job_row 2 0 0 'run two')"
+report=$(_report_parallel_joblog 'probe' "$joblog" 0 2>&1)
+check "a clean run returns zero" 0 "$?"
+check "a clean run prints nothing" "" "$report"
+
+# parallel failing without recording a job (it could not start, say) must not
+# read as all clear.
+: >"$joblog"
+report=$(_report_parallel_joblog 'probe' "$joblog" 127 2>&1)
+check "an unrecorded parallel failure is still reported" \
+  "WARNING: probe: parallel exited 127 without recording a failing job" "$report"
+
+# The sample is capped, and the remainder counted rather than dropped.
+rows=()
+for i in $(seq 1 12); do rows+=("$(job_row "$i" 1 0 "run $i")"); done
+write_joblog "${rows[@]}"
+report=$(_report_parallel_joblog 'probe' "$joblog" 12 2>&1)
+check "the sample is capped at ten" 10 "$(echo "$report" | grep -c '^  exit 1: ')"
+check "the remainder is counted" "  ... and 2 more" "$(echo "$report" | grep '\.\.\. and')"
+
+if command -v parallel >/dev/null; then
+  # TMPDIR is redirected so the job logs this leaves behind are countable: one
+  # kept for the failing run, none for the clean one.
+  runs="$pj/runs"
+  mkdir -p "$runs"
+  report=$(printf 'a\nb\nc\n' | TMPDIR="$runs" run_parallel_reporting 'probe' '[ {} != b ]' 2>&1 >/dev/null)
+  check "run_parallel_reporting never fails its caller" 0 "$?"
+  check "a real failing job is counted" "WARNING: probe: 1 of 3 jobs failed" "$(echo "$report" | head -1)"
+  case "$report" in
+  *"[ b != b ]"*) echo "ok   - the failing job's argument is named" ;;
+  *)
+    echo "FAIL - the failing job's argument was not named"
+    fail=1
+    ;;
+  esac
+  check "a failing run keeps its job log" 1 "$(find "$runs" -type f | grep -c . || true)"
+
+  rm -f "$runs"/*
+  report=$(printf 'a\nc\n' | TMPDIR="$runs" run_parallel_reporting 'probe' '[ {} != b ]' 2>&1 >/dev/null)
+  check "a clean run stays silent" "" "$report"
+  check "a clean run leaves no job log behind" 0 "$(find "$runs" -type f | grep -c . || true)"
+
+  # set -e is the mode every caller runs under: a failed job must not abort it.
+  check "a failed job does not abort a set -e caller" "survived" \
+    "$(
+      set -e
+      printf 'b\n' | run_parallel_reporting 'probe' '[ {} != b ]' 2>/dev/null
+      echo survived
+    )"
+else
+  echo "skip - run_parallel_reporting end-to-end (GNU parallel not installed)"
+fi
+
+rm -rf "$pj"
+unset -f write_joblog job_row
 
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail

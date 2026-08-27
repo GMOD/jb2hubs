@@ -195,15 +195,20 @@ node src/makeGenArkExtensions.ts
 
 log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
-  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' <"$NEW_HUBS_FILE" || true
+  run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}' <"$NEW_HUBS_FILE"
 elif [ -n "${REPROCESS:-}" ]; then
   # Force regen (e.g. to add the coarse PIF tier): bypass the .checked gate and
   # let createChainTrackPifs.sh clear stamps / overwrite existing outputs.
-  parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' <"$ALL_META_FILE" || true
+  run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
 else
+  # An `if` rather than a `&&`: the loop's exit status is its last iteration's,
+  # so a `&&` whose test fails on the final hub would fail the pipeline under
+  # pipefail. The old trailing `|| true` was covering that.
   while IFS= read -r meta; do
-    [[ ! -f "$(dirname "$meta")/liftOver/.checked" ]] && echo "$meta"
-  done <"$ALL_META_FILE" | parallel $PARALLEL_OPTS './createChainTrackPifs.sh {}' || true
+    if [[ ! -f "$(dirname "$meta")/liftOver/.checked" ]]; then
+      echo "$meta"
+    fi
+  done <"$ALL_META_FILE" | run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}'
 fi
 
 log "Adding chain tracks to configs..."

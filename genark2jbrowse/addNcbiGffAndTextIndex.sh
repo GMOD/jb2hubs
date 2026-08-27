@@ -117,5 +117,5 @@ export -f extract_genetic_codes
 # Skip when sourced (e.g. by the test script) so only the function
 # definitions above are loaded.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  list_scoped_gz bgz "$SCOPE_FILE" | parallel -j16 $PARALLEL_OPTS add_track_and_text_index || true
+  list_scoped_gz bgz "$SCOPE_FILE" | run_parallel_reporting 'GFF track+index' -j16 add_track_and_text_index
 fi

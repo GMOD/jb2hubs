@@ -98,6 +98,66 @@ log() {
 }
 export -f log
 
+# Reports the failing jobs in a GNU parallel --joblog, given the exit status
+# parallel itself returned. Prints nothing when every job succeeded; otherwise
+# writes a count plus the first few failing command lines to stderr and returns
+# non-zero, which is how run_parallel_reporting decides whether the log is worth
+# keeping. Rows are Seq/Host/Starttime/JobRuntime/Send/Receive/Exitval/Signal/
+# Command, so a job failed when either Exitval or Signal is set.
+# Usage: _report_parallel_joblog <label> <joblog> <parallel-exit-status>
+_report_parallel_joblog() {
+  local label="$1" joblog="$2" status="${3:-0}" total=0 failed=0
+  if [ -s "$joblog" ]; then
+    total=$(awk 'END {print (NR > 0 ? NR - 1 : 0)}' "$joblog")
+    failed=$(awk -F'\t' 'NR > 1 && ($7 != 0 || $8 != 0) {n++} END {print n + 0}' "$joblog")
+  fi
+  if [ "$failed" -eq 0 ]; then
+    # parallel can fail without recording a job -- it could not start, or the
+    # joblog never got written. Saying so beats reporting "all clear".
+    if [ "$status" -ne 0 ]; then
+      echo "WARNING: $label: parallel exited $status without recording a failing job" >&2
+    fi
+    return 0
+  fi
+  {
+    echo "WARNING: $label: $failed of $total jobs failed"
+    # The sample is capped inside awk rather than piped through head, so a
+    # SIGPIPE cannot abort the reporting path in a `set -e` caller.
+    awk -F'\t' -v max=10 'NR > 1 && ($7 != 0 || $8 != 0) {
+      if (++n > max) exit
+      cmd = $9
+      for (i = 10; i <= NF; i++) cmd = cmd FS $i
+      printf "  %s: %s\n", ($7 != 0 ? "exit " $7 : "signal " $8), cmd
+    }' "$joblog"
+    if [ "$failed" -gt 10 ]; then
+      echo "  ... and $((failed - 10)) more"
+    fi
+    echo "  full job log: $joblog"
+  } >&2
+  return 1
+}
+export -f _report_parallel_joblog
+
+# Runs GNU parallel over the job arguments on stdin, then says how many jobs
+# failed and which. Tolerating a failed job is deliberate in the sweep scripts --
+# one hub with broken chain files must not stop the other 50,700 -- but the bare
+# `parallel ... || true` this replaces hid a systematic breakage exactly as well
+# as it hid a one-off. Always returns 0, so a `set -e` caller keeps going.
+# Everything after the label goes to parallel; PARALLEL_OPTS is added here.
+# Usage: printf '%s\n' "${items[@]}" | run_parallel_reporting <label> [parallel args...]
+run_parallel_reporting() {
+  local label="$1"
+  shift
+  local joblog status=0
+  joblog=$(mktemp)
+  # shellcheck disable=SC2086 # PARALLEL_OPTS is a deliberate word-split list
+  parallel --joblog "$joblog" $PARALLEL_OPTS "$@" || status=$?
+  if _report_parallel_joblog "$label" "$joblog" "$status"; then
+    rm -f "$joblog"
+  fi
+}
+export -f run_parallel_reporting
+
 # Counts changed objects in an rclone -v log: one line is printed per
 # transferred/deleted object. Returns 0 (not an error) when nothing changed.
 count_rclone_changes() {
@@ -106,6 +166,17 @@ count_rclone_changes() {
 export -f count_rclone_changes
 
 # Invalidates one or more CloudFront paths on the jbrowse.org distribution.
+#
+# CloudFront bills per path, so no caller may invalidate unconditionally, and
+# as of 2026-08-27 none does -- audited, so the next reader does not have to:
+# ucsc2jbrowse/uploadAll.sh and genark2jbrowse/uploadAll.sh both gate on the
+# object count rclone_sync_with_indexes reports (genark invalidating only the
+# prefixes that moved), website/pangenome-config/upload.sh on its
+# upload_if_changed stamp, and website/deploy.sh's "/*" fires only after a
+# release actually swapped the webroot symlink -- which run.sh in turn gates on
+# genark, ucsc or website source having changed. Keep it that way when adding a
+# caller: gate on a real change count, the way upload_if_changed gates uploads.
+#
 # Usage: cloudfront_invalidate "/ucsc/*" ["/processedHubJson/*" ...]
 cloudfront_invalidate() {
   aws cloudfront create-invalidation \
