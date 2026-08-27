@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { fileURLToPath } from 'url'
 import zlib from 'zlib'
 
 //
@@ -256,7 +257,16 @@ export function formatTsv(rows: DerivedAccession[]) {
 }
 
 // CLI: prints the merged map as `db<tab>accession<tab>assemblyName<tab>source`.
-if (import.meta.main) {
+//
+// `process.argv[1] === fileURLToPath(import.meta.url)` rather than
+// `import.meta.main`, which is FALSE for a TypeScript entry point under
+// --experimental-strip-types (true for .mjs, false for .ts on node 24.2.0) --
+// and lib/common.sh puts that flag in NODE_OPTIONS for every script here. The
+// block simply never ran: the CLI exited 0 having written nothing, so
+// downloadNcbiGff.sh read an empty list, logged `0 assemblies detected as
+// NCBI-derived.` and added no track to any of the 238 -- see the emptiness
+// gate there, which is what now makes that state loud rather than routine.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [listJson, downloadsDir, curatedTsv] = process.argv.slice(2)
   if (!listJson || !downloadsDir || !curatedTsv) {
     console.error(

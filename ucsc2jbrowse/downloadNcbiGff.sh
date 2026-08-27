@@ -42,6 +42,24 @@ node "$SCRIPT_DIR/src/deriveNcbiAccessions.ts" \
   "$UCSC_BUILT_DIR/list.json" "$UCSC_DOWNLOADS_DIR" "$CURATED_TSV" >"$ACC_TSV"
 log "$(wc -l <"$ACC_TSV") assemblies detected as NCBI-derived."
 
+# Zero is never a legitimate answer for a genome list with hundreds of entries,
+# and it is the shape every failure upstream of here takes: a derivation that
+# throws, an input that moved, or -- as happened on 2026-08-27 -- a CLI entry
+# guard that silently stops matching. `import.meta.main` is false for a .ts
+# entry point under --experimental-strip-types, so deriveNcbiAccessions.ts wrote
+# nothing and exited 0. The old log line read "0 assemblies detected as
+# NCBI-derived.", which looks like a normal count rather than a broken run, and
+# every one of the 238 assemblies lost its ncbiRefSeqGff track with no error
+# anywhere. Refuse instead of proceeding over an empty list.
+if [ ! -s "$ACC_TSV" ] || [ "$(grep -vc '^#\|^$' "$ACC_TSV")" -eq 0 ]; then
+  echo "ERROR: no assemblies detected as NCBI-derived." >&2
+  echo "  deriveNcbiAccessions.ts produced an empty list from $UCSC_BUILT_DIR/list.json" >&2
+  echo "  ($(python3 -c "import json,sys;print(len(json.load(open(sys.argv[1]))['ucscGenomes']))" "$UCSC_BUILT_DIR/list.json" 2>/dev/null || echo '?') genomes in that list)." >&2
+  echo "  This is a broken derivation, not an empty answer -- refusing rather than" >&2
+  echo "  adding no GFF track to any assembly." >&2
+  exit 1
+fi
+
 # Restrict to dbs named on the command line, when any are given.
 declare -A WANT
 for a in "$@"; do
