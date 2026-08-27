@@ -15,6 +15,9 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
 - [architectural-decision-records/0003-mirror-assembly-sidecars.md](architectural-decision-records/0003-mirror-assembly-sidecars.md)
   — why chrom.sizes/chromAlias/cytoBand are served from our bucket, and why all
   three had to be
+- [architectural-decision-records/0004-netted-chains-not-all-chains.md](architectural-decision-records/0004-netted-chains-not-all-chains.md)
+  — why chain tracks use `over.chain`, and the measurement showing netting keeps
+  the paralogs
 - [ENCODE_TRACKS.md](ENCODE_TRACKS.md) — which ENCODE content is converted,
   which is dropped, and the numbers behind that split
 
@@ -43,15 +46,21 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   per-assembly bundles for JBrowse Desktop
 - [genark-taxon-images-prd.md](genark-taxon-images-prd.md) — taxon-level image
   lookup (implemented) and the taxonomy-walk follow-up
-- [OTHER_IDEAS.md](OTHER_IDEAS.md) — keeping JBrowse Desktop in sync with this
-  portal's content
 
 ## Surveys
 
 - [ncbi-gff-feature-type-survey.md](ncbi-gff-feature-type-survey.md) — feature
   types and parent/child structure across the full RefSeq corpus
 
+## Work not yet done
+
+One file per item, so a loose end can be picked up, linked to, or deleted on its
+own.
+
+- [todo/](todo/) — loose ends we intend to close
+- [ideas/](ideas/) — things we might do, including open questions whose answer
+  might be no
+
 ## Other
 
-- [TODO.md](TODO.md) — loose ends
 - [archive/](archive/) — superseded scratch notes, kept only for provenance
