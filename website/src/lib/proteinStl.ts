@@ -75,9 +75,7 @@ export function parseCaTrace(pdb: string): Vec3[] {
 function tangents(points: Vec3[]): Vec3[] {
   const last = points.length - 1
   return points.map((_p, i) =>
-    normalize(
-      sub(points[Math.min(last, i + 1)]!, points[Math.max(0, i - 1)]!),
-    ),
+    normalize(sub(points[Math.min(last, i + 1)]!, points[Math.max(0, i - 1)]!)),
   )
 }
 

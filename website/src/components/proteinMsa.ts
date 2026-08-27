@@ -248,13 +248,30 @@ export function parseGenpeptDomains(record: string): Domain[] {
   return out
 }
 
-// accession.version -> its CDD domains, from a multi-record GenPept efetch.
-function parseAllDomains(text: string): Map<string, Domain[]> {
+// accession -> its CDD domains, from a multi-record GenPept efetch, keyed BOTH
+// versioned and bare. efetch answers with the version it holds — ask for
+// `P00546` and the record says `VERSION P00546.1` — while the accession a row
+// carries depends on where it came from: NCBI's product report gives a versioned
+// RefSeq (`NP_009718.3`), PANTHER gives a bare UniProt (`P00546`). Keying only
+// on what the record says silently dropped every domain on the PANTHER rows,
+// which reads as "these orthologs have no conserved domains" rather than as a
+// lookup miss.
+export function parseAllDomains(text: string): Map<string, Domain[]> {
   const byAcc = new Map<string, Domain[]>()
   for (const record of text.split(/\n\/\/\s*\n/)) {
     const ver = /^VERSION\s+(\S+)/m.exec(record)?.[1]
     if (ver) {
-      byAcc.set(ver, parseGenpeptDomains(record))
+      const domains = parseGenpeptDomains(record)
+      const bare = ver.replace(/\.\d+$/, '')
+      // The exact key is unambiguous and always wins. The bare key is shared —
+      // two records can reduce to it — so first claim holds, which keeps a later
+      // record from silently answering an earlier one's lookup.
+      if (ver !== bare) {
+        byAcc.set(ver, domains)
+      }
+      if (!byAcc.has(bare)) {
+        byAcc.set(bare, domains)
+      }
     }
   }
   return byAcc

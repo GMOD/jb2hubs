@@ -5,8 +5,8 @@ import useSWRImmutable from 'swr/immutable'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
-import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import { HelpDialog, SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
+import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import { examplesFor } from './geneExamples.ts'
 import { fetchOrthologSymbol, searchGenes } from './geneSearch.ts'
 import {
@@ -383,7 +383,9 @@ function GeneCombobox({
               key={symbol}
               role="option"
               aria-selected={i === highlighted}
-              className={i === highlighted ? 'msv-option highlighted' : 'msv-option'}
+              className={
+                i === highlighted ? 'msv-option highlighted' : 'msv-option'
+              }
               onMouseEnter={() => {
                 setHighlighted(i)
               }}
@@ -455,7 +457,9 @@ function GeneResults({
     error,
     isLoading: aligning,
   } = useSWRImmutable(
-    wantAlignment ? (['protein-alignment', symbol, taxId, source] as const) : null,
+    wantAlignment
+      ? (['protein-alignment', symbol, taxId, source] as const)
+      : null,
     ([, sym, , src]) =>
       src === 'hundredWay'
         ? loadHundredWay(sym)
@@ -692,7 +696,8 @@ async function loadLive(
   precomputed: ProteinAlignment | undefined,
   onProgress: (s: string) => void,
 ): Promise<LoadedAlignment> {
-  const aligned = precomputed ?? (await alignProteinPanel(panel, { onProgress }))
+  const aligned =
+    precomputed ?? (await alignProteinPanel(panel, { onProgress }))
   const queryRow =
     panel.rows.find(r => r.taxId === panel.query.refTaxonId) ?? panel.rows[0]!
   return {
@@ -739,7 +744,8 @@ function AlignmentSource({
             onChange('hundredWay')
           }}
         />
-        100 vertebrates <span className="msv-source-note">instant, no domains</span>
+        100 vertebrates{' '}
+        <span className="msv-source-note">instant, no domains</span>
       </label>
       <label className="msv-source-option">
         <input

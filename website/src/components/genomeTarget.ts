@@ -49,7 +49,9 @@ export function pickGeneTrack(
   trackIds: string[],
 ): string | undefined {
   const ids = new Set(trackIds)
-  return GENE_TRACK_SUFFIXES.map(s => `${assembly}-${s}`).find(id => ids.has(id))
+  return GENE_TRACK_SUFFIXES.map(s => `${assembly}-${s}`).find(id =>
+    ids.has(id),
+  )
 }
 
 // chromAlias.txt in either of the two shapes UCSC publishes:

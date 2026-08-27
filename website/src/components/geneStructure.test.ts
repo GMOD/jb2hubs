@@ -193,7 +193,10 @@ test('buildSessionUrl: emits the workspace layout tree, not the dropped init', (
     s.layout?.children.map(c => c.tabs[0]!.viewIds),
     [['lgv-Test'], ['protein-Test']],
   )
-  assert.deepEqual(s.layout?.children.map(c => c.size), [58, 42])
+  assert.deepEqual(
+    s.layout?.children.map(c => c.size),
+    [58, 42],
+  )
 })
 
 test('buildSessionUrl: an indexed alignment is named, not carried', () => {
@@ -210,7 +213,10 @@ test('buildSessionUrl: an indexed alignment is named, not carried', () => {
     init?: { msaIndexedLocation?: { uri: string }; msaName?: string }
     data?: unknown
   }
-  assert.equal(msa.init?.msaIndexedLocation?.uri, 'https://example.org/100way.fa.gz')
+  assert.equal(
+    msa.init?.msaIndexedLocation?.uri,
+    'https://example.org/100way.fa.gz',
+  )
   assert.equal(msa.init?.msaName, 'Test')
   // the alignment stays out of the URL, which is what keeps it small
   assert.equal(msa.data, undefined)

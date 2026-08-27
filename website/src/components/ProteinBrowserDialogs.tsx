@@ -150,7 +150,9 @@ export function SessionDetailsDialog({
         )}
       </div>
       {message && <p className="msv-hint">{message}</p>}
-      {stlError && <p className="msv-error">Couldn&rsquo;t build STL: {stlError}</p>}
+      {stlError && (
+        <p className="msv-error">Couldn&rsquo;t build STL: {stlError}</p>
+      )}
 
       <pre className="msv-code msv-code-scroll">{sessionJson}</pre>
     </Modal>
@@ -164,8 +166,8 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
       onClose={onClose}
     >
       <p>
-        Nothing is precomputed per gene — everything below is synthesized in your
-        browser from public data the moment you ask for it.
+        Nothing is precomputed per gene — everything below is synthesized in
+        your browser from public data the moment you ask for it.
       </p>
 
       <h3>Finding the gene</h3>
@@ -181,16 +183,16 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
         , which returns the GeneID, the assemblies the gene is placed on and its
         Swiss-Prot accession. The coding exon structure is parsed out of the
         E-utils <code>gene_table</code> flat file, preferring a curated RefSeq
-        transcript and, among those, the isoform whose length matches the UniProt
-        canonical protein — so the 3D structure lines up with the exons.
+        transcript and, among those, the isoform whose length matches the
+        UniProt canonical protein — so the 3D structure lines up with the exons.
       </p>
 
       <h3>The orthologs</h3>
       <p>
-        One ortholog per species, with a representative protein each (MANE Select
-        where flagged, else the longest isoform), plus the NCBI CDD conserved
-        domains for every one. That is the domain cartoon, and it needs no
-        alignment, so it appears in seconds.
+        One ortholog per species, with a representative protein each (MANE
+        Select where flagged, else the longest isoform), plus the NCBI CDD
+        conserved domains for every one. That is the domain cartoon, and it
+        needs no alignment, so it appears in seconds.
       </p>
       <p>
         NCBI&rsquo;s ortholog sets cover vertebrates and insects. For a fly,
@@ -242,9 +244,9 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
         >
           AlphaFold
         </a>{' '}
-        model is fetched by UniProt accession, and the session connects it to the
-        genome view through the same transcript. Session details also builds a
-        3D-printable STL of the backbone in the browser.
+        model is fetched by UniProt accession, and the session connects it to
+        the genome view through the same transcript. Session details also builds
+        a 3D-printable STL of the backbone in the browser.
       </p>
     </Modal>
   )

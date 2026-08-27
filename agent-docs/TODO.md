@@ -161,3 +161,25 @@ is left, in the order I'd do them.
   The only visible symptom for a year was that the script logged
   `scanned 476 ucsc configs` while walking 478. That number is now counted
   rather than written down.
+
+## Orthologs index
+
+ortholog_index.json is 9× bigger than it needs to be. It's 4.34 MB (1.11 MB
+gzipped) and the page's largest asset, but only two things are actually read
+from it: is this accession one we host, and its ucscDb (62 entries). The names
+duplicate taxname/common_name, which every ortholog report already carries — and
+NCBI's are cleaner, with no assembly parenthetical to strip. An accession list
+plus the ucscDb map measures 672 KB raw / 120 KB gzipped. Worth its own change.
+
+Scoping to a clade the reference isn't in (human TP53 → Birds) loses the ref row
+and every synteny link, because taxon_filter excludes the reference's own
+report. I made the page say so and name the way back; the alternative is
+injecting the reference taxon into the request, which muddies the "N of M in
+birds" count.
+
+Smaller: no column sorting, no expand-all; NCBI is still browser-direct and
+unkeyed (pre-existing). The ortholog payload also carries GO terms and
+Ensembl/UniProt/OMIM ids that nothing shows yet.
+
+One note if you astro dev in another checkout: synteny_pairs.json changed shape,
+so run pnpm generate there. I regenerated this one.

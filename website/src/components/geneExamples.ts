@@ -110,7 +110,10 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
       note: 'Cyclin-dependent kinase — the cell-cycle engine',
     },
     { symbol: 'ACT1', note: 'Actin — among the most conserved proteins known' },
-    { symbol: 'GAL4', note: 'The transcription activator two-hybrid is built on' },
+    {
+      symbol: 'GAL4',
+      note: 'The transcription activator two-hybrid is built on',
+    },
     { symbol: 'HSP104', note: 'Disaggregase — prion propagation' },
     { symbol: 'TUB1', note: 'α-tubulin' },
   ],
@@ -127,8 +130,4 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
 // human symbols are the ones most readers can name.
 export function examplesFor(taxId: number): Example[] {
   return EXAMPLES_BY_TAXON[taxId] ?? EXAMPLES_BY_TAXON[9606]!
-}
-
-export function noteFor(taxId: number, symbol: string): string | undefined {
-  return examplesFor(taxId).find(e => e.symbol === symbol)?.note
 }

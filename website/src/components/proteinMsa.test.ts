@@ -6,6 +6,7 @@ import {
   buildDomainGff,
   buildInputFasta,
   dedupeLabels,
+  parseAllDomains,
   parseFasta,
   parseGenpeptDomains,
   unwrapFasta,
@@ -51,6 +52,31 @@ test('parseGenpeptDomains keeps CDD regions and drops non-CDD sites', () => {
 
 test('parseGenpeptDomains returns nothing when there is no FEATURES table', () => {
   assert.deepEqual(parseGenpeptDomains('LOCUS x\nORIGIN\n//'), [])
+})
+
+// A row's accession is versioned when it came from NCBI's product report
+// (NP_000537.3) and bare when it came from PANTHER (P00546), but efetch answers
+// with whichever version it holds. Keying only on the record's own VERSION
+// dropped every domain on the PANTHER rows, which the cartoon renders as "these
+// orthologs share no conserved domains" rather than as a failed lookup.
+test('parseAllDomains: a record is findable by its bare accession too', () => {
+  const byAcc = parseAllDomains(`${genpept}\n//\n`)
+  assert.equal(byAcc.get('NP_000537.3')?.length, 3)
+  assert.equal(byAcc.get('NP_000537')?.length, 3)
+})
+
+test('parseAllDomains: a versioned key is never displaced by a bare one', () => {
+  const other = genpept
+    .replace('VERSION     NP_000537.3', 'VERSION     NP_000537')
+    .replace('/region_name="P53_TAD"', '/region_name="OTHER"')
+  const byAcc = parseAllDomains(`${genpept}\n//\n${other}\n//\n`)
+  assert.equal(byAcc.get('NP_000537.3')?.[0]?.name, 'P53_TAD')
+  // the bare key was claimed by the first record and stays claimed
+  assert.equal(byAcc.get('NP_000537')?.[0]?.name, 'P53_TAD')
+})
+
+test('parseAllDomains: a record without a VERSION line is skipped', () => {
+  assert.equal(parseAllDomains('LOCUS x\nORIGIN\n//\n').size, 0)
 })
 
 test('parseFasta concatenates wrapped lines, keyed by accession token', () => {

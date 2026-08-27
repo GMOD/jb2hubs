@@ -84,38 +84,68 @@ an `outDir` needs an explicit `rootDir`, and `moduleResolution: node` (node10)
 is rejected outright. A tsconfig error there fails `pnpm lint` before any rule
 runs.
 
-## The react-msaview patch is gone, and the reason it existed is worth keeping
+## The website is a major version ahead of published `@jbrowse/core`
 
-`patches/react-msaview@5.6.3.patch` existed because 5.6.x was built against
-**unreleased** `@jbrowse/core`: its `dist/fetchUtils.js` imported
-`statusMessageText`, added to jbrowse-components on 2026-06-17 (`7e576348e8`)
-— after `@jbrowse/core@4.3.0` shipped on 2026-05-21, and 4.3.0 is still
-`latest`. Without the patch, `astro build` died with
-`[MISSING_EXPORT] "statusMessageText" is not exported`, failing `pnpm build`
-and so `run.sh`'s `predeploy`.
+This is one situation with several symptoms, and every piece of machinery below
+disappears together when `@jbrowse/core` **v5** publishes. That tree already
+sits on `@mui/material` 9.3, `@mui/icons-material` 9.3, `mobx` 7 and
+`@jbrowse/mobx-state-tree` 6 — the exact set the website and react-msaview 6.x
+already use — so the gap is a release, not a design decision.
 
-**react-msaview 6.2.0 upstreamed the same fix** — `fetchUtils.ts` now inlines
-the one-liner, with a comment giving our reasoning (an external
-`@jbrowse/core/util` in the UMD build resolves against whatever core the host
-ships, so the import lands as `undefined` on an older host). Verified in the
-published 6.2.0 tarball on 2026-08-26: `statusMessageText` is defined locally
-and the only `@jbrowse/core` import in that module is `fetchAndMaybeUnzipText`.
-So the patch, the `patchedDependencies` block and `patches/` are all deleted.
+The newest **published** core is 4.3.0, on MUI 7 / mobx 6 / MST 5. The website
+and `react-msaview@6.2.0` are on MUI 9 / mobx 7 / MST 6. Install them together
+and both copies of each land in the page, at which point the alignment viewer
+does not render **at all**:
 
-The general shape is what to remember, because it will recur: **react-msaview
-is released from a repo that develops against jbrowse-components `main`**, so a
-fresh msaview can import a core symbol no published `@jbrowse/core` exports,
-and the failure is a build-time `MISSING_EXPORT` rather than anything subtle.
-When bumping it, grep the tarball's `dist/` for `@jbrowse/core` named imports
-and check them against the installed core before trusting a green install:
+- `[MobX] There are multiple, different versions of MobX active`, and then
+  `[mobx-state-tree] Identifier types can only be instantiated as direct child of a model type`
+  — MST refuses to build the viewer's model.
+- A MUI 7 theme (core's `createJBrowseTheme`, which is what react-msaview
+  renders under) handed to MUI 9's `ThemeProvider`. One component reads a field
+  whose shape moved and throws
+  `Cannot read properties of undefined (reading 'length')` from its zoom
+  `ToggleButton` — and react-msaview's error boundary is above the whole view,
+  so the page shows a red bar where the alignment was, not a missing button.
+
+`pnpm-workspace.yaml`'s `overrides` hoist core onto the newer four. That alone
+is not enough: core 4.3.0 imports `@mui/icons-material/HelpOutline` in two
+modules, an unsuffixed alias MUI 9 dropped (it is `HelpOutlined` there), and an
+unresolvable import 500s the whole react-msaview chunk at prebundle — a harder
+failure than the one being fixed. So `patches/@jbrowse__core@4.3.0.patch`
+renames those two imports and nothing else.
+
+Measured in a browser on 2026-08-26, all three states: **overrides + patch** →
+the 100-way alignment draws, zero console errors; **overrides alone** → dead on
+the MUI theme; **neither** → dead on mobx/MST. Re-run that, don't reason about
+it — every one of these fails inside an error boundary, so a green build proves
+nothing.
+
+**Delete `overrides`, `patchedDependencies` and `patches/` together** when core
+v5 lands, and check with a browser rather than a build.
+
+### Why react-msaview keeps landing ahead of core
+
+react-msaview is released from a repo that develops against jbrowse-components
+`main`, so a fresh msaview routinely needs a core that has not shipped. This is
+the second time: `patches/react-msaview@5.6.3.patch` existed because 5.6.x
+imported `statusMessageText` from an `@jbrowse/core` that did not export it, and
+`astro build` died with `[MISSING_EXPORT]`. **6.2.0 upstreamed that fix** — its
+`fetchUtils.ts` inlines the one-liner — so that patch is gone.
+
+When bumping it, check the published tarball against the installed core before
+trusting a green install, because the build-time half of this is silent until it
+isn't:
 
 ```
 npm pack react-msaview@<version> && tar xzf react-msaview-<version>.tgz
 grep -rhoE "from ['\"]@jbrowse/core[^'\"]*['\"]" package/dist/ | sort -u
+grep -rhoE "['\"]@mui/icons-material/[A-Za-z0-9_]+['\"]" package/dist/ | sort -u
 ```
 
-A patch is the right answer again if one turns up; pinning to the last working
-version is not, since pnpm gives no warning when the same trap reappears.
+The second line is worth running against **core's** own `esm/` too, which is how
+the `HelpOutline` breakage above was found. As of 6.2.0 react-msaview itself is
+clean against MUI 9 — 20 icon imports, all present — and core is the one that is
+not.
 
 ## Generated files — do not hand-edit
 

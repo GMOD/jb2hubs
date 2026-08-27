@@ -4,6 +4,23 @@ packages:
   - genark2jbrowse
   - 'aws/*'
   - hubtools
+overrides:
+  # This site and react-msaview 6.x are a major version ahead of the newest
+  # PUBLISHED @jbrowse/core (4.3.0) on both of its UI stacks: MUI 9 vs 7, and
+  # mobx 7 / MST 6 vs mobx 6 / MST 5. Left alone, both copies of each land in the
+  # page and the alignment viewer does not render at all — MobX says "multiple,
+  # different versions of MobX active", MST then refuses to build the viewer's
+  # model, and separately a MUI 7 theme handed to MUI 9's ThemeProvider takes the
+  # whole view down through react-msaview's error boundary
+  # ("Cannot read properties of undefined (reading 'length')").
+  #
+  # So hoist core onto what everything else already uses. Measured in a browser
+  # on 2026-08-26: with these four, the 100-way alignment draws with zero console
+  # errors; with the mobx pair alone it still dies on the MUI theme.
+  mobx: ^7.0.0
+  '@jbrowse/mobx-state-tree': ^6.0.0
+  '@mui/material': ^9.2.0
+  '@mui/icons-material': ^9.2.0
 allowBuilds:
   esbuild: true
   sharp: true
@@ -12,3 +29,5 @@ minimumReleaseAgeExclude:
   - '@jbrowse/svgcanvas@6.2.0'
   - msa-parsers@6.2.0
   - react-msaview@6.2.0
+patchedDependencies:
+  '@jbrowse/core@4.3.0': patches/@jbrowse__core@4.3.0.patch

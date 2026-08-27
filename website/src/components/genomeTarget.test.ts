@@ -44,7 +44,10 @@ test('parseChromAlias: no named column means the first one, as golden path does'
 // alias file is the difference between a session that highlights and one that
 // silently does not, so falling back to column 0 keeps the common case working.
 test('parseChromAlias: an unmatched column name falls back to the first', () => {
-  assert.equal(parseChromAlias(genArk, 'nosuchcolumn').get('chr1'), 'NC_000067.7')
+  assert.equal(
+    parseChromAlias(genArk, 'nosuchcolumn').get('chr1'),
+    'NC_000067.7',
+  )
 })
 
 test('parseChromAlias: an empty file is an empty map, not a throw', () => {
