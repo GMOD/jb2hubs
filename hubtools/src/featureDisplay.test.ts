@@ -72,6 +72,26 @@ describe('getUcscFeatureDisplay', () => {
     assert.equal(d.displays?.[0]?.labels?.name, "jexl:get(feature,'geneName')")
   })
 
+  // The label field IS the adapter's aggregateField on a bigGenePred, and
+  // BigBedAdapter's synthesized gene parent carries none of the autoSql columns
+  // -- only the aggregated value, as `name`. Naming the column labeled nothing.
+  it('labels an aggregated bigGenePred by the parent name, not the column', () => {
+    const d = getUcscFeatureDisplay('t', {
+      type: 'bigGenePred',
+      labelFields: 'geneName,geneName2',
+      defaultLabelFields: 'geneName2',
+    })
+    assert.equal(d.displays?.[0]?.labels?.name, "jexl:get(feature,'name')")
+  })
+
+  it('keeps the none suppression on a bigGenePred', () => {
+    const d = getUcscFeatureDisplay('t', {
+      type: 'bigGenePred',
+      defaultLabelFields: 'none',
+    })
+    assert.equal(d.displays?.[0]?.labels?.name, "jexl:''")
+  })
+
   it('suppresses the label when defaultLabelFields is none', () => {
     const d = getUcscFeatureDisplay('t', {
       labelFields: 'name',

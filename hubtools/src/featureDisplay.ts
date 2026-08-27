@@ -78,6 +78,13 @@ export function toFeatureField(field: string) {
   return featureFieldRenames[field] ?? field
 }
 
+// A trackDb `type` is the format plus optional arguments ("bigGenePred .as=…"),
+// so the format is the first word -- the same split createTrackConfiguration
+// makes when it chooses an adapter.
+export function baseType(trackType: unknown) {
+  return typeof trackType === 'string' ? trackType.split(' ')[0] : undefined
+}
+
 // Converts a UCSC trackDb `mouseOver` template (e.g. "<b>AF</b>: ${AF} ($ref)")
 // into a jexl template literal, mapping both $field and ${field} to
 // ${get(feature,'field')}. A jexl template literal renders a missing/null field
@@ -197,13 +204,27 @@ export function getUcscFeatureDisplay(
 ): Partial<FeatureDisplay> {
   const labelField =
     firstField(ucsc.defaultLabelFields) ?? firstField(ucsc.labelFields)
+  // A bigGenePred's label field is also what createTrackConfiguration hands the
+  // adapter as `aggregateField`, and BigBedAdapter groups the transcripts under
+  // a SYNTHESIZED gene parent whose data is exactly type/subfeatures/strand/
+  // name/start/end/refName -- every autoSql column stays on the children. The
+  // row that draws is that parent, so `get(feature,'geneName2')` resolved to
+  // nothing and the gene rendered unlabeled. The value it wanted is the one the
+  // adapter aggregated on, which it writes as the parent's `name`. Reading
+  // `name` instead is the same text on the parent and the transcript's own
+  // accession on a row that did not aggregate. `none` is unchanged: that field
+  // never aggregates, and UCSC means no label.
+  const aggregatesOnLabelField =
+    baseType(ucsc.type) === 'bigGenePred' && labelField !== 'none'
   const labels =
     labelField !== undefined
       ? {
           name:
             labelField === 'none'
               ? "jexl:''"
-              : `jexl:get(feature,'${toFeatureField(labelField)}')`,
+              : aggregatesOnLabelField
+                ? "jexl:get(feature,'name')"
+                : `jexl:get(feature,'${toFeatureField(labelField)}')`,
         }
       : undefined
 
