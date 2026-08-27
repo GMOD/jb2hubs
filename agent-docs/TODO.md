@@ -183,3 +183,7 @@ Ensembl/UniProt/OMIM ids that nothing shows yet.
 
 One note if you astro dev in another checkout: synteny_pairs.json changed shape,
 so run pnpm generate there. I regenerated this one.
+
+## name2 not shown
+
+https://jbrowse.org/code/jb2/main/?config=%2Fhubs%2Fgenark%2FGCF%2F025%2F998%2F455%2FGCF_025998455.1%2Fconfig.json&session=local-V2JT1jCtkx
