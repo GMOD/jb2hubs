@@ -23,9 +23,12 @@ thing the page shows when that is true.
 ## What the file holds now
 
 `"<accession1>,<accession2>": [trackId, name1, name2]`, the names in the same
-order as the key, resolved through `public/ortholog_index.json` (written just
-before it in `pnpm generate`, which is what keeps the two agreeing: a pair only
-helps if both halves are rows the ortholog table can show).
+order as the key. Membership and the UCSC db come from
+`public/ortholog_index.json` — written just before it in `pnpm generate`, which
+is what keeps the two agreeing: a pair only helps if both halves are rows the
+ortholog table can show. The names themselves are the track's own
+`assemblyNames`; the ortholog index only resolves those to accessions, which
+since `ortholog-index/2` is all it holds — an accession list and a `ucscDb` map.
 
 Two rules the generator enforces, both silent if broken:
 

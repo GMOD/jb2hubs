@@ -55,7 +55,9 @@ The alternative was baking a taxon → clade map into `ortholog_index.json` at
 build time. That is 41,517 distinct taxa to classify, so it means a ~4-minute
 NCBI dependency inside `pnpm generate` and a new way for CI to fail, to save a
 request that overlaps with reading the first group. Revisit only if the runtime
-call becomes a rate-limit problem.
+call becomes a rate-limit problem — and note the index no longer holds per-taxon
+data at all (it is an accession list plus a `ucscDb` map, `ortholog-index/2`),
+so this now means adding a third key rather than extending an existing row.
 
 `CLADE_LADDER` in `orthologClades.ts` is a hand-picked list of ~28 taxon ids,
 most-specific first, and each broad "other" entry only mops up what its narrower
