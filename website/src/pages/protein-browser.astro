@@ -11,13 +11,13 @@ if (!features.proteinBrowser) {
 
 <Layout
   title="Protein browser"
-  description="Enter a gene and compare its protein across model organisms: domain architecture, a residue-level alignment, the AlphaFold structure, and a connected JBrowse 2 session."
+  description="Enter a gene and open it in JBrowse 2 with its coding exons back to back, the AlphaFold structure and a cross-species protein alignment in one connected session."
 >
   <Container>
     <h1>Protein browser</h1>
     <p class="ui-lede">
-      Domain architecture, a residue-level alignment, the AlphaFold structure
-      and a connected JBrowse session — resolved live for any gene.
+      Enter a gene and open it in JBrowse with its coding exons back to back,
+      the AlphaFold structure and a cross-species alignment beside them.
     </p>
     <ProteinBrowser client:only="react" />
   </Container>
@@ -60,7 +60,7 @@ if (!features.proteinBrowser) {
     align-items: center;
     flex-wrap: wrap;
     gap: 0.35rem 1rem;
-    margin: 1rem 0 0.5rem;
+    margin: 0.6rem 0;
     font-size: 13px;
   }
   .msv-source-label {
@@ -120,13 +120,6 @@ if (!features.proteinBrowser) {
     color: #444;
   }
 
-  .msv-options {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-    margin-top: 0.75rem;
-  }
   .msv-dialog-actions {
     display: flex;
     flex-wrap: wrap;
@@ -251,8 +244,9 @@ if (!features.proteinBrowser) {
   .msv-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem 1rem;
     flex-wrap: wrap;
+    margin-bottom: 0.5rem;
   }
   .msv-open {
     padding: 8px 18px;

@@ -417,8 +417,11 @@ interface LoadedAlignment {
   structureOverrides?: Partial<GeneStructure>
 }
 
-// Everything downstream of a resolved gene: the domain cartoon, the alignment
-// (from whichever source is selected), and the JBrowse session card.
+// Everything downstream of a resolved gene. The page is a launcher, so the
+// session card leads with the one primary action and the two heavy views — the
+// domain cartoon and the alignment — fold away underneath it. The alignment
+// still loads while its disclosure is closed, because it is what the launched
+// session carries.
 function GeneResults({
   structure,
   panel,
@@ -462,75 +465,9 @@ function GeneResults({
     LIVE_QUERY,
   )
 
-  const found = new Set(panel?.rows.map(r => r.taxId))
-  const missing = COMMON_SPECIES.filter(s => !found.has(s.taxId))
-
   return (
     <>
-      <p className="ui-hint">
-        {panel
-          ? `${panel.rows.length} of ${COMMON_SPECIES.length} model species · `
-          : ''}
-        <a href={geneUrl('/orthologs', symbol, taxId)}>ortholog table</a> ·{' '}
-        <a href={geneUrl('/conserved-gene-order', symbol, taxId)}>
-          conserved gene order
-        </a>
-      </p>
-      {panelError && (
-        <p className="ui-note">
-          No ortholog panel for {symbol}: {panelError}
-        </p>
-      )}
-      {panel && missing.length > 0 && (
-        <p className="ui-note">
-          No ortholog in {missing.map(s => s.label).join(', ')}
-        </p>
-      )}
-
-      {panel && <ProteinDomainCartoon rows={panel.rows} />}
-
-      {(hundredWay || panel) && (
-        <AlignmentSource
-          source={source}
-          hundredWay={hundredWay}
-          live={!!panel}
-          precomputed={!!precomputed}
-          onChange={next => {
-            setSource(next)
-          }}
-        />
-      )}
-
-      <ErrorMessage
-        error={error}
-        className="ui-error"
-      />
-
-      {alignment ? (
-        <AlignmentPanel
-          alignment={alignment}
-          gene={symbol}
-        />
-      ) : source === 'live' && panel ? (
-        <div className="msv-advanced">
-          <button
-            className="ui-btn-secondary ui-busy"
-            disabled={aligning}
-            onClick={() => {
-              setWantLive(true)
-            }}
-          >
-            {aligning ? status || 'Aligning…' : 'Build cross-species alignment'}
-          </button>
-          <span className="ui-caption">
-            {precomputed ? 'precomputed' : 'EBI Clustal Omega, up to a minute'}
-          </span>
-        </div>
-      ) : aligning ? (
-        <p className="ui-hint">Reading the 100-way alignment…</p>
-      ) : null}
-
-      <ResultCard
+      <LaunchCard
         structure={structure}
         alignment={alignment}
         collapse={collapse}
@@ -538,7 +475,143 @@ function GeneResults({
         flip={flip}
         onToggleFlip={setFlip}
       />
+
+      {panelError && (
+        <p className="ui-note">
+          No ortholog panel for {symbol}: {panelError}
+        </p>
+      )}
+      {panel && <DomainSection panel={panel} />}
+
+      {(hundredWay || panel) && (
+        <AlignmentSection
+          gene={symbol}
+          alignment={alignment}
+          error={error}
+          aligning={aligning}
+          status={status}
+          source={source}
+          onSource={setSource}
+          bothSources={hundredWay && !!panel}
+          precomputed={!!precomputed}
+          onBuildLive={() => {
+            setWantLive(true)
+          }}
+        />
+      )}
+
+      <p className="ui-hint">
+        <a href={geneUrl('/orthologs', symbol, taxId)}>Ortholog table</a> ·{' '}
+        <a href={geneUrl('/conserved-gene-order', symbol, taxId)}>
+          Conserved gene order
+        </a>
+      </p>
     </>
+  )
+}
+
+// The cartoon, and the species it could not cover. Folded away because it
+// answers a question the reader has after the launch rather than before it.
+function DomainSection({ panel }: { panel: ProteinPanel }) {
+  const found = new Set(panel.rows.map(r => r.taxId))
+  const missing = COMMON_SPECIES.filter(s => !found.has(s.taxId))
+  return (
+    <details className="ui-disclosure">
+      <summary>
+        Domain architecture{' '}
+        <span className="ui-caption">
+          {panel.rows.length} of {COMMON_SPECIES.length} model species
+        </span>
+      </summary>
+      <ProteinDomainCartoon rows={panel.rows} />
+      {missing.length > 0 && (
+        <p className="ui-note">
+          No ortholog in {missing.map(s => s.label).join(', ')}
+        </p>
+      )}
+    </details>
+  )
+}
+
+// The alignment, folded the same way. `open` is controlled because the viewer
+// may only mount once the disclosure is: react-msaview sizes its canvas from the
+// container it first mounts into, and a closed <details> is display: none.
+function AlignmentSection({
+  gene,
+  alignment,
+  error,
+  aligning,
+  status,
+  source,
+  onSource,
+  bothSources,
+  precomputed,
+  onBuildLive,
+}: {
+  gene: string
+  alignment: LoadedAlignment | undefined
+  error: unknown
+  aligning: boolean
+  status: string
+  source: AlignSource
+  onSource: (s: AlignSource) => void
+  bothSources: boolean
+  precomputed: boolean
+  onBuildLive: () => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <details
+      className="ui-disclosure"
+      open={open}
+      onToggle={e => {
+        setOpen(e.currentTarget.open)
+      }}
+    >
+      <summary>
+        Residue alignment{' '}
+        <span className="ui-caption">
+          {alignment
+            ? `${alignment.rowCount} rows`
+            : source === 'hundredWay'
+              ? '100 vertebrates'
+              : `${COMMON_SPECIES.length} model species`}
+        </span>
+      </summary>
+
+      {bothSources && (
+        <AlignmentSourceChoice
+          source={source}
+          precomputed={precomputed}
+          onChange={onSource}
+        />
+      )}
+      <ErrorMessage
+        error={error}
+        className="ui-error"
+      />
+
+      {open && alignment ? (
+        <AlignmentPanel
+          alignment={alignment}
+          gene={gene}
+        />
+      ) : aligning ? (
+        <p className="ui-hint">{status || 'Aligning…'}</p>
+      ) : alignment ? null : (
+        <div className="msv-advanced">
+          <button
+            className="ui-btn-secondary"
+            onClick={onBuildLive}
+          >
+            Build cross-species alignment
+          </button>
+          <span className="ui-caption">
+            {precomputed ? 'precomputed' : 'EBI Clustal Omega, up to a minute'}
+          </span>
+        </div>
+      )}
+    </details>
   )
 }
 
@@ -703,24 +776,18 @@ async function loadLive(
   }
 }
 
-// The choice between the two alignment sources, shown only where there is a
-// choice to make. Each option says what it costs and what it gives up.
-function AlignmentSource({
+// The choice between the two alignment sources, rendered by AlignmentSection
+// only where there is a choice to make. Each option says what it costs and what
+// it gives up.
+function AlignmentSourceChoice({
   source,
-  hundredWay,
-  live,
   precomputed,
   onChange,
 }: {
   source: AlignSource
-  hundredWay: boolean
-  live: boolean
   precomputed: boolean
   onChange: (s: AlignSource) => void
 }) {
-  if (!hundredWay || !live) {
-    return null
-  }
   return (
     <div className="msv-source">
       <span className="msv-source-label">Alignment</span>
@@ -753,7 +820,17 @@ function AlignmentSource({
   )
 }
 
-function ResultCard({
+// Joins a short list into prose: "a", "a and b", "a, b and c".
+function joinList(parts: string[]) {
+  return parts.length > 1
+    ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`
+    : (parts[0] ?? '')
+}
+
+// The launch, and what the page is for — so it leads, and carries one primary
+// action. What used to be a row of chips is now either a fact in the meta line
+// or part of the sentence saying what the session opens with.
+function LaunchCard({
   structure,
   alignment,
   collapse,
@@ -774,7 +851,7 @@ function ResultCard({
   // space, rather than pairing that alignment with a different isoform.
   const launched = { ...structure, ...alignment?.structureOverrides }
   const { transcript, assemblyAccession, uniprotId } = launched
-  const { codingBp, ratio } = geneStats(transcript)
+  const { codingBp } = geneStats(transcript)
   const { session, url } = buildSessionUrl({
     structure: launched,
     collapse,
@@ -782,13 +859,10 @@ function ResultCard({
     inlineMsa: alignment?.inline,
     indexedMsa: alignment?.indexed,
   })
-  const chips = [
-    `${transcript.cds.length} coding exons`,
-    `${codingBp.toLocaleString()} bp CDS`,
-    `${ratio}× collapsed`,
-    alignment ? `${alignment.rowCount}-species alignment` : undefined,
-    uniprotId ? 'AlphaFold structure' : undefined,
-    launched.target.geneTrackId ? 'gene track' : undefined,
+  const carries = [
+    collapse ? 'the coding exons back to back' : 'the gene in its genome',
+    uniprotId ? 'the AlphaFold structure' : undefined,
+    alignment ? `a ${alignment.rowCount}-row alignment` : undefined,
   ].filter((c): c is string => !!c)
 
   return (
@@ -799,18 +873,9 @@ function ResultCard({
       <p className="msv-meta">
         {assemblyAccession} · {launched.target.assemblyName} ·{' '}
         {launched.target.canonicalRefName(transcript.refName)}{' '}
-        {transcript.strand === 1 ? '+' : '−'}
+        {transcript.strand === 1 ? '+' : '−'} · {transcript.cds.length} coding
+        exons · {codingBp.toLocaleString()} bp CDS
       </p>
-      <div className="ui-chips">
-        {chips.map(c => (
-          <span
-            key={c}
-            className="ui-chip"
-          >
-            {c}
-          </span>
-        ))}
-      </div>
 
       <div className="msv-actions">
         <a
@@ -821,17 +886,6 @@ function ResultCard({
         >
           Open in JBrowse ↗
         </a>
-        <button
-          className="ui-btn-secondary"
-          onClick={() => {
-            setDetailsOpen(true)
-          }}
-        >
-          Session details
-        </button>
-      </div>
-
-      <div className="msv-options">
         <label className="msv-collapse">
           <input
             type="checkbox"
@@ -854,7 +908,18 @@ function ResultCard({
             Read 5′→3′
           </label>
         )}
+        <button
+          className="ui-linkbtn"
+          onClick={() => {
+            setDetailsOpen(true)
+          }}
+        >
+          Session details
+        </button>
       </div>
+      <p className="ui-caption">
+        Opens {joinList(carries)} in one connected session.
+      </p>
 
       {detailsOpen && (
         <SessionDetailsDialog

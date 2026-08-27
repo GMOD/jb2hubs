@@ -127,22 +127,21 @@
   cursor: progress;
 }
 
+/* A tertiary action that has to sit beside the primary one without competing
+   with it — reads as a link, behaves as a button. */
+.ui-linkbtn {
+  padding: 0;
+  font-size: 13px;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.ui-linkbtn:hover {
+  text-decoration: underline;
+}
+
 /* --- Chips ----------------------------------------------------------------- */
-.ui-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 0.9rem;
-}
-/* Static: a fact about the result. */
-.ui-chip {
-  padding: 2px 10px;
-  font-size: 12px;
-  color: var(--muted);
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-}
 /* Clickable: an example query. Deliberately quieter than .ui-btn — a row of
    these sits above the results and should not outweigh them. */
 .ui-chip-btn {
@@ -178,6 +177,24 @@
 .ui-caption {
   font-size: 12px;
   color: var(--faint);
+}
+
+/* --- Disclosure ------------------------------------------------------------ */
+/* A secondary view the reader opens when they want it. The tool pages lead with
+   one answer and fold the rest of what they resolved into these. */
+.ui-disclosure {
+  margin: 1.25rem 0;
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+}
+.ui-disclosure > summary {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.ui-disclosure > summary:hover {
+  color: var(--accent);
 }
 
 /* --- Modal shell (components/Modal.tsx) ------------------------------------ */
