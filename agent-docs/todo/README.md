@@ -13,3 +13,9 @@ turns out to be a decision rather than a task belongs in
   next full regeneration is the cheapest time to get it: the `hubtools/src` and
   `lib/common.sh` changes of 2026-08-27 move `.pipeline_hash`, so the next
   `make.sh` re-derives every config anyway.
+- [prune-unreferenced-derived-files.md](prune-unreferenced-derived-files.md) —
+  13.09 GB across 1,814 files is derived and uploaded while no config names it.
+  11.99 GB of that is provably dropped by `getTrackModifications.ts`; the
+  remaining 1.10 GB is not, and one slice of it turned out to be a bug rather
+  than junk, which is why the gate must mirror the drop rules rather than
+  observe the config.

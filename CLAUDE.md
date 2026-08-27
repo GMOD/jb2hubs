@@ -831,6 +831,45 @@ Three things not to undo:
   reader is about to launch makes against the same host. Putting it in
   `Layout.astro` would be simpler and would probe from the blog.
 
+### And one level down again: the compressor is not in any hash
+
+`source_tree_hash` covers the repo's code. It does not cover the **toolchain**,
+and the bytes a derived `.gz` holds are a function of the bgzip build as much as
+of the converter. htslib 1.23.1 linked against libz emits ~6% larger output than
+the same version linked against libdeflate, and the _decompressed_ content is
+byte-identical — so every check here passes either way.
+
+On 2026-08-27 a `~/.local` htslib upgrade (installed Aug 2, linking libz where
+`/usr/bin`'s htslib 1.13 links `libdeflate.so.0`) swapped the backend silently.
+The next `REDERIVE` rewrote **5,757 files / 76.7 GB** with no content change,
+`rclone -c` correctly saw different bytes and re-sent all of them, and because
+`rclone_sync_with_indexes` is two passes the run left fresh `.gz` against stale
+`.csi` in the bucket for every assembly it reached — `invalid bgzf header` on
+hg19 and hg38 in production, traced to nothing anyone had pushed.
+
+`assert_bgzip_toolchain` (`lib/common.sh`, called from both `make.sh` before any
+derivation) pins the property that matters: **the bytes bgzip emits**, compared
+against `BGZIP_TOOLCHAIN_SIGNATURE`. Three things about it are load-bearing:
+
+- **Not a version string.** `bgzip --version` read `1.23.1` before and after the
+  swap. A version check would have caught nothing.
+- **The canary input is 2.4 MB of varied bed-like data, deliberately.** A short
+  input hashes _identically_ under htslib 1.13 and 1.23.1 — both libdeflate,
+  both disagreeing on real files (243,569 vs 242,051 bytes on the same bed) — so
+  a trivial canary waves through exactly the drift this exists to catch. Cost is
+  0.09s per run.
+- **Fatal, not a warning.** The failure is invisible in the output and surfaces
+  only as an unexplained multi-GB re-upload plus desynchronized indexes, which
+  is precisely the shape a warning gets scrolled past. `ALLOW_BGZIP_DRIFT=1`
+  accepts a deliberate change, which means committing the new signature and
+  accepting that every derived `.gz` and `.csi` gets rewritten and re-sent.
+
+Worth knowing if it ever fires: libdeflate levels are **not** comparable across
+htslib versions, so no `-l` makes 1.23.1 reproduce 1.13 (l5→243,497, l6→242,051,
+l7→239,062). Matching an existing corpus means matching the build, not tuning
+the level. The corpus today is htslib 1.23.1 + libz, chosen for stability over
+the 6% — file size was explicitly not the priority.
+
 ## Which UCSC assemblies are NCBI-derived is derived, not listed
 
 A `<db>-ncbiRefSeqGff` track is the full-resolution NCBI RefSeq GFF3 — gene →
@@ -879,6 +918,32 @@ four assemblies people actually open would lose their GFF. The other seven rows
 (ce11, danRer11, dm6, mm10, rn6, rn7, sacCer3) are recovered by `asmEquivalent`
 and kept only because a curated pick should beat a derived one where they ever
 disagree — today they agree on every one.
+
+### `import.meta.main` is false for a `.ts` entry point, and it cost every GFF track
+
+`lib/common.sh` exports `NODE_OPTIONS=--experimental-strip-types`, so every
+`node src/*.ts` here runs type-stripped. Under that, **`import.meta.main` is
+`false`** on node 24.2.0 (it is `true` for a `.mjs` entry point). The CLI block
+at the foot of `deriveNcbiAccessions.ts` was guarded on it, so the block never
+ran: the script wrote nothing and exited **0**.
+
+`downloadNcbiGff.sh` then read an empty accession list and logged
+`0 assemblies detected as NCBI-derived.` — a line that reads like a count, not a
+failure — and added no `-ncbiRefSeqGff` track to any of the 238. Measured
+2026-08-27: **zero** such tracks existed in the whole corpus, while 11
+assemblies still held the GFF a pre-refactor run had downloaded, referenced by
+nothing. The exit 0 is why `set -euo pipefail` never saw it.
+
+Two things came out of that, and both generalize:
+
+- Use `process.argv[1] === fileURLToPath(import.meta.url)`, which is what
+  `mergeAll.ts` and `removeEverythingButLatest.ts` already do and which is
+  verified to work under stripping. `deriveNcbiAccessions.ts` was the only file
+  in the tree using `import.meta.main`.
+- **A derivation over hundreds of inputs that yields zero refuses now.** The
+  emptiness gate in `downloadNcbiGff.sh` exits 1 rather than proceeding, on the
+  same principle as `prune_stray_configs` and `check-orphan-configs`: an answer
+  of "none" from an input of 238 is a broken run, not an empty answer.
 
 ### Two gates, because a GFF whose seqids resolve to nothing is worse than no GFF
 
