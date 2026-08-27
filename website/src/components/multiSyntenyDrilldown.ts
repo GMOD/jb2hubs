@@ -117,8 +117,8 @@ export interface SubtreeLeaf {
 export const MAX_SUBTREE_GENOMES = 15
 
 // Build a stacked, tree-ordered LinearSyntenyView URL for a subtree, each genome
-// navigated to its ortholog locus with its gene track open, with a synteny track between adjacent genomes
-// where a chain exists. JBrowse binds tracks to a level by array position, NOT by
+// navigated to its ortholog locus with its gene track open, and a synteny track
+// between adjacent genomes where a chain exists. JBrowse binds tracks to a level by array position, NOT by
 // assemblyNames, so tracks is one slot per level (the gap between picked[i] and
 // picked[i+1]); a level with no chain gets an empty slot to keep the rest aligned.
 // Pure (no DOM/fetch) so the level binding stays unit-testable. Returns undefined
