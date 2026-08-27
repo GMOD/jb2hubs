@@ -51,6 +51,8 @@ import { parseArgs } from 'node:util'
 // puppeteer cache one.
 import { launch } from 'puppeteer-core'
 
+import { resolveBuiltDir } from './builtDir.mjs'
+
 function findChrome() {
   const candidates = [
     process.env.CHROME_PATH,
@@ -113,11 +115,32 @@ const CONFIGS = {
   merge: {
     url: 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge?hubIds=GCF_000001405.40',
   },
+  // mergeAll's output: 239 assemblies, ~11k tracks and the one plugin list that
+  // is a union rather than a copy. That list is why it is worth booting at all
+  // -- plugins[].url is the only field that can kill a whole session, and
+  // mergeAll used to emit the same four plugins three times over under
+  // different urls, so PluginLoader's Promise.all was installing 12. It is also
+  // 26MB, which is the reason it is not in ALL_JSON_VERSIONS' full matrix.
+  all: {
+    url: 'https://jbrowse.org/ucsc/all.json',
+    // `built`, not `local`: mergeAll writes all.json into $UCSC_BUILT_DIR and
+    // nothing mirrors it into the repo, so --local can only reach it on the
+    // build machine. Where it is absent this is skipped, which is honest --
+    // and the canary boots the published copy either way.
+    built: 'all.json',
+  },
 }
+
+// all.json alone is skipped on the intermediate releases. Its 26MB parse is
+// most of this script's wall clock, and what it adds over hg38 is the merged
+// plugin list, which is config content and identical on every host. Floor plus
+// latest is where a plugin-loading regression would actually show.
+const ALL_JSON_VERSIONS = new Set([HOST_VERSIONS[0], 'latest'])
 
 const { values } = parseArgs({
   options: {
     floor: { type: 'string' },
+    'built-dir': { type: 'string' },
     configs: { type: 'string' },
     versions: { type: 'string' },
     json: { type: 'string' },
@@ -395,16 +418,25 @@ for (const name of configNames) {
   // In --local mode a config with no working-tree counterpart is skipped rather
   // than silently probed against production, which would read as a pass for
   // something the gate never actually checked.
-  if (values.local && !entry.local) {
-    console.log(`\n${name}: skipped, composed remotely (no local counterpart)`)
+  const builtDir = entry.built
+    ? resolveBuiltDir(values['built-dir'])
+    : undefined
+  const builtPath =
+    builtDir === undefined ? undefined : path.join(builtDir, entry.built)
+  const localPath = entry.local
+    ? path.join(import.meta.dirname, '..', entry.local)
+    : builtPath !== undefined && fs.existsSync(builtPath)
+      ? builtPath
+      : undefined
+  if (values.local && localPath === undefined) {
+    console.log(
+      `\n${name}: skipped, ${entry.built ? 'not in the built tree here' : 'composed remotely'} (no local counterpart)`,
+    )
     continue
   }
   const localBody =
-    values.local && entry.local
-      ? fs.readFileSync(
-          path.join(import.meta.dirname, '..', entry.local),
-          'utf8',
-        )
+    values.local && localPath !== undefined
+      ? fs.readFileSync(localPath, 'utf8')
       : undefined
   const declared = await declaredContent(configUrl, localBody)
   console.log(
@@ -414,7 +446,12 @@ for (const name of configNames) {
         ? ` (+${declared.vendored.join(', ')} vendored by newer hosts)`
         : ''),
   )
-  for (const hostVersion of versions) {
+  // Honour an explicit --versions; the narrowing is a default, not a rule.
+  const configVersions =
+    name === 'all' && values.versions === undefined
+      ? versions.filter(v => ALL_JSON_VERSIONS.has(v))
+      : versions
+  for (const hostVersion of configVersions) {
     const r = await probe(browser, hostVersion, configUrl, declared, localBody)
     r.config = name
     results.push(r)
