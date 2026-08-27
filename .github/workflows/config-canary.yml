@@ -11,6 +11,11 @@ name: Config canary
 # began calling appendToMenu('File'), which every released core rejects, and
 # hg38/hg19/mm39/hs1 were error pages on v4.0.0 through latest with nothing
 # reporting it.
+#
+# It also runs the UCSC outage drill, which is the one check here that does not
+# watch production: it blocks hgdownload and asserts hg38/hg19 open anyway. That
+# regression is invisible while UCSC is up, so a timer is the only thing that
+# would ever notice it before the outage does.
 
 on:
   schedule:
@@ -63,11 +68,21 @@ jobs:
               # rather than muted -- see HOST_VERSIONS for what was failing there.
               node scripts/checkConfigCompat.mjs
               echo "compat exit=$?"
+              echo
+              echo "### UCSC outage drill"
+              # The other two sections boot against a working hgdownload, so
+              # they stay green right up until the outage itself. This aborts
+              # every request to it and asserts hg38/hg19 still open -- the
+              # property sidecar mirroring buys, which check-sidecar-urls can
+              # only check the config-content half of. Floor + latest only,
+              # not the full matrix: see OFFLINE_VERSIONS for why.
+              node scripts/checkConfigCompat.mjs --offline-ucsc
+              echo "offline exit=$?"
             } 2>&1
           }
 
           probe >canary.log
-          if grep -qE '^(urls|compat) exit=[^0]' canary.log; then
+          if grep -qE '^(urls|compat|offline) exit=[^0]' canary.log; then
             # One retry before alerting. A canary that reports a transient CDN
             # blip as an outage gets muted, and a muted canary is worse than
             # none, so a failure has to survive twice to count.
@@ -76,8 +91,16 @@ jobs:
             sleep 120
             probe >canary-retry.log
             cat canary-retry.log >>canary.log
-            if grep -qE '^(urls|compat) exit=[^0]' canary-retry.log; then
+            if grep -qE '^(urls|compat|offline) exit=[^0]' canary-retry.log; then
               echo "status=broken" >>"$GITHUB_OUTPUT"
+              # Which section broke, so the rolling issue can say what kind of
+              # failure this is. The three have different causes and different
+              # fixes, and a body that only ever says "a config is broken"
+              # makes the reader open the log to learn which.
+              echo "failed_checks=$(
+                grep -oE '^(urls|compat|offline) exit=[^0]' canary-retry.log \
+                  | cut -d' ' -f1 | sort -u | paste -sd, -
+              )" >>"$GITHUB_OUTPUT"
             else
               echo "status=flaky" >>"$GITHUB_OUTPUT"
             fi
@@ -90,6 +113,7 @@ jobs:
         if: steps.probe.outputs.status == 'broken'
         env:
           GH_TOKEN: ${{ github.token }}
+          FAILED_CHECKS: ${{ steps.probe.outputs.failed_checks }}
           RUN_URL:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{
             github.run_id }}
@@ -99,7 +123,21 @@ jobs:
           existing=$(gh issue list --label config-canary --state open \
             --json number --jq '.[0].number')
           {
-            echo "A shipped config is failing to boot on a hosted JBrowse release."
+            case "$FAILED_CHECKS" in
+              offline)
+                echo "The UCSC outage drill failed: hg38/hg19 no longer open with"
+                echo "hgdownload blocked. Production is fine while UCSC is up, so"
+                echo "this is a *latent* break -- the sidecar mirroring in"
+                echo "finalizeConfigs.ts has regressed and a config is naming an"
+                echo "upstream chrom.sizes/chromAlias/cytoBand again. See ADR 0003"
+                echo "and check-sidecar-urls' MUST_BE_LOCAL."
+                ;;
+              *)
+                echo "A shipped config is failing to boot on a hosted JBrowse release."
+                ;;
+            esac
+            echo
+            echo "Failing checks: ${FAILED_CHECKS:-unknown}"
             echo
             echo "Run: $RUN_URL"
             echo

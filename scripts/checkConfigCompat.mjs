@@ -19,6 +19,8 @@
 //     load rejects PluginLoader's Promise.all, which fails the whole session)
 //   - a plugin named by the config did not define its global
 //   - fewer tracks are readable than the config declares
+//   - (--offline-ucsc only) the assembly never loaded, so the session's view
+//     has no displayedRegions
 //
 // Usage:
 //   node scripts/checkConfigCompat.mjs                      # full matrix
@@ -26,6 +28,11 @@
 //   node scripts/checkConfigCompat.mjs --configs hg19,hg38
 //   node scripts/checkConfigCompat.mjs --local              # working tree, not
 //                                                          # what is published
+//   node scripts/checkConfigCompat.mjs --offline-ucsc       # UCSC outage drill
+//
+// --offline-ucsc aborts every request to the hgdownload family and asserts
+// hg38/hg19 still open. See OFFLINE_HOSTS and offlineDefaults below for what
+// that does and does not prove.
 //
 // --local is the pre-upload gate run.sh uses: it feeds the hosted app the
 // config files sitting in the working tree, so a regeneration that would break
@@ -116,9 +123,49 @@ const { values } = parseArgs({
     json: { type: 'string' },
     timeout: { type: 'string', default: '60000' },
     local: { type: 'boolean', default: false },
+    'offline-ucsc': { type: 'boolean', default: false },
     plugin: { type: 'string', multiple: true, default: [] },
   },
 })
+
+const offline = values['offline-ucsc']
+
+// The UCSC outage drill. Every request whose host starts with `hgdownload` is
+// aborted, and the assertion is that hg38 and hg19 still open — which is the
+// property assembly sidecar mirroring buys (ADR 0003) and which no other check
+// covers: check-sidecar-urls proves a config NAMES local files, not that the
+// app opens without upstream.
+//
+// Two things this deliberately does NOT claim:
+//
+//   - It is not the real outage. hgdownload fails by STALLING — the TCP
+//     handshake completes, the TLS Client Hello goes out, and no Server Hello
+//     comes back — and jbrowse-core sets no fetch deadline, so the real symptom
+//     is a session that hangs forever. request.abort() fails fast instead. That
+//     makes this a test of config content (does loadPre() touch only files we
+//     serve) rather than a reproduction of the hang. UcscStatusBanner is the
+//     part that addresses the hang, and it lives in the website.
+//   - It says nothing about GenArk, which is deliberately not mirrored: those
+//     configs name hgdownload for both chromSizes and refNameAliases, so a
+//     GenArk assembly is expected to fail this and is not in the default set.
+//
+// The whole hgdownload family, not just the one spelling the configs use today.
+// hgdownload2.soe.ucsc.edu is a byte-identical mirror on a different UCSC
+// address block and hgdownload.gi.ucsc.edu is another alias for the same
+// service — all three go down with the same file server, so a config that
+// quietly switched to a sibling name would otherwise pass a drill proving
+// nothing. genome.ucsc.edu and api.genome.ucsc.edu are NOT blocked: they are a
+// different host that answered normally through the stall we measured, and the
+// configs reference them only from trackDb prose, which the browser never
+// fetches.
+const isUcscFileServer = url => {
+  try {
+    const { hostname } = new URL(url)
+    return hostname.startsWith('hgdownload') && hostname.endsWith('.ucsc.edu')
+  } catch {
+    return false
+  }
+}
 
 // --plugin Hubs=dist/bundle.js swaps a candidate build in for the bundle a
 // config names, on real hosted releases. A plugin bundle reaches every already
@@ -137,8 +184,30 @@ const pluginOverrides = new Map(
   }),
 )
 
-const versions = values.versions?.split(',') ?? HOST_VERSIONS
-const configNames = values.configs?.split(',') ?? Object.keys(CONFIGS)
+// The drill's default matrix is the floor plus `latest`, not all five hosts: a
+// 6-hourly cron that boots the whole matrix offline as well as online doubles
+// the canary's cost, and the property under test is config content, which is
+// the same document on every host. The floor earns its slot anyway because the
+// one host-side half of this IS version-sensitive — a relative `chromSizes`
+// resolves only because jbrowse-web stamps `baseUri` beside the adapter's uri
+// and TwoBitAdapter's preProcessSnapshot forwards it, and v4.0.0 is the oldest
+// build we make that promise on. `main` is left out: it is the dev host, the
+// online matrix already covers it, and its breakage is not a support promise.
+const OFFLINE_VERSIONS = [HOST_VERSIONS[0], 'latest']
+
+// The two most-linked UCSC assemblies, and the two of checkSidecarUrls.mjs's
+// MUST_BE_LOCAL set that CONFIGS already carries. mm39, mm10 and hs1 make the
+// same promise and are not drilled: MUST_BE_LOCAL already fails the pre-upload
+// gate if any of the five regresses to naming an upstream sidecar, so what this
+// adds on top is the app-behaviour half, and paying for that on two assemblies
+// every 6h buys most of the signal. Add one here if that stops feeling true.
+const OFFLINE_CONFIGS = ['hg38', 'hg19']
+
+const versions =
+  values.versions?.split(',') ?? (offline ? OFFLINE_VERSIONS : HOST_VERSIONS)
+const configNames =
+  values.configs?.split(',') ??
+  (offline ? OFFLINE_CONFIGS : Object.keys(CONFIGS))
 const timeout = Number(values.timeout)
 
 // Plugins the host bundles into its own build. jbrowse-web drops a config entry
@@ -183,11 +252,15 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
       .filter(p => pluginOverrides.has(p.name))
       .map(p => [p.url, pluginOverrides.get(p.name)]),
   )
-  if (localBody !== undefined || bundleSwaps.size > 0) {
+  let blockedRequests = 0
+  if (localBody !== undefined || bundleSwaps.size > 0 || offline) {
     await page.setRequestInterception(true)
     page.on('request', request => {
       const url = request.url()
-      if (localBody !== undefined && url === configUrl) {
+      if (offline && isUcscFileServer(url)) {
+        blockedRequests += 1
+        request.abort()
+      } else if (localBody !== undefined && url === configUrl) {
         request.respond({
           status: 200,
           contentType: 'application/json',
@@ -252,10 +325,46 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
       const session = w.JBrowseSession ?? w.__jbrowse_session
       return session?.tracks?.length ?? session?.jbrowse?.tracks?.length
     })
+
+    if (offline) {
+      // "Still opens" needs an assertion the other checks cannot make. A failed
+      // assembly renders no error page, defines every plugin global and leaves
+      // the track count intact, so fatal/plugins/tracks all report ok while the
+      // session is unusable — ADR 0003 says as much. What an outage actually
+      // takes away is loadPre(): the assembly's regions never arrive, so the
+      // defaultSession's view never gets its displayedRegions. Wait for those.
+      result.viewRegions = await page
+        .waitForFunction(
+          () => {
+            const w = /** @type {Record<string, any>} */ (window)
+            const session = w.JBrowseSession ?? w.__jbrowse_session
+            return session?.views?.[0]?.displayedRegions?.length > 0
+          },
+          { timeout },
+        )
+        .then(() => true)
+        .catch(() => false)
+
+      // assemblyManager keeps the rejection rather than throwing it, so read it
+      // out: "loadPre failed on hg38.chromAlias.txt" is a far better report
+      // than "the view has no regions".
+      result.assemblyErrors = await page.evaluate(() => {
+        const w = /** @type {Record<string, any>} */ (window)
+        const session = w.JBrowseSession ?? w.__jbrowse_session
+        try {
+          return (session?.assemblyManager?.assemblies ?? [])
+            .filter(a => a.error)
+            .map(a => `${a.name}: ${String(a.error).slice(0, 160)}`)
+        } catch {
+          return []
+        }
+      })
+    }
   } catch (e) {
     result.threw = String(e).slice(0, 200)
   }
   result.pageErrors = [...new Set(errors)].slice(0, 4)
+  result.blockedRequests = blockedRequests
   await page.close()
   return result
 }
@@ -266,6 +375,14 @@ const browser = await launch({
   args: ['--no-sandbox', '--use-gl=swiftshader'],
   defaultViewport: { width: 1400, height: 900 },
 })
+
+if (offline) {
+  console.log(
+    'UCSC outage drill: aborting every request to hgdownload*.ucsc.edu.\n' +
+      'The real outage stalls rather than failing, so this tests whether the ' +
+      'configs\nname only files we serve, not the hang itself.',
+  )
+}
 
 const results = []
 let failed = false
@@ -310,9 +427,21 @@ for (const name of configNames) {
       r.readableTracks !== undefined &&
         r.readableTracks < declared.trackCount &&
         `only ${r.readableTracks}/${declared.trackCount} tracks readable`,
+      offline &&
+        r.viewRegions === false &&
+        'assembly never loaded: the view got no displayedRegions with ' +
+          'hgdownload blocked',
+      offline &&
+        r.assemblyErrors?.length > 0 &&
+        `assembly error: ${r.assemblyErrors.join('; ')}`,
     ].filter(Boolean)
+    // The blocked count is reported, never failed on. Zero is the ideal result
+    // -- the whole page load touched hgdownload not once -- but it is also what
+    // a misconfigured predicate looks like, so print it rather than asserting
+    // either way on it.
+    const suffix = offline ? ` [${r.blockedRequests} blocked]` : ''
     console.log(
-      `  ${hostVersion.padEnd(10)} ${problems.length > 0 ? problems.join(' | ') : 'ok'}`,
+      `  ${hostVersion.padEnd(10)} ${problems.length > 0 ? problems.join(' | ') : 'ok'}${suffix}`,
     )
     const atOrAboveFloor =
       !values.floor ||
@@ -330,7 +459,11 @@ if (values.json) {
 
 if (failed) {
   console.error(
-    `\nA shipped config broke on a host at or above the ${values.floor ?? 'oldest tested'} floor.`,
+    offline
+      ? '\nUCSC outage drill FAILED: an assembly we promise stays open with ' +
+          'hgdownload unreachable did not open. Check that finalizeConfigs.ts ' +
+          'still mirrors the sidecars (see check-sidecar-urls and ADR 0003).'
+      : `\nA shipped config broke on a host at or above the ${values.floor ?? 'oldest tested'} floor.`,
   )
   process.exit(1)
 }
