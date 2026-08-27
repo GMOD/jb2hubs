@@ -150,12 +150,13 @@ export default function OrthologSearch() {
     runSearch(geneInput, refInput, scopeInput)
   }
 
-  // Honour a shared/bookmarked link. ?ref= alone is the accession page's
-  // "orthologs for this species" link: it sets the reference and waits for a
-  // gene, rather than being ignored and leaving the box on its Human default.
-  // ?gene= additionally submits the search (the back-link from the
-  // conserved-gene-order and protein-browser views). Deferred to an effect
-  // because this island is client:load, so window is unavailable until mount.
+  // Honour a shared/bookmarked link. ?gene= submits the search (the back-link
+  // from the conserved-gene-order and protein-browser views); ?ref= alone only
+  // sets the reference and waits for a gene. Nothing links that second shape
+  // today — the accession pages used to, until it turned out that 79% of the
+  // species we host have no NCBI orthologs to find — but a hand-edited or
+  // bookmarked url still means it. Deferred to an effect because this island is
+  // client:load, so window is unavailable until mount.
   useEffect(() => {
     const p = new URLSearchParams(window.location.search)
     const gene = p.get('gene')?.trim()
