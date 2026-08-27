@@ -269,6 +269,26 @@
         }
       },
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "saiBol1-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "saiBol1.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "saiBol1.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["saiBol1"]
     }
   ],
   "aggregateTextSearchAdapters": [

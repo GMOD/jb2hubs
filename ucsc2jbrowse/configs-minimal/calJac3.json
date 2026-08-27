@@ -275,6 +275,26 @@
         }
       },
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "calJac3-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "calJac3.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "calJac3.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["calJac3"]
     }
   ],
   "aggregateTextSearchAdapters": [

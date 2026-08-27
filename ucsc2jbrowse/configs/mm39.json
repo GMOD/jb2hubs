@@ -135,7 +135,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "mm39-knownGene-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'geneName')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -2107,6 +2107,27 @@
       },
       "description": "Non-Mouse RefSeq Genes",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mm39-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mm39.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mm39.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["mm39"]
     },
     {
       "type": "SyntenyTrack",

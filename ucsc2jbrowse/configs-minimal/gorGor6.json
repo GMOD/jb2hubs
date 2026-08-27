@@ -246,6 +246,26 @@
         }
       },
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "gorGor6-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "gorGor6.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "gorGor6.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["gorGor6"]
     }
   ],
   "aggregateTextSearchAdapters": [

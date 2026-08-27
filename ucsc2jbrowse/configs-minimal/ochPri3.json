@@ -271,6 +271,26 @@
         }
       },
       "description": "NCBI RefSeq genes, predicted subset (XM_* or XR_*)"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ochPri3-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ochPri3.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "ochPri3.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["ochPri3"]
     }
   ],
   "aggregateTextSearchAdapters": [

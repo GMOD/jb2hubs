@@ -420,7 +420,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-ncbiGeneBGP-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'geneName2')"
+            "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:get(feature,'note')"
         }
@@ -465,7 +465,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-ncbiProducts-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'geneName')"
+            "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:get(feature,'note')"
         }
@@ -632,7 +632,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "wuhCor1-unipCov2FullSeq-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'protShortNames')"
+            "name": "jexl:get(feature,'name')"
           },
           "mouseover": "jexl:get(feature,'comments')"
         }
@@ -13779,6 +13779,46 @@
       },
       "description": "Genscan Gene Predictions",
       "category": ["Genes and Gene Predictions"]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "wuhCor1-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "wuhCor1.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "wuhCor1.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["wuhCor1"]
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "wuhCor1-index",
+      "ixFilePath": {
+        "uri": "trix/wuhCor1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/wuhCor1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/wuhCor1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["wuhCor1"]
     }
   ],
   "plugins": [

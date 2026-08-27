@@ -216,7 +216,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "mpxvRivers-ncbiGene-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'geneName2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -344,6 +344,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mpxvRivers/bbi/GCF_014621545.1_ASM1462154v1.windowMasker.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "mpxvRivers-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "mpxvRivers.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "mpxvRivers.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["mpxvRivers"]
     }
   ],
   "defaultSession": {
@@ -370,6 +391,25 @@
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "mpxvRivers-index",
+      "ixFilePath": {
+        "uri": "trix/mpxvRivers.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/mpxvRivers.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/mpxvRivers_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["mpxvRivers"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",

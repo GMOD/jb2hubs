@@ -1369,6 +1369,27 @@
       "category": ["Genes and Gene Predictions"]
     },
     {
+      "type": "FeatureTrack",
+      "trackId": "anoGam3-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "anoGam3.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "anoGam3.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["anoGam3"]
+    },
+    {
       "type": "SyntenyTrack",
       "trackId": "anoGam3_to_anoGam1_liftOver",
       "name": "anoGam3 to A. gambiae (anoGam1) liftOver",
@@ -1409,6 +1430,25 @@
           "indexType": "CSI"
         }
       }
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "anoGam3-index",
+      "ixFilePath": {
+        "uri": "trix/anoGam3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/anoGam3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/anoGam3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["anoGam3"]
     }
   ],
   "plugins": [

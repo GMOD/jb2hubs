@@ -285,7 +285,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_002263795.3-ncbiRefSeq-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -327,7 +327,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_002263795.3-ncbiRefSeqCurated-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -369,7 +369,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_002263795.3-ncbiRefSeqPredicted-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -602,7 +602,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_002263795.3-xenoRefGene-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'geneName')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -801,6 +801,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/002/263/795/GCF_002263795.3/contrib/tiberius/tiberius.bigGenePred.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "ARS_UCD2.0-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "ARS_UCD2.0.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "ARS_UCD2.0.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_002263795.3"]
     }
   ],
   "defaultSession": {
@@ -827,6 +848,25 @@
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_002263795.3-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_002263795.3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_002263795.3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_002263795.3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_002263795.3"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",

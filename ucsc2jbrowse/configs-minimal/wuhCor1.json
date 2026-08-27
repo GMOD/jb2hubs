@@ -105,6 +105,45 @@
         }
       },
       "description": "AUGUSTUS ab initio gene predictions v3.1"
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "wuhCor1-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "wuhCor1.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "wuhCor1.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["wuhCor1"]
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "wuhCor1-index",
+      "ixFilePath": {
+        "uri": "trix/wuhCor1.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/wuhCor1.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/wuhCor1_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["wuhCor1"]
     }
   ],
   "plugins": [

@@ -321,7 +321,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_016699485.2-ncbiRefSeq-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -363,7 +363,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_016699485.2-ncbiRefSeqCurated-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -405,7 +405,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_016699485.2-ncbiRefSeqPredicted-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -638,7 +638,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_016699485.2-xenoRefGene-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'geneName')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -682,7 +682,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_016699485.2-ensGene-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -959,6 +959,27 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/016/699/485/GCF_016699485.2/contrib/tiberius/tiberius.bigGenePred.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "GRCg7b-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "GRCg7b.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "GRCg7b.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "assemblyNames": ["GCF_016699485.2"]
     }
   ],
   "defaultSession": {
@@ -985,6 +1006,25 @@
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_016699485.2-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_016699485.2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_016699485.2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_016699485.2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_016699485.2"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",

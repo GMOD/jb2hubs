@@ -81,7 +81,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_037993035.2-ncbiRefSeq-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -122,7 +122,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_037993035.2-ncbiRefSeqCurated-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -163,7 +163,7 @@
           "type": "LinearBasicDisplay",
           "displayId": "GCF_037993035.2-ncbiRefSeqPredicted-LinearBasicDisplay",
           "labels": {
-            "name": "jexl:get(feature,'name2')"
+            "name": "jexl:get(feature,'name')"
           }
         }
       ]
@@ -238,6 +238,26 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/037/993/035/GCF_037993035.2/bbi/GCF_037993035.2_T2T-MFA8v1.1.bigPsl.bb"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "T2T_MFA8v1.1-ncbiRefSeqGff",
+      "name": "NCBI RefSeq - RefSeq All (GFF)",
+      "adapter": {
+        "type": "Gff3TabixAdapter",
+        "gffGzLocation": {
+          "uri": "T2T_MFA8v1.1.gff.gz",
+          "locationType": "UriLocation"
+        },
+        "index": {
+          "location": {
+            "uri": "T2T_MFA8v1.1.gff.gz.csi",
+            "locationType": "UriLocation"
+          },
+          "indexType": "CSI"
+        }
+      },
+      "assemblyNames": ["GCF_037993035.2"]
     }
   ],
   "defaultSession": {
@@ -264,6 +284,25 @@
       "hierarchicalTrackSelector": "hierarchicalTrackSelector"
     }
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_037993035.2-index",
+      "ixFilePath": {
+        "uri": "trix/GCF_037993035.2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCF_037993035.2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCF_037993035.2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCF_037993035.2"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",
