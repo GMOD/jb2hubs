@@ -77,14 +77,20 @@ function toAccession(name: string) {
 // no defaultSession, so a panel with no explicit track is an empty browser —
 // which is what every synteny launch used to be: right locus, nothing drawn.
 //
-// GenArk hubs carry `<accession>-ncbiGff` without exception (checked against all
-// 170 GenArk names in this catalog on 2026-08-27), the same id the single-genome
-// launch in accessionToJbrowseUrl asks for. A UCSC db is not a convention: three
-// of the 26 here have no `ncbiRefSeq` track at all (xenTro3 and bosTau6 are
-// refGene, melGal1 is ensGene). Its own defaultSession already names the best
-// gene track it has — generateDefaultSessions picked it — so read that rather
-// than re-implementing the preference order in a second place.
+// The NCBI RefSeq GFF3 is the one to prefer on both sides: gene -> mRNA ->
+// CDS/exon with the real attributes, against UCSC's genePred-derived bigBeds.
+// GenArk hubs carry it as `<accession>-ncbiGff` without exception (checked
+// against all 170 GenArk names in this catalog on 2026-08-27), which is also the
+// id the single-genome launch in accessionToJbrowseUrl asks for.
+//
+// A UCSC db spells the same thing `<db>-ncbiRefSeqGff`, but only the 75
+// NCBI-derived assemblies have one — 20 of the 26 UCSC names here. The rest fall
+// back to that config's own defaultSession, which already names the best gene
+// track it has (generateDefaultSessions picked it), rather than re-implementing
+// that preference order in a second place. Guessing `ncbiRefSeq` for them would
+// open nothing: xenTro3 and bosTau6 are refGene, melGal1 is ensGene.
 interface UcscConfig {
+  tracks?: { trackId?: string }[]
   defaultSession?: {
     views?: { init?: { tracks?: string[] } }[]
   }
@@ -99,9 +105,12 @@ function geneTrackFor(name: string) {
     const config: UcscConfig | undefined = fs.existsSync(file)
       ? JSON.parse(fs.readFileSync(file, 'utf-8'))
       : undefined
+    const gff = `${name}-ncbiRefSeqGff`
     geneTrackCache.set(
       name,
-      config?.defaultSession?.views?.[0]?.init?.tracks?.[0],
+      config?.tracks?.some(t => t.trackId === gff)
+        ? gff
+        : config?.defaultSession?.views?.[0]?.init?.tracks?.[0],
     )
   }
   return geneTrackCache.get(name)
