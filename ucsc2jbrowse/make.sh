@@ -363,6 +363,22 @@ node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 # these are two separate walks and each needs it.
 log "Copying generated configs to the local 'configs' and 'configs-minimal' directories..."
 mkdir -p configs configs-minimal
+wanted_names=$(mktemp)
+{
+  jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json"
+  echo hgFixed
+} >"$wanted_names"
+
+# A short genome list is not a small problem here: it would copy almost nothing
+# and make every config it omits look stray to the prune below. UCSC lists 238,
+# and nothing short of a truncated response gets near 100.
+wanted_count=$(wc -l <"$wanted_names")
+if [ "$wanted_count" -lt 100 ]; then
+  rm -f "$wanted_names"
+  log "ERROR: the UCSC genome list yielded $wanted_count names; refusing to copy or prune configs from it."
+  exit 1
+fi
+
 while IFS= read -r name; do
   d="$UCSC_BUILT_DIR/$name"
   if [ -f "$d/config.json" ]; then
@@ -371,10 +387,15 @@ while IFS= read -r name; do
   if [ -f "$d/minimal.json" ]; then
     cp "$d/minimal.json" "configs-minimal/$name.json"
   fi
-done < <(
-  jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json"
-  echo hgFixed
-)
+done <"$wanted_names"
+
+# The other direction, which nothing did until now: a file the copy loop will
+# never write again stays forever otherwise. Only provable junk is deleted -- see
+# prune_stray_configs in common.sh -- and a real config for a vanished db is left
+# for scripts/checkOrphanConfigs.mjs to fail the deploy over.
+prune_stray_configs configs "$wanted_names"
+prune_stray_configs configs-minimal "$wanted_names"
+rm -f "$wanted_names"
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts

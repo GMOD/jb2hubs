@@ -122,3 +122,48 @@ run_for_assemblies_lenient() {
   parallel ${PARALLEL_JOBS:+-j"$PARALLEL_JOBS"} $PARALLEL_OPTS _assembly_job "$fn" ::: "$@" ||
     echo "WARNING: parallel reported failures while $label (exit $?)" >&2
 }
+
+# Removes a configs/<name>.json that the copy loop will never write again and
+# that is demonstrably not a config. `configs/` is an append-only mirror --
+# make.sh copies a built config in, and nothing ever took one out -- which is how
+# `ucscRenames/hg38.json` rode in as `configs/renames.json` and fed four
+# unpkg.com plugin urls into all.json for a year.
+#
+# Deliberately narrow: a file goes only when it is both absent from the wanted
+# list AND has no `assemblies[0].name`, the same discriminator
+# checkPluginUrls.mjs keys on. That combination is junk, and deleting it needs no
+# judgement. A real config whose db UCSC stopped listing keeps its file and gets
+# a warning instead -- retiring a db that published links still name is a human
+# decision, and scripts/checkOrphanConfigs.mjs fails the deploy over it.
+#
+# Usage: prune_stray_configs <dir> <wanted-names-file>
+prune_stray_configs() {
+  local dir="$1" wanted="$2" f name pruned=0
+  if [ ! -d "$dir" ]; then
+    echo "prune_stray_configs: $dir does not exist" >&2
+    return 1
+  fi
+  # An empty list makes every file look stray. This function deletes, and its
+  # input arrives over the network, so refuse rather than act vacuously.
+  if [ ! -s "$wanted" ]; then
+    echo "prune_stray_configs: $wanted is empty; refusing to prune $dir" >&2
+    return 1
+  fi
+  for f in "$dir"/*.json; do
+    [ -f "$f" ] || continue
+    name=$(basename "$f" .json)
+    if grep -qxF "$name" "$wanted"; then
+      continue
+    fi
+    if jq -e '.assemblies[0].name' "$f" >/dev/null 2>&1; then
+      echo "WARNING: $dir/$name.json is a config for a db the UCSC genome list no longer has. Left in place; retiring it is a human decision." >&2
+      continue
+    fi
+    echo "Pruning $dir/$name.json: not in the UCSC genome list and not an assembly config."
+    rm -f "$f"
+    pruned=$((pruned + 1))
+  done
+  if [ "$pruned" -gt 0 ]; then
+    log "Pruned $pruned stray file(s) from $dir."
+  fi
+}

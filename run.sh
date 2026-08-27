@@ -138,6 +138,25 @@ gate_configs() {
     echo "SKIP_CONFIG_GATE set; skipping the pre-upload config gate."
     return 0
   fi
+  # Which files are published at all, before anything asks what is in them.
+  # configs/ is an append-only mirror, so a db that disappears upstream leaves
+  # its config behind forever, still merged into all.json and still served.
+  # make.sh prunes what it can prove is junk; a real config for a db UCSC no
+  # longer lists is a retirement decision, so it stops here for a human.
+  echo "Pre-upload gate: checking for orphaned UCSC configs..."
+  orphan_rc=0
+  node scripts/checkOrphanConfigs.mjs || orphan_rc=$?
+  if [ "$orphan_rc" -eq 2 ]; then
+    echo "Gate failed to run: checkOrphanConfigs found no genome list or no"
+    echo "configs to compare against, so it checked nothing. Pass --list or set"
+    echo "UCSC_BUILT_DIR, or re-run with SKIP_CONFIG_GATE=1 to upload unchecked."
+    return 1
+  elif [ "$orphan_rc" -ne 0 ]; then
+    echo "Gate failed: a config names a db the UCSC genome list does not have."
+    echo "Delete it and its configs-minimal/ twin if the db really disappeared"
+    echo "upstream. Re-run with SKIP_CONFIG_GATE=1 if you accept publishing it."
+    return 1
+  fi
   echo "Pre-upload gate: checking every plugin url the configs name..."
   if ! node scripts/checkPluginUrls.mjs; then
     echo "Gate failed: a plugin url is broken. Uploading would error-page every"

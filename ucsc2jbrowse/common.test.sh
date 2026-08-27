@@ -110,6 +110,48 @@ esac
 (run_for_assemblies touched) >/dev/null 2>&1
 check "run_for_assemblies rejects an empty assembly list" "1" "$?"
 
+# --- prune_stray_configs ---
+
+configs="$work/configs"
+mkdir -p "$configs"
+printf 'hg38\nmm39\nhgFixed\n' >"$work/wanted"
+printf '{"assemblies":[{"name":"hg38"}]}' >"$configs/hg38.json"
+printf '{"assemblies":[{"name":"retired"}]}' >"$configs/retired.json"
+printf '{"assemblies":[{}]}' >"$configs/renames.json"
+printf 'not json at all' >"$configs/garbage.json"
+
+out=$(prune_stray_configs "$configs" "$work/wanted" 2>&1)
+check "prune_stray_configs keeps a wanted config" "yes" \
+  "$([ -f "$configs/hg38.json" ] && echo yes || echo no)"
+check "prune_stray_configs deletes a swept-up rename map" "no" \
+  "$([ -f "$configs/renames.json" ] && echo yes || echo no)"
+check "prune_stray_configs deletes an unparseable file" "no" \
+  "$([ -f "$configs/garbage.json" ] && echo yes || echo no)"
+# The load-bearing half: an unlisted db with a real config is a retirement
+# decision, so it survives and checkOrphanConfigs.mjs fails the deploy over it.
+check "prune_stray_configs keeps a named config for an unlisted db" "yes" \
+  "$([ -f "$configs/retired.json" ] && echo yes || echo no)"
+case "$out" in
+*"WARNING: $configs/retired.json"*)
+  echo "ok   - prune_stray_configs warns about the config it kept"
+  ;;
+*)
+  echo "FAIL - prune_stray_configs did not warn about retired.json (got '$out')"
+  fail=1
+  ;;
+esac
+
+# An empty wanted list makes every file look stray. Refusing is the difference
+# between a bad genome-list fetch and losing all 239 configs.
+printf '' >"$work/empty"
+(prune_stray_configs "$configs" "$work/empty") >/dev/null 2>&1
+check "prune_stray_configs refuses an empty wanted list" "1" "$?"
+check "prune_stray_configs deleted nothing while refusing" "2" \
+  "$(find "$configs" -name '*.json' | wc -l)"
+
+(prune_stray_configs "$work/no-such-dir" "$work/wanted") >/dev/null 2>&1
+check "prune_stray_configs refuses a missing directory" "1" "$?"
+
 rm -rf "$work"
 
 if [ "$fail" -eq 0 ]; then
