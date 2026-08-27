@@ -2,9 +2,9 @@ import { useMemo, useState } from 'react'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
-import { orthologSymbol, searchGenes } from '../orthologs/ncbiOrthologs.ts'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
+import { fetchOrthologSymbol, searchGenes } from './geneSearch.ts'
 import { syntenyViewUrl } from './jbrowseLinks.ts'
 
 import type {
@@ -77,13 +77,17 @@ export default function SyntenySelector({ data }: Props) {
   }
 
   // Gene-name typeahead in the first assembly's taxon. Each option carries the
-  // NCBI gene id so selection can resolve the ortholog in the second taxon.
+  // NCBI gene id so selection can resolve the ortholog in the second taxon —
+  // so a suggestion mygene holds without one is dropped rather than offered as
+  // a choice that could not resolve.
   const queryGeneOptions = async (search: string) =>
     taxon1 !== undefined
-      ? (await searchGenes(search, taxon1)).map(h => ({
-          value: `${h.geneId}\t${h.symbol}`,
-          label: h.symbol,
-        }))
+      ? (await searchGenes(search, taxon1))
+          .filter(h => h.geneId)
+          .map(h => ({
+            value: `${h.geneId}\t${h.symbol}`,
+            label: h.symbol,
+          }))
       : []
 
   // On selection, resolve the orthologous symbol in the second taxon (or reuse
@@ -100,7 +104,7 @@ export default function SyntenySelector({ data }: Props) {
     } else {
       setSelectedGene('')
       setGeneNote(`Finding ${symbol1} ortholog in ${nameOf(species2)}…`)
-      void orthologSymbol(geneId, taxon2)
+      void fetchOrthologSymbol(geneId, taxon2)
         .then(symbol2 => {
           if (symbol2) {
             setSelectedGene(`${symbol1}\t${symbol2}`)

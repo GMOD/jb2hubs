@@ -121,6 +121,13 @@ export interface ProteinPanelOptions {
   maxRows?: number // defaults to MAX_PANEL_ROWS
   source?: OrthologSource // defaults per reference species
   onProgress?: (message: string) => void
+  // An already-resolved NCBI GeneID for the query, which skips the symbol
+  // lookup. A caller that resolved the gene for something else (the browser
+  // resolves it for the genome view) would otherwise pay the identical
+  // `gene/symbol/<sym>/taxon/<tax>` request a second time, and ncbiFetch
+  // serializes every call — so the duplicate costs a whole rate-limit slot.
+  // Ignored by the PANTHER source, which resolves on the symbol.
+  geneId?: string
 }
 
 export interface ProteinAlignOptions {
@@ -470,9 +477,10 @@ async function ncbiProteins(
   wanted: Set<number> | undefined,
   maxRows: number,
   onProgress: (message: string) => void,
+  resolvedGeneId?: string,
 ): Promise<Sourced> {
   onProgress('Resolving orthologs across species…')
-  const queryGeneId = await resolveGeneId(query, refTaxonId)
+  const queryGeneId = resolvedGeneId ?? (await resolveGeneId(query, refTaxonId))
   if (!queryGeneId) {
     throw new Error(`no gene found for "${query}"`)
   }
@@ -581,6 +589,7 @@ export async function assembleProteinPanel(
     maxRows = MAX_PANEL_ROWS,
     source = defaultOrthologSource(refTaxonId),
     onProgress = () => undefined,
+    geneId,
   }: ProteinPanelOptions = {},
 ): Promise<ProteinPanel> {
   // No `taxa` asks the source for everything it has; naming one still scopes the
@@ -588,7 +597,7 @@ export async function assembleProteinPanel(
   const wanted = taxa ? new Set([...taxa, refTaxonId]) : undefined
   const { proteins, total } = await (source === 'panther'
     ? pantherProteins(query, refTaxonId, wanted, maxRows, onProgress)
-    : ncbiProteins(query, refTaxonId, wanted, maxRows, onProgress))
+    : ncbiProteins(query, refTaxonId, wanted, maxRows, onProgress, geneId))
 
   // Ordered by the common-species rank (reference and close relatives first) so
   // the panel reads as a curated set rather than whatever order a source used.

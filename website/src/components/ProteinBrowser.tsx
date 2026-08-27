@@ -89,9 +89,16 @@ interface Resolved {
   hundredWay: boolean
 }
 
-// Phase 1: the gene's own genome/AlphaFold structure and the ortholog domain
-// panel, resolved together. Example genes take the panel side from the
-// precomputed cache instantly; everything else resolves live.
+// Phase 1: the gene's own genome/AlphaFold structure, then the ortholog domain
+// panel. Example genes take the panel side from the precomputed cache instantly;
+// everything else resolves live.
+//
+// The structure comes FIRST so its resolved GeneID can seed the panel. Both
+// halves used to resolve the symbol themselves, issuing
+// `gene/symbol/<sym>/taxon/<tax>` twice for one page load — and ncbiFetch
+// serializes every request, so running them concurrently never overlapped them
+// anyway. Sequencing costs nothing and saves a rate-limit slot. The structure's
+// id is also the better one: it is the gene NCBI actually places on an assembly.
 //
 // A failed panel is NOT fatal. The genome view and the AlphaFold structure come
 // from the structure half alone, and they are worth having even when no ortholog
@@ -103,16 +110,15 @@ async function resolveGene(
   onProgress: (s: string) => void,
 ): Promise<Resolved> {
   const cached = (await loadExampleCache())[cacheKey(sym, ref)]
-  const panelPromise = cached
-    ? Promise.resolve(cached.panel)
-    : assembleProteinPanel(sym, ref, { onProgress })
-  const [structure, panelOutcome] = await Promise.all([
-    fetchGeneStructure(sym, ref),
-    panelPromise.then(
-      panel => ({ panel }),
-      (e: unknown) => ({ panelError: message(e) }),
-    ),
-  ])
+  const structure = await fetchGeneStructure(sym, ref)
+  const panelOutcome = await (
+    cached
+      ? Promise.resolve(cached.panel)
+      : assembleProteinPanel(sym, ref, { onProgress, geneId: structure.geneId })
+  ).then(
+    panel => ({ panel }),
+    (e: unknown) => ({ panelError: message(e) }),
+  )
   return {
     structure,
     ...panelOutcome,
@@ -303,7 +309,7 @@ function GeneCombobox({
       void searchGenes(typed.trim(), taxId).then(found => {
         // set even when empty, so a no-match query clears stale suggestions
         if (!ignore) {
-          setHits(found)
+          setHits(found.map(h => h.symbol))
           setHighlighted(-1)
         }
       })
