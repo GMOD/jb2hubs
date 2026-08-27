@@ -313,21 +313,48 @@ sentinel and all) that had been swept up and processed as a config, leaving
 Deleted 2026-08-05. Two things let it persist, both now addressed — but the
 first is structural and still worth knowing:
 
-- **`configs/` is an append-only mirror.** `make.sh` copies
-  `$UCSC_BUILT_DIR/<db>/config.json` to `configs/<db>.json` and never prunes, so
-  a db that disappears upstream leaves a config behind forever, still feeding
-  `mergeAll`, `checkPluginUrls` and `checkConfigCompat`. Compare `configs/`
-  against `api.genome.ucsc.edu/list/ucscGenomes` when something looks stale;
-  `hgFixed` is the one legitimate extra (make.sh rsyncs it deliberately). It no
-  longer accretes non-assemblies, at least: both walks over `$UCSC_BUILT_DIR` —
-  make.sh's copy step and `src/finalizeConfigs.ts` — now iterate the genome
-  list's own keys plus `hgFixed` rather than whatever directories happen to be
-  there, so a stray `renames` can't become a config again. Pruning a db that
-  really did disappear upstream is still manual.
+- **`configs/` was an append-only mirror.** `make.sh` copied
+  `$UCSC_BUILT_DIR/<db>/config.json` to `configs/<db>.json` and never pruned, so
+  a db that disappeared upstream left a config behind forever, still feeding
+  `mergeAll`, `checkPluginUrls` and `checkConfigCompat`. Two things close that
+  now, and the split between them is on **provability**:
+
+  `prune_stray_configs` (`ucsc2jbrowse/common.sh`, called from make.sh's copy
+  step for both directories) deletes a file only when it is **both** absent from
+  the genome list **and** carries no `assemblies[0].name` — the same
+  discriminator `checkPluginUrls.mjs` keys on, and exactly the shape of a
+  swept-up rename map. That needs no judgement, so it does not ask.
+
+  `pnpm check-orphan-configs` (`scripts/checkOrphanConfigs.mjs`, first in
+  run.sh's `gate_configs`) fails the upload on the rest: a real, named config
+  for a db UCSC no longer lists. **Retiring one stays manual** — these are
+  permanent urls that published links and desktop installs keep naming, so it is
+  a decision, not a cleanup. `hgFixed` is the one legitimate extra (make.sh
+  rsyncs it deliberately).
+
+  Both **refuse rather than act vacuously**: a genome list under 100 names, a
+  missing or empty config directory, or no list at all is "could not run", never
+  "no orphans". Getting that backwards would let one truncated fetch report the
+  whole corpus as stray — and, in make.sh's case, delete it. run.sh reports the
+  check's exit 2 separately from its exit 1 for the same reason.
+
+  Both walks over `$UCSC_BUILT_DIR` — make.sh's copy step and
+  `src/finalizeConfigs.ts` — also iterate the genome list's own keys plus
+  `hgFixed` rather than whatever directories happen to be there, so a stray
+  `renames` cannot become a config in the first place. As of 2026-08-27 the two
+  directories hold the same 239 names and the built tree no longer has a
+  `renames/` at all.
+
 - **`mergeAll` deduped plugins on whole-object identity**, so the same plugin
   under two urls was two entries. `all.json` was asking PluginLoader to install
   each of the four plugins three times over. It now dedupes by name, preferring
-  the canonical `latest/` path — see `mergePlugins` in `src/mergeAll.ts`.
+  the canonical `latest/` path — see `mergePlugins` in `src/mergeAll.ts`. That
+  list is also the one thing here that is a union rather than a copy of some
+  assembly's, so `all.json` is now a `CONFIGS` entry in `checkConfigCompat.mjs`
+  and gets booted: on the floor and `latest` only (26MB, and the merged plugin
+  list is config content, identical on every host), from `$UCSC_BUILT_DIR` under
+  `--local` so the pre-upload gate reads the file it is about to publish.
+  Measured 2026-08-27: 10,968 tracks, 4 plugins, clean on both.
 
 ## Staging a config-level feature
 
