@@ -2,17 +2,16 @@ import { useMemo, useState } from 'react'
 
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
+import MultiSyntenyPicker from './MultiSyntenyPicker.tsx'
 import { groupByClade } from './orthologClades.ts'
 import {
   COMMON_TAX_RANK,
-  buildMultiSyntenyUrl,
   formatNumber,
   matchesQuery,
   orthoSyntenyUrl,
+  orthologSyntenyLink,
   orthologsToTsv,
-  planMultiSynteny,
 } from './orthologSearchUtils.ts'
-import { syntenyLink } from './syntenyPairIndex.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
 import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
@@ -121,10 +120,13 @@ export default function OrthologResultsTable({
     if (pairIndex && refAccession) {
       for (const r of results) {
         const acc = r.assembly.accession
+        // Not syntenyLink: it matches across assembly versions, and a panel
+        // opening a version the row's coordinates did not come from does not
+        // navigate at all. See orthologSyntenyLink.
         const link =
           acc === refAccession
             ? undefined
-            : syntenyLink(pairIndex, acc, refAccession)
+            : orthologSyntenyLink(pairIndex, r, refAccession)
         if (link) {
           found.set(acc, link)
         }
@@ -132,23 +134,6 @@ export default function OrthologResultsTable({
     }
     return found
   }, [results, pairIndex, refAccession])
-
-  // Auto-infer a single multi-species synteny view from the whole ortholog set.
-  // Only surfaced when it chains 3+ rows — a 2-row chain adds nothing over the
-  // per-row pairwise "Synteny" links already in the table. Memoized because the
-  // chain search is quadratic in the row count, and the row count runs to the
-  // hundreds while the filter box re-renders on every keystroke.
-  const multiPlan = useMemo(
-    () =>
-      refAccession && pairIndex
-        ? planMultiSynteny(results, refAccession, pairIndex)
-        : null,
-    [results, refAccession, pairIndex],
-  )
-  const multiSyntenyUrl =
-    multiPlan && multiPlan.rows.length >= 3
-      ? buildMultiSyntenyUrl(multiPlan)
-      : null
 
   const filtered = useMemo(
     () =>
@@ -188,18 +173,13 @@ export default function OrthologResultsTable({
 
   return (
     <>
-      {multiPlan && multiSyntenyUrl && (
-        <p className="orthologs-summary">
-          <a
-            href={multiSyntenyUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Launch multi-species synteny view
-          </a>{' '}
-          ({multiPlan.rows.length} species:{' '}
-          {multiPlan.rows.map(r => r.assembly.scientificName).join(' → ')})
-        </p>
+      {refResult && pairIndex && (
+        <MultiSyntenyPicker
+          results={results}
+          refResult={refResult}
+          pairIndex={pairIndex}
+          lineages={lineages}
+        />
       )}
 
       <div className="orthologs-toolbar">

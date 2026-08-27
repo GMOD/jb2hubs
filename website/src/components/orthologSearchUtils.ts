@@ -148,6 +148,40 @@ export function accessionToJbrowseUrl(
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 
+// Whether a row's coordinates actually belong to the genome its synteny panel
+// would open.
+//
+// syntenyLink matches on the version-stripped accession, deliberately, so a
+// lookup succeeds whichever version the caller holds. That is right for FINDING
+// a track and wrong for placing a locus: the panel opens under the name the
+// catalog uses, and NCBI reports the ortholog against whatever version it
+// annotated. Measured on TP53 against human 2026-08-27, 5 of the 38 rows with a
+// link disagree — bonobo (row GCF_029289425.2, catalog .1), both orangutans, the
+// siamang and the goat — and four of those are among the closest apes, so this
+// is the common case for exactly the species a reader reaches for first. The
+// panel then fails to navigate at all: NC_073268.2 is not a refName the .1
+// assembly's chromAlias knows, so the row lands at position 0 of its first
+// chromosome with no tracks loaded.
+//
+// A UCSC db name is a different naming scheme rather than a different assembly,
+// so `hg38` is safe for the row the ortholog index maps to hg38 — and only for
+// that row.
+export function isSameGenome(panelName: string, r: OrthologResult) {
+  return panelName === r.assembly.accession || panelName === r.assembly.ucscDb
+}
+
+// The synteny link for a row, kept only when the panel it names is the genome
+// the row's coordinates came from. Every caller that goes on to navigate the
+// panel wants this rather than syntenyLink.
+export function orthologSyntenyLink(
+  index: PairIndex,
+  r: OrthologResult,
+  otherAccession: string,
+) {
+  const link = syntenyLink(index, r.assembly.accession, otherAccession)
+  return link && isSameGenome(link.names[0], r) ? link : undefined
+}
+
 // bp of context drawn either side of the ortholog gene, so a launched synteny
 // panel shows the neighborhood rather than landing flush on the gene bounds
 // (at gene scale the alignment ribbons would otherwise be invisible).
@@ -235,8 +269,17 @@ export function planMultiSynteny(
   if (!ref) {
     return null
   }
-  // results arrive pre-sorted by evolutionary proximity to the reference, so a
-  // row's index doubles as a "closeness" rank for tie-breaking chain extension.
+  // A row's index is its preference rank when several candidates could extend
+  // the chain — the caller's order, not a phylogeny this function computes.
+  // syntenyCandidates (multiSyntenyPicker.ts) passes shared-lineage order, which
+  // is what makes the suggestion reach for chimp before chicken; a caller that
+  // passes the raw result set gets COMMON_TAX_RANK, then alphabetical.
+  //
+  // Greedy, and deliberately not a longest-path search. A DFS over TP53's
+  // catalog finds a 12-genome chain (Leopardus -> Felis -> Capra -> Ovis ->
+  // Oryctolagus -> human -> rat -> mouse -> chicken -> Bos -> Bubalus x2), and
+  // an answer of that shape is exactly what made the old launch look arbitrary.
+  // Longer is not better here; the reader picks.
   const rank = new Map(results.map((r, i) => [r.assembly.accession, i]))
   const used = new Set([refAccession])
   const chain = [ref]

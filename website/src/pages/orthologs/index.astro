@@ -187,6 +187,61 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
     color: var(--muted);
   }
 
+  .orthologs-multi {
+    margin: 1.25rem 0 0.75rem;
+  }
+
+  .orthologs-multi .orthologs-summary {
+    margin: 0 0 0.5rem;
+  }
+
+  /* The stack order, which is the part a reader has to be able to check: the
+     chain is a path through the synteny catalog, not a phylogeny. */
+  .orthologs-chain {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .orthologs-multi-toggle {
+    font-size: 13px;
+  }
+
+  .orthologs-picker {
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+  }
+
+  .orthologs-picker-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2px 1rem;
+    max-height: 320px;
+    padding: 0;
+    margin: 0.5rem 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .orthologs-pick {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .orthologs-pick:has(input:disabled) {
+    color: var(--muted);
+  }
+
+  /* Chosen, but the chain had nowhere to put it — flagged rather than silently
+     dropped, which is what made the old auto-chain look arbitrary. */
+  .orthologs-pick-unplaced {
+    color: var(--muted);
+    text-decoration: line-through solid var(--border);
+  }
+
   .orthologs-group-count {
     padding: 0 7px;
     font-size: 12px;
