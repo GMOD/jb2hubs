@@ -136,16 +136,31 @@ interface ProductTranscript {
 
 // Representative protein per gene: MANE Select where flagged, else the longest
 // protein isoform (a stable, comparable choice across species).
+// product_report paginates: it returns 20 reports a page by default and hands
+// back a next_page_token. Reading `reports` from one response therefore caps the
+// panel at 20 species however many gene ids go in — invisible while the panel
+// was the 13 COMMON_SPECIES, and a silent truncation the moment it is not.
+// Measured 2026-08-26 on 60 TP53 orthologs: one call returns 20, page_size=100
+// returns all 60, and the token walks the rest.
+const PRODUCT_PAGE_SIZE = 100
+const MAX_PRODUCT_PAGES = 50
+
 async function fetchRepresentativeProteins(
   geneIds: string[],
 ): Promise<Map<string, string>> {
   const byGene = new Map<string, string>()
-  if (geneIds.length > 0) {
+  let pageToken: string | undefined
+  for (let page = 0; geneIds.length > 0 && page < MAX_PRODUCT_PAGES; page++) {
     const json = await ncbiJson<{
       reports?: {
         product?: { gene_id?: string; transcripts?: ProductTranscript[] }
       }[]
-    }>(`${DATASETS}/gene/id/${geneIds.join(',')}/product_report`)
+      next_page_token?: string
+    }>(
+      `${DATASETS}/gene/id/${geneIds.join(',')}/product_report?page_size=${PRODUCT_PAGE_SIZE}${
+        pageToken ? `&page_token=${encodeURIComponent(pageToken)}` : ''
+      }`,
+    )
     for (const { product } of json.reports ?? []) {
       const candidates = (product?.transcripts ?? [])
         .map(t => ({
@@ -162,6 +177,10 @@ async function fetchRepresentativeProteins(
       if (product?.gene_id && best) {
         byGene.set(product.gene_id, best.acc)
       }
+    }
+    pageToken = json.next_page_token
+    if (!pageToken) {
+      break
     }
   }
   return byGene
