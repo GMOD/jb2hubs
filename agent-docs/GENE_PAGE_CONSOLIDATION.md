@@ -1,13 +1,20 @@
 # Gene pages: consolidating the gene-first views
 
-Written 2026-08-27. A design note, not a record of work done — nothing below is
-implemented. Every count in it was measured against the tree at `eae67744f68`.
+Written 2026-08-27. A design note: everything in the order of work is a proposal
+except step 4, which is done and marked so. Every count in it was measured
+against the tree at `eae67744f68`.
 
 The site has five "offerings" beyond assembly browsing, four of them
-staging-only. Three of the four are the same tool wearing three shells. This
-proposes collapsing them into one gene entity page, and argues that the thing
-which decides whether that works — request latency — has already been solved
-once here and applied to only one of the three.
+staging-only. Three of the four take the same input and differ only in how they
+render it. This proposes a gene entity page that resolves a gene once and gives
+the three somewhere to hang, and argues that the thing which decides whether
+that works — request latency — has already been solved once here and applied to
+only one of the three.
+
+**Read the amendment below before the order of work.** The first draft proposed
+absorbing all three views into that page and dropping `/synteny`; the decision
+went the other way, and the shape is a hub with the deep tools keeping their own
+pages.
 
 ## What is actually there
 
@@ -93,10 +100,10 @@ identity and protein layers as well, and pointing one page at it.
 A merged page with tabs would remove the duplicate shells and stop there. Naming
 the result a gene entity page is worth more, for three reasons.
 
-**Tabs hide two thirds of the argument.** The case for the whole feature is that
-one gene resolves into a species table, a gene-order picture and a domain
-cartoon at once. Someone landing on TP53 should scroll them, not discover two of
-them behind controls.
+**Tabs hide half the argument.** The case for the whole feature is that one gene
+resolves into a species table and a gene-order picture together, with the deep
+tools one click on from there. Someone landing on TP53 should scroll that, not
+discover it behind a control.
 
 **Several things belong to no current view.** The gene's own identity —
 description, aliases, map location, organism — is already fetched and, per the
@@ -156,6 +163,40 @@ Do both:
 The prerendered half is what makes the Lambda worth extending twice over: the
 same cached JSON serves the build and the live page.
 
+## Amended 2026-08-27: a hub, not an absorber
+
+The first draft of this note proposed folding all three views into one page and
+dropping `/synteny` into the accession page. Colin decided otherwise on both
+counts: **the synteny launcher stays its own page**, and **the protein browser
+probably should too.** The amendment is an improvement, and the reason is worth
+stating rather than just recording.
+
+A tool is not a view. `/protein-browser` and `/synteny` each have a workflow of
+their own — pick a gene, read the cartoon, launch a connected session, and in
+the protein browser's case optionally start an EBI job that runs for minutes.
+Neither degrades gracefully into a section of a summary page, and a page whose
+sections take minutes to settle is not a summary page any more.
+
+What was actually broken is narrower than "there are too many pages": three
+separate search forms, three gene resolutions with no shared cache, and a nav
+dropdown of five items with no stated relationship. None of that requires
+absorbing the tools.
+
+So the shape is a **hub**, in the way that NCBI Gene links out to BLAST rather
+than embedding it:
+
+- `/gene/<symbol>` — identity header, ortholog species table, gene-order
+  picture, and launch cards into the deep tools.
+- `/protein-browser`, `/synteny` — still pages, still in the nav, but reached
+  with the gene already resolved so neither asks for it a second time.
+- The shared layer is gene **resolution** and the `?gene=&ref=` contract, not
+  rendering.
+
+One thing gets no better under the hub and should be named: a dropdown of five
+items is still a dropdown of five items unless the nav states the hierarchy. The
+gene page has to read as the entry point and the tools as things reached from
+it, or this trades a consolidation problem for an information-architecture one.
+
 ## Proposed order of work
 
 1. **Extend the ortholog-assembler** to serve identity and the protein panel
@@ -163,26 +204,36 @@ same cached JSON serves the build and the live page.
    — a cache key that is versioned on assembler behaviour, so a resolver fix
    invalidates rather than serving a wrong answer forever (the v3 bump exists
    because human `TTN` had been resolving to TTR).
-2. **Build `/gene/[symbol]`** with the three existing views as sections.
-   `OrthologResultsTable`, `MultiSyntenyView` and `ProteinDomainCartoon` survive
-   nearly unchanged — they are presentational. What dies is three shells, three
-   forms, three URL syncs, and two of the three gene resolvers.
-3. **Fold `/synteny` into the accession page.** It is the oldest of the set
-   (2025-12-02) and the weakest, because being assembly-first it asks for two
-   genomes before it can say anything. Its payload already arrives from two
-   better-anchored places: the per-row Synteny links and "Launch multi-species
-   synteny view" in `OrthologResultsTable.tsx`, and the "Compare with other
-   genomes" section at `accession/[id].astro:327`. Keep `SyntenySelector` as a
-   control there, keep `/synteny/info`, drop the standalone page and its nav
-   entry.
-4. **Delete `website/src/orthologs/ncbiOrthologs.ts`.** Its `searchGenes`
-   duplicates `geneSearch.ts`'s (E-utils versus mygene.info) and its
-   `orthologSymbol` duplicates `fetchOrthologSymbol`. `SyntenySelector` is its
-   only consumer, so step 3 frees it.
+2. **Build `/gene/[symbol]`** as the hub: identity, ortholog table, gene-order
+   picture, launch cards. `OrthologResultsTable` and `MultiSyntenyView` survive
+   nearly unchanged — they are presentational.
+
+   Build every data layer as a `*Client.ts` in the shape of
+   `neighborhoodClient.ts`
+   (`const viaApi = API ? await tryApi(…) : undefined; return viaApi ?? assembleLocally(…)`)
+   **from the first commit**. That is what lets step 2 run against the
+   browser-side assemblers and step 1 light up per layer with no call site to
+   retrofit — and it is why the two steps can be taken in either order. Judge
+   the result on staging, where the neighborhood layer is already Lambda-served;
+   on a cold local tree that section is 15 serialized calls and you will be
+   looking at a spinner rather than a page.
+
+3. ~~Fold `/synteny` into the accession page.~~ Declined — see the amendment
+   above. `/synteny` keeps its page and its nav entry.
+4. ~~Delete `website/src/orthologs/ncbiOrthologs.ts`.~~ **Done 2026-08-27**, and
+   it was not the pure duplicate this note first called it: its `searchGenes`
+   returned `{geneId, symbol}` where `geneSearch.ts`'s returned symbols alone,
+   and `SyntenySelector` needs the id to resolve the second species. The
+   unification therefore moved the id into `geneSearch.ts` rather than deleting
+   a copy — which also took the synteny typeahead off NCBI's throttled budget,
+   since mygene answers in one unthrottled call where E-utils took two throttled
+   ones. `dedupeHits` handles the wrinkle that surfaced: mygene returns a record
+   per source, so an Ensembl-only duplicate arrives with no `entrezgene`.
 
 Leave the EBI Clustal Omega alignment where it is — on demand, behind a button.
 A broad panel's job runs for minutes, which is not page-load material at any
-level of caching.
+level of caching, and it is the clearest single argument for the protein browser
+keeping a page of its own.
 
 ## What this does not touch
 
@@ -197,8 +248,9 @@ is worth its own look, but not as part of this.
 `/protein-browser` cannot ship to production whatever happens here.
 `geneStructure.ts:31` records why: the view needs a JBrowse build that bundles
 the msaview and protein3d plugins and reads params from the URL hash, which is
-true of `main` only. On a merged gene page that section ships dark on production
-and lights up on release, which is fine — but it must not drive the design.
+true of `main` only. Keeping it on its own page makes that cheap to live with —
+the gene page's launch card for it stays staging-gated and lights up on release,
+rather than a whole section of the hub shipping dark.
 
 `/conserved-gene-order` has **no** external blocker. It renders SVG the site
 draws itself from NCBI data, and it is already served by the Lambda. It is the
