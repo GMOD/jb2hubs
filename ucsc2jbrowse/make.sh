@@ -49,6 +49,11 @@ export TMPDIR="${TMPDIR:-/mnt/sdb/cdiesh/tmp}"
 # Ensure the script's path is in the PATH for tool access.
 export PATH="$SCRIPT_DIR:$PATH"
 
+# Refuse to derive anything with a bgzip that would emit different bytes than
+# the corpus holds -- see assert_bgzip_toolchain in lib/common.sh. Checked before
+# any derivation runs, because the damage is done by the time output exists.
+assert_bgzip_toolchain
+
 # A built config is a function of two things: the trackDb it was built from, and
 # the converter that built it. Only the first used to be stamped, so an
 # incremental run after a converter fix reported "No UCSC assemblies have

@@ -348,6 +348,82 @@ save_rebuild_stamp() {
 }
 export -f save_rebuild_stamp
 
+# The bytes a derived .gz holds are a function of the bgzip BUILD, not only of
+# the code in this repo. htslib 1.23.1 linked against libz emits ~6% larger
+# output than the same version linked against libdeflate, and the decompressed
+# content is byte-identical -- so every check here passes either way and nothing
+# downstream can tell the two apart.
+#
+# That is not hypothetical. On 2026-08-27 a ~/.local htslib upgrade silently
+# swapped the backend, and the next REDERIVE rewrote 5,757 files / 76.7GB with
+# no content change at all. rclone -c saw genuinely different bytes and re-sent
+# every one of them; worse, because the data and index objects are two separate
+# passes, the run left fresh .gz against stale .csi in the bucket for every
+# assembly it had reached -- "invalid bgzf header" on hg19 and hg38 in
+# production, from an upgrade nobody connected to it.
+#
+# So pin the property that actually matters -- the bytes bgzip emits -- rather
+# than a version string, which read "1.23.1" both before and after the swap and
+# would have caught nothing.
+#
+# The canary input is deliberately large and varied. A short one hashes
+# identically under htslib 1.13 and 1.23.1 even though those two disagree on
+# real data (243569 vs 242051 bytes on the same bed), so a trivial canary would
+# wave through exactly the kind of drift this exists to catch. Cost is ~0.09s.
+BGZIP_TOOLCHAIN_SIGNATURE=6543e177be96fb685072546d230967b3
+
+bgzip_canary_input() {
+  awk 'BEGIN {
+    s = 12345
+    for (i = 1; i <= 60000; i++) {
+      s = (s * 1103515245 + 12345) % 2147483648
+      c = s % 24 + 1
+      p = s % 250000000
+      printf "chr%d\t%d\t%d\tfeat%d\t%d\t%s\n", c, p, p + (s % 5000), i, s % 1000, (s % 2 ? "+" : "-")
+    }
+  }'
+}
+export -f bgzip_canary_input
+
+bgzip_toolchain_signature() {
+  bgzip_canary_input | bgzip -c | md5sum | awk '{print $1}'
+}
+export -f bgzip_toolchain_signature
+
+# Fails the run when bgzip would emit different bytes than the corpus was built
+# with. Deliberately fatal rather than a warning: the failure it guards against
+# is invisible in the output and only shows up as an unexplained multi-GB
+# re-upload plus desynchronized indexes, which is precisely the shape of problem
+# a warning gets scrolled past. ALLOW_BGZIP_DRIFT=1 overrides for a deliberate
+# toolchain change -- which means committing the new signature and accepting
+# that every derived .gz and .csi in the corpus will be rewritten and re-sent.
+assert_bgzip_toolchain() {
+  if [ -n "${ALLOW_BGZIP_DRIFT:-}" ]; then
+    echo "WARNING: ALLOW_BGZIP_DRIFT set; skipping bgzip toolchain check" >&2
+    return 0
+  fi
+  local actual
+  actual=$(bgzip_toolchain_signature)
+  if [ "$actual" != "$BGZIP_TOOLCHAIN_SIGNATURE" ]; then
+    {
+      echo "ERROR: bgzip emits different bytes than this corpus was built with."
+      echo "  expected signature: $BGZIP_TOOLCHAIN_SIGNATURE"
+      echo "  this bgzip:         $actual"
+      echo "  bgzip in use:       $(command -v bgzip) ($(bgzip --version 2>&1 | head -1))"
+      echo
+      echo "Every derived .gz and .csi would be rewritten with identical content"
+      echo "and re-uploaded. Usually this means a different htslib is first on"
+      echo "PATH, or the same htslib was rebuilt against a different compression"
+      echo "backend (libz vs libdeflate)."
+      echo
+      echo "To accept it: re-run with ALLOW_BGZIP_DRIFT=1 and commit the new"
+      echo "signature as BGZIP_TOOLCHAIN_SIGNATURE in lib/common.sh."
+    } >&2
+    return 1
+  fi
+}
+export -f assert_bgzip_toolchain
+
 # Deterministic content hash of a source tree: the code a derived output is a
 # function of, as opposed to the data it was derived from. needs_rebuild covers
 # the data half of that; this covers the half an incremental build otherwise

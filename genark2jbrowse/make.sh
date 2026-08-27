@@ -29,6 +29,11 @@ Options:
 handle_flag() { return 1; }
 parse_flags "$@"
 
+# Refuse to derive anything with a bgzip that would emit different bytes than
+# the corpus holds -- see assert_bgzip_toolchain in lib/common.sh. Checked before
+# any derivation runs, because the damage is done by the time output exists.
+assert_bgzip_toolchain
+
 # "new" | "all" | "reprocess", for logging and for the phases that only skip
 # work in the default incremental mode.
 MODE="new"

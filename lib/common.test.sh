@@ -4,7 +4,7 @@
 #
 # Tests for helpers in lib/common.sh: make_file_listing, parse_flags,
 # needs_gff_fetch, needs_rebuild / save_rebuild_stamp, source_tree_hash,
-# rclone_sync_with_indexes and run_parallel_reporting.
+# rclone_sync_with_indexes, assert_bgzip_toolchain and run_parallel_reporting.
 # Run: ./lib/common.test.sh
 #
 
@@ -443,6 +443,54 @@ fi
 
 rm -rf "$pj"
 unset -f write_joblog job_row
+
+# --- assert_bgzip_toolchain ---
+# The signature pins the BYTES bgzip emits, not its version string: the incident
+# that motivated it was htslib 1.23.1 rebuilt against libz instead of libdeflate,
+# where the version was identical before and after. So the test that matters is
+# that a different backend at the same version is rejected.
+check "signature is deterministic across runs" \
+  "$(bgzip_toolchain_signature)" "$(bgzip_toolchain_signature)"
+
+if assert_bgzip_toolchain 2>/dev/null; then
+  echo "ok   - current bgzip matches the pinned signature"
+else
+  echo "FAIL - current bgzip does not match BGZIP_TOOLCHAIN_SIGNATURE"
+  echo "       (if the toolchain changed deliberately, re-pin it; see lib/common.sh)"
+  fail=1
+fi
+
+# A canary that only exercises trivially-compressible input hashes the same
+# under htslib 1.13 and 1.23.1, both of which link libdeflate but disagree on
+# real data. Assert the input is big enough to tell builds apart at all.
+bg_bytes=$(bgzip_canary_input | wc -c)
+if [ "$bg_bytes" -gt 1000000 ]; then
+  echo "ok   - canary input is large enough to expose level mapping ($bg_bytes bytes)"
+else
+  echo "FAIL - canary input is only $bg_bytes bytes; too small to tell builds apart"
+  fail=1
+fi
+
+if command -v /usr/bin/bgzip >/dev/null 2>&1 &&
+  ! /usr/bin/bgzip --version 2>&1 | head -1 | grep -q "1.23.1"; then
+  bgd=$(mktemp -d)
+  ln -s /usr/bin/bgzip "$bgd/bgzip"
+  if PATH="$bgd:$PATH" assert_bgzip_toolchain >/dev/null 2>&1; then
+    echo "FAIL - a different bgzip build was not detected"
+    fail=1
+  else
+    echo "ok   - a different bgzip build is rejected"
+  fi
+  if PATH="$bgd:$PATH" ALLOW_BGZIP_DRIFT=1 assert_bgzip_toolchain >/dev/null 2>&1; then
+    echo "ok   - ALLOW_BGZIP_DRIFT overrides the check"
+  else
+    echo "FAIL - ALLOW_BGZIP_DRIFT did not override the check"
+    fail=1
+  fi
+  rm -rf "$bgd"
+else
+  echo "skip - drift detection (no second bgzip build available to compare)"
+fi
 
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail
