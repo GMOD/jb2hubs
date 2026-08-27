@@ -514,13 +514,18 @@ function GeneResults({
 // answers a question the reader has after the launch rather than before it.
 function DomainSection({ panel }: { panel: ProteinPanel }) {
   const found = new Set(panel.rows.map(r => r.taxId))
-  const missing = COMMON_SPECIES.filter(s => !found.has(s.taxId))
+  // Which model species came back empty is worth saying only when the model
+  // species are what the panel asked for. A broad panel takes NCBI's ortholog
+  // order instead, so naming the four it never requested reads as a gap.
+  const curated = panel.rows.length <= COMMON_SPECIES.length
+  const missing = curated ? COMMON_SPECIES.filter(s => !found.has(s.taxId)) : []
   return (
     <details className="ui-disclosure">
       <summary>
         Domain architecture{' '}
         <span className="ui-caption">
-          {panel.rows.length} of {COMMON_SPECIES.length} model species
+          {panel.rows.length} species
+          {curated ? ` of ${COMMON_SPECIES.length}` : ''}
         </span>
       </summary>
       <ProteinDomainCartoon rows={panel.rows} />

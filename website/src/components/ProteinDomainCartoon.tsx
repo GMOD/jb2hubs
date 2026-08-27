@@ -19,10 +19,39 @@ const PALETTE = [
   '#bab0ac',
 ]
 
+// How many rows carry each domain name.
+function prevalence(rows: ProteinPanelRow[]) {
+  const count = new Map<string, number>()
+  for (const r of rows) {
+    for (const name of new Set(r.domains.map(d => d.name))) {
+      count.set(name, (count.get(name) ?? 0) + 1)
+    }
+  }
+  return count
+}
+
+// A CDD hit landing on a single row out of dozens is a low-specificity model
+// rather than a real difference: BRCA2 picks up a 128-character "Replication
+// protein A, class 2b aminoacyl-tRNA synthetases…" and NOTCH1 and DMD collect
+// three or four such singletons each. Every one costs a legend entry and says
+// nothing, so a broad panel drops them.
+//
+// A small panel keeps everything, because there one row IS the pattern — TP53's
+// primate-only TAD2 shows up on 1 of 9 rows and is the most interesting thing in
+// that panel.
+const BROAD_PANEL_ROWS = 20
+
 // Same domain name -> same color across every row, so a shared domain reads as a
-// vertically-aligned color band down the panel.
+// vertically-aligned color band down the panel. Ordered by prevalence, which
+// spends the strongest palette entries on the bands that run the whole way down
+// and puts the legend in the order the eye meets it.
 function assignColors(rows: ProteinPanelRow[]) {
-  const names = [...new Set(rows.flatMap(r => r.domains.map(d => d.name)))]
+  const count = prevalence(rows)
+  const floor = rows.length >= BROAD_PANEL_ROWS ? 2 : 1
+  const names = [...count]
+    .filter(([, n]) => n >= floor)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name]) => name)
   return new Map(names.map((name, i) => [name, PALETTE[i % PALETTE.length]!]))
 }
 
@@ -33,6 +62,7 @@ export default function ProteinDomainCartoon({
 }) {
   const maxLength = Math.max(...rows.map(r => r.length), 1)
   const colors = assignColors(rows)
+  const counts = prevalence(rows)
 
   return (
     <div className="pdc">
@@ -53,18 +83,20 @@ export default function ProteinDomainCartoon({
                 className="pdc-bar"
                 style={{ width: `${(r.length / maxLength) * 100}%` }}
               >
-                {r.domains.map((d, i) => (
-                  <div
-                    className="pdc-domain"
-                    key={`${d.name}-${d.start}-${i}`}
-                    title={`${d.name} (${d.start}–${d.end})`}
-                    style={{
-                      left: `${((d.start - 1) / r.length) * 100}%`,
-                      width: `${((d.end - d.start + 1) / r.length) * 100}%`,
-                      background: colors.get(d.name),
-                    }}
-                  />
-                ))}
+                {r.domains
+                  .filter(d => colors.has(d.name))
+                  .map((d, i) => (
+                    <div
+                      className="pdc-domain"
+                      key={`${d.name}-${d.start}-${i}`}
+                      title={`${d.name} (${d.start}–${d.end})`}
+                      style={{
+                        left: `${((d.start - 1) / r.length) * 100}%`,
+                        width: `${((d.end - d.start + 1) / r.length) * 100}%`,
+                        background: colors.get(d.name),
+                      }}
+                    />
+                  ))}
               </div>
               <span className="pdc-len">{r.length} aa</span>
             </div>
@@ -77,12 +109,14 @@ export default function ProteinDomainCartoon({
             <span
               className="pdc-legend-item"
               key={name}
+              title={`${name} · ${counts.get(name)} of ${rows.length} species`}
             >
               <span
                 className="pdc-swatch"
                 style={{ background: color }}
               />
-              {name}
+              <span className="pdc-legend-name">{name}</span>
+              <span className="pdc-legend-count">{counts.get(name)}</span>
             </span>
           ))}
         </div>

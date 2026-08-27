@@ -3,7 +3,12 @@
 // GeneIDs — no static assembly index, no eutils chaining. Consumed by
 // neighborhood.ts (which adds neighbors + the induced tree).
 
-import { EUTILS, fetchOrthologReports, ncbiJson } from './ncbiFetch.ts'
+import {
+  DATASETS,
+  EUTILS,
+  fetchOrthologReports,
+  ncbiJson,
+} from './ncbiFetch.ts'
 import { COMMON_SPECIES } from './orthologSearchUtils.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
@@ -94,11 +99,47 @@ export function collectNames(tree: TaxonNode | undefined) {
 
 // Resolve a gene symbol to an NCBI GeneID in the reference taxon (a numeric query
 // is already a GeneID).
+//
+// Both NCBI symbol lookups match aliases as well as symbols, and neither ranks
+// the exact match first: `TTN` in human returns 7276 (TTR, transthyretin) ahead
+// of 7273 (TTN, titin), on the Datasets symbol endpoint and on an esearch
+// `[Gene Name]` alike. Taking the first hit therefore silently resolved titin to
+// transthyretin — measured 2026-08-26, and TTN is one of the example chips. So
+// ask for the candidates and prefer the one whose own symbol matches.
+//
+// Falling back to the first hit is what keeps an alias working: `p53` returns
+// TP53 and matches nothing exactly, which is the right answer.
+function pickBySymbol(
+  query: string,
+  candidates: { gene_id?: string; symbol?: string }[],
+) {
+  const wanted = query.trim().toLowerCase()
+  const exact = candidates.find(c => c.symbol?.toLowerCase() === wanted)
+  return (exact ?? candidates[0])?.gene_id
+}
+
 export async function resolveGeneId(query: string, refTaxonId: number) {
-  if (/^\d+$/.test(query.trim())) {
-    return query.trim()
+  const trimmed = query.trim()
+  if (/^\d+$/.test(trimmed)) {
+    return trimmed
   }
-  const term = `${encodeURIComponent(query)}[Gene+Name]+AND+${refTaxonId}[taxid]`
+  const bySymbol = await ncbiJson<{
+    reports?: { gene?: { gene_id?: string; symbol?: string } }[]
+  }>(
+    `${DATASETS}/gene/symbol/${encodeURIComponent(trimmed)}/taxon/${refTaxonId}`,
+  ).catch(() => undefined)
+  const hit = pickBySymbol(
+    trimmed,
+    (bySymbol?.reports ?? [])
+      .map(r => r.gene)
+      .filter((g): g is { gene_id?: string; symbol?: string } => !!g),
+  )
+  if (hit) {
+    return hit
+  }
+  // Datasets knows symbols and aliases; esearch also reaches descriptions, so it
+  // stays as the wider net for a query neither matches.
+  const term = `${encodeURIComponent(trimmed)}[Gene+Name]+AND+${refTaxonId}[taxid]`
   const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
     `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`,
   )

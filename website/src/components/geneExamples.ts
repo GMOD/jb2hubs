@@ -11,20 +11,50 @@
 import type { Example } from './orthologSearchUtils.ts'
 
 const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
+  // The human picks are chosen on what the DOMAIN CARTOON shows at 60 species,
+  // measured 2026-08-26 — a chip whose panel is one flat band teaches nothing,
+  // however famous the gene. Each note says what there is to see.
+  //
+  // Deliberately dropped, with the reason, so they don't get re-added:
+  //   CFTR — CDD annotates the whole protein as one "CFTR_protein" hit. One
+  //          domain, no variation, a solid bar 60 times.
+  //   HBB  — 18 orthologs in all of NCBI (globins are a paralog thicket), one
+  //          domain, and 147 aa in every one of them.
+  //   KRAS — small and near-invariant; SOD1 already covers "nothing changes"
+  //          and does it in 150 aa.
   9606: [
     {
       symbol: 'TP53',
-      note: 'Tumour suppressor — mutated in ~half of all cancers',
+      note: 'Tumour suppressor — the TAD is missing in most fish, TAD2 is primate-only',
     },
-    { symbol: 'BRCA2', note: 'Hereditary breast/ovarian cancer, 27 exons' },
-    { symbol: 'EGFR', note: 'Receptor tyrosine kinase and major drug target' },
-    { symbol: 'SOD1', note: 'ALS — small and highly conserved' },
     {
-      symbol: 'KRAS',
-      note: 'Oncogene — small and almost invariant across vertebrates',
+      symbol: 'BRCA2',
+      note: 'BRC repeats, 4–15 copies — fish carry a shorter, tighter array',
     },
-    { symbol: 'CFTR', note: 'Cystic fibrosis chloride channel' },
-    { symbol: 'HBB', note: 'β-globin (sickle cell) — tiny 3-exon gene' },
+    {
+      symbol: 'NOTCH1',
+      note: 'EGF-repeat array, 13–30 copies; the richest architecture here',
+    },
+    {
+      symbol: 'DMD',
+      note: 'Dystrophin — spectrin repeats, 2–14 copies',
+    },
+    {
+      symbol: 'EGFR',
+      note: 'Identical 4-domain layout everywhere, so short bars are incomplete annotations',
+    },
+    {
+      symbol: 'COL1A1',
+      note: 'Collagen — glycine-rich repeats, 4–6 copies',
+    },
+    {
+      symbol: 'PAX6',
+      note: 'Homeodomain + paired box, unchanged across every vertebrate',
+    },
+    {
+      symbol: 'SOD1',
+      note: 'ALS — 150 aa and invariant: the control case',
+    },
     {
       symbol: 'TTN',
       note: 'Titin — the largest human gene, extreme intron collapse',

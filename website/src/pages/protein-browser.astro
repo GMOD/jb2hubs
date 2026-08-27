@@ -213,6 +213,19 @@ if (!features.proteinBrowser) {
     align-items: center;
     gap: 5px;
   }
+  /* CDD names run from "P53" to a 128-character sentence, so the long ones are
+     clipped rather than allowed to wrap the legend into a paragraph. The full
+     name and the species count are on the item's title. */
+  .pdc-legend-name {
+    max-width: 22ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .pdc-legend-count {
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
   .pdc-swatch {
     width: 11px;
     height: 11px;
