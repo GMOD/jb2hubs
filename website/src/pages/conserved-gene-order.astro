@@ -15,63 +15,16 @@ if (!features.multiSynteny) {
 >
   <Container>
     <h1>Conserved gene order across species</h1>
-    <p>
-      Enter a gene and reference organism: this view places the gene plus its
-      protein-coding neighbors across every species with an annotated ortholog,
-      ordered by the NCBI taxonomy. Ribbons connect orthologs between adjacent
-      species, so crossings and inversions reveal local gene-order
-      rearrangements (conserved synteny, or microsynteny). Toggle between
-      bp-scaled (real sizes/distances) and ordinal (equal slots) layouts. Click
-      any gene to open it in JBrowse, or click an internal tree node to launch a
-      stacked synteny view of that whole subtree. For the full cross-species
-      ortholog table, see <a href="/orthologs">Orthologs</a>.
+    <p class="ui-lede">
+      A gene and its protein-coding neighbors across every species with an
+      annotated ortholog, ordered by the NCBI taxonomy — ribbons connect the
+      orthologs, so crossings and inversions are local rearrangements.
     </p>
     <MultiSyntenyExplorer client:only="react" />
   </Container>
 </Layout>
 
 <style is:global>
-  .msv-form {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    margin: 1.25rem 0;
-    flex-wrap: wrap;
-  }
-  .msv-form input,
-  .msv-form select {
-    padding: 7px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .msv-form input {
-    min-width: 220px;
-  }
-  .msv-form button {
-    padding: 8px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .msv-form button:disabled {
-    background: #f0f0f0;
-    color: #999;
-    border-color: #ddd;
-    cursor: not-allowed;
-  }
-  .msv-hint {
-    color: #666;
-    font-size: 14px;
-  }
-  .msv-error {
-    color: #b00020;
-    font-size: 14px;
-  }
   .msv-controls {
     font-size: 14px;
     color: #333;
@@ -176,18 +129,5 @@ if (!features.multiSynteny) {
     margin: 0 0 1rem;
     font-size: 13px;
     color: #666;
-  }
-  .msv-example-chip {
-    padding: 3px 10px;
-    font-size: 13px;
-    border: 1px solid #ccc;
-    border-radius: 999px;
-    background: white;
-    color: var(--accent);
-    cursor: pointer;
-  }
-  .msv-example-chip:hover:not(:disabled) {
-    border-color: var(--accent);
-    background: var(--accent-wash);
   }
 </style>

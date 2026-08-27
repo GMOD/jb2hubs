@@ -1,3 +1,5 @@
+import '../styles/ui.css'
+
 import { useEffect, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
@@ -7,6 +9,7 @@ import { ncbiGeneUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
+import HelpButton from './HelpButton.tsx'
 import OrthologHelpDialog from './OrthologHelpDialog.tsx'
 import OrthologResultsTable from './OrthologResultsTable.tsx'
 import { fetchTaxonAncestors } from './multiSyntenyTaxonTree.ts'
@@ -168,11 +171,11 @@ export default function OrthologSearch() {
 
   return (
     <div>
-      <div className="orthologs-controls">
+      <div className="ui-form ui-form-labeled">
         <SearchField
           id="gene-input"
           label="Gene symbol"
-          className="orthologs-input"
+          className="ui-input"
           value={geneInput}
           onChange={setGeneInput}
           onSubmit={submit}
@@ -182,7 +185,7 @@ export default function OrthologSearch() {
         <SearchField
           id="species-input"
           label="Reference species"
-          className="orthologs-select"
+          className="ui-select"
           value={refInput}
           onChange={setRefInput}
           onSubmit={submit}
@@ -200,16 +203,16 @@ export default function OrthologSearch() {
             ))}
           </datalist>
         </SearchField>
-        <div className="orthologs-field">
+        <div className="ui-field">
           <label
             htmlFor="scope-input"
-            className="orthologs-label"
+            className="ui-field-label"
           >
             Limit to
           </label>
           <select
             id="scope-input"
-            className="orthologs-select"
+            className="ui-select"
             value={scopeInput}
             onChange={e => {
               setScopeInput(e.target.value)
@@ -230,20 +233,16 @@ export default function OrthologSearch() {
         <button
           onClick={submit}
           disabled={loading || !geneInput.trim() || !refInput.trim()}
-          className="orthologs-search-btn"
+          className="ui-btn"
         >
           {loading ? 'Searching…' : 'Search'}
         </button>
-        <button
+        <HelpButton
+          label="How this search works"
           onClick={() => {
             setHelpOpen(true)
           }}
-          className="orthologs-help-btn"
-          title="How this search works"
-          aria-label="How this search works"
-        >
-          ?
-        </button>
+        />
       </div>
 
       {helpOpen && (
@@ -254,7 +253,7 @@ export default function OrthologSearch() {
         />
       )}
 
-      <p className="orthologs-hint">
+      <p className="ui-hint">
         Try an example:{' '}
         {['BRCA1', 'TP53', 'SHH'].map(g => (
           <button
@@ -263,20 +262,18 @@ export default function OrthologSearch() {
               runSearch(g, 'Human', scopeInput)
             }}
             disabled={loading}
-            className="orthologs-chip"
+            className="ui-chip-btn"
           >
             {g}
           </button>
         ))}
       </p>
 
-      {!store && !search && (
-        <p className="orthologs-hint">Loading assembly index…</p>
-      )}
+      {!store && !search && <p className="ui-hint">Loading assembly index…</p>}
 
       <ErrorMessage
         error={error}
-        className="orthologs-error"
+        className="ui-error"
       />
 
       {search && (
@@ -318,10 +315,10 @@ function SearchField({
   children?: React.ReactNode
 }) {
   return (
-    <div className="orthologs-field">
+    <div className="ui-field">
       <label
         htmlFor={id}
-        className="orthologs-label"
+        className="ui-field-label"
       >
         {label}
       </label>
@@ -471,7 +468,7 @@ function SearchResults({
         />
       )}
       {results.length === 0 ? (
-        <p className="orthologs-hint">
+        <p className="ui-hint">
           {totalOrthologs > 0
             ? 'NCBI lists orthologs for this gene, but we host none of their genomes'
             : 'NCBI lists no orthologs for this gene'}

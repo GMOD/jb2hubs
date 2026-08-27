@@ -1,3 +1,5 @@
+import '../styles/ui.css'
+
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
@@ -5,6 +7,7 @@ import useSWRImmutable from 'swr/immutable'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
+import HelpButton from './HelpButton.tsx'
 import { HelpDialog, SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
 import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import { examplesFor } from './geneExamples.ts'
@@ -165,7 +168,7 @@ export default function ProteinBrowser() {
 
   return (
     <div>
-      <div className="msv-form">
+      <div className="ui-form">
         <GeneCombobox
           value={gene}
           taxId={taxId}
@@ -176,6 +179,7 @@ export default function ProteinBrowser() {
           }}
         />
         <select
+          className="ui-select"
           value={taxId}
           onChange={e => {
             switchSpecies(Number(e.target.value))
@@ -193,6 +197,7 @@ export default function ProteinBrowser() {
           ))}
         </select>
         <button
+          className="ui-btn"
           onClick={() => {
             run(gene, taxId)
           }}
@@ -200,16 +205,12 @@ export default function ProteinBrowser() {
         >
           {loading ? 'Resolving…' : 'Explore'}
         </button>
-        <button
-          className="msv-icon-btn"
-          title="How the protein browser works"
-          aria-label="How the protein browser works"
+        <HelpButton
+          label="How the protein browser works"
           onClick={() => {
             setHelpOpen(true)
           }}
-        >
-          ?
-        </button>
+        />
       </div>
 
       <div className="msv-examples">
@@ -217,7 +218,7 @@ export default function ProteinBrowser() {
         {examples.map(ex => (
           <button
             key={ex.symbol}
-            className="msv-example-chip"
+            className="ui-chip-btn"
             title={ex.note}
             disabled={loading}
             onClick={() => {
@@ -229,17 +230,10 @@ export default function ProteinBrowser() {
         ))}
       </div>
 
-      <p className="msv-scope">
-        The domain cartoon and alignment compare one representative protein
-        (MANE Select, else longest isoform) per species across{' '}
-        {COMMON_SPECIES.length} model organisms — human through yeast and
-        plants. Not a general species search.
-      </p>
-
-      {loading && <p className="msv-hint">{status || 'Resolving…'}</p>}
+      {loading && <p className="ui-hint">{status || 'Resolving…'}</p>}
       <ErrorMessage
         error={error}
-        className="msv-error"
+        className="ui-error"
       />
 
       {data && (
@@ -340,6 +334,7 @@ function GeneCombobox({
       ref={boxRef}
     >
       <input
+        className="ui-input"
         value={value}
         role="combobox"
         aria-expanded={showList}
@@ -472,7 +467,7 @@ function GeneResults({
 
   return (
     <>
-      <p className="msv-hint">
+      <p className="ui-hint">
         {panel
           ? `${panel.rows.length} of ${COMMON_SPECIES.length} model species · `
           : ''}
@@ -482,14 +477,13 @@ function GeneResults({
         </a>
       </p>
       {panelError && (
-        <p className="msv-note">
-          No cross-species panel for {symbol}: {panelError}. The genome view and
-          structure below still work.
+        <p className="ui-note">
+          No ortholog panel for {symbol}: {panelError}
         </p>
       )}
       {panel && missing.length > 0 && (
-        <p className="msv-note">
-          No annotated ortholog in: {missing.map(s => s.label).join(', ')}
+        <p className="ui-note">
+          No ortholog in {missing.map(s => s.label).join(', ')}
         </p>
       )}
 
@@ -509,7 +503,7 @@ function GeneResults({
 
       <ErrorMessage
         error={error}
-        className="msv-error"
+        className="ui-error"
       />
 
       {alignment ? (
@@ -520,7 +514,7 @@ function GeneResults({
       ) : source === 'live' && panel ? (
         <div className="msv-advanced">
           <button
-            className="msv-advanced-btn"
+            className="ui-btn-secondary ui-busy"
             disabled={aligning}
             onClick={() => {
               setWantLive(true)
@@ -528,17 +522,12 @@ function GeneResults({
           >
             {aligning ? status || 'Aligning…' : 'Build cross-species alignment'}
           </button>
-          <span className="msv-advanced-note">
-            Residue-level alignment + guide tree, overlaid with the domains
-            above and added to the JBrowse session below
-            {precomputed
-              ? ' (precomputed)'
-              : ' — via EBI Clustal Omega, can take up to a minute'}
-            .
+          <span className="ui-caption">
+            {precomputed ? 'precomputed' : 'EBI Clustal Omega, up to a minute'}
           </span>
         </div>
       ) : aligning ? (
-        <p className="msv-hint">Reading the 100-way alignment…</p>
+        <p className="ui-hint">Reading the 100-way alignment…</p>
       ) : null}
 
       <ResultCard
@@ -574,7 +563,7 @@ function AlignmentPanel({
   const height = useViewportHeight(expanded)
 
   const viewer = (
-    <Suspense fallback={<p className="msv-hint">Loading alignment viewer…</p>}>
+    <Suspense fallback={<p className="ui-hint">Loading alignment viewer…</p>}>
       <MSAViewer
         key={expanded ? 'expanded' : 'inline'}
         msa={alignment.fasta}
@@ -601,7 +590,7 @@ function AlignmentPanel({
         {gene} · {alignment.rowCount} rows
       </span>
       <button
-        className="msv-advanced-btn"
+        className="ui-btn-secondary"
         onClick={() => {
           setExpanded(!expanded)
         }}
@@ -744,8 +733,7 @@ function AlignmentSource({
             onChange('hundredWay')
           }}
         />
-        100 vertebrates{' '}
-        <span className="msv-source-note">instant, no domains</span>
+        100 vertebrates <span className="ui-caption">instant, no domains</span>
       </label>
       <label className="msv-source-option">
         <input
@@ -757,8 +745,8 @@ function AlignmentSource({
           }}
         />
         {COMMON_SPECIES.length} model species{' '}
-        <span className="msv-source-note">
-          with CDD domains{precomputed ? ', precomputed' : ', ~a minute'}
+        <span className="ui-caption">
+          domains{precomputed ? ', precomputed' : ', ~a minute'}
         </span>
       </label>
     </div>
@@ -813,11 +801,11 @@ function ResultCard({
         {launched.target.canonicalRefName(transcript.refName)}{' '}
         {transcript.strand === 1 ? '+' : '−'}
       </p>
-      <div className="msv-chips">
+      <div className="ui-chips">
         {chips.map(c => (
           <span
             key={c}
-            className="msv-chip"
+            className="ui-chip"
           >
             {c}
           </span>
@@ -834,7 +822,7 @@ function ResultCard({
           Open in JBrowse ↗
         </a>
         <button
-          className="msv-advanced-btn"
+          className="ui-btn-secondary"
           onClick={() => {
             setDetailsOpen(true)
           }}
@@ -867,12 +855,6 @@ function ResultCard({
           </label>
         )}
       </div>
-
-      <p className="msv-note">
-        {alignment
-          ? `Alignment (${alignment.rowCount} species) included — connected to the genome and structure.`
-          : 'Add an alignment above to include it in this session.'}
-      </p>
 
       {detailsOpen && (
         <SessionDetailsDialog

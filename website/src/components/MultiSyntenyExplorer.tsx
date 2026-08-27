@@ -1,3 +1,5 @@
+import '../styles/ui.css'
+
 import { useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
@@ -123,8 +125,9 @@ export default function MultiSyntenyExplorer() {
 
   return (
     <div>
-      <div className="msv-form">
+      <div className="ui-form">
         <input
+          className="ui-input"
           value={geneInput}
           onChange={e => {
             setGeneInput(e.target.value)
@@ -138,6 +141,7 @@ export default function MultiSyntenyExplorer() {
           disabled={loading}
         />
         <input
+          className="ui-input"
           list="msv-ref-species"
           value={refInput}
           onChange={e => {
@@ -161,6 +165,7 @@ export default function MultiSyntenyExplorer() {
           ))}
         </datalist>
         <select
+          className="ui-select"
           value={anchors}
           onChange={e => {
             setAnchors(Number(e.target.value))
@@ -178,6 +183,7 @@ export default function MultiSyntenyExplorer() {
           ))}
         </select>
         <select
+          className="ui-select"
           value={flankBp}
           onChange={e => {
             setFlankBp(Number(e.target.value))
@@ -195,6 +201,7 @@ export default function MultiSyntenyExplorer() {
           ))}
         </select>
         <button
+          className="ui-btn"
           onClick={() => {
             run(geneInput, refInput)
           }}
@@ -209,7 +216,7 @@ export default function MultiSyntenyExplorer() {
         {EXAMPLES.map(g => (
           <button
             key={g}
-            className="msv-example-chip"
+            className="ui-chip-btn"
             disabled={loading}
             onClick={() => {
               run(g, refInput)
@@ -221,25 +228,25 @@ export default function MultiSyntenyExplorer() {
       </div>
 
       {loading && (
-        <p className="msv-hint">
+        <p className="ui-hint">
           Querying NCBI orthologs + neighbors across species…
         </p>
       )}
       <ErrorMessage
         error={error}
-        className="msv-error"
+        className="ui-error"
       />
       {nb?.species.length === 0 && !loading && (
-        <p className="msv-hint">No informative ortholog neighborhoods found.</p>
+        <p className="ui-hint">No informative ortholog neighborhoods found.</p>
       )}
       {nb && eligible > nb.species.length && (
-        <p className="msv-hint">
+        <p className="ui-hint">
           Showing the {nb.species.length} species nearest the reference of{' '}
           {eligible} with orthologs here.
         </p>
       )}
       {nb && nb.species.length > 0 && (
-        <p className="msv-hint">
+        <p className="ui-hint">
           <a
             href={`/orthologs?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
           >

@@ -208,7 +208,7 @@ export default function OrthologResultsTable({
       <div className="orthologs-toolbar">
         <input
           type="search"
-          className="orthologs-input orthologs-filter"
+          className="ui-input orthologs-filter"
           value={query}
           onChange={e => {
             setQuery(e.target.value)
@@ -236,7 +236,7 @@ export default function OrthologResultsTable({
             : `${filtered.length} of ${results.length} species`}
         </span>
         <button
-          className="orthologs-download"
+          className="ui-btn-secondary"
           onClick={() => {
             downloadText(
               `${refResult?.geneSymbol ?? 'gene'}_orthologs.tsv`,
@@ -250,7 +250,7 @@ export default function OrthologResultsTable({
       </div>
 
       {filtered.length === 0 ? (
-        <p className="orthologs-hint">No ortholog rows match this filter.</p>
+        <p className="ui-hint">No ortholog rows match this filter.</p>
       ) : (
         groups.map((group, i) => {
           const open = isOpen(group.label, i)

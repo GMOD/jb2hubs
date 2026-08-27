@@ -15,43 +15,15 @@ if (!features.proteinBrowser) {
 >
   <Container>
     <h1>Protein browser</h1>
-    <p>
-      Enter a gene and reference organism: this resolves the gene's orthologs
-      live and draws each protein's NCBI CDD conserved domains as a
-      domain-architecture cartoon — the quick view of whether the orthologs
-      share the same domains — while in parallel building a connected JBrowse
-      session with the gene on its <strong>genome</strong> (introns collapsed so the
-      coding exons sit side by side, under that assembly's gene track) and its <strong
-        >AlphaFold 3D structure</strong
-      >. Add the cross-species protein <strong>alignment</strong>
-      and it rides along in the session as a connected view: hover or select in any
-      one and the others light up the matching residue. Human genes can take that
-      alignment from the hosted <strong>100-vertebrate</strong> set instantly, or
-      build a domain-annotated one across the model organisms at EBI Clustal Omega.
-      Nothing is precomputed per gene.
+    <p class="ui-lede">
+      Domain architecture, a residue-level alignment, the AlphaFold structure
+      and a connected JBrowse session — resolved live for any gene.
     </p>
     <ProteinBrowser client:only="react" />
   </Container>
 </Layout>
 
 <style is:global>
-  .msv-form {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    margin: 1.25rem 0;
-    flex-wrap: wrap;
-  }
-  .msv-form input,
-  .msv-form select {
-    padding: 7px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  .msv-form input {
-    min-width: 240px;
-  }
   /* The gene box and its suggestion list; positioned so the listbox overlays
      what follows instead of pushing the examples row down as you type. */
   .msv-combobox {
@@ -81,21 +53,6 @@ if (!features.proteinBrowser) {
   .msv-option.highlighted {
     background: var(--accent-wash);
   }
-  .msv-icon-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 15px;
-    font-weight: 700;
-    color: #666;
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  .msv-icon-btn:hover {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
 
   /* Which of the two alignments to show, offered only where both exist. */
   .msv-source {
@@ -116,10 +73,6 @@ if (!features.proteinBrowser) {
     gap: 5px;
     color: #333;
     cursor: pointer;
-  }
-  .msv-source-note {
-    color: #999;
-    font-size: 12px;
   }
 
   /* An alignment is a wide matrix, and the article measure (60rem) shows a
@@ -174,15 +127,6 @@ if (!features.proteinBrowser) {
     gap: 0.25rem 1rem;
     margin-top: 0.75rem;
   }
-  .msv-dialog {
-    max-width: 64ch;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  .msv-dialog h3 {
-    margin: 1.25rem 0 0.35rem;
-    font-size: 1rem;
-  }
   .msv-dialog-actions {
     display: flex;
     flex-wrap: wrap;
@@ -204,30 +148,6 @@ if (!features.proteinBrowser) {
     overflow-y: auto;
     font-size: 11px;
   }
-  .msv-form button {
-    padding: 8px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .msv-form button:disabled {
-    background: #f0f0f0;
-    color: #999;
-    border-color: #ddd;
-    cursor: not-allowed;
-  }
-  .msv-hint {
-    color: #666;
-    font-size: 14px;
-  }
-  .msv-error {
-    color: #b00020;
-    font-size: 14px;
-  }
   .msv-examples {
     display: flex;
     align-items: center;
@@ -236,35 +156,6 @@ if (!features.proteinBrowser) {
     margin: 0 0 1rem;
     font-size: 13px;
     color: #666;
-  }
-  .msv-example-chip {
-    padding: 4px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    background: var(--accent);
-    color: white;
-    cursor: pointer;
-  }
-  .msv-example-chip:hover:not(:disabled) {
-    background: var(--accent-hover);
-    border-color: var(--accent-hover);
-  }
-  .msv-example-chip:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-  .msv-scope {
-    color: #666;
-    font-size: 13px;
-    margin: 0 0 1rem;
-    max-width: 60ch;
-  }
-  .msv-note {
-    color: #8a6d3b;
-    font-size: 13px;
-    margin: 0.5rem 0;
   }
 
   /* Domain-architecture cartoon (ProteinDomainCartoon) */
@@ -357,20 +248,6 @@ if (!features.proteinBrowser) {
     font-size: 13px;
     color: #666;
   }
-  .msv-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 0.9rem;
-  }
-  .msv-chip {
-    padding: 2px 10px;
-    font-size: 12px;
-    color: #33475b;
-    background: #eef1f5;
-    border: 1px solid #dce0e6;
-    border-radius: 999px;
-  }
   .msv-actions {
     display: flex;
     align-items: center;
@@ -402,29 +279,5 @@ if (!features.proteinBrowser) {
     flex-wrap: wrap;
     gap: 0.5rem 0.75rem;
     margin: 1rem 0 0;
-  }
-  .msv-advanced-btn {
-    padding: 7px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    background: white;
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  .msv-advanced-btn:hover:not(:disabled) {
-    background: var(--accent-wash);
-  }
-  .msv-advanced-btn:disabled {
-    color: #999;
-    background: #f0f0f0;
-    border-color: #ddd;
-    cursor: progress;
-  }
-  .msv-advanced-note {
-    font-size: 12px;
-    color: #999;
-    max-width: 42ch;
   }
 </style>

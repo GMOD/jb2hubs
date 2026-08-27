@@ -10,17 +10,9 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
 >
   <Container>
     <h1>Ortholog Gene Search</h1>
-    <p>
-      Search a gene and see its orthologs across species, grouped by clade, with
-      exact genomic locations and one-click links into JBrowse 2 — including a
-      synteny view wherever we host a whole-genome alignment between the two
-      assemblies. Narrow the search to one clade, or filter the results in
-      place. Ortholog relationships come live from the <a
-        href="https://www.ncbi.nlm.nih.gov/datasets/"
-        target="_blank"
-        rel="noreferrer"
-        >NCBI Datasets</a
-      > API; only orthologs whose genome we host are shown.
+    <p class="ui-lede">
+      A gene&rsquo;s orthologs across every species we host, grouped by clade,
+      each one a click from JBrowse 2.
     </p>
 
     <OrthologSearch client:load />
@@ -28,109 +20,6 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
 </Layout>
 
 <style is:global>
-  .orthologs-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 0.75rem;
-    margin: 1.5rem 0;
-  }
-
-  .orthologs-field {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .orthologs-label {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: #666;
-    margin-bottom: 4px;
-  }
-
-  .orthologs-input,
-  .orthologs-select {
-    padding: 7px 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: white;
-  }
-
-  .orthologs-input:focus,
-  .orthologs-select:focus {
-    border-color: var(--accent);
-    outline: none;
-  }
-
-  .orthologs-input {
-    min-width: 240px;
-  }
-
-  .orthologs-search-btn {
-    padding: 9px 18px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .orthologs-search-btn:hover:not(:disabled) {
-    background: var(--accent-hover);
-  }
-
-  .orthologs-search-btn:disabled {
-    color: #999;
-    background: #f0f0f0;
-    border-color: #ddd;
-    cursor: not-allowed;
-  }
-
-  .orthologs-help-btn {
-    padding: 7px 12px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  .orthologs-dialog {
-    max-width: 60ch;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-
-  .orthologs-hint {
-    color: #666;
-    font-size: 14px;
-  }
-
-  .orthologs-chip {
-    padding: 3px 10px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-wash);
-    border: 1px solid #cfe3f8;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
-  .orthologs-chip:hover:not(:disabled) {
-    background: #d9eafc;
-  }
-
-  .orthologs-chip:disabled {
-    color: #999;
-    background: #f0f0f0;
-    border-color: #ddd;
-    cursor: not-allowed;
-  }
-
   /* A statement about the answer's shape rather than about a failure — the
      reference falling outside a scoped search, which is why its column of
      synteny links is empty. */
@@ -140,11 +29,6 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
     color: var(--muted);
     background: var(--surface-alt);
     border-left: 3px solid var(--border);
-  }
-
-  .orthologs-error {
-    color: #b00020;
-    font-size: 14px;
   }
 
   .orthologs-summary {
@@ -252,21 +136,6 @@ import OrthologSearch from '../../components/OrthologSearch.tsx'
   .orthologs-filter {
     flex: 1 1 260px;
     min-width: 200px;
-  }
-
-  .orthologs-download {
-    padding: 4px 10px;
-    font-size: 13px;
-    color: var(--accent);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .orthologs-download:hover {
-    background: var(--accent-wash);
   }
 
   .orthologs-toggle,

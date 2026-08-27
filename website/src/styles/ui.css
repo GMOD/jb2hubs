@@ -1,0 +1,226 @@
+/* The controls the live-query tool pages are built from — /orthologs,
+   /conserved-gene-order, /protein-browser — plus the modal shell.
+ *
+ * These pages are the same shape: a lede, a query row, example chips, a status
+ * line, results. Each had grown its own copy of that vocabulary under its own
+ * prefix, and the copies had drifted — the same `.msv-example-chip` rendered as
+ * a solid accent pill on one page and a white outline pill on another. So the
+ * concept lives here once and the pages keep only what is genuinely theirs (a
+ * results table, an alignment panel, a domain cartoon).
+ *
+ * Colors come from the tokens in global.css. A literal hex below means it wants
+ * to be different, not that it was missed.
+ *
+ * Imported by the React components rather than the pages: Astro scopes a page's
+ * <style> to that page's own markup, which never reaches inside a client island,
+ * and `is:global` per page is what let the copies diverge in the first place.
+ * Same pattern as common-table.css. */
+
+/* --- Page lede: one line under the h1, saying what the tool answers. -------- */
+.ui-lede {
+  max-width: 62ch;
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+}
+
+/* --- Query row ------------------------------------------------------------- */
+.ui-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+/* Bottom-aligned instead, for a row whose controls carry .ui-field labels. */
+.ui-form-labeled {
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ui-field-label {
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ui-input,
+.ui-select {
+  padding: 7px 8px;
+  font-size: 14px;
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: 4px;
+}
+.ui-input {
+  min-width: 240px;
+}
+.ui-input:focus,
+.ui-select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+/* --- Buttons --------------------------------------------------------------- */
+.ui-btn {
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ui-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.ui-btn-secondary {
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.ui-btn-secondary:hover:not(:disabled) {
+  background: var(--accent-wash);
+}
+
+/* The round `?` beside a query row. */
+.ui-btn-help {
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.ui-btn-help:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.ui-btn:disabled,
+.ui-btn-secondary:disabled,
+.ui-chip-btn:disabled {
+  color: var(--faint);
+  background: var(--disabled-bg);
+  border-color: var(--disabled-border);
+  cursor: not-allowed;
+}
+/* A button disabled because its own work is running, rather than because the
+   form is incomplete. */
+.ui-btn-secondary.ui-busy:disabled {
+  cursor: progress;
+}
+
+/* --- Chips ----------------------------------------------------------------- */
+.ui-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 0.9rem;
+}
+/* Static: a fact about the result. */
+.ui-chip {
+  padding: 2px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+/* Clickable: an example query. Deliberately quieter than .ui-btn — a row of
+   these sits above the results and should not outweigh them. */
+.ui-chip-btn {
+  padding: 3px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-wash);
+  border: 1px solid var(--accent-wash);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.ui-chip-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+/* --- Status text ----------------------------------------------------------- */
+.ui-hint {
+  font-size: 14px;
+  color: var(--muted);
+}
+.ui-error {
+  font-size: 14px;
+  color: var(--danger);
+}
+/* Something the reader should notice but that is not a failure. */
+.ui-note {
+  margin: 0.5rem 0;
+  font-size: 13px;
+  color: var(--notice);
+}
+/* A caption beside a control, explaining what it costs. */
+.ui-caption {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* --- Modal shell (components/Modal.tsx) ------------------------------------ */
+/* A <dialog> is width: fit-content by default, so a max-width alone leaves a
+   wall of prose narrow and very tall; these give it a real measure and cap the
+   height instead. */
+.ui-dialog {
+  width: min(640px, 92vw);
+  max-width: min(640px, 92vw);
+  max-height: 80vh;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.ui-dialog::backdrop {
+  background: rgb(0 0 0 / 35%);
+}
+.ui-dialog h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+/* One row per thing explained: what it is, and where it comes from. Replaces a
+   run of <h3> + paragraph sections, which is what made these dialogs long. */
+.ui-help {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0 0 1rem;
+}
+.ui-help dt {
+  font-weight: 600;
+}
+.ui-help dd {
+  margin: 0;
+  color: var(--muted);
+}
+@media (max-width: 520px) {
+  .ui-help {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+  .ui-help dd {
+    margin-bottom: 0.6rem;
+  }
+}
