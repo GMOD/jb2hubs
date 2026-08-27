@@ -44,8 +44,8 @@ interface GeneSummary {
 
 // One whole search, from a gene symbol and a free-text reference organism to the
 // ortholog rows. Takes the assembly store from the shared module-level loader
-// rather than as an argument, so a search submitted before the (~4 MB) index has
-// landed just waits for it. Failures throw; SWR surfaces them as `error`.
+// rather than as an argument, so a search submitted before the index has landed
+// just waits for it. Failures throw; SWR surfaces them as `error`.
 async function searchOrthologs(
   gene: string,
   ref: string,

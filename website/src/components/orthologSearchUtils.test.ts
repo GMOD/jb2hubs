@@ -21,17 +21,15 @@ import type {
 } from './orthologSearchUtils.ts'
 
 const indexData: AssemblyIndex = {
-  'GCF_000001405.40': ['Human', 'Homo sapiens', 9606, 'hg38'],
-  'GCF_000001635.27': ['Mouse', 'Mus musculus', 10090],
+  schema: 'ortholog-index/2',
+  accessions: ['GCF_000001405.40', 'GCF_000001635.27'],
+  ucscDb: { 'GCF_000001405.40': 'hg38' },
 }
 
-test('createStore.find returns named assembly fields', () => {
+test('createStore.find returns the hosted accession and its UCSC db', () => {
   const store = createStore(indexData)
   const assembly = store.find('GCF_000001405.40')
   assert.equal(assembly?.accession, 'GCF_000001405.40')
-  assert.equal(assembly?.commonName, 'Human')
-  assert.equal(assembly?.scientificName, 'Homo sapiens')
-  assert.equal(assembly?.taxonId, 9606)
   assert.equal(assembly?.ucscDb, 'hg38')
 })
 
@@ -49,8 +47,9 @@ test('createStore.find returns undefined for an unknown accession', () => {
 
 test('createStore.find resolves the base fallback to the newest hosted version', () => {
   const store = createStore({
-    'GCF_000001635.26': ['Mouse', 'Mus musculus', 10090],
-    'GCF_000001635.27': ['Mouse', 'Mus musculus', 10090],
+    schema: 'ortholog-index/2',
+    accessions: ['GCF_000001635.26', 'GCF_000001635.27'],
+    ucscDb: {},
   })
   // NCBI reports .25; we host .26 and .27 — the newest (.27) wins deterministically
   assert.equal(store.find('GCF_000001635.25')?.accession, 'GCF_000001635.27')
@@ -96,6 +95,9 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
       gene: {
         gene_id: '111',
         symbol: 'mouseGene',
+        tax_id: '10090',
+        taxname: 'Mus musculus',
+        common_name: 'house mouse',
         annotations: [
           {
             assembly_accession: 'GCF_000001635.27',
@@ -114,6 +116,9 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
       gene: {
         gene_id: '222',
         symbol: 'humanGene',
+        tax_id: '9606',
+        taxname: 'Homo sapiens',
+        common_name: 'human',
         annotations: [
           {
             assembly_accession: 'GCF_000001405.40',
@@ -140,6 +145,79 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
   assert.equal(results[1]?.assembly.scientificName, 'Mus musculus')
 })
 
+// The index carries no names, so every displayed name is the report's own.
+test('buildOrthologResults names each row from its own report', () => {
+  const store = createStore(indexData)
+  const [row] = buildOrthologResults(
+    [
+      {
+        gene: {
+          gene_id: '222',
+          symbol: 'humanGene',
+          tax_id: '9606',
+          taxname: 'Homo sapiens',
+          common_name: 'human',
+          annotations: [
+            {
+              assembly_accession: 'GCF_000001405.40',
+              genomic_locations: [
+                {
+                  genomic_accession_version: 'NC_000017.11',
+                  sequence_name: '17',
+                  genomic_range: { begin: '1', end: '2' },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+    store,
+  )
+  assert.equal(row?.assembly.scientificName, 'Homo sapiens')
+  assert.equal(row?.assembly.commonName, 'human')
+  assert.equal(row?.assembly.taxonId, 9606)
+  // and the one thing the report cannot say: which config a launch targets
+  assert.equal(row?.assembly.ucscDb, 'hg38')
+  assert.ok(row?.jbrowseUrl.includes('config=/ucsc/hg38/config.json'))
+})
+
+// NCBI files a common name for ~85% of ortholog reports. The row still renders
+// on the scientific name alone rather than being dropped or blanked.
+test('buildOrthologResults keeps a row whose report has no common name', () => {
+  const store = createStore(indexData)
+  const rows = buildOrthologResults(
+    [
+      {
+        gene: {
+          gene_id: '777',
+          symbol: 'noCommon',
+          tax_id: '9606',
+          taxname: 'Homo sapiens',
+          annotations: [
+            {
+              assembly_accession: 'GCF_000001405.40',
+              genomic_locations: [
+                {
+                  genomic_accession_version: 'NC_000017.11',
+                  sequence_name: '17',
+                  genomic_range: { begin: '1', end: '2' },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+    store,
+  )
+  assert.equal(rows.length, 1)
+  assert.equal(rows[0]?.assembly.commonName, undefined)
+  assert.equal(rows[0]?.assembly.scientificName, 'Homo sapiens')
+  assert.ok(rows.every(r => matchesQuery(r, 'homo')))
+  assert.ok(!orthologsToTsv(rows).includes('undefined'))
+})
+
 test('buildOrthologResults skips assemblies not in our collection', () => {
   const store = createStore(indexData)
   const reports: NcbiOrthologReport[] = [
@@ -147,6 +225,8 @@ test('buildOrthologResults skips assemblies not in our collection', () => {
       gene: {
         gene_id: '333',
         symbol: 'frogGene',
+        tax_id: '9606',
+        taxname: 'Homo sapiens',
         annotations: [
           {
             assembly_accession: 'GCF_000004195.4',
@@ -172,6 +252,8 @@ test('buildOrthologResults resolves off a later location when the first lacks a 
       gene: {
         gene_id: '555',
         symbol: 'lateLoc',
+        tax_id: '9606',
+        taxname: 'Homo sapiens',
         annotations: [
           {
             assembly_accession: 'GCF_000001405.40',
@@ -203,6 +285,8 @@ test('buildOrthologResults skips annotations lacking a genomic range', () => {
       gene: {
         gene_id: '444',
         symbol: 'noRange',
+        tax_id: '9606',
+        taxname: 'Homo sapiens',
         annotations: [
           {
             assembly_accession: 'GCF_000001405.40',

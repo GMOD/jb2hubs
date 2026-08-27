@@ -7,8 +7,24 @@ import { syntenyViewUrl } from './jbrowseLinks.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
-import type { Assembly, AssemblyStore } from './orthologDb.ts'
+import type { AssemblyStore } from './orthologDb.ts'
 import type { PairIndex, SyntenyLink } from './syntenyPairIndex.ts'
+
+// The species identity of one ortholog row: which hosted assembly it opens on,
+// and what NCBI filed the ortholog under. The names come from the report rather
+// than from the assembly index, which no longer carries any — NCBI names the
+// taxon, not the assembly, so there is no "(Hereford L1 Dominette … 2018 USDA)"
+// to strip off. `commonName` is the one field NCBI leaves out sometimes (~15% of
+// rows), and the table renders the scientific name alone for those.
+export interface Assembly {
+  accession: string
+  scientificName: string
+  commonName?: string
+  taxonId: number
+  // UCSC browser db (hg38, mm39, …) when this assembly is a native UCSC genome
+  // rather than a GenArk hub; drives which JBrowse config a launch URL targets.
+  ucscDb?: string
+}
 
 export const COMMON_SPECIES = [
   { label: 'Human', taxId: 9606 },
@@ -74,6 +90,9 @@ export function orthologSearchUrl(
 interface NcbiGene {
   gene_id: string
   symbol: string
+  tax_id?: string | number
+  taxname?: string
+  common_name?: string
   annotations?: {
     assembly_accession: string
     genomic_locations?: {
@@ -290,9 +309,9 @@ export function formatNumber(n: number) {
 }
 
 // The rows as a spreadsheet, which is where a set of ortholog coordinates
-// usually ends up. Tab-separated rather than comma, because assembly common
-// names carry commas ("cattle (Hereford L1 Dominette 01449 …, USDA)") and no
-// field here can contain a tab, so this needs no quoting rules. Takes whatever
+// usually ends up. Tab-separated rather than comma, because a species common
+// name may well carry a comma and no field here can contain a tab, so this
+// needs no quoting rules. Takes whatever
 // the caller has on screen, so the filter and the clade scope carry through.
 export function orthologsToTsv(results: OrthologResult[]) {
   const header = [
@@ -311,7 +330,7 @@ export function orthologsToTsv(results: OrthologResult[]) {
   const rows = results.map(r =>
     [
       r.assembly.scientificName,
-      r.assembly.commonName,
+      r.assembly.commonName ?? '',
       r.assembly.taxonId,
       r.geneSymbol,
       r.geneId,
@@ -338,7 +357,7 @@ export function matchesQuery(r: OrthologResult, query: string) {
   }
   const haystack = [
     r.assembly.scientificName,
-    r.assembly.commonName,
+    r.assembly.commonName ?? '',
     r.geneSymbol,
     r.assembly.accession,
   ]
@@ -354,13 +373,29 @@ export function buildOrthologResults(
   const results: OrthologResult[] = []
 
   for (const { gene } of reports) {
+    // A row is grouped by clade, ranked against COMMON_TAX_RANK and matched
+    // against the reference by taxon, so a report without one has no place to
+    // go. Every report carries `tax_id` (658 of 658 on TP53, measured
+    // 2026-08-27); the guard is the same one buildRows applies in
+    // orthologSet.ts, not a case seen in the wild.
+    const taxonId = Number(gene.tax_id)
+    if (!Number.isFinite(taxonId)) {
+      continue
+    }
     // First hosted annotation carrying any placed location. Scans every location
     // (not just [0]) so an annotation whose first location lacks a range still
     // resolves off a later placed one, matching locate() in orthologSet.ts.
     for (const ann of gene.annotations ?? []) {
-      const assembly = store.find(ann.assembly_accession)
+      const hosted = store.find(ann.assembly_accession)
       const loc = ann.genomic_locations?.find(l => l.genomic_range)
-      if (assembly && loc?.genomic_range) {
+      if (hosted && loc?.genomic_range) {
+        const assembly: Assembly = {
+          accession: hosted.accession,
+          ucscDb: hosted.ucscDb,
+          scientificName: gene.taxname ?? String(taxonId),
+          commonName: gene.common_name,
+          taxonId,
+        }
         const begin = parseInt(loc.genomic_range.begin)
         const end = parseInt(loc.genomic_range.end)
         const locStr = `${loc.genomic_accession_version}:${begin}-${end}`

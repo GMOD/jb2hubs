@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react'
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
 import { groupByClade } from './orthologClades.ts'
-import { speciesLabel } from './orthologDb.ts'
 import {
   COMMON_TAX_RANK,
   buildMultiSyntenyUrl,
@@ -28,11 +27,9 @@ interface ResultRowProps {
 function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
   return (
     <tr>
-      <td title={r.assembly.commonName || undefined}>
+      <td>
         <em>{r.assembly.scientificName}</em>
-        {r.assembly.commonName
-          ? ` (${speciesLabel(r.assembly.commonName)})`
-          : ''}
+        {r.assembly.commonName ? ` (${r.assembly.commonName})` : ''}
         {COMMON_TAX_RANK.has(r.assembly.taxonId) && (
           <span
             className="orthologs-model-label"

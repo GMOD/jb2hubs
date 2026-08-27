@@ -33,29 +33,39 @@ const outputPath = path.join(__dirname, 'public/ortholog_index.json')
 // GenArk-sharded config, whose sequence data 404s for these genomes.
 const ucscMapping = buildUcscMapping(loadAccessionMap())
 
+// The file answers two questions and deliberately nothing else: do we host this
+// accession, and does UCSC serve it natively. Species names used to live here
+// too — 44,685 of them, 84% of the bytes — and every NCBI ortholog report
+// already names its own row's species (`taxname`/`common_name`) in cleaner form,
+// with no trailing assembly parenthetical to strip. See orthologDb.ts.
+//
 // Only GCF (RefSeq) assemblies appear in NCBI ortholog API responses.
-// Format: { accession: [commonName, scientificName, taxonId, ucscDb?] }
-const index: Record<
-  string,
-  [string, string, number] | [string, string, number, string]
-> = {}
-let ucscCount = 0
+const accessions: string[] = []
+const ucscDb: Record<string, string> = {}
 for (const entry of searchIndex) {
-  if (entry[0].startsWith('GCF_')) {
-    const ucscDb = ucscMapping.get(entry[0])
-    index[entry[0]] = ucscDb
-      ? [entry[1], entry[2], entry[6], ucscDb]
-      : [entry[1], entry[2], entry[6]]
-    if (ucscDb) {
-      ucscCount += 1
+  const accession = entry[0]
+  if (accession.startsWith('GCF_')) {
+    accessions.push(accession)
+    const db = ucscMapping.get(accession)
+    if (db) {
+      ucscDb[accession] = db
     }
   }
 }
 
-fs.writeFileSync(outputPath, JSON.stringify(index))
+// Sorted for the compressor, not for the reader: nothing downstream depends on
+// the order (createStore builds a Set and picks the newest version explicitly),
+// and neighbouring accessions then share long prefixes — 125 KB gzipped against
+// 167 KB in searchIndex order, for the same 787 KB of JSON.
+accessions.sort()
+
+fs.writeFileSync(
+  outputPath,
+  JSON.stringify({ schema: 'ortholog-index/2', accessions, ucscDb }),
+)
 
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)
 console.log(
-  `Ortholog index: ${Object.keys(index).length} GCF assemblies ` +
-    `(${ucscCount} UCSC-native), ${sizeKB} KB`,
+  `Ortholog index: ${accessions.length} GCF assemblies ` +
+    `(${Object.keys(ucscDb).length} UCSC-native), ${sizeKB} KB`,
 )

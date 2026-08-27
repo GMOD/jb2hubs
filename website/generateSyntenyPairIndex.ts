@@ -24,8 +24,11 @@ const data: SyntenyData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
 // script in `pnpm generate`. Reading it rather than rebuilding the mapping is
 // what keeps the two files agreeing: a synteny pair is only ever useful if both
 // of its assemblies are rows the ortholog table can show.
-// Entry: [commonName, scientificName, taxonId, ucscDb?].
-type IndexEntry = [string, string, number] | [string, string, number, string]
+interface OrthologIndex {
+  schema: string
+  accessions: string[]
+  ucscDb: Record<string, string>
+}
 if (!fs.existsSync(orthologIndexPath)) {
   // Left silent, this would emit a plausible-looking file with every UCSC-named
   // track dropped — the exact bug this script was fixed for.
@@ -33,9 +36,10 @@ if (!fs.existsSync(orthologIndexPath)) {
     `${orthologIndexPath} is missing; run \`pnpm generate-ortholog-index\` first (\`pnpm generate\` does both, in order)`,
   )
 }
-const orthologIndex: Record<string, IndexEntry> = JSON.parse(
+const orthologIndex: OrthologIndex = JSON.parse(
   fs.readFileSync(orthologIndexPath, 'utf-8'),
 )
+const hosted = new Set(orthologIndex.accessions)
 
 // The names a synteny track uses for its two genomes are whatever the hosted
 // config calls them, and for a UCSC-native assembly that is the browser db —
@@ -47,11 +51,10 @@ const orthologIndex: Record<string, IndexEntry> = JSON.parse(
 const ucscToAccession = new Map<string, string>()
 const byBase = new Map<string, string>()
 const version = (accession: string) => Number(/\.(\d+)$/.exec(accession)?.[1])
-for (const [accession, entry] of Object.entries(orthologIndex)) {
-  const ucscDb = entry[3]
-  if (ucscDb) {
-    ucscToAccession.set(ucscDb, accession)
-  }
+for (const [accession, ucscDb] of Object.entries(orthologIndex.ucscDb)) {
+  ucscToAccession.set(ucscDb, accession)
+}
+for (const accession of orthologIndex.accessions) {
   const base = accession.replace(/\.\d+$/, '')
   const existing = byBase.get(base)
   if (!existing || version(accession) > version(existing)) {
@@ -64,7 +67,7 @@ for (const [accession, entry] of Object.entries(orthologIndex)) {
 function toAccession(name: string) {
   return (
     ucscToAccession.get(name) ??
-    (orthologIndex[name] ? name : byBase.get(name.replace(/\.\d+$/, '')))
+    (hosted.has(name) ? name : byBase.get(name.replace(/\.\d+$/, '')))
   )
 }
 
