@@ -20,6 +20,9 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
 
 ## Feature designs and handoffs
 
+- [GENE_PAGE_CONSOLIDATION.md](GENE_PAGE_CONSOLIDATION.md) — collapsing
+  `/orthologs`, `/conserved-gene-order` and `/protein-browser` into one gene
+  entity page, and why the ortholog-assembler Lambda decides whether it works
 - [SYNTENY_ALIGNMENT_STRATEGY.md](SYNTENY_ALIGNMENT_STRATEGY.md) — alignment
   tiers behind the multi-way gene-order view
 - [HALSYNTENY_EXTRACTION_PIPELINE.md](HALSYNTENY_EXTRACTION_PIPELINE.md) —
