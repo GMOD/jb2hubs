@@ -221,10 +221,9 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
       .waitForFunction(
         () =>
           !!(
-            (/** @type {Record<string, any>} */
-              (window).JBrowseSession ??
-              /** @type {Record<string, any>} */ (window).__jbrowse_session
-            )
+            /** @type {Record<string, any>} */
+            (window).JBrowseSession ??
+            /** @type {Record<string, any>} */ (window).__jbrowse_session
           ) ||
           /JBrowse Error|Fatal error|Failed to load/.test(
             document.body.innerText,
