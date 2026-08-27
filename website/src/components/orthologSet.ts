@@ -109,7 +109,7 @@ export function collectNames(tree: TaxonNode | undefined) {
 //
 // Falling back to the first hit is what keeps an alias working: `p53` returns
 // TP53 and matches nothing exactly, which is the right answer.
-function pickBySymbol(
+export function pickBySymbol(
   query: string,
   candidates: { gene_id?: string; symbol?: string }[],
 ) {

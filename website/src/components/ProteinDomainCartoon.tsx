@@ -6,6 +6,12 @@ import type { ProteinPanelRow } from './proteinMsa.ts'
 // question — "do these orthologs share the same domains?" — before the user
 // pays for the full alignment.
 
+// Tableau 10, then its light companions. Ten was not enough once panels went
+// broad: NOTCH1 shows 12 domains and DMD 13, so the modulo wrapped and gave a
+// full-height band the same color as a rare domain — which reads as that band
+// occurring where it does not, the exact misreading the shared-color scheme
+// exists to prevent. Twenty covers every panel measured; beyond that the wrap
+// returns, so keep an eye on the legend when adding genes.
 const PALETTE = [
   '#4e79a7',
   '#f28e2b',
@@ -17,6 +23,16 @@ const PALETTE = [
   '#ff9da7',
   '#9c755f',
   '#bab0ac',
+  '#a0cbe8',
+  '#ffbe7d',
+  '#8cd17d',
+  '#ff9d9a',
+  '#86bcb6',
+  '#f1ce63',
+  '#d4a6c8',
+  '#fabfd2',
+  '#d7b5a6',
+  '#79706e',
 ]
 
 // How many rows carry each domain name.
@@ -45,9 +61,8 @@ const BROAD_PANEL_ROWS = 20
 // vertically-aligned color band down the panel. Ordered by prevalence, which
 // spends the strongest palette entries on the bands that run the whole way down
 // and puts the legend in the order the eye meets it.
-function assignColors(rows: ProteinPanelRow[]) {
-  const count = prevalence(rows)
-  const floor = rows.length >= BROAD_PANEL_ROWS ? 2 : 1
+function assignColors(count: Map<string, number>, rowCount: number) {
+  const floor = rowCount >= BROAD_PANEL_ROWS ? 2 : 1
   const names = [...count]
     .filter(([, n]) => n >= floor)
     .sort((a, b) => b[1] - a[1])
@@ -61,8 +76,8 @@ export default function ProteinDomainCartoon({
   rows: ProteinPanelRow[]
 }) {
   const maxLength = Math.max(...rows.map(r => r.length), 1)
-  const colors = assignColors(rows)
   const counts = prevalence(rows)
+  const colors = assignColors(counts, rows.length)
 
   return (
     <div className="pdc">

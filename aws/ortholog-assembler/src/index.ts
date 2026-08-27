@@ -26,7 +26,12 @@ const BUCKET = process.env.CACHE_BUCKET
 // Bump when the assembler's output shape or logic changes, so stale cached
 // results are bypassed rather than served indefinitely. v2: PlacedGene gained a
 // `chromosome` field (UCSC chr mapping for the whole-genome alignment launch).
-const PREFIX = 'neighborhood/v2'
+// v3: resolveGeneId stopped taking NCBI's first hit, which for a symbol that is
+// also another gene's alias resolved to the wrong gene entirely — human `TTN`
+// returned TTR (transthyretin) rather than titin. Every neighborhood assembled
+// for such a symbol before that fix is cached under the same key and would be
+// served as a HIT forever, fixed resolver or not.
+const PREFIX = 'neighborhood/v3'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
