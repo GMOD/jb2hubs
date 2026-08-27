@@ -16,8 +16,11 @@
 // 0 or 1 unhosted species. A browser would have paid the 4.3 MB ortholog index
 // to learn that, which is the reason the live path could not have matched.
 //
-// --align adds the EBI Clustal Omega pass, which is minutes per gene against
-// seconds for the panel. Skip it while surveying: the cartoon needs phase 1 only.
+// --align adds the EBI Clustal Omega pass, which is a minute or so per gene
+// against seconds for the panel. Skip it while surveying: the cartoon needs
+// phase 1 only. It is also what lets the entry drop its protein sequences, which
+// nothing but the aligner reads and which are 71% of the file — so an --align
+// entry is smaller than a survey one despite carrying more.
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -27,6 +30,7 @@ import {
   alignProteinPanel,
   alignedRows,
   assembleProteinPanel,
+  stripSequences,
 } from './src/components/proteinMsa.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -55,7 +59,9 @@ for (const gene of GENES) {
       },
     })
     const alignment = ALIGN ? await alignProteinPanel(panel) : undefined
-    out[`${gene}:${REF_TAXON}`] = alignment ? { panel, alignment } : { panel }
+    out[`${gene}:${REF_TAXON}`] = alignment
+      ? { panel: stripSequences(panel), alignment }
+      : { panel }
     fs.writeFileSync(OUT, JSON.stringify(out))
     const domains = new Set(panel.rows.flatMap(r => r.domains.map(d => d.name)))
     console.log(

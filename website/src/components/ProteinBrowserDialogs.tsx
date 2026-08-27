@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { fetchProteinStl } from '../lib/proteinStl.ts'
 import Modal from './Modal.tsx'
 import { collapsedLoc } from './geneStructure.ts'
+import { MAX_ALIGN_ROWS, MAX_PANEL_ROWS } from './proteinMsa.ts'
 
 import type { Transcript } from './geneStructure.ts'
 import type { ReactNode } from 'react'
@@ -128,7 +129,10 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
       title="How the protein browser works"
       onClose={onClose}
     >
-      <p>Nothing is precomputed per gene. Each piece is resolved live:</p>
+      <p>
+        The example genes ship with their ortholog panel and alignment already
+        built. Any other gene resolves live, from the same sources:
+      </p>
       <dl className="ui-help">
         <dt>Gene</dt>
         <dd>
@@ -142,9 +146,10 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
 
         <dt>Orthologs</dt>
         <dd>
-          One representative protein per species (MANE Select, else longest)
-          with its NCBI CDD domains — that is the cartoon. Fly, worm, yeast and
-          plant reference genes go to{' '}
+          Up to {MAX_PANEL_ROWS} species, one representative protein each (MANE
+          Select, else longest) with its NCBI CDD domains — that is the cartoon.
+          Model organisms come first, then outward through NCBI&rsquo;s ortholog
+          report. Fly, worm, yeast and plant reference genes go to{' '}
           <Link href="https://pantherdb.org">PANTHER</Link>, which NCBI&rsquo;s
           ortholog sets do not cover.
         </dd>
@@ -155,7 +160,10 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
             EBI Clustal Omega
           </Link>{' '}
           with a guide tree and the CDD domains overlaid, or the hosted
-          100-vertebrate alignment — instant, but no domains.
+          100-vertebrate alignment — instant, but no domains. Clustal Omega gets
+          the first {MAX_ALIGN_ROWS} rows rather than all {MAX_PANEL_ROWS}: on a
+          long protein the whole panel takes minutes, and residue alignments get
+          harder to read as they get broader, which the cartoon does not.
         </dd>
 
         <dt>Genome</dt>

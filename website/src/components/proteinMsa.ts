@@ -45,8 +45,12 @@ export interface ProteinMsaRow {
 }
 
 // A panel row carries everything the domain cartoon needs without any alignment.
+// `sequence` is the one thing the cartoon does NOT need — `length` is stored
+// beside it — and it is 71% of the precomputed cache's bytes, so a cache entry
+// that ships its alignment drops it (see stripSequences). A live panel always
+// has it. Nothing but alignProteinPanel reads it.
 export interface ProteinPanelRow extends ProteinMsaRow {
-  sequence: string // ungapped protein sequence
+  sequence?: string // ungapped protein sequence
   length: number // residues
   domains: Domain[] // CDD conserved domains, ungapped protein coords
 }
@@ -654,6 +658,25 @@ export function alignedRows(panel: ProteinPanel, maxRows = MAX_ALIGN_ROWS) {
   return capRows(panel.rows, panel.query.refTaxonId, maxRows)
 }
 
+// Whether a panel still carries the sequences an alignment would need. A live
+// panel always does; a cache entry that shipped its alignment does not, and
+// asking EBI to align nothing would come back as an unreadable submission error
+// rather than as the missing precondition it is.
+export function canAlign(panel: ProteinPanel) {
+  return panel.rows.filter(r => r.sequence).length >= 2
+}
+
+// Drops what only the aligner reads, for a cache entry whose alignment is
+// already computed. The cartoon renders from `length` and `domains`, so this is
+// invisible on the page and 71% of the file: measured 2026-08-27 over the eight
+// example genes, 1,071 KB raw / 139 KB brotli becomes 307 KB / 23 KB.
+export function stripSequences(panel: ProteinPanel): ProteinPanel {
+  return {
+    ...panel,
+    rows: panel.rows.map(({ sequence: _drop, ...row }) => row),
+  }
+}
+
 // Phase 2: align the panel's sequences at EBI Clustal Omega and emit the
 // column-locked alignment, guide tree, and per-row domain gff for react-msaview.
 export async function alignProteinPanel(
@@ -664,12 +687,17 @@ export async function alignProteinPanel(
     onProgress = () => undefined,
   }: ProteinAlignOptions = {},
 ): Promise<ProteinAlignment> {
+  if (!canAlign(panel)) {
+    throw new Error('this panel carries no protein sequences to align')
+  }
   // The gff comes off the same rows as the fasta: react-msaview keys domains to
   // alignment rows by label, so a domain for a row that was not aligned has
   // nothing to land on.
   const rows = alignedRows(panel, maxRows)
   onProgress(`Aligning ${rows.length} proteins at EBI Clustal Omega…`)
-  const seqById = new Map(rows.map(r => [r.protein, r.sequence]))
+  const seqById = new Map(
+    rows.flatMap(r => (r.sequence ? [[r.protein, r.sequence] as const] : [])),
+  )
   const domainsByAcc = new Map(rows.map(r => [r.protein, r.domains]))
   const { aligned, newick } = await clustalOmega(
     buildInputFasta(rows, seqById),

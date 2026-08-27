@@ -22,6 +22,17 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
   //          domain, and 147 aa in every one of them.
   //   KRAS — small and near-invariant; SOD1 already covers "nothing changes"
   //          and does it in 150 aa.
+  //   TTN  — CDD annotates titin one beta-strand at a time: 787 of the 1,040
+  //          Region features on NP_001254479.2 are "Ig strand B [structural
+  //          motif]" and friends, which is 59,632 blocks across a 60-species
+  //          panel at a median 0.017% of the bar — sub-pixel, and the legend
+  //          reads as an Ig strand census rather than an architecture.
+  //          Measured 2026-08-27. There is no honest filter for it either:
+  //          [structural motif] also tags NOTCH1's ANK repeats and DMD's
+  //          EF-hands, and a width threshold that kills the strands kills
+  //          titin's real Ig domains with them, because on a 35,000 aa protein
+  //          they are the same size. Titin is still typeable; it is the
+  //          cartoon it fails, and the chips are picked on the cartoon.
   9606: [
     {
       symbol: 'TP53',
@@ -54,10 +65,6 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
     {
       symbol: 'SOD1',
       note: 'ALS — 150 aa and invariant: the control case',
-    },
-    {
-      symbol: 'TTN',
-      note: 'Titin — the largest human gene, extreme intron collapse',
     },
   ],
   10090: [

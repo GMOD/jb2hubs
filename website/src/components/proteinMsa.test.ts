@@ -4,14 +4,17 @@ import { test } from 'node:test'
 import {
   type Domain,
   type ProteinPanel,
+  alignProteinPanel,
   alignedRows,
   buildDomainGff,
   buildInputFasta,
+  canAlign,
   capRows,
   dedupeLabels,
   parseAllDomains,
   parseFasta,
   parseGenpeptDomains,
+  stripSequences,
   unwrapFasta,
 } from './proteinMsa.ts'
 
@@ -124,6 +127,30 @@ const panelOf = (taxa: number[], refTaxonId: number): ProteinPanel => ({
     length: 3,
     domains: [],
   })),
+})
+
+// A cache entry that ships its alignment ships no sequences, so the cartoon's
+// inputs have to survive the strip and the aligner's have to be seen to be gone.
+test('stripSequences keeps everything the cartoon draws from', () => {
+  const [row] = stripSequences(panelOf([9606], 9606)).rows
+  assert.equal(row?.sequence, undefined)
+  assert.deepEqual(
+    { length: row?.length, domains: row?.domains, label: row?.label },
+    { length: 3, domains: [], label: 't9606' },
+  )
+})
+
+test('canAlign is false once the sequences are gone', () => {
+  const panel = panelOf([9606, 10090], 9606)
+  assert.equal(canAlign(panel), true)
+  assert.equal(canAlign(stripSequences(panel)), false)
+})
+
+test('alignProteinPanel refuses a stripped panel rather than submitting nothing', async () => {
+  await assert.rejects(
+    alignProteinPanel(stripSequences(panelOf([9606, 10090], 9606))),
+    /no protein sequences/,
+  )
 })
 
 test('capRows leaves a list that is already within the cap alone', () => {
