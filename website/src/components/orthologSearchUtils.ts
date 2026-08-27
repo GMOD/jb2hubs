@@ -166,8 +166,11 @@ export function accessionToJbrowseUrl(
 // A UCSC db name is a different naming scheme rather than a different assembly,
 // so `hg38` is safe for the row the ortholog index maps to hg38 — and only for
 // that row.
-export function isSameGenome(panelName: string, r: OrthologResult) {
-  return panelName === r.assembly.accession || panelName === r.assembly.ucscDb
+export function isSameGenome(
+  panelName: string,
+  hosted: { accession: string; ucscDb?: string },
+) {
+  return panelName === hosted.accession || panelName === hosted.ucscDb
 }
 
 // The synteny link for a row, kept only when the panel it names is the genome
@@ -179,7 +182,7 @@ export function orthologSyntenyLink(
   otherAccession: string,
 ) {
   const link = syntenyLink(index, r.assembly.accession, otherAccession)
-  return link && isSameGenome(link.names[0], r) ? link : undefined
+  return link && isSameGenome(link.names[0], r.assembly) ? link : undefined
 }
 
 // bp of context drawn either side of the ortholog gene, so a launched synteny

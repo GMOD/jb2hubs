@@ -1,10 +1,11 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { subtreeSyntenyUrl } from './multiSyntenyDrilldown.ts'
+import { geneDrilldownUrl, subtreeSyntenyUrl } from './multiSyntenyDrilldown.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
 import type { SubtreeLeaf } from './multiSyntenyDrilldown.ts'
+import type { PlacedGene } from './neighborhood.ts'
 
 // Pull the decoded LinearSyntenyView spec back out of a launch URL.
 function viewOf(url: string) {
@@ -80,4 +81,118 @@ test('a panel with no known gene track carries no tracks field', () => {
     viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
     [undefined, undefined],
   )
+})
+
+const gene = (assembly: string): PlacedGene => ({
+  anchorId: 'a',
+  symbol: 'TP53',
+  assembly,
+  refName: 'NC_000017.11',
+  chromosome: '17',
+  start: 7_668_421,
+  end: 7_687_490,
+  strand: 1,
+})
+
+function configOf(url: string) {
+  return new URL(url).searchParams.get('config')
+}
+
+// The bug this guards: the GenArk config for a UCSC-native genome exists, so a
+// launch built from the bare accession looked fine, but its 2bit and chrom.sizes
+// both 404 and the browser opens with no sequence.
+test('a UCSC-native genome opens its curated config, not the GenArk one', () => {
+  const url = geneDrilldownUrl(
+    gene('GCF_000001405.40'),
+    'GCF_000001405.40',
+    undefined,
+    buildPairIndex({}),
+    { accession: 'GCF_000001405.40', ucscDb: 'hg38' },
+  )!
+  assert.equal(configOf(url), '/ucsc/hg38/config.json')
+})
+
+test('everything else still opens its sharded GenArk config', () => {
+  const url = geneDrilldownUrl(
+    gene('GCF_000002285.5'),
+    'GCF_000001405.40',
+    undefined,
+    buildPairIndex({}),
+    { accession: 'GCF_000002285.5' },
+  )!
+  assert.equal(
+    configOf(url),
+    '/hubs/genark/GCF/000/002/285/GCF_000002285.5/config.json',
+  )
+})
+
+// find() answers with the version we host, and that is the config to open —
+// launching the version NCBI named would 404.
+test('a version we do not host opens the one we do', () => {
+  const url = geneDrilldownUrl(
+    gene('GCF_000002285.9'),
+    undefined,
+    undefined,
+    buildPairIndex({}),
+    { accession: 'GCF_000002285.5' },
+  )!
+  assert.match(url, /GCF_000002285\.5/)
+})
+
+test('a genome the index does not know opens nothing', () => {
+  assert.equal(
+    geneDrilldownUrl(
+      gene('GCF_999999999.1'),
+      undefined,
+      undefined,
+      buildPairIndex({}),
+      undefined,
+    ),
+    undefined,
+  )
+})
+
+// The catalog names the .1 build; NCBI reported the gene against .2. The panel
+// would open .1 and the .2 locstring would resolve against neither, so the
+// pairwise launch is given up in favour of one genome that does navigate.
+test('a pairwise link naming another version falls back to one genome', () => {
+  const index = buildPairIndex({
+    'GCF_000002285.1,GCF_000001405.40': [
+      'dog_to_hg38',
+      'GCF_000002285.1',
+      'hg38',
+    ],
+  })
+  const url = geneDrilldownUrl(
+    gene('GCF_000002285.5'),
+    'GCF_000001405.40',
+    undefined,
+    index,
+    { accession: 'GCF_000002285.5' },
+  )!
+  assert.equal(
+    configOf(url),
+    '/hubs/genark/GCF/000/002/285/GCF_000002285.5/config.json',
+  )
+})
+
+test('a pairwise link naming the genome we opened is used', () => {
+  const index = buildPairIndex({
+    'GCF_000002285.5,GCF_000001405.40': [
+      'dog_to_hg38',
+      'GCF_000002285.5',
+      'hg38',
+    ],
+  })
+  const view = viewOf(
+    geneDrilldownUrl(
+      gene('GCF_000002285.5'),
+      'GCF_000001405.40',
+      undefined,
+      index,
+      { accession: 'GCF_000002285.5' },
+    )!,
+  )
+  assert.equal(view.type, 'LinearSyntenyView')
+  assert.deepEqual(view.tracks, ['dog_to_hg38'])
 })

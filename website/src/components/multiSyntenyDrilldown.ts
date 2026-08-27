@@ -7,10 +7,12 @@
 import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { panelTracks, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
+import { loadStore } from './orthologDb.ts'
 import {
   SYNTENY_FLANK_BP,
   accessionToJbrowseUrl,
   flankLoc,
+  isSameGenome,
 } from './orthologSearchUtils.ts'
 import {
   type PairEntry,
@@ -154,36 +156,84 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
   }
 }
 
+// What the assembly index says about the genome a clicked gene sits on:
+// `undefined` when we do not host it, and the accession verbatim when the index
+// itself could not be loaded.
+export type HostedGenome = { accession: string; ucscDb?: string } | undefined
+
+// The best JBrowse URL for a clicked gene, or undefined when there is nothing of
+// ours to open. Pure, like subtreeSyntenyUrl, so the two branches and the guard
+// between them stay unit-testable.
+//
+// The single-genome fallback goes through `hosted` rather than off the accession
+// NCBI reported, for two reasons the accession alone cannot supply.
+//
+// A UCSC-native genome has to open its curated /ucsc/<db> config, which is what
+// the rest of the site links to and the only one with a defaultSession worth
+// opening. Built from the bare accession it opened the GenArk hub instead — for
+// 61 of the 62 that is a working but far sparser config, and for **human** it is
+// a browser with no sequence at all: alone among the 62, GCF_000001405.40's
+// GenArk 2bit and chrom.sizes both 404 (swept 2026-08-27). Human is the default
+// reference, and the reference's own gene is the most-clicked thing on the page.
+//
+// And NCBI may report against a version we do not host, where the index answers
+// with the version we do.
+export function geneDrilldownUrl(
+  gene: PlacedGene,
+  refAccession: string | undefined,
+  refGene: PlacedGene | undefined,
+  index: PairIndex,
+  hosted: HostedGenome,
+) {
+  const candidate =
+    refAccession && gene.assembly !== refAccession
+      ? syntenyLink(index, gene.assembly, refAccession)
+      : undefined
+  // syntenyLink matches across assembly versions on purpose, which is right for
+  // finding a track and wrong for placing a locus: the panel opens under the
+  // catalog's name while NCBI reported the gene against whatever version it
+  // annotated, and the locstring resolves against neither. Falling back to the
+  // single genome beats opening a panel that cannot navigate.
+  if (candidate && hosted && isSameGenome(candidate.names[0], hosted)) {
+    return pairwiseSyntenyUrl(
+      candidate,
+      flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
+      refGene &&
+        flankLoc(refGene.refName, refGene.start, refGene.end, SYNTENY_FLANK_BP),
+    )
+  }
+  return hosted
+    ? accessionToJbrowseUrl(
+        hosted.accession,
+        `${gene.refName}:${gene.start}-${gene.end}`,
+        hosted.ucscDb,
+      )
+    : undefined
+}
+
 // Resolve the best JBrowse URL for a clicked gene, then open it. refGene is the
 // same anchor's ortholog in the reference, used to navigate the reference panel
 // of a pairwise synteny view. A pairwise launch flanks both panels so the
 // alignment ribbons are visible instead of landing flush on the gene bounds; the
 // single-genome fallback lands on the gene itself.
+//
+// An index that will not load degrades to the accession verbatim — what this did
+// before it consulted the index at all — rather than to a dead click. Only a
+// loaded index saying it does not know the accession means "not ours to open".
 export async function openGeneDrilldown(
   gene: PlacedGene,
   refAccession: string | undefined,
   refGene: PlacedGene | undefined,
 ) {
-  const index = await loadPairs()
-  const link =
-    refAccession && gene.assembly !== refAccession
-      ? syntenyLink(index, gene.assembly, refAccession)
-      : undefined
-  const url = link
-    ? pairwiseSyntenyUrl(
-        link,
-        flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
-        refGene &&
-          flankLoc(
-            refGene.refName,
-            refGene.start,
-            refGene.end,
-            SYNTENY_FLANK_BP,
-          ),
-      )
-    : accessionToJbrowseUrl(
-        gene.assembly,
-        `${gene.refName}:${gene.start}-${gene.end}`,
-      )
-  window.open(url, '_blank', 'noopener')
+  const [index, hosted] = await Promise.all([
+    loadPairs(),
+    loadStore().then(
+      s => s.find(gene.assembly),
+      () => ({ accession: gene.assembly }),
+    ),
+  ])
+  const url = geneDrilldownUrl(gene, refAccession, refGene, index, hosted)
+  if (url) {
+    window.open(url, '_blank', 'noopener')
+  }
 }

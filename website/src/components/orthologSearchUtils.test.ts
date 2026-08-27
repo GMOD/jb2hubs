@@ -391,6 +391,29 @@ test('planMultiSynteny matches a track regardless of pair key order', () => {
   assert.deepEqual(plan?.tracks, ['tA_REF'])
 })
 
+// buildMultiSyntenyUrl turns tracks[i] into level i, and the plan flattens what
+// resolveStackNames returns — so a dropped level would not leave a hole, it would
+// slide every later track up onto the wrong pair of genomes. What prevents that
+// is bestNeighbor refusing an extension whose link disagrees with the name
+// already fixed for the node, which means the chain never contains an adjacency
+// the resolver then drops. Loosen that guard and this is what notices.
+test('a plan has exactly one track per adjacency, never a dropped level', () => {
+  // dm6 under two names: the catalog knows the fly as `dm6` against the beetle
+  // and as its accession against mouse, so only one of the two can be a panel.
+  const plan = planMultiSynteny(
+    [REF, A, B, C],
+    'REF',
+    buildPairIndex({
+      'REF,A': ['tREF_A', 'REF', 'A'],
+      'A,B': ['tA_B', 'dm6', 'B'],
+      'B,C': ['tB_C', 'B', 'C'],
+    }),
+  )
+  assert.ok(plan)
+  assert.equal(plan.tracks.length, plan.rows.length - 1)
+  assert.equal(plan.geneTracks.length, plan.rows.length)
+})
+
 test('planMultiSynteny returns null when nothing chains to the reference', () => {
   assert.equal(
     planMultiSynteny([REF, A, B], 'REF', pairs({ 'A,B': 'tA_B' })),
