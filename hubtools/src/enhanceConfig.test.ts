@@ -181,13 +181,13 @@ describe('enhanceConfig gene-only display for NCBI GFF tracks', () => {
       },
     ])
     for (const t of [ucsc, genark]) {
-      assert.deepEqual(t.displays, [
-        {
-          type: 'LinearBasicDisplay',
-          displayId: `${t.trackId}-LinearBasicDisplay`,
-          showOnlyGenes: true,
-        },
-      ])
+      assert.equal(t.displays.length, 1)
+      assert.equal(t.displays[0].type, 'LinearBasicDisplay')
+      assert.equal(t.displays[0].displayId, `${t.trackId}-LinearBasicDisplay`)
+      assert.equal(t.displays[0].showOnlyGenes, true)
+      // the label chain rides along; ncbiGff.test.ts is where its shape is
+      // pinned, so this only asserts the production pass writes one
+      assert.match(t.displays[0].labels.name, /^jexl:/)
     }
   })
 

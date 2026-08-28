@@ -37,11 +37,12 @@ describe('addGeneOnlyDisplay', () => {
   it('gives a UCSC NCBI GFF track a gene-only basic display', () => {
     const displays = displaysOf(ucsc)
     assert.equal(displays.length, 1)
-    assert.deepEqual(displays[0], {
-      type: 'LinearBasicDisplay',
-      displayId: 'hg38-ncbiRefSeqGff-LinearBasicDisplay',
-      showOnlyGenes: true,
-    })
+    assert.equal(displays[0]!.type, 'LinearBasicDisplay')
+    assert.equal(
+      displays[0]!.displayId,
+      'hg38-ncbiRefSeqGff-LinearBasicDisplay',
+    )
+    assert.equal(displays[0]!.showOnlyGenes, true)
   })
 
   it('does the same for the GenArk spelling of the same file', () => {
@@ -69,8 +70,11 @@ describe('addGeneOnlyDisplay', () => {
     }
     const displays = displaysOf(derived)
     assert.equal(displays.length, 1)
-    assert.equal(displays[0]!.mouseover, "jexl:get(feature,'name')")
     assert.equal(displays[0]!.showOnlyGenes, true)
+    // mouseover is one of the keys this DOES own, so it is replaced rather than
+    // kept -- a hover showing a UUID beside a label reading "conserved
+    // acetylation island" would be the worse outcome
+    assert.match(displays[0]!.mouseover as string, /standard_name/)
   })
 
   it('keeps a hand-authored extra display, and stays ahead of it', () => {
@@ -110,6 +114,55 @@ describe('addGeneOnlyDisplay', () => {
     ]) {
       assert.deepEqual(addGeneOnlyDisplay(track), track, track.trackId)
     }
+  })
+})
+
+describe('addGeneOnlyDisplay labels', () => {
+  function labelOf(track: Track) {
+    const { displays } = addGeneOnlyDisplay(track)
+    assert.ok(Array.isArray(displays))
+    const d = displays.find(isRecord)!
+    assert.ok(isRecord(d.labels))
+    return d.labels.name as string
+  }
+
+  // The trap this exists for: get(feature, key) folds the FILE's tag but
+  // compares it against `key` verbatim, so `get(feature,'Target')` matches
+  // nothing and returns undefined with NO error — the `||` chain simply moves
+  // on. Measured in a browser on hg38: 'Target' labelled 0 of the window's 33
+  // `match` records, 'target' labelled all 33.
+  it('spells every attribute key lowercase', () => {
+    const keys = [...labelOf(ucsc).matchAll(/get\(feature,'([^']+)'\)/g)].map(
+      m => m[1]!,
+    )
+    assert.ok(keys.length > 4, 'expected a fallback chain')
+    for (const k of keys) {
+      assert.equal(k, k.toLowerCase(), k)
+    }
+  })
+
+  // standard_name has to come before name: all 9,131 biological_region rows in a
+  // human RefSeq GFF3 carry the same useless `Name=biological region`, while
+  // their standard_name is the real description.
+  it('prefers standard_name over name', () => {
+    const label = labelOf(ucsc)
+    assert.ok(label.indexOf("'standard_name'") < label.indexOf("'name'"), label)
+  })
+
+  // match and cDNA_match carry no Name, no gene and no Note at all -- only an
+  // opaque ID and `Target=NG_004148.3 1 1144 +`, whose first token is the whole
+  // content of the feature.
+  it('falls back to the alignment target, which is all a match record has', () => {
+    assert.match(
+      labelOf(ucsc),
+      /split\(get\(feature,'target'\)\|\|'',' '\)\[0\]$/,
+    )
+  })
+
+  it('uses the same text for the hover, so the two cannot disagree', () => {
+    const { displays } = addGeneOnlyDisplay(ucsc)
+    const d = (displays as unknown[]).find(isRecord)!
+    assert.equal(d.mouseover, (d.labels as { name: string }).name)
   })
 })
 

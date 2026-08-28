@@ -138,6 +138,63 @@ const NON_INDEX_TYPES = [
   'nucleotide_motif',
 ]
 
+// What to draw on a record NCBI left unnamed, and what to show on hover.
+//
+// The order is derived attribute by attribute from a real human RefSeq GFF3
+// (1,976,126 records), not guessed:
+//
+// - `standard_name` FIRST, and it has to beat `name`: all 9,131
+//   `biological_region` rows carry `Name=biological region` — the same useless
+//   literal — while their `standard_name` is "conserved acetylation island
+//   sequence 30 enhancer". It is also the only label V/C/J/D_gene_segment
+//   (581 of 587 on V) and `recombination_feature` (553 of 568) have, neither of
+//   which carries a `Name` at all. The one other type carrying both is `exon`
+//   (1,391 of 984,360), a subfeature whose text the gene glyph draws, so
+//   putting it first costs nothing.
+// - `name` — gene, pseudogene, mRNA, transcript, lnc_RNA, snoRNA: the normal
+//   case, unchanged.
+// - `gene` — miRNA (3,172 of 3,172) and tRNA (660 of 660) have no `Name`.
+// - `Note` — the RefSeqFE descriptive text: silencer 3,154/3,156,
+//   protein_binding_site 1,305/1,326 ("USF-binding E box motif"),
+//   nucleotide_motif 580/580, and the recombination regions.
+// - `function` — enhancer 5,415/5,559 ("enhancer in Jurkat T cells"); some
+//   enhancers carry this and no Note.
+// - `regulatory_class` — a regulatory row with neither at least says what it is.
+// - `target` — `match` and `cDNA_match` carry NOTHING else: no Name, no gene,
+//   no Note, not even a gbkey. `Target=NG_004148.3 1 1144 +` names the
+//   RefSeqGene or transcript aligned there, which is the entire content of the
+//   feature, so its first token is the label. This is what replaces the bare
+//   UUID and MD5.
+//
+// Verified end to end in a browser against the real hg38 config, at the BRCA1
+// window, with showOnlyGenes off — 116 top-level records, of which 33 `match`,
+// 27 `biological_region`, 26 `protein_binding_site`, 25 `enhancer`, 22 `gene`.
+// Before: 33 UUIDs, 51 `id-GeneID:…`, 27 "biological region". After: none of
+// those, 33 `NG_…` accessions, and labels reading "NANOG-H3K27ac-H3K4me1 hESC
+// enhancer", "ATAC-STARR-seq lymphoblastoid active region 12236", "BRCA1P1
+// intergenic recombination region".
+//
+// Mostly INERT in the default view, and that is the point: `showOnlyGenes`
+// hides every type above whose label this changes, so nothing here alters the
+// picture a reader lands on. It is what makes turning that off usable, instead
+// of a wall of identifiers.
+//
+// EVERY KEY IS LOWERCASE, and that is not cosmetic. `get(feature, key)` folds
+// the FILE's tag but compares it against `key` verbatim, so a query that spells
+// the GFF3 attribute as GFF3 does — `Note`, `Target` — matches nothing and
+// returns undefined with no error. Measured 2026-08-28 on hg38 in a browser:
+// `get(feature,'Target')` labelled 0 of the window's 33 `match` records,
+// `get(feature,'target')` labelled all 33. The chain still "worked" either way,
+// because `||` just moved on, which is exactly why this is worth stating.
+const LABEL =
+  "jexl:get(feature,'standard_name')" +
+  "||get(feature,'name')" +
+  "||get(feature,'gene')" +
+  "||get(feature,'note')" +
+  "||get(feature,'function')" +
+  "||get(feature,'regulatory_class')" +
+  "||split(get(feature,'target')||'',' ')[0]"
+
 /**
  * Give an NCBI GFF track its own text-indexing policy, so `jbrowse text-index`
  * indexes names rather than identifiers. Idempotent, and it merges into whatever
@@ -169,9 +226,16 @@ export function addNcbiGffTextSearching(track: Track): Track {
 }
 
 /**
- * Set `showOnlyGenes` on an NCBI GFF track's basic display, leaving every other
- * track alone. Idempotent, so a re-run over an already-enhanced config is a
- * no-op.
+ * Give an NCBI GFF track the display it needs to be readable — `showOnlyGenes`,
+ * plus the label/hover fallback chain for the records it does show — leaving
+ * every other track alone. Idempotent, so a re-run over an already-enhanced
+ * config is a no-op.
+ *
+ * `labels`/`mouseover` are two of `deriveFeatureDisplay`'s DERIVED_KEYS, which
+ * it drops and rewrites on the entry with this same displayId. There is no
+ * conflict today — that deriver runs on tracks carrying `metadata.ucsc` and an
+ * NCBI GFF track has none — and if one ever did, this runs second and wins,
+ * consistently on every re-run rather than alternating.
  *
  * Unlike `addRepeatClassDisplay` this needs no env gate, and the difference is
  * which half of the entry is new. That one names a display TYPE the released
@@ -198,12 +262,26 @@ export function addGeneOnlyDisplay(track: Track): Track {
     displays: found
       ? existing.map(d =>
           isRecord(d) && d.displayId === displayId
-            ? { ...d, showOnlyGenes: true }
+            ? {
+                ...d,
+                showOnlyGenes: true,
+                labels: { name: LABEL },
+                mouseover: LABEL,
+              }
             : d,
         )
       : // First, not appended: pickDisplayForView takes the first declared
         // display the view supports, so this has to hold the position the track
         // type's own default would have.
-        [{ type: BASIC, displayId, showOnlyGenes: true }, ...existing],
+        [
+          {
+            type: BASIC,
+            displayId,
+            showOnlyGenes: true,
+            labels: { name: LABEL },
+            mouseover: LABEL,
+          },
+          ...existing,
+        ],
   }
 }
