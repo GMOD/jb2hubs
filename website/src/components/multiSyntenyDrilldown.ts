@@ -6,7 +6,12 @@
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
-import { panelTracks, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
+import {
+  flipLoc,
+  panelTracks,
+  specUrl,
+  syntenyViewUrl,
+} from './jbrowseLinks.ts'
 import { loadStore } from './orthologDb.ts'
 import {
   SYNTENY_FLANK_BP,
@@ -88,14 +93,27 @@ function loadPairs(): Promise<PairIndex> {
 // as `hg38`, so merging by accession would fetch a hub without the track. Each
 // panel also opens its own gene track — a synteny sub-view has no defaultSession,
 // so without one the panel is an empty browser at the right locus.
+//
+// `flipped` flips the CLICKED genome's panel and leaves the reference in its own
+// coordinates, which is the opposite end from the ortholog page's pairwise launch
+// (orthoSyntenyUrl, where the row leads and the reference flips). Both rules are
+// "match what the reader is looking at", and here that is a figure already on
+// screen: the page mirrors a row whose locus is inverted RELATIVE TO THE
+// REFERENCE, so the reference is the frame and the launch has to use the same one
+// or it opens mirror-image to the row that was clicked.
 function pairwiseSyntenyUrl(
   link: SyntenyLink,
   loc: string,
   refLoc: string | undefined,
+  flipped: boolean,
 ) {
   return syntenyViewUrl(
     [
-      { assembly: link.names[0], loc, ...panelTracks(link.geneTracks[0]) },
+      {
+        assembly: link.names[0],
+        loc: flipLoc(loc, flipped),
+        ...panelTracks(link.geneTracks[0]),
+      },
       // Land the reference panel on the orthologous locus too, so both genomes
       // open at the gene rather than leaving the reference unnavigated.
       {
@@ -112,6 +130,9 @@ function pairwiseSyntenyUrl(
 export interface SubtreeLeaf {
   assembly: string
   loc: string
+  // Open this genome's panel horizontally flipped, because the row it came from
+  // is drawn mirrored on the page (see `orientToRef` in multiSyntenyLayout.ts).
+  flipped?: boolean
 }
 
 // A multi-level LinearSyntenyView stacks one full genome browser per level, so a
@@ -136,7 +157,7 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
   return syntenyViewUrl(
     picked.map((p, i) => ({
       assembly: names[i] ?? p.assembly,
-      loc: p.loc,
+      loc: flipLoc(p.loc, p.flipped ?? false),
       ...panelTracks(geneTracks[i] ?? ''),
     })),
     tracks,
@@ -184,6 +205,7 @@ export function geneDrilldownUrl(
   refGene: PlacedGene | undefined,
   index: PairIndex,
   hosted: HostedGenome,
+  flipped = false,
 ) {
   const candidate =
     refAccession && gene.assembly !== refAccession
@@ -200,6 +222,7 @@ export function geneDrilldownUrl(
       flankLoc(gene.refName, gene.start, gene.end, SYNTENY_FLANK_BP),
       refGene &&
         flankLoc(refGene.refName, refGene.start, refGene.end, SYNTENY_FLANK_BP),
+      flipped,
     )
   }
   return hosted
@@ -224,6 +247,7 @@ export async function openGeneDrilldown(
   gene: PlacedGene,
   refAccession: string | undefined,
   refGene: PlacedGene | undefined,
+  flipped = false,
 ) {
   const [index, hosted] = await Promise.all([
     loadPairs(),
@@ -232,7 +256,14 @@ export async function openGeneDrilldown(
       () => ({ accession: gene.assembly }),
     ),
   ])
-  const url = geneDrilldownUrl(gene, refAccession, refGene, index, hosted)
+  const url = geneDrilldownUrl(
+    gene,
+    refAccession,
+    refGene,
+    index,
+    hosted,
+    flipped,
+  )
   if (url) {
     window.open(url, '_blank', 'noopener')
   }

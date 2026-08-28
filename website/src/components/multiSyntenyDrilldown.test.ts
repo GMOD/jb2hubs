@@ -13,9 +13,10 @@ function viewOf(url: string) {
   return JSON.parse(spec.replace(/^spec-/, '')).views[0]
 }
 
-const leaf = (assembly: string): SubtreeLeaf => ({
+const leaf = (assembly: string, flipped = false): SubtreeLeaf => ({
   assembly,
   loc: 'chr1:1-1000',
+  flipped,
 })
 
 test('subtreeSyntenyUrl needs at least two genomes', () => {
@@ -92,6 +93,21 @@ test('a panel with no known gene track carries no tracks field', () => {
   assert.deepEqual(
     viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
     [undefined, undefined],
+  )
+})
+
+// A row the page draws mirrored opens its panel mirrored too, or the launch is
+// the mirror image of the figure that was clicked.
+test('a mirrored row opens its panel flipped', () => {
+  const index = buildPairIndex({
+    'GCF_1.1,GCF_2.1': ['t12', 'GCF_1.1', 'GCF_2.1'],
+  })
+  const view = viewOf(
+    subtreeSyntenyUrl([leaf('GCF_1.1'), leaf('GCF_2.1', true)], index)!,
+  )
+  assert.deepEqual(
+    view.views.map((v: { loc: string }) => v.loc),
+    ['chr1:1-1000', 'chr1:1-1000[rev]'],
   )
 })
 
@@ -185,6 +201,61 @@ test('a pairwise link naming another version falls back to one genome', () => {
   assert.equal(
     configOf(url),
     '/hubs/genark/GCF/000/002/285/GCF_000002285.5/config.json',
+  )
+})
+
+// The CLICKED genome's panel is the one that flips, not the reference: the page
+// mirrors a row relative to the reference, so the reference is the frame.
+test('a pairwise drill-down from a mirrored row flips the clicked panel', () => {
+  const index = buildPairIndex({
+    'GCF_000002285.5,GCF_000001405.40': [
+      'dog_to_hg38',
+      'GCF_000002285.5',
+      'hg38',
+    ],
+  })
+  const view = viewOf(
+    geneDrilldownUrl(
+      gene('GCF_000002285.5'),
+      'GCF_000001405.40',
+      gene('GCF_000001405.40'),
+      index,
+      { accession: 'GCF_000002285.5' },
+      true,
+    )!,
+  )
+  assert.deepEqual(
+    view.views.map((v: { assembly: string; loc: string }) => [
+      v.assembly,
+      v.loc,
+    ]),
+    [
+      ['GCF_000002285.5', 'NC_000017.11:7568421-7787490[rev]'],
+      ['hg38', 'NC_000017.11:7568421-7787490'],
+    ],
+  )
+})
+
+test('an unmirrored row flips nothing', () => {
+  const index = buildPairIndex({
+    'GCF_000002285.5,GCF_000001405.40': [
+      'dog_to_hg38',
+      'GCF_000002285.5',
+      'hg38',
+    ],
+  })
+  const view = viewOf(
+    geneDrilldownUrl(
+      gene('GCF_000002285.5'),
+      'GCF_000001405.40',
+      gene('GCF_000001405.40'),
+      index,
+      { accession: 'GCF_000002285.5' },
+    )!,
+  )
+  assert.ok(
+    view.views.every((v: { loc: string }) => !v.loc.includes('[rev]')),
+    'no panel should carry [rev]',
   )
 })
 

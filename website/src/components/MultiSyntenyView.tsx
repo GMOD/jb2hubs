@@ -92,8 +92,19 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
   const refGene = refGenesByAnchor.get(queryId)
   const refAssembly = refGene?.assembly
   const refAlignment = REF_ALIGNMENTS[neighborhood.query.refTaxonId]
-  const openGene = (g: GeneBox) => {
-    void openGeneDrilldown(g, refAssembly, refGenesByAnchor.get(g.anchorId))
+  // `inverted` comes from the row, not from the gene: the page decides a row is
+  // mirrored from the SIGN OF ITS GENE-ORDER CORRELATION with the reference (see
+  // isInverted in multiSyntenyLayout.ts), which is a better answer than one
+  // gene's annotated strand — orthologs routinely differ in strand without the
+  // locus being inverted. Passing it through is what makes the launch open the
+  // same way round as the figure that was clicked.
+  const openGene = (g: GeneBox, inverted: boolean) => {
+    void openGeneDrilldown(
+      g,
+      refAssembly,
+      refGenesByAnchor.get(g.anchorId),
+      inverted,
+    )
   }
 
   // Per-species locus for launching a subtree's stacked synteny view: the span of
@@ -110,6 +121,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
       placementByTaxon.set(row.taxonId, {
         assembly: row.assembly,
         loc: `${row.refName}:${Math.max(1, row.spanStart - flank)}-${row.spanEnd + flank}`,
+        flipped: row.inverted,
       })
     }
   }
@@ -331,7 +343,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                         setFocusAnchor(null)
                       }}
                       onClick={() => {
-                        openGene(g)
+                        openGene(g, row.inverted)
                       }}
                     >
                       <title>
