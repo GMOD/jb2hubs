@@ -538,7 +538,69 @@
         }
       },
       "category": ["Genes and Gene Predictions"],
-      "assemblyNames": ["GCF_020921035.1"]
+      "assemblyNames": ["GCF_020921035.1"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_020921035.1-ncbiGff-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+          },
+          "mouseover": "jexl:get(feature,'standard_name')||get(feature,'name')||get(feature,'gene')||get(feature,'note')||get(feature,'function')||get(feature,'regulatory_class')||split(get(feature,'target')||'',' ')[0]"
+        }
+      ],
+      "textSearching": {
+        "indexingAttributes": ["Name", "ID", "gene_synonym"],
+        "indexingFeatureTypesToInclude": [
+          "gene",
+          "pseudogene",
+          "mRNA",
+          "transcript",
+          "primary_transcript",
+          "lnc_RNA",
+          "lncRNA",
+          "ncRNA",
+          "tRNA",
+          "rRNA",
+          "snRNA",
+          "snoRNA",
+          "scaRNA",
+          "scRNA",
+          "miRNA",
+          "piRNA",
+          "antisense_RNA",
+          "guide_RNA",
+          "hammerhead_ribozyme",
+          "autocatalytically_spliced_intron",
+          "SRP_RNA",
+          "RNase_P_RNA",
+          "RNase_MRP_RNA",
+          "tmRNA",
+          "telomerase_RNA",
+          "vault_RNA",
+          "Y_RNA",
+          "V_gene_segment",
+          "C_gene_segment",
+          "J_gene_segment",
+          "D_gene_segment",
+          "pseudogenic_rRNA",
+          "pseudogenic_tRNA"
+        ],
+        "indexingFeatureTypesToExclude": [
+          "CDS",
+          "exon",
+          "region",
+          "match",
+          "cDNA_match",
+          "biological_region",
+          "enhancer",
+          "silencer",
+          "promoter",
+          "protein_binding_site",
+          "transcriptional_cis_regulatory_region",
+          "nucleotide_motif"
+        ]
+      }
     }
   ],
   "defaultSession": {
