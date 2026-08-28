@@ -215,10 +215,40 @@ function windowedLoc(r: OrthologResult, flankBp: number) {
   return flankLoc(refName, r.begin, r.end, flankBp)
 }
 
+// Which rows of a synteny launch open horizontally flipped, so the ortholog
+// points the same way in every panel. Both launches on this page — the pairwise
+// one below and the multi-species stack — go through this.
+//
+// Which strand an ortholog is annotated on is as much a fact about how its
+// assembly happened to orient the scaffold as about the gene: BRCA1 is minus on
+// hg38 chr17 and plus on the chimp and gorilla chromosomes it aligns to. Left
+// alone, the human row draws its neighborhood back-to-front and the alignment
+// ribbons above and below it cross the whole strip diagonally instead of running
+// down it — the picture reads as a rearrangement where there is none.
+//
+// The top row is the frame everything else is matched to, rather than the
+// reference row: the multi-species chain grows outward from the reference at
+// both ends, so the reference usually sits in the MIDDLE of the stack, and
+// anchoring there would flip the rows around it instead of the one row that
+// disagrees. Either choice makes the ribbons parallel — they differ only in which
+// way the whole figure reads — so the one that flips fewer rows, and leaves the
+// row a reader's eye starts from in its own coordinates, wins.
+//
+// This is a per-gene decision and deliberately not a claim about the locus. A
+// gene's own strand is the only orientation signal an ortholog row carries (the
+// conserved-gene-order page, which knows the neighbours too, prefers the sign of
+// their order correlation and falls back to this) — and for the thing being
+// compared here, one gene seen in several genomes, it is exactly the right one.
+export function strandFlips(rows: OrthologResult[]) {
+  const anchor = rows[0]?.strand ?? 1
+  return rows.map(r => r.strand !== anchor)
+}
+
 // Pairwise reference-vs-ortholog synteny launch. Both panels land on the
 // neighborhood window around their gene and open that genome's gene track, so
 // the ortholog is drawn rather than merely centered; the reference panel is left
-// unnavigated only when the reference ortholog row is unknown. The panel assemblies come
+// unnavigated only when the reference ortholog row is unknown, and flipped when
+// its ortholog runs the other way from this row's. The panel assemblies come
 // from the link, not from the accessions, because the track lives in a config
 // that may know a genome as `hg38` rather than as GCF_000001405.40 — naming the
 // accession there merges a hub without the track in it.
@@ -228,6 +258,10 @@ export function orthoSyntenyUrl(
   ref: OrthologResult | undefined,
   flankBp = SYNTENY_FLANK_BP,
 ) {
+  // The reference panel is the one that flips, since this row leads the stack.
+  // An unnavigated reference panel has nothing to match, and no locstring to
+  // carry the suffix.
+  const flips = strandFlips(ref ? [r, ref] : [r])
   return syntenyViewUrl(
     [
       {
@@ -237,7 +271,9 @@ export function orthoSyntenyUrl(
       },
       {
         assembly: link.names[1],
-        ...(ref ? { loc: windowedLoc(ref, flankBp) } : {}),
+        ...(ref
+          ? { loc: flipLoc(windowedLoc(ref, flankBp), flips[1] ?? false) }
+          : {}),
         ...panelTracks(link.geneTracks[1]),
       },
     ],
@@ -352,34 +388,6 @@ export function planMultiSynteny(
     geneTracks: stack.geneTracks,
     tracks: stack.tracks.flat(),
   }
-}
-
-// Which rows a stacked launch opens horizontally flipped, so the ortholog points
-// the same way in every panel.
-//
-// Which strand an ortholog is annotated on is as much a fact about how its
-// assembly happened to orient the scaffold as about the gene: BRCA1 is minus on
-// hg38 chr17 and plus on the chimp and gorilla chromosomes it aligns to. Left
-// alone, the human row draws its neighborhood back-to-front and the alignment
-// ribbons above and below it cross the whole strip diagonally instead of running
-// down it — the picture reads as a rearrangement where there is none.
-//
-// The top row is the frame everything else is matched to, rather than the
-// reference row: the chain grows outward from the reference at both ends, so the
-// reference usually sits in the MIDDLE of the stack, and anchoring there would
-// flip the rows around it instead of the one row that disagrees. Either choice
-// makes the ribbons parallel — they differ only in which way the whole figure
-// reads — so the one that flips fewer rows, and leaves the row a reader's eye
-// starts from in its own coordinates, wins.
-//
-// This is a per-gene decision and deliberately not a claim about the locus. A
-// gene's own strand is the only orientation signal an ortholog row carries (the
-// conserved-gene-order page, which knows the neighbours too, prefers the sign of
-// their order correlation and falls back to this) — and for the thing being
-// compared here, one gene seen in several genomes, it is exactly the right one.
-export function strandFlips(rows: OrthologResult[]) {
-  const anchor = rows[0]?.strand ?? 1
-  return rows.map(r => r.strand !== anchor)
 }
 
 // Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row

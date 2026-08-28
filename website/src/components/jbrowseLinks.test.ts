@@ -75,6 +75,31 @@ test('orthoSyntenyUrl windows both panels around their genes', () => {
   ])
 })
 
+// Same rule as the multi-species stack, on two rows: this row leads, so it is
+// the reference panel that flips. Without it a chimp-vs-human BRCA1 launch draws
+// the human panel back-to-front and the one ribbon crosses the strip.
+test('orthoSyntenyUrl flips the reference panel when the strands disagree', () => {
+  const views = sessionOf(
+    orthoSyntenyUrl(result, link, { ...refResult, strand: -1 }, 10),
+  ).views[0].views
+  assert.equal(views[0].loc, 'NC_1:90-210')
+  assert.equal(views[1].loc, 'NC_REF:1-19[rev]')
+})
+
+test('orthoSyntenyUrl flips nothing when both rows agree, whichever strand', () => {
+  const both = (strand: 1 | -1) =>
+    sessionOf(
+      orthoSyntenyUrl(
+        { ...result, strand },
+        link,
+        { ...refResult, strand },
+        10,
+      ),
+    ).views[0].views.map((v: { loc: string }) => v.loc)
+  assert.deepEqual(both(1), ['NC_1:90-210', 'NC_REF:1-19'])
+  assert.deepEqual(both(-1), ['NC_1:90-210', 'NC_REF:1-19'])
+})
+
 test('orthoSyntenyUrl leaves the reference panel unnavigated when no ref row', () => {
   const views = sessionOf(orthoSyntenyUrl(result, link, undefined)).views[0]
     .views
