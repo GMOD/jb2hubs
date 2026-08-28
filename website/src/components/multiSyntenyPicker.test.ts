@@ -16,6 +16,7 @@ function res(
   accession: string,
   taxonId: number,
   scientificName: string,
+  strand: 1 | -1 = 1,
 ): OrthologResult {
   return {
     assembly: { accession, scientificName, taxonId },
@@ -25,6 +26,7 @@ function res(
     begin: 100,
     end: 200,
     locStr: 'NC_1:100-200',
+    strand,
     jbrowseUrl: 'x',
   }
 }

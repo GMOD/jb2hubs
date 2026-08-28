@@ -43,6 +43,7 @@ const result: OrthologResult = {
   begin: 100,
   end: 200,
   locStr: 'NC_1:100-200',
+  strand: 1,
   jbrowseUrl: 'x',
 }
 

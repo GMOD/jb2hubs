@@ -3,7 +3,7 @@ import {
   genarkConfigPath,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
-import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
+import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
@@ -98,7 +98,7 @@ interface NcbiGene {
     genomic_locations?: {
       genomic_accession_version: string
       sequence_name: string
-      genomic_range?: { begin: string; end: string }
+      genomic_range?: { begin: string; end: string; orientation?: string }
     }[]
   }[]
 }
@@ -121,6 +121,12 @@ export interface OrthologResult {
   end: number
   locStr: string
   jbrowseUrl: string
+  // Which strand of its own assembly the ortholog sits on, from NCBI's
+  // `genomic_range.orientation`. Decides which panels a multi-species launch
+  // opens flipped — see `strandFlips`. Defaults to 1 where NCBI names no
+  // orientation, which in practice it always does: 565 of 565 placed BRCA1
+  // ortholog locations carried one, measured 2026-08-28.
+  strand: 1 | -1
 }
 
 // Single-genome JBrowse launch URL. UCSC-native assemblies (ucscDb set, e.g.
@@ -348,19 +354,49 @@ export function planMultiSynteny(
   }
 }
 
+// Which rows a stacked launch opens horizontally flipped, so the ortholog points
+// the same way in every panel.
+//
+// Which strand an ortholog is annotated on is as much a fact about how its
+// assembly happened to orient the scaffold as about the gene: BRCA1 is minus on
+// hg38 chr17 and plus on the chimp and gorilla chromosomes it aligns to. Left
+// alone, the human row draws its neighborhood back-to-front and the alignment
+// ribbons above and below it cross the whole strip diagonally instead of running
+// down it — the picture reads as a rearrangement where there is none.
+//
+// The top row is the frame everything else is matched to, rather than the
+// reference row: the chain grows outward from the reference at both ends, so the
+// reference usually sits in the MIDDLE of the stack, and anchoring there would
+// flip the rows around it instead of the one row that disagrees. Either choice
+// makes the ribbons parallel — they differ only in which way the whole figure
+// reads — so the one that flips fewer rows, and leaves the row a reader's eye
+// starts from in its own coordinates, wins.
+//
+// This is a per-gene decision and deliberately not a claim about the locus. A
+// gene's own strand is the only orientation signal an ortholog row carries (the
+// conserved-gene-order page, which knows the neighbours too, prefers the sign of
+// their order correlation and falls back to this) — and for the thing being
+// compared here, one gene seen in several genomes, it is exactly the right one.
+export function strandFlips(rows: OrthologResult[]) {
+  const anchor = rows[0]?.strand ?? 1
+  return rows.map(r => r.strand !== anchor)
+}
+
 // Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row
 // pair becomes a level carrying its single synteny track; every panel lands on
 // its ortholog's neighborhood window with that genome's gene track open, which
 // is what makes the launch show the gene in every genome rather than a stack of
-// empty browsers at the right coordinates.
+// empty browsers at the right coordinates — flipped, for a row whose ortholog
+// runs the other way.
 export function buildMultiSyntenyUrl(
   plan: MultiSyntenyPlan,
   flankBp = SYNTENY_FLANK_BP,
 ) {
+  const flips = strandFlips(plan.rows)
   return syntenyViewUrl(
     plan.rows.map((r, i) => ({
       assembly: plan.names[i] ?? r.assembly.accession,
-      loc: windowedLoc(r, flankBp),
+      loc: flipLoc(windowedLoc(r, flankBp), flips[i] ?? false),
       ...panelTracks(plan.geneTracks[i] ?? ''),
     })),
     plan.tracks.map(t => [t]),
@@ -461,6 +497,7 @@ export function buildOrthologResults(
         }
         const begin = parseInt(loc.genomic_range.begin)
         const end = parseInt(loc.genomic_range.end)
+        const strand = loc.genomic_range.orientation === 'minus' ? -1 : 1
         const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
         results.push({
           assembly,
@@ -470,6 +507,7 @@ export function buildOrthologResults(
           begin,
           end,
           locStr,
+          strand,
           jbrowseUrl: accessionToJbrowseUrl(
             assembly.accession,
             locStr,

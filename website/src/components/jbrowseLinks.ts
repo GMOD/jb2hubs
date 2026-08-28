@@ -49,6 +49,18 @@ export interface SyntenySubView {
   tracks?: string[]
 }
 
+// A locstring the panel opens horizontally flipped: the region is displayed
+// right-to-left, so a gene on the minus strand of its own assembly draws the
+// same way as a plus-strand ortholog above it. `[rev]` is jbrowse-core's own
+// notation for that — `parseLocString` strips the suffix and `navToLocString`
+// marks the displayed region `reversed` — and it is not one of the launch
+// options the released host drops on the floor, because it travels inside a
+// panel's `loc`. Measured 2026-08-28 on `latest` (v4.3.0) and on `main`: the
+// row's `displayedRegions[0].reversed` comes back true on both.
+export function flipLoc(loc: string, flipped: boolean) {
+  return flipped ? `${loc}[rev]` : loc
+}
+
 // The `tracks` field for one panel, or nothing at all when the catalog resolved
 // no gene track for that genome — an absent field and an empty array launch the
 // same, and omitting it keeps the spec the shape older hosts already read.

@@ -11,6 +11,7 @@ import {
   orthologsToTsv,
   planMultiSynteny,
   refLabel,
+  strandFlips,
 } from './orthologSearchUtils.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
@@ -144,6 +145,35 @@ test('buildOrthologResults maps reports and ranks common species first', () => {
   assert.equal(results[0]?.chromosome, '17')
   assert.equal(results[0]?.locStr, 'NC_000017.11:300-400')
   assert.equal(results[1]?.assembly.scientificName, 'Mus musculus')
+})
+
+test('buildOrthologResults reads the strand off NCBI orientation', () => {
+  const store = createStore(indexData)
+  const report = (orientation?: string): NcbiOrthologReport => ({
+    gene: {
+      gene_id: '222',
+      symbol: 'BRCA1',
+      tax_id: '9606',
+      taxname: 'Homo sapiens',
+      annotations: [
+        {
+          assembly_accession: 'GCF_000001405.40',
+          genomic_locations: [
+            {
+              genomic_accession_version: 'NC_000017.11',
+              sequence_name: '17',
+              genomic_range: { begin: '300', end: '400', orientation },
+            },
+          ],
+        },
+      ],
+    },
+  })
+  assert.equal(buildOrthologResults([report('minus')], store)[0]?.strand, -1)
+  assert.equal(buildOrthologResults([report('plus')], store)[0]?.strand, 1)
+  // NCBI always names one, but a row with no orientation is a plus-strand row
+  // rather than an unflippable one
+  assert.equal(buildOrthologResults([report()], store)[0]?.strand, 1)
 })
 
 // The index carries no names, so every displayed name is the report's own.
@@ -317,6 +347,7 @@ function res(
   begin = 100,
   end = 200,
   refName = 'NC_1',
+  strand: 1 | -1 = 1,
 ): OrthologResult {
   return {
     assembly: {
@@ -331,6 +362,7 @@ function res(
     begin,
     end,
     locStr: `${refName}:${begin}-${end}`,
+    strand,
     jbrowseUrl: 'x',
   }
 }
@@ -449,6 +481,56 @@ test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel'
     // begin - flank clamps at 1 rather than going negative
     { assembly: 'A', loc: 'NC_1:1-150500', tracks: ['A-gene'] },
   ])
+})
+
+// The defect this fixes: BRCA1 is minus on hg38 chr17 and plus on the chimp and
+// gorilla chromosomes it aligns to, so the human row drew its neighborhood
+// back-to-front and both ribbons crossed the strip diagonally.
+test('buildMultiSyntenyUrl flips a row whose ortholog runs the other way', () => {
+  const chimp = res('GCF_CHIMP', 9598, 25_025_791, 25_106_592, 'NC_072417.2')
+  const human = res('hg38', 9606, 43_044_295, 43_170_327, 'NC_000017.11', -1)
+  const gorilla = res('GCF_GOR', 9595, 49_344_066, 49_425_506, 'NC_073228.2')
+  const spec = specOf(
+    buildMultiSyntenyUrl(
+      {
+        rows: [chimp, human, gorilla],
+        names: ['GCF_CHIMP', 'hg38', 'GCF_GOR'],
+        geneTracks: ['c-gene', 'h-gene', 'g-gene'],
+        tracks: ['tC_H', 'tH_G'],
+      },
+      100_000,
+    ),
+  )
+  assert.deepEqual(
+    spec.views.map((v: { loc: string }) => v.loc),
+    [
+      'NC_072417.2:24925791-25206592',
+      'NC_000017.11:42944295-43270327[rev]',
+      'NC_073228.2:49244066-49525506',
+    ],
+  )
+})
+
+// Anchoring on the top row rather than on the reference, which the chain usually
+// leaves in the middle: matching the reference here would flip the two rows
+// around it instead of the one that disagrees.
+test('strandFlips matches every row to the top one, not to the reference', () => {
+  assert.deepEqual(
+    strandFlips([res('A', 1, 1, 2, 'NC_1', -1), res('B', 2), res('C', 3)]),
+    [false, true, true],
+  )
+  assert.deepEqual(
+    strandFlips([res('A', 1), res('B', 2, 1, 2, 'NC_1', -1), res('C', 3)]),
+    [false, true, false],
+  )
+})
+
+test('a stack that agrees on strand is launched unflipped', () => {
+  assert.deepEqual(strandFlips([res('A', 1), res('B', 2)]), [false, false])
+  assert.deepEqual(
+    strandFlips([res('A', 1, 1, 2, 'NC_1', -1), res('B', 2, 1, 2, 'NC_1', -1)]),
+    [false, false],
+  )
 })
 
 test('refLabel names known model organisms and passes anything else through', () => {
