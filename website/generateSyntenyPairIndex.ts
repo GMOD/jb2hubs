@@ -79,7 +79,7 @@ function toAccession(name: string) {
 //
 // The NCBI RefSeq GFF3 is the one to prefer on both sides: gene -> mRNA ->
 // CDS/exon with the real attributes, against UCSC's genePred-derived bigBeds.
-// GenArk hubs carry it as `<accession>-ncbiGff` without exception (checked
+// GenArk hubs carry it as `<accession>-ncbiRefSeq` without exception (checked
 // against all 170 GenArk names in this catalog on 2026-08-27), which is also the
 // id the single-genome launch in accessionToJbrowseUrl asks for.
 //
@@ -98,7 +98,7 @@ interface UcscConfig {
 const geneTrackCache = new Map<string, string | undefined>()
 function geneTrackFor(name: string) {
   if (/^GC[AF]_/.test(name)) {
-    return `${name}-ncbiGff`
+    return `${name}-ncbiRefSeq`
   }
   if (!geneTrackCache.has(name)) {
     const file = path.join(ucscConfigDir, `${name}.json`)

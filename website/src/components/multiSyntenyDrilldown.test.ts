@@ -57,8 +57,8 @@ test('a fully-chained subtree yields one track slot per level', () => {
 // draws nothing at the locus it was sent to.
 test('each panel opens the gene track its own link names', () => {
   const index = buildPairIndex({
-    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2', 'GCF_1-ncbiGff', 'GCF_2-ncbiGff'],
-    'GCF_2,GCF_3': ['t23', 'GCF_2', 'GCF_3', 'GCF_2-ncbiGff', 'GCF_3-ncbiGff'],
+    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2', 'GCF_1-ncbiRefSeq', 'GCF_2-ncbiRefSeq'],
+    'GCF_2,GCF_3': ['t23', 'GCF_2', 'GCF_3', 'GCF_2-ncbiRefSeq', 'GCF_3-ncbiRefSeq'],
   })
   const url = subtreeSyntenyUrl(
     [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],
@@ -66,7 +66,7 @@ test('each panel opens the gene track its own link names', () => {
   )!
   assert.deepEqual(
     viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
-    [['GCF_1-ncbiGff'], ['GCF_2-ncbiGff'], ['GCF_3-ncbiGff']],
+    [['GCF_1-ncbiRefSeq'], ['GCF_2-ncbiRefSeq'], ['GCF_3-ncbiRefSeq']],
   )
 })
 
