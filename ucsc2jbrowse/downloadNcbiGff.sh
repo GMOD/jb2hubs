@@ -165,20 +165,29 @@ process_db() {
     # genark2jbrowse/addNcbiGffAndTextIndex.sh.
     #
     # Both tracks in ONE pass, because --tracks REPLACES the assembly's
-    # aggregate index rather than adding to it: indexing the GFF alone is what
-    # silently dropped textIndexGoldenPath.sh's work for every assembly this
-    # branch reached. text-index skips a named track that is absent or whose
-    # adapter it cannot index, so naming the golden-path one costs nothing where
-    # there is not one.
+    # aggregate index rather than adding to it: indexing the GFF alone would
+    # silently drop textIndexGoldenPath.sh's work for every assembly this
+    # branch reaches. text-index does NOT skip a named track that is merely
+    # absent from config.json -- it exits nonzero ("Track not found ... please
+    # add track configuration before indexing"), which under set -euo pipefail
+    # kills the whole run. And "$db-ncbiRefSeq" is not always the golden-path
+    # trackId: a GenArk-backed alias (e.g. ARS_UCD2.0) names its golden-path
+    # tracks after the underlying accession (GCF_002263795.3-ncbiRefSeq), not
+    # after the db. So only name it when it is actually there, exactly the
+    # check textIndexGoldenPath.sh already makes.
     #
     # --attributes is for the golden-path track; the GFF track overrides it from
     # its own config. gene_synonym is what makes an old gene symbol findable,
     # and matches textIndexGoldenPath.sh so the two passes stop disagreeing.
     local trix_ix="$UCSC_BUILT_DIR/$db/trix/$db.ix"
     if [ "$present" = 1 ] && { [ ! -f "$trix_ix" ] || [ -n "${REPROCESS:-}" ]; }; then
+      local tracks="$track_id"
+      if grep -q "\"$db-ncbiRefSeq\"" "$config"; then
+        tracks="$track_id,$db-ncbiRefSeq"
+      fi
       log "Text-indexing $db..."
       jbrowse text-index --force --out "$UCSC_BUILT_DIR/$db" \
-        --tracks "$track_id,$db-ncbiRefSeq" --attributes Name,ID,gene_synonym
+        --tracks "$tracks" --attributes Name,ID,gene_synonym
     fi
   fi
 }
