@@ -2,6 +2,7 @@ import {
   getUcscFeatureDisplay,
   ucscHiddenDetailFields,
 } from './featureDisplay.ts'
+import { addGeneOnlyDisplay } from './geneOnlyDisplay.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
 
@@ -211,7 +212,14 @@ export function enhanceConfig(
   const withRepeatClass = process.env.RMSK_MULTIROW_DISPLAY
     ? addRepeatClassDisplay
     : (track: Track) => track
-  config.tracks = config.tracks?.map(deriveFeatureDisplay).map(withRepeatClass)
+  // Unconditional, unlike withRepeatClass: it adds a slot to a display type
+  // every supported host has rather than a display type only `main` has, and an
+  // undeclared slot is dropped from the MST snapshot in silence. See
+  // addGeneOnlyDisplay for the boot matrix that says so.
+  config.tracks = config.tracks
+    ?.map(deriveFeatureDisplay)
+    .map(addGeneOnlyDisplay)
+    .map(withRepeatClass)
 
   config.configuration ??= {}
   config.configuration.hierarchical = {

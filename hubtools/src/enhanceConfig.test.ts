@@ -154,6 +154,57 @@ describe('enhanceConfig feature display derivation', () => {
   })
 })
 
+describe('enhanceConfig gene-only display for NCBI GFF tracks', () => {
+  // Ungated, unlike the repeat-class display below: an undeclared config slot on
+  // a display type every supported host has is dropped in silence, where an
+  // unreleased display TYPE is a fatal union error. So this one has to reach the
+  // production pass, and the assertion protecting the shipped file is that it
+  // does — with no env var set.
+  it('writes it on the production pass, with no env var', () => {
+    const [ucsc, genark] = runOnConfig([
+      {
+        trackId: 'hg38-ncbiRefSeqGff',
+        type: 'FeatureTrack',
+        adapter: {
+          type: 'Gff3TabixAdapter',
+          gffGzLocation: { uri: 'hg38.gff.gz' },
+        },
+      },
+      {
+        trackId: 'GCF_028858775.2-ncbiGff',
+        type: 'FeatureTrack',
+        adapter: {
+          type: 'Gff3TabixAdapter',
+          gffGzLocation: { uri: 'x.gff.gz' },
+        },
+        displays: [],
+      },
+    ])
+    for (const t of [ucsc, genark]) {
+      assert.deepEqual(t.displays, [
+        {
+          type: 'LinearBasicDisplay',
+          displayId: `${t.trackId}-LinearBasicDisplay`,
+          showOnlyGenes: true,
+        },
+      ])
+    }
+  })
+
+  // UCSC's genePred-derived bigBed of the same annotation draws gene models
+  // only, so a type gate would have nothing to hide and everything to lose.
+  it('leaves the bigBed of the same annotation alone', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'GCF_028858775.2-ncbiRefSeq',
+        type: 'FeatureTrack',
+        adapter: { type: 'BigBedAdapter', bigBedLocation: { uri: 'x.bb' } },
+      },
+    ])
+    assert.equal(t.displays, undefined)
+  })
+})
+
 describe('enhanceConfig repeat-class display gate', () => {
   const rmsk = {
     trackId: 'hg38-rmsk',
