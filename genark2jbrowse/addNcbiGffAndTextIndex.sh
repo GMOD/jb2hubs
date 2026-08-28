@@ -102,7 +102,13 @@ add_track_and_text_index() {
   else
     echo "Trix index missing or reprocessing requested for $accession, running jbrowse text-index"
 
-    jbrowse text-index --force --out "$hub_dir" --tracks "${accession}-ncbiGff" --attributes Name,ID,Note || echo "Warning: text-index failed for $accession" >&2
+    # No --attributes for this track: hubtools addNcbiGffTextSearching writes the
+    # indexing policy onto the track config, which text-index reads in
+    # preference to the flags, so it has one home instead of one per call site.
+    # gene_synonym is in that list -- it is what makes an old gene symbol
+    # findable -- and Note is not, because a RefSeq Note is prose and ixIxx made
+    # a search term of every word in it.
+    jbrowse text-index --force --out "$hub_dir" --tracks "${accession}-ncbiGff" || echo "Warning: text-index failed for $accession" >&2
   fi
 
   # last, so the in-place config rewrites above can't clobber it

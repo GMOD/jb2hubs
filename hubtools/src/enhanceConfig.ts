@@ -2,7 +2,7 @@ import {
   getUcscFeatureDisplay,
   ucscHiddenDetailFields,
 } from './featureDisplay.ts'
-import { addGeneOnlyDisplay } from './geneOnlyDisplay.ts'
+import { addGeneOnlyDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
 
@@ -219,6 +219,7 @@ export function enhanceConfig(
   config.tracks = config.tracks
     ?.map(deriveFeatureDisplay)
     .map(addGeneOnlyDisplay)
+    .map(addNcbiGffTextSearching)
     .map(withRepeatClass)
 
   config.configuration ??= {}

@@ -142,18 +142,43 @@ process_db() {
       rm -rf "$zip" "$extract"
     fi
 
+    local present=0
     if grep -q "\"$track_id\"" "$config"; then
       log "$db GFF track already present, skipping add-track."
+      present=1
     elif seqids_resolve "$db" "$gff"; then
       log "Adding $track_id track..."
       jbrowse add-track "$gff" --force --trackId "$track_id" \
         --name "NCBI RefSeq - RefSeq All (GFF)" \
         --category "Genes and Gene Predictions" \
         --out "$UCSC_BUILT_DIR/$db/" --load copy --indexFile "$gff.csi"
+      present=1
+    fi
 
-      log "Text-indexing $track_id..."
+    # The trix is a function of the indexing POLICY as much as of the GFF, and
+    # the policy lives on the track config (hubtools addNcbiGffTextSearching,
+    # which text-index reads in preference to these flags). So "the track
+    # already exists" is not the same question as "its index is current" -- the
+    # same blind spot needs_rebuild has one level down, and the reason these 74
+    # assemblies would otherwise keep an index full of UUIDs long after the
+    # policy existed. REPROCESS (--reprocess-all) is the lever, matching
+    # genark2jbrowse/addNcbiGffAndTextIndex.sh.
+    #
+    # Both tracks in ONE pass, because --tracks REPLACES the assembly's
+    # aggregate index rather than adding to it: indexing the GFF alone is what
+    # silently dropped textIndexGoldenPath.sh's work for every assembly this
+    # branch reached. text-index skips a named track that is absent or whose
+    # adapter it cannot index, so naming the golden-path one costs nothing where
+    # there is not one.
+    #
+    # --attributes is for the golden-path track; the GFF track overrides it from
+    # its own config. gene_synonym is what makes an old gene symbol findable,
+    # and matches textIndexGoldenPath.sh so the two passes stop disagreeing.
+    local trix_ix="$UCSC_BUILT_DIR/$db/trix/$db.ix"
+    if [ "$present" = 1 ] && { [ ! -f "$trix_ix" ] || [ -n "${REPROCESS:-}" ]; }; then
+      log "Text-indexing $db..."
       jbrowse text-index --force --out "$UCSC_BUILT_DIR/$db" \
-        --tracks "$track_id" --attributes Name,ID,Note
+        --tracks "$track_id,$db-ncbiRefSeq" --attributes Name,ID,gene_synonym
     fi
   fi
 }

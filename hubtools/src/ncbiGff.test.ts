@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { addGeneOnlyDisplay } from './geneOnlyDisplay.ts'
+import { addGeneOnlyDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
 import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
@@ -110,5 +110,77 @@ describe('addGeneOnlyDisplay', () => {
     ]) {
       assert.deepEqual(addGeneOnlyDisplay(track), track, track.trackId)
     }
+  })
+})
+
+describe('addNcbiGffTextSearching', () => {
+  function searchingOf(track: Track) {
+    const { textSearching } = addNcbiGffTextSearching(track)
+    assert.ok(isRecord(textSearching), 'expected a textSearching object')
+    return textSearching
+  }
+
+  it('indexes names, not identifiers', () => {
+    const t = searchingOf(ucsc)
+    assert.deepEqual(t.indexingAttributes, ['Name', 'ID', 'gene_synonym'])
+    // the three measured junk sources: a UUID per match, an MD5 per cDNA_match,
+    // "biological region" as the Name of every biological_region
+    for (const type of ['match', 'cDNA_match', 'biological_region']) {
+      assert.ok(
+        (t.indexingFeatureTypesToExclude as string[]).includes(type),
+        type,
+      )
+    }
+  })
+
+  // Setting the slot REPLACES the CLI default rather than adding to it, so
+  // dropping these two would put every exon and CDS back into the index.
+  it('keeps the CLI default exclusions it is replacing', () => {
+    const excluded = searchingOf(ucsc).indexingFeatureTypesToExclude as string[]
+    assert.ok(excluded.includes('CDS'))
+    assert.ok(excluded.includes('exon'))
+  })
+
+  // The allow list is the statement that survives NCBI adding a 116th type; the
+  // deny list is what a released CLI can honor. They must not disagree, or the
+  // index changes shape the day the CLI catches up.
+  it('the deny list is a subset of what the allow list already drops', () => {
+    const t = searchingOf(ucsc)
+    const included = new Set(t.indexingFeatureTypesToInclude as string[])
+    for (const type of t.indexingFeatureTypesToExclude as string[]) {
+      assert.ok(!included.has(type), `${type} is on both lists`)
+    }
+  })
+
+  it('the allow list carries the gene model, not just genes', () => {
+    const included = new Set(
+      searchingOf(ucsc).indexingFeatureTypesToInclude as string[],
+    )
+    for (const type of ['gene', 'pseudogene', 'mRNA', 'tRNA', 'lnc_RNA']) {
+      assert.ok(included.has(type), type)
+    }
+  })
+
+  // ensureTextSearchAdapters puts the trix adapter here; dropping it would
+  // unhook the track from its own index.
+  it('merges into an existing textSearching rather than replacing it', () => {
+    const adapter = { type: 'TrixTextSearchAdapter', textSearchAdapterId: 'x' }
+    const t = searchingOf({
+      ...ucsc,
+      textSearching: { textSearchAdapter: adapter },
+    })
+    assert.deepEqual(t.textSearchAdapter, adapter)
+    assert.ok(Array.isArray(t.indexingAttributes))
+  })
+
+  it('is idempotent and leaves every other track alone', () => {
+    const once = addNcbiGffTextSearching(genark)
+    assert.deepEqual(addNcbiGffTextSearching(once), once)
+    const bigBed = {
+      trackId: 'GCF_028858775.2-ncbiRefSeq',
+      type: 'FeatureTrack',
+      adapter: { type: 'BigBedAdapter', bigBedLocation: { uri: 'x.bb' } },
+    }
+    assert.deepEqual(addNcbiGffTextSearching(bigBed), bigBed)
   })
 })

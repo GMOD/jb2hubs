@@ -1,3 +1,8 @@
+// What we know about NCBI RefSeq GFF3, applied to the two tracks that serve it:
+// `<db>-ncbiRefSeqGff` on a UCSC golden-path assembly, `<acc>-ncbiGff` on a
+// GenArk hub. Both quirks below come from the same property of the file, so they
+// share one description of it and one predicate for "is this that track".
+//
 // An NCBI RefSeq GFF3 gene track drawn with everything the file carries is not
 // readable, and the reason is not density — it is that most of what NCBI puts at
 // the top level of that file is not a gene and carries no name.
@@ -49,6 +54,118 @@ function isNcbiGffTrack(track: Track) {
     track.adapter.type === 'Gff3TabixAdapter' &&
     /(^|-)(ncbiRefSeqGff|ncbiGff)$/.test(track.trackId)
   )
+}
+
+// The name index reads the same file, so it inherits the same problem — and
+// there it is worse, because the index has no zoom level to hide behind. A human
+// RefSeq GFF3 hands `jbrowse text-index` 63,193 opaque `ID`s (a UUID per `match`,
+// an MD5 per `cDNA_match`), 9,131 copies of the string "biological region", and
+// ~24,000 `id-GeneID:106783496` from the RefSeqFE regulatory records, none of
+// which is a thing anyone types. They also skew the `--prefixSize` heuristic,
+// whose whole job is splitting bins of similarly-shaped identifiers.
+//
+// Two lists, because they answer different questions and only one of them is
+// answerable today:
+//
+// - **INDEX_TYPES is the real statement**: the types that carry a searchable
+//   name. It is derived, not guessed — every type with `exon` children in the
+//   42,704-file corpus survey (agent-docs/ncbi-gff-feature-type-survey.md §3c),
+//   which is exactly gene, pseudogene and the transcript-level vocabulary.
+//   Nothing NCBI adds to its 115-type vocabulary can leak past an allow list,
+//   which is why this is the shape to prefer.
+// - **NON_INDEX_TYPES is what a released `jbrowse text-index` can honor.** The
+//   allow list needs `textSearching.indexingFeatureTypesToInclude`, which does
+//   not exist in a published `@jbrowse/cli` yet; the deny list has been honored
+//   for releases. So this carries the measured offenders — every one of the
+//   junk terms counted above — and becomes a redundant subset of the allow list
+//   the day the CLI catches up. `CDS` and `exon` are restated because setting
+//   the slot REPLACES the CLI's default rather than adding to it.
+const INDEX_ATTRIBUTES = ['Name', 'ID', 'gene_synonym']
+
+const INDEX_TYPES = [
+  'gene',
+  'pseudogene',
+  'mRNA',
+  'transcript',
+  'primary_transcript',
+  'lnc_RNA',
+  'lncRNA',
+  'ncRNA',
+  'tRNA',
+  'rRNA',
+  'snRNA',
+  'snoRNA',
+  'scaRNA',
+  'scRNA',
+  'miRNA',
+  'piRNA',
+  'antisense_RNA',
+  'guide_RNA',
+  'hammerhead_ribozyme',
+  'autocatalytically_spliced_intron',
+  'SRP_RNA',
+  'RNase_P_RNA',
+  'RNase_MRP_RNA',
+  'tmRNA',
+  'telomerase_RNA',
+  'vault_RNA',
+  'Y_RNA',
+  'V_gene_segment',
+  'C_gene_segment',
+  'J_gene_segment',
+  'D_gene_segment',
+  'pseudogenic_rRNA',
+  'pseudogenic_tRNA',
+]
+
+const NON_INDEX_TYPES = [
+  'CDS',
+  'exon',
+  // one whole-chromosome gbkey=Src row per contig, in all 42,704 genomes
+  'region',
+  // RefSeqGene and transcript alignments: a bare UUID / MD5 as their only
+  // attribute
+  'match',
+  'cDNA_match',
+  // Name is the literal string "biological region" on all 9,131
+  'biological_region',
+  // RefSeqFE regulatory records, whose only attribute is `ID=id-GeneID:<n>`
+  'enhancer',
+  'silencer',
+  'promoter',
+  'protein_binding_site',
+  'transcriptional_cis_regulatory_region',
+  'nucleotide_motif',
+]
+
+/**
+ * Give an NCBI GFF track its own text-indexing policy, so `jbrowse text-index`
+ * indexes names rather than identifiers. Idempotent, and it merges into whatever
+ * `textSearching` the track already carries — `ensureTextSearchAdapters` puts a
+ * `textSearchAdapter` there, and dropping that would unhook the track from its
+ * own trix.
+ *
+ * The policy lives on the track rather than in the flags each pipeline passes,
+ * for the reason `metadata.skipTextIndex` exists: a per-track answer belongs
+ * with the track, where every later re-index finds it and nobody has to
+ * remember it at the call site. `text-index` reads both slots in preference to
+ * its own flags — verified against the installed @jbrowse/cli 4.1.12, which is
+ * what the pipelines run.
+ */
+export function addNcbiGffTextSearching(track: Track): Track {
+  if (!isNcbiGffTrack(track)) {
+    return track
+  }
+  const existing = isRecord(track.textSearching) ? track.textSearching : {}
+  return {
+    ...track,
+    textSearching: {
+      ...existing,
+      indexingAttributes: INDEX_ATTRIBUTES,
+      indexingFeatureTypesToInclude: INDEX_TYPES,
+      indexingFeatureTypesToExclude: NON_INDEX_TYPES,
+    },
+  }
 }
 
 /**
