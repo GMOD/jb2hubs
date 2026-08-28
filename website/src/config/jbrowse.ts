@@ -88,3 +88,27 @@ export function genarkConfigPath(accession: string) {
 export function retargetJbrowseUrl(url: string) {
   return url.replace(/^https:\/\/jbrowse\.org\/code\/jb2\/[^/]+/, JBROWSE_BASE)
 }
+
+// The gene-first launches (/orthologs, /conserved-gene-order) go to `main`
+// rather than to whatever JBROWSE_BASE pins, because those are the only launches
+// that open an NCBI RefSeq GFF3 panel and `latest` cannot draw one.
+//
+// `showOnlyGenes` and the label fallback chain that make that track readable
+// (hubtools/src/ncbiGff.ts) are a config slot and a jexl expression the released
+// v4.3.0 has no code for — the slot is dropped from the MST snapshot in silence.
+// Measured 2026-08-28 at the BRCA1 window on hg38: 116 top-level records, 22 of
+// them genes, and on `latest` the panel labels 33 of them with a bare UUID and
+// 51 with `id-GeneID:…`. The reader came for the gene.
+//
+// The trade is deliberate and temporary: `main` is a moving build, which is the
+// whole reason production pins a release, and this accepts that for two pages
+// until v5.0.0 publishes. DELETE this and its callers then — `latest` updates
+// itself, and JBROWSE_BASE is right for every launch on the site again.
+const GENE_TRACK_HOST = 'https://jbrowse.org/code/jb2/main'
+
+export function onGeneTrackHost(url: string) {
+  return url.replace(
+    /^https:\/\/jbrowse\.org\/code\/jb2\/[^/]+/,
+    GENE_TRACK_HOST,
+  )
+}

@@ -2,7 +2,10 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import { mergeConfig, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
-import { orthoSyntenyUrl } from './orthologSearchUtils.ts'
+import {
+  accessionToJbrowseUrl,
+  orthoSyntenyUrl,
+} from './orthologSearchUtils.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
 import type { SyntenyLink } from './syntenyPairIndex.ts'
@@ -129,6 +132,30 @@ test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
     { assembly: 'canFam3', loc: 'NC_1:90-210', tracks: ['canFam3-ncbiRefSeq'] },
     { assembly: 'hg38', loc: 'NC_REF:1-19', tracks: ['hg38-ncbiRefSeq'] },
   ])
+})
+
+// The gene-first launches are the only ones that open an NCBI RefSeq GFF3 panel,
+// and `showOnlyGenes` plus its label chain (hubtools/src/ncbiGff.ts) do not exist
+// in the released build JBROWSE_BASE pins — on `latest` that panel labels its
+// records with UUIDs and `id-GeneID:…` instead of gene names. So they go to
+// `main` until v5.0.0 publishes.
+//
+// Under the node test runner `import.meta.env` is undefined, so features.staging
+// is false and JBROWSE_BASE is the production `latest`. That is what makes this
+// pair meaningful: it pins the retarget AND its scope.
+test('a gene-first synteny launch goes to main, not to the pinned release', () => {
+  const host = (url: string) => new URL(url).pathname.split('/')[3]
+  assert.equal(host(orthoSyntenyUrl(result, link, refResult, 10)), 'main')
+  assert.equal(
+    host(accessionToJbrowseUrl('GCF_1', 'NC_1:1-2')),
+    'main',
+    'the single-genome row link opens <acc>-ncbiGff too',
+  )
+  // and nothing else moves: specUrl is what the pangenome launches use
+  assert.equal(
+    host(specUrl('/x/config.json', [{ type: 'LinearGenomeView' }])),
+    'latest',
+  )
 })
 
 // The indel wedges are noise at ortholog-window scale. Ignored outright by the

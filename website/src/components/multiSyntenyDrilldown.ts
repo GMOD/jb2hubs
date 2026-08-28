@@ -4,7 +4,7 @@
 //  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
 //  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
 
-import { ucscConfigPath } from '../config/jbrowse.ts'
+import { onGeneTrackHost, ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import {
   flipLoc,
@@ -107,23 +107,26 @@ function pairwiseSyntenyUrl(
   refLoc: string | undefined,
   flipped: boolean,
 ) {
-  return syntenyViewUrl(
-    [
-      {
-        assembly: link.names[0],
-        loc: flipLoc(loc, flipped),
-        ...panelTracks(link.geneTracks[0]),
-      },
-      // Land the reference panel on the orthologous locus too, so both genomes
-      // open at the gene rather than leaving the reference unnavigated.
-      {
-        assembly: link.names[1],
-        ...(refLoc ? { loc: refLoc } : {}),
-        ...panelTracks(link.geneTracks[1]),
-      },
-    ],
-    [link.trackId],
-    { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+  return onGeneTrackHost(
+    syntenyViewUrl(
+      [
+        {
+          assembly: link.names[0],
+          loc: flipLoc(loc, flipped),
+          ...panelTracks(link.geneTracks[0]),
+        },
+        // Land the reference panel on the orthologous locus too, so both
+        // genomes open at the gene rather than leaving the reference
+        // unnavigated.
+        {
+          assembly: link.names[1],
+          ...(refLoc ? { loc: refLoc } : {}),
+          ...panelTracks(link.geneTracks[1]),
+        },
+      ],
+      [link.trackId],
+      { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+    ),
   )
 }
 
@@ -154,14 +157,16 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
     picked.map(p => p.assembly),
     index,
   )
-  return syntenyViewUrl(
-    picked.map((p, i) => ({
-      assembly: names[i] ?? p.assembly,
-      loc: flipLoc(p.loc, p.flipped ?? false),
-      ...panelTracks(geneTracks[i] ?? ''),
-    })),
-    tracks,
-    { drawCurves: true },
+  return onGeneTrackHost(
+    syntenyViewUrl(
+      picked.map((p, i) => ({
+        assembly: names[i] ?? p.assembly,
+        loc: flipLoc(p.loc, p.flipped ?? false),
+        ...panelTracks(geneTracks[i] ?? ''),
+      })),
+      tracks,
+      { drawCurves: true },
+    ),
   )
 }
 
