@@ -154,12 +154,13 @@ describe('enhanceConfig feature display derivation', () => {
   })
 })
 
-describe('enhanceConfig gene-only display for NCBI GFF tracks', () => {
-  // Ungated, unlike the repeat-class display below: an undeclared config slot on
-  // a display type every supported host has is dropped in silence, where an
-  // unreleased display TYPE is a fatal union error. So this one has to reach the
-  // production pass, and the assertion protecting the shipped file is that it
-  // does — with no env var set.
+describe('enhanceConfig label display for NCBI GFF tracks', () => {
+  // Ungated, unlike the repeat-class display below: this names a display type
+  // every supported host already has, unlike the repeat-class one below which
+  // names a type only `main` has and would fail the track config's MST union
+  // on a released host. So this one has to reach the production pass, and the
+  // assertion protecting the shipped file is that it does — with no env var
+  // set.
   it('writes it on the production pass, with no env var', () => {
     const [ucsc, genark] = runOnConfig([
       {
@@ -184,7 +185,7 @@ describe('enhanceConfig gene-only display for NCBI GFF tracks', () => {
       assert.equal(t.displays.length, 1)
       assert.equal(t.displays[0].type, 'LinearBasicDisplay')
       assert.equal(t.displays[0].displayId, `${t.trackId}-LinearBasicDisplay`)
-      assert.equal(t.displays[0].showOnlyGenes, true)
+      assert.equal(t.displays[0].showOnlyGenes, undefined)
       // the label chain rides along; ncbiGff.test.ts is where its shape is
       // pinned, so this only asserts the production pass writes one
       assert.match(t.displays[0].labels.name, /^jexl:/)

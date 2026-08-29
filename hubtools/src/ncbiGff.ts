@@ -30,12 +30,10 @@
 // because RefSeqFE density tracks how well-studied a locus is.
 //
 // `showOnlyGenes` is jbrowse's own answer to this (the config form of the track
-// menu's "Show only genes"), and on this data it costs nothing: NOT ONE
-// transcript-level record is ever top-level — zero rows of mRNA, transcript,
-// lnc_RNA, miRNA, exon or CDS lack a `Parent=` — so every isoform, exon and CDS
-// stays attached to its gene. The regulatory features are a click away in the
-// same menu rather than gone, which is why this is a default view and not a
-// filter on the file.
+// menu's "Show only genes"), but it is not set here: it would hide exactly the
+// `match`/`cDNA_match`/regulatory records the label chain below exists to make
+// readable, which would defeat the point of adding one. A reader who wants
+// genes-only can still flip it on from the track menu themselves.
 import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
@@ -64,59 +62,22 @@ function isNcbiGffTrack(track: Track) {
 // which is a thing anyone types. They also skew the `--prefixSize` heuristic,
 // whose whole job is splitting bins of similarly-shaped identifiers.
 //
-// Two lists, because they answer different questions and only one of them is
-// answerable today:
+// A deny list, not an allow list, and that is not the shape to prefer — an
+// allow list is the statement that survives NCBI adding a 116th type to its
+// vocabulary, and one was written here (every type with `exon` children in the
+// 42,704-file corpus survey, agent-docs/ncbi-gff-feature-type-survey.md §3c).
+// It was removed on 2026-08-28 because **nothing reads it**:
+// `indexingFeatureTypesToInclude` is not a slot in core's `baseTrackConfig`
+// (4.3.0) and `@jbrowse/cli`'s indexing-utils (4.2.1) destructures only
+// `indexingFeatureTypesToExclude` and `indexingAttributes`. Written for a CLI
+// that would catch up, it instead shipped 33 dead type names into 44,681
+// configs — 74 UCSC, the rest GenArk — that every reader fetches. Bring it
+// back when a release honors it, not before.
 //
-// - **INDEX_TYPES is the real statement**: the types that carry a searchable
-//   name. It is derived, not guessed — every type with `exon` children in the
-//   42,704-file corpus survey (agent-docs/ncbi-gff-feature-type-survey.md §3c),
-//   which is exactly gene, pseudogene and the transcript-level vocabulary.
-//   Nothing NCBI adds to its 115-type vocabulary can leak past an allow list,
-//   which is why this is the shape to prefer.
-// - **NON_INDEX_TYPES is what a released `jbrowse text-index` can honor.** The
-//   allow list needs `textSearching.indexingFeatureTypesToInclude`, which does
-//   not exist in a published `@jbrowse/cli` yet; the deny list has been honored
-//   for releases. So this carries the measured offenders — every one of the
-//   junk terms counted above — and becomes a redundant subset of the allow list
-//   the day the CLI catches up. `CDS` and `exon` are restated because setting
-//   the slot REPLACES the CLI's default rather than adding to it.
+// So NON_INDEX_TYPES carries the measured offenders — every one of the junk
+// terms counted above. `CDS` and `exon` are restated because setting the slot
+// REPLACES the CLI's default rather than adding to it.
 const INDEX_ATTRIBUTES = ['Name', 'ID', 'gene_synonym']
-
-const INDEX_TYPES = [
-  'gene',
-  'pseudogene',
-  'mRNA',
-  'transcript',
-  'primary_transcript',
-  'lnc_RNA',
-  'lncRNA',
-  'ncRNA',
-  'tRNA',
-  'rRNA',
-  'snRNA',
-  'snoRNA',
-  'scaRNA',
-  'scRNA',
-  'miRNA',
-  'piRNA',
-  'antisense_RNA',
-  'guide_RNA',
-  'hammerhead_ribozyme',
-  'autocatalytically_spliced_intron',
-  'SRP_RNA',
-  'RNase_P_RNA',
-  'RNase_MRP_RNA',
-  'tmRNA',
-  'telomerase_RNA',
-  'vault_RNA',
-  'Y_RNA',
-  'V_gene_segment',
-  'C_gene_segment',
-  'J_gene_segment',
-  'D_gene_segment',
-  'pseudogenic_rRNA',
-  'pseudogenic_tRNA',
-]
 
 const NON_INDEX_TYPES = [
   'CDS',
@@ -167,17 +128,13 @@ const NON_INDEX_TYPES = [
 //   UUID and MD5.
 //
 // Verified end to end in a browser against the real hg38 config, at the BRCA1
-// window, with showOnlyGenes off — 116 top-level records, of which 33 `match`,
-// 27 `biological_region`, 26 `protein_binding_site`, 25 `enhancer`, 22 `gene`.
-// Before: 33 UUIDs, 51 `id-GeneID:…`, 27 "biological region". After: none of
-// those, 33 `NG_…` accessions, and labels reading "NANOG-H3K27ac-H3K4me1 hESC
-// enhancer", "ATAC-STARR-seq lymphoblastoid active region 12236", "BRCA1P1
-// intergenic recombination region".
-//
-// Mostly INERT in the default view, and that is the point: `showOnlyGenes`
-// hides every type above whose label this changes, so nothing here alters the
-// picture a reader lands on. It is what makes turning that off usable, instead
-// of a wall of identifiers.
+// window — 116 top-level records, of which 33 `match`, 27 `biological_region`,
+// 26 `protein_binding_site`, 25 `enhancer`, 22 `gene`. Before: 33 UUIDs, 51
+// `id-GeneID:…`, 27 "biological region". After: none of those, 33 `NG_…`
+// accessions, and labels reading "NANOG-H3K27ac-H3K4me1 hESC enhancer",
+// "ATAC-STARR-seq lymphoblastoid active region 12236", "BRCA1P1 intergenic
+// recombination region". This is what every reader sees by default, since
+// `showOnlyGenes` is not set — see the note above.
 //
 // EVERY KEY IS LOWERCASE, and that is not cosmetic. `get(feature, key)` folds
 // the FILE's tag but compares it against `key` verbatim, so a query that spells
@@ -219,36 +176,27 @@ export function addNcbiGffTextSearching(track: Track): Track {
     textSearching: {
       ...existing,
       indexingAttributes: INDEX_ATTRIBUTES,
-      indexingFeatureTypesToInclude: INDEX_TYPES,
       indexingFeatureTypesToExclude: NON_INDEX_TYPES,
     },
   }
 }
 
 /**
- * Give an NCBI GFF track the display it needs to be readable — `showOnlyGenes`,
- * plus the label/hover fallback chain for the records it does show — leaving
- * every other track alone. Idempotent, so a re-run over an already-enhanced
- * config is a no-op.
+ * Give an NCBI GFF track the label/hover fallback chain the records without a
+ * `Name` need, leaving every other track alone. Idempotent, so a re-run over an
+ * already-enhanced config is a no-op.
+ *
+ * Deliberately does not set `showOnlyGenes`: that would hide the very records
+ * this label chain exists to make readable, so nothing would ever show it. A
+ * reader who wants genes-only can still turn it on from the track menu.
  *
  * `labels`/`mouseover` are two of `deriveFeatureDisplay`'s DERIVED_KEYS, which
  * it drops and rewrites on the entry with this same displayId. There is no
  * conflict today — that deriver runs on tracks carrying `metadata.ucsc` and an
  * NCBI GFF track has none — and if one ever did, this runs second and wins,
  * consistently on every re-run rather than alternating.
- *
- * Unlike `addRepeatClassDisplay` this needs no env gate, and the difference is
- * which half of the entry is new. That one names a display TYPE the released
- * host lacks, which fails the track config's MST union and takes the whole track
- * down with a fatal. This names `LinearBasicDisplay`, which every supported host
- * has had since v4.0.0, and adds one undeclared SLOT to it — which MST drops from
- * the snapshot in silence. Measured 2026-08-28 against
- * jbrowse.org/code/jb2/{v4.0.0,latest,main} with the real hg38 config served to
- * the hosted app: no fatal on any of the three, and the track renders exactly as
- * it does today on the two released ones (`showOnlyGenes` reads back undefined)
- * while `main` drops the 116 rows around BRCA1 to its 17 genes.
  */
-export function addGeneOnlyDisplay(track: Track): Track {
+export function addNcbiGffLabelDisplay(track: Track): Track {
   if (!isNcbiGffTrack(track)) {
     return track
   }
@@ -264,7 +212,6 @@ export function addGeneOnlyDisplay(track: Track): Track {
           isRecord(d) && d.displayId === displayId
             ? {
                 ...d,
-                showOnlyGenes: true,
                 labels: { name: LABEL },
                 mouseover: LABEL,
               }
@@ -277,7 +224,6 @@ export function addGeneOnlyDisplay(track: Track): Track {
           {
             type: BASIC,
             displayId,
-            showOnlyGenes: true,
             labels: { name: LABEL },
             mouseover: LABEL,
           },

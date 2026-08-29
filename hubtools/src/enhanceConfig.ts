@@ -2,7 +2,7 @@ import {
   getUcscFeatureDisplay,
   ucscHiddenDetailFields,
 } from './featureDisplay.ts'
-import { addGeneOnlyDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
+import { addNcbiGffLabelDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
 
@@ -212,13 +212,11 @@ export function enhanceConfig(
   const withRepeatClass = process.env.RMSK_MULTIROW_DISPLAY
     ? addRepeatClassDisplay
     : (track: Track) => track
-  // Unconditional, unlike withRepeatClass: it adds a slot to a display type
-  // every supported host has rather than a display type only `main` has, and an
-  // undeclared slot is dropped from the MST snapshot in silence. See
-  // addGeneOnlyDisplay for the boot matrix that says so.
+  // Unconditional, unlike withRepeatClass: it names a display type every
+  // supported host has, so it needs no boot-matrix gate.
   config.tracks = config.tracks
     ?.map(deriveFeatureDisplay)
-    .map(addGeneOnlyDisplay)
+    .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)
     .map(withRepeatClass)
 

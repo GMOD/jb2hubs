@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { addGeneOnlyDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
+import { addNcbiGffLabelDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
 import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
@@ -28,13 +28,13 @@ const genark = {
 // A config read off disk is unknown all the way down (see the Track type), so
 // walk into it rather than asserting a shape onto it.
 function displaysOf(track: Track) {
-  const { displays } = addGeneOnlyDisplay(track)
+  const { displays } = addNcbiGffLabelDisplay(track)
   assert.ok(Array.isArray(displays), 'expected a displays array')
   return displays.filter(isRecord)
 }
 
-describe('addGeneOnlyDisplay', () => {
-  it('gives a UCSC NCBI GFF track a gene-only basic display', () => {
+describe('addNcbiGffLabelDisplay', () => {
+  it('gives a UCSC NCBI GFF track a basic display with the label chain', () => {
     const displays = displaysOf(ucsc)
     assert.equal(displays.length, 1)
     assert.equal(displays[0]!.type, 'LinearBasicDisplay')
@@ -42,19 +42,19 @@ describe('addGeneOnlyDisplay', () => {
       displays[0]!.displayId,
       'hg38-ncbiRefSeqGff-LinearBasicDisplay',
     )
-    assert.equal(displays[0]!.showOnlyGenes, true)
+    assert.equal(displays[0]!.showOnlyGenes, undefined)
   })
 
   it('does the same for the GenArk spelling of the same file', () => {
-    assert.equal(displaysOf(genark)[0]!.showOnlyGenes, true)
+    assert.equal(displaysOf(genark)[0]!.showOnlyGenes, undefined)
   })
 
   it('is idempotent, since enhanceConfig re-runs over its own output', () => {
-    const once = addGeneOnlyDisplay(ucsc)
-    assert.deepEqual(addGeneOnlyDisplay(once), once)
+    const once = addNcbiGffLabelDisplay(ucsc)
+    assert.deepEqual(addNcbiGffLabelDisplay(once), once)
   })
 
-  it('sets the slot on a display the deriver already wrote, rather than a second entry', () => {
+  it('sets labels/mouseover on a display the deriver already wrote, rather than a second entry', () => {
     // deriveFeatureDisplay writes `<trackId>-LinearBasicDisplay` with labels and
     // mouseover on it; two entries with the same displayId would be a config
     // error, and a second entry ahead of it would drop that work.
@@ -70,7 +70,6 @@ describe('addGeneOnlyDisplay', () => {
     }
     const displays = displaysOf(derived)
     assert.equal(displays.length, 1)
-    assert.equal(displays[0]!.showOnlyGenes, true)
     // mouseover is one of the keys this DOES own, so it is replaced rather than
     // kept -- a hover showing a UUID beside a label reading "conserved
     // acetylation island" would be the worse outcome
@@ -112,14 +111,14 @@ describe('addGeneOnlyDisplay', () => {
       },
       { trackId: 'hg38-ncbiRefSeqGff', type: 'QuantitativeTrack' },
     ]) {
-      assert.deepEqual(addGeneOnlyDisplay(track), track, track.trackId)
+      assert.deepEqual(addNcbiGffLabelDisplay(track), track, track.trackId)
     }
   })
 })
 
-describe('addGeneOnlyDisplay labels', () => {
+describe('addNcbiGffLabelDisplay labels', () => {
   function labelOf(track: Track) {
-    const { displays } = addGeneOnlyDisplay(track)
+    const { displays } = addNcbiGffLabelDisplay(track)
     assert.ok(Array.isArray(displays))
     const d = displays.find(isRecord)!
     assert.ok(isRecord(d.labels))
@@ -160,7 +159,7 @@ describe('addGeneOnlyDisplay labels', () => {
   })
 
   it('uses the same text for the hover, so the two cannot disagree', () => {
-    const { displays } = addGeneOnlyDisplay(ucsc)
+    const { displays } = addNcbiGffLabelDisplay(ucsc)
     const d = (displays as unknown[]).find(isRecord)!
     assert.equal(d.mouseover, (d.labels as { name: string }).name)
   })
@@ -194,24 +193,15 @@ describe('addNcbiGffTextSearching', () => {
     assert.ok(excluded.includes('exon'))
   })
 
-  // The allow list is the statement that survives NCBI adding a 116th type; the
-  // deny list is what a released CLI can honor. They must not disagree, or the
-  // index changes shape the day the CLI catches up.
-  it('the deny list is a subset of what the allow list already drops', () => {
-    const t = searchingOf(ucsc)
-    const included = new Set(t.indexingFeatureTypesToInclude as string[])
-    for (const type of t.indexingFeatureTypesToExclude as string[]) {
-      assert.ok(!included.has(type), `${type} is on both lists`)
-    }
-  })
-
-  it('the allow list carries the gene model, not just genes', () => {
-    const included = new Set(
-      searchingOf(ucsc).indexingFeatureTypesToInclude as string[],
-    )
-    for (const type of ['gene', 'pseudogene', 'mRNA', 'tRNA', 'lnc_RNA']) {
-      assert.ok(included.has(type), type)
-    }
+  // An allow list is the better statement, but no released reader has the slot:
+  // core 4.3.0's baseTrackConfig does not declare it and @jbrowse/cli 4.2.1's
+  // indexing-utils destructures only the exclude list and the attributes. 33
+  // type names nothing reads, in 44,681 configs, is what that cost.
+  it('writes only slots a released reader honors', () => {
+    assert.deepEqual(Object.keys(searchingOf(ucsc)), [
+      'indexingAttributes',
+      'indexingFeatureTypesToExclude',
+    ])
   })
 
   // ensureTextSearchAdapters puts the trix adapter here; dropping it would
