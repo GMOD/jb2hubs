@@ -6,11 +6,19 @@
 # assemblies, leaving bed/rmsk/config/pif outputs untouched. Ships nothing — run
 # ./uploadAll.sh afterwards to push the regenerated tracks.
 #
-# Why this exists: the normal incremental gates key off *input data* hashes
-# (trackDb, and per-table .txt.gz), not the version of the tools that derive the
-# outputs. A change to bed2gff or src/geneLike.ts leaves those input hashes
-# unchanged, so a plain ./make.sh would silently skip every gene track. This
-# script forces a rebuild of the gene-track step only.
+# Why this exists: to re-derive ONLY the gene tracks, without the rest of a
+# reprocess. ./make.sh --reprocess-all would get there too, but it also re-runs
+# every bed and rmsk derivation, the config generation and the whole finalize
+# tail; this is the narrow version for when bed2gff or geneLike.ts is what
+# moved and you want the outputs in minutes rather than hours.
+#
+# It is no longer needed for CORRECTNESS, which is what it was originally for.
+# The gates used to key only off input data hashes (trackDb, per-table
+# .txt.gz), so a change to the deriving code left every gene track silently
+# stale -- exactly the dm6/droPer1 carriage-return bug. DERIVATION_SOURCES in
+# make.sh now covers both bed2gff/src and src/geneLike.ts, so a plain ./make.sh
+# sets REDERIVE and rebuilds them on its own. Check with ./make.sh --explain,
+# which reports the derivation stamp before anything runs.
 #
 # Only ucsc2jbrowse uses bed2gff; genark2jbrowse is unaffected and needs nothing.
 #

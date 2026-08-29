@@ -244,6 +244,35 @@ Both stamps are gitignored. They describe the built tree **on this machine**; a
 checkout whose stamp disagreed with its own `hubs/` would either skip a rebuild
 it needs or force one it does not.
 
+### `--explain` answers what a run would do, before it does it
+
+Every gate above is a pure predicate over local stamps, so both `make.sh`s take
+`--explain`: they run the gates, print the verdict and the reason, and exit
+without fetching, writing or building anything. It is `make -n` for a pipeline
+that is not a Makefile, and it exists because the gates are only readable by
+running them — the hg19 mappability regression cost a day partly because
+`No UCSC assemblies have changed` reads like success, and there was no way to
+ask the question first.
+
+Two properties are what make it worth trusting, and both are easy to break:
+
+- **It calls the code the run calls.** `detect_changed_assemblies` and
+  `would_rsync` in `ucsc2jbrowse/make.sh` were extracted so the report and the
+  build share one implementation; `explain_stamp` (`lib/common.sh`) only renders
+  a comparison the caller has already decided into `REDERIVE` or `MODE`. A
+  second copy of any of that would be a model of the run rather than the run,
+  and would be most confident exactly when it had drifted.
+- **It says what it cannot know.** ucsc's report is exact on the code half and
+  as-of-last-rsync on the data half, because a real run syncs first; genark
+  cannot know its new-hub count at all without the hub list. Both say so rather
+  than implying a precision they do not have. It also lists what runs regardless
+  — Phase 3 onward always does — so a clean report reads as "nothing is
+  rebuilt", not "nothing happens".
+
+Answers grouped by reason, not one line per assembly: a converter change marks
+all ~240 stale for the same reason, and the ungrouped form buries the two that
+actually got new data.
+
 ## The tail of `ucsc2jbrowse/make.sh` is one walk, not six
 
 `src/finalizeConfigs.ts` reads each built `config.json` once, applies the six
@@ -773,6 +802,70 @@ other layer and each a different shape:
   in `finalizeConfigs.ts`'s `STEPS`, ahead of everything that reads `tracks[]`)
   is both the cleanup and the standing guard: a glob character in a location is
   never a key our bucket has.
+
+### Whether the file is complete is a different question from whether it exists
+
+`pnpm check-tabix-indexes` (`scripts/checkTabixIndexes.mjs`, in `gate_configs`)
+requires a `.csi` or `.tbi` beside every derived `.bed.gz`/`.gff.gz`. Local
+walk, no network, so **GenArk is in scope here** unlike the two url checks —
+both trees, 50,476 files, 0.6s, all clean as of 2026-08-28.
+
+This is the one place make's model is genuinely better than a shell pipeline's,
+and it is worth stating plainly: make's unit of work is the target file, so "the
+recipe ran" and "the thing it was supposed to produce exists" are the same
+question. Here they are two, and nothing asked the second one. criGriChoV1 is
+the shape — `tabix -C` refused an 80MB gff.gz, `run_for_assemblies_lenient`
+warned and moved on, and the config shipped naming an index that was never
+written. `checkTrackUrls.mjs` eventually caught it by probing urls; this catches
+it on disk, before the upload.
+
+`save_rebuild_stamp` (`lib/common.sh`) closes the other half at the point of
+derivation: it now takes the **output** as well — argument order matching
+`needs_rebuild`, since the two are always a pair — and refuses to stamp when
+that output is missing or empty. A recipe that exits 0 having written nothing
+would otherwise be recorded as done and skipped by every later run, which is the
+durable half of the failure.
+
+Presence only, deliberately. A fresh `.gz` against an _older_ index is the other
+shape worth fearing (it is what the bucket held during the bgzip backend swap,
+and reads as `invalid bgzf header` rather than as a missing file), but mtime
+cannot detect it: 72 of the 5,856 UCSC files have an index whose mtime precedes
+the data by up to **0.05 seconds**, which is bgzip and tabix finishing inside
+one filesystem timestamp. A tolerance big enough to absorb that would absorb a
+real stale index too. What defends that shape is `assert_bgzip_toolchain` (the
+cause) and `rclone_sync_with_indexes`' ordering (the exposure).
+
+### A post-processing step with no gate is where over-invalidation gets expensive
+
+`PIPELINE_SOURCES` being broad is the right trade _because_ a reprocess is cheap
+on a warm tree — every per-file derivation is `needs_rebuild`-gated.
+`addGeneticCodes.ts` was the exception, with no gate at all, so any edit under
+`hubtools/src` marked all ~240 assemblies changed and cost a full round of NCBI
+eutils queries **plus one `chrom.sizes` fetch per assembly from hgdownload** —
+unbudgeted, against the same host `check-track-urls` is held to 300 requests a
+day against.
+
+`src/mitoCodes.ts` restores the invariant, and the second half is the
+non-obvious one:
+
+- **The taxId → mito code answers are cached** (`ucsc2jbrowse/.mitoCodes.json`,
+  gitignored, 180-day TTL). Negatives are cached too: `null` means "NCBI
+  answered and this taxon has no MGCId", and without it every such taxon is
+  re-queried forever. Only taxa in a chunk NCBI actually **served** may be
+  cached as negative — caching a failed request as an answer would suppress the
+  genetic code until the TTL expired.
+- **`chrom.sizes` is read from the mirrored sidecar already on disk.** This step
+  runs in Phase 4 and mirroring runs in `finalizeConfigs` afterwards, and
+  `createAssemblies.sh` rewrites `config.json` from scratch — so a reprocessed
+  assembly's fresh config names the upstream url again _even though the previous
+  run's mirrored file is sitting right next to it_. Only `config.json` is
+  rewritten; the sidecars are not. `localChromSizesPath` asks `mirrorSidecars`
+  for the naming rule rather than keeping a second copy of it.
+
+Measured 2026-08-28 on hg38 and dm6, configs restored to their pre-finalize
+shape: cold cache 2 NCBI queries and **0** hgdownload fetches; warm cache 0 and
+0, with both configs reported already current. The run summary prints those
+counts, because a silent regression to fetching would otherwise look identical.
 
 Two scope decisions to leave alone. **Track prose is out of scope**: the configs
 carry UCSC's trackDb html, which links ncbi, ebi, ensembl and a long tail of lab

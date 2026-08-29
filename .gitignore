@@ -89,6 +89,15 @@ website/public/taxonomyFilter.json
 # more.
 ucsc2jbrowse/.trackUrlCheck.json
 
+# addGeneticCodes.ts's taxId -> mitochondrial genetic code answers from NCBI
+# taxonomy. Derived, machine-local, and re-derivable in one round of efetch, so
+# it is ignored for the same reasons as the rotation state above. It exists
+# because this step has no needs_rebuild-style gate of its own: a broad
+# PIPELINE_SOURCES marks all ~240 assemblies changed on any hubtools edit, and
+# without the cache each of those runs re-queried NCBI and re-fetched a
+# chrom.sizes per assembly from hgdownload.
+ucsc2jbrowse/.mitoCodes.json
+
 # vendored bed2gff Rust build output (source is committed, binary is not)
 /bed2gff/target/
 

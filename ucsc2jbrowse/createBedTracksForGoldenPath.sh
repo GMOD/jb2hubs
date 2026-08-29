@@ -41,7 +41,7 @@ process_assembly() {
           fi
           sort_if_needed "${outfile}.tmp" | bgzip -@2 >"${outfile}.bed.gz"
           tabix -p bed -C "${outfile}.bed.gz"
-          save_rebuild_stamp "${infile}.txt.gz" "$hash_file"
+          save_rebuild_stamp "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"
           rm -f "${outfile}.tmp"
         fi
       fi

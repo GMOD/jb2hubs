@@ -19,6 +19,7 @@ cd "$SCRIPT_DIR"
 # Parse arguments. --all, --reprocess-all and --help are handled by parse_flags;
 # this pipeline has no extra flags of its own.
 PROCESS_ALL=false
+EXPLAIN=false
 USAGE="Usage: $0 [OPTIONS]
 
 Every run also re-fetches the oldest slice of stale NCBI metadata, so upstream
@@ -84,6 +85,74 @@ save_pipeline_stamp() {
     printf '%s\n' "$PIPELINE_HASH" >"$PIPELINE_STAMP"
   fi
 }
+
+# --- --explain ---------------------------------------------------------------
+#
+# What a run would do and why, without doing it. Everything above this point is
+# a local decision, and MODE is the whole answer here -- a genark run has one
+# gate, not ucsc2jbrowse's two levels of them.
+#
+# What it deliberately cannot tell you is the new-hub count, which needs the hub
+# list from hgdownload. In "new" mode that count decides whether phases 3-6 run
+# at all, so the honest report says the count is unknown rather than implying a
+# scope it has not measured.
+explain_run() {
+  local hub_count
+  echo
+  echo "=== genark2jbrowse --explain ====================================="
+  echo
+  echo "Local stamps only: no network, no writes, nothing built."
+  echo
+  # Reports MODE, not the flags: the stamp check above may already have
+  # escalated it, and the escalation is the single most useful thing this can
+  # say -- it is what turns an expected few-minute incremental run into all
+  # 50,000+ hubs.
+  echo "Mode: $MODE"
+  case "$MODE" in
+  reprocess)
+    echo "  --reprocess-all: every hub is re-derived from cached downloads."
+    echo "  The pipeline stamp is not consulted."
+    ;;
+  all)
+    if [ "$PROCESS_ALL" = true ]; then
+      echo "  --all: every hub is regenerated."
+    else
+      echo "  ESCALATED from \"new\" by the pipeline stamp below: the converter"
+      echo "  moved, so every hub on disk is stale and all of them are"
+      echo "  regenerated. This is the expensive outcome; it is not what a plain"
+      echo "  ./make.sh usually does."
+    fi
+    ;;
+  *)
+    echo "  Only accessions with no hub.txt yet. The oldest slice of stale NCBI"
+    echo "  metadata is refreshed and all.json regenerated either way."
+    ;;
+  esac
+
+  echo
+  echo "Code stamp"
+  explain_stamp "pipeline hash" "$PIPELINE_HASH" "$PIPELINE_STAMP" \
+    "escalates \"new\" to \"all\": every hub on disk was built by a different converter"
+
+  hub_count=$(find "$SCRIPT_DIR/../hubs" -name config.json 2>/dev/null | grep -c . || true)
+  echo
+  echo "Scope"
+  echo "  $hub_count hub configs on disk."
+  if [ "$MODE" = "new" ]; then
+    echo "  How many are NEW needs the hub list from hgdownload, which this does"
+    echo "  not fetch -- so the size of this run is genuinely unknown until it"
+    echo "  starts. If the count comes back 0, phases 3-6 are skipped entirely."
+  else
+    echo "  All of them are in scope for regeneration, plus any new accession"
+    echo "  the hub list turns out to name."
+  fi
+  echo
+}
+
+if [ "$EXPLAIN" = true ]; then
+  explain_run
+  exit 0
+fi
 
 # Temp files for intermediate data (used in new-only mode)
 NEW_HUBS_FILE=$(mktemp)

@@ -29,6 +29,7 @@ DRY_RUN=false
 UPLOAD_ONLY=false
 STAGING=false
 PROCESS_ALL=false
+EXPLAIN=false
 USAGE="Usage: $0 [OPTIONS]
 
 Options:
@@ -36,6 +37,8 @@ Options:
                    incremental: only new/changed assemblies are reprocessed.
   --dry-run        Build only, no upload or deploy
   --upload-only    Upload + deploy only, skip build (run after --dry-run)
+  --explain        Report what both pipelines would rebuild, then exit. Note
+                   this covers the BUILD only -- see below.
   --staging        Build, then deploy the website to staging only. Skips S3
                    data upload and git commit/push; the staging site reads the
                    same production S3 data.
@@ -68,6 +71,25 @@ fi
 if [ "$UPLOAD_ONLY" = true ] && [ "$PROCESS_ALL" = true ]; then
   echo "Error: --upload-only skips the build, so it cannot be combined with --all or --reprocess-all"
   exit 1
+fi
+
+# --explain is forwarded rather than reimplemented: the question is entirely
+# about what the two make.sh runs would rebuild, and each already answers it
+# against its own gates. Handled before every other mode check, because it must
+# not be combinable with anything that uploads or deploys -- and it exits here,
+# so it cannot be.
+#
+# It deliberately does NOT describe run.sh's own decisions (the pre-upload
+# gates, whether the website is rebuilt, what gets invalidated). Those are
+# downstream of a build that has not happened, so predicting them would mean
+# guessing. Say what is known.
+if [ "$EXPLAIN" = true ]; then
+  ./genark2jbrowse/make.sh --explain
+  ./ucsc2jbrowse/make.sh --explain
+  echo "This covers the build only. Whether run.sh then uploads, deploys the"
+  echo "website or invalidates CloudFront depends on what the build changes,"
+  echo "which is not knowable until it runs."
+  exit 0
 fi
 
 # Flags to forward to both make.sh scripts, which accept the same vocabulary.
@@ -197,6 +219,25 @@ gate_configs() {
     echo "Gate failed: a config names a track file that is not in the built tree."
     echo "That track would 404 from our own bucket. Re-run with"
     echo "SKIP_CONFIG_GATE=1 if you accept that."
+    return 1
+  fi
+  # Whether the files themselves are complete, which is a different question
+  # from whether a config names them: a bgzipped track with no .csi is not a
+  # missing reference, it is a present reference to an unusable file. Local
+  # walk, no network, so GenArk is in scope here even though it is out of scope
+  # for the two url checks above.
+  echo "Pre-upload gate: checking every derived track file has a tabix index..."
+  tabix_rc=0
+  node scripts/checkTabixIndexes.mjs || tabix_rc=$?
+  if [ "$tabix_rc" -eq 2 ]; then
+    echo "Gate failed to run: checkTabixIndexes found no built tree to walk, so"
+    echo "it checked nothing. Set UCSC_BUILT_DIR or pass --dir, or re-run with"
+    echo "SKIP_CONFIG_GATE=1 to upload unchecked."
+    return 1
+  elif [ "$tabix_rc" -ne 0 ]; then
+    echo "Gate failed: a derived track file has no tabix index beside it. The"
+    echo "track is unopenable, and the derivation left no rebuild stamp, so no"
+    echo "later run retries it. Re-run with SKIP_CONFIG_GATE=1 if you accept that."
     return 1
   fi
   echo "Pre-upload gate: booting working-tree configs on hosted releases..."

@@ -58,7 +58,7 @@ process_assembly() {
 
         tabix -C "${outfile}.gff.gz"
 
-        save_rebuild_stamp "${infile}.txt.gz" "$hash_file"
+        save_rebuild_stamp "${outfile}.gff.gz" "${infile}.txt.gz" "$hash_file"
       fi
     fi
   done

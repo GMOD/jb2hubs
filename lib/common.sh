@@ -67,6 +67,13 @@ parse_flags() {
       PROCESS_ALL=true
       export REPROCESS=true
       ;;
+    --explain)
+      # Answer "what would this run do, and why" without doing it. The gates
+      # here are all pure predicates over local stamps, so the report costs a
+      # few hashes and no network -- see explain_stamp below for why that
+      # restraint is the whole point.
+      EXPLAIN=true
+      ;;
     --help | -h)
       printf '%s\n' "$USAGE"
       printf '%s\n' "
@@ -74,6 +81,8 @@ parse_flags() {
   --reprocess-all  Re-derive every output from cached downloads (implies --all).
                    Use after changing converter code or templates. Does not
                    re-pull NCBI GFFs unless FETCH_UPDATES=1.
+  --explain        Report what a run would do and why, then exit without doing
+                   it. Reads local stamps only: fetches nothing, writes nothing.
   --help, -h       Show this help message
 
 Env vars (canonical description in lib/common.sh; they compose):
@@ -340,11 +349,31 @@ needs_rebuild() {
 }
 export -f needs_rebuild
 
-# Records a source file's current XXH3 content hash into a hash file, for a later
-# needs_rebuild check.
-# Usage: save_rebuild_stamp in.txt.gz out.hash
+# Records a source file's current XXH3 content hash into a hash file, marking the
+# derivation done for a later needs_rebuild check.
+#
+# It takes the OUTPUT as well, and refuses to stamp when that output is missing
+# or empty. The argument order deliberately matches needs_rebuild's, because the
+# two are always used as a pair and a mismatched order between them is a silent
+# corruption rather than an error.
+#
+# The refusal is the property make gets for free and a shell pipeline does not:
+# make's unit of work is the target file, so "the recipe ran" and "the thing it
+# was supposed to produce exists" are the same question. Here they are not. A
+# derivation that exits 0 having written nothing -- a `node src/foo.ts > out`
+# whose CLI block never fired, the shape that made deriveNcbiAccessions.ts emit
+# an empty accession list and report it as `0 assemblies detected` -- would
+# otherwise be stamped as done, and every later run would skip rebuilding it.
+# Refusing leaves the stamp absent, so the next run retries instead.
+#
+# Usage: save_rebuild_stamp out.bed.gz in.txt.gz out.hash
 save_rebuild_stamp() {
-  xxhsum -H3 "$1" | awk '{print $NF}' >"$2"
+  local output="$1" source="$2" hash_file="$3"
+  if [ ! -s "$output" ]; then
+    echo "save_rebuild_stamp: $output was not produced (or is empty); refusing to stamp $hash_file" >&2
+    return 1
+  fi
+  xxhsum -H3 "$source" | awk '{print $NF}' >"$hash_file"
 }
 export -f save_rebuild_stamp
 
@@ -453,6 +482,34 @@ source_tree_hash() {
   ) | xxhsum -H3 | awk '{print $NF}'
 }
 export -f source_tree_hash
+
+# Renders one stamp comparison for --explain. Three states, because the third is
+# the one people misread: an ABSENT stamp bootstraps -- it records the current
+# hash and re-derives nothing -- which looks identical to "unchanged" in every
+# log line this pipeline writes, and is why a first run after a converter change
+# can quietly ship the old outputs.
+#
+# It renders; it does not decide. The caller has already made the decision (into
+# REDERIVE, or MODE) by the time it calls this, and passes the consequence in as
+# text. A second copy of the comparison here would be a second source of truth
+# for the question --explain exists to answer, and could disagree with the run
+# it is describing -- which is exactly the failure mode, one level up.
+#
+# Usage: explain_stamp <label> <current-hash> <stamp-file> <consequence-if-changed>
+explain_stamp() {
+  local label="$1" current="$2" stamp_file="$3" consequence="$4" stored
+  stored=$(cat "$stamp_file" 2>/dev/null || echo "")
+  if [ -z "$stored" ]; then
+    printf '  %-18s no stamp yet at %s\n' "$label:" "$stamp_file"
+    printf '  %-18s bootstraps: records %s, re-derives nothing\n' "" "$current"
+  elif [ "$stored" = "$current" ]; then
+    printf '  %-18s unchanged (%s)\n' "$label:" "$current"
+  else
+    printf '  %-18s CHANGED %s -> %s\n' "$label:" "$stored" "$current"
+    printf '  %-18s %s\n' "" "$consequence"
+  fi
+}
+export -f explain_stamp
 
 # Hashes the newline-separated paths on stdin, emitting "hash<TAB>path" rows.
 # xxhsum's native output is BSD-style "XXH3 (path) = hash"; converting once here

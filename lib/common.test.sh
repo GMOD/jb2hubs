@@ -116,16 +116,22 @@ handle_flag() {
 # Each case runs in a subshell: parse_flags exits the shell on --help and on an
 # unknown flag, and exports REPROCESS.
 probe_flags() (
-  PROCESS_ALL=false EXTRA=false
+  PROCESS_ALL=false EXTRA=false EXPLAIN=false
   parse_flags "$@"
-  echo "all=$PROCESS_ALL extra=$EXTRA reprocess=${REPROCESS:-}"
+  echo "all=$PROCESS_ALL extra=$EXTRA reprocess=${REPROCESS:-} explain=$EXPLAIN"
 )
 
-check "no flags leaves everything off" "all=false extra=false reprocess=" "$(probe_flags)"
-check "--all sets PROCESS_ALL" "all=true extra=false reprocess=" "$(probe_flags --all)"
-check "--reprocess-all implies --all" "all=true extra=false reprocess=true" "$(probe_flags --reprocess-all)"
-check "script-specific flags reach handle_flag" "all=false extra=true reprocess=" "$(probe_flags --extra)"
-check "flags compose" "all=true extra=true reprocess=true" "$(probe_flags --extra --reprocess-all)"
+check "no flags leaves everything off" "all=false extra=false reprocess= explain=false" "$(probe_flags)"
+check "--all sets PROCESS_ALL" "all=true extra=false reprocess= explain=false" "$(probe_flags --all)"
+check "--reprocess-all implies --all" "all=true extra=false reprocess=true explain=false" "$(probe_flags --reprocess-all)"
+check "script-specific flags reach handle_flag" "all=false extra=true reprocess= explain=false" "$(probe_flags --extra)"
+check "flags compose" "all=true extra=true reprocess=true explain=false" "$(probe_flags --extra --reprocess-all)"
+
+# --explain is orthogonal: it reports on whatever the other flags select, so it
+# must not imply or suppress any of them.
+check "--explain sets EXPLAIN alone" "all=false extra=false reprocess= explain=true" "$(probe_flags --explain)"
+check "--explain composes with --reprocess-all" "all=true extra=false reprocess=true explain=true" \
+  "$(probe_flags --reprocess-all --explain)"
 
 (probe_flags --nope) >/dev/null 2>&1
 check "unknown flag exits non-zero" "1" "$?"
@@ -201,9 +207,11 @@ if needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when output mi
   fail=1
 fi
 
-# Output + matching stamp -> no rebuild.
-touch "$out"
-save_rebuild_stamp "$src" "$hash"
+# Output + matching stamp -> no rebuild. The output has to have content: an
+# empty one is what a derivation that exited 0 without producing anything leaves
+# behind, and save_rebuild_stamp refuses to stamp that (tested at the end).
+printf 'derived' >"$out"
+save_rebuild_stamp "$out" "$src" "$hash"
 if needs_rebuild "$out" "$src" "$hash"; then
   echo "FAIL - skip when stamp matches"
   fail=1
@@ -219,7 +227,7 @@ fi
 # Same byte size but different content -> needs rebuild. Byte-size stamping
 # missed this; the XXH3 content hash catches it.
 printf 'bbbbbbbb' >"$src"
-save_rebuild_stamp "$src" "$hash"
+save_rebuild_stamp "$out" "$src" "$hash"
 printf 'cccccccc' >"$src" # still 8 bytes, different content
 if needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when content changes at identical size"; else
   echo "FAIL - rebuild when content changes at identical size"
@@ -227,7 +235,7 @@ if needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when content c
 fi
 
 # REPROCESS forces rebuild even when the stamp matches.
-save_rebuild_stamp "$src" "$hash"
+save_rebuild_stamp "$out" "$src" "$hash"
 if REPROCESS=1 needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild when REPROCESS set"; else
   echo "FAIL - rebuild when REPROCESS set"
   fail=1
@@ -245,7 +253,7 @@ fi
 # Skipping here is what left dm6/droPer1's gff.gz holding raw carriage returns
 # after encodeGffAttribute was fixed, since their tables had not moved.
 printf 'stable' >"$src"
-save_rebuild_stamp "$src" "$hash"
+save_rebuild_stamp "$out" "$src" "$hash"
 if needs_rebuild "$out" "$src" "$hash"; then
   echo "FAIL - skip when stamp matches and REDERIVE unset"
   fail=1
@@ -257,7 +265,85 @@ if REDERIVE=1 needs_rebuild "$out" "$src" "$hash"; then echo "ok   - rebuild whe
   fail=1
 fi
 
+# --- save_rebuild_stamp refuses to stamp an output that was not produced ---
+#
+# The stamp means "this derivation is done", and nothing used to check that the
+# thing it was supposed to derive exists. A recipe that exits 0 having written
+# nothing would be recorded as done and skipped by every later run -- the
+# durable half of the failure, since the missing file is then named by a config
+# forever and no rebuild is ever attempted. Both shapes are the same bug: an
+# absent output, and a zero-byte one from a redirect whose producer wrote
+# nothing.
+missing="$rb/never-written.bed.gz"
+mstamp="$rb/never-written.hash"
+if save_rebuild_stamp "$missing" "$src" "$mstamp" 2>/dev/null; then
+  echo "FAIL - refuse to stamp a missing output"
+  fail=1
+else echo "ok   - refuse to stamp a missing output"; fi
+check "no stamp file written for a missing output" "absent" \
+  "$([ -f "$mstamp" ] && echo present || echo absent)"
+
+: >"$missing" # zero bytes: the redirect ran, the producer wrote nothing
+if save_rebuild_stamp "$missing" "$src" "$mstamp" 2>/dev/null; then
+  echo "FAIL - refuse to stamp an empty output"
+  fail=1
+else echo "ok   - refuse to stamp an empty output"; fi
+check "no stamp file written for an empty output" "absent" \
+  "$([ -f "$mstamp" ] && echo present || echo absent)"
+
+# The refusal has to leave the next run rebuilding rather than skipping, which
+# is the whole point of not writing the stamp.
+if needs_rebuild "$missing" "$src" "$mstamp"; then
+  echo "ok   - a refused stamp leaves the output needing a rebuild"
+else
+  echo "FAIL - a refused stamp leaves the output needing a rebuild"
+  fail=1
+fi
+
+# It says which output it refused on: the caller is a parallel job over
+# thousands of files, so a bare failure is not findable. Captured rather than
+# piped -- under `set -o pipefail` the pipeline would take this function's
+# deliberate non-zero status, not grep's.
+refusal=$(save_rebuild_stamp "$missing" "$src" "$mstamp" 2>&1 || true)
+check "the refusal names the output" "yes" \
+  "$(echo "$refusal" | grep -q "never-written.bed.gz" && echo yes || echo no)"
+check "the refusal names the stamp it withheld" "yes" \
+  "$(echo "$refusal" | grep -q "never-written.hash" && echo yes || echo no)"
+
 rm -rf "$rb"
+
+# --- explain_stamp ---
+#
+# The three states, and specifically that an absent stamp reports as a bootstrap
+# rather than as "unchanged". Conflating those two is the misreading --explain
+# exists to prevent: a bootstrapping stamp re-derives nothing, which is correct,
+# but is indistinguishable from a clean incremental run in every line the
+# pipeline otherwise logs.
+es=$(mktemp -d)
+es_stamp="$es/.pipeline_hash"
+
+check "absent stamp reports a bootstrap" "yes" \
+  "$(explain_stamp code abc123 "$es_stamp" 'consequence' | grep -q bootstraps && echo yes || echo no)"
+check "absent stamp does not report unchanged" "no" \
+  "$(explain_stamp code abc123 "$es_stamp" 'consequence' | grep -q unchanged && echo yes || echo no)"
+
+printf 'abc123\n' >"$es_stamp"
+check "matching stamp reports unchanged" "yes" \
+  "$(explain_stamp code abc123 "$es_stamp" 'consequence' | grep -q 'unchanged (abc123)' && echo yes || echo no)"
+check "matching stamp does not print the consequence" "no" \
+  "$(explain_stamp code abc123 "$es_stamp" 'every hub is stale' | grep -q 'every hub is stale' && echo yes || echo no)"
+
+printf 'old999\n' >"$es_stamp"
+check "differing stamp reports the transition" "yes" \
+  "$(explain_stamp code abc123 "$es_stamp" 'consequence' | grep -q 'CHANGED old999 -> abc123' && echo yes || echo no)"
+check "differing stamp prints the caller's consequence" "yes" \
+  "$(explain_stamp code abc123 "$es_stamp" 'every hub is stale' | grep -q 'every hub is stale' && echo yes || echo no)"
+
+# It reports; it must never write. A --explain that stamped would make the run
+# it just described unnecessary.
+check "explain_stamp does not touch the stamp" "old999" "$(cat "$es_stamp")"
+
+rm -rf "$es"
 
 # --- rclone_sync_with_indexes ---
 # Stub rclone so the test is hermetic. count_rclone_changes counts one line per

@@ -24,6 +24,7 @@ cd "$SCRIPT_DIR"
 # Parse arguments. --all, --reprocess-all and --help are handled by parse_flags.
 SKIP_DOWNLOAD=false
 PROCESS_ALL=false
+EXPLAIN=false
 USAGE="Usage: $0 [OPTIONS]
 
 Options:
@@ -48,6 +49,41 @@ export TMPDIR="${TMPDIR:-/mnt/sdb/cdiesh/tmp}"
 
 # Ensure the script's path is in the PATH for tool access.
 export PATH="$SCRIPT_DIR:$PATH"
+
+# How often each assembly is re-synced from hgdownload. Up here rather than
+# inside the download loop because --explain reports on the same gate, and a
+# second copy of the policy could describe a run this script would not do.
+FREQUENT_ASSEMBLIES="hg19 hg38 mm39 rn6"
+RSYNC_MONTHLY_DAYS=30
+
+# The non-hub assemblies named by the cached UCSC genome list -- exactly the set
+# the download loop rsyncs. Hub-backed entries (hs1, mpxvRivers, every
+# GenArk-backed alias) are built from hub.txt in Phase 3 and never rsynced, so a
+# preview that walked the downloads directory instead would claim sync work this
+# script does not do. One selector, two callers.
+list_rsync_assemblies() {
+  jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:") | not)) | .key' \
+    "$UCSC_BUILT_DIR/list.json.raw"
+}
+
+# Whether a run would rsync this assembly: always under REPROCESS, always for
+# the frequently updated ones, otherwise only when the sync stamp is missing or
+# older than the monthly threshold.
+# Usage: if would_rsync hg38; then ...; fi
+would_rsync() {
+  local assembly="$1" age
+  if [ -n "${REPROCESS:-}" ]; then
+    return 0
+  fi
+  if echo "$FREQUENT_ASSEMBLIES" | grep -qw "$assembly"; then
+    return 0
+  fi
+  if stamp_age_days age "$UCSC_DOWNLOADS_DIR/$assembly/.sync_stamp" &&
+    [ "$age" -lt "$RSYNC_MONTHLY_DAYS" ]; then
+    return 1
+  fi
+  return 0
+}
 
 # Refuse to derive anything with a bgzip that would emit different bytes than
 # the corpus holds -- see assert_bgzip_toolchain in lib/common.sh. Checked before
@@ -107,9 +143,245 @@ DERIVATION_SOURCES=(
 DERIVATION_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${DERIVATION_SOURCES[@]}")
 DERIVATION_STAMP="$UCSC_BUILT_DIR/.derivation_hash"
 
-# --- Phase 1: Download ---
+# Which assemblies need to go through the full processing pipeline, and why.
+#
+# Fills CHANGED_DL_DIRS / CHANGED_BUILT_DIRS with the work list, CHANGE_REASONS
+# with one tab-separated "<name> <category> <detail>" row per entry, and
+# stale_code_count with how many are being reprocessed for the surprising reason
+# (the converter moved, not the data). The category is separate from the detail
+# so --explain can group 200 identical answers into one line instead of printing
+# them 200 times, which is the difference between a report and a wall.
+#
+# It reads stamps and hashes trackDb; it writes nothing. That is what lets
+# --explain call the same function the run calls, instead of a second
+# implementation of the gate that could describe a different run than the one
+# that follows.
+detect_changed_assemblies() {
+  CHANGED_DL_DIRS=()
+  CHANGED_BUILT_DIRS=()
+  CHANGE_REASONS=()
+  stale_code_count=0
 
-ensure_dir "$UCSC_BUILT_DIR"
+  local assembly assembly_data_dir db_dir trackdb built_dir hash_file
+  local pipeline_hash_file current_hash stored_hash stored_pipeline_hash
+  local category detail
+
+  if [ "$PROCESS_ALL" = true ]; then
+    while IFS= read -r assembly_data_dir; do
+      assembly=$(basename "$assembly_data_dir")
+      CHANGED_DL_DIRS+=("$assembly_data_dir")
+      CHANGED_BUILT_DIRS+=("$UCSC_BUILT_DIR/$assembly")
+      CHANGE_REASONS+=("$assembly"$'\t'"forced"$'\t'"")
+    done < <(list_assembly_dirs)
+    return 0
+  fi
+
+  while IFS= read -r assembly_data_dir; do
+    assembly=$(basename "$assembly_data_dir")
+    db_dir="$assembly_data_dir/$assembly/database"
+    trackdb="$db_dir/trackDb.txt.gz"
+    built_dir="$UCSC_BUILT_DIR/$assembly"
+    hash_file="$built_dir/.trackdb_hash"
+    pipeline_hash_file="$built_dir/.pipeline_hash"
+
+    if [ ! -f "$trackdb" ]; then
+      continue
+    fi
+
+    # stderr is dropped: xxhsum writes a progress indicator per file, which over
+    # 200+ assemblies buries every line this loop and --explain print. A genuine
+    # failure still leaves current_hash empty, which reads as "changed" and
+    # reprocesses -- the safe direction, and the file is read again downstream
+    # where a real problem surfaces with context.
+    current_hash=$(xxhsum -H3 "$trackdb" 2>/dev/null | awk '{print $NF}')
+    stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
+    stored_pipeline_hash=$(cat "$pipeline_hash_file" 2>/dev/null || echo "")
+
+    if [ "$current_hash" = "$stored_hash" ] &&
+      [ "$PIPELINE_HASH" = "$stored_pipeline_hash" ] &&
+      [ -f "$built_dir/config.json" ]; then
+      continue # unchanged
+    fi
+
+    if [ ! -f "$built_dir/config.json" ]; then
+      category="never-built"
+      detail=""
+    elif [ "$current_hash" = "$stored_hash" ]; then
+      # The surprising one, and the reason PIPELINE_HASH exists: no new data,
+      # but the code that built the config on disk is not the code in the tree.
+      category="converter-changed"
+      detail=""
+      stale_code_count=$((stale_code_count + 1))
+    else
+      category="trackdb-changed"
+      detail="${stored_hash:-none} -> $current_hash"
+    fi
+
+    CHANGED_DL_DIRS+=("$assembly_data_dir")
+    CHANGED_BUILT_DIRS+=("$built_dir")
+    CHANGE_REASONS+=("$assembly"$'\t'"$category"$'\t'"$detail")
+  done < <(list_assembly_dirs)
+}
+
+# --- --explain ---------------------------------------------------------------
+#
+# The question `make -n` answers and a shell pipeline does not: what would this
+# run do, and why. Every gate involved is already a pure predicate over local
+# stamps, so this is a report over the functions the run itself calls rather
+# than a model of them -- which matters, because a model that drifted would be
+# most confident exactly when it was wrong.
+#
+# It fetches nothing, and that bounds what it can honestly claim. A real run
+# rsyncs from hgdownload first, so the DATA half of every answer is as of the
+# last sync; the CODE half is exact. The report says so rather than implying a
+# precision it does not have.
+# Renders CHANGE_REASONS grouped by category. A converter change marks every
+# assembly stale for the same reason, so the ungrouped form is 200+ identical
+# lines with the two that actually got new data buried somewhere among them --
+# the report would reproduce the problem it exists to solve. Ordered
+# most-informative first for the same reason: new upstream data is news, and
+# "the code changed" is one fact about the run, not 200 facts about assemblies.
+EXPLAIN_NAME_SAMPLE=8
+explain_reason_groups() {
+  local row name category detail cat
+  local -A names=() counts=()
+  for row in "${CHANGE_REASONS[@]}"; do
+    name=${row%%$'\t'*}
+    detail=${row##*$'\t'}
+    category=${row#*$'\t'}
+    category=${category%%$'\t'*}
+    counts[$category]=$((${counts[$category]:-0} + 1))
+    if [ "${counts[$category]}" -le "$EXPLAIN_NAME_SAMPLE" ]; then
+      if [ -n "$detail" ]; then
+        names[$category]+=" $name ($detail)"
+      else
+        names[$category]+=" $name"
+      fi
+    fi
+  done
+
+  for cat in trackdb-changed never-built converter-changed forced; do
+    if [ -n "${counts[$cat]:-}" ]; then
+      case "$cat" in
+      trackdb-changed) printf '    %-4s %s\n' "${counts[$cat]}" "trackDb changed upstream" ;;
+      never-built) printf '    %-4s %s\n' "${counts[$cat]}" "never built (no config.json)" ;;
+      converter-changed) printf '    %-4s %s\n' "${counts[$cat]}" "converter changed (trackDb unchanged)" ;;
+      forced) printf '    %-4s %s\n' "${counts[$cat]}" "forced by --all" ;;
+      esac
+      printf '        %s' "${names[$cat]# }"
+      if [ "${counts[$cat]}" -gt "$EXPLAIN_NAME_SAMPLE" ]; then
+        printf ' ... and %s more' "$((counts[$cat] - EXPLAIN_NAME_SAMPLE))"
+      fi
+      printf '\n'
+    fi
+  done
+}
+
+explain_run() {
+  local total=0 name reason count age
+  echo
+  echo "=== ucsc2jbrowse --explain ======================================="
+  echo
+  echo "Local stamps only: no network, no writes, nothing built. A real run"
+  echo "rsyncs from hgdownload first, so a table that moved upstream since the"
+  echo "last sync still reads as unchanged below. The code stamps are exact."
+  echo
+  echo "  built tree    $UCSC_BUILT_DIR"
+  echo "  downloads     $UCSC_DOWNLOADS_DIR"
+
+  if [ ! -d "$UCSC_DOWNLOADS_DIR" ]; then
+    echo
+    echo "No downloads directory, so there is nothing to compare against: a run"
+    echo "would sync and build every assembly in the UCSC genome list."
+    return 0
+  fi
+
+  echo
+  echo "Code stamps"
+  printf '  %-18s %s (compared against each assembly'"'"'s .pipeline_hash, below)\n' \
+    "pipeline hash:" "$PIPELINE_HASH"
+  explain_stamp "derivation hash" "$DERIVATION_HASH" "$DERIVATION_STAMP" \
+    "REDERIVE=1: every bed/gff/rmsk output is rebuilt, not only those whose golden-path table moved"
+
+  detect_changed_assemblies
+  total=$(list_assembly_dirs | grep -c . || true)
+
+  echo
+  echo "Assemblies ($total on disk)"
+  if [ "${#CHANGED_DL_DIRS[@]}" -eq 0 ]; then
+    echo "  none would be reprocessed."
+  else
+    echo "  ${#CHANGED_DL_DIRS[@]} would be reprocessed:"
+    explain_reason_groups
+    echo "  $((total - ${#CHANGED_DL_DIRS[@]})) unchanged, skipped."
+  fi
+
+  # The rsync gate is the other reason a run "sees no changes": the table it
+  # would have noticed was never pulled. would_rsync is the same predicate the
+  # download loop applies.
+  echo
+  echo "Downloads (a real run does this FIRST, and it can change the answers above)"
+  if [ "$SKIP_DOWNLOAD" = true ]; then
+    echo "  skipped entirely (--skip-download)"
+  elif [ ! -f "$UCSC_BUILT_DIR/list.json.raw" ]; then
+    # The list is fetched at the top of a real run, so previewing the sync set
+    # without one would mean guessing at it. Say so instead.
+    echo "  no cached genome list yet, so the sync set cannot be previewed;"
+    echo "  a run fetches it first and would sync every non-hub assembly in it."
+  else
+    local sync=0 skip=0 sync_names=() skip_ages=()
+    while IFS= read -r name; do
+      if ! is_assembly_db "$name"; then
+        continue
+      fi
+      if would_rsync "$name"; then
+        sync=$((sync + 1))
+        if [ "$sync" -le "$EXPLAIN_NAME_SAMPLE" ]; then
+          sync_names+=("$name")
+        fi
+      else
+        skip=$((skip + 1))
+        if stamp_age_days age "$UCSC_DOWNLOADS_DIR/$name/.sync_stamp"; then
+          skip_ages+=("$age $name")
+        fi
+      fi
+    done < <(list_rsync_assemblies)
+
+    echo "  $sync would sync ($FREQUENT_ASSEMBLIES always, plus anything past ${RSYNC_MONTHLY_DAYS}d)"
+    if [ "$sync" -gt 0 ]; then
+      printf '        %s' "${sync_names[*]}"
+      if [ "$sync" -gt "$EXPLAIN_NAME_SAMPLE" ]; then
+        printf ' ... and %s more' "$((sync - EXPLAIN_NAME_SAMPLE))"
+      fi
+      printf '\n'
+    fi
+
+    # The oldest few rather than all 200: the question this answers is "could a
+    # table have moved upstream without this run seeing it", and the assemblies
+    # nearest the threshold are the only ones where the answer is interesting.
+    echo "  $skip synced within ${RSYNC_MONTHLY_DAYS}d, skipped"
+    if [ "${#skip_ages[@]}" -gt 0 ]; then
+      printf '        oldest:'
+      printf '%s\n' "${skip_ages[@]}" | sort -rn | head -5 |
+        while read -r age name; do printf ' %s(%sd)' "$name" "$age"; done
+      printf '\n'
+    fi
+  fi
+
+  # Without this section "0 assemblies changed" reads as "0 work", which is what
+  # made the hg19 mappability regression cost a day: the run after the fix
+  # logged that line, did all of the below, and shipped the old configs anyway.
+  echo
+  echo "Runs regardless of everything above"
+  echo "  hub configs, extension tracks, NCBI RefSeq GFFs, chain PIFs, hs1 PIFs,"
+  echo "  GENCODE, finalizeConfigs (all $total), mergeAll, the configs/ copy and"
+  echo "  prune, the staging siblings, and the file listing."
+  echo
+  echo "So a clean report here means nothing is REBUILT -- not that nothing runs."
+  echo
+}
+
+# --- Phase 1: Download ---
 
 # An absent stamp bootstraps rather than re-deriving. We cannot know which
 # version of the converter produced the outputs already on disk, and assuming
@@ -123,19 +395,25 @@ if [ -n "$stored_derivation_hash" ] && [ "$stored_derivation_hash" != "$DERIVATI
   export REDERIVE=1
 fi
 
+# Placed here because REDERIVE is the last decision made before work starts, and
+# above ensure_dir because a report must not create the tree it reports on.
+if [ "$EXPLAIN" = true ]; then
+  explain_run
+  exit 0
+fi
+
+ensure_dir "$UCSC_BUILT_DIR"
+
 if [ "$SKIP_DOWNLOAD" = false ]; then
   log "Starting UCSC data download."
 
   log "Fetching latest UCSC genome list..."
   curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_BUILT_DIR/list.json.raw"
 
-  # hg19, hg38, mm39, rn6 are synced every run; everything else at most once per month.
-  FREQUENT_ASSEMBLIES="hg19 hg38 mm39 rn6"
-  RSYNC_MONTHLY_DAYS=30
   age_days=0 # set by stamp_age_days below
 
   log "Downloading non-hub assemblies..."
-  jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:") | not)) | .key' "$UCSC_BUILT_DIR/list.json.raw" | while read -r assembly; do
+  list_rsync_assemblies | while read -r assembly; do
     if ! is_assembly_db "$assembly"; then
       log "Skipping $assembly genome."
       continue
@@ -143,12 +421,10 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
 
     sync_stamp="$UCSC_DOWNLOADS_DIR/$assembly/.sync_stamp"
 
-    # For infrequent assemblies, skip rsync if synced within the last month
-    if [ -z "${REPROCESS:-}" ] && ! echo "$FREQUENT_ASSEMBLIES" | grep -qw "$assembly"; then
-      if stamp_age_days age_days "$sync_stamp" && [ "$age_days" -lt "$RSYNC_MONTHLY_DAYS" ]; then
-        log "Skipping rsync for $assembly (synced ${age_days}d ago)"
-        continue
-      fi
+    if ! would_rsync "$assembly"; then
+      stamp_age_days age_days "$sync_stamp" || age_days="?"
+      log "Skipping rsync for $assembly (synced ${age_days}d ago)"
+      continue
     fi
 
     log "Syncing $assembly data..."
@@ -178,61 +454,21 @@ fi
 # Skip change detection when --all (or anything implying it) is active so those
 # modes process everything.
 
-CHANGED_DL_DIRS=()
-CHANGED_BUILT_DIRS=()
+detect_changed_assemblies
 
 if [ "$PROCESS_ALL" = true ]; then
-  log "Processing all assemblies (--all)..."
-  while IFS= read -r assembly_data_dir; do
-    assembly=$(basename "$assembly_data_dir")
-    CHANGED_DL_DIRS+=("$assembly_data_dir")
-    CHANGED_BUILT_DIRS+=("$UCSC_BUILT_DIR/$assembly")
-  done < <(list_assembly_dirs)
+  log "Processing all ${#CHANGED_DL_DIRS[@]} assemblies (--all)..."
+elif [ "${#CHANGED_DL_DIRS[@]}" -eq 0 ]; then
+  log "No UCSC assemblies have changed. (Phase 3 onward still runs -- ./make.sh --explain lists what.)"
 else
-  log "Detecting changed assemblies..."
-  stale_code_count=0
-  while IFS= read -r assembly_data_dir; do
-    assembly=$(basename "$assembly_data_dir")
-    db_dir="$assembly_data_dir/$assembly/database"
-    trackdb="$db_dir/trackDb.txt.gz"
-    built_dir="$UCSC_BUILT_DIR/$assembly"
-    hash_file="$built_dir/.trackdb_hash"
-    pipeline_hash_file="$built_dir/.pipeline_hash"
-
-    if [ ! -f "$trackdb" ]; then
-      continue
-    fi
-
-    current_hash=$(xxhsum -H3 "$trackdb" | awk '{print $NF}')
-    stored_hash=$(cat "$hash_file" 2>/dev/null || echo "")
-    stored_pipeline_hash=$(cat "$pipeline_hash_file" 2>/dev/null || echo "")
-
-    if [ "$current_hash" = "$stored_hash" ] &&
-      [ "$PIPELINE_HASH" = "$stored_pipeline_hash" ] &&
-      [ -f "$built_dir/config.json" ]; then
-      continue # unchanged
-    fi
-
-    if [ "$current_hash" = "$stored_hash" ] && [ -f "$built_dir/config.json" ]; then
-      stale_code_count=$((stale_code_count + 1))
-    fi
-
-    CHANGED_DL_DIRS+=("$assembly_data_dir")
-    CHANGED_BUILT_DIRS+=("$built_dir")
-  done < <(list_assembly_dirs)
-
-  if [ "${#CHANGED_DL_DIRS[@]}" -eq 0 ]; then
-    log "No UCSC assemblies have changed."
-  else
-    changed_names=()
-    for d in "${CHANGED_DL_DIRS[@]}"; do changed_names+=("$(basename "$d")"); done
-    log "${#CHANGED_DL_DIRS[@]} changed assembly/assemblies: ${changed_names[*]}"
-    # Called out separately because it is the surprising reason to see a large
-    # rebuild on a run that pulled no new data: the converter changed, so every
-    # config built by the old one is stale regardless of its trackDb.
-    if [ "$stale_code_count" -gt 0 ]; then
-      log "$stale_code_count of those have an unchanged trackDb and are being reprocessed because the converter sources changed."
-    fi
+  changed_names=()
+  for d in "${CHANGED_DL_DIRS[@]}"; do changed_names+=("$(basename "$d")"); done
+  log "${#CHANGED_DL_DIRS[@]} changed assembly/assemblies: ${changed_names[*]}"
+  # Called out separately because it is the surprising reason to see a large
+  # rebuild on a run that pulled no new data: the converter changed, so every
+  # config built by the old one is stale regardless of its trackDb.
+  if [ "$stale_code_count" -gt 0 ]; then
+    log "$stale_code_count of those have an unchanged trackDb and are being reprocessed because the converter sources changed."
   fi
 fi
 
