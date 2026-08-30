@@ -68,11 +68,17 @@ jobs:
       - name: TypeScript tests
         run: pnpm --recursive --if-present run test
 
+      # parallel is for ucsc2jbrowse/common.test.sh's run_for_assemblies cases;
+      # the runner image does not promise GNU parallel.
       - name: Install shell test dependencies
-        run: sudo apt-get update && sudo apt-get install -y xxhash pigz
+        run: sudo apt-get update && sudo apt-get install -y xxhash pigz parallel
 
+      # ucsc2jbrowse/common.test.sh was written but never wired in, so the gates
+      # it pins -- is_assembly_db, prune_stray_configs' refusals -- were only
+      # ever checked by whoever ran it by hand.
       - name: Shell tests
         run: |
           ./lib/common.test.sh
           ./lib/chainpif.test.sh
+          ./ucsc2jbrowse/common.test.sh
           ./genark2jbrowse/addNcbiGffAndTextIndex.test.sh

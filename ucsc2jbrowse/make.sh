@@ -595,20 +595,26 @@ log "Download and add GENCODE tracks"
 log "Finalizing configs..."
 node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 
-# Only names the current UCSC genome list recognizes, plus hgFixed, which is
-# rsynced deliberately and never appears in that list. UCSC_BUILT_DIR is not
+# Only names the current UCSC genome list recognizes. UCSC_BUILT_DIR is not
 # guaranteed to hold only assemblies -- configs/renames.json was a `renames`
 # directory that got swept up and processed as one -- and configs/ never
 # prunes, so an unfiltered walk mirrors that mistake forever.
 # src/finalizeConfigs.ts applies the same rule to decide what to finalize;
 # these are two separate walks and each needs it.
+#
+# hgFixed used to be appended here, and that was the whole reason a config for
+# it existed. It is UCSC's shared metadata database, not a genome: it has no
+# sequence, so the config we published named a 2bit and a chrom.sizes that 404
+# and could never have opened. Nothing has ever linked to it -- it is absent
+# from the genome list, which is what every page and the hubs plugin resolve a
+# genome through -- so this is a retirement with no reader to strand, unlike the
+# permanent urls checkOrphanConfigs.mjs deliberately refuses to clean up on its
+# own. Its database is still rsynced below; deriveNcbiAccessions.ts reads
+# asmEquivalent out of it, and that is the only thing hgFixed is for.
 log "Copying generated configs to the local 'configs' and 'configs-minimal' directories..."
 mkdir -p configs configs-minimal
 wanted_names=$(mktemp)
-{
-  jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json"
-  echo hgFixed
-} >"$wanted_names"
+jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json" >"$wanted_names"
 
 # A short genome list is not a small problem here: it would copy almost nothing
 # and make every config it omits look stray to the prune below. UCSC lists 238,

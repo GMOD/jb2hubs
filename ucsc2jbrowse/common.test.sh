@@ -29,8 +29,11 @@ check() {
 
 # --- is_assembly_db / list_assembly_dirs ---
 
-if is_assembly_db hg38 && ! is_assembly_db hgFixed && ! is_assembly_db cb1; then
-  echo "ok   - is_assembly_db excludes hgFixed and cb1"
+# cb1 is in the list deliberately: it was excluded as a non-assembly for a year
+# and is one, so a regression that re-excludes it would silently stop rebuilding
+# an assembly whose published config is only correct because it is rebuilt.
+if is_assembly_db hg38 && is_assembly_db cb1 && ! is_assembly_db hgFixed; then
+  echo "ok   - is_assembly_db excludes hgFixed and keeps cb1"
 else
   echo "FAIL - is_assembly_db classified a database wrongly"
   fail=1
@@ -38,7 +41,7 @@ fi
 
 mkdir -p "$UCSC_DOWNLOADS_DIR"/{hg38,mm39,hgFixed,cb1}
 check "list_assembly_dirs skips non-assemblies" \
-  "$UCSC_DOWNLOADS_DIR/hg38 $UCSC_DOWNLOADS_DIR/mm39" "$(list_assembly_dirs | tr '\n' ' ' | sed 's/ $//')"
+  "$UCSC_DOWNLOADS_DIR/cb1 $UCSC_DOWNLOADS_DIR/hg38 $UCSC_DOWNLOADS_DIR/mm39" "$(list_assembly_dirs | tr '\n' ' ' | sed 's/ $//')"
 
 # --- assembly_paths ---
 
@@ -74,7 +77,7 @@ touched() { touch "$UCSC_BUILT_DIR/$(basename "$1").done"; }
 export -f touched
 run_for_assemblies touched "$UCSC_DOWNLOADS_DIR/hg38" "$UCSC_DOWNLOADS_DIR/mm39"
 check "run_for_assemblies runs every job" "2" \
-  "$(find "$UCSC_BUILT_DIR" -name '*.done' | wc -l)"
+  "$(find "$UCSC_BUILT_DIR" -name '*.done' | wc -l | tr -d ' ')"
 
 # A job whose first command fails must abort rather than run on: this is what
 # stops a broken derivation from reaching save_rebuild_stamp.
@@ -142,12 +145,12 @@ case "$out" in
 esac
 
 # An empty wanted list makes every file look stray. Refusing is the difference
-# between a bad genome-list fetch and losing all 239 configs.
+# between a bad genome-list fetch and losing all 238 configs.
 printf '' >"$work/empty"
 (prune_stray_configs "$configs" "$work/empty") >/dev/null 2>&1
 check "prune_stray_configs refuses an empty wanted list" "1" "$?"
 check "prune_stray_configs deleted nothing while refusing" "2" \
-  "$(find "$configs" -name '*.json' | wc -l)"
+  "$(find "$configs" -name '*.json' | wc -l | tr -d ' ')"
 
 (prune_stray_configs "$work/no-such-dir" "$work/wanted") >/dev/null 2>&1
 check "prune_stray_configs refuses a missing directory" "1" "$?"

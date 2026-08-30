@@ -10,11 +10,16 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
 //
 // The loop that produced them was fixed at the source long ago
 // (createConfigsForGoldenPath.sh sets `shopt -s nullglob` around both globs),
-// but a fix at the source only reaches a config that is regenerated. These two
-// are the repo's only non-assemblies: `is_assembly_db` excludes them from every
-// derivation pass, so their tracks[] is effectively frozen and no amount of
-// rebuilding would have cleared it. Finalization is the one pass that does
-// visit them, hence here.
+// but a fix at the source only reaches a config that is regenerated, and
+// neither of those two ever was: `is_assembly_db` excluded both from every
+// derivation pass, so their tracks[] was frozen and no amount of rebuilding
+// would have cleared it. Finalization is the one pass that did visit them,
+// hence here.
+//
+// Both of those exclusions are gone now -- cb1 is built like any other
+// assembly, hgFixed no longer gets a config -- which removes the case that
+// needed the cleanup, not the case that needs the guard: the next forgotten
+// nullglob would ship through a perfectly ordinary regeneration.
 //
 // So this is both the cleanup and the standing guard. A glob character in a
 // location cannot be a filename we publish -- our own bucket has no such key,

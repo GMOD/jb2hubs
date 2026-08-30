@@ -55,7 +55,19 @@ jobs:
       # reached. A cache miss is safe -- it costs a restarted rotation, not a
       # wrong answer -- so the key is deliberately coarse and the restore-keys
       # accept any previous day's.
-      - uses: actions/cache@640a1c2554105b57832a23eea0b4672fc7a790d5 # v4.2.3
+      #
+      # restore + save, not the combined `actions/cache`, and the save is
+      # `if: always()`. The combined action declares `post-if: success()`, so it
+      # writes nothing when the job fails -- and this job fails precisely when it
+      # finds a 404. One permanent broken reference therefore froze the rotation:
+      # every run restored the same pre-failure snapshot, re-probed the same 300
+      # urls, re-reported the same finding and saved nothing. Three consecutive
+      # nightly runs (2026-08-28 to 08-30) printed byte-identical counts --
+      # `600 answered OK ... 300 to probe ... 4602 deferred` -- while cb1's two
+      # dead urls were the only thing anyone saw. The other 4,602 had gone
+      # unchecked since the day the first finding landed, which is the failure
+      # this canary exists to not have.
+      - uses: actions/cache/restore@640a1c2554105b57832a23eea0b4672fc7a790d5 # v4.2.3
         with:
           path: ucsc2jbrowse/.trackUrlCheck.json
           key: track-url-state-${{ github.run_id }}
@@ -81,6 +93,14 @@ jobs:
           fi
           echo "exit=$?" >>"$GITHUB_OUTPUT"
           cat probe.log
+
+      # Whatever the probe concluded, it spent the requests and the answers are
+      # what advance the rotation. A finding must not cost them.
+      - uses: actions/cache/save@640a1c2554105b57832a23eea0b4672fc7a790d5 # v4.2.3
+        if: always()
+        with:
+          path: ucsc2jbrowse/.trackUrlCheck.json
+          key: track-url-state-${{ github.run_id }}
 
       # A 404 is not weather -- checkTrackUrls.mjs already separates the two, and
       # only counts 404/410 toward the exit code -- so unlike the config canary

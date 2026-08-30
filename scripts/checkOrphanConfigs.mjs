@@ -48,9 +48,6 @@ const { values } = parseArgs({
 const root = path.join(import.meta.dirname, '..')
 const CONFIG_DIRS = ['ucsc2jbrowse/configs', 'ucsc2jbrowse/configs-minimal']
 
-// hgFixed is rsynced deliberately and never appears in the genome list.
-const EXTRA_NAMES = ['hgFixed']
-
 // A truncated genome list would make every config it omits an orphan and fail
 // the deploy over nothing. UCSC lists 238 and this check has no business
 // running on a fraction of that.
@@ -101,7 +98,14 @@ function readGenomeNames() {
 }
 
 const { source, names } = readGenomeNames()
-const expected = new Set([...names, ...EXTRA_NAMES])
+
+// The genome list is the whole of it. `hgFixed` was allowed alongside it,
+// because make.sh's copy step appended it by name: rsynced deliberately, never
+// in the list, and -- being UCSC's shared metadata database rather than a genome
+// -- carrying a config whose 2bit and chrom.sizes 404. Retired on 2026-08-30
+// together with that append, so a config named hgFixed is now an orphan like any
+// other.
+const expected = new Set(names)
 
 const contents = new Map()
 for (const dir of CONFIG_DIRS) {
@@ -122,7 +126,7 @@ for (const dir of CONFIG_DIRS) {
 }
 
 console.log(
-  `genome list: ${path.relative(root, source)} (${names.length} genomes + ${EXTRA_NAMES.join(', ')})`,
+  `genome list: ${path.relative(root, source)} (${names.length} genomes)`,
 )
 
 const orphans = []

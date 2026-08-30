@@ -57,9 +57,17 @@ interface Sidecar {
    * `chromSizes` deliberately has none. Dropping it would move sequence-region
    * derivation onto the 2bit header, and whether TwoBitAdapter accepts its
    * absence back to the v4.0.0 support floor is not something the configs in
-   * this repo demonstrate -- all 237 carry one. The only assemblies whose
-   * chrom.sizes 404s are hgFixed and cb1, which `is_assembly_db` already knows
-   * are not assemblies, so there is nothing to buy here.
+   * this repo demonstrate -- every one of them carries one. The only assembly
+   * whose chrom.sizes 404s is hgFixed, which is UCSC's shared metadata database
+   * rather than a genome and no longer gets a published config at all, so there
+   * is nothing to buy here.
+   *
+   * cb1 was the other one, and it is the reason to be careful about reading
+   * this paragraph as reassurance: for a year it meant "the config is broken
+   * anyway", which was true and was not a defence. A golden-path assembly's
+   * chrom.sizes comes from its own rsynced chromInfo.txt.gz (see the
+   * provideLocal hook), so the fix was to build the assembly, not to drop the
+   * field.
    */
   drop?: () => void
 }

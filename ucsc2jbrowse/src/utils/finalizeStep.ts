@@ -12,8 +12,9 @@ export interface FinalizeContext {
    */
   dbDir: string
   /**
-   * this assembly's list.json entry, absent for a built directory UCSC no
-   * longer lists (hgFixed, renames)
+   * this assembly's list.json entry. The runner only visits names the list
+   * has, so this is present in practice; it stays optional because an index
+   * lookup is.
    */
   genome: UcscGenome | undefined
   /** parsed once per assembly, mutated in place by each step in turn */

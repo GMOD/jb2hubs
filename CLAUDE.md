@@ -331,9 +331,10 @@ it is what the track's About dialog shows.
   explicit: `generateDefaultSessions` precedes `createMinimalConfig` in the
   `STEPS` array in `src/finalizeConfigs.ts`, which documents why.
 
-Three configs are still legitimately empty — `cb1`, `hgFixed`, `enhLutNer1` have
-no annotation to include (the first two are not assemblies at all; `common.sh`'s
-`is_assembly_db` already knows this).
+`enhLutNer1` is legitimately empty — it has no annotation to include. `cb1` and
+`hgFixed` used to be counted beside it as "not assemblies at all", which was
+half wrong and wholly an excuse; see the section on the two configs that named a
+404 sequence.
 
 `renames` used to be counted as a fourth, and was not an assembly at all: it was
 a stray copy of `ucscRenames/hg38.json` (the trackId → new-name map, `"DELETE"`
@@ -368,11 +369,11 @@ first is structural and still worth knowing:
   check's exit 2 separately from its exit 1 for the same reason.
 
   Both walks over `$UCSC_BUILT_DIR` — make.sh's copy step and
-  `src/finalizeConfigs.ts` — also iterate the genome list's own keys plus
-  `hgFixed` rather than whatever directories happen to be there, so a stray
-  `renames` cannot become a config in the first place. As of 2026-08-27 the two
-  directories hold the same 239 names and the built tree no longer has a
-  `renames/` at all.
+  `src/finalizeConfigs.ts` — also iterate the genome list's own keys rather than
+  whatever directories happen to be there, so a stray `renames` cannot become a
+  config in the first place. `hgFixed` was appended to both until 2026-08-30
+  (below); the two directories now hold the genome list's 238 names and nothing
+  else, and the built tree no longer has a `renames/` at all.
 
 - **`mergeAll` deduped plugins on whole-object identity**, so the same plugin
   under two urls was two entries. `all.json` was asking PluginLoader to install
@@ -617,12 +618,12 @@ sidecar whose fetch failed is deliberately left upstream and retried next run �
 making that fatal everywhere would turn one blip into a blocked deploy.
 
 As of 2026-08-05 all 235 real UCSC assemblies are fully mirrored; the only
-upstream `chromSizes` are `cb1` and `hgFixed`, which are not assemblies and
-whose files 404 anyway. For hg19/hg38 specifically, all three sidecars are
-served from our bucket and verified live, so `loadPre()` touches only
-jbrowse.org — a UCSC outage costs the sequence track (the 2bit is still theirs,
-too big to mirror) and the individual tracks that name hgdownload, but the
-assembly still opens.
+upstream `chromSizes` were `cb1` and `hgFixed`, both of which 404 — dismissed at
+the time as "not assemblies", which is exactly the reasoning the section below
+takes apart. For hg19/hg38 specifically, all three sidecars are served from our
+bucket and verified live, so `loadPre()` touches only jbrowse.org — a UCSC
+outage costs the sequence track (the 2bit is still theirs, too big to mirror)
+and the individual tracks that name hgdownload, but the assembly still opens.
 
 Two things that will bite a change here:
 
@@ -753,8 +754,8 @@ only failures reach it, so it adds no load in the normal case.
 
 ### What the gate caught once it could run
 
-Three broken references across the 239 UCSC configs, all invisible to every
-other layer and each a different shape:
+Three broken references across the UCSC configs, all invisible to every other
+layer and each a different shape:
 
 - **`criGriChoV1-xenoRefGene` named a `.csi` that was never written.** The 80MB
   `xenoRefGene.gff.gz` was fine; `tabix -C` had refused it with
@@ -795,13 +796,105 @@ other layer and each a different shape:
   residue of a shell loop that ran with nullglob off over a directory with
   nothing to match. `createConfigsForGoldenPath.sh` grew its `shopt -s nullglob`
   long ago, but **a fix at the source only reaches a config that is
-  regenerated**, and these two are the repo's only non-assemblies —
-  `is_assembly_db` excludes them from every derivation pass, so their `tracks[]`
-  was frozen from 2025-05-13 and no amount of rebuilding would have cleared it.
-  Finalization is the one pass that does visit them, so `dropGlobTracks` (first
-  in `finalizeConfigs.ts`'s `STEPS`, ahead of everything that reads `tracks[]`)
-  is both the cleanup and the standing guard: a glob character in a location is
-  never a key our bucket has.
+  regenerated**, and neither of these two ever was — `is_assembly_db` excluded
+  both from every derivation pass, so their `tracks[]` was frozen from
+  2025-05-13 and no amount of rebuilding would have cleared it. Finalization is
+  the one pass that did visit them, so `dropGlobTracks` (first in
+  `finalizeConfigs.ts`'s `STEPS`, ahead of everything that reads `tracks[]`) is
+  both the cleanup and the standing guard: a glob character in a location is
+  never a key our bucket has. Both exclusions are gone now (below), which
+  retires the cleanup and not the guard — the next forgotten nullglob would ship
+  through an ordinary regeneration.
+
+### "Not a real assembly" was excusing a url we publish
+
+The canary's next two findings were `cb1`'s 2bit and `chrom.sizes`, both 404,
+reported nightly from 2026-08-28. Three earlier places in this file had already
+written that pair off — "the only assemblies whose `chrom.sizes` 404s are
+`hgFixed` and `cb1`, which `is_assembly_db` already knows are not assemblies" —
+and the dismissal was the bug.
+
+**`cb1` is an assembly.** It is an active entry in the live UCSC genome list
+(nib-era C. briggsae, July 2002, one 108Mb `chrUn`), with a browser, a trackDb
+and a 2bit at `/gbdb/cb1/cb1.2bit` — the same `/gbdb` shape
+`resolveSequenceFile` already finds for rn3. It had been skipped since the
+pipeline's first commit (`downloadGoldenpath.sh`, `if [ "$p" = "cb1" ]`) with no
+reason recorded then or since. Skipping it never stopped us **publishing** it:
+the copy step takes the genome list's own keys, `transformGenomeList.ts` stamps
+a `jbrowseConfig` url on every entry unconditionally, and
+`website/src/list.json` is what the `/ucsc` table renders — so
+`genomes.jbrowse.org/ucsc/cb1` was an advertised browser naming a `bigZips` 2bit
+and `chrom.sizes` that have never existed. `loadPre()` rejects on either, so it
+did not open at all, for a year.
+
+**`hgFixed` is not**, and that is why its config is gone rather than fixed: it
+is UCSC's shared metadata database (make.sh rsyncs it for `asmEquivalent`, which
+is all it is for), it has no sequence, and it was only in `configs/` because the
+copy step appended it by name. Nothing has ever linked to it — every page and
+the hubs plugin resolve a genome through the list it is absent from — so this is
+a retirement with no reader to strand, unlike the permanent urls
+`check-orphan-configs` deliberately refuses to clean up on its own. The
+"genome-list keys plus `hgFixed`" rule is now just "genome-list keys", in all
+three walks that carried it (make.sh's copy step, `stageConfigs.sh`,
+`finalizeConfigs.ts`), and `checkOrphanConfigs.mjs`'s `EXTRA_NAMES` allowance is
+gone with them.
+
+So `cb1` builds like any other golden-path assembly, and nothing about that is
+special-cased: `createAssembly.ts` probes `bigZips` and falls back to `/gbdb`,
+and `mirrorAssemblySidecars`'s `provideLocal` hook derives `chrom.sizes` from
+the rsynced `chromInfo.txt.gz`, so both 404s go away for the ordinary reason.
+Its first `make.sh` sees no `.trackdb_hash` and processes it whole.
+
+Two things the source change alone does not do, both on the build box.
+`configs/cb1.json` is only correct once it is **regenerated** — the committed
+config still names the dead urls until a run copies the rebuilt one over it, and
+the canary reads `ucsc2jbrowse/configs/`, not the source. And
+`$UCSC_BUILT_DIR/hgFixed/` still holds the config nothing copies any more;
+deleting that directory is what makes the next `uploadAll.sh` drop
+`/ucsc/hgFixed/` from the bucket, and until then a
+`check-track-urls --built-dir` run still sees its two 404s.
+
+The generalizable half is the shape of the excuse. "It is not a real assembly"
+was a claim about **our processing**; what it was excusing was a claim about **a
+url we publish**. Those are different questions, and nothing in the pipeline
+asks the second one — which is why a config that could not open survived every
+gate here until a daily 404 report said so out loud.
+
+### A canary that fails on a permanent finding stops rotating
+
+The same issue was the only thing anyone had seen for three nights, and that was
+the second bug. `checkTrackUrls.mjs` is budgeted — 300 urls a run, oldest-first,
+the rest of the ~5,500 rotating behind them over ~3 weeks — and the rotation
+lives entirely in the `ucsc2jbrowse/.trackUrlCheck.json` that
+`track-url-canary.yml` carries in the actions cache.
+
+`actions/cache` declares **`post-if: success()`**. This job fails on purpose
+whenever it finds a 404. So from the first permanent finding onward the state
+file was never saved: every run restored the same pre-failure snapshot,
+re-probed the same first 300 urls, re-reported the same finding, and saved
+nothing. Three consecutive nightly comments carried byte-identical counts —
+`600 answered OK … 300 to probe … 4602 deferred` — which is what the frozen
+rotation looks like if you happen to compare two of them. The other 4,602
+references had gone unchecked since the day the first finding landed.
+
+It is now `actions/cache/restore` plus `actions/cache/save` with `if: always()`.
+Whatever the probe concluded, it spent the requests and the answers are what
+advance the rotation; a finding must not cost them. Worth checking in any
+workflow that pairs a cache with a deliberately failing step — the failure mode
+is silent in exactly the way the cached thing was supposed to prevent.
+
+Unfreezing the rotation exposes the bug the freeze was hiding, which is why the
+two go together. The exit code opens **and closes** the canary's issue, and it
+can only speak for the urls that run probed — the script says so itself ("no
+findings means none among the 300 probed"). So once the rotation moves past a
+known-broken url, the next night finds nothing among its own 300, exits 0, and
+the workflow closes the issue with "every probed reference resolves again" while
+the config still names a 404. `checkTrackUrls.mjs` therefore **carries every url
+last seen `gone` outside the budget**, re-probing it every run: re-confirming a
+404 is two requests, and the size of that set is how many broken references we
+have not fixed yet, which is a number we control. Verified by hand on 2026-08-30
+against cb1's two: with `--budget 5` they are re-checked and reported, and the
+run still fails.
 
 ### Whether the file is complete is a different question from whether it exists
 
@@ -891,7 +984,7 @@ hang lives in the hosted jbrowse-web build and in
 older hosts our permanent config urls still serve. So this warns one step
 earlier, on the page the reader launches from. Treat it as a consolation prize,
 not the cure — the cure is a fetch deadline in core or in the Hubs plugin, which
-every one of the 239 UCSC configs loads.
+every one of the UCSC configs loads.
 
 **It measures a difference, not a timeout.** A dropped wifi link times out
 against hgdownload exactly as a stalled hgdownload does, and so does a tracking

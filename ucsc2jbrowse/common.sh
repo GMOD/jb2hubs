@@ -32,13 +32,24 @@ is_skipped_track() {
 }
 export -f is_skipped_track
 
-# Directories under UCSC_DOWNLOADS_DIR that are not real assemblies: hgFixed is
-# a shared metadata database, cb1 is a retired assembly UCSC still lists. Single
-# source of truth for both the download loop and every "process all assemblies"
-# pass, which previously each spelled the exclusion out themselves.
+# hgFixed is the one directory under UCSC_DOWNLOADS_DIR that is not an assembly:
+# it is UCSC's shared metadata database (asmEquivalent and friends), rsynced
+# deliberately by make.sh and absent from the genome list. Single source of truth
+# for both the download loop and every "process all assemblies" pass, which
+# previously each spelled the exclusion out themselves.
+#
+# cb1 was excluded here too, from the pipeline's first commit and with no reason
+# ever recorded, and that was simply wrong: it is an active entry in UCSC's
+# genome list (nib-era, one 108Mb chrUn) with a browser, a trackDb and a 2bit.
+# Excluding it did not stop us publishing a config for it -- the copy step takes
+# the genome list's own keys -- it only stopped that config ever being
+# regenerated or given data. What shipped was an advertised browser naming a
+# bigZips 2bit and chrom.sizes that have never existed, so loadPre() rejected and
+# genomes.jbrowse.org/ucsc/cb1 could not open at all. The track-url canary is
+# what finally said so, daily, from 2026-08-28.
 is_assembly_db() {
   case "$1" in
-  hgFixed | cb1) return 1 ;;
+  hgFixed) return 1 ;;
   *) return 0 ;;
   esac
 }
@@ -47,7 +58,7 @@ export -f is_assembly_db
 # Lists the download directory of every real assembly, sorted.
 list_assembly_dirs() {
   find "$UCSC_DOWNLOADS_DIR" -mindepth 1 -maxdepth 1 -type d \
-    ! -name hgFixed ! -name cb1 | sort
+    ! -name hgFixed | sort
 }
 export -f list_assembly_dirs
 

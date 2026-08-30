@@ -115,7 +115,7 @@ const CONFIGS = {
   merge: {
     url: 'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge?hubIds=GCF_000001405.40',
   },
-  // mergeAll's output: 239 assemblies, ~11k tracks and the one plugin list that
+  // mergeAll's output: 238 assemblies, ~11k tracks and the one plugin list that
   // is a union rather than a copy. That list is why it is worth booting at all
   // -- plugins[].url is the only field that can kill a whole session, and
   // mergeAll used to emit the same four plugins three times over under

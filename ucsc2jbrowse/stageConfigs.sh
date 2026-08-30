@@ -77,12 +77,13 @@ if [ $# -gt 0 ]; then
   run_for_assemblies process_assembly "$@"
 else
   # The same rule make.sh's copy step and src/finalizeConfigs.ts already use:
-  # names the current UCSC genome list recognizes, plus hgFixed, which is
-  # rsynced deliberately and never appears in it. UCSC_BUILT_DIR holds more than
-  # assemblies -- a bare `$UCSC_BUILT_DIR/*` hands over the top-level `trix`
-  # directory, which is where "config.json not found for trix" came from, and it
-  # is the same unfiltered walk that once processed a stray `renames` directory
-  # into a published config. Three walks over this tree, one rule.
+  # names the current UCSC genome list recognizes, and nothing else.
+  # UCSC_BUILT_DIR holds more than assemblies -- a bare `$UCSC_BUILT_DIR/*`
+  # hands over the top-level `trix` directory, which is where "config.json not
+  # found for trix" came from, and it is the same unfiltered walk that once
+  # processed a stray `renames` directory into a published config. Three walks
+  # over this tree, one rule. (hgFixed was the exception all three carried until
+  # 2026-08-30; make.sh's copy step says why it no longer is.)
   if [ ! -f "$UCSC_BUILT_DIR/list.json" ]; then
     echo "ERROR: $UCSC_BUILT_DIR/list.json is missing; run make.sh first" >&2
     exit 1
@@ -92,10 +93,7 @@ else
     if [ -f "$UCSC_BUILT_DIR/$name/config.json" ]; then
       staged_dirs+=("$UCSC_BUILT_DIR/$name")
     fi
-  done < <(
-    jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json"
-    echo hgFixed
-  )
+  done < <(jq -r '.ucscGenomes | keys[]' "$UCSC_BUILT_DIR/list.json")
   run_for_assemblies process_assembly "${staged_dirs[@]}"
 fi
 

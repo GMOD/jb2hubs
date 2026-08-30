@@ -157,7 +157,9 @@ this repo demonstrates TwoBitAdapter accepts its absence back to the v4.0.0
 floor (all 237 configs carry one). The only two assemblies whose `chrom.sizes`
 404s are `hgFixed` and `cb1`, which `is_assembly_db` already excludes — and
 `cb1`'s **2bit** 404s as well, so its config is dead at the sequence adapter
-where no sidecar decision reaches.
+where no sidecar decision reaches. (That last sentence stood for a year and
+should have read as an alarm rather than an exemption — see the second
+amendment.)
 
 ### The guard this needed
 
@@ -226,3 +228,36 @@ Cheaper options than the sweep, roughly in order of appeal:
   alias lookups for outage-independence at roughly 1/4 the bytes.
 - Serve the sidecars through a CloudFront origin that proxies hgdownload, so
   nothing is stored and the cache absorbs the outage.
+
+## Amendment, 2026-08-30 — "not an assembly" was doing the excusing
+
+The paragraph above dismisses `cb1` and `hgFixed` as the only assemblies whose
+`chrom.sizes` 404s, on the grounds that `is_assembly_db` excludes them. Half of
+that was wrong, and the half that was right was still describing a published
+config that could not open.
+
+`cb1` is an **active entry in UCSC's genome list** — nib-era C. briggsae, one
+108Mb `chrUn`, with a browser, a trackDb and a 2bit at `/gbdb/cb1/cb1.2bit`. It
+had been skipped since the pipeline's first commit with no reason recorded
+anywhere. Skipping it never stopped us publishing a config for it: the copy step
+takes the genome list's own keys, so `genomes.jbrowse.org/ucsc/cb1` was
+advertised on the UCSC table page the whole time, naming a `bigZips` 2bit and
+`chrom.sizes` that have never existed. `loadPre()` rejects on either, so the
+assembly did not open at all.
+
+`hgFixed` genuinely is not a genome — it is UCSC's shared metadata database,
+rsynced for `asmEquivalent` — and it was only in `configs/` because make.sh's
+copy step appended it by name. Nothing links to it, since every page and the
+hubs plugin resolve a genome through the list it is absent from.
+
+So: `cb1` is built like any other assembly (its `chrom.sizes` now comes from its
+own rsynced `chromInfo.txt.gz` through the `provideLocal` hook, and
+`resolveSequenceFile` finds the `/gbdb` 2bit the same way it does rn3's), and
+`hgFixed` no longer gets a config. `chromSizes` still has no `drop`, and now has
+no counterexample either.
+
+The general lesson is about the shape of the excuse, not about these two names.
+"It is not a real assembly" was a claim about our processing, and the thing it
+was excusing was a claim about a url we publish. Those are different questions,
+and the track-url canary is the only layer that asks the second one — which is
+why it took a daily 404 report to notice.

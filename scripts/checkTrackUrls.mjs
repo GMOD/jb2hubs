@@ -352,7 +352,24 @@ for (const url of byUrl.keys()) {
 // Never-checked (at: 0) first, then the longest unchecked. A config generated
 // today is probed on the next run rather than whenever its turn comes round.
 stale.sort((a, b) => a.at - b.at)
-const queue = stale.slice(0, BUDGET === Infinity ? stale.length : BUDGET)
+
+// A url last seen GONE is carried outside the budget, because the exit code is
+// what opens and closes the canary's issue and it can only speak for the urls
+// this run actually probed. Left in the ordinary rotation, a known-broken
+// reference is re-probed once every few weeks; on every night in between the run
+// finds nothing among its 300, exits 0, and the workflow closes the issue with
+// "every probed reference resolves again" while the config still names a 404.
+// Re-confirming a 404 is two requests and the set is meant to be empty, so its
+// cost is proportional to how long a real finding goes unfixed.
+const carried = stale.filter(entry => state.urls[entry.url]?.verdict === 'gone')
+const rotating = stale.filter(
+  entry => state.urls[entry.url]?.verdict !== 'gone',
+)
+const probing =
+  BUDGET === 0
+    ? []
+    : rotating.slice(0, BUDGET === Infinity ? rotating.length : BUDGET)
+const queue = BUDGET === 0 ? [] : [...carried, ...probing]
 const deferred = stale.length - queue.length
 
 const GONE = new Set([404, 410])
@@ -429,6 +446,9 @@ if (values.offline) {
   console.log(
     `${fresh.length} answered OK within ${TTL_DAYS}d and are skipped; ` +
       `${queue.length} to probe at ${RPS}/s` +
+      (carried.length > 0
+        ? ` (${carried.length} re-checked outside the budget: last seen gone)`
+        : '') +
       (deferred > 0 ? `; ${deferred} deferred by --budget ${BUDGET}` : ''),
   )
 }

@@ -58,12 +58,15 @@ if (!fs.existsSync(builtDir)) {
 }
 
 // Kept in sync with `is_assembly_db` in ucsc2jbrowse/common.sh, the source of
-// truth every "process all assemblies" pass already uses. hgFixed is a shared
-// metadata database; cb1 is a retired assembly UCSC still lists, whose 2bit
-// 404s along with its chrom.sizes -- so its config is dead at the sequence
-// adapter, which no sidecar decision can fix. Skipped rather than allowlisted
-// silently: they are reported below.
-const NOT_ASSEMBLIES = new Set(['hgFixed', 'cb1'])
+// truth every "process all assemblies" pass already uses. hgFixed is UCSC's
+// shared metadata database, rsynced deliberately and absent from the genome
+// list. Skipped rather than allowlisted silently: it is reported below.
+//
+// cb1 was in this set until 2026-08-30, described as retired. It is not: it is
+// an active nib-era assembly, and being excluded is precisely why its published
+// config named a 2bit and a chrom.sizes that have never existed. It is built
+// like any other assembly now, so it is checked like one.
+const NOT_ASSEMBLIES = new Set(['hgFixed'])
 
 const isRemote = value =>
   value.startsWith('http://') || value.startsWith('https://')
