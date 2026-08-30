@@ -33,6 +33,19 @@ how `no-console` is handled — off for the CLI/build-script trees
 (`genark2jbrowse/src`, `ucsc2jbrowse/src`, `website/generate*.ts`, `scripts/`),
 where stdout _is_ the output, and on everywhere else.
 
+There is one file-scoped override, `react/set-state-in-effect` off for
+`website/src/components/OrthologSearch.tsx`, and it is the exception that should
+stay rare. That component seeds four pieces of state from `location.search` on
+mount, in a `client:load` island — the hydration case the rule's own help text
+sanctions ("use an effect only when synchronizing with an external system"), and
+a lazy `useState` initializer would read the real URL during hydration and
+mismatch the server HTML. The five sibling violations the oxlint 1.80 bump
+surfaced were all fixable and were fixed: three were the same reset-on-change
+effect and now share `useResetOnChange`, `ProteinBrowser` derives what it was
+clearing, and `useUrlState` is a `useSyncExternalStore` over the URL, which is
+what the rule was pointing at all along. Reach for the override only after
+finding that the effect really is the synchronization it looks like.
+
 One thing `.oxfmtrc.json` must keep ignoring: `**/.*-uploaded.json`, the
 `upload_if_changed` stamps (currently just
 `genark2jbrowse/.categories-uploaded.json`). A stamp is a **byte-exact** copy of
@@ -1049,6 +1062,18 @@ against `BGZIP_TOOLCHAIN_SIGNATURE`. Three things about it are load-bearing:
   is precisely the shape a warning gets scrolled past. `ALLOW_BGZIP_DRIFT=1`
   accepts a deliberate change, which means committing the new signature and
   accepting that every derived `.gz` and `.csi` gets rewritten and re-sent.
+
+The **guard** asserts the host; the **test** asserts the mechanism, and mixing
+those up cost three test suites. `lib/common.test.sh` used to fail unless the
+machine running it matched the pin — which no CI runner can, having no bgzip at
+all — and because the workflow step was a plain list under `bash -e`, that took
+`lib/chainpif.test.sh` and `genark2jbrowse/addNcbiGffAndTextIndex.test.sh` down
+with it, so neither had ever run in CI. The suite now checks determinism, canary
+size, rejection of a different build and the override, and _reports_ the host's
+own match unless `BGZIP_STRICT=1` (worth setting on the build box). Nothing is
+lost: the protection was never the test, it is `assert_bgzip_toolchain` being
+fatal in both `make.sh` files before any derivation. The step also runs every
+suite and fails afterwards, because one red suite must not hide the others.
 
 Worth knowing if it ever fires: libdeflate levels are **not** comparable across
 htslib versions, so no `-l` makes 1.23.1 reproduce 1.13 (l5→243,497, l6→242,051,
