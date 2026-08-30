@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { rankOptions } from '../utils/rankOptions.ts'
 
 export interface AutocompleteOption {
@@ -48,7 +49,10 @@ export default function Autocomplete({
   const listboxId = `${id ?? 'autocomplete'}-listbox`
   const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [highlightedIndex, setHighlightedIndex] = useState(0)
+  const [highlightedIndex, setHighlightedIndex] = useResetOnChange(
+    inputValue,
+    0,
+  )
   const [asyncResults, setAsyncResults] = useState<AutocompleteOption[]>([])
   // Remembers the picked option so async mode can label the input without the
   // selection necessarily being in the latest query results.
@@ -98,10 +102,6 @@ export default function Autocomplete({
       }
     }
   }, [])
-
-  useEffect(() => {
-    setHighlightedIndex(0)
-  }, [inputValue])
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

@@ -73,12 +73,25 @@ jobs:
       - name: Install shell test dependencies
         run: sudo apt-get update && sudo apt-get install -y xxhash pigz parallel
 
-      # ucsc2jbrowse/common.test.sh was written but never wired in, so the gates
-      # it pins -- is_assembly_db, prune_stray_configs' refusals -- were only
-      # ever checked by whoever ran it by hand.
+      # Every suite runs, and the step fails afterwards if any did. A plain list
+      # under `bash -e` stops at the first failure, and lib/common.test.sh had
+      # been failing since it started asserting that this host's bgzip matches
+      # BGZIP_TOOLCHAIN_SIGNATURE -- a runner with no bgzip at all cannot -- so
+      # the two suites after it had never run in CI. One red suite must not hide
+      # the others.
+      #
+      # ucsc2jbrowse/common.test.sh is new to this list for a duller reason: it
+      # was written and never wired in, so the gates it pins (is_assembly_db,
+      # prune_stray_configs' refusals) were only ever checked by hand.
       - name: Shell tests
         run: |
-          ./lib/common.test.sh
-          ./lib/chainpif.test.sh
-          ./ucsc2jbrowse/common.test.sh
-          ./genark2jbrowse/addNcbiGffAndTextIndex.test.sh
+          status=0
+          for suite in \
+            ./lib/common.test.sh \
+            ./lib/chainpif.test.sh \
+            ./ucsc2jbrowse/common.test.sh \
+            ./genark2jbrowse/addNcbiGffAndTextIndex.test.sh; do
+            echo "==> $suite"
+            "$suite" || status=1
+          done
+          exit $status

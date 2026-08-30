@@ -304,7 +304,7 @@ function GeneCombobox({
   onChange: (v: string) => void
   onSubmit: (v: string) => void
 }) {
-  const [hits, setHits] = useState<string[]>([])
+  const [fetchedHits, setFetchedHits] = useState<string[]>([])
   const [open, setOpen] = useState(false)
   const [highlighted, setHighlighted] = useState(-1)
   // what the user typed, as opposed to a symbol put in the box by a chip or a
@@ -312,11 +312,17 @@ function GeneCombobox({
   const [typed, setTyped] = useState('')
   const boxRef = useRef<HTMLDivElement>(null)
 
+  // A query too short to look up has no suggestions, which is a fact about
+  // `typed` rather than a state to clear: derived here so the effect does the
+  // one thing it is for, which is fetching. The 220ms after the box climbs back
+  // past two characters shows the previous query's hits, which is the staleness
+  // the debounce already has everywhere else.
+  const hits = typed.trim().length < 2 ? [] : fetchedHits
+
   // Debounced and race-safe: the cleanup drops a slow earlier response so it
   // cannot land on top of a newer one.
   useEffect(() => {
     if (typed.trim().length < 2) {
-      setHits([])
       return
     }
     let ignore = false
@@ -324,7 +330,7 @@ function GeneCombobox({
       void searchGenes(typed.trim(), taxId).then(found => {
         // set even when empty, so a no-match query clears stale suggestions
         if (!ignore) {
-          setHits(found.map(h => h.symbol))
+          setFetchedHits(found.map(h => h.symbol))
           setHighlighted(-1)
         }
       })

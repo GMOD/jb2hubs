@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Search, X } from 'lucide-react'
 
@@ -7,6 +7,7 @@ import {
   jbrowseUrl,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
+import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import { useTaxonomyFilter } from '../hooks/useTaxonomyFilter.ts'
@@ -48,13 +49,12 @@ export default function SearchPage() {
   const [query, setQuery] = useUrlState('q', '')
   const [clade, setClade] = useUrlState('clade', '')
   const [curatedOnly, setCuratedOnly] = useUrlState('curated', '')
-  const [page, setPage] = useState(0)
+  const [page, setPage] = useResetOnChange(
+    `${query}\u0000${clade}\u0000${curatedOnly}`,
+    0,
+  )
   const [pageSize, setPageSize] = useState(100)
   const highlightRef = useSearchHighlight(query)
-
-  useEffect(() => {
-    setPage(0)
-  }, [query, clade, curatedOnly])
 
   const trimmedQuery = query.trim()
 

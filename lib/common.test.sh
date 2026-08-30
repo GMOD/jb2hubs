@@ -535,21 +535,55 @@ unset -f write_joblog job_row
 # that motivated it was htslib 1.23.1 rebuilt against libz instead of libdeflate,
 # where the version was identical before and after. So the test that matters is
 # that a different backend at the same version is rejected.
-check "signature is deterministic across runs" \
-  "$(bgzip_toolchain_signature)" "$(bgzip_toolchain_signature)"
+#
+# What this file can assert is the MECHANISM -- deterministic, big enough to
+# tell builds apart, rejects a different build, honours the override. Whether
+# *this* host's bgzip matches the pin is a fact about the host, not about the
+# code, and the enforcement for that is assert_bgzip_toolchain being fatal in
+# both make.sh files before any derivation runs. Asserting it here instead made
+# the suite unrunnable anywhere but the build box: CI has no bgzip at all, so
+# `bgzip: command not found` failed this file, and because the workflow step
+# runs under `bash -e` that took lib/chainpif.test.sh and
+# genark2jbrowse/addNcbiGffAndTextIndex.test.sh down with it -- three suites
+# that had therefore never run in CI. Reported, not failed, unless
+# BGZIP_STRICT=1 asks for the build box's question.
+#
+if command -v bgzip >/dev/null 2>&1; then
+  check "signature is deterministic across runs" \
+    "$(bgzip_toolchain_signature)" "$(bgzip_toolchain_signature)"
 
-if assert_bgzip_toolchain 2>/dev/null; then
-  echo "ok   - current bgzip matches the pinned signature"
+  if assert_bgzip_toolchain 2>/dev/null; then
+    echo "ok   - current bgzip matches the pinned signature"
+  elif [ -n "${BGZIP_STRICT:-}" ]; then
+    echo "FAIL - current bgzip does not match BGZIP_TOOLCHAIN_SIGNATURE"
+    echo "       (if the toolchain changed deliberately, re-pin it; see lib/common.sh)"
+    fail=1
+  else
+    echo "note - this host's bgzip does not match BGZIP_TOOLCHAIN_SIGNATURE, so"
+    echo "       make.sh would refuse to derive here. That is the guard working."
+    echo "       Set BGZIP_STRICT=1 to make it a failure (do so on the build box)."
+  fi
 else
-  echo "FAIL - current bgzip does not match BGZIP_TOOLCHAIN_SIGNATURE"
-  echo "       (if the toolchain changed deliberately, re-pin it; see lib/common.sh)"
-  fail=1
+  # An absent bgzip is a fact about the runner, but assert_bgzip_toolchain must
+  # still say so rather than reporting a hash of nothing as a toolchain change.
+  bgzip_msg=$(assert_bgzip_toolchain 2>&1 || true)
+  case "$bgzip_msg" in
+  *"not on PATH"*)
+    echo "ok   - a missing bgzip is named as such, not as a signature mismatch"
+    ;;
+  *)
+    echo "FAIL - a missing bgzip was not reported as a missing bgzip"
+    echo "       (got '$bgzip_msg')"
+    fail=1
+    ;;
+  esac
+  echo "skip - pinned-signature match (no bgzip on this host)"
 fi
 
 # A canary that only exercises trivially-compressible input hashes the same
 # under htslib 1.13 and 1.23.1, both of which link libdeflate but disagree on
 # real data. Assert the input is big enough to tell builds apart at all.
-bg_bytes=$(bgzip_canary_input | wc -c)
+bg_bytes=$(bgzip_canary_input | wc -c | tr -d ' ')
 if [ "$bg_bytes" -gt 1000000 ]; then
   echo "ok   - canary input is large enough to expose level mapping ($bg_bytes bytes)"
 else

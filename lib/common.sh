@@ -431,6 +431,13 @@ assert_bgzip_toolchain() {
     echo "WARNING: ALLOW_BGZIP_DRIFT set; skipping bgzip toolchain check" >&2
     return 0
   fi
+  # Named separately from a mismatch: with no bgzip the signature is the md5 of
+  # an empty stream, which is a real hash of nothing and reads as "a different
+  # htslib is first on PATH" -- the one diagnosis that cannot be right.
+  if ! command -v bgzip >/dev/null 2>&1; then
+    echo "ERROR: bgzip is not on PATH; nothing here can be derived without it." >&2
+    return 1
+  fi
   local actual
   actual=$(bgzip_toolchain_signature)
   if [ "$actual" != "$BGZIP_TOOLCHAIN_SIGNATURE" ]; then

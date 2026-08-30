@@ -1,10 +1,11 @@
 import '../styles/common-table.css'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Search } from 'lucide-react'
 import useSWRImmutable from 'swr/immutable'
 
+import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { paginate } from '../utils/paginate.ts'
@@ -41,7 +42,6 @@ export default function DataTable({
   accessions,
   totalRows,
 }: TableProps) {
-  const [pageIndex, setPageIndex] = useState(0)
   const [pageSize, setPageSize] = useState(200)
 
   const { data: allRows } = useSWRImmutable(dataUrls, () => loadRows(dataUrls))
@@ -74,9 +74,10 @@ export default function DataTable({
   const { columns } = useTableColumns({ showAllColumns })
   const highlightRef = useSearchHighlight(searchQuery)
 
-  useEffect(() => {
-    setPageIndex(0)
-  }, [searchQuery, filterOption])
+  const [pageIndex, setPageIndex] = useResetOnChange(
+    `${searchQuery}\u0000${filterOption}`,
+    0,
+  )
 
   const sortedRows = useMemo(() => {
     const col = columns.find(c => c.id === sortId)
