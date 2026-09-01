@@ -389,6 +389,35 @@ order indexed a freshly generated config before enhance had put the policy on it
 otherwise. The CLI rewrites `config.json` in its own layout; `formatConfigs.ts`
 puts those back.
 
+## `hubs/` stays in git, and nothing depends on its history
+
+The 52,720 GenArk configs (260k tracked files, 1.5 GB at HEAD) are committed
+on purpose: `git diff` after a run is the one place that shows _what_ changed in
+which hub, and it is what a converter change is checked against before it is
+shipped. Measured 2026-09-01, git is not the cost it looks like — `git status`
+1.4 s, `git diff --stat hubs/` 4.8 s — and what grew the repo to 1.2 GB on
+GitHub was not the per-run traffic (1 to 100 hubs) but corpus-wide rewrites,
+four of which in late August were the formatter reflowing what the pipeline
+wrote. The one-pass builder writes oxfmt's format directly, so those are gone.
+
+What made the history precious was one date: the recently-updated page needed
+to know when each hub first appeared, and the only record was the commit that
+added its config, so `generateRecentlyUpdated.ts` walked `git log -- hubs/`
+(1.2M lines) and run.sh had to commit `hubs/` before the website build could
+run. **`genark2jbrowse/hubFirstSeen.json`** is that record now: accession to
+the ISO time of the run that first built its config, seeded once from the git
+log on 2026-09-01, appended to by `buildConfigsBatch.ts` for any accession it
+lacks (never under `--out-root`), and committed beside `hubs/` by run.sh. It is
+written with `formatJson` like the configs, so an ordinary run adds one line
+per new hub and reflows nothing.
+
+That leaves the history with no reader. Squashing it, or moving `hubs/` and
+`ucsc2jbrowse/configs/` into a sibling data repo when the size does become a
+problem, costs nothing the website or the pipeline reads. A manifest of hashes
+instead of the files was considered and rejected: it says which hubs changed
+and not what changed in them, and the second half is the one that catches a
+converter regression.
+
 ## What belongs in `configs-minimal/`
 
 `minimal.json` is a second, small config published beside every UCSC
@@ -1395,7 +1424,7 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   `IndexEntry = [accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus]`
   (ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both)
 - `src/recentlyUpdated.json` — build-time generated data for recently-updated
-  page
+  page, from `genark2jbrowse/hubFirstSeen.json` (below)
 
 ## UCSC hubs vs GenArk aliases (two-flavor configs)
 

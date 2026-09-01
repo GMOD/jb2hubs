@@ -15,6 +15,7 @@ import { formatJson, linkOrCopy, readJSON } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
 import { buildHubConfig } from './buildConfig.ts'
+import { hubFirstSeenPath } from './hubFirstSeen.ts'
 
 import type { JBrowseConfig } from 'hubtools'
 
@@ -48,6 +49,17 @@ try {
 } catch {
   console.error('Warning: could not load processedHubJson/all.json')
 }
+
+// When each accession's config was first built, which is the only record of
+// when we picked a hub up (no upstream metadata carries it). It used to be
+// recovered from the git history of hubs/, which is what made that history
+// unsquashable. Read once, extended below for every accession it lacks, and
+// written back at the end.
+const firstSeen = new Map(
+  Object.entries(readJSON<Record<string, string>>(hubFirstSeenPath)),
+)
+const runStartedAt = new Date().toISOString()
+let firstSeenAdded = 0
 
 const ucscDisplayNames = new Map<string, string>()
 function ucscDisplayName(db: string) {
@@ -157,6 +169,10 @@ function processOne(metaPath: string) {
     fs.mkdirSync(path.dirname(configPath), { recursive: true })
     fs.writeFileSync(configPath, text)
   }
+  if (!outRoot && !firstSeen.has(accession)) {
+    firstSeen.set(accession, runStartedAt)
+    firstSeenAdded++
+  }
 
   if (gffFile && gffPath && !outRoot) {
     // The hub's copy of the GFF is a hard link to bgz/, not a third copy.
@@ -190,6 +206,16 @@ for await (const line of rl) {
     }
   }
 }
+if (firstSeenAdded > 0) {
+  fs.writeFileSync(
+    hubFirstSeenPath,
+    formatJson(
+      Object.fromEntries(
+        [...firstSeen].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+      ),
+    ),
+  )
+}
 console.error(
-  `Built ${processed} configs: ${written} written, ${processed - written - failed} unchanged, ${failed} failed`,
+  `Built ${processed} configs: ${written} written, ${processed - written - failed} unchanged, ${failed} failed, ${firstSeenAdded} first seen`,
 )

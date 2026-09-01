@@ -1,9 +1,8 @@
 // Builds src/recentlyUpdated.json — when each GenArk hub first appeared, joined
 // to the name and category the processed listing gives it. The date is in no
-// upstream metadata: it comes from the git history of hubs/ in this repo, which
-// is the only record of when we picked a hub up.
+// upstream metadata: genark2jbrowse/hubFirstSeen.json records the run that
+// first built each hub's config.
 
-import { execSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -12,7 +11,10 @@ import type { HubRecord } from './src/lib/recentlyUpdated.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const REPO_ROOT = path.join(__dirname, '..')
+const FIRST_SEEN_PATH = path.join(
+  __dirname,
+  '../genark2jbrowse/hubFirstSeen.json',
+)
 const ALL_HUBS_PATH = path.join(__dirname, 'processedHubJson/all.json')
 const OUTPUT_FILE = path.join(__dirname, 'src/recentlyUpdated.json')
 
@@ -24,47 +26,16 @@ interface HubMetadata {
   source: string
 }
 
-// "hubs/GCF/022/846/515/GCF_022846515.1/config.json" -> "GCF_022846515.1"
-const accessionRegex = /GC[AF]_\d+\.\d+/
-
-// When each hub first appeared, from one pass over the git history of hubs/.
-// `--name-only --diff-filter=ACMR` prints the touched paths under each commit,
-// and log order is newest-first, so the LAST commit naming a hub is the one that
-// added it — hence the unconditional set.
-function getHubCreationDates() {
-  console.log('Fetching git history (single command)...')
-  const gitLog = execSync(
-    `git -C "${REPO_ROOT}" log --format="COMMIT%x09%ai" --name-only --diff-filter=ACMR -- hubs/`,
-    { encoding: 'utf-8', maxBuffer: 500 * 1024 * 1024 },
-  )
-
-  const created = new Map<string, Date>()
-  let currentDate: Date | undefined
-  const lines = gitLog.split('\n')
-  console.log(`Processing ${lines.length} lines of git history...`)
-
-  for (const line of lines) {
-    if (line.startsWith('COMMIT\t')) {
-      // "COMMIT\t2025-12-09 20:36:27 -0800"
-      currentDate = new Date(line.substring(7))
-    } else if (line && currentDate) {
-      const match = accessionRegex.exec(line)
-      if (match) {
-        created.set(match[0], currentDate)
-      }
-    }
-  }
-  return created
-}
-
 function main() {
   const allHubs: HubMetadata[] = JSON.parse(
     fs.readFileSync(ALL_HUBS_PATH, 'utf-8'),
   )
   const metadata = new Map(allHubs.map(hub => [hub.accession, hub]))
 
-  const created = getHubCreationDates()
-  console.log(`Found ${created.size} hubs with git history`)
+  const firstSeen: Record<string, string> = JSON.parse(
+    fs.readFileSync(FIRST_SEEN_PATH, 'utf-8'),
+  )
+  console.log(`Read ${Object.keys(firstSeen).length} first-seen dates`)
 
   // A hub that is in the tree but not in the processed listing has no name, no
   // category, and no /accession/ page — getStaticPaths builds those from this
@@ -75,13 +46,13 @@ function main() {
   // drop is visible rather than silent.
   const rows: HubRecord[] = []
   let unresolved = 0
-  for (const [accession, date] of created) {
+  for (const [accession, createdDate] of Object.entries(firstSeen)) {
     const hub = metadata.get(accession)
     if (hub) {
       rows.push({
         accession,
-        createdDate: date.toISOString(),
-        createdTimestamp: date.getTime(),
+        createdDate,
+        createdTimestamp: new Date(createdDate).getTime(),
         scientificName: hub.scientificName,
         commonName: hub.commonName,
         source: hub.source,
