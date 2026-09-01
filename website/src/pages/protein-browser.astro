@@ -273,6 +273,86 @@ if (!features.proteinBrowser) {
   .msv-open:hover {
     background: var(--accent-hover);
   }
+  .msv-open-disabled,
+  .msv-open-disabled:hover {
+    background: #b8bec7;
+    cursor: default;
+  }
+
+  /* What the session opens with: isoform, structure, superposed species, the
+     domain to land on. Each row is a label and one control, so the card reads as
+     a form rather than a paragraph of chips. */
+  .msv-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin: 0.6rem 0 0.8rem;
+    font-size: 13px;
+  }
+  .msv-control {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.6rem;
+  }
+  .msv-control .ui-select {
+    max-width: 100%;
+  }
+  .msv-control-label {
+    flex: 0 0 5.5rem;
+    font-weight: 600;
+    color: #444;
+  }
+  .msv-chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .pdc-howto {
+    margin: 0 0 0.6rem;
+  }
+  .pdc-row-query .pdc-name {
+    font-weight: 600;
+  }
+  .pdc-superpose-cell {
+    flex: 0 0 26px;
+    display: inline-flex;
+    justify-content: center;
+  }
+  .pdc-superpose {
+    padding: 0 4px;
+    font-size: 10px;
+    line-height: 16px;
+    color: #555;
+    background: white;
+    border: 1px solid #c9ced6;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .pdc-superpose:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .pdc-superpose.on {
+    color: white;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .pdc-domain.clickable {
+    cursor: pointer;
+  }
+  .pdc-domain.clickable:hover {
+    opacity: 1;
+    outline: 2px solid #222;
+    outline-offset: 1px;
+  }
+  .pdc-domain.selected {
+    opacity: 1;
+    outline: 2px solid #222;
+    outline-offset: 1px;
+    box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
+  }
   .msv-collapse {
     display: inline-flex;
     align-items: center;

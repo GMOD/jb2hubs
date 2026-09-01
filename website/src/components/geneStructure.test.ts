@@ -2,10 +2,9 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
-  type GeneStructure,
-  buildSessionUrl,
   collapsedLoc,
   geneStats,
+  orderIsoforms,
   parseGeneTableBlocks,
 } from './geneStructure.ts'
 
@@ -27,6 +26,7 @@ test('parseGeneTableBlocks: genomic CDS as interbase, UTR-only exon skipped', ()
   const tx = parseGeneTableBlocks(plusTable, 1)[0]
   assert.ok(tx)
   assert.equal(tx.mrna, 'NM_000001.1')
+  assert.equal(tx.protein, 'NP_000001.1')
   assert.deepEqual(
     tx.cds.map(c => [c.start, c.end]),
     [
@@ -39,6 +39,20 @@ test('parseGeneTableBlocks: genomic CDS as interbase, UTR-only exon skipped', ()
     tx.cds.map(c => c.phase),
     [0, 0, 1],
   )
+})
+
+// The coding intervals include the stop codon, so a 393-residue protein is
+// listed as 1,182 coding bases. Comparing 394 against a protein record's 393
+// is how the isoform match used to miss on every gene.
+test('parseGeneTableBlocks: aaLength is the translated length, stop codon excluded', () => {
+  const table = [
+    'Reference GRCh38.p14 NC_000017.11  from: 7668402 to: 7687538',
+    'Exon table for  mRNA  NM_000546.6 and protein NP_000537.3',
+    'Genomic Interval Exon\t\tGenomic Interval Coding\t\tExon Length',
+    '----',
+    '1-1182\t\t1-1182\t\t1182',
+  ].join('\n')
+  assert.equal(parseGeneTableBlocks(table, 1)[0]?.aaLength, 393)
 })
 
 test('parseGeneTableBlocks: minus-strand high-to-low intervals normalize', () => {
@@ -62,6 +76,51 @@ test('parseGeneTableBlocks: minus-strand high-to-low intervals normalize', () =>
     ],
   )
   assert.ok(tx.cds.every(c => c.end > c.start))
+})
+
+const base = { refName: 'NC_000017.11', strand: 1 as const, geneName: 'PAX6' }
+const cds = [{ start: 0, end: 30, phase: 0 }]
+
+// PAX6: the MANE Select is a 436-residue isoform and the longest curated one is
+// 504 residues. Longest-first opened the 504 while the structure was the 422;
+// the flagged transcript leads now, whatever its length.
+test('orderIsoforms: the flagged transcript leads, then curated by length', () => {
+  const parsed = [
+    { mrna: 'NM_001368910.2', protein: 'NP_1', aaLength: 504, cds },
+    { mrna: 'XM_999.1', protein: 'XP_1', aaLength: 600, cds },
+    { mrna: 'NM_001368894.2', protein: 'NP_2', aaLength: 436, cds },
+    { mrna: 'NM_000280.6', protein: 'NP_3', aaLength: 422, cds },
+  ]
+  const tags = new Map([['NM_001368894.2', 'MANE Select' as const]])
+  const ordered = orderIsoforms(parsed, tags, base)
+  assert.deepEqual(
+    ordered.map(i => i.transcript.name),
+    ['NM_001368894.2', 'NM_001368910.2', 'NM_000280.6', 'XM_999.1'],
+  )
+  assert.equal(ordered[0]?.tag, 'MANE Select')
+  assert.equal(ordered[0]?.protein, 'NP_2')
+  assert.equal(ordered[0]?.transcript.geneName, 'PAX6')
+})
+
+test('orderIsoforms: a tag matches across an accession version drift', () => {
+  const parsed = [
+    { mrna: 'NM_1.3', protein: 'NP_1', aaLength: 100, cds },
+    { mrna: 'NM_2.1', protein: 'NP_2', aaLength: 300, cds },
+  ]
+  const tags = new Map([['NM_1.2', 'RefSeq Select' as const]])
+  assert.equal(orderIsoforms(parsed, tags, base)[0]?.transcript.name, 'NM_1.3')
+})
+
+test('orderIsoforms: with no flags, longest curated first', () => {
+  const parsed = [
+    { mrna: 'XM_1.1', protein: 'XP_1', aaLength: 900, cds },
+    { mrna: 'NM_1.1', protein: 'NP_1', aaLength: 100, cds },
+    { mrna: 'NM_2.1', protein: 'NP_2', aaLength: 300, cds },
+  ]
+  assert.deepEqual(
+    orderIsoforms(parsed, new Map(), base).map(i => i.transcript.name),
+    ['NM_2.1', 'NM_1.1', 'XM_1.1'],
+  )
 })
 
 const transcript = {
@@ -103,140 +162,4 @@ test('geneStats: sums CDS length and the collapse ratio', () => {
     span: 980,
     ratio: '5.4',
   })
-})
-
-// A stand-in for a resolved hosted config: names the gene track the session
-// should open, and renames NCBI's accession to what that config calls the
-// sequence — the rename buildSessionUrl has to apply everywhere at once.
-const target = {
-  configUrl: '/hubs/genark/GCF/000/001/635/GCF_000001635.27/config.json',
-  assemblyName: 'GCF_000001635.27',
-  geneTrackId: 'GCF_000001635.27-ncbiRefSeqSelect',
-  canonicalRefName: (refName: string) =>
-    refName === 'NC_000077.7' ? 'chr11' : refName,
-}
-
-const structure: GeneStructure = {
-  symbol: 'Test',
-  geneId: '1',
-  taxId: 10090,
-  assemblyAccession: 'GCF_000001635.27',
-  target,
-  uniprotId: 'P02340',
-  proteinSequence: 'MEEP',
-  transcript,
-}
-
-interface SessionView {
-  id: string
-  type: string
-  init?: { assembly?: string; loc?: string; tracks?: string[] }
-  connectedFeature?: { refName: string }
-  structures?: { connectedViewId: string }[]
-}
-
-function viewsOf(session: object) {
-  return (session as unknown as { views: SessionView[] }).views
-}
-
-test('buildSessionUrl: opens the target config with its gene track', () => {
-  const { session, url } = buildSessionUrl({ structure })
-  assert.match(
-    url,
-    /#config=%2Fhubs%2Fgenark%2FGCF%2F000%2F001%2F635%2FGCF_000001635\.27%2Fconfig\.json/,
-  )
-  assert.match(url, /session=encoded-/)
-  const views = viewsOf(session)
-  const lgv = views[0]!
-  const protein = views.find(v => v.type === 'ProteinView')!
-  assert.equal(lgv.type, 'LinearGenomeView')
-  assert.equal(lgv.init?.assembly, 'GCF_000001635.27')
-  // without this the collapsed exons render over an empty view
-  assert.deepEqual(lgv.init?.tracks, ['GCF_000001635.27-ncbiRefSeqSelect'])
-  // structure links back to the genome view
-  assert.equal(protein.structures?.[0]?.connectedViewId, lgv.id)
-})
-
-// Displayed-region matching is exact and does not alias-resolve, so the loc and
-// the connectedFeature must BOTH carry the config's own name for the sequence.
-// One of the two left on NCBI's accession is the silent-no-highlight failure.
-test('buildSessionUrl: renames the sequence everywhere the session names it', () => {
-  const views = viewsOf(buildSessionUrl({ structure }).session)
-  const lgv = views[0]!
-  const protein = views.find(v => v.type === 'ProteinView')!
-  assert.equal(lgv.init?.loc, 'chr11:61-240 chr11:961-1120')
-  assert.equal(
-    protein.structures?.[0] &&
-      (protein as unknown as { structures: { feature: { refName: string } }[] })
-        .structures[0]!.feature.refName,
-    'chr11',
-  )
-})
-
-// The session-level `init: {direction, children}` layout stopped being read when
-// the workspace became an MST tree; a session still emitting it stacks its views
-// in one column instead of tiling them.
-test('buildSessionUrl: emits the workspace layout tree, not the dropped init', () => {
-  const { session } = buildSessionUrl({ structure })
-  const s = session as unknown as {
-    init?: unknown
-    useWorkspaces?: boolean
-    layout?: {
-      direction: string
-      children: { size: number; tabs: { viewIds: string[] }[] }[]
-    }
-  }
-  assert.equal(s.init, undefined)
-  assert.equal(s.useWorkspaces, true)
-  assert.equal(s.layout?.direction, 'row')
-  assert.deepEqual(
-    s.layout?.children.map(c => c.tabs[0]!.viewIds),
-    [['lgv-Test'], ['protein-Test']],
-  )
-  assert.deepEqual(
-    s.layout?.children.map(c => c.size),
-    [58, 42],
-  )
-})
-
-test('buildSessionUrl: an indexed alignment is named, not carried', () => {
-  const { session } = buildSessionUrl({
-    structure,
-    indexedMsa: {
-      msaUri: 'https://example.org/100way.fa.gz',
-      treeUri: 'https://example.org/100way.nh',
-      msaName: 'Test',
-      querySeqName: 'hg38',
-    },
-  })
-  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
-    init?: { msaIndexedLocation?: { uri: string }; msaName?: string }
-    data?: unknown
-  }
-  assert.equal(
-    msa.init?.msaIndexedLocation?.uri,
-    'https://example.org/100way.fa.gz',
-  )
-  assert.equal(msa.init?.msaName, 'Test')
-  // the alignment stays out of the URL, which is what keeps it small
-  assert.equal(msa.data, undefined)
-})
-
-test('buildSessionUrl: an inline alignment rides in the session with its domains', () => {
-  const { session } = buildSessionUrl({
-    structure,
-    inlineMsa: {
-      fasta: '>mouse\nMEEP',
-      newick: '(mouse);',
-      gff: '##gff-version 3',
-      querySeqName: 'mouse',
-    },
-  })
-  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
-    data?: { msa: string; tree: string; gff?: string }
-    init?: unknown
-  }
-  assert.equal(msa.data?.msa, '>mouse\nMEEP')
-  assert.equal(msa.data?.gff, '##gff-version 3')
-  assert.equal(msa.init, undefined)
 })

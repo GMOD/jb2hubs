@@ -42,6 +42,10 @@ export interface ProteinMsaRow {
   // PANTHER identifies a gene by its UniProt accession instead
   geneId?: string
   protein: string // accession.version (NCBI) or UniProt accession (PANTHER)
+  // Swiss-Prot accession, which is what a structure is filed under: NCBI's
+  // ortholog report carries one per gene, and a PANTHER row IS one. Absent
+  // where the species has no reviewed entry, so no structure to superpose.
+  uniprot?: string
 }
 
 // A panel row carries everything the domain cartoon needs without any alignment.
@@ -166,6 +170,7 @@ interface OrthologGene {
   geneId: string
   scientificName: string
   commonName?: string
+  uniprot?: string
 }
 
 // One ortholog gene per species from the NCBI Datasets orthologs endpoint.
@@ -177,6 +182,7 @@ async function fetchOrthologGenes(geneId: string): Promise<OrthologGene[]> {
         tax_id?: string | number
         taxname?: string
         common_name?: string
+        swiss_prot_accessions?: string[]
       }
     }[]
   }>(geneId)
@@ -189,6 +195,7 @@ async function fetchOrthologGenes(geneId: string): Promise<OrthologGene[]> {
         geneId: gene.gene_id,
         scientificName: gene.taxname ?? String(taxId),
         commonName: gene.common_name,
+        uniprot: gene.swiss_prot_accessions?.[0],
       })
     }
   }
@@ -460,6 +467,7 @@ interface SourcedProtein {
   commonName?: string
   geneId?: string
   protein: string
+  uniprot?: string
   sequence: string
 }
 
@@ -532,6 +540,7 @@ async function ncbiProteins(
             commonName: g.commonName,
             geneId: g.geneId,
             protein,
+            uniprot: g.uniprot,
             sequence,
           },
         ]
@@ -578,6 +587,7 @@ async function pantherProteins(
       scientificName: r.scientificName,
       commonName: r.commonName,
       protein: r.accession,
+      uniprot: r.accession,
       sequence: r.sequence,
     })),
   }

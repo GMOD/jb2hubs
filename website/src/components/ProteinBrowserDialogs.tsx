@@ -6,6 +6,7 @@ import { collapsedLoc } from './geneStructure.ts'
 import { MAX_ALIGN_ROWS, MAX_PANEL_ROWS } from './proteinMsa.ts'
 
 import type { Transcript } from './geneStructure.ts'
+import type { AlphaFoldModel } from './structureSources.ts'
 import type { ReactNode } from 'react'
 
 // Copy text and say so inline. A rejected write (insecure context, denied
@@ -45,14 +46,14 @@ export function SessionDetailsDialog({
   session,
   collapse,
   flip,
-  uniprotId,
+  model,
 }: {
   onClose: () => void
   transcript: Transcript
   session: object
   collapse: boolean
   flip: boolean
-  uniprotId: string | undefined
+  model: AlphaFoldModel | undefined
 }) {
   const { copy, message } = useCopy()
   const [stlBusy, setStlBusy] = useState(false)
@@ -60,12 +61,12 @@ export function SessionDetailsDialog({
   const loc = collapsedLoc(transcript, { collapse, flip })
   const sessionJson = JSON.stringify(session, null, 2)
 
-  function downloadStl(accession: string) {
+  function downloadStl({ pdbUrl, entity }: AlphaFoldModel) {
     setStlBusy(true)
     setStlError(undefined)
-    fetchProteinStl(accession)
+    fetchProteinStl(pdbUrl)
       .then(bytes => {
-        triggerDownload(bytes, `${transcript.geneName}-${accession}.stl`)
+        triggerDownload(bytes, `${transcript.geneName}-${entity}.stl`)
       })
       .catch((e: unknown) => {
         setStlError(e instanceof Error ? e.message : String(e))
@@ -100,13 +101,13 @@ export function SessionDetailsDialog({
         >
           Copy session JSON
         </button>
-        {uniprotId && (
+        {model && (
           <button
             className="ui-btn-secondary"
             disabled={stlBusy}
             title="A solid tube swept along the protein backbone, ready to slice"
             onClick={() => {
-              downloadStl(uniprotId)
+              downloadStl(model)
             }}
           >
             {stlBusy ? 'Preparing STL…' : '3D print (STL)'}
@@ -139,9 +140,10 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           <Link href="https://www.ncbi.nlm.nih.gov/datasets/">
             NCBI Datasets
           </Link>{' '}
-          for the GeneID and Swiss-Prot accession; coding exons from the E-utils{' '}
-          <code>gene_table</code>, picking the isoform that matches the UniProt
-          canonical protein.
+          for the GeneID and Swiss-Prot accession; coding exons for every
+          isoform from the E-utils <code>gene_table</code>, opening on the MANE
+          Select (or RefSeq Select) transcript and its own translation. Any
+          other isoform is a pick away on the card.
         </dd>
 
         <dt>Orthologs</dt>
@@ -175,9 +177,17 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
 
         <dt>Structure</dt>
         <dd>
-          The <Link href="https://alphafold.ebi.ac.uk">AlphaFold</Link> model by
-          UniProt accession. All three views share one transcript model, so
-          hovering a residue lights up its codon everywhere.
+          The <Link href="https://alphafold.ebi.ac.uk">AlphaFold</Link> model
+          whose sequence matches the transcript, asked of AlphaFold&rsquo;s API
+          rather than assumed; or an experimental entry from the{' '}
+          <Link href="https://www.ebi.ac.uk/pdbe/pdbe-kb/3dbeacons/">
+            3D-Beacons
+          </Link>{' '}
+          list, best coverage first. The 3D view aligns the structure&rsquo;s
+          residues to the transcript&rsquo;s translation, so a structure of
+          another isoform or a truncated crystal still lands on the right
+          codons. Mark other species in the cartoon and their AlphaFold models
+          are superposed on the query&rsquo;s (TM-align, in the plugin).
         </dd>
       </dl>
     </Modal>

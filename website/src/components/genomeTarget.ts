@@ -54,6 +54,19 @@ export function pickGeneTrack(
   )
 }
 
+// Variant evidence to open under the gene, where the config carries it: the
+// UCSC ClinVar SNV track and the AlphaMissense pathogenicity signal, which is
+// the pairing the protein browser paper's BRAF case study is built on. Only the
+// human golden-path configs have them today; elsewhere this is empty.
+const VARIANT_TRACK_SUFFIXES = ['clinvarMain', 'alphaMissense']
+
+export function pickVariantTracks(assembly: string, trackIds: string[]) {
+  const ids = new Set(trackIds)
+  return VARIANT_TRACK_SUFFIXES.map(s => `${assembly}-${s}`).filter(id =>
+    ids.has(id),
+  )
+}
+
 // chromAlias.txt in either of the two shapes UCSC publishes:
 //
 //   GenArk       `# refseq  assembly  genbank  ncbi  ucsc`, one column per
@@ -99,6 +112,8 @@ export interface GenomeTarget {
   assemblyName: string
   // the gene track to open under the collapsed exons, when the config has one
   geneTrackId?: string
+  // ClinVar / AlphaMissense, where the config has them
+  variantTrackIds: string[]
   // NCBI's name for a sequence -> the config's canonical name for it
   canonicalRefName: (refName: string) => string
 }
@@ -157,13 +172,12 @@ async function loadTarget(
     throw new Error(`No hosted config for ${assemblyName}`)
   }
   const aliases = await loadAliases(metaUrl, config)
+  const trackIds = (config.tracks ?? []).map(t => t.trackId)
   return {
     configUrl,
     assemblyName,
-    geneTrackId: pickGeneTrack(
-      assemblyName,
-      (config.tracks ?? []).map(t => t.trackId),
-    ),
+    geneTrackId: pickGeneTrack(assemblyName, trackIds),
+    variantTrackIds: pickVariantTracks(assemblyName, trackIds),
     canonicalRefName: refName => aliases?.get(refName) ?? refName,
   }
 }

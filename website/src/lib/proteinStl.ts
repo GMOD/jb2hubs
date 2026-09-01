@@ -1,7 +1,7 @@
 // Build a 3D-printable STL of a protein directly in the browser, keeping with
-// the protein browser's "nothing precomputed" design: the AlphaFold model is
-// fetched by UniProt accession, its alpha-carbon (CA) trace is extracted, and a
-// solid tube is swept along the backbone. The tube is the classic way to 3D
+// the protein browser's "nothing precomputed" design: the AlphaFold model's PDB
+// file is fetched, its alpha-carbon (CA) trace is extracted, and a solid tube
+// is swept along the backbone. The tube is the classic way to 3D
 // print a protein fold — a single connected body a slicer can handle, versus a
 // cloud of atom spheres that would need supports everywhere.
 //
@@ -13,9 +13,6 @@
 // then 50 bytes/triangle: face normal + 3 vertices + a 2-byte attribute count).
 
 export type Vec3 = readonly [number, number, number]
-
-const alphafoldPdbUrl = (uniprotId: string) =>
-  `https://alphafold.ebi.ac.uk/files/AF-${uniprotId}-F1-model_v6.pdb`
 
 const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
 const add = (a: Vec3, b: Vec3): Vec3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]]
@@ -205,11 +202,12 @@ export function trianglesToStl(
   return bytes
 }
 
-// Fetch a gene's AlphaFold model and return a printable STL of its backbone.
+// Fetch a model's PDB file (the url AlphaFold's API names for it, so the version
+// is whatever is current) and return a printable STL of its backbone.
 export async function fetchProteinStl(
-  uniprotId: string,
+  pdbUrl: string,
 ): Promise<Uint8Array<ArrayBuffer>> {
-  const res = await fetch(alphafoldPdbUrl(uniprotId))
+  const res = await fetch(pdbUrl)
   if (!res.ok) {
     throw new Error(`AlphaFold structure unavailable (HTTP ${res.status})`)
   }

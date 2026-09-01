@@ -1,10 +1,14 @@
-import type { ProteinPanelRow } from './proteinMsa.ts'
+import type { Domain, ProteinPanelRow } from './proteinMsa.ts'
 
 // Domain-architecture cartoon: one length-scaled bar per ortholog with its CDD
 // conserved domains drawn as colored blocks. Renders straight from the NCBI
 // panel (no alignment), so it appears in seconds and answers the common first
 // question — "do these orthologs share the same domains?" — before the user
 // pays for the full alignment.
+//
+// It is also where two launch options are chosen: a domain on the query row can
+// be clicked to open the session with it highlighted, and any row with a
+// Swiss-Prot accession can be marked for superposition on the query's structure.
 
 // Tableau 10, then its light companions. Ten was not enough once panels went
 // broad: NOTCH1 shows 12 domains and DMD 13, so the modulo wrapped and gave a
@@ -70,53 +74,122 @@ function assignColors(count: Map<string, number>, rowCount: number) {
   return new Map(names.map((name, i) => [name, PALETTE[i % PALETTE.length]!]))
 }
 
+const sameDomain = (a: Domain, b: Domain) =>
+  a.name === b.name && a.start === b.start && a.end === b.end
+
 export default function ProteinDomainCartoon({
   rows,
+  queryTaxId,
+  selectedDomain,
+  onSelectDomain,
+  superposed,
+  onToggleSuperpose,
 }: {
   rows: ProteinPanelRow[]
+  queryTaxId: number
+  selectedDomain?: Domain
+  onSelectDomain?: (domain: Domain) => void
+  // Swiss-Prot accessions currently marked for superposition
+  superposed?: string[]
+  onToggleSuperpose?: (uniprot: string) => void
 }) {
   const maxLength = Math.max(...rows.map(r => r.length), 1)
   const counts = prevalence(rows)
   const colors = assignColors(counts, rows.length)
+  const marked = new Set(superposed)
 
   return (
     <div className="pdc">
+      {onToggleSuperpose && (
+        <p className="ui-caption pdc-howto">
+          Click a domain on the query row to open the session with it
+          highlighted. Mark other species to superpose their AlphaFold model on
+          the query&rsquo;s.
+        </p>
+      )}
       <div className="pdc-rows">
-        {rows.map(r => (
-          <div
-            className="pdc-row"
-            key={r.label}
-          >
+        {rows.map(r => {
+          const isQuery = r.taxId === queryTaxId
+          const canSuperpose = !isQuery && !!r.uniprot && !!onToggleSuperpose
+          return (
             <div
-              className="pdc-name"
-              title={`${r.scientificName} · ${r.protein}`}
+              className={isQuery ? 'pdc-row pdc-row-query' : 'pdc-row'}
+              key={r.label}
             >
-              {r.commonName ?? r.scientificName}
-            </div>
-            <div className="pdc-track">
               <div
-                className="pdc-bar"
-                style={{ width: `${(r.length / maxLength) * 100}%` }}
+                className="pdc-name"
+                title={`${r.scientificName} · ${r.protein}`}
               >
-                {r.domains
-                  .filter(d => colors.has(d.name))
-                  .map((d, i) => (
-                    <div
-                      className="pdc-domain"
-                      key={`${d.name}-${d.start}-${i}`}
-                      title={`${d.name} (${d.start}–${d.end})`}
-                      style={{
-                        left: `${((d.start - 1) / r.length) * 100}%`,
-                        width: `${((d.end - d.start + 1) / r.length) * 100}%`,
-                        background: colors.get(d.name),
-                      }}
-                    />
-                  ))}
+                {r.commonName ?? r.scientificName}
               </div>
-              <span className="pdc-len">{r.length} aa</span>
+              <span className="pdc-superpose-cell">
+                {canSuperpose && (
+                  <button
+                    className={
+                      marked.has(r.uniprot!)
+                        ? 'pdc-superpose on'
+                        : 'pdc-superpose'
+                    }
+                    title={
+                      marked.has(r.uniprot!)
+                        ? `Stop superposing ${r.scientificName}`
+                        : `Superpose the ${r.scientificName} AlphaFold model (${r.uniprot})`
+                    }
+                    aria-pressed={marked.has(r.uniprot!)}
+                    onClick={() => {
+                      onToggleSuperpose(r.uniprot!)
+                    }}
+                  >
+                    3D
+                  </button>
+                )}
+              </span>
+              <div className="pdc-track">
+                <div
+                  className="pdc-bar"
+                  style={{ width: `${(r.length / maxLength) * 100}%` }}
+                >
+                  {r.domains
+                    .filter(d => colors.has(d.name))
+                    .map((d, i) => {
+                      const clickable = isQuery && !!onSelectDomain
+                      const selected =
+                        isQuery &&
+                        !!selectedDomain &&
+                        sameDomain(d, selectedDomain)
+                      return (
+                        <div
+                          className={[
+                            'pdc-domain',
+                            clickable ? 'clickable' : '',
+                            selected ? 'selected' : '',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          key={`${d.name}-${d.start}-${i}`}
+                          title={`${d.name} (${d.start}–${d.end})${clickable ? ' — click to highlight at launch' : ''}`}
+                          role={clickable ? 'button' : undefined}
+                          onClick={
+                            clickable
+                              ? () => {
+                                  onSelectDomain(d)
+                                }
+                              : undefined
+                          }
+                          style={{
+                            left: `${((d.start - 1) / r.length) * 100}%`,
+                            width: `${((d.end - d.start + 1) / r.length) * 100}%`,
+                            background: colors.get(d.name),
+                          }}
+                        />
+                      )
+                    })}
+                </div>
+                <span className="pdc-len">{r.length} aa</span>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
       {colors.size > 0 && (
         <div className="pdc-legend">

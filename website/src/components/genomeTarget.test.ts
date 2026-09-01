@@ -1,7 +1,11 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { parseChromAlias, pickGeneTrack } from './genomeTarget.ts'
+import {
+  parseChromAlias,
+  pickGeneTrack,
+  pickVariantTracks,
+} from './genomeTarget.ts'
 
 // GenArk publishes one column per naming scheme and the config's adapter names
 // which one is canonical.
@@ -87,4 +91,17 @@ test('pickGeneTrack: falls through to whatever gene set the assembly has', () =>
 test('pickGeneTrack: only this assembly counts, and none is undefined', () => {
   assert.equal(pickGeneTrack('hg38', ['mm39-ncbiRefSeqSelect']), undefined)
   assert.equal(pickGeneTrack('hg38', []), undefined)
+})
+
+test('pickVariantTracks: ClinVar and AlphaMissense where the config has them', () => {
+  assert.deepEqual(
+    pickVariantTracks('hg38', [
+      'hg38-ncbiRefSeq',
+      'hg38-alphaMissense',
+      'hg38-clinvarMain',
+      'hg19-clinvarMain',
+    ]),
+    ['hg38-clinvarMain', 'hg38-alphaMissense'],
+  )
+  assert.deepEqual(pickVariantTracks('mm39', ['mm39-ncbiRefSeq']), [])
 })
