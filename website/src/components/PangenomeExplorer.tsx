@@ -1,7 +1,4 @@
-import useSWRImmutable from 'swr/immutable'
-
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { fetchJson } from '../lib/fetchJson.ts'
 import PangenomeLocusDashboard from './PangenomeLocusDashboard.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import { VARIATION_LABELS } from './pangenomeLoci.ts'
@@ -26,7 +23,9 @@ const SORTS: { value: Sort; label: string }[] = [
   { value: 'count', label: 'Most variants' },
 ]
 
-interface Manifest {
+// The generated `<dataPrefix>/manifest.json`, imported at build by the page
+// and handed down rather than fetched again from the browser.
+export interface PangenomeManifest {
   samples: string[]
   loci: { id: string; gene: string; variantCount: number }[]
 }
@@ -38,8 +37,10 @@ const matchesFilter = (l: PangenomeLocus, f: Filter) =>
 
 export default function PangenomeExplorer({
   dataset,
+  manifest,
 }: {
   dataset: PangenomeDataset
+  manifest: PangenomeManifest
 }) {
   const loci = dataset.loci
   // ?locus=<id>, ?filter=<class>, ?sort=<mode> all deep-link via useUrlState so a
@@ -53,15 +54,9 @@ export default function PangenomeExplorer({
   const sort = SORTS.find(s => s.value === rawSort)?.value ?? 'catalog'
 
   // Precomputed per-locus variant counts, shown on the cards so the grid is
-  // informative before you drill in. Optional — cards render fine without it.
-  const { data: manifest } = useSWRImmutable<Manifest>(
-    `${dataset.dataPrefix}/manifest.json`,
-    fetchJson,
-  )
-  const variantCount = new Map(manifest?.loci.map(l => [l.id, l.variantCount]))
+  // informative before you drill in.
+  const variantCount = new Map(manifest.loci.map(l => [l.id, l.variantCount]))
 
-  // "Most variants" needs the manifest counts; until it loads the comparator
-  // returns 0, leaving the stable catalog order in place.
   const visible = loci
     .filter(l => matchesFilter(l, filter))
     .sort((a, b) =>
@@ -69,7 +64,10 @@ export default function PangenomeExplorer({
         ? (variantCount.get(b.id) ?? 0) - (variantCount.get(a.id) ?? 0)
         : 0,
     )
+  // An unknown ?locus= falls back to the first card, and the grid highlights
+  // what the dashboard actually shows rather than the id in the url.
   const selected = loci.find(l => l.id === selectedId) ?? loci[0]
+  const activeId = selected ? selected.id : ''
 
   // Keep the dashboard in sync with the grid: if a new filter would hide the
   // selected locus, jump to the first locus that survives it (no effect needed —
@@ -120,8 +118,8 @@ export default function PangenomeExplorer({
           return (
             <button
               key={l.id}
-              className={`pg-card${l.id === selectedId ? ' pg-card-active' : ''}`}
-              aria-pressed={l.id === selectedId}
+              className={`pg-card${l.id === activeId ? ' pg-card-active' : ''}`}
+              aria-pressed={l.id === activeId}
               onClick={() => {
                 setSelectedId(l.id)
               }}

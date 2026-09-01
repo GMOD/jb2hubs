@@ -1,5 +1,22 @@
 # Mouse (mm39) pangenome explorer — handoff plan
 
+> **Status as of 2026-09-01.** Written against an earlier layout; read the rest
+> with these corrections. The pages are `website/src/pages/pangenomes/*.astro`
+> (`/pangenomes`, `/pangenomes/hprc`, `/pangenomes/explorer`,
+> `/pangenomes/mouse`), gated on `features.pangenome`; there is no `/pangenome`
+> route and no `hprc/index.astro`. The parameterisation §3 proposes is done:
+> `PangenomeDataset` (`website/src/components/pangenomeDataset.ts`) carries the
+> reference, VCF, synteny target, data prefix, optional hosted `graphBrowser`
+> (itself gated on `features.pangenomeGraph`, since the GraphGenomeView plugin
+> needs core v5) and external graph browser, and every builder in
+> `pangenomeLinks.ts` and every component reads only that shape — a mouse
+> dataset is a second `PangenomeDataset` plus its precomputed data. The locus
+> shape is `pangenomeLoci.ts`'s `PangenomeLocus`: `variation` (a
+> `VariationClass[]`: `cnv`, `pav`, `hyperdiversity`, `vntr`, `inversion`) and
+> `significance`, not `kinds`/`story`, with optional `detailWindow`,
+> `graphCollapsed` and `pangeneGenes`. Translate the table in §2 into that
+> shape.
+
 For whoever owns the pangenome feature (`PangenomeExplorer`, `pangenomeLoci`,
 `generatePangenomeData`, `pangenomeLinks`, `/pangenome` + `/hprc` pages). Goal:
 a mm39 analog of the HPRC explorer — curated mouse divergence loci → per-locus

@@ -2,8 +2,9 @@ import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
+import { features } from '../config/features.ts'
 import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
-import { HPRC_DATASET } from './pangenomeDataset.ts'
+import { HPRC_DATASET, HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
 import {
   crossSpeciesGeneOrderUrl,
   externalGraphUrl,
@@ -37,6 +38,16 @@ function parseLaunch(url: string) {
 }
 
 const locus = HPRC_DATASET.loci.find(l => l.id === 'mhc-hla')!
+
+// The shipped dataset carries the hosted graph only under features.pangenomeGraph
+// (off outside Vite, and on production), so the graph launches are exercised on
+// a copy that always has it.
+const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
+
+test('the hosted graph reaches the dataset only under its own flag', () => {
+  assert.equal(HPRC_DATASET.graphBrowser !== undefined, features.pangenomeGraph)
+  assert.ok(HPRC_DATASET.externalGraphBrowser, 'PangyPlot is the fallback')
+})
 
 test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks', () => {
   const { config, spec } = parseLaunch(graphVcfLgvUrl(HPRC_DATASET, locus))
@@ -110,10 +121,21 @@ test('referenceSyntenyUrl builds a reference↔target synteny view', () => {
     const view = spec.views[0]!
     assert.equal(view.type, 'LinearSyntenyView')
     assert.deepEqual(view.tracks, [target.trackId])
+    // The reference panel opens on its gene track rather than as an empty
+    // browser; the target panel has no locus of its own.
     assert.deepEqual(view.views, [
-      { assembly: HPRC_DATASET.reference.assembly, loc: locusRegion(locus) },
+      {
+        assembly: HPRC_DATASET.reference.assembly,
+        loc: locusRegion(locus),
+        tracks: [HPRC_DATASET.reference.geneTrackId],
+      },
       { assembly: target.assembly },
     ])
+    // Through the shared builder, so the site's synteny defaults apply.
+    assert.equal(view.cigarMode, 'off')
+    assert.equal(view.colorBy, 'query')
+    assert.equal(view.drawCurves, true)
+    assert.equal(view.autoDiagonalize, true)
   } else {
     assert.fail('HPRC dataset has a synteny target, so a URL is produced')
   }
@@ -133,18 +155,18 @@ test('crossSpeciesGeneOrderUrl seeds the marker gene and reference taxon', () =>
 })
 
 test('graphLocusUrl opens the graph on the locus, paired with a linear view', () => {
-  const url = graphLocusUrl(HPRC_DATASET, locus)
+  const url = graphLocusUrl(graphDataset, locus)
   assert.ok(url, 'MHC has a detailWindow, so a URL is produced')
   const { config, spec } = parseLaunch(url)
   // the graph plugin is declared only in this config, never in the UCSC ones
-  assert.equal(config, HPRC_DATASET.graphBrowser!.configUrl)
+  assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
 
   const [lgv, graph] = spec.views
   assert.equal(lgv!.type, 'LinearGenomeView')
   assert.equal(graph!.type, 'GraphGenomeView')
   // the pairing that gives the two panels their hover sync
   assert.equal(graph!.connectedViewId, lgv!.id)
-  assert.equal(graph!.loadedTrackId, HPRC_DATASET.graphBrowser!.segmentsTrackId)
+  assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
   // under the default force layout there is no shared axis, so the ramp is what
   // ties a node to the block above it
   assert.equal(graph!.colorScheme, 'reference-position')
@@ -159,7 +181,7 @@ test('graphLocusUrl opens the graph on the locus, paired with a linear view', ()
 
 test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   const region = { chrom: 'chr1', start: 100, end: 5_100, label: 'anywhere' }
-  const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region)!)
+  const { spec } = parseLaunch(graphRegionUrl(graphDataset, region)!)
   const [lgv, graph] = spec.views
   assert.equal(lgv!.loc, 'chr1:100-5100')
   assert.equal(graph!.displayName, 'anywhere graph')
@@ -176,10 +198,10 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
 })
 
 test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp raised', () => {
-  const url = graphChromosomeUrl(HPRC_DATASET, 'chr21')
+  const url = graphChromosomeUrl(graphDataset, 'chr21')
   assert.ok(url)
   const { config, spec } = parseLaunch(url)
-  assert.equal(config, HPRC_DATASET.graphBrowser!.configUrl)
+  assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   const [lgv, graph] = spec.views
   assert.equal(lgv!.loc, 'chr21:1-46709983')
   assert.deepEqual(lgv!.tracks, [
@@ -192,10 +214,10 @@ test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp
   assert.equal(graph!.maxRegionBp, 46_709_983)
   assert.equal(graph!.layoutMode, 'auto')
   assert.equal(graph!.connectedViewId, lgv!.id)
-  assert.equal(graphChromosomeUrl(HPRC_DATASET, 'chrM'), undefined)
+  assert.equal(graphChromosomeUrl(graphDataset, 'chrM'), undefined)
   const noTier = {
     ...HPRC_DATASET,
-    graphBrowser: { ...HPRC_DATASET.graphBrowser!, tierTrackId: undefined },
+    graphBrowser: { ...HPRC_GRAPH_BROWSER, tierTrackId: undefined },
   }
   assert.equal(graphChromosomeUrl(noTier, 'chr21'), undefined)
 })
@@ -208,7 +230,7 @@ test('the owned graph config names every track the launches open', () => {
     ),
   ) as { tracks: { trackId: string }[] }
   const ids = new Set(config.tracks.map(t => t.trackId))
-  const g = HPRC_DATASET.graphBrowser!
+  const g = HPRC_GRAPH_BROWSER
   for (const id of [
     g.segmentsTrackId,
     g.bubblesTrackId,
@@ -250,7 +272,7 @@ test('graphLocusUrl is undefined where the graph collapses the locus', () => {
   const collapsed = PANGENOME_LOCI.find(l => l.id === 'cyp2d6')!
   assert.ok(collapsed.graphCollapsed)
   assert.ok(detailWindow(collapsed), 'and it is not the width rule doing it')
-  assert.equal(graphLocusUrl(HPRC_DATASET, collapsed), undefined)
+  assert.equal(graphLocusUrl(graphDataset, collapsed), undefined)
 })
 
 test('every launched region is bare digits, in every locale', () => {
@@ -261,7 +283,7 @@ test('every launched region is bare digits, in every locale', () => {
   for (const l of PANGENOME_LOCI) {
     for (const url of [
       graphVcfLgvUrl(HPRC_DATASET, l),
-      graphLocusUrl(HPRC_DATASET, l),
+      graphLocusUrl(graphDataset, l),
     ]) {
       if (url) {
         for (const view of parseLaunch(url).spec.views) {
@@ -276,7 +298,7 @@ test('every launched region is bare digits, in every locale', () => {
 
 test('every locus either draws a window a graph can hold, or none at all', () => {
   for (const l of PANGENOME_LOCI) {
-    const url = graphLocusUrl(HPRC_DATASET, l)
+    const url = graphLocusUrl(graphDataset, l)
     if (url) {
       const { spec } = parseLaunch(url)
       const region = spec.views[1]!.loadedRegion as {

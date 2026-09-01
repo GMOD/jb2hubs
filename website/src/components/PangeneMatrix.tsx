@@ -1,6 +1,7 @@
 import useSWRImmutable from 'swr/immutable'
 
 import { fetchJson } from '../lib/fetchJson.ts'
+import { errorText } from './ErrorMessage.tsx'
 
 import type { PangeneData } from './pangenomeData.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
@@ -90,7 +91,11 @@ export default function PangeneMatrix({
         range column is min–max copies across haplotypes; red (hatched) = gene
         absent (copy 0), blue darkens with copy number.
       </p>
-      {error && <p className="pg-error">Could not load pangene matrix.</p>}
+      {error ? (
+        <p className="pg-error">
+          Could not load the pangene matrix: {errorText(error)}
+        </p>
+      ) : null}
       {!data && !error && <p className="pg-hint">Loading matrix…</p>}
       {data && (
         <>
@@ -103,14 +108,17 @@ export default function PangeneMatrix({
             >
               {data.genes.map((gene, gi) => {
                 const row = data.matrix[gi]!
+                const range = copyRange(row)
                 return (
                   <div
                     key={gene}
                     className="pg-matrix-row"
                     style={{ display: 'contents' }}
+                    role="img"
+                    aria-label={`${gene}: ${range} copies across ${order.length} haplotypes`}
                   >
                     <span className="pg-matrix-gene">{gene}</span>
-                    <span className="pg-matrix-range">{copyRange(row)}</span>
+                    <span className="pg-matrix-range">{range}</span>
                     {order.map((o, pos) => {
                       const n = row[o.hi]!
                       return (

@@ -82,8 +82,12 @@ const TIMEOUT = Number(values.timeout)
 // They read `features.staging` for the host and for whether the matrix display
 // is declared, and outside Vite that is false — so the spec is rebuilt here
 // against the host actually being tested rather than imported wholesale.
-const { HPRC_DATASET } =
+const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
   await import('../website/src/components/pangenomeDataset.ts')
+// The hosted graph is gated on features.pangenomeGraph the same way, so outside
+// Vite the dataset has no graphBrowser and every graph builder returns
+// undefined; this probe exists to boot those launches, so put it back.
+const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
 const { graphChromosomeUrl, graphLocusUrl, graphVcfLgvUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
 
@@ -138,7 +142,7 @@ for (const locus of loci) {
         }
       : undefined,
   })
-  const graph = graphLocusUrl(HPRC_DATASET, locus)
+  const graph = graphLocusUrl(graphDataset, locus)
   if (graph) {
     launches.push({
       name: `${locus.id}: graph`,
@@ -151,7 +155,7 @@ for (const locus of loci) {
 // One whole-chromosome launch off the bubble tier. chr21 is the shortest
 // autosome, so it is the cheapest proof that the tier track resolves and the
 // raised maxRegionBp is honoured; --loci filtering does not apply to it.
-const chromosome = graphChromosomeUrl(HPRC_DATASET, 'chr21')
+const chromosome = graphChromosomeUrl(graphDataset, 'chr21')
 if (chromosome && !wanted) {
   launches.push({
     name: 'chr21: whole-chromosome tier graph',

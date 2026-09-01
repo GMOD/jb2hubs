@@ -3,14 +3,19 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import hprcSamples from '../../hprcSamples.json'
 import { features } from '../../config/features.ts'
-import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
 import {
+  HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY,
+  retargetJbrowseUrl,
+} from '../../config/jbrowse.ts'
+import {
+  externalGraphUrl,
   graphBrowserUrl,
   graphLocusUrl,
 } from '../../components/pangenomeLinks.ts'
 import OpenInDesktop from '../../components/OpenInDesktop.tsx'
 import GraphRegionLauncher from '../../components/GraphRegionLauncher.tsx'
 import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
+import { detailWindow } from '../../components/pangenomeLoci.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
 
@@ -20,9 +25,18 @@ if (!features.pangenome) {
 }
 
 const browserUrl = graphBrowserUrl(HPRC_DATASET)
-// The hero's graph launch opens the catalog's headline locus, the MHC.
+// The hero's graph launch opens the catalog's headline locus, the MHC — in the
+// hosted graph view where the dataset has one (staging, until core v5), else
+// in the external browser at the same window.
 const mhc = HPRC_DATASET.loci.find(l => l.id === 'mhc-hla')
 const graphUrl = mhc && graphLocusUrl(HPRC_DATASET, mhc)
+const mhcWindow = mhc && detailWindow(mhc)
+const ext = HPRC_DATASET.externalGraphBrowser
+const externalMhcUrl =
+  !graphUrl && mhc && mhcWindow
+    ? externalGraphUrl(HPRC_DATASET, { ...mhcWindow, chrom: mhc.chrom })
+    : undefined
+const hostedGraph = HPRC_DATASET.graphBrowser !== undefined
 
 const RELEASE2 =
   'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2'
@@ -102,6 +116,19 @@ const pangenomeGraphs = [
             </a>
           )
         }
+        {
+          externalMhcUrl && ext && (
+            <a
+              class="portal-btn portal-btn-primary"
+              href={externalMhcUrl}
+              target="_blank"
+              rel="noreferrer"
+              title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
+            >
+              Draw the MHC as a graph in {ext.name} ↗
+            </a>
+          )
+        }
         <a
           class="portal-btn"
           href="/pangenomes/explorer"
@@ -129,6 +156,17 @@ const pangenomeGraphs = [
           HPRC data portal ↗
         </a>
       </div>
+      {
+        !HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
+          <p class="portal-hero-note">
+            <small>
+              On the current JBrowse release the 464-haplotype callset opens as
+              a single row; the per-haplotype matrix display ships in the next
+              release.
+            </small>
+          </p>
+        )
+      }
     </div>
 
     <p>
@@ -138,29 +176,49 @@ const pangenomeGraphs = [
       > for a searchable table of all assemblies.
     </p>
 
-    <h2>Draw the graph</h2>
-    <p>
-      The minigraph-cactus graph on GRCh38, cut to a window and drawn as nodes
-      and edges beside a linear view of the same window: bubbles are the
-      alternative haplotypes, node color runs along the reference, and hovering
-      one panel highlights the other. Type any GRCh38 region, or start from a
-      locus where structure is known to vary. Inside JBrowse the same view opens
-      from any region via the segments track&rsquo;s menu, <em
-        >Launch → Graph genome view</em
-      >, so the form is only the first cut.
-    </p>
-    <GraphRegionLauncher
-      dataset={HPRC_DATASET}
-      client:load
-    />
-    <p>
-      <small>
-        Needs the JBrowse build the staging site links; the GraphGenomeView
-        plugin does not load on released v4 hosts. Loci that minigraph collapses
-        onto one path (SMN1/2, RHD/RHCE, CYP2D6) draw as a bare thread and are
-        left out of the presets.
-      </small>
-    </p>
+    {
+      (hostedGraph || ext) && (
+        <>
+          <h2>Draw the graph</h2>
+          {hostedGraph ? (
+            <p>
+              The minigraph-cactus graph on GRCh38, cut to a window and drawn as
+              nodes and edges beside a linear view of the same window: bubbles
+              are the alternative haplotypes, node color runs along the
+              reference, and hovering one panel highlights the other. Type any
+              GRCh38 region, or start from a locus where structure is known to
+              vary. Inside JBrowse the same view opens from any region via the
+              segments track&rsquo;s menu, <em>Launch → Graph genome view</em>,
+              so the form is only the first cut.
+            </p>
+          ) : (
+            ext && (
+              <p>
+                Drawing the graph inside JBrowse needs a release newer than the
+                one this site links (the GraphGenomeView plugin boots on v5
+                only). Until then, {ext.name} draws its {ext.graphLabel} graph
+                at any GRCh38 region — type one, or start from a locus where
+                structure is known to vary.
+              </p>
+            )
+          )}
+          <GraphRegionLauncher
+            dataset={HPRC_DATASET}
+            client:load
+          />
+          {hostedGraph && (
+            <p>
+              <small>
+                Needs the JBrowse build the staging site links; the
+                GraphGenomeView plugin does not load on released v4 hosts. Loci
+                that minigraph collapses onto one path (SMN1/2, RHD/RHCE,
+                CYP2D6) draw as a bare thread and are left out of the presets.
+              </small>
+            </p>
+          )}
+        </>
+      )
+    }
 
     <h2>Pangenome Graphs</h2>
     <p>
@@ -253,6 +311,11 @@ const pangenomeGraphs = [
 </Layout>
 
 <style is:global>
+  .portal-hero-note {
+    flex: 1 0 100%;
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+  }
   .graph-launcher {
     margin: 1rem 0 1.5rem;
   }

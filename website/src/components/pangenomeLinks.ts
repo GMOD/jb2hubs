@@ -5,7 +5,7 @@
 // CORS-open VCF — the launch works without first baking the track into the config.
 
 import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
-import { mergeConfig, specUrl } from './jbrowseLinks.ts'
+import { panelTracks, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -275,7 +275,8 @@ export function graphLocusUrl(
 
 // Internal cross-link into the conserved-gene-order view for the locus's marker
 // gene, seeded from the reference species' taxon (not a JBrowse spec — a site
-// route).
+// route). That page redirects home unless `features.multiSynteny`, so render
+// this only under the same flag.
 export function crossSpeciesGeneOrderUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
@@ -284,26 +285,26 @@ export function crossSpeciesGeneOrderUrl(
 }
 
 // Pairwise reference ↔ synteny-target view at the locus (reference-level
-// divergence). Undefined when the dataset defines no synteny target.
+// divergence), through the shared synteny builder so it gets the site's view
+// defaults and opens the reference panel on its gene track rather than empty.
+// Undefined when the dataset defines no synteny target.
 export function referenceSyntenyUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
   const target = dataset.syntenyTarget
-  if (!target) {
-    return undefined
-  }
-  return specUrl(mergeConfig([dataset.reference.assembly, target.assembly]), [
-    {
-      type: 'LinearSyntenyView',
-      tracks: [target.trackId],
-      views: [
-        { assembly: dataset.reference.assembly, loc: locusRegion(locus) },
-        { assembly: target.assembly },
-      ],
-      colorBy: 'query',
-      drawCurves: true,
-      autoDiagonalize: true,
-    },
-  ])
+  return target
+    ? syntenyViewUrl(
+        [
+          {
+            assembly: dataset.reference.assembly,
+            loc: locusRegion(locus),
+            ...panelTracks(dataset.reference.geneTrackId),
+          },
+          { assembly: target.assembly },
+        ],
+        [target.trackId],
+        { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+      )
+    : undefined
 }

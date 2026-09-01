@@ -11,7 +11,9 @@ if (!features.pangenome) {
   return Astro.redirect('/')
 }
 
-// Sample count comes from the generated manifest, not a hand-written figure.
+// Sample count comes from the generated manifest, not a hand-written figure;
+// the same import feeds the explorer's per-card counts, so the browser never
+// fetches it.
 const sampleCount = manifest.samples.length
 ---
 
@@ -35,7 +37,8 @@ const sampleCount = manifest.samples.length
 
     <PangenomeExplorer
       dataset={HPRC_DATASET}
-      client:only="react"
+      manifest={manifest}
+      client:load
     />
   </Container>
 </Layout>

@@ -1,6 +1,9 @@
 import useSWRImmutable from 'swr/immutable'
 
+import { features } from '../config/features.ts'
+import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
+import { errorText } from './ErrorMessage.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import PangeneMatrix from './PangeneMatrix.tsx'
 import PangenomeBarChart from './PangenomeBarChart.tsx'
@@ -8,11 +11,12 @@ import PangenomeMsaSection from './PangenomeMsaSection.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import {
   crossSpeciesGeneOrderUrl,
+  externalGraphUrl,
   graphLocusUrl,
   graphVcfLgvUrl,
   referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
-import { locusRegion, syntenyGene } from './pangenomeLoci.ts'
+import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
 import type { LocusSummary } from './pangenomeData.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -30,6 +34,16 @@ function typeBins(typeCounts: Record<string, number>) {
 // pre-sorted descending by the generator, so this slice is the most-divergent N.
 const TOP_DIVERGENT = 12
 
+// Where there is no hosted graph (production, until core v5), the external
+// browser stands in for the locus launch: same reference coordinates, its own
+// graph build.
+function externalLocusUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
+  const window = detailWindow(locus)
+  return window && !dataset.graphBrowser
+    ? externalGraphUrl(dataset, { ...window, chrom: locus.chrom })
+    : undefined
+}
+
 export default function PangenomeLocusDashboard({
   dataset,
   locus,
@@ -42,9 +56,12 @@ export default function PangenomeLocusDashboard({
     fetchJson,
   )
   const gene = syntenyGene(locus)
+  const target = dataset.syntenyTarget
   const syntenyUrl = referenceSyntenyUrl(dataset, locus)
   const variantsUrl = graphVcfLgvUrl(dataset, locus)
   const graphUrl = graphLocusUrl(dataset, locus)
+  const externalUrl = externalLocusUrl(dataset, locus)
+  const ext = dataset.externalGraphBrowser
 
   return (
     <div className="pg-dashboard">
@@ -91,7 +108,24 @@ export default function PangenomeLocusDashboard({
             Draw {gene} as a pangenome graph →
           </a>
         )}
-        {locus.graphCollapsed && (
+        {externalUrl && ext && (
+          <a
+            className="pg-launch-btn"
+            href={externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
+          >
+            Draw {gene} as a graph in {ext.name} ↗
+          </a>
+        )}
+        {!HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
+          <p className="pg-hint pg-launch-note">
+            On the current JBrowse release the callset opens as a single row;
+            the per-haplotype matrix display ships in the next release.
+          </p>
+        )}
+        {dataset.graphBrowser && locus.graphCollapsed && (
           <p className="pg-hint pg-launch-note">
             No graph launch: minigraph collapses this locus&rsquo;s
             near-identical paralogs onto a single path, so the graph holds no
@@ -103,30 +137,32 @@ export default function PangenomeLocusDashboard({
           className="pg-launch-btn pg-launch-secondary"
           webUrl={variantsUrl}
         />
-        {syntenyUrl && dataset.syntenyTarget && (
+        {target && (
           <a
             className="pg-launch-btn pg-launch-secondary"
             href={syntenyUrl}
             target="_blank"
             rel="noreferrer"
           >
-            Compare {dataset.reference.label} ↔ {dataset.syntenyTarget.label}{' '}
-            (synteny) →
+            Compare {dataset.reference.label} ↔ {target.label} (synteny) →
           </a>
         )}
-        <a
-          className="pg-launch-btn pg-launch-secondary"
-          href={crossSpeciesGeneOrderUrl(dataset, locus)}
-        >
-          {gene} gene-order across species →
-        </a>
+        {features.multiSynteny && (
+          <a
+            className="pg-launch-btn pg-launch-secondary"
+            href={crossSpeciesGeneOrderUrl(dataset, locus)}
+          >
+            {gene} gene-order across species →
+          </a>
+        )}
       </div>
 
-      {error && (
+      {error ? (
         <p className="pg-error">
-          Could not load precomputed summary for this locus.
+          Could not load the precomputed summary for this locus:{' '}
+          {errorText(error)}
         </p>
-      )}
+      ) : null}
       {!summary && !error && <p className="pg-hint">Loading summary…</p>}
 
       {summary && (
