@@ -1,135 +1,28 @@
 ---
-import Layout from '../../layouts/Layout.astro'
-import Container from '../../components/Container.astro'
-import mouseStrains from '../../mouseStrains.json'
-import ensemblMouseStrains from '../../ensemblMouseStrains.json'
-import { features } from '../../config/features.ts'
-import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
-import '../../styles/common-table.css'
-import '../../styles/portal.css'
-
-// The pangenomes section is staging-only while in development.
-if (!features.pangenome) {
-  return Astro.redirect('/')
-}
+// This page folded into /pangenomes on 2026-09-01; kept so bookmarks and older
+// links land on the same section.
+const target = '/pangenomes#mouse'
+const canonical = new URL('/pangenomes', Astro.site)
 ---
 
-<Layout
-  title="Mouse Strain Assemblies"
-  description="Inbred mouse strain assemblies from the UCSC Mouse Strains Hub and the Ensembl Mouse Genomes Project, each openable in JBrowse 2."
->
-  <Container>
-    <h1>Mouse Strain Assemblies</h1>
-
-    <div class="portal-hero">
-      <div class="portal-hero-text">
-        <h2 class="portal-hero-title">Browse strains interactively</h2>
-        <p>
-          Open the strain assemblies in a genome browser rather than starting
-          from the download tables. There is no published mouse pangenome graph
-          yet, but cross-strain variation (MGP, ~52 strains vs GRCm39) is
-          available as data.
-        </p>
-      </div>
-      <div class="portal-hero-actions">
-        <a
-          class="portal-btn portal-btn-primary"
-          href="https://projects.ensembl.org/mouse_genomes/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Ensembl Mouse Genomes portal ↗
-        </a>
-        <a
-          class="portal-btn"
-          href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
-          target="_blank"
-          rel="noreferrer"
-        >
-          UCSC Mouse Strains Hub ↗
-        </a>
-        <a
-          class="portal-btn portal-btn-ghost"
-          href="https://ftp.ebi.ac.uk/pub/databases/mousegenomes/REL-2112-v8-SNPs_Indels/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          MGP strain variation (GRCm39) ↗
-        </a>
-      </div>
-    </div>
-
-    <h2>Ensembl Mouse Genomes Project</h2>
-    <p>
-      18 inbred mouse strain assemblies from the <a
-        href="https://projects.ensembl.org/mouse_genomes/"
-        >Ensembl Mouse Genomes Project</a
-      >, including two T2T assemblies, with GENCODE M30 annotation.
-    </p>
-    <table>
-      <thead>
-        <tr>
-          <th>Strain</th>
-          <th>Year</th>
-          <th>Accession</th>
-          <th>JAX</th>
-          <th>JBrowse</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          ensemblMouseStrains.map(strain => (
-            <tr>
-              <td>{strain.strain}</td>
-              <td>{strain.assemblyYear}</td>
-              <td>
-                <a href={`/accession/${strain.accession}/`}>
-                  {strain.accession}
-                </a>
-              </td>
-              <td>{strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}</td>
-              <td>
-                <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-
-    <h2>UCSC Mouse Strains Hub (2016)</h2>
-    <p>
-      16 inbred mouse strain assemblies from the <a
-        href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
-        >UCSC Mouse Strains Hub</a
-      >, aligned to mm10 via Cactus with RNA-seq and cross-strain alignment
-      tracks.
-    </p>
-    <table>
-      <thead>
-        <tr>
-          <th>Strain</th>
-          <th>Year</th>
-          <th>Organism</th>
-          <th>JAX</th>
-          <th>JBrowse</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          mouseStrains.map(strain => (
-            <tr>
-              <td>{strain.genomeName.replaceAll('_', '/')}</td>
-              <td>{strain.assemblyYear}</td>
-              <td>{strain.organism}</td>
-              <td>{strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}</td>
-              <td>
-                <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </Container>
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="refresh"
+      content={`0; url=${target}`}
+    />
+    <link
+      rel="canonical"
+      href={canonical}
+    />
+    <title>Redirecting to /pangenomes</title>
+    <script is:inline define:vars={{ target }}>
+      location.replace(target)
+    </script>
+  </head>
+  <body>
+    <p>This page moved to <a href={target}>{target}</a>.</p>
+  </body>
+</html>

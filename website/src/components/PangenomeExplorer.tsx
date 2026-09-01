@@ -1,6 +1,7 @@
 import { useUrlState } from '../hooks/useUrlState.ts'
 import PangenomeLocusDashboard from './PangenomeLocusDashboard.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
+import { DEFAULT_DATASET_ID, PANGENOME_DATASETS } from './pangenomeDataset.ts'
 import { VARIATION_LABELS } from './pangenomeLoci.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -35,7 +36,11 @@ const filterLabel = (f: Filter) => (f === 'all' ? 'All' : VARIATION_LABELS[f])
 const matchesFilter = (l: PangenomeLocus, f: Filter) =>
   f === 'all' || l.variation.includes(f)
 
-export default function PangenomeExplorer({
+// Only a dataset with a locus catalog can be explored; the mouse strains on
+// /pangenomes#mouse have none yet.
+const EXPLORABLE = PANGENOME_DATASETS.filter(d => d.loci.length > 0)
+
+function LocusGrid({
   dataset,
   manifest,
 }: {
@@ -84,6 +89,15 @@ export default function PangenomeExplorer({
 
   return (
     <div>
+      <p>
+        {dataset.reference.label} loci where structure varies between haplotypes
+        (copy number, gene presence/absence, tandem repeats, inversions,
+        hypervariable immune regions), from the {dataset.label} graph (
+        {manifest.samples.length} samples), with JBrowse launches. The graph
+        files and sample assemblies are on{' '}
+        <a href={`/pangenomes#${dataset.id}`}>the pangenomes page</a>.
+      </p>
+
       <div className="pg-filters">
         {FILTERS.map(f => (
           <button
@@ -143,6 +157,56 @@ export default function PangenomeExplorer({
           locus={selected}
         />
       )}
+    </div>
+  )
+}
+
+// `manifests` holds one generated manifest per explorable dataset id, imported
+// at build by the page. ?dataset=<id> picks the dataset; an unknown id falls
+// back to the default.
+export default function PangenomeExplorer({
+  manifests,
+}: {
+  manifests: Record<string, PangenomeManifest>
+}) {
+  const [datasetId, setDatasetId] = useUrlState('dataset', DEFAULT_DATASET_ID)
+  const dataset = EXPLORABLE.find(d => d.id === datasetId) ?? EXPLORABLE[0]
+  const manifest = dataset && manifests[dataset.id]
+
+  return dataset === undefined || manifest === undefined ? (
+    <p className="pg-error">
+      No pangenome dataset has a locus catalog to explore yet.
+    </p>
+  ) : (
+    <div>
+      {EXPLORABLE.length > 1 ? (
+        <p className="pg-filters">
+          <span>Dataset:</span>
+          {EXPLORABLE.map(d => (
+            <button
+              key={d.id}
+              className={`pg-filter${d.id === dataset.id ? ' pg-filter-active' : ''}`}
+              aria-pressed={d.id === dataset.id}
+              onClick={() => {
+                setDatasetId(d.id)
+              }}
+            >
+              {d.label}
+            </button>
+          ))}
+        </p>
+      ) : (
+        <p className="pg-hint">
+          {dataset.label} is the only dataset with a locus catalog so far; the{' '}
+          <a href="/pangenomes#mouse">mouse strain assemblies</a> have no
+          pangenome VCF or curated loci wired up yet.
+        </p>
+      )}
+      <LocusGrid
+        key={dataset.id}
+        dataset={dataset}
+        manifest={manifest}
+      />
     </div>
   )
 }

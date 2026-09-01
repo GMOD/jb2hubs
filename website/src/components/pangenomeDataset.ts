@@ -184,8 +184,12 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // alongside a change to `graphVcf` (`node generatePangenomeData.ts`). The three
 // generators read `graphVcf.url` from here rather than restating it, so that
 // sentence stays true: a changed url can no longer leave them on the old file.
+//
+// `id` is the `?dataset=` value on /pangenomes/explorer and the section anchor
+// on /pangenomes, so it is short and stable across graph releases; the release
+// is in `label`.
 export const HPRC_DATASET: PangenomeDataset = {
-  id: 'hprc-mc-v2.0-grch38',
+  id: 'hprc',
   label: 'HPRC minigraph-cactus v2.0',
   reference: {
     assembly: 'hg38',
@@ -227,4 +231,16 @@ export const HPRC_DATASET: PangenomeDataset = {
     graphLabel: 'HPRC minigraph-cactus v1.1',
   },
   loci: PANGENOME_LOCI,
+}
+
+// Every dataset the explorer can show, keyed by `id`. The mouse strains on
+// /pangenomes#mouse are not one: there is no mouse pangenome VCF wired up and
+// no curated mm39 loci yet (agent-docs/MOUSE_PANGENOME_PLAN.md is the plan),
+// so the explorer lists only datasets that have loci.
+export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [HPRC_DATASET]
+
+export const DEFAULT_DATASET_ID = HPRC_DATASET.id
+
+export function datasetById(id: string) {
+  return PANGENOME_DATASETS.find(d => d.id === id)
 }

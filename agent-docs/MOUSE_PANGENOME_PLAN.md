@@ -1,21 +1,28 @@
 # Mouse (mm39) pangenome explorer — handoff plan
 
 > **Status as of 2026-09-01.** Written against an earlier layout; read the rest
-> with these corrections. The pages are `website/src/pages/pangenomes/*.astro`
-> (`/pangenomes`, `/pangenomes/hprc`, `/pangenomes/explorer`,
-> `/pangenomes/mouse`), gated on `features.pangenome`; there is no `/pangenome`
-> route and no `hprc/index.astro`. The parameterisation §3 proposes is done:
-> `PangenomeDataset` (`website/src/components/pangenomeDataset.ts`) carries the
-> reference, VCF, synteny target, data prefix, optional hosted `graphBrowser`
-> (itself gated on `features.pangenomeGraph`, since the GraphGenomeView plugin
-> needs core v5) and external graph browser, and every builder in
-> `pangenomeLinks.ts` and every component reads only that shape — a mouse
-> dataset is a second `PangenomeDataset` plus its precomputed data. The locus
-> shape is `pangenomeLoci.ts`'s `PangenomeLocus`: `variation` (a
-> `VariationClass[]`: `cnv`, `pav`, `hyperdiversity`, `vntr`, `inversion`) and
-> `significance`, not `kinds`/`story`, with optional `detailWindow`,
-> `graphCollapsed` and `pangeneGenes`. Translate the table in §2 into that
-> shape.
+> with these corrections. There are two routes, both under
+> `website/src/pages/pangenomes/` and gated on `features.pangenome`:
+> `/pangenomes` (one landing page, `#hprc` and `#mouse` sections carrying the
+> HPRC launchers, graph tables and sample table, and the mouse strain tables)
+> and `/pangenomes/explorer?dataset=<id>`. `/pangenomes/hprc` and
+> `/pangenomes/mouse` are meta-refresh redirects to the two anchors, kept for
+> old links. There is no `/pangenome` route and no `hprc/index.astro`. The
+> parameterisation §3 proposes is done: `PangenomeDataset`
+> (`website/src/components/pangenomeDataset.ts`) carries the reference, VCF,
+> synteny target, data prefix, optional hosted `graphBrowser` (itself gated on
+> `features.pangenomeGraph`, since the GraphGenomeView plugin needs core v5) and
+> external graph browser, and every builder in `pangenomeLinks.ts` and every
+> component reads only that shape. `PANGENOME_DATASETS` in that file is the
+> registry the explorer resolves `?dataset=` against, and it lists datasets with
+> loci only — so a mouse dataset is a second `PangenomeDataset` entry (id
+> `mouse`, matching the landing-page anchor) plus its precomputed data under its
+> own `dataPrefix`, plus its manifest imported in `explorer.astro`'s `manifests`
+> map; no new page. The locus shape is `pangenomeLoci.ts`'s `PangenomeLocus`:
+> `variation` (a `VariationClass[]`: `cnv`, `pav`, `hyperdiversity`, `vntr`,
+> `inversion`) and `significance`, not `kinds`/`story`, with optional
+> `detailWindow`, `graphCollapsed` and `pangeneGenes`. Translate the table in §2
+> into that shape.
 
 For whoever owns the pangenome feature (`PangenomeExplorer`, `pangenomeLoci`,
 `generatePangenomeData`, `pangenomeLinks`, `/pangenome` + `/hprc` pages). Goal:
@@ -81,8 +88,9 @@ parameter rather than forking:
 - **`pangenomeLinks.ts`** — `hprcSyntenyUrl`/`hprcVcfLgvUrl` become
   reference-aware (mm39 UCSC config + the mouse VCF track); the mm39 LGV uses
   `jbrowse.org/ucsc/mm39/config.json`.
-- **New page** `src/pages/mouse-pangenome/index.astro` mirroring
-  `hprc/index.astro`, behind a staging flag.
+- **No new page**: add the dataset to `PANGENOME_DATASETS` and its manifest to
+  `explorer.astro`; the explorer's dataset switch appears once two datasets have
+  loci.
 
 ## 4. Notes
 

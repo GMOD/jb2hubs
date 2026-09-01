@@ -6,7 +6,7 @@ import { features } from '../config/features.ts'
 import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { HPRC_DATASET, HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
 import {
-  crossSpeciesGeneOrderUrl,
+  geneHubUrl,
   externalGraphUrl,
   graphBrowserUrl,
   graphChromosomeUrl,
@@ -146,9 +146,10 @@ test('referenceSyntenyUrl is undefined when the dataset has no synteny target', 
   assert.equal(referenceSyntenyUrl(noTarget, locus), undefined)
 })
 
-test('crossSpeciesGeneOrderUrl seeds the marker gene and reference taxon', () => {
-  const url = crossSpeciesGeneOrderUrl(HPRC_DATASET, locus)
-  const { searchParams } = new URL(url, 'https://example.org')
+test('geneHubUrl seeds the marker gene and reference taxon', () => {
+  const url = geneHubUrl(HPRC_DATASET, locus)
+  const { pathname, searchParams } = new URL(url, 'https://example.org')
+  assert.equal(pathname, '/gene')
   // First pangene marker for MHC is HLA-A.
   assert.equal(searchParams.get('gene'), 'HLA-A')
   assert.equal(searchParams.get('ref'), String(HPRC_DATASET.reference.taxonId))

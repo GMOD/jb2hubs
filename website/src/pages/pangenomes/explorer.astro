@@ -4,40 +4,27 @@ import Container from '../../components/Container.astro'
 import PangenomeExplorer from '../../components/PangenomeExplorer.tsx'
 import { features } from '../../config/features.ts'
 import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
-import manifest from '../../../public/pangenome/manifest.json'
+import hprcManifest from '../../../public/pangenome/manifest.json'
 
 // Staging-only while the pangenome explorer is in development; see synteny/index.astro.
 if (!features.pangenome) {
   return Astro.redirect('/')
 }
 
-// Sample count comes from the generated manifest, not a hand-written figure;
-// the same import feeds the explorer's per-card counts, so the browser never
-// fetches it.
-const sampleCount = manifest.samples.length
+// One generated manifest per explorable dataset, imported here so the browser
+// never fetches it; `?dataset=<id>` picks among them client-side.
+const manifests = { [HPRC_DATASET.id]: hprcManifest }
 ---
 
 <Layout
-  title="Human pangenome — variable loci"
-  description="Curated human loci where genome structure varies between haplotypes — copy number, gene presence/absence, tandem repeats, inversions — drawn from the HPRC pangenome graph."
+  title="Pangenome explorer — variable loci"
+  description="Curated loci where genome structure varies between haplotypes — copy number, gene presence/absence, tandem repeats, inversions — drawn from a pangenome graph, with JBrowse launches."
 >
   <Container>
-    <h1>Human pangenome: variable loci</h1>
-    <p>
-      GRCh38 loci where structure varies between haplotypes (copy number, gene
-      presence/absence, tandem repeats, inversions, hypervariable immune
-      regions), from the
-      <a
-        href="https://github.com/human-pangenomics/hpp_pangenome_resources"
-        target="_blank"
-        rel="noreferrer"
-        >HPRC</a
-      > minigraph-cactus v2.0 graph ({sampleCount} samples), with JBrowse launches.
-    </p>
+    <h1>Pangenome explorer: variable loci</h1>
 
     <PangenomeExplorer
-      dataset={HPRC_DATASET}
-      manifest={manifest}
+      manifests={manifests}
       client:load
     />
   </Container>

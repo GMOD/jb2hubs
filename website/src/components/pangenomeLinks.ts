@@ -273,15 +273,10 @@ export function graphLocusUrl(
     : undefined
 }
 
-// Internal cross-link into the conserved-gene-order view for the locus's marker
-// gene, seeded from the reference species' taxon (not a JBrowse spec — a site
-// route). That page redirects home unless `features.multiSynteny`, so render
-// this only under the same flag.
-export function crossSpeciesGeneOrderUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  return `/conserved-gene-order?gene=${encodeURIComponent(syntenyGene(locus))}&ref=${dataset.reference.taxonId}`
+// Internal cross-link into the gene hub for the locus's marker gene, seeded
+// from the reference species' taxon (not a JBrowse spec — a site route).
+export function geneHubUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
+  return `/gene?gene=${encodeURIComponent(syntenyGene(locus))}&ref=${dataset.reference.taxonId}`
 }
 
 // Pairwise reference ↔ synteny-target view at the locus (reference-level

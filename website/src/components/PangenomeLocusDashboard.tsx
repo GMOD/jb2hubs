@@ -1,6 +1,5 @@
 import useSWRImmutable from 'swr/immutable'
 
-import { features } from '../config/features.ts'
 import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { errorText } from './ErrorMessage.tsx'
@@ -10,8 +9,8 @@ import PangenomeBarChart from './PangenomeBarChart.tsx'
 import PangenomeMsaSection from './PangenomeMsaSection.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import {
-  crossSpeciesGeneOrderUrl,
   externalGraphUrl,
+  geneHubUrl,
   graphLocusUrl,
   graphVcfLgvUrl,
   referenceSyntenyUrl,
@@ -147,14 +146,12 @@ export default function PangenomeLocusDashboard({
             Compare {dataset.reference.label} ↔ {target.label} (synteny) →
           </a>
         )}
-        {features.multiSynteny && (
-          <a
-            className="pg-launch-btn pg-launch-secondary"
-            href={crossSpeciesGeneOrderUrl(dataset, locus)}
-          >
-            {gene} gene-order across species →
-          </a>
-        )}
+        <a
+          className="pg-launch-btn pg-launch-secondary"
+          href={geneHubUrl(dataset, locus)}
+        >
+          {gene} across species (gene hub) →
+        </a>
       </div>
 
       {error ? (
