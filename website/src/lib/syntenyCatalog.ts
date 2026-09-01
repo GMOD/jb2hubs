@@ -1,10 +1,12 @@
 // The synteny catalog is the set of assemblies and synteny tracks that the
 // /synteny page lets you browse, backed by the build-time `syntenyTracks.json`
-// blob that the page already holds in its props. The queries below are
-// synchronous because the data is: an earlier Promise-returning version bought
-// nothing but forced the selector to mirror every list into state behind an
-// effect. Should this ever move behind an API, the component swaps its useMemos
-// for SWR calls — the same one-line-per-query change either way.
+// that `scripts/extractSyntenyTracks.ts` writes and the page hands to the
+// selector as island props. That file is already the pruned shape below — track
+// ids, names and assembly names, plus info for the assemblies that take part —
+// not the configs' adapters, which nothing on the client reads and which made
+// the props 8 MB. The queries are synchronous because the data is: an earlier
+// Promise-returning version bought nothing but forced the selector to mirror
+// every list into state behind an effect.
 
 export type AssemblySource = 'ucsc' | 'genark' | 'legacy'
 
@@ -12,9 +14,16 @@ export interface AssemblyInfo {
   commonName?: string
   scientificName?: string
   source: AssemblySource
-  // NCBI taxonomy id, used to map assemblies to the cross-species ortholog
-  // tables for the optional gene-level comparison.
+  // NCBI taxonomy id, which is what the gene picker searches and resolves
+  // orthologs by.
   taxonId?: number
+  // The NCBI accession a UCSC db stands for, from the genome list's
+  // sourceName. A GenArk name is its own accession and carries none.
+  accession?: string
+  // The gene track a launched panel opens for this genome; '' when its config
+  // has none. A LinearSyntenyView sub-view gets no defaultSession, so a panel
+  // launched without one is an empty browser at the right locus.
+  geneTrack: string
 }
 
 export interface SyntenyTrackSummary {
@@ -27,15 +36,16 @@ export interface SyntenyAssembly {
   id: string
   displayName: string
   scientificName: string
-  source: string
+  source: AssemblySource
 }
 
-// Which assembly sources are currently enabled in the UI. A future DB-backed
-// catalog would translate this into query predicates.
+// Which assembly sources are currently enabled in the UI.
 export interface SourceFilter {
   ucsc: boolean
   genark: boolean
 }
+
+export const ALL_SOURCES: SourceFilter = { ucsc: true, genark: true }
 
 export interface SyntenyCatalog {
   // Assemblies that participate in at least one launchable track.
@@ -48,6 +58,9 @@ export interface SyntenyCatalog {
     assembly2: string,
     filter: SourceFilter,
   ): SyntenyTrackSummary[]
+  // Distinct assembly pairs with a launchable track, counting both liftOver
+  // directions and the chainBridge variant of one comparison once.
+  countComparisons(filter: SourceFilter): number
 }
 
 export interface SyntenyCatalogData {
@@ -70,10 +83,13 @@ export function pickDefaultTrack(
   return plain ?? candidates[0]
 }
 
-function trackIsLaunchable(
+// Both ends of the track name a hosted, non-retired assembly whose source the
+// filter allows. Shared with generateSyntenyAccessions.ts so the accession
+// pages link to exactly the assemblies the selector lists.
+export function trackIsLaunchable(
   track: SyntenyTrackSummary,
   assemblyInfo: Record<string, AssemblyInfo>,
-  filter: SourceFilter,
+  filter: SourceFilter = ALL_SOURCES,
 ) {
   let launchable = true
   for (const name of track.assemblyNames) {
@@ -89,6 +105,34 @@ function trackIsLaunchable(
   return launchable
 }
 
+// GCA_000001215.4 and GCF_000001215.4 are one assembly (the GenBank and RefSeq
+// copies), so identity is the digits and version without the prefix. The
+// version is kept on purpose: hg19 and hg38 share GCA_000001405 and are a real
+// comparison, which is why this is stricter than the version-stripped rule
+// generateSyntenyPairIndex.ts needs for its base-keyed lookups.
+function assemblyIdentity(
+  name: string,
+  assemblyInfo: Record<string, AssemblyInfo>,
+) {
+  const accession = assemblyInfo[name]?.accession ?? name
+  return /^GC[AF]_(\d+\.\d+)/.exec(accession)?.[1] ?? accession
+}
+
+// A track whose two halves are the same genome under two names — UCSC dm6
+// against the GenArk build of the same assembly — which would otherwise offer
+// an assembly as its own partner.
+export function isSelfPair(
+  track: SyntenyTrackSummary,
+  assemblyInfo: Record<string, AssemblyInfo>,
+) {
+  const [a, b] = track.assemblyNames
+  return (
+    a !== undefined &&
+    b !== undefined &&
+    assemblyIdentity(a, assemblyInfo) === assemblyIdentity(b, assemblyInfo)
+  )
+}
+
 export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   const { tracks, assemblyInfo } = data
 
@@ -99,8 +143,10 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
     const key = `${filter.ucsc ? 1 : 0}${filter.genark ? 1 : 0}`
     let result = launchableCache.get(key)
     if (!result) {
-      result = tracks.filter(track =>
-        trackIsLaunchable(track, assemblyInfo, filter),
+      result = tracks.filter(
+        track =>
+          trackIsLaunchable(track, assemblyInfo, filter) &&
+          !isSelfPair(track, assemblyInfo),
       )
       launchableCache.set(key, result)
     }
@@ -157,6 +203,14 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
           track.assemblyNames.includes(assembly1) &&
           track.assemblyNames.includes(assembly2),
       )
+    },
+
+    countComparisons(filter) {
+      const pairs = new Set<string>()
+      for (const track of launchableTracks(filter)) {
+        pairs.add(track.assemblyNames.slice().sort().join('\t'))
+      }
+      return pairs.size
     },
   }
 }

@@ -1,7 +1,14 @@
 import assert from 'node:assert'
-import { test } from 'node:test'
+import { mock, test } from 'node:test'
 
-import { dedupeHits, rankSymbols } from './geneSearch.ts'
+import {
+  dedupeHits,
+  encodeGeneRef,
+  parseGeneRef,
+  queryGenes,
+  rankSymbols,
+  searchGenes,
+} from './geneSearch.ts'
 
 // mygene's prefix search does not lead with the obvious answer: `symbol:TP5*` in
 // human returns TP53TG3C, TP53TG1, TP53RK and buries TP53, so a reader typing
@@ -79,4 +86,34 @@ test('dedupeHits: a symbol with no id at all survives, without one', () => {
   assert.deepEqual(dedupeHits([{ symbol: 'BRCA1P1' }]), [
     { symbol: 'BRCA1P1', geneId: undefined },
   ])
+})
+
+// A synteny link carries the picked gene as one query parameter, and a load
+// needs both halves back: the id to resolve the ortholog, the symbol to show.
+test('gene ref: round-trips id and symbol, with a colon in the symbol', () => {
+  const ref = encodeGeneRef('7157', 'TP53')
+  assert.equal(ref, '7157:TP53')
+  assert.deepEqual(parseGeneRef(ref), { geneId: '7157', symbol: 'TP53' })
+  assert.deepEqual(parseGeneRef('12:A:B'), { geneId: '12', symbol: 'A:B' })
+})
+
+test('gene ref: anything else is not a gene', () => {
+  assert.equal(parseGeneRef(''), undefined)
+  assert.equal(parseGeneRef('TP53'), undefined)
+  assert.equal(parseGeneRef('7157:'), undefined)
+})
+
+// An outage and "no gene starts with that" both come back as an empty list
+// from the best-effort search, which is what the synteny picker used to show
+// as "No results found". The strict query keeps them apart.
+test('queryGenes rejects on a failed request; searchGenes swallows it', async () => {
+  const failing = mock.method(globalThis, 'fetch', () =>
+    Promise.resolve(new Response('', { status: 429 })),
+  )
+  try {
+    await assert.rejects(queryGenes('TP5', 9606), /429/)
+    assert.deepEqual(await searchGenes('TP5', 9606), [])
+  } finally {
+    failing.mock.restore()
+  }
 })

@@ -1,16 +1,25 @@
 import { useMemo, useState } from 'react'
 
+import useSWRImmutable from 'swr/immutable'
+
+import { features } from '../config/features.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
-import { fetchOrthologSymbol, searchGenes } from './geneSearch.ts'
-import { syntenyViewUrl } from './jbrowseLinks.ts'
+import {
+  encodeGeneRef,
+  parseGeneRef,
+  queryGenes,
+  resolveOrthologSymbol,
+} from './geneSearch.ts'
+import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 
 import type {
   SyntenyAssembly,
   SyntenyCatalogData,
 } from '../lib/syntenyCatalog.ts'
+import type { AutocompleteOption } from './Autocomplete.tsx'
 
 interface Props {
   data: SyntenyCatalogData
@@ -26,19 +35,16 @@ function formatOption(asm: SyntenyAssembly) {
 }
 
 export default function SyntenySelector({ data }: Props) {
-  const [species1, setSpecies1] = useUrlState('assembly', '')
-  const [species2, setSpecies2] = useUrlState('assembly2', '')
-  const [trackOverride, setTrackOverride] = useState('')
+  // Everything that makes the link shareable is URL state: the pair, the gene
+  // (as "<NCBI GeneID>:<symbol>", so a load can re-resolve the ortholog without
+  // a search) and an alignment other than the default.
+  const [species1Param, setSpecies1] = useUrlState('assembly', '')
+  const [species2Param, setSpecies2] = useUrlState('assembly2', '')
+  const [geneValue, setGeneValue] = useUrlState('gene', '')
+  const [trackOverride, setTrackOverride] = useUrlState('track', '')
   const [showUcsc, setShowUcsc] = useState(true)
   const [showGenark, setShowGenark] = useState(true)
-  // The gene chosen in the Autocomplete, encoded as "<geneId>\t<symbol>" (its
-  // option value). Drives display + ortholog resolution.
-  const [geneValue, setGeneValue] = useState('')
-  // The resolved ortholog pair as "species1Symbol\tspecies2Symbol", used to
-  // navigate each sub-view at launch. Empty = whole genome.
-  const [selectedGene, setSelectedGene] = useState('')
-  // Status under the gene box while resolving / when no ortholog exists.
-  const [geneNote, setGeneNote] = useState('')
+  const [searchError, setSearchError] = useState<unknown>(undefined)
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = useMemo(
@@ -48,15 +54,29 @@ export default function SyntenySelector({ data }: Props) {
   const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
 
   // Every list is a filter over the blob the page already handed us, so it is
-  // derived during render rather than mirrored into state by an effect.
+  // derived during render rather than mirrored into state by an effect. The
+  // URL is validated the same way: a link naming an assembly the catalog does
+  // not list reads as nothing chosen, rather than a half-selected pair.
   const assemblies = useMemo(
     () => catalog.listAssemblies(filter),
     [catalog, filter],
   )
+  const species1 = assemblies.some(a => a.id === species1Param)
+    ? species1Param
+    : ''
   const partners = useMemo(
     () => (species1 ? catalog.listPartners(species1, filter) : []),
     [catalog, species1, filter],
   )
+  const species2 = partners.some(a => a.id === species2Param)
+    ? species2Param
+    : ''
+  const unknownParams = [
+    [species1Param, species1],
+    [species2Param, species2],
+  ]
+    .filter(([param, valid]) => param && !valid)
+    .map(([param]) => param)
   const tracks = useMemo(
     () =>
       species1 && species2
@@ -69,70 +89,89 @@ export default function SyntenySelector({ data }: Props) {
   const taxon2 = data.assemblyInfo[species2]?.taxonId
   // Gene centering is offered whenever both assemblies map to an NCBI taxon.
   const canSearchGenes = taxon1 !== undefined && taxon2 !== undefined
+  const gene = canSearchGenes ? parseGeneRef(geneValue) : undefined
 
-  const resetGene = () => {
-    setGeneValue('')
-    setSelectedGene('')
-    setGeneNote('')
+  // The orthologous symbol in the second taxon, keyed on exactly the inputs it
+  // answers for: a response for an earlier gene or partner can never land on
+  // the current pair, and a failed request is an error rather than "no
+  // ortholog". A same-species pair reuses the symbol and asks nothing.
+  const ortholog = useSWRImmutable(
+    gene && taxon2 !== undefined && taxon1 !== taxon2
+      ? (['ortholog', gene.geneId, taxon2] as const)
+      : null,
+    ([, geneId, taxId]) => resolveOrthologSymbol(geneId, taxId),
+  )
+  const symbol2 = gene
+    ? taxon1 === taxon2
+      ? gene.symbol
+      : ortholog.data
+    : undefined
+
+  function orthologNote() {
+    let note = ''
+    if (gene && taxon1 !== taxon2) {
+      if (ortholog.isLoading) {
+        note = `Finding ${gene.symbol} ortholog in ${nameOf(species2)}…`
+      } else if (ortholog.error !== undefined) {
+        note = `Ortholog lookup failed (${String(ortholog.error)}); pick the gene again to retry.`
+      } else if (ortholog.data) {
+        note = `${gene.symbol} → ${ortholog.data}`
+      } else {
+        note = `No ${gene.symbol} ortholog in ${nameOf(species2)}.`
+      }
+    }
+    return note
   }
+  const geneNote =
+    searchError === undefined
+      ? orthologNote()
+      : `Gene search failed (${String(searchError)}).`
 
   // Gene-name typeahead in the first assembly's taxon. Each option carries the
   // NCBI gene id so selection can resolve the ortholog in the second taxon —
   // so a suggestion mygene holds without one is dropped rather than offered as
-  // a choice that could not resolve.
-  const queryGeneOptions = async (search: string) =>
-    taxon1 !== undefined
-      ? (await searchGenes(search, taxon1))
-          .filter(h => h.geneId)
-          .map(h => ({
-            value: `${h.geneId}\t${h.symbol}`,
-            label: h.symbol,
-          }))
-      : []
-
-  // On selection, resolve the orthologous symbol in the second taxon (or reuse
-  // the same symbol for same-species pairs) so the launch can center both views.
-  const handleGeneChange = (value: string) => {
-    setGeneValue(value)
-    const [geneId, symbol1] = value.split('\t')
-    if (!geneId || !symbol1 || taxon2 === undefined) {
-      setSelectedGene('')
-      setGeneNote('')
-    } else if (taxon1 === taxon2) {
-      setSelectedGene(`${symbol1}\t${symbol1}`)
-      setGeneNote('')
-    } else {
-      setSelectedGene('')
-      setGeneNote(`Finding ${symbol1} ortholog in ${nameOf(species2)}…`)
-      void fetchOrthologSymbol(geneId, taxon2)
-        .then(symbol2 => {
-          if (symbol2) {
-            setSelectedGene(`${symbol1}\t${symbol2}`)
-            setGeneNote(`${symbol1} → ${symbol2}`)
-          } else {
-            setGeneNote(`No ${symbol1} ortholog in ${nameOf(species2)}.`)
-          }
-        })
-        .catch(() => {
-          setGeneNote('Ortholog lookup failed; try again.')
-        })
+  // a choice that could not resolve. A failed search is kept as the error it
+  // was, so an outage does not read as "no gene by that name".
+  const queryGeneOptions = async (search: string) => {
+    let options: AutocompleteOption[] = []
+    if (taxon1 !== undefined) {
+      try {
+        const hits = await queryGenes(search, taxon1)
+        setSearchError(undefined)
+        options = hits.flatMap(h =>
+          h.geneId
+            ? [{ value: encodeGeneRef(h.geneId, h.symbol), label: h.symbol }]
+            : [],
+        )
+      } catch (error) {
+        setSearchError(error)
+      }
     }
+    return options
+  }
+
+  const resetGene = () => {
+    setGeneValue('')
+    setSearchError(undefined)
   }
 
   const handleSpecies1Change = (value: string) => {
     setSpecies1(value)
     setSpecies2('')
+    setTrackOverride('')
     resetGene()
   }
 
   const handleSpecies2Change = (value: string) => {
     setSpecies2(value)
+    setTrackOverride('')
     resetGene()
   }
 
   const handleSwap = () => {
     setSpecies1(species2)
     setSpecies2(species1)
+    setTrackOverride('')
     resetGene()
   }
 
@@ -147,21 +186,17 @@ export default function SyntenySelector({ data }: Props) {
       species1 &&
       !catalog.listAssemblies(next).some(a => a.id === species1)
     ) {
-      setSpecies1('')
-      setSpecies2('')
-      resetGene()
+      handleSpecies1Change('')
     } else if (
       species2 &&
       !catalog.listPartners(species1, next).some(a => a.id === species2)
     ) {
-      setSpecies2('')
-      resetGene()
+      handleSpecies2Change('')
     }
   }
 
-  // A track override left over from a previous pair isn't in this pair's list,
-  // so it falls back to the default rather than leaving the launch disabled —
-  // which is why changing the pair needs no reset.
+  // An override that is not in this pair's list (a hand-edited link) falls
+  // back to the default rather than leaving the launch disabled.
   const selectedTrack = useMemo(
     () =>
       tracks.find(t => t.trackId === trackOverride) ??
@@ -170,35 +205,28 @@ export default function SyntenySelector({ data }: Props) {
     [tracks, trackOverride, species1],
   )
 
-  const launchUrl = useMemo(() => {
-    if (!species1 || !species2 || !selectedTrack) {
-      return null
-    }
-
-    // The LinearSyntenyView LaunchView extension point reads these top-level
-    // spec fields into its one-time init block. They make the whole-genome
-    // synteny readable on first load: chromosome painting instead of grey
-    // mud, diagonalized axes, and bezier ribbons. Deployments that predate
-    // these options ignore the extra fields.
-    // When a gene is chosen, navigate each sub-view to the orthologous gene
-    // symbol; JBrowse resolves the symbol to a locus via each assembly's text
-    // search index at load. A whole-genome view (no loc) otherwise. selectedGene
-    // encodes both symbols as "species1Symbol\tspecies2Symbol".
-    const [gene1, gene2] = selectedGene.split('\t')
-    const subViews =
-      gene1 && gene2
-        ? [
-            { assembly: species1, loc: gene1 },
-            { assembly: species2, loc: gene2 },
-          ]
-        : [{ assembly: species1 }, { assembly: species2 }]
-
-    return syntenyViewUrl(subViews, [selectedTrack.trackId], {
-      colorBy: 'query',
-      drawCurves: true,
-      autoDiagonalize: true,
-    })
-  }, [species1, species2, selectedTrack, selectedGene])
+  // Each panel opens its genome's gene track — a synteny sub-view has no
+  // defaultSession, so without one it is an empty browser at the right locus —
+  // and, when an ortholog pair resolved, is navigated to that symbol, which
+  // JBrowse resolves through the assembly's text index at load. Otherwise the
+  // whole genome. The view options make the whole-genome synteny readable on
+  // first load (chromosome painting, diagonalized axes, bezier ribbons); see
+  // SyntenyViewOptions for which hosts honour them.
+  const panel = (assembly: string, loc: string | undefined) => ({
+    assembly,
+    ...(loc ? { loc } : {}),
+    ...panelTracks(data.assemblyInfo[assembly]?.geneTrack ?? ''),
+  })
+  const launchUrl =
+    species1 && species2 && selectedTrack
+      ? syntenyViewUrl(
+          gene && symbol2
+            ? [panel(species1, gene.symbol), panel(species2, symbol2)]
+            : [panel(species1, undefined), panel(species2, undefined)],
+          [selectedTrack.trackId],
+          { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+        )
+      : null
 
   const species1Options = useMemo(
     () =>
@@ -266,7 +294,16 @@ export default function SyntenySelector({ data }: Props) {
         </div>
       </div>
 
-      <div className="synteny-hint">
+      <div
+        className="synteny-hint"
+        aria-live="polite"
+      >
+        {unknownParams.length > 0 && (
+          <span>
+            Ignored {unknownParams.map(p => `“${p}”`).join(' and ')} from the
+            link: not an assembly with a synteny comparison.{' '}
+          </span>
+        )}
         {!species1 && 'Pick two assemblies to compare their synteny.'}
         {species1 &&
           !species2 &&
@@ -287,14 +324,20 @@ export default function SyntenySelector({ data }: Props) {
           <Autocomplete
             id="gene"
             key={`gene-${species1}-${species2}`}
+            options={gene ? [{ value: geneValue, label: gene.symbol }] : []}
             queryOptions={queryGeneOptions}
             value={geneValue}
             onChange={value => {
-              handleGeneChange(value)
+              setGeneValue(value)
             }}
             placeholder={`Whole genome (or search a ${nameOf(species1)} gene)…`}
           />
-          {geneNote && <div className="synteny-gene-note">{geneNote}</div>}
+          <div
+            className="synteny-gene-note"
+            aria-live="polite"
+          >
+            {geneNote}
+          </div>
         </div>
       )}
 
@@ -323,6 +366,15 @@ export default function SyntenySelector({ data }: Props) {
           </button>
         )}
       </div>
+
+      {!features.staging && (
+        <p className="synteny-release-note">
+          The current JBrowse release opens the view without chromosome coloring
+          or diagonalized axes, so a whole-genome comparison starts grey and
+          unsorted; those options apply automatically once the next release
+          ships.
+        </p>
+      )}
 
       <details className="synteny-options">
         <summary>Options</summary>

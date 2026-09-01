@@ -3,18 +3,19 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import syntenyData from '../../syntenyTracks.json'
 import { features } from '../../config/features.ts'
+import { ALL_SOURCES, createStaticCatalog } from '../../lib/syntenyCatalog.ts'
 
 // Staging-only alongside the synteny browser; see synteny/index.astro.
 if (!features.synteny) {
   return Astro.redirect('/')
 }
 
-const allAssemblies = new Set<string>()
-for (const track of syntenyData.tracks) {
-  for (const assembly of track.assemblyNames) {
-    allAssemblies.add(assembly)
-  }
-}
+// The same queries the selector runs, so the numbers here are what the
+// selector offers: launchable tracks only, one comparison per assembly pair
+// whichever liftOver direction or chain variant it comes in.
+const catalog = createStaticCatalog(syntenyData)
+const assemblyCount = catalog.listAssemblies(ALL_SOURCES).length
+const comparisonCount = catalog.countComparisons(ALL_SOURCES)
 ---
 
 <Layout
@@ -33,8 +34,8 @@ for (const track of syntenyData.tracks) {
       only, following the UCSC licensing.
     </p>
     <p>
-      We have <strong>{syntenyData.tracks.length}</strong> synteny comparisons available
-      across <strong>{allAssemblies.size}</strong> different species assemblies.
+      We have <strong>{comparisonCount}</strong> synteny comparisons available across
+      <strong>{assemblyCount}</strong> assemblies.
     </p>
     <p>
       <a href="/synteny">&larr; Back to Synteny Browser</a>

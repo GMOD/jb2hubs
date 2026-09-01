@@ -22,6 +22,19 @@ export interface GeneHit {
   geneId?: string
 }
 
+// A picked gene as one string, "<NCBI GeneID>:<symbol>" — the id is what an
+// ortholog lookup needs and the symbol is what the reader sees, so a link can
+// carry both and re-resolve the ortholog on load without a search. GeneIDs are
+// numeric, so the first colon is the divider whatever the symbol holds.
+export function encodeGeneRef(geneId: string, symbol: string) {
+  return `${geneId}:${symbol}`
+}
+
+export function parseGeneRef(ref: string) {
+  const match = /^(\d+):(.+)$/.exec(ref)
+  return match ? { geneId: match[1]!, symbol: match[2]! } : undefined
+}
+
 interface MyGeneQuery {
   hits?: { symbol?: string; entrezgene?: string | number }[]
 }
@@ -58,19 +71,19 @@ export function dedupeHits(
   return [...bySymbol.values()]
 }
 
-// Symbols starting with the typed prefix, in the species. Best-effort: a failed
-// lookup means no suggestions, never an error — someone can always type the
-// whole symbol.
-export async function searchGenes(
+// Symbols starting with the typed prefix, in the species. Rejects when mygene
+// cannot be reached or answers with an error, so a caller can tell an outage
+// from "no gene starts with that" — the two read identically as an empty list.
+export async function queryGenes(
   query: string,
   taxId: number,
   limit = 10,
 ): Promise<GeneHit[]> {
   const q = encodeURIComponent(`symbol:${query}*`)
   const url = `${MYGENE}/query?q=${q}&species=${taxId}&fields=symbol,entrezgene&size=${limit * 2}`
-  const res = await fetch(url).catch(() => undefined)
-  if (!res?.ok) {
-    return []
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error(`mygene.info answered ${res.status} for ${query}`)
   }
   const json = (await res.json()) as MyGeneQuery
   const hits = dedupeHits(json.hits ?? [])
@@ -78,6 +91,12 @@ export async function searchGenes(
   return rankSymbols([...bySymbol.keys()], query)
     .map(s => bySymbol.get(s)!)
     .slice(0, limit)
+}
+
+// queryGenes, best-effort: a failed lookup means no suggestions, never an
+// error — someone can always type the whole symbol.
+export async function searchGenes(query: string, taxId: number, limit = 10) {
+  return queryGenes(query, taxId, limit).catch((): GeneHit[] => [])
 }
 
 // The gene's symbol in another species, so switching the reference organism can
@@ -90,12 +109,23 @@ export async function searchGenes(
 //
 // Asks for the one taxon rather than fetching every ortholog and filtering the
 // answer, which is what the synteny picker's own copy of this used to do.
-export async function fetchOrthologSymbol(
+//
+// Rejects on a failed request. "NCBI answered and there is no ortholog" and
+// "NCBI did not answer" are different facts — the synteny picker shows the
+// first as no ortholog and the second as an error to retry — and the
+// best-effort wrapper below is for callers that treat both as nothing.
+export async function resolveOrthologSymbol(
   geneId: string,
   taxId: number,
 ): Promise<string | undefined> {
   const json = await fetchOrthologReports<{
     reports?: { gene?: { symbol?: string } }[]
-  }>(geneId, [taxId]).catch(() => undefined)
-  return json?.reports?.[0]?.gene?.symbol
+  }>(geneId, [taxId])
+  return json.reports?.[0]?.gene?.symbol
+}
+
+export async function fetchOrthologSymbol(geneId: string, taxId: number) {
+  return resolveOrthologSymbol(geneId, taxId).catch(
+    (): string | undefined => undefined,
+  )
 }

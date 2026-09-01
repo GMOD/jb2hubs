@@ -30,9 +30,10 @@ import syntenyAccessions from '../../syntenyAccessions.json'
 
 import '../../styles/common-table.css'
 
-// Accessions that participate in at least one launchable synteny track,
-// precomputed by extractSyntenyTracks.ts so accession pages avoid loading the
-// multi-megabyte syntenyTracks.json.
+// The assembly names the /synteny selector lists, precomputed by
+// generateSyntenyAccessions.ts so accession pages avoid loading
+// syntenyTracks.json. A UCSC-hosted genome is listed under its db name (hg38),
+// which is why the link below tries ucscDbName before the accession.
 const syntenyAssemblies = new Set<string>(syntenyAccessions)
 
 export async function getStaticPaths() {
@@ -92,6 +93,10 @@ const {
   pairedAccession,
   ncbiMissing,
 } = data
+
+const syntenyName = [ucscDbName, accession].find(
+  name => name !== undefined && syntenyAssemblies.has(name),
+)
 
 const {
   stats,
@@ -324,9 +329,9 @@ const hasAssemblyDetails =
       <h2>Compare with other genomes</h2>
       <ul>
         {
-          features.synteny && syntenyAssemblies.has(accession) ? (
+          features.synteny && syntenyName ? (
             <li>
-              <a href={`/synteny?assembly=${accession}`}>
+              <a href={`/synteny?assembly=${syntenyName}`}>
                 Open a synteny view against an aligned assembly
               </a>
             </li>

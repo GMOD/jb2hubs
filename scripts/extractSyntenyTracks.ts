@@ -1,62 +1,59 @@
 #!/usr/bin/env node
+// Writes website/src/syntenyTracks.json: every SyntenyTrack in the hosted
+// configs, and the assembly info the /synteny selector needs for the genomes
+// those tracks name. It is the shape the page hands to its island verbatim, so
+// it carries only what the client reads — no adapters, no config paths, and no
+// info for the 52,000 assemblies that take part in no synteny track.
 import { readFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
-interface SyntenyTrack {
-  trackId: string
-  name: string
-  type: string
-  assemblyNames: string[]
-  configFile: string
-  adapter?: unknown
-  metadata?: unknown
-}
-
-interface Assembly {
-  name: string
-  displayName?: string
-  sequence?: {
-    metadata?: {
-      commonName?: string
-      scientificName?: string
-      organism?: string
-    }
-  }
-}
+import type {
+  AssemblyInfo,
+  AssemblySource,
+  SyntenyCatalogData,
+  SyntenyTrackSummary,
+} from '../website/src/lib/syntenyCatalog.ts'
 
 interface Config {
-  assemblies?: Assembly[]
+  assemblies?: {
+    name: string
+    displayName?: string
+    sequence?: {
+      metadata?: {
+        commonName?: string
+        scientificName?: string
+        organism?: string
+        ucsc?: { taxId?: string | number }
+      }
+    }
+  }[]
   tracks?: {
     type?: string
     trackId?: string
     name?: string
     assemblyNames?: string[]
-    adapter?: unknown
-    metadata?: unknown
   }[]
+  defaultSession?: {
+    views?: { init?: { tracks?: string[] } }[]
+  }
 }
 
-interface AssemblyInfo {
+interface ConfigAssembly {
   commonName?: string
   scientificName?: string
-  source: 'ucsc' | 'genark' | 'legacy'
-  // NCBI taxonomy id, used to map assemblies to the cross-species ortholog
-  // tables. Only populated for GenArk assemblies (from all.json).
   taxonId?: number
+  geneTrack: string
 }
 
-interface SyntenyDataset {
-  trackId: string
-  name: string
-  assemblyNames: string[]
-  configFile: string
-  adapter?: unknown
-  metadata?: unknown
+interface ConfigFacts {
+  tracks: SyntenyTrackSummary[]
+  assemblies: Record<string, ConfigAssembly>
 }
 
-interface SyntenyOutput {
-  tracks: SyntenyDataset[]
-  assemblyInfo: Record<string, AssemblyInfo>
+interface NamedInfo {
+  commonName?: string
+  scientificName?: string
+  taxonId?: number
 }
 
 async function* walkDirectory(
@@ -64,10 +61,8 @@ async function* walkDirectory(
   pattern: string,
 ): AsyncGenerator<string> {
   const entries = await readdir(dir, { withFileTypes: true })
-
   for (const entry of entries) {
     const path = join(dir, entry.name)
-
     if (entry.isDirectory()) {
       yield* walkDirectory(path, pattern)
     } else if (entry.isFile() && entry.name === pattern) {
@@ -76,298 +71,215 @@ async function* walkDirectory(
   }
 }
 
-interface ExtractionResult {
-  tracks: SyntenyDataset[]
-  assemblyInfo: Record<string, Omit<AssemblyInfo, 'source'>>
+function parseTaxId(taxId: string | number | undefined) {
+  const n = Number(taxId)
+  return Number.isInteger(n) && n > 0 ? n : undefined
 }
 
-async function extractSyntenyTracksFromFile(
-  filePath: string,
-): Promise<ExtractionResult> {
+// The gene track a synteny panel opens for this genome. The two hosting sides
+// name it differently and it is not the same file: a UCSC config carries the
+// NCBI RefSeq GFF3 as `<db>-ncbiRefSeqGff` on the 75 NCBI-derived assemblies,
+// while a GenArk hub carries UCSC's genePred-derived bigBed as
+// `<accession>-ncbiRefSeq` (`-ncbiGene` on the microbial hubs). Anything else
+// opens what the config's own defaultSession opens, which generateDefaultSessions
+// already picked as the best gene track a UCSC assembly has (refGene, ensGene,
+// ...), rather than re-implementing that order here. A GenArk defaultSession
+// names no tracks at all, and a GenBank-only hub has no NCBI annotation, so
+// the last resort is its gene predictions in UCSC's preference order.
+function geneTrackFor(name: string, config: Config) {
+  const ids = new Set(config.tracks?.map(t => t.trackId))
+  const candidates = [
+    `${name}-ncbiRefSeqGff`,
+    `${name}-ncbiRefSeq`,
+    `${name}-ncbiGene`,
+    ...(config.defaultSession?.views?.[0]?.init?.tracks ?? []),
+    `${name}-augustus`,
+    `${name}-xenoRefGene`,
+  ]
+  return candidates.find(id => ids.has(id)) ?? ''
+}
+
+async function readConfig(filePath: string): Promise<ConfigFacts> {
+  const facts: ConfigFacts = { tracks: [], assemblies: {} }
   try {
-    const content = await readFile(filePath, 'utf-8')
-    const config: Config = JSON.parse(content)
-
-    const assemblyInfo: Record<string, Omit<AssemblyInfo, 'source'>> = {}
-
-    if (config.assemblies && Array.isArray(config.assemblies)) {
-      for (const asm of config.assemblies) {
-        const meta = asm.sequence?.metadata
-        const displayName = asm.displayName
-        if (meta?.commonName || meta?.scientificName || displayName) {
-          assemblyInfo[asm.name] = {
-            commonName: meta?.commonName ?? meta?.organism ?? displayName,
-            scientificName: meta?.scientificName,
-          }
-        }
+    const config: Config = JSON.parse(await readFile(filePath, 'utf-8'))
+    for (const asm of config.assemblies ?? []) {
+      const meta = asm.sequence?.metadata
+      facts.assemblies[asm.name] = {
+        commonName: meta?.commonName ?? meta?.organism ?? asm.displayName,
+        scientificName: meta?.scientificName,
+        taxonId: parseTaxId(meta?.ucsc?.taxId),
+        geneTrack: geneTrackFor(asm.name, config),
       }
     }
-
-    if (!config.tracks || !Array.isArray(config.tracks)) {
-      return { tracks: [], assemblyInfo }
+    for (const track of config.tracks ?? []) {
+      if (
+        track.type === 'SyntenyTrack' &&
+        track.trackId &&
+        track.name &&
+        track.assemblyNames
+      ) {
+        facts.tracks.push({
+          trackId: track.trackId,
+          name: track.name,
+          assemblyNames: track.assemblyNames,
+        })
+      }
     }
-
-    const tracks = config.tracks
-      .filter((track): track is SyntenyTrack => track.type === 'SyntenyTrack')
-      .map(track => ({
-        trackId: track.trackId,
-        name: track.name,
-        assemblyNames: track.assemblyNames,
-        configFile: filePath,
-        adapter: track.adapter,
-        metadata: track.metadata,
-      }))
-
-    return { tracks, assemblyInfo }
   } catch (error) {
     console.error(`Error processing ${filePath}:`, error)
-    return { tracks: [], assemblyInfo: {} }
   }
+  return facts
 }
 
-async function scanDirectory(
-  dir: string,
-  pattern: string,
-): Promise<ExtractionResult> {
-  const allTracks: SyntenyDataset[] = []
-  const allAssemblyInfo: Record<string, AssemblyInfo> = {}
-
-  for await (const filePath of walkDirectory(dir, pattern)) {
-    const result = await extractSyntenyTracksFromFile(filePath)
-    allTracks.push(...result.tracks)
-    Object.assign(allAssemblyInfo, result.assemblyInfo)
+async function readConfigs(files: AsyncIterable<string> | Iterable<string>) {
+  const all: ConfigFacts = { tracks: [], assemblies: {} }
+  for await (const filePath of files) {
+    const facts = await readConfig(filePath)
+    all.tracks.push(...facts.tracks)
+    Object.assign(all.assemblies, facts.assemblies)
   }
-
-  return { tracks: allTracks, assemblyInfo: allAssemblyInfo }
+  return all
 }
 
-async function scanJsonFiles(dir: string): Promise<ExtractionResult> {
-  const allTracks: SyntenyDataset[] = []
-  const allAssemblyInfo: Record<string, AssemblyInfo> = {}
-
-  try {
-    const files = await readdir(dir)
-
-    for (const file of files) {
-      if (file.endsWith('.json')) {
-        const filePath = join(dir, file)
-        const result = await extractSyntenyTracksFromFile(filePath)
-        allTracks.push(...result.tracks)
-        Object.assign(allAssemblyInfo, result.assemblyInfo)
-      }
+async function loadGenArkInfo() {
+  const result: Record<string, NamedInfo> = {}
+  const assemblies = JSON.parse(
+    await readFile('website/processedHubJson/all.json', 'utf-8'),
+  ) as {
+    accession: string
+    commonName?: string
+    scientificName?: string
+    taxonId?: number
+  }[]
+  for (const asm of assemblies) {
+    result[asm.accession] = {
+      commonName: asm.commonName,
+      scientificName: asm.scientificName,
+      taxonId: asm.taxonId,
     }
-  } catch (error) {
-    console.error(`Error scanning directory ${dir}:`, error)
   }
-
-  return { tracks: allTracks, assemblyInfo: allAssemblyInfo }
-}
-
-async function loadGenArkAssemblyInfo(): Promise<Record<string, AssemblyInfo>> {
-  const result: Record<string, AssemblyInfo> = {}
-  try {
-    const content = await readFile('website/processedHubJson/all.json', 'utf-8')
-    const assemblies = JSON.parse(content) as {
-      accession: string
-      commonName?: string
-      scientificName?: string
-      taxonId?: number
-    }[]
-    for (const asm of assemblies) {
-      if (asm.accession) {
-        result[asm.accession] = {
-          commonName: asm.commonName,
-          scientificName: asm.scientificName,
-          source: 'genark',
-          taxonId: asm.taxonId,
-        }
-      }
-    }
-    console.log(`Loaded ${Object.keys(result).length} GenArk assembly records`)
-  } catch (error) {
-    console.error('Error loading GenArk assembly info:', error)
-  }
+  console.log(`Loaded ${Object.keys(result).length} GenArk assembly records`)
   return result
 }
 
-// Retired UCSC assemblies that the live API no longer lists, so their synteny
-// tracks would otherwise render with a bare db name. Pure data, kept beside the
-// script rather than inline: it was 422 of this file's lines.
-const legacyUcscAssemblies: Record<
-  string,
-  Omit<AssemblyInfo, 'source'>
-> = JSON.parse(
-  await readFile(
-    join(import.meta.dirname, 'legacyUcscAssemblies.json'),
-    'utf-8',
-  ),
-)
-
-async function loadUcscAssemblyInfo(): Promise<Record<string, AssemblyInfo>> {
-  const result: Record<string, AssemblyInfo> = {}
-  try {
-    console.log('Fetching UCSC assembly metadata from API...')
-    const response = await fetch('https://api.genome.ucsc.edu/list/ucscGenomes')
-    const data = (await response.json()) as {
-      ucscGenomes: Record<
-        string,
-        { organism?: string; scientificName?: string }
-      >
-    }
-    for (const [name, info] of Object.entries(data.ucscGenomes)) {
-      result[name] = {
-        commonName: info.organism,
-        scientificName: info.scientificName,
-        source: 'ucsc',
+// The UCSC genome list as transformGenomeList.ts last wrote it — the same
+// snapshot the /ucsc pages render — rather than a live API fetch, so a run is
+// reproducible and works offline. Every entry carries organism, scientificName
+// and taxId, which the hosted config does not: hs1's config knows itself only
+// as "Jan. 2022 (T2T CHM13v2.0/hs1)".
+async function loadUcscInfo() {
+  const result: Record<string, NamedInfo & { accession?: string }> = {}
+  const list = JSON.parse(await readFile('website/src/list.json', 'utf-8')) as {
+    ucscGenomes: Record<
+      string,
+      {
+        organism?: string
+        scientificName?: string
+        taxId?: number
+        sourceName?: string
       }
-    }
-    console.log(`Loaded ${Object.keys(result).length} UCSC assembly records`)
-  } catch (error) {
-    console.error('Error loading UCSC assembly info:', error)
+    >
   }
+  for (const [name, info] of Object.entries(list.ucscGenomes)) {
+    result[name] = {
+      commonName: info.organism,
+      scientificName: info.scientificName,
+      taxonId: parseTaxId(info.taxId),
+      accession: /GC[AF]_\d+(?:\.\d+)?/.exec(info.sourceName ?? '')?.[0],
+    }
+  }
+  console.log(`Loaded ${Object.keys(result).length} UCSC assembly records`)
   return result
 }
 
 async function main() {
-  console.log('Scanning for SyntenyTrack datasets...\n')
-
-  // Load assembly info from external sources
-  const genArkInfo = await loadGenArkAssemblyInfo()
-  const ucscInfo = await loadUcscAssemblyInfo()
-
-  // Scan hubs/ directory for config.json files
-  console.log('Scanning hubs/ directory...')
-  const hubsResult = await scanDirectory('hubs', 'config.json')
-  console.log(
-    `Found ${hubsResult.tracks.length} SyntenyTrack entries in hubs/\n`,
+  const genark = await loadGenArkInfo()
+  const ucsc = await loadUcscInfo()
+  // Retired UCSC assemblies the genome list no longer carries, so their tracks
+  // still render with a name and are blocked as legacy rather than unknown.
+  const legacy: Record<string, NamedInfo> = JSON.parse(
+    await readFile(
+      join(import.meta.dirname, 'legacyUcscAssemblies.json'),
+      'utf-8',
+    ),
   )
 
-  // Scan ucsc2jbrowse/configs/ directory for .json files
-  console.log('Scanning ucsc2jbrowse/configs/ directory...')
-  const ucscResult = await scanJsonFiles('ucsc2jbrowse/configs')
+  console.log('Scanning hubs/ ...')
+  const hubs = await readConfigs(walkDirectory('hubs', 'config.json'))
+  console.log(`Found ${hubs.tracks.length} SyntenyTrack entries in hubs/`)
+
+  console.log('Scanning ucsc2jbrowse/configs/ ...')
+  const ucscConfigDir = 'ucsc2jbrowse/configs'
+  const ucscConfigs = await readConfigs(
+    (await readdir(ucscConfigDir))
+      .filter(f => f.endsWith('.json'))
+      .map(f => join(ucscConfigDir, f)),
+  )
   console.log(
-    `Found ${ucscResult.tracks.length} SyntenyTrack entries in ucsc2jbrowse/configs/\n`,
+    `Found ${ucscConfigs.tracks.length} SyntenyTrack entries in ${ucscConfigDir}/`,
   )
 
-  // Combine all tracks
-  const allTracks = [...hubsResult.tracks, ...ucscResult.tracks]
-  console.log(`Total SyntenyTrack entries found: ${allTracks.length}\n`)
+  const tracks = [...hubs.tracks, ...ucscConfigs.tracks]
+  const participating = new Set(tracks.flatMap(t => t.assemblyNames))
 
-  // Build legacy assembly info with source
-  const legacyInfo: Record<string, AssemblyInfo> = {}
-  for (const [name, info] of Object.entries(legacyUcscAssemblies)) {
-    legacyInfo[name] = { ...info, source: 'legacy' }
+  // Field by field, most authoritative source first, so a source that knows
+  // the taxon but not the name (or the reverse) still contributes what it has.
+  // Whole-record precedence was what left hs1 with its config's displayName
+  // and every GenArk assembly without the taxonId all.json holds for it.
+  function describe(name: string): AssemblyInfo {
+    const fromList = ucsc[name]
+    const fromUcscConfig = ucscConfigs.assemblies[name]
+    const fromHub = hubs.assemblies[name]
+    const fromGenark = genark[name]
+    const fromLegacy = legacy[name]
+    const source: AssemblySource =
+      fromList || fromUcscConfig
+        ? 'ucsc'
+        : fromHub || fromGenark
+          ? 'genark'
+          : 'legacy'
+    const sources = [fromList, fromUcscConfig, fromHub, fromGenark, fromLegacy]
+    const first = <K extends keyof NamedInfo>(key: K) =>
+      sources.find(s => s?.[key] !== undefined)?.[key]
+    return {
+      commonName: first('commonName'),
+      scientificName: first('scientificName'),
+      source,
+      taxonId: first('taxonId'),
+      accession: fromList?.accession,
+      geneTrack: fromUcscConfig?.geneTrack ?? fromHub?.geneTrack ?? '',
+    }
   }
 
-  // Add source to hub assembly info (genark)
-  const hubsAssemblyInfo: Record<string, AssemblyInfo> = {}
-  for (const [name, info] of Object.entries(hubsResult.assemblyInfo)) {
-    hubsAssemblyInfo[name] = { ...info, source: 'genark' }
+  const assemblyInfo: Record<string, AssemblyInfo> = {}
+  for (const name of [...participating].sort()) {
+    assemblyInfo[name] = describe(name)
   }
 
-  // Add source to ucsc config assembly info
-  const ucscConfigAssemblyInfo: Record<string, AssemblyInfo> = {}
-  for (const [name, info] of Object.entries(ucscResult.assemblyInfo)) {
-    ucscConfigAssemblyInfo[name] = { ...info, source: 'ucsc' }
-  }
-
-  // Combine assembly info from all sources (later sources override earlier)
-  const assemblyInfo: Record<string, AssemblyInfo> = {
-    ...legacyInfo,
-    ...genArkInfo,
-    ...ucscInfo,
-    ...hubsAssemblyInfo,
-    ...ucscConfigAssemblyInfo,
-  }
+  const infos = Object.values(assemblyInfo)
+  const count = (pred: (info: AssemblyInfo) => boolean) =>
+    infos.filter(pred).length
   console.log(
-    `Total assembly info records: ${Object.keys(assemblyInfo).length}`,
+    `${tracks.length} tracks over ${infos.length} assemblies: ` +
+      `${count(i => i.source === 'legacy')} legacy, ` +
+      `${count(i => i.taxonId === undefined)} without taxonId, ` +
+      `${count(i => !i.geneTrack)} without a gene track`,
   )
-
-  // Backfill taxonId for assemblies that lack it (UCSC, legacy) by matching
-  // scientificName against the GenArk assemblies that carry one. This lets
-  // same-species comparisons such as hg19 vs hg38 (both Homo sapiens) reach the
-  // ortholog tables, which are keyed by taxon.
-  const sciNameToTaxon = new Map<string, number>()
-  for (const info of Object.values(assemblyInfo)) {
-    if (info.taxonId !== undefined && info.scientificName) {
-      sciNameToTaxon.set(info.scientificName.toLowerCase(), info.taxonId)
-    }
-  }
-  let backfilled = 0
-  for (const info of Object.values(assemblyInfo)) {
-    if (info.taxonId === undefined && info.scientificName) {
-      const taxon = sciNameToTaxon.get(info.scientificName.toLowerCase())
-      if (taxon !== undefined) {
-        info.taxonId = taxon
-        backfilled++
-      }
-    }
-  }
-  console.log(`Backfilled taxonId for ${backfilled} assemblies via name`)
-
-  // Check for assemblies without info
-  const allAssemblyNames = new Set<string>()
-  for (const track of allTracks) {
-    for (const name of track.assemblyNames) {
-      allAssemblyNames.add(name)
-    }
-  }
-  const missingInfo = [...allAssemblyNames].filter(name => !assemblyInfo[name])
-  console.log(`Assemblies without info: ${missingInfo.length}`)
-  if (missingInfo.length > 0 && missingInfo.length <= 20) {
-    console.log(`  ${missingInfo.join(', ')}`)
+  const nameless = Object.entries(assemblyInfo)
+    .filter(([, info]) => !info.commonName)
+    .map(([name]) => name)
+  if (nameless.length > 0) {
+    console.log(`Assemblies without a name: ${nameless.join(', ')}`)
   }
 
-  // Write output with both tracks and assembly info
-  const output: SyntenyOutput = { tracks: allTracks, assemblyInfo }
+  const output: SyntenyCatalogData = { tracks, assemblyInfo }
   const outputFile = 'website/src/syntenyTracks.json'
   await writeFile(outputFile, JSON.stringify(output, null, 2))
-  console.log(`\nResults written to ${outputFile}`)
-
-  // Lightweight list of GCA/GCF accessions that take part in a launchable
-  // synteny track (both sides non-legacy). The accession pages import this
-  // instead of the multi-megabyte syntenyTracks.json.
-  const launchableAccessions = new Set<string>()
-  for (const track of allTracks) {
-    const usable = track.assemblyNames.every(name => {
-      const info = assemblyInfo[name]
-      return info && info.source !== 'legacy'
-    })
-    if (usable) {
-      for (const name of track.assemblyNames) {
-        if (name.startsWith('GCA_') || name.startsWith('GCF_')) {
-          launchableAccessions.add(name)
-        }
-      }
-    }
-  }
-  const accessionsFile = 'website/src/syntenyAccessions.json'
-  await writeFile(
-    accessionsFile,
-    JSON.stringify([...launchableAccessions].sort()),
-  )
-  console.log(
-    `Wrote ${launchableAccessions.size} synteny accessions to ${accessionsFile}`,
-  )
-
-  // Generate summary statistics
-  const assemblyPairs = new Map<string, number>()
-  for (const track of allTracks) {
-    if (track.assemblyNames.length === 2) {
-      const pair = track.assemblyNames.slice().sort().join(' <-> ')
-      assemblyPairs.set(pair, (assemblyPairs.get(pair) ?? 0) + 1)
-    }
-  }
-
-  console.log(`\nUnique assembly pairs: ${assemblyPairs.size}`)
-  console.log('\nTop 10 most common assembly pairs:')
-  const sortedPairs = [...assemblyPairs.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10)
-
-  for (const [pair, count] of sortedPairs) {
-    console.log(`  ${pair}: ${count} tracks`)
-  }
+  console.log(`Wrote ${outputFile}`)
 }
 
-main().catch(console.error)
+main().catch((error: unknown) => {
+  console.error(error)
+  process.exitCode = 1
+})

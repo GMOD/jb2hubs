@@ -24,6 +24,10 @@ if (!features.synteny) {
       conserved regions between them.
     </p>
 
+    {
+      /* syntenyTracks.json is already the pruned island shape (track ids and
+        names, info for participating assemblies) — see SyntenyCatalogData. */
+    }
     <SyntenySelector
       client:load
       data={syntenyData}
@@ -96,7 +100,14 @@ if (!features.synteny) {
   }
 
   .synteny-gene-note {
+    min-height: 1.25rem;
     margin-top: 4px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .synteny-release-note {
+    margin: 0.75rem 0 0;
     font-size: 13px;
     color: #666;
   }

@@ -2,24 +2,16 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const inputPath = path.join(__dirname, 'src/syntenyTracks.json')
 const orthologIndexPath = path.join(__dirname, 'public/ortholog_index.json')
-const ucscConfigDir = path.join(__dirname, '../ucsc2jbrowse/configs')
 const outputPath = path.join(__dirname, 'public/synteny_pairs.json')
 
-interface Track {
-  trackId: string
-  assemblyNames: string[]
-}
-
-interface SyntenyData {
-  tracks: Track[]
-}
-
-const data: SyntenyData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
+const data: SyntenyCatalogData = JSON.parse(fs.readFileSync(inputPath, 'utf-8'))
 
 // The ortholog index, written by generateOrthologIndex.ts just before this
 // script in `pnpm generate`. Reading it rather than rebuilding the mapping is
@@ -72,57 +64,16 @@ function toAccession(name: string) {
   )
 }
 
-// The gene track a launched panel should open for one genome, under whichever
-// name that genome's synteny track calls it. A LinearSyntenyView sub-view gets
-// no defaultSession, so a panel with no explicit track is an empty browser —
-// which is what every synteny launch used to be: right locus, nothing drawn.
-//
-// The gene track each panel opens. The two sides are named differently and are
-// NOT the same file, which the previous version of this comment had wrong:
-//
-// - **GenArk**: `<accession>-ncbiRefSeq`, a `BigBedAdapter` over UCSC's
-//   genePred-derived bigBed. Present without exception (checked against all 170
-//   GenArk names in this catalog on 2026-08-27). Its hub also carries the real
-//   NCBI GFF3 as `<accession>-ncbiGff` — that is the id the single-genome launch
-//   in accessionToJbrowseUrl asks for, and it is a different track.
-// - **UCSC**: `<db>-ncbiRefSeqGff`, a `Gff3TabixAdapter` over the NCBI RefSeq
-//   GFF3 itself (gene -> mRNA -> CDS/exon with the real attributes). Only the 75
-//   NCBI-derived assemblies have one — 20 of the 26 UCSC names here. The rest
-//   fall back to that config's own defaultSession, which already names the best
-//   gene track it has (generateDefaultSessions picked it), rather than
-//   re-implementing that preference order in a second place. Guessing
-//   `ncbiRefSeq` for them would open nothing: xenTro3 and bosTau6 are refGene,
-//   melGal1 is ensGene.
-//
-// So a mixed stack draws its human row from a GFF3 and its GenArk rows from
-// bigBeds. That is why the human panel alone used to fill up with unnamed
-// records — see addGeneOnlyDisplay in hubtools, which is what makes the two
-// sides read the same.
-interface UcscConfig {
-  tracks?: { trackId?: string }[]
-  defaultSession?: {
-    views?: { init?: { tracks?: string[] } }[]
-  }
-}
-const geneTrackCache = new Map<string, string | undefined>()
+// The gene track a launched panel opens for one genome, under whichever name
+// that genome's synteny track calls it. A LinearSyntenyView sub-view gets no
+// defaultSession, so a panel with no explicit track is an empty browser — which
+// is what every synteny launch used to be: right locus, nothing drawn. The
+// catalog resolves it once per assembly (see geneTrackFor in
+// scripts/extractSyntenyTracks.ts: the NCBI GFF3 on a UCSC config, the
+// ncbiRefSeq bigBed or a gene prediction on a GenArk hub), and '' means its
+// config has none.
 function geneTrackFor(name: string) {
-  if (/^GC[AF]_/.test(name)) {
-    return `${name}-ncbiRefSeq`
-  }
-  if (!geneTrackCache.has(name)) {
-    const file = path.join(ucscConfigDir, `${name}.json`)
-    const config: UcscConfig | undefined = fs.existsSync(file)
-      ? JSON.parse(fs.readFileSync(file, 'utf-8'))
-      : undefined
-    const gff = `${name}-ncbiRefSeqGff`
-    geneTrackCache.set(
-      name,
-      config?.tracks?.some(t => t.trackId === gff)
-        ? gff
-        : config?.defaultSession?.views?.[0]?.init?.tracks?.[0],
-    )
-  }
-  return geneTrackCache.get(name)
+  return data.assemblyInfo[name]?.geneTrack ?? ''
 }
 
 // "<accession1>,<accession2>" -> [trackId, name1, name2, geneTrack1,
@@ -137,7 +88,9 @@ function geneTrackFor(name: string) {
 // dm6 against the GenArk build of the same assembly, or two versions of
 // Arabidopsis. The client matches on the version-stripped base, so those would
 // answer a "is A syntenic with A" lookup and offer a row a synteny link to
-// itself.
+// itself. The /synteny catalog's own isSelfPair keeps the version — hg19 and
+// hg38 share GCA_000001405 and are a real comparison there — which this file
+// cannot, because its keys are base-matched.
 const pairs: Record<string, [string, string, string, string, string]> = {}
 const base = (accession: string) => accession.replace(/\.\d+$/, '')
 let viaUcscDb = 0
@@ -156,8 +109,8 @@ for (const track of data.tracks) {
       if (pairs[key]) {
         collisions += 1
       }
-      const gene1 = geneTrackFor(name1) ?? ''
-      const gene2 = geneTrackFor(name2) ?? ''
+      const gene1 = geneTrackFor(name1)
+      const gene2 = geneTrackFor(name2)
       if (!gene1) {
         noGeneTrack.add(name1)
       }
