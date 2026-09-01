@@ -61,5 +61,32 @@ check "generate_file_paths (.all.chain.gz)" \
   "/tmp/chains/chr1.all.chain.gz
 /tmp/pifs/chr1.pif.gz" "$got"
 
+# CLI stamps: a PIF or a liftOver dir built by another make-pif is rebuilt. The
+# version is stubbed so the suite does not need node_modules.
+jbrowse_cli_version() { echo "@jbrowse/cli version 5.0.0-test"; }
+tmp=$(mktemp -d)
+check "pif_stamp_current: missing stamp is stale" "stale" \
+  "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+touch "$tmp/.checked"
+check "pif_stamp_current: the pre-5.0 empty touch stamp is stale" "stale" \
+  "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+echo "@jbrowse/cli version 4.2.1" >"$tmp/.checked"
+check "pif_stamp_current: another CLI's stamp is stale" "stale" \
+  "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+write_pif_stamp "$tmp/.checked"
+check "write_pif_stamp records the current CLI" "current" \
+  "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+
+touch "$tmp/a.pif.gz" "$tmp/a.pif.gz.csi"
+check "pif_current: pif + index without a stamp is stale" "stale" \
+  "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
+write_pif_stamp "$tmp/a.pif.gz.cli"
+check "pif_current: pif + index + current stamp" "current" \
+  "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
+rm "$tmp/a.pif.gz.csi"
+check "pif_current: a stamp does not excuse a missing index" "stale" \
+  "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
+rm -r "$tmp"
+
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail

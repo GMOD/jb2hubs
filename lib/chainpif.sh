@@ -12,6 +12,31 @@
 
 : "${CHAINPIF_DOWNLOAD_DELAY:=0}"
 
+# The repo's pinned @jbrowse/cli, not whatever `jbrowse` is on PATH: the bytes a
+# PIF holds are a function of make-pif's version (5.0 added the coarse
+# level-of-detail tier), and a global install drifts silently.
+JBROWSE_CLI="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/node_modules/.bin/jbrowse"
+
+# One line naming the CLI build, stamped beside every PIF and in each liftOver
+# dir's .checked file. A stamp that differs from it (or an empty one, the pre-5.0
+# `touch` format) means the output was built by another make-pif and is rebuilt.
+jbrowse_cli_version() {
+  if [ -z "${JBROWSE_CLI_VERSION:-}" ]; then
+    JBROWSE_CLI_VERSION=$("$JBROWSE_CLI" --version) || log_error "$JBROWSE_CLI --version failed; run pnpm install"
+  fi
+  printf '%s\n' "$JBROWSE_CLI_VERSION"
+}
+
+# $1: stamp path. True when the stamp records the current CLI.
+pif_stamp_current() {
+  [ -f "$1" ] && [ "$(cat "$1")" = "$(jbrowse_cli_version)" ]
+}
+
+# $1: stamp path
+write_pif_stamp() {
+  jbrowse_cli_version >"$1"
+}
+
 # Logs an info message with a timestamp.
 log_info() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] INFO: $*"
@@ -71,11 +96,12 @@ download_file() {
   fi
 }
 
-# Converts a chain file to a PIF file.
+# Converts a chain file to a PIF file, unless a PIF built by the current CLI is
+# already there (REPROCESS forces it).
 # $1: path to the chain file (.chain.gz)  $2: output PIF path (.pif.gz)
 create_pif() {
   local chain_path="$1" pif_path="$2"
-  if [ -n "${REPROCESS:-}" ] || [ ! -f "$pif_path" ] || [ ! -f "$pif_path.csi" ]; then
+  if [ -n "${REPROCESS:-}" ] || ! pif_current "$pif_path"; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
     local paf_path
     paf_path=$(mktemp) || log_error "Failed to create temporary file"
@@ -85,13 +111,19 @@ create_pif() {
       log_error "Failed to convert chain to PAF for $(basename "$chain_path")"
     fi
 
-    if ! jbrowse make-pif "$paf_path" --csi --out "$pif_path"; then
+    if ! "$JBROWSE_CLI" make-pif "$paf_path" --csi --out "$pif_path"; then
       rm -f "$paf_path"
       log_error "Failed to create PIF for $(basename "$chain_path")"
     fi
 
     rm "$paf_path"
+    write_pif_stamp "$pif_path.cli"
   fi
+}
+
+# $1: PIF path. True when the PIF, its index and a current CLI stamp all exist.
+pif_current() {
+  [ -f "$1" ] && [ -f "$1.csi" ] && pif_stamp_current "$1.cli"
 }
 
 # Copies a PIF file and its index to a destination directory.
@@ -114,7 +146,7 @@ process_chain_file() {
   pif_path="${paths[1]}"
   pif_filename=$(basename "$pif_path")
 
-  if [[ -z "${REPROCESS:-}" && -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]]; then
+  if [[ -z "${REPROCESS:-}" && -f "$dest_dir/$pif_filename" && -f "$dest_dir/$pif_filename.csi" ]] && pif_current "$pif_path"; then
     log_info "PIF file $pif_filename already exists, skipping"
   else
     download_file "$file_url" "$chain_path"

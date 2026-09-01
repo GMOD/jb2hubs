@@ -66,7 +66,7 @@ main() {
 
   if [[ -n "${REPROCESS:-}" ]]; then
     rm -f "$stamp"
-  elif [[ -f "$stamp" ]]; then
+  elif pif_stamp_current "$stamp"; then
     return 0
   fi
 
@@ -80,7 +80,7 @@ main() {
       process_chain_file "$url" "$(basename "$url")" '.over.chain.gz' "$liftover_dir"
     done
   fi
-  touch "$stamp"
+  write_pif_stamp "$stamp"
 }
 
 main "$@"

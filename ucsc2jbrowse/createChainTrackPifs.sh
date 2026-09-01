@@ -74,7 +74,7 @@ process_liftover() {
 
   if [[ -n "${REPROCESS:-}" ]]; then
     rm -f "$stamp"
-  elif [[ -f "$stamp" ]]; then
+  elif pif_stamp_current "$stamp"; then
     return 0
   fi
 
@@ -91,14 +91,14 @@ process_liftover() {
 
   if [[ -z "$urls" ]]; then
     log_info "No liftOver chain files found at $base_url, skipping"
-    touch "$stamp"
+    write_pif_stamp "$stamp"
     return 0
   fi
 
   echo "$urls" | while read -r url; do
     process_chain_file "$url" "$(basename "$url")" '.chain.gz' "$liftover_dir"
   done
-  touch "$stamp"
+  write_pif_stamp "$stamp"
 }
 
 # Processes vs chain files
@@ -109,7 +109,7 @@ process_vs() {
 
   if [[ -n "${REPROCESS:-}" ]]; then
     rm -f "$stamp"
-  elif [[ -f "$stamp" ]]; then
+  elif pif_stamp_current "$stamp"; then
     return 0
   fi
 
@@ -121,7 +121,7 @@ process_vs() {
 
   if [[ -z "$subdirs" ]]; then
     log_info "No 'vs*' subdirectories found at $base_url, skipping"
-    touch "$stamp"
+    write_pif_stamp "$stamp"
     return 0
   fi
 
@@ -137,7 +137,7 @@ process_vs() {
       process_chain_file "$subdir_url/$file" "$file" '.all.chain.gz' "$vs_dir"
     done
   done
-  touch "$stamp"
+  write_pif_stamp "$stamp"
 }
 
 # Main processing dispatcher
