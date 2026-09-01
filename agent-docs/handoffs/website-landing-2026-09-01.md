@@ -140,7 +140,5 @@ prerendering `/gene/<symbol>` for human protein-coding genes, and moving the
 - Flip `multiSynteny` whenever the figure is wanted on production; it is a
   section of a live page now.
 - Start the PIF regeneration as its own run and watch the upload.
-- `CLAUDE.md` and `genark2jbrowse/make.sh` carry small uncommitted hunks from
-  this session (a PIF section, a lint-section rewrite, a two-line ShellCheck
-  fix) beside another session's uncommitted GenArk work; whoever commits that
-  work should take these along.
+- Everything from this session is committed. The only uncommitted files in the
+  tree at handoff were another session's GenArk pipeline outputs.

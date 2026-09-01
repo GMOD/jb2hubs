@@ -33,18 +33,17 @@ how `no-console` is handled — off for the CLI/build-script trees
 (`genark2jbrowse/src`, `ucsc2jbrowse/src`, `website/generate*.ts`, `scripts/`),
 where stdout _is_ the output, and on everywhere else.
 
-There is one file-scoped override, `react/set-state-in-effect` off for
-`website/src/components/OrthologSearch.tsx`, and it is the exception that should
-stay rare. That component seeds four pieces of state from `location.search` on
-mount, in a `client:load` island — the hydration case the rule's own help text
-sanctions ("use an effect only when synchronizing with an external system"), and
-a lazy `useState` initializer would read the real URL during hydration and
-mismatch the server HTML. The five sibling violations the oxlint 1.80 bump
-surfaced were all fixable and were fixed: three were the same reset-on-change
-effect and now share `useResetOnChange`, `ProteinBrowser` derives what it was
-clearing, and `useUrlState` is a `useSyncExternalStore` over the URL, which is
-what the rule was pointing at all along. Reach for the override only after
-finding that the effect really is the synchronization it looks like.
+There are no file-scoped overrides either, and that took two rounds. The oxlint
+1.80 bump surfaced six `react/set-state-in-effect` violations; five were fixable
+at once (three were the same reset-on-change effect and now share
+`useResetOnChange`, `ProteinBrowser` derives what it was clearing, and
+`useUrlState` is a `useSyncExternalStore` over the URL, which is what the rule
+was pointing at all along). The sixth, `OrthologSearch.tsx` seeding four pieces
+of state from `location.search` on mount, kept an override until 2026-09-01,
+when that shell became `GenePage.tsx` and the state became `useUrlState` values
+with uncontrolled inputs keyed on them — no effect, no override. Reach for an
+override only after finding that the effect really is the synchronization it
+looks like; so far every one has turned out not to be.
 
 One thing `.oxfmtrc.json` must keep ignoring: `**/.*-uploaded.json`, the
 `upload_if_changed` stamps (currently just
@@ -400,8 +399,8 @@ than our copy, and of 12 sampled 3 differed in content; the first full sync
 changed 278 of them in content.
 
 Three steps in `genark2jbrowse/make.sh`, each one rsync connection, because
-52,000 HEAD requests against hgdownload is the kind of load the track-url
-canary is budgeted to avoid:
+52,000 HEAD requests against hgdownload is the kind of load the track-url canary
+is budgeted to avoid:
 
 - **`listUpstreamHubs.sh`** walks `rsync://hgdownload.soe.ucsc.edu/hubs/GCA/`
   and `GCF/` with `--list-only`, an include chain that descends exactly four
@@ -413,25 +412,24 @@ canary is budgeted to avoid:
   from the listing, and `rsync -t --files-from` copies exactly those. `-t`
   leaves upstream's mtime on the copy, so the comparison is exact from then on
   and needs no stamp file; a fresh checkout, whose mtimes are checkout times,
-  costs one full copy (all 52,720 in 890 s) and is exact after it.
-  `git status` on `hubs/**/hub.txt` then says which changed in **content**,
-  and those hubs lose their `liftOver/.checked` so the chain probe runs again
-  for them — a refreshed `hub.txt` is how a new chain gets noticed at all.
-- **`downloadHubs.ts`** fetches only hubs with no `hub.txt` yet, and reports
-  two things the assembly list cannot say: every accession it names that the
-  walk did not find, and every hub whose `2bit` or `chrom.sizes.txt` is gone.
-  The first is split by whether we publish a config for it, because UCSC's
-  `assemblyList.json` names 23 hubs that have never existed on hgdownload
-  (404 on both hosts, absent from rsync), and those are noise; a hub we have
-  and upstream no longer does is the finding, and it is no longer fetched.
-  The second is the GenArk half of the sidecar problem — `loadPre()` fails the
-  whole assembly on either — answered from a directory listing the walk reads
-  anyway, not from the 105k-request probe that the reverted mirroring sweep
-  was.
+  costs one full copy (all 52,720 in 890 s) and is exact after it. `git status`
+  on `hubs/**/hub.txt` then says which changed in **content**, and those hubs
+  lose their `liftOver/.checked` so the chain probe runs again for them — a
+  refreshed `hub.txt` is how a new chain gets noticed at all.
+- **`downloadHubs.ts`** fetches only hubs with no `hub.txt` yet, and reports two
+  things the assembly list cannot say: every accession it names that the walk
+  did not find, and every hub whose `2bit` or `chrom.sizes.txt` is gone. The
+  first is split by whether we publish a config for it, because UCSC's
+  `assemblyList.json` names 23 hubs that have never existed on hgdownload (404
+  on both hosts, absent from rsync), and those are noise; a hub we have and
+  upstream no longer does is the finding, and it is no longer fetched. The
+  second is the GenArk half of the sidecar problem — `loadPre()` fails the whole
+  assembly on either — answered from a directory listing the walk reads anyway,
+  not from the 105k-request probe that the reverted mirroring sweep was.
 
 The rsync daemon lags the web host by under an hour (192 files changed upstream
-between the first listing and its copy, and were current on the next walk), so
-a few "still stale" entries right after a sync are the window, not a bug.
+between the first listing and its copy, and were current on the next walk), so a
+few "still stale" entries right after a sync are the window, not a bug.
 
 A failed walk skips the refresh for that run and says so; nothing is deleted on
 either evidence. That report is where **GCF_000001405.40** shows up: UCSC's
@@ -441,13 +439,13 @@ gone from both hgdownload hosts (hub.txt, 2bit, `chrom.sizes` and every bigBed
 open. The accession page is unaffected — it launches `/ucsc/hg38` — and the
 synteny drilldown already routes around it, but the config is still at its
 permanent url, in `processedHubJson` for Desktop, and is the liftOver target of
-other hubs' synteny tracks. Retiring or re-pointing it is a decision this
-report keeps visible rather than one the pipeline makes.
+other hubs' synteny tracks. Retiring or re-pointing it is a decision this report
+keeps visible rather than one the pipeline makes.
 
 ## `hubs/` stays in git, and nothing depends on its history
 
-The 52,720 GenArk configs (260k tracked files, 1.5 GB at HEAD) are committed
-on purpose: `git diff` after a run is the one place that shows _what_ changed in
+The 52,720 GenArk configs (260k tracked files, 1.5 GB at HEAD) are committed on
+purpose: `git diff` after a run is the one place that shows _what_ changed in
 which hub, and it is what a converter change is checked against before it is
 shipped. Measured 2026-09-01, git is not the cost it looks like — `git status`
 1.4 s, `git diff --stat hubs/` 4.8 s — and what grew the repo to 1.2 GB on
@@ -455,22 +453,22 @@ GitHub was not the per-run traffic (1 to 100 hubs) but corpus-wide rewrites,
 four of which in late August were the formatter reflowing what the pipeline
 wrote. The one-pass builder writes oxfmt's format directly, so those are gone.
 
-What made the history precious was one date: the recently-updated page needed
-to know when each hub first appeared, and the only record was the commit that
-added its config, so `generateRecentlyUpdated.ts` walked `git log -- hubs/`
-(1.2M lines) and run.sh had to commit `hubs/` before the website build could
-run. **`genark2jbrowse/hubFirstSeen.json`** is that record now: accession to
-the ISO time of the run that first built its config, seeded once from the git
-log on 2026-09-01, appended to by `buildConfigsBatch.ts` for any accession it
-lacks (never under `--out-root`), and committed beside `hubs/` by run.sh. It is
-written with `formatJson` like the configs, so an ordinary run adds one line
-per new hub and reflows nothing.
+What made the history precious was one date: the recently-updated page needed to
+know when each hub first appeared, and the only record was the commit that added
+its config, so `generateRecentlyUpdated.ts` walked `git log -- hubs/` (1.2M
+lines) and run.sh had to commit `hubs/` before the website build could run.
+**`genark2jbrowse/hubFirstSeen.json`** is that record now: accession to the ISO
+time of the run that first built its config, seeded once from the git log on
+2026-09-01, appended to by `buildConfigsBatch.ts` for any accession it lacks
+(never under `--out-root`), and committed beside `hubs/` by run.sh. It is
+written with `formatJson` like the configs, so an ordinary run adds one line per
+new hub and reflows nothing.
 
 That leaves the history with no reader. Squashing it, or moving `hubs/` and
 `ucsc2jbrowse/configs/` into a sibling data repo when the size does become a
 problem, costs nothing the website or the pipeline reads. A manifest of hashes
-instead of the files was considered and rejected: it says which hubs changed
-and not what changed in them, and the second half is the one that catches a
+instead of the files was considered and rejected: it says which hubs changed and
+not what changed in them, and the second half is the one that catches a
 converter regression.
 
 ## What belongs in `configs-minimal/`
@@ -1242,6 +1240,37 @@ htslib versions, so no `-l` makes 1.23.1 reproduce 1.13 (l5→243,497, l6→242,
 l7→239,062). Matching an existing corpus means matching the build, not tuning
 the level. The corpus today is htslib 1.23.1 + libz, chosen for stability over
 the 6% — file size was explicitly not the priority.
+
+### The PIF corpus is keyed on the CLI that wrote it
+
+Same shape one tool over: a PIF's bytes are a function of `jbrowse make-pif`'s
+version as much as of the chain. `@jbrowse/cli` 5.0 (`5.0.0-beta.1`, published
+2026-08-31) emits a **coarse level-of-detail tier** beside the per-row CIGAR
+tier — the same alignments under uppercase `T<chr>`/`Q<chr>` refnames, split at
+indels ≥ 10 kb, which the v5 adapter probes for and switches to at
+`coarseBpPerPxThreshold` (10,000 bp/px). A v4 adapter queries `t<chr>` and never
+sees the uppercase rows, so a regenerated PIF ships to production without a
+staging sibling. Measured on hg38→mm39: 33 s, 141.5 MB against 132.2 MB (+7 %),
+80,845 fine and 121,175 coarse row pairs.
+
+Two things hold the corpus current, both in `lib/chainpif.sh`:
+
+- **The CLI is the repo's pinned `node_modules/.bin/jbrowse`**, not whatever
+  `jbrowse` is on PATH (a global 4.2.1 was what built every existing PIF, and
+  the global text-index CLI is deliberately left alone).
+- **Every PIF carries a `.cli` stamp** in the cache dir and every liftOver dir's
+  `.checked` holds the same line (`jbrowse_cli_version`). `pif_current` and
+  `pif_stamp_current` treat a missing, empty (the old `touch` format) or
+  different stamp as stale, so a CLI bump rebuilds the corpus on the next run
+  and the bootstrap is deliberately "rebuild", not "record": the code that wrote
+  the 4,064 files on disk is known to lack the tier. The stamp lives only in
+  `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy, so nothing new reaches
+  the bucket.
+
+The first run after the bump is therefore the regeneration: 4,064 UCSC PIFs (928
+GB, chains cached in `/mnt/sdb/cdiesh/chains`) plus 738 GenArk, and `rclone -c`
+re-sends all of it. Nothing about that is a mistake to be gated away — it is the
+only way the tier reaches the files — but it is a run to start on purpose.
 
 ## Which UCSC assemblies are NCBI-derived is derived, not listed
 
