@@ -152,35 +152,46 @@ export default function ProteinDomainCartoon({
                   {r.domains
                     .filter(d => colors.has(d.name))
                     .map((d, i) => {
-                      const clickable = isQuery && !!onSelectDomain
                       const selected =
                         isQuery &&
                         !!selectedDomain &&
                         sameDomain(d, selectedDomain)
-                      return (
-                        <div
-                          className={[
-                            'pdc-domain',
-                            clickable ? 'clickable' : '',
-                            selected ? 'selected' : '',
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                          key={`${d.name}-${d.start}-${i}`}
-                          title={`${d.name} (${d.start}–${d.end})${clickable ? ' — click to highlight at launch' : ''}`}
-                          role={clickable ? 'button' : undefined}
-                          onClick={
-                            clickable
-                              ? () => {
-                                  onSelectDomain(d)
-                                }
-                              : undefined
+                      const name = `${d.name} (${d.start}–${d.end})`
+                      const style = {
+                        left: `${((d.start - 1) / r.length) * 100}%`,
+                        width: `${((d.end - d.start + 1) / r.length) * 100}%`,
+                        background: colors.get(d.name),
+                      }
+                      const key = `${d.name}-${d.start}-${i}`
+                      // A query-row domain is a real button — focusable, with
+                      // its name and state readable — since it decides what
+                      // the session opens on. Every other block is a picture
+                      // of a domain, named the same way.
+                      return isQuery && onSelectDomain ? (
+                        <button
+                          type="button"
+                          className={
+                            selected
+                              ? 'pdc-domain clickable selected'
+                              : 'pdc-domain clickable'
                           }
-                          style={{
-                            left: `${((d.start - 1) / r.length) * 100}%`,
-                            width: `${((d.end - d.start + 1) / r.length) * 100}%`,
-                            background: colors.get(d.name),
+                          key={key}
+                          title={`${name} — highlight at launch`}
+                          aria-label={`${name}, highlight at launch`}
+                          aria-pressed={selected}
+                          onClick={() => {
+                            onSelectDomain(d)
                           }}
+                          style={style}
+                        />
+                      ) : (
+                        <span
+                          className="pdc-domain"
+                          key={key}
+                          role="img"
+                          title={name}
+                          aria-label={name}
+                          style={style}
                         />
                       )
                     })}

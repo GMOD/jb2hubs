@@ -10,6 +10,12 @@
 
 import type { Example } from './orthologSearchUtils.ts'
 
+// How the precomputed panels (public/proteinExamples.json) are keyed. One rule,
+// shared by the generator that writes the file and the page that reads it, so
+// a chip for any species finds its entry however the symbol was typed.
+export const cacheKey = (symbol: string, ref: number) =>
+  `${symbol.trim().toUpperCase()}:${ref}`
+
 const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
   // The human picks are chosen on what the DOMAIN CARTOON shows at 60 species,
   // measured 2026-08-26 — a chip whose panel is one flat band teaches nothing,

@@ -33,7 +33,7 @@ import { COMMON_TAX_RANK } from './orthologSearchUtils.ts'
 import { resolveGeneId } from './orthologSet.ts'
 import { fetchGenomes, fetchPantherOrthologs } from './pantherOrthologs.ts'
 
-export interface ProteinMsaRow {
+interface ProteinMsaRow {
   taxId: number
   label: string // single-token id used in FASTA / tree / gff
   scientificName: string
@@ -89,7 +89,7 @@ const PANTHER_ONLY_TAXA = new Set([
   3702, // Arabidopsis thaliana
 ])
 
-export function defaultOrthologSource(taxId: number): OrthologSource {
+function defaultOrthologSource(taxId: number): OrthologSource {
   return PANTHER_ONLY_TAXA.has(taxId) ? 'panther' : 'ncbi'
 }
 
@@ -142,6 +142,7 @@ export interface ProteinAlignOptions {
   email?: string
   maxRows?: number // defaults to MAX_ALIGN_ROWS
   onProgress?: (message: string) => void // staged status for the slow EBI step
+  signal?: AbortSignal // stops polling EBI once nobody wants the answer
 }
 
 // The first `max` of the source's own order, with the reference species kept
@@ -695,6 +696,7 @@ export async function alignProteinPanel(
     email = EBI_EMAIL,
     maxRows = MAX_ALIGN_ROWS,
     onProgress = () => undefined,
+    signal,
   }: ProteinAlignOptions = {},
 ): Promise<ProteinAlignment> {
   if (!canAlign(panel)) {
@@ -711,7 +713,7 @@ export async function alignProteinPanel(
   const domainsByAcc = new Map(rows.map(r => [r.protein, r.domains]))
   const { aligned, newick } = await clustalOmega(
     buildInputFasta(rows, seqById),
-    { email },
+    { email, signal },
   )
   return {
     fasta: unwrapFasta(aligned),

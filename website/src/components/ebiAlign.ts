@@ -8,8 +8,6 @@
 // record (jbrowse.org is rejected), so this is the project's real mailbox. It
 // ships to every visitor, since the job is submitted from their browser.
 
-import { delay } from '../lib/delay.ts'
-
 const CLUSTALO = 'https://www.ebi.ac.uk/Tools/services/rest/clustalo'
 
 export const EBI_EMAIL = 'jbrowse2@berkeley.edu'
@@ -18,6 +16,9 @@ interface ClustalOptions {
   email?: string
   pollMs?: number
   timeoutMs?: number
+  // aborting stops the polling; the job itself runs on at EBI, which offers no
+  // cancel and drops it on its own
+  signal?: AbortSignal
 }
 
 async function text(url: string, init?: RequestInit) {
@@ -26,6 +27,20 @@ async function text(url: string, init?: RequestInit) {
     throw new Error(`EBI request failed (${res.status})`)
   }
   return (await res.text()).trim()
+}
+
+function sleep(ms: number, signal?: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(new DOMException('EBI alignment abandoned', 'AbortError'))
+    }
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort)
+      resolve()
+    }, ms)
+    signal?.addEventListener('abort', onAbort, { once: true })
+  })
 }
 
 // Align protein sequences (FASTA in, FASTA out). Sequence ids in the input FASTA
@@ -37,28 +52,29 @@ export async function clustalOmega(
     email = EBI_EMAIL,
     pollMs = 2000,
     timeoutMs = 180_000,
+    signal,
   }: ClustalOptions = {},
 ): Promise<{ aligned: string; newick: string }> {
   const body = new URLSearchParams({ email, stype: 'protein', sequence: fasta })
-  const jobId = await text(`${CLUSTALO}/run`, { method: 'POST', body })
+  const jobId = await text(`${CLUSTALO}/run`, { method: 'POST', body, signal })
   if (!jobId.startsWith('clustalo-')) {
     throw new Error(`EBI submission rejected: ${jobId.slice(0, 200)}`)
   }
 
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
-    const status = await text(`${CLUSTALO}/status/${jobId}`)
+    const status = await text(`${CLUSTALO}/status/${jobId}`, { signal })
     if (status === 'FINISHED') {
       const [aligned, newick] = await Promise.all([
-        text(`${CLUSTALO}/result/${jobId}/fa`),
-        text(`${CLUSTALO}/result/${jobId}/phylotree`),
+        text(`${CLUSTALO}/result/${jobId}/fa`, { signal }),
+        text(`${CLUSTALO}/result/${jobId}/phylotree`, { signal }),
       ])
       return { aligned, newick }
     }
     if (status !== 'RUNNING' && status !== 'QUEUED') {
       throw new Error(`EBI alignment job ${status}`)
     }
-    await delay(pollMs)
+    await sleep(pollMs, signal)
   }
   throw new Error('EBI alignment timed out')
 }

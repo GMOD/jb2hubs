@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
+import { errorText } from './ErrorMessage.tsx'
 import { SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
 import {
   type GeneStructure,
@@ -36,13 +37,28 @@ function isoformLabel(iso: Isoform) {
   return `${iso.transcript.name} · ${iso.aaLength} aa${iso.tag ? ` · ${iso.tag}` : ''}`
 }
 
-// A structure's AlphaFold models, resolved through the API so a species whose
-// canonical is past the length cap still gets its best isoform model.
+// An ortholog's best AlphaFold model, resolved through the API so a species
+// whose canonical is past the length cap still gets its isoform model. Memoized
+// per accession: the SWR key below is the whole list of marked rows, so without
+// this every toggle re-asked the API for every accession already resolved.
+const modelByAccession = new Map<string, Promise<AlphaFoldModel | undefined>>()
+
+function superposedModel(accession: string) {
+  let pending = modelByAccession.get(accession)
+  if (!pending) {
+    pending = fetchAlphaFoldModels(accession).then(models =>
+      pickAlphaFoldModel(models),
+    )
+    modelByAccession.set(accession, pending)
+  }
+  return pending
+}
+
 async function superposedModels(accessions: string[]) {
   return Promise.all(
     accessions.map(async accession => ({
       accession,
-      model: pickAlphaFoldModel(await fetchAlphaFoldModels(accession)),
+      model: await superposedModel(accession),
     })),
   )
 }
@@ -83,7 +99,12 @@ export default function ProteinLaunchCard({
   const isoform =
     isoforms.find(i => i.transcript.name === isoformName) ?? isoforms[0]!
   const isDefaultIsoform = isoform.transcript.name === structure.transcript.name
-  const { data: fetchedTranslation, isLoading: translating } = useSWRImmutable(
+  const {
+    data: fetchedTranslation,
+    error: translationError,
+    isLoading: translating,
+    mutate: retryTranslation,
+  } = useSWRImmutable(
     isDefaultIsoform ? null : (['protein-seq', isoform.protein] as const),
     ([, protein]) => fetchProteinSequence(protein),
     LIVE_QUERY,
@@ -138,12 +159,21 @@ export default function ProteinLaunchCard({
     // A domain is a range on the query row's protein; the plugin lights
     // structure residues. The two agree when the model was folded from the
     // transcript's own translation and that is the row's protein. A PDB entry
-    // numbers its observed chain, and a different isoform shifts the range.
-    const domainExact =
+    // numbers its observed chain, and a different isoform shifts the range —
+    // either the model's (folded from another isoform) or the row's (the
+    // panel's pick is MANE, else the longest, which need not be the launched
+    // transcript's protein). The row is matched by accession, and by length
+    // where the accession cannot agree: a PANTHER row is a UniProt entry, and
+    // the 100-way's transcript has no RefSeq protein to name.
+    const modelExact =
       chosen === 'alphafold' &&
       !!model &&
-      model.sequence === launched.proteinSequence &&
-      queryRow?.length === model.sequence.length
+      model.sequence === launched.proteinSequence
+    const rowExact =
+      !!queryRow &&
+      (queryRow.protein === isoform.protein ||
+        queryRow.length === launched.proteinSequence?.length)
+    const domainExact = modelExact && rowExact
     return {
       launched,
       model,
@@ -152,6 +182,7 @@ export default function ProteinLaunchCard({
       primary,
       found,
       missingModels,
+      modelExact,
       domainExact,
       ...buildSessionUrl({
         structure: launched,
@@ -189,24 +220,33 @@ export default function ProteinLaunchCard({
     primary,
     found,
     missingModels,
+    modelExact,
     domainExact,
     session,
     url,
+    alignmentOmitted,
   } = launch
   const { transcript, assemblyAccession } = launched
   const { codingBp } = geneStats(transcript)
 
+  // What the session actually holds, read off the session: the structure view
+  // is omitted when there is no translation to align it to, whatever structure
+  // was picked, and the superposed models ride inside it.
+  const hasProteinView = session.views.some(v => v.type === 'ProteinView')
+  const noTranslation = !!primary && !launched.proteinSequence && !translating
   const carries = [
     collapse ? 'the coding exons back to back' : 'the gene in its genome',
-    primary
+    hasProteinView
       ? chosen === 'alphafold'
         ? 'the AlphaFold structure'
         : `PDB ${chosen.toUpperCase()}`
       : undefined,
-    found.length > 0
+    hasProteinView && found.length > 0
       ? `${found.length} superposed ortholog ${found.length === 1 ? 'structure' : 'structures'}`
       : undefined,
-    alignment ? `a ${alignment.rowCount}-row alignment` : undefined,
+    alignment && !alignmentOmitted
+      ? `a ${alignment.rowCount}-row alignment`
+      : undefined,
     variants && launched.target.variantTrackIds.length > 0
       ? 'variant tracks'
       : undefined,
@@ -304,6 +344,23 @@ export default function ProteinLaunchCard({
             to open.
           </p>
         )}
+        {noTranslation && (
+          <p className="ui-error">
+            The translation of {isoform.protein} could not be fetched
+            {translationError ? ` (${errorText(translationError)})` : ''}, so
+            the structure is not opened: the 3D view aligns it to that sequence.{' '}
+            {isDefaultIsoform ? null : (
+              <button
+                className="ui-linkbtn"
+                onClick={() => {
+                  void retryTranslation()
+                }}
+              >
+                Try again
+              </button>
+            )}
+          </p>
+        )}
 
         {superposed.length > 0 && (
           <div className="msv-control">
@@ -352,9 +409,11 @@ export default function ProteinLaunchCard({
                 ? 'needs a structure'
                 : domainExact
                   ? 'lit on load in all three views'
-                  : chosen === 'alphafold'
-                    ? 'approximate: the model is a different isoform'
-                    : 'approximate: PDB residue numbering'}
+                  : chosen !== 'alphafold'
+                    ? 'approximate: PDB residue numbering'
+                    : modelExact
+                      ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
+                      : 'approximate: the model is a different isoform'}
             </span>
           </div>
         )}
@@ -419,6 +478,13 @@ export default function ProteinLaunchCard({
       <p className="ui-caption">
         Opens {joinList(carries)} in one connected session.
       </p>
+      {alignment && alignmentOmitted && (
+        <p className="ui-caption">
+          The {alignment.rowCount}-row alignment is too large to ride in a
+          launch link on the current JBrowse release, so the session opens
+          without it; it stays on this page.
+        </p>
+      )}
 
       {detailsOpen && (
         <SessionDetailsDialog

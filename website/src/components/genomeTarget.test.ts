@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  isNcbiGffTrack,
   parseChromAlias,
   pickGeneTrack,
   pickVariantTracks,
@@ -104,4 +105,14 @@ test('pickVariantTracks: ClinVar and AlphaMissense where the config has them', (
     ['hg38-clinvarMain', 'hg38-alphaMissense'],
   )
   assert.deepEqual(pickVariantTracks('mm39', ['mm39-ncbiRefSeq']), [])
+})
+
+// A GenArk hub's only gene track is its NCBI GFF, which `latest` labels with
+// UUIDs, so a session opening it is routed to the gene-track host.
+test('isNcbiGffTrack: the two GFF3 tracks and nothing else', () => {
+  assert.equal(isNcbiGffTrack('GCF_000001215.4-ncbiGff'), true)
+  assert.equal(isNcbiGffTrack('hg38-ncbiRefSeqGff'), true)
+  assert.equal(isNcbiGffTrack('hg38-ncbiRefSeqSelect'), false)
+  assert.equal(isNcbiGffTrack('hg38-ncbiRefSeq'), false)
+  assert.equal(isNcbiGffTrack(undefined), false)
 })

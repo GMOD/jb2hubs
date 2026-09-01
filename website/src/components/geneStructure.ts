@@ -48,7 +48,7 @@ export interface Transcript {
   cds: CDS[] // genomic ascending, coding only
 }
 
-export type TranscriptTag = 'MANE Select' | 'RefSeq Select'
+type TranscriptTag = 'MANE Select' | 'RefSeq Select'
 
 // One isoform the gene encodes: its exon model, the protein it translates to,
 // and whether NCBI flags it as the representative transcript.
@@ -100,7 +100,7 @@ interface DatasetsGeneReport {
   }[]
 }
 
-export interface PlacedAnnotation {
+interface PlacedAnnotation {
   assemblyAccession: string
   refName: string
   strand: 1 | -1
@@ -246,7 +246,7 @@ function assignPhases(
   return strand === 1 ? phased : phased.reverse()
 }
 
-export interface ParsedTranscript {
+interface ParsedTranscript {
   mrna: string
   protein: string
   // translated residues. The coding intervals include the stop codon, so this
@@ -430,7 +430,7 @@ export async function fetchGeneStructure(
 
 // --- collapsed-intron geometry -----------------------------------------------
 
-export const DEFAULT_PADDING = 40
+const DEFAULT_PADDING = 40
 
 export function blockBounds(blocks: Exon[]) {
   return {
@@ -478,7 +478,7 @@ export function collapsedLoc(
   return (flip ? locs.reverse() : locs).join(' ')
 }
 
-export interface GeneStats {
+interface GeneStats {
   codingBp: number
   span: number
   ratio: string

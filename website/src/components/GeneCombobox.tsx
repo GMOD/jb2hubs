@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { searchGenes } from './geneSearch.ts'
 
+const optionId = (i: number) => `msv-gene-option-${i}`
+
 // A gene-symbol box with suggestions. Deliberately free-text: Enter submits what
 // was typed unless a suggestion is highlighted, so a symbol the type-ahead has
 // not heard of (or has not answered for yet) still runs. The suggestions are a
@@ -26,10 +28,13 @@ export default function GeneCombobox({
   // species switch — only typing should fire a lookup
   const [typed, setTyped] = useState('')
 
-  // A query too short to look up has no suggestions, which is a fact about
-  // `typed` rather than a state to clear: derived here so the effect does the
-  // one thing it is for, which is fetching.
-  const hits = typed.trim().length < 2 ? [] : fetchedHits
+  // A query too short to look up has no suggestions, and so does a box whose
+  // value came from outside — a chip or a species switch puts a symbol in the
+  // box without going through `typed`, so the last typed lookup no longer
+  // describes what is shown. Both are facts about (`typed`, `value`) rather
+  // than state to clear: derived here so the effect does the one thing it is
+  // for, which is fetching.
+  const hits = typed.trim().length < 2 || value !== typed ? [] : fetchedHits
 
   // Debounced and race-safe: the cleanup drops a slow earlier response so it
   // cannot land on top of a newer one.
@@ -71,6 +76,9 @@ export default function GeneCombobox({
         aria-expanded={showList}
         aria-controls="msv-gene-listbox"
         aria-autocomplete="list"
+        aria-activedescendant={
+          showList && highlighted >= 0 ? optionId(highlighted) : undefined
+        }
         autoComplete="off"
         placeholder="Gene symbol, e.g. TP53"
         disabled={disabled}
@@ -112,6 +120,7 @@ export default function GeneCombobox({
           {hits.map((symbol, i) => (
             <li
               key={symbol}
+              id={optionId(i)}
               role="option"
               aria-selected={i === highlighted}
               className={

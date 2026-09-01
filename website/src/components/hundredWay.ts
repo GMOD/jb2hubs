@@ -30,10 +30,15 @@ import { RemoteFile } from 'generic-filehandle2'
 
 import type { CDS, Transcript } from './geneStructure.ts'
 
-const BASE = 'https://jbrowse.org/demos/msaview/100way'
-const MSA_GZ = `${BASE}/hg38.knownCanonical.multiz100way.aa.fa.gz`
+// Where the alignment and its sidecars live. This url is baked into every
+// launched session that names the indexed alignment (HUNDRED_WAY_MSA and
+// HUNDRED_WAY_TREE ride in the bookmarkable session url), so it should be
+// promoted out of `demos/` before those urls are treated as permanent — moving
+// the files afterwards breaks every saved link.
+const HUNDRED_WAY_BASE = 'https://jbrowse.org/demos/msaview/100way'
+const MSA_GZ = `${HUNDRED_WAY_BASE}/hg38.knownCanonical.multiz100way.aa.fa.gz`
 
-export const HUNDRED_WAY_TREE = `${BASE}/hg38.multiz100way.nh`
+export const HUNDRED_WAY_TREE = `${HUNDRED_WAY_BASE}/hg38.multiz100way.nh`
 export const HUNDRED_WAY_MSA = MSA_GZ
 
 // The alignment is hg38 knownCanonical, so it exists for human alone.

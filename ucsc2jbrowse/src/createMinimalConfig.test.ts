@@ -25,8 +25,24 @@ describe('shouldIncludeTrack', () => {
       'hg38-clinvarCnv',
       'mm10-clinvarLift',
       'hs1-clinVar20220313',
+      'hg38-alphaMissense',
+      'hg19-alphaMissense',
     ]) {
       assert.equal(shouldIncludeTrack(id), true, id)
+    }
+  })
+
+  // The protein browser picks its variant tracks off minimal.json, so the
+  // AlphaMissense half of "ClinVar + AlphaMissense" was never opened until the
+  // pattern existed. The sibling missense tracks are not the same signal.
+  it('keeps alphaMissense and not the other missense tracks', () => {
+    assert.equal(shouldIncludeTrack('hg38-alphaMissense'), true)
+    for (const id of [
+      'hg38-missenseByGene',
+      'hg38-missenseByTranscript',
+      'hg19-gnomadMissense',
+    ]) {
+      assert.equal(shouldIncludeTrack(id), false, id)
     }
   })
 

@@ -54,6 +54,13 @@ export function pickGeneTrack(
   )
 }
 
+// The two full-resolution GFF3 tracks are the ones `latest` cannot label (see
+// onGeneTrackHost in config/jbrowse.ts); a session opening one of them goes to
+// the gene-track host, as every /orthologs launch does.
+export function isNcbiGffTrack(trackId: string | undefined) {
+  return /-(ncbiRefSeqGff|ncbiGff)$/.test(trackId ?? '')
+}
+
 // Variant evidence to open under the gene, where the config carries it: the
 // UCSC ClinVar SNV track and the AlphaMissense pathogenicity signal, which is
 // the pairing the protein browser paper's BRAF case study is built on. Only the

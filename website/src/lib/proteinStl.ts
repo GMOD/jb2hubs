@@ -12,7 +12,7 @@
 // layout Mol*'s own exporter writes (80-byte header, uint32 triangle count,
 // then 50 bytes/triangle: face normal + 3 vertices + a 2-byte attribute count).
 
-export type Vec3 = readonly [number, number, number]
+type Vec3 = readonly [number, number, number]
 
 const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
 const add = (a: Vec3, b: Vec3): Vec3 => [a[0] + b[0], a[1] + b[1], a[2] + b[2]]
@@ -119,7 +119,7 @@ function tubeRings(points: Vec3[], radius: number, segments: number): Vec3[][] {
   })
 }
 
-export interface TubeOptions {
+interface TubeOptions {
   // tube radius in Ångströms; CA–CA spacing is ~3.8 Å, so the default overlaps
   // neighbouring rings into one solid rod. STL units are unitless — most slicers
   // read them as mm, making a ~50 Å protein a ~5 cm print.

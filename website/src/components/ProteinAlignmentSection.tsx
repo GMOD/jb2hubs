@@ -1,6 +1,6 @@
 import { Suspense, lazy, useState, useSyncExternalStore } from 'react'
 
-import ErrorMessage from './ErrorMessage.tsx'
+import { errorText } from './ErrorMessage.tsx'
 import {
   HUNDRED_WAY_MSA,
   HUNDRED_WAY_TREE,
@@ -64,13 +64,16 @@ export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
 }
 
 // The live panel aligned at EBI, with the CDD domains as a per-row overlay.
+// The signal is what stops the EBI polling when the reader has moved on to
+// another gene — the job can otherwise run to its three-minute deadline.
 export async function loadLive(
   panel: ProteinPanel,
   precomputed: ProteinAlignment | undefined,
   onProgress: (s: string) => void,
+  signal: AbortSignal,
 ): Promise<LoadedAlignment> {
   const aligned =
-    precomputed ?? (await alignProteinPanel(panel, { onProgress }))
+    precomputed ?? (await alignProteinPanel(panel, { onProgress, signal }))
   const queryRow =
     panel.rows.find(r => r.taxId === panel.query.refTaxonId) ?? panel.rows[0]!
   return {
@@ -105,6 +108,7 @@ export default function ProteinAlignmentSection({
   precomputed,
   wantLive,
   onBuildLive,
+  onRetry,
 }: {
   gene: string
   alignment: LoadedAlignment | undefined
@@ -121,12 +125,14 @@ export default function ProteinAlignmentSection({
   precomputed: boolean
   wantLive: boolean
   onBuildLive: () => void
+  // re-runs the failed fetch: the SWR key does not change on a retry
+  onRetry: () => void
 }) {
   const [open, setOpen] = useState(false)
   // Offering to build only means something on the live arm, and only while it
   // has not already been asked for: `wantLive` is not in the SWR key, so a
-  // second click refetches nothing. The 100-way arm loads on selection, so when
-  // it fails the honest answer is the error alone.
+  // second click refetches nothing. After a failure the retry beside the error
+  // is what re-runs it, on either arm.
   const canBuild = source === 'live' && panelRows > 0 && !wantLive
   return (
     <details
@@ -155,10 +161,19 @@ export default function ProteinAlignmentSection({
           onChange={onSource}
         />
       )}
-      <ErrorMessage
-        error={error}
-        className="ui-error"
-      />
+      {!aligning && error ? (
+        <p className="ui-error">
+          {errorText(error)}{' '}
+          <button
+            className="ui-linkbtn"
+            onClick={() => {
+              onRetry()
+            }}
+          >
+            Try again
+          </button>
+        </p>
+      ) : null}
 
       {open && alignment ? (
         <AlignmentPanel

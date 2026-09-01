@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { fetchProteinStl } from '../lib/proteinStl.ts'
+import { errorText } from './ErrorMessage.tsx'
 import Modal from './Modal.tsx'
 import { collapsedLoc } from './geneStructure.ts'
 import { MAX_ALIGN_ROWS, MAX_PANEL_ROWS } from './proteinMsa.ts'
@@ -9,19 +10,25 @@ import type { Transcript } from './geneStructure.ts'
 import type { AlphaFoldModel } from './structureSources.ts'
 import type { ReactNode } from 'react'
 
-// Copy text and say so inline. A rejected write (insecure context, denied
-// permission) reports the failure rather than a false confirmation.
+// Copy text and say so inline. A rejected write (denied permission) reports the
+// failure rather than a false confirmation, and so does a missing clipboard —
+// an insecure context has no `navigator.clipboard` at all, which would
+// otherwise throw synchronously out of the click.
 function useCopy() {
   const [message, setMessage] = useState<string>()
   const copy = (text: string, ok: string) => {
-    void navigator.clipboard.writeText(text).then(
-      () => {
-        setMessage(ok)
-      },
-      () => {
-        setMessage('Copy failed — clipboard access was blocked')
-      },
-    )
+    if ('clipboard' in navigator) {
+      void navigator.clipboard.writeText(text).then(
+        () => {
+          setMessage(ok)
+        },
+        () => {
+          setMessage('Copy failed — clipboard access was blocked')
+        },
+      )
+    } else {
+      setMessage('Copy failed — no clipboard access on this page')
+    }
   }
   return { copy, message }
 }
@@ -57,7 +64,7 @@ export function SessionDetailsDialog({
 }) {
   const { copy, message } = useCopy()
   const [stlBusy, setStlBusy] = useState(false)
-  const [stlError, setStlError] = useState<string>()
+  const [stlError, setStlError] = useState<Error>()
   const loc = collapsedLoc(transcript, { collapse, flip })
   const sessionJson = JSON.stringify(session, null, 2)
 
@@ -69,7 +76,7 @@ export function SessionDetailsDialog({
         triggerDownload(bytes, `${transcript.geneName}-${entity}.stl`)
       })
       .catch((e: unknown) => {
-        setStlError(e instanceof Error ? e.message : String(e))
+        setStlError(e instanceof Error ? e : new Error(String(e)))
       })
       .finally(() => {
         setStlBusy(false)
@@ -116,7 +123,9 @@ export function SessionDetailsDialog({
       </div>
       {message && <p className="ui-hint">{message}</p>}
       {stlError && (
-        <p className="ui-error">Couldn&rsquo;t build STL: {stlError}</p>
+        <p className="ui-error">
+          Couldn&rsquo;t build STL: {errorText(stlError)}
+        </p>
       )}
 
       <pre className="msv-code msv-code-scroll">{sessionJson}</pre>

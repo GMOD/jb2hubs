@@ -11,6 +11,10 @@ const MINIMAL_TRACK_PATTERNS = [
   'gap', // Gap tracks (gap, gapOverlap)
   'allgaps', // also a gap track, but not under the `gap` name
   'clinvar', // clinvarMain/Cnv/SubLolly, clinvarLift, clinVar<date> on hs1
+  // The pathogenicity signal the protein browser opens beside ClinVar. It reads
+  // a UCSC assembly's track ids from minimal.json (website genomeTarget.ts),
+  // so a track absent here is one that launch cannot open.
+  'alphamissense',
 ]
 
 /**

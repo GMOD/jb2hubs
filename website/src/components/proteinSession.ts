@@ -3,12 +3,18 @@
 // alignment — three views sharing one transcript model, so a residue hovered in
 // any of them lights its codon in the others.
 //
-// The session rides in the URL hash (never sent to the server, so no
-// request-line 414) deflated via toUrlSafeB64.
+// The session rides in the URL, deflated via toUrlSafeB64 — in the hash where
+// the host reads it (never sent to the server, so no request-line limit), else
+// in the query string under QUERY_URL_BUDGET.
 
 import { deflate } from 'pako-esm2'
 
-import { JBROWSE_BASE } from '../config/jbrowse.ts'
+import {
+  HOST_HAS_WORKSPACE_LAYOUT,
+  HOST_READS_HASH_PARAMS,
+  JBROWSE_BASE,
+  onGeneTrackHost,
+} from '../config/jbrowse.ts'
 import {
   type GeneStructure,
   type LocOptions,
@@ -16,6 +22,7 @@ import {
   blockBounds,
   collapsedLoc,
 } from './geneStructure.ts'
+import { isNcbiGffTrack } from './genomeTarget.ts'
 
 // Mirrors @jbrowse/core's toUrlSafeB64 (deflate + url-safe unpadded base64) so
 // jbrowse-web's `encoded-` loader inflates it back.
@@ -27,7 +34,7 @@ function toUrlSafeB64(str: string) {
 
 // An alignment carried in the session itself — small enough to ride in the URL,
 // and the only way to ship the per-row domain overlay, which no hosted file has.
-export interface InlineMsa {
+interface InlineMsa {
   fasta: string
   newick: string
   gff?: string // per-row CDD domains, overlaid in react-msaview
@@ -36,7 +43,7 @@ export interface InlineMsa {
 
 // An alignment the msaview plugin reads for itself at launch, named rather than
 // carried: one block of an indexed bgzip file, keyed by gene name.
-export interface IndexedMsa {
+interface IndexedMsa {
   msaUri: string
   treeUri: string
   msaName: string
@@ -52,10 +59,18 @@ export type MsaSource =
 // lets the plugin fetch the SIFTS UniProt mapping for it.
 export type StructureSource = { url: string } | { pdbId: string }
 
+// A hash never leaves the browser; a query string is a request line, and
+// CloudFront refuses one over 8,192 bytes. A host that reads only the query
+// string (HOST_READS_HASH_PARAMS false) therefore gets a budget, and the inline
+// alignment — the one part of a session that can run to tens of KB — is what
+// gives way. The genome and structure views always fit: DMD, the largest
+// example, is 6 KB without an alignment.
+const QUERY_URL_BUDGET = 8000
+
 // A 0-based half-open range of structure residues, lit on load across all
 // three views as if it had been clicked — how a domain in the cartoon becomes
 // the thing the session opens on.
-export interface ResidueRange {
+interface ResidueRange {
   start: number
   end: number
 }
@@ -193,15 +208,19 @@ function proteinView(
 // The workspace tree a session restores: a `row` branch of panels, each holding
 // tabs of view ids, with sizes as weights (app-core's WorkspaceLayoutMixin).
 // Genome + alignment stacked in the left cell, the 3D structure in the right.
-// `useWorkspaces` turns the tiled layout on for this session without touching
-// the reader's own preference.
+// `useWorkspaces` turns the tiled layout on for this session — on a host that
+// reads the tree, without touching the reader's own preference.
 //
 // This is NOT the older session-level `init: {direction, children}` shape, which
 // jbrowse-components dropped when the workspace became an MST tree — a session
 // still emitting that one silently stacks its views in one column instead of
 // tiling them. Ids only need to be unique within the tree; the ones jbrowse
 // mints later are random, so fixed names cannot collide with them.
-function sideBySideLayout(leftIds: string[], rightId: string) {
+//
+// Emitted only for a host that has the tree (HOST_HAS_WORKSPACE_LAYOUT): on
+// v4.3.0 the tree is dropped and `useWorkspaces: true` is written into the
+// reader's localStorage preference, which is worse than a stacked session.
+export function sideBySideLayout(leftIds: string[], rightId: string) {
   return {
     useWorkspaces: true,
     activePanelId: 'panel-left',
@@ -270,20 +289,25 @@ export function buildSessionUrl({
         )
       : undefined
 
-  const session = {
-    name: `Gene explorer: ${transcript.geneName}`,
-    views: [
-      lgv,
-      ...(alignment ? [alignment] : []),
-      ...(protein ? [protein] : []),
-    ],
-    ...(protein
-      ? sideBySideLayout(
-          [lgv.id, ...(alignment ? [alignment.id] : [])],
-          protein.id,
-        )
-      : {}),
+  // A GFF gene track is readable on the gene-track host only, which is `main`,
+  // and `main` has the layout tree whatever the production host lacks.
+  const geneTrackHost = isNcbiGffTrack(target.geneTrackId)
+  const tiled = HOST_HAS_WORKSPACE_LAYOUT || geneTrackHost
+  const inHash = HOST_READS_HASH_PARAMS || geneTrackHost
+  const assemble = (withAlignment: boolean) => {
+    const carried = withAlignment && alignment ? [alignment] : []
+    const session = {
+      name: `Gene explorer: ${transcript.geneName}`,
+      views: [lgv, ...carried, ...(protein ? [protein] : [])],
+      ...(protein && tiled
+        ? sideBySideLayout([lgv.id, ...carried.map(v => v.id)], protein.id)
+        : {}),
+    }
+    const base = `${JBROWSE_BASE}/${inHash ? '#' : '?'}config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
+    return { session, url: geneTrackHost ? onGeneTrackHost(base) : base }
   }
-  const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
-  return { session, url }
+  const full = assemble(true)
+  const alignmentOmitted =
+    !inHash && alignment !== undefined && full.url.length > QUERY_URL_BUDGET
+  return { ...(alignmentOmitted ? assemble(false) : full), alignmentOmitted }
 }

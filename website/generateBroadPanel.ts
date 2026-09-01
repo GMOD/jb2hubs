@@ -25,6 +25,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { cacheKey } from './src/components/geneExamples.ts'
 import {
   MAX_PANEL_ROWS,
   alignProteinPanel,
@@ -59,7 +60,7 @@ for (const gene of GENES) {
       },
     })
     const alignment = ALIGN ? await alignProteinPanel(panel) : undefined
-    out[`${gene}:${REF_TAXON}`] = alignment
+    out[cacheKey(gene, REF_TAXON)] = alignment
       ? { panel: stripSequences(panel), alignment }
       : { panel }
     fs.writeFileSync(OUT, JSON.stringify(out))

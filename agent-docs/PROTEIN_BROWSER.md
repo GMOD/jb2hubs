@@ -111,16 +111,75 @@ the field; a chip built before that shows no toggles.
   link is disabled while it does. Hidden when the 100-way alignment is the
   source, because that alignment fixes the transcript.
 
+## The session has to agree with the host it lands on
+
+Production launches go to `latest` (v4.3.0 as of 2026-09-01) and staging to
+`main`, decided by `JBROWSE_BASE` in `website/src/config/jbrowse.ts`, and the
+session `proteinSession.ts` emits is not the same on both. Two facts about the
+hosts decide what it may carry:
+
+- **The workspace layout tree is `main`-only.** The side-by-side tiling
+  (`useWorkspaces: true` plus a `layout` of LayoutBranch/LayoutPanel/LayoutTab)
+  is read by `main`'s WorkspaceLayout. v4.3.0 has no `layout` field — its
+  workspace is `dockviewLayout` — so MST drops the tree in silence, and its
+  `MultipleViews` autorun persists the session's `useWorkspaces` into
+  localStorage: one launch flipped the reader's preference for every later
+  session on that host. `HOST_HAS_WORKSPACE_LAYOUT` gates both fields, and the
+  production session is the same three views stacked in one column. Delete the
+  constant once a released `latest` restores the tree.
+- **A GFF gene track is readable on `main` only.** `latest` labels the
+  full-resolution NCBI GFF3 with UUIDs (see `onGeneTrackHost`, and the
+  measurement beside it), so a session whose picked gene track is
+  `-ncbiGff`/`-ncbiRefSeqGff` — every GenArk-hosted genome, whose only gene
+  track that is — is routed to the gene-track host the way every `/orthologs`
+  launch already is (`isNcbiGffTrack` in `genomeTarget.ts`). That host has the
+  layout tree, so those sessions are tiled on production too. UCSC-hosted
+  genomes pick a bigBed track (`ncbiRefSeqSelect` first) and stay on `latest`.
+
+`ProteinBrowser`'s "ClinVar + AlphaMissense" depends on a file this repo
+generates rather than on the hosts: `genomeTarget.ts` reads a UCSC assembly's
+track ids off `/ucsc/<db>/minimal.json`, so a track absent from
+`ucsc2jbrowse/src/createMinimalConfig.ts`'s `MINIMAL_TRACK_PATTERNS` is one the
+launch cannot open however the full config names it. `alphamissense` was missing
+until 2026-09-01, which is why the checkbox opened ClinVar alone. The pattern is
+in the list now; `configs-minimal/hg38.json` and `hg19.json` carry the track
+only after the pipeline regenerates and re-uploads them.
+
+### The hash is the third host difference, and it hid the other two
+
+Until 2026-09-01 the launch URL always carried the session in the hash
+(`#config=…&session=encoded-…`), for a good reason: a hash never leaves the
+browser, so there is no request line for CloudFront to refuse at 8,192 bytes.
+v4.3.0 does not read the hash at all. It lands on "Select a view to launch" with
+nothing in the console, which is also why neither the dropped layout nor the
+UUID gene labels had ever been _seen_ on `latest` — no launch had reached the
+point of showing them. The same session in the query string hydrates on both
+hosts: measured with TP53, both views open, the structure aligns as an exact
+match, and `useWorkspaces` stays `false`.
+
+`HOST_READS_HASH_PARAMS` (`config/jbrowse.ts`) picks `#` or `?`. A `?` launch
+inherits the request-line limit, so `buildSessionUrl` enforces
+`QUERY_URL_BUDGET` (8,000 bytes) and drops the inline alignment when the URL is
+over it, returning `alignmentOmitted: true` for the card to explain. The eight
+example genes are 0.9–6.0 KB without an alignment (DMD is the largest), so the
+genome and structure views always fit; a live 60-row EBI alignment does not, and
+on the current release it stays on the page rather than in the session.
+
 ## Verification
 
-`pnpm check-protein-launches` (`scripts/checkProteinLaunches.mjs`) resolves the
+`pnpm check-protein-launches` (`scripts/checkProteinLaunches.ts`) resolves the
 example genes with the page's own code, boots each session on a hosted build,
 waits for the plugin's `protein-view-ready`, and fails when the structure never
 aligns onto the transcript (`pairwiseAlignment` absent) or when a model whose
 sequence equals the translation does not report `exactMatch`. Both bugs above
-would have failed it. It needs a browser and live answers from four services, so
+would have failed it. It also reads the reader's `useWorkspaces` localStorage
+key back after each launch, which is what catches the preference rewrite above
+on `--host latest`. It needs a browser and live answers from four services, so
 it is run by hand — before promoting `features.proteinBrowser`, and after
-touching the resolution or session code.
+touching the resolution or session code. Its modules run with `features.staging`
+false, so it exercises the production session on whichever host it is pointed
+at; the staging shape (the layout tree itself) is pinned by
+`proteinSession.test.ts`.
 
 ## Still open
 

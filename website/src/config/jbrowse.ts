@@ -27,6 +27,35 @@ export const JBROWSE_BASE = features.staging
 // the failure is silent from this side.
 export const HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY = features.staging
 
+// Does the build JBROWSE_BASE points at read a session-level workspace `layout`
+// tree (`useWorkspaces` + LayoutBranch/LayoutPanel/LayoutTab)?
+//
+// Same kind of fact as above, with a nastier failure: not a fatal, a rewrite of
+// the reader's own settings. Checked against the two hosts' source on
+// 2026-09-01: `main` restores the tree (app-core's WorkspaceLayout) and treats
+// `useWorkspaces` as a per-session override. v4.3.0 (`latest`) has no `layout`
+// field at all — its workspace is `dockviewLayout` — so MST drops the tree in
+// silence, and its `MultipleViews` autorun persists `useWorkspaces` to
+// localStorage, so one launch carrying `useWorkspaces: true` flips the reader's
+// preference for every later session on that host. So on a host without the
+// tree the session must not carry either field.
+//
+// DELETE this and emit the layout unconditionally once a released `latest`
+// restores it — `scripts/checkProteinLaunches.ts --host latest` reads the
+// localStorage key back and fails if it was written.
+export const HOST_HAS_WORKSPACE_LAYOUT = features.staging
+
+// Does the build read `#config=…&session=…` off the URL hash? Measured
+// 2026-09-01 with the protein browser's TP53 session on hg38: `main` hydrates
+// it from the hash; v4.3.0 ignores the hash outright and lands on "Select a
+// view to launch" with no error anywhere, while the same session in the query
+// string hydrates on both hosts (both views, structure aligned, exact match).
+// The hash is preferred where it works because it never leaves the browser —
+// no request line, so no CloudFront 8,192-byte limit — which is why a launch
+// that has to use the query string gets a length budget in proteinSession.ts.
+// DELETE this and always use the hash once a released `latest` reads it.
+export const HOST_READS_HASH_PARAMS = features.staging
+
 // `config` is either site-relative (/ucsc/hg38/config.json) or an absolute URL
 // (a hosted hub config, or the merge API).
 export function jbrowseUrl(config: string) {

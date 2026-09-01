@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { buildSessionUrl } from './proteinSession.ts'
+import { buildSessionUrl, sideBySideLayout } from './proteinSession.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
 
@@ -68,7 +68,7 @@ test('buildSessionUrl: opens the target config with its gene and variant tracks'
   const { session, url } = buildSessionUrl({ structure, primary: alphafold })
   assert.match(
     url,
-    /#config=%2Fhubs%2Fgenark%2FGCF%2F000%2F001%2F635%2FGCF_000001635\.27%2Fconfig\.json/,
+    /[#?]config=%2Fhubs%2Fgenark%2FGCF%2F000%2F001%2F635%2FGCF_000001635\.27%2Fconfig\.json/,
   )
   assert.match(url, /session=encoded-/)
   const views = viewsOf(session)
@@ -149,26 +149,47 @@ test('buildSessionUrl: a PDB entry is named by id, superposed models by url, a d
 // The session-level `init: {direction, children}` layout stopped being read when
 // the workspace became an MST tree; a session still emitting it stacks its views
 // in one column instead of tiling them.
-test('buildSessionUrl: emits the workspace layout tree, not the dropped init', () => {
-  const { session } = buildSessionUrl({ structure, primary: alphafold })
-  const s = session as unknown as {
-    init?: unknown
-    useWorkspaces?: boolean
-    layout?: {
-      direction: string
-      children: { size: number; tabs: { viewIds: string[] }[] }[]
-    }
-  }
-  assert.equal(s.init, undefined)
-  assert.equal(s.useWorkspaces, true)
-  assert.equal(s.layout?.direction, 'row')
+test('sideBySideLayout: the workspace layout tree, not the dropped init', () => {
+  const layout = sideBySideLayout(['lgv-Test', 'msa-Test'], 'protein-Test')
+  assert.equal('init' in layout, false)
+  assert.equal(layout.useWorkspaces, true)
+  assert.equal(layout.layout.direction, 'row')
   assert.deepEqual(
-    s.layout?.children.map(c => c.tabs[0]!.viewIds),
-    [['lgv-Test'], ['protein-Test']],
+    layout.layout.children.map(c => c.tabs[0]!.viewIds),
+    [['lgv-Test', 'msa-Test'], ['protein-Test']],
   )
   assert.deepEqual(
-    s.layout?.children.map(c => c.size),
+    layout.layout.children.map(c => c.size),
     [58, 42],
+  )
+})
+
+// Outside a staging build the launch host is `latest`, which has no `layout`
+// field and writes `useWorkspaces` into the reader's localStorage — so the
+// production session carries neither. The tree comes back on the gene-track
+// host, which is `main`.
+test('buildSessionUrl: no workspace fields for a host without the tree', () => {
+  const { session } = buildSessionUrl({ structure, primary: alphafold })
+  assert.equal('useWorkspaces' in session, false)
+  assert.equal('layout' in session, false)
+  assert.equal('init' in session, false)
+})
+
+test('buildSessionUrl: a GFF gene track goes to the gene-track host, tiled', () => {
+  const gff = {
+    ...structure,
+    target: { ...target, geneTrackId: 'GCF_000001635.27-ncbiGff' },
+  }
+  const { session, url } = buildSessionUrl({
+    structure: gff,
+    primary: alphafold,
+  })
+  assert.ok(url.startsWith('https://jbrowse.org/code/jb2/main/#config='))
+  assert.equal('useWorkspaces' in session, true)
+  assert.equal('layout' in session, true)
+  const plain = buildSessionUrl({ structure, primary: alphafold })
+  assert.ok(
+    plain.url.startsWith('https://jbrowse.org/code/jb2/latest/?config='),
   )
 })
 
@@ -196,6 +217,45 @@ test('buildSessionUrl: an indexed alignment is named, not carried', () => {
   assert.equal(msa.init?.msaName, 'Test')
   // the alignment stays out of the URL, which is what keeps it small
   assert.equal(msa.data, undefined)
+})
+
+test('buildSessionUrl: the query string for a host that ignores the hash, the hash for main', () => {
+  assert.match(buildSessionUrl({ structure }).url, /\/latest\/\?config=/)
+  const gff = {
+    ...structure,
+    target: { ...structure.target, geneTrackId: 'hg38-ncbiRefSeqGff' },
+  }
+  assert.match(buildSessionUrl({ structure: gff }).url, /\/main\/#config=/)
+})
+
+test('buildSessionUrl: an inline alignment over the query-string budget is dropped, and says so', () => {
+  // pseudo-random residues, so deflate cannot fold the rows away
+  let seed = 7
+  const residue = () => {
+    seed = (seed * 1103515245 + 12345) % 2147483648
+    return 'ACDEFGHIKLMNPQRSTVWY'[seed % 20]
+  }
+  const rows = Array.from(
+    { length: 60 },
+    (_, i) => `>row${i}\n${Array.from({ length: 800 }, residue).join('')}`,
+  )
+  const msa = {
+    kind: 'inline' as const,
+    msa: { fasta: rows.join('\n'), newick: '(row0);', querySeqName: 'row0' },
+  }
+  const big = buildSessionUrl({ structure, msa })
+  assert.equal(big.alignmentOmitted, true)
+  assert.ok(big.url.length <= 8000, `${big.url.length} bytes`)
+  assert.ok(!viewsOf(big.session).some(v => v.type === 'MsaView'))
+  const small = buildSessionUrl({
+    structure,
+    msa: {
+      kind: 'inline',
+      msa: { fasta: '>mouse\nMEEP', newick: '(mouse);', querySeqName: 'mouse' },
+    },
+  })
+  assert.equal(small.alignmentOmitted, false)
+  assert.ok(viewsOf(small.session).some(v => v.type === 'MsaView'))
 })
 
 test('buildSessionUrl: an inline alignment rides in the session with its domains', () => {
