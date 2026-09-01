@@ -5,8 +5,8 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 //
 // Wires up the trix index an assembly already has on disk. The same
-// aggregateTextSearchAdapters node is built by add_trix_adapter (jq) in
-// genark2jbrowse/common.sh, so the two have to stay in step.
+// aggregateTextSearchAdapters node is built by trixAdapter in
+// genark2jbrowse/src/buildConfig.ts, so the two have to stay in step.
 //
 
 export const ensureTextSearchAdapters: FinalizeStep = {

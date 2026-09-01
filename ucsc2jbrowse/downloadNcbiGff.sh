@@ -162,7 +162,7 @@ process_db() {
     # same blind spot needs_rebuild has one level down, and the reason these 74
     # assemblies would otherwise keep an index full of UUIDs long after the
     # policy existed. REPROCESS (--reprocess-all) is the lever, matching
-    # genark2jbrowse/addNcbiGffAndTextIndex.sh.
+    # genark2jbrowse/src/buildConfigsBatch.ts (trixIsCurrent).
     #
     # Both tracks in ONE pass, because --tracks REPLACES the assembly's
     # aggregate index rather than adding to it: indexing the GFF alone would

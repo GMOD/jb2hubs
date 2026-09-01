@@ -157,16 +157,25 @@ function deriveFeatureDisplay(track: Track): Track {
 }
 
 /**
- * Enhances a JBrowse configuration file with standard plugins and hierarchical settings.
- * @param configPath Path to the config.json file to enhance.
- * @param plugins Optional array of plugins to add. Defaults to standard JBrowse plugins.
+ * Enhances a JBrowse configuration file in place with standard plugins and
+ * hierarchical settings. genark2jbrowse builds its configs in memory and calls
+ * enhanceConfigObject directly; this wrapper is for the callers that still work
+ * on a file.
  */
 export function enhanceConfig(
   configPath: string,
   plugins: JBrowsePlugin[] = defaultPlugins,
-): void {
-  const config = readJSON<JBrowseConfig>(configPath)
+) {
+  writeJSON(
+    configPath,
+    enhanceConfigObject(readJSON<JBrowseConfig>(configPath), plugins),
+  )
+}
 
+export function enhanceConfigObject(
+  config: JBrowseConfig,
+  plugins: JBrowsePlugin[] = defaultPlugins,
+) {
   config.plugins ??= []
 
   // Upsert by name rather than skip-if-present: enhanceConfigs.sh re-runs over
@@ -234,6 +243,5 @@ export function enhanceConfig(
       subCategories: true,
     },
   }
-
-  writeJSON(configPath, config)
+  return config
 }

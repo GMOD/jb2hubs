@@ -1,13 +1,13 @@
 #!/bin/bash
 #
-# addNcbiGffAndTextIndex.test.sh
+# deriveGeneticCodes.test.sh
 #
-# Tests for the pure (network-free) helpers in addNcbiGffAndTextIndex.sh.
-# Run: ./addNcbiGffAndTextIndex.test.sh
+# Tests for the pure (network-free) helpers in deriveGeneticCodes.sh.
+# Run: ./deriveGeneticCodes.test.sh
 #
 
 set -uo pipefail
-source "$(cd "$(dirname "$0")" && pwd)/addNcbiGffAndTextIndex.sh"
+source "$(cd "$(dirname "$0")" && pwd)/deriveGeneticCodes.sh"
 
 fail=0
 check() {
@@ -42,6 +42,18 @@ chr2	RefSeq	CDS	40	50	.	+	0	ID=c;transl_table=5'
 got=$(printf '%s\n' "$gff_mixed" | extract_genetic_codes)
 check "extract_genetic_codes picks the dominant non-standard code" \
   "chr2	2" "$got"
+
+# derive_codes writes the sidecar even when there are no codes, so presence
+# means "derived" rather than "has codes".
+tmp=$(mktemp -d)
+printf '%s\n' "$gff_no_cds" | pigz >"$tmp/x.gff.gz"
+derive_codes "$tmp/x.gff.gz"
+check "derive_codes writes an empty sidecar for a GFF without codes" \
+  "yes" "$([ -f "$tmp/x.gff.gz.codes.tsv" ] && [ ! -s "$tmp/x.gff.gz.codes.tsv" ] && echo yes)"
+printf '%s\n' "$gff" | pigz >"$tmp/y.gff.gz"
+derive_codes "$tmp/y.gff.gz"
+check "derive_codes writes the codes it finds" "chrM	2" "$(cat "$tmp/y.gff.gz.codes.tsv")"
+rm -rf "$tmp"
 
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail

@@ -221,8 +221,6 @@ fi
 log "Processing UCSC list data..."
 node src/processUcscList.ts
 
-# --- Phase 3: Generate configs ---
-
 # Cache fd results for "all" mode to avoid repeated directory traversals
 if [ "$MODE" != "new" ]; then
   ALL_META_FILE=$(mktemp)
@@ -230,14 +228,7 @@ if [ "$MODE" != "new" ]; then
   log "Found $(wc -l <"$ALL_META_FILE") hub assemblies"
 fi
 
-log "Generating JBrowse 2 config.json..."
-if [ "$MODE" = "new" ]; then
-  node src/generateConfigsBatch.ts <"$NEW_HUBS_FILE"
-else
-  node src/generateConfigsBatch.ts <"$ALL_META_FILE"
-fi
-
-# --- Phase 4: Download and process GFF files ---
+# --- Phase 3: Per-hub data files (nothing here touches config.json) ---
 
 log "Downloading NCBI GFF files..."
 mkdir -p gff
@@ -255,17 +246,12 @@ else
   ./processGffFiles.sh
 fi
 
-log "Loading and text indexing NCBI GFF tracks..."
+log "Deriving genetic codes from NCBI GFF files..."
 if [ "$MODE" = "new" ]; then
-  ./addNcbiGffAndTextIndex.sh "$NEW_ACCESSIONS_FILE"
+  ./deriveGeneticCodes.sh "$NEW_ACCESSIONS_FILE"
 else
-  ./addNcbiGffAndTextIndex.sh
+  ./deriveGeneticCodes.sh
 fi
-
-# --- Phase 5: Extensions and chain tracks ---
-
-log "Adding GenArk extensions (special tracks)..."
-node src/makeGenArkExtensions.ts
 
 log "Processing liftOver chain files and creating PIFs..."
 if [ "$MODE" = "new" ]; then
@@ -285,30 +271,36 @@ else
   done <"$ALL_META_FILE" | run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}'
 fi
 
-log "Adding chain tracks to configs..."
-if [ "$MODE" = "new" ]; then
-  node src/createChainTracksBatch.ts <"$NEW_HUBS_FILE"
-else
-  node src/createChainTracksBatch.ts <"$ALL_META_FILE"
-fi
-
-# --- Phase 6: Wiki images and finishing ---
-
 log "Fetching taxon-level images (Wikidata + Wikipedia)..."
 node src/getTaxonImages.ts
 
 log "Copying taxon images to accession directories..."
 node src/copyTaxonImages.ts
 
+# --- Phase 4: Build configs, one pass per hub ---
+#
+# src/buildConfigsBatch.ts assembles each config.json in memory from hub.txt,
+# the GFF/codes/PIF files above and genArkExtensions/, enhances it, and writes
+# it once, already in the tree's committed format. It used to be seven
+# read-modify-write passes by five tools (generate, `jbrowse add-track`,
+# `jbrowse text-index`, two jq splices, extensions, chain tracks, enhance), each
+# leaving a half-built config on disk between them. The hub directories it
+# prints are the ones whose text index is missing or older than the GFF.
+
+log "Building configs..."
+NEEDS_INDEX_FILE=$(mktemp)
+if [ "$MODE" = "new" ]; then
+  node src/buildConfigsBatch.ts <"$NEW_HUBS_FILE" >"$NEEDS_INDEX_FILE"
+else
+  node src/buildConfigsBatch.ts <"$ALL_META_FILE" >"$NEEDS_INDEX_FILE"
+fi
+
+log "Text indexing NCBI GFF tracks..."
+./textIndex.sh <"$NEEDS_INDEX_FILE"
+rm -f "$NEEDS_INDEX_FILE"
+
 log "Calculating gff file hashes..."
 ./getFileListing.sh
-
-log "Enhancing configs with plugins and hierarchical settings..."
-if [ "$MODE" = "new" ]; then
-  sed 's|meta\.json$|config.json|' "$NEW_HUBS_FILE" | node src/enhanceConfigsBatch.ts
-else
-  sed 's|meta\.json$|config.json|' "$ALL_META_FILE" | node src/enhanceConfigsBatch.ts
-fi
 
 # --- Phase 7: Mouse strain assemblies ---
 # Mouse strain hubs change very rarely; skip unless the stamp is older than 30 days.

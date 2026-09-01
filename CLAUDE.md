@@ -313,6 +313,58 @@ way after touching this: snapshot `$UCSC_BUILT_DIR/*/config.json` and
 `minimal.json`, re-run, `diff -rq`. It is idempotent on a warm tree, so a
 nonempty diff is a real finding.
 
+## A GenArk config is built in one pass, and written in its final format
+
+`genark2jbrowse/src/buildConfigsBatch.ts` assembles each hub's `config.json` in
+memory — hub.txt → NCBI GFF track, trix adapter and genetic codes →
+`genArkExtensions/` → liftOver synteny tracks → `enhanceConfigObject` — and
+writes it once, only when the text differs from what is on disk. Until
+2026-09-01 that was seven read-modify-write passes by five tools (a generator,
+`jbrowse add-track`, `jbrowse text-index`, two jq splices, an extension merger,
+a chain-track adder, then enhance), each leaving a half-built config on disk
+between them: 52,720 hubs × 7 parses, ~89,000 `@jbrowse/cli` process starts, and
+a run that was aborted mid-way left every config in whatever intermediate state
+its pass had reached. The one pass builds all 52,720 in **17 seconds**.
+
+The pure half is `buildHubConfig` (`src/buildConfig.ts`), and the step order in
+it is the order the passes used to run, because that order is what every
+published config's **key order** is. Verified on 2026-09-01 by building all
+52,720 into a scratch tree and diffing against the committed `hubs/`: 52,718
+byte-identical once the `indexingFeatureTypesToInclude` list hubtools stopped
+writing on 2026-08-28 is dropped from the committed side (the tree had not been
+regenerated since), and 2 differing only in a liftOver track name that today's
+`all.json` spells differently. Re-verify the same way after touching it —
+`--out-root <dir>` writes the configs there and touches nothing else, which is
+what makes the diff cheap.
+
+Three things the pass changed on purpose, each removing a cost that scaled with
+52,720:
+
+- **The output is already in oxfmt's format.** `formatJson` (`hubtools`) prints
+  what `oxfmt` prints for a `.json` file at printWidth 80, checked on 3,000
+  committed configs, and the batch writes with it. `pnpm run format` in `run.sh`
+  used to reflow every hub config on every run, which is why an aborted run
+  showed 52,475 modified files: the pipeline wrote one shape and the formatter
+  another. Now an unchanged hub is not rewritten at all, so `git status` mid-run
+  lists only hubs whose content moved.
+- **Genetic codes are derived once, beside the GFF.** `deriveGeneticCodes.sh`
+  writes `bgz/<gff>.codes.tsv` (empty when there are none, so presence means
+  "derived"), gated on the sidecar being missing or older than the GFF. The old
+  pass re-scanned every 100 MB GFF through awk on every hub visit. The builder
+  refuses a GFF without a sidecar rather than silently writing a config with no
+  codes.
+- **The hub's copy of the GFF is a hard link to `bgz/`**, matched by inode, not
+  a `--load copy`. That was a third copy of ~40 GB and a re-copy on every
+  `--all` run.
+
+`jbrowse text-index` still runs, but **after** the config is written
+(`textIndex.sh`, over the hub dirs the batch prints as needing an index). It
+reads the indexing policy off the track's `textSearching` slot, and the old
+order indexed a freshly generated config before enhance had put the policy on it
+— so a `--reprocess-all` was building indexes of UUIDs while the config said
+otherwise. The CLI rewrites `config.json` in its own layout; `formatConfigs.ts`
+puts those back.
+
 ## What belongs in `configs-minimal/`
 
 `minimal.json` is a second, small config published beside every UCSC
@@ -1067,13 +1119,14 @@ The **guard** asserts the host; the **test** asserts the mechanism, and mixing
 those up cost three test suites. `lib/common.test.sh` used to fail unless the
 machine running it matched the pin — which no CI runner can, having no bgzip at
 all — and because the workflow step was a plain list under `bash -e`, that took
-`lib/chainpif.test.sh` and `genark2jbrowse/addNcbiGffAndTextIndex.test.sh` down
-with it, so neither had ever run in CI. The suite now checks determinism, canary
-size, rejection of a different build and the override, and _reports_ the host's
-own match unless `BGZIP_STRICT=1` (worth setting on the build box). Nothing is
-lost: the protection was never the test, it is `assert_bgzip_toolchain` being
-fatal in both `make.sh` files before any derivation. The step also runs every
-suite and fails afterwards, because one red suite must not hide the others.
+`lib/chainpif.test.sh` and `genark2jbrowse/deriveGeneticCodes.test.sh` (then
+named `addNcbiGffAndTextIndex.test.sh`) down with it, so neither had ever run in
+CI. The suite now checks determinism, canary size, rejection of a different
+build and the override, and _reports_ the host's own match unless
+`BGZIP_STRICT=1` (worth setting on the build box). Nothing is lost: the
+protection was never the test, it is `assert_bgzip_toolchain` being fatal in
+both `make.sh` files before any derivation. The step also runs every suite and
+fails afterwards, because one red suite must not hide the others.
 
 Worth knowing if it ever fires: libdeflate levels are **not** comparable across
 htslib versions, so no `-l` makes 1.23.1 reproduce 1.13 (l5→243,497, l6→242,051,
