@@ -90,7 +90,6 @@ export default function Pagination({
           <option value={200}>200</option>
           <option value={500}>500</option>
           <option value={1000}>1000</option>
-          <option value={10000}>10000</option>
         </select>
         <span>rows</span>
       </div>

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import RecentlyUpdatedTable from '../../components/RecentlyUpdatedTable.astro'
+import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 import { ALL, categories } from '../../lib/recentlyUpdatedData.ts'
 ---
 
@@ -10,6 +11,7 @@ import { ALL, categories } from '../../lib/recentlyUpdatedData.ts'
   description="The most recently added UCSC GenArk assemblies, newest first, by category — each with links into JBrowse 2, UCSC and NCBI."
 >
   <Container wide>
+    <UcscStatusBanner client:idle />
     <RecentlyUpdatedTable category={ALL} />
   </Container>
 </Layout>

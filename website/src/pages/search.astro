@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
 import SearchPage from '../components/SearchPage.tsx'
+import UcscStatusBanner from '../components/UcscStatusBanner.tsx'
 import '../styles/common-table.css'
 ---
 
@@ -10,6 +11,7 @@ import '../styles/common-table.css'
   description="Search over 50,000 genome assemblies by common name, scientific name or accession, filter by clade, and open any of them in JBrowse 2."
 >
   <Container wide>
+    <UcscStatusBanner client:idle />
     <h1>Search all genomes</h1>
     {
       /* client:load, not client:only: the controls render on the server so the

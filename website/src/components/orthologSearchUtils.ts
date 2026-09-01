@@ -1,6 +1,6 @@
 import {
-  JBROWSE_BASE,
   genarkConfigPath,
+  jbrowseUrl,
   onGeneTrackHost,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
@@ -152,7 +152,7 @@ export function accessionToJbrowseUrl(
     ? ''
     : `&tracks=${encodeURIComponent(`${accession}-ncbiGff`)}`
   const url = onGeneTrackHost(
-    `${JBROWSE_BASE}/?config=${config}&assembly=${encodeURIComponent(assembly)}${tracks}`,
+    `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`,
   )
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }

@@ -10,8 +10,9 @@ interface ParsedNode {
   branchLength?: number
 }
 
-// What TreeNode.astro renders. The only thing it adds to the parse is `depth`,
-// which the renderer zebra-stripes by; the tree is otherwise passed through.
+// What TreeNode.astro renders. The parse adds `depth`, which the renderer
+// zebra-stripes by; budgetTree adds `hiddenAccessions` to a node whose subtree
+// it cut, which the renderer draws as a count linking to that node's own page.
 export interface TaxonomyNode {
   name?: string
   accession?: string
@@ -19,6 +20,7 @@ export interface TaxonomyNode {
   branchLength?: number
   children?: TaxonomyNode[]
   depth: number
+  hiddenAccessions?: number
 }
 
 // In-memory cache for parsed trees
@@ -281,6 +283,64 @@ export function getTaxonomyIndex(category: string): TaxonomyIndex | null {
     }
   }
   return index
+}
+
+// Nodes server-rendered per taxonomy page. /taxonomy/1 held all 89K in 80MB of
+// HTML; at ~700 bytes a row this keeps every page under about half a megabyte,
+// and a cut node links to its own page, where it is the root and gets the
+// budget. Lives here rather than in the page for the same reason taxonIdsIn
+// does: getStaticPaths is extracted from the frontmatter and loses its
+// neighbours.
+export const TREE_NODE_BUDGET = 500
+
+// The rendered form of a subtree, cut to at most `maxNodes` nodes. Whole levels
+// are taken in order — the root's own children always, then each deeper level
+// while the total still fits — so a thin chain (the ~15 single-child ranks
+// between Eukaryota and any mammal) renders deep while a bushy one stops early.
+// A node whose children were cut keeps none and records how many assemblies
+// sit beneath it. The input is not modified: it is the shared, cached tree.
+//
+// Before this, /taxonomy/1 server-rendered all 89K nodes into 80MB of HTML,
+// and every accession page's breadcrumb links to it.
+export function budgetTree(root: TaxonomyNode, maxNodes: number): TaxonomyNode {
+  const copy = (node: TaxonomyNode): TaxonomyNode => ({
+    ...node,
+    children: undefined,
+  })
+  const out = copy(root)
+  let frontier: { source: TaxonomyNode; target: TaxonomyNode }[] = [
+    { source: root, target: out },
+  ]
+  let rendered = 1
+  let level = 0
+  while (frontier.length > 0) {
+    const next: typeof frontier = []
+    let levelSize = 0
+    for (const { source } of frontier) {
+      levelSize += source.children?.length ?? 0
+    }
+    if (level > 0 && rendered + levelSize > maxNodes) {
+      for (const { source, target } of frontier) {
+        if (source.children?.length) {
+          target.hiddenAccessions = collectAccessions(source).length
+        }
+      }
+      frontier = []
+    } else {
+      for (const { source, target } of frontier) {
+        if (source.children?.length) {
+          target.children = source.children.map(copy)
+          for (const [i, child] of source.children.entries()) {
+            next.push({ source: child, target: target.children[i]! })
+          }
+        }
+      }
+      rendered += levelSize
+      frontier = next
+      level += 1
+    }
+  }
+  return out
 }
 
 /**

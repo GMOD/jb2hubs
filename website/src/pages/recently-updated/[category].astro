@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import RecentlyUpdatedTable from '../../components/RecentlyUpdatedTable.astro'
+import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 import { categories } from '../../lib/recentlyUpdatedData.ts'
 
 export function getStaticPaths() {
@@ -16,6 +17,7 @@ const { category } = Astro.params
   description={`The most recently added UCSC GenArk ${category} assemblies, newest first, with links into JBrowse 2, UCSC and NCBI.`}
 >
   <Container wide>
+    <UcscStatusBanner client:idle />
     <RecentlyUpdatedTable category={category} />
   </Container>
 </Layout>

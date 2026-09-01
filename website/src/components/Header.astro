@@ -3,11 +3,14 @@ import HeaderSearch from './HeaderSearch.astro'
 import Logo from '../logo.astro'
 import { features } from '../config/features.ts'
 
-// Gene-centric resources (Orthologs hub + its conserved-gene-order view) grouped
-// first, then the assembly-level synteny browser, then pangenomes.
-const exploreItems = [
+// Plain links: production has two, and a dropdown for two items is a click
+// that hides them. Gene-centric resources (Orthologs + its conserved-gene-order
+// view) first, then the assembly-level synteny browser. Pangenomes pages exist
+// (staging-gated) but are intentionally NOT linked from the nav yet — the
+// explorer isn't proven enough to feature.
+const primaryNavItems = [
   { name: 'Search', href: '/search' },
-  ...(features.orthologs ? [{ name: 'Orthologs', href: '/orthologs' }] : []),
+  { name: 'Orthologs', href: '/orthologs' },
   ...(features.multiSynteny
     ? [{ name: 'Conserved gene order', href: '/conserved-gene-order' }]
     : []),
@@ -15,8 +18,6 @@ const exploreItems = [
     ? [{ name: 'Protein browser', href: '/protein-browser' }]
     : []),
   ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
-  // Pangenomes pages exist (staging-gated) but are intentionally NOT linked from
-  // the nav yet — the explorer isn't proven enough to feature.
 ]
 
 const secondaryNavItems = [
@@ -26,7 +27,6 @@ const secondaryNavItems = [
 ]
 
 const { pathname } = Astro.url
-const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
 ---
 
 <nav class="nav">
@@ -45,38 +45,19 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
         JBrowse 2 Genomes
       </a>
       <div class="primary-nav desktop-nav">
-        <div class="dropdown">
-          <button
-            type="button"
-            id="explore-toggle"
-            aria-expanded="false"
-            aria-controls="explore-menu"
-            class:list={[
-              'navLink',
-              'dropdownToggle',
-              { active: exploreActive },
-            ]}
-            >Explore ▾</button
-          >
-          <div
-            id="explore-menu"
-            class="dropdownMenu"
-          >
-            {
-              exploreItems.map(item => (
-                <a
-                  href={item.href}
-                  class:list={[
-                    'dropdownItem',
-                    { active: pathname.startsWith(item.href) },
-                  ]}
-                >
-                  {item.name}
-                </a>
-              ))
-            }
-          </div>
-        </div>
+        {
+          primaryNavItems.map(item => (
+            <a
+              href={item.href}
+              class:list={[
+                'navLink',
+                { active: pathname.startsWith(item.href) },
+              ]}
+            >
+              {item.name}
+            </a>
+          ))
+        }
       </div>
       {
         /* A plain GET form, so search works with no JS and is one interaction
@@ -224,24 +205,8 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     id="mobile-menu"
     class="mobile-menu"
   >
-    <span class="navLink mobile-navLink mobile-groupLabel">Explore</span>
     {
-      exploreItems.map(item => (
-        <a
-          href={item.href}
-          class:list={[
-            'navLink',
-            'mobile-navLink',
-            'mobile-subLink',
-            { active: pathname.startsWith(item.href) },
-          ]}
-        >
-          {item.name}
-        </a>
-      ))
-    }
-    {
-      secondaryNavItems.map(item => (
+      [...primaryNavItems, ...secondaryNavItems].map(item => (
         <a
           href={item.href}
           class:list={[
@@ -259,46 +224,36 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const hamburgerButton = document.getElementById('hamburger-button')
-    const mobileMenu = document.getElementById('mobile-menu')
+    const button = document.getElementById('hamburger-button')
+    const menu = document.getElementById('mobile-menu')
 
-    if (hamburgerButton && mobileMenu) {
-      hamburgerButton.addEventListener('click', () => {
-        const open = mobileMenu.classList.toggle('show')
-        hamburgerButton.setAttribute('aria-expanded', String(open))
-        hamburgerButton.setAttribute(
-          'aria-label',
-          open ? 'Close menu' : 'Open menu',
-        )
-      })
-    }
-
-    const toggle = document.getElementById('explore-toggle')
-    const menu = document.getElementById('explore-menu')
-
-    if (toggle && menu) {
+    if (button && menu) {
       const setOpen = (open: boolean) => {
-        menu.classList.toggle('open', open)
-        toggle.setAttribute('aria-expanded', String(open))
+        menu.classList.toggle('show', open)
+        button.setAttribute('aria-expanded', String(open))
+        button.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
       }
+      const isOpen = () => menu.classList.contains('show')
 
-      toggle.addEventListener('click', () => {
-        setOpen(!menu.classList.contains('open'))
+      button.addEventListener('click', () => {
+        setOpen(!isOpen())
       })
 
       document.addEventListener('click', e => {
         if (
-          !toggle.contains(e.target as Node) &&
-          !menu.contains(e.target as Node)
+          isOpen() &&
+          e.target instanceof Node &&
+          !button.contains(e.target) &&
+          !menu.contains(e.target)
         ) {
           setOpen(false)
         }
       })
 
       document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && menu.classList.contains('open')) {
+        if (e.key === 'Escape' && isOpen()) {
           setOpen(false)
-          toggle.focus()
+          button.focus()
         }
       })
     }
@@ -401,59 +356,6 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     height: 1.5rem;
   }
 
-  .dropdown {
-    position: relative;
-  }
-
-  .dropdownToggle {
-    cursor: pointer;
-    user-select: none;
-    background: none;
-    border: none;
-    font: inherit;
-    font-weight: 500;
-  }
-
-  .dropdownToggle.active {
-    font-weight: 700;
-  }
-
-  .dropdownMenu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    min-width: 130px;
-    z-index: 100;
-    padding: 4px 0;
-  }
-
-  .dropdownMenu.open {
-    display: block;
-  }
-
-  .dropdownItem {
-    display: block;
-    padding: 6px 12px;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    font-size: 0.9rem;
-    white-space: nowrap;
-  }
-
-  .dropdownItem:hover {
-    background: var(--surface-alt);
-  }
-
-  .dropdownItem.active {
-    font-weight: 700;
-  }
-
   .mobile-nav {
     display: none;
   }
@@ -486,27 +388,16 @@ const exploreActive = exploreItems.some(item => pathname.startsWith(item.href))
     margin: 0.5rem 0;
   }
 
-  .mobile-groupLabel {
-    color: rgba(0, 0, 0, 0.4);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.25rem;
-    margin-bottom: 0;
-    cursor: default;
-  }
-
-  .mobile-subLink {
-    padding-left: 1rem;
-    margin-top: 0.25rem;
-  }
-
   .desktop-nav {
     display: flex;
     align-items: center;
   }
 
-  @media (max-width: 900px) {
+  .primary-nav {
+    gap: 2px;
+  }
+
+  @media (max-width: 960px) {
     .desktop-nav {
       display: none;
     }

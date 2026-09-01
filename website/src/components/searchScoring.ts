@@ -1,6 +1,7 @@
+import { IS_REFERENCE } from '../lib/searchIndex.ts'
 import { bareCommonName } from '../utils/names.ts'
 
-import type { IndexEntry } from '../hooks/useSearchIndex.ts'
+import type { IndexEntry } from '../lib/searchIndex.ts'
 
 export function scoreTerm(term: string, field: string) {
   if (field.startsWith(term)) {
@@ -80,7 +81,7 @@ export function scoreEntry(entry: IndexEntry, terms: string[]) {
   if (entry[5] === 'ucsc') {
     score += 0.06
   }
-  if (entry[7] & 1) {
+  if (entry[7] & IS_REFERENCE) {
     score += 0.03
   }
 
@@ -133,7 +134,7 @@ export function rankEntries(
 // drives the "Reference assemblies only" filter, which is how a user cuts the
 // alternate haplotypes and GenBank/RefSeq duplicates out of a big result set.
 export function isCurated(entry: IndexEntry) {
-  return entry[5] === 'ucsc' || !!(entry[7] & 1)
+  return entry[5] === 'ucsc' || !!(entry[7] & IS_REFERENCE)
 }
 
 export function entryHref(entry: IndexEntry) {

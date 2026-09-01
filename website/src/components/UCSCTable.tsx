@@ -2,34 +2,25 @@ import '../styles/common-table.css'
 
 import { useMemo } from 'react'
 
-import {
-  jbrowseUrl,
-  ucscAllConfigPath,
-  ucscConfigPath,
-} from '../config/jbrowse.ts'
+import { jbrowseUrl, ucscAllConfigPath } from '../config/jbrowse.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { ucscBrowserUrl } from '../lib/externalLinks.ts'
-import list from '../list.json'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import styles from './UCSCTable.module.css'
 
-interface RowData {
+// Built by pages/ucsc/index.astro from list.json, which is 144KB the island has
+// no other use for.
+export interface UcscRow {
   name: string
   scientificName: string
   organism: string
   description: string
+  // Off the description ("Dec. 2013 (GRCh38/hg38)"), which is what that column
+  // sorts by: its text would order by month name.
+  year: number
   jbrowseLink: string
   ucscLink: string
-  orderKey: number
-}
-
-interface UCSCGenome {
-  scientificName: string
-  organism: string
-  description: string
-  orderKey: number
 }
 
 // The two link columns render the same word in every row, so sorting by them
@@ -43,7 +34,11 @@ const columns = [
   { id: 'ucscLink', header: 'UCSC', enableSorting: false },
 ] as const
 
-export default function UCSCTable() {
+function sortValue(row: UcscRow, id: (typeof columns)[number]['id']) {
+  return id === 'description' ? row.year : row[id]
+}
+
+export default function UCSCTable({ rows }: { rows: UcscRow[] }) {
   const { sortId: rawSortId, sortDesc, handleSort } = useTableSort()
   const [search, setSearch] = useUrlState('search', '')
   // Validate the URL-supplied sort against the sortable columns so `sortId`
@@ -52,35 +47,23 @@ export default function UCSCTable() {
   const sortId =
     columns.find(col => col.id === rawSortId && col.enableSorting)?.id ?? ''
 
-  const data = useMemo<RowData[]>(() => {
-    return Object.entries(list.ucscGenomes as Record<string, UCSCGenome>)
-      .map(([key, val]) => ({
-        name: key,
-        scientificName: val.scientificName,
-        organism: val.organism,
-        description: val.description,
-        jbrowseLink: jbrowseUrl(ucscConfigPath(key)),
-        ucscLink: ucscBrowserUrl(key),
-        orderKey: val.orderKey,
-      }))
-      .sort((a, b) => a.orderKey - b.orderKey)
-  }, [])
-
   const matchingRows = useMemo(() => {
     const query = search.trim().toLowerCase()
     return query
-      ? data.filter(row =>
+      ? rows.filter(row =>
           `${row.name} ${row.scientificName} ${row.organism} ${row.description}`
             .toLowerCase()
             .includes(query),
         )
-      : data
-  }, [data, search])
+      : rows
+  }, [rows, search])
 
   const sortedRows = useMemo(
     () =>
       sortId
-        ? matchingRows.toSorted(makeComparator(row => row[sortId], sortDesc))
+        ? matchingRows.toSorted(
+            makeComparator(row => sortValue(row, sortId), sortDesc),
+          )
         : matchingRows,
     [matchingRows, sortId, sortDesc],
   )
@@ -110,9 +93,9 @@ export default function UCSCTable() {
           }}
         />
         <span className={styles.count}>
-          {sortedRows.length === data.length
-            ? `${data.length} genomes`
-            : `${sortedRows.length} of ${data.length} genomes`}
+          {sortedRows.length === rows.length
+            ? `${rows.length} genomes`
+            : `${sortedRows.length} of ${rows.length} genomes`}
         </span>
       </div>
       <div className="table-scroll">

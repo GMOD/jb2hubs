@@ -40,26 +40,39 @@ export default function DataTable({
   initialRows,
   dataUrls,
   accessions,
+  accessionsUrl,
   totalRows,
 }: TableProps) {
   const [pageSize, setPageSize] = useState(200)
 
-  const { data: allRows } = useSWRImmutable(dataUrls, () => loadRows(dataUrls))
+  // A table whose first page is the whole set has nothing to fetch: most
+  // taxonomy subtrees are under 200 rows, and the category files behind them
+  // are megabytes.
+  const complete = totalRows <= initialRows.length
+  const { data: allRows } = useSWRImmutable(complete ? null : dataUrls, () =>
+    loadRows(dataUrls),
+  )
+  // One of `accessions` (inline) or `accessionsUrl` (a file, for a large
+  // subtree) is set when this table shows a taxonomic subtree rather than a
+  // whole category, so the fetched category files get narrowed to it.
+  const { data: fetchedAccessions } = useSWRImmutable(
+    complete ? null : accessionsUrl,
+    fetchJson<string[]>,
+  )
+  const subset = accessions ?? fetchedAccessions
   // Until the full set lands, searching and sorting would silently apply to only
   // the first page, so the controls stay disabled and these rows are shown as-is.
-  const loading = !allRows
-  // `accessions` is set when this table shows a taxonomic subtree rather than a
-  // whole category, so the fetched category files get narrowed to it.
+  const loading = !complete && (!allRows || (!!accessionsUrl && !subset))
   const rows = useMemo(() => {
-    if (!allRows) {
+    if (!allRows || loading) {
       return initialRows
     }
-    if (!accessions) {
+    if (!subset) {
       return allRows
     }
-    const wanted = new Set(accessions)
+    const wanted = new Set(subset)
     return allRows.filter(row => wanted.has(row.accession))
-  }, [allRows, accessions, initialRows])
+  }, [allRows, subset, initialRows, loading])
 
   const {
     filterOption,
@@ -105,6 +118,7 @@ export default function DataTable({
           <input
             type="text"
             placeholder="Search by common name, scientific name, NCBI assembly name, or accession..."
+            aria-label="Search assemblies"
             value={searchQuery}
             disabled={loading}
             onChange={e => {

@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url'
 
 import { CURATED_CLADES } from './src/lib/taxonomyClades.ts'
 
+import type { IndexEntry } from './src/lib/searchIndex.ts'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -84,15 +86,9 @@ function collectDescendants(
 
 ensureNodesDmp()
 
-const searchIndex = JSON.parse(fs.readFileSync(SEARCH_INDEX_PATH, 'utf-8')) as [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
-][]
+const searchIndex = JSON.parse(
+  fs.readFileSync(SEARCH_INDEX_PATH, 'utf-8'),
+) as IndexEntry[]
 
 const indexTaxonIds = new Set(searchIndex.map(e => e[6]).filter(id => id > 0))
 console.error(

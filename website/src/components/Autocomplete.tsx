@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
-import { useResetOnChange } from '../hooks/useResetOnChange.ts'
+import { useCombobox } from '../hooks/useCombobox.ts'
 import { rankOptions } from '../utils/rankOptions.ts'
 
 export interface AutocompleteOption {
@@ -44,28 +44,14 @@ export default function Autocomplete({
   disabled = false,
   id,
 }: Props) {
-  // Ties the input to its listbox for aria-controls / aria-activedescendant.
-  // Two selectors on one page (the synteny pair) must not share option ids.
-  const listboxId = `${id ?? 'autocomplete'}-listbox`
-  const [isOpen, setIsOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
-  const [highlightedIndex, setHighlightedIndex] = useResetOnChange(
-    inputValue,
-    0,
-  )
   const [asyncResults, setAsyncResults] = useState<AutocompleteOption[]>([])
   // Remembers the picked option so async mode can label the input without the
   // selection necessarily being in the latest query results.
   const [pickedOption, setPickedOption] = useState<AutocompleteOption | null>(
     null,
   )
-  const containerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const listRef = useRef<HTMLUListElement>(null)
-  // Discards out-of-order async query responses.
-  const queryIdRef = useRef(0)
-  // Debounces async queries so a remote backend isn't hit on every keystroke.
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const selectedOption =
     pickedOption?.value === value
@@ -79,111 +65,54 @@ export default function Autocomplete({
     ? asyncResults
     : rankOptions(inputValue, options)
 
-  const runQuery = (search: string) => {
-    if (queryOptions) {
-      const id = ++queryIdRef.current
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-      }
-      debounceRef.current = setTimeout(() => {
-        void queryOptions(search).then(res => {
-          if (id === queryIdRef.current) {
-            setAsyncResults(res)
-          }
-        })
-      }, 220)
-    }
+  const close = () => {
+    setInputValue('')
   }
 
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false)
-        setInputValue('')
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (isOpen && listRef.current) {
-      const highlighted = listRef.current.children.item(highlightedIndex)
-      if (highlighted instanceof HTMLElement) {
-        highlighted.scrollIntoView({ block: 'nearest' })
-      }
-    }
-  }, [highlightedIndex, isOpen])
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
-    setIsOpen(true)
-    runQuery(e.target.value)
-  }
-
-  const handleSelect = (option: AutocompleteOption) => {
+  const pick = (option: AutocompleteOption) => {
     setPickedOption(option)
     onChange(option.value)
-    setIsOpen(false)
-    setInputValue('')
+    close()
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      if (!isOpen) {
-        setIsOpen(true)
-      } else if (filteredOptions.length > 0) {
-        setHighlightedIndex(i => Math.min(i + 1, filteredOptions.length - 1))
+  const combobox = useCombobox({
+    optionCount: filteredOptions.length,
+    resetKey: inputValue,
+    onPick: index => {
+      const option = filteredOptions[index]
+      if (option) {
+        pick(option)
       }
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      setHighlightedIndex(i => Math.max(i - 1, 0))
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      const opt = filteredOptions.at(highlightedIndex)
-      if (isOpen && opt) {
-        handleSelect(opt)
-      }
-    } else if (e.key === 'Escape') {
-      setIsOpen(false)
-      setInputValue('')
+    },
+    onClose: close,
+  })
+  const { open, setOpen, highlighted, setHighlighted, listboxId, optionId } =
+    combobox
+  const showList = open && !disabled
+
+  // Debounced and race-safe: the cleanup drops a slow earlier response so it
+  // cannot land on top of a newer one. Runs whenever the list is open, so
+  // focusing the box asks the backend for its default (empty-query) list.
+  useEffect(() => {
+    if (!queryOptions || !showList) {
+      return
     }
-  }
-
-  const handleFocus = () => {
-    setIsOpen(true)
-    runQuery(inputValue)
-  }
-
-  const handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setPickedOption(null)
-    onChange('')
-    setInputValue('')
-    inputRef.current?.focus()
-  }
-
-  const showList = isOpen && !disabled
+    let ignore = false
+    const timer = setTimeout(() => {
+      void queryOptions(inputValue).then(res => {
+        if (!ignore) {
+          setAsyncResults(res)
+        }
+      })
+    }, 220)
+    return () => {
+      ignore = true
+      clearTimeout(timer)
+    }
+  }, [queryOptions, inputValue, showList])
 
   return (
-    <div
-      className="autocomplete"
-      ref={containerRef}
-    >
+    <div className="autocomplete">
       <div
         className={`autocomplete-input-wrapper${disabled ? ' disabled' : ''}`}
       >
@@ -191,10 +120,23 @@ export default function Autocomplete({
           ref={inputRef}
           id={id}
           type="text"
-          value={isOpen ? inputValue : (selectedOption?.label ?? '')}
-          onChange={handleInputChange}
-          onFocus={handleFocus}
-          onKeyDown={handleKeyDown}
+          value={open ? inputValue : (selectedOption?.label ?? '')}
+          onChange={e => {
+            setInputValue(e.target.value)
+            setOpen(true)
+          }}
+          onFocus={() => {
+            setOpen(true)
+          }}
+          // An option's mousedown prevents default below, so picking one never
+          // blurs the box; anything else that takes focus closes the list.
+          onBlur={() => {
+            setOpen(false)
+            close()
+          }}
+          onKeyDown={e => {
+            combobox.onKeyDown(e)
+          }}
           placeholder={placeholder}
           disabled={disabled}
           autoComplete="off"
@@ -204,7 +146,7 @@ export default function Autocomplete({
           aria-autocomplete="list"
           aria-activedescendant={
             showList && filteredOptions.length > 0
-              ? `${listboxId}-option-${highlightedIndex}`
+              ? optionId(highlighted)
               : undefined
           }
           className="autocomplete-input"
@@ -213,7 +155,12 @@ export default function Autocomplete({
           <button
             type="button"
             className="autocomplete-clear"
-            onClick={handleClear}
+            onClick={() => {
+              setPickedOption(null)
+              onChange('')
+              close()
+              inputRef.current?.focus()
+            }}
             tabIndex={-1}
             aria-label="Clear"
           >
@@ -226,7 +173,6 @@ export default function Autocomplete({
           id={listboxId}
           className="autocomplete-list"
           role="listbox"
-          ref={listRef}
         >
           {filteredOptions.length === 0 ? (
             <li className="autocomplete-no-results">No results found</li>
@@ -234,15 +180,26 @@ export default function Autocomplete({
             filteredOptions.map((option, index) => (
               <li
                 key={option.value}
-                id={`${listboxId}-option-${index}`}
+                id={optionId(index)}
                 role="option"
-                aria-selected={index === highlightedIndex}
-                className={`autocomplete-option ${index === highlightedIndex ? 'highlighted' : ''} ${option.value === value ? 'selected' : ''}`}
-                onClick={() => {
-                  handleSelect(option)
+                aria-selected={index === highlighted}
+                className={`autocomplete-option ${index === highlighted ? 'highlighted' : ''} ${option.value === value ? 'selected' : ''}`}
+                // A callback ref runs on every render of the highlighted row,
+                // which is exactly when it may have moved out of view.
+                ref={
+                  index === highlighted
+                    ? el => {
+                        el?.scrollIntoView({ block: 'nearest' })
+                      }
+                    : undefined
+                }
+                onMouseDown={e => {
+                  e.preventDefault()
+                  pick(option)
+                  setOpen(false)
                 }}
                 onMouseEnter={() => {
-                  setHighlightedIndex(index)
+                  setHighlighted(index)
                 }}
               >
                 {option.label}

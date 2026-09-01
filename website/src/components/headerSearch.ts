@@ -1,4 +1,5 @@
 import { loadJsonOnce } from '../lib/fetchJson.ts'
+import { SEARCH_INDEX_URL } from '../lib/searchIndex.ts'
 import { entryHref } from './searchScoring.ts'
 import {
   MIN_SUGGEST_LENGTH,
@@ -7,7 +8,7 @@ import {
   suggestionTitle,
 } from './searchSuggestions.ts'
 
-import type { IndexEntry } from '../hooks/useSearchIndex.ts'
+import type { IndexEntry } from '../lib/searchIndex.ts'
 
 // The typeahead is on all 125K pages, and hydrating it as a React island cost
 // 210KB of JS per page view — react-dom alone was 178KB — to decorate a form
@@ -37,7 +38,8 @@ function attach(
 ) {
   // The index is several megabytes; nothing downloads it until the user focuses
   // the box, so the other pages on the site are unaffected by this being in the
-  // header of every one of them.
+  // header of every one of them. loadJsonOnce is also what useSearchIndex
+  // fetches through, so the /search page and this box share one download.
   let index: IndexEntry[] = []
   let loading = false
   let engaged = false
@@ -159,7 +161,7 @@ function attach(
     if (!engaged) {
       engaged = true
       loading = true
-      loadJsonOnce<IndexEntry[]>('/searchIndex.json')
+      loadJsonOnce<IndexEntry[]>(SEARCH_INDEX_URL)
         .then(data => {
           index = data
           loading = false

@@ -7,22 +7,12 @@ import {
   loadAccessionMap,
 } from './src/utils/accessionData.ts'
 
+import type { IndexEntry } from './src/lib/searchIndex.ts'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// searchIndex entry: [accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus]
-type SearchEntry = [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
-  number,
-]
-
-const searchIndex: SearchEntry[] = JSON.parse(
+const searchIndex: IndexEntry[] = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'public/searchIndex.json'), 'utf-8'),
 )
 

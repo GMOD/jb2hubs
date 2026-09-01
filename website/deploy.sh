@@ -42,6 +42,9 @@ while [[ $# -gt 0 ]]; do
   --rollback) rollback=1 ;;
   -h | --help)
     echo "usage: $0 [--staging] [--rollback]"
+    echo "  --rollback  serve the newest release older than the current one;"
+    echo "              refuses when the current release is not the newest,"
+    echo "              i.e. after a rollback, rather than rolling forward"
     exit 0
     ;;
   *)
@@ -67,10 +70,18 @@ releases_dir=$1
 webroot=$2
 
 current=$(readlink -f "$webroot")
-previous=$(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d | sort | awk -v cur="$current" '$0 != cur' | tail -1)
+newest=$(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d | sort | tail -1)
+previous=$(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d | sort | awk -v cur="$current" '$0 < cur' | tail -1)
 
+# Release names are timestamps, so "previous" is older-than-current, not
+# newest-other-than-current: a second --rollback would otherwise land back on
+# the release the first one backed out of.
+if [[ $current != "$newest" ]]; then
+  echo "$webroot already serves $current, which is older than $newest — a rollback is in effect; deploy to move forward" >&2
+  exit 1
+fi
 if [[ -z $previous ]]; then
-  echo "no previous release to roll back to in $releases_dir" >&2
+  echo "no release older than $current to roll back to in $releases_dir" >&2
   exit 1
 fi
 

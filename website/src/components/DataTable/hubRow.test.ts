@@ -1,14 +1,15 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
+import { IS_REFERENCE, IS_SUPPRESSED } from '../../lib/searchIndex.ts'
 import {
-  IS_REFERENCE,
-  IS_SUPPRESSED,
+  INLINE_ACCESSION_LIMIT,
   byCommonName,
   categoryTable,
   decodeHubRow,
   encodeHubRow,
   subtreeTable,
+  taxonAccessionsUrl,
   toRowData,
 } from './hubRow.ts'
 
@@ -100,9 +101,40 @@ test('subtreeTable pulls every category its rows came from, deduped', () => {
     '/hubData/mammals.json',
     '/hubData/vertebrate.json',
   ])
-  // The accession list is what narrows those files back down to this subtree.
-  assert.deepEqual(table.accessions, ['GCA_1', 'GCA_2', 'GCA_3'])
   assert.equal(table.totalRows, 3)
+  // Three rows fit in the first page, so the table already has the whole
+  // subtree and nothing narrows anything.
+  assert.equal(table.accessions, undefined)
+  assert.equal(table.accessionsUrl, undefined)
+})
+
+function manyRows(n: number): HubSource[] {
+  return Array.from({ length: n }, (_, i) => ({
+    accession: `GCA_${i}`,
+    commonName: `species ${i}`,
+    source: 'bacteria',
+  }))
+}
+
+test('a subtree past the first page carries the accession list that narrows the category file', () => {
+  const table = subtreeTable(manyRows(300))
+  assert.equal(table.initialRows.length, 200)
+  assert.equal(table.accessions?.length, 300)
+  assert.equal(table.accessionsUrl, undefined)
+})
+
+test('a large subtree names its list file instead of inlining it', () => {
+  const url = taxonAccessionsUrl('2')
+  assert.equal(url, '/hubData/taxon/2.json')
+  const table = subtreeTable(manyRows(INLINE_ACCESSION_LIMIT + 1), url)
+  assert.equal(table.accessions, undefined)
+  assert.equal(table.accessionsUrl, url)
+  // Without a file to name, the list is inlined however large it is: a table
+  // that cannot narrow would show the whole category.
+  assert.equal(
+    subtreeTable(manyRows(INLINE_ACCESSION_LIMIT + 1)).accessions?.length,
+    INLINE_ACCESSION_LIMIT + 1,
+  )
 })
 
 test('a server-rendered first page decodes to exactly what the wire will replace it with', () => {

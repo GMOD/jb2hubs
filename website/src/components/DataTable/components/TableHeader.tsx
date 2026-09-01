@@ -1,7 +1,5 @@
 import styles from './TableHeader.module.css'
 
-import type { KeyboardEvent } from 'react'
-
 // Only what the header itself reads, so any table with sortable columns can use
 // this — the full ColumnDef (which also carries `cell`/`sortValue`) satisfies it.
 export interface SortableColumn {
@@ -37,13 +35,8 @@ export default function TableHeader({
   sortDesc,
   sortable = true,
 }: TableHeaderProps) {
-  const handleKeyDown = (e: KeyboardEvent, colId: string) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault()
-      handleSort(colId)
-    }
-  }
-
+  // The th stays a column header (aria-sort lives there); the control inside it
+  // is a real button, so it is focusable and keyboard-operable on its own.
   return (
     <thead>
       <tr>
@@ -53,29 +46,23 @@ export default function TableHeader({
             <th
               key={col.id}
               scope="col"
-              className={canSort ? styles.cursorPointer : ''}
-              onClick={
-                canSort
-                  ? () => {
-                      handleSort(col.id)
-                    }
-                  : undefined
-              }
-              onKeyDown={
-                canSort
-                  ? e => {
-                      handleKeyDown(e, col.id)
-                    }
-                  : undefined
-              }
-              tabIndex={canSort ? 0 : undefined}
-              role={canSort ? 'button' : undefined}
               aria-sort={
                 canSort ? getAriaSortValue(col.id, sortId, sortDesc) : undefined
               }
             >
-              {col.header}{' '}
-              {canSort && sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}
+              {canSort ? (
+                <button
+                  type="button"
+                  className={styles.sortButton}
+                  onClick={() => {
+                    handleSort(col.id)
+                  }}
+                >
+                  {col.header} {sortId === col.id ? (sortDesc ? '↓' : '↑') : ''}
+                </button>
+              ) : (
+                col.header
+              )}
             </th>
           )
         })}

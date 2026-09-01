@@ -2,6 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { ncbiStatusOf } from './src/lib/searchIndex.ts'
+
+import type { IndexEntry } from './src/lib/searchIndex.ts'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -76,54 +80,26 @@ function buildUcscRanks() {
 
 const ucscRanks = buildUcscRanks()
 
-// Compact format: array of arrays to avoid repeating key names 50K times
-// [accession, commonName, scientificName, assemblyName, assemblyStatus, source,
-//  taxonId, ncbiStatus, year, rank, altAccession]
-// ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both
-// rank: UCSC's preference order within the species (1 = first), 0 = unranked
-// altAccession: for a UCSC db, the GC[AF] accession its sourceName records, so
-//               the db is reachable by accession search; '' for GenArk
-type Entry = [
-  string,
-  string,
-  string,
-  string,
-  string,
-  string,
-  number,
-  number,
-  number,
-  number,
-  string,
-]
-
-const index: Entry[] = allHubs
+// Array of arrays to avoid repeating key names 50K times; the fields are
+// documented on IndexEntry (src/lib/searchIndex.ts).
+const index: IndexEntry[] = allHubs
   .filter(h => h.accession)
-  .map(h => {
-    let ncbiStatus = 0
-    if (h.ncbiRefSeqCategory === 'reference genome') {
-      ncbiStatus += 1
-    }
-    if (h.suppressed) {
-      ncbiStatus += 2
-    }
-    return [
-      h.accession ?? '',
-      h.commonName ?? '',
-      h.scientificName ?? '',
-      h.ncbiAssemblyName ?? '',
-      h.assemblyStatus ?? '',
-      h.source ?? '',
-      h.taxonId ?? 0,
-      ncbiStatus,
-      // GenArk rows carry an ISO release date; commonName repeats the year in a
-      // parenthetical ("aardvark (SDZICR_OR568_19922 2012 Broad)") for the few
-      // that don't.
-      yearOf(h.seqReleaseDate) || yearOf(h.commonName),
-      0,
-      '',
-    ]
-  })
+  .map(h => [
+    h.accession ?? '',
+    h.commonName ?? '',
+    h.scientificName ?? '',
+    h.ncbiAssemblyName ?? '',
+    h.assemblyStatus ?? '',
+    h.source ?? '',
+    h.taxonId ?? 0,
+    ncbiStatusOf(h),
+    // GenArk rows carry an ISO release date; commonName repeats the year in a
+    // parenthetical ("aardvark (SDZICR_OR568_19922 2012 Broad)") for the few
+    // that don't.
+    yearOf(h.seqReleaseDate) || yearOf(h.commonName),
+    0,
+    '',
+  ])
 
 // Add UCSC genomes (hg38, mm39, etc.)
 for (const [id, genome] of Object.entries(ucscGenomes)) {
@@ -138,6 +114,8 @@ for (const [id, genome] of Object.entries(ucscGenomes)) {
     0,
     yearOf(genome.description),
     ucscRanks.get(id) ?? 0,
+    // altAccession: the GC[AF] accession the sourceName records, so the db is
+    // reachable by accession search
     /GC[AF]_\d+(?:\.\d+)?/.exec(genome.sourceName ?? '')?.[0] ?? '',
   ])
 }

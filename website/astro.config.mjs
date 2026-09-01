@@ -1,6 +1,30 @@
+import fs from 'node:fs'
+
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import { defineConfig } from 'astro/config'
+
+// This file is loaded by node before Astro applies --mode, so import.meta.env
+// (what src/config/features.ts reads) is not available here. Read the same
+// .env.<mode> file Astro will, keyed on the --mode the CLI was given, so the
+// flag has one source: PUBLIC_STAGING in .env.staging.
+const modeFlag = process.argv.indexOf('--mode')
+const mode = modeFlag === -1 ? 'production' : process.argv[modeFlag + 1]
+const envFile = new URL(`./.env.${mode}`, import.meta.url)
+const staging =
+  fs.existsSync(envFile) &&
+  /^PUBLIC_STAGING=true$/m.test(fs.readFileSync(envFile, 'utf-8'))
+
+// Routes whose page redirects home unless the matching flag in
+// src/config/features.ts is on. Every one of those flags is `staging` today;
+// a flag promoted to production has to come off this list at the same time,
+// or its pages stay out of the sitemap while being live.
+const STAGING_ONLY = [
+  '/conserved-gene-order/',
+  '/protein-browser/',
+  '/pangenomes/',
+  '/synteny/',
+]
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,6 +42,10 @@ export default defineConfig({
       // violation rather than failing the build.
       babel: { plugins: ['babel-plugin-react-compiler'] },
     }),
-    sitemap(),
+    sitemap({
+      filter: page =>
+        staging ||
+        !STAGING_ONLY.some(prefix => new URL(page).pathname.startsWith(prefix)),
+    }),
   ],
 })

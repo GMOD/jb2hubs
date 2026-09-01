@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
 import { genarkConfigPath, jbrowseUrl } from '../../../config/jbrowse.ts'
+import { IS_REFERENCE, IS_SUPPRESSED } from '../../../lib/searchIndex.ts'
 import OrangeStar from '../../OrangeStar.tsx'
 import RedX from '../../RedX.tsx'
-import { IS_REFERENCE, IS_SUPPRESSED } from '../hubRow.ts'
 import { statusOrder } from '../utils.ts'
 import styles from './useTableColumns.module.css'
 
@@ -79,7 +79,7 @@ export function useTableColumns({
         header: 'Release date',
         enableSorting: true,
         sortValue: row => row.seqReleaseDate,
-        cell: row => row.seqReleaseDate.replace('00:00', ''),
+        cell: row => row.seqReleaseDate,
       },
       {
         id: 'scientificName',

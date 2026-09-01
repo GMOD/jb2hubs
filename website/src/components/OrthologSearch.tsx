@@ -76,14 +76,8 @@ async function searchOrthologs(
   // would put the "ref" marker on the wrong row and window every synteny launch
   // against the wrong genome.
   const refTaxId = summary.organism?.taxid ?? tax
-  // Only now that the gene resolved: a search that is about to error should not
-  // leave a link to itself in the address bar.
-  window.history.replaceState(
-    null,
-    '',
-    orthologSearchUrl(summary.name ?? gene, refTaxId, scope.id),
-  )
   return {
+    scopeId: scope.id,
     resolved: {
       geneId,
       symbol: summary.name ?? gene,
@@ -146,9 +140,24 @@ export default function OrthologSearch() {
       setSubmitted([gene, ref, scope])
     }
   }
-  const submit = () => {
-    runSearch(geneInput, refInput, scopeInput)
-  }
+
+  // The address bar follows the answer, not the question: only a search that
+  // resolved leaves a link to itself, and under the symbol and taxon NCBI
+  // settled on rather than whatever was typed. Keyed on the result so a cached
+  // answer re-shown after another search re-syncs too.
+  useEffect(() => {
+    if (search) {
+      window.history.replaceState(
+        null,
+        '',
+        orthologSearchUrl(
+          search.resolved.symbol,
+          search.resolved.refTaxId,
+          search.scopeId,
+        ),
+      )
+    }
+  }, [search])
 
   // Honour a shared/bookmarked link. ?gene= submits the search (the back-link
   // from the conserved-gene-order and protein-browser views); ?ref= alone only
@@ -172,72 +181,81 @@ export default function OrthologSearch() {
 
   return (
     <div>
+      {/* The help button sits in the same row but outside the form, so opening
+          the dialog is not a submit; display: contents keeps the row's flex
+          layout across the form boundary. */}
       <div className="ui-form ui-form-labeled">
-        <SearchField
-          id="gene-input"
-          label="Gene symbol"
-          className="ui-input"
-          value={geneInput}
-          onChange={setGeneInput}
-          onSubmit={submit}
-          disabled={loading}
-          placeholder="e.g. BRCA1 or 672"
-        />
-        <SearchField
-          id="species-input"
-          label="Reference species"
-          className="ui-select"
-          value={refInput}
-          onChange={setRefInput}
-          onSubmit={submit}
-          disabled={loading}
-          placeholder="Species name or taxid"
-          title="Any species name or NCBI taxon id — common model organisms are suggested"
-          list="ortholog-ref-species"
+        <form
+          style={{ display: 'contents' }}
+          onSubmit={e => {
+            e.preventDefault()
+            runSearch(geneInput, refInput, scopeInput)
+          }}
         >
-          <datalist id="ortholog-ref-species">
-            {COMMON_SPECIES.map(s => (
-              <option
-                key={s.taxId}
-                value={s.label}
-              />
-            ))}
-          </datalist>
-        </SearchField>
-        <div className="ui-field">
-          <label
-            htmlFor="scope-input"
-            className="ui-field-label"
-          >
-            Limit to
-          </label>
-          <select
-            id="scope-input"
-            className="ui-select"
-            value={scopeInput}
-            onChange={e => {
-              setScopeInput(e.target.value)
-            }}
+          <SearchField
+            id="gene-input"
+            label="Gene symbol"
+            className="ui-input"
+            value={geneInput}
+            onChange={setGeneInput}
             disabled={loading}
-            title="Ask NCBI for orthologs in one clade only — a smaller, faster answer than every species"
+            placeholder="e.g. BRCA1 or 672"
+          />
+          <SearchField
+            id="species-input"
+            label="Reference species"
+            className="ui-select"
+            value={refInput}
+            onChange={setRefInput}
+            disabled={loading}
+            placeholder="Species name or taxid"
+            title="Any species name or NCBI taxon id — common model organisms are suggested"
+            list="ortholog-ref-species"
           >
-            {ORTHOLOG_SCOPES.map(s => (
-              <option
-                key={s.id}
-                value={s.id}
-              >
-                {s.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          onClick={submit}
-          disabled={loading || !geneInput.trim() || !refInput.trim()}
-          className="ui-btn"
-        >
-          {loading ? 'Searching…' : 'Search'}
-        </button>
+            <datalist id="ortholog-ref-species">
+              {COMMON_SPECIES.map(s => (
+                <option
+                  key={s.taxId}
+                  value={s.label}
+                />
+              ))}
+            </datalist>
+          </SearchField>
+          <div className="ui-field">
+            <label
+              htmlFor="scope-input"
+              className="ui-field-label"
+            >
+              Limit to
+            </label>
+            <select
+              id="scope-input"
+              className="ui-select"
+              value={scopeInput}
+              onChange={e => {
+                setScopeInput(e.target.value)
+              }}
+              disabled={loading}
+              title="Ask NCBI for orthologs in one clade only — a smaller, faster answer than every species"
+            >
+              {ORTHOLOG_SCOPES.map(s => (
+                <option
+                  key={s.id}
+                  value={s.id}
+                >
+                  {s.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="submit"
+            disabled={loading || !geneInput.trim() || !refInput.trim()}
+            className="ui-btn"
+          >
+            {loading ? 'Searching…' : 'Search'}
+          </button>
+        </form>
         <HelpButton
           label="How this search works"
           onClick={() => {
@@ -259,6 +277,7 @@ export default function OrthologSearch() {
         {['BRCA1', 'TP53', 'SHH'].map(g => (
           <button
             key={g}
+            type="button"
             onClick={() => {
               runSearch(g, 'Human', scopeInput)
             }}
@@ -288,15 +307,14 @@ export default function OrthologSearch() {
   )
 }
 
-// A labelled text box that submits on Enter. `children` carries the optional
-// <datalist> the reference-species box needs alongside its input.
+// A labelled text box; Enter submits the form around it. `children` carries
+// the optional <datalist> the reference-species box needs alongside its input.
 function SearchField({
   id,
   label,
   className,
   value,
   onChange,
-  onSubmit,
   disabled,
   placeholder,
   title,
@@ -308,7 +326,6 @@ function SearchField({
   className: string
   value: string
   onChange: (v: string) => void
-  onSubmit: () => void
   disabled: boolean
   placeholder: string
   title?: string
@@ -330,11 +347,6 @@ function SearchField({
         value={value}
         onChange={e => {
           onChange(e.target.value)
-        }}
-        onKeyDown={e => {
-          if (e.key === 'Enter') {
-            onSubmit()
-          }
         }}
         placeholder={placeholder}
         title={title}

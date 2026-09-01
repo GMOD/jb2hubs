@@ -12,6 +12,7 @@ import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import { useTaxonomyFilter } from '../hooks/useTaxonomyFilter.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { IS_REFERENCE, IS_SUPPRESSED } from '../lib/searchIndex.ts'
 import { CURATED_CLADES, cladeDisplay } from '../lib/taxonomyClades.ts'
 import { paginate } from '../utils/paginate.ts'
 import OrangeStar from './OrangeStar.tsx'
@@ -20,7 +21,7 @@ import RedX from './RedX.tsx'
 import styles from './SearchPage.module.css'
 import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
 
-import type { IndexEntry } from '../hooks/useSearchIndex.ts'
+import type { IndexEntry } from '../lib/searchIndex.ts'
 
 const EXAMPLE_QUERIES = ['human', 'mouse', 'zebrafish', 'GCF_000001405']
 
@@ -93,6 +94,7 @@ export default function SearchPage() {
               setQuery(e.target.value)
             }}
             placeholder="Search by name, species, or accession..."
+            aria-label="Search genomes"
             autoComplete="off"
             autoFocus
             className={styles.input}
@@ -112,6 +114,7 @@ export default function SearchPage() {
         </div>
         <select
           id="clade-filter"
+          aria-label="Clade"
           value={clade}
           onChange={e => {
             setClade(e.target.value)
@@ -215,8 +218,8 @@ export default function SearchPage() {
                   <td>{entry[4]}</td>
                   <td>{entry[5]}</td>
                   <td>
-                    {entry[7] & 1 ? <OrangeStar /> : null}
-                    {entry[7] & 2 ? <RedX /> : null}
+                    {entry[7] & IS_REFERENCE ? <OrangeStar /> : null}
+                    {entry[7] & IS_SUPPRESSED ? <RedX /> : null}
                   </td>
                   <td>
                     <a href={launchUrl(entry)}>JBrowse</a>

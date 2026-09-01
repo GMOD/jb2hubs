@@ -2,20 +2,30 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
-import list from '../../list.json'
 import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
 import { ucscBrowserUrl, ucscGatewayUrl } from '../../lib/externalLinks.ts'
+import { ucscPageLinks } from '../../utils/accessionData.ts'
+import type { UcscGenomeEntry } from '../../utils/accessionData.ts'
 
-export async function getStaticPaths() {
-  const genomes = list.ucscGenomes
-  return (Object.keys(genomes) as Array<keyof typeof genomes>).map(id => ({
-    params: { id },
-    props: { ret: genomes[id] },
-  }))
+interface Props {
+  ret: UcscGenomeEntry
+  // The GenArk accession pages and the taxonomy page this db can link to —
+  // only ones that exist, so nothing here is a link to a 404.
+  accessions: string[]
+  taxonomyPage: boolean
+}
+
+export function getStaticPaths() {
+  return Object.entries(ucscPageLinks()).map(
+    ([id, { genome, accessions, taxonomyPage }]) => ({
+      params: { id },
+      props: { ret: genome, accessions, taxonomyPage } satisfies Props,
+    }),
+  )
 }
 
 const { id } = Astro.params
-const { ret } = Astro.props
+const { ret, accessions, taxonomyPage } = Astro.props
 
 // These ~250 pages carried the bare db name as their whole <title> and no
 // description at all, so a search result for "hg38" read as just "hg38" with
@@ -50,6 +60,29 @@ const pageDescription = [
         <b>Common name:</b>
         {ret.organism}
       </div>
+      <div>
+        <b>Taxonomy ID:</b>
+        {
+          taxonomyPage ? (
+            <a href={`/taxonomy/${ret.taxId}`}>{ret.taxId}</a>
+          ) : (
+            ret.taxId
+          )
+        }
+      </div>
+      {
+        accessions.length > 0 && (
+          <div>
+            <b>NCBI accession:</b>
+            {accessions.map((accession, i) => (
+              <>
+                {i > 0 ? ', ' : ''}
+                <a href={`/accession/${accession}`}>{accession}</a>
+              </>
+            ))}
+          </div>
+        )
+      }
     </div>
 
     <div>
@@ -70,6 +103,15 @@ const pageDescription = [
         <li>
           <a href={ucscGatewayUrl(id)}>UCSC assembly info</a>
         </li>
+        {
+          taxonomyPage && (
+            <li>
+              <a href={`/taxonomy/${ret.taxId}`}>
+                Other assemblies of this species (GenArk taxonomy)
+              </a>
+            </li>
+          )
+        }
       </ul>
     </div>
   </Container>

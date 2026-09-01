@@ -1,0 +1,116 @@
+---
+import OrangeStar from './OrangeStar.tsx'
+import RedX from './RedX.tsx'
+import type { TaxonomyNode } from '../utils/taxonomyCache'
+import type { HubSource } from './DataTable/hubRow.ts'
+
+// One row's text, shared by the group summary and the leaf in TreeNode.astro.
+interface Props {
+  node: TaxonomyNode
+  speciesInfo: HubSource | undefined
+}
+
+const { node, speciesInfo } = Astro.props
+const name = node.name || 'Unnamed'
+---
+
+<div class="tree-content">
+  {
+    node.taxonId ? (
+      <a
+        href={`/taxonomy/${node.taxonId}`}
+        class="tree-node-link"
+      >
+        {name}
+      </a>
+    ) : (
+      <span class="tree-name">{name}</span>
+    )
+  }
+  {
+    speciesInfo?.commonName ? (
+      <span class="tree-muted">({speciesInfo.commonName})</span>
+    ) : null
+  }
+  {
+    node.accession ? (
+      <>
+        <a
+          href={`/accession/${node.accession}`}
+          class="tree-link tree-link-underline"
+        >
+          (info)
+        </a>
+        <span class="accession-badge">{node.accession}</span>
+      </>
+    ) : null
+  }
+  {
+    speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
+      <OrangeStar />
+    ) : null
+  }
+  {speciesInfo?.suppressed ? <RedX /> : null}
+  {
+    node.branchLength !== undefined && node.branchLength !== 1.0 ? (
+      <span class="tree-muted">[{node.branchLength.toFixed(4)}]</span>
+    ) : null
+  }
+  {
+    node.hiddenAccessions !== undefined ? (
+      <a
+        href={node.taxonId ? `/taxonomy/${node.taxonId}` : undefined}
+        class="tree-link tree-link-underline"
+      >
+        {node.hiddenAccessions}{' '}
+        {node.hiddenAccessions === 1 ? 'assembly' : 'assemblies'} not shown
+      </a>
+    ) : null
+  }
+</div>
+
+<style>
+  .tree-content {
+    display: inline;
+  }
+
+  .tree-content > * {
+    display: inline;
+    margin-right: 8px;
+  }
+
+  .tree-name {
+    color: #1f2937;
+  }
+
+  .tree-muted {
+    color: #6b7280;
+  }
+
+  .tree-link {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .tree-link-underline {
+    text-decoration: underline;
+  }
+
+  .tree-node-link {
+    color: #1f2937;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .tree-node-link:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .accession-badge {
+    color: var(--accent);
+    background-color: #eff6ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+</style>

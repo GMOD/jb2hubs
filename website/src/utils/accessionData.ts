@@ -3,6 +3,8 @@ import path from 'path'
 
 import { accessionChunks } from 'hubtools'
 
+import { taxonIdsIn } from './taxonomyCache.ts'
+
 import type { AnnotationInfo } from 'hubtools'
 
 export type { AnnotationInfo }
@@ -134,16 +136,27 @@ function accessionVersion(accession: string) {
   return m ? Number(m[1]) : 0
 }
 
-export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
-  const list = JSON.parse(
-    fs.readFileSync(path.join('src', 'list.json'), 'utf-8'),
-  )
+// One entry of list.json's ucscGenomes, as much of it as the pages read.
+export interface UcscGenomeEntry {
+  description: string
+  organism: string
+  scientificName: string
+  sourceName?: string
+  taxId: number
+}
 
+function loadUcscGenomes() {
+  return (
+    JSON.parse(fs.readFileSync(path.join('src', 'list.json'), 'utf-8')) as {
+      ucscGenomes: Record<string, UcscGenomeEntry>
+    }
+  ).ucscGenomes
+}
+
+export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
   const exactToUcsc = new Map<string, string>()
   const newestForBase = new Map<string, { id: string; version: number }>()
-  for (const [id, genome] of Object.entries(
-    list.ucscGenomes as Record<string, { sourceName?: string }>,
-  )) {
+  for (const [id, genome] of Object.entries(loadUcscGenomes())) {
     const accession = genome.sourceName?.match(/GC[AF]_\d+(?:\.\d+)?/)?.[0]
     if (accession) {
       const version = accessionVersion(accession)
@@ -171,6 +184,32 @@ export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
     }
   }
   return mapping
+}
+
+// What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
+// (the reverse of buildUcscMapping, so a link is only ever to a page that
+// exists) and whether the taxonomy tree has a page for its taxon.
+export function ucscPageLinks() {
+  const accessionsByDb = new Map<string, string[]>()
+  for (const [accession, db] of buildUcscMapping(loadAccessionMap())) {
+    accessionsByDb.set(db, [...(accessionsByDb.get(db) ?? []), accession])
+  }
+  // Absent on a checkout that has not run generate-taxonomy; the taxonomy
+  // pages are absent then too, so nothing links to them.
+  const newick = path.join('public', 'taxonomy', 'all.newick')
+  const taxonPages = fs.existsSync(newick)
+    ? taxonIdsIn(fs.readFileSync(newick, 'utf-8'))
+    : new Set<string>()
+  return Object.fromEntries(
+    Object.entries(loadUcscGenomes()).map(([db, genome]) => [
+      db,
+      {
+        genome,
+        accessions: (accessionsByDb.get(db) ?? []).sort(),
+        taxonomyPage: taxonPages.has(String(genome.taxId)),
+      },
+    ]),
+  )
 }
 
 // What the accession page's "other assemblies for this species" table needs,

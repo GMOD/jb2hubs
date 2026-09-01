@@ -57,10 +57,18 @@ test('createStore.find resolves the base fallback to the newest hosted version',
   assert.equal(store.find('GCF_000001635.25')?.accession, 'GCF_000001635.27')
 })
 
+// The config path is a query value, so it is read back the way jbrowse-web
+// reads it rather than by substring: encodeURIComponent has turned its slashes
+// into %2F.
+function configOf(url: string) {
+  return new URL(url).searchParams.get('config')
+}
+
 test('accessionToJbrowseUrl shards the accession into the config path', () => {
   const url = accessionToJbrowseUrl('GCF_000001405.40')
-  assert.ok(
-    url.includes('/hubs/genark/GCF/000/001/405/GCF_000001405.40/config.json'),
+  assert.equal(
+    configOf(url),
+    '/hubs/genark/GCF/000/001/405/GCF_000001405.40/config.json',
   )
   assert.ok(!url.includes('&loc='))
 })
@@ -76,7 +84,7 @@ test('accessionToJbrowseUrl targets the /ucsc config for UCSC-native assemblies'
     'NC_000017.11:1-2',
     'hg38',
   )
-  assert.ok(url.includes('config=/ucsc/hg38/config.json'))
+  assert.equal(configOf(url), '/ucsc/hg38/config.json')
   assert.ok(url.includes('&assembly=hg38'))
   assert.ok(!url.includes('/hubs/genark/'))
   assert.ok(url.includes('&loc=NC_000017.11%3A1-2'))
@@ -210,7 +218,7 @@ test('buildOrthologResults names each row from its own report', () => {
   assert.equal(row?.assembly.taxonId, 9606)
   // and the one thing the report cannot say: which config a launch targets
   assert.equal(row?.assembly.ucscDb, 'hg38')
-  assert.ok(row?.jbrowseUrl.includes('config=/ucsc/hg38/config.json'))
+  assert.equal(configOf(row?.jbrowseUrl ?? ''), '/ucsc/hg38/config.json')
 })
 
 // NCBI files a common name for ~85% of ortholog reports. The row still renders

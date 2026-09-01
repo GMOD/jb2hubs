@@ -3,7 +3,11 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 import {
+  TREE_NODE_BUDGET,
+  budgetTree,
+  getCachedTree,
   getTaxonomyIndex,
   collectAccessions,
   taxonIdsIn,
@@ -12,6 +16,7 @@ import type { TaxonomyNode } from '../../utils/taxonomyCache'
 import {
   categoryTable,
   subtreeTable,
+  taxonAccessionsUrl,
 } from '../../components/DataTable/hubRow.ts'
 import type {
   HubSource,
@@ -28,7 +33,9 @@ interface Props {
   speciesData: HubSource[]
   isCategory: boolean
   taxonId?: string
-  precomputedSubtree?: TaxonomyNode | null
+  // Already cut to the render budget: the whole subtree is what the accession
+  // list and table were built from, and is not what the tree draws.
+  precomputedSubtree: TaxonomyNode | null
   precomputedLineage?: TaxonomyNode[]
 }
 
@@ -46,6 +53,7 @@ export async function getStaticPaths() {
   const paths: { params: { slug: string }; props: Props }[] = []
   for (const { slug, data } of categories) {
     if (slug !== 'all') {
+      const tree = getCachedTree(slug)
       paths.push({
         params: { slug },
         props: {
@@ -53,6 +61,7 @@ export async function getStaticPaths() {
           rowCount: data.length,
           speciesData: data,
           isCategory: true,
+          precomputedSubtree: tree && budgetTree(tree, TREE_NODE_BUDGET),
         },
       })
     }
@@ -74,6 +83,12 @@ export async function getStaticPaths() {
     // for each of the 74K taxa cost ~6ms apiece, ~7 minutes of every build.
     const taxonomy = getTaxonomyIndex('all')
     const hubsByAccession = new Map(allHubs.map(hub => [hub.accession, hub]))
+    // generateHubData.ts writes a list file for every subtree too large to
+    // inline; the page names it only when it is really there to fetch.
+    const hasListFile = (taxonId: string) =>
+      fs.existsSync(
+        path.join(process.cwd(), 'public', taxonAccessionsUrl(taxonId)),
+      )
 
     for (const taxonId of taxonIdsIn(newick)) {
       if (categorySlugs.has(taxonId)) {
@@ -88,12 +103,15 @@ export async function getStaticPaths() {
       paths.push({
         params: { slug: taxonId },
         props: {
-          table: subtreeTable(speciesData),
+          table: subtreeTable(
+            speciesData,
+            hasListFile(taxonId) ? taxonAccessionsUrl(taxonId) : undefined,
+          ),
           rowCount: speciesData.length,
           speciesData,
           isCategory: false,
           taxonId,
-          precomputedSubtree: subtree,
+          precomputedSubtree: subtree && budgetTree(subtree, TREE_NODE_BUDGET),
           precomputedLineage: taxonomy?.lineage(taxonId) ?? [],
         },
       })
@@ -135,6 +153,7 @@ if (isCategory) {
   description={description}
 >
   <Container wide>
+    <UcscStatusBanner client:idle />
     {
       isCategory && (
         <div class="page-header">

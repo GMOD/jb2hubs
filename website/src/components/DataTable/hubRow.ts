@@ -5,6 +5,8 @@
 // the table actually uses, encoded one array per row so the key names aren't
 // repeated 22K times. generateHubData.ts is the only writer.
 
+import { ncbiStatusOf } from '../../lib/searchIndex.ts'
+
 export type HubRow = [
   string, // accession
   string, // commonName
@@ -16,9 +18,6 @@ export type HubRow = [
   string, // submitterOrg
   number, // ncbiStatus
 ]
-
-export const IS_REFERENCE = 1
-export const IS_SUPPRESSED = 2
 
 export interface RowData {
   accession: string
@@ -58,8 +57,7 @@ export function encodeHubRow(source: HubSource): HubRow {
     source.seqReleaseDate ?? '',
     source.taxonId ?? 0,
     source.submitterOrg ?? '',
-    (source.ncbiRefSeqCategory === 'reference genome' ? IS_REFERENCE : 0) +
-      (source.suppressed ? IS_SUPPRESSED : 0),
+    ncbiStatusOf(source),
   ]
 }
 
@@ -99,12 +97,24 @@ export interface HubTableData {
   // Compact row files holding the whole set — see generateHubData.ts.
   dataUrls: string[]
   // Set when the table shows a taxonomic subtree rather than a whole category, so
-  // the fetched category files get narrowed to it.
+  // the fetched category files get narrowed to it: inline for a small subtree,
+  // as a file to fetch for a large one (see taxonAccessionsUrl).
   accessions?: string[]
+  accessionsUrl?: string
   totalRows: number
 }
 
 const FIRST_PAGE = 200
+
+// A subtree with more accessions than this fetches its list from
+// public/hubData/taxon/<taxonId>.json, written by generateHubData.ts, instead of
+// carrying it in the island props. /taxonomy/2759 inlined 437KB of accessions
+// that way; the tree budget was the other half of that page.
+export const INLINE_ACCESSION_LIMIT = 1000
+
+export function taxonAccessionsUrl(taxonId: string) {
+  return `/hubData/taxon/${taxonId}.json`
+}
 
 // A whole GenArk category, which has a hubData file of its own.
 export function categoryTable(slug: string, rows: HubSource[]): HubTableData {
@@ -116,8 +126,14 @@ export function categoryTable(slug: string, rows: HubSource[]): HubTableData {
   }
 }
 
-// One taxonomic subtree, which can draw from several categories.
-export function subtreeTable(rows: HubSource[]): HubTableData {
+// One taxonomic subtree, which can draw from several categories. A subtree
+// that fits in the first page is complete as rendered and needs no narrowing;
+// one over INLINE_ACCESSION_LIMIT names its list file, which the caller has to
+// have (generateHubData.ts writes them for exactly these subtrees).
+export function subtreeTable(
+  rows: HubSource[],
+  accessionsUrl?: string,
+): HubTableData {
   const sorted = rows.filter(row => row.accession).sort(byCommonName)
   const sources = new Set<string>()
   for (const row of sorted) {
@@ -125,10 +141,15 @@ export function subtreeTable(rows: HubSource[]): HubTableData {
       sources.add(row.source)
     }
   }
-  return {
+  const table: HubTableData = {
     initialRows: sorted.slice(0, FIRST_PAGE).map(toRowData),
     dataUrls: [...sources].map(source => `/hubData/${source}.json`),
-    accessions: sorted.map(row => row.accession),
     totalRows: sorted.length,
   }
+  if (sorted.length <= FIRST_PAGE) {
+    return table
+  }
+  return accessionsUrl && sorted.length > INLINE_ACCESSION_LIMIT
+    ? { ...table, accessionsUrl }
+    : { ...table, accessions: sorted.map(row => row.accession) }
 }

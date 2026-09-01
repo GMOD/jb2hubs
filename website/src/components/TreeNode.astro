@@ -1,6 +1,5 @@
 ---
-import OrangeStar from './OrangeStar.tsx'
-import RedX from './RedX.tsx'
+import TreeNodeLabel from './TreeNodeLabel.astro'
 import type { TaxonomyNode } from '../utils/taxonomyCache'
 import type { HubSource } from './DataTable/hubRow.ts'
 
@@ -14,10 +13,10 @@ interface Props {
 
 const { node, speciesDataMap } = Astro.props
 const children = node.children ?? []
-const indent = 20
 const speciesInfo = node.accession
   ? speciesDataMap.get(node.accession)
   : undefined
+const stripe = node.depth % 2 === 0 ? 'even' : 'odd'
 ---
 
 {
@@ -25,48 +24,12 @@ const speciesInfo = node.accession
     <details
       class="tree-node"
       open
-      style={`padding-left: ${indent}px;`}
     >
-      <summary
-        class="tree-summary"
-        style={`background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
-      >
-        <div class="tree-content">
-          {node.taxonId ? (
-            <a
-              href={`/taxonomy/${node.taxonId}`}
-              class="tree-node-link"
-            >
-              {node.name || 'Unnamed'}
-            </a>
-          ) : (
-            <span style="color: #1f2937;">{node.name || 'Unnamed'}</span>
-          )}
-
-          {speciesInfo?.commonName ? (
-            <span style="color: #6b7280;">({speciesInfo.commonName})</span>
-          ) : null}
-          {node.accession ? (
-            <>
-              <a
-                href={`/accession/${node.accession}`}
-                class="tree-link tree-link-underline"
-              >
-                (info)
-              </a>{' '}
-              <span class="accession-badge">{node.accession}</span>
-            </>
-          ) : null}
-          {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
-            <OrangeStar />
-          ) : null}
-          {speciesInfo?.suppressed ? <RedX /> : null}
-          {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
-            <span style="color: #6b7280;">
-              [{node.branchLength.toFixed(4)}]
-            </span>
-          ) : null}
-        </div>
+      <summary class:list={['tree-summary', stripe]}>
+        <TreeNodeLabel
+          node={node}
+          speciesInfo={speciesInfo}
+        />
       </summary>
       {children.map(child => (
         <Astro.self
@@ -76,59 +39,20 @@ const speciesInfo = node.accession
       ))}
     </details>
   ) : (
-    <div
-      class="tree-leaf"
-      style={`padding-left: ${indent}px; background-color: ${node.depth % 2 === 0 ? '#ffffff' : '#f9fafb'};`}
-    >
-      <div class="tree-content">
-        <span style="margin-right: 8px;">•</span>
-        {node.taxonId ? (
-          <a
-            href={`/taxonomy/${node.taxonId}`}
-            class="tree-node-link"
-          >
-            {node.name || 'Unnamed'}
-          </a>
-        ) : (
-          <span style="color: #374151;">{node.name || 'Unnamed'}</span>
-        )}
-
-        {speciesInfo?.commonName ? (
-          <span style="color: #6b7280;">({speciesInfo.commonName})</span>
-        ) : null}
-        {node.accession ? (
-          <>
-            {/* prettier-ignore */}
-            <a href={`/accession/${node.accession}`} class="tree-link tree-link-underline">(info)</a>
-            <span class="accession-badge">{node.accession}</span>
-          </>
-        ) : null}
-        {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
-          <OrangeStar />
-        ) : null}
-        {speciesInfo?.suppressed ? <RedX /> : null}
-        {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
-          <span style="color: #6b7280;">[{node.branchLength.toFixed(4)}]</span>
-        ) : null}
-      </div>
+    <div class:list={['tree-leaf', stripe]}>
+      <span class="tree-bullet">•</span>
+      <TreeNodeLabel
+        node={node}
+        speciesInfo={speciesInfo}
+      />
     </div>
   )
 }
 
 <style>
-  @media (max-width: 768px) {
-    .tree-node {
-      padding-left: 10px !important;
-    }
-    .tree-leaf {
-      padding-left: 10px !important;
-    }
-  }
-</style>
-<style>
   .tree-node {
     margin: 0;
-    padding-left: 0;
+    padding-left: 20px;
   }
 
   .tree-summary {
@@ -148,55 +72,28 @@ const speciesInfo = node.accession
     display: none;
   }
 
-  .tree-summary:hover {
-    background-color: #f3f4f6 !important;
-  }
-
-  .tree-content {
-    display: inline;
-  }
-
-  .tree-content > * {
-    display: inline;
-    margin-right: 8px;
-  }
-
   .tree-leaf {
     display: flex;
     align-items: center;
-    padding: 2px 8px;
+    padding: 2px 8px 2px 20px;
     border-bottom: 1px solid #e5e7eb;
   }
 
+  .even {
+    background-color: #ffffff;
+  }
+
+  .odd {
+    background-color: #f9fafb;
+  }
+
+  .tree-summary:hover,
   .tree-leaf:hover {
-    background-color: #f3f4f6 !important;
+    background-color: #f3f4f6;
   }
 
-  .tree-link {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  .tree-link-underline {
-    text-decoration: underline;
-  }
-
-  .tree-node-link {
-    color: #1f2937;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .tree-node-link:hover {
-    color: var(--accent);
-    text-decoration: underline;
-  }
-
-  .accession-badge {
-    color: var(--accent);
-    background-color: #eff6ff;
-    padding: 2px 6px;
-    border-radius: 4px;
+  .tree-bullet {
+    margin-right: 8px;
   }
 
   /* Add chevron indicator using CSS */
@@ -210,5 +107,14 @@ const speciesInfo = node.accession
 
   details[open] > .tree-summary::before {
     transform: rotate(90deg);
+  }
+
+  @media (max-width: 768px) {
+    .tree-node {
+      padding-left: 10px;
+    }
+    .tree-leaf {
+      padding-left: 10px;
+    }
   }
 </style>

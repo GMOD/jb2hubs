@@ -1,20 +1,36 @@
 ---
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
+import { features } from '../config/features.ts'
 import '../styles/global.css'
 
 interface Props {
   title?: string
   description?: string
-  frontmatter?: { title?: string; description?: string }
-  // schema.org JSON-LD for the page, emitted verbatim.
+  // schema.org JSON-LD for the page.
   jsonLd?: object
 }
 
-const { frontmatter, title, description, jsonLd } = Astro.props
-const pageTitle = title ?? frontmatter?.title ?? 'JBrowse 2 genome browser hubs'
-const pageDescription = description ?? frontmatter?.description
+const { title, description, jsonLd } = Astro.props
+const pageTitle = title ?? 'JBrowse 2 genome browser hubs'
+const pageDescription = description
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+// Inline script text has to be set:html here: inside a template expression the
+// compiler would read it as JSX.
+const GTAG_BOOTSTRAP = `
+window.dataLayer = window.dataLayer || []
+function gtag() {
+  dataLayer.push(arguments)
+}
+gtag('js', new Date())
+gtag('config', 'G-D9CD3J2V31')
+`
+// A JSON string is not HTML-safe: the parser ends a <script> at the first
+// "</script" regardless of quoting, and the values here come from NCBI. \u003c
+// is the same character to JSON, and no longer a tag to the parser.
+const jsonLdScript = jsonLd
+  ? JSON.stringify(jsonLd).replaceAll('<', '\\u003c')
+  : undefined
 ---
 
 <!doctype html>
@@ -30,28 +46,37 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
       type="image/x-icon"
       href="/favicon.ico"
     />
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
-    ></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || []
-      function gtag() {
-        dataLayer.push(arguments)
-      }
-      gtag('js', new Date())
-
-      gtag('config', 'G-D9CD3J2V31')
-    </script>
+    {
+      /* Staging is a preview: its traffic is not the site's, and its pages must
+        not be indexed as duplicates of production. */
+    }
+    {
+      !features.staging && (
+        <>
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
+          />
+          <script
+            is:inline
+            set:html={GTAG_BOOTSTRAP}
+          />
+        </>
+      )
+    }
     <title>{pageTitle}</title>
     <link
       rel="canonical"
       href={canonicalURL}
     />
-    <meta
-      name="robots"
-      content="index, follow"
-    />
+    {
+      features.staging && (
+        <meta
+          name="robots"
+          content="noindex"
+        />
+      )
+    }
     {
       pageDescription && (
         <meta
@@ -94,10 +119,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
       content="summary_large_image"
     />
     {
-      jsonLd && (
+      jsonLdScript && (
         <script
           type="application/ld+json"
-          set:html={JSON.stringify(jsonLd)}
+          set:html={jsonLdScript}
         />
       )
     }
