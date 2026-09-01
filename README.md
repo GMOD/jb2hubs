@@ -111,7 +111,7 @@ Generated — regeneration clobbers hand edits:
 Source-controlled inputs that steer the output — edit these instead:
 
 - `ucsc2jbrowse/ucscExtensions/*.json` (extra tracks merged into a generated
-  config), `ucscMixins/`, `ucscRenames/`, `defaultFavs.json` (default sessions)
+  config), `ucscMixins/`, `ucscRenames/`
 - `genark2jbrowse/genArkExtensions/*.json` — the same idea for GenArk hubs
 - everything under `hubtools/src/`, `*/src/` and `website/src/`
 

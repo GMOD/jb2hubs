@@ -235,36 +235,31 @@ Two properties hold this together, and breaking either is silent:
   was missing. The cost of the bootstrap is one blind spot for outputs built
   before 2026-08-06; the alternative was a permanent one.
 
-### genark2jbrowse escalates the mode instead of stamping each hub
+### genark2jbrowse has no such gate any more, because nothing it guards is expensive
 
-Same gap, different shape: genark's "new" means "this accession has no hub.txt
-yet", so an existing hub's config is never regenerated and a converter change
-reaches none of the 50,701 until someone remembers `--reprocess-all`.
+Until 2026-09-01 genark's "new" mode meant "this accession has no hub.txt yet",
+so an existing hub's config was never regenerated and a converter change reached
+none of the 52,000 until someone remembered `--reprocess-all`; a repo-level
+`.pipeline_hash` escalated the run to "all" when the code moved, and the work
+list for a run lived in a `mktemp` that a crash deleted.
 
-It gets **one repo-level stamp** (`genark2jbrowse/.pipeline_hash`), not the
-per-assembly stamps ucsc2jbrowse uses — there the unit of work is ~240
-directories, here it is 50,701, and a stamp beside each would be 50,701 files
-answering a question with one answer. When it differs, `MODE` escalates from
-`new` to `all`, which is already exactly "every hub is stale".
-
-`save_pipeline_stamp` refuses to write on an incremental run: `new` mode touched
-only new hubs, so recording the current hash would claim the other 50,700 are
-current and swallow the next change. The lone exception is the same bootstrap as
-above — an absent stamp has to start somewhere.
-
-Both stamps are gitignored. They describe the built tree **on this machine**; a
-checkout whose stamp disagreed with its own `hubs/` would either skip a rebuild
-it needs or force one it does not.
+All of that existed to avoid rebuilding configs, and a config build is 17
+seconds for the whole corpus now (see the one-pass section below). Every other
+phase is gated per file — a GFF is downloaded when absent and processed when
+newer than its output, genetic codes derived when the sidecar is missing, chain
+files probed once per hub, text indexed when older than the GFF — so a run
+simply visits every hub, every time, and rebuilds what is stale. `--all` is
+accepted and changes nothing; `--reprocess-all` still forces everything.
 
 ### `--explain` answers what a run would do, before it does it
 
-Every gate above is a pure predicate over local stamps, so both `make.sh`s take
-`--explain`: they run the gates, print the verdict and the reason, and exit
-without fetching, writing or building anything. It is `make -n` for a pipeline
-that is not a Makefile, and it exists because the gates are only readable by
-running them — the hg19 mappability regression cost a day partly because
-`No UCSC assemblies have changed` reads like success, and there was no way to
-ask the question first.
+Every ucsc gate above is a pure predicate over local stamps, so
+`ucsc2jbrowse/make.sh` takes `--explain`: it runs the gates, prints the verdict
+and the reason, and exits without fetching, writing or building anything. It is
+`make -n` for a pipeline that is not a Makefile, and it exists because the gates
+are only readable by running them — the hg19 mappability regression cost a day
+partly because `No UCSC assemblies have changed` reads like success, and there
+was no way to ask the question first.
 
 Two properties are what make it worth trusting, and both are easy to break:
 
@@ -274,12 +269,12 @@ Two properties are what make it worth trusting, and both are easy to break:
   a comparison the caller has already decided into `REDERIVE` or `MODE`. A
   second copy of any of that would be a model of the run rather than the run,
   and would be most confident exactly when it had drifted.
-- **It says what it cannot know.** ucsc's report is exact on the code half and
-  as-of-last-rsync on the data half, because a real run syncs first; genark
-  cannot know its new-hub count at all without the hub list. Both say so rather
-  than implying a precision they do not have. It also lists what runs regardless
-  — Phase 3 onward always does — so a clean report reads as "nothing is
-  rebuilt", not "nothing happens".
+- **It says what it cannot know.** The report is exact on the code half and
+  as-of-last-rsync on the data half, because a real run syncs first, and says so
+  rather than implying a precision it does not have. It also lists what runs
+  regardless — Phase 3 onward always does — so a clean report reads as "nothing
+  is rebuilt", not "nothing happens". genark's `--explain` has nothing to
+  predict and says that instead.
 
 Answers grouped by reason, not one line per assembly: a converter change marks
 all ~240 stale for the same reason, and the ungrouped form buries the two that

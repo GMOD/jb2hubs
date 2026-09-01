@@ -66,8 +66,7 @@ FETCH_UPDATES=1 ./run.sh  # re-pull upstream NCBI GFFs in both pipelines
 
 ```bash
 cd genark2jbrowse
-./make.sh                  # Process only new hubs (default, fastest)
-./make.sh --all            # Process all hubs
+./make.sh                  # Visit every hub, rebuild what is stale
 ./make.sh --reprocess-all  # Re-derive everything from cached downloads
 # optionally review git diff
 ./uploadAll.sh

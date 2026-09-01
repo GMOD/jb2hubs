@@ -59,10 +59,4 @@ fi
 log "Force-regenerating gene tracks for ${#dl_dirs[@]} assemblies (REPROCESS=true)..."
 REPROCESS=true ./createGeneTracksForGoldenPath.sh "${dl_dirs[@]}"
 
-# Keep the integrity listing consistent with the regenerated outputs, matching
-# the listing make.sh writes at the end of a normal run.
-log "Refreshing output file listing..."
-make_file_listing fileListing.txt "$UCSC_BUILT_DIR" \
-  ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" ! -name ".sync_stamp"
-
 log "Done. Run ./uploadAll.sh to ship the regenerated gene tracks."

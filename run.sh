@@ -103,6 +103,8 @@ fi
 # --- Setup logging ---
 
 mkdir -p logs
+# A full run's log is ~50MB and nothing ever pruned them (1.6GB by 2026-09-01).
+find logs -name 'run_*.log' -mtime +30 -delete
 LOG_FILE="logs/run_$(date +%Y-%m-%d_%H-%M-%S).log"
 echo "Logging to $LOG_FILE"
 
@@ -127,19 +129,19 @@ if [ "$UPLOAD_ONLY" = false ]; then
   # them is wasted work -- use --reprocess-all to re-apply converter changes.
   build_description="${BUILD_FLAGS[*]:-incremental}"
 
-  echo "Running genark2jbrowse/make.sh ($build_description)..."
+  log "Running genark2jbrowse/make.sh ($build_description)..."
   ./genark2jbrowse/make.sh ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
 
-  echo "Running ucsc2jbrowse/make.sh ($build_description)..."
+  log "Running ucsc2jbrowse/make.sh ($build_description)..."
   ./ucsc2jbrowse/make.sh ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
 
-  echo "Extracting SyntenyTrack datasets..."
+  log "Extracting SyntenyTrack datasets..."
   node scripts/extractSyntenyTracks.ts
 
-  echo "Formatting codebase..."
+  log "Formatting codebase..."
   pnpm run format
 
-  echo "Build phase complete"
+  log "Build phase complete"
 else
   echo "Skipping build phase (--upload-only)"
 fi
@@ -268,16 +270,16 @@ if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
     echo "or every staging launch fails to fetch its config."
     exit 1
   fi
-  echo "Deploying website to staging..."
+  log "Deploying website to staging..."
   pnpm --filter website2 run deploy:staging
   echo "Staging deploy complete"
 elif [ "$DRY_RUN" = false ]; then
   gate_configs
 
-  echo "Uploading genark data..."
+  log "Uploading genark data..."
   ./genark2jbrowse/uploadAll.sh
 
-  echo "Uploading ucsc data..."
+  log "Uploading ucsc data..."
   ./ucsc2jbrowse/uploadAll.sh
 
   echo "Committing hub changes before generating recently updated..."
@@ -332,7 +334,7 @@ elif [ "$DRY_RUN" = false ]; then
   # One-line summary so it's easy to confirm from logs that incremental
   # detection is doing its job (e.g. a quiet run should read "all unchanged").
   describe() { [ "$1" = 1 ] && echo "changed" || echo "unchanged"; }
-  echo "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED"
+  log "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED"
 
   # Scope the commit to pipeline-generated paths so stray edits in the working
   # tree don't ride along to origin. hubs/ was committed above.
@@ -342,7 +344,7 @@ elif [ "$DRY_RUN" = false ]; then
     ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal \
     ucsc2jbrowse/fileAccessCache ucsc2jbrowse/removedTracks \
     ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
-    ucsc2jbrowse/fileListing.txt 'website/src/*.json'
+    'website/src/*.json'
   # Same reasoning as the hubs commit above: an empty index is fine, a failed
   # commit is not, and this is the last chance to notice before `git push`.
   if git diff --cached --quiet; then

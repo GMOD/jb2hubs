@@ -607,11 +607,6 @@ node src/mergeFileAccessCache.ts
 log "Merging removed tracks..."
 node src/mergeRemovedTracks.ts
 
-log "Hashing output files for integrity checking..."
-make_file_listing fileListing.txt "$UCSC_BUILT_DIR" \
-  ! -name "*meta.json" ! -name "*.hash" ! -name ".trackdb_hash" \
-  ! -name ".pipeline_hash" ! -name ".derivation_hash" ! -name ".sync_stamp"
-
 # Write updated hashes for assemblies we just processed.
 #
 # The converter stamp is written on every mode, including --reprocess-all and
