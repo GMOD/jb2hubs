@@ -1,28 +1,15 @@
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
-import { readJSON, requireArg } from './util.ts'
 import {
   getCytobands,
   getRefNameAliases,
 } from './utils/assemblyAliasesAndCytobands.ts'
 
-if (process.argv.length !== 5) {
-  console.error(
-    'Usage: node createAssembly.ts <assemblyName> <listJsonPath> <dbDir>',
-  )
-  process.exit(1)
-}
-
-const assemblyName = requireArg(process.argv[2], 'assemblyName is required')
-const list = requireArg(process.argv[3], 'listJsonPath is required')
-const dbDir = requireArg(process.argv[4], 'dbDir is required')
+import type { JBrowseConfig, UcscGenome } from './types.ts'
 
 const HGDOWNLOAD = 'https://hgdownload.soe.ucsc.edu'
 
-const getBigDataLink = (j: string) =>
-  `${HGDOWNLOAD}/goldenPath/${assemblyName}/bigZips/${j}`
-
 // bigZips is where UCSC puts an assembly's downloadable files, and for almost
-// every db the template above is simply right. The nib-era assemblies are the
+// every db the template is simply right. The nib-era assemblies are the
 // exception: UCSC never built them a bigZips 2bit, and theirs sits beside the
 // browser's own data under /gbdb instead. rn3 is the live example — it is in
 // api.genome.ucsc.edu/list/ucscGenomes with `nibPath: /gbdb/rn3/nib`, we built
@@ -32,8 +19,8 @@ const getBigDataLink = (j: string) =>
 // So derive, then confirm. A transient failure keeps the bigZips url (that is
 // what checkIfFileAccessible returns on a timeout), which is the right way to be
 // wrong: an hgdownload blip must not rewrite a working config to the fallback.
-async function resolveSequenceFile(basename: string, gbdbName: string) {
-  const bigZips = getBigDataLink(basename)
+async function resolveSequenceFile(assemblyName: string, basename: string) {
+  const bigZips = `${HGDOWNLOAD}/goldenPath/${assemblyName}/bigZips/${basename}`
   if (
     await checkIfFileAccessible({
       url: bigZips,
@@ -43,7 +30,7 @@ async function resolveSequenceFile(basename: string, gbdbName: string) {
   ) {
     return bigZips
   }
-  const gbdb = `${HGDOWNLOAD}/gbdb/${assemblyName}/${gbdbName}`
+  const gbdb = `${HGDOWNLOAD}/gbdb/${assemblyName}/${basename}`
   if (
     await checkIfFileAccessible({
       url: gbdb,
@@ -61,47 +48,44 @@ async function resolveSequenceFile(basename: string, gbdbName: string) {
   return bigZips
 }
 
-const twoBitUri = await resolveSequenceFile(
-  `${assemblyName}.2bit`,
-  `${assemblyName}.2bit`,
-)
-
-const refNameAliases = getRefNameAliases(assemblyName, dbDir)
-const cytobands = getCytobands(assemblyName, dbDir)
-
-interface GenomeRecord {
-  organism: string
-}
-
-const metadata = readJSON<{ ucscGenomes: Record<string, GenomeRecord> }>(list)
-  .ucscGenomes[assemblyName]
-console.log(
-  JSON.stringify(
-    {
-      assemblies: [
-        {
-          name: assemblyName,
-          displayName: `${metadata?.organism} (${assemblyName})`,
-          sequence: {
-            type: 'ReferenceSequenceTrack',
-            trackId: `${assemblyName}-refseq`,
-            // for UCSC golden-path assemblies the db BLAT queries against is
-            // just the assembly name; jbrowse-plugin-blat reads blatDb to know
-            // the assembly is BLAT-able and which db to query
-            metadata: { ...metadata, blatDb: assemblyName },
-            adapter: {
-              type: 'TwoBitAdapter',
-              uri: twoBitUri,
-              chromSizes: getBigDataLink(`${assemblyName}.chrom.sizes`),
-            },
+/** The starting config for a golden-path assembly: one assembly, no tracks. */
+export async function createAssemblyConfig({
+  assemblyName,
+  dbDir,
+  genome,
+}: {
+  assemblyName: string
+  dbDir: string
+  genome: UcscGenome | undefined
+}): Promise<JBrowseConfig> {
+  const twoBitUri = await resolveSequenceFile(
+    assemblyName,
+    `${assemblyName}.2bit`,
+  )
+  const refNameAliases = getRefNameAliases(assemblyName, dbDir)
+  const cytobands = getCytobands(assemblyName, dbDir)
+  return {
+    assemblies: [
+      {
+        name: assemblyName,
+        displayName: `${genome?.organism} (${assemblyName})`,
+        sequence: {
+          type: 'ReferenceSequenceTrack',
+          trackId: `${assemblyName}-refseq`,
+          // for UCSC golden-path assemblies the db BLAT queries against is
+          // just the assembly name; jbrowse-plugin-blat reads blatDb to know
+          // the assembly is BLAT-able and which db to query
+          metadata: { ...genome, blatDb: assemblyName },
+          adapter: {
+            type: 'TwoBitAdapter',
+            uri: twoBitUri,
+            chromSizes: `${HGDOWNLOAD}/goldenPath/${assemblyName}/bigZips/${assemblyName}.chrom.sizes`,
           },
-          ...(refNameAliases ? { refNameAliases } : {}),
-          ...(cytobands ? { cytobands } : {}),
         },
-      ],
-      tracks: [],
-    },
-    null,
-    2,
-  ),
-)
+        ...(refNameAliases ? { refNameAliases } : {}),
+        ...(cytobands ? { cytobands } : {}),
+      },
+    ],
+    tracks: [],
+  }
+}

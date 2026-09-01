@@ -90,7 +90,7 @@ describe('readMitoCache', () => {
 
 describe('localChromSizesPath', () => {
   it('resolves a relative chromSizes against the config directory', () => {
-    // The post-mirroring shape: finalizeConfigs rewrote it to a bare file name.
+    // The post-mirroring shape: mirrorAssemblySidecars rewrote it to a bare file name.
     const dir = workdir()
     fs.writeFileSync(path.join(dir, 'hg38.chrom.sizes'), 'chrM\t16569\n')
     assert.equal(
@@ -100,7 +100,7 @@ describe('localChromSizesPath', () => {
   })
 
   it('finds the mirrored copy when the config names the upstream url', () => {
-    // The case that matters: createAssemblies.sh rewrote config.json from
+    // The case that matters: the config was rebuilt from
     // scratch, so chromSizes points upstream again -- but the sidecar the
     // previous run mirrored is untouched and still beside it. Without this,
     // every reprocessed assembly costs one hgdownload request.

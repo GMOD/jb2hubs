@@ -1,43 +1,38 @@
+import fs from 'fs'
 import path from 'path'
 
-import { categoryLabel, notEmpty } from 'hubtools'
+import { categoryLabel, formatJson, notEmpty } from 'hubtools'
 
 import {
   getTrackModifications,
-  writeRemovedTracks,
+  removedTracksFor,
 } from './getTrackModifications.ts'
-import {
-  readConfig,
-  readJSON,
-  replaceLink,
-  splitOnFirst,
-  writeJSON,
-} from './util.ts'
+import { replaceLink, splitOnFirst } from './util.ts'
 
-import type { TrackDbEntry } from './types'
+import type { FinalizeStep } from './utils/finalizeStep.ts'
 
-type TracksDb = Record<string, TrackDbEntry>
-
-function addMetadata(configPath: string, tracksDbPath: string) {
-  const config = readConfig(configPath)
-  let tracksDb: TracksDb | undefined
-  try {
-    tracksDb = readJSON<Record<string, TrackDbEntry>>(tracksDbPath)
-  } catch (e) {
-    console.error(`no tracksDb for ${configPath}`)
-  }
-
-  const assembly = path.basename(path.dirname(configPath))
-
-  writeJSON(configPath, {
-    ...config,
-    tracks: config.tracks
+/**
+ * Names, describes and categorizes each track from its trackDb entry, then
+ * applies the drop rules in getTrackModifications. The tracks dropped are
+ * reported to removedTracks/<db>.json, which mergeRemovedTracks.ts collects
+ * for the website. Golden-path assemblies only: a hub assembly has no
+ * tracks.json, and its trackDb prose came in with the hub.
+ */
+export const addMetadata: FinalizeStep = {
+  name: 'track metadata',
+  run: ({ assemblyName, tracksDb, config, compareOnly }) => {
+    const counts: Record<string, number> = {}
+    if (!tracksDb) {
+      return counts
+    }
+    const before = config.tracks.length
+    config.tracks = config.tracks
       .map(track => {
         const [, trackLabelWithoutAssemblyName] = splitOnFirst(
           track.trackId,
           '-',
         )
-        const trackDbEntry = tracksDb?.[trackLabelWithoutAssemblyName]
+        const trackDbEntry = tracksDb[trackLabelWithoutAssemblyName]
         const currentCategories = track.category ?? []
 
         if (trackDbEntry) {
@@ -53,7 +48,7 @@ function addMetadata(configPath: string, tracksDbPath: string) {
             ? splitOnFirst(trackMetadata.parent, ' ')[0]
             : undefined
           const parentTrack = parentTrackId
-            ? tracksDb?.[parentTrackId]
+            ? tracksDb[parentTrackId]
             : undefined
 
           const isAddedByJBrowseTeam = !!track.metadata?.addedByJBrowseTeam
@@ -84,20 +79,22 @@ function addMetadata(configPath: string, tracksDbPath: string) {
             ],
           }
         } else {
-          // console.warn('Track not found in trackDb', track.trackId)
           return track
         }
       })
       .map(track => getTrackModifications(track))
-      .filter(notEmpty),
-  })
+      .filter(notEmpty)
 
-  writeRemovedTracks(assembly)
+    counts.dropped = before - config.tracks.length
+    const removed = removedTracksFor(assemblyName)
+    if (removed.length > 0 && !compareOnly) {
+      const dir = 'removedTracks'
+      fs.mkdirSync(dir, { recursive: true })
+      fs.writeFileSync(
+        path.join(dir, `${assemblyName}.json`),
+        formatJson(removed),
+      )
+    }
+    return counts
+  },
 }
-
-if (process.argv.length !== 4) {
-  console.error('Usage: node addMetadata.ts <config.json> <tracksDb.json>')
-  process.exit(1)
-}
-
-addMetadata(process.argv[2]!, process.argv[3]!)

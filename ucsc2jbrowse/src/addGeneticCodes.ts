@@ -1,28 +1,22 @@
 import fs from 'fs'
-import path from 'path'
 
 import {
   localChromSizesPath,
   readMitoCache,
   writeMitoCache,
 } from './mitoCodes.ts'
-import { readConfig, writeJSON } from './util.ts'
 
-import type { JBrowseConfig } from './types.ts'
+import type { MitoCache } from './mitoCodes.ts'
+import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 // The standard nuclear genetic code. Animals (all UCSC main-browser genomes)
 // use code 1 in the nucleus but a non-standard mitochondrial code (vertebrate
 // = 2, invertebrate = 5, etc.) on their chrM contig. Mirrors the GenArk
-// add_genetic_codes step, which mines transl_table from NCBI GFFs; here the
+// genetic-code derivation, which mines transl_table from NCBI GFFs; here the
 // source GFFs are genePred-derived and carry no transl_table, so we instead
 // look up the mitochondrial code by taxId from NCBI taxonomy and key it by the
 // canonical UCSC mito refName (chrM).
 const STANDARD_CODE = 1
-
-// Where the taxId -> mitochondrial code answers are kept between runs, beside
-// checkTrackUrls.mjs's rotation state and gitignored for the same reasons. The
-// cache's shape, its TTL and the reason any of it exists are in mitoCodes.ts.
-const CACHE_PATH = path.join(import.meta.dirname, '..', '.mitoCodes.json')
 
 // Fetches each taxon's mitochondrial genetic code from NCBI taxonomy. The
 // efetch XML embeds every taxon's full lineage, whose nested <Taxon> nodes
@@ -76,6 +70,31 @@ async function fetchMitoCodes(taxIds: number[]) {
   return { codes, answered }
 }
 
+/**
+ * The taxId -> mitochondrial code cache, with every taxon in `taxIds` the cache
+ * does not yet answer for fetched from NCBI in one round. The cache's shape,
+ * TTL and reason for existing are in mitoCodes.ts.
+ */
+export async function prefetchMitoCodes(
+  cachePath: string,
+  taxIds: number[],
+): Promise<MitoCache> {
+  const cache = readMitoCache(cachePath)
+  const wanted = [...new Set(taxIds)]
+  const uncached = wanted.filter(taxId => !(String(taxId) in cache.codes))
+  if (uncached.length > 0) {
+    const { codes, answered } = await fetchMitoCodes(uncached)
+    for (const taxId of answered) {
+      cache.codes[String(taxId)] = codes.get(taxId) ?? null
+    }
+    writeMitoCache(cachePath, cache)
+  }
+  console.warn(
+    `genetic codes: ${uncached.length} of ${wanted.length} taxa queried from NCBI`,
+  )
+  return cache
+}
+
 function mitoContigsFromChromSizes(text: string) {
   return text.split('\n').flatMap(line => {
     const name = line.split('\t')[0]
@@ -83,22 +102,18 @@ function mitoContigsFromChromSizes(text: string) {
   })
 }
 
-// Returns the mito contig names actually present in the assembly (chrM/chrMT),
-// read from its chrom.sizes. `contigs: undefined` means chrom.sizes was
-// unavailable, which the caller treats as "assume the conventional chrM" rather
-// than "no mito". `fetched` is reported so the run summary can show that the
-// local paths are doing their job -- a silent regression to fetching would
-// otherwise look identical.
+// The mito contig names actually present in the assembly (chrM/chrMT), read
+// from its chrom.sizes. `undefined` means chrom.sizes was unavailable, which
+// the caller treats as "assume the conventional chrM" rather than "no mito".
+// The sidecar mirrored beside the config on a previous run is read first, so
+// a steady-state build fetches nothing; `fetched` is counted so a silent
+// regression to fetching does not look identical.
 async function fetchMitoContigs(
   chromSizes: string,
-  configPath: string,
+  dir: string,
   assemblyName: string,
 ) {
-  const local = localChromSizesPath(
-    chromSizes,
-    path.dirname(configPath),
-    assemblyName,
-  )
+  const local = localChromSizesPath(chromSizes, dir, assemblyName)
   if (local !== undefined) {
     return {
       contigs: mitoContigsFromChromSizes(fs.readFileSync(local, 'utf8')),
@@ -115,110 +130,35 @@ async function fetchMitoContigs(
   }
 }
 
-async function mapWithConcurrency<T, U>(
-  items: T[],
-  limit: number,
-  fn: (item: T) => Promise<U>,
-) {
-  const results: U[] = Array.from({ length: items.length })
-  let next = 0
-  async function worker() {
-    while (next < items.length) {
-      const current = next++
-      results[current] = await fn(items[current]!)
+export const addGeneticCodes: FinalizeStep = {
+  name: 'genetic codes',
+  run: async ({ dir, config, mitoCache }) => {
+    const counts: Record<string, number> = {}
+    const assembly = config.assemblies[0]
+    const sequence = assembly?.sequence
+    const taxId = sequence?.metadata?.taxId
+    const chromSizes = sequence?.adapter.chromSizes
+    if (assembly === undefined || typeof taxId !== 'number') {
+      return counts
     }
-  }
-  await Promise.all(
-    Array.from({ length: Math.min(limit, items.length) }, () => worker()),
-  )
-  return results
-}
-
-interface Entry {
-  configPath: string
-  config: JBrowseConfig
-  assemblyName: string
-  taxId: number
-  chromSizes?: string
-}
-
-const configPaths = process.argv.slice(2)
-
-const entries = configPaths.flatMap<Entry>(configPath => {
-  const config = readConfig(configPath)
-  const assembly = config.assemblies[0]
-  const sequence = assembly?.sequence
-  const taxId = sequence?.metadata?.taxId
-  const chromSizes = sequence?.adapter.chromSizes
-  return typeof taxId === 'number' && assembly !== undefined
-    ? [
-        {
-          configPath,
-          config,
-          assemblyName: assembly.name,
-          taxId,
-          chromSizes: typeof chromSizes === 'string' ? chromSizes : undefined,
-        },
-      ]
-    : []
-})
-
-const cache = readMitoCache(CACHE_PATH)
-const wanted = [...new Set(entries.map(e => e.taxId))]
-const uncached = wanted.filter(taxId => !(String(taxId) in cache.codes))
-
-if (uncached.length > 0) {
-  const { codes, answered } = await fetchMitoCodes(uncached)
-  for (const taxId of answered) {
-    cache.codes[String(taxId)] = codes.get(taxId) ?? null
-  }
-  writeMitoCache(CACHE_PATH, cache)
-}
-
-let written = 0
-let unchanged = 0
-let fetches = 0
-
-await mapWithConcurrency(entries, 8, async entry => {
-  const code = cache.codes[String(entry.taxId)]
-  if (code !== undefined && code !== null && code !== STANDARD_CODE) {
-    const { contigs: present, fetched } = entry.chromSizes
-      ? await fetchMitoContigs(
-          entry.chromSizes,
-          entry.configPath,
-          entry.assemblyName,
-        )
-      : { contigs: undefined, fetched: false }
+    const code = mitoCache.codes[String(taxId)]
+    if (code === undefined || code === null || code === STANDARD_CODE) {
+      return counts
+    }
+    const { contigs: present, fetched } =
+      typeof chromSizes === 'string'
+        ? await fetchMitoContigs(chromSizes, dir, assembly.name)
+        : { contigs: undefined, fetched: false }
     if (fetched) {
-      fetches++
+      counts['chrom.sizes fetched remotely'] = 1
     }
     // undefined = chrom.sizes unavailable, fall back to the UCSC convention;
     // [] = assembly genuinely has no mito contig, so emit nothing.
     const contigs = present ?? ['chrM']
     if (contigs.length > 0) {
-      const assembly = entry.config.assemblies[0]!
-      const geneticCodes = Object.fromEntries(contigs.map(c => [c, code]))
-      // Only write when the answer moved. A reprocessed assembly always needs
-      // the write (createAssemblies.sh dropped the key), but hub assemblies go
-      // through Phase 4 on every run whether or not anything about them changed.
-      if (
-        JSON.stringify(assembly.geneticCodes) !== JSON.stringify(geneticCodes)
-      ) {
-        assembly.geneticCodes = geneticCodes
-        writeJSON(entry.configPath, entry.config)
-        written++
-        console.log(
-          `${assembly.name}: geneticCodes ${contigs.join(',')} = ${code}`,
-        )
-      } else {
-        unchanged++
-      }
+      assembly.geneticCodes = Object.fromEntries(contigs.map(c => [c, code]))
+      counts.set = 1
     }
-  }
-})
-
-console.log(
-  `genetic codes: ${written} config(s) updated, ${unchanged} already current; ` +
-    `${uncached.length} of ${wanted.length} taxa queried from NCBI, ` +
-    `${fetches} chrom.sizes fetched remotely`,
-)
+    return counts
+  },
+}

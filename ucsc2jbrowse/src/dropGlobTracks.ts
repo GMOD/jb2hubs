@@ -8,9 +8,10 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
 // Gff3TabixAdapter on `*.gff.gz` plus `*.gff.gz.csi` -- from 2025-05-13 until
 // 2026-08-26.
 //
-// The loop that produced them was fixed at the source long ago
-// (createConfigsForGoldenPath.sh sets `shopt -s nullglob` around both globs),
-// but a fix at the source only reaches a config that is regenerated, and
+// The loop that produced them was fixed at the source long ago (the shell
+// adder set `shopt -s nullglob` around both globs; addDerivedTabixTracks reads
+// the directory now), but a fix at the source only reaches a config that is
+// regenerated, and
 // neither of those two ever was: `is_assembly_db` excluded both from every
 // derivation pass, so their tracks[] was frozen and no amount of rebuilding
 // would have cleared it. Finalization is the one pass that did visit them,

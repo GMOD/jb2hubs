@@ -5,9 +5,9 @@ import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
-import { readConfig, readJSON, splitOnFirst, writeJSON } from './util.ts'
+import { readJSON, splitOnFirst } from './util.ts'
 
-import type { TrackDbEntry } from './types.ts'
+import type { JBrowseConfig, TrackDbEntry, UcscTrack } from './types.ts'
 
 interface BigDataTrack {
   tableName: string
@@ -29,46 +29,39 @@ interface BigDataTrack {
   }
 }
 
-function mergeDeep(
-  target: Record<string, unknown>,
+function mergeDeep<T extends Record<string, unknown>>(
+  target: T,
   source: Record<string, unknown>,
-): Record<string, unknown> {
-  const result = { ...target }
+) {
+  const merged: Record<string, unknown> = {}
   for (const key of Object.keys(source)) {
     const srcVal = source[key]
-    const tgtVal = result[key]
-    if (
+    const tgtVal = target[key]
+    merged[key] =
       srcVal !== null &&
       typeof srcVal === 'object' &&
       !Array.isArray(srcVal) &&
       tgtVal !== null &&
       typeof tgtVal === 'object' &&
       !Array.isArray(tgtVal)
-    ) {
-      result[key] = mergeDeep(
-        tgtVal as Record<string, unknown>,
-        srcVal as Record<string, unknown>,
-      )
-    } else {
-      result[key] = srcVal
-    }
+        ? mergeDeep(
+            tgtVal as Record<string, unknown>,
+            srcVal as Record<string, unknown>,
+          )
+        : srcVal
   }
-  return result
+  return Object.assign({ ...target }, merged)
 }
 
 type BigDataTracksJson = Record<string, BigDataTrack>
 
 /**
- * Parses a tracks.json file to extract information about bigData and BAM tracks.
- * It filters tracks based on their 'type' (starting with 'big' or 'bam')
- * and processes their settings string into a key-value object
- *
- * @param tracksJsonPath The path to the tracks.json file.
- * @returns A promise that resolves to the parsed big file tracks.
+ * The bigData and BAM tracks of a parsed trackDb: those whose 'type' starts
+ * with 'big' or 'bam', with their settings string parsed into key-value pairs.
  */
-function parseBigFileTracks(tracksJsonPath: string): BigDataTracksJson {
-  const tracks = readJSON<Record<string, TrackDbEntry>>(tracksJsonPath)
-
+function parseBigFileTracks(
+  tracks: Record<string, TrackDbEntry>,
+): BigDataTracksJson {
   return Object.fromEntries(
     Object.entries(tracks)
       .filter(([_key, trackEntry]) =>
@@ -92,13 +85,22 @@ function parseBigFileTracks(tracksJsonPath: string): BigDataTracksJson {
   )
 }
 
-async function addBigDataTracks(
-  bigDataEntries: BigDataTracksJson,
-  tracksDb: Record<string, TrackDbEntry>,
-  configPath: string,
-  dbDir: string | undefined,
-) {
-  const config = readConfig(configPath)
+/**
+ * Adds the trackDb's big* and bam tracks to the config: bigBed/bigMaf/bigWig/bam
+ * files named by bigDataUrl or resolved from their golden-path table, each
+ * probed for existence, multiWig composites folded into one track each, and
+ * ucscMixins/<db>.json merged over the result.
+ */
+export async function addBigDataTracks({
+  config,
+  tracksDb,
+  dbDir,
+}: {
+  config: JBrowseConfig
+  tracksDb: Record<string, TrackDbEntry>
+  dbDir: string | undefined
+}) {
+  const bigDataEntries = parseBigFileTracks(tracksDb)
   const baseUrl = 'https://hgdownload.soe.ucsc.edu'
   const assembly = config.assemblies[0]
 
@@ -135,7 +137,7 @@ async function addBigDataTracks(
     baseUrl,
     resolveTable,
   })
-  const newTracks = []
+  const newTracks: UcscTrack[] = []
   for (const entry of Object.values(bigDataEntries)) {
     const { settings, tableName } = entry
     const { type } = settings
@@ -223,7 +225,14 @@ async function addBigDataTracks(
             name: tableName,
             type: 'AlignmentsTrack',
             assemblyNames: [assemblyName],
-            adapter: { type: 'BamAdapter', uri, sequenceAdapter },
+            // a copy, not the assembly's own adapter object: the sidecar
+            // mirroring later rewrites that one's chromSizes to a local path,
+            // and the embedded copy keeps naming upstream as it always has
+            adapter: {
+              type: 'BamAdapter',
+              uri,
+              sequenceAdapter: { ...sequenceAdapter },
+            },
           })
         }
       } else {
@@ -238,33 +247,13 @@ async function addBigDataTracks(
     }
   }
 
-  writeJSON(configPath, {
-    ...config,
-    tracks: dedupe(
-      [...config.tracks, ...multiWigTracks, ...newTracks],
-      track => track.trackId,
-    ).map(r => {
-      const mixin = (mixinTracks as Record<string, Record<string, unknown>>)[
-        r.trackId
-      ]
-      return mixin ? mergeDeep(r, mixin) : r
-    }),
+  config.tracks = dedupe<UcscTrack>(
+    [...config.tracks, ...multiWigTracks, ...newTracks],
+    track => track.trackId,
+  ).map(r => {
+    const mixin = (mixinTracks as Record<string, Record<string, unknown>>)[
+      r.trackId
+    ]
+    return mixin ? mergeDeep(r, mixin) : r
   })
 }
-
-if (process.argv.length < 4) {
-  console.error(
-    'Usage: node mergeBigFileTracks.ts <tracks.json> <config.json> [databaseDir]',
-  )
-  process.exit(1)
-}
-
-const tracksJsonPath = process.argv[2]!
-const configPath = process.argv[3]!
-
-await addBigDataTracks(
-  parseBigFileTracks(tracksJsonPath),
-  readJSON<Record<string, TrackDbEntry>>(tracksJsonPath),
-  configPath,
-  process.argv[4],
-)

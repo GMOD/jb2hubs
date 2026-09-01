@@ -2,6 +2,8 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { enhanceConfigObject, stagingEnhanceOptions } from 'hubtools'
+
 import { readConfig, writeJSON } from './util.ts'
 
 import type { JBrowseConfig, JBrowsePlugin } from './types.ts'
@@ -117,6 +119,13 @@ function mergeAllConfigs() {
     throw new Error('No UCSC_BUILT_DIR env defined')
   }
   writeJSON(path.join(ucscResultsDir, 'all.json'), mergedConfig)
+  // The relative uris are already <assembly>/<file>, which resolves the same
+  // from either filename, so the staging sibling is the merged config plus
+  // what only staging gets (see buildConfigs.ts).
+  writeJSON(
+    path.join(ucscResultsDir, 'all-staging.json'),
+    enhanceConfigObject(structuredClone(mergedConfig), stagingEnhanceOptions),
+  )
   console.log(`All configurations merged into ${ucscResultsDir}/all.json`)
 }
 

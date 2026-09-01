@@ -1,11 +1,9 @@
-import path from 'path'
+import fs from 'fs'
 
-import { readConfig, writeJSON } from './util.ts'
+import type { JBrowseConfig } from './types.ts'
 
 // The bed and gff adders were separate, byte-identical files differing only in
-// these three strings. They stay separate CLI entry points (addBedTabixTrack /
-// addGffTabixTrack) because createConfigsForGoldenPath.sh globs the two file
-// types separately, but the logic lives here once.
+// these three strings.
 export interface TabixTrackKind {
   /** Extension stripped to derive the trackId, e.g. '.bed.gz' */
   extension: string
@@ -29,11 +27,10 @@ export const GFF_TABIX: TabixTrackKind = {
 
 function tabixTrack(
   assemblyName: string,
-  filePath: string,
+  fileName: string,
   kind: TabixTrackKind,
 ) {
-  const fileName = path.basename(filePath)
-  const trackId = path.basename(fileName, kind.extension)
+  const trackId = fileName.slice(0, -kind.extension.length)
   return {
     type: 'FeatureTrack',
     trackId: `${assemblyName}-${trackId}`,
@@ -51,41 +48,34 @@ function tabixTrack(
 }
 
 /**
- * Adds one or more tabix-indexed tracks to a JBrowse configuration file, reading
- * and writing the config a single time for the whole batch.
+ * Adds a track for each tabix-indexed file the derivation scripts left in the
+ * built directory: every *.bed.gz, then every *.gff.gz. `<db>.gff.gz` is
+ * skipped: that name is the NCBI RefSeq copy addNcbiRefSeqGffTrack registers
+ * itself, and the generic adder would mint a second, category-less `<db>-<db>`
+ * track pointing at the same file.
  */
-export function addTabixTracksToConfig(
-  configPath: string,
-  filePaths: string[],
-  kind: TabixTrackKind,
-) {
-  const config = readConfig(configPath)
+export function addDerivedTabixTracks(config: JBrowseConfig, dir: string) {
   const assemblyName = config.assemblies[0]?.name
-
   if (!assemblyName) {
     throw new Error('Assembly name not found in config')
   }
-
-  for (const filePath of filePaths) {
-    const newTrack = tabixTrack(assemblyName, filePath, kind)
-    const existingTrackIndex = config.tracks.findIndex(
-      track => track.trackId === newTrack.trackId,
-    )
-    if (existingTrackIndex === -1) {
-      config.tracks.push(newTrack)
-    } else {
-      config.tracks[existingTrackIndex] = newTrack
+  const files = fs.readdirSync(dir).sort()
+  for (const kind of [BED_TABIX, GFF_TABIX]) {
+    for (const fileName of files) {
+      if (
+        fileName.endsWith(kind.extension) &&
+        fileName !== `${assemblyName}.gff.gz`
+      ) {
+        const newTrack = tabixTrack(assemblyName, fileName, kind)
+        const existing = config.tracks.findIndex(
+          track => track.trackId === newTrack.trackId,
+        )
+        if (existing === -1) {
+          config.tracks.push(newTrack)
+        } else {
+          config.tracks[existing] = newTrack
+        }
+      }
     }
   }
-
-  writeJSON(configPath, config)
-}
-
-/** Shared CLI wrapper for the two entry points. */
-export function runTabixTrackAdderCli(kind: TabixTrackKind, usage: string) {
-  if (process.argv.length < 4) {
-    console.error(usage)
-    process.exit(1)
-  }
-  addTabixTracksToConfig(process.argv[2]!, process.argv.slice(3), kind)
 }

@@ -7,15 +7,11 @@ import { sidecarFileName } from 'hubtools'
 // from the script so it can be tested without running the script (which does its
 // work at import time, over process.argv).
 //
-// Why any of it exists: addGeneticCodes runs over every assembly in
-// POST_PROCESS_DIRS, and PIPELINE_SOURCES is deliberately broad -- so an edit
-// anywhere under hubtools/src marks all ~240 assemblies changed and drags this
-// step along with them. Over-invalidating is the right trade everywhere else
-// here, because a reprocess is cheap on a warm tree: every per-file derivation
-// is needs_rebuild-gated. This step was the one exception, with no gate at all,
-// so a one-line library change cost a full round of NCBI eutils queries plus one
-// chrom.sizes fetch per assembly from hgdownload -- unbudgeted, against the same
-// host check-track-urls is held to 300 requests a day against.
+// Why any of it exists: addGeneticCodes runs over every assembly on every
+// config build. Without the cache that was a full round of NCBI eutils queries
+// plus one chrom.sizes fetch per assembly from hgdownload per run --
+// unbudgeted, against the same host check-track-urls is held to 300 requests
+// a day against.
 
 export interface MitoCache {
   fetchedAt: number
@@ -73,17 +69,14 @@ export function writeMitoCache(cachePath: string, cache: MitoCache) {
  * Where this assembly's chrom.sizes can be read from disk, or undefined when it
  * has to come over the network.
  *
- * Two local shapes, and the second is the one that matters. Once
- * mirrorAssemblySidecars has run, `chromSizes` is a file name relative to the
- * config and the mirrored copy sits beside it. But addGeneticCodes runs in
- * Phase 4 and mirroring runs in finalizeConfigs afterwards, and
- * createAssemblies.sh rewrites config.json from scratch for every reprocessed
- * assembly -- so the freshly written config names the upstream url again even
- * though the previous run's mirrored file is still sitting next to it. Only
- * config.json is rewritten; the sidecars are not. Looking for it under the name
+ * Two local shapes, and the second is the one that matters. In the config
+ * build, addGeneticCodes runs before mirrorAssemblySidecars, and the config is
+ * rebuilt from scratch on every run -- so at this point it names the upstream
+ * url even though the previous run's mirrored file is sitting next to it. Only
+ * config.json is rebuilt; the sidecars are not. Looking for it under the name
  * mirrorAssemblySidecars would have given it is what turns ~200 hgdownload
- * requests per full reprocess into zero, and it asks that module for the naming
- * rule rather than keeping a second copy of it.
+ * requests per run into zero, and it asks that module for the naming rule
+ * rather than keeping a second copy of it.
  */
 export function localChromSizesPath(
   chromSizes: string,

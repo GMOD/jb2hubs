@@ -1,6 +1,4 @@
-import { fileURLToPath } from 'node:url'
-
-import { readConfig, writeJSON } from './util.ts'
+import type { JBrowseConfig } from './types.ts'
 
 // Track ID prefixes that are versioned (e.g. wgEncodeGencodeCompV5,
 // wgEncodeGencodeCompV46). For each prefix we keep only the latest version and
@@ -35,19 +33,7 @@ export function findOutdatedTrackIds(
   return toRemove
 }
 
-function removeEverythingButLatest(configPath: string) {
-  const config = readConfig(configPath)
+export function removeOutdatedTracks(config: JBrowseConfig) {
   const toRemove = findOutdatedTrackIds(config.tracks)
-  writeJSON(configPath, {
-    ...config,
-    tracks: config.tracks.filter(t => !toRemove.has(t.trackId)),
-  })
-}
-
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  if (process.argv.length !== 3) {
-    console.error('Usage: node removeEverythingButLatest.ts <config.json>')
-    process.exit(1)
-  }
-  removeEverythingButLatest(process.argv[2]!)
+  config.tracks = config.tracks.filter(t => !toRemove.has(t.trackId))
 }

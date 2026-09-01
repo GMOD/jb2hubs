@@ -1,4 +1,4 @@
-import type { JBrowsePlugin } from 'hubtools'
+import type { JBrowseConfiguration, JBrowsePlugin } from 'hubtools'
 
 export type { JBrowsePlugin }
 
@@ -35,21 +35,31 @@ export interface DefaultSession {
   }
 }
 
+// The fields the converters read; the index signature is the rest of a track
+// config, which they carry through untouched.
+export interface UcscTrack {
+  type?: string
+  category?: string[]
+  assemblyNames: string[]
+  name: string
+  metadata?: {
+    addedByJBrowseTeam?: boolean
+    multiWigContainer?: boolean
+    ucsc?: Record<string, unknown>
+  }
+  trackId: string
+  description?: string
+  adapter: Record<string, unknown>
+  [key: string]: unknown
+}
+
+// The index signature is what lets a config pass to hubtools, whose own
+// JBrowseConfig carries one.
 export interface JBrowseConfig {
-  configuration?: Record<string, unknown>
+  [key: string]: unknown
+  configuration?: JBrowseConfiguration
   defaultSession?: DefaultSession
-  tracks: {
-    category?: string[]
-    assemblyNames: string[]
-    name: string
-    metadata?: {
-      addedByJBrowseTeam?: boolean
-      ucsc?: Record<string, unknown>
-    }
-    trackId: string
-    description?: string
-    adapter: Record<string, unknown>
-  }[]
+  tracks: UcscTrack[]
   assemblies: {
     name: string
     displayName?: string

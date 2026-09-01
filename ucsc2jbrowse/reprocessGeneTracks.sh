@@ -23,8 +23,7 @@
 # Only ucsc2jbrowse uses bed2gff; genark2jbrowse is unaffected and needs nothing.
 #
 # Usage:
-#   ./reprocessGeneTracks.sh            # regenerate gene .gff.gz for all assemblies
-#   ./reprocessGeneTracks.sh --reindex  # also refresh the ncbiRefSeq text index
+#   ./reprocessGeneTracks.sh   # regenerate gene .gff.gz for all assemblies
 #
 
 set -euo pipefail
@@ -33,18 +32,12 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 cd "$SCRIPT_DIR"
 
-REINDEX=false
 for arg in "$@"; do
   case $arg in
-  --reindex)
-    REINDEX=true
-    ;;
   --help | -h)
-    echo "Usage: $0 [--reindex]"
-    echo "  (default)   Force-regenerate gene .gff.gz for every assembly"
-    echo "  --reindex   Also rerun text indexing. Usually unnecessary: transcript"
-    echo "              ids were already searchable via the ID attribute, so the"
-    echo "              new Name attribute does not change search coverage."
+    echo "Usage: $0"
+    echo "  Force-regenerate gene .gff.gz for every assembly. The next ./make.sh"
+    echo "  sees the newer files and refreshes each assembly's text index."
     exit 0
     ;;
   *)
@@ -65,15 +58,6 @@ fi
 
 log "Force-regenerating gene tracks for ${#dl_dirs[@]} assemblies (REPROCESS=true)..."
 REPROCESS=true ./createGeneTracksForGoldenPath.sh "${dl_dirs[@]}"
-
-if [ "$REINDEX" = true ]; then
-  built_dirs=()
-  for d in "${dl_dirs[@]}"; do
-    built_dirs+=("$UCSC_BUILT_DIR/$(basename "$d")")
-  done
-  log "Refreshing text index for ${#built_dirs[@]} assemblies..."
-  ./textIndexGoldenPath.sh "${built_dirs[@]}"
-fi
 
 # Keep the integrity listing consistent with the regenerated outputs, matching
 # the listing make.sh writes at the end of a normal run.

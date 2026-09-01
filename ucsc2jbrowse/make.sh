@@ -373,9 +373,9 @@ explain_run() {
   # logged that line, did all of the below, and shipped the old configs anyway.
   echo
   echo "Runs regardless of everything above"
-  echo "  hub configs, extension tracks, NCBI RefSeq GFFs, chain PIFs, hs1 PIFs,"
-  echo "  GENCODE, finalizeConfigs (all $total), mergeAll, the configs/ copy and"
-  echo "  prune, the staging siblings, and the file listing."
+  echo "  NCBI RefSeq GFFs, chain PIFs, hs1 PIFs, GENCODE, the config build"
+  echo "  (all $total, written only where changed), text indexing where stale,"
+  echo "  mergeAll, the configs/ copy and prune, and the file listing."
   echo
   echo "So a clean report here means nothing is REBUILT -- not that nothing runs."
   echo
@@ -472,7 +472,7 @@ else
   fi
 fi
 
-# --- Phase 2: Process ---
+# --- Phase 2: Per-assembly track derivation (changed assemblies only) ---
 
 log "Starting the UCSC to JBrowse data processing pipeline."
 
@@ -491,7 +491,7 @@ if [ "$SKIP_DOWNLOAD" = true ]; then
 fi
 
 # Keeps the ucscGenomes object shape (later phases and
-# generateJBrowseConfigForAssemblyHub.sh both jq '.ucscGenomes | to_entries[]'
+# src/buildConfigs.ts both read the same ucscGenomes object
 # over it), adding per-genome fields the website needs.
 log "Enriching genome list..."
 node src/transformGenomeList.ts "$UCSC_BUILT_DIR/list.json.raw" "$UCSC_BUILT_DIR/list.json"
@@ -500,9 +500,6 @@ log "Creating a copy for the website..."
 cp "$UCSC_BUILT_DIR/list.json" "$SCRIPT_DIR/../website/src/list.json"
 
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
-  log "Creating initial assembly configurations for ${#CHANGED_DL_DIRS[@]} changed assemblies..."
-  ./createAssemblies.sh "${CHANGED_DL_DIRS[@]}"
-
   log "Extracting track definitions from trackDb..."
   ./createTracksJsonForGoldenPath.sh "${CHANGED_DL_DIRS[@]}"
 
@@ -514,27 +511,14 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
 
   log "Creating gene tracks..."
   ./createGeneTracksForGoldenPath.sh "${CHANGED_DL_DIRS[@]}"
-
-  log "Generating JBrowse track configurations..."
-  ./createConfigsForGoldenPath.sh "${CHANGED_DL_DIRS[@]}"
-
-  log "Performing text indexing for search..."
-  ./textIndexGoldenPath.sh "${CHANGED_BUILT_DIRS[@]}"
 else
-  log "Skipping per-assembly processing (no changes detected)"
+  log "Skipping per-assembly track derivation (no changes detected)"
 fi
 
-# --- Phase 3: Global processing (always runs) ---
-# These steps handle hub assemblies, extension tracks, and cross-assembly concerns.
-# They must run before the post-processing steps below, and must see the full built dir.
+# --- Phase 3: Data every assembly may need (always runs; nothing here
+# touches a config) ---
 
-log "Creating configurations from track hubs..."
-./generateJBrowseConfigForAssemblyHub.sh
-
-log "Adding non-UCSC 'extension' tracks..."
-node src/makeUcscExtensions.ts "$UCSC_BUILT_DIR"
-
-log "Downloading and processing NCBI RefSeq GFFs..."
+log "Downloading NCBI RefSeq GFFs..."
 ./downloadNcbiGff.sh
 
 log "Creating chain track PIFs..."
@@ -543,63 +527,33 @@ log "Creating chain track PIFs..."
 log "Making hs1 PIFs"
 ./processHs1LiftOver.sh
 
-# --- Phase 4: Post-processing (changed assemblies + hub assemblies) ---
-# These steps refine configs that were created or updated in phases 2-3.
-# The ordering here matches the original pipeline: metadata → rename → enhance → gencode.
-# Hub assemblies (hs1, etc.) are always included since they're rebuilt in phase 3.
-
-# Build the list of dirs that need post-processing
-POST_PROCESS_DIRS=("${CHANGED_BUILT_DIRS[@]}")
-
-# Always include hub assemblies (rebuilt by generateJBrowseConfigForAssemblyHub)
-while IFS= read -r hub_assembly; do
-  hub_dir="$UCSC_BUILT_DIR/$hub_assembly"
-  if [ -d "$hub_dir" ]; then
-    POST_PROCESS_DIRS+=("$hub_dir")
-  fi
-done < <(jq -r '.ucscGenomes | to_entries[] | select(.value.nibPath | (. != null and startswith("hub:"))) | .key' "$UCSC_BUILT_DIR/list.json" 2>/dev/null)
-
-if [ "${#POST_PROCESS_DIRS[@]}" -gt 0 ]; then
-  log "Adding metadata to tracks..."
-  ./addMetadata.sh "${POST_PROCESS_DIRS[@]}"
-
-  log "Adding original assembly to track name..."
-  ./addOrigAssemblyToAllTrackNames.sh "${POST_PROCESS_DIRS[@]}"
-
-  log "Renaming some tracks..."
-  node src/rewriteUcscTrackNames.ts "$UCSC_BUILT_DIR"
-
-  log "Enhancing configs with plugins and hierarchical configuration..."
-  ./enhanceConfigs.sh "${POST_PROCESS_DIRS[@]}"
-
-  log "Adding mitochondrial genetic codes..."
-  gc_configs=()
-  for d in "${POST_PROCESS_DIRS[@]}"; do
-    if [ -f "$d/config.json" ]; then
-      gc_configs+=("$d/config.json")
-    fi
-  done
-  if [ "${#gc_configs[@]}" -gt 0 ]; then
-    node src/addGeneticCodes.ts "${gc_configs[@]}" || true
-  fi
-fi
-
-log "Download and add GENCODE tracks"
+log "Downloading and processing GENCODE annotations..."
 ./downloadGencode.sh
 
-# One walk over every built assembly, applying the six finalize steps in the
-# order src/finalizeConfigs.ts declares: refNameAliases/cytobands backfill,
-# sidecar mirroring, UCSC db-name aliases, text search adapters, default
-# sessions, minimal configs. Two of those adjacencies are load-bearing and the
-# reasons are recorded beside the array, not here.
-log "Finalizing configs..."
-node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
+# --- Phase 4: Build every config, one pass each ---
+#
+# src/buildConfigs.ts rebuilds config.json, minimal.json and config-staging.json
+# for every assembly the genome list names, from the derived files above and
+# the hub.txt of the hub-backed entries, and writes each only when it changed.
+# It used to be ~14 read-modify-write passes per assembly (23 on hg38) spread
+# over three phases, with a half-built config on disk between them; the order
+# of the steps and the adjacencies that matter are recorded in that file. The
+# lines it prints are the assemblies whose text index is missing or older than
+# the files it covers.
+
+log "Building configs..."
+NEEDS_INDEX_FILE=$(mktemp)
+node src/buildConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR" >"$NEEDS_INDEX_FILE"
+
+log "Text indexing..."
+./textIndex.sh <"$NEEDS_INDEX_FILE"
+rm -f "$NEEDS_INDEX_FILE"
 
 # Only names the current UCSC genome list recognizes. UCSC_BUILT_DIR is not
 # guaranteed to hold only assemblies -- configs/renames.json was a `renames`
 # directory that got swept up and processed as one -- and configs/ never
 # prunes, so an unfiltered walk mirrors that mistake forever.
-# src/finalizeConfigs.ts applies the same rule to decide what to finalize;
+# src/buildConfigs.ts applies the same rule to decide what to build;
 # these are two separate walks and each needs it.
 #
 # hgFixed used to be appended here, and that was the whole reason a config for
@@ -646,10 +600,6 @@ rm -f "$wanted_names"
 
 log "Merging all assembly configs into a single file..."
 node src/mergeAll.ts
-
-# After mergeAll, so all-staging.json is derived from a fresh all.json.
-log "Writing staging-only config siblings..."
-./stageConfigs.sh
 
 log "Merging file access caches..."
 node src/mergeFileAccessCache.ts

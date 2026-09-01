@@ -264,7 +264,7 @@ if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
   staging_config="https://jbrowse.org/ucsc/hg38/config-staging.json"
   if [ "$(curl -s -o /dev/null -w '%{http_code}' -L "$staging_config")" != "200" ]; then
     echo "Error: $staging_config is not in the bucket."
-    echo "Run ./ucsc2jbrowse/stageConfigs.sh and upload before deploying staging,"
+    echo "Run ./ucsc2jbrowse/make.sh (which writes it) and upload before deploying staging,"
     echo "or every staging launch fails to fetch its config."
     exit 1
   fi

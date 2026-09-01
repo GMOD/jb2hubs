@@ -196,10 +196,9 @@ Two things to know when changing this:
   derivations are `needs_rebuild`-gated, so only the configs are actually
   re-derived. Measured 2026-08-06 by reprocessing hg19 alone, the worst
   assembly: 2m40s for the whole `make.sh` run, of which hg19's own Phase 2 was
-  67s and the two text-index passes (`textIndexGoldenPath.sh`, then
-  `downloadNcbiGff.sh` overwriting it) were 10s and 23s. Under-invalidating
-  ships wrong configs indefinitely. Add new inputs to the list rather than
-  reasoning about whether they matter.
+  67s and the text-index passes were 10s and 23s. Under-invalidating ships wrong
+  configs indefinitely. Add new inputs to the list rather than reasoning about
+  whether they matter.
 - **`.pipeline_hash` is written on every mode**, including `--reprocess-all` and
   `--skip-download`, unlike `.trackdb_hash`. Whatever else those modes skip, the
   code that just built the configs is the code in the tree; not recording it
@@ -286,32 +285,62 @@ Answers grouped by reason, not one line per assembly: a converter change marks
 all ~240 stale for the same reason, and the ungrouped form buries the two that
 actually got new data.
 
-## The tail of `ucsc2jbrowse/make.sh` is one walk, not six
+## A UCSC config is built in one pass, from scratch, on every run
 
-`src/finalizeConfigs.ts` reads each built `config.json` once, applies the six
-steps in its `STEPS` array in order, and writes it back once. They used to be
-six separate `node src/…` lines in `make.sh`, each doing its own full-tree walk.
-Fusing them saved almost nothing (~0.6s on hg38, the worst config) — the reason
-to do it was that the order had become an accident of line numbering, and two of
-those adjacencies are load-bearing:
+`ucsc2jbrowse/src/buildConfigs.ts` rebuilds `config.json`, `minimal.json` and
+`config-staging.json` for **every** assembly the genome list names, in memory,
+from the files the earlier phases leave beside it — `tracks.json`, the derived
+`*.bed.gz`/`*.gff.gz`, `gff/<db>.gff.gz`, the GENCODE files, `liftOver/*.pif.gz`
+— plus a live `hub.txt` fetch for the 17 hub-backed entries. Each file is
+written only when its text changed, in the format `pnpm format` would produce.
+The whole walk is under two minutes for 238 assemblies, most of it hg38's 32 MB
+`tracks.json`.
 
-- `generateDefaultSessions` before `createMinimalConfig` (see below)
-- `ensureAssemblyAliasesAndCytobands` before `mirrorAssemblySidecars`, which
-  mirrors the urls the first one adds
+Until 2026-09-01 the same config was assembled by ~14 separate read-modify-write
+passes (23 on hg38) spread over three `make.sh` phases — `createAssembly`, the
+big-file merger, two tabix adders, `removeEverythingButLatest`, two
+`jbrowse text-index` passes, extensions, `jbrowse add-track` for the NCBI GFF
+and seven GENCODE files, chain tracks, metadata, name suffixes, renames,
+enhance, genetic codes, then the six-step finalize walk — and most of them ran
+only for "changed" assemblies, which is how a converter fix could ship to none
+of them (the hg19 mappability incident above). Rebuilding every config every run
+is what closes that class for good: the `.pipeline_hash` gate now decides only
+which assemblies get their **track files** re-derived, never which configs are
+current.
 
-Both reasons are written beside the array. **Add a step by putting it in
+The step order in `STEPS` is the order the passes used to run, because that
+order is what every published config's key order is; the adjacencies that are
+load-bearing are listed at the top of the file. **Add a step by putting it in
 `STEPS`, and say whether its position matters.** A step takes a
 `FinalizeContext` (`src/utils/finalizeStep.ts`), mutates `ctx.config` in place,
 and returns counters for the run summary; it never reads or writes `config.json`
-itself. The one exception is `createMinimalConfig`, which derives a second file
-— `minimal.json` — rather than mutating anything, which is exactly why it goes
-last.
+itself. `--out-root <dir>` writes the three files there and touches nothing
+else, which is what makes the diff below cheap.
 
-Verified byte-identical to the six-pass version over all 238 built assemblies
-(476 files, `config.json` and `minimal.json`) on 2026-08-05. Re-verify the same
-way after touching this: snapshot `$UCSC_BUILT_DIR/*/config.json` and
-`minimal.json`, re-run, `diff -rq`. It is idempotent on a warm tree, so a
-nonempty diff is a real finding.
+Three things moved on purpose:
+
+- **Text indexing runs after the config is written** (`textIndex.sh`, over the
+  assemblies `textIndexPlan` reports as missing an index or holding one older
+  than its sources). `jbrowse text-index` reads the NCBI GFF track's indexing
+  policy off its `textSearching` slot, and the old order indexed a freshly
+  generated config before enhance had put the policy on it. The index is named
+  after the config's assembly, which for a GenArk-backed alias is the accession:
+  looking for `trix/<db>.ix` instead is why rn8 was re-indexed on every run.
+- **The NCBI GFF and GENCODE files are hard links** into the built dir, matched
+  by inode, not `jbrowse add-track --load copy` copies remade on every
+  reprocess.
+- **Staging is an in-memory second enhance** (`stagingEnhanceOptions` in
+  hubtools), not a copy plus a re-run with env set.
+
+Verified on 2026-09-01 by building all 238 into a scratch tree and diffing
+against the committed `configs/` and `configs-minimal/`: 230 of 238 configs
+byte-identical once the `indexingFeatureTypesToInclude` list hubtools stopped
+writing on 2026-08-28 is dropped from the committed side, 4 identical apart from
+top-level key order (they had never been through the fresh chain), and 4
+differing in content that had moved upstream or was stale in git: hg38's trackDb
+re-synced that morning, `cb1`'s first real build, `enhLutNer1`'s
+never-regenerated plugin urls, and a hub whose `hub.txt` gained a field. The 230
+`minimal.json` and 231 `config-staging.json` matched the same way.
 
 ## A GenArk config is built in one pass, and written in its final format
 
@@ -393,8 +422,8 @@ it is what the track's About dialog shows.
   track its minimal config had dropped — 134 of the 238, booting to an empty
   view: hg18/mm9 named `refGene`, danRer4 `ensGene`, the invertebrates
   `augustusGene` or `xenoRefGene`. The ordering that prevents this is now
-  explicit: `generateDefaultSessions` precedes `createMinimalConfig` in the
-  `STEPS` array in `src/finalizeConfigs.ts`, which documents why.
+  explicit: `generateDefaultSessions` precedes `minimalConfig` at the end of
+  `src/buildConfigs.ts`, which documents why.
 
 `enhLutNer1` is legitimately empty — it has no annotation to include. `cb1` and
 `hgFixed` used to be counted beside it as "not assemblies at all", which was
@@ -434,7 +463,7 @@ first is structural and still worth knowing:
   check's exit 2 separately from its exit 1 for the same reason.
 
   Both walks over `$UCSC_BUILT_DIR` — make.sh's copy step and
-  `src/finalizeConfigs.ts` — also iterate the genome list's own keys rather than
+  `src/buildConfigs.ts` — also iterate the genome list's own keys rather than
   whatever directories happen to be there, so a stray `renames` cannot become a
   config in the first place. `hgFixed` was appended to both until 2026-08-30
   (below); the two directories now hold the genome list's 238 names and nothing
@@ -459,24 +488,26 @@ tree served to both sites, so regenerating `config.json` publishes to production
 too.
 
 To stage something that lives in the config (a plugin, a track), have
-`ucsc2jbrowse/stageConfigs.sh` write it into a **sibling** `config-staging.json`
-(and `all-staging.json`), and read the filename through `ucscConfigPath` /
+`ucsc2jbrowse/src/buildConfigs.ts` write it into the **sibling**
+`config-staging.json` it emits beside every `config.json` (and `mergeAll.ts`
+into `all-staging.json`), and read the filename through `ucscConfigPath` /
 `ucscAllConfigPath` in `website/src/config/jbrowse.ts`. It has to be a sibling,
 not a `/ucsc-staging/` tree: a UCSC config names ~600 of its files relatively
 (`centromeres.bed.gz`, `ncbiRefSeq.gff.gz`, `trix/*`) and jbrowse-web resolves
 those against the config's own URL, so only a file in the same directory reaches
-the data production serves. `enhanceConfig` is idempotent, so the staging pass
-is just a copy plus a re-run with the extra env set, cheap enough to run alone.
+the data production serves. The sibling is the finished config run through
+`enhanceConfigObject` a second time with `stagingEnhanceOptions`, which is
+idempotent, so it adds the staging extras and changes nothing else.
 
-Two things are staged this way today, both env-gated in `enhanceConfig` and both
-set by `stageConfigs.sh`: `BLAT_PLUGIN_URL` (the BLAT plugin) and
-`RMSK_MULTIROW_DISPLAY` (the RepeatMasker track's split-by-class multi-row
-display, `hubtools/src/repeatClassDisplay.ts`). The second is waiting on a
-release rather than on a decision — delete its gate and call
-`addRepeatClassDisplay` unconditionally once a released `latest` carries
-`LinearMultiRowFeatureDisplay`, which is also what the website's
-`HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY` is waiting on. Re-run the probe rather
-than assuming, since from this side the failure is silent.
+Two things are staged this way today, both in `stagingEnhanceOptions`
+(`hubtools/src/enhanceConfig.ts`): the BLAT plugin and the RepeatMasker track's
+split-by-class multi-row display (`repeatClassDisplay: true`,
+`hubtools/src/repeatClassDisplay.ts`). The second is waiting on a release rather
+than on a decision — delete its gate and call `addRepeatClassDisplay`
+unconditionally once a released `latest` carries `LinearMultiRowFeatureDisplay`,
+which is also what the website's `HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY` is
+waiting on. Re-run the probe rather than assuming, since from this side the
+failure is silent.
 
 For **this** question the probe is not the cheapest instrument, and the browser
 one cannot answer it at all — the fatal needs the track opened. What decides it
@@ -629,8 +660,8 @@ one rejection fails the entire assembly** — which is why a UCSC outage read as
 from `chromInfo.txt.gz`, cytoBand copied straight from `database/`, so only
 chromAlias is fetched). It sweeps every assembly every build, because a
 regenerated config comes back naming upstream urls. A sidecar that can't be
-fetched is left pointing upstream and retried next run. It is one of the six
-steps in `src/finalizeConfigs.ts` (below), and must run **after**
+fetched is left pointing upstream and retried next run. It is one of the steps
+in `src/buildConfigs.ts` (above), and must run **after**
 `ensureAssemblyAliasesAndCytobands`, which is what adds the `refNameAliases` and
 `cytobands` urls it mirrors.
 
@@ -677,10 +708,10 @@ script (`hg38`, `hg19`, `mm39`, `mm10`, `hs1`) may not name an upstream sidecar
 even when upstream answers: a config that regressed to
 `hgdownload…/hg38.chrom.sizes` passes every reachability check while UCSC is up,
 and the protection is silently gone until the outage that needed it. Mirroring
-is one step in `finalizeConfigs.ts`; if it throws or leaves `STEPS`, this is
-what notices. Other assemblies are reported rather than failed, because a
-sidecar whose fetch failed is deliberately left upstream and retried next run —
-making that fatal everywhere would turn one blip into a blocked deploy.
+is one step in `buildConfigs.ts`; if it throws or leaves `STEPS`, this is what
+notices. Other assemblies are reported rather than failed, because a sidecar
+whose fetch failed is deliberately left upstream and retried next run — making
+that fatal everywhere would turn one blip into a blocked deploy.
 
 As of 2026-08-05 all 235 real UCSC assemblies are fully mirrored; the only
 upstream `chromSizes` were `cb1` and `hgFixed`, both of which 404 — dismissed at
@@ -859,17 +890,17 @@ layer and each a different shape:
 
 - **`cb1-*` and `hgFixed-*`**, `Gff3TabixAdapter` on a literal `*.gff.gz`: the
   residue of a shell loop that ran with nullglob off over a directory with
-  nothing to match. `createConfigsForGoldenPath.sh` grew its `shopt -s nullglob`
-  long ago, but **a fix at the source only reaches a config that is
-  regenerated**, and neither of these two ever was — `is_assembly_db` excluded
-  both from every derivation pass, so their `tracks[]` was frozen from
-  2025-05-13 and no amount of rebuilding would have cleared it. Finalization is
-  the one pass that did visit them, so `dropGlobTracks` (first in
-  `finalizeConfigs.ts`'s `STEPS`, ahead of everything that reads `tracks[]`) is
-  both the cleanup and the standing guard: a glob character in a location is
-  never a key our bucket has. Both exclusions are gone now (below), which
-  retires the cleanup and not the guard — the next forgotten nullglob would ship
-  through an ordinary regeneration.
+  nothing to match. The shell adder grew its `shopt -s nullglob` long ago
+  (`addDerivedTabixTracks` reads the directory now), but **a fix at the source
+  only reaches a config that is regenerated**, and neither of these two ever was
+  — `is_assembly_db` excluded both from every derivation pass, so their
+  `tracks[]` was frozen from 2025-05-13 and no amount of rebuilding would have
+  cleared it. Finalization is the one pass that did visit them, so
+  `dropGlobTracks` (in `buildConfigs.ts`'s `STEPS`, ahead of the tail that reads
+  `tracks[]`) is both the cleanup and the standing guard: a glob character in a
+  location is never a key our bucket has. Both exclusions are gone now (below),
+  which retires the cleanup and not the guard — the next forgotten nullglob
+  would ship through an ordinary regeneration.
 
 ### "Not a real assembly" was excusing a url we publish
 
@@ -900,9 +931,8 @@ the hubs plugin resolve a genome through the list it is absent from — so this 
 a retirement with no reader to strand, unlike the permanent urls
 `check-orphan-configs` deliberately refuses to clean up on its own. The
 "genome-list keys plus `hgFixed`" rule is now just "genome-list keys", in all
-three walks that carried it (make.sh's copy step, `stageConfigs.sh`,
-`finalizeConfigs.ts`), and `checkOrphanConfigs.mjs`'s `EXTRA_NAMES` allowance is
-gone with them.
+walks that carried it (make.sh's copy step, `buildConfigs.ts`), and
+`checkOrphanConfigs.mjs`'s `EXTRA_NAMES` allowance is gone with them.
 
 So `cb1` builds like any other golden-path assembly, and nothing about that is
 special-cased: `createAssembly.ts` probes `bigZips` and falls back to `/gbdb`,
@@ -997,11 +1027,11 @@ cause) and `rclone_sync_with_indexes`' ordering (the exposure).
 
 `PIPELINE_SOURCES` being broad is the right trade _because_ a reprocess is cheap
 on a warm tree — every per-file derivation is `needs_rebuild`-gated.
-`addGeneticCodes.ts` was the exception, with no gate at all, so any edit under
-`hubtools/src` marked all ~240 assemblies changed and cost a full round of NCBI
-eutils queries **plus one `chrom.sizes` fetch per assembly from hgdownload** —
-unbudgeted, against the same host `check-track-urls` is held to 300 requests a
-day against.
+`addGeneticCodes.ts` was the exception, with no gate at all, and now runs for
+every assembly on every config build, so without a cache each run would cost a
+full round of NCBI eutils queries **plus one `chrom.sizes` fetch per assembly
+from hgdownload** — unbudgeted, against the same host `check-track-urls` is held
+to 300 requests a day against.
 
 `src/mitoCodes.ts` restores the invariant, and the second half is the
 non-obvious one:
@@ -1013,12 +1043,12 @@ non-obvious one:
   cached as negative — caching a failed request as an answer would suppress the
   genetic code until the TTL expired.
 - **`chrom.sizes` is read from the mirrored sidecar already on disk.** This step
-  runs in Phase 4 and mirroring runs in `finalizeConfigs` afterwards, and
-  `createAssemblies.sh` rewrites `config.json` from scratch — so a reprocessed
-  assembly's fresh config names the upstream url again _even though the previous
-  run's mirrored file is sitting right next to it_. Only `config.json` is
-  rewritten; the sidecars are not. `localChromSizesPath` asks `mirrorSidecars`
-  for the naming rule rather than keeping a second copy of it.
+  runs before `mirrorAssemblySidecars` in `buildConfigs.ts`, and the config is
+  rebuilt from scratch on every run — so at that point it names the upstream url
+  again _even though the previous run's mirrored file is sitting right next to
+  it_. Only `config.json` is rebuilt; the sidecars are not.
+  `localChromSizesPath` asks `mirrorSidecars` for the naming rule rather than
+  keeping a second copy of it.
 
 Measured 2026-08-28 on hg38 and dm6, configs restored to their pre-finalize
 shape: cold cache 2 NCBI queries and **0** hgdownload fetches; warm cache 0 and
@@ -1247,13 +1277,13 @@ subtrack, rather than to N tracks (`ucsc2jbrowse/src/mergeMultiWigTracks.ts`).
 
 A `type big*` track with no `bigDataUrl` keeps its file path in the golden-path
 table named by its `table` setting, which `src/resolveTableBigFile.ts` reads
-from the rsynced `database/` dir (`createTracksJsonForGoldenPath.sh` passes
-`db_dir` to `mergeBigFileTracks.ts` for this). Without it the legacy ENCODE
-regulation composites never convert, which on hg19 means no regulation signal
-tracks at all, since ENCODE 4 is hg38-only. The aggregate carries
-`metadata.multiWigContainer`, which exempts it from the too-many-tracks drop
-rules in `getTrackModifications.ts` — it is one track, and for the ENCODE ones
-its trackId would otherwise match the `wgEncode*` rule.
+from the rsynced `database/` dir (`buildConfigs.ts` hands `addBigDataTracks` the
+`dbDir` for this). Without it the legacy ENCODE regulation composites never
+convert, which on hg19 means no regulation signal tracks at all, since ENCODE 4
+is hg38-only. The aggregate carries `metadata.multiWigContainer`, which exempts
+it from the too-many-tracks drop rules in `getTrackModifications.ts` — it is one
+track, and for the ENCODE ones its trackId would otherwise match the `wgEncode*`
+rule.
 
 ENCODE's individual-experiment composites (12,729 subtracks on hg38) stay
 dropped. `agent-docs/ENCODE_TRACKS.md` records why, what was measured, and what
@@ -1379,8 +1409,8 @@ The UCSC genome list is fetched **live** from
 new UCSC assemblies can appear (and break the pipeline) without any repo change.
 
 Hub-backed entries (`nibPath` starts with `hub:`) come in two shapes, and
-`generateJBrowseConfigForAssemblyHub.sh` derives the `hub.txt` URL from
-`nibPath`, not the assembly name:
+`buildConfigs.ts` (`hubUrl`) derives the `hub.txt` URL from `nibPath`, not the
+assembly name:
 
 - native UCSC assembly hub (e.g. `hs1`, `mpxvRivers`): `hub:/gbdb/<db>/hubs` →
   `/gbdb/<db>/hubs/public/hub.txt`

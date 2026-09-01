@@ -77,7 +77,7 @@ const isRemote = value =>
 // reachability: a config that regressed to naming
 // hgdownload.soe.ucsc.edu/…/hg38.chrom.sizes passes every one of them while UCSC
 // is up, and the outage protection is silently gone. Mirroring is applied by one
-// step in finalizeConfigs.ts; if that step throws, gets dropped from STEPS, or
+// step in buildConfigs.ts; if that step throws, gets dropped from STEPS, or
 // simply finds nothing to do, nothing else notices.
 //
 // So these have to be LOCAL, not merely fetchable. loadPre() resolves the

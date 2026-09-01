@@ -45,7 +45,7 @@ export function hostedUrl(sitePath: string) {
 }
 
 // Staging launches a SIBLING config file (config.json -> config-staging.json),
-// written by ucsc2jbrowse/stageConfigs.sh, carrying the plugins that are staging
+// written by ucsc2jbrowse/src/buildConfigs.ts, carrying the plugins that are staging
 // only — today the BLAT plugin. Regenerating config.json publishes to production
 // and staging alike, so a sibling is what makes a config-level feature stageable
 // at all.

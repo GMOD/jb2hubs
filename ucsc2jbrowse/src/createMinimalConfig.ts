@@ -1,9 +1,4 @@
-import path from 'path'
-
-import { writeJSON } from './util.ts'
-
 import type { JBrowseConfig } from './types.ts'
-import type { FinalizeStep } from './utils/finalizeStep.ts'
 
 /**
  * Track categories to include in minimal configs.
@@ -58,7 +53,7 @@ export function minimalTracks(config: JBrowseConfig) {
   for (const view of config.defaultSession?.views ?? []) {
     // `?? []` because a session built by hubtools' makeDefaultSession has no
     // `tracks` key -- see the note on DefaultSession in types.ts. Iterating it
-    // directly threw, and finalizeConfigs catches per assembly, so the only
+    // directly threw, and buildConfigs catches per assembly, so the only
     // symptom was one error line and a missing minimal.json.
     for (const trackId of view.init.tracks ?? []) {
       sessionTrackIds.add(trackId)
@@ -73,21 +68,11 @@ export function minimalTracks(config: JBrowseConfig) {
 }
 
 /**
- * Writes minimal.json beside config.json: the same assemblies, plugins,
- * configuration and defaultSession, with the track list filtered down.
- *
- * The only step here that does not mutate ctx.config — it derives a second
- * artifact from it, which is why it has to come last, after the defaultSession
- * whose gene track it is obliged to keep.
+ * The minimal config: the same assemblies, plugins, configuration and
+ * defaultSession, with the track list filtered down. The runner writes it as
+ * minimal.json beside config.json; it has to be derived last, after the
+ * defaultSession whose gene track it is obliged to keep.
  */
-export const createMinimalConfig: FinalizeStep = {
-  name: 'minimal configs',
-  run: ({ dir, config }) => {
-    const tracks = minimalTracks(config)
-    writeJSON(path.join(dir, 'minimal.json'), { ...config, tracks })
-    return {
-      'tracks kept': tracks.length,
-      'tracks dropped': config.tracks.length - tracks.length,
-    }
-  },
+export function minimalConfig(config: JBrowseConfig) {
+  return { ...config, tracks: minimalTracks(config) }
 }

@@ -16,13 +16,12 @@ process_assembly() {
   local assembly_name assembly_results_dir db_dir
   assembly_paths "$1"
 
+  # tracks.json is the parsed trackDb: the bed/rmsk/gene derivation scripts
+  # select tables from it, and src/buildConfigs.ts reads it for the big-file
+  # tracks and the track metadata.
   if [[ -f "$db_dir/trackDb.sql" ]]; then
+    mkdir -p "$assembly_results_dir"
     node src/tracksDbLike.ts "$db_dir/trackDb.sql" "$db_dir/trackDb.txt.gz" >"$assembly_results_dir/tracks.json"
-
-    # Find bigBed/bigWig files in the tracks.json, these do not have sql db
-    # files. $db_dir is passed so the ones that name no bigDataUrl can be
-    # resolved from their golden-path table (see src/resolveTableBigFile.ts).
-    node src/mergeBigFileTracks.ts "$assembly_results_dir/tracks.json" "$assembly_results_dir/config.json" "$db_dir"
   fi
 }
 export -f process_assembly

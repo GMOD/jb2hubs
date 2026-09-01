@@ -35,6 +35,44 @@ export function writeJSON(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, undefined, 2))
 }
 
+// Puts `src` at `dest` as a hard link, or a copy when they are on different
+// devices. Already current when `dest` is the same inode, or a copy with the
+// source's size and mtime (the copy is stamped with them), so a re-derived
+// source is picked up without the file being copied on every run.
+export function linkOrCopy(src: string, dest: string) {
+  const s = fs.statSync(src)
+  const d = fs.existsSync(dest) ? fs.statSync(dest) : undefined
+  // whole milliseconds: utimes sets the copy's mtime at that precision
+  const same =
+    d !== undefined &&
+    (d.ino === s.ino ||
+      (d.size === s.size && Math.floor(d.mtimeMs) === Math.floor(s.mtimeMs)))
+  if (!same) {
+    fs.rmSync(dest, { force: true })
+    try {
+      fs.linkSync(src, dest)
+    } catch {
+      fs.copyFileSync(src, dest)
+      fs.utimesSync(dest, s.atime, s.mtime)
+    }
+  }
+}
+
+// hgdownload stalls and drops connections under load, so a one-off fetch of a
+// small file is retried a few times before it counts as failed.
+export async function myfetchtextWithRetry(url: string, attempts = 3) {
+  let lastError: unknown
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await myfetchtext(url)
+    } catch (e) {
+      lastError = e
+      await new Promise(r => setTimeout(r, 2000 * (i + 1)))
+    }
+  }
+  throw lastError
+}
+
 // Builds the JBrowse defaultSession that opens a LinearGenomeView at the
 // assembly's default position with the track selector widget active.
 export function makeDefaultSession(assemblyName: string, loc: string) {

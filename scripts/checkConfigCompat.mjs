@@ -498,7 +498,7 @@ if (failed) {
   console.error(
     offline
       ? '\nUCSC outage drill FAILED: an assembly we promise stays open with ' +
-          'hgdownload unreachable did not open. Check that finalizeConfigs.ts ' +
+          'hgdownload unreachable did not open. Check that buildConfigs.ts ' +
           'still mirrors the sidecars (see check-sidecar-urls and ADR 0003).'
       : `\nA shipped config broke on a host at or above the ${values.floor ?? 'oldest tested'} floor.`,
   )

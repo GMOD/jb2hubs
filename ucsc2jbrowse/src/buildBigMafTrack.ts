@@ -51,7 +51,7 @@ function parseSpeciesString(str: string) {
 
 /**
  * The `type bigMaf` branch of the big-file walk, as its own module so it can be
- * tested — `mergeBigFileTracks.ts` parses argv and exits at import, so nothing
+ * tested — `mergeBigFileTracks.ts` used to parse argv and exit at import, so nothing
  * defined inside it is reachable from a test.
  *
  * UCSC ships two sidecars beside a multiz/cactus alignment and names them in the

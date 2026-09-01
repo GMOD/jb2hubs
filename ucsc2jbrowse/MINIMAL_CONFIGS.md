@@ -29,12 +29,12 @@ and the rest of the variant tracks) are excluded from minimal configs.
 
 ## Usage
 
-Minimal configs are not generated on their own. `createMinimalConfig` is the
-last of the six steps in `src/finalizeConfigs.ts`, which `make.sh` runs as one
-walk over `$UCSC_BUILT_DIR`:
+Minimal configs are not generated on their own. `minimalConfig` is derived at
+the end of `src/buildConfigs.ts`, the one pass `make.sh` runs over every
+assembly to build its configs:
 
 ```bash
-node src/finalizeConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
+node src/buildConfigs.ts "$UCSC_BUILT_DIR" "$UCSC_DOWNLOADS_DIR"
 ```
 
 It has to be last, or at least after `generateDefaultSessions`: the filter keeps
@@ -42,44 +42,18 @@ whatever gene track the config's own `defaultSession` opens, so running it
 against a config without a session yet drops that track. That ordering
 constraint is spelled out beside the `STEPS` array.
 
-For each assembly directory containing a `config.json`, the step writes a
-`minimal.json` beside it. `make.sh` then copies those to
-`configs-minimal/<assembly>.json` alongside the equivalent copy of `config.json`
-into `configs/`.
+For each assembly it builds, the runner writes a `minimal.json` beside
+`config.json`. `make.sh` then copies those to `configs-minimal/<assembly>.json`
+alongside the equivalent copy of `config.json` into `configs/`.
 
 ## Output
 
-`finalizeConfigs.ts` prints one summary line per step. The minimal-config line
-reports the totals across every assembly (the shape, not current numbers — as of
-2026-08 the run covers 238 assemblies, and hg38 keeps 33 of its 595 tracks):
-
-```
-Finalized 238 of 238 configs
-  …
-  minimal configs: 1033 tracks kept, 9563 tracks dropped
-```
-
-## Adding or removing track categories
-
-To modify which tracks are included in minimal configs, edit the
-`MINIMAL_TRACK_PATTERNS` array in `src/createMinimalConfig.ts`:
-
-```typescript
-const MINIMAL_TRACK_PATTERNS = [
-  'ncbirefseq', // NCBI RefSeq tracks
-  'gencode', // GENCODE tracks
-  'rmsk', // RepeatMasker tracks
-  'gap', // Gap tracks
-]
-```
-
-The patterns are matched case-insensitively against track IDs. Add or remove
-patterns as needed.
+`buildConfigs.ts` prints one summary line per step that did something. As of
+2026-08 the run covers 238 assemblies, and hg38 keeps 33 of its 595 tracks.
 
 ## Files
 
-- `src/createMinimalConfig.ts` - the track filter, and the finalize step that
-  writes `minimal.json`
-- `src/finalizeConfigs.ts` - the single walk that runs it last, after the
+- `src/createMinimalConfig.ts` - the track filter and `minimalConfig`
+- `src/buildConfigs.ts` - the single pass that derives it last, after the
   default sessions it depends on
 - `MINIMAL_CONFIGS.md` - This documentation file

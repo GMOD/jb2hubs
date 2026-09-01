@@ -33,10 +33,10 @@ import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
 // play, and BLAT is only zero-config for genomes UCSC hosts (elsewhere it wants
 // a db set in advanced settings). Hence a plain hosted URL.
 //
-// Setting BLAT_PLUGIN_URL for the pipeline's own enhanceConfigs pass would put
-// BLAT in the config.json production serves. ucsc2jbrowse/stageConfigs.sh sets it
-// for a second pass over a COPY instead, so staging gets it and production does
-// not — see that script for why the copy is a sibling file.
+// Setting BLAT_PLUGIN_URL for a pipeline's production pass would put BLAT in
+// the config.json production serves. ucsc2jbrowse/src/buildConfigs.ts uses
+// stagingEnhanceOptions (below) for the config-staging.json sibling instead, so
+// staging gets it and production does not.
 const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
   ? [{ name: 'Blat', url: process.env.BLAT_PLUGIN_URL }]
   : []
@@ -109,7 +109,7 @@ const DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters'] as const
 // leaving any hand-authored display untouched.
 //
 // An entry this deriver already wrote is REFRESHED rather than skipped, matched
-// by the displayId it gives itself. enhanceConfigs.sh runs over built configs in
+// by the displayId it gives itself. The file wrapper runs over built configs in
 // place, so most of what it sees on any given run is its own previous output —
 // the same reason the plugin loop below upserts by name. Skipping those meant a
 // track that had earned a display from one trackDb setting could never receive a
@@ -168,17 +168,34 @@ export function enhanceConfig(
 ) {
   writeJSON(
     configPath,
-    enhanceConfigObject(readJSON<JBrowseConfig>(configPath), plugins),
+    enhanceConfigObject(readJSON<JBrowseConfig>(configPath), { plugins }),
   )
+}
+
+// The versioned UMD path: a config that names it picks up compatible updates,
+// while a change needing a newer JBrowse than some host runs gets a v2 instead
+// of breaking configs already published.
+export const BLAT_PLUGIN_URL_V1 =
+  'https://jbrowse.org/plugins/jbrowse-plugin-blat/dist/v1/jbrowse-plugin-blat.umd.production.min.js'
+
+// What the staging site gets on top of production: see the BLAT and
+// RMSK_MULTIROW_DISPLAY notes above. ucsc2jbrowse writes these into the
+// config-staging.json sibling rather than into config.json.
+export const stagingEnhanceOptions = {
+  plugins: [...defaultPlugins, { name: 'Blat', url: BLAT_PLUGIN_URL_V1 }],
+  repeatClassDisplay: true,
 }
 
 export function enhanceConfigObject(
   config: JBrowseConfig,
-  plugins: JBrowsePlugin[] = defaultPlugins,
+  {
+    plugins = defaultPlugins,
+    repeatClassDisplay = !!process.env.RMSK_MULTIROW_DISPLAY,
+  }: { plugins?: JBrowsePlugin[]; repeatClassDisplay?: boolean } = {},
 ) {
   config.plugins ??= []
 
-  // Upsert by name rather than skip-if-present: enhanceConfigs.sh re-runs over
+  // Upsert by name rather than skip-if-present: the file wrapper re-runs over
   // already-enhanced built configs, so a name match that kept its old entry meant
   // a changed url never reached any config built before the change (the stale
   // protein3d bundle outlived four plugin releases that way). Rewriting the entry
@@ -213,12 +230,12 @@ export function enhanceConfigObject(
   // declared in. Only `main` has LinearMultiRowFeatureDisplay, which landed
   // 2026-06-20, after v4.3.0.
   //
-  // So ucsc2jbrowse/stageConfigs.sh sets this for its pass over a COPY, and
-  // staging (which launches code/jb2/main) gets the display while production
-  // does not. Drop the gate and call it unconditionally once a released
+  // So stagingEnhanceOptions sets this for the config-staging.json sibling,
+  // and staging (which launches code/jb2/main) gets the display while
+  // production does not. Drop the gate and call it unconditionally once a released
   // `latest` carries the display — the same promotion
   // HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY in the website is waiting on.
-  const withRepeatClass = process.env.RMSK_MULTIROW_DISPLAY
+  const withRepeatClass = repeatClassDisplay
     ? addRepeatClassDisplay
     : (track: Track) => track
   // Unconditional, unlike withRepeatClass: it names a display type every

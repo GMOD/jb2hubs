@@ -1,5 +1,3 @@
-import fs from 'fs'
-
 const specializedParents = new Set([
   'exomeProbesets',
   'genotypeArrays',
@@ -154,26 +152,9 @@ function logRemovedTrack(
   })
 }
 
-/**
- * Writes the removed tracks for an assembly to disk
- */
-export function writeRemovedTracks(assembly: string) {
-  const tracks = removedTracksByAssembly.get(assembly)
-  if (!tracks || tracks.length === 0) {
-    return
-  }
-
-  const dir = 'removedTracks'
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-
-  const filename = `${dir}/${assembly}.json`
-  try {
-    fs.writeFileSync(filename, JSON.stringify(tracks, null, 2))
-  } catch (error) {
-    console.error(`Error writing removed tracks for ${assembly}: ${error}`)
-  }
+/** The tracks the rules below dropped from this assembly, in this process. */
+export function removedTracksFor(assembly: string) {
+  return removedTracksByAssembly.get(assembly) ?? []
 }
 
 export function getTrackModifications<

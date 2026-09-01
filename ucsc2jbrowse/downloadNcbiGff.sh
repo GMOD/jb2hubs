@@ -3,8 +3,9 @@
 #
 # downloadNcbiGff.sh
 #
-# Downloads the source NCBI RefSeq GFF3 for each NCBI-derived UCSC assembly and
-# adds it as a <db>-ncbiRefSeqGff FeatureTrack.
+# Downloads the source NCBI RefSeq GFF3 for each NCBI-derived UCSC assembly;
+# src/addNcbiRefSeqGffTrack.ts adds it as a <db>-ncbiRefSeqGff FeatureTrack
+# when the config is built.
 #
 # This is the full-resolution NCBI annotation (rich GFF3 gene -> mRNA -> CDS/exon
 # structure), complementary to UCSC's own genePred-derived ncbiRefSeq tracks. The
@@ -66,129 +67,27 @@ for a in "$@"; do
   WANT["$a"]=1
 done
 
-# Every name this assembly can resolve a GFF seqid to: its own refNames, plus
-# every alias of one. Golden-path assemblies answer from the rsync'd tables, so
-# this needs no network and no prior build; a hub assembly has no database dir
-# and answers from whatever a previous run mirrored beside its config.
-resolvable_names() {
-  local db_dir="$1" built_dir="$2"
-  {
-    if [ -f "$db_dir/chromInfo.txt.gz" ]; then
-      zcat "$db_dir/chromInfo.txt.gz" | cut -f1
-    fi
-    if [ -f "$db_dir/chromAlias.txt.gz" ]; then
-      zcat "$db_dir/chromAlias.txt.gz" | cut -f1,2
-    fi
-    cat "$built_dir"/*.chrom.sizes "$built_dir"/*.chrom.sizes.txt \
-      "$built_dir"/*.chromAlias.txt 2>/dev/null | cut -f1-6
-  } 2>/dev/null | tr '\t' '\n' | grep -v '^[[:space:]]*$' | sort -u
-}
-
-# Whether this GFF's seqids reach this assembly at all.
-#
-# deriveNcbiAccessions.ts already asked whether RefSeq names are addressable
-# here; this asks whether *these* RefSeq names are, which is the question a
-# partial asmEquivalent match (galGal6, rn6) leaves open. Zero overlap means a
-# track that loads and draws nothing, which is worse than no track: it reads as
-# "this assembly has no NCBI annotation".
-#
-# Not being able to answer is not the same as answering no. A hub assembly on a
-# cold tree has nothing mirrored yet, and refusing there would withhold the
-# track from every GenArk-backed alias on its first build -- the exact case this
-# whole detection pass exists to serve. Say so and proceed.
-seqids_resolve() {
-  local db="$1" gff="$2" names seqids matched total
-  names=$(resolvable_names \
-    "$UCSC_DOWNLOADS_DIR/$db/$db/database" "$UCSC_BUILT_DIR/$db")
-  if [ -z "$names" ]; then
-    log "$db: no local chrom tables to check GFF seqids against; adding unverified"
-    return 0
-  fi
-  seqids=$(tabix -l "$gff" | sort -u)
-  total=$(printf '%s' "$seqids" | grep -c '' || true)
-  matched=$(comm -12 <(printf '%s\n' "$seqids") <(printf '%s\n' "$names") | grep -c '' || true)
-  if [ "$matched" -eq 0 ]; then
-    log "Skipping $db: none of its $total GFF seqids resolve to a refName or alias"
-    return 1
-  fi
-  log "$db: $matched/$total GFF seqids resolve"
-  return 0
-}
-
-# Downloads, sorts, bgzips and indexes one assembly's NCBI RefSeq GFF, then adds
-# it as a track and text-indexes it.
+# Downloads, sorts, bgzips and indexes one assembly's NCBI RefSeq GFF into
+# gff/<db>.gff.gz. Whether its seqids reach the assembly, and the track itself,
+# are src/addNcbiRefSeqGffTrack.ts's business, in the config build.
 process_db() {
   local db="$1"
   local acc="$2"
-  local config="$UCSC_BUILT_DIR/$db/config.json"
   local gff="$GFF_DIR/$db.gff.gz"
-  local track_id="$db-ncbiRefSeqGff"
 
-  if [ ! -f "$config" ]; then
-    log "Skipping $db: no config.json (assembly not built)"
-  else
-    # Shared with genark2jbrowse/downloadNcbiGff.sh; the .csi rather than the
-    # .gff.gz is the witness, since a run that died between bgzip and tabix
-    # leaves the latter behind. See needs_gff_fetch in lib/common.sh.
-    if needs_gff_fetch "$gff.csi"; then
-      log "Downloading $db NCBI RefSeq GFF ($acc)..."
-      local zip="$GFF_DIR/$db.ncbi_dataset.zip"
-      local extract="$GFF_DIR/$db.ncbi_dataset"
-      datasets download genome accession "$acc" --include gff3 --no-progressbar --filename "$zip"
-      rm -rf "$extract"
-      unzip -o "$zip" -d "$extract" >/dev/null
-      jbrowse sort-gff "$extract/ncbi_dataset/data/$acc/genomic.gff" | bgzip -@4 >"$gff"
-      tabix -C "$gff"
-      rm -rf "$zip" "$extract"
-    fi
-
-    local present=0
-    if grep -q "\"$track_id\"" "$config"; then
-      log "$db GFF track already present, skipping add-track."
-      present=1
-    elif seqids_resolve "$db" "$gff"; then
-      log "Adding $track_id track..."
-      jbrowse add-track "$gff" --force --trackId "$track_id" \
-        --name "NCBI RefSeq - RefSeq All (GFF)" \
-        --category "Genes and Gene Predictions" \
-        --out "$UCSC_BUILT_DIR/$db/" --load copy --indexFile "$gff.csi"
-      present=1
-    fi
-
-    # The trix is a function of the indexing POLICY as much as of the GFF, and
-    # the policy lives on the track config (hubtools addNcbiGffTextSearching,
-    # which text-index reads in preference to these flags). So "the track
-    # already exists" is not the same question as "its index is current" -- the
-    # same blind spot needs_rebuild has one level down, and the reason these 74
-    # assemblies would otherwise keep an index full of UUIDs long after the
-    # policy existed. REPROCESS (--reprocess-all) is the lever, matching
-    # genark2jbrowse/src/buildConfigsBatch.ts (trixIsCurrent).
-    #
-    # Both tracks in ONE pass, because --tracks REPLACES the assembly's
-    # aggregate index rather than adding to it: indexing the GFF alone would
-    # silently drop textIndexGoldenPath.sh's work for every assembly this
-    # branch reaches. text-index does NOT skip a named track that is merely
-    # absent from config.json -- it exits nonzero ("Track not found ... please
-    # add track configuration before indexing"), which under set -euo pipefail
-    # kills the whole run. And "$db-ncbiRefSeq" is not always the golden-path
-    # trackId: a GenArk-backed alias (e.g. ARS_UCD2.0) names its golden-path
-    # tracks after the underlying accession (GCF_002263795.3-ncbiRefSeq), not
-    # after the db. So only name it when it is actually there, exactly the
-    # check textIndexGoldenPath.sh already makes.
-    #
-    # --attributes is for the golden-path track; the GFF track overrides it from
-    # its own config. gene_synonym is what makes an old gene symbol findable,
-    # and matches textIndexGoldenPath.sh so the two passes stop disagreeing.
-    local trix_ix="$UCSC_BUILT_DIR/$db/trix/$db.ix"
-    if [ "$present" = 1 ] && { [ ! -f "$trix_ix" ] || [ -n "${REPROCESS:-}" ]; }; then
-      local tracks="$track_id"
-      if grep -q "\"$db-ncbiRefSeq\"" "$config"; then
-        tracks="$track_id,$db-ncbiRefSeq"
-      fi
-      log "Text-indexing $db..."
-      jbrowse text-index --force --out "$UCSC_BUILT_DIR/$db" \
-        --tracks "$tracks" --attributes Name,ID,gene_synonym
-    fi
+  # Shared with genark2jbrowse/downloadNcbiGff.sh; the .csi rather than the
+  # .gff.gz is the witness, since a run that died between bgzip and tabix
+  # leaves the latter behind. See needs_gff_fetch in lib/common.sh.
+  if needs_gff_fetch "$gff.csi"; then
+    log "Downloading $db NCBI RefSeq GFF ($acc)..."
+    local zip="$GFF_DIR/$db.ncbi_dataset.zip"
+    local extract="$GFF_DIR/$db.ncbi_dataset"
+    datasets download genome accession "$acc" --include gff3 --no-progressbar --filename "$zip"
+    rm -rf "$extract"
+    unzip -o "$zip" -d "$extract" >/dev/null
+    jbrowse sort-gff "$extract/ncbi_dataset/data/$acc/genomic.gff" | bgzip -@4 >"$gff"
+    tabix -C "$gff"
+    rm -rf "$zip" "$extract"
   fi
 }
 

@@ -11,7 +11,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-import { formatJson, readJSON } from 'hubtools'
+import { formatJson, linkOrCopy, readJSON } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
 import { buildHubConfig } from './buildConfig.ts'
@@ -81,22 +81,6 @@ function readGeneticCodes(codesPath: string) {
     }
   }
   return codes
-}
-
-// The hub dir's copy of the GFF is a hard link to bgz/, so a re-derived GFF is
-// picked up by inode rather than by copying 100 MB again; a cross-device
-// fallback copies.
-function linkIntoHub(src: string, dest: string) {
-  const same =
-    fs.existsSync(dest) && fs.statSync(dest).ino === fs.statSync(src).ino
-  if (!same) {
-    fs.rmSync(dest, { force: true })
-    try {
-      fs.linkSync(src, dest)
-    } catch {
-      fs.copyFileSync(src, dest)
-    }
-  }
 }
 
 function trixIsCurrent(hubDir: string, accession: string, gffPath: string) {
@@ -175,8 +159,9 @@ function processOne(metaPath: string) {
   }
 
   if (gffFile && gffPath && !outRoot) {
-    linkIntoHub(gffPath, path.join(hubDir, gffFile))
-    linkIntoHub(`${gffPath}.csi`, path.join(hubDir, `${gffFile}.csi`))
+    // The hub's copy of the GFF is a hard link to bgz/, not a third copy.
+    linkOrCopy(gffPath, path.join(hubDir, gffFile))
+    linkOrCopy(`${gffPath}.csi`, path.join(hubDir, `${gffFile}.csi`))
     if (!trixIsCurrent(hubDir, accession, gffPath)) {
       console.log(hubDir)
     }

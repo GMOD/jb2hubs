@@ -8,7 +8,7 @@ import type { UcscGenome, UcscGenomeList, UcscGenomeRaw } from './types.ts'
  * Enriches each entry of UCSC's genome list in place.
  *
  * The object shape is deliberately preserved: later phases and
- * generateJBrowseConfigForAssemblyHub.sh both `jq '.ucscGenomes | to_entries[]'`
+ * buildConfigs.ts both `jq '.ucscGenomes | to_entries[]'`
  * over the result. (An older docstring here claimed this converted the object
  * into an array, which it has never done.)
  *
