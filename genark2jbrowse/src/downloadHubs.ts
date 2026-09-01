@@ -1,8 +1,9 @@
 // Fetches each listed hub's hub.txt and writes meta.json beside it. Only hubs
 // with no hub.txt yet are fetched (their meta.json path is printed on stdout);
 // refreshing the rest is make.sh's rsync step. With UPSTREAM_HUB_LIST set to
-// listUpstreamHubs.sh's TSV, hubs the assembly list names that are gone from
-// hgdownload's tree are reported.
+// listUpstreamHubs.sh's TSV, two things the assembly list cannot say are
+// reported: hubs it names that are gone from hgdownload's tree, and hubs whose
+// 2bit or chrom.sizes is gone, which loadPre() fails the whole assembly on.
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -29,21 +30,29 @@ const allHubEntries = dedupe(
   d => d.ucscBrowser,
 )
 
-function readUpstreamAccessions(file: string) {
-  return new Set(
-    fs
-      .readFileSync(file, 'utf8')
-      .split('\n')
-      .map(line => line.split('\t')[0])
-      .filter(Boolean),
-  )
+// accession -> the top-level files rsync listed for it
+function readUpstreamFiles(file: string) {
+  const files = new Map<string, Set<string>>()
+  for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
+    const [accession, name] = line.split('\t')
+    if (accession && name) {
+      const set = files.get(accession) ?? new Set<string>()
+      set.add(name)
+      files.set(accession, set)
+    }
+  }
+  return files
 }
 
 const upstream = process.env.UPSTREAM_HUB_LIST
-  ? readUpstreamAccessions(process.env.UPSTREAM_HUB_LIST)
+  ? readUpstreamFiles(process.env.UPSTREAM_HUB_LIST)
   : undefined
 
+// Named by the assembly list, absent from the tree: the ones we publish a
+// config for are the finding; the rest never existed to fetch.
 const retired: string[] = []
+const neverExisted: string[] = []
+const missingSequence: string[] = []
 let fetched = 0
 
 async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
@@ -68,15 +77,24 @@ async function processHubEntry(entry: UCSCGenArkAssemblyEntry, idx: number) {
     return
   }
 
-  if (upstream && !upstream.has(accession)) {
-    retired.push(accession)
-  }
-
   const hubBasePath = getHubBasePath(accession)
   const metaFilePath = `${hubBasePath}/meta.json`
   const hubFilePath = `${hubBasePath}/hub.txt`
   const hubFileDownloadLocation = `https://hgdownload.soe.ucsc.edu/${hubBasePath}/hub.txt`
   const isNew = !fs.existsSync(hubFilePath)
+
+  if (upstream) {
+    const files = upstream.get(accession)
+    if (!files?.has('hub.txt')) {
+      ;(isNew ? neverExisted : retired).push(accession)
+      return
+    } else if (
+      !files.has(`${accession}.2bit`) ||
+      !files.has(`${accession}.chrom.sizes.txt`)
+    ) {
+      missingSequence.push(accession)
+    }
+  }
 
   if (isNew) {
     log(
@@ -128,10 +146,19 @@ for (const [idx, entry] of allHubEntries.entries()) {
 
 log(`hub.txt: ${fetched} new hub(s) fetched`)
 if (retired.length > 0) {
-  // Listed in assemblyList.json, absent from hgdownload's tree: the config we
-  // publish for it names files that 404. Reported, not deleted -- retiring a
-  // permanent url is a decision.
+  // The config we publish for it names files that 404. Reported, not deleted:
+  // retiring a permanent url is a decision.
   log(
-    `${retired.length} hub(s) in the assembly list have no hub.txt upstream: ${retired.join(' ')}`,
+    `${retired.length} published hub(s) are gone upstream: ${retired.join(' ')}`,
+  )
+}
+if (neverExisted.length > 0) {
+  log(
+    `${neverExisted.length} hub(s) the assembly list names have never existed upstream: ${neverExisted.join(' ')}`,
+  )
+}
+if (missingSequence.length > 0) {
+  log(
+    `${missingSequence.length} hub(s) have no 2bit or chrom.sizes upstream, so their assembly cannot load: ${missingSequence.join(' ')}`,
   )
 }

@@ -16,8 +16,8 @@ if (!listFile) {
 let existing = 0
 let stale = 0
 for (const line of fs.readFileSync(listFile, 'utf8').split('\n')) {
-  const [accession, size, mtime] = line.split('\t')
-  if (accession && size && mtime) {
+  const [accession, file, size, mtime] = line.split('\t')
+  if (accession && file === 'hub.txt' && size && mtime) {
     const file = `${getHubBasePath(accession)}/hub.txt`
     if (fs.existsSync(file)) {
       existing++

@@ -405,9 +405,10 @@ canary is budgeted to avoid:
 
 - **`listUpstreamHubs.sh`** walks `rsync://hgdownload.soe.ucsc.edu/hubs/GCA/`
   and `GCF/` with `--list-only`, an include chain that descends exactly four
-  levels and names `hub.txt` there, so it never enters `bbi/`. 52,720 entries
-  in 631 s. It refuses a listing under 10,000 lines: a truncated walk would
-  read as "every hub retired".
+  levels and names `hub.txt`, `*.2bit` and `*.chrom.sizes.txt` there, so it
+  never enters `bbi/`. 52,720 hubs in 631 s. It refuses a listing under 10,000
+  hubs: a truncated walk would read as "every hub retired".
+  `listUpstreamHubs.test.sh` pins the parser and the refusal.
 - **`src/staleHubTxt.ts`** prints the paths whose local size or mtime differs
   from the listing, and `rsync -t --files-from` copies exactly those. `-t`
   leaves upstream's mtime on the copy, so the comparison is exact from then on
@@ -417,7 +418,16 @@ canary is budgeted to avoid:
   and those hubs lose their `liftOver/.checked` so the chain probe runs again
   for them — a refreshed `hub.txt` is how a new chain gets noticed at all.
 - **`downloadHubs.ts`** fetches only hubs with no `hub.txt` yet, and reports
-  every accession the assembly list names that the walk did not find.
+  two things the assembly list cannot say: every accession it names that the
+  walk did not find, and every hub whose `2bit` or `chrom.sizes.txt` is gone.
+  The first is split by whether we publish a config for it, because UCSC's
+  `assemblyList.json` names 23 hubs that have never existed on hgdownload
+  (404 on both hosts, absent from rsync), and those are noise; a hub we have
+  and upstream no longer does is the finding, and it is no longer fetched.
+  The second is the GenArk half of the sidecar problem — `loadPre()` fails the
+  whole assembly on either — answered from a directory listing the walk reads
+  anyway, not from the 105k-request probe that the reverted mirroring sweep
+  was.
 
 The rsync daemon lags the web host by under an hour (192 files changed upstream
 between the first listing and its copy, and were current on the next walk), so
