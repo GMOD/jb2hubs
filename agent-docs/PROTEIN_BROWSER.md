@@ -128,6 +128,13 @@ touching the resolution or session code.
   unfiltered and 326 KB with `?provider=pdbe` (lowercase; `PDBe` 404s), which
   the fetch now passes. It is fetched once per gene, after the card renders, and
   only when the reader has a Swiss-Prot accession to ask about.
+- Superposition toggles appear only on rows with a Swiss-Prot accession, which
+  NCBI's report supplies for 4–25 of 60 rows on the human examples (every
+  PANTHER row has one). UniProt's ID-mapping job (`RefSeq_Protein` →
+  `UniProtKB`) would cover the rest, but it is asynchronous and slow: a
+  three-accession job was still `RUNNING` 30 s after submission on 2026-09-01,
+  which rules it out for a click and makes it a panel-assembly cost if ever
+  adopted. Not done.
 - Foldseek is in the plugin already (`services/foldseekApi.ts`); the page does
   not expose it. Structure-based neighbours would be a third alignment source
   where sequence orthology fails (the PANTHER-only taxa), but it is an async job

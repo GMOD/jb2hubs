@@ -1334,6 +1334,32 @@ The genomes.jbrowse.org side of the JBrowse docs
 (`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) describes
 this page, so a visible change here should be reflected there.
 
+## The protein browser launches a session the plugins have to agree with
+
+`/protein-browser` (`website/src/components/ProteinBrowser.tsx` and the files
+beside it) is the landing page for the "Proteins in the Genome Browser" paper:
+gene symbol → collapsed-intron genome view + 3D structure + ortholog alignment,
+three views on one transcript model. The design record, including the two
+residue↔codon mapping bugs that shipped with every unit test green, is
+`agent-docs/PROTEIN_BROWSER.md`. Three things to hold onto:
+
+- **`userProvidedTranscriptSequence` is the transcript's own translation**, the
+  NP record of the picked isoform — never the UniProt canonical. The protein3d
+  plugin pairwise-aligns it against the structure's residues; handing it the
+  structure's own sequence makes that alignment an identity and mis-indexes the
+  CDS whenever the isoforms differ. Silently.
+- **Structures are asked for, not derived.** `structureSources.ts` reads the
+  AlphaFold prediction API (which models exist, at which version, with which
+  sequence) and 3D-Beacons filtered to `provider === 'PDBe'`. A url built from
+  `AF-<acc>-F1-model_v6.cif` 404s for any protein past AlphaFold's length cap
+  (DMD, BRCA2, TTN) and for every version bump.
+- **`pnpm check-protein-launches` is the test that matters.** It boots each
+  example gene in a hosted build and reads the ProteinView back: structure
+  ready, `pairwiseAlignment` present, `exactMatch` where the model's sequence
+  equals the translation. Needs a browser and four live services, so it is
+  by-hand, before touching `geneStructure.ts`/`proteinSession.ts` and before
+  promoting `features.proteinBrowser`.
+
 ## Key website internals
 
 - `src/components/SearchPage.tsx` — client-side search over
