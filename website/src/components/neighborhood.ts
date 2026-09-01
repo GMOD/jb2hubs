@@ -20,6 +20,7 @@ import {
   collectNames,
   fetchOrthologRows,
   locate,
+  oneAssemblyPerSpecies,
   resolveGeneId,
 } from './orthologSet.ts'
 
@@ -62,6 +63,15 @@ export interface NeighborhoodOptions {
   flankBp?: number // window each side of the query gene (reference bp)
   maxAnchors?: number // cap on neighbor genes (nearest to the query)
 }
+
+// The only values a request may carry, shared by the form that offers them and
+// the Lambda that refuses anything else: each extra anchor is one more NCBI
+// call, so the vocabulary is the request budget. maxAnchors counts the query
+// gene; flankBp is the search window each side of it.
+export const ANCHOR_CHOICES = [7, 11, 15, 21]
+export const FLANK_CHOICES_BP = [100_000, 150_000, 300_000, 500_000]
+export const DEFAULT_MAX_ANCHORS = 11
+export const DEFAULT_FLANK_BP = 150_000
 
 // A reference-genome gene with type + placement, used to pick protein-coding
 // anchors. Pseudogenes / ncRNA / predicted loci have no orthologs and would
@@ -115,7 +125,10 @@ async function fetchGeneReports(geneIds: string[]): Promise<GeneReport[]> {
 export async function assembleNeighborhood(
   query: string,
   refTaxonId: number,
-  { flankBp = 150_000, maxAnchors = 11 }: NeighborhoodOptions = {},
+  {
+    flankBp = DEFAULT_FLANK_BP,
+    maxAnchors = DEFAULT_MAX_ANCHORS,
+  }: NeighborhoodOptions = {},
 ): Promise<Neighborhood> {
   const queryGeneId = await resolveGeneId(query, refTaxonId)
   if (!queryGeneId) {
@@ -178,13 +191,16 @@ export async function assembleNeighborhood(
   const taxa = [...new Set(allRows.flat().map(r => r.taxonId))]
   const tree = await fetchInducedTree(taxa)
 
-  const rowsByAnchor = new Map<string, OrthologRow[]>([
-    [queryGeneId, queryRows],
-    ...neighbors.map((n, i): [string, OrthologRow[]] => [
-      n.geneId,
-      neighborRows[i] ?? [],
+  const rowsByAnchor = oneAssemblyPerSpecies(
+    new Map<string, OrthologRow[]>([
+      [queryGeneId, queryRows],
+      ...neighbors.map((n, i): [string, OrthologRow[]] => [
+        n.geneId,
+        neighborRows[i] ?? [],
+      ]),
     ]),
-  ])
+    queryGeneId,
+  )
 
   // Place each anchor's ortholog into per-species rows, keyed by taxon.
   const byTaxon = new Map<number, SpeciesRow>()

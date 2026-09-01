@@ -1,12 +1,17 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
+import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import {
-  MAX_SUBTREE_GENOMES,
+  DEFAULT_SUBTREE_GENOMES,
+  type DrilldownData,
   REF_ALIGNMENTS,
   type SubtreeLeaf,
+  geneDrilldownUrl,
+  nearestWindow,
   openGeneDrilldown,
   openRefAlignment,
   openSubtreeSynteny,
+  subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
 import {
   type GeneBox,
@@ -17,21 +22,71 @@ import {
 } from './multiSyntenyLayout.ts'
 
 import type { Anchor, Neighborhood } from './neighborhood.ts'
+import type { MouseEvent, ReactNode } from 'react'
 
 interface Props {
   neighborhood: Neighborhood
+  // Undefined until the pair catalog and assembly index have been prefetched;
+  // genes and branch points are plain click targets until then and real links
+  // after.
+  drilldown: DrilldownData | undefined
+}
+
+// Hovering a gene, ribbon or legend swatch traces one ortholog down the whole
+// view: its genes and ribbon chain stay vivid while everything else dims.
+// Hovering a branch point shows the band of rows it covers. Both are CSS: the
+// wrapper carries `data-focus` / `data-clade`, set straight on the DOM from one
+// delegated handler, and the rules below light the matching elements — no
+// React state, so a hover over one of ~900 paths re-renders nothing.
+function setOrClear(el: Element, name: string, value: string | undefined) {
+  if (value === undefined) {
+    el.removeAttribute(name)
+  } else {
+    el.setAttribute(name, value)
+  }
+}
+
+function traceHover(e: MouseEvent<HTMLDivElement>) {
+  const target = e.target instanceof Element ? e.target : undefined
+  setOrClear(
+    e.currentTarget,
+    'data-focus',
+    target?.closest('[data-anchor]')?.getAttribute('data-anchor') ?? undefined,
+  )
+  setOrClear(
+    e.currentTarget,
+    'data-clade',
+    target?.closest('[data-clade]')?.getAttribute('data-clade') ?? undefined,
+  )
+}
+
+function clearHover(e: MouseEvent<HTMLDivElement>) {
+  e.currentTarget.removeAttribute('data-focus')
+  e.currentTarget.removeAttribute('data-clade')
+}
+
+// One rule per anchor and per branch point; the static half (what dims, what a
+// lit element looks like) is in conserved-gene-order.astro. Rendered only on the
+// client, so the selector quotes reach the sheet verbatim.
+function hoverRules(anchors: Anchor[], cladeCount: number) {
+  const focus = anchors.map(
+    a =>
+      `.msv[data-focus="${a.geneId}"] [data-anchor="${a.geneId}"]{--msv-on:1}`,
+  )
+  const clades = Array.from(
+    { length: cladeCount },
+    (_, i) =>
+      `.msv[data-clade="${i}"] .msv-band[data-node="${i}"]{visibility:visible}`,
+  )
+  return [...focus, ...clades].join('\n')
 }
 
 function AnchorLegend({
   anchors,
   colors,
-  focus,
-  onFocus,
 }: {
   anchors: Anchor[]
   colors: Map<string, string>
-  focus: string | null
-  onFocus: (anchorId: string | null) => void
 }) {
   return (
     <div className="msv-legend">
@@ -39,14 +94,7 @@ function AnchorLegend({
         <span
           key={a.geneId}
           className="msv-legend-item"
-          data-dim={focus !== null && focus !== a.geneId ? '' : undefined}
-          data-focus={focus === a.geneId ? '' : undefined}
-          onMouseEnter={() => {
-            onFocus(a.geneId)
-          }}
-          onMouseLeave={() => {
-            onFocus(null)
-          }}
+          data-anchor={a.geneId}
           title={`${a.symbol}${a.isQuery ? ' — the query gene' : ' — neighbor gene'} · reference ${a.refStart.toLocaleString()}–${a.refEnd.toLocaleString()} · hover to trace this gene's orthologs across species`}
         >
           <span
@@ -61,43 +109,76 @@ function AnchorLegend({
   )
 }
 
-export default function MultiSyntenyView({ neighborhood }: Props) {
+// A link when the url is known, else the element itself with its click fallback.
+function Launch({
+  href,
+  title,
+  children,
+}: {
+  href: string | undefined
+  title: string
+  children: ReactNode
+}) {
+  return href ? (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener"
+      aria-label={title}
+    >
+      {children}
+    </a>
+  ) : (
+    children
+  )
+}
+
+interface Clade {
+  leaves: SubtreeLeaf[]
+  opened: number
+}
+
+export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
   const [mode, setMode] = useState<LayoutMode>('bp')
   const [orientToRef, setOrientToRef] = useState(true)
-  const layout = layoutNeighborhood(neighborhood, { mode, orientToRef })
+  const layout = useMemo(
+    () => layoutNeighborhood(neighborhood, { mode, orientToRef }),
+    [neighborhood, mode, orientToRef],
+  )
   const H = layout.geneHeight
 
-  // Hovering a gene or legend swatch traces one ortholog down the whole view:
-  // its genes and ribbon chain stay vivid while everything else dims, so a single
-  // gene is followable through the phylogeny despite the many-color palette.
-  const [focusAnchor, setFocusAnchor] = useState<string | null>(null)
-  const ribbonOpacity = (anchorId: string) =>
-    focusAnchor === null ? 0.25 : focusAnchor === anchorId ? 0.65 : 0.04
-  const geneOpacity = (anchorId: string) =>
-    focusAnchor === null || focusAnchor === anchorId ? 1 : 0.18
-
   const queryId = neighborhood.query.geneId
+  const refTaxonId = neighborhood.query.refTaxonId
   // Per-taxon species detail (full names) for row-label tooltips; the drawn row
   // label collapses to the common name, so the hover restores the rest.
   const speciesByTaxon = new Map(neighborhood.species.map(s => [s.taxonId, s]))
   // The reference species' genes, keyed by anchor — each anchor's reference
   // locus drives the reference panel of a pairwise synteny drill-down, and the
   // query anchor's gene is the locus for the whole-genome alignment view.
-  const refSpecies = neighborhood.species.find(
-    s => s.taxonId === neighborhood.query.refTaxonId,
-  )
+  const refSpecies = neighborhood.species.find(s => s.taxonId === refTaxonId)
   const refGenesByAnchor = new Map(
     refSpecies?.genes.map(g => [g.anchorId, g]) ?? [],
   )
   const refGene = refGenesByAnchor.get(queryId)
   const refAssembly = refGene?.assembly
-  const refAlignment = REF_ALIGNMENTS[neighborhood.query.refTaxonId]
+  const refAlignment = REF_ALIGNMENTS[refTaxonId]
   // `inverted` comes from the row, not from the gene: the page decides a row is
   // mirrored from the SIGN OF ITS GENE-ORDER CORRELATION with the reference (see
   // isInverted in multiSyntenyLayout.ts), which is a better answer than one
   // gene's annotated strand — orthologs routinely differ in strand without the
   // locus being inverted. Passing it through is what makes the launch open the
   // same way round as the figure that was clicked.
+  const geneHref = (g: GeneBox, inverted: boolean) =>
+    drilldown
+      ? geneDrilldownUrl(
+          g,
+          refAssembly,
+          refGenesByAnchor.get(g.anchorId),
+          drilldown.index,
+          drilldown.hosted(g.assembly),
+          inverted,
+        )
+      : undefined
   const openGene = (g: GeneBox, inverted: boolean) => {
     void openGeneDrilldown(
       g,
@@ -125,31 +206,56 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
       })
     }
   }
+  const leavesOf = (taxonIds: number[]) =>
+    taxonIds
+      .map(t => placementByTaxon.get(t))
+      .filter((p): p is SubtreeLeaf => !!p)
+  const subtreeHref = (leaves: SubtreeLeaf[]) =>
+    drilldown ? subtreeSyntenyUrl(leaves, drilldown.index) : undefined
 
-  const openSubtree = (leafTaxonIds: number[]) => {
-    void openSubtreeSynteny(
-      leafTaxonIds
-        .map(t => placementByTaxon.get(t))
-        .filter((p): p is SubtreeLeaf => !!p),
-    )
-  }
+  // Branch points that can launch, each with the band of rows it covers (drawn
+  // hidden, lit by the hover rules) and the leaves nearest the reference that a
+  // click opens. The rest of a big clade is a second, explicit choice.
+  const clades = layout.treeNodes
+    .map(n => {
+      const placed = n.leafTaxonIds.filter(t => placementByTaxon.has(t))
+      const ys = layout.rows
+        .filter(r => placed.includes(r.taxonId))
+        .map(r => r.y)
+      return {
+        x: n.x,
+        y: n.y,
+        placed,
+        nearest: nearestWindow(
+          placed,
+          placed.indexOf(refTaxonId),
+          DEFAULT_SUBTREE_GENOMES,
+        ),
+        top: Math.min(...ys) - 4,
+        bottom: Math.max(...ys) + H + 4,
+      }
+    })
+    .filter(c => c.placed.length >= 2)
 
-  // Hovering a branch point highlights the contiguous band of rows it covers, so
-  // the clade a click would launch is visible before clicking.
-  const [hovered, setHovered] = useState<Set<number> | null>(null)
-  const hoveredYs = hovered
-    ? layout.rows.filter(r => hovered.has(r.taxonId)).map(r => r.y)
-    : []
-  const band =
-    hoveredYs.length >= 2
-      ? {
-          top: Math.min(...hoveredYs) - 4,
-          bottom: Math.max(...hoveredYs) + H + 4,
-        }
-      : null
+  // The clade whose branch point was last clicked, so a launch that opened the
+  // nearest few can be followed by one that opens them all.
+  const [clade, setClade] = useResetOnChange<Clade | null>(
+    `${queryId}:${refTaxonId}:${neighborhood.anchors.length}:${neighborhood.species.length}:${orientToRef}`,
+    null,
+  )
+  const allHref = clade && subtreeHref(clade.leaves)
 
   return (
-    <div className="msv">
+    <div
+      className="msv"
+      onMouseOver={e => {
+        traceHover(e)
+      }}
+      onMouseLeave={e => {
+        clearHover(e)
+      }}
+    >
+      <style>{hoverRules(neighborhood.anchors, clades.length)}</style>
       <div className="msv-controls">
         <strong>{neighborhood.query.symbol}</strong> neighborhood ·{' '}
         {layout.rows.length} species · {neighborhood.anchors.length} genes
@@ -190,7 +296,7 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
           <button
             className="msv-align-btn"
             onClick={() => {
-              openRefAlignment(neighborhood.query.refTaxonId, refGene)
+              openRefAlignment(refTaxonId, refGene)
             }}
             title={`Open the ${refAlignment.alignmentLabel} at ${neighborhood.query.symbol} in JBrowse`}
           >
@@ -202,33 +308,61 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
       <AnchorLegend
         anchors={neighborhood.anchors}
         colors={layout.anchorColors}
-        focus={focusAnchor}
-        onFocus={setFocusAnchor}
       />
+
+      {clade && clade.leaves.length > clade.opened && (
+        <p className="ui-hint">
+          Opened the {clade.opened} species nearest the reference of the{' '}
+          {clade.leaves.length} in that clade.{' '}
+          {allHref ? (
+            <a
+              href={allHref}
+              target="_blank"
+              rel="noopener"
+            >
+              Open all {clade.leaves.length} →
+            </a>
+          ) : (
+            <button
+              className="ui-linkbtn"
+              onClick={() => {
+                void openSubtreeSynteny(clade.leaves)
+              }}
+            >
+              Open all {clade.leaves.length} →
+            </button>
+          )}
+        </p>
+      )}
 
       <div className="msv-scroll">
         <svg
           width={layout.width}
           height={layout.height}
           role="img"
+          aria-label={`${neighborhood.query.symbol} and its neighbors across ${layout.rows.length} species, in taxonomy order`}
         >
-          {band && (
-            <rect
-              x={0}
-              y={band.top}
-              width={layout.width}
-              height={band.bottom - band.top}
-              className="msv-band"
-            />
-          )}
+          <g className="msv-bands">
+            {clades.map((c, i) => (
+              <rect
+                key={i}
+                data-node={i}
+                x={0}
+                y={c.top}
+                width={layout.width}
+                height={c.bottom - c.top}
+                className="msv-band"
+              />
+            ))}
+          </g>
 
           <g className="msv-ribbons">
             {layout.ribbons.map((r, i) => (
               <path
                 key={i}
+                data-anchor={r.anchorId}
                 d={ribbonPath(r)}
                 fill={r.color}
-                fillOpacity={ribbonOpacity(r.anchorId)}
               />
             ))}
           </g>
@@ -251,46 +385,49 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
           </g>
 
           <g className="msv-treenodes">
-            {layout.treeNodes.map((n, i) => {
-              const count = n.leafTaxonIds.filter(t =>
-                placementByTaxon.has(t),
-              ).length
-              return count >= 2 ? (
-                <g
+            {clades.map((c, i) => {
+              const leaves = leavesOf(c.nearest)
+              const title =
+                c.placed.length > c.nearest.length
+                  ? `Open a stacked synteny view of the ${c.nearest.length} species nearest the reference, of ${c.placed.length} in this clade`
+                  : `Open a stacked synteny view of these ${c.placed.length} species`
+              const remember = () => {
+                setClade({ leaves: leavesOf(c.placed), opened: leaves.length })
+              }
+              const href = subtreeHref(leaves)
+              return (
+                <Launch
                   key={i}
-                  onMouseEnter={() => {
-                    setHovered(new Set(n.leafTaxonIds))
-                  }}
-                  onMouseLeave={() => {
-                    setHovered(null)
-                  }}
-                  onClick={() => {
-                    openSubtree(n.leafTaxonIds)
-                  }}
-                  style={{ cursor: 'pointer' }}
+                  href={href}
+                  title={title}
                 >
-                  {/* generous transparent hit target around the small dot */}
-                  <circle
-                    cx={n.x}
-                    cy={n.y}
-                    r={9}
-                    style={{ fill: 'transparent' }}
-                  />
-                  <circle
-                    cx={n.x}
-                    cy={n.y}
-                    r={3.5}
-                    className="msv-node-dot"
-                  />
-                  <title>
-                    Launch stacked synteny view of{' '}
-                    {count > MAX_SUBTREE_GENOMES
-                      ? `the ${MAX_SUBTREE_GENOMES} nearest of ${count}`
-                      : count}{' '}
-                    species
-                  </title>
-                </g>
-              ) : null
+                  <g
+                    data-clade={i}
+                    onClick={() => {
+                      remember()
+                      if (!href) {
+                        void openSubtreeSynteny(leaves)
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {/* generous transparent hit target around the small dot */}
+                    <circle
+                      cx={c.x}
+                      cy={c.y}
+                      r={9}
+                      style={{ fill: 'transparent' }}
+                    />
+                    <circle
+                      cx={c.x}
+                      cy={c.y}
+                      r={3.5}
+                      className="msv-node-dot"
+                    />
+                    <title>{title}</title>
+                  </g>
+                </Launch>
+              )
             })}
           </g>
 
@@ -326,34 +463,43 @@ export default function MultiSyntenyView({ neighborhood }: Props) {
                   {row.inverted ? ' ⇄' : ''}
                   <title>{labelTitle}</title>
                 </text>
-                <g transform={`translate(0,${row.y})`}>
-                  {row.genes.map(g => (
-                    <path
-                      key={g.anchorId}
-                      d={geneArrowPath(g, H)}
-                      fill={layout.anchorColors.get(g.anchorId) ?? '#999'}
-                      fillOpacity={geneOpacity(g.anchorId)}
-                      stroke={g.anchorId === queryId ? '#000' : 'none'}
-                      strokeWidth={g.anchorId === queryId ? 1.5 : 0}
-                      style={{ cursor: 'pointer' }}
-                      onMouseEnter={() => {
-                        setFocusAnchor(g.anchorId)
-                      }}
-                      onMouseLeave={() => {
-                        setFocusAnchor(null)
-                      }}
-                      onClick={() => {
-                        openGene(g, row.inverted)
-                      }}
-                    >
-                      <title>
-                        {g.symbol} · {row.label} · {g.refName}:
-                        {g.start.toLocaleString()}-{g.end.toLocaleString()} (
-                        {g.strand > 0 ? '+' : '−'} strand) · click to open in
-                        JBrowse
-                      </title>
-                    </path>
-                  ))}
+                <g
+                  className="msv-genes"
+                  transform={`translate(0,${row.y})`}
+                >
+                  {row.genes.map(g => {
+                    const href = geneHref(g, row.inverted)
+                    // Before the prefetch lands every gene is assumed openable,
+                    // as the click path always did; after it, the index has
+                    // the last word.
+                    const openable = drilldown ? href !== undefined : true
+                    const title = `${g.symbol} · ${row.label} · ${g.refName}:${g.start.toLocaleString()}-${g.end.toLocaleString()} (${g.strand > 0 ? '+' : '−'} strand)${openable ? ' · open in JBrowse' : ' · not a genome we host'}`
+                    return (
+                      <Launch
+                        key={g.anchorId}
+                        href={href}
+                        title={title}
+                      >
+                        <path
+                          data-anchor={g.anchorId}
+                          d={geneArrowPath(g, H)}
+                          fill={layout.anchorColors.get(g.anchorId) ?? '#999'}
+                          stroke={g.anchorId === queryId ? '#000' : 'none'}
+                          strokeWidth={g.anchorId === queryId ? 1.5 : 0}
+                          style={{ cursor: openable ? 'pointer' : 'default' }}
+                          onClick={
+                            href !== undefined || !openable
+                              ? undefined
+                              : () => {
+                                  openGene(g, row.inverted)
+                                }
+                          }
+                        >
+                          <title>{title}</title>
+                        </path>
+                      </Launch>
+                    )
+                  })}
                 </g>
               </g>
             )

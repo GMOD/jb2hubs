@@ -1,7 +1,11 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { geneDrilldownUrl, subtreeSyntenyUrl } from './multiSyntenyDrilldown.ts'
+import {
+  geneDrilldownUrl,
+  nearestWindow,
+  subtreeSyntenyUrl,
+} from './multiSyntenyDrilldown.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
 import type { SubtreeLeaf } from './multiSyntenyDrilldown.ts'
@@ -278,4 +282,18 @@ test('a pairwise link naming the genome we opened is used', () => {
   )
   assert.equal(view.type, 'LinearSyntenyView')
   assert.deepEqual(view.tracks, ['dog_to_hg38'])
+})
+
+// Tree order runs basal→derived, so the head of a clade holding the reference is
+// its most distant members; the window is centered on the reference instead.
+test('nearestWindow centers on the reference and clamps at both ends', () => {
+  const leaves = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+  assert.deepEqual(nearestWindow(leaves, 4, 3), ['d', 'e', 'f'])
+  assert.deepEqual(nearestWindow(leaves, 0, 3), ['a', 'b', 'c'])
+  assert.deepEqual(nearestWindow(leaves, 7, 3), ['f', 'g', 'h'])
+  assert.deepEqual(nearestWindow(leaves, 4, 20), leaves)
+})
+
+test('a reference outside the clade takes the head of the list', () => {
+  assert.deepEqual(nearestWindow(['a', 'b', 'c'], -1, 2), ['a', 'b'])
 })

@@ -106,23 +106,49 @@ export const handler = async (
   }
 }
 
+// Fetched configs live for the Lambda instance, keyed by url. A stacked
+// synteny launch merges one full config per genome — hg38's is 2 MB — and the
+// same handful of genomes is asked for again and again, so on a warm instance
+// the merge re-fetches nothing. An hour bounds how stale a regenerated config
+// can be served; a failed fetch is not remembered.
+const CONFIG_TTL_MS = 60 * 60 * 1000
+
+interface CachedConfig {
+  config: Promise<JBrowseConfig>
+  expires: number
+}
+
+const configCache = new Map<string, CachedConfig>()
+
+async function fetchConfig(url: string): Promise<JBrowseConfig> {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch config from ${url}: ${response.statusText}`,
+    )
+  }
+  const config = (await response.json()) as JBrowseConfig
+  addRelativeUris(config, url.slice(0, url.lastIndexOf('/') + 1))
+  return config
+}
+
+function cachedConfig(url: string, now = Date.now()) {
+  const hit = configCache.get(url)
+  if (hit && hit.expires > now) {
+    return hit.config
+  }
+  const config = fetchConfig(url).catch((e: unknown) => {
+    configCache.delete(url)
+    throw e
+  })
+  configCache.set(url, { config, expires: now + CONFIG_TTL_MS })
+  return config
+}
+
 async function fetchConfigs(urls: string[]): Promise<JBrowseConfig[]> {
-  return Promise.all(
-    urls.map(async url => {
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch config from ${url}: ${response.statusText}`,
-        )
-      }
-      const config = (await response.json()) as JBrowseConfig
-      const baseUri = url.slice(0, url.lastIndexOf('/') + 1)
-      addRelativeUris(config, baseUri)
-      return config
-    }),
-  )
+  return Promise.all(urls.map(url => cachedConfig(url)))
 }
 
 export { mergeConfigs } from './merger.ts'
-export { addRelativeUris, idToConfigUrl }
+export { addRelativeUris, cachedConfig, idToConfigUrl }
 export type * from './types.ts'

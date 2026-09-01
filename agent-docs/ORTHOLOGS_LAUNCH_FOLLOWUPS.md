@@ -6,12 +6,12 @@ literal `true` in `website/src/config/features.ts` rather than tracking
 
 ## Staging-gated follow-up views leave a dead end
 
-`multiSynteny` and `proteinMsa` are still staging-only, so a production search
-renders the ortholog table and nothing after it — the "conserved gene order" and
-"protein alignment" links (`OrthologSearch.tsx`, gated on those two flags) are
-hidden, and `conserved-gene-order.astro` / `protein-alignment.astro` redirect to
-`/`. Those two views are the payoff for running a search, so decide whether they
-should ship alongside orthologs or stay held back.
+`multiSynteny` and `proteinBrowser` are still staging-only, so a production
+search renders the ortholog table and nothing after it — the "conserved gene
+order" and "protein browser" links (`OrthologSearch.tsx`, gated on those two
+flags) are hidden, and `conserved-gene-order.astro` / `protein-browser.astro`
+redirect to `/`. Those two views are the payoff for running a search, so decide
+whether they should ship alongside orthologs or stay held back.
 
 Note the per-row **Synteny** and **Launch multi-species synteny view** links in
 `OrthologResultsTable.tsx` are deliberately _not_ gated: they build JBrowse

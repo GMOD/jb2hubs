@@ -4,7 +4,13 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3'
 
-import { assembleNeighborhood } from '../../../website/src/components/neighborhood.ts'
+import {
+  ANCHOR_CHOICES,
+  DEFAULT_FLANK_BP,
+  DEFAULT_MAX_ANCHORS,
+  FLANK_CHOICES_BP,
+  assembleNeighborhood,
+} from '../../../website/src/components/neighborhood.ts'
 
 import type { APIGatewayProxyResultV2 } from 'aws-lambda'
 
@@ -18,8 +24,9 @@ interface ApiEvent {
 }
 
 // The assembler logic is imported verbatim from the website package (esbuild
-// bundles it in), so the serverless filler and the browser dev fallback run the
-// exact same code. This Lambda adds only the durable S3 cache around it.
+// bundles it in), and so is the vocabulary of options the form offers, so the
+// Lambda refuses exactly what the form cannot ask for. This Lambda adds only
+// the durable S3 cache around it.
 
 const s3 = new S3Client({})
 const BUCKET = process.env.CACHE_BUCKET
@@ -45,6 +52,40 @@ interface Params {
   ref: number
   flankBp: number
   maxAnchors: number
+}
+
+// Every anchor is one more NCBI call and the reference is part of the cache
+// key, so a request outside the form's vocabulary is refused rather than
+// costing ~200 calls (`maxAnchors=200`) or being cached under human (`ref=abc`).
+function chosen(raw: string | undefined, choices: number[], fallback: number) {
+  return raw === undefined
+    ? fallback
+    : choices.includes(Number(raw))
+      ? Number(raw)
+      : undefined
+}
+
+export function parseParams(
+  q: Record<string, string | undefined>,
+): { params: Params } | { error: string } {
+  const gene = q.gene?.trim()
+  const ref =
+    q.ref === undefined
+      ? 9606
+      : /^[1-9]\d*$/.test(q.ref)
+        ? Number(q.ref)
+        : undefined
+  const flankBp = chosen(q.flank, FLANK_CHOICES_BP, DEFAULT_FLANK_BP)
+  const maxAnchors = chosen(q.maxAnchors, ANCHOR_CHOICES, DEFAULT_MAX_ANCHORS)
+  return !gene
+    ? { error: 'gene query parameter is required' }
+    : ref === undefined
+      ? { error: 'ref must be a positive integer NCBI taxon id' }
+      : flankBp === undefined
+        ? { error: `flank must be one of ${FLANK_CHOICES_BP.join(', ')}` }
+        : maxAnchors === undefined
+          ? { error: `maxAnchors must be one of ${ANCHOR_CHOICES.join(', ')}` }
+          : { params: { gene, ref, flankBp, maxAnchors } }
 }
 
 function cacheKey({ gene, ref, flankBp, maxAnchors }: Params) {
@@ -95,24 +136,19 @@ export const handler = async (
     }
   }
 
-  const q = event.queryStringParameters ?? {}
-  if (!q.gene) {
+  const parsed = parseParams(event.queryStringParameters ?? {})
+  if ('error' in parsed) {
     return {
       statusCode: 400,
       headers: json,
       body: JSON.stringify({
-        error: 'gene query parameter is required',
+        error: parsed.error,
+        message: parsed.error,
         example: '?gene=BRCA1&ref=9606',
       }),
     }
   }
-
-  const params: Params = {
-    gene: q.gene.trim(),
-    ref: Number(q.ref) || 9606,
-    flankBp: Number(q.flank) || 150_000,
-    maxAnchors: Number(q.maxAnchors) || 11,
-  }
+  const { params } = parsed
   const key = cacheKey(params)
 
   const ok = (body: string, hit: boolean) => ({
@@ -120,7 +156,8 @@ export const handler = async (
     headers: {
       ...json,
       'Cache-Control': 'public, max-age=86400',
-      'X-Cache': hit ? 'HIT' : 'MISS',
+      // Not `X-Cache`: API Gateway's edge overwrites that one with its own.
+      'X-Assembler-Cache': hit ? 'HIT' : 'MISS',
     },
     body,
   })

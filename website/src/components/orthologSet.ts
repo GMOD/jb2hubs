@@ -45,37 +45,105 @@ export interface DatasetsGene {
   }[]
 }
 
+// Every annotation+location carrying a genomic range, in NCBI's order. A
+// species annotated on two assemblies (human: GRCh38 and T2T-CHM13) lists both.
+function locateAll(gene: DatasetsGene | undefined) {
+  return (gene?.annotations ?? [])
+    .flatMap(a => (a.genomic_locations ?? []).map(l => ({ a, l })))
+    .filter(({ l }) => l.genomic_range?.begin)
+}
+
 // First annotation+location carrying a genomic range; undefined for unplaced
 // genes (which are skipped).
 export function locate(gene: DatasetsGene | undefined) {
-  return gene?.annotations
-    ?.flatMap(a => (a.genomic_locations ?? []).map(l => ({ a, l })))
-    .find(({ l }) => l.genomic_range?.begin)
+  return locateAll(gene)[0]
 }
 
-// One row per ortholog gene with coordinates + strand.
-function buildRows(reports: { gene?: DatasetsGene }[]): OrthologRow[] {
+// One row per placement of each ortholog gene, so a species annotated on two
+// assemblies yields two rows for the same gene; oneAssemblyPerSpecies picks
+// between them once every anchor's rows are in.
+export function buildRows(reports: { gene?: DatasetsGene }[]): OrthologRow[] {
   const rows: OrthologRow[] = []
   for (const { gene } of reports) {
     const taxonId = Number(gene?.tax_id)
-    const hit = locate(gene)
-    if (gene?.gene_id && Number.isFinite(taxonId) && hit) {
-      const { begin, end, orientation } = hit.l.genomic_range ?? {}
-      rows.push({
-        taxonId,
-        assembly: hit.a.assembly_accession ?? '',
-        symbol: gene.symbol ?? gene.gene_id,
-        geneId: gene.gene_id,
-        refName: hit.l.genomic_accession_version ?? '',
-        chromosome:
-          hit.l.sequence_name ?? hit.l.genomic_accession_version ?? '',
-        start: Number(begin),
-        end: Number(end),
-        strand: orientation === 'minus' ? -1 : 1,
-      })
+    if (gene?.gene_id && Number.isFinite(taxonId)) {
+      for (const hit of locateAll(gene)) {
+        const { begin, end, orientation } = hit.l.genomic_range ?? {}
+        rows.push({
+          taxonId,
+          assembly: hit.a.assembly_accession ?? '',
+          symbol: gene.symbol ?? gene.gene_id,
+          geneId: gene.gene_id,
+          refName: hit.l.genomic_accession_version ?? '',
+          chromosome:
+            hit.l.sequence_name ?? hit.l.genomic_accession_version ?? '',
+          start: Number(begin),
+          end: Number(end),
+          strand: orientation === 'minus' ? -1 : 1,
+        })
+      }
     }
   }
   return rows
+}
+
+// Keep one assembly per species across every anchor, so a row's coordinates
+// all come from the same genome. Taking the first placement per gene
+// independently per anchor let a species annotated on two assemblies mix them
+// in one row (1 of 873 BRCA1 rows, measured 2026-09-01), and a JBrowse launch
+// built from such a row navigates one assembly with another's coordinates.
+//
+// The assembly is the one carrying the species' query ortholog (its first
+// placement, which is also what the reference locus is read from); a species
+// without the query ortholog keeps the assembly most of its anchors are placed
+// on. The assembler has no hosted-assembly index to consult, so "the one we
+// host" is not an option here. Within the chosen assembly, one placement per
+// anchor: a second location is an alt locus or patch, not a second gene.
+export function oneAssemblyPerSpecies(
+  rowsByAnchor: Map<string, OrthologRow[]>,
+  queryAnchorId: string,
+) {
+  const chosen = new Map<number, string>()
+  for (const r of rowsByAnchor.get(queryAnchorId) ?? []) {
+    if (!chosen.has(r.taxonId)) {
+      chosen.set(r.taxonId, r.assembly)
+    }
+  }
+  const votes = new Map<number, Map<string, number>>()
+  for (const rows of rowsByAnchor.values()) {
+    for (const r of rows) {
+      if (!chosen.has(r.taxonId)) {
+        const tally = votes.get(r.taxonId) ?? new Map<string, number>()
+        tally.set(r.assembly, (tally.get(r.assembly) ?? 0) + 1)
+        votes.set(r.taxonId, tally)
+      }
+    }
+  }
+  for (const [taxonId, tally] of votes) {
+    let best: [string, number] | undefined
+    for (const entry of tally) {
+      best = best && best[1] >= entry[1] ? best : entry
+    }
+    if (best) {
+      chosen.set(taxonId, best[0])
+    }
+  }
+  return new Map(
+    [...rowsByAnchor].map(([anchorId, rows]): [string, OrthologRow[]] => {
+      const seen = new Set<number>()
+      return [
+        anchorId,
+        rows.filter(r => {
+          const keep =
+            chosen.get(r.taxonId) === r.assembly && !seen.has(r.taxonId)
+          if (keep) {
+            seen.add(r.taxonId)
+          }
+          return keep
+        }),
+      ]
+    }),
+  )
 }
 
 // taxonId -> display names, harvested from every node of the induced tree.

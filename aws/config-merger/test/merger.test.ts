@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { addRelativeUris, idToConfigUrl } from '../src/index.ts'
+import { addRelativeUris, cachedConfig, idToConfigUrl } from '../src/index.ts'
 import { mergeConfigs } from '../src/merger.ts'
 
 import type { Assembly, JBrowseConfig, SyntenyTrack } from '../src/types.ts'
@@ -491,5 +491,50 @@ describe('addRelativeUris', () => {
     expect((config.adapter as { baseUri: string }).baseUri).toBe(
       'https://example.com/',
     )
+  })
+})
+
+describe('cachedConfig', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  function stubFetch(status = 200) {
+    const fetchMock = vi.fn(() =>
+      Promise.resolve(
+        new Response(JSON.stringify({ tracks: [{ trackId: 't', uri: 'x' }] }), {
+          status,
+        }),
+      ),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    return fetchMock
+  }
+
+  it('fetches a url once per instance while the entry is fresh', async () => {
+    const fetchMock = stubFetch()
+    const url = 'https://jbrowse.org/ucsc/test-once/config.json'
+    const a = await cachedConfig(url, 1000)
+    const b = await cachedConfig(url, 2000)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(b).toBe(a)
+  })
+
+  it('refetches once the entry has expired', async () => {
+    const fetchMock = stubFetch()
+    const url = 'https://jbrowse.org/ucsc/test-expiry/config.json'
+    await cachedConfig(url, 1000)
+    await cachedConfig(url, 1000 + 61 * 60 * 1000)
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('does not remember a failed fetch', async () => {
+    const failing = stubFetch(503)
+    const url = 'https://jbrowse.org/ucsc/test-failure/config.json'
+    await expect(cachedConfig(url, 1000)).rejects.toThrow('Failed to fetch')
+    expect(failing).toHaveBeenCalledTimes(1)
+    const ok = stubFetch()
+    await expect(cachedConfig(url, 1000)).resolves.toBeDefined()
+    expect(ok).toHaveBeenCalledTimes(1)
   })
 })

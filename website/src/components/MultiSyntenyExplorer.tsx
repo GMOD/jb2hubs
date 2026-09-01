@@ -1,17 +1,27 @@
 import '../styles/ui.css'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
 import { features } from '../config/features.ts'
+import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
-import { type Neighborhood } from './neighborhood.ts'
+import { loadDrilldownData } from './multiSyntenyDrilldown.ts'
+import {
+  ANCHOR_CHOICES,
+  DEFAULT_FLANK_BP,
+  DEFAULT_MAX_ANCHORS,
+  FLANK_CHOICES_BP,
+  type Neighborhood,
+} from './neighborhood.ts'
 import { getNeighborhood } from './neighborhoodClient.ts'
-import { COMMON_SPECIES, refLabel } from './orthologSearchUtils.ts'
+import { COMMON_SPECIES, geneUrl, refLabel } from './orthologSearchUtils.ts'
 import { resolveRefTaxon } from './orthologSet.ts'
+
+import type { FormEvent } from 'react'
 
 // Rows with too few anchors carry little synteny signal and just lengthen the
 // view, so the explorer keeps the most informative species (tree order intact).
@@ -48,190 +58,209 @@ function trim(nb: Neighborhood): { nb: Neighborhood; eligible: number } {
   }
 }
 
-// The submitted query drives the SWR key; the raw reference string (a taxid or a
-// species name) is resolved to a taxon id inside the fetcher.
-interface Query {
-  gene: string
-  ref: string
-  maxAnchors: number
-  flankBp: number
+function choice(choices: number[], raw: string, fallback: number) {
+  const n = Number(raw)
+  return choices.includes(n) ? n : fallback
 }
 
-// Neighbor-gene counts and reference windows offered in the form. maxAnchors
-// includes the query gene; flankBp is the search window each side of it.
-const ANCHOR_CHOICES = [7, 11, 15, 21]
-const FLANK_CHOICES = [
-  { label: '±100 kb', bp: 100_000 },
-  { label: '±150 kb', bp: 150_000 },
-  { label: '±300 kb', bp: 300_000 },
-  { label: '±500 kb', bp: 500_000 },
-]
-
-// Initial gene/reference come from the URL (?gene=BRCA1&ref=9606) so a view is
-// shareable/bookmarkable; this is a client:only island, so window is available.
-function paramsFromUrl(): Query {
-  const p = new URLSearchParams(window.location.search)
-  const anchors = Number(p.get('anchors'))
-  const flank = Number(p.get('flank'))
-  return {
-    gene: p.get('gene')?.trim() ?? 'BRCA1',
-    ref: p.get('ref')?.trim() ?? '9606',
-    maxAnchors: ANCHOR_CHOICES.includes(anchors) ? anchors : 11,
-    flankBp: FLANK_CHOICES.some(f => f.bp === flank) ? flank : 150_000,
-  }
+// A reference the page can resolve without a request — a taxon id, or one of
+// the suggested species — as the taxon id string; anything else as typed, for
+// the fetcher to look up. Keying the fetch on this rather than the raw text is
+// what makes `human`, `Human` and `9606` one fetch instead of three.
+function localRef(ref: string) {
+  const q = ref.trim()
+  const known = COMMON_SPECIES.find(
+    s => s.label.toLowerCase() === q.toLowerCase(),
+  )
+  return /^\d+$/.test(q) ? q : known ? String(known.taxId) : q
 }
 
+function field(fd: FormData, name: string) {
+  const v = fd.get(name)
+  return typeof v === 'string' ? v.trim() : ''
+}
+
+// False for the server render and the hydrating one, true after. The URL hooks
+// answer their defaults until hydration completes, and a fetch keyed on those
+// would spend a request on BRCA1 for every deep link to some other gene.
+function useHydrated() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  )
+}
+
+// The URL is the query: ?gene=BRCA1&ref=9606&anchors=11&flank=150000, the
+// `?gene=&ref=` half being the contract the gene-first pages share. Submitting
+// writes it (with the reference resolved to a taxon id first) and the fetch is
+// keyed on what it says, so a view is shareable and back/forward work.
 export default function MultiSyntenyExplorer() {
-  const [initial] = useState(paramsFromUrl)
-  const [geneInput, setGeneInput] = useState(initial.gene)
-  const [refInput, setRefInput] = useState(() => refLabel(initial.ref))
-  const [anchors, setAnchors] = useState(initial.maxAnchors)
-  const [flankBp, setFlankBp] = useState(initial.flankBp)
-  const [query, setQuery] = useState<Query>(initial)
+  const hydrated = useHydrated()
+  const [geneParam, setGeneParam] = useUrlState('gene', 'BRCA1')
+  const [refParam, setRefParam] = useUrlState('ref', '9606')
+  const [anchorsParam, setAnchorsParam] = useUrlState(
+    'anchors',
+    String(DEFAULT_MAX_ANCHORS),
+  )
+  const [flankParam, setFlankParam] = useUrlState(
+    'flank',
+    String(DEFAULT_FLANK_BP),
+  )
+  const gene = geneParam.trim()
+  const ref = localRef(refParam)
+  const maxAnchors = choice(ANCHOR_CHOICES, anchorsParam, DEFAULT_MAX_ANCHORS)
+  const flankBp = choice(FLANK_CHOICES_BP, flankParam, DEFAULT_FLANK_BP)
 
-  // SWR fetches on mount from the URL-derived key and again whenever the query
-  // changes — no effect needed. keepPreviousData holds the current view on screen
-  // (no flicker) while the next one loads.
+  const [refError, setRefError] = useState<unknown>(undefined)
+
+  // SWR supersedes a stale key on its own, so the form stays live while a
+  // build is in flight; keepPreviousData holds the current figure on screen
+  // until the next one lands.
   const { data, error, isValidating } = useSWRImmutable(
-    query.gene
-      ? ['neighborhood', query.gene, query.ref, query.maxAnchors, query.flankBp]
-      : null,
-    async ([, gene, ref, maxAnchors, flank]) =>
-      getNeighborhood(gene, await resolveRefTaxon(ref), {
-        maxAnchors,
-        flankBp: flank,
+    hydrated && gene ? ['neighborhood', gene, ref, maxAnchors, flankBp] : null,
+    async ([, g, r, a, f]) =>
+      getNeighborhood(g, await resolveRefTaxon(r), {
+        maxAnchors: a,
+        flankBp: f,
       }),
     { ...LIVE_QUERY, keepPreviousData: true, revalidateOnFocus: false },
   )
+  // The pair catalog and assembly index behind every drill-down, fetched once
+  // the neighborhood is on screen so the figure's genes render as real links.
+  const { data: drilldown } = useSWRImmutable(
+    data ? 'multi-synteny-drilldown' : null,
+    loadDrilldownData,
+  )
   const trimmed = useMemo(() => (data ? trim(data) : null), [data])
-  const nb = trimmed?.nb ?? null
+  const nb = error ? null : trimmed?.nb
   const eligible = trimmed?.eligible ?? 0
   const loading = isValidating
 
-  const run = (gene: string, ref: string) => {
-    const g = gene.trim()
-    if (g) {
-      setGeneInput(g)
-      setQuery({ gene: g, ref, maxAnchors: anchors, flankBp })
-      const params = new URLSearchParams({
-        gene: g,
-        ref,
-        anchors: String(anchors),
-        flank: String(flankBp),
-      })
-      window.history.replaceState(null, '', `?${params.toString()}`)
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const fd = new FormData(
+      e.currentTarget,
+      e.nativeEvent instanceof SubmitEvent ? e.nativeEvent.submitter : null,
+    )
+    const example = field(fd, 'example')
+    const g = example ? example : field(fd, 'gene')
+    const refText = field(fd, 'ref')
+    if (g && refText) {
+      try {
+        const taxId = await resolveRefTaxon(refText)
+        setRefError(undefined)
+        setGeneParam(g)
+        setRefParam(String(taxId))
+        setAnchorsParam(field(fd, 'anchors'))
+        setFlankParam(field(fd, 'flank'))
+      } catch (err) {
+        setRefError(err)
+      }
     }
   }
 
   return (
     <div>
-      <div className="ui-form">
-        <input
-          className="ui-input"
-          value={geneInput}
-          onChange={e => {
-            setGeneInput(e.target.value)
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              run(geneInput, refInput)
-            }
-          }}
-          placeholder="Gene symbol, e.g. BRCA1"
-          disabled={loading}
-        />
-        <input
-          className="ui-input"
-          list="msv-ref-species"
-          value={refInput}
-          onChange={e => {
-            setRefInput(e.target.value)
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              run(geneInput, refInput)
-            }
-          }}
-          placeholder="Reference species or taxid"
-          disabled={loading}
-          title="Any species name or NCBI taxon id — common species are suggested"
-        />
-        <datalist id="msv-ref-species">
-          {COMMON_SPECIES.map(s => (
-            <option
-              key={s.taxId}
-              value={s.label}
-            />
-          ))}
-        </datalist>
-        <select
-          className="ui-select"
-          value={anchors}
-          onChange={e => {
-            setAnchors(Number(e.target.value))
-          }}
-          disabled={loading}
-          title="How many genes to show: the query gene plus its nearest protein-coding neighbors"
-        >
-          {ANCHOR_CHOICES.map(n => (
-            <option
-              key={n}
-              value={n}
-            >
-              {n} genes
-            </option>
-          ))}
-        </select>
-        <select
-          className="ui-select"
-          value={flankBp}
-          onChange={e => {
-            setFlankBp(Number(e.target.value))
-          }}
-          disabled={loading}
-          title="Search window each side of the query gene for neighbor genes"
-        >
-          {FLANK_CHOICES.map(f => (
-            <option
-              key={f.bp}
-              value={f.bp}
-            >
-              {f.label}
-            </option>
-          ))}
-        </select>
-        <button
-          className="ui-btn"
-          onClick={() => {
-            run(geneInput, refInput)
-          }}
-          disabled={loading || !geneInput.trim() || !refInput.trim()}
-        >
-          {loading ? 'Building…' : 'Build'}
-        </button>
-      </div>
-
-      <div className="msv-examples">
-        <span>Examples:</span>
-        {EXAMPLES.map(g => (
-          <button
-            key={g}
-            className="ui-chip-btn"
-            disabled={loading}
-            onClick={() => {
-              run(g, refInput)
-            }}
+      <form
+        onSubmit={e => {
+          void submit(e)
+        }}
+      >
+        <div className="ui-form">
+          <input
+            key={gene}
+            name="gene"
+            className="ui-input"
+            defaultValue={gene}
+            placeholder="Gene symbol, e.g. BRCA1"
+            required
+          />
+          <input
+            key={refParam}
+            name="ref"
+            className="ui-input"
+            list="msv-ref-species"
+            defaultValue={refLabel(refParam)}
+            placeholder="Reference species or taxid"
+            required
+            title="Any species name or NCBI taxon id — common species are suggested"
+          />
+          <datalist id="msv-ref-species">
+            {COMMON_SPECIES.map(s => (
+              <option
+                key={s.taxId}
+                value={s.label}
+              />
+            ))}
+          </datalist>
+          <select
+            key={maxAnchors}
+            name="anchors"
+            className="ui-select"
+            defaultValue={maxAnchors}
+            title="How many genes to show: the query gene plus its nearest protein-coding neighbors"
           >
-            {g}
+            {ANCHOR_CHOICES.map(n => (
+              <option
+                key={n}
+                value={n}
+              >
+                {n} genes
+              </option>
+            ))}
+          </select>
+          <select
+            key={flankBp}
+            name="flank"
+            className="ui-select"
+            defaultValue={flankBp}
+            title="Search window each side of the query gene for neighbor genes"
+          >
+            {FLANK_CHOICES_BP.map(bp => (
+              <option
+                key={bp}
+                value={bp}
+              >
+                ±{bp / 1000} kb
+              </option>
+            ))}
+          </select>
+          <button
+            type="submit"
+            className="ui-btn"
+          >
+            {loading ? 'Building…' : 'Build'}
           </button>
-        ))}
-      </div>
+        </div>
+
+        <div className="msv-examples">
+          <span>Examples:</span>
+          {EXAMPLES.map(g => (
+            <button
+              key={g}
+              type="submit"
+              name="example"
+              value={g}
+              className="ui-chip-btn"
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+      </form>
 
       {loading && (
         <p className="ui-hint">
-          Querying NCBI orthologs + neighbors across species…
+          Building the {gene} neighborhood. A gene someone has looked at before
+          lands in about a second; the first build of a gene takes 10–20 s of
+          NCBI lookups and is then cached for everyone.
         </p>
       )}
+      <ErrorMessage
+        error={refError}
+        className="ui-error"
+      />
       <ErrorMessage
         error={error}
         className="ui-error"
@@ -247,16 +276,18 @@ export default function MultiSyntenyExplorer() {
       )}
       {nb && nb.species.length > 0 && (
         <p className="ui-hint">
-          <a
-            href={`/orthologs?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
-          >
+          <a href={geneUrl('/orthologs', nb.query.symbol, nb.query.refTaxonId)}>
             View the full ortholog table for {nb.query.symbol} →
           </a>
           {features.proteinBrowser && (
             <>
               {' · '}
               <a
-                href={`/protein-browser?gene=${encodeURIComponent(nb.query.symbol)}&ref=${nb.query.refTaxonId}`}
+                href={geneUrl(
+                  '/protein-browser',
+                  nb.query.symbol,
+                  nb.query.refTaxonId,
+                )}
               >
                 protein browser →
               </a>
@@ -264,7 +295,12 @@ export default function MultiSyntenyExplorer() {
           )}
         </p>
       )}
-      {nb && nb.species.length > 0 && <MultiSyntenyView neighborhood={nb} />}
+      {nb && nb.species.length > 0 && (
+        <MultiSyntenyView
+          neighborhood={nb}
+          drilldown={drilldown}
+        />
+      )}
     </div>
   )
 }

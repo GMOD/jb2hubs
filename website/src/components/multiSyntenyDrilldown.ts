@@ -12,7 +12,7 @@ import {
   specUrl,
   syntenyViewUrl,
 } from './jbrowseLinks.ts'
-import { loadStore } from './orthologDb.ts'
+import { type AssemblyStore, loadStore } from './orthologDb.ts'
 import {
   SYNTENY_FLANK_BP,
   accessionToJbrowseUrl,
@@ -138,9 +138,22 @@ export interface SubtreeLeaf {
   flipped?: boolean
 }
 
-// A multi-level LinearSyntenyView stacks one full genome browser per level, so a
-// huge subtree is unreadable; cap the launch to the nearest leaves (tree order).
-export const MAX_SUBTREE_GENOMES = 15
+// A multi-level LinearSyntenyView stacks one full genome browser per level, and
+// the merge behind it fetches one full config per genome, so a branch point
+// opens this many by default — the leaves nearest the reference — and opening
+// the whole clade is a separate, explicit choice that says how many.
+export const DEFAULT_SUBTREE_GENOMES = 7
+
+// The `n` items around `center` (tree order runs basal→derived, so a head
+// slice of a clade holding the reference would be its most distant members);
+// the head of the list when the center is not in it.
+export function nearestWindow<T>(items: T[], center: number, n: number) {
+  const start = Math.min(
+    Math.max(0, (center >= 0 ? center : 0) - Math.floor(n / 2)),
+    Math.max(0, items.length - n),
+  )
+  return items.slice(start, start + n)
+}
 
 // Build a stacked, tree-ordered LinearSyntenyView URL for a subtree, each genome
 // navigated to its ortholog locus with its gene track open, and a synteny track
@@ -170,16 +183,39 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
   )
 }
 
-// Cap the launch to the nearest leaves (tree order) — a multi-level synteny view
-// stacks one genome browser per level, so a huge subtree is unreadable.
+// The click path for a branch point before the catalog has been prefetched:
+// the caller has already chosen which leaves to open.
 export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
-  const url = subtreeSyntenyUrl(
-    leaves.slice(0, MAX_SUBTREE_GENOMES),
-    await loadPairs(),
-  )
+  const url = subtreeSyntenyUrl(leaves, await loadPairs())
   if (url) {
     window.open(url, '_blank', 'noopener')
   }
+}
+
+// Everything a drill-down url needs besides the clicked gene, loaded once so
+// the figure can render real links: a click that only follows an href is not a
+// popup for the blocker to eat, and it does not wait on an 806 KB index first.
+// Each half degrades the way the click path does — an unloadable catalog is an
+// empty index, an unloadable assembly index answers with the accession verbatim.
+export interface DrilldownData {
+  index: PairIndex
+  hosted: (accession: string) => HostedGenome
+}
+
+function hostedLookup(store: AssemblyStore | undefined) {
+  return (accession: string): HostedGenome =>
+    store ? store.find(accession) : { accession }
+}
+
+export async function loadDrilldownData(): Promise<DrilldownData> {
+  const [index, store] = await Promise.all([
+    loadPairs(),
+    loadStore().then(
+      s => s,
+      () => undefined,
+    ),
+  ])
+  return { index, hosted: hostedLookup(store) }
 }
 
 // What the assembly index says about the genome a clicked gene sits on:

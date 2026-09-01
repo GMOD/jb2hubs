@@ -20,7 +20,7 @@ if (!features.multiSynteny) {
       annotated ortholog, ordered by the NCBI taxonomy — ribbons connect the
       orthologs, so crossings and inversions are local rearrangements.
     </p>
-    <MultiSyntenyExplorer client:only="react" />
+    <MultiSyntenyExplorer client:load />
   </Container>
 </Layout>
 
@@ -75,11 +75,24 @@ if (!features.multiSynteny) {
     cursor: help;
     transition: opacity 0.1s;
   }
-  .msv-legend-item[data-dim] {
-    opacity: 0.3;
+  /* Hover tracing is CSS: the .msv wrapper carries data-focus (an anchor's
+     gene id) or data-clade (a branch point's index), and per-anchor rules the
+     view renders set --msv-on on the matching elements. Everything else dims. */
+  .msv[data-focus] .msv-legend-item {
+    opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
+    font-weight: calc(400 + 300 * var(--msv-on, 0));
   }
-  .msv-legend-item[data-focus] {
-    font-weight: 700;
+  .msv-ribbons path {
+    fill-opacity: 0.25;
+  }
+  .msv[data-focus] .msv-ribbons path {
+    fill-opacity: calc(0.04 + 0.61 * var(--msv-on, 0));
+  }
+  .msv[data-focus] .msv-genes path {
+    fill-opacity: calc(0.18 + 0.82 * var(--msv-on, 0));
+  }
+  .msv svg a:focus-visible {
+    outline: 2px solid var(--accent);
   }
   .msv-swatch {
     width: 12px;
@@ -108,6 +121,7 @@ if (!features.multiSynteny) {
     fill: var(--accent);
     opacity: 0.09;
     pointer-events: none;
+    visibility: hidden;
   }
   .msv-align-btn {
     padding: 5px 12px;
