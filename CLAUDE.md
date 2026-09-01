@@ -389,6 +389,51 @@ order indexed a freshly generated config before enhance had put the policy on it
 otherwise. The CLI rewrites `config.json` in its own layout; `formatConfigs.ts`
 puts those back.
 
+## A hub.txt is refreshed by rsync, not fetched once and kept forever
+
+`downloadHubs.ts` fetched a hub's `hub.txt` the first time the assembly list
+named it and never again outside `--reprocess-all`, so whatever UCSC later did
+to that hub — renamed labels, a RepeatMasker track switched to `bigRmsk`, a new
+liftOver chain to a sibling assembly — never reached its config. Measured
+2026-09-01: 18,846 of 52,720 upstream `hub.txt` files carried an mtime newer
+than our copy, and of 12 sampled 3 differed in content; the first full sync
+changed 278 of them in content.
+
+Three steps in `genark2jbrowse/make.sh`, each one rsync connection, because
+52,000 HEAD requests against hgdownload is the kind of load the track-url
+canary is budgeted to avoid:
+
+- **`listUpstreamHubs.sh`** walks `rsync://hgdownload.soe.ucsc.edu/hubs/GCA/`
+  and `GCF/` with `--list-only`, an include chain that descends exactly four
+  levels and names `hub.txt` there, so it never enters `bbi/`. 52,720 entries
+  in 631 s. It refuses a listing under 10,000 lines: a truncated walk would
+  read as "every hub retired".
+- **`src/staleHubTxt.ts`** prints the paths whose local size or mtime differs
+  from the listing, and `rsync -t --files-from` copies exactly those. `-t`
+  leaves upstream's mtime on the copy, so the comparison is exact from then on
+  and needs no stamp file; a fresh checkout, whose mtimes are checkout times,
+  costs one full copy (all 52,720 in 890 s) and is exact after it.
+  `git status` on `hubs/**/hub.txt` then says which changed in **content**,
+  and those hubs lose their `liftOver/.checked` so the chain probe runs again
+  for them — a refreshed `hub.txt` is how a new chain gets noticed at all.
+- **`downloadHubs.ts`** fetches only hubs with no `hub.txt` yet, and reports
+  every accession the assembly list names that the walk did not find.
+
+The rsync daemon lags the web host by under an hour (192 files changed upstream
+between the first listing and its copy, and were current on the next walk), so
+a few "still stale" entries right after a sync are the window, not a bug.
+
+A failed walk skips the refresh for that run and says so; nothing is deleted on
+either evidence. That report is where **GCF_000001405.40** shows up: UCSC's
+`assemblyList.json` still lists the GRCh38.p14 GenArk hub, but its directory is
+gone from both hgdownload hosts (hub.txt, 2bit, `chrom.sizes` and every bigBed
+404; the API says "genome not found"), so the config we publish for it cannot
+open. The accession page is unaffected — it launches `/ucsc/hg38` — and the
+synteny drilldown already routes around it, but the config is still at its
+permanent url, in `processedHubJson` for Desktop, and is the liftOver target of
+other hubs' synteny tracks. Retiring or re-pointing it is a decision this
+report keeps visible rather than one the pipeline makes.
+
 ## `hubs/` stays in git, and nothing depends on its history
 
 The 52,720 GenArk configs (260k tracked files, 1.5 GB at HEAD) are committed

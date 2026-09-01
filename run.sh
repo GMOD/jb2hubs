@@ -285,7 +285,8 @@ elif [ "$DRY_RUN" = false ]; then
   # hubs/ and hubFirstSeen.json are one change: the file records the run that
   # first built each config, and the website reads it, not the git history.
   echo "Committing hub changes..."
-  git add hubs/ genark2jbrowse/hubFirstSeen.json
+  hub_paths=(hubs/ genark2jbrowse/hubFirstSeen.json)
+  git add "${hub_paths[@]}"
   # Silence only the genuinely-empty case. `git commit || echo "no changes"`
   # reports a hook, lock or index failure as "nothing to commit", so a run that
   # uploads to S3 and then fails to record what it generated looks like a quiet
@@ -297,10 +298,10 @@ elif [ "$DRY_RUN" = false ]; then
   # already staged in the working tree rides along to origin under "Update
   # hubs". That is not hypothetical -- a staged `git rm` of two pipeline scripts
   # shipped this way on 2026-08-05, leaving make.sh calling a deleted file.
-  if git diff --cached --quiet -- hubs/ genark2jbrowse/hubFirstSeen.json; then
+  if git diff --cached --quiet -- "${hub_paths[@]}"; then
     echo "No hub changes to commit"
   else
-    git commit -m "Update hubs" -- hubs/ genark2jbrowse/hubFirstSeen.json
+    git commit -m "Update hubs" -- "${hub_paths[@]}"
   fi
 
   # Decide whether the website needs rebuilding/redeploying. The site is a

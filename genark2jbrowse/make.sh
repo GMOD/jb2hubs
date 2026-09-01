@@ -23,8 +23,8 @@ source "$SCRIPT_DIR/common.sh"
 cd "$SCRIPT_DIR"
 
 # Parse arguments. --all, --reprocess-all and --help are handled by parse_flags;
-# --all is accepted for compatibility and changes nothing.
-PROCESS_ALL=false
+# --all is accepted for compatibility and changes nothing here (parse_flags sets
+# PROCESS_ALL, which only ucsc2jbrowse reads).
 EXPLAIN=false
 USAGE="Usage: $0 [OPTIONS]
 
@@ -60,14 +60,42 @@ fi
 
 ALL_META_FILE=$(mktemp)
 NEEDS_INDEX_FILE=$(mktemp)
-trap 'rm -f "$ALL_META_FILE" "$NEEDS_INDEX_FILE"' EXIT
+UPSTREAM_HUB_LIST=$(mktemp)
+STALE_HUB_TXT=$(mktemp)
+trap 'rm -f "$ALL_META_FILE" "$NEEDS_INDEX_FILE" "$UPSTREAM_HUB_LIST" "$STALE_HUB_TXT"' EXIT
 
 # --- Phase 1: Download hub list and hub.txt files ---
 
 log "Downloading list of hubs..."
 node src/downloadHubList.ts
 
-# Only accessions with no hub.txt yet are fetched (all of them under REPROCESS).
+# A hub.txt was fetched once and never again, so tracks, labels and liftOver
+# chains UCSC adds to an existing hub never reached its config (measured
+# 2026-09-01: about a quarter of the hub.txt files upstream had changed since
+# we fetched them). Refreshed in three steps, one rsync connection each way:
+# list every hub.txt upstream with its size and mtime (two rsync walks, about
+# ten minutes), copy the ones that differ from the local file (rsync -t leaves
+# upstream's mtime on the copy, so the next walk sees them as current), and
+# re-probe the chain directory of any hub whose hub.txt content moved. A failed
+# walk skips the refresh rather than guessing.
+log "Listing upstream hub.txt files..."
+if ./listUpstreamHubs.sh "$UPSTREAM_HUB_LIST"; then
+  export UPSTREAM_HUB_LIST
+  log "Refreshing hub.txt files that changed upstream..."
+  node src/staleHubTxt.ts "$UPSTREAM_HUB_LIST" >"$STALE_HUB_TXT"
+  if [ -s "$STALE_HUB_TXT" ]; then
+    rsync -t --files-from="$STALE_HUB_TXT" rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/
+    git -C .. status --porcelain -- ':(glob)hubs/**/hub.txt' |
+      awk '$1 == "M" { sub(/\/hub\.txt$/, "/liftOver/.checked", $2); print $2 }' |
+      xargs -r rm -f
+  fi
+else
+  log "Upstream listing failed; existing hub.txt files are not refreshed this run"
+  unset UPSTREAM_HUB_LIST
+fi
+
+# Fetches hubs with no hub.txt yet, and reports hubs the assembly list names
+# that the walk above did not find (their configs name files that 404).
 log "Downloading hub.txt files..."
 node src/downloadHubs.ts >/dev/null
 
