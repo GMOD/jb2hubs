@@ -20,10 +20,12 @@ export const features = {
   // The /synteny comparison browser, including its cross-species ortholog gene
   // picker (which is additionally gated on ortholog data being present).
   synteny: staging,
-  // The /orthologs gene-first search page (NCBI-backed). Live in production.
+  // The /gene hub's ortholog species table (NCBI-backed; /orthologs until
+  // 2026-09-01, which now redirects there). Live in production.
   orthologs: true,
-  // The /conserved-gene-order view: tree-ordered ortholog neighborhood showing
-  // conserved gene order (microsynteny) across species.
+  // The /gene hub's conserved-gene-order section: tree-ordered ortholog
+  // neighborhood showing microsynteny across species (/conserved-gene-order
+  // until 2026-09-01, which now redirects). Gates a section, not a page.
   multiSynteny: staging,
   // The /protein-browser view: gene -> ortholog domain-architecture cartoon,
   // connected JBrowse session (collapsed-intron genome + AlphaFold 3D), and an

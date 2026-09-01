@@ -27,9 +27,14 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   page for the proteins-in-the-genome-browser work: the two residue↔codon
   mapping bugs, which structure APIs are asked and why, and how launches are
   verified
-- [GENE_PAGE_CONSOLIDATION.md](GENE_PAGE_CONSOLIDATION.md) — collapsing
-  `/orthologs`, `/conserved-gene-order` and `/protein-browser` into one gene
-  entity page, and why the ortholog-assembler Lambda decides whether it works
+- [GENE_PAGE_CONSOLIDATION.md](GENE_PAGE_CONSOLIDATION.md) — the `/gene` hub
+  that absorbed `/orthologs` and `/conserved-gene-order` on 2026-09-01, why the
+  tools kept their pages, and why the ortholog-assembler Lambda decides whether
+  it works
+- [handoffs/website-landing-2026-09-01.md](handoffs/website-landing-2026-09-01.md)
+  — what each staging flag still needs before it flips, the PIF regeneration the
+  next run starts, the leads already chased (v4.3.0 ignores URL hash params),
+  and the page reorganization that landed
 - [SYNTENY_ALIGNMENT_STRATEGY.md](SYNTENY_ALIGNMENT_STRATEGY.md) — alignment
   tiers behind the multi-way gene-order view
 - [HALSYNTENY_EXTRACTION_PIPELINE.md](HALSYNTENY_EXTRACTION_PIPELINE.md) —

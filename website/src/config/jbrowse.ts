@@ -118,7 +118,7 @@ export function retargetJbrowseUrl(url: string) {
   return url.replace(/^https:\/\/jbrowse\.org\/code\/jb2\/[^/]+/, JBROWSE_BASE)
 }
 
-// The gene-first launches (/orthologs, /conserved-gene-order) go to `main`
+// The gene-first launches (the /gene hub's table and figure) go to `main`
 // rather than to whatever JBROWSE_BASE pins, because those are the only launches
 // that open an NCBI RefSeq GFF3 panel and `latest` cannot draw one.
 //

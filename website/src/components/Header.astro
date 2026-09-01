@@ -3,21 +3,19 @@ import HeaderSearch from './HeaderSearch.astro'
 import Logo from '../logo.astro'
 import { features } from '../config/features.ts'
 
-// Plain links: production has two, and a dropdown for two items is a click
-// that hides them. Gene-centric resources (Orthologs + its conserved-gene-order
-// view) first, then the assembly-level synteny browser. Pangenomes pages exist
-// (staging-gated) but are intentionally NOT linked from the nav yet — the
-// explorer isn't proven enough to feature.
+// Plain links, one per entry point: assemblies (Search), genes (the /gene hub,
+// which holds the ortholog table and the conserved-gene-order figure), then
+// the tools reached from a gene — the synteny browser and the protein browser
+// — and the pangenome collection. Each staging feature appears when its flag
+// does.
 const primaryNavItems = [
   { name: 'Search', href: '/search' },
-  { name: 'Orthologs', href: '/orthologs' },
-  ...(features.multiSynteny
-    ? [{ name: 'Conserved gene order', href: '/conserved-gene-order' }]
-    : []),
+  { name: 'Genes', href: '/gene' },
+  ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
   ...(features.proteinBrowser
     ? [{ name: 'Protein browser', href: '/protein-browser' }]
     : []),
-  ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
+  ...(features.pangenome ? [{ name: 'Pangenomes', href: '/pangenomes' }] : []),
 ]
 
 const secondaryNavItems = [

@@ -26,7 +26,7 @@ through it:
 
 - `specUrl`, `syntenyViewUrl`, `mergeConfig` — `jbrowseLinks.ts`
 - `graphBrowserUrl`, `graphVcfLgvUrl`, `referenceLgvUrl` — `pangenomeLinks.ts`
-- ortholog result launches — `OrthologSearch.tsx`
+- ortholog result launches — `GenePage.tsx` (formerly `GenePage.tsx`)
 
 The plain genome list is the _only_ launch that uses just a hosted config with
 no spec.
@@ -88,9 +88,9 @@ pairs, and variable loci as launchable resources. The dialog then becomes a
 
 ### 4. Orthologs needs an explicit decision
 
-Orthologs is not a static list — `OrthologSearch.tsx` is a live query against
-the NCBI Datasets API filtered to hosted genomes. Desktop can't ship an Astro
-page. Two honest options:
+Orthologs is not a static list — `GenePage.tsx` is a live query against the NCBI
+Datasets API filtered to hosted genomes. Desktop can't ship an Astro page. Two
+honest options:
 
 - **Replicate the behavior**: desktop calls the same NCBI API plus a published
   ortholog index, and builds the result launch via the shared spec builder (#2).

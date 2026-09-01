@@ -8,10 +8,11 @@ literal `true` in `website/src/config/features.ts` rather than tracking
 
 `multiSynteny` and `proteinBrowser` are still staging-only, so a production
 search renders the ortholog table and nothing after it — the "conserved gene
-order" and "protein browser" links (`OrthologSearch.tsx`, gated on those two
-flags) are hidden, and `conserved-gene-order.astro` / `protein-browser.astro`
-redirect to `/`. Those two views are the payoff for running a search, so decide
-whether they should ship alongside orthologs or stay held back.
+order" and "protein browser" links (`GenePage.tsx` (formerly `GenePage.tsx`),
+gated on those two flags) are hidden, and `conserved-gene-order.astro` /
+`protein-browser.astro` redirect to `/`. Those two views are the payoff for
+running a search, so decide whether they should ship alongside orthologs or stay
+held back.
 
 Note the per-row **Synteny** and **Launch multi-species synteny view** links in
 `OrthologResultsTable.tsx` are deliberately _not_ gated: they build JBrowse
@@ -28,10 +29,10 @@ reachable — no longer a link into a redirect.
 ## NCBI access is browser-direct and unkeyed
 
 `website/src/components/ncbiFetch.ts` reads `NCBI_API_KEY` from `process.env`,
-which is always undefined in the client bundle. `OrthologSearch` is a
-`client:load` island, so every visitor runs the unkeyed path (350 ms minimum
-gap, 429/5xx backoff) from their own IP. Fine for individuals; users sharing an
-institutional NAT will collide and lean on the retry backoff.
+which is always undefined in the client bundle. `GenePage` is a `client:load`
+island, so every visitor runs the unkeyed path (350 ms minimum gap, 429/5xx
+backoff) from their own IP. Fine for individuals; users sharing an institutional
+NAT will collide and lean on the retry backoff.
 
 The file's own header comment describes the intended fix — a server-side
 assembler that holds the rate budget once and caches — but there is no
@@ -46,10 +47,10 @@ leaving `/orthologs` on the browser-direct path costs is measured there.
 
 The clade groups come from NCBI's `taxonomy/filtered_subtree` over the result
 taxa — one POST, ~55 KB gzipped and ~1.5 s for a 549-species answer, issued
-_after_ the rows are already on screen (`SearchResults` in
-`OrthologSearch.tsx`). Until it lands the table is one flat group, which renders
-identically minus the headings, and a failure is silent for the same reason:
-nothing the reader asked for is missing.
+_after_ the rows are already on screen (`SearchResults` in `GenePage.tsx`).
+Until it lands the table is one flat group, which renders identically minus the
+headings, and a failure is silent for the same reason: nothing the reader asked
+for is missing.
 
 The alternative was baking a taxon → clade map into `ortholog_index.json` at
 build time. That is 41,517 distinct taxa to classify, so it means a ~4-minute

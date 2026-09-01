@@ -19,11 +19,16 @@ const staging =
 // src/config/features.ts is on. Every one of those flags is `staging` today;
 // a flag promoted to production has to come off this list at the same time,
 // or its pages stay out of the sitemap while being live.
-const STAGING_ONLY = [
+const STAGING_ONLY = ['/protein-browser/', '/pangenomes/', '/synteny/']
+
+// Redirect stubs kept for old links: each is a meta-refresh page whose
+// canonical points at the page it forwards to, so it never belongs in the
+// sitemap, staging or not.
+const REDIRECT_STUBS = [
+  '/orthologs/',
   '/conserved-gene-order/',
-  '/protein-browser/',
-  '/pangenomes/',
-  '/synteny/',
+  '/pangenomes/hprc/',
+  '/pangenomes/mouse/',
 ]
 
 // https://astro.build/config
@@ -43,9 +48,13 @@ export default defineConfig({
       babel: { plugins: ['babel-plugin-react-compiler'] },
     }),
     sitemap({
-      filter: page =>
-        staging ||
-        !STAGING_ONLY.some(prefix => new URL(page).pathname.startsWith(prefix)),
+      filter: page => {
+        const { pathname } = new URL(page)
+        return (
+          !REDIRECT_STUBS.includes(pathname) &&
+          (staging || !STAGING_ONLY.some(prefix => pathname.startsWith(prefix)))
+        )
+      },
     }),
   ],
 })
