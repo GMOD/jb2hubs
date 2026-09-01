@@ -1,147 +1,34 @@
 ---
-import Layout from '../layouts/Layout.astro'
-import Container from '../components/Container.astro'
-import MultiSyntenyExplorer from '../components/MultiSyntenyExplorer.tsx'
-import { features } from '../config/features.ts'
-
-if (!features.multiSynteny) {
-  return Astro.redirect('/')
-}
+// /conserved-gene-order is now a section of the /gene hub (shown there when
+// features.multiSynteny is on). The site is static, so the redirect is
+// client-side; the query string (?gene=&ref=&anchors=&flank=) is the same
+// contract, and the inline script carries it across. The meta refresh is the
+// fallback without JavaScript, where the query is lost but the page is not.
+const target = new URL('/gene', Astro.site)
 ---
 
-<Layout
-  title="Conserved gene order"
-  description="Place a gene and its protein-coding neighbors across every species with an annotated ortholog, ordered by the NCBI taxonomy, to see conserved gene order and local rearrangements."
->
-  <Container>
-    <h1>Conserved gene order across species</h1>
-    <p class="ui-lede">
-      A gene and its protein-coding neighbors across every species with an
-      annotated ortholog, ordered by the NCBI taxonomy — ribbons connect the
-      orthologs, so crossings and inversions are local rearrangements.
-    </p>
-    <MultiSyntenyExplorer client:load />
-  </Container>
-</Layout>
-
-<style is:global>
-  .msv-controls {
-    font-size: 14px;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-  }
-  .msv-modes {
-    margin-left: auto;
-    display: inline-flex;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .msv-modes button {
-    padding: 5px 12px;
-    font-size: 13px;
-    border: none;
-    background: white;
-    cursor: pointer;
-  }
-  .msv-modes button.active {
-    background: var(--accent);
-    color: white;
-  }
-  .msv-orient {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 13px;
-    color: #444;
-    cursor: pointer;
-    user-select: none;
-  }
-  .msv-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-    margin: 0.6rem 0;
-    font-size: 12.5px;
-    color: #444;
-  }
-  .msv-legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    cursor: help;
-    transition: opacity 0.1s;
-  }
-  /* Hover tracing is CSS: the .msv wrapper carries data-focus (an anchor's
-     gene id) or data-clade (a branch point's index), and per-anchor rules the
-     view renders set --msv-on on the matching elements. Everything else dims. */
-  .msv[data-focus] .msv-legend-item {
-    opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
-    font-weight: calc(400 + 300 * var(--msv-on, 0));
-  }
-  .msv-ribbons path {
-    fill-opacity: 0.25;
-  }
-  .msv[data-focus] .msv-ribbons path {
-    fill-opacity: calc(0.04 + 0.61 * var(--msv-on, 0));
-  }
-  .msv[data-focus] .msv-genes path {
-    fill-opacity: calc(0.18 + 0.82 * var(--msv-on, 0));
-  }
-  .msv svg a:focus-visible {
-    outline: 2px solid var(--accent);
-  }
-  .msv-swatch {
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    display: inline-block;
-  }
-  .msv-scroll {
-    max-height: 75vh;
-    overflow: auto;
-    border: 1px solid #eee;
-    border-radius: 4px;
-  }
-  .msv-label {
-    font-size: 11px;
-    fill: #333;
-  }
-  .msv-node-dot {
-    fill: var(--accent);
-    opacity: 0.5;
-  }
-  .msv-treenodes g:hover .msv-node-dot {
-    opacity: 1;
-  }
-  .msv-band {
-    fill: var(--accent);
-    opacity: 0.09;
-    pointer-events: none;
-    visibility: hidden;
-  }
-  .msv-align-btn {
-    padding: 5px 12px;
-    font-size: 13px;
-    border: 1px solid var(--accent);
-    border-radius: 4px;
-    background: white;
-    color: var(--accent);
-    cursor: pointer;
-  }
-  .msv-align-btn:hover {
-    background: var(--accent-wash);
-  }
-  .msv-examples {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin: 0 0 1rem;
-    font-size: 13px;
-    color: #666;
-  }
-</style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Gene</title>
+    <link
+      rel="canonical"
+      href={target.href}
+    />
+    <meta
+      http-equiv="refresh"
+      content="0; url=/gene"
+    />
+    <script is:inline>
+      location.replace('/gene' + location.search)
+    </script>
+  </head>
+  <body>
+    <p>Conserved gene order moved to <a href="/gene">/gene</a>.</p>
+  </body>
+</html>

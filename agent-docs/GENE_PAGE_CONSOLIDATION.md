@@ -256,3 +256,60 @@ rather than a whole section of the hub shipping dark.
 draws itself from NCBI data, and it is already served by the Lambda. It is the
 one staging view that could ship tomorrow, which makes it the natural second
 section.
+
+## Built 2026-09-01: the hub landed, as `/gene?gene=&ref=`
+
+Step 2 of the order of work shipped, in the hub shape the amendment decided on,
+and step 1 (the assembler serving identity and the table) did not — the ortholog
+and identity layers still resolve in the browser.
+
+What landed:
+
+- **`/gene`** (`website/src/pages/gene.astro`, `components/GenePage.tsx`): one
+  form (gene box, free-text reference species, example chips, the `/orthologs`
+  help dialog), then an identity header, the ortholog species table, the
+  conserved-gene-order figure, and launch cards. The URL is the query —
+  `?gene=&ref=` plus `scope=` for the table and `anchors=`/`flank=` for the
+  figure, all through `useUrlState`, so every deep link the two old pages
+  accepted resolves here unchanged.
+- **One resolution.** `components/geneHub.ts`'s `resolveGeneIdentity` (taxon →
+  GeneID → esummary) is one SWR key, and every section is keyed on its answer:
+  the table on `geneId`, the figure on NCBI's spelling of the symbol plus the
+  gene's own taxon. The identity header is the esummary fields the ortholog
+  search used to fetch and throw away, plus NCBI Gene, Ensembl (a symbol search
+  — the identity carries no Ensembl id) and taxonomy links.
+- **Sections fail on their own.** Each has its own SWR state and error line; a
+  Lambda 504 on the figure leaves the table standing and vice versa.
+- **The figure is gated on `features.multiSynteny`** and renders nothing when
+  off, so production shows the identity, the table and the cards.
+- **Launch cards**: `/protein-browser?gene=<symbol>&ref=<taxid>` behind
+  `features.proteinBrowser`, and
+  `/synteny?assembly=<ucscDb or accession>&gene=<geneId>:<symbol>` behind
+  `features.synteny`, the assembly being the reference row's genome from the
+  ortholog table (so the card appears once that table has an answer).
+- **`/orthologs` and `/conserved-gene-order` are redirect stubs**: an inline
+  `location.replace('/gene' + location.search)`, a meta refresh to `/gene`
+  without JavaScript, canonical `/gene`. `OrthologSearch.tsx` and
+  `MultiSyntenyExplorer.tsx` are deleted; `OrthologResultsTable` and
+  `MultiSyntenyView` survived unchanged, as predicted. The file-scoped
+  `react/set-state-in-effect` override went with the shell it excused — the hub
+  reads the URL through `useUrlState` and needs no effect.
+
+Verified in a staging dev server with puppeteer: `TP53`/human (652 rows, 830
+figure paths), `Trp53`/mouse (the identity reports mouse, and the synteny card
+names `mm39`), `/orthologs?…&scope=primates` and
+`/conserved-gene-order?…&anchors=7` both landing on `/gene` with their query
+intact, zero console errors.
+
+What remains of the order of work:
+
+- **Step 1**, extending `aws/ortholog-assembler` to serve identity and the
+  ortholog table. `geneHub.ts` is the seam: `resolveGeneIdentity` and
+  `fetchOrthologSet` are the two calls a `*Client.ts` in the shape of
+  `neighborhoodClient.ts` would front. Until then the table costs the visitor's
+  browser 3 serialized NCBI calls (taxon, symbol, esummary) plus the ortholog
+  report, and the figure waits on the first three before it asks the Lambda.
+- **Prerendering** human protein-coding genes with `getStaticPaths` — needs step
+  1's cached JSON to be worth doing.
+- **The nav** still has to state the hierarchy (hub first, tools reached from
+  it); `Header.astro` and the home page are the lead's.

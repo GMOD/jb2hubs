@@ -1,253 +1,33 @@
 ---
-import Layout from '../../layouts/Layout.astro'
-import Container from '../../components/Container.astro'
-import OrthologSearch from '../../components/OrthologSearch.tsx'
+// /orthologs is now the ortholog section of the /gene hub. The site is static,
+// so the redirect is client-side; the query string (?gene=&ref=&scope=) is the
+// same contract, and the inline script carries it across. The meta refresh is
+// the fallback without JavaScript, where the query is lost but the page is not.
+const target = new URL('/gene', Astro.site)
 ---
 
-<Layout
-  title="Ortholog Browser"
-  description="Search a gene symbol and see its orthologs across every species we host, with genomic locations, one-click JBrowse 2 links, and pairwise synteny views where an alignment exists."
->
-  <Container>
-    <h1>Ortholog Gene Search</h1>
-    <p class="ui-lede">
-      A gene&rsquo;s orthologs across every species we host, grouped by clade,
-      each one a click from JBrowse 2.
-    </p>
-
-    <OrthologSearch client:load />
-  </Container>
-</Layout>
-
-<style is:global>
-  /* A statement about the answer's shape rather than about a failure — the
-     reference falling outside a scoped search, which is why its column of
-     synteny links is empty. */
-  .orthologs-note {
-    padding: 8px 12px;
-    font-size: 13px;
-    color: var(--muted);
-    background: var(--surface-alt);
-    border-left: 3px solid var(--border);
-  }
-
-  .orthologs-summary {
-    margin: 1.25rem 0 0.75rem;
-    font-size: 14px;
-    color: #444;
-  }
-
-  .orthologs-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-
-  .orthologs-table th,
-  .orthologs-table td {
-    text-align: left;
-    padding: 7px 10px;
-    border-bottom: 1px solid #eee;
-    vertical-align: top;
-  }
-
-  .orthologs-table th {
-    font-weight: 600;
-    color: #444;
-    border-bottom: 2px solid #ddd;
-    white-space: nowrap;
-  }
-
-  .orthologs-table a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-
-  .orthologs-table a:hover {
-    text-decoration: underline;
-  }
-
-  .orthologs-loc {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 13px;
-    white-space: nowrap;
-  }
-
-  .orthologs-actions {
-    white-space: nowrap;
-  }
-
-  .orthologs-ref-label {
-    margin-left: 6px;
-    padding: 1px 6px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--accent-wash);
-    border-radius: 3px;
-  }
-
-  .orthologs-model-label {
-    margin-left: 6px;
-    padding: 1px 6px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-  }
-
-  /* What the gene actually is, above the species table: a symbol on its own
-     doesn't tell a reader whether they got the gene they meant. */
-  .orthologs-gene-card {
-    margin: 1.5rem 0 0.5rem;
-    padding: 12px 14px;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-  }
-
-  .orthologs-gene-title {
-    margin: 0;
-    font-size: 18px;
-  }
-
-  .orthologs-gene-desc {
-    font-weight: 400;
-    color: var(--muted);
-  }
-
-  .orthologs-gene-meta,
-  .orthologs-gene-aliases {
-    margin: 4px 0 0;
-    font-size: 13px;
-    color: var(--muted);
-  }
-
-  .orthologs-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
-    margin: 0.75rem 0;
-  }
-
-  .orthologs-filter {
-    flex: 1 1 260px;
-    min-width: 200px;
-  }
-
-  .orthologs-toggle,
-  .orthologs-count {
-    font-size: 13px;
-    color: var(--muted);
-    white-space: nowrap;
-  }
-
-  .orthologs-toggle {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  /* One collapsible clade section. The heading is the whole click target, so a
-     several-hundred-row answer opens a group at a time. */
-  .orthologs-group + .orthologs-group {
-    margin-top: 0.5rem;
-  }
-
-  .orthologs-group-head {
-    margin: 0;
-    font-size: 14px;
-  }
-
-  .orthologs-group-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 6px 4px;
-    font: inherit;
-    font-weight: 600;
-    color: var(--text);
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-  }
-
-  .orthologs-group-btn:hover {
-    color: var(--accent);
-  }
-
-  .orthologs-caret {
-    width: 1em;
-    color: var(--muted);
-  }
-
-  .orthologs-multi {
-    margin: 1.25rem 0 0.75rem;
-  }
-
-  .orthologs-multi .orthologs-summary {
-    margin: 0 0 0.5rem;
-  }
-
-  /* The stack order, which is the part a reader has to be able to check: the
-     chain is a path through the synteny catalog, not a phylogeny. */
-  .orthologs-chain {
-    color: var(--muted);
-    font-size: 13px;
-  }
-
-  .orthologs-multi-toggle {
-    font-size: 13px;
-  }
-
-  .orthologs-picker {
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    background: var(--surface-alt);
-    border: 1px solid var(--border);
-  }
-
-  .orthologs-picker-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 2px 1rem;
-    max-height: 320px;
-    padding: 0;
-    margin: 0.5rem 0;
-    overflow-y: auto;
-    list-style: none;
-  }
-
-  .orthologs-pick {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    font-size: 13px;
-  }
-
-  .orthologs-pick:has(input:disabled) {
-    color: var(--muted);
-  }
-
-  /* Chosen, but the chain had nowhere to put it — flagged rather than silently
-     dropped, which is what made the old auto-chain look arbitrary. */
-  .orthologs-pick-unplaced {
-    color: var(--muted);
-    text-decoration: line-through solid var(--border);
-  }
-
-  .orthologs-group-count {
-    padding: 0 7px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted);
-    background: var(--surface-alt);
-    border-radius: 999px;
-  }
-</style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Gene</title>
+    <link
+      rel="canonical"
+      href={target.href}
+    />
+    <meta
+      http-equiv="refresh"
+      content="0; url=/gene"
+    />
+    <script is:inline>
+      location.replace('/gene' + location.search)
+    </script>
+  </head>
+  <body>
+    <p>The ortholog search moved to <a href="/gene">/gene</a>.</p>
+  </body>
+</html>

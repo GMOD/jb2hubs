@@ -5,7 +5,6 @@ import {
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
-import { DEFAULT_SCOPE } from './orthologClades.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
 import type { AssemblyStore } from './orthologDb.ts'
@@ -62,8 +61,8 @@ export function refLabel(ref: string) {
   return COMMON_SPECIES.find(s => String(s.taxId) === ref)?.label ?? ref
 }
 
-// The ?gene=&ref= link shape the gene-first pages (/orthologs,
-// /conserved-gene-order, /protein-browser) all read back on mount.
+// The ?gene=&ref= link shape the gene-first pages (/gene, /protein-browser)
+// all read back on mount.
 export function geneUrl(path: string, symbol: string, taxId: number) {
   return `${path}?gene=${encodeURIComponent(symbol)}&ref=${taxId}`
 }
@@ -73,18 +72,6 @@ export function geneUrl(path: string, symbol: string, taxId: number) {
 // was typed, so the link still means the same thing later.
 export function syncGeneUrl(symbol: string, taxId: number) {
   window.history.replaceState(null, '', geneUrl('', symbol, taxId))
-}
-
-// The ortholog page's own link, which additionally carries the clade the search
-// was scoped to. The default scope is left out so the common link stays the
-// same shape the other gene-first pages read.
-export function orthologSearchUrl(
-  symbol: string,
-  taxId: number,
-  scopeId: string,
-) {
-  const base = geneUrl('', symbol, taxId)
-  return scopeId === DEFAULT_SCOPE.id ? base : `${base}&scope=${scopeId}`
 }
 
 // NCBI Datasets API response shapes

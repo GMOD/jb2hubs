@@ -1,0 +1,404 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Container from '../components/Container.astro'
+import GenePage from '../components/GenePage.tsx'
+---
+
+<Layout
+  title="Gene"
+  description="Look up a gene in a reference species and see it across every genome we host: its orthologs grouped by clade with one-click JBrowse 2 launches, its conserved gene-order neighborhood across the tree, and the deep tools it opens into."
+>
+  <Container>
+    <h1>Gene</h1>
+    <p class="ui-lede">
+      A gene across every genome we host: its orthologs grouped by clade, each a
+      click from JBrowse 2, and where the flag is on, its neighborhood drawn
+      across the tree of life.
+    </p>
+
+    <GenePage client:load />
+  </Container>
+</Layout>
+
+<style is:global>
+  .gene-section {
+    margin-top: 2rem;
+  }
+
+  .gene-section-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .gene-section-head h2 {
+    margin: 0;
+    margin-right: auto;
+    font-size: 18px;
+  }
+
+  .gene-scope {
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .gene-launches {
+    padding: 0;
+    margin: 0.5rem 0 0;
+    list-style: none;
+  }
+
+  .gene-launches li {
+    margin: 0.35rem 0;
+  }
+
+  .gene-launches span {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* A statement about the answer's shape rather than about a failure — the
+     reference falling outside a scoped search, which is why its column of
+     synteny links is empty. */
+  .orthologs-note {
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--surface-alt);
+    border-left: 3px solid var(--border);
+  }
+
+  .orthologs-summary {
+    margin: 1.25rem 0 0.75rem;
+    font-size: 14px;
+    color: #444;
+  }
+
+  .orthologs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  .orthologs-table th,
+  .orthologs-table td {
+    text-align: left;
+    padding: 7px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+  }
+
+  .orthologs-table th {
+    font-weight: 600;
+    color: #444;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+  }
+
+  .orthologs-table a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .orthologs-table a:hover {
+    text-decoration: underline;
+  }
+
+  .orthologs-loc {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .orthologs-actions {
+    white-space: nowrap;
+  }
+
+  .orthologs-ref-label {
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-wash);
+    border-radius: 3px;
+  }
+
+  .orthologs-model-label {
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+  }
+
+  /* What the gene actually is, above everything else: a symbol on its own
+     doesn't tell a reader whether they got the gene they meant. */
+  .orthologs-gene-card {
+    margin: 1.5rem 0 0.5rem;
+    padding: 12px 14px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .orthologs-gene-title {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .orthologs-gene-desc {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .orthologs-gene-meta,
+  .orthologs-gene-aliases {
+    margin: 4px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .orthologs-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
+  .orthologs-filter {
+    flex: 1 1 260px;
+    min-width: 200px;
+  }
+
+  .orthologs-toggle,
+  .orthologs-count {
+    font-size: 13px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .orthologs-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* One collapsible clade section. The heading is the whole click target, so a
+     several-hundred-row answer opens a group at a time. */
+  .orthologs-group + .orthologs-group {
+    margin-top: 0.5rem;
+  }
+
+  .orthologs-group-head {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .orthologs-group-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 6px 4px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--text);
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
+
+  .orthologs-group-btn:hover {
+    color: var(--accent);
+  }
+
+  .orthologs-caret {
+    width: 1em;
+    color: var(--muted);
+  }
+
+  .orthologs-multi {
+    margin: 1.25rem 0 0.75rem;
+  }
+
+  .orthologs-multi .orthologs-summary {
+    margin: 0 0 0.5rem;
+  }
+
+  /* The stack order, which is the part a reader has to be able to check: the
+     chain is a path through the synteny catalog, not a phylogeny. */
+  .orthologs-chain {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  .orthologs-multi-toggle {
+    font-size: 13px;
+  }
+
+  .orthologs-picker {
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+  }
+
+  .orthologs-picker-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 2px 1rem;
+    max-height: 320px;
+    padding: 0;
+    margin: 0.5rem 0;
+    overflow-y: auto;
+    list-style: none;
+  }
+
+  .orthologs-pick {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 13px;
+  }
+
+  .orthologs-pick:has(input:disabled) {
+    color: var(--muted);
+  }
+
+  /* Chosen, but the chain had nowhere to put it — flagged rather than silently
+     dropped, which is what made the old auto-chain look arbitrary. */
+  .orthologs-pick-unplaced {
+    color: var(--muted);
+    text-decoration: line-through solid var(--border);
+  }
+
+  .orthologs-group-count {
+    padding: 0 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-alt);
+    border-radius: 999px;
+  }
+
+  /* The conserved-gene-order figure. */
+  .msv-controls {
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .msv-modes {
+    margin-left: auto;
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .msv-modes button {
+    padding: 5px 12px;
+    font-size: 13px;
+    border: none;
+    background: white;
+    cursor: pointer;
+  }
+  .msv-modes button.active {
+    background: var(--accent);
+    color: white;
+  }
+  .msv-orient {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #444;
+    cursor: pointer;
+    user-select: none;
+  }
+  .msv-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0.6rem 0;
+    font-size: 12.5px;
+    color: #444;
+  }
+  .msv-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: help;
+    transition: opacity 0.1s;
+  }
+  /* Hover tracing is CSS: the .msv wrapper carries data-focus (an anchor's
+     gene id) or data-clade (a branch point's index), and per-anchor rules the
+     view renders set --msv-on on the matching elements. Everything else dims. */
+  .msv[data-focus] .msv-legend-item {
+    opacity: calc(0.3 + 0.7 * var(--msv-on, 0));
+    font-weight: calc(400 + 300 * var(--msv-on, 0));
+  }
+  .msv-ribbons path {
+    fill-opacity: 0.25;
+  }
+  .msv[data-focus] .msv-ribbons path {
+    fill-opacity: calc(0.04 + 0.61 * var(--msv-on, 0));
+  }
+  .msv[data-focus] .msv-genes path {
+    fill-opacity: calc(0.18 + 0.82 * var(--msv-on, 0));
+  }
+  .msv svg a:focus-visible {
+    outline: 2px solid var(--accent);
+  }
+  .msv-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .msv-scroll {
+    max-height: 75vh;
+    overflow: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+  }
+  .msv-label {
+    font-size: 11px;
+    fill: #333;
+  }
+  .msv-node-dot {
+    fill: var(--accent);
+    opacity: 0.5;
+  }
+  .msv-treenodes g:hover .msv-node-dot {
+    opacity: 1;
+  }
+  .msv-band {
+    fill: var(--accent);
+    opacity: 0.09;
+    pointer-events: none;
+    visibility: hidden;
+  }
+  .msv-align-btn {
+    padding: 5px 12px;
+    font-size: 13px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    background: white;
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .msv-align-btn:hover {
+    background: var(--accent-wash);
+  }
+</style>

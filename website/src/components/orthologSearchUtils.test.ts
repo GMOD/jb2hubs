@@ -7,7 +7,6 @@ import {
   buildMultiSyntenyUrl,
   buildOrthologResults,
   matchesQuery,
-  orthologSearchUrl,
   orthologsToTsv,
   planMultiSynteny,
   refLabel,
@@ -568,14 +567,6 @@ test('matchesQuery ANDs terms across species, symbol and accession', () => {
 // The scope rides in the url so a shared link reproduces the same answer, but
 // the default is left off — the other gene-first pages read ?gene=&ref= and a
 // third param on every link would be noise.
-test('orthologSearchUrl carries a non-default scope only', () => {
-  assert.equal(orthologSearchUrl('BRCA1', 9606, 'all'), '?gene=BRCA1&ref=9606')
-  assert.equal(
-    orthologSearchUrl('BRCA1', 9606, 'mammals'),
-    '?gene=BRCA1&ref=9606&scope=mammals',
-  )
-})
-
 // Tab-separated, because the common names carry commas and nothing here can
 // carry a tab — so the export needs no quoting rules to stay parseable.
 test('orthologsToTsv emits a header plus one line per row', () => {

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
-import { features } from '../config/features.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
@@ -515,15 +514,9 @@ function GeneResults({
       )}
 
       <p className="ui-hint">
-        <a href={geneUrl('/orthologs', symbol, taxId)}>Ortholog table</a>
-        {features.multiSynteny && (
-          <>
-            {' · '}
-            <a href={geneUrl('/conserved-gene-order', symbol, taxId)}>
-              Conserved gene order
-            </a>
-          </>
-        )}
+        <a href={geneUrl('/gene', symbol, taxId)}>
+          {symbol} gene page — orthologs and conserved gene order →
+        </a>
       </p>
     </>
   )

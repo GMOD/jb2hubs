@@ -66,7 +66,7 @@ function clearHover(e: MouseEvent<HTMLDivElement>) {
 }
 
 // One rule per anchor and per branch point; the static half (what dims, what a
-// lit element looks like) is in conserved-gene-order.astro. Rendered only on the
+// lit element looks like) is in gene.astro. Rendered only on the
 // client, so the selector quotes reach the sheet verbatim.
 function hoverRules(anchors: Anchor[], cladeCount: number) {
   const focus = anchors.map(
