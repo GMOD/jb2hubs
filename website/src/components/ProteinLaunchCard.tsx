@@ -56,6 +56,7 @@ export default function ProteinLaunchCard({
   alignment,
   superposed,
   onRemoveSuperposed,
+  queryRow,
   selectedDomain,
   onClearDomain,
 }: {
@@ -64,6 +65,8 @@ export default function ProteinLaunchCard({
   // ortholog rows the reader asked to superpose, by Swiss-Prot accession
   superposed: ProteinPanelRow[]
   onRemoveSuperposed: (uniprot: string) => void
+  // the panel's row for the query gene, whose protein the domains are on
+  queryRow: ProteinPanelRow | undefined
   selectedDomain: Domain | undefined
   onClearDomain: () => void
 }) {
@@ -132,6 +135,15 @@ export default function ProteinLaunchCard({
     const missingModels = (extras ?? [])
       .filter(e => !e.model)
       .map(e => e.accession)
+    // A domain is a range on the query row's protein; the plugin lights
+    // structure residues. The two agree when the model was folded from the
+    // transcript's own translation and that is the row's protein. A PDB entry
+    // numbers its observed chain, and a different isoform shifts the range.
+    const domainExact =
+      chosen === 'alphafold' &&
+      !!model &&
+      model.sequence === launched.proteinSequence &&
+      queryRow?.length === model.sequence.length
     return {
       launched,
       model,
@@ -140,6 +152,7 @@ export default function ProteinLaunchCard({
       primary,
       found,
       missingModels,
+      domainExact,
       ...buildSessionUrl({
         structure: launched,
         primary,
@@ -162,6 +175,7 @@ export default function ProteinLaunchCard({
     choice,
     experimental,
     extras,
+    queryRow,
     selectedDomain,
     collapse,
     flip,
@@ -175,6 +189,7 @@ export default function ProteinLaunchCard({
     primary,
     found,
     missingModels,
+    domainExact,
     session,
     url,
   } = launch
@@ -331,6 +346,15 @@ export default function ProteinLaunchCard({
                 {selectedDomain.name} {selectedDomain.start}–
                 {selectedDomain.end} ×
               </button>
+            </span>
+            <span className="ui-caption">
+              {!primary
+                ? 'needs a structure'
+                : domainExact
+                  ? 'lit on load in all three views'
+                  : chosen === 'alphafold'
+                    ? 'approximate: the model is a different isoform'
+                    : 'approximate: PDB residue numbering'}
             </span>
           </div>
         )}

@@ -346,6 +346,7 @@ function GeneResults({
         onRemoveSuperposed={u => {
           toggleSuperpose(u)
         }}
+        queryRow={panel?.rows.find(r => r.taxId === panel.query.refTaxonId)}
         selectedDomain={selectedDomain}
         onClearDomain={() => {
           setSelectedDomain(undefined)

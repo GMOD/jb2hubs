@@ -5,13 +5,14 @@
 // sends `access-control-allow-origin: *`, so this runs from the browser.
 //
 // EBI requires a contact email and validates that its domain has a real MX
-// record (jbrowse.org is rejected, gmail is fine), so this is a real address.
+// record (jbrowse.org is rejected), so this is the project's real mailbox. It
+// ships to every visitor, since the job is submitted from their browser.
 
 import { delay } from '../lib/delay.ts'
 
 const CLUSTALO = 'https://www.ebi.ac.uk/Tools/services/rest/clustalo'
 
-export const EBI_EMAIL = 'colin.diesh@gmail.com'
+export const EBI_EMAIL = 'jbrowse2@berkeley.edu'
 
 interface ClustalOptions {
   email?: string

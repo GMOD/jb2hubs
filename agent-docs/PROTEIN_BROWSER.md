@@ -99,9 +99,9 @@ the field; a chip built before that shows no toggles.
 - **Domain → `initialSelection`.** Clicking a CDD domain on the query row opens
   the session with that residue range lit in all three views. The range is in
   the row's protein coordinates and the plugin wants structure residues, so it
-  is exact when the structure was folded from that protein and offset by the
-  isoform difference otherwise — the card says "highlighted at launch", not
-  "exactly these residues".
+  is exact when the model was folded from the transcript's own translation and
+  that is the row's protein; a different isoform shifts it and a PDB entry
+  numbers its observed chain. The card says which, beside the chip.
 - **Variant tracks.** `pickVariantTracks` in `genomeTarget.ts` opens
   `<db>-clinvarMain` and `<db>-alphaMissense` where the config has them (hg38
   and hg19 today), which is the pairing the paper's BRAF V600 case study is
@@ -124,9 +124,6 @@ touching the resolution or session code.
 
 ## Still open
 
-- The EBI Clustal Omega contact address in `ebiAlign.ts` is a personal one,
-  shipped to every visitor. EBI requires a real mailbox; it should be a role
-  address before this is a landing page.
 - The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB
   unfiltered and 326 KB with `?provider=pdbe` (lowercase; `PDBe` 404s), which
   the fetch now passes. It is fetched once per gene, after the card renders, and
