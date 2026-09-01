@@ -5,13 +5,22 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import '../styles/common-table.css'
 
-// Read blockedFiles.json from project root (a symlink to
-// ucsc2jbrowse/blockedFiles.json, which mergeFileAccessCache.ts writes with the
-// blocked entries only — the accessible ones stay in ucsc2jbrowse/fileAccessCache/)
-const blockedFilesPath = join(process.cwd(), 'blockedFiles.json')
-const blockedData = JSON.parse(
-  await readFile(blockedFilesPath, 'utf-8'),
-) as Record<
+// Both files are symlinks into ucsc2jbrowse/, where make.sh deletes them at the
+// start of a run and mergeFileAccessCache.ts / mergeRemovedTracks.ts rewrite
+// them at the end. A build that lands inside that window must not fail on
+// ENOENT; it renders the page with a note instead.
+async function readJsonIfPresent(name: string) {
+  const path = join(process.cwd(), name)
+  return readFile(path, 'utf-8').then(
+    text => JSON.parse(text) as unknown,
+    () => undefined,
+  )
+}
+
+// blockedFiles.json holds the blocked entries only — the accessible ones stay
+// in ucsc2jbrowse/fileAccessCache/
+const blockedJson = await readJsonIfPresent('blockedFiles.json')
+const blockedData = (blockedJson ?? {}) as Record<
   string,
   { blocked: boolean; lastChecked: number; trackName?: string }
 >
@@ -27,17 +36,15 @@ const files = Object.entries(blockedData)
   }))
   .sort((a, b) => b.lastChecked - a.lastChecked)
 
-// Read removedTracks.json from project root
-const removedTracksPath = join(process.cwd(), 'removedTracks.json')
-
-const removedTracks = JSON.parse(
-  await readFile(removedTracksPath, 'utf-8'),
-) as Array<{
+const removedJson = await readJsonIfPresent('removedTracks.json')
+const removedTracks = (removedJson ?? []) as Array<{
   trackId: string
   name: string
   reason: string
   assembly: string
 }>
+const dataBeingRegenerated =
+  blockedJson === undefined || removedJson === undefined
 
 // 41K individual filtered tracks made this a 7.9MB document, and an
 // undifferentiated list of them answers nobody's question. What a visitor wants to
@@ -77,6 +84,14 @@ function formatDate(timestamp: number): string {
 >
   <Container>
     <h3>Unavailable tracks</h3>
+    {
+      dataBeingRegenerated && (
+        <p>
+          The pipeline is regenerating this list; it is incomplete until the
+          next site build.
+        </p>
+      )
+    }
     <p>
       This is a list of tracks that are available at UCSC, but which we were not
       able to download, generally due to licensing restrictions. See <a

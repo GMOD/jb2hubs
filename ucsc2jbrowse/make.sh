@@ -278,7 +278,7 @@ explain_reason_groups() {
 }
 
 explain_run() {
-  local total=0 name reason count age
+  local total=0 name age
   echo
   echo "=== ucsc2jbrowse --explain ======================================="
   echo
