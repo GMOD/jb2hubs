@@ -29,6 +29,14 @@ echo ""
 # changes on every converter edit including ones that leave every config
 # byte-identical, so syncing it would turn a comment-only change to a .ts file
 # into 238 "changed" objects and a full site redeploy.
+#
+# tracks.json is the parsed trackDb the derivation scripts and buildConfigs.ts
+# read (32MB on hg38, 136MB over the corpus) and *.bak is an old editor
+# leftover; neither is named by any config. Both had been shipping, and were
+# live at jbrowse.org/ucsc/hg38/tracks.json on 2026-09-01. An exclude keeps
+# them out of future syncs but does not delete what is already in the bucket
+# -- rclone leaves excluded objects alone on both sides -- so clearing those is
+# a one-off `rclone delete --include tracks.json --include '*.bak'`.
 echo "Syncing files (data + indexes via rclone hasher)..."
 total_changed=$(rclone_sync_with_indexes \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
@@ -39,7 +47,9 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "*.xxh" \
   --exclude "*.checked" \
   --exclude "*_meta.json" \
-  --exclude "*/vs/*")
+  --exclude "*/vs/*" \
+  --exclude "tracks.json" \
+  --exclude "*.bak")
 
 echo ""
 
