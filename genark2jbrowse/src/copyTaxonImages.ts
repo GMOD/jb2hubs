@@ -43,13 +43,6 @@ function main() {
 
     try {
       fs.copyFileSync(taxonImageFile, destPath)
-
-      // Clean up old notfound sentinel if present
-      const notfoundPath = destPath + '.notfound'
-      if (fs.existsSync(notfoundPath)) {
-        fs.unlinkSync(notfoundPath)
-      }
-
       copied++
     } catch (e) {
       errors++
