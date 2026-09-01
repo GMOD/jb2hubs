@@ -270,7 +270,18 @@ rclone_sync_with_indexes() {
 export -f rclone_sync_with_indexes
 
 # Creates a directory if it doesn't exist.
+#
+# A symlink that does not resolve to a directory is replaced by a real one.
+# hgdownload publishes several golden-path assemblies as symlinks (cb1 ->
+# cbJul2002), and one of those landing in the downloads tree leaves a dangling
+# link that `mkdir -p` refuses with "File exists" on every later run. Dropping
+# the link cannot lose data -- only the link is removed, never its target, and a
+# link that does resolve to a directory is left alone.
 ensure_dir() {
+  if [ -L "$1" ] && [ ! -d "$1" ]; then
+    echo "ensure_dir: replacing dangling symlink $1 -> $(readlink "$1")" >&2
+    rm -f "$1"
+  fi
   mkdir -p "$1"
 }
 export -f ensure_dir

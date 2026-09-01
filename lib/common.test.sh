@@ -4,7 +4,8 @@
 #
 # Tests for helpers in lib/common.sh: make_file_listing, parse_flags,
 # needs_gff_fetch, needs_rebuild / save_rebuild_stamp, source_tree_hash,
-# rclone_sync_with_indexes, assert_bgzip_toolchain and run_parallel_reporting.
+# rclone_sync_with_indexes, ensure_dir, assert_bgzip_toolchain and
+# run_parallel_reporting.
 # Run: ./lib/common.test.sh
 #
 
@@ -344,6 +345,34 @@ check "differing stamp prints the caller's consequence" "yes" \
 check "explain_stamp does not touch the stamp" "old999" "$(cat "$es_stamp")"
 
 rm -rf "$es"
+
+# --- ensure_dir ---
+#
+# hgdownload's goldenPath tree publishes cb1 as a symlink to cbJul2002, and the
+# copy of it that reached the downloads directory was dangling, so every run's
+# `mkdir -p` died with "File exists" before cb1 could sync.
+
+ed=$(mktemp -d)
+ln -s missing-target "$ed/dangling"
+ensure_dir "$ed/dangling" 2>/dev/null
+check "dangling symlink becomes a directory" "yes" \
+  "$([ -d "$ed/dangling" ] && [ ! -L "$ed/dangling" ] && echo yes || echo no)"
+
+mkdir -p "$ed/real"
+echo keep >"$ed/real/file"
+ln -s real "$ed/link"
+ensure_dir "$ed/link"
+check "symlink to a directory is left alone" "yes" \
+  "$([ -L "$ed/link" ] && [ -f "$ed/real/file" ] && echo yes || echo no)"
+
+ensure_dir "$ed/fresh/nested"
+check "missing path is created" "yes" "$([ -d "$ed/fresh/nested" ] && echo yes || echo no)"
+
+echo file >"$ed/plain"
+ensure_dir "$ed/plain" 2>/dev/null
+check "a plain file is not replaced" "1" "$?"
+
+rm -rf "$ed"
 
 # --- rclone_sync_with_indexes ---
 # Stub rclone so the test is hermetic. count_rclone_changes counts one line per
