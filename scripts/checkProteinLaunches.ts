@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-/* global window, document -- page.evaluate() bodies run in the browser, not here */
 //
-// checkProteinLaunches.mjs
+// checkProteinLaunches.ts
 //
 // Resolves the protein browser's example genes exactly as the page does, boots
 // each launch URL in a real hosted JBrowse build, and reads back what the
@@ -25,15 +24,25 @@
 // hydrates with a ProteinView whose `pairwiseAlignment` never arrives, or whose
 // structure never becomes ready, is the failure this exists to catch.
 //
+// The host contract is the third thing it reads back. `latest` (v4.3.0) has no
+// workspace `layout` field and persists a session's `useWorkspaces` into the
+// reader's localStorage, so a launch must not carry either there
+// (HOST_HAS_WORKSPACE_LAYOUT in website/src/config/jbrowse.ts). The page's
+// modules run here with `features.staging` false, which is the production
+// shape: the session carries no layout on any host, and the check is that the
+// launch left the reader's `useWorkspaces` preference alone. The staging
+// shape — the layout tree itself, on `main` — is pinned by
+// proteinSession.test.ts and not exercised here.
+//
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
 // website/src/components/{geneStructure,proteinSession,structureSources}.ts or
 // the launch card, and before promoting `features.proteinBrowser`.
 //
 // Usage:
-//   node scripts/checkProteinLaunches.mjs                 # human examples, on main
-//   node scripts/checkProteinLaunches.mjs --genes TP53,DMD --ref 9606
-//   node scripts/checkProteinLaunches.mjs --host latest   # what production would get
+//   pnpm check-protein-launches                          # human examples, on main
+//   pnpm check-protein-launches --genes TP53,DMD --ref 9606
+//   pnpm check-protein-launches --host latest            # what production would get
 //
 import fs from 'node:fs'
 import os from 'node:os'
@@ -41,6 +50,14 @@ import path from 'node:path'
 import { parseArgs } from 'node:util'
 
 import { launch } from 'puppeteer-core'
+
+import { examplesFor } from '../website/src/components/geneExamples.ts'
+import { fetchGeneStructure } from '../website/src/components/geneStructure.ts'
+import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
+import {
+  fetchExperimentalStructures,
+  pickAlphaFoldModel,
+} from '../website/src/components/structureSources.ts'
 
 // Same resolution as checkConfigCompat.mjs: puppeteer-core carries no Chromium.
 function findChrome() {
@@ -56,7 +73,7 @@ function findChrome() {
       )
       .sort()
       .reverse(),
-  ].filter(Boolean)
+  ].filter(c => c !== undefined)
   const found = candidates.find(c => fs.existsSync(c))
   if (!found) {
     throw new Error(
@@ -87,7 +104,12 @@ const PUBLIC = path.resolve(import.meta.dirname, '../website/public')
 // user-agent with 403, so every request carries a browser-like one.
 const realFetch = globalThis.fetch
 globalThis.fetch = (input, init) => {
-  const url = typeof input === 'string' ? input : input.url
+  const url =
+    typeof input === 'string'
+      ? input
+      : input instanceof URL
+        ? input.href
+        : input.url
   if (url.startsWith('/')) {
     const file = path.join(PUBLIC, url)
     return fs.existsSync(file)
@@ -99,24 +121,26 @@ globalThis.fetch = (input, init) => {
   return realFetch(input, { ...init, headers })
 }
 
-const { fetchGeneStructure } =
-  await import('../website/src/components/geneStructure.ts')
-const { buildSessionUrl } =
-  await import('../website/src/components/proteinSession.ts')
-const { fetchExperimentalStructures, pickAlphaFoldModel } =
-  await import('../website/src/components/structureSources.ts')
-const { examplesFor } =
-  await import('../website/src/components/geneExamples.ts')
-
 const genes = values.genes?.split(',') ?? examplesFor(REF).map(e => e.symbol)
 
-// features.staging is false outside Vite, so the builder targets `latest`;
-// retarget to the host under test.
-function retarget(url) {
+// The builder targets whatever the production flag says, and a GFF gene track
+// sends it to the gene-track host; retarget to the host under test either way.
+function retarget(url: string) {
   return url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`)
 }
 
-const launches = []
+type Launch =
+  | { name: string; resolveError: string }
+  | {
+      name: string
+      url: string
+      expectStructure: boolean
+      expectGeneTrack: boolean
+      expectExact: boolean
+      tiled: boolean
+    }
+
+const launches: Launch[] = []
 for (const gene of genes) {
   try {
     const structure = await fetchGeneStructure(gene, REF)
@@ -136,7 +160,7 @@ for (const gene of genes) {
       : pdb
         ? { pdbId: pdb.pdbId }
         : undefined
-    const { url } = buildSessionUrl({ structure, primary })
+    const { session, url } = buildSessionUrl({ structure, primary })
     const structureName = model
       ? model.entity
       : pdb
@@ -150,10 +174,30 @@ for (const gene of genes) {
       // the transcript's own translation is what the plugin aligns; an
       // AlphaFold model folded from exactly it should align as an identity
       expectExact: !!model && model.sequence === structure.proteinSequence,
+      tiled: 'layout' in session,
     })
   } catch (e) {
-    launches.push({ name: gene, resolveError: `${e}`.split('\n')[0] })
+    launches.push({ name: gene, resolveError: `${e}`.split('\n')[0] ?? '' })
   }
+}
+
+// What page.evaluate reads off the app. Only the fields read are named; the
+// root model is reached through Reflect because the page, not this script,
+// declares it.
+interface StructureState {
+  url?: string
+  pairwiseAlignment?: unknown
+  exactMatch?: boolean
+  error?: unknown
+}
+interface ViewState {
+  type: string
+  tracks?: unknown[]
+  error?: unknown
+  structures?: StructureState[]
+}
+interface RootModelState {
+  session?: { views?: ViewState[] }
 }
 
 const browser = await launch({
@@ -163,25 +207,33 @@ const browser = await launch({
 
 let failures = 0
 for (const launchSpec of launches) {
-  const { name, url, resolveError } = launchSpec
-  const problems = []
-  if (resolveError) {
-    problems.push(`could not resolve: ${resolveError}`)
+  const problems: string[] = []
+  if ('resolveError' in launchSpec) {
+    problems.push(`could not resolve: ${launchSpec.resolveError}`)
   } else {
     const page = await browser.newPage()
     try {
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUT })
+      await page.goto(launchSpec.url, {
+        waitUntil: 'domcontentloaded',
+        timeout: TIMEOUT,
+      })
       // Wait for the structure to be ready OR the error page. Waiting on ready
       // alone reports an error-paged app as a timeout with the cause unread.
       await page.waitForFunction(
-        expectStructure =>
-          document.querySelector('[data-testid="protein-view-ready"]') !==
-            null ||
-          (!expectStructure &&
-            window.JBrowseRootModel?.session?.views?.length > 0) ||
-          /JBrowse Error|No matching type for union/.test(
-            document.body.innerText,
-          ),
+        (expectStructure: boolean) => {
+          const root: RootModelState | undefined = Reflect.get(
+            window,
+            'JBrowseRootModel',
+          )
+          return (
+            document.querySelector('[data-testid="protein-view-ready"]') !==
+              null ||
+            (!expectStructure && (root?.session?.views ?? []).length > 0) ||
+            /JBrowse Error|No matching type for union/.test(
+              document.body.innerText,
+            )
+          )
+        },
         { timeout: TIMEOUT },
         launchSpec.expectStructure,
       )
@@ -190,7 +242,11 @@ for (const launchSpec of launches) {
       await new Promise(r => setTimeout(r, 8000))
 
       const state = await page.evaluate(() => {
-        const views = window.JBrowseRootModel?.session?.views ?? []
+        const root: RootModelState | undefined = Reflect.get(
+          window,
+          'JBrowseRootModel',
+        )
+        const views = root?.session?.views ?? []
         const protein = views.find(v => v.type === 'ProteinView')
         return {
           errorText: /JBrowse Error|No matching type for union/.test(
@@ -205,7 +261,7 @@ for (const launchSpec of launches) {
           protein: protein
             ? {
                 error: protein.error ? `${protein.error}` : undefined,
-                structures: protein.structures.map(s => ({
+                structures: (protein.structures ?? []).map(s => ({
                   url: s.url,
                   aligned: !!s.pairwiseAlignment,
                   exactMatch: s.exactMatch,
@@ -213,6 +269,9 @@ for (const launchSpec of launches) {
                 })),
               }
             : undefined,
+          // v4.3.0 persists the session's `useWorkspaces` here; a launch that
+          // flips it rewrites the reader's preference for every later session
+          useWorkspacesPreference: localStorage.getItem('useWorkspaces'),
         }
       })
 
@@ -241,27 +300,36 @@ for (const launchSpec of launches) {
           )
         }
       }
+      if (!launchSpec.tiled && state.useWorkspacesPreference === 'true') {
+        problems.push(
+          'the launch wrote useWorkspaces=true into localStorage: the host persists the session flag as the reader’s preference',
+        )
+      }
     } catch (e) {
-      problems.push(`${e}`.split('\n')[0])
+      problems.push(`${e}`.split('\n')[0] ?? '')
     }
     await page.close()
   }
 
   if (problems.length) {
     failures++
-    console.log(`FAIL ${name}`)
+    console.log(`FAIL ${launchSpec.name}`)
     for (const p of problems) {
       console.log(`       ${p}`)
     }
   } else {
-    console.log(`ok   ${name}`)
+    console.log(`ok   ${launchSpec.name}`)
   }
 }
 
 await browser.close()
+const tiledCount = launches.filter(l => 'tiled' in l && l.tiled).length
+console.log(
+  `\n${tiledCount}/${launches.length} sessions carried a workspace layout (0 is the production shape)`,
+)
 console.log(
   failures
-    ? `\n${failures}/${launches.length} launches failed on ${HOST}`
-    : `\nall ${launches.length} launches boot on ${HOST}`,
+    ? `${failures}/${launches.length} launches failed on ${HOST}`
+    : `all ${launches.length} launches boot on ${HOST}`,
 )
 process.exit(failures ? 1 : 0)
