@@ -20,6 +20,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
+# For pif_stamp_current: the liftOver gate below compares the stamp's contents,
+# not its presence, so a @jbrowse/cli bump re-probes and rebuilds the PIFs.
+source "$SCRIPT_DIR/../lib/chainpif.sh"
 cd "$SCRIPT_DIR"
 
 # Parse arguments. --all, --reprocess-all and --help are handled by parse_flags;
@@ -134,9 +137,12 @@ mkdir -p bgz
 log "Deriving genetic codes from NCBI GFF files..."
 ./deriveGeneticCodes.sh
 
-# Each hub's liftOver directory is probed for chain files once, recorded by
-# its .checked stamp; REPROCESS clears the stamps and regenerates every PIF
-# (e.g. to add the coarse PIF tier).
+# Each hub's liftOver directory is probed for chain files once, recorded by its
+# .checked stamp, which names the @jbrowse/cli that wrote the PIFs. The gate
+# reads that name rather than testing for the file, because a PIF's bytes are a
+# function of make-pif's version: gating on presence alone (which is what this
+# did until 2026-09-02) pinned all 52,720 hubs to whichever CLI first visited
+# them, and the 5.0 coarse tier reached none of them. REPROCESS forces it.
 log "Processing liftOver chain files and creating PIFs..."
 if [ -n "${REPROCESS:-}" ]; then
   run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
@@ -145,7 +151,7 @@ else
   # so a `&&` whose test fails on the final hub would fail the pipeline under
   # pipefail.
   while IFS= read -r meta; do
-    if [[ ! -f "${meta%/meta.json}/liftOver/.checked" ]]; then
+    if ! pif_stamp_current "${meta%/meta.json}/liftOver/.checked"; then
       echo "$meta"
     fi
   done <"$ALL_META_FILE" | run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}'
