@@ -1255,20 +1255,45 @@ never sees the uppercase rows, so a regenerated PIF ships to production without
 a staging sibling. Measured on hg38→mm39: 33 s, 141.5 MB against 132.2 MB (+7
 %), 80,845 fine and 121,175 coarse row pairs.
 
-`5.0.0-beta.2` (bumped here 2026-09-02) makes that tier **self-describing**
-rather than something the adapter has to probe for. Diffed on ce6→ce4:
+`5.0.0-beta.2` (bumped here 2026-09-02) changes the coarse tier from a
+**re-segmentation** of the alignments into a **projection** of them, and makes
+the file say so. Measured on hg38→mm39 (80,845 PAF records, the same `.paf` fed
+to both):
 
+- **A coarse row is now exactly its fine row without the CIGAR.** 80,845 coarse
+  against 80,845 fine, and comparing (refname, start, end, strand, target start,
+  target end) across the two tiers gives **zero** differing rows. beta.1 emitted
+  121,175 coarse rows against the same 80,845 fine ones, of which 43,902 had no
+  fine counterpart at those coordinates — so crossing `coarseBpPerPxThreshold`
+  used to redraw the view as a differently-segmented picture. It no longer does;
+  the two tiers now differ only in what they cost to read.
 - A leading `#pif` header line, in PAF tag syntax:
-  `#pif  version:i:1  tiers:Z:fine,coarse  coarse:i:10000  cigars:Z:all`. It is
-  a `#` comment, so tabix/`--csi` skips it and an old reader ignores it.
-- **Coarse rows lose the `de:f:` divergence tag** they carried in beta.1 — a
-  coarse row is an aggregate, and the number was computed over the merged block.
-- Coarse block coordinates now agree with the fine rows they summarize; beta.1
-  was off by one on some (ce6→ce4 `QchrIII` ended at 13783682 against the fine
-  row's 13783681).
+  `#pif  version:i:1  tiers:Z:fine,coarse  coarse:i:10000  cigars:Z:all`, so the
+  layout is declared rather than probed for. It is a `#` comment, so tabix and
+  `--csi` skip it (verified: `tabix -l` and both `q…`/`Q…` range queries work on
+  a regenerated file) and an old reader ignores it.
+- Coarse rows lose the `de:f:` divergence tag, which beta.1 computed over the
+  merged block.
 
-Fine rows are byte-identical between the two betas, so the whole beta.1 → beta.2
-delta is the header plus the coarse rows.
+Fine rows are byte-identical between the two betas, so the entire delta is the
+header plus the coarse tier.
+
+**The coarse tier is what a whole-genome view reads, and that is where the win
+is.** On hg38→mm39, a whole-`chr1` query costs 12.8 MB at the fine tier against
+**574 KB** at the coarse one — 22×; genome-wide the two tiers are 348 MB against
+18.7 MB, 18.6×. Across all 57 regenerated dm6 liftOver PIFs the ratio is 13.7×.
+The file is ~7 % larger for it (141.7 MB against the 132.2 MB of the pre-tier
+4.2.1 build), which is the trade.
+
+`make-pif` also got **2.5× faster** on the same input: 11.0 s against beta.1's
+27.7 s.
+
+The payoff is not uniform, and it is worth knowing which corpus you are looking
+at. A coarse row saves only the bytes its CIGAR occupied, so an assembly whose
+chains are short saves nothing measurable — regenerating **ce11** gave a 1.00
+fine:coarse byte ratio on all six of its PIFs, and the files came back the same
+size to within a percent. The mammalian and cross-phylum chains are where the
+18× lives.
 
 Two things hold the corpus current, both in `lib/chainpif.sh`:
 
