@@ -19,3 +19,8 @@ turns out to be a decision rather than a task belongs in
   remaining 1.10 GB is not, and one slice of it turned out to be a bug rather
   than junk, which is why the gate must mirror the drop rules rather than
   observe the config.
+- [ncbi-gff-annotation-release-date.md](ncbi-gff-annotation-release-date.md) —
+  the NCBI GFF track's info dialog says nothing about annotation freshness,
+  though `parseAssemblyEntry.ts` already parses the release date and the
+  accession page already shows it. Implemented once on a branch since deleted;
+  the reason it waits is that `enhanceConfig.ts` is corpus-invalidating.
