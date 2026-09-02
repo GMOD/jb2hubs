@@ -108,6 +108,58 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "colorsDbSv",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/colorsDbSv.html\">colorsDbSv.html</a>",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>AF</b>: $AF<br><b>AC</b>: $AC/$AN (Hom $acHom, Het $acHet, Hemi $acHemi)<br><b>Samples</b>: $NS",
+          "filter.AC": "0:2854",
+          "filter.AF": "0:1",
+          "visibility": "pack",
+          "shortLabel": "CoLoRSdb 1427 SVs",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "DEL,INS,INV,DUP",
+          "filterLabel.svLen": "SV Length (bp)",
+          "filterByRange.svLen": "on",
+          "filterLabel.insLen": "Insertion Length (bp)",
+          "filterByRange.insLen": "on",
+          "filterLabel.AC": "Alt Allele Count (AC)",
+          "filterByRange.AC": "on",
+          "filterLabel.AF": "Allele Frequency (AF)",
+          "filterByRange.AF": "on",
+          "priority": "1",
+          "itemRgb": "on",
+          "bigDataUrl": "/gbdb/hs1/lrSv/colorsDb/sv.hs1.bb",
+          "parent": "longReadVariants",
+          "longLabel": "Structural Variants from 1,427 CoLoRSdb samples (Consortium of Long-Read Sequencing, PacBio HiFi)",
+          "filterType.svType": "multipleListOr",
+          "skipEmptyFields": "on",
+          "filterLimits.AF": "0:1",
+          "dataVersion": "v1.2.0",
+          "filter.svLen": "0:111110",
+          "filter.insLen": "0:18724"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-colorsDbSv",
+      "description": "Structural Variants from 1,427 CoLoRSdb samples (Consortium of Long-Read Sequencing, PacBio HiFi)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - CoLoRSdb 1427 SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/colorsDb/sv.hs1.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-colorsDbSv-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')} (Hom ${get(feature,'acHom')}, Het ${get(feature,'acHet')}, Hemi ${get(feature,'acHemi')})<br><b>Samples</b>: ${get(feature,'NS')}`"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "censat",
           "type": "bigBed 9 +",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/censat.html\">censat.html</a>",
@@ -362,6 +414,80 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "lrSv1kLin",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/lrSv1kLin.html\">lrSv1kLin.html</a>",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>AC</b>: $AC/$AN<br><b>AF</b>: $AF<br><b>AF (African)</b>: $afAfr<br><b>AF (European)</b>: $afEur<br><b>Samples</b>: $NS",
+          "filterLimits.afAfr": "0:1",
+          "filter.AC": "0:2436",
+          "filter.AF": "0:1",
+          "filterLimits.afSas": "0:1",
+          "filter.NS": "1:1218",
+          "visibility": "hide",
+          "shortLabel": "1KG Lin 1218 SVs",
+          "filterLabel.afAmr": "AF Admixed American",
+          "filterByRange.afAmr": "on",
+          "filterLimits.afEas": "0:1",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "DEL,INS",
+          "filterLabel.afEur": "AF European",
+          "filterByRange.afEur": "on",
+          "filterLabel.svLen": "SV Length (bp)",
+          "filterByRange.svLen": "on",
+          "filter.afAfr": "0:1",
+          "filterLabel.insLen": "Insertion Length (bp)",
+          "filterByRange.insLen": "on",
+          "filter.afSas": "0:1",
+          "filterLabel.AC": "Allele Count",
+          "filterByRange.AC": "on",
+          "filterLabel.AF": "Allele Frequency",
+          "filterByRange.AF": "on",
+          "filterLabel.NS": "Samples with Genotype Data",
+          "filterByRange.NS": "on",
+          "filter.afEas": "0:1",
+          "filterLimits.afAmr": "0:1",
+          "priority": "3",
+          "itemRgb": "on",
+          "filterLimits.afEur": "0:1",
+          "bigDataUrl": "/gbdb/hs1/lrSv/lin1218.bb",
+          "parent": "longReadVariants",
+          "filterLabel.afAfr": "AF African",
+          "filterByRange.afAfr": "on",
+          "filterLabel.afSas": "AF South Asian",
+          "filterByRange.afSas": "on",
+          "filter.afAmr": "0:1",
+          "longLabel": "Structural Variants from 1,218 1000 Genomes samples (long-read merge; Lin et al.)",
+          "filterType.svType": "multipleListOr",
+          "filterLabel.afEas": "AF East Asian",
+          "filterByRange.afEas": "on",
+          "skipEmptyFields": "on",
+          "filterLimits.AF": "0:1",
+          "filter.afEur": "0:1",
+          "filter.svLen": "0:99691",
+          "filter.insLen": "0:99968"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-lrSv1kLin",
+      "description": "Structural Variants from 1,218 1000 Genomes samples (long-read merge; Lin et al.)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - 1KG Lin 1218 SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/lin1218.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-lrSv1kLin-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'AN')}<br><b>AF</b>: ${get(feature,'AF')}<br><b>AF (African)</b>: ${get(feature,'afAfr')}<br><b>AF (European)</b>: ${get(feature,'afEur')}<br><b>Samples</b>: ${get(feature,'NS')}`"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "hgUniqueHg38",
           "type": "bigBed 3",
           "shortLabel": "CHM13 unique for hg38",
@@ -412,6 +538,174 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "lrSv1kgOnt",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/lrSv1kgOnt.html\">lrSv1kgOnt.html</a>",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>Type</b>: $insType<br><b>Family</b>: $family<br><b>AC</b>: $AC<br><b>AF</b>: $alleleFreq",
+          "filter.AC": "0:1816",
+          "filterType.insType": "multipleListOr",
+          "visibility": "hide",
+          "shortLabel": "1KG Vienna ONT SVs",
+          "filterLabel.alleleFreq": "Allele Frequency",
+          "filterByRange.alleleFreq": "on",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "DEL,INS,CPX",
+          "filterLabel.insType": "Insertion/Deletion Type",
+          "filterLabel.svLen": "SV Length",
+          "filterByRange.svLen": "on",
+          "filterLabel.insLen": "Insertion Length",
+          "filterByRange.insLen": "on",
+          "filterType.family": "multipleListOr",
+          "filterLabel.AC": "Allele Count",
+          "filterByRange.AC": "on",
+          "priority": "4",
+          "itemRgb": "on",
+          "filterLimits.alleleFreq": "0:1",
+          "bigDataUrl": "/gbdb/hs1/lrSv/1kgOnt.bb",
+          "parent": "longReadVariants",
+          "filterLabel.family": "Transposon Family",
+          "filterValues.family": "Alu,HERVK,L1,LTR5_Hs,SVA",
+          "longLabel": "Structural Variants from 1,019 1000 Genomes samples (Vienna ONT; Schloissnig et al. 2025)",
+          "filterValues.insType": "COMPLEX_DUP,DUP,DUP_INTERSPERSED,INV_DUP,NUMT,PSD,VNTR,chimera,orphan,partnered,solo",
+          "filterType.svType": "multipleListOr",
+          "skipEmptyFields": "on",
+          "dataVersion": "1.1",
+          "filter.svLen": "0:49171",
+          "filter.insLen": "0:48091"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-lrSv1kgOnt",
+      "description": "Structural Variants from 1,019 1000 Genomes samples (Vienna ONT; Schloissnig et al. 2025)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - 1KG Vienna ONT SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/1kgOnt.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-lrSv1kgOnt-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Type</b>: ${get(feature,'insType')}<br><b>Family</b>: ${get(feature,'family')}<br><b>AC</b>: ${get(feature,'AC')}<br><b>AF</b>: ${get(feature,'alleleFreq')}`"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hprc2v21Sv",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/hprc2v21Sv.html\">hprc2v21Sv.html</a>",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>AF</b>: $alleleFreq<br><b>AC</b>: $AC/$alleleNumber<br><b>Samples</b>: $nSamples",
+          "filter.AC": "0:463",
+          "visibility": "hide",
+          "shortLabel": "HPRC v2.1 233 SVs",
+          "filterLabel.snarlLevel": "Snarl Level",
+          "filterByRange.snarlLevel": "on",
+          "filterLabel.alleleFreq": "Allele Frequency",
+          "filterByRange.alleleFreq": "on",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "INS,DEL",
+          "filterLabel.svLen": "SV Length",
+          "filterByRange.svLen": "on",
+          "filterLabel.insLen": "Insertion Length",
+          "filterByRange.insLen": "on",
+          "filterLabel.AC": "Allele Count",
+          "filterByRange.AC": "on",
+          "priority": "7",
+          "itemRgb": "on",
+          "filterLimits.alleleFreq": "0:1",
+          "bigDataUrl": "/gbdb/hs1/lrSv/hprc2v21.bb",
+          "parent": "longReadVariants",
+          "filter.snarlLevel": "0:7",
+          "filter.alleleFreq": "0:1",
+          "longLabel": "Structural Variants from 233 HPRC v2.1 assemblies (minigraph-cactus pangenome graph)",
+          "filterType.svType": "multipleListOr",
+          "skipEmptyFields": "on",
+          "filter.svLen": "0:99835",
+          "filter.insLen": "0:1064897"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-hprc2v21Sv",
+      "description": "Structural Variants from 233 HPRC v2.1 assemblies (minigraph-cactus pangenome graph)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - HPRC v2.1 233 SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/hprc2v21.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-hprc2v21Sv-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>Samples</b>: ${get(feature,'nSamples')}`"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "hgsvc3Sv",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/hgsvc3Sv.html\">hgsvc3Sv.html</a>",
+          "filter.refSd": "0:1",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>Samples</b>: $sampleCount<br><b>AC</b>: $AC",
+          "filter.AC": "1:136",
+          "visibility": "hide",
+          "shortLabel": "HGSVC3 65 SVs",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "DEL,INS,INV",
+          "filterLabel.svLen": "SV Length",
+          "filterByRange.svLen": "on",
+          "filterLabel.insLen": "Insertion Length",
+          "filterByRange.insLen": "on",
+          "filter.sampleCount": "1:65",
+          "filterLabel.refSd": "Segmental Duplication Overlap",
+          "filterByRange.refSd": "on",
+          "filterType.refTrf": "multipleListOr",
+          "filterLabel.AC": "Allele Count (carrier haplotypes)",
+          "filterByRange.AC": "on",
+          "priority": "8",
+          "itemRgb": "on",
+          "bigDataUrl": "/gbdb/hs1/lrSv/hgsvc3.bb",
+          "parent": "longReadVariants",
+          "filterLimits.refSd": "0:1",
+          "filterLabel.sampleCount": "Sample Count",
+          "filterByRange.sampleCount": "on",
+          "filterLabel.refTrf": "In Tandem Repeat",
+          "filterValues.refTrf": "True,False",
+          "longLabel": "Structural Variants from 65 HGSVC3 assemblies (diverse ancestry; HiFi + ONT)",
+          "filterType.svType": "multipleListOr",
+          "skipEmptyFields": "on",
+          "filter.svLen": "0:30176500",
+          "filter.insLen": "0:30176500"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-hgsvc3Sv",
+      "description": "Structural Variants from 65 HGSVC3 assemblies (diverse ancestry; HiFi + ONT)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - HGSVC3 65 SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/hgsvc3.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-hgsvc3Sv-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>Samples</b>: ${get(feature,'sampleCount')}<br><b>AC</b>: ${get(feature,'AC')}`"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "rdnaModel",
           "type": "bigBed 4",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/rdnaModel.html\">rdnaModel.html</a>",
@@ -435,6 +729,106 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/rdnaModel/rdnaModel.bb"
       }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpc1Sv",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/cpc1Sv.html\">cpc1Sv.html</a>",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>AC</b>: $AC/$alleleNumber<br><b>AF</b>: $alleleFreq<br><b>Samples</b>: $numSamples<br><b>Alts</b>: $numAlts",
+          "filter.AC": "0:116",
+          "visibility": "hide",
+          "shortLabel": "CPC 58 SVs",
+          "filterLabel.alleleFreq": "Allele Frequency",
+          "filterByRange.alleleFreq": "on",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "INS,DEL,CPX,MIXED",
+          "filterLabel.svLen": "SV Length",
+          "filterByRange.svLen": "on",
+          "filterLabel.insLen": "Insertion Length",
+          "filterByRange.insLen": "on",
+          "filterLabel.AC": "Allele Count",
+          "filterByRange.AC": "on",
+          "priority": "13",
+          "itemRgb": "on",
+          "filterLimits.alleleFreq": "0:1",
+          "bigDataUrl": "/gbdb/hs1/lrSv/cpc1.bb",
+          "parent": "longReadVariants",
+          "longLabel": "Structural Variants from 58 Chinese Pangenome Consortium samples (CPC-only; HiFi)",
+          "filterType.svType": "multipleListOr",
+          "skipEmptyFields": "on",
+          "filter.svLen": "0:8998096",
+          "filter.insLen": "0:414249"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-cpc1Sv",
+      "description": "Structural Variants from 58 Chinese Pangenome Consortium samples (CPC-only; HiFi)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - CPC 58 SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/cpc1.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-cpc1Sv-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`"
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "aprSv",
+          "type": "bigBed 9 +",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/aprSv.html\">aprSv.html</a>",
+          "mouseOver": "<b>Var</b>: $name ($svType)<br><b>SV len</b>: $svLen<br><b>Ins len</b>: $insLen<br><b>AC</b>: $AC/$alleleNumber<br><b>AF</b>: $alleleFreq<br><b>Samples</b>: $numSamples<br><b>Alts</b>: $numAlts",
+          "filter.AC": "0:107",
+          "visibility": "hide",
+          "shortLabel": "Arab APR 53 SVs",
+          "filterLabel.alleleFreq": "Allele Frequency",
+          "filterByRange.alleleFreq": "on",
+          "filterLabel.svType": "SV Type",
+          "filterValues.svType": "INS,DEL,CPX,MIXED",
+          "filterLabel.svLen": "SV Length",
+          "filterByRange.svLen": "on",
+          "filterLabel.insLen": "Insertion Length",
+          "filterByRange.insLen": "on",
+          "filterLabel.AC": "Allele Count",
+          "filterByRange.AC": "on",
+          "priority": "15",
+          "itemRgb": "on",
+          "filterLimits.alleleFreq": "0:1",
+          "bigDataUrl": "/gbdb/hs1/lrSv/apr.bb",
+          "parent": "longReadVariants",
+          "longLabel": "Structural Variants from 53 Arab Pangenome Reference samples (UAE-resident; HiFi + ONT)",
+          "filterType.svType": "multipleListOr",
+          "skipEmptyFields": "on",
+          "filter.svLen": "0:99892",
+          "filter.insLen": "0:584016"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "hs1-aprSv",
+      "description": "Structural Variants from 53 Arab Pangenome Reference samples (UAE-resident; HiFi + ONT)",
+      "assemblyNames": ["hs1"],
+      "name": "Long-read SVs - Arab APR 53 SVs",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/lrSv/apr.bb"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hs1-aprSv-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>Var</b>: ${get(feature,'name')} (${get(feature,'svType')})<br><b>SV len</b>: ${get(feature,'svLen')}<br><b>Ins len</b>: ${get(feature,'insLen')}<br><b>AC</b>: ${get(feature,'AC')}/${get(feature,'alleleNumber')}<br><b>AF</b>: ${get(feature,'alleleFreq')}<br><b>Samples</b>: ${get(feature,'numSamples')}<br><b>Alts</b>: ${get(feature,'numAlts')}`"
+        }
+      ]
     },
     {
       "metadata": {
@@ -780,75 +1174,6 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "deepvariant",
-          "type": "vcfTabix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/deepvariant.html\">deepvariant.html</a>",
-          "visibility": "pack",
-          "shortLabel": "CoLoRSdb small variants",
-          "bigDataUrl": "/gbdb/hs1/colorsDb/colorsDb.v1.2.0.deepvariant.glnexus.vcf.gz",
-          "parent": "longReadVariants",
-          "longLabel": "CoLoRSdb long-read small variants"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "hs1-deepvariant",
-      "description": "CoLoRSdb long-read small variants",
-      "assemblyNames": ["hs1"],
-      "name": "Long-read Variants - CoLoRSdb small variants",
-      "type": "VariantTrack",
-      "adapter": {
-        "type": "VcfTabixAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/colorsDb/colorsDb.v1.2.0.deepvariant.glnexus.vcf.gz"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "pbsv",
-          "type": "bigBed 9 +",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/pbsv.html\">pbsv.html</a>",
-          "mouseOver": "<b>Position</b>: $chrom:${chromStart}-${chromEnd}<br> <b>SV type</b>: ${svType}<br> <b>Length</b>: ${svLen} bp<br> <b>Allele Frequency</b>: ${af}<br> <b>Alt allele count</b>: ${AC} (Hom: ${AC_Hom}, Het: ${AC_Het}, Hemi: ${AC_Hemi})<br> <b>Number of samples</b>: ${NS} <br> <b>Total allele number</b>: ${AN}<br> <b>HWE p-value</b>: ${HWE}<br> <b>ExcHet</b>: ${ExcHet}",
-          "filter.AC": "0",
-          "visibility": "pack",
-          "shortLabel": "CoLoRSdb structural variants",
-          "searchIndex": "name,svType",
-          "filterLabel.svType": "Type",
-          "filterValues.svType": "INS,DEL,INV",
-          "filterLabel.svLen": "SV length (bp)",
-          "filterByRange.svLen": "on",
-          "filterLabel.AC": "Alt allele count (AC)",
-          "filterByRange.AC": "on",
-          "itemRgb": "on",
-          "filterLimits.svLen": "0:12000",
-          "bigDataUrl": "/gbdb/hs1/colorsDb/colorsDb.v1.2.0.sv.bb",
-          "parent": "longReadVariants",
-          "longLabel": "CoLoRSdb long-read structural variants",
-          "filterType.svType": "multiple",
-          "filterLimits.AC": "0:3000",
-          "filter.svLen": "0"
-        }
-      },
-      "category": ["Variation and Repeats"],
-      "trackId": "hs1-pbsv",
-      "description": "CoLoRSdb long-read structural variants",
-      "assemblyNames": ["hs1"],
-      "name": "Long-read Variants - CoLoRSdb structural variants",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/colorsDb/colorsDb.v1.2.0.sv.bb"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "hs1-pbsv-LinearBasicDisplay",
-          "mouseover": "jexl:`<b>Position</b>: ${get(feature,'refName')}:${get(feature,'start')}-${get(feature,'end')}<br> <b>SV type</b>: ${get(feature,'svType')}<br> <b>Length</b>: ${get(feature,'svLen')} bp<br> <b>Allele Frequency</b>: ${get(feature,'af')}<br> <b>Alt allele count</b>: ${get(feature,'AC')} (Hom: ${get(feature,'AC_Hom')}, Het: ${get(feature,'AC_Het')}, Hemi: ${get(feature,'AC_Hemi')})<br> <b>Number of samples</b>: ${get(feature,'NS')} <br> <b>Total allele number</b>: ${get(feature,'AN')}<br> <b>HWE p-value</b>: ${get(feature,'HWE')}<br> <b>ExcHet</b>: ${get(feature,'ExcHet')}`"
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
           "track": "cpgIslandExt",
           "type": "bigBed 4 +",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/cpgIslandExt.html\">cpgIslandExt.html</a>",
@@ -940,6 +1265,29 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "cytoBandIdeo",
+          "type": "bigBed 4 +",
+          "visibility": "dense",
+          "shortLabel": "Cytobands (Ideogram)",
+          "group": "map",
+          "bigDataUrl": "/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb",
+          "longLabel": "Cytobands Mapped from hg38/GRCh38"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-cytoBandIdeo",
+      "description": "Cytobands Mapped from hg38/GRCh38",
+      "assemblyNames": ["hs1"],
+      "name": "Cytobands (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "cytoBand",
           "type": "bigBed 4 +",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hs1/hubs/public/cytoBand.html\">cytoBand.html</a>",
@@ -953,29 +1301,6 @@
       },
       "category": ["Mapping and Sequencing"],
       "trackId": "hs1-cytoBand",
-      "description": "Cytobands Mapped from hg38/GRCh38",
-      "assemblyNames": ["hs1"],
-      "name": "Cytobands (Ideogram)",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "cytoBandIdeo",
-          "type": "bigBed 4 +",
-          "visibility": "dense",
-          "shortLabel": "Cytobands (Ideogram)",
-          "group": "map",
-          "bigDataUrl": "/gbdb/hs1/cytoBandMapped/cytoBandMapped.bb",
-          "longLabel": "Cytobands Mapped from hg38/GRCh38"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-cytoBandIdeo",
       "description": "Cytobands Mapped from hg38/GRCh38",
       "assemblyNames": ["hs1"],
       "name": "Cytobands (Ideogram)",
@@ -1066,6 +1391,156 @@
       "adapter": {
         "type": "VcfTabixAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/gwasSNPs2022-03-08/chm13v2.0_GWASv1.0rsids_e100_r2022-03-08.vcf.gz"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap24",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S24",
+          "priority": "1",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb",
+          "parent": "umapBigBed on",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 24-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap24",
+      "description": "Single-read mappability with 24-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S24",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap36",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S36",
+          "priority": "2",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 36-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap36",
+      "description": "Single-read mappability with 36-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S36",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap50",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S50",
+          "priority": "3",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 50-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap50",
+      "description": "Single-read mappability with 50-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S50",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap100",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S100",
+          "priority": "4",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 100-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap100",
+      "description": "Single-read mappability with 100-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S100",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap150",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S150",
+          "priority": "5",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 150-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap150",
+      "description": "Single-read mappability with 150-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S150",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "umap250",
+          "type": "bigBed 6",
+          "shortLabel": "Umap S250",
+          "priority": "6",
+          "subGroups": "view=SR",
+          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb",
+          "parent": "umapBigBed off",
+          "color": "80,20,240",
+          "longLabel": "Single-read mappability with 250-mers"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "hs1-umap250",
+      "description": "Single-read mappability with 250-mers",
+      "assemblyNames": ["hs1"],
+      "name": "Mappability - Umap S250",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb"
       }
     },
     {
@@ -1221,156 +1696,6 @@
       "adapter": {
         "type": "BigWigAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k250.Umap.MultiTrackMappability.bw"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap24",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S24",
-          "priority": "1",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb",
-          "parent": "umapBigBed on",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 24-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap24",
-      "description": "Single-read mappability with 24-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S24",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k24.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap36",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S36",
-          "priority": "2",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 36-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap36",
-      "description": "Single-read mappability with 36-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S36",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k36.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap50",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S50",
-          "priority": "3",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 50-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap50",
-      "description": "Single-read mappability with 50-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S50",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k50.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap100",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S100",
-          "priority": "4",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 100-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap100",
-      "description": "Single-read mappability with 100-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S100",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k100.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap150",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S150",
-          "priority": "5",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 150-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap150",
-      "description": "Single-read mappability with 150-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S150",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k150.Unique.Mappability.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "umap250",
-          "type": "bigBed 6",
-          "shortLabel": "Umap S250",
-          "priority": "6",
-          "subGroups": "view=SR",
-          "bigDataUrl": "/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb",
-          "parent": "umapBigBed off",
-          "color": "80,20,240",
-          "longLabel": "Single-read mappability with 250-mers"
-        }
-      },
-      "category": ["Mapping and Sequencing"],
-      "trackId": "hs1-umap250",
-      "description": "Single-read mappability with 250-mers",
-      "assemblyNames": ["hs1"],
-      "name": "Mappability - Umap S250",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hs1/hoffmanMappability/k250.Unique.Mappability.bb"
       }
     },
     {
@@ -14800,41 +15125,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -15014,6 +15304,27 @@
         "index": {
           "location": {
             "uri": "liftOver/hs1ToGCA_029289425.2.over.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "hs1_to_GCF_000165445.2_liftOver",
+      "name": "hs1 to gray mouse lemur (2017) (GCF_000165445.2) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["hs1", "GCF_000165445.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "hs1",
+        "queryAssembly": "GCF_000165445.2",
+        "pifGzLocation": {
+          "uri": "liftOver/hs1ToGCF_000165445.2.over.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/hs1ToGCF_000165445.2.over.pif.gz.csi"
           },
           "indexType": "CSI"
         }

@@ -21,6 +21,7 @@ htmlPath html/GCA_000188115.5_SL4.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5
+liftOver.GCF_000188115.2 liftOver/GCA_000188115.5ToGCF_000188115.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -177,4 +178,109 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_000188115.5_SL4.0.xenoRefGene.ix
 html html/GCA_000188115.5_SL4.0.xenoRefGene
+
+##############################################################################
+# GCF_000188115.2 - tomato - Solanum lycopersicum - taxId: 4081
+##############################################################################
+track chainNetGCF_000188115.2
+compositeTrack on
+shortLabel tomato Chain/Net
+longLabel tomato (2011-02-08), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_000188115.2
+html html/GCA_000188115.5_SL4.0.chainNet
+
+    track chainNetGCF_000188115.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_000188115.2
+    spectrum on
+
+        track chainGCF_000188115.2
+        parent chainNetGCF_000188115.2Viewchain
+        subGroups view=chain
+        shortLabel tomato Chain
+        longLabel tomato (2011-02-08) Chained Alignments
+        type bigChain GCF_000188115.2
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.chainGCF_000188115.2.bb
+        linkDataUrl bbi/GCA_000188115.5_SL4.0.chainGCF_000188115.2Link.bb
+        priority 1
+
+        track chainSynGCF_000188115.2
+        parent chainNetGCF_000188115.2Viewchain
+        subGroups view=chain
+        shortLabel tomato synChain
+        longLabel tomato (2011-02-08) Syntenic Chained Alignments
+        type bigChain GCF_000188115.2
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.chainSynGCF_000188115.2.bb
+        linkDataUrl bbi/GCA_000188115.5_SL4.0.chainSynGCF_000188115.2Link.bb
+        priority 2
+
+        track chainRBestGCF_000188115.2
+        parent chainNetGCF_000188115.2Viewchain
+        subGroups view=chain
+        shortLabel tomato rbChain
+        longLabel tomato (2011-02-08) Reciprocal Best Chained Alignments
+        type bigChain GCF_000188115.2
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.chainRBestGCF_000188115.2.bb
+        linkDataUrl bbi/GCA_000188115.5_SL4.0.chainRBestGCF_000188115.2Link.bb
+        priority 3
+
+        track chainLiftOverGCF_000188115.2
+        parent chainNetGCF_000188115.2Viewchain
+        subGroups view=chain
+        shortLabel tomato loChain
+        longLabel tomato (2011-02-08) Lift Over Chained Alignments
+        type bigChain GCF_000188115.2
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.chainLiftOverGCF_000188115.2.bb
+        linkDataUrl bbi/GCA_000188115.5_SL4.0.chainLiftOverGCF_000188115.2Link.bb
+        priority 4
+
+    track mafNetGCF_000188115.2Viewnet
+    shortLabel Net
+    view net
+    visibility full
+    parent chainNetGCF_000188115.2
+
+        track netGCF_000188115.2
+        parent mafNetGCF_000188115.2Viewnet
+        subGroups view=net
+        shortLabel tomato net
+        longLabel tomato (2011-02-08) Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.GCF_000188115.2.net.bb
+        summary bbi/GCA_000188115.5_SL4.0.GCF_000188115.2.net.summary.bb
+        speciesOrder GCF_000188115.2
+        priority 5
+
+        track synNetGCF_000188115.2
+        parent mafNetGCF_000188115.2Viewnet
+        subGroups view=net
+        shortLabel tomato synNet
+        longLabel tomato (2011-02-08) Syntenic Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.GCF_000188115.2.synNet.bb
+        summary bbi/GCA_000188115.5_SL4.0.GCF_000188115.2.synNet.summary.bb
+        speciesOrder GCF_000188115.2
+        priority 6
+
+        track rbestNetGCF_000188115.2
+        parent mafNetGCF_000188115.2Viewnet
+        subGroups view=net
+        shortLabel tomato rbestNet
+        longLabel tomato (2011-02-08) Reciprocal Best Net Alignment
+        type bigMaf
+        bigDataUrl bbi/GCA_000188115.5_SL4.0.GCF_000188115.2.rbestNet.bb
+        summary bbi/GCA_000188115.5_SL4.0.GCF_000188115.2.rbestNet.summary.bb
+        speciesOrder GCF_000188115.2
+        priority 7
 

@@ -21,6 +21,7 @@ htmlPath html/GCA_051348685.1_bAgePho1.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/348/685/GCA_051348685.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/348/685/GCA_051348685.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/051/348/685/GCA_051348685.1
+liftOver.GCF_051311805.1 liftOver/GCA_051348685.1ToGCF_051311805.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -174,4 +175,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_051348685.1_bAgePho1.hap2.xenoRefGene.ix
 html html/GCA_051348685.1_bAgePho1.hap2.xenoRefGene
+
+##############################################################################
+# GCF_051311805.1 - red-winged blackbird - Agelaius phoeniceus - taxId: 39638
+##############################################################################
+track chainNetGCF_051311805.1
+compositeTrack on
+shortLabel red-winged blackbird Chain/Net
+longLabel red-winged blackbird (2025-07-14), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_051311805.1
+html html/GCA_051348685.1_bAgePho1.hap2.chainNet
+
+    track chainNetGCF_051311805.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_051311805.1
+    spectrum on
+
+        track chainGCF_051311805.1
+        parent chainNetGCF_051311805.1Viewchain
+        subGroups view=chain
+        shortLabel red-winged blackbird Chain
+        longLabel red-winged blackbird (2025-07-14) Chained Alignments
+        type bigChain GCF_051311805.1
+        bigDataUrl bbi/GCA_051348685.1_bAgePho1.hap2.chainGCF_051311805.1.bb
+        linkDataUrl bbi/GCA_051348685.1_bAgePho1.hap2.chainGCF_051311805.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_051311805.1
+        parent chainNetGCF_051311805.1Viewchain
+        subGroups view=chain
+        shortLabel red-winged blackbird loChain
+        longLabel red-winged blackbird (2025-07-14) Lift Over Chained Alignments
+        type bigChain GCF_051311805.1
+        bigDataUrl bbi/GCA_051348685.1_bAgePho1.hap2.chainLiftOverGCF_051311805.1.bb
+        linkDataUrl bbi/GCA_051348685.1_bAgePho1.hap2.chainLiftOverGCF_051311805.1Link.bb
+        priority 2
 

@@ -20,6 +20,7 @@ htmlPath html/GCA_027406535.1_mNycCou1.alt.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1
+liftOver.GCF_027406575.1 liftOver/GCA_027406535.1ToGCF_027406575.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -157,6 +158,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_027406535.1_mNycCou1.alt.xenoRefGene.ix
 html html/GCA_027406535.1_mNycCou1.alt.xenoRefGene
+
+##############################################################################
+# GCF_027406575.1 - slow loris - Nycticebus coucang - taxId: 9470
+##############################################################################
+track chainNetGCF_027406575.1
+compositeTrack on
+shortLabel slow loris Chain/Net
+longLabel slow loris (2022-12-28), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_027406575.1
+html html/GCA_027406535.1_mNycCou1.alt.chainNet
+
+    track chainNetGCF_027406575.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_027406575.1
+    spectrum on
+
+        track chainGCF_027406575.1
+        parent chainNetGCF_027406575.1Viewchain
+        subGroups view=chain
+        shortLabel slow loris Chain
+        longLabel slow loris (2022-12-28) Chained Alignments
+        type bigChain GCF_027406575.1
+        bigDataUrl bbi/GCA_027406535.1_mNycCou1.alt.chainGCF_027406575.1.bb
+        linkDataUrl bbi/GCA_027406535.1_mNycCou1.alt.chainGCF_027406575.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_027406575.1
+        parent chainNetGCF_027406575.1Viewchain
+        subGroups view=chain
+        shortLabel slow loris loChain
+        longLabel slow loris (2022-12-28) Lift Over Chained Alignments
+        type bigChain GCF_027406575.1
+        bigDataUrl bbi/GCA_027406535.1_mNycCou1.alt.chainLiftOverGCF_027406575.1.bb
+        linkDataUrl bbi/GCA_027406535.1_mNycCou1.alt.chainLiftOverGCF_027406575.1Link.bb
+        priority 2
 
 
 track Tiberius

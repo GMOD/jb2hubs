@@ -1,9 +1,9 @@
 hub GCA_010909765.1 genome assembly
 shortLabel thorny skate (v1 primary hap CabotCenter1 2020 genbank)
-longLabel thorny skate (v1 primary hap CabotCenter1 2020 genbank)/Amblyraja radiata/GCA_010909765.1_sAmbRad1.pri genome assembly
+longLabel thorny skate (v1 primary hap CabotCenter1 2020 genbank)/Amblyraja radiata/GCA_010909765.1_sAmbRad1 genome assembly
 useOneFile on
 email genome-www@soe.ucsc.edu
-descriptionUrl html/GCA_010909765.1_sAmbRad1.pri.description.html
+descriptionUrl html/GCA_010909765.1_sAmbRad1.description.html
 
 genome GCA_010909765.1
 taxId 386614
@@ -14,10 +14,10 @@ twoBitBptUrl GCA_010909765.1.2bit.bpt
 chromSizes GCA_010909765.1.chrom.sizes.txt
 chromAliasBb GCA_010909765.1.chromAlias.bb
 chromAuthority ucsc
-organism sAmbRad1.pri Feb. 2020
+organism sAmbRad1 Feb. 2020
 defaultPos CM021366.1:64389434-64399434
 scientificName Amblyraja radiata
-htmlPath html/GCA_010909765.1_sAmbRad1.pri.description.html
+htmlPath html/GCA_010909765.1_sAmbRad1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/010/909/765/GCA_010909765.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/010/909/765/GCA_010909765.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/010/909/765/GCA_010909765.1
@@ -25,15 +25,15 @@ isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/010/909/765/GCA_010909765.1
 track assembly
 longLabel Assembly
 shortLabel Assembly
-visibility pack
+visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.assembly.bb
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.assembly.bb
 type bigBed 6
-html html/GCA_010909765.1_sAmbRad1.pri.assembly
+html html/GCA_010909765.1_sAmbRad1.assembly
 searchIndex name
-searchTrix ixIxx/GCA_010909765.1_sAmbRad1.pri.assembly.ix
+searchTrix ixIxx/GCA_010909765.1_sAmbRad1.assembly.ix
 url https://www.ncbi.nlm.nih.gov/nuccore/$$
 urlLabel NCBI Nucleotide database:
 group map
@@ -44,13 +44,13 @@ longLabel Ideogram for Orientation
 group map
 visibility dense
 type bigBed 4 +
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.cytoBand.bb
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.cytoBand.bb
 
 track gc5Base
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
-visibility full
+visibility dense
 autoScale Off
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
@@ -60,8 +60,8 @@ color 0,0,0
 altColor 128,128,128
 viewLimits 30:70
 type bigWig 0 100
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.gc5Base.bw
-html html/GCA_010909765.1_sAmbRad1.pri.gc5Base
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.gc5Base.bw
+html html/GCA_010909765.1_sAmbRad1.gc5Base
 
 track tanDups
 shortLabel Tandem Dups
@@ -70,20 +70,20 @@ compositeTrack on
 visibility hide
 type bigBed 12
 group map
-html html/GCA_010909765.1_sAmbRad1.pri.tanDups
+html html/GCA_010909765.1_sAmbRad1.tanDups
 
     track gapOverlap
     parent tanDups on
     shortLabel Gap Overlaps
     longLabel Paired exactly identical sequence on each side of a gap
-    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.gapOverlap.bb
+    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.gapOverlap.bb
     type bigBed 12
 
     track tandemDups
     parent tanDups on
     shortLabel Tandem Dups
     longLabel Paired exactly identical sequence survey over entire genome assembly
-    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.tandemDups.bb
+    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.tandemDups.bb
     type bigBed 12
 
 track repeatMasker
@@ -92,9 +92,10 @@ longLabel RepeatMasker Repetitive Elements
 type bigRmsk 9 +
 visibility pack
 group varRep
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.rmsk.bb
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.rmsk.bb
+xrefDataUrl bbi/GCA_010909765.1_sAmbRad1.rmsk.align.bb
 maxWindowToDraw 5000000
-html html/GCA_010909765.1_sAmbRad1.pri.repeatMasker
+html html/GCA_010909765.1_sAmbRad1.repeatMasker
 
 track simpleRepeat
 shortLabel Simple Repeats
@@ -102,97 +103,17 @@ longLabel Simple Tandem Repeats by TRF
 group varRep
 visibility dense
 type bigBed 4 +
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.simpleRepeat.bb
-html html/GCA_010909765.1_sAmbRad1.pri.simpleRepeat
-
-track refSeqComposite
-compositeTrack on
-shortLabel NCBI RefSeq
-longLabel RefSeq gene predictions from NCBI
-group genes
-visibility pack
-type bigBed
-dragAndDrop subTracks
-allButtonPair on
-dataVersion NCBI Amblyraja radiata Annotation Release 100 (2020-03-21)
-html html/GCA_010909765.1_sAmbRad1.pri.refSeqComposite
-priority 2
-
-        track ncbiRefSeq
-        parent refSeqComposite on
-        color 12,12,120
-        altColor 120,12,12
-        shortLabel RefSeq All
-        type bigGenePred
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
-        searchIndex name
-        searchTrix ixIxx/GCA_010909765.1_sAmbRad1.pri.ncbiRefSeq.ix
-        bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.ncbiRefSeq.bb
-        longLabel NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)
-        idXref ncbiRefSeqLink mrnaAcc name
-        baseColorUseCds given
-        baseColorDefault genomicCodons
-        priority 1
-
-        track ncbiRefSeqPredicted
-        color 12,12,120
-        parent refSeqComposite on
-        shortLabel RefSeq Predicted
-        longLabel NCBI RefSeq genes, predicted subset (XM_* or XR_*)
-        type bigGenePred
-        labelFields name,geneName,geneName2
-        defaultLabelFields geneName2
-        searchIndex name
-        searchTrix ixIxx/GCA_010909765.1_sAmbRad1.pri.ncbiRefSeqPredicted.ix
-        idXref ncbiRefSeqLink mrnaAcc name
-        bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.ncbiRefSeqPredicted.bb
-        baseColorUseCds given
-        baseColorDefault genomicCodons
-        priority 3
-
-        track ncbiRefSeqOther
-        color 32,32,32
-        parent refSeqComposite on
-        shortLabel RefSeq Other
-        longLabel NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)
-        priority 4
-        searchIndex name
-        searchTrix ixIxx/GCA_010909765.1_sAmbRad1.pri.ncbiRefSeqOther.ix
-        bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.ncbiRefSeqOther.bb
-        type bigBed 12 +
-        labelFields name
-        skipEmptyFields on
-        urls GeneID="https://www.ncbi.nlm.nih.gov/gene/$$" MIM="https://www.ncbi.nlm.nih.gov/omim/$$" HGNC="http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=$$" FlyBase="http://flybase.org/reports/$$" WormBase="http://www.wormbase.org/db/gene/gene?name=$$" RGD="https://rgd.mcw.edu/rgdweb/search/search.html?term=$$" SGD="https://www.yeastgenome.org/locus/$$" miRBase="http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=$$" ZFIN="https://zfin.org/$$" MGI="http://www.informatics.jax.org/marker/$$"
-
-        track ncbiRefSeqPsl
-        priority 5
-        parent refSeqComposite off
-        shortLabel RefSeq Alignments
-        longLabel RefSeq Alignments of RNAs
-        type bigPsl
-        searchIndex name
-        bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.bigPsl.bb
-        indelDoubleInsert on
-        indelQueryInsert on
-        showDiffBasesAllScales .
-        showDiffBasesMaxZoom 10000.0
-        showCdsMaxZoom 10000.0
-        showCdsAllScales .
-        baseColorDefault diffCodons
-        pslSequence no
-        baseColorUseSequence lfExtra
-        baseColorUseCds table given
-        color 0,0,0
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.simpleRepeat.bb
+html html/GCA_010909765.1_sAmbRad1.simpleRepeat
 
 track cpgIslands
 compositeTrack on
 shortLabel CpG Islands
 longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
-visibility pack
+visibility dense
 type bigBed 4 +
-html html/GCA_010909765.1_sAmbRad1.pri.cpgIslands
+html html/GCA_010909765.1_sAmbRad1.cpgIslands
 
     track cpgIslandExt
     parent cpgIslands off
@@ -200,7 +121,7 @@ html html/GCA_010909765.1_sAmbRad1.pri.cpgIslands
     longLabel CpG Islands (Islands < 300 Bases are Light Green)
     type bigBed 4 +
     priority 1
-    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.cpgIslandExt.bb
+    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.cpgIslandExt.bb
 
     track cpgIslandExtUnmasked
     parent cpgIslands on
@@ -208,7 +129,7 @@ html html/GCA_010909765.1_sAmbRad1.pri.cpgIslands
     longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
     type bigBed 4 +
     priority 2
-    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.cpgIslandExtUnmasked.bb
+    bigDataUrl bbi/GCA_010909765.1_sAmbRad1.cpgIslandExtUnmasked.bb
 
 track windowMasker
 shortLabel WM + SDust
@@ -216,27 +137,27 @@ longLabel Genomic Intervals Masked by WindowMasker + SDust
 group varRep
 visibility dense
 type bigBed 3
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.windowMasker.bb
-html html/GCA_010909765.1_sAmbRad1.pri.windowMasker
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.windowMasker.bb
+html html/GCA_010909765.1_sAmbRad1.windowMasker
 
 track allGaps
 shortLabel All Gaps
 longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
-visibility dense
+visibility hide
 type bigBed 3
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.allGaps.bb
-html html/GCA_010909765.1_sAmbRad1.pri.allGaps
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.allGaps.bb
+html html/GCA_010909765.1_sAmbRad1.allGaps
 
 track augustus
 shortLabel Augustus
 longLabel Augustus Gene Predictions
 group genes
-visibility dense
+visibility pack
 color 180,0,0
 type bigGenePred
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.augustus.bb
-html html/GCA_010909765.1_sAmbRad1.pri.augustus
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.augustus.bb
+html html/GCA_010909765.1_sAmbRad1.augustus
 
 track xenoRefGene
 shortLabel RefSeq mRNAs
@@ -245,31 +166,12 @@ group rna
 visibility pack
 color 180,0,0
 type bigGenePred
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.xenoRefGene.bb
+bigDataUrl bbi/GCA_010909765.1_sAmbRad1.xenoRefGene.bb
 url https://www.ncbi.nlm.nih.gov/nuccore/$$
 urlLabel NCBI Nucleotide database:
 labelFields name,geneName,geneName2
 defaultLabelFields geneName
 searchIndex name
-searchTrix ixIxx/GCA_010909765.1_sAmbRad1.pri.xenoRefGene.ix
-html html/GCA_010909765.1_sAmbRad1.pri.xenoRefGene
-
-track ensGene
-shortLabel Ensembl genes
-longLabel Ensembl genes 2020_06
-group genes
-priority 40
-visibility pack
-color 150,0,0
-itemRgb on
-type bigGenePred
-bigDataUrl bbi/GCA_010909765.1_sAmbRad1.pri.ensGene.bb
-searchTrix ixIxx/GCA_010909765.1_sAmbRad1.pri.ensGene.ix
-searchIndex name
-labelFields name,name2
-defaultLabelFields name2
-baseColorUseCds given
-baseColorDefault genomicCodons
-labelSeperator " "
-html html/GCA_010909765.1_sAmbRad1.pri.ensGene
+searchTrix ixIxx/GCA_010909765.1_sAmbRad1.xenoRefGene.ix
+html html/GCA_010909765.1_sAmbRad1.xenoRefGene
 

@@ -21,6 +21,7 @@ blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/742/125/GCF_002742125.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/742/125/GCF_002742125.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/742/125/GCF_002742125.1
 liftOver.GCF_016772045.1 liftOver/GCF_002742125.1ToGCF_016772045.1.over.chain.gz
+liftOver.GCF_016772045.2 liftOver/GCF_002742125.1ToGCF_016772045.2.over.chain.gz
 liftOver.hg19 liftOver/GCF_002742125.1ToHg19.over.chain.gz
 liftOver.hg38 liftOver/GCF_002742125.1ToHg38.over.chain.gz
 liftOver.mm10 liftOver/GCF_002742125.1ToMm10.over.chain.gz
@@ -313,7 +314,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_002742125.1_Oar_rambouillet_v1.0
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=GCF_016772045.1 s001=oviAri4 s002=oviAri3 s003=hg19 s004=hg38 s005=mm39 s006=mm10
+subGroup2 species Assembly s000=GCF_016772045.2 s001=GCF_016772045.1 s002=oviAri4 s003=oviAri3 s004=hg19 s005=hg38 s006=mm39 s007=mm10
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -335,9 +336,21 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
     parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNet
     spectrum on
 
-        track chainGCF_016772045.1
+        track chainGCF_016772045.2
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
+        shortLabel GCF_016772045.2 Chain
+        longLabel GCF_016772045.2/GCF_016772045.2_ARS-UI_Ramb_v3.0 (2023-07-20) Chained Alignments
+        type bigChain GCF_016772045.2
+        bigDataUrl bbi/GCF_002742125.1_Oar_rambouillet_v1.0.chainGCF_016772045.2.bb
+        linkDataUrl bbi/GCF_002742125.1_Oar_rambouillet_v1.0.chainGCF_016772045.2Link.bb
+        otherDb GCF_016772045.2
+        html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
+        priority 0.939
+
+        track chainGCF_016772045.1
+        parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
         shortLabel GCF_016772045.1 Chain
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigChain GCF_016772045.1
@@ -349,7 +362,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
-        subGroups view=chain species=s001 chainType=c00
+        subGroups view=chain species=s002 chainType=c00
         shortLabel oviAri4 Chain
         longLabel oviAri4/oviAri4 () Chained Alignments
         type bigChain oviAri4
@@ -361,7 +374,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
-        subGroups view=chain species=s002 chainType=c00
+        subGroups view=chain species=s003 chainType=c00
         shortLabel oviAri3 Chain
         longLabel oviAri3/oviAri3 () Chained Alignments
         type bigChain oviAri3
@@ -373,7 +386,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainHg19
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
-        subGroups view=chain species=s003 chainType=c00
+        subGroups view=chain species=s004 chainType=c00
         shortLabel hg19 Chain
         longLabel hg19/hg19 () Chained Alignments
         type bigChain hg19
@@ -385,7 +398,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
-        subGroups view=chain species=s004 chainType=c00
+        subGroups view=chain species=s005 chainType=c00
         shortLabel hg38 Chain
         longLabel hg38/hg38 () Chained Alignments
         type bigChain hg38
@@ -397,7 +410,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
-        subGroups view=chain species=s005 chainType=c00
+        subGroups view=chain species=s006 chainType=c00
         shortLabel mm39 Chain
         longLabel mm39/mm39 () Chained Alignments
         type bigChain mm39
@@ -409,7 +422,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewchain off
-        subGroups view=chain species=s006 chainType=c00
+        subGroups view=chain species=s007 chainType=c00
         shortLabel mm10 Chain
         longLabel mm10/mm10 () Chained Alignments
         type bigChain mm10
@@ -428,7 +441,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynGCF_016772045.1
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
+        subGroups view=synten species=s001 chainType=c01
         shortLabel GCF_016772045.1 synChain
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigChain GCF_016772045.1
@@ -440,7 +453,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
+        subGroups view=synten species=s002 chainType=c01
         shortLabel oviAri4 synChain
         longLabel oviAri4/oviAri4_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain oviAri4
@@ -452,7 +465,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
+        subGroups view=synten species=s003 chainType=c01
         shortLabel oviAri3 synChain
         longLabel oviAri3/oviAri3_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain oviAri3
@@ -464,7 +477,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynHg19
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s003 chainType=c01
+        subGroups view=synten species=s004 chainType=c01
         shortLabel hg19 synChain
         longLabel hg19/hg19_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain hg19
@@ -476,7 +489,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s004 chainType=c01
+        subGroups view=synten species=s005 chainType=c01
         shortLabel hg38 synChain
         longLabel hg38/hg38_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain hg38
@@ -488,7 +501,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s005 chainType=c01
+        subGroups view=synten species=s006 chainType=c01
         shortLabel mm39 synChain
         longLabel mm39/mm39_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain mm39
@@ -500,7 +513,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainSynMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewSynTen off
-        subGroups view=synten species=s006 chainType=c01
+        subGroups view=synten species=s007 chainType=c01
         shortLabel mm10 synChain
         longLabel mm10/mm10_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain mm10
@@ -519,7 +532,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainRBestGCF_016772045.1
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
+        subGroups view=rbest species=s001 chainType=c02
         shortLabel GCF_016772045.1 rbChain
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigChain GCF_016772045.1
@@ -531,7 +544,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainRBestOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
+        subGroups view=rbest species=s002 chainType=c02
         shortLabel oviAri4 rbChain
         longLabel oviAri4/oviAri4_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain oviAri4
@@ -543,7 +556,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainRBestOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
+        subGroups view=rbest species=s003 chainType=c02
         shortLabel oviAri3 rbChain
         longLabel oviAri3/oviAri3_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain oviAri3
@@ -555,7 +568,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainRBestHg19
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewRBest off
-        subGroups view=rbest species=s003 chainType=c02
+        subGroups view=rbest species=s004 chainType=c02
         shortLabel hg19 rbChain
         longLabel hg19/hg19_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain hg19
@@ -567,7 +580,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainRBestMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewRBest off
-        subGroups view=rbest species=s005 chainType=c02
+        subGroups view=rbest species=s006 chainType=c02
         shortLabel mm39 rbChain
         longLabel mm39/mm39_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain mm39
@@ -579,7 +592,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainRBestMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewRBest off
-        subGroups view=rbest species=s006 chainType=c02
+        subGroups view=rbest species=s007 chainType=c02
         shortLabel mm10 rbChain
         longLabel mm10/mm10_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain mm10
@@ -596,9 +609,21 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
     parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNet
     spectrum on
 
-        track chainLiftOverGCF_016772045.1
+        track chainLiftOverGCF_016772045.2
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
         subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCF_016772045.2 loChain
+        longLabel GCF_016772045.2/GCF_016772045.2_ARS-UI_Ramb_v3.0 (2023-07-20) Chained Alignments
+        type bigChain GCF_016772045.2
+        bigDataUrl bbi/GCF_002742125.1_Oar_rambouillet_v1.0.chainLiftOverGCF_016772045.2.bb
+        linkDataUrl bbi/GCF_002742125.1_Oar_rambouillet_v1.0.chainLiftOverGCF_016772045.2Link.bb
+        otherDb GCF_016772045.2
+        html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
+        priority 0.939
+
+        track chainLiftOverGCF_016772045.1
+        parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
         shortLabel GCF_016772045.1 loChain
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigChain GCF_016772045.1
@@ -610,7 +635,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainLiftOverOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
+        subGroups view=liftover species=s002 chainType=c03
         shortLabel oviAri4 loChain
         longLabel oviAri4/oviAri4_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain oviAri4
@@ -622,7 +647,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainLiftOverOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s002 chainType=c03
+        subGroups view=liftover species=s003 chainType=c03
         shortLabel oviAri3 loChain
         longLabel oviAri3/oviAri3_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain oviAri3
@@ -634,7 +659,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainLiftOverHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s004 chainType=c03
+        subGroups view=liftover species=s005 chainType=c03
         shortLabel hg38 loChain
         longLabel hg38/hg38_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain hg38
@@ -646,7 +671,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainLiftOverMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s005 chainType=c03
+        subGroups view=liftover species=s006 chainType=c03
         shortLabel mm39 loChain
         longLabel mm39/mm39_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain mm39
@@ -658,7 +683,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track chainLiftOverMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s006 chainType=c03
+        subGroups view=liftover species=s007 chainType=c03
         shortLabel mm10 loChain
         longLabel mm10/mm10_ARS-UI_Ramb_v2.0 () Chained Alignments
         type bigChain mm10
@@ -676,7 +701,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netGCF_016772045.1
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s000 chainType=c04
+        subGroups view=align species=s001 chainType=c04
         shortLabel GCF_016772045.1 mafNet
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigMaf
@@ -688,7 +713,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetGCF_016772045.1
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s000 chainType=c05
+        subGroups view=align species=s001 chainType=c05
         shortLabel GCF_016772045.1 synNet
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigMaf
@@ -700,7 +725,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetGCF_016772045.1
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s000 chainType=c06
+        subGroups view=align species=s001 chainType=c06
         shortLabel GCF_016772045.1 rbestNet
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigMaf
@@ -712,7 +737,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track liftOverNetGCF_016772045.1
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s000 chainType=c07
+        subGroups view=align species=s001 chainType=c07
         shortLabel GCF_016772045.1 liftOverNet
         longLabel GCF_016772045.1/GCF_016772045.1_ARS-UI_Ramb_v2.0 (2021-02-03) Chained Alignments
         type bigMaf
@@ -724,7 +749,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s001 chainType=c04
+        subGroups view=align species=s002 chainType=c04
         shortLabel oviAri4 mafNet
         longLabel oviAri4/oviAri4 () Chained Alignments
         type bigMaf
@@ -736,7 +761,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s001 chainType=c05
+        subGroups view=align species=s002 chainType=c05
         shortLabel oviAri4 synNet
         longLabel oviAri4/oviAri4 () Chained Alignments
         type bigMaf
@@ -748,7 +773,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s001 chainType=c06
+        subGroups view=align species=s002 chainType=c06
         shortLabel oviAri4 rbestNet
         longLabel oviAri4/oviAri4 () Chained Alignments
         type bigMaf
@@ -760,7 +785,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track liftOverNetOviAri4
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s001 chainType=c07
+        subGroups view=align species=s002 chainType=c07
         shortLabel oviAri4 liftOverNet
         longLabel oviAri4/oviAri4 () Chained Alignments
         type bigMaf
@@ -772,7 +797,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s002 chainType=c04
+        subGroups view=align species=s003 chainType=c04
         shortLabel oviAri3 mafNet
         longLabel oviAri3/oviAri3 () Chained Alignments
         type bigMaf
@@ -784,7 +809,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s002 chainType=c05
+        subGroups view=align species=s003 chainType=c05
         shortLabel oviAri3 synNet
         longLabel oviAri3/oviAri3 () Chained Alignments
         type bigMaf
@@ -796,7 +821,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s002 chainType=c06
+        subGroups view=align species=s003 chainType=c06
         shortLabel oviAri3 rbestNet
         longLabel oviAri3/oviAri3 () Chained Alignments
         type bigMaf
@@ -808,7 +833,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track liftOverNetOviAri3
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s002 chainType=c07
+        subGroups view=align species=s003 chainType=c07
         shortLabel oviAri3 liftOverNet
         longLabel oviAri3/oviAri3 () Chained Alignments
         type bigMaf
@@ -820,7 +845,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netHg19
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s003 chainType=c04
+        subGroups view=align species=s004 chainType=c04
         shortLabel hg19 mafNet
         longLabel hg19/hg19 () Chained Alignments
         type bigMaf
@@ -832,7 +857,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetHg19
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s003 chainType=c05
+        subGroups view=align species=s004 chainType=c05
         shortLabel hg19 synNet
         longLabel hg19/hg19 () Chained Alignments
         type bigMaf
@@ -844,7 +869,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetHg19
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s003 chainType=c06
+        subGroups view=align species=s004 chainType=c06
         shortLabel hg19 rbestNet
         longLabel hg19/hg19 () Chained Alignments
         type bigMaf
@@ -856,7 +881,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s004 chainType=c04
+        subGroups view=align species=s005 chainType=c04
         shortLabel hg38 mafNet
         longLabel hg38/hg38 () Chained Alignments
         type bigMaf
@@ -868,7 +893,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s004 chainType=c05
+        subGroups view=align species=s005 chainType=c05
         shortLabel hg38 synNet
         longLabel hg38/hg38 () Chained Alignments
         type bigMaf
@@ -880,7 +905,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s004 chainType=c06
+        subGroups view=align species=s005 chainType=c06
         shortLabel hg38 rbestNet
         longLabel hg38/hg38 () Chained Alignments
         type bigMaf
@@ -892,7 +917,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track liftOverNetHg38
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s004 chainType=c07
+        subGroups view=align species=s005 chainType=c07
         shortLabel hg38 liftOverNet
         longLabel hg38/hg38 () Chained Alignments
         type bigMaf
@@ -904,7 +929,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s005 chainType=c04
+        subGroups view=align species=s006 chainType=c04
         shortLabel mm39 mafNet
         longLabel mm39/mm39 () Chained Alignments
         type bigMaf
@@ -916,7 +941,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s005 chainType=c05
+        subGroups view=align species=s006 chainType=c05
         shortLabel mm39 synNet
         longLabel mm39/mm39 () Chained Alignments
         type bigMaf
@@ -928,7 +953,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s005 chainType=c06
+        subGroups view=align species=s006 chainType=c06
         shortLabel mm39 rbestNet
         longLabel mm39/mm39 () Chained Alignments
         type bigMaf
@@ -940,7 +965,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track liftOverNetMm39
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s005 chainType=c07
+        subGroups view=align species=s006 chainType=c07
         shortLabel mm39 liftOverNet
         longLabel mm39/mm39 () Chained Alignments
         type bigMaf
@@ -952,7 +977,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track netMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s006 chainType=c04
+        subGroups view=align species=s007 chainType=c04
         shortLabel mm10 mafNet
         longLabel mm10/mm10 () Chained Alignments
         type bigMaf
@@ -964,7 +989,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track synNetMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s006 chainType=c05
+        subGroups view=align species=s007 chainType=c05
         shortLabel mm10 synNet
         longLabel mm10/mm10 () Chained Alignments
         type bigMaf
@@ -976,7 +1001,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track rbestNetMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s006 chainType=c06
+        subGroups view=align species=s007 chainType=c06
         shortLabel mm10 rbestNet
         longLabel mm10/mm10 () Chained Alignments
         type bigMaf
@@ -988,7 +1013,7 @@ html html/GCF_002742125.1_Oar_rambouillet_v1.0.chainNet
 
         track liftOverNetMm10
         parent GCF_002742125.1_Oar_rambouillet_v1.0MafNetViewnet off
-        subGroups view=align species=s006 chainType=c07
+        subGroups view=align species=s007 chainType=c07
         shortLabel mm10 liftOverNet
         longLabel mm10/mm10 () Chained Alignments
         type bigMaf

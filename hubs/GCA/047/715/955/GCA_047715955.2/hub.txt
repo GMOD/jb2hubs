@@ -21,6 +21,7 @@ htmlPath html/GCA_047715955.2_rBraPum1.hap2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/047/715/955/GCA_047715955.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/047/715/955/GCA_047715955.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/047/715/955/GCA_047715955.2
+liftOver.GCA_047715975.2 liftOver/GCA_047715955.2ToGCA_047715975.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -174,4 +175,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCA_047715955.2_rBraPum1.hap2.xenoRefGene.ix
 html html/GCA_047715955.2_rBraPum1.hap2.xenoRefGene
+
+##############################################################################
+# GCA_047715975.2 - lizards & snakes - Bradypodion pumilum - taxId: 179887
+##############################################################################
+track chainNetGCA_047715975.2
+compositeTrack on
+shortLabel lizards & snakes Chain/Net
+longLabel lizards & snakes (2025-12-17), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCA_047715975.2
+html html/GCA_047715955.2_rBraPum1.hap2.chainNet
+
+    track chainNetGCA_047715975.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCA_047715975.2
+    spectrum on
+
+        track chainGCA_047715975.2
+        parent chainNetGCA_047715975.2Viewchain
+        subGroups view=chain
+        shortLabel lizards & snakes Chain
+        longLabel lizards & snakes (2025-12-17) Chained Alignments
+        type bigChain GCA_047715975.2
+        bigDataUrl bbi/GCA_047715955.2_rBraPum1.hap2.chainGCA_047715975.2.bb
+        linkDataUrl bbi/GCA_047715955.2_rBraPum1.hap2.chainGCA_047715975.2Link.bb
+        priority 1
+
+        track chainLiftOverGCA_047715975.2
+        parent chainNetGCA_047715975.2Viewchain
+        subGroups view=chain
+        shortLabel lizards & snakes loChain
+        longLabel lizards & snakes (2025-12-17) Lift Over Chained Alignments
+        type bigChain GCA_047715975.2
+        bigDataUrl bbi/GCA_047715955.2_rBraPum1.hap2.chainLiftOverGCA_047715975.2.bb
+        linkDataUrl bbi/GCA_047715955.2_rBraPum1.hap2.chainLiftOverGCA_047715975.2Link.bb
+        priority 2
 

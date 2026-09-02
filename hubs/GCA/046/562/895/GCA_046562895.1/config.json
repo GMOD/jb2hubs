@@ -254,6 +254,49 @@
     {
       "metadata": {
         "ucsc": {
+          "track": "ncbiGene",
+          "longLabel": "Gene models submitted to GenBank, ENA, DDBJ",
+          "shortLabel": "NCBI GenBank",
+          "visibility": "pack",
+          "color": "0,80,150",
+          "altColor": "150,80,0",
+          "colorByStrand": "0,80,150 150,80,0",
+          "bigDataUrl": "bbi/GCA_046562895.1_mTriInu1_haplotype_2.ncbiGene.bb",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/046/562/895/GCA_046562895.1/html/GCA_046562895.1_mTriInu1_haplotype_2.ncbiGene\">html/GCA_046562895.1_mTriInu1_haplotype_2.ncbiGene</a>",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_046562895.1_mTriInu1_haplotype_2.ncbiGene.ix",
+          "urlLabel": "Entrez gene:",
+          "labelFields": "geneName,geneName2",
+          "defaultLabelFields": "geneName2",
+          "group": "genes"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_046562895.1-ncbiGene",
+      "description": "Gene models submitted to GenBank, ENA, DDBJ",
+      "assemblyNames": ["GCA_046562895.1"],
+      "name": "NCBI GenBank",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/046/562/895/GCA_046562895.1/bbi/GCA_046562895.1_mTriInu1_haplotype_2.ncbiGene.bb",
+        "aggregateField": "geneName2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_046562895.1-ncbiGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "metadata": {
+        "ucsc": {
           "track": "cpgIslandExt",
           "parent": "cpgIslands off",
           "shortLabel": "CpG Islands",
@@ -352,7 +395,7 @@
           "shortLabel": "Augustus",
           "longLabel": "Augustus Gene Predictions",
           "group": "genes",
-          "visibility": "pack",
+          "visibility": "dense",
           "color": "180,0,0",
           "type": "bigGenePred",
           "bigDataUrl": "bbi/GCA_046562895.1_mTriInu1_haplotype_2.augustus.bb",

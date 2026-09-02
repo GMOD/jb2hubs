@@ -174,41 +174,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -224,6 +189,25 @@
           "nucleotide_motif"
         ]
       }
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "anoGam3-index",
+      "ixFilePath": {
+        "uri": "trix/anoGam3.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/anoGam3.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/anoGam3_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["anoGam3"]
     }
   ],
   "plugins": [
@@ -259,25 +243,6 @@
       }
     }
   },
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "anoGam3-index",
-      "ixFilePath": {
-        "uri": "trix/anoGam3.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/anoGam3.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/anoGam3_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["anoGam3"]
-    }
-  ],
   "defaultSession": {
     "name": "anoGam3 Oct. 2006 (AgamP3/anoGam3)",
     "views": [

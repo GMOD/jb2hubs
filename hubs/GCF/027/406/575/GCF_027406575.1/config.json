@@ -24,6 +24,7 @@
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/027/406/575/GCF_027406575.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/027/406/575/GCF_027406575.1",
             "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/027/406/575/GCF_027406575.1",
+            "liftOver.GCA_027406535.1": "liftOver/GCF_027406575.1ToGCA_027406535.1.over.chain.gz",
             "liftOver.GCA_028858775.2": "liftOver/GCF_027406575.1ToGCA_028858775.2.over.chain.gz",
             "liftOver.GCA_028878055.2": "liftOver/GCF_027406575.1ToGCA_028878055.2.over.chain.gz",
             "liftOver.GCA_028885625.2": "liftOver/GCF_027406575.1ToGCA_028885625.2.over.chain.gz",
@@ -802,41 +803,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -851,6 +817,27 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_027406575.1_to_GCA_027406535.1_liftOver",
+      "name": "GCF_027406575.1 (slow loris (primary hap 2022)) to slow loris (alternate hap 2022) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_027406575.1", "GCA_027406535.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_027406575.1",
+        "queryAssembly": "GCA_027406535.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_027406575.1ToGCA_027406535.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_027406575.1ToGCA_027406535.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     },
     {

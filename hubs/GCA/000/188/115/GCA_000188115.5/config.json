@@ -23,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/000/188/115/GCA_000188115.5/html/GCA_000188115.5_SL4.0.description.html\">html/GCA_000188115.5_SL4.0.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/000/188/115/GCA_000188115.5",
+            "liftOver.GCF_000188115.2": "liftOver/GCA_000188115.5ToGCF_000188115.2.over.chain.gz"
           }
         },
         "trackId": "GCA_000188115.5-ReferenceSequenceTrack",
@@ -386,6 +387,27 @@
           }
         }
       ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_000188115.5_to_GCF_000188115.2_liftOver",
+      "name": "GCA_000188115.5 (tomato (SL4.0 Heinz 1706 2025 genbank)) to tomato (SL2.40 Heinz 1706 2011) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_000188115.5", "GCF_000188115.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_000188115.5",
+        "queryAssembly": "GCF_000188115.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_000188115.5ToGCF_000188115.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_000188115.5ToGCF_000188115.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {

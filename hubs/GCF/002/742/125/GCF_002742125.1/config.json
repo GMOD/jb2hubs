@@ -24,6 +24,7 @@
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/742/125/GCF_002742125.1",
             "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/742/125/GCF_002742125.1",
             "liftOver.GCF_016772045.1": "liftOver/GCF_002742125.1ToGCF_016772045.1.over.chain.gz",
+            "liftOver.GCF_016772045.2": "liftOver/GCF_002742125.1ToGCF_016772045.2.over.chain.gz",
             "liftOver.hg19": "liftOver/GCF_002742125.1ToHg19.over.chain.gz",
             "liftOver.hg38": "liftOver/GCF_002742125.1ToHg38.over.chain.gz",
             "liftOver.mm10": "liftOver/GCF_002742125.1ToMm10.over.chain.gz",
@@ -722,41 +723,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -789,6 +755,27 @@
         "index": {
           "location": {
             "uri": "liftOver/GCF_002742125.1ToGCF_016772045.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_002742125.1_to_GCF_016772045.2_liftOver",
+      "name": "GCF_002742125.1 (Rambouillet sheep (Baylor 2017)) to sheep (OAR_USU_Benz2616 2023) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_002742125.1", "GCF_016772045.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_002742125.1",
+        "queryAssembly": "GCF_016772045.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_002742125.1ToGCF_016772045.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_002742125.1ToGCF_016772045.2.pif.gz.csi"
           },
           "indexType": "CSI"
         }

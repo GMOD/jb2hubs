@@ -22,7 +22,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/027/406/535/GCA_027406535.1/html/GCA_027406535.1_mNycCou1.alt.description.html\">html/GCA_027406535.1_mNycCou1.alt.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/027/406/535/GCA_027406535.1",
+            "liftOver.GCF_027406575.1": "liftOver/GCA_027406535.1ToGCF_027406575.1.over.chain.gz"
           }
         },
         "trackId": "GCA_027406535.1-ReferenceSequenceTrack",
@@ -363,6 +364,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/027/406/535/GCA_027406535.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_027406535.1_to_GCF_027406575.1_liftOver",
+      "name": "GCA_027406535.1 (slow loris (alternate hap 2022)) to slow loris (primary hap 2022) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_027406535.1", "GCF_027406575.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_027406535.1",
+        "queryAssembly": "GCF_027406575.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_027406535.1ToGCF_027406575.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_027406535.1ToGCF_027406575.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

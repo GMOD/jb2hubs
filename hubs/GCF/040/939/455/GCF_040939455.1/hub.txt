@@ -21,6 +21,7 @@ htmlPath html/GCF_040939455.1_M.murinus_Inina_mat1.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/040/939/455/GCF_040939455.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/040/939/455/GCF_040939455.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/040/939/455/GCF_040939455.1
+liftOver.hg38 liftOver/GCF_040939455.1ToHg38.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -272,4 +273,54 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_040939455.1_M.murinus_Inina_mat1.0.xenoRefGene.ix
 html html/GCF_040939455.1_M.murinus_Inina_mat1.0.xenoRefGene
+
+##############################################################################
+# hg38 - Human - Homo sapiens - taxId: 9606
+##############################################################################
+track chainNetHg38
+compositeTrack on
+shortLabel Human Chain/Net
+longLabel Human (Dec. 2013 (GRCh38/hg38)), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainMinScore 5000
+chainLinearGap medium
+matrixHeader A, C, G, T
+otherDb hg38
+html html/GCF_040939455.1_M.murinus_Inina_mat1.0.chainNet
+
+    track chainNetHg38Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetHg38
+    spectrum on
+
+        track chainHg38
+        parent chainNetHg38Viewchain
+        subGroups view=chain
+        shortLabel Human Chain
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_040939455.1_M.murinus_Inina_mat1.0.chainHg38.bb
+        linkDataUrl bbi/GCF_040939455.1_M.murinus_Inina_mat1.0.chainHg38Link.bb
+        priority 1
+
+        track chainLiftOverHg38
+        parent chainNetHg38Viewchain
+        subGroups view=chain
+        shortLabel Human loChain
+        longLabel Human (Dec. 2013 (GRCh38/hg38)) Lift Over Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_040939455.1_M.murinus_Inina_mat1.0.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_040939455.1_M.murinus_Inina_mat1.0.chainLiftOverHg38Link.bb
+        priority 2
 

@@ -23,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/188/115/GCF_000188115.2/html/GCF_000188115.2_SL2.40.description.html\">html/GCF_000188115.2_SL2.40.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/188/115/GCF_000188115.2",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/188/115/GCF_000188115.2",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/188/115/GCF_000188115.2"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/188/115/GCF_000188115.2",
+            "liftOver.GCA_000188115.5": "liftOver/GCF_000188115.2ToGCA_000188115.5.over.chain.gz"
           }
         },
         "trackId": "GCF_000188115.2-ReferenceSequenceTrack",
@@ -643,41 +644,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -692,6 +658,27 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_000188115.2_to_GCA_000188115.5_liftOver",
+      "name": "GCF_000188115.2 (tomato (SL2.40 Heinz 1706 2011)) to tomato (SL4.0 Heinz 1706 2025 genbank) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_000188115.2", "GCA_000188115.5"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_000188115.2",
+        "queryAssembly": "GCA_000188115.5",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_000188115.2ToGCA_000188115.5.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_000188115.2ToGCA_000188115.5.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

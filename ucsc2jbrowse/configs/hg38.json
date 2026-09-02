@@ -5875,7 +5875,7 @@
           "labelFields": "name,geneName",
           "longLabel": "gnomAD Predicted Loss of Function Constraint Metrics By Gene (LOEUF and pLI) v2.1.1",
           "mouseOver": "LOEUF: $_loeuf<br> pLI: $_pli<br> $synonymous<br> $pLoF",
-          "parent": "constraintV2 on",
+          "parent": "constraintV2 off",
           "priority": "1",
           "searchIndex": "name,geneName",
           "shortLabel": "Gene LoF",
@@ -5902,20 +5902,20 @@
     },
     {
       "trackId": "hg38-gnomadGenomesVariantsV4_1",
-      "name": "gnomAD v4.1 - gnomAD v4.1 Genomes",
+      "name": "gnomAD v4.1.1 - gnomAD v4.1.1 Genomes",
       "type": "FeatureTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1/genomes/genomes.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/genomes/genomes.bb"
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/v4.1/genomes/genomes.bb",
-          "dataVersion": "Release v4.1 (April 19, 2024)",
+          "bigDataUrl": "/gbdb/hg38/gnomAD/v4.1.1/genomes/genomes.bb",
+          "dataVersion": "Release v4.1.1 (March 30, 2026)",
           "defaultLabelFields": "_displayName",
           "detailsDynamicTable": "_jsonVep|Variant Effect Predictor,_jsonPopTable|Population Frequencies,_jsonHapTable|Haplotype Frequencies",
-          "detailsTabUrls": "_dataOffset=/gbdb/hg38/gnomAD/v4.1/genomes/gnomad.v4.1.genomes.details.tab.gz",
+          "detailsTabUrls": "_dataOffset=/gbdb/hg38/gnomAD/v4.1.1/genomes/gnomad.v4.1.1.genomes.details.tab.gz",
           "filter.AF": "0.0",
           "filterLabel.AF": "Minor Allele Frequency Filter",
           "filterType.FILTER": "multipleListAnd",
@@ -5925,15 +5925,15 @@
           "filterValues.variation_type": "3_prime_UTR_variant,5_prime_UTR_variant,NMD_transcript_variant,coding_sequence_variant,frameshift_variant,incomplete_terminal_codon_variant,inframe_deletion,inframe_insertion,intron_variant,mature_miRNA_variant,missense_variant,non_coding_transcript_exon_variant,non_coding_transcript_variant,protein_altering_variant,splice_acceptor_variant,splice_donor_variant,splice_region_variant,start_lost,start_retained_variant,stop_gained,stop_lost,stop_retained_variant,synonymous_variant,transcript_ablation",
           "filterValuesDefault.FILTER": "PASS",
           "filterValuesDefault.annot": "pLoF,missense,synonymous",
-          "html": "<h2>Description</h2>\n<p>\nGnomAD 4 used the whole-genome data from gnomAD 3 and added more exomes.\nThe v4.1 release included a fix for the allele number\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2024-04-gnomad-v4-1/\">issue</a>.\nThe current v4.1.1 release, from March 30, 2026, revises the LOFTEE END_TRUNC GERP distance\nthreshold from -58.0 to 0.0. This reclassifies about 79,920 predicted loss-of-function (pLoF)\nvariants from high-confidence to low-confidence. For more information, see the related <a\ntarget=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2026-03-gnomad-v4-1-1/\">blog post</a>.\n</p>\n<p>\nThe track shows variants from 807,162 individuals, including 730,947\nexomes and 76,215 genomes. This includes the 76,156 genomes from the gnomAD v3.1.2 release as well\nas exome data from 416,555 UK Biobank individuals.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<p>\nMouse hover on an item will display the following details about each variant:</p>\n<ul>\n  <li>Position</li>\n  <li>Total Allele Frequency (TotalAF)</li>\n  <li>Genes</li>\n  <li>Annotation</li>\n  <li>FILTER tags from VCF (FILTER)</li>\n  <li>Population with maximum AF (PopMaxAF)</li>\n  <li>Homozygous Individuals</li>\n  <li>Homozygous Individuals in XX samples (chrX and chrY only)</li>\n  <li>Hemizygous Individuals (chrX and chrY only)</li>\n</ul>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for this track:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP.\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v4.1.1 data is unfiltered.</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below).</p>\n\n<p>\nThe underlying bigBed only contains enough information necessary to use the track in the browser.\nThe extra data like VEP annotations and CADD scores are available in the\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\">same directory</a>\nas the bigBed but in the files <em>details.tab.gz</em> and <em>details.tab.gz.gzi</em>. The\ndetails.tab.gz contains the gzip compressed extra data in JSON format, and the .gzi file is\navailable to speed searching of this data. Each variant has an associated md5sum in the name field\nof the bigBed which can be used along with the _dataOffset and _dataLen fields to get the\nassociated external data. For example:</p>\n\n<pre>\n# find an item of interest, the last two fields are _dataOffset and _dataLen:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted..]    67293    902\n\n# use _dataOffset and _dataLen (add one to _dataLen for the newline character):\nbgzip -b 67293 -s 903 gnomad.v4.1.1.genomes.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\"...\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alföldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n<p>\nGnomAD 4 used the whole-genome data from gnomAD 3 and added more exomes.\nThe v4.1 release included a fix for the allele number\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2024-04-gnomad-v4-1/\">issue</a>.\nThe current v4.1.1 release, from March 30, 2026, revises the LOFTEE END_TRUNC GERP distance\nthreshold from -58.0 to 0.0. This reclassifies about 79,920 predicted loss-of-function (pLoF)\nvariants from high-confidence to low-confidence. For more information, see the related <a\ntarget=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2026-03-gnomad-v4-1-1/\">blog post</a>.\n</p>\n<p>\nThe track shows variants from 807,162 individuals, including 730,947\nexomes and 76,215 genomes. This includes the 76,156 genomes from the gnomAD v3.1.2 release as well\nas exome data from 416,555 UK Biobank individuals.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<p>\nMouse hover on an item will display the following details about each variant:</p>\n<ul>\n  <li>Position</li>\n  <li>Total Allele Frequency (TotalAF)</li>\n  <li>Genes</li>\n  <li>Annotation</li>\n  <li>FILTER tags from VCF (FILTER)</li>\n  <li>Population with maximum AF (PopMaxAF)</li>\n  <li>Homozygous Individuals</li>\n  <li>Homozygous Individuals in XX samples (chrX and chrY only)</li>\n  <li>Hemizygous Individuals (chrX and chrY only)</li>\n</ul>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for this track:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP.\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v4.1.1 data is unfiltered.</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below).</p>\n\n<p>\nThe underlying bigBed only contains enough information necessary to use the track in the browser.\nThe extra data like VEP annotations and CADD scores are available in the\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\">same directory</a>\nas the bigBed but in the files <em>details.tab.gz</em> and <em>details.tab.gz.gzi</em>. The\ndetails.tab.gz contains the gzip compressed extra data in JSON format, and the .gzi file is\navailable to speed searching of this data. Each variant has an associated md5sum in the name field\nof the bigBed which can be used along with the _dataOffset and _dataLen fields to get the\nassociated external data. For example:</p>\n\n<pre>\n# find an item of interest, the last two fields are _dataOffset and _dataLen:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted..]    67293    902\n\n# use _dataOffset and _dataLen (add one to _dataLen for the newline character):\nbgzip -b 67293 -s 903 gnomad.v4.1.1.genomes.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\"...\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alf&#246;ldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
           "itemRgb": "on",
           "labelFields": "rsId,_displayName",
-          "longLabel": "Genome Aggregation Database (gnomAD) Genome Variants v4.1",
+          "longLabel": "Genome Aggregation Database (gnomAD) Genome Variants v4.1.1",
           "mouseOver": "<b>Position</b>: $chrom:${chromStart}-${chromEnd} ($ref/$alt)<br> <b>TotalAF</b>: ${AF} (${AC}/${AN})<br> <b>Genes</b>: $genes<br> <b>Annotation</b>: $annot<br> <b>FILTER</b>: ${FILTER}<br> <b>PopMaxAF</b>: ${grpmax}<br> <b>Homozygous Individuals</b>: ${nhomalt}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${nhemi}",
           "parent": "gnomadVariantsV4.1 on",
           "priority": "1",
           "searchIndex": "name,_displayName,rsId",
-          "shortLabel": "gnomAD v4.1 Genomes",
+          "shortLabel": "gnomAD v4.1.1 Genomes",
           "skipEmptyFields": "on",
           "skipFields": "_displayName",
           "track": "gnomadGenomesVariantsV4_1",
@@ -5943,7 +5943,7 @@
           "visibility": "squish"
         }
       },
-      "description": "Genome Aggregation Database (gnomAD) Genome Variants v4.1",
+      "description": "Genome Aggregation Database (gnomAD) Genome Variants v4.1.1",
       "category": ["Variation and Repeats"],
       "formatDetails": {
         "feature": "jexl:{_dataOffset:undefined,_dataLen:undefined}"
@@ -6195,6 +6195,34 @@
           "mouseover": "jexl:get(feature,'_mouseOver')"
         }
       ]
+    },
+    {
+      "trackId": "hg38-gnomadMpcA",
+      "name": "gnomAD MPC - MPC alt=A",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/a.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/mpc/a.bw",
+          "color": "68,1,84",
+          "longLabel": "gnomAD MPC score: alt allele is A",
+          "maxHeightPixels": "128:20:8",
+          "parent": "gnomadMpc on",
+          "shortLabel": "MPC alt=A",
+          "track": "gnomadMpcA",
+          "type": "bigWig",
+          "viewLimits": "0:3",
+          "viewLimitsMax": "0:6",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "gnomAD MPC score: alt allele is A",
+      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-mprabase",
@@ -6823,6 +6851,95 @@
       ]
     },
     {
+      "trackId": "hg38-pliByTranscriptV4_1_1",
+      "name": "Constraint V4.1.1 - Transcript LoF v4.1.1",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/pLI/pliByTranscript.v4.1.1.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/pLI/pliByTranscript.v4.1.1.bb",
+          "filter._pli": "0:1",
+          "filterByRange._pli": "on",
+          "filterLabel._pli": "Show only items between this pLI range",
+          "itemRgb": "on",
+          "labelFields": "name,geneName",
+          "longLabel": "gnomAD Predicted Loss of Function Constraint Metrics By Transcript (LOEUF and pLI) v4.1.1",
+          "mouseOver": "$_mouseOver<br> $synonymous<br> $pLoF<br> Constraint flags: $constraintFlags",
+          "parent": "constraintV4_1_1",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#082626 \"Released Aug. 26, 2026\"",
+          "priority": "1.5",
+          "searchIndex": "name,geneName",
+          "shortLabel": "Transcript LoF v4.1.1",
+          "subGroups": "view=v4_1_1",
+          "track": "pliByTranscriptV4_1_1",
+          "type": "bigBed 12 +",
+          "url": "https://gnomad.broadinstitute.org/transcript/$$?dataset=gnomad_r4",
+          "urlLabel": "View this Transcript on the gnomAD browser",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Predicted Loss of Function Constraint Metrics By Transcript (LOEUF and pLI) v4.1.1",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-pliByTranscriptV4_1_1-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'pLoF')}<br> Constraint flags: ${get(feature,'constraintFlags')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "hg38-missenseByTranscriptV4_1_1",
+      "name": "Constraint V4.1.1 - Transcript Missense v4.1.1",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/pLI/missenseByTranscript.v4.1.1.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/pLI/missenseByTranscript.v4.1.1.bb",
+          "filter._zscore": "-20:11",
+          "filterByRange._zscore": "on",
+          "filterLabel._zscore": "Show only items between this Z-score range",
+          "labelFields": "name,geneName",
+          "longLabel": "gnomAD Predicted Missense Constraint Metrics By Transcript (Z-scores) v4.1.1",
+          "mouseOver": "$_mouseOver<br> $synonymous<br> $missense<br> Constraint flags: $constraintFlags",
+          "parent": "constraintV4_1_1",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#082626 \"Released Aug. 26, 2026\"",
+          "priority": "1.5",
+          "searchIndex": "name,geneName",
+          "shortLabel": "Transcript Missense v4.1.1",
+          "subGroups": "view=v4_1_1",
+          "track": "missenseByTranscriptV4_1_1",
+          "type": "bigBed 12 +",
+          "url": "https://gnomad.broadinstitute.org/transcript/$$?dataset=gnomad_r4",
+          "urlLabel": "View this Transcript on the gnomAD browser",
+          "html": ""
+        }
+      },
+      "description": "gnomAD Predicted Missense Constraint Metrics By Transcript (Z-scores) v4.1.1",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-missenseByTranscriptV4_1_1-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:`${get(feature,'_mouseOver')}<br> ${get(feature,'synonymous')}<br> ${get(feature,'missense')}<br> Constraint flags: ${get(feature,'constraintFlags')}`"
+        }
+      ]
+    },
+    {
       "trackId": "hg38-nmdEscNcbiRefSeq",
       "name": "NMD Escape - NMD Escape RefSeq",
       "type": "FeatureTrack",
@@ -7355,20 +7472,20 @@
     },
     {
       "trackId": "hg38-gnomadExomesVariantsV4_1",
-      "name": "gnomAD v4.1 - gnomAD v4.1 Exomes",
+      "name": "gnomAD v4.1.1 - gnomAD v4.1.1 Exomes",
       "type": "FeatureTrack",
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1/exomes/exomes.bb"
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/exomes/exomes.bb"
       },
       "metadata": {
         "ucsc": {
-          "bigDataUrl": "/gbdb/hg38/gnomAD/v4.1/exomes/exomes.bb",
-          "dataVersion": "Release v4.1 (April 19, 2024)",
+          "bigDataUrl": "/gbdb/hg38/gnomAD/v4.1.1/exomes/exomes.bb",
+          "dataVersion": "Release v4.1.1 (March 30, 2026)",
           "defaultLabelFields": "_displayName",
           "detailsDynamicTable": "_jsonVep|Variant Effect Predictor,_jsonPopTable|Population Frequencies,_jsonHapTable|Haplotype Frequencies",
-          "detailsTabUrls": "_dataOffset=/gbdb/hg38/gnomAD/v4.1/exomes/gnomad.v4.1.exomes.details.tab.gz",
+          "detailsTabUrls": "_dataOffset=/gbdb/hg38/gnomAD/v4.1.1/exomes/gnomad.v4.1.1.exomes.details.tab.gz",
           "filter.AF": "0.0",
           "filterLabel.AF": "Minor Allele Frequency Filter",
           "filterType.FILTER": "multipleListAnd",
@@ -7378,15 +7495,15 @@
           "filterValues.variation_type": "3_prime_UTR_variant,5_prime_UTR_variant,NMD_transcript_variant,coding_sequence_variant,frameshift_variant,incomplete_terminal_codon_variant,inframe_deletion,inframe_insertion,intron_variant,mature_miRNA_variant,missense_variant,non_coding_transcript_exon_variant,non_coding_transcript_variant,protein_altering_variant,splice_acceptor_variant,splice_donor_variant,splice_region_variant,start_lost,start_retained_variant,stop_gained,stop_lost,stop_retained_variant,synonymous_variant,transcript_ablation",
           "filterValuesDefault.FILTER": "PASS",
           "filterValuesDefault.annot": "pLoF,missense,synonymous",
-          "html": "<h2>Description</h2>\n<p>\nGnomAD 4 used the whole-genome data from gnomAD 3 and added more exomes.\nThe v4.1 release included a fix for the allele number\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2024-04-gnomad-v4-1/\">issue</a>.\nThe current v4.1.1 release, from March 30, 2026, revises the LOFTEE END_TRUNC GERP distance\nthreshold from -58.0 to 0.0. This reclassifies about 79,920 predicted loss-of-function (pLoF)\nvariants from high-confidence to low-confidence. For more information, see the related <a\ntarget=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2026-03-gnomad-v4-1-1/\">blog post</a>.\n</p>\n<p>\nThe track shows variants from 807,162 individuals, including 730,947\nexomes and 76,215 genomes. This includes the 76,156 genomes from the gnomAD v3.1.2 release as well\nas exome data from 416,555 UK Biobank individuals.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<p>\nMouse hover on an item will display the following details about each variant:</p>\n<ul>\n  <li>Position</li>\n  <li>Total Allele Frequency (TotalAF)</li>\n  <li>Genes</li>\n  <li>Annotation</li>\n  <li>FILTER tags from VCF (FILTER)</li>\n  <li>Population with maximum AF (PopMaxAF)</li>\n  <li>Homozygous Individuals</li>\n  <li>Homozygous Individuals in XX samples (chrX and chrY only)</li>\n  <li>Hemizygous Individuals (chrX and chrY only)</li>\n</ul>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for this track:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP.\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v4.1.1 data is unfiltered.</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below).</p>\n\n<p>\nThe underlying bigBed only contains enough information necessary to use the track in the browser.\nThe extra data like VEP annotations and CADD scores are available in the\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\">same directory</a>\nas the bigBed but in the files <em>details.tab.gz</em> and <em>details.tab.gz.gzi</em>. The\ndetails.tab.gz contains the gzip compressed extra data in JSON format, and the .gzi file is\navailable to speed searching of this data. Each variant has an associated md5sum in the name field\nof the bigBed which can be used along with the _dataOffset and _dataLen fields to get the\nassociated external data. For example:</p>\n\n<pre>\n# find an item of interest, the last two fields are _dataOffset and _dataLen:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted..]    67293    902\n\n# use _dataOffset and _dataLen (add one to _dataLen for the newline character):\nbgzip -b 67293 -s 903 gnomad.v4.1.1.genomes.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\"...\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alföldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
+          "html": "<h2>Description</h2>\n<p>\nGnomAD 4 used the whole-genome data from gnomAD 3 and added more exomes.\nThe v4.1 release included a fix for the allele number\n<a target=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2024-04-gnomad-v4-1/\">issue</a>.\nThe current v4.1.1 release, from March 30, 2026, revises the LOFTEE END_TRUNC GERP distance\nthreshold from -58.0 to 0.0. This reclassifies about 79,920 predicted loss-of-function (pLoF)\nvariants from high-confidence to low-confidence. For more information, see the related <a\ntarget=\"_blank\" href=\"https://gnomad.broadinstitute.org/news/2026-03-gnomad-v4-1-1/\">blog post</a>.\n</p>\n<p>\nThe track shows variants from 807,162 individuals, including 730,947\nexomes and 76,215 genomes. This includes the 76,156 genomes from the gnomAD v3.1.2 release as well\nas exome data from 416,555 UK Biobank individuals.\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<p>\nFollowing the conventions on the gnomAD browser, items are shaded according to their Annotation\ntype:\n<table class=\"stdTbl\">\n    <tr><td>pLoF</td><td width=\"50px\" style=\"background: rgb(255,32,0)\"></td></tr>\n    <tr><td>Missense</td><td width=\"50px\" style=\"background: rgb(247,189,0)\"></td></tr>\n    <tr><td>Synonymous</td><td style=\"background: rgb(4,255,0)\"></td></tr>\n    <tr><td>Other</td><td style=\"background: rgb(95,95,95)\"></td></tr>\n</table>\n</p>\n\n<p>\nMouse hover on an item will display the following details about each variant:</p>\n<ul>\n  <li>Position</li>\n  <li>Total Allele Frequency (TotalAF)</li>\n  <li>Genes</li>\n  <li>Annotation</li>\n  <li>FILTER tags from VCF (FILTER)</li>\n  <li>Population with maximum AF (PopMaxAF)</li>\n  <li>Homozygous Individuals</li>\n  <li>Homozygous Individuals in XX samples (chrX and chrY only)</li>\n  <li>Hemizygous Individuals (chrX and chrY only)</li>\n</ul>\n\n<p>\nClicking on an item will display additional details on the variant, including a population frequency\ntable showing allele count in each sub-population.\n</p>\n\n<h4>Label Options</h4>\n<p>\nTo maintain consistency with the gnomAD website, variants are by default labeled according\nto their chromosomal start position followed by the reference and alternate alleles,\nfor example &quot;chr1-1234-T-CAG&quot;. dbSNP rsID's are also available as an additional\nlabel, if the variant is present in dbSnp.\n</p>\n\n<h4>Filtering Options</h4>\n<p>\nThree filters are available for this track:\n</p>\n<ul>\n    <li>FILTER: Used to exclude/include variants that failed Random Forest\n    (RF), Inbreeding Coefficient (Inbreeding Coeff), or Allele Count (AC0) filters. The\n    PASS option is used to include/exclude variants that pass all of the RF,\n    InbreedingCoeff, and AC0 filters, as denoted in the original VCF.\n    <li>Annotation type: Used to exclude/include variants that are annotated as\n    Probability Loss of Function (pLoF), Missense, Synonymous, or Other, as\n    annotated by VEP.\n    <li>Variant Type: Used to exclude/include variants according to the type of\n    variation, as annotated by VEP.\n</ul>\nThere is one additional configurable filter on the minimum minor allele frequency.\n\n<h2>UCSC Methods</h2>\n<p>\nThe gnomAD v4.1.1 data is unfiltered.</p>\n\n<p>\nFor the full steps used to create the gnomAD tracks at UCSC, please see the\n<a\nhref=\"https://raw.githubusercontent.com/ucscGenomeBrowser/kent/master/src/hg/makeDb/doc/hg38/gnomad.txt\"\ntarget=\"_blank\">hg38 gnomad makedoc</a>.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">\nTable Browser</a>, or the <a target=\"_blank\" href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For\nautomated analysis, the data may be queried from our <a target=\"_blank\"\nhref=\"/goldenPath/help/api.html\">REST API</a>, and the genome annotations are stored in files that\ncan be downloaded from our <a\nhref=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\" target=\"_blank\">download server</a>, subject\nto the conditions set forth by the gnomAD consortium (see below).</p>\n\n<p>\nThe underlying bigBed only contains enough information necessary to use the track in the browser.\nThe extra data like VEP annotations and CADD scores are available in the\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/v4.1.1/\">same directory</a>\nas the bigBed but in the files <em>details.tab.gz</em> and <em>details.tab.gz.gzi</em>. The\ndetails.tab.gz contains the gzip compressed extra data in JSON format, and the .gzi file is\navailable to speed searching of this data. Each variant has an associated md5sum in the name field\nof the bigBed which can be used along with the _dataOffset and _dataLen fields to get the\nassociated external data. For example:</p>\n\n<pre>\n# find an item of interest, the last two fields are _dataOffset and _dataLen:\nbigBedToBed genomes.bb stdout | head -4 | tail -1\nchr1    12416    12417    854246d79dc5d02dcdbd5f5438542b6e    [..omitted..]    67293    902\n\n# use _dataOffset and _dataLen (add one to _dataLen for the newline character):\nbgzip -b 67293 -s 903 gnomad.v4.1.1.genomes.details.tab.gz\n854246d79dc5d02dcdbd5f5438542b6e    {\"DDX11L1\": {\"cons\": [\"non_coding_transcript_variant\"...\n</pre>\n\n<p>\nThe data can also be found directly from the gnomAD <a target=\"_blank\"\nhref=\"https://gnomad.broadinstitute.org/downloads\">downloads page</a>. Please refer to\nour <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list archives</a> for questions, or our <a target=\"_blank\"\nhref=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\">Data Access FAQ</a> for more information.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the <a href=\"https://gnomad.broadinstitute.org/about\" target=\"_blank\">Genome Aggregation\nDatabase Consortium</a> for making these data available. The data are released under the <a\nhref=\"https://creativecommons.org/publicdomain/zero/1.0/\" target=\"_blank\">Creative Commons Zero Public Domain Dedication</a> as described <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a>.\n</p>\n\n<p>\nPlease note that some annotations within the provided files may have restrictions on usage. See <a href=\"https://gnomad.broadinstitute.org/policies\" target=\"_blank\">here</a> for more information.\n</p>\n\n<h2>References</h2>\n\n<p>\nChen S, Francioli LC, Goodrich JK, Collins RL, Kanai M, Wang Q, Alf&#246;ldi J, Watts NA, Vittal C,\nGauthier LD <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-023-06045-0\" target=\"_blank\">\n    A genomic mutational constraint map using variation in 76,156 human genomes</a>.\n<em>Nature</em>. 2024 Jan;625(7993):92-100.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/38057664\" target=\"_blank\">38057664</a>\n</p>\n<p>\nKarczewski KJ, Francioli LC, Tiao G, Cummings BB, Alf&#246;ldi J, Wang Q, Collins RL, Laricchia KM, Ganna\nA, Birnbaum DP <em>et al</em>.\n<a href=\"https://doi.org/10.1038/s41586-020-2308-7\" target=\"_blank\">\nThe mutational constraint spectrum quantified from variation in 141,456 humans</a>.\n<em>Nature</em>. 2020 May;581(7809):434-443.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/32461654\" target=\"_blank\">32461654</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7334197/\" target=\"_blank\">PMC7334197</a>\n</p>\n<p>\nLek M, Karczewski KJ, Minikel EV, Samocha KE, Banks E, Fennell T, O'Donnell-Luria AH, Ware JS, Hill\nAJ, Cummings BB <em>et al</em>.\n<a href=\"https://www.nature.com/articles/nature19057\" target=\"_blank\">Analysis of protein-coding\ngenetic variation in 60,706 humans</a>. <em>Nature</em>. 2016 Aug 17;536(7616):285-91.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/27535533\" target=\"_blank\">27535533</a>;\nPMC: <a href=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5018207/\" target=\"_blank\">PMC5018207</a>\n</p>\n",
           "itemRgb": "on",
           "labelFields": "rsId,_displayName",
-          "longLabel": "Genome Aggregation Database (gnomAD) Exomes Variants v4.1",
+          "longLabel": "Genome Aggregation Database (gnomAD) Exomes Variants v4.1.1",
           "mouseOver": "<b>Position</b>: $chrom:${chromStart}-${chromEnd} ($ref/$alt)<br> <b>TotalAF</b>: ${AF} (${AC}/${AN})<br> <b>Genes</b>: $genes<br> <b>Annotation</b>: $annot<br> <b>FILTER</b>: ${FILTER}<br> <b>PopMaxAF</b>: ${grpmax}<br> <b>Homozygous Individuals</b>: ${nhomalt}<br> <b>Hemizygous Individuals (only in chrX & chrY)</b>: ${nhemi}",
           "parent": "gnomadVariantsV4.1 on",
           "priority": "2",
           "searchIndex": "name,_displayName,rsId",
-          "shortLabel": "gnomAD v4.1 Exomes",
+          "shortLabel": "gnomAD v4.1.1 Exomes",
           "skipEmptyFields": "on",
           "skipFields": "_displayName",
           "track": "gnomadExomesVariantsV4_1",
@@ -7396,7 +7513,7 @@
           "visibility": "squish"
         }
       },
-      "description": "Genome Aggregation Database (gnomAD) Exomes Variants v4.1",
+      "description": "Genome Aggregation Database (gnomAD) Exomes Variants v4.1.1",
       "category": ["Variation and Repeats"],
       "formatDetails": {
         "feature": "jexl:{_dataOffset:undefined,_dataLen:undefined}"
@@ -7654,6 +7771,34 @@
           "mouseover": "jexl:get(feature,'_mouseOver')"
         }
       ]
+    },
+    {
+      "trackId": "hg38-gnomadMpcC",
+      "name": "gnomAD MPC - MPC alt=C",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/c.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/mpc/c.bw",
+          "color": "59,82,139",
+          "longLabel": "gnomAD MPC score: alt allele is C",
+          "maxHeightPixels": "128:20:8",
+          "parent": "gnomadMpc on",
+          "shortLabel": "MPC alt=C",
+          "track": "gnomadMpcC",
+          "type": "bigWig",
+          "viewLimits": "0:3",
+          "viewLimitsMax": "0:6",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "gnomAD MPC score: alt allele is C",
+      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-mpraVarDb",
@@ -8161,7 +8306,7 @@
           "labelFields": "name,geneName",
           "longLabel": "gnomAD Predicted Loss of Function Constraint Metrics By Transcript (LOEUF and pLI) v4",
           "mouseOver": "LOEUF: $_loeuf<br> pLI: $_pli<br> $synonymous<br> $pLoF",
-          "parent": "constraintV4",
+          "parent": "constraintV4 off",
           "priority": "2",
           "searchIndex": "name,geneName",
           "shortLabel": "Transcript LoF v4",
@@ -8205,7 +8350,7 @@
           "labelFields": "name,geneName",
           "longLabel": "gnomAD Predicted Loss of Function Constraint Metrics By Transcript (LOEUF and pLI) v4.1",
           "mouseOver": "LOEUF: $_loeuf<br> pLI: $_pli<br> $synonymous<br> $pLoF",
-          "parent": "constraintV4_1",
+          "parent": "constraintV4_1 off",
           "priority": "2",
           "searchIndex": "name,geneName",
           "shortLabel": "Transcript LoF v4.1",
@@ -8291,7 +8436,7 @@
           "labelFields": "name,geneName",
           "longLabel": "gnomAD Predicted Missense Constraint Metrics By Transcript (Z-scores) v4",
           "mouseOver": "Z: $_zscore<br> $synonymous<br> $missense",
-          "parent": "constraintV4",
+          "parent": "constraintV4 off",
           "priority": "2",
           "searchIndex": "name,geneName",
           "shortLabel": "Transcript Missense v4",
@@ -8334,7 +8479,7 @@
           "labelFields": "name,geneName",
           "longLabel": "gnomAD Predicted Missense Constraint Metrics By Transcript (Z-scores) v4.1",
           "mouseOver": "Z: $_zscore<br> $synonymous<br> $missense",
-          "parent": "constraintV4_1",
+          "parent": "constraintV4_1 off",
           "priority": "2",
           "searchIndex": "name,geneName",
           "shortLabel": "Transcript Missense v4.1",
@@ -8621,6 +8766,34 @@
       },
       "description": "long hConDels: 583 Long Human Conserved Deletions - present in chimp and macaque but deleted in humans",
       "category": ["Comparative Genomics"]
+    },
+    {
+      "trackId": "hg38-gnomadMpcG",
+      "name": "gnomAD MPC - MPC alt=G",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/g.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/mpc/g.bw",
+          "color": "33,144,141",
+          "longLabel": "gnomAD MPC score: alt allele is G",
+          "maxHeightPixels": "128:20:8",
+          "parent": "gnomadMpc on",
+          "shortLabel": "MPC alt=G",
+          "track": "gnomadMpcG",
+          "type": "bigWig",
+          "viewLimits": "0:3",
+          "viewLimitsMax": "0:6",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "gnomAD MPC score: alt allele is G",
+      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-dbSnp155Mult",
@@ -9662,6 +9835,34 @@
       },
       "description": "JASPAR CORE 2018 - Predicted Transcription Factor Binding Sites",
       "category": ["Regulation"]
+    },
+    {
+      "trackId": "hg38-gnomadMpcT",
+      "name": "gnomAD MPC - MPC alt=T",
+      "type": "QuantitativeTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/t.bw"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/mpc/t.bw",
+          "color": "253,231,36",
+          "longLabel": "gnomAD MPC score: alt allele is T",
+          "maxHeightPixels": "128:20:8",
+          "parent": "gnomadMpc on",
+          "shortLabel": "MPC alt=T",
+          "track": "gnomadMpcT",
+          "type": "bigWig",
+          "viewLimits": "0:3",
+          "viewLimitsMax": "0:6",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "gnomAD MPC score: alt allele is T",
+      "category": ["Variation and Repeats"]
     },
     {
       "trackId": "hg38-clinPredT",
@@ -11428,10 +11629,6 @@
         "bigBedLocation": {
           "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/multiz470way/multiz470way.bigMaf"
         },
-        "nhLocation": {
-          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/multiz470way/hg38.470way.nh",
-          "locationType": "UriLocation"
-        },
         "summaryAdapter": {
           "type": "BigBedAdapter",
           "bigBedLocation": {
@@ -11443,6 +11640,10 @@
           "bigBedLocation": {
             "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/multiz470way/multiz470wayFrames.bb"
           }
+        },
+        "nhLocation": {
+          "locationType": "UriLocation",
+          "uri": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/multiz470way/hg38.470way.nh"
         }
       },
       "metadata": {
@@ -16238,6 +16439,36 @@
       ]
     },
     {
+      "trackId": "hg38-eve",
+      "name": "Deleteriousness Predictions - EVE Scores",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/eve/eve.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/eve/eve.bb",
+          "dataVersion": "November 2021",
+          "filterLabel.name": "Protein name",
+          "filterText.name": ".*",
+          "filterType.name": "regexp",
+          "longLabel": "EVE missense variant effect scores",
+          "maxWindowCoverage": "200000",
+          "parent": "predictionScoresSuper",
+          "shortLabel": "EVE Scores",
+          "style": "heatmap",
+          "track": "eve",
+          "type": "bigBed 12 +",
+          "visibility": "pack",
+          "html": "<h2>Description</h2>\n<p>\nMissense mutations change a single amino acid in a protein and make up a large fraction\nof the variants observed in human populations. Most have no known clinical significance,\nboth because clinical data are limited and because the relationship between sequence change\nand protein function is complex. Computational approaches that model evolutionary\nconservation across species can estimate how much a given position tolerates change, since\nresidues critical to function tend to be highly conserved. EVE (<b>E</b>volutionary model of\n<b>V</b>ariant <b>E</b>ffect) formalizes this reasoning with a deep generative model trained\nentirely on natural sequence variation, without any reliance on clinical labels. This track shows\nEVE scores for all possible missense substitutions in 2,949 disease-associated proteins.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nEach entry spans one protein at its genomic locus. The heatmap columns correspond to\nindividual amino acid positions in the protein, placed at the codon's genomic coordinate.\nThe rows correspond to the 20 standard amino acids, ordered by amino acid class to match the\nMaveDB Heatmaps track. Each cell shows the EVE score for substituting the wildtype amino\nacid at that position with the row amino acid. Empty cells indicate the wildtype amino acid\nat a given position (no substitution) or positions for which no score is available.\n</p>\n\n<p>\nCells are colored on a gradient:\n</p>\n<p>\n<span style=\"display:inline-block; background-color:#2166ac; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>EVE &asymp; 0 &mdash; benign:</b> the substitution is well-tolerated in evolutionary sequence variation<br>\n<span style=\"display:inline-block; background-color:#f7f7f7; width:18px; height:12px; vertical-align:middle; border:1px solid #ccc;\"></span>\n<b>EVE &asymp; 0.5 &mdash; uncertain:</b> the model cannot confidently classify the variant<br>\n<span style=\"display:inline-block; background-color:#d6604d; width:18px; height:12px; vertical-align:middle;\"></span>\n<b>EVE &asymp; 1 &mdash; pathogenic:</b> the substitution is rare or absent across evolutionary sequences\n</p>\n\n<p>\nHovering over a cell shows the wildtype amino acid, the protein position, the variant amino\nacid, the EVE score, and the class EVE assigns to that substitution (benign, uncertain, or\npathogenic). The cell color and the class are two separate measures. The color is a\ncontinuous gradient on the EVE score, while the class is a confidence-based call that EVE\nmakes only for the substitutions it can classify most confidently. Only about a quarter of\nsubstitutions receive a definite benign or pathogenic call, so most cells are labeled\nuncertain even when their score lies close to 0 or 1. A strongly colored cell labeled\nuncertain means the score leans benign or pathogenic, but not confidently enough for EVE to\ncommit to a call.\n</p>\n\n<p>\nFor reverse-strand genes, protein positions are displayed left to right in genomic\norder (C-terminus to N-terminus on the screen), consistent with the standard genome\nbrowser orientation.\n</p>\n\n<h2>Methods</h2>\n<p>\nEVE trains a Bayesian variational autoencoder (VAE) separately for each of 3,219\ndisease-associated human proteins; of these, 2,951 have missense VCF scores in the\npublic bulk download (the remainder have sequence alignments but no released scores). For\neach protein, a multiple sequence alignment is retrieved by searching roughly 250 million\nprotein sequences from UniRef, and the VAE learns the distribution of amino acid sequences\nacross species, capturing both per-position conservation and co-evolutionary dependencies\nbetween positions. An evolutionary index for each single amino acid variant is then computed\nas the approximate negative log-likelihood ratio of the variant versus the wildtype sequence,\nestimated by sampling from the VAE posterior (ensembled over five independently trained\nmodels). A global-local mixture of Gaussian mixture models, fit to the index distributions\nacross all variants and all proteins, converts this continuous index to an EVE score\nbetween 0 (benign) and 1 (pathogenic) and assigns each variant to a benign, uncertain, or\npathogenic class. The uncertainty of each classification reflects the predictive entropy of\nthe mixture model, and a threshold on this entropy controls how many variants the model is\nwilling to classify rather than leave uncertain. The mouseovers in this track use the\nauthors' Class25 threshold, which assigns a definite benign or pathogenic call to roughly a\nquarter of all substitutions and leaves the remaining three quarters uncertain. See\nFrazer et al. 2021 for full details.\n</p>\n\n<p>\nThe data were downloaded as a bulk archive from\n<a href=\"https://evemodel.org/download/bulk\" target=\"_blank\">https://evemodel.org/download/bulk</a>.\nThe archive contains one VCF file per protein, each listing every possible missense\nsubstitution with its EVE score and per-threshold classifications. Multiple VCF records\nencoding different codon changes for the same amino acid substitution carry identical EVE\nscores and were deduplicated to one record per substitution. Records were converted to\nheatmap bigBed format using a custom Python script; full processing instructions are in the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/eve.txt\"\ntarget=\"_blank\">makedoc file</a>, and the conversion script is available in\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/eve\"\ntarget=\"_blank\">our GitHub repository</a>.\nTwo proteins (G6PT1, UniProt O43826; and MAFIP, Q8WZ33) were excluded because their\nVCF coordinates mapped to assembly scaffolds (chrCHR_HG2217_PATCH and chrGL000194.1)\nabsent from the standard hg38 assembly. The remaining 2,949 proteins covering approximately\n1.7 million amino acid positions are included in this track.\n</p>\n\n<h2>Data Access</h2>\n<p>The data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from there to\nspreadsheet or tab-separated tables. From scripts, the data can be accessed through our\n<a href=\"https://api.genome.ucsc.edu\" target=\"_blank\">API</a>, track=<i>eve</i>.</p>\n<p>For automated download and analysis, the genome annotation is stored in a bigBed file\nthat can be downloaded from\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/eve\" target=\"_blank\">our download\nserver</a>. The file for this track is called <tt>eve.bb</tt>. Individual regions or the\nwhole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>, which can be\ncompiled from the source code or downloaded as a precompiled binary for your system.\nInstructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/hg38/eve/eve.bb -chrom=chr17\n-start=43000000 -end=43200000 stdout</tt></p>\n<p>The original annotation source data can be downloaded from\n<a href=\"https://evemodel.org/download/bulk\" target=\"_blank\">https://evemodel.org/download/bulk</a>.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Jonathan Frazer, Pascal Notin, Mafalda Dias, and Debora S. Marks at Harvard\nMedical School and Yarin Gal at the University of Oxford for making the EVE scores\npublicly available at\n<a href=\"https://evemodel.org/\" target=\"_blank\">evemodel.org</a>.\n</p>\n\n<h2>References</h2>\n<p>\nFrazer J, Notin P, Dias M, Gomez A, Min JK, Brock K, Gal Y, Marks DS.\n<a href=\"https://doi.org/10.1038/s41586-021-04043-8\" target=\"_blank\">\nDisease variant prediction with deep generative models of evolutionary data</a>.\n<em>Nature</em>. 2021 Nov;599(7883):91-95.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/34707284\" target=\"_blank\">34707284</a>\n</p>\n\n"
+        }
+      },
+      "description": "EVE missense variant effect scores",
+      "category": ["Phenotypes, Variants, and Literature"]
+    },
+    {
       "trackId": "hg38-g2p",
       "name": "G2P Project",
       "type": "FeatureTrack",
@@ -16325,7 +16556,7 @@
           "type": "bigBed 9 + 34",
           "url": "https://search.thegencc.org/genes/$<gene_curie>",
           "urlLabel": "Link to GenCC Gene page",
-          "urls": "ensTranscript=\"https://useast.ensembl.org/Multi/Search/Results?q=$$;site=ensembl_all\" ensGene=\"https://useast.ensembl.org/Multi/Search/Results?q=$$;site=ensembl_all\" refSeqAccession=\"https://www.ncbi.nlm.nih.gov/clinvar/?term=$$\" sgc_id=\"https://search.thegencc.org/submissions/$$\" gene_curie=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" gene_symbol=\"https://www.genecards.org/cgi-bin/carddisp.pl?gene=$$\" disease_curie=\"https://www.pombase.org/term/$$\" moi_curie=\"https://hpo.jax.org/app/browse/term/$$\"",
+          "urls": "ensTranscript=\"https://useast.ensembl.org/Multi/Search/Results?q=$$;site=ensembl_all\" ensGene=\"https://useast.ensembl.org/Multi/Search/Results?q=$$;site=ensembl_all\" refSeqAccession=\"https://www.ncbi.nlm.nih.gov/clinvar/?term=$$\" sgc_id=\"https://search.thegencc.org/submissions/$$\" gene_curie=\"https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/$$\" gene_symbol=\"https://www.genecards.org/card/$$\" disease_curie=\"https://www.pombase.org/term/$$\" moi_curie=\"https://hpo.jax.org/app/browse/term/$$\"",
           "html": "<h2>Description</h2>\n\n<p>\nThis track shows annotations from <a target=\"_blank\"\nhref=\"https://thegencc.org/\">The Gene Curation Coalition (GenCC)</a>.\nThe GenCC provides information pertaining to the validity of gene-disease relationships, \nwith a current focus on Mendelian diseases. Curated gene-disease relationships are submitted \nby GenCC member organizations that currently provide online resources (e.g. ClinGen, DECIPHER, \nOrphanet, etc.), as well as diagnostic laboratories that have committed to sharing their internal \ncurated gene-level knowledge (e.g. Ambry Genetics, Illumina, Invitae, etc.).</p>\n<p>\nThe GenCC aims to clarify overlap between gene curation efforts and develop\nconsistent terminology for validity, allelic requirement and mechanism\nof disease. Each item on this track corresponds with a gene, and contains\na large number of information such as associated disease, evidence classification,\nspecific submission notes and identifiers from different databases. In cases where\nmultiple annotations exist for the same gene, multiple items are displayed.</p> \n\n<h2>Display Conventions and Configuration</h2>\n<p>\nEach item displayed represents a submission to the GenCC database. The displayed \nname is a combination of the gene symbol and the disease's original submission ID. \nThis submission ID is either the OMIM#, MONDO# or Orphanet#. Clicking\non any item will display the complete meta data for that item, including\nlinkouts to the GenCC, NCBI, Ensembl, HGNC, GeneCards, Pombase (MONDO),\nand Human Phenotype Ontology (HPO). Mousing over any item will display the\nassociated disease title, the classification title, and the mode of inheritance\ntitle.</p>\n\n<p>\nItems are colored based on the GenCC classification, or validation, of the\nevidence in the color scheme seen in the table below. \nFor more information on this process, see the <a target=\"_blank\"\nhref=\"https://thegencc.org/faq.html#validity-termsdelphi-survey\">GenCC\nvalidity terms FAQ</a>. A filter for the track is also available\nto display a subset of the items based on their classification.</p>\n\n<p>\n<table cellpadding='2'>\n  <thead><tr>\n    <th style=\"border-bottom: 2px solid;\">Color</th>\n    <th style=\"border-bottom: 2px solid;\">Evidence classification</th>\n  </tr></thead>\n  <tr><td style=\"background-color: #27C149\"></td><td>Definitive</td></tr>\n  <tr><td style=\"background-color: #38A169\"></td><td>Strong</td></tr>\n  <tr><td style=\"background-color: #68D391\"></td><td>Moderate</td></tr>\n  <tr><td style=\"background-color: #63B3ED\"></td><td>Supportive</td></tr>\n  <tr><td style=\"background-color: #FC8181\"></td><td>Limited</td></tr>\n  <tr><td style=\"background-color: #E53E3E\"></td><td>Disputed Evidence</td></tr>\n  <tr><td style=\"background-color: #9B2C2C\"></td><td>Refuted Evidence</td></tr>\n  <tr><td style=\"background-color: #718096\"></td><td>No Known Disease Relationship</td></tr>\n</table>\n</p>\n\n<p>\n<b>Limitations:</b> Most entries include both NM_ accessions as well as ENST and ENSG identifiers.\nFrom the original file, which contains no coordinates, two genes were not mapped\nto the hg38 genome, SLCO1B7 and ATXN8. This means that the hg38 track has 2 fewer items\nthan what can be found in the GenCC download file. For hg19, one additional\ngene was not mapped, KCNJ18. In addition to this, the GenCC data in the Genome\nBrowser does not include OMIM data due to licensing restrictions. For more\ninformation, see the Methods section below.</p>\n\n<h2>Data Access</h2>\n<p>\nThe source data can be explored in <a target=\"_blank\" href=\"https://search.thegencc.org/\">\nGenCC database</a>. The source files can also be found on the <a target=\"_blank\"\nhref=\"https://search.thegencc.org/download\">GenCC downloads page</a>.</p>\n\n<p>\nThe GenCC data on the UCSC Genome Browser can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>.\nFor automated download and analysis, the genome annotation is stored at UCSC in bigBed\nfiles that can be downloaded from\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/genCC.bb\" target=\"_blank\">our download server</a>.\nThe data may also be explored interactively using our\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a>.</p>\n\n<p>\nThe file for this track may also be locally explored using our tools <tt>bigBedToBed</tt> \nwhich can be compiled from the source code or downloaded as a precompiled\nbinary for your system. Instructions for downloading source code and binaries can be found\n<a href=\"http://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\">here</a>.\nThe tools can also be used to obtain features confined to a given range, e.g.,\n<br><br>\n<tt>bigBedToBed -chrom=chr1 -start=100000 -end=100500 http://hgdownload.soe.ucsc.edu/gbdb/hg38/bbi/genCC.bb stdout</tt></p>\n\n<h2>Methods</h2>\n<p>\nThe data were downloaded from the <a target=\"_blank\" \nhref=\"https://search.thegencc.org/download\">GenCC downloads page</a> in tsv format. Manual\ncuration was performed on the file to remove newline characters and tab characters present in \nthe submission notes, in total fewer than 20 manual edits were made.</p>\n<p>\nThe track was first built on hg38 by associating the gene symbols with the NCBI MANE 1.0 \nrelease transcripts. These coordinates were added to the items as well as the NM_ accession,\nENST ID and ENSG ID. For items where there was no gene symbol match in MANE (~130), the gene\nsymbols were queried against GENCODEv40 comprehensive set release. In places where multiple\ntranscript matches were found, the earliest transcription start and latest end site was used\nfrom among the transcripts to encompass the entire gene coordinates. Two genes were not able\nto be mapped for hg38, SLCO1B7 and ATXN8, resulting in two missing submissions in the Genome\nBrowser when compared to the raw file. Lastly, the items were colored according to their\nevidence classification as seen on the GenCC database.</p>\n<p>\nFor hg19, the hg38 NM_ accessions were used to convert the item coordinates according to the\nlatest hg19 refseq release. For items that failed to convert, the gene symbols were queried\nusing the GENCODEv40 hg19 lift comprehensive set. One additional gene symbol failed to map in\nhg19, KCNJ18, leading to 3 fewer items on this track when compared to the raw file.</p>\n<p>\nFor both assemblies, GenCC OMIM data is excluded do to data restrictions.\nFor complete documentation of the processing of these tracks, read the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/genCC.txt\">\nGenCC MakeDoc</a>.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the entire <a target=\"_blank\" href=\"https://thegencc.org/about.html\">GenCC\ncommittee</a> for creating these annotations and making them available.</p>\n\n<h2>References</h2>\n<p>\nDiStefano MT, Goehringer S, Babb L, Alkuraya FS, Amberger J, Amin M, Austin-Tse C, Balzotti M, Berg\nJS, Birney E <em>et al</em>.\n<a href=\"https://www.gimjournal.org/article/S1098-3600(22)00746-8/fulltext\" target=\"_blank\">\nThe Gene Curation Coalition: A global effort to harmonize gene-disease evidence resources</a>.\n<em>Genet Med</em>. 2022 May 4;.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/35507016\" target=\"_blank\">35507016</a>\n</p>\n"
         }
       },
@@ -16490,6 +16721,51 @@
       ]
     },
     {
+      "trackId": "hg38-gnomadMpcOverlaps",
+      "name": "gnomAD - gnomAD MPC overlaps",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/mpcOverlaps.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/gnomAD/mpc/mpcOverlaps.bb",
+          "dataVersion": "Release v4.1.1 (2026-02-10)",
+          "filter.mpcMax": "0:6",
+          "filterByRange.mpcMax": "on",
+          "filterLabel.mpcMax": "Filter by max MPC score",
+          "filterLimits.mpcMax": "0:6",
+          "group": "varRep",
+          "html": "<h2>Description</h2>\n<p>\nThis track shows MPC v4.1.1 (\"Missense deleteriousness Prediction by\nConstraint\"), a machine-learning score that predicts which missense variants\nare likely to be deleterious. It was computed by the Broad Institute gnomAD\nteam from the <b>gnomAD v4.1.1</b> release of 730,947 exomes aligned to\nGRCh38/hg38. Scores are provided for every possible single-nucleotide\nmissense variant across 18,245 MANE Select or canonical protein-coding\ntranscripts.\n</p>\n\n<p>\nMissense variants change a single amino acid in a protein and are a common\nsource of variants of uncertain significance (VUS): about 90% of missense\nvariants in ClinVar are VUS. MPC predicts which missense variants are likely\ndeleterious by combining three lines of evidence: (i) regional missense constraint (how\ndepleted the surrounding sub-genic region is of rare missense variation in\nthe general population), (ii) the biochemical severity of the specific\namino-acid substitution and additional protein-structure and homology\ninformation from PolyPhen-2, and (iii) cross-species conservation (phyloP).\nHigher scores indicate greater predicted deleteriousness.\n</p>\n\n<p>\nThis data is available as two separate tracks:\n</p>\n<ul>\n<li><b>gnomAD MPC</b> is a set of four bigWig subtracks, one for each\npossible alternate allele (A, C, G, T), with scores ranging from 0 to 6.\nAt a given genomic position, the subtrack for a given alternate allele\nshows the MPC score for the substitution from the reference base to that\nallele. A score of 6 is the ceiling assigned when a variant is more severe\nthan every benign variant in the MPC training set (the maximum real\ncomputed value is just over 5). When a variant is scored against more\nthan one transcript, the four bigWigs show the <b>maximum</b> (most\ndeleterious) MPC across transcripts.</li>\n<li><b>gnomAD MPC overlaps</b> is a bigBed track covering the small\nsubset of variants that are scored against more than one transcript (about\n250,000, or 0.4% of the ~70 million scored variants). Each item lists the\nEnsembl transcripts and their individual MPC scores for that variant on\nthe details page, showing which transcripts' scores differ. Different\ntranscripts overlapping the same position don't always have an MPC score\nfor the same alternate alleles. Single-transcript variants are not\nincluded in this track because the bigWig track already fully represents\nthem.</li>\n</ul>\n\n<p>\nThe <a href=\"https://genome.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=gnomadMpc\">MPC track on hg19</a>\nis an older release of the MPC score, calculated on gnomAD v2 (125,748\nexomes) rather than gnomAD v4 (730,947 exomes).\n</p>\n\n<h2>Display Conventions and Configuration</h2>\n<ul>\n<li><b>gnomAD MPC</b>: Each subtrack has a fixed color from the viridis\npalette: A is purple, C is blue, G is teal, T is yellow. At a given\nposition, the subtrack matching the reference base shows 0, since that\nisn't a real substitution. Positions outside the scored transcripts (for\nexample, outside coding regions) have no data. The track's default view\nlimit is 0&ndash;3 because the vast majority of variants score below 3.\nMouseover shows the score.</li>\n<li><b>gnomAD MPC overlaps</b>: A range filter on <tt>mpcMax</tt> is\navailable from the track configuration page. Items are colored by max MPC:\n<table>\n  <thead>\n  <tr>\n    <th style=\"border-bottom: 2px solid #6678B1;\">Color</th>\n    <th style=\"border-bottom: 2px solid #6678B1;\">Max MPC range</th>\n  </tr>\n  </thead>\n  <tr>\n    <th bgcolor=\"#C8C8C8\"></th>\n    <th align=\"left\">&lt; 1</th>\n  </tr>\n  <tr>\n    <th bgcolor=\"#FFC864\"></th>\n    <th align=\"left\">1 &ndash; 2</th>\n  </tr>\n  <tr>\n    <th bgcolor=\"#FF9632\"></th>\n    <th align=\"left\">2 &ndash; 3</th>\n  </tr>\n  <tr>\n    <th bgcolor=\"#C80000\"></th>\n    <th align=\"left\">&ge; 3</th>\n  </tr>\n</table>\nMouseover shows the variant, its max MPC score, and the number of\ntranscripts that scored it.</li>\n</ul>\n\n<h2>Methods</h2>\n<h3>Regional missense constraint (MCR)</h3>\n<p>\nFor each of 17,841 QC-passing\nMANE Select or canonical coding transcripts, the authors tallied the\nobserved rare missense variants (allele count &gt; 0, allele frequency\n&lt; 0.1%, %AN &ge; 20, QC PASS) in gnomAD v4.1.1 against the expected\ncount under a position- and coverage-adjusted mutational model. A recursive\nlikelihood-ratio test (Poisson model, p-value threshold 0.001, minimum\n16 expected missense variants per sub-region) identifies change-points at\nwhich the transcript-wide observed/expected (OE) ratio deviates\nsignificantly; each resulting segment is a missense constraint region\n(MCR). 36% of transcripts (6,361/17,841) harbor two or more MCRs. MCR\nmissense OE was calibrated against ClinVar P/LP vs. B/LB missense variants\nfollowing ClinGen recommendations for the ACMG/AMP guidelines: OE &le; 0.36\nmeets <i>moderate</i> evidence for pathogenicity, OE &le; 0.59 meets\n<i>supporting</i> evidence for pathogenicity, OE &gt; 0.97 and OE &gt; 1.23\nmeet supporting and moderate evidence for benignity, respectively.\n</p>\n\n<h3>MPC score</h3>\n<p>\nMPC is an XGBoost gradient-boosted-tree classifier that\ntakes as input (1) MCR missense OE, (2) gene-level constraint, (3) a\nper-substitution amino-acid severity feature, (4) the PolyPhen-2\npathogenicity score, and (5) phyloP conservation. The model is trained to\ndistinguish pathogenic missense variants under strong heterozygous\nselection from benign missense variants under neutral to near-neutral\nselection. Training: 20,931\n\"pathogenic\" variants (high-quality ClinVar P/LP in 2,987\nhaploinsufficient genes with pHaplo &ge; 0.86 or in 359 non-LoF DD genes\nfrom Gene2Phenotype) vs. 93,638 \"benign\" variants (high-quality ClinVar\nB/LB or gnomAD variants with AF &gt; 0.1% in the same gene set). The model\nis applied to all 70,313,598 possible exome-wide missense variants in the\nEnsembl VEP table. For a variant <i>i</i>, MPC is\n<i>d</i><sub><i>i</i></sub> = log<sub>10</sub>(<i>M</i> / <i>m</i><sub><i>i</i></sub>),\nwhere <i>M</i> is the number of benign training variants and\n<i>m</i><sub><i>i</i></sub> is the number of those with a fitted\npathogenicity probability lower than variant <i>i</i>'s; when\n<i>m</i><sub><i>i</i></sub> is 0 the score is capped at 6. Restricted to genes already\nknown to cause developmental disorders, the authors report that de novo\nvariants with MPC &ge; 2.5 are strongly enriched in affected individuals\nrelative to their unaffected siblings, with MPC 2&ndash;2.5 showing\nintermediate enrichment and MPC &lt; 2 little enrichment. The authors\ncaution that MPC is\nbest suited to modelling strong fitness effects (as expected given its\ntraining set) and that naively taking the maximum of MPC and AlphaMissense\n<i>decreases</i> case/control discrimination for de novo variants relative\nto either score alone.\nCode for\ncalculating the MPC scores and MCRs is available at the\n<a href=\"https://github.com/broadinstitute/regional_missense_constraint\" target=\"_blank\">broadinstitute/regional_missense_constraint</a>\nGitHub repository.\n</p>\n\n<h3>UCSC Methods</h3>\n<p>\nThe precomputed MPC score table was downloaded from the\ngnomAD Broad public bucket at\n<a href=\"https://storage.googleapis.com/gcp-public-data--gnomad/papers/2026-rmc/gnomad_v4.1.1_mpc.tsv.bgz\" target=\"_blank\">gs://gcp-public-data--gnomad/papers/2026-rmc/gnomad_v4.1.1_mpc.tsv.bgz</a>,\ncompanion to the Hail-table release\n<tt>gnomad_v4.1.1_mpc.ht</tt> in the same directory. The input TSV contains\none row per (locus, alleles, transcript) combination, for 70M rows.\n<a target=\"_blank\"\nhref=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/gnomadMpc\">Two Python scripts</a>\nconvert to bigWig/bigBed formats, available on GitHub. Build commands are\ndocumented in the\n<a target=\"_blank\"\nhref=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/gnomadMpc.txt\">gnomadMpc.txt</a>\nmakeDoc file.\n</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a>. For automated access,\nthis track is available via our\n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\">API</a>. The underlying bigWig and\nbigBed files are at\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/\" target=\"_blank\">our download server</a>\nas <tt>a.bw</tt>, <tt>c.bw</tt>, <tt>g.bw</tt>, <tt>t.bw</tt>, and\n<tt>mpcOverlaps.bb</tt>. Individual positions or whole chromosomes can be extracted\nwith <tt>bigWigToBedGraph</tt> / <tt>bigWigToWig</tt> (for the bigWigs) or\n<tt>bigBedToBed</tt> (for the bigBed), for example:\n</p>\n<pre>\nbigWigToBedGraph -chrom=chr1 -start=100000 -end=100500   \n    http://hgdownload.soe.ucsc.edu/gbdb/hg38/gnomAD/mpc/a.bw stdout\n</pre>\n<p>\nThe original MPC table and the accompanying missense constraint regions can\nbe downloaded from the\n<a href=\"https://gnomad.broadinstitute.org/downloads\" target=\"_blank\">gnomAD downloads page</a>.\n</p>\n\n<h2>Credits</h2>\n<p>\nThanks to the gnomAD production team and the Samocha and MacArthur\nlaboratories for generating and releasing the MPC scores.\n</p>\n\n<h2>References</h2>\n<p>\nWang L, Chao KR, Panchal R, Liao C, Abderrazzaq H, Ye R, Schultz P,\nCompitello J, Grant RH, Kosmicki JA, Weisburd B, Phu W, Wilson MW,\nLaricchia KM, Goodrich JK, Goldstein D, Goldstein JI, Vittal C, Poterba T,\nBaxter S, Watts NA, Solomonson M, gnomAD consortium, Tiao G, Rehm HL,\nNeale BM, Talkowski ME, MacArthur DG, O'Donnell-Luria A, Karczewski KJ,\nRadivojac P, Daly MJ, Samocha KE.\n<a href=\"https://doi.org/10.1101/2024.04.11.588920\" target=\"_blank\">The landscape of regional missense mutational intolerance quantified from 730,947 exomes</a>.\n<em>bioRxiv</em> April 23, 2026;\ndoi: <a href=\"https://doi.org/10.1101/2024.04.11.588920\" target=\"_blank\">10.1101/2024.04.11.588920</a>.\n</p>\n",
+          "itemRgb": "on",
+          "labelFields": "name",
+          "longLabel": "gnomAD MPC v4.1.1 - variants scored against multiple transcripts",
+          "mouseOver": "<b>Variant:</b> $ref&gt;$alt<br> <b>Max MPC score:</b> $mpcMax<br> <b>Number of transcripts:</b> $nTranscripts",
+          "parent": "gnomadVariants",
+          "pennantIcon": "New red ../goldenPath/newsarch.html#082626 \"Released Aug. 26, 2026\"",
+          "scoreLabel": "MPC score (0-1000 scale)",
+          "shortLabel": "gnomAD MPC overlaps",
+          "track": "gnomadMpcOverlaps",
+          "type": "bigBed 9 +",
+          "visibility": "hide"
+        }
+      },
+      "description": "gnomAD MPC v4.1.1 - variants scored against multiple transcripts",
+      "category": ["Variation and Repeats"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "hg38-gnomadMpcOverlaps-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          },
+          "mouseover": "jexl:`<b>Variant:</b> ${get(feature,'ref')}&gt;${get(feature,'alt')}<br> <b>Max MPC score:</b> ${get(feature,'mpcMax')}<br> <b>Number of transcripts:</b> ${get(feature,'nTranscripts')}`"
+        }
+      ]
+    },
+    {
       "trackId": "hg38-gnomadCopyNumberVariants",
       "name": "gnomAD - gnomAD Rare CNV Variants",
       "type": "FeatureTrack",
@@ -16547,7 +16823,6 @@
           "longLabel": "Genome Aggregation Database (gnomAD) - Short Tandem Repeat Genotypes at Disease-Associated Loci",
           "mouseOver": "<b>Gene:</b> $gene<br> <b>Repeat Motif(s):</b> $motif<br> <b>Number of samples:</b> $nSamples <br> <b>Passing quality filter:</b> $nPass <br> <b>Population sample counts:</b> $populations",
           "parent": "gnomadVariants on",
-          "pennantIcon": "New red ../goldenPath/newsarch.html#041026 \"Released Apr. 10, 2026\"",
           "searchIndex": "name",
           "shortLabel": "gnomAD STR",
           "track": "gnomadStr",
@@ -16777,7 +17052,7 @@
           "skipFields": "cdsStartStat,cdsEndStat,exonFrames,geneType,type",
           "track": "mane",
           "type": "bigGenePred",
-          "urls": "name2=\"https://www.ensembl.org/Homo_sapiens/Transcript/Summary?t=$$\" geneName=\"https://www.ensembl.org/homo_sapiens/Gene/Summary?g=$$&db=core\" geneName2=\"https://www.genecards.org/cgi-bin/carddisp.pl?gene=$$\" ensemblProtAcc=\"https://www.ensembl.org/Homo_sapiens/Transcript/Summary?t=$$\" ncbiId=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\" ncbiProtAcc=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "urls": "name2=\"https://www.ensembl.org/Homo_sapiens/Transcript/Summary?t=$$\" geneName=\"https://www.ensembl.org/homo_sapiens/Gene/Summary?g=$$&db=core\" geneName2=\"https://www.genecards.org/card/$$\" ensemblProtAcc=\"https://www.ensembl.org/Homo_sapiens/Transcript/Summary?t=$$\" ncbiId=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\" ncbiProtAcc=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
           "visibility": "pack",
           "html": "<h2>Description</h2>\n<p>\nThe <a href=\"https://www.ncbi.nlm.nih.gov/refseq/MANE/\" target=\"_blank\">Matched Annotation from\nNCBI and EMBL-EBI (MANE)</a> project aims to produce a matched set of \nhigh-confidence transcripts that are identically annotated between RefSeq (NCBI) and \nEnsembl/GENCODE (led by EMBL-EBI). Transcripts for MANE are chosen by a combination of \nautomated and manual methods based on conservation, expression levels, clinical significance, \nand other factors. Transcripts are matched between the NCBI RefSeq and Ensembl/GENCODE annotations\nbased on the GRCh38 genome assembly, with precise 5' and 3' ends defined by high-throughput\nsequencing or other available data.</p>\n<p>\nThis track is automatically updated, see the <b>source data version</b> above for the current\nversion number. MANE includes almost all human protein-coding genes and genes of clinical relevance,\nincluding genes in the\n<a href=\"https://www.acmg.net/PDFLibrary/41436_2021_1172_OnlinePDF-1.pdf\" target=\"_blank\">American\nCollege of Medical Genetics and Genomics (ACMG) Secondary Findings list (SF) v3.0</a>. It includes \nboth <b>MANE Select</b> and <b>MANE Plus Clinical</b> transcripts. <b>MANE\nPlus Clinical</b> items are <b><font color=red>colored red</font></b>.\n<p>\nFor more information on the different gene tracks, including MANE vs GENCODE or RefSeq,\nsee our <a href=\"/FAQ/FAQgenes.html#ens\" target=\"_blank\">Genes FAQ</a>.</p>\n\n<h2>Data Access</h2>\n<p>\nThe raw data can be explored interactively with the <a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\"\ntarget=\"_blank\">Table Browser</a>, or the <a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\"\ntarget=\"_blank\">Data Integrator</a>. For computational analysis, genome annotations are stored in\na bigGenePred file that can be downloaded from the\n<a href=\"http://hgdownload.soe.ucsc.edu/gbdb/hg38/mane/\" target=\"_blank\">download\nserver</a>. Regional or genome-wide annotations can be converted from binary data to human readable\ntext using our command line utility <em>bigBedToBed</em> which can be compiled from source code or\ndownloaded as a precompiled binary for your system. Files and instructions can be found in the\n<a href=\"http://hgdownload.soe.ucsc.edu/admin/exe/\" target=\"_blank\">utilities directory</a>.\n\nThe utility can be used to obtain features within a given range, for example:</p>\n<code>bigBedToBed -chrom=chr6 -start=0 -end=1000000 http://hgdownload.soe.ucsc.edu/gbdb/hg38/mane/mane.bb stdout</code>\n\n<p>\nDownload links for MANE:\n<a href=\"ftp://ftp.ncbi.nlm.nih.gov/refseq/MANE\">ftp://ftp.ncbi.nlm.nih.gov/refseq/MANE</a>\n</p>\n\n<p>\nPrevious MANE versions are also available on our <a href=\"https://hgdownload.soe.ucsc.edu/goldenPath/archive/hg38/mane/\"\ntarget=\"_blank\">download archive</a>.</p>\n\n<p>\nPlease refer to our <a href=\"https://genome.ucsc.edu/FAQ/FAQdownloads.html#download36\" target=\"_blank\">Data Access FAQ</a>\nfor more information or our <a href=\"https://groups.google.com/a/soe.ucsc.edu/forum/#!forum/genome\"\ntarget=\"_blank\">mailing list</a> for archived user questions.</p>\n\n<h2>Credits</h2>\n<p>\nThank you to the RefSeq project at NCBI and the Ensembl/GENCODE project at EMBL-EBI.\nYou can contact the authors directly at <A HREF=\"mailto:&#77;A&#78;&#69;&#45;h&#101;&#108;&#112;&#64;&#110;&#99;&#98;&#105;.\n&#110;&#108;&#109;.&#110;ih.&#103;&#111;&#118;\">\n&#77;A&#78;&#69;&#45;h&#101;&#108;&#112;&#64;&#110;&#99;&#98;&#105;.&#110;&#108;&#109;.&#110;ih.&#103;&#111;&#118;</A>\nor <A HREF=\"mailto:&#109;&#97;&#110;&#101;&#45;&#104;el&#112;&#64;&#101;&#98;&#105;.a&#99;.&#117;&#107;\">\n&#109;&#97;&#110;&#101;&#45;&#104;el&#112;&#64;&#101;&#98;&#105;.a&#99;.&#117;&#107;</A>.</p>\n\n<h2>References</h2>\n<p>\nMorales J, Pujar S, Loveland JE, Astashyn A, Bennett R, Berry A, Cox E, Davidson C, Ermolaeva O,\nFarrell CM <em>et al</em>.\n<a href=\"https://www.ncbi.nlm.nih.gov/pubmed/35388217\" target=\"_blank\">\nA joint NCBI and EMBL-EBI transcript set for clinical genomics and research</a>.\n<em>Nature</em>. 2022 Apr;604(7905):310-315.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/35388217\" target=\"_blank\">35388217</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9007741/\" target=\"_blank\">PMC9007741</a>\n</p>\n"
         }
@@ -17043,6 +17318,36 @@
       },
       "description": "Panmask Easy 151b Regions: High accuracy for variant calling",
       "category": ["Mapping and Sequencing"]
+    },
+    {
+      "trackId": "hg38-popEve",
+      "name": "Deleteriousness Predictions - popEVE Scores",
+      "type": "FeatureTrack",
+      "assemblyNames": ["hg38"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/hg38/popEve/popEve.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/hg38/popEve/popEve.bb",
+          "dataVersion": "popEVE v1.1 (UKBB); scores 2025-03-12, coordinates 2025-07-15",
+          "filterLabel.name": "Gene symbol",
+          "filterText.name": ".*",
+          "filterType.name": "regexp",
+          "longLabel": "popEVE proteome-wide missense deleteriousness scores",
+          "maxWindowCoverage": "200000",
+          "parent": "predictionScoresSuper",
+          "shortLabel": "popEVE Scores",
+          "style": "heatmap",
+          "track": "popEve",
+          "type": "bigBed 12 +",
+          "visibility": "pack",
+          "html": "<h2>Description</h2>\n<p>\nMissense mutations change a single amino acid in a protein and make up a large fraction\nof the variants observed in human populations, yet most have no established clinical\nsignificance. <a href=\"https://pop.evemodel.org/\" target=\"_blank\">popEVE</a> places missense\nvariants on a single, proteome-wide spectrum of\ndeleteriousness, so that variants in different genes can be compared directly. It is a deep\ngenerative model that combines cross-species evolutionary scores with human population\nvariation: scores from EVE (an evolutionary variational autoencoder) and the ESM-1v protein\nlanguage model are calibrated against allele observations in the UK Biobank using a Gaussian\nprocess, yielding a continuous, human-specific measure of variant impact. This track shows\npopEVE scores for all missense substitutions across roughly 18,000 human proteins.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nEach entry spans one protein at its genomic locus. The heatmap columns correspond to\nindividual amino acid positions in the protein, placed at the codon's genomic coordinate.\nThe rows correspond to the 20 standard amino acids, ordered by amino acid class to match the\nMaveDB Heatmaps track. Each cell shows the popEVE score for substituting the wildtype amino\nacid at that position with the row amino acid. All 19 possible substitutions are scored at\neach position; only the wildtype cell is left empty. A small number of proteins, taken from\nan earlier data release that provided only genomic single-nucleotide variants, show just the\nsubstitutions reachable by a single-nucleotide change (roughly 6 of 19 per position) and\ntherefore appear sparser.\n</p>\n\n<p>\nUnlike per-gene scores, popEVE is calibrated across the whole proteome, so cells are colored\non a single global gradient keyed to the raw popEVE score (lower, more negative scores are\nmore deleterious). The color is interpolated between the five anchors below: the published\nsevere and moderate thresholds are fixed anchors, and the extremes saturate at the 0.5th and\n99.5th percentiles of the proteome-wide score distribution.\n</p>\n<table style=\"border-collapse: collapse; border: 1px solid #ccc;\">\n<tr><th style=\"border:1px solid #ccc;padding:6px 12px;background:#f2f2f2;\">Color</th>\n    <th style=\"border:1px solid #ccc;padding:6px 12px;background:#f2f2f2;\">popEVE score</th>\n    <th style=\"border:1px solid #ccc;padding:6px 12px;background:#f2f2f2;\">Interpretation</th></tr>\n<tr><td style=\"border:1px solid #ccc;background:#b2182b;width:50px;\">&nbsp;</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">&le; &minus;6.04</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">Most deleterious (color saturates here)</td></tr>\n<tr><td style=\"border:1px solid #ccc;background:#d6604d;width:50px;\">&nbsp;</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">&asymp; &minus;5.056</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">Severe threshold: high-confidence deleterious (99.99% likelihood of falling in the more deleterious distribution)</td></tr>\n<tr><td style=\"border:1px solid #ccc;background:#f4a582;width:50px;\">&nbsp;</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">&asymp; &minus;4.617</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">Moderate threshold</td></tr>\n<tr><td style=\"border:1px solid #ccc;background:#f7f7f7;width:50px;\">&nbsp;</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">&asymp; &minus;3.5</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">Near the proteome-wide median</td></tr>\n<tr><td style=\"border:1px solid #ccc;background:#2166ac;width:50px;\">&nbsp;</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">&ge; &minus;2.41</td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">Most tolerated (color saturates here)</td></tr>\n</table>\n<p>\n<b>Note:</b> popEVE ranks deleteriousness to organismal fitness, weighted toward severe,\noften early-onset phenotypes, rather than classic clinical pathogenicity. Some well-known\ndisease genes whose variants act mainly through loss of function or cause adult-onset\nconditions (for example BRCA1) may therefore show few or no cells in the severe range.\n</p>\n\n<p>\nHovering over a cell shows a summary of that substitution and the scores behind it, for\nexample:\n</p>\n<p style=\"border:1px solid #ccc; padding:6px 12px; display:inline-block;\">\nG1042&rarr;A<br>\n<b>popEVE:</b> -3.652 (tolerated)<br>\n<b>EVE index:</b> 6.75<br>\n<b>ESM1v:</b> -8.779<br>\n<b>popAdj:</b> EVE -3.537 / ESM1v -3.767<br>\n<b>gap:</b> 0.277\n</p>\n<table style=\"border-collapse: collapse; border: 1px solid #ccc;\">\n<tr><th style=\"border:1px solid #ccc;padding:6px 12px;background:#f2f2f2;\">Field</th>\n    <th style=\"border:1px solid #ccc;padding:6px 12px;background:#f2f2f2;\">Meaning</th></tr>\n<tr><td style=\"border:1px solid #ccc;padding:4px 10px;\"><tt>G1042&rarr;A</tt></td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">The substitution: the wildtype amino acid (G) at the protein position (1042) changed to the variant amino acid (A) represented by this row.</td></tr>\n<tr><td style=\"border:1px solid #ccc;padding:4px 10px;\"><tt>popEVE</tt></td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">The popEVE score and its severity class (severe / moderate / tolerated). This is the calibrated, proteome-wide score &mdash; comparable across genes, with lower (more negative) values more deleterious &mdash; and it determines the cell color.</td></tr>\n<tr><td style=\"border:1px solid #ccc;padding:4px 10px;\"><tt>EVE index</tt></td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">The raw EVE evolutionary index used as an input to popEVE (a log-likelihood-ratio scale on which higher values are more deleterious). This is not the same as the 0&ndash;1 score shown in the separate EVE track.</td></tr>\n<tr><td style=\"border:1px solid #ccc;padding:4px 10px;\"><tt>ESM1v</tt></td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">The raw ESM-1v protein language model score used as the other input to popEVE, on which more negative values are more deleterious.</td></tr>\n<tr><td style=\"border:1px solid #ccc;padding:4px 10px;\"><tt>popAdj</tt></td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">The EVE and ESM-1v scores after popEVE's population-based recalibration onto the proteome-wide scale; the popEVE score is the combination of these two.</td></tr>\n<tr><td style=\"border:1px solid #ccc;padding:4px 10px;\"><tt>gap</tt></td>\n    <td style=\"border:1px solid #ccc;padding:4px 10px;\">The fraction of sequences with a gap at this position in the multiple sequence alignment (a per-position value; higher means sparser alignment coverage and a weaker evolutionary signal).</td></tr>\n</table>\n\n<p>\nFor reverse-strand genes, protein positions are displayed left to right in genomic\norder (C-terminus to N-terminus on the screen), consistent with the standard genome\nbrowser orientation.\n</p>\n\n<p>\npopEVE scores are computed per protein isoform, so a gene with more than one RefSeq isoform\nappears as several overlapping entries (one per protein accession) that may stack in the\ndisplay. The track item name is the gene symbol; the specific RefSeq protein accession is\navailable as a field in the Table Browser and details page.\n</p>\n\n<h2>Methods</h2>\n<p>\npopEVE is built on top of two unsupervised variant effect models: EVE, a Bayesian\nvariational autoencoder trained per protein on multiple sequence alignments of evolutionary\nvariation, and ESM-1v, a protein language model trained on the UniRef database. For each\nprotein, the evolutionary scores from these models are treated as a prior, and a Gaussian\nprocess is used to model how the probability of observing a variant in the human population\n(the UK Biobank, ~500,000 exomes) depends on its evolutionary score. Population data are\nused only as a coarse \"seen / not seen\" signal rather than by allele frequency, which lets\nthe resulting score rank the deleteriousness of variants across different proteins while\nleaving the within-gene ranking essentially unchanged. The inferred function rescales the\nevolutionary score per protein to account for the degree of constraint acting on that\nprotein in the population, producing a calibrated, proteome-wide score. Low (more negative)\nscores indicate greater predicted deleteriousness. Following the authors, a high-confidence\nsevere threshold is set at &minus;5.056 and a moderate threshold at &minus;4.617, each\nderived from a two-component Gaussian mixture fit. See Orenbuch et al. 2025 for full details.\n</p>\n\n<p>\nThe full per-amino-acid popEVE score matrices (all substitutions at every position, with the\npopEVE score and component scores) were downloaded as per-transcript files from\n<a href=\"https://pop.evemodel.org\" target=\"_blank\">https://pop.evemodel.org</a>\n(UKBB-trained popEVE, version 1.1). Because those files are keyed by RefSeq protein position\nrather than by genome coordinate, the genomic codon coordinates for each residue were taken\nfrom the companion complete GRCh38 popEVE VCF. A small number of proteins present in the VCF\nbut not in the per-transcript release retain only their single-nucleotide-reachable\nsubstitutions. Records were converted to heatmap bigBed format\nwith a custom Python script; full processing instructions are in the\n<a href=\"https://github.com/ucscGenomeBrowser/kent/blob/master/src/hg/makeDb/doc/hg38/popEve.txt\"\ntarget=\"_blank\">makedoc file</a>, and the conversion scripts are available in\n<a href=\"https://github.com/ucscGenomeBrowser/kent/tree/master/src/hg/makeDb/scripts/popEve\"\ntarget=\"_blank\">our GitHub repository</a>. The strand of each protein was taken from NCBI\nRefSeq. The global color gradient saturates at the 0.5th and 99.5th percentiles of the\nproteome-wide score distribution.\n</p>\n\n<h2>Data Access</h2>\n<p>The data can be explored interactively in table format with the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\">Data Integrator</a> and exported from there to\nspreadsheet or tab-separated tables. From scripts, the data can be accessed through our\n<a href=\"https://api.genome.ucsc.edu\" target=\"_blank\">API</a>, track=<i>popEve</i>.</p>\n<p>For automated download and analysis, the genome annotation is stored in a bigBed file\nthat can be downloaded from\n<a href=\"https://hgdownload.soe.ucsc.edu/gbdb/hg38/popEve\" target=\"_blank\">our download\nserver</a>. The file for this track is called <tt>popEve.bb</tt>. Individual regions or the\nwhole genome annotation can be obtained using our tool <tt>bigBedToBed</tt>, which can be\ncompiled from the source code or downloaded as a precompiled binary for your system.\nInstructions for downloading source code and binaries can be found\n<a href=\"https://hgdownload.soe.ucsc.edu/downloads.html#utilities_downloads\" target=\"_blank\">here</a>.\nThe tool can also be used to obtain features within a given range, e.g.\n<tt>bigBedToBed https://hgdownload.soe.ucsc.edu/gbdb/hg38/popEve/popEve.bb -chrom=chr17\n-start=43000000 -end=43200000 stdout</tt></p>\n<p>The original annotation source data can be downloaded from\n<a href=\"https://pop.evemodel.org\" target=\"_blank\">https://pop.evemodel.org</a>.</p>\n\n<h2>Credits</h2>\n<p>\nThanks to Mafalda Dias, Jonathan Frazer, Debora S. Marks, Rose Orenbuch, and colleagues at\nHarvard Medical School, the Centre for Genomic Regulation, and collaborating institutions for\ndeveloping popEVE and making the scores publicly available at\n<a href=\"https://pop.evemodel.org\" target=\"_blank\">pop.evemodel.org</a>.\n</p>\n\n<h2>References</h2>\n<p>\nFrazer J, Notin P, Dias M, Gomez A, Min JK, Brock K, Gal Y, Marks DS.\n<a href=\"https://doi.org/10.1038/s41586-021-04043-8\" target=\"_blank\">\nDisease variant prediction with deep generative models of evolutionary data</a>.\n<em>Nature</em>. 2021 Nov;599(7883):91-95.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/34707284\" target=\"_blank\">34707284</a>\n</p>\n\n<p>\nOrenbuch R, Shearer CA, Kollasch AW, Spinner AD, Hopf TA, van Niekerk L, Franceschi D,\nDias M, Frazer J, Marks DS.\n<a href=\"https://doi.org/10.1038/s41588-025-02400-1\" target=\"_blank\">\nProteome-wide model for human disease genetics</a>.\n<em>Nat Genet</em>. 2025 Dec;57(12):3165-3174.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/41286104\" target=\"_blank\">41286104</a>\n</p>\n"
+        }
+      },
+      "description": "popEVE proteome-wide missense deleteriousness scores",
+      "category": ["Phenotypes, Variants, and Literature"]
     },
     {
       "trackId": "hg38-pubtator",
@@ -19171,41 +19476,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -24389,25 +24659,6 @@
       "assemblyNames": ["hg38"]
     }
   ],
-  "aggregateTextSearchAdapters": [
-    {
-      "type": "TrixTextSearchAdapter",
-      "textSearchAdapterId": "hg38-index",
-      "ixFilePath": {
-        "uri": "trix/hg38.ix",
-        "locationType": "UriLocation"
-      },
-      "ixxFilePath": {
-        "uri": "trix/hg38.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/hg38_meta.json",
-        "locationType": "UriLocation"
-      },
-      "assemblyNames": ["hg38"]
-    }
-  ],
   "defaultSession": {
     "name": "hg38 Dec. 2013 (GRCh38/hg38)",
     "views": [
@@ -24451,6 +24702,25 @@
       "name": "MsaView",
       "storePlugin": "MsaView",
       "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "hg38-index",
+      "ixFilePath": {
+        "uri": "trix/hg38.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/hg38.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/hg38_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["hg38"]
     }
   ],
   "configuration": {

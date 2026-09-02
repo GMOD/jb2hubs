@@ -23,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/000/165/445/GCF_000165445.2/html/GCF_000165445.2_Mmur_3.0.description.html\">html/GCF_000165445.2_Mmur_3.0.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2",
+            "liftOver.hs1": "liftOver/GCF_000165445.2ToHs1.over.chain.gz"
           }
         },
         "trackId": "GCF_000165445.2-ReferenceSequenceTrack",
@@ -835,41 +836,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -884,6 +850,27 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_000165445.2_to_hs1_liftOver",
+      "name": "GCF_000165445.2 (gray mouse lemur (2017)) to Jan. 2022 (T2T CHM13v2.0/hs1) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_000165445.2", "hs1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_000165445.2",
+        "queryAssembly": "hs1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_000165445.2ToHs1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_000165445.2ToHs1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

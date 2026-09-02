@@ -2,7 +2,7 @@
   "assemblies": [
     {
       "name": "GCF_051311805.1",
-      "displayName": "red-winged blackbird (hap1 2025)",
+      "displayName": "red-winged blackbird (hap1 2025 refseq)",
       "sequence": {
         "type": "ReferenceSequenceTrack",
         "metadata": {
@@ -11,7 +11,7 @@
             "genome": "GCF_051311805.1",
             "taxId": "39638",
             "groups": "groups.txt",
-            "description": "red-winged blackbird (hap1 2025)",
+            "description": "red-winged blackbird (hap1 2025 refseq)",
             "twoBitPath": "GCF_051311805.1.2bit",
             "twoBitBptUrl": "GCF_051311805.1.2bit.bpt",
             "chromSizes": "GCF_051311805.1.chrom.sizes.txt",
@@ -23,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/051/311/805/GCF_051311805.1/html/GCF_051311805.1_bAgePho1.hap1.description.html\">html/GCF_051311805.1_bAgePho1.hap1.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/311/805/GCF_051311805.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/311/805/GCF_051311805.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/311/805/GCF_051311805.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/051/311/805/GCF_051311805.1",
+            "liftOver.GCA_051348685.1": "liftOver/GCF_051311805.1ToGCA_051348685.1.over.chain.gz"
           }
         },
         "trackId": "GCF_051311805.1-ReferenceSequenceTrack",
@@ -602,41 +603,6 @@
       ],
       "textSearching": {
         "indexingAttributes": ["Name", "ID", "gene_synonym"],
-        "indexingFeatureTypesToInclude": [
-          "gene",
-          "pseudogene",
-          "mRNA",
-          "transcript",
-          "primary_transcript",
-          "lnc_RNA",
-          "lncRNA",
-          "ncRNA",
-          "tRNA",
-          "rRNA",
-          "snRNA",
-          "snoRNA",
-          "scaRNA",
-          "scRNA",
-          "miRNA",
-          "piRNA",
-          "antisense_RNA",
-          "guide_RNA",
-          "hammerhead_ribozyme",
-          "autocatalytically_spliced_intron",
-          "SRP_RNA",
-          "RNase_P_RNA",
-          "RNase_MRP_RNA",
-          "tmRNA",
-          "telomerase_RNA",
-          "vault_RNA",
-          "Y_RNA",
-          "V_gene_segment",
-          "C_gene_segment",
-          "J_gene_segment",
-          "D_gene_segment",
-          "pseudogenic_rRNA",
-          "pseudogenic_tRNA"
-        ],
         "indexingFeatureTypesToExclude": [
           "CDS",
           "exon",
@@ -651,6 +617,27 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_051311805.1_to_GCA_051348685.1_liftOver",
+      "name": "GCF_051311805.1 (red-winged blackbird (hap1 2025)) to red-winged blackbird (hap2 2025) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_051311805.1", "GCA_051348685.1"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_051311805.1",
+        "queryAssembly": "GCA_051348685.1",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_051311805.1ToGCA_051348685.1.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_051311805.1ToGCA_051348685.1.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],

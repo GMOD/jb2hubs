@@ -21,6 +21,7 @@ htmlPath html/GCF_000165445.2_Mmur_3.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
+liftOver.hs1 liftOver/GCF_000165445.2ToHs1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -281,6 +282,56 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_000165445.2_Mmur_3.0.xenoRefGene.ix
 html html/GCF_000165445.2_Mmur_3.0.xenoRefGene
+
+##############################################################################
+# hs1 - Human - Homo sapiens - taxId: 9606
+##############################################################################
+track chainNetHs1
+compositeTrack on
+shortLabel Human Chain/Net
+longLabel Human (Jan. 2022 (T2T CHM13v2.0/hs1)), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainMinScore 5000
+chainLinearGap medium
+matrixHeader A, C, G, T
+otherDb hs1
+html html/GCF_000165445.2_Mmur_3.0.chainNet
+
+    track chainNetHs1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetHs1
+    spectrum on
+
+        track chainHs1
+        parent chainNetHs1Viewchain
+        subGroups view=chain
+        shortLabel Human Chain
+        longLabel Human (Jan. 2022 (T2T CHM13v2.0/hs1)) Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainHs1.bb
+        linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainHs1Link.bb
+        priority 1
+
+        track chainLiftOverHs1
+        parent chainNetHs1Viewchain
+        subGroups view=chain
+        shortLabel Human loChain
+        longLabel Human (Jan. 2022 (T2T CHM13v2.0/hs1)) Lift Over Chained Alignments
+        type bigChain hs1
+        bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverHs1.bb
+        linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverHs1Link.bb
+        priority 2
 
 
 track TOGAv2
