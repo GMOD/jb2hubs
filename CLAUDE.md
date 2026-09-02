@@ -1244,14 +1244,31 @@ the 6% — file size was explicitly not the priority.
 ### The PIF corpus is keyed on the CLI that wrote it
 
 Same shape one tool over: a PIF's bytes are a function of `jbrowse make-pif`'s
-version as much as of the chain. `@jbrowse/cli` 5.0 (`5.0.0-beta.1`, published
-2026-08-31) emits a **coarse level-of-detail tier** beside the per-row CIGAR
-tier — the same alignments under uppercase `T<chr>`/`Q<chr>` refnames, split at
-indels ≥ 10 kb, which the v5 adapter probes for and switches to at
-`coarseBpPerPxThreshold` (10,000 bp/px). A v4 adapter queries `t<chr>` and never
-sees the uppercase rows, so a regenerated PIF ships to production without a
-staging sibling. Measured on hg38→mm39: 33 s, 141.5 MB against 132.2 MB (+7 %),
-80,845 fine and 121,175 coarse row pairs.
+version as much as of the chain, and the format has now moved twice inside the
+5.0 betas.
+
+`5.0.0-beta.1` (2026-08-31) added a **coarse level-of-detail tier** beside the
+per-row CIGAR tier — the same alignments under uppercase `T<chr>`/`Q<chr>`
+refnames, split at indels ≥ 10 kb, which the v5 adapter probes for and switches
+to at `coarseBpPerPxThreshold` (10,000 bp/px). A v4 adapter queries `t<chr>` and
+never sees the uppercase rows, so a regenerated PIF ships to production without
+a staging sibling. Measured on hg38→mm39: 33 s, 141.5 MB against 132.2 MB (+7
+%), 80,845 fine and 121,175 coarse row pairs.
+
+`5.0.0-beta.2` (bumped here 2026-09-02) makes that tier **self-describing**
+rather than something the adapter has to probe for. Diffed on ce6→ce4:
+
+- A leading `#pif` header line, in PAF tag syntax:
+  `#pif  version:i:1  tiers:Z:fine,coarse  coarse:i:10000  cigars:Z:all`. It is
+  a `#` comment, so tabix/`--csi` skips it and an old reader ignores it.
+- **Coarse rows lose the `de:f:` divergence tag** they carried in beta.1 — a
+  coarse row is an aggregate, and the number was computed over the merged block.
+- Coarse block coordinates now agree with the fine rows they summarize; beta.1
+  was off by one on some (ce6→ce4 `QchrIII` ended at 13783682 against the fine
+  row's 13783681).
+
+Fine rows are byte-identical between the two betas, so the whole beta.1 → beta.2
+delta is the header plus the coarse rows.
 
 Two things hold the corpus current, both in `lib/chainpif.sh`:
 
@@ -1261,16 +1278,19 @@ Two things hold the corpus current, both in `lib/chainpif.sh`:
 - **Every PIF carries a `.cli` stamp** in the cache dir and every liftOver dir's
   `.checked` holds the same line (`jbrowse_cli_version`). `pif_current` and
   `pif_stamp_current` treat a missing, empty (the old `touch` format) or
-  different stamp as stale, so a CLI bump rebuilds the corpus on the next run
-  and the bootstrap is deliberately "rebuild", not "record": the code that wrote
-  the 4,064 files on disk is known to lack the tier. The stamp lives only in
-  `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy, so nothing new reaches
-  the bucket.
+  different stamp as stale, so a CLI bump rebuilds the corpus on the next run.
+  The stamp records `jbrowse --version` verbatim, which is what makes it
+  format-agnostic — beta.1 → beta.2 needed no code change here at all. The stamp
+  lives only in `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy, so
+  nothing new reaches the bucket.
 
-The first run after the bump is therefore the regeneration: 4,064 UCSC PIFs (928
-GB, chains cached in `/mnt/sdb/cdiesh/chains`) plus 738 GenArk, and `rclone -c`
+The first run after a bump is therefore the regeneration: 4,068 UCSC PIFs (928
+GB, chains cached in `/mnt/sdb/cdiesh/chains`) plus 750 GenArk, and `rclone -c`
 re-sends all of it. Nothing about that is a mistake to be gated away — it is the
-only way the tier reaches the files — but it is a run to start on purpose.
+only way a format change reaches the files — but it is a run to start on
+purpose. As of the beta.2 bump every stamp on disk reads beta.1 (and 1,913 of
+the UCSC PIFs predate stamping entirely), so the whole corpus is already marked
+stale and no `--reprocess` is needed to force it.
 
 ## Which UCSC assemblies are NCBI-derived is derived, not listed
 
