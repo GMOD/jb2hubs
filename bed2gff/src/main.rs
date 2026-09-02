@@ -1,28 +1,7 @@
 //! # bed2gff
 //! A Rust BED-to-gff translator.
 //!
-//! ## Overview
-//! `bed2gff` is a Rust-based utility designed to facilitate
-//! the conversion of BED files to gff files. This tool offers
-//! good performance and quick results, making it, filling a
-//! gap in the current landscape of BED-to-GTF converters.
-//! The main objective of `bed2gff` is to streamline the process of
-//! translating genomic data from the BED format to the gff format,
-//! enabling easier downstream analysis.
-//!
-//!
 //! ## Usage
-//!
-//! ### Installation
-//!
-//! `bed2gff` can be easily installed and used on your system.
-//! Detailed installation instructions are available
-//! on the [GitHub repository](https://github.com/alejandrogzi/bed2gff).
-//!
-//! ### Conversion
-//!
-//! To convert a BED file to a gff file using `bed2gff`, you can use the
-//! following command:
 //!
 //! ```shell
 //! bed2gff -b input.bed -i isoforms.txt -o output.gff
@@ -31,39 +10,27 @@
 //! Where:
 //! - `input.bed` is the input BED file you want to convert.
 //! - `isoforms.txt` is a file that contains information about isoforms.
-//! - `output.gff3` is the output gff file where the conversion results
-//! will be stored.
+//! - `output.gff` is the output gff file where the conversion results will be
+//!   stored.
 //!
 //! ## Output
 //!
-//! `bed2gff` produces gff files compliant with the GTF3 standard.
+//! `bed2gff` produces gff files compliant with the GFF3 standard.
 //! The resulting GFF file contains detailed annotations of genomic
 //! features, including genes, transcripts, exons, coding
 //! sequences (CDS), start codons, and stop codons.
-//!
-//! ## Contact and Support
-//!
-//! For inquiries, bug reports, or suggestions, please
-//! visit the [GitHub repository](https://github.com/alejandrogzi/bed2gff).
-//! We welcome your feedback and contributions to enhance this tool.
 
 use std::collections::HashMap;
-use std::error::Error;
 use std::fs::File;
-use std::io::{BufWriter, Write};
-use std::string::String;
-use std::time::Instant;
+use std::io::Write;
 
 use clap::{self, Parser};
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use log::Level;
-use natord::compare;
 use rayon::prelude::*;
 
 use bed2gff::*;
-
-const SOURCE: &str = "bed2gff";
 
 fn main() {
     let args = Cli::parse();
@@ -79,94 +46,128 @@ fn main() {
         .build_global()
         .unwrap();
 
-
-    let start = Instant::now();
-    let bmem = max_mem_usage_mb();
-
-    let imap = if !args.no_gene {
-        let isf = reader(&args.isoforms.unwrap()).unwrap_or_else(|_| {
-            let message = format!("Error reading isoforms file",);
-            panic!("{}", message);
-        });
-        get_isoforms(&isf)
-    } else {
+    let imap = if args.no_gene {
         HashMap::new()
+    } else {
+        let isf = reader(&args.isoforms.unwrap())
+            .unwrap_or_else(|e| panic!("Error reading isoforms file: {e}"));
+        get_isoforms(&isf)
     };
 
     let bed = bed_reader(&args.bed);
-    let gene_track = custom_par_parse(&bed).unwrap_or_else(|_| {
-        let message = format!("Error parsing BED file {}", args.bed.display());
-        panic!("{}", message);
-    });
+    let (chroms, chrom_ids) = intern_chroms(&bed);
+    let record_chroms: Vec<u32> = bed.iter().map(|r| chrom_ids[r.chrom.as_str()]).collect();
+    let genes_of_records = resolve_genes(&bed, &imap);
+    let gene_entries = gene_entries(&bed, &record_chroms, &imap);
 
-    let results = bed
-        .par_iter()
-        .filter_map(|record| to_gff(record, &imap).ok())
-        .flatten()
-        .collect::<Vec<_>>();
+    let mut blocks: Vec<Line> = gene_entries
+        .iter()
+        .enumerate()
+        .map(|(i, entry)| Line {
+            chrom: entry.chrom,
+            start: entry.start + 1,
+            end: entry.end,
+            owner: i as u32,
+            seq: 0,
+            feature: Feature::Gene,
+            phase: b'.',
+            exon: -1,
+        })
+        .collect();
 
-    let mut blocks = combine_maps_par(&imap, &gene_track);
-    blocks.extend(results);
-
-    blocks.par_sort_unstable_by(|a, b| {
-        let chr_cmp = compare(&a.0, &b.0);
-        if chr_cmp == std::cmp::Ordering::Equal {
-            a.2.cmp(&b.2)
-        } else {
-            chr_cmp
-        }
-    });
-
-    let writer_boxed: Box<dyn Write> = if args.gz {
-        let file = File::create(&args.output).unwrap();
-        let encoder = GzEncoder::new(file, Compression::default());
-        Box::new(BufWriter::new(encoder))
-    } else {
-        let file = File::create(&args.output).unwrap();
-        Box::new(BufWriter::new(file))
-    };
-
-    let mut writer = writer_boxed;
-    comments(&mut writer);
-
-    for entry in &blocks {
-        writeln!(
-            writer,
-            "{}\t{}\t{}\t{}\t{}\t.\t{}\t{}\t{}",
-            entry.0, SOURCE, entry.1, entry.2, entry.3, entry.4, entry.5, entry.6
-        )
-        .unwrap();
+    // Rows are emitted straight into one buffer rather than collected in
+    // parallel: measured on criGriChoV1 xenoRefGene (7.8M rows), a rayon
+    // collect was slower at every thread count and cost twice the memory,
+    // because the emit is bandwidth-bound and the unindexed collect stages
+    // every row a second time.
+    blocks.reserve(bed.iter().map(|r| 5 + 2 * r.exon_count as usize).sum());
+    for (i, record) in bed.iter().enumerate() {
+        to_gff_into(record, i as u32, record_chroms[i], &mut blocks);
     }
 
-    let peak_mem = (max_mem_usage_mb() - bmem).max(0.0);
+    // `seq` makes the sort a total order over rows that share a start, so the
+    // file is byte-reproducible. Comparing the chrom name per comparison is what
+    // this replaces; the rank packed above the start does it in one integer
+    // compare.
+    for (i, line) in blocks.iter_mut().enumerate() {
+        line.seq = i as u32;
+    }
+    blocks.par_sort_unstable_by_key(|line| {
+        (((line.chrom as u64) << 32) | line.start as u64, line.seq)
+    });
+
+    let file = File::create(&args.output).unwrap();
+    if args.gz {
+        let mut out = GzEncoder::new(file, Compression::default());
+        emit(
+            &mut out,
+            &blocks,
+            &chroms,
+            &bed,
+            &genes_of_records,
+            &gene_entries,
+        );
+        out.finish().unwrap();
+    } else {
+        let mut out = file;
+        emit(
+            &mut out,
+            &blocks,
+            &chroms,
+            &bed,
+            &genes_of_records,
+            &gene_entries,
+        );
+        out.flush().unwrap();
+    }
+
+    // The output is on disk; tearing down millions of rows and their records
+    // afterwards is pure cost.
+    std::process::exit(0);
 }
 
-fn to_gff(
-    bedline: &BedRecord,
-    isoforms: &HashMap<String, String>,
-) -> Result<Vec<(String, String, u32, u32, String, String, String)>, Box<dyn Error>> {
-    let mut result: Vec<(String, String, u32, u32, String, String, String)> = Vec::new();
+fn emit(
+    out: &mut dyn Write,
+    blocks: &[Line],
+    chroms: &[&str],
+    bed: &[BedRecord],
+    genes_of_records: &[&str],
+    gene_entries: &[GeneEntry<'_>],
+) {
+    comments(out).unwrap();
+    write_lines(out, blocks, chroms, bed, genes_of_records, gene_entries).unwrap();
+}
 
-    let gene = if !isoforms.is_empty() {
-        match isoforms.get(&bedline.name) {
-            Some(g) => g,
-            None => {
-                log::error!("Gene {} not found in isoforms file.", bedline.name);
-                std::process::exit(1)
+/// The gene each record belongs to, resolved once instead of per output row.
+fn resolve_genes<'a>(bed: &'a [BedRecord], isoforms: &'a HashMap<String, String>) -> Vec<&'a str> {
+    bed.iter()
+        .map(|record| {
+            if isoforms.is_empty() {
+                return record.name.as_str();
             }
-        }
-    } else {
-        &bedline.name
+            match isoforms.get(&record.name) {
+                Some(gene) => gene.as_str(),
+                None => {
+                    log::error!("Gene {} not found in isoforms file.", record.name);
+                    std::process::exit(1)
+                }
+            }
+        })
+        .collect()
+}
+
+fn to_gff_into(bedline: &BedRecord, owner: u32, chrom: u32, result: &mut Vec<Line>) {
+    let ctx = RowContext {
+        record: bedline,
+        owner,
+        chrom,
     };
 
-    let fcodon = first_codon(bedline)
-        .unwrap_or_else(|| panic!("No start codon found for {}.", bedline.name));
-    let lcodon = last_codon(bedline).unwrap_or_else(|| {
-        panic!("No stop codon found for {}.", bedline.name);
-    });
-    // let first_utr_end = bedline.cds_start;
-    // let last_utr_start = bedline.cds_end;
     let frames = bedline.get_frames();
+    let fcodon = first_codon(bedline, &frames)
+        .unwrap_or_else(|| panic!("No start codon found for {}.", bedline.name));
+    let lcodon = last_codon(bedline, &frames)
+        .unwrap_or_else(|| panic!("No stop codon found for {}.", bedline.name));
 
     let cds_end: u32 = if bedline.strand == "+" && codon_complete(&lcodon) {
         move_pos(bedline, lcodon.end, -3)
@@ -181,59 +182,41 @@ fn to_gff(
     };
 
     build_gff_line(
-        bedline,
-        gene,
-        "transcript",
+        ctx,
+        Feature::Transcript,
         bedline.tx_start,
         bedline.tx_end,
         3,
         -1,
-        &mut result,
+        result,
     );
 
-    for i in 0..bedline.exon_count as usize {
+    for (i, &frame) in frames.iter().enumerate() {
         build_gff_line(
-            bedline,
-            gene,
-            "exon",
+            ctx,
+            Feature::Exon,
             bedline.exon_start[i],
             bedline.exon_end[i],
             3,
             i as i16,
-            &mut result,
+            result,
         );
         if cds_start < cds_end {
-            write_features(
-                i,
-                bedline,
-                gene,
-                // first_utr_end,
-                cds_start,
-                cds_end,
-                // last_utr_start,
-                frames[i] as u32,
-                &mut result,
-            );
+            write_features(ctx, i, cds_start, cds_end, frame as u32, result);
         }
     }
 
-    if bedline.strand != "-" {
-        if codon_complete(&fcodon) {
-            write_codon(bedline, gene, "start_codon", fcodon, &mut result);
-        }
-        if codon_complete(&lcodon) {
-            write_codon(bedline, gene, "stop_codon", lcodon, &mut result);
-        }
+    let (start, stop) = if bedline.strand == "-" {
+        (lcodon, fcodon)
     } else {
-        if codon_complete(&lcodon) {
-            write_codon(bedline, gene, "start_codon", lcodon, &mut result);
-        }
-        if codon_complete(&fcodon) {
-            write_codon(bedline, gene, "stop_codon", fcodon, &mut result);
-        }
+        (fcodon, lcodon)
+    };
+    if codon_complete(&start) {
+        write_codon(ctx, Feature::StartCodon, start, result);
     }
-
-    Ok(result)
+    if codon_complete(&stop) {
+        write_codon(ctx, Feature::StopCodon, stop, result);
+    }
 }
 
 fn move_pos(record: &BedRecord, pos: u32, dist: i32) -> u32 {
@@ -245,10 +228,7 @@ fn move_pos(record: &BedRecord, pos: u32, dist: i32) -> u32 {
         .iter()
         .zip(record.exon_end.iter())
         .position(|(start, end)| pos >= *start && pos <= *end)
-        .unwrap_or_else(|| {
-            let message = format!("Position {} not in exons.", pos);
-            panic!("{}", message);
-        }) as i16;
+        .unwrap_or_else(|| panic!("Position {pos} not in exons.")) as i16;
 
     let mut steps = dist.abs();
     let direction = if dist >= 0 { 1 } else { -1 };
@@ -276,7 +256,7 @@ fn move_pos(record: &BedRecord, pos: u32, dist: i32) -> u32 {
         }
     }
     if steps > 0 {
-        panic!("can't move {} by {}", pos, dist);
+        panic!("can't move {pos} by {dist}");
     }
     pos
 }

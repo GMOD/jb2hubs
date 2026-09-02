@@ -13,17 +13,13 @@ categories = ["command-line-utilities", "science"]
 
 [dependencies]
 clap = {version = "4.0", features = ["derive"]}
-colored = {version = "1.0.0"}
 log = "0.4.14"
 simple_logger = "4.0.0"
-indoc = "1.0"
 natord = "1.0.9"
-chrono = "0.4.31"
 rayon = "1.8.0"
 num_cpus = "1.16.0"
 flate2 = "1.0.28"
 thiserror = "1.0.58"
-libc = "0.2.153"
 
 [lib]
 name = "bed2gff"
@@ -31,3 +27,4 @@ path = "src/lib.rs"
 
 [profile.release]
 lto = true
+codegen-units = 1

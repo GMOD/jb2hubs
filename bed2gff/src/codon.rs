@@ -10,6 +10,12 @@ pub struct Codon {
     pub end2: u32,
 }
 
+impl Default for Codon {
+    fn default() -> Codon {
+        Codon::new()
+    }
+}
+
 impl Codon {
     pub fn new() -> Codon {
         Codon {
@@ -22,8 +28,7 @@ impl Codon {
     }
 }
 
-pub fn first_codon(record: &BedRecord) -> Option<Codon> {
-    let exon_frames = record.get_frames();
+pub fn first_codon(record: &BedRecord, exon_frames: &[i16]) -> Option<Codon> {
     record
         .exon_start
         .iter()
@@ -75,8 +80,7 @@ pub fn first_codon(record: &BedRecord) -> Option<Codon> {
         })
 }
 
-pub fn last_codon(record: &BedRecord) -> Option<Codon> {
-    let exon_frames = record.get_frames();
+pub fn last_codon(record: &BedRecord, exon_frames: &[i16]) -> Option<Codon> {
     record
         .exon_start
         .iter()
@@ -164,7 +168,7 @@ mod tests {
         let line = "NW_003684908v1\t0\t88\tNM_207404\t0\t-\t0\t1\t0\t1\t88,\t0,";
         let record = BedRecord::parse(line).unwrap();
 
-        let codon = last_codon(&record).unwrap();
+        let codon = last_codon(&record, &record.get_frames()).unwrap();
 
         assert!(
             codon.start <= codon.end,
@@ -205,7 +209,7 @@ mod tests {
         let line = "chr1\t1000\t5000\tNM_1\t0\t-\t1200\t4800\t0\t1\t4000,\t0,";
         let record = BedRecord::parse(line).unwrap();
 
-        let codon = last_codon(&record).unwrap();
+        let codon = last_codon(&record, &record.get_frames()).unwrap();
 
         assert_eq!((codon.start, codon.end), (4797, 4800));
         assert!(codon_complete(&codon));

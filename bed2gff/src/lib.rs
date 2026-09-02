@@ -7,6 +7,9 @@ pub use codon::*;
 pub mod lines;
 pub use lines::*;
 
+pub mod writer;
+pub use writer::*;
+
 pub mod utils;
 pub use utils::*;
 

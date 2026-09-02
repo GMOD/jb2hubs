@@ -14,63 +14,59 @@ pub struct BedRecord {
     pub exon_end: Vec<u32>,
 }
 
+fn field(s: &str) -> Result<u32, &'static str> {
+    s.parse::<u32>().map_err(|_| "Cannot parse field")
+}
+
 impl BedRecord {
     pub fn parse(line: &str) -> Result<BedRecord, &'static str> {
-        let fields: Vec<&str> = line.split('\t').collect();
-        if fields.len() < 12 {
+        let mut fields = [""; 12];
+        let mut count = 0;
+        for f in line.split('\t') {
+            if count < 12 {
+                fields[count] = f;
+            }
+            count += 1;
+        }
+        if count < 12 {
             return Err("Bed line has less than 12 fields and cannot be parsed into a BedRecord");
         }
 
-        let chrom = fields[0].to_string();
-        let name = fields[3].to_string();
-        let strand = fields[5].to_string();
+        let tx_start = field(fields[1])?;
+        let tx_end = field(fields[2])?;
+        let cds_start = field(fields[6])?;
+        let cds_end = field(fields[7])?;
+        let exon_count = field(fields[9])? as u16;
 
-        let get = |field: &str| field.parse::<u32>().map_err(|_| "Cannot parse field");
-        let tx_start = get(fields[1])?;
-        let tx_end = get(fields[2])?;
-        let cds_start = get(fields[6])?;
-        let cds_end = get(fields[7])?;
-        let exon_count = get(fields[9])? as u16;
+        let mut exon_start = Vec::with_capacity(exon_count as usize);
+        for num in fields[11].split(',').filter(|n| !n.is_empty()) {
+            exon_start.push(tx_start + field(num)?);
+        }
 
-        let group = |field: &str| -> Result<Vec<u32>, &'static str> {
-            field
-                .split(',')
-                .filter_map(|num| {
-                    if !num.is_empty() {
-                        Some(num.parse::<u32>().expect("Cannot parse number"))
-                    } else {
-                        None
-                    }
-                })
-                .map(|num| Ok(num))
-                .collect()
-        };
-
-        let exon_start = group(fields[11])?;
-        let exon_end = group(fields[10])?;
+        let mut exon_end = Vec::with_capacity(exon_count as usize);
+        for num in fields[10].split(',').filter(|n| !n.is_empty()) {
+            exon_end.push(field(num)?);
+        }
 
         if exon_start.len() != exon_end.len() {
             return Err("Exon start and end vectors have different lengths");
         }
 
-        let exon_starts: Vec<u32> = exon_start.iter().map(|&s| s + tx_start).collect();
-        let exon_ends: Vec<u32> = exon_end
-            .iter()
-            .enumerate()
-            .map(|(i, &s)| s + exon_starts[i])
-            .collect();
+        for (end, &start) in exon_end.iter_mut().zip(exon_start.iter()) {
+            *end += start;
+        }
 
         Ok(BedRecord {
-            chrom: chrom.to_string(),
-            tx_start: tx_start,
-            tx_end: tx_end,
-            name: name.to_string(),
-            strand: strand.to_string(),
-            cds_start: cds_start,
-            cds_end: cds_end,
-            exon_count: exon_count,
-            exon_start: exon_starts,
-            exon_end: exon_ends,
+            chrom: fields[0].to_string(),
+            tx_start,
+            tx_end,
+            name: fields[3].to_string(),
+            strand: fields[5].to_string(),
+            cds_start,
+            cds_end,
+            exon_count,
+            exon_start,
+            exon_end,
         })
     }
 
@@ -78,13 +74,14 @@ impl BedRecord {
         let mut exon_frames: Vec<i16> = vec![0; self.exon_count as usize];
         let mut cds: u32 = 0;
 
-        let exon_range = if self.strand == "+" {
-            (0..(self.exon_count as usize)).collect::<Vec<_>>()
-        } else {
-            (0..(self.exon_count as usize)).rev().collect::<Vec<_>>()
-        };
+        let plus = self.strand == "+";
+        for i in 0..(self.exon_count as usize) {
+            let exon = if plus {
+                i
+            } else {
+                self.exon_count as usize - 1 - i
+            };
 
-        for exon in exon_range {
             let cds_exon_start = max(self.exon_start[exon], self.cds_start);
             let cds_exon_end = min(self.exon_end[exon], self.cds_end);
 
@@ -150,6 +147,17 @@ mod tests {
         assert_eq!(
             record,
             Err("Bed line has less than 12 fields and cannot be parsed into a BedRecord")
+        );
+    }
+
+    // Exons are stored absolute, so a start list shorter than the size list must
+    // be refused before the offsets are applied rather than indexing past it.
+    #[test]
+    fn mismatched_exon_lists() {
+        let line = "chr1\t0\t100\tA\t0\t+\t0\t100\t0\t2\t10,20,\t0,";
+        assert_eq!(
+            BedRecord::parse(line),
+            Err("Exon start and end vectors have different lengths")
         );
     }
 }
