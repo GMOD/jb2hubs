@@ -10,7 +10,10 @@ use std::path::PathBuf;
 
 pub fn bed_reader(file: &PathBuf) -> Vec<BedRecord> {
     let bed = reader(file).unwrap();
-    parallel_parse(&bed).unwrap()
+    parallel_parse(&bed).unwrap_or_else(|e| {
+        eprintln!("Fail: {}: {e}", file.display());
+        std::process::exit(1);
+    })
 }
 
 pub fn get_isoforms(file: &str) -> HashMap<String, String> {
@@ -30,19 +33,27 @@ pub fn reader(file: &PathBuf) -> io::Result<String> {
     Ok(contents)
 }
 
+/// Tab, not whitespace: the isoforms file is a TSV, and a transcript name that
+/// contains a space (UCSC's hg16 encodeEgasp* tables name every one of theirs
+/// `transcript_id "ENr231_1";`) would otherwise be keyed by its first word and
+/// match no BED record.
 pub fn parallel_hash_rev(s: &str) -> HashMap<String, String> {
     s.par_lines()
         .filter_map(|line| {
-            let mut words = line.split_whitespace();
-            let gene = words.next()?;
-            let transcript = words.next()?;
+            let mut words = line.split('\t');
+            let gene = words.next().filter(|g| !g.is_empty())?;
+            let transcript = words.next().filter(|t| !t.is_empty())?;
             Some((transcript.to_owned(), gene.to_owned()))
         })
         .collect()
 }
 
-pub fn parallel_parse(s: &str) -> Result<Vec<BedRecord>, &'static str> {
-    s.par_lines().map(BedRecord::parse).collect()
+/// The offending line travels with the error: the caller is a batch of millions
+/// of rows, and "Cannot parse field" on its own says nothing about which one.
+pub fn parallel_parse(s: &str) -> Result<Vec<BedRecord>, String> {
+    s.par_lines()
+        .map(|line| BedRecord::parse(line).map_err(|e| format!("{e}: {line}")))
+        .collect()
 }
 
 /// Distinct chrom names in the order the output is sorted by, so a row carries
@@ -115,6 +126,27 @@ mod tests {
 
     fn bed(lines: &[&str]) -> Vec<BedRecord> {
         lines.iter().map(|l| BedRecord::parse(l).unwrap()).collect()
+    }
+
+    // The isoforms file is a TSV and a name may contain spaces, so the key is
+    // the whole column.
+    #[test]
+    fn isoforms_key_on_the_whole_column() {
+        let pairs = parallel_hash_rev("G\ttranscript_id \"ENr231_1\";\nG2\tNM_1\n");
+
+        assert_eq!(pairs["transcript_id \"ENr231_1\";"], "G");
+        assert_eq!(pairs["NM_1"], "G2");
+    }
+
+    // A parse failure has to name the row: the input is millions of lines and
+    // the message is all the pipeline log gets.
+    #[test]
+    fn parse_failure_carries_the_line() {
+        let line = "chr1\t0\t100\tA\t0\t+\t0\t100\t0\t1\t-5,\t0,";
+        assert_eq!(
+            parallel_parse(line),
+            Err(format!("Cannot parse field: {line}"))
+        );
     }
 
     #[test]

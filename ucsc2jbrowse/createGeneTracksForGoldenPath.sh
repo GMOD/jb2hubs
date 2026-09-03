@@ -44,8 +44,11 @@ process_assembly() {
       local hash_file="${outfile}.hash"
       if needs_rebuild "${outfile}.gff.gz" "${infile}.txt.gz" "$hash_file"; then
         echo "Processing ${key}: file changed or new"
-        node src/geneLike.ts "${infile}.sql" "${infile}.txt.gz" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($2 >= $3) {temp=$2; $2=$3; $3=temp} print}' | sort -k1,1 -k2,2n >"${outfile}.bed"
-        hck -f 13,4 "${outfile}.bed" >"${outfile}.isoforms.txt"
+        node src/geneLike.ts "${infile}.sql" "${infile}.txt.gz" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($2 >= $3) {temp=$2; $2=$3; $3=temp} print}' | sort -t$'\t' -k1,1 -k2,2n >"${outfile}.bed"
+        # -Ld$'\t': hck splits on \s+ by default, and UCSC ships names that
+        # contain spaces (hg16's encodeEgasp* tables name every transcript
+        # `transcript_id "ENr231_1";`), which shifts every column after them.
+        hck -Ld$'\t' -f 13,4 "${outfile}.bed" >"${outfile}.isoforms.txt"
         node src/fixupIsoforms.ts "${outfile}.isoforms.txt"
         "$BED2GFF" -t1 --bed "${outfile}.bed" --output "${outfile}.gff" --isoforms "${outfile}.isoforms.txt"
         if [ -f "${infile}Link.sql" ]; then

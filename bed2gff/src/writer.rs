@@ -44,6 +44,30 @@ pub fn push_i16(out: &mut Vec<u8>, value: i16) {
     }
 }
 
+/// GFF3 column 9 reserves these, and UCSC ships names that carry them: hg16's
+/// encodeEgasp* tables name every transcript `transcript_id "ENr231_1";`, whose
+/// semicolon would otherwise end the attribute and leave the rest as garbage.
+/// Values without one are written through untouched, which is every ordinary
+/// gene in the corpus.
+fn push_escaped(out: &mut Vec<u8>, value: &str) {
+    const HEX: &[u8; 16] = b"0123456789ABCDEF";
+    let reserved = |b: u8| matches!(b, b';' | b'=' | b'&' | b',' | b'%') || b < 0x20;
+
+    if value.bytes().any(reserved) {
+        for b in value.bytes() {
+            if reserved(b) {
+                out.push(b'%');
+                out.push(HEX[(b >> 4) as usize]);
+                out.push(HEX[(b & 0xf) as usize]);
+            } else {
+                out.push(b);
+            }
+        }
+    } else {
+        out.extend_from_slice(value.as_bytes());
+    }
+}
+
 pub fn attributes(out: &mut Vec<u8>, line: Line, record: &BedRecord, gene: &str) {
     let name = record.name.as_str();
 
@@ -51,19 +75,15 @@ pub fn attributes(out: &mut Vec<u8>, line: Line, record: &BedRecord, gene: &str)
         // Name is the transcript id (not the gene). Without an explicit Name,
         // consumers like JBrowse fall back to gene_id and every transcript ends
         // up labeled with the parent gene's name.
-        for part in [
-            "ID=",
-            name,
-            ";Parent=",
-            gene,
-            ";Name=",
-            name,
-            ";gene_id=",
-            gene,
-            ";transcript_id=",
-            name,
+        for (tag, value) in [
+            ("ID=", name),
+            (";Parent=", gene),
+            (";Name=", name),
+            (";gene_id=", gene),
+            (";transcript_id=", name),
         ] {
-            out.extend_from_slice(part.as_bytes());
+            out.extend_from_slice(tag.as_bytes());
+            push_escaped(out, value);
         }
         return;
     }
@@ -73,20 +93,18 @@ pub fn attributes(out: &mut Vec<u8>, line: Line, record: &BedRecord, gene: &str)
     out.extend_from_slice(b"ID=");
     out.extend_from_slice(line.feature.name().as_bytes());
     out.push(b':');
-    out.extend_from_slice(name.as_bytes());
+    push_escaped(out, name);
     out.push(b'.');
     push_u32(out, exon_id as u32);
-    for part in [
-        ";Parent=",
-        name,
-        ";gene_id=",
-        gene,
-        ";transcript_id=",
-        name,
-        ";exon_number=",
+    for (tag, value) in [
+        (";Parent=", name),
+        (";gene_id=", gene),
+        (";transcript_id=", name),
     ] {
-        out.extend_from_slice(part.as_bytes());
+        out.extend_from_slice(tag.as_bytes());
+        push_escaped(out, value);
     }
+    out.extend_from_slice(b";exon_number=");
     push_i16(out, exon_number);
 }
 
@@ -146,8 +164,9 @@ pub fn write_lines(
                 entry.strand,
                 line.phase,
             );
-            for part in ["ID=", entry.gene, ";gene_id=", entry.gene] {
-                buf.extend_from_slice(part.as_bytes());
+            for tag in ["ID=", ";gene_id="] {
+                buf.extend_from_slice(tag.as_bytes());
+                push_escaped(&mut buf, entry.gene);
             }
         } else {
             let record = &records[line.owner as usize];
@@ -182,6 +201,22 @@ pub fn write_lines(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // A name carrying a GFF3-reserved character has to survive as one attribute
+    // value; an ordinary name has to come out byte for byte.
+    #[test]
+    fn reserved_characters_are_percent_encoded() {
+        let mut out = Vec::new();
+        push_escaped(&mut out, "transcript_id \"ENr231_1\";");
+        assert_eq!(
+            String::from_utf8(out).unwrap(),
+            "transcript_id \"ENr231_1\"%3B"
+        );
+
+        let mut out = Vec::new();
+        push_escaped(&mut out, "NM_017037");
+        assert_eq!(String::from_utf8(out).unwrap(), "NM_017037");
+    }
 
     #[test]
     fn integers_round_trip() {

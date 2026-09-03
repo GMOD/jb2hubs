@@ -1100,6 +1100,49 @@ one filesystem timestamp. A tolerance big enough to absorb that would absorb a
 real stale index too. What defends that shape is `assert_bgzip_toolchain` (the
 cause) and `rclone_sync_with_indexes`' ordering (the exposure).
 
+### The other half again: a `.gz` with an index and no records
+
+`save_rebuild_stamp` refuses an output that is missing or empty, and
+`check-tabix-indexes` requires an index beside it. A **28-byte** `.gff.gz` — the
+BGZF end-of-file block and nothing else — satisfies both, and four of them had
+been shipping since 2026-06-03, each with a `.hash` recording it as built and a
+source table full of rows: `galGal2` xenoRefGene (438,401 of them), `hg16`
+encodeEgaspFullGenemark, `hg16` pseudoYale, `tetNig1` hoxGenes.
+
+What broke them is UCSC's own data, in two shapes, both of which stop `bed2gff`
+dead — and a failing derivation costs not just its own track but every gene
+track after it in that assembly, since `process_assembly` in
+`createGeneTracksForGoldenPath.sh` runs under `set -e`:
+
+- **Exons that run backwards.** 9 of galGal2's xenoRefGene rows have an
+  `exonEnds` entry behind its `exonStarts` partner (`NM_017037`'s seventh exon
+  is 2176615..2176258), which becomes a negative BED block size that
+  `BedRecord::parse` refuses — `Cannot parse field`, and the message named
+  neither the row nor the file. `geneLike.ts` drops such rows now and reports
+  how many; the parse error carries the offending line.
+- **Names with spaces in them.** hg16's `encodeEgasp*` tables put the GTF
+  attribute verbatim in the `name` column — every transcript is
+  `transcript_id "ENr231_1";` — and tetNig1's hoxGenes has a `CDS EVX-HOXA`. Two
+  things split those on whitespace: `hck`, whose `--delimiter` defaults to
+  `\s+`, so the isoforms file was built out of the wrong columns entirely, and
+  bed2gff's `parallel_hash_rev`. The transcript then matches nothing in the
+  isoforms map and `resolve_genes` exits 1. Both split on tab now. That name
+  also lands in GFF3 column 9, where its `;` would end the attribute, so
+  `writer.rs` percent-encodes the reserved set — a value without one is written
+  through untouched, which is every ordinary gene in the corpus.
+
+The gap that let this last three months is the section above, one step further
+in: nothing asks whether a derived file holds any **records**. `find` over the
+built tree for `-size -100c` is the cheap version of that question, and it is
+how these four were found.
+
+All three fixed files are in `DERIVATION_SOURCES`, so the next run re-derives
+every gene track on all 238 assemblies. Only the handful of files described here
+can come out different — but "byte-identical everywhere else" is an argument
+about names and coordinates across the whole corpus, and nobody has run that
+scan, so take the re-derivation rather than advancing `.derivation_hash` by
+hand.
+
 ### A post-processing step with no gate is where over-invalidation gets expensive
 
 `PIPELINE_SOURCES` being broad is the right trade _because_ a reprocess is cheap

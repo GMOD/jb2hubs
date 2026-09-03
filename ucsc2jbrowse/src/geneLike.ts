@@ -35,6 +35,7 @@ function generateBed12(sqlFilePath: string, txtGzFilePath: string) {
   const cols = getColNames(fs.readFileSync(sqlFilePath, 'utf8'))
   const gzippedContent = fs.readFileSync(txtGzFilePath)
   const unzippedContent = zlib.gunzipSync(gzippedContent)
+  let skipped = 0
 
   parseLineByLine(unzippedContent, line => {
     const {
@@ -61,26 +62,43 @@ function generateBed12(sqlFilePath: string, txtGzFilePath: string) {
       .filter(Boolean)
       .map(r => +r - +txStart!)
 
-    const sizes = starts && ends ? starts.map((s, i) => ends[i]! - s) : []
+    const sizes =
+      starts && ends && starts.length === ends.length
+        ? starts.map((s, i) => ends[i]! - s)
+        : undefined
 
-    process.stdout.write(
-      [
-        chrom,
-        txStart,
-        txEnd,
-        name,
-        score,
-        strand,
-        cdsStart,
-        cdsEnd,
-        '0,0,0',
-        starts?.length ?? 0,
-        sizes.join(','),
-        starts?.join(','),
-        name2,
-      ].join('\t') + '\n',
-    )
+    // UCSC's older xenoRefGene tables carry a handful of rows whose exonEnds
+    // run behind their exonStarts (9 of galGal2's 438,401), which becomes a
+    // negative BED block size that bed2gff refuses to parse -- taking the whole
+    // track, and every gene track after it in the assembly, down with it.
+    if (starts && sizes && starts.every((s, i) => s >= 0 && sizes[i]! > 0)) {
+      process.stdout.write(
+        [
+          chrom,
+          txStart,
+          txEnd,
+          name,
+          score,
+          strand,
+          cdsStart,
+          cdsEnd,
+          '0,0,0',
+          starts.length,
+          sizes.join(','),
+          starts.join(','),
+          name2,
+        ].join('\t') + '\n',
+      )
+    } else {
+      skipped += 1
+    }
   })
+
+  if (skipped > 0) {
+    console.error(
+      `${txtGzFilePath}: skipped ${skipped} rows with inverted or out-of-range exons`,
+    )
+  }
 }
 
 if (process.argv.length !== 4) {
