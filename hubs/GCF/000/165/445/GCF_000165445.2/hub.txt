@@ -21,6 +21,7 @@ htmlPath html/GCF_000165445.2_Mmur_3.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
+liftOver.GCF_040939455.1 liftOver/GCF_000165445.2ToGCF_040939455.1.over.chain.gz
 liftOver.hs1 liftOver/GCF_000165445.2ToHs1.over.chain.gz
 
 track assembly
@@ -283,55 +284,93 @@ searchIndex name
 searchTrix ixIxx/GCF_000165445.2_Mmur_3.0.xenoRefGene.ix
 html html/GCF_000165445.2_Mmur_3.0.xenoRefGene
 
-##############################################################################
-# hs1 - Human - Homo sapiens - taxId: 9606
-##############################################################################
-track chainNetHs1
+track GCF_000165445.2_Mmur_3.0ChainNet
 compositeTrack on
-shortLabel Human Chain/Net
-longLabel Human (Jan. 2022 (T2T CHM13v2.0/hs1)), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_000165445.2_Mmur_3.0
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_040939455.1 s001=hs1
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainLinearGap loose
 chainMinScore 5000
-chainLinearGap medium
-matrixHeader A, C, G, T
-otherDb hs1
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_000165445.2_Mmur_3.0.chainNet
 
-    track chainNetHs1Viewchain
-    shortLabel Chain
+    track GCF_000165445.2_Mmur_3.0ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetHs1
+    visibility dense
+    parent GCF_000165445.2_Mmur_3.0ChainNet
     spectrum on
 
+        track chainGCF_040939455.1
+        parent GCF_000165445.2_Mmur_3.0ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel GCF_040939455.1 Chain
+        longLabel GCF_040939455.1/GCF_040939455.1_M.murinus_Inina_mat1.0 (2025-06-05) Chained Alignments
+        type bigChain GCF_040939455.1
+        bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainGCF_040939455.1.bb
+        linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainGCF_040939455.1Link.bb
+        otherDb GCF_040939455.1
+        html html/GCF_000165445.2_Mmur_3.0.chainNet
+        priority 7.896
+
         track chainHs1
-        parent chainNetHs1Viewchain
-        subGroups view=chain
-        shortLabel Human Chain
-        longLabel Human (Jan. 2022 (T2T CHM13v2.0/hs1)) Chained Alignments
+        parent GCF_000165445.2_Mmur_3.0ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel hs1 Chain
+        longLabel hs1/hs1 () Chained Alignments
         type bigChain hs1
         bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainHs1.bb
         linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainHs1Link.bb
-        priority 1
+        otherDb hs1
+        html html/GCF_000165445.2_Mmur_3.0.chainNet
+        priority 64.840
+
+    track GCF_000165445.2_Mmur_3.0ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_000165445.2_Mmur_3.0ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_040939455.1
+        parent GCF_000165445.2_Mmur_3.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCF_040939455.1 loChain
+        longLabel GCF_040939455.1/GCF_040939455.1_M.murinus_Inina_mat1.0 (2025-06-05) Chained Alignments
+        type bigChain GCF_040939455.1
+        bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverGCF_040939455.1.bb
+        linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverGCF_040939455.1Link.bb
+        otherDb GCF_040939455.1
+        html html/GCF_000165445.2_Mmur_3.0.chainNet
+        priority 7.896
 
         track chainLiftOverHs1
-        parent chainNetHs1Viewchain
-        subGroups view=chain
-        shortLabel Human loChain
-        longLabel Human (Jan. 2022 (T2T CHM13v2.0/hs1)) Lift Over Chained Alignments
+        parent GCF_000165445.2_Mmur_3.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel hs1 loChain
+        longLabel hs1/hs1_M.murinus_Inina_mat1.0 () Chained Alignments
         type bigChain hs1
         bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverHs1.bb
         linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverHs1Link.bb
-        priority 2
+        otherDb hs1
+        html html/GCF_000165445.2_Mmur_3.0.chainNet
+        priority 64.840
+
+    track GCF_000165445.2_Mmur_3.0MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_000165445.2_Mmur_3.0ChainNet
 
 
 track TOGAv2
