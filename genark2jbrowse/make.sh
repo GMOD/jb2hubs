@@ -76,11 +76,12 @@ node src/downloadHubList.ts
 # chains UCSC adds to an existing hub never reached its config (measured
 # 2026-09-01: about a quarter of the hub.txt files upstream had changed since
 # we fetched them). Refreshed in three steps, one rsync connection each way:
-# list every hub.txt upstream with its size and mtime (two rsync walks, about
-# ten minutes), copy the ones that differ from the local file (rsync -t leaves
-# upstream's mtime on the copy, so the next walk sees them as current), and
-# re-probe the chain directory of any hub whose hub.txt content moved. A failed
-# walk skips the refresh rather than guessing.
+# list every hub.txt upstream with its size and mtime (~12s: hgdownload's own
+# genArkFileList.txt.gz names the accessions, so rsync stats the paths we read
+# instead of traversing the tree), copy the ones that differ from the local
+# file (rsync -t leaves upstream's mtime on the copy, so the next listing sees
+# them as current), and re-probe the chain directory of any hub whose hub.txt
+# content moved. A failed listing skips the refresh rather than guessing.
 log "Listing upstream hub.txt files..."
 if ./listUpstreamHubs.sh "$UPSTREAM_HUB_LIST"; then
   export UPSTREAM_HUB_LIST

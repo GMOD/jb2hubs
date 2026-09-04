@@ -398,16 +398,57 @@ liftOver chain to a sibling assembly — never reached its config. Measured
 than our copy, and of 12 sampled 3 differed in content; the first full sync
 changed 278 of them in content.
 
-Three steps in `genark2jbrowse/make.sh`, each one rsync connection, because
-52,000 HEAD requests against hgdownload is the kind of load the track-url canary
-is budgeted to avoid:
+Three steps in `genark2jbrowse/make.sh`, a few dozen rsync connections in total,
+because 52,000 HEAD requests against hgdownload is the kind of load the
+track-url canary is budgeted to avoid:
 
-- **`listUpstreamHubs.sh`** walks `rsync://hgdownload.soe.ucsc.edu/hubs/GCA/`
-  and `GCF/` with `--list-only`, an include chain that descends exactly four
-  levels and names `hub.txt`, `*.2bit` and `*.chrom.sizes.txt` there, so it
-  never enters `bbi/`. 52,720 hubs in 631 s. It refuses a listing under 10,000
-  hubs: a truncated walk would read as "every hub retired".
-  `listUpstreamHubs.test.sh` pins the parser and the refusal.
+- **`listUpstreamHubs.sh`** answers, for every hub, the size and mtime of
+  `hub.txt` and whether the `2bit` and `chrom.sizes.txt` are there. It refuses a
+  listing under 10,000 hubs: a truncated one would read as "every hub retired".
+  `listUpstreamHubs.test.sh` pins the parser, the refusal and the dispatch
+  below.
+
+  It used to walk `rsync://hgdownload.soe.ucsc.edu/hubs/GCA/` and `GCF/` with
+  `--list-only` and an include chain descending exactly four levels — 52,720
+  hubs in 631 s, and 775 s when re-measured. That walk is still in the file as
+  `walk_upstream_hubs`, because it needs nothing from upstream but the rsync
+  daemon itself; `HUB_LIST_MODE=walk` forces it and the default falls back to it
+  automatically. What replaced it: hgdownload publishes
+  **`hubs/genArkFileList.txt.gz`**, a daily manifest of all 2.07M paths under
+  `hubs/GCA` and `GCF` (10.5 MB, downloads in 0.15 s), so the accessions are
+  known without walking anything and `rsync --files-from` is asked to stat only
+  the ~158,000 paths we read. **13 s against 775 s.**
+
+  Three measurements are why, and the first is the one that generalises. The
+  walk's cost is hgdownload reading ~110,000 directories it then discards, and
+  it is almost entirely **cache**-bound, not work-bound: the same GCA walk is
+  68.8 s cold and 1.85 s warm, 37×, with 0.49 s of that on our side. Statting
+  named paths barely moves — the same GCF/002 stat is 0.547 s cold and 0.532 s
+  warm. And **parallelising the walk is not the fix**: four concurrent cold
+  walks moved 188 hubs/s against 117 single-stream (~1.2× for 3× the
+  connections, once the one subtree that came back warm is excluded), because
+  the server is throughput-bound rather than latency-bound.
+
+  Two things about the replacement are load-bearing. **`--files-from` must be
+  chunked** — rsync's handling of it is quadratic in the list length, so the
+  whole corpus in one call spends **74.8 s of client CPU** against 8 s of wall
+  clock in chunks of 4,000; the fast version was slower than the walk until that
+  was found. And **the manifest proposes candidates, it does not answer**:
+  `src/upstreamHubCandidates.ts` unions its accessions with our own `hubs/` tree
+  (so a hub gone upstream still gets a stat, which is the "gone upstream"
+  finding) and with the assembly list (so a hub added in the last day is not
+  reported as never having existed), and rsync's `--ignore-missing-args` makes a
+  path that is not there simply absent from the output. Nothing downstream reads
+  a stale answer, because nothing downstream reads the manifest.
+
+  Verified 2026-09-04 against a full walk taken the same hour: the 52,722
+  `hub.txt` rows are **byte-identical**, the new listing invents nothing, and
+  both consumers agree exactly (`staleHubTxt.ts` identical output; the
+  `downloadHubs.ts` verdicts identical, 24 gone and 0 missing-sequence). The
+  only rows the walk had are 1,221 `<acc>.repeatModeler.2bit` and one
+  `<acc>.chrNames.2bit`, which matched its `*.2bit` glob and which no consumer
+  looks for — `downloadHubs.ts` asks for `<accession>.2bit` by name.
+
 - **`src/staleHubTxt.ts`** prints the paths whose local size or mtime differs
   from the listing, and `rsync -t --files-from` copies exactly those. `-t`
   leaves upstream's mtime on the copy, so the comparison is exact from then on
@@ -417,22 +458,22 @@ is budgeted to avoid:
   lose their `liftOver/.checked` so the chain probe runs again for them — a
   refreshed `hub.txt` is how a new chain gets noticed at all.
 - **`downloadHubs.ts`** fetches only hubs with no `hub.txt` yet, and reports two
-  things the assembly list cannot say: every accession it names that the walk
+  things the assembly list cannot say: every accession it names that the listing
   did not find, and every hub whose `2bit` or `chrom.sizes.txt` is gone. The
   first is split by whether we publish a config for it, because UCSC's
   `assemblyList.json` names 23 hubs that have never existed on hgdownload (404
   on both hosts, absent from rsync), and those are noise; a hub we have and
   upstream no longer does is the finding, and it is no longer fetched. The
   second is the GenArk half of the sidecar problem — `loadPre()` fails the whole
-  assembly on either — answered from a directory listing the walk reads anyway,
-  not from the 105k-request probe that the reverted mirroring sweep was.
+  assembly on either — answered from the same stat pass, not from the
+  105k-request probe that the reverted mirroring sweep was.
 
 The rsync daemon lags the web host by under an hour (192 files changed upstream
-between the first listing and its copy, and were current on the next walk), so a
-few "still stale" entries right after a sync are the window, not a bug.
+between the first listing and its copy, and were current on the next listing),
+so a few "still stale" entries right after a sync are the window, not a bug.
 
-A failed walk skips the refresh for that run and says so; nothing is deleted on
-either evidence. That report is where **GCF_000001405.40** shows up: UCSC's
+A failed listing skips the refresh for that run and says so; nothing is deleted
+on either evidence. That report is where **GCF_000001405.40** shows up: UCSC's
 `assemblyList.json` still lists the GRCh38.p14 GenArk hub, but its directory is
 gone from both hgdownload hosts (hub.txt, 2bit, `chrom.sizes` and every bigBed
 404; the API says "genome not found"), so the config we publish for it cannot
