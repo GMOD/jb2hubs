@@ -40,4 +40,25 @@ describe('linkOrCopy', () => {
     linkOrCopy(src, dest)
     assert.equal(fs.statSync(dest).ino, before.ino)
   })
+
+  // The filesystem keeps sub-millisecond mtimes and a Date does not, so the
+  // stamp linkOrCopy writes lands either side of the whole millisecond. When it
+  // landed on the far side, comparing floors re-copied a current file -- which
+  // is what made the case above fail about half the times it ran.
+  it('recognizes a stamp that rounded across the millisecond', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'link-'))
+    const src = path.join(dir, 'a')
+    const dest = path.join(dir, 'b')
+    fs.writeFileSync(src, 'new')
+    fs.copyFileSync(src, dest)
+    fs.utimesSync(src, 1_700_000_000.65068, 1_700_000_000.65068)
+    fs.utimesSync(dest, 1_700_000_000.651, 1_700_000_000.651)
+    const before = fs.statSync(dest)
+    assert.notEqual(
+      Math.floor(before.mtimeMs),
+      Math.floor(fs.statSync(src).mtimeMs),
+    )
+    linkOrCopy(src, dest)
+    assert.equal(fs.statSync(dest).ino, before.ino)
+  })
 })

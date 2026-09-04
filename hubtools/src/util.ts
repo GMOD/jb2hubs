@@ -42,11 +42,16 @@ export function writeJSON(filePath: string, data: unknown): void {
 export function linkOrCopy(src: string, dest: string) {
   const s = fs.statSync(src)
   const d = fs.existsSync(dest) ? fs.statSync(dest) : undefined
-  // whole milliseconds: utimes sets the copy's mtime at that precision
+  // Within a millisecond, because that is the precision the stamp survives at:
+  // the filesystem keeps sub-millisecond mtimes, `s.mtime` is a Date that does
+  // not, and utimes writes the difference back as a value that can land either
+  // side of the whole millisecond (a source at ...650.68 is stamped onto the
+  // copy as ...650.999 or ...651). Comparing floors called those unequal about
+  // half the time, and re-copied a file that was already current.
   const same =
     d !== undefined &&
     (d.ino === s.ino ||
-      (d.size === s.size && Math.floor(d.mtimeMs) === Math.floor(s.mtimeMs)))
+      (d.size === s.size && Math.abs(d.mtimeMs - s.mtimeMs) < 1))
   if (!same) {
     fs.rmSync(dest, { force: true })
     try {
