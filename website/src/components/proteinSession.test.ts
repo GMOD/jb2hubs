@@ -219,6 +219,53 @@ test('buildSessionUrl: an indexed alignment is named, not carried', () => {
   assert.equal(msa.data, undefined)
 })
 
+test('buildSessionUrl: a built alignment carries the request and the transcript translation', () => {
+  const { session } = buildSessionUrl({
+    structure: { ...structure, proteinSequence: 'MEEPQ' },
+    msa: {
+      kind: 'built',
+      msa: {
+        orthologParams: {
+          taxId: 9606,
+          geneCandidates: ['P04637', 'TP53'],
+          source: 'uniref',
+          msaAlgorithm: 'browser',
+        },
+      },
+    },
+  })
+  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
+    orthologParams?: Record<string, unknown>
+    allowedGappyness?: number
+    data?: unknown
+  }
+  assert.deepEqual(msa.orthologParams, {
+    taxId: 9606,
+    geneCandidates: ['P04637', 'TP53'],
+    source: 'uniref',
+    msaAlgorithm: 'browser',
+    proteinSequence: 'MEEPQ',
+  })
+  assert.equal(msa.allowedGappyness, 50)
+  assert.equal(msa.data, undefined)
+
+  const search = buildSessionUrl({
+    structure,
+    msa: {
+      kind: 'built',
+      msa: { blastParams: { searchProgram: 'phmmer', blastDatabase: 'rp15' } },
+    },
+  })
+  const view = viewsOf(search.session).find(
+    v => v.type === 'MsaView',
+  ) as unknown as { blastParams?: Record<string, unknown> }
+  assert.deepEqual(view.blastParams, {
+    searchProgram: 'phmmer',
+    blastDatabase: 'rp15',
+    proteinSequence: structure.proteinSequence,
+  })
+})
+
 test('buildSessionUrl: the query string for a host that ignores the hash, the hash for main', () => {
   assert.match(buildSessionUrl({ structure }).url, /\/latest\/\?config=/)
   const gff = {

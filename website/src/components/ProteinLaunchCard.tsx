@@ -244,9 +244,7 @@ export default function ProteinLaunchCard({
     hasProteinView && found.length > 0
       ? `${found.length} superposed ortholog ${found.length === 1 ? 'structure' : 'structures'}`
       : undefined,
-    alignment && !alignmentOmitted
-      ? `a ${alignment.rowCount}-row alignment`
-      : undefined,
+    alignment && !alignmentOmitted ? alignment.carries : undefined,
     variants && launched.target.variantTrackIds.length > 0
       ? 'variant tracks'
       : undefined,

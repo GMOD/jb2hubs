@@ -20,16 +20,21 @@ const MSAViewer = lazy(() =>
   import('react-msaview').then(m => ({ default: m.MSAViewer })),
 )
 
-// Which alignment the page shows and the session carries.
-export type AlignSource = 'live' | 'hundredWay'
+// Which alignment the page shows and the session carries. The first two are
+// alignments this page holds; the last two are requests the msaview plugin
+// resolves when the session opens, so the page has nothing to draw for them.
+export type AlignSource = 'live' | 'hundredWay' | 'uniref' | 'phmmer'
 
 export interface LoadedAlignment {
   // what the launched session carries
   source: MsaSource
   // what the embedded viewer renders: for the indexed source this is the block
-  // read out of the hosted file, which the session names rather than carries
-  fasta: string
-  rowCount: number
+  // read out of the hosted file, which the session names rather than carries.
+  // Absent for a source built on open.
+  fasta?: string
+  rowCount?: number
+  // what the launch card says the session opens with
+  carries: string
   // for the 100-way, the knownCanonical model the alignment was built from —
   // swapped into the session so genome, alignment and structure share codons
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
@@ -59,6 +64,7 @@ export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
     },
     fasta: msa.fasta,
     rowCount: msa.rowCount,
+    carries: `a ${msa.rowCount}-row alignment`,
     structureOverrides: { proteinSequence: msa.querySequence, transcript },
   }
 }
@@ -76,6 +82,7 @@ export async function loadLive(
     precomputed ?? (await alignProteinPanel(panel, { onProgress, signal }))
   const queryRow =
     panel.rows.find(r => r.taxId === panel.query.refTaxonId) ?? panel.rows[0]!
+  const rowCount = (aligned.fasta.match(/^>/gm) ?? []).length
   return {
     source: {
       kind: 'inline',
@@ -87,8 +94,86 @@ export async function loadLive(
       },
     },
     fasta: aligned.fasta,
-    rowCount: (aligned.fasta.match(/^>/gm) ?? []).length,
+    rowCount,
+    carries: `a ${rowCount}-row alignment`,
   }
+}
+
+// Rows the built sources ask for. UniRef is a lookup, so a hundred rows cost
+// only the in-browser alignment; phmmer's count is what EBI reports back.
+const BUILT_ROWS = 100
+
+// A request the msaview plugin resolves on open, so the page has nothing to
+// fetch: the query's UniRef50 cluster across UniProtKB aligned in the browser
+// (no job anywhere), or a phmmer search at EBI whose queue decides the wait.
+// Both are given the gene's UniProt accession first and its symbol second, so
+// the lookup goes by accession where the gene has one.
+export function loadBuilt(
+  source: 'uniref' | 'phmmer',
+  structure: GeneStructure,
+): LoadedAlignment {
+  const candidates = [
+    ...(structure.uniprotId ? [structure.uniprotId] : []),
+    structure.symbol,
+  ]
+  return source === 'uniref'
+    ? {
+        source: {
+          kind: 'built',
+          msa: {
+            orthologParams: {
+              taxId: structure.taxId,
+              geneCandidates: candidates,
+              source: 'uniref',
+              msaAlgorithm: 'browser',
+              maxSpecies: BUILT_ROWS,
+            },
+          },
+        },
+        carries: 'the UniRef cluster, aligned on open',
+      }
+    : {
+        source: {
+          kind: 'built',
+          msa: {
+            blastParams: {
+              searchProgram: 'phmmer',
+              blastDatabase: 'rp15',
+              maxHits: BUILT_ROWS,
+            },
+          },
+        },
+        carries: 'a phmmer search across the tree of life, run on open',
+      }
+}
+
+// What each source is, for the reader choosing one.
+const SOURCE_LABELS: Record<
+  AlignSource,
+  {
+    title: (panelRows: number) => string
+    note: (precomputed: boolean) => string
+  }
+> = {
+  hundredWay: {
+    title: () => '100 vertebrates',
+    note: () => 'instant, no domains',
+  },
+  live: {
+    title: rows => `${rows} species`,
+    note: precomputed =>
+      `domains${precomputed ? ', precomputed' : ', built at EBI'}`,
+  },
+  uniref: {
+    title: () => 'UniRef cluster',
+    note: () =>
+      'all of UniProtKB within 50% identity; built in JBrowse on open, no job',
+  },
+  phmmer: {
+    title: () => 'phmmer search',
+    note: () =>
+      'remote homologs across the tree of life; an EBI job on open, minutes',
+  },
 }
 
 // The alignment, folded away under the launch card. `open` is controlled
@@ -102,8 +187,8 @@ export default function ProteinAlignmentSection({
   aligning,
   status,
   source,
+  sources,
   onSource,
-  bothSources,
   panelRows,
   precomputed,
   wantLive,
@@ -116,8 +201,9 @@ export default function ProteinAlignmentSection({
   aligning: boolean
   status: string
   source: AlignSource
+  // every source this gene can offer, in the order to list them
+  sources: AlignSource[]
   onSource: (s: AlignSource) => void
-  bothSources: boolean
   // rows the live job would align, which is fewer than the panel draws: the
   // cartoon takes every species the source has, and the alignment takes the
   // first MAX_ALIGN_ROWS of the panel's model-organism-first order
@@ -145,17 +231,16 @@ export default function ProteinAlignmentSection({
       <summary>
         Residue alignment{' '}
         <span className="ui-caption">
-          {alignment
+          {alignment?.rowCount
             ? `${alignment.rowCount} rows`
-            : source === 'hundredWay'
-              ? '100 vertebrates'
-              : `${panelRows} species`}
+            : SOURCE_LABELS[source].title(panelRows)}
         </span>
       </summary>
 
-      {bothSources && (
+      {sources.length > 1 && (
         <AlignmentSourceChoice
           source={source}
+          sources={sources}
           panelRows={panelRows}
           precomputed={precomputed}
           onChange={onSource}
@@ -175,11 +260,21 @@ export default function ProteinAlignmentSection({
         </p>
       ) : null}
 
-      {open && alignment ? (
+      {open && alignment?.fasta ? (
         <AlignmentPanel
           alignment={alignment}
+          fasta={alignment.fasta}
           gene={gene}
         />
+      ) : alignment?.source.kind === 'built' ? (
+        <p className="ui-hint">
+          This alignment is built inside JBrowse when the session opens, from
+          the launched transcript's own translation, so there is nothing to show
+          here yet.{' '}
+          {'orthologParams' in alignment.source.msa
+            ? 'The UniRef lookup and the alignment take a few seconds and run in the browser.'
+            : 'phmmer runs at EBI, and the wait is its queue: seconds on a good day, many minutes on a bad one.'}
+        </p>
       ) : aligning ? (
         <p className="ui-hint">{status || 'Aligning…'}</p>
       ) : alignment || !canBuild ? null : (
@@ -213,9 +308,11 @@ export default function ProteinAlignmentSection({
 // Both alignments are already strings in memory, so nothing is re-fetched.
 function AlignmentPanel({
   alignment,
+  fasta,
   gene,
 }: {
   alignment: LoadedAlignment
+  fasta: string
   gene: string
 }) {
   const [expanded, setExpanded] = useState(false)
@@ -226,18 +323,20 @@ function AlignmentPanel({
     <Suspense fallback={<p className="ui-hint">Loading alignment viewer…</p>}>
       <MSAViewer
         key={expanded ? 'expanded' : 'inline'}
-        msa={alignment.fasta}
+        msa={fasta}
         {...(source.kind === 'inline'
           ? {
               tree: source.msa.newick,
               ...(source.msa.gff ? { gff: source.msa.gff } : {}),
             }
-          : {
-              treeFilehandle: {
-                uri: source.msa.treeUri,
-                locationType: 'UriLocation',
-              },
-            })}
+          : source.kind === 'indexed'
+            ? {
+                treeFilehandle: {
+                  uri: source.msa.treeUri,
+                  locationType: 'UriLocation',
+                },
+              }
+            : {})}
         colorScheme="clustalx_protein_dynamic"
         treeAreaWidth={200}
         height={height}
@@ -308,15 +407,17 @@ function useViewportHeight(expanded: boolean) {
   return expanded ? Math.max(360, viewport - 120) : INLINE_HEIGHT
 }
 
-// The choice between the two alignment sources, rendered only where there is a
+// The choice between the alignment sources, rendered only where there is a
 // choice to make. Each option says what it costs and what it gives up.
 function AlignmentSourceChoice({
   source,
+  sources,
   panelRows,
   precomputed,
   onChange,
 }: {
   source: AlignSource
+  sources: AlignSource[]
   panelRows: number
   precomputed: boolean
   onChange: (s: AlignSource) => void
@@ -324,31 +425,25 @@ function AlignmentSourceChoice({
   return (
     <div className="msv-source">
       <span className="msv-source-label">Alignment</span>
-      <label className="msv-source-option">
-        <input
-          type="radio"
-          name="align-source"
-          checked={source === 'hundredWay'}
-          onChange={() => {
-            onChange('hundredWay')
-          }}
-        />
-        100 vertebrates <span className="ui-caption">instant, no domains</span>
-      </label>
-      <label className="msv-source-option">
-        <input
-          type="radio"
-          name="align-source"
-          checked={source === 'live'}
-          onChange={() => {
-            onChange('live')
-          }}
-        />
-        {panelRows} species{' '}
-        <span className="ui-caption">
-          domains{precomputed ? ', precomputed' : ', built at EBI'}
-        </span>
-      </label>
+      {sources.map(s => (
+        <label
+          key={s}
+          className="msv-source-option"
+        >
+          <input
+            type="radio"
+            name="align-source"
+            checked={source === s}
+            onChange={() => {
+              onChange(s)
+            }}
+          />
+          {SOURCE_LABELS[s].title(panelRows)}{' '}
+          <span className="ui-caption">
+            {SOURCE_LABELS[s].note(precomputed)}
+          </span>
+        </label>
+      ))}
     </div>
   )
 }

@@ -11,6 +11,7 @@ import GeneCombobox from './GeneCombobox.tsx'
 import HelpButton from './HelpButton.tsx'
 import ProteinAlignmentSection, {
   type AlignSource,
+  loadBuilt,
   loadHundredWay,
   loadLive,
 } from './ProteinAlignmentSection.tsx'
@@ -393,15 +394,23 @@ function GeneResults({
   const { symbol } = structure
   const panel = 'panel' in panelOutcome ? panelOutcome.panel : undefined
   // The 100-way is one indexed read, so where it exists it is the better first
-  // impression: 100 vertebrates with no wait, against a Clustal Omega job. The
-  // live panel keeps the domain overlay, which is why both are offered.
-  const [source, setSource] = useState<AlignSource>(
-    hundredWay ? 'hundredWay' : 'live',
-  )
+  // impression: 100 vertebrates with no wait, against a Clustal Omega job.
+  // Elsewhere the UniRef cluster leads, because it costs no job either and
+  // exists for any gene UniProt knows. The live panel keeps the domain overlay,
+  // which is why it stays offered; phmmer is the reach into remote homologs.
+  const sources: AlignSource[] = [
+    ...(hundredWay ? ['hundredWay' as const] : []),
+    'uniref',
+    ...(panel ? ['live' as const] : []),
+    'phmmer',
+  ]
+  const [source, setSource] = useState<AlignSource>(sources[0]!)
   // The live alignment is the only one worth gating behind a click — it costs an
-  // EBI job. The 100-way loads as soon as it is chosen.
+  // EBI job here on the page. The others load as soon as they are chosen: the
+  // 100-way is one read, and the built sources are requests the session
+  // carries.
   const [wantLive, setWantLive] = useState(false)
-  const wantAlignment = source === 'hundredWay' || wantLive
+  const wantAlignment = source !== 'live' || wantLive
   // Swiss-Prot accessions of the ortholog rows marked for superposition, and
   // the query-row domain the session should open on.
   const [superposed, setSuperposed] = useState<string[]>([])
@@ -430,7 +439,9 @@ function GeneResults({
     ([, sym, , src]) =>
       src === 'hundredWay'
         ? loadHundredWay(sym)
-        : loadLive(panel!, precomputed, onProgress, aborter.signal),
+        : src === 'live'
+          ? loadLive(panel!, precomputed, onProgress, aborter.signal)
+          : Promise.resolve(loadBuilt(src, structure)),
     LIVE_QUERY,
   )
 
@@ -489,29 +500,27 @@ function GeneResults({
         />
       )}
 
-      {(hundredWay || panel) && (
-        <ProteinAlignmentSection
-          gene={symbol}
-          alignment={alignment}
-          error={error}
-          aligning={aligning}
-          status={status}
-          source={source}
-          onSource={s => {
-            setSource(s)
-          }}
-          bothSources={hundredWay && !!panel}
-          panelRows={panel ? alignedRows(panel).length : 0}
-          precomputed={!!precomputed}
-          wantLive={wantLive}
-          onBuildLive={() => {
-            setWantLive(true)
-          }}
-          onRetry={() => {
-            void retry()
-          }}
-        />
-      )}
+      <ProteinAlignmentSection
+        gene={symbol}
+        alignment={alignment}
+        error={error}
+        aligning={aligning}
+        status={status}
+        source={source}
+        sources={sources}
+        onSource={s => {
+          setSource(s)
+        }}
+        panelRows={panel ? alignedRows(panel).length : 0}
+        precomputed={!!precomputed}
+        wantLive={wantLive}
+        onBuildLive={() => {
+          setWantLive(true)
+        }}
+        onRetry={() => {
+          void retry()
+        }}
+      />
 
       <p className="ui-hint">
         <a href={geneUrl('/gene', symbol, taxId)}>

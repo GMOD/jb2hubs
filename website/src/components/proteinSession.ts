@@ -50,9 +50,36 @@ interface IndexedMsa {
   querySeqName: string
 }
 
+// An alignment the msaview plugin BUILDS when the session opens, from a request
+// the session carries rather than rows. `orthologParams` with the `uniref`
+// source is the query's UniRef cluster across UniProtKB, aligned in the
+// browser, no job anywhere; `blastParams` is a phmmer search at EBI. Both take
+// the launched transcript's translation as the query row, added by msaView so
+// the rows share the genome view's codons. See jbrowse-plugin-msaview's
+// DEVELOPERS.md for every field.
+export type BuiltMsa =
+  | {
+      orthologParams: {
+        taxId: number
+        geneCandidates: string[]
+        source: 'uniref'
+        identity?: 50 | 90
+        msaAlgorithm: 'browser'
+        maxSpecies?: number
+      }
+    }
+  | {
+      blastParams: {
+        searchProgram: 'phmmer'
+        blastDatabase: string
+        maxHits?: number
+      }
+    }
+
 export type MsaSource =
   | { kind: 'inline'; msa: InlineMsa }
   | { kind: 'indexed'; msa: IndexedMsa }
+  | { kind: 'built'; msa: BuiltMsa }
 
 // Where the primary structure comes from. `pdbId` is the protein3d plugin's
 // shorthand for an RCSB entry, and naming the entry rather than a file is what
@@ -138,6 +165,7 @@ function msaView(
   feature: Feature,
   source: MsaSource,
   uniprotId?: string,
+  proteinSequence?: string,
 ) {
   const base = {
     id: `msa-${transcript.geneName}`,
@@ -149,8 +177,9 @@ function msaView(
     labelsAlignRight: true,
     treeAreaWidth: 200,
   }
-  return source.kind === 'inline'
-    ? {
+  switch (source.kind) {
+    case 'inline':
+      return {
         ...base,
         querySeqName: source.msa.querySeqName,
         data: {
@@ -159,11 +188,12 @@ function msaView(
           gff: source.msa.gff,
         },
       }
-    : // The hosted 100-way: the session names the file and the gene, and the
-      // msaview plugin random-reads that block itself (the .gzi/.idx are found
-      // by suffix). The alignment stays out of the URL, which is what keeps a
-      // 100-row session small.
-      {
+    // The hosted 100-way: the session names the file and the gene, and the
+    // msaview plugin random-reads that block itself (the .gzi/.idx are found
+    // by suffix). The alignment stays out of the URL, which is what keeps a
+    // 100-row session small.
+    case 'indexed':
+      return {
         ...base,
         treeFilehandle: {
           uri: source.msa.treeUri,
@@ -175,6 +205,21 @@ function msaView(
           querySeqName: source.msa.querySeqName,
         },
       }
+    // Built on open. The query row is the launched transcript's translation,
+    // the same protein the structure view aligns to, so the three views share
+    // codons; a query-anchored alignment is gappy, so the gappiest columns are
+    // hidden until the reader asks for them.
+    case 'built': {
+      const query = proteinSequence ? { proteinSequence } : {}
+      return {
+        ...base,
+        allowedGappyness: 50,
+        ...('orthologParams' in source.msa
+          ? { orthologParams: { ...source.msa.orthologParams, ...query } }
+          : { blastParams: { ...source.msa.blastParams, ...query } }),
+      }
+    }
+  }
 }
 
 // Every field maps onto a Structure model property in the protein3d plugin, so
@@ -275,7 +320,7 @@ export function buildSessionUrl({
     ],
   )
   const alignment = msa
-    ? msaView(transcript, feature, msa, uniprotId)
+    ? msaView(transcript, feature, msa, uniprotId, proteinSequence)
     : undefined
   const protein =
     primary && proteinSequence
