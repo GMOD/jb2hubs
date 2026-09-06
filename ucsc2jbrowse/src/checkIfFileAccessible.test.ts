@@ -4,7 +4,10 @@ import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, it } from 'node:test'
 
-import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
+import {
+  checkIfFileAccessible,
+  flushFileAccessCaches,
+} from './checkIfFileAccessible.ts'
 
 // The cache is written to `fileAccessCache/` relative to cwd, which is how
 // make.sh gets it under ucsc2jbrowse/. Each test runs in its own cwd so the real
@@ -18,7 +21,11 @@ const url = 'https://hgdownload.soe.ucsc.edu/gbdb/hg38/_promoterAi/a.bw'
 
 let counter = 0
 const nextAssembly = () => `testAsm${counter++}`
+// A probe records into the in-memory map and the run writes the files once at
+// the end (see the dirty-set note in checkIfFileAccessible.ts), so reading a
+// cache back means flushing first.
 const readCache = (assembly: string) => {
+  flushFileAccessCaches()
   const file = path.join('fileAccessCache', `${assembly}.json`)
   return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {}
 }
@@ -49,6 +56,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  // While still in the temp cwd: a case that probed without reading the cache
+  // back would otherwise stay dirty and be written to the repo root by the
+  // exit handler.
+  flushFileAccessCaches()
   process.chdir(cwd)
   fs.rmSync(tmp, { recursive: true, force: true })
   globalThis.fetch = realFetch

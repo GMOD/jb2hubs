@@ -7,16 +7,28 @@ const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
 // Cache per assembly to avoid contention between parallel processes
 const cacheByAssembly = new Map<string, FileAccessCache>()
 
+// The assemblies whose in-memory cache has moved since it was last written.
+//
+// Every probe used to rewrite the whole file. hg38's is 21,779 entries and 6MB,
+// so a pass that has to re-probe it spends ~130GB of writes restating what it
+// already knew; even an ordinary run pays a 6MB serialize per newly-seen url.
+// The map is the authority for the run, so it is written once at the end
+// instead. What that trades is a run killed by a signal, which now loses the
+// probes it spent -- they are re-derivable at the cost of the requests, and the
+// budget that matters (checkTrackUrls.mjs) is a different, throttled path.
+const dirtyAssemblies = new Set<string>()
+let flushRegistered = false
+
+const CACHE_DIR = 'fileAccessCache'
+
 /**
- * Gets the cache filename for a specific assembly.
+ * Gets the cache filename for a specific assembly. Reading one must not create
+ * the directory: the read path runs wherever a caller happens to be, and a
+ * `mkdir` here is how a unit test left a stray `fileAccessCache/` at the repo
+ * root. The write path creates it.
  */
 function getCacheFilename(assembly: string): string {
-  // Ensure fileAccessCache directory exists
-  const dir = 'fileAccessCache'
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true })
-  }
-  return `${dir}/${assembly}.json`
+  return `${CACHE_DIR}/${assembly}.json`
 }
 
 /**
@@ -43,8 +55,26 @@ function loadFileAccessCache(assembly: string): FileAccessCache {
   return cache
 }
 
+/** Writes every cache whose in-memory copy has moved, and forgets the marks. */
+export function flushFileAccessCaches() {
+  if (dirtyAssemblies.size > 0) {
+    fs.mkdirSync(CACHE_DIR, { recursive: true })
+  }
+  for (const assembly of dirtyAssemblies) {
+    try {
+      fs.writeFileSync(
+        getCacheFilename(assembly),
+        JSON.stringify(cacheByAssembly.get(assembly), null, 2),
+      )
+    } catch (error) {
+      console.error(`Error saving file access cache for ${assembly}: ${error}`)
+    }
+  }
+  dirtyAssemblies.clear()
+}
+
 /**
- * Saves a blocked file to the cache with a timestamp.
+ * Records a probe's answer in the cache, to be written out at exit.
  */
 function saveCheckResult(
   assembly: string,
@@ -58,12 +88,13 @@ function saveCheckResult(
     blocked,
     ...(trackName && { trackName }),
   }
-
-  try {
-    const cacheFile = getCacheFilename(assembly)
-    fs.writeFileSync(cacheFile, JSON.stringify(cache, null, 2))
-  } catch (error) {
-    console.error(`Error saving file access cache for ${assembly}: ${error}`)
+  dirtyAssemblies.add(assembly)
+  if (!flushRegistered) {
+    flushRegistered = true
+    // Covers both a clean finish and buildConfigs.ts's process.exit(1) on a
+    // failed assembly, and needs no caller to remember it -- a step that
+    // probes a url is not one that knows when the run is over.
+    process.on('exit', flushFileAccessCaches)
   }
 }
 

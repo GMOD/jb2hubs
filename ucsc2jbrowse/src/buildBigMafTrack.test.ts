@@ -101,6 +101,21 @@ describe('buildBigMafTrack', () => {
 // chainNet, which the lookup skips outright), so a full ucsc2jbrowse build
 // spends three of these and an incremental build that leaves hg38 alone spends
 // none.
+//
+// No `summary`/`frames`, deliberately. These cases set CHECK_404, which is also
+// what turns checkIfFileAccessible on, and that reads and WRITES the real
+// ucsc2jbrowse/fileAccessCache/<db>.json: with sidecars in the settings, the
+// 404 case below would record the live multiz470way summary and frames as
+// blocked for 90 days, and the run after that would ship hg38 without them.
+// They passed only because that committed cache happened to hold fresh
+// entries for both -- i.e. they were a test of the cache's age. The tree
+// lookup does not depend on the sidecars, so leaving them out makes these
+// hermetic.
+const treeOnly = {
+  longLabel: multiz470way.longLabel,
+  speciesLabels: multiz470way.speciesLabels,
+}
+
 describe('buildBigMafTrack species tree', () => {
   const realFetch = globalThis.fetch
   let calls: string[] = []
@@ -138,7 +153,7 @@ describe('buildBigMafTrack species tree', () => {
         'multiz470way.bigMaf',
       ]),
     )
-    const { adapter } = await build(multiz470way)
+    const { adapter } = await build(treeOnly)
     assert.deepEqual(adapter.nhLocation, {
       uri: `${baseUrl}/goldenPath/hg38/multiz470way/hg38.470way.nh`,
     })
@@ -148,7 +163,7 @@ describe('buildBigMafTrack species tree', () => {
   it('omits nhLocation rather than naming a file upstream does not publish', async () => {
     process.env.CHECK_404 = 'true'
     stubFetch(() => Promise.resolve({ ok: false, status: 404 }))
-    const { adapter } = await build(multiz470way)
+    const { adapter } = await build(treeOnly)
     assert.equal('nhLocation' in adapter, false)
   })
 })
