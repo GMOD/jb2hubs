@@ -8,6 +8,10 @@ import {
   removedTracksFor,
 } from './getTrackModifications.ts'
 import { replaceLink, splitOnFirst } from './util.ts'
+import {
+  parentTrackName,
+  parseTrackDbSettings,
+} from './utils/trackDbSettings.ts'
 
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
@@ -37,16 +41,8 @@ export const addMetadata: FinalizeStep = {
 
         if (trackDbEntry) {
           const { settings, html, longLabel, shortLabel, grp } = trackDbEntry
-          const trackMetadata = Object.fromEntries(
-            settings
-              .split('\n')
-              .map(r => splitOnFirst(r, ' '))
-              .filter(([key]) => !!key),
-          )
-
-          const parentTrackId = trackMetadata.parent
-            ? splitOnFirst(trackMetadata.parent, ' ')[0]
-            : undefined
+          const trackMetadata = parseTrackDbSettings(settings)
+          const parentTrackId = parentTrackName(trackMetadata)
           const parentTrack = parentTrackId
             ? tracksDb[parentTrackId]
             : undefined
@@ -87,13 +83,21 @@ export const addMetadata: FinalizeStep = {
 
     counts.dropped = before - config.tracks.length
     const removed = removedTracksFor(assemblyName)
-    if (removed.length > 0 && !compareOnly) {
+    if (!compareOnly) {
       const dir = 'removedTracks'
-      fs.mkdirSync(dir, { recursive: true })
-      fs.writeFileSync(
-        path.join(dir, `${assemblyName}.json`),
-        formatJson(removed),
-      )
+      const file = path.join(dir, `${assemblyName}.json`)
+      if (removed.length > 0) {
+        fs.mkdirSync(dir, { recursive: true })
+        fs.writeFileSync(file, formatJson(removed))
+      } else {
+        // An assembly that stops dropping tracks has to stop reporting them.
+        // Only the merged removedTracks.json is cleared before a run, so a
+        // stale per-db file kept feeding the unavailable-tracks page tracks
+        // that are back -- and now that every config is rebuilt every run,
+        // this branch is reached for every assembly rather than the changed
+        // ones.
+        fs.rmSync(file, { force: true })
+      }
     }
     return counts
   },

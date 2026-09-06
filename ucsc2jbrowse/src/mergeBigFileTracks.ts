@@ -5,7 +5,8 @@ import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
 import { buildMultiWigTracks } from './mergeMultiWigTracks.ts'
 import { resolveBigDataUri } from './resolveBigDataUri.ts'
 import { makeTableFileResolver, noTableFiles } from './resolveTableBigFile.ts'
-import { readJSON, splitOnFirst } from './util.ts'
+import { readJSON } from './util.ts'
+import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
 
 import type { JBrowseConfig, TrackDbEntry, UcscTrack } from './types.ts'
 
@@ -73,12 +74,7 @@ function parseBigFileTracks(
           {
             ...trackEntry,
             tableName: trackEntry.tableName,
-            settings: Object.fromEntries(
-              trackEntry.settings
-                .split('\n')
-                .map(settingLine => splitOnFirst(settingLine, ' '))
-                .filter(([settingKey]) => !!settingKey),
-            ),
+            settings: parseTrackDbSettings(trackEntry.settings),
           },
         ] as const
       }),

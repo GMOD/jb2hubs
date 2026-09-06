@@ -1,4 +1,8 @@
 import { noTableFiles } from './resolveTableBigFile.ts'
+import {
+  parentTrackName,
+  parseTrackDbSettings,
+} from './utils/trackDbSettings.ts'
 
 import type { TableFileResolver } from './resolveTableBigFile.ts'
 import type { TrackDbEntry } from './types.ts'
@@ -40,23 +44,6 @@ export type MultiWigTrack = {
   }
 }
 
-function parseSettings(entry: TrackDbEntry) {
-  return Object.fromEntries(
-    entry.settings
-      .split('\n')
-      .map(line => {
-        const i = line.indexOf(' ')
-        return i < 0 ? [line, ''] : [line.slice(0, i), line.slice(i + 1)]
-      })
-      .filter(([key]) => !!key),
-  ) as Record<string, string>
-}
-
-// "parent <track> [on|off]" -> "<track>"
-function parentOf(settings: Record<string, string>) {
-  return settings.parent ? settings.parent.split(' ')[0] : undefined
-}
-
 /**
  * Build one MultiQuantitativeTrack per multiWig container, plus the set of
  * subtrack table names they consumed so the caller doesn't also emit those
@@ -76,12 +63,13 @@ export function buildMultiWigTracks({
   resolveTable?: TableFileResolver
 }): { tracks: MultiWigTrack[]; consumed: Set<string> } {
   const entries = Object.entries(tracksDb).map(
-    ([tableName, entry]) => [tableName, entry, parseSettings(entry)] as const,
+    ([tableName, entry]) =>
+      [tableName, entry, parseTrackDbSettings(entry.settings)] as const,
   )
 
   const childrenByParent = new Map<string, typeof entries>()
   for (const row of entries) {
-    const parent = parentOf(row[2])
+    const parent = parentTrackName(row[2])
     if (parent) {
       const existing = childrenByParent.get(parent)
       if (existing) {
