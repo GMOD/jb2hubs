@@ -23,26 +23,27 @@ SCOPE_FILE="${1:-}"
 # genetic code as "seqid<TAB>code". The standard code (1) and sequences without
 # a CDS transl_table are omitted, so the typical nuclear assembly produces no
 # output at all.
+#
+# The running maximum is kept per seqid as the rows arrive. The END block used
+# to rescan every (seqid, code) key once per seqid, which is quadratic in the
+# scaffold count -- 20,000 seqids over a 60,000-line GFF took over two minutes,
+# against 0.08s here, and a fragmented GenArk assembly is larger than that in
+# both dimensions. It also makes ties deterministic: the old inner loop walked
+# awk's hash order, so a seqid whose two codes tied could resolve either way on
+# different awk builds.
 extract_genetic_codes() {
   awk -F'\t' '
     $3 == "CDS" && match($9, /transl_table=[0-9]+/) {
       code = substr($9, RSTART + 13, RLENGTH - 13)
-      count[$1 SUBSEP code]++
-      seqids[$1] = 1
+      if (++count[$1 SUBSEP code] > best_count[$1]) {
+        best_count[$1] = count[$1 SUBSEP code]
+        best[$1] = code
+      }
     }
     END {
-      for (seqid in seqids) {
-        best = ""
-        best_count = 0
-        for (key in count) {
-          split(key, parts, SUBSEP)
-          if (parts[1] == seqid && count[key] > best_count) {
-            best_count = count[key]
-            best = parts[2]
-          }
-        }
-        if (best != "" && best != "1") {
-          print seqid "\t" best
+      for (seqid in best) {
+        if (best[seqid] != "1") {
+          print seqid "\t" best[seqid]
         }
       }
     }'
