@@ -66,8 +66,10 @@ function createChainTrackConfig({
   const targetAssembly = normalizeAssemblyName(targetAssemblyOrig)
   const trackSrcDir = isChainBridge ? `${SRC_DIR}_chainBridge` : SRC_DIR
 
+  // both lookups take the NORMALIZED name: all.json is keyed by bare accession,
+  // so an asmId-spelled target (dm6ToGCA_003448975.1_ASM344897v1) found nothing
   const commonName = isAccession(targetAssemblyOrig)
-    ? getAccessionCommonName(targetAssemblyOrig)
+    ? getAccessionCommonName(targetAssembly)
     : ucscOrganism(targetAssembly)
 
   const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`
