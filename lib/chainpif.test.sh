@@ -88,5 +88,45 @@ check "pif_current: a stamp does not excuse a missing index" "stale" \
   "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
 rm -r "$tmp"
 
+# chain_to_paf tells a chain that will not decompress (exit 2) apart from one
+# chain2paf refused (exit 1), which is what lets create_pif refetch the first.
+# chain2paf is stubbed; pigz is real, because the truncation is the subject.
+tmp=$(mktemp -d)
+printf 'chain 100 chr1 1000 + 0 100 chr1 1000 + 0 100 1\n100\n\n' |
+  pigz >"$tmp/good.chain.gz"
+head -c 20 "$tmp/good.chain.gz" >"$tmp/truncated.chain.gz"
+
+chain2paf() { cat >/dev/null; }
+check "chain_to_paf: a good chain converts" "0" \
+  "$(chain_to_paf "$tmp/good.chain.gz" "$tmp/out.paf" >/dev/null 2>&1; echo $?)"
+check "chain_to_paf: a truncated chain is 2, not a conversion failure" "2" \
+  "$(chain_to_paf "$tmp/truncated.chain.gz" "$tmp/out.paf" >/dev/null 2>&1; echo $?)"
+
+chain2paf() { cat >/dev/null; return 1; }
+check "chain_to_paf: chain2paf refusing good input is 1" "1" \
+  "$(chain_to_paf "$tmp/good.chain.gz" "$tmp/out.paf" >/dev/null 2>&1; echo $?)"
+
+# create_pif repairs the corrupt cached copy rather than failing every run.
+# The download and make-pif are stubbed; the refetch is what is under test.
+chain2paf() { cat >/dev/null; }
+download_file() { cp "$tmp/good.chain.gz" "$2"; }
+JBROWSE_CLI=true
+cp "$tmp/truncated.chain.gz" "$tmp/cached.chain.gz"
+out=$(create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz" \
+  https://example.org/cached.chain.gz 2>&1)
+check "create_pif: a corrupt cached chain is refetched" "0" \
+  "$(pigz -t "$tmp/cached.chain.gz" 2>/dev/null; echo $?)"
+check "create_pif: and the PIF is stamped afterwards" "current" \
+  "$(pif_stamp_current "$tmp/cached.pif.gz.cli" && echo current || echo stale)"
+check "create_pif: says it is refetching" "yes" \
+  "$(grep -q 're-downloading' <<<"$out" && echo yes || echo no)"
+
+# Without a url there is nothing to refetch, so it fails rather than looping.
+cp "$tmp/truncated.chain.gz" "$tmp/nourl.chain.gz"
+check "create_pif: no url still fails on a corrupt chain" "1" \
+  "$( (create_pif "$tmp/nourl.chain.gz" "$tmp/nourl.pif.gz") >/dev/null 2>&1; echo $?)"
+unset -f chain2paf download_file
+rm -r "$tmp"
+
 [[ $fail -eq 0 ]] && echo "All tests passed" || echo "Some tests failed"
 exit $fail

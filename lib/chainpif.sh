@@ -96,17 +96,45 @@ download_file() {
   fi
 }
 
+# Decompresses a chain into a PAF. Returns 2 when the chain itself would not
+# decompress and 1 when chain2paf refused it: a cached chain is never
+# re-fetched, so a truncated one fails every run forever, and that is worth
+# telling apart from bad chain content.
+# $1: chain path  $2: output PAF path
+chain_to_paf() {
+  local chain_path="$1" paf_path="$2"
+  local -a st
+  if pigz -dc "$chain_path" | chain2paf --input /dev/stdin >"$paf_path"; then
+    return 0
+  fi
+  st=("${PIPESTATUS[@]}")
+  [ "${st[0]}" = 0 ] && return 1 || return 2
+}
+
 # Converts a chain file to a PIF file, unless a PIF built by the current CLI is
 # already there (REPROCESS forces it).
 # $1: path to the chain file (.chain.gz)  $2: output PIF path (.pif.gz)
+# $3: the chain's url, so a corrupt cached copy can be fetched again
 create_pif() {
-  local chain_path="$1" pif_path="$2"
+  local chain_path="$1" pif_path="$2" chain_url="${3:-}" rc
   if [ -n "${REPROCESS:-}" ] || ! pif_current "$pif_path"; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
     local paf_path
     paf_path=$(mktemp) || log_error "Failed to create temporary file"
 
-    if ! pigz -dc "$chain_path" | chain2paf --input /dev/stdin >"$paf_path"; then
+    chain_to_paf "$chain_path" "$paf_path" && rc=0 || rc=$?
+
+    # Chains downloaded before the atomic tmp+mv landed can be truncated (an
+    # aborted run left a partial file that every later run counted as cached),
+    # and a size comparison cannot see that. Refetching is the only repair.
+    if [ "$rc" = 2 ] && [ -n "$chain_url" ]; then
+      log_info "$(basename "$chain_path") does not decompress; re-downloading"
+      rm -f "$chain_path"
+      download_file "$chain_url" "$chain_path"
+      chain_to_paf "$chain_path" "$paf_path" && rc=0 || rc=$?
+    fi
+
+    if [ "$rc" != 0 ]; then
       rm -f "$paf_path"
       log_error "Failed to convert chain to PAF for $(basename "$chain_path")"
     fi
@@ -150,7 +178,7 @@ process_chain_file() {
     log_info "PIF file $pif_filename already exists, skipping"
   else
     download_file "$file_url" "$chain_path"
-    create_pif "$chain_path" "$pif_path"
+    create_pif "$chain_path" "$pif_path" "$file_url"
     copy_pif_files "$pif_path" "$dest_dir"
   fi
 }

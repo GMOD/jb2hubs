@@ -63,17 +63,37 @@ export function linkOrCopy(src: string, dest: string) {
   }
 }
 
+const HGDOWNLOAD = 'hgdownload.soe.ucsc.edu'
+const HGDOWNLOAD_MIRROR = 'hgdownload2.soe.ucsc.edu'
+
+// hgdownload2 serves the same tree from a different UCSC address block, so it
+// answers while the primary is stalling or refusing connections outright. Only
+// the text is read from it -- the caller keeps naming the primary in whatever
+// it writes -- so a fallback cannot put the mirror in a published config.
+function fetchHosts(url: string) {
+  const mirror = new URL(url)
+  if (mirror.hostname !== HGDOWNLOAD) {
+    return [url]
+  }
+  mirror.hostname = HGDOWNLOAD_MIRROR
+  return [url, mirror.href]
+}
+
 // hgdownload stalls and drops connections under load, so a one-off fetch of a
-// small file is retried a few times before it counts as failed.
+// small file is retried a few times, and each round asks the mirror too,
+// before it counts as failed.
 export async function myfetchtextWithRetry(url: string, attempts = 3) {
+  const urls = fetchHosts(url)
   let lastError: unknown
   for (let i = 0; i < attempts; i++) {
-    try {
-      return await myfetchtext(url)
-    } catch (e) {
-      lastError = e
-      await new Promise(r => setTimeout(r, 2000 * (i + 1)))
+    for (const candidate of urls) {
+      try {
+        return await myfetchtext(candidate)
+      } catch (e) {
+        lastError = e
+      }
     }
+    await new Promise(r => setTimeout(r, 2000 * (i + 1)))
   }
   throw lastError
 }
