@@ -198,6 +198,15 @@ export interface MirrorOptions {
   /** re-fetch even when a mirrored copy already exists */
   force?: boolean
   /**
+   * Point the config at a sidecar already mirrored beside it, but neither fetch
+   * nor write one that is not there (and ignore `force`). For a build writing
+   * its configs somewhere other than `dir` -- buildConfigs.ts --out-root, whose
+   * whole contract is that it touches nothing else -- where mirroring would
+   * otherwise write into the real built tree and spend hgdownload requests on a
+   * cold one, while the rewrite itself is what makes the compared config match.
+   */
+  reuseOnly?: boolean
+  /**
    * Supplies the file's bytes from somewhere local instead of fetching it, for
    * the golden-path assemblies whose rsync'd database/ dir already holds the
    * same data. Returning undefined falls back to downloading.
@@ -231,6 +240,7 @@ export async function mirrorAssemblySidecars({
   assembly,
   dir,
   force = false,
+  reuseOnly = false,
   provideLocal,
   download = downloadToFile,
   onWarn = console.warn,
@@ -257,10 +267,18 @@ export async function mirrorAssemblySidecars({
     }
     const file = sidecarFileName(assembly.name, value)
     const dest = path.join(dir, file)
-    if (!force && fs.existsSync(dest) && fs.statSync(dest).size > 0) {
+    if (
+      (!force || reuseOnly) &&
+      fs.existsSync(dest) &&
+      fs.statSync(dest).size > 0
+    ) {
       localize(file)
       result.changed = true
       result.reused.push(label)
+      continue
+    }
+    if (reuseOnly) {
+      result.failed.push(label)
       continue
     }
     try {

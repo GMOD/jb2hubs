@@ -70,7 +70,7 @@ function localProvider(dbDir: string) {
 
 export const mirrorAssemblySidecars: FinalizeStep = {
   name: 'assembly sidecars',
-  run: async ({ assemblyName, dir, dbDir, config }) => {
+  run: async ({ assemblyName, dir, dbDir, config, compareOnly }) => {
     const counts: Record<string, number> = {}
     const assembly = config.assemblies[0]
 
@@ -79,6 +79,11 @@ export const mirrorAssemblySidecars: FinalizeStep = {
         assembly,
         dir,
         force,
+        // --out-root compares a build against the tree, so it must not write a
+        // sidecar into the real built dir or fetch one on a cold tree. Pointing
+        // at what is already mirrored still happens, which is what makes the
+        // compared config match.
+        reuseOnly: compareOnly,
         provideLocal: fs.existsSync(dbDir) ? localProvider(dbDir) : undefined,
       })
       if (result.mirrored.length > 0) {

@@ -119,6 +119,36 @@ describe('mirrorAssemblySidecars', () => {
     )
   })
 
+  // buildConfigs.ts --out-root compares a build against the committed tree, so
+  // it must not write into the real built dir or spend hgdownload requests on a
+  // cold one -- but the rewrite to the local name is exactly what makes the
+  // compared config match, so a sidecar already on disk is still pointed at.
+  it('reuseOnly points at what is there and neither fetches nor writes', async () => {
+    const dir = tmpdir()
+    fs.writeFileSync(path.join(dir, 'hg38.chrom.sizes'), 'chr1\t1000\n')
+    const assembly = makeAssembly()
+    let provided = 0
+    const result = await mirrorAssemblySidecars({
+      assembly,
+      dir,
+      force: true,
+      reuseOnly: true,
+      provideLocal: () => {
+        provided++
+        return Buffer.from('nope')
+      },
+      download: () => {
+        throw new Error('reuseOnly must not download')
+      },
+    })
+    assert.equal(provided, 0, 'nothing is derived either')
+    assert.deepEqual(result.reused, ['chromSizes'])
+    assert.deepEqual(result.failed, ['refNameAliases', 'cytobands'])
+    assert.equal(assembly.sequence.adapter.chromSizes, 'hg38.chrom.sizes')
+    assert.match(assembly.refNameAliases.adapter.uri, /^https:/)
+    assert.deepEqual(fs.readdirSync(dir), ['hg38.chrom.sizes'])
+  })
+
   // an unreachable file must leave the config working as well as it did
   // before, not naming a local file that isn't there
   it('leaves a failed sidecar pointing upstream', async () => {
