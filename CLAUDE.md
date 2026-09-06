@@ -966,6 +966,16 @@ for both `/goldenPath/` and `/hubs/` paths, `Accept-Ranges: bytes` and
 (169.233.10.x vs 128.114.119.x). Nothing in the shipped configs names it, and
 only failures reach it, so it adds no load in the normal case.
 
+`myfetchtextWithRetry` (`hubtools/src/util.ts`) is the second such use, and it
+is what the hub-backed configs are built through: each of its three rounds asks
+the mirror as well as the primary. On 2026-09-06 hgdownload **refused**
+connections for a few minutes (`ECONNREFUSED` on 128.114.119.163:443 — an
+immediate refusal, not the stall documented above), rn8's live `hub.txt` fetch
+lost all three attempts inside the ~6s the backoff spans, and one flaky fetch
+exited the whole config build. Only the **text** comes from the mirror — the
+caller keeps naming the primary in the `trackDbUrl` it writes — so a fallback
+cannot put hgdownload2 in a published config.
+
 ### What the gate caught once it could run
 
 Three broken references across the UCSC configs, all invisible to every other
@@ -1392,6 +1402,19 @@ Two things hold the corpus current, both in `lib/chainpif.sh`:
   format-agnostic — beta.1 → beta.2 needed no code change here at all. The stamp
   lives only in `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy, so
   nothing new reaches the bucket.
+
+A cached chain, by contrast, is never re-fetched — and one of them had been
+truncated since 2025-06-14, 66,891,932 bytes of hg38ToFukDam1's 90,055,223, an
+aborted download from before `download_file` grew its tmp+mv. Existence is all
+the cache asks, so `pigz: corrupted -- incomplete deflate data` failed the same
+job on every run for a year with no way to repair it. `chain_to_paf` now
+separates a chain that will not **decompress** (exit 2) from one `chain2paf`
+**refused** (exit 1) and `create_pif` re-downloads on the first only, so bad
+chain content still fails loudly instead of looping on a fetch. Detection rides
+the decompress the conversion already does: a `pigz -t` sweep would cost a
+second full decode of all 585 GB to find whichever ones are wrong (only
+hg38ToFukDam1 has failed so far, and the rest of the cache is unaudited — a
+corrupt one now repairs itself the first time it is read).
 
 The first run after a bump is therefore the regeneration: 4,068 UCSC PIFs (928
 GB, chains cached in `/mnt/sdb/cdiesh/chains`) plus 750 GenArk, and `rclone -c`
