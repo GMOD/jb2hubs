@@ -82,10 +82,17 @@ function fetchHosts(url: string) {
 // hgdownload stalls and drops connections under load, so a one-off fetch of a
 // small file is retried a few times, and each round asks the mirror too,
 // before it counts as failed.
+//
+// The backoff sits BEFORE each retry, not after each round: sleeping after the
+// last round spent 6s of the 12s deciding nothing, on the path a whole config
+// build exits from when one hub.txt loses all three attempts.
 export async function myfetchtextWithRetry(url: string, attempts = 3) {
   const urls = fetchHosts(url)
   let lastError: unknown
   for (let i = 0; i < attempts; i++) {
+    if (i > 0) {
+      await new Promise(r => setTimeout(r, 2000 * i))
+    }
     for (const candidate of urls) {
       try {
         return await myfetchtext(candidate)
@@ -93,7 +100,6 @@ export async function myfetchtextWithRetry(url: string, attempts = 3) {
         lastError = e
       }
     }
-    await new Promise(r => setTimeout(r, 2000 * (i + 1)))
   }
   throw lastError
 }
