@@ -31,5 +31,6 @@ if [ "$count" -eq 0 ]; then
 else
   echo "Text indexing $count NCBI GFF track(s)..."
   run_parallel_reporting 'text index' -j16 text_index <"$INDEX_LIST"
-  sed 's|$|/config.json|' "$INDEX_LIST" | node src/formatConfigs.ts
+  sed 's|$|/config.json|' "$INDEX_LIST" |
+    node "$(dirname "$0")/../scripts/formatConfigs.ts"
 fi

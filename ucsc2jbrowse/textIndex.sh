@@ -36,5 +36,6 @@ else
   echo "Text indexing $count assembly/assemblies..."
   # text-index is memory-hungry, so cap concurrency well below core count.
   run_parallel_reporting 'text index' -j8 --colsep '\t' text_index '{1}' '{2}' <"$INDEX_LIST"
-  cut -f1 "$INDEX_LIST" | sed 's|$|/config.json|' | node src/formatConfigs.ts
+  cut -f1 "$INDEX_LIST" | sed 's|$|/config.json|' |
+    node "$(dirname "$0")/../scripts/formatConfigs.ts"
 fi
