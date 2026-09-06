@@ -136,10 +136,13 @@ export function createTrackConfiguration({
         },
         category: effectiveGroup ? [categoryLabel(effectiveGroup)] : [],
         ...conf,
+        // the stanzas themselves, not another lookup by their own name:
+        // extractParentTracks already returns `trackDb.data[...]`, and the
+        // round trip silently dropped a parent whose `name` was unset
         name: [
           ...new Set([
             ...parentTracks
-              .map(p => trackDb.data[p.name!]?.data.shortLabel)
+              .map(p => p.data.shortLabel)
               .filter(s => s !== undefined),
             conf.name,
           ]),
