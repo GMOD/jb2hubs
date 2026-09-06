@@ -1,11 +1,9 @@
 import * as fs from 'fs'
 
-import deepEqual from 'fast-deep-equal'
 import {
-  enhanceConfig,
+  enhanceConfigObject,
   generateJBrowseConfigsForMultiGenomeHub,
   readJSON,
-  writeJSON,
 } from 'hubtools'
 
 import { JAX_STRAIN_IDS, jaxUrl } from './jaxStrainIds.ts'
@@ -22,6 +20,25 @@ const SITE = 'https://jbrowse.org'
 // its genomes file, so generateJBrowseConfigsForMultiGenomeHub skips them and
 // ucsc2jbrowse publishes them instead).
 const UCSC_SPECIES = new Set(['mm10', 'rn6'])
+
+// Writes only when the text moved, so an unchanged run leaves the file (and its
+// mtime) alone. The trailing newline is what `pnpm format` leaves on these two
+// files, and writing without one would make the formatter rewrite all 32 of
+// them after every run.
+function writeJsonIfChanged(file: string, data: unknown) {
+  const text = `${JSON.stringify(data, undefined, 2)}\n`
+  let existing = ''
+  try {
+    existing = fs.readFileSync(file, 'utf8')
+  } catch {
+    // normal on first run
+  }
+  if (text === existing) {
+    return false
+  }
+  fs.writeFileSync(file, text)
+  return true
+}
 
 // Every row of the MAF is one of this hub's own strains or one of those two, so
 // the alignment's `speciesOrder` resolves exactly — the sample ids ARE the
@@ -48,23 +65,39 @@ const metadata = configs.map(
     const outDir = `hubs/mouseStrains/${genomeName}`
     fs.mkdirSync(outDir, { recursive: true })
 
+    // config.raw.json records what the hub itself produced, and is what says
+    // whether the hub moved. config.json is rebuilt from it only then --
+    // createMouseStrainsChainTracks.ts appends the mm10 assembly and the
+    // synteny tracks to config.json afterwards, so rewriting it unconditionally
+    // would drop those every run.
     const configPath = `${outDir}/config.json`
     const rawPath = `${outDir}/config.raw.json`
-    let oldRaw: Record<string, unknown> = {}
-    try {
-      oldRaw = readJSON(rawPath)
-    } catch {
-      // Normal on first run
+    const rawChanged = writeJsonIfChanged(rawPath, config)
+    if (rawChanged || !fs.existsSync(configPath)) {
+      writeJsonIfChanged(configPath, config)
     }
 
-    if (deepEqual(config, oldRaw)) {
-      console.log(`Config for ${genomeName} is unchanged. Skipping write.`)
-    } else {
-      writeJSON(rawPath, config)
-      writeJSON(configPath, config)
-      enhanceConfig(configPath)
-      console.log(`Generated config for ${genomeName} → ${configPath}`)
-    }
+    // Enhance runs over whatever is on disk, on EVERY run, not only when the
+    // hub changed. It is idempotent, so an unchanged config is not rewritten --
+    // but a change to what enhance adds now reaches a config whose hub has not
+    // moved. That was the gap: the enhance pass sat inside the raw-equality
+    // branch, the mouseStrains hub changes very rarely, and Phase 5 is
+    // additionally gated on a 30-day stamp. Measured 2026-09-06, all 16 of
+    // these configs name the three store plugins with `name` and `url` only,
+    // while every GenArk hub carries the `storePlugin` ref a host resolves its
+    // own build through. Same failure enhanceConfigObject's upsert-by-name
+    // fixed one level down, reintroduced by the caller not calling it at all;
+    // check-plugin-urls globs these files but asks whether a url resolves, not
+    // whether the entry is current.
+    const enhanced = writeJsonIfChanged(
+      configPath,
+      enhanceConfigObject(readJSON(configPath)),
+    )
+    console.log(
+      rawChanged || enhanced
+        ? `Generated config for ${genomeName} → ${configPath}`
+        : `Config for ${genomeName} is unchanged. Skipping write.`,
+    )
 
     const strainSlash = genomeName.replaceAll('_', '/')
     const jaxId = JAX_STRAIN_IDS[strainSlash]
