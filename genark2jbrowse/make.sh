@@ -89,8 +89,12 @@ if ./listUpstreamHubs.sh "$UPSTREAM_HUB_LIST"; then
   node src/staleHubTxt.ts "$UPSTREAM_HUB_LIST" >"$STALE_HUB_TXT"
   if [ -s "$STALE_HUB_TXT" ]; then
     rsync -t --files-from="$STALE_HUB_TXT" rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/
+    # `$1 ~ /M/` rather than `== "M"`: porcelain's status is two columns, and a
+    # hub.txt that is both staged and modified reads `MM`, which an equality
+    # test misses -- so a chain the refreshed hub.txt names would never be
+    # probed for, silently.
     git -C .. status --porcelain -- ':(glob)hubs/**/hub.txt' |
-      awk '$1 == "M" { sub(/\/hub\.txt$/, "/liftOver/.checked", $2); print $2 }' |
+      awk '$1 ~ /M/ { sub(/\/hub\.txt$/, "/liftOver/.checked", $2); print $2 }' |
       xargs -r rm -f
   fi
 else
