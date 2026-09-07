@@ -61,9 +61,12 @@ check "generate_file_paths (.all.chain.gz)" \
   "/tmp/chains/chr1.all.chain.gz
 /tmp/pifs/chr1.pif.gz" "$got"
 
-# CLI stamps: a PIF or a liftOver dir built by another make-pif is rebuilt. The
-# version is stubbed so the suite does not need node_modules.
-jbrowse_cli_version() { echo "@jbrowse/cli version 5.0.0-test"; }
+# CLI stamps: a PIF or a liftOver dir built by another make-pif is rebuilt.
+# Priming the memo is what stubs the version here, so the suite needs no
+# node_modules -- and a stamp check that ever forked the CLI again would fail
+# against JBROWSE_CLI below rather than quietly costing a process per hub.
+JBROWSE_CLI=false
+export JBROWSE_CLI_VERSION="@jbrowse/cli version 5.0.0-test"
 tmp=$(mktemp -d)
 check "pif_stamp_current: missing stamp is stale" "stale" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
@@ -88,6 +91,27 @@ check "pif_current: a stamp does not excuse a missing index" "stale" \
   "$(pif_current "$tmp/a.pif.gz" && echo current || echo stale)"
 rm -r "$tmp"
 
+# The memo, which is the difference between the genark gate taking seconds and
+# taking 21 minutes: it runs once per hub, so asking the CLI its version there
+# is a node process per hub. A counting stub answers whether it is asked twice.
+tmp=$(mktemp -d)
+printf '#!/bin/bash\necho x >>"%s/asked"\necho "@jbrowse/cli version 5.0.0-test"\n' \
+  "$tmp" >"$tmp/jbrowse"
+chmod +x "$tmp/jbrowse"
+JBROWSE_CLI="$tmp/jbrowse"
+unset JBROWSE_CLI_VERSION
+# Written by hand rather than by write_pif_stamp, which would prime the memo
+# itself -- the cold gate loop in genark2jbrowse/make.sh is the case under test.
+echo "@jbrowse/cli version 5.0.0-test" >"$tmp/.checked"
+for _ in 1 2 3; do pif_stamp_current "$tmp/.checked"; done
+check "the CLI is asked its version once per shell, not once per stamp" "1" \
+  "$(wc -l <"$tmp/asked")"
+check "and the memoized answer still matches the stamp" "current" \
+  "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+JBROWSE_CLI=false
+export JBROWSE_CLI_VERSION="@jbrowse/cli version 5.0.0-test"
+rm -r "$tmp"
+
 # chain_to_paf tells a chain that will not decompress (exit 2) apart from one
 # chain2paf refused (exit 1), which is what lets create_pif refetch the first.
 # chain2paf is stubbed; pigz is real, because the truncation is the subject.
@@ -110,7 +134,7 @@ check "chain_to_paf: chain2paf refusing good input is 1" "1" \
 # The download and make-pif are stubbed; the refetch is what is under test.
 chain2paf() { cat >/dev/null; }
 download_file() { cp "$tmp/good.chain.gz" "$2"; }
-JBROWSE_CLI=true
+JBROWSE_CLI=true # make-pif; the version is already memoized above
 cp "$tmp/truncated.chain.gz" "$tmp/cached.chain.gz"
 out=$(create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz" \
   https://example.org/cached.chain.gz 2>&1)

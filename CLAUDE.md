@@ -1403,6 +1403,22 @@ Two things hold the corpus current, both in `lib/chainpif.sh`:
   lives only in `/mnt/sdb/cdiesh/pifs`, never beside the uploaded copy, so
   nothing new reaches the bucket.
 
+The stamp comparison is also the genark liftOver **gate**, run once per hub over
+all 52,722 of them, and that is what makes a `$(…)` in it expensive.
+`jbrowse_cli_version` memoized into a global and was called as
+`$(jbrowse_cli_version)` inside a `[ ]` — a command substitution is a subshell,
+so the assignment was discarded every time and the gate forked a
+`node jbrowse --version` **per hub**. Measured 2026-09-07: 24 ms a hub, **21
+minutes** for make.sh to print
+`Processing liftOver chain files and creating PIFs...` and then decide that all
+52,722 stamps were already current and there was nothing to do.
+`load_jbrowse_cli_version` assigns instead of echoing (and exports, so a
+`parallel` child inherits rather than re-asks) and the stamp is read with `read`
+rather than `$(cat)`: **1.0 s** for the same corpus. `chainpif.test.sh` pins the
+count with a counting CLI stub, priming the memo by hand — calling
+`write_pif_stamp` first would prime it for real and the test would pass against
+either version.
+
 A cached chain, by contrast, is never re-fetched — and one of them had been
 truncated since 2025-06-14, 66,891,932 bytes of hg38ToFukDam1's 90,055,223, an
 aborted download from before `download_file` grew its tmp+mv. Existence is all

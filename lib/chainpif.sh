@@ -17,19 +17,36 @@
 # level-of-detail tier), and a global install drifts silently.
 JBROWSE_CLI="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/node_modules/.bin/jbrowse"
 
-# One line naming the CLI build, stamped beside every PIF and in each liftOver
-# dir's .checked file. A stamp that differs from it (or an empty one, the pre-5.0
-# `touch` format) means the output was built by another make-pif and is rebuilt.
-jbrowse_cli_version() {
+# Sets JBROWSE_CLI_VERSION, once per shell: one line naming the CLI build,
+# stamped beside every PIF and in each liftOver dir's .checked file. A stamp
+# that differs from it (or an empty one, the pre-5.0 `touch` format) means the
+# output was built by another make-pif and is rebuilt.
+#
+# Assigning rather than echoing is what makes the memo work. Every caller wants
+# it inside a comparison, and `$(jbrowse_cli_version)` there is a subshell, so
+# the cached value was discarded on every call -- one `node jbrowse --version`
+# per hub, 52,722 of them, ~21 minutes for the genark gate to decide it had
+# nothing to do. Exported so a `parallel` child inherits it rather than re-asking.
+load_jbrowse_cli_version() {
   if [ -z "${JBROWSE_CLI_VERSION:-}" ]; then
     JBROWSE_CLI_VERSION=$("$JBROWSE_CLI" --version) || log_error "$JBROWSE_CLI --version failed; run pnpm install"
+    export JBROWSE_CLI_VERSION
   fi
+}
+
+jbrowse_cli_version() {
+  load_jbrowse_cli_version
   printf '%s\n' "$JBROWSE_CLI_VERSION"
 }
 
-# $1: stamp path. True when the stamp records the current CLI.
+# $1: stamp path. True when the stamp records the current CLI. `read` rather
+# than `$(cat)` for the same reason: the gate runs this once per hub.
 pif_stamp_current() {
-  [ -f "$1" ] && [ "$(cat "$1")" = "$(jbrowse_cli_version)" ]
+  local stamp=''
+  load_jbrowse_cli_version
+  [ -f "$1" ] || return 1
+  IFS= read -r stamp <"$1" || true
+  [ "$stamp" = "$JBROWSE_CLI_VERSION" ]
 }
 
 # $1: stamp path
