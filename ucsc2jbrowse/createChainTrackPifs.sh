@@ -13,10 +13,11 @@
 #
 # `jbrowse make-pif` emits the no-CIGAR coarse tier (uppercase T/Q rows) by
 # default since the coarse-tier release, so whole-genome synteny views auto-
-# switch to it. Regenerating existing PIFs to gain the coarse tier needs that
-# newer @jbrowse/cli on PATH plus a force pass: the default run skips assemblies
-# that already have outputs. Set REPROCESS=true to force a full rebuild (clears
-# the .checked stamp and ignores existing pif/csi).
+# switch to it. The CLI is the repo's pinned one (JBROWSE_CLI), and a bump to it
+# is picked up on the next run: the .cli stamps beside the PIFs record which
+# build wrote them, so a version that differs is rebuilt without a force pass.
+# Set REPROCESS=true to force a full rebuild anyway (clears the .checked stamp
+# and ignores existing pif/csi).
 
 set -euo pipefail
 

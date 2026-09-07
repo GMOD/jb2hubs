@@ -17,7 +17,7 @@ text_index() {
   local hub_dir="$1"
   local accession
   accession=$(basename "$hub_dir")
-  jbrowse text-index --force --quiet --out "$hub_dir" --tracks "${accession}-ncbiGff" >/dev/null
+  "$JBROWSE_CLI" text-index --force --quiet --out "$hub_dir" --tracks "${accession}-ncbiGff" >/dev/null
 }
 export -f text_index
 

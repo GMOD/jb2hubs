@@ -18,6 +18,14 @@ export NODE_OPTIONS="--experimental-strip-types --no-warnings=ExperimentalWarnin
 # Locale for consistent sorting
 export LC_ALL=C
 
+# The repo's pinned @jbrowse/cli, not whatever `jbrowse` is on PATH. Every
+# invocation in both pipelines goes through it -- make-pif, text-index and
+# sort-gff -- so what the corpus holds is a function of a version this repo
+# controls and a `pnpm install` moves, rather than of whatever a global install
+# happens to be. The global was 4.2.1 while the repo was on 5.0.0-beta.2, so
+# only make-pif (which reads this) was on the version package.json names.
+export JBROWSE_CLI="${JBROWSE_CLI:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/node_modules/.bin/jbrowse}"
+
 # Suppress GNU parallel's citation notice everywhere; show progress bar only
 # when running interactively.
 if [ -t 1 ]; then

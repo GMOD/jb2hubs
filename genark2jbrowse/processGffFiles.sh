@@ -52,7 +52,7 @@ process_gff_file() {
   # into temp files and move into place only after tabix succeeds, so a failure
   # never leaves an indexless output that the existence-based gate treats as done.
   pigz -dc "$input_file" | awk -F"\t" 'BEGIN{OFS="\t"} {if ($4 > $5) {temp=$4; $4=$5; $5=temp} print}' >"$unzipped_file"
-  jbrowse sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file.tmp"
+  "$JBROWSE_CLI" sort-gff "$unzipped_file" | bgzip -@2 >"$output_bgz_file.tmp"
   tabix -C "$output_bgz_file.tmp"
   mv "$output_bgz_file.tmp" "$output_bgz_file"
   mv "$output_bgz_file.tmp.csi" "$output_bgz_file.csi"

@@ -53,9 +53,9 @@ process_assembly() {
         "$BED2GFF" -t1 --bed "${outfile}.bed" --output "${outfile}.gff" --isoforms "${outfile}.isoforms.txt"
         if [ -f "${infile}Link.sql" ]; then
           node src/enhanceGffWithLinkTable.ts "${outfile}.gff" "${infile}Link.txt.gz" "${infile}Link.sql" >"${outfile}.enhanced.gff"
-          jbrowse sort-gff "${outfile}.enhanced.gff" | bgzip >"${outfile}.gff.gz"
+          "$JBROWSE_CLI" sort-gff "${outfile}.enhanced.gff" | bgzip >"${outfile}.gff.gz"
         else
-          jbrowse sort-gff "${outfile}.gff" | bgzip >"${outfile}.gff.gz"
+          "$JBROWSE_CLI" sort-gff "${outfile}.gff" | bgzip >"${outfile}.gff.gz"
         fi
         rm -f "${outfile}.bed" "${outfile}.isoforms.txt" "${outfile}.enhanced.gff" "${outfile}.gff"
 

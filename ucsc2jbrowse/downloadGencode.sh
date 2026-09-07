@@ -38,7 +38,7 @@ process_gff_file() {
   if [ ! -f "$output_sorted_gff_gz" ] || [ ! -f "$output_sorted_gff_gz.csi" ]; then
     log "Sorting and indexing $filename..."
     zcat "$downloaded_gz_file" >"$temp_gff_file"
-    jbrowse sort-gff "$temp_gff_file" >"$output_sorted_gff_file"
+    "$JBROWSE_CLI" sort-gff "$temp_gff_file" >"$output_sorted_gff_file"
     rm "$temp_gff_file"
     bgzip -f -@8 "$output_sorted_gff_file"
     tabix -C -p gff "$output_sorted_gff_gz"

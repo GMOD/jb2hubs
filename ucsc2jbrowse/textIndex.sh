@@ -20,7 +20,7 @@ source "$(dirname "$0")/common.sh"
 text_index() {
   set -eo pipefail
   local dir="$1" tracks="$2"
-  jbrowse text-index --force --quiet --out "$dir" --tracks "$tracks" \
+  "$JBROWSE_CLI" text-index --force --quiet --out "$dir" --tracks "$tracks" \
     --attributes Name,ID,gene_synonym >/dev/null
 }
 export -f text_index

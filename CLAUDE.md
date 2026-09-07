@@ -1392,8 +1392,9 @@ size to within a percent. The mammalian and cross-phylum chains are where the
 Two things hold the corpus current, both in `lib/chainpif.sh`:
 
 - **The CLI is the repo's pinned `node_modules/.bin/jbrowse`**, not whatever
-  `jbrowse` is on PATH (a global 4.2.1 was what built every existing PIF, and
-  the global text-index CLI is deliberately left alone).
+  `jbrowse` is on PATH (a global 4.2.1 was what built every existing PIF).
+  `JBROWSE_CLI` in `lib/common.sh` is the one definition, and as of 2026-09-07
+  **every** invocation in both pipelines reads it — see below.
 - **Every PIF carries a `.cli` stamp** in the cache dir and every liftOver dir's
   `.checked` holds the same line (`jbrowse_cli_version`). `pif_current` and
   `pif_stamp_current` treat a missing, empty (the old `touch` format) or
@@ -1418,6 +1419,42 @@ rather than `$(cat)`: **1.0 s** for the same corpus. `chainpif.test.sh` pins the
 count with a counting CLI stub, priming the memo by hand — calling
 `write_pif_stamp` first would prime it for real and the test would pass against
 either version.
+
+### Only `make-pif` was on the pinned CLI; `sort-gff` and `text-index` were not
+
+`JBROWSE_CLI` was defined in `lib/chainpif.sh`, which only the PIF path sources.
+The other six invocations — `sort-gff` in `createGeneTracksForGoldenPath.sh`
+(×2), `downloadGencode.sh`, `downloadNcbiGff.sh` and `processGffFiles.sh`, and
+`text-index` in both `textIndex.sh` — called a bare `jbrowse`, which resolved to
+whatever a global install happened to be. That was **4.2.1** while
+`package.json` named **5.0.0-beta.2**, so every GFF in both corpora and every
+trix index was written by a version no file in this repo pins, and a
+`pnpm install` moved none of it. The definition now lives in `lib/common.sh`
+(sourced by all of them) and `chainpif.sh` picks it up from there rather than
+keeping a second copy of the path.
+
+Measured 2026-09-07 before switching, because a version change to either tool
+rewrites a corpus that nothing would otherwise regenerate — the bgzip lesson one
+tool over:
+
+- **`sort-gff` is byte-identical** between 4.2.1 and beta.2 on all five inputs
+  tried (dm6 ncbiRefSeq/xenoRefGene, hg38 ncbiRefSeqCurated, the dm and human
+  NCBI GFFs — 0.4M to 4.9M lines). So the GFF corpus is unaffected and no
+  re-derivation is owed.
+- **`text-index` differs, and only by dropping duplicate postings.** 4.2.1
+  emitted a record once per occurrence of the term in it, so gene `dyw`, whose
+  alias list reads `0.9 0.9 gene 0.9kb …`, appeared three times under `0.9`.
+  Same terms (180,630 on the dm hub, 244,648 on dm6), same record set for every
+  one of them — collapsing repeats makes the two files identical — and 11-12%
+  smaller: 35.4→31.6 MB and 100.8→88.5 MB. It is also ~35% faster. A duplicate
+  posting was never a second search result, so nothing about search changes.
+
+The trix corpus is therefore left **mixed** on purpose: the gate is mtime (index
+older than its GFF), a 4.2.1 index and a beta.2 index answer identically, and
+re-indexing 50,000 hubs to save 11% of disk would re-upload every one of them.
+New and regenerated indexes are beta.2's; the rest turn over when their GFF
+does. That is a different call from the PIF `.cli` stamps, where the coarse tier
+made old files functionally worse, not just larger.
 
 A cached chain, by contrast, is never re-fetched — and one of them had been
 truncated since 2025-06-14, 66,891,932 bytes of hg38ToFukDam1's 90,055,223, an

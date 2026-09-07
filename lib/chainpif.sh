@@ -12,10 +12,11 @@
 
 : "${CHAINPIF_DOWNLOAD_DELAY:=0}"
 
-# The repo's pinned @jbrowse/cli, not whatever `jbrowse` is on PATH: the bytes a
-# PIF holds are a function of make-pif's version (5.0 added the coarse
-# level-of-detail tier), and a global install drifts silently.
-JBROWSE_CLI="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/node_modules/.bin/jbrowse"
+# JBROWSE_CLI (the repo's pinned @jbrowse/cli, not whatever `jbrowse` is on
+# PATH) is defined by lib/common.sh, which every pipeline script sources. The
+# two createChainTrackPifs.sh entry points source only this file, so pick it up
+# from there rather than keeping a second copy of the path.
+[ -n "${JBROWSE_CLI:-}" ] || source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 
 # Sets JBROWSE_CLI_VERSION, once per shell: one line naming the CLI build,
 # stamped beside every PIF and in each liftOver dir's .checked file. A stamp
