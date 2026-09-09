@@ -27,7 +27,9 @@ const OUT_DIR = path.join(__dirname, 'public/pangenome')
 const TABIX_OPTS = { cwd: os.tmpdir() }
 
 // Read from the dataset rather than restated, so the url the site launches and
-// the url these summaries describe cannot drift apart.
+// the url these summaries describe cannot drift apart. Same for the label the
+// summaries stamp themselves with, which a restated copy left on v2.0 through a
+// graph release.
 const graphVcf = HPRC_DATASET.graphVcf
 if (graphVcf === undefined) {
   throw new Error(
@@ -35,6 +37,7 @@ if (graphVcf === undefined) {
   )
 }
 const VCF_URL = graphVcf.url
+const SOURCE_LABEL = `${HPRC_DATASET.label} (release 2)`
 
 // AF and size bins are fixed edges so every locus is directly comparable.
 // Release 2 is 232 samples → up to 464 haplotypes, so the rarest observable AF is
@@ -243,7 +246,7 @@ async function summarizeLocus(
     gene: locus.gene,
     region,
     ref: 'GRCh38',
-    source: 'HPRC minigraph-cactus v2.0 (release 2)',
+    source: SOURCE_LABEL,
     variantCount,
     alleleCount,
     typeCounts,

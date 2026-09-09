@@ -151,7 +151,7 @@ export function portalFiles(portal: PangenomePortal): PangenomePortalFile[] {
 
 export interface PangenomeDataset {
   id: string
-  // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.0'.
+  // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.1'.
   label: string
   reference: PangenomeReference
   // One line naming the assemblies the graph was built from, shown wherever the
@@ -268,7 +268,7 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
   ],
 }
 
-// The HPRC minigraph-cactus v2.0 (release 2) graph projected onto GRCh38 — the
+// The HPRC minigraph-cactus v2.1 (release 2) graph projected onto GRCh38 — the
 // one dataset the explorer ships today. Release 2 is 232 samples against release
 // 1's 45, so every precomputed summary under `dataPrefix` has to be regenerated
 // alongside a change to `graphVcf` (`node generatePangenomeData.ts`). The three
@@ -280,7 +280,7 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // is in `label`.
 export const HPRC_DATASET: PangenomeDataset = {
   id: 'hprc',
-  label: 'HPRC minigraph-cactus v2.0',
+  label: 'HPRC minigraph-cactus v2.1',
   reference: {
     assembly: 'hg38',
     configUrl: ucscConfigPath('hg38'),
@@ -291,9 +291,9 @@ export const HPRC_DATASET: PangenomeDataset = {
   panelDescription:
     '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
   graphVcf: {
-    trackId: 'hprc-v2.0-mc-grch38-pangenome-vcf',
-    name: 'HPRC pangenome variants (minigraph-cactus v2.0, GRCh38)',
-    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz',
+    trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
+    name: 'HPRC pangenome variants (minigraph-cactus v2.1, GRCh38)',
+    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz',
     phased: true,
   },
   svTrackIds: [
