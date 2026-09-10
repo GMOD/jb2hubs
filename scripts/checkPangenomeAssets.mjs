@@ -28,7 +28,9 @@
 //               committed config decoration.
 //   reachable   every url answers. On a track that is a dead lane; on the
 //               assembly node it is a config that does not open at all, for
-//               the loadPre() reason ADR 0003 records.
+//               the loadPre() reason ADR 0003 records. Only a 404/410 fails
+//               the run -- see below, this cost a false failure the first hour
+//               the check mattered.
 //   consistent  all versioned urls WITHIN one config name the same version, so
 //               a half-finished bump cannot ship.
 //   current     for each version a config pins, the next minor and next major
@@ -47,6 +49,15 @@
 // stamps a byte-exact copy: `hprc-grch38.json` was live AND three hundred bytes
 // out of date at the same moment, which is invisible to a HEAD.
 //
+// And read twice on a mismatch, because these urls are behind CloudFront and
+// upload.sh's invalidation is not instant: for several minutes after a publish
+// the edge still serves the previous copy while the origin has the new one.
+// Measured on the publish that fixed the two findings above -- S3 reported 3745
+// bytes and a cache-busted GET returned the new trackId while the plain url
+// still returned the old. Failing there would report a publish that WORKED as
+// a config that is not published, which is the wrong direction to be wrong in:
+// the fix a reader would try is to publish again.
+//
 // The pin is read out of the urls rather than declared in the file, on purpose.
 // A hand-maintained `pangenomeVersion` key is exactly the thing that drifted,
 // and these configs are published files that jbrowse-web parses -- an unknown
@@ -55,8 +66,22 @@
 // "A newer version exists" is REPORTED, not fatal. Staleness has to be loud,
 // but the day HPRC publishes v2.2 should not block an unrelated deploy; that
 // is the same call check-sidecar-urls makes for assemblies outside
-// MUST_BE_LOCAL. Only an unreachable url or an internally inconsistent config
-// exits non-zero.
+// MUST_BE_LOCAL.
+//
+// **And neither is a url that failed without saying it is gone.** These configs
+// name three hgdownload 2bit files, and this check runs in run.sh's
+// gate_configs -- so treating a network failure as a dead reference makes one
+// hgdownload wobble block a deploy. Which is not hypothetical: minutes after
+// this check first found anything, hgdownload's primary stopped completing TLS
+// (the stall CLAUDE.md documents at length) while hgdownload2 served all three
+// 2bits at 200, and this script exited 1 on three perfectly good urls.
+//
+// So it classifies the way checkTrackUrls.mjs does, for the same reasons and
+// with the same vocabulary: only 404/410 is `gone` and fails; a failure that is
+// not definitive is retried, then asked of `hgdownload2.soe.ucsc.edu`, and
+// reported as `primary-only` if the mirror serves it or `transient` if nobody
+// can say. The `published` check stays fatal regardless, because it reads our
+// own bucket rather than a research file server.
 //
 // Usage:
 //   node scripts/checkPangenomeAssets.mjs [--dir DIR] [--json report.json]
@@ -69,6 +94,11 @@ const { values } = parseArgs({
   options: {
     dir: { type: 'string' },
     json: { type: 'string' },
+    // For a caller that is about to publish them itself: report the
+    // unpublished configs and do not fail on them. run.sh passes this, because
+    // its gate runs BEFORE its upload step and a config it is about to publish
+    // being unpublished is the expected state rather than a finding.
+    'allow-unpublished': { type: 'boolean' },
   },
 })
 
@@ -164,26 +194,74 @@ for (const file of files) {
   }
 }
 
+// The two statuses that mean "this file is not there", as opposed to "nobody
+// answered". Everything else is the server or the network having a bad minute.
+const GONE = new Set([404, 410])
+const PRIMARY = 'hgdownload.soe.ucsc.edu'
+const MIRROR = 'hgdownload2.soe.ucsc.edu'
+
 async function head(url) {
   try {
     const res = await fetch(url, {
       method: 'HEAD',
       signal: AbortSignal.timeout(20000),
     })
-    return res.ok ? undefined : `HTTP ${res.status}`
+    return { ok: res.ok, status: res.status, why: `HTTP ${res.status}` }
   } catch (e) {
-    return `${e instanceof Error ? e.message : e}`
+    return {
+      ok: false,
+      status: 0,
+      why: `${e instanceof Error ? e.message : e}`,
+    }
   }
+}
+
+// `undefined` for a url that answered, else a verdict. Two attempts before
+// reaching for the mirror, so a single dropped connection does not spend a
+// request on the other host.
+async function probe(url) {
+  const first = await head(url)
+  if (first.ok) {
+    return undefined
+  }
+  if (GONE.has(first.status)) {
+    return { verdict: 'gone', why: first.why }
+  }
+  const retry = await head(url)
+  if (retry.ok) {
+    return undefined
+  }
+  if (GONE.has(retry.status)) {
+    return { verdict: 'gone', why: retry.why }
+  }
+  if (!url.includes(PRIMARY)) {
+    return { verdict: 'transient', why: retry.why }
+  }
+  const mirror = await head(url.replace(PRIMARY, MIRROR))
+  return mirror.ok
+    ? { verdict: 'primary-only', why: retry.why }
+    : GONE.has(mirror.status)
+      ? { verdict: 'gone', why: `${retry.why}; ${MIRROR} ${mirror.why}` }
+      : { verdict: 'transient', why: `${retry.why}; ${MIRROR} ${mirror.why}` }
 }
 
 // ~25 requests against our own bucket, so unlike check-track-urls there is no
 // budget to keep. Sequential rather than parallel so a slow edge cannot look
 // like a failure.
 const broken = []
+const primaryOnly = []
+const transient = []
 for (const ref of refs) {
-  const problem = await head(ref.url)
+  const problem = await probe(ref.url)
   if (problem !== undefined) {
-    broken.push({ ...ref, problem })
+    const entry = { ...ref, problem: problem.why }
+    if (problem.verdict === 'gone') {
+      broken.push(entry)
+    } else if (problem.verdict === 'primary-only') {
+      primaryOnly.push(entry)
+    } else {
+      transient.push(entry)
+    }
   }
 }
 
@@ -191,27 +269,48 @@ for (const ref of refs) {
 // prefix (`s3://jbrowse.org/pangenome/<name>/config.json`), and that url is
 // what `graphBrowser.configUrl` in the website names. Read the published copy
 // rather than HEADing it, so "live but stale" is distinguishable from "live".
+async function fetchText(url) {
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
+    return res.ok
+      ? { text: await res.text() }
+      : { problem: `HTTP ${res.status}` }
+  } catch (e) {
+    return { problem: `${e instanceof Error ? e.message : e}` }
+  }
+}
+
 async function publishedState(file, localText) {
   const name = file.replace(/\.json$/, '')
   const url = `https://jbrowse.org/pangenome/${name}/config.json`
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
-    if (!res.ok) {
-      return { url, problem: `HTTP ${res.status}` }
-    }
-    return (await res.text()) === localText
-      ? { url }
-      : { url, problem: 'served copy differs from the file in this tree' }
-  } catch (e) {
-    return { url, problem: `${e instanceof Error ? e.message : e}` }
+  const edge = await fetchText(url)
+  if (edge.text === localText) {
+    return { url }
+  }
+  // A unique query string is a distinct cache key, so this reaches the origin
+  // rather than the warm edge object.
+  const origin = await fetchText(`${url}?cachebust=${Date.now()}`)
+  if (origin.text === localText) {
+    return { url, propagating: true }
+  }
+  return {
+    url,
+    problem:
+      origin.problem ??
+      (edge.problem !== undefined
+        ? `${edge.problem} (origin also differs)`
+        : 'served copy differs from the file in this tree'),
   }
 }
 
 const unpublished = []
+const propagating = []
 for (const c of configs) {
   const state = await publishedState(c.file, c.text)
   if (state.problem !== undefined) {
     unpublished.push({ file: c.file, ...state })
+  } else if (state.propagating) {
+    propagating.push({ file: c.file, ...state })
   }
 }
 
@@ -229,7 +328,7 @@ async function newerThan(url) {
   const found = []
   for (const version of candidates) {
     const candidate = url.replace(VERSION, `-${version}-`)
-    if ((await head(candidate)) === undefined) {
+    if ((await head(candidate)).ok) {
       found.push({ version, url: candidate })
     }
   }
@@ -263,8 +362,26 @@ for (const u of unpublished) {
   console.log(`        ${u.url}`)
   console.log(`        run website/pangenome-config/upload.sh`)
 }
+for (const u of propagating) {
+  console.log(
+    `  note  ${u.file.padEnd(26)} published, but the edge still serves the previous copy`,
+  )
+  console.log(`        ${u.url} (invalidation in flight)`)
+}
 for (const ref of broken) {
   console.log(`  FAIL  ${ref.file.padEnd(26)} ${ref.problem}`)
+  console.log(`        ${ref.url}`)
+}
+for (const ref of primaryOnly) {
+  console.log(
+    `  WARN  ${ref.file.padEnd(26)} primary failed (${ref.problem}) but ${MIRROR} serves it`,
+  )
+  console.log(`        ${ref.url}`)
+}
+for (const ref of transient) {
+  console.log(
+    `  note  ${ref.file.padEnd(26)} neither resolved nor 404'd: ${ref.problem}`,
+  )
   console.log(`        ${ref.url}`)
 }
 for (const c of inconsistent) {
@@ -288,6 +405,10 @@ if (values.json) {
         refs,
         stale,
         unpublished,
+        propagating,
+        broken,
+        primaryOnly,
+        transient,
       },
       null,
       2,
@@ -295,12 +416,33 @@ if (values.json) {
   )
 }
 
-if (broken.length > 0 || inconsistent.length > 0 || unpublished.length > 0) {
+const fatalUnpublished = values['allow-unpublished'] ? [] : unpublished
+if (
+  broken.length > 0 ||
+  inconsistent.length > 0 ||
+  fatalUnpublished.length > 0
+) {
   console.error(
-    `\n${broken.length} unreachable url(s), ${inconsistent.length} config(s) ` +
-      `mixing versions, ${unpublished.length} config(s) not published as served.`,
+    `\n${broken.length} url(s) gone, ${inconsistent.length} config(s) ` +
+      `mixing versions, ${fatalUnpublished.length} config(s) not published as ` +
+      `served.`,
   )
   process.exit(1)
+}
+if (unpublished.length > 0) {
+  console.log(
+    `\n${unpublished.length} config(s) are not published as committed. Not ` +
+      `failing, because --allow-unpublished says the caller publishes them ` +
+      `itself.`,
+  )
+}
+if (primaryOnly.length > 0 || transient.length > 0) {
+  console.log(
+    `\n${primaryOnly.length} url(s) served only by ${MIRROR} and ` +
+      `${transient.length} that nobody answered for. Neither fails this run: a ` +
+      `404 is a dead reference and anything else is a bad minute on a research ` +
+      `file server.`,
+  )
 }
 if (stale.length > 0) {
   console.log(

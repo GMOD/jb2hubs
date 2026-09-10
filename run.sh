@@ -154,6 +154,63 @@ fi
 
 # --- Phase 2: Deploy ---
 
+# The pangenome graph configs, which no deploy path used to publish at all.
+#
+# That omission had a cost: `bovine-arsucd12.json` was committed on 2026-09-09,
+# passed every gate, was written up as live, and 404'd in the bucket for a day,
+# because `website/pangenome-config/upload.sh` is a hand step and nothing
+# reminded anyone of it. `hprc-grch38.json` was live and stale at the same
+# moment, still naming the trackId a rename had replaced, so every
+# whole-chromosome graph launch on staging named a track the visitor's own
+# config did not have. `check-pangenome-assets` reports both now; this is the
+# other half, which is that a run publishes them rather than hoping.
+#
+# It runs on the STAGING path too, unlike every other upload here. Staging
+# skips S3 because the data is shared with production -- but these configs are
+# exactly what a staging launch fetches, from that same shared bucket, so
+# "skip the upload" would leave staging linking a file that does not exist.
+# Publishing one to production is inert while `features.pangenome` is closed
+# there.
+#
+# `upload_if_changed` inside it makes this a no-op on a run that changed
+# nothing: it compares byte-for-byte against a stamp and neither uploads nor
+# invalidates when they match.
+# Its own function rather than a block inside gate_configs, because the staging
+# path publishes these too and gates nothing else: the rest of gate_configs is
+# about the UCSC and GenArk data that a staging run does not upload, and running
+# it there would block a website deploy on a finding about files it is not
+# touching.
+#
+# --allow-unpublished because both callers run this immediately BEFORE
+# publishing, so a config that is out of date in the bucket is the state this
+# run exists to fix rather than a finding. A hand run gets no such promise and
+# fails on it, which is how the 404 was found.
+gate_pangenome_configs() {
+  if [ -n "${SKIP_CONFIG_GATE:-}" ]; then
+    echo "SKIP_CONFIG_GATE set; skipping the pangenome config gate."
+    return 0
+  fi
+  echo "Pre-upload gate: checking the pangenome graph configs..."
+  pangenome_rc=0
+  node scripts/checkPangenomeAssets.mjs --allow-unpublished || pangenome_rc=$?
+  if [ "$pangenome_rc" -eq 2 ]; then
+    echo "Gate failed to run: checkPangenomeAssets found no configs to check, so"
+    echo "it checked nothing. Pass --dir, or re-run with SKIP_CONFIG_GATE=1 to"
+    echo "upload unchecked."
+    return 1
+  elif [ "$pangenome_rc" -ne 0 ]; then
+    echo "Gate failed: a pangenome config names a url that does not resolve, or"
+    echo "mixes two dataset versions. Re-run with SKIP_CONFIG_GATE=1 if you"
+    echo "accept publishing it."
+    return 1
+  fi
+}
+
+publish_pangenome_configs() {
+  log "Publishing pangenome graph configs..."
+  ./website/pangenome-config/upload.sh
+}
+
 # Refuse to publish configs that cannot boot. Regenerating rewrites every
 # config's plugins[] from hubtools' defaultPlugins, so one bad plugin url turns
 # all ~50900 configs into error pages at once -- and those urls are published
@@ -255,20 +312,7 @@ gate_configs() {
   # side reporting it. Exit 2 is "could not run" (no config dir), exit 1 is an
   # unreachable url or a config mixing two dataset versions; a newer upstream
   # version merely prints, since that must not block an unrelated deploy.
-  echo "Pre-upload gate: checking the pangenome graph configs..."
-  pangenome_rc=0
-  node scripts/checkPangenomeAssets.mjs || pangenome_rc=$?
-  if [ "$pangenome_rc" -eq 2 ]; then
-    echo "Gate failed to run: checkPangenomeAssets found no configs to check, so"
-    echo "it checked nothing. Pass --dir, or re-run with SKIP_CONFIG_GATE=1 to"
-    echo "upload unchecked."
-    return 1
-  elif [ "$pangenome_rc" -ne 0 ]; then
-    echo "Gate failed: a pangenome config names a url that does not resolve, or"
-    echo "mixes two dataset versions. Re-run with SKIP_CONFIG_GATE=1 if you"
-    echo "accept publishing it."
-    return 1
-  fi
+  gate_pangenome_configs || return 1
   echo "Pre-upload gate: booting working-tree configs on hosted releases..."
   if ! node scripts/checkConfigCompat.mjs --local; then
     echo "Gate failed: a working-tree config does not boot on a hosted JBrowse"
@@ -301,6 +345,8 @@ if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
   # --mode staging (PUBLIC_STAGING=true) which enables in-progress pages.
   echo "Staging mode: skipping S3 data upload and git commit/push."
   staging_config_present || exit 1
+  gate_pangenome_configs || exit 1
+  publish_pangenome_configs
   log "Deploying website to staging..."
   pnpm --filter website2 run deploy:staging
   echo "Staging deploy complete"
@@ -312,6 +358,8 @@ elif [ "$DRY_RUN" = false ]; then
 
   log "Uploading ucsc data..."
   ./ucsc2jbrowse/uploadAll.sh
+
+  publish_pangenome_configs
 
   # hubs/ and hubFirstSeen.json are one change: the file records the run that
   # first built each config, and the website reads it, not the git history.
