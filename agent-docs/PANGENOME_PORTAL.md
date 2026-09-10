@@ -270,6 +270,56 @@ Both blockers on shipping it are the same shape as everything else here:
 is **absent from v4.3.0** (`git cat-file -e` against the newest tag). So the GBZ
 lane is v5-only, exactly like the graph pane it would sit beside.
 
+### Wiring the GBZ lane: what is done, and the one thing that is not
+
+Everything under the lane is in the tree and verified. What is not done is the
+lane drawing in OUR config, and the bisect is recorded here because the next
+person should not repeat it.
+
+**Done.** `website/src/components/pangenomeGbz.ts` holds the haplotype set (the
+eight the tutorial's figures use), the two urls and the PanSN map.
+`generatePangenomeHaplotypes.ts` derives one `chrom.sizes` per haplotype from
+the database — `max(fragment + haplotypeLength)` per contig, since
+`haplotypeLength` is a fragment's length and paths are fragmented, 103-125
+fragments over 30-49 contigs each. Checked against the demo's own hand-made
+sidecars: two of three match to the byte, HG01123.1 comes out 12,097 bp short at
+the end of a 244 Mb contig. All eight are published under
+`s3://jbrowse.org/pangenome/hprc-grch38/`, CORS-open and range-serving, and
+`upload.sh` uploads sidecars **before** configs — a config published ahead of
+its sidecars names 404s, and `loadPre()` fails the whole assembly on one.
+
+**Not done.** The track block, copied byte-for-byte from
+`demos/hprc/config.json` (they differ only in `name`), draws 8/8 lanes there on
+a hosted `main` and sits on "Loading..." indefinitely in ours. Ruled out:
+
+| hypothesis                          | test                                           | result                                           |
+| ----------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
+| the adapter cannot be read remotely | node, against both published files             | works — 0.34s for all 464                        |
+| CORS on the db or the index         | `Origin:` + `Range:` on both                   | `Access-Control-Allow-Origin: *`, 206            |
+| our config's shape                  | diff of the two track blocks                   | identical apart from `name`                      |
+| the adapter's config slot names     | grep the published plugin bundle               | all four present in its ConfigurationSchema      |
+| our sidecars' VALUES                | vs the demo's hand-made ones                   | 2 of 3 byte-identical, 3rd 12 kb short of 244 Mb |
+| our `hg38` assembly block           | our config + the demo's hg38                   | **still hangs** — not the cause                  |
+| the launch shape                    | the demo's exact spec, only the config swapped | still hangs                                      |
+
+What is left, and the leading suspect: our sidecars name **30-49 contigs each**
+where the demo's name exactly one. Eight lanes x 49 refNames is a different
+amount of work for a display that fetches per lane, and the demo's stubs are
+CFHR-specific precisely because that demo only ever opens at CFHR. The cheap
+next test is a one-contig sidecar set for the CFHR window: if it draws, the fix
+is to narrow what the generator emits (or to find why breadth costs anything),
+not to change the track.
+
+**A confound to control for, because it corrupted two of these runs.** The
+reverse bisect (the demo's config with our hg38) errored with
+`MultiWayLaneGenes: one lane failed ... No response from https://jbrowse.org/ucsc/hg38/ncbiRefSeq.gff.gz.csi after 30s (the connection was open and the server sent nothing)`.
+Ten sequential range reads of that object from curl came back in 0.11-0.35s
+every time, so it is not the server: `MultiWaySyntenyDisplay` fetches a gene
+lane per haplotype, and those plus the GBZ adapter's range reads of the 7.9 GB
+haplotype index are **all on jbrowse.org**, against the browser's
+six-connections-per-host limit. Treat any "Loading..." here as possibly that
+rather than as the lane, and measure with the gene track out of the spec.
+
 ### The variant route, for bovine: minutes, on data already extracted
 
 `vg deconstruct` over the P-line minigraph GFA gives exactly the file the
