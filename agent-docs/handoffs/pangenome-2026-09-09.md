@@ -10,9 +10,9 @@ GMOD/jbrowse-components — and the commits are named on each side.
 The mouse and bovine pangenomes were already built and serving from
 `demos/{mouse,bovine}_pangenome/` with no build script in git and no config in
 either repo. They now have both, a variant route for cattle, a tutorial with
-four figures, a locus catalogue that is **derived rather than curated**, and —
-as of the second half of the day — a portal that actually reads any of it. The
-gap that is left is not code: it is two publishes and one long compute.
+four figures, a locus catalogue that is **derived rather than curated**, a
+portal that reads all of it, and — as of the end of the day — both halves
+actually published. What is left is one long compute and one version bump.
 
 |                                                | jb2hubs                      | jbrowse-components                    |
 | ---------------------------------------------- | ---------------------------- | ------------------------------------- |
@@ -25,41 +25,54 @@ gap that is left is not code: it is two publishes and one long compute.
 | mouse + bovine as datasets the site reads      | `819c960b0bd`                |                                       |
 | the portal page renders both off the dataset   | `7d9aa7433c5`                |                                       |
 | Dock2 replaces the H2 figure; Nnt unclipped    |                              | `8ffddac841`                          |
+| the configs published, run.sh publishes them   | `767d83faf5f`                | `34f7d922cb` (figures.lock)           |
 | plan corrections                               | `3c07e73fc4d`, `56dcca97c91` |                                       |
 
-## Blocking, and both of them are publishes
+## Both publishes are done, and one of them found a silent no-op
 
-Neither is a decision about the work; both are a decision about pushing bytes to
-a place readers see, which is why they were left.
+`website/pangenome-config/upload.sh` ran and all three configs are live and
+byte-current; `pnpm figures:push` ran and `check-figure-refs` reports all 473
+doc references resolving against 592 figures. Neither check is red any more.
 
-**1. `website/pangenome-config/upload.sh` has not been run, and two configs are
-wrong in the bucket because of it.** `pnpm check-pangenome-assets` says so on
-every run now — that is what `b7d8cd7c290` added, and it found both the moment
-it existed:
+The upload is worth reading about, because it exposed two further things:
 
-- `bovine-arsucd12.json` is **404**. It was committed on 2026-09-09, passed
-  every other gate, and was written up in this file as live.
-- `hprc-grch38.json` is live and **stale**: the served copy still names
-  `hprc_tier`, and the tree renamed it to `hprc_minigraph_tier`. So every
-  whole-chromosome graph launch on staging today names a track the visitor's own
-  config does not have. `mouse-mm39.json` matches but carries no upload stamp.
+- **`run.sh` published these configs on no path at all.** That is the root cause
+  of the day-long 404, not forgetfulness — `upload.sh` was a hand step and
+  nothing in any deploy called it. `publish_pangenome_configs` now runs on both
+  the production and the staging path (`767d83faf5f`); staging skips S3 for
+  everything else because the data is shared, but these configs are exactly what
+  a staging launch fetches from that same bucket.
+- **`cloudfront_invalidate "/pangenome/*/config.json"` was a no-op.** CloudFront
+  requires the `*` to be the LAST character of an invalidation path. A mid-path
+  wildcard is accepted, reports `Status: Completed`, and matches nothing — so
+  after the publish the edge went on serving the previous hprc config for twenty
+  minutes while the two configs that had never been cached read correctly. That
+  pattern is exactly what makes it look like propagation delay rather than a
+  no-op; `/pangenome/*` took effect on the first poll. Every other
+  `cloudfront_invalidate` call in this repo already used a trailing wildcard, so
+  this was the only one.
 
-One `bash website/pangenome-config/upload.sh` fixes all three. It stamps and
-invalidates only what changed.
+The asset check learned two distinctions in the same pass, both of which fired
+for real within the hour:
 
-**2. The four figures are not in the store.** They render, they are reviewed,
-and `website/static/img/` is gitignored, so they exist only on the machine that
-made them. `check-figure-refs` is red until:
+- **only 404/410 fails it.** Minutes after it first found anything, hgdownload's
+  primary stopped completing TLS while hgdownload2 served all three 2bit files
+  at 200, and the check exited 1 on three good urls — which in `gate_configs`
+  blocks a deploy on someone else's bad minute. It classifies like
+  `checkTrackUrls.mjs` now: `gone`, `primary-only`, `transient`.
+- **a mismatch is re-read past the edge**, so "published, invalidation in
+  flight" is a note rather than a failure. Without that, a publish that worked
+  reports as a config that is not published, and the fix a reader would try is
+  to publish again.
 
-```
-pnpm figures:push --exact --filter pangenome/mouse_nnt,pangenome/mouse_dock2,pangenome/bovine_bola,pangenome/bovine_whole_chromosome
-```
-
-then commit `figures.lock`. `pangenome/mouse_h2` is **not** in that list any
-more — see below. Regenerate with `pnpm screenshots:build`, or plain
-`pnpm screenshots` while `products/jbrowse-web/build` is from today; see
-`test_data/graphgenomeview/README.md` for why a stale build costs five minutes
-per figure and blames the wrong thing.
+**One thing left in the bucket for a human:**
+`s3://jbrowse.org/pangenome/bovine-bostau9/config.json`, 3,362 bytes from
+2026-09-02, is an orphan — the bovine config was renamed to `bovine-arsucd12`
+and the old key was never pruned. Nothing names it (the dataset, the page and
+`check-pangenome-assets` all read the new one), so it is inert, but it is the
+same append-only-mirror class `check-orphan-configs` refuses to clean up on its
+own for the UCSC tree. Deleting it is a retirement decision, which is why it is
+written down here rather than done.
 
 ## Then: the two remaining data routes
 
@@ -150,7 +163,7 @@ a rule with no counterexample on the page is a preference.
 
 ## If you pick this up
 
-Run `upload.sh` and push the figures; that is both red checks and the one
-genuinely broken thing in production-facing state (the bovine config a launch
-cannot fetch). Then mouse's `--call` route, which is the last asymmetry between
-the three that anyone can close from here.
+Nothing here is red. The next thing worth doing is mouse's `--call` route, which
+is the last asymmetry between the three that anyone can close from here — hours
+of compute on assemblies already on disk. HPRC v2.1 is the other, and it is a
+one-pass job rather than a url edit.
