@@ -116,7 +116,7 @@ list_upstream_hubs() {
     split -l "$STAT_CHUNK" "$work/paths" "$work/chunks/c"
     stat_upstream_paths "$work/chunks"
   else
-    echo "listUpstreamHubs: genArkFileList.txt.gz unusable, falling back to the rsync walk" >&2
+    echo "listUpstreamHubs: genArkFileList.txt.gz unusable (this happens occasionally when hgdownload regenerates it) -- falling back to the rsync walk, ~10 minutes" >&2
     walk_upstream_hubs
   fi
 }

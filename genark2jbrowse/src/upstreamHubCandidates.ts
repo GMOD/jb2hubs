@@ -107,9 +107,17 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.error('usage: upstreamHubCandidates.ts <genArkFileList.txt.gz>')
     process.exit(1)
   }
-  const fromManifest = manifestAccessions(
-    zlib.gunzipSync(fs.readFileSync(manifest)).toString(),
-  )
+  let fromManifest: string[]
+  try {
+    fromManifest = manifestAccessions(
+      zlib.gunzipSync(fs.readFileSync(manifest)).toString(),
+    )
+  } catch (error) {
+    console.error(
+      `upstreamHubCandidates: ${manifest} is not a usable gzip (${error instanceof Error ? error.message : error}) -- hgdownload's daily manifest regeneration can land mid-write; this is expected occasionally and the caller falls back to the rsync walk`,
+    )
+    process.exit(1)
+  }
   const fromLocal = localAccessions()
   const fromList = assemblyListAccessions()
   console.error(
