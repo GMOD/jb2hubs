@@ -35,6 +35,7 @@
 //   node scripts/checkPangenomeLaunches.mjs                 # staging (main)
 //   node scripts/checkPangenomeLaunches.mjs --host latest   # what production would get
 //   node scripts/checkPangenomeLaunches.mjs --loci mhc-hla,lpa
+//   node scripts/checkPangenomeLaunches.mjs --local   # working-tree configs
 //
 import fs from 'node:fs'
 import os from 'node:os'
@@ -72,6 +73,7 @@ const { values } = parseArgs({
     host: { type: 'string', default: 'main' },
     loci: { type: 'string' },
     timeout: { type: 'string', default: '120000' },
+    local: { type: 'boolean', default: false },
   },
 })
 
@@ -171,6 +173,36 @@ if (chromosome && !wanted) {
   })
 }
 
+// --local answers the graph config's own url with the working-tree file, the way
+// `checkConfigCompat.mjs --local` does, so a config change is browser-tested
+// before it is public. Without it these launches read the SERVED config and a
+// changed trackId or data url in the tree is invisible to them -- which is the
+// state the v2.0 -> v2.1 bump was in: every launch booted, against the old
+// config. Only the config document is substituted; the data is the real data.
+const localConfigs = new Map()
+if (values.local) {
+  const dir = new URL('../website/pangenome-config/', import.meta.url)
+  // `<basename>.json` publishes to `/pangenome/<basename>/config.json` -- the
+  // rule in upload.sh's own loop. The dotfiles beside them are the upload
+  // stamps, which are byte-exact copies of what the bucket already serves and
+  // therefore exactly what --local must not substitute.
+  const configs = fs
+    .readdirSync(dir)
+    .filter(f => f.endsWith('.json') && !f.startsWith('.'))
+  for (const name of configs) {
+    localConfigs.set(
+      `https://jbrowse.org/pangenome/${name.replace(/\.json$/, '')}/config.json`,
+      fs.readFileSync(new URL(name, dir), 'utf8'),
+    )
+  }
+  if (localConfigs.size === 0) {
+    throw new Error('--local found no configs in website/pangenome-config/')
+  }
+  console.log(
+    `--local: serving ${localConfigs.size} working-tree config(s) to the app`,
+  )
+}
+
 const browser = await launch({
   executablePath: findChrome(),
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
@@ -181,6 +213,25 @@ for (const { name, url, expectView, expectDisplay } of launches) {
   const page = await browser.newPage()
   const problems = []
   try {
+    if (localConfigs.size > 0) {
+      await page.setRequestInterception(true)
+      // Fire-and-forget on purpose: an interception handler cannot be awaited
+      // by its emitter, and a rejection here means the request was already
+      // handled or the page is gone, neither of which should fail the probe.
+      page.on('request', request => {
+        const body = localConfigs.get(request.url())
+        void (
+          body === undefined
+            ? request.continue()
+            : request.respond({
+                status: 200,
+                contentType: 'application/json',
+                headers: { 'access-control-allow-origin': '*' },
+                body,
+              })
+        ).catch(() => {})
+      })
+    }
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUT })
     // Wait for EITHER a session or the error page. Waiting on the session alone
     // means an app that error-paged — the exact failure this script exists to
