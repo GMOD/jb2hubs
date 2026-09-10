@@ -118,8 +118,20 @@ function manyRows(n: number): HubSource[] {
 
 test('a subtree past the first page carries the accession list that narrows the category file', () => {
   const table = subtreeTable(manyRows(300))
-  assert.equal(table.initialRows.length, 200)
+  // No prefill: the component fetches dataUrls anyway at this size, and on a
+  // taxonomy page the table is behind the view toggle, so these rows would be
+  // serialized into every page to paint something nobody had asked for.
+  assert.equal(table.initialRows.length, 0)
   assert.equal(table.accessions?.length, 300)
+  assert.equal(table.accessionsUrl, undefined)
+})
+
+test('a subtree that fits in the first page carries all of it, since nothing fetches', () => {
+  const table = subtreeTable(manyRows(150))
+  assert.equal(table.initialRows.length, 150)
+  assert.equal(table.totalRows, 150)
+  // totalRows <= initialRows.length is what DataTable reads as complete.
+  assert.equal(table.accessions, undefined)
   assert.equal(table.accessionsUrl, undefined)
 })
 

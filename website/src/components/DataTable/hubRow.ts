@@ -93,6 +93,7 @@ export function byCommonName(a: HubSource, b: HubSource) {
 // tree-shakes the rest of the frontmatter away.
 export interface HubTableData {
   // Rendered immediately, so the document has real content without the full set.
+  // Empty when the page does not server-render the table -- see subtreeTable.
   initialRows: RowData[]
   // Compact row files holding the whole set — see generateHubData.ts.
   dataUrls: string[]
@@ -141,12 +142,21 @@ export function subtreeTable(
       sources.add(row.source)
     }
   }
+  // A subtree that fits in the first page is the whole set: the table needs no
+  // fetch at all, so these rows are the only copy and are worth their bytes.
+  // Past that the component fetches dataUrls regardless and shows these only
+  // while that is in flight -- and on a taxonomy page the table lives behind
+  // the view toggle, so nothing is painted from them before the fetch lands
+  // anyway. They were the largest thing in the island props by far: 76KB of
+  // the 90KB on /taxonomy/1883, on every one of 76K pages, to prefill a table
+  // that had not been opened.
+  const complete = sorted.length <= FIRST_PAGE
   const table: HubTableData = {
-    initialRows: sorted.slice(0, FIRST_PAGE).map(toRowData),
+    initialRows: complete ? sorted.map(toRowData) : [],
     dataUrls: [...sources].map(source => `/hubData/${source}.json`),
     totalRows: sorted.length,
   }
-  if (sorted.length <= FIRST_PAGE) {
+  if (complete) {
     return table
   }
   return accessionsUrl && sorted.length > INLINE_ACCESSION_LIMIT
