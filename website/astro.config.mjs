@@ -40,6 +40,14 @@ export default defineConfig({
   // whitespace (the browser collapses runs to one space); the size cost is
   // negligible for a static docs site.
   compressHTML: false,
+  build: {
+    // Astro's default ('auto') inlines any stylesheet under 4kB into every page
+    // that uses it. This site has 129k pages sharing one shell, so a 6.7kB
+    // inline <style> -- which is what 'auto' produced, over its own threshold,
+    // beside a <link> to _astro/*.css that was already there -- costs 0.87GB of
+    // dist and is re-downloaded per page instead of being cached once.
+    inlineStylesheets: 'never',
+  },
   integrations: [
     react({
       // React Compiler auto-memoizes components, so manual useMemo/useCallback
