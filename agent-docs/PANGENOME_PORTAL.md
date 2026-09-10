@@ -59,16 +59,18 @@ path. Layer one of the stack needs no work.
 
 None of these is hard. They are listed because each is a place a later reader
 would otherwise have to rediscover which of three shapes is the intended one.
+Most have since converged on the target, and the rows say so rather than being
+deleted — what the divergence WAS is the reason the target is what it is.
 
-| dimension                | human                                                                                             | mouse                                                      | bovine                      | target                                                |
-| ------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | --------------------------- | ----------------------------------------------------- |
-| bucket prefix            | `demos/hprc/`                                                                                     | `demos/mouse_pangenome/`                                   | `demos/bovine_pangenome/`   | one scheme; `demos/<species>_pangenome/`              |
-| basename                 | `hprc-v2.1-mc-grch38`                                                                             | `mouse-mm39-minigraph`                                     | `bovine-arsucd12-minigraph` | `<dataset>-<ref>-<method>`, versioned iff upstream is |
-| rGFA published beside    | no                                                                                                | yes, 911 MB                                                | yes, 760 MB                 | always (it is what makes the BEDs reproducible)       |
-| assembly block in config | bgzip FASTA at `genomes/GRCh38/`, **bare-numeric refnames**, alias file on raw `s3.amazonaws.com` | TwoBit + `jbrowse.org/ucsc/mm39/` sidecars, `chr` refnames | none yet                    | **the mouse shape**                                   |
-| tier trackId             | `hprc_tier`                                                                                       | `mouse_minigraph_tier`                                     | —                           | `<p>_minigraph_tier`                                  |
-| config source of truth   | `website/pangenome-config/hprc-grch38.json`                                                       | **orphan in the bucket, no source in any repo**            | **none**                    | all three in `website/pangenome-config/` (below)      |
-| build script             | committed in jbrowse-components `scripts/`                                                        | `/mnt/sdb`, uncommitted                                    | `/mnt/sdb`, uncommitted     | committed in `scripts/`                               |
+| dimension                | human                                                                                                      | mouse                                                      | bovine                                          | target                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------- |
+| bucket prefix            | `demos/hprc/`                                                                                              | `demos/mouse_pangenome/`                                   | `demos/bovine_pangenome/`                       | one scheme; `demos/<species>_pangenome/`              |
+| basename                 | `hprc-v2.1-mc-grch38`                                                                                      | `mouse-mm39-minigraph`                                     | `bovine-arsucd12-minigraph`                     | `<dataset>-<ref>-<method>`, versioned iff upstream is |
+| rGFA published beside    | no                                                                                                         | yes, 911 MB                                                | yes, 760 MB                                     | always (it is what makes the BEDs reproducible)       |
+| assembly block in config | TwoBit + `jbrowse.org/ucsc/hg38/` sidecars _(was a bgzip FASTA with **bare-numeric refnames**; see below)_ | TwoBit + `jbrowse.org/ucsc/mm39/` sidecars, `chr` refnames | TwoBit + `jbrowse.org/ucsc/bosTau9/` sidecars   | **the mouse shape** — converged                       |
+| tier trackId             | `hprc_minigraph_tier` _(the bucket still serves `hprc_tier`; see the ordering hazard below)_               | `mouse_minigraph_tier`                                     | `bovine_minigraph_tier`                         | `<p>_minigraph_tier` — converged in the tree          |
+| config source of truth   | `website/pangenome-config/hprc-grch38.json`                                                                | `website/pangenome-config/mouse-mm39.json`                 | `website/pangenome-config/bovine-arsucd12.json` | all three in `website/pangenome-config/` — converged  |
+| build script             | committed in jbrowse-components `scripts/`                                                                 | `scripts/build_mouse_pangenome.sh`                         | `scripts/build_bovine_pangenome.sh`             | committed in `scripts/` — converged                   |
 
 The assembly-block difference is the one worth reading twice, because both
 shapes work and they are not the same refname space. The human config's sequence
@@ -296,6 +298,19 @@ jbrowse-components' `demos/`. The reasoning, since the opposite is tempting:
   `gate_configs` beside the others rather than on a budget. It covers all three
   datasets by construction, which is the point of having one shape.
 
+  It also asserts, since `b7d8cd7c290`, that **the config itself is served at
+  the url the site links, byte-for-byte as committed** — which turned out to be
+  the check that was actually missing. Every url INSIDE `bovine-arsucd12.json`
+  resolved while the config was 404 in the bucket, because `upload.sh` beside it
+  had not been run since it landed; and `hprc-grch38.json` was live and three
+  hundred bytes stale at the same moment, still naming `hprc_tier`. A launch
+  reads `?config=` from the reader's own browser and genomes.jbrowse.org sends
+  no CORS headers, so the bucket copy is the only copy that exists as far as a
+  launch is concerned — a config that is only in git is a launch that fails
+  before it starts. Byte comparison rather than a HEAD, for the same reason
+  `upload_if_changed` stamps a byte-exact copy; the stamps themselves were no
+  help, mouse having none at all despite being live.
+
 ## Nothing reaches the bucket without a committed script and a README
 
 This is an invariant, not a preference, and it is the one this whole
@@ -401,15 +416,36 @@ has already changed once.
   resolution, and it closes the mouse gap on its own — the rebuild below is a
   separate question, not a follow-up to this.
 
-- **Registry-driven `/pangenomes`.** `pages/pangenomes/index.astro` is 529
-  hand-written lines that read `PANGENOME_DATASETS` not at all. Extend
-  `PangenomeDataset` with what the page hardcodes — species and common name,
-  graph-file table rows, sample-table source, outbound portal links, a `notes[]`
-  for the coverage caveats — and loop one section component. This is also where
-  `graphVcf` has to become optional, since mouse and bovine have none until the
-  two steps above land. Locus catalogs are seeded: the bovine README lists 8
-  windows with gene and insertion size, `pangenome-build/mouse-loci.tsv` has 9
-  anchor-gene mouse loci.
+- **Registry-driven `/pangenomes`.** _Landed 2026-09-09, `819c960b0bd` +
+  `7d9aa7433c5`._ Both graphs are `PANGENOME_DATASETS` entries, so the explorer,
+  the locus dashboard and every launch builder work on all three, and
+  `PangenomeSection.astro` renders the mouse and cattle sections off the
+  dataset. HPRC's section stays hand-written — a 232-row sample table, two
+  references and a release history that nothing else has — so `portal` is
+  optional on the type.
+
+  `graphVcf` became optional as planned, and the thing to hold onto is that its
+  absence is a property of the FILE rather than a stage of the wiring: mouse's
+  rGFA has no `P` or `W` lines, so no callset can be projected from it however
+  much else lands. `noCallsetReason` is what the dashboard shows in its place.
+  `phased` moved onto the callset in the same pass, having been hardcoded — it
+  is right for HPRC's 232 diploid samples and wrong for `vg deconstruct` over 11
+  haploid assembly paths, where it draws every second row empty.
+
+  Locus catalogues came from neither seed list in the end: `04d62efa1ec` derives
+  them from the graph's own coarse tier, and `locus.derived` carries the four
+  numbers the tier reported. Its presence is also the per-locus signal that
+  nothing was precomputed — no `<id>.vcfsummary.json`, no MSA — so the dashboard
+  shows the tier's facts rather than a load error over a locus that is working
+  as intended.
+
+  One defect worth remembering, because a URL-shape test could not see it:
+  `syntenyGene` split a derived locus's COMPOSED label and produced text that is
+  not a gene symbol — `Gm10439,` with the comma still on it, `Vmn` out of "Vmn
+  cluster (18 genes)", and `chr9:87,086,686` out of an intergenic entry. It
+  reads the tier's gene list now and offers no hub link where the bubble names
+  no gene. Found by server-rendering the dashboard for every dataset, which is
+  the cheap version of the launch check and worth doing after any change here.
 
 - **Optionally, the mouse minigraph-cactus rebuild**, as its own deliberate
   multi-day run. It buys the GBZ route and nothing else — which is a route human
