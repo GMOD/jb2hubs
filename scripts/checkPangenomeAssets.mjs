@@ -20,8 +20,12 @@
 // website/public/pangenome/ described a different file from the one the
 // launches opened.
 //
-// Three checks, because reachability alone would not have caught that:
+// Four checks, because reachability alone would not have caught that:
 //
+//   published   the config itself is served at the url the site links, and the
+//               bytes served are the bytes in the tree. See below -- this is
+//               the one that was missing, and the one whose absence makes a
+//               committed config decoration.
 //   reachable   every url answers. On a track that is a dead lane; on the
 //               assembly node it is a config that does not open at all, for
 //               the loadPre() reason ADR 0003 records.
@@ -29,6 +33,19 @@
 //               a half-finished bump cannot ship.
 //   current     for each version a config pins, the next minor and next major
 //               sibling are probed. If one exists, the dataset has moved on.
+//
+// The `published` check exists because `bovine-arsucd12.json` was committed,
+// gated by the three checks above, described in a handoff as live -- and 404 in
+// the bucket, because `upload.sh` beside it had not been run since it landed.
+// Every url INSIDE it resolved, so this script passed on a config no visitor
+// could fetch. jbrowse-web reads `?config=` from the reader's own browser and
+// genomes.jbrowse.org sends no CORS headers, so the bucket copy is the only one
+// that exists as far as a launch is concerned; a config that is only in git is
+// a launch that fails before it starts.
+//
+// Byte comparison rather than existence, for the same reason `upload_if_changed`
+// stamps a byte-exact copy: `hprc-grch38.json` was live AND three hundred bytes
+// out of date at the same moment, which is invisible to a HEAD.
 //
 // The pin is read out of the urls rather than declared in the file, on purpose.
 // A hand-maintained `pangenomeVersion` key is exactly the thing that drifted,
@@ -118,9 +135,10 @@ const refs = []
 const configs = []
 for (const file of files) {
   const full = path.join(dir, file)
+  const text = fs.readFileSync(full, 'utf8')
   let config
   try {
-    config = JSON.parse(fs.readFileSync(full, 'utf8'))
+    config = JSON.parse(text)
   } catch (e) {
     console.error(`${file}: unparseable: ${e}`)
     process.exit(2)
@@ -140,7 +158,7 @@ for (const file of files) {
       }),
     ),
   ].sort()
-  configs.push({ file, versions, count: urls.length })
+  configs.push({ file, versions, count: urls.length, text })
   for (const url of urls) {
     refs.push({ file, url })
   }
@@ -166,6 +184,34 @@ for (const ref of refs) {
   const problem = await head(ref.url)
   if (problem !== undefined) {
     broken.push({ ...ref, problem })
+  }
+}
+
+// Where upload.sh publishes each config: the file's basename is the bucket
+// prefix (`s3://jbrowse.org/pangenome/<name>/config.json`), and that url is
+// what `graphBrowser.configUrl` in the website names. Read the published copy
+// rather than HEADing it, so "live but stale" is distinguishable from "live".
+async function publishedState(file, localText) {
+  const name = file.replace(/\.json$/, '')
+  const url = `https://jbrowse.org/pangenome/${name}/config.json`
+  try {
+    const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
+    if (!res.ok) {
+      return { url, problem: `HTTP ${res.status}` }
+    }
+    return (await res.text()) === localText
+      ? { url }
+      : { url, problem: 'served copy differs from the file in this tree' }
+  } catch (e) {
+    return { url, problem: `${e instanceof Error ? e.message : e}` }
+  }
+}
+
+const unpublished = []
+for (const c of configs) {
+  const state = await publishedState(c.file, c.text)
+  if (state.problem !== undefined) {
+    unpublished.push({ file: c.file, ...state })
   }
 }
 
@@ -212,6 +258,11 @@ for (const c of configs) {
   const label = c.versions.length > 0 ? c.versions.join(' + ') : '(unversioned)'
   console.log(`  ${c.file.padEnd(26)} ${label.padEnd(16)} ${c.count} urls`)
 }
+for (const u of unpublished) {
+  console.log(`  UNPUB ${u.file.padEnd(26)} ${u.problem}`)
+  console.log(`        ${u.url}`)
+  console.log(`        run website/pangenome-config/upload.sh`)
+}
 for (const ref of broken) {
   console.log(`  FAIL  ${ref.file.padEnd(26)} ${ref.problem}`)
   console.log(`        ${ref.url}`)
@@ -231,14 +282,23 @@ for (const s of stale) {
 if (values.json) {
   fs.writeFileSync(
     values.json,
-    JSON.stringify({ configs, refs, stale }, null, 2),
+    JSON.stringify(
+      {
+        configs: configs.map(({ text: _text, ...c }) => c),
+        refs,
+        stale,
+        unpublished,
+      },
+      null,
+      2,
+    ),
   )
 }
 
-if (broken.length > 0 || inconsistent.length > 0) {
+if (broken.length > 0 || inconsistent.length > 0 || unpublished.length > 0) {
   console.error(
-    `\n${broken.length} unreachable url(s) and ${inconsistent.length} config(s) ` +
-      `mixing versions.`,
+    `\n${broken.length} unreachable url(s), ${inconsistent.length} config(s) ` +
+      `mixing versions, ${unpublished.length} config(s) not published as served.`,
   )
   process.exit(1)
 }
@@ -250,5 +310,8 @@ if (stale.length > 0) {
       `agent-docs/PANGENOME_PORTAL.md.`,
   )
 } else {
-  console.log('\nEvery pangenome config url resolves, and none is superseded.')
+  console.log(
+    '\nEvery pangenome config is published as committed, every url resolves, ' +
+      'and none is superseded.',
+  )
 }

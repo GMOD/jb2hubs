@@ -4,15 +4,23 @@ import { test } from 'node:test'
 
 import { features } from '../config/features.ts'
 import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
-import { HPRC_DATASET, HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
+import {
+  BOVINE_DATASET,
+  HPRC_DATASET,
+  HPRC_GRAPH_BROWSER,
+  MOUSE_DATASET,
+  PANGENOME_DATASETS,
+} from './pangenomeDataset.ts'
 import {
   geneHubUrl,
   externalGraphUrl,
   graphBrowserUrl,
   graphChromosomeUrl,
+  graphLanesUrl,
   graphLocusUrl,
   graphRegionUrl,
   graphVcfLgvUrl,
+  locusLaunchUrl,
   referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
 import {
@@ -49,6 +57,10 @@ test('the hosted graph reaches the dataset only under its own flag', () => {
   assert.ok(HPRC_DATASET.externalGraphBrowser, 'PangyPlot is the fallback')
 })
 
+// HPRC is the one dataset here with a callset; `graphVcf` is optional on the
+// type because mouse's graph records no haplotype paths to project.
+const HPRC_VCF = HPRC_DATASET.graphVcf!
+
 test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks', () => {
   const { config, spec } = parseLaunch(graphVcfLgvUrl(HPRC_DATASET, locus))
   assert.equal(config, HPRC_DATASET.reference.configUrl)
@@ -64,17 +76,17 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
   // Reference genes, the graph VCF, then every SV track — in that order.
   assert.deepEqual(view.tracks, [
     HPRC_DATASET.reference.geneTrackId,
-    HPRC_DATASET.graphVcf.trackId,
+    HPRC_VCF.trackId,
     ...HPRC_DATASET.svTrackIds,
   ])
 
   // The graph VCF isn't in the hosted config, so it must ride along as a session
   // track pointing at the real data URL.
   const inlined = spec.sessionTracks?.[0]
-  assert.equal(inlined?.trackId, HPRC_DATASET.graphVcf.trackId)
+  assert.equal(inlined?.trackId, HPRC_VCF.trackId)
   assert.deepEqual(inlined?.adapter, {
     type: 'VcfTabixAdapter',
-    uri: HPRC_DATASET.graphVcf.url,
+    uri: HPRC_VCF.url,
   })
 })
 
@@ -104,8 +116,140 @@ test('the callset declares the matrix display exactly where the host has it', ()
 })
 
 test('graphBrowserUrl lands on the dataset landing region', () => {
-  const { spec } = parseLaunch(graphBrowserUrl(HPRC_DATASET))
+  const { spec } = parseLaunch(graphBrowserUrl(HPRC_DATASET)!)
   assert.equal(spec.views[0]!.loc, HPRC_DATASET.landingRegion)
+})
+
+// --- a dataset with no reference-projected callset -------------------------
+//
+// mouse's graph is `minigraph -cxggs` output, which writes no P or W lines, so
+// there is nothing to deconstruct into a VCF. Everything below is about the
+// site staying correct rather than empty when that is true.
+
+// The shipped mouse dataset only carries `graphBrowser` under
+// features.pangenomeGraph, and for mouse that gates the LINEAR lanes too — all
+// three adapters ship in the graphgenomeviewer plugin.
+const mouseGraph = {
+  ...MOUSE_DATASET,
+  graphBrowser: MOUSE_DATASET.graphBrowser ?? {
+    configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
+    segmentsTrackId: 'mouse_minigraph_segments',
+    bubblesTrackId: 'mouse_minigraph_bubbles',
+    geneTrackId: 'mm39_ncbiRefSeq_ucsc',
+    allelesTrackId: 'mouse_minigraph_alleles',
+    tierTrackId: 'mouse_minigraph_tier',
+  },
+}
+
+test('a dataset with no callset says so rather than half-declaring one', () => {
+  assert.equal(MOUSE_DATASET.graphVcf, undefined)
+  assert.ok(
+    MOUSE_DATASET.noCallsetReason,
+    'and the reason is stated, since the pages show it in place of the charts',
+  )
+  // bovine's graph DOES carry path lines, which is the whole difference.
+  assert.ok(BOVINE_DATASET.graphVcf)
+  assert.equal(BOVINE_DATASET.noCallsetReason, undefined)
+})
+
+test('the reference launch omits the callset track entirely when there is none', () => {
+  const { spec } = parseLaunch(
+    graphVcfLgvUrl(MOUSE_DATASET, MOUSE_DATASET.loci[0]!),
+  )
+  // Not a trackId naming a track that does not exist, and no session track
+  // pointing at a file that was never built: the lane is simply absent.
+  assert.deepEqual(spec.views[0]!.tracks, [MOUSE_DATASET.reference.geneTrackId])
+  assert.equal(spec.sessionTracks, undefined)
+})
+
+test('an unphased callset does not ask for haplotype rows', () => {
+  const { spec } = parseLaunch(
+    graphVcfLgvUrl(BOVINE_DATASET, BOVINE_DATASET.loci[0]!),
+  )
+  const display = (
+    spec.sessionTracks?.[0]?.displays as Record<string, unknown>[] | undefined
+  )?.[0]
+  if (HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY) {
+    // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
+    // empty rows between them.
+    assert.equal(display?.renderingMode, undefined)
+  }
+})
+
+test('without a callset the primary launch is the graph configs own lanes', () => {
+  const locus = mouseGraph.loci[0]!
+  const url = locusLaunchUrl(mouseGraph, locus)!
+  const { config, spec } = parseLaunch(url)
+  assert.equal(config, mouseGraph.graphBrowser.configUrl)
+  assert.deepEqual(spec.views[0]!.tracks, [
+    'mm39_ncbiRefSeq_ucsc',
+    'mouse_minigraph_bubbles',
+    'mouse_minigraph_alleles',
+    'mouse_minigraph_segments',
+  ])
+})
+
+test('and with a callset it is still the reference view', () => {
+  const url = locusLaunchUrl(HPRC_DATASET, locus)
+  assert.equal(url, graphVcfLgvUrl(HPRC_DATASET, locus))
+})
+
+test('the lanes launch is undefined without a hosted graph config', () => {
+  const noGraph = { ...MOUSE_DATASET, graphBrowser: undefined }
+  assert.equal(graphLanesUrl(noGraph, 'chr11:1-1000'), undefined)
+  assert.equal(graphBrowserUrl(noGraph), undefined)
+  assert.equal(locusLaunchUrl(noGraph, noGraph.loci[0]!), undefined)
+})
+
+test('every dataset lands on a region a view can navigate to', () => {
+  // Commas are allowed and grouped digits are not, which is the same rule the
+  // locale test below applies: JBrowse's locstring parser strips commas only,
+  // so a hand-written `chr6:29,700,000-33,500,000` is fine and anything
+  // `toLocaleString` produced under de-DE is not.
+  for (const d of PANGENOME_DATASETS) {
+    assert.match(
+      d.landingRegion,
+      /^[A-Za-z0-9_.]+:[\d,]+-[\d,]+$/,
+      `${d.id} landing region "${d.landingRegion}"`,
+    )
+  }
+})
+
+test('a derived dataset lands on a locus its own catalogue ranked', () => {
+  // HPRC's is a hand-picked MHC overview; a derived dataset has no such
+  // knowledge, so its landing region must come out of the ranking rather than
+  // out of a constant nobody would maintain.
+  for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
+    assert.ok(
+      d.loci.some(l => locusRegion(l) === d.landingRegion),
+      `${d.id} lands on ${d.landingRegion}, which its catalogue does not name`,
+    )
+  }
+})
+
+test('a derived catalogue carries what the tier said and claims nothing else', () => {
+  for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
+    assert.ok(d.loci.length > 0, `${d.id} has a catalogue`)
+    for (const l of d.loci) {
+      const derived = l.derived
+      assert.ok(derived, `${d.id}/${l.id} is marked derived`)
+      assert.ok(derived.segments > 0, `${d.id}/${l.id} has a segment count`)
+      // The tier's only variation claim is its inversion flag, so a derived
+      // locus carries that class or none. A guessed badge would read exactly
+      // like a curated one.
+      assert.ok(
+        l.variation.every(v => v === 'inversion'),
+        `${d.id}/${l.id} claims ${l.variation.join()}`,
+      )
+    }
+    // Ranked by segments per bubble, descending — that ordering is the whole
+    // claim the catalogue makes.
+    const counts = d.loci.map(l => l.derived!.segments)
+    assert.deepEqual(
+      counts,
+      [...counts].sort((a, b) => b - a),
+    )
+  }
 })
 
 test('referenceSyntenyUrl builds a reference↔target synteny view', () => {
@@ -205,12 +349,19 @@ test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   const [lgv, graph] = spec.views
   assert.equal(lgv!.loc, 'chr21:1-46709983')
+  // `hprc_minigraph_tier`, not `hprc_tier`: the rename to one trackId shape
+  // across all three datasets landed in the config and the dataset and left
+  // this literal behind, so this assertion has been red on main since. Which
+  // is worth more than the fix — the SERVED config still says `hprc_tier`, so
+  // until `website/pangenome-config/upload.sh` runs, this launch names a track
+  // the visitor's copy does not have. `pnpm check-pangenome-assets` reports
+  // that as of 2026-09-09.
   assert.deepEqual(lgv!.tracks, [
     'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
-    'hprc_tier',
+    'hprc_minigraph_tier',
   ])
-  assert.equal(graph!.loadedTrackId, 'hprc_tier')
+  assert.equal(graph!.loadedTrackId, 'hprc_minigraph_tier')
   // the 5 Mb default would refuse the cut outright
   assert.equal(graph!.maxRegionBp, 46_709_983)
   assert.equal(graph!.layoutMode, 'auto')
