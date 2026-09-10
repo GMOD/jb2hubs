@@ -68,7 +68,7 @@ deleted — what the divergence WAS is the reason the target is what it is.
 | basename                 | `hprc-v2.1-mc-grch38`                                                                                      | `mouse-mm39-minigraph`                                     | `bovine-arsucd12-minigraph`                     | `<dataset>-<ref>-<method>`, versioned iff upstream is |
 | rGFA published beside    | no                                                                                                         | yes, 911 MB                                                | yes, 760 MB                                     | always (it is what makes the BEDs reproducible)       |
 | assembly block in config | TwoBit + `jbrowse.org/ucsc/hg38/` sidecars _(was a bgzip FASTA with **bare-numeric refnames**; see below)_ | TwoBit + `jbrowse.org/ucsc/mm39/` sidecars, `chr` refnames | TwoBit + `jbrowse.org/ucsc/bosTau9/` sidecars   | **the mouse shape** — converged                       |
-| tier trackId             | `hprc_minigraph_tier` _(the bucket still serves `hprc_tier`; see the ordering hazard below)_               | `mouse_minigraph_tier`                                     | `bovine_minigraph_tier`                         | `<p>_minigraph_tier` — converged in the tree          |
+| tier trackId             | `hprc_minigraph_tier` _(the bucket serves this too as of 2026-09-10; it briefly served `hprc_tier`)_       | `mouse_minigraph_tier`                                     | `bovine_minigraph_tier`                         | `<p>_minigraph_tier` — converged in the tree          |
 | config source of truth   | `website/pangenome-config/hprc-grch38.json`                                                                | `website/pangenome-config/mouse-mm39.json`                 | `website/pangenome-config/bovine-arsucd12.json` | all three in `website/pangenome-config/` — converged  |
 | build script             | committed in jbrowse-components `scripts/`                                                                 | `scripts/build_mouse_pangenome.sh`                         | `scripts/build_bovine_pangenome.sh`             | committed in `scripts/` — converged                   |
 
@@ -83,25 +83,36 @@ sidecar doctrine (CLAUDE.md's `MUST_BE_LOCAL` names hg38 and mm39), and all
 three references have their sidecars mirrored — `chromAlias.txt`, `chrom.sizes`
 and `ncbiRefSeq.gff.gz` probed 200 for hg38, mm39 and bosTau9.
 
-### The version drift, which is a symptom rather than an accident
+### The version drift, which was a symptom rather than an accident
 
-The tutorials moved to HPRC **v2.1**. This repo is entirely on **v2.0** — 13
-pins across three files (recounted 2026-09-10, after the fourth file's download
-table was deleted):
+_Closed 2026-09-10._ The tutorials moved to HPRC **v2.1** and this repo was
+entirely on **v2.0** — 13 pins across three files, all bumped, every v2.1
+counterpart probed first including its index. The upstream callset needed
+probing rather than substituting: v2.1 lives one directory deeper, under
+`/v2.1/<basename>/`. The 20 locus summaries were regenerated against the v2.1
+`wave` VCF (the panel is the same 232 samples, checked off both headers before
+any prose moved), and `source` now reads off `HPRC_DATASET.label` instead of
+being a hardcoded string that said v2.0 while the url above it said v2.1.
 
-- `website/pangenome-config/hprc-grch38.json` — all six track URIs
-- `website/src/components/pangenomeDataset.ts` — `graphVcf.url`, its trackId and
-  `HPRC_PORTAL.filePrefix`
-- `ucsc2jbrowse/ucscExtensions/hg38.json` — the served VCF and the allele
-  inventory
+The `hg38` and `hs1` **trackIds still say v2.0 on purpose**: they are in
+published links and saved sessions, where a renamed trackId does not error — the
+track simply never opens. The names and descriptions beside them moved; an id is
+not a claim.
 
-Both versions are live in `demos/hprc/` (v2.0 `segs.bed.gz` 6,693,943 bytes,
-v2.1 6,686,172), so nothing errors — we are just quietly serving the older
-graph, and the 8.4 MB of committed explorer summaries under
-`website/public/pangenome/` are v2.0-derived. **No gate would ever notice.**
-This is the same class as CLAUDE.md's "the plugin bundles are published from
-another repo": a config here goes stale from a push there, and push-triggered CI
-structurally cannot see it.
+Why it was allowed to persist is the part still worth holding: both versions are
+live in `demos/hprc/` (v2.0 `segs.bed.gz` 6,693,943 bytes, v2.1 6,686,172), so
+nothing errored — we were quietly serving the older graph. **No gate could ever
+have noticed**, which is the same class as CLAUDE.md's "the plugin bundles are
+published from another repo": a config here goes stale from a push there, and
+push-triggered CI structurally cannot see it. What notices now is
+`check-pangenome-assets`, which reports a newer published version as STALE, and
+which is what surfaced this.
+
+And a second gap the bump exposed: `check-pangenome-launches` read the SERVED
+config, so all four launches reported ok while the graph half of each was
+reading the v2.0 config still in the bucket. Its new `--local` answers each
+config's published url with the working-tree file, the way
+`checkConfigCompat.mjs --local` already does for the /ucsc configs.
 
 ## The structural divergence: carriage
 
