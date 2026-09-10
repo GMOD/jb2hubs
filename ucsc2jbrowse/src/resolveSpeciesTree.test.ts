@@ -200,17 +200,35 @@ describe('resolveSpeciesTreeUri', () => {
     )
   })
 
-  it('emits nothing, and remembers nothing, when upstream is having a bad day', async () => {
-    // Nothing is cached either way, so a 5xx or a stall costs one build's tree
-    // and the next build asks again -- which is the whole reason this needs no
-    // 404-vs-transient bookkeeping of its own.
-    stubFetch(responds(503))
+  it('reads the tree from hgdownload2 when the primary is having a bad day', async () => {
+    // The case that matters, and the one a bare fetch could not survive: the
+    // config is rebuilt from scratch and written whenever its text moved, so a
+    // listing that goes unanswered does not merely skip the tree, it deletes
+    // the nhLocation from the published config. Falling through to the mirror
+    // inside the same round costs no backoff at all.
+    stubFetch(target =>
+      target.includes('hgdownload2')
+        ? autoindex(listings['hg38/multiz470way'])()
+        : responds(503)(),
+    )
     assert.equal(
       await resolveSpeciesTreeUri({
         alignmentUri: `${base}/hg38/multiz470way/multiz470way.bigMaf`,
       }),
-      undefined,
+      `${base}/hg38/multiz470way/hg38.470way.nh`,
     )
+    assert.deepEqual(calls, [
+      `${base}/hg38/multiz470way/`,
+      `${base.replace('hgdownload.soe', 'hgdownload2.soe')}/hg38/multiz470way/`,
+    ])
+  })
+
+  it('emits nothing, and remembers nothing, when both hosts are down', async () => {
+    // Nothing is cached either way, so a stall costs one build's tree and the
+    // next build asks again -- which is the whole reason this needs no
+    // 404-vs-transient bookkeeping of its own. It must return rather than
+    // throw: one unreachable directory listing may not fail a 238-assembly
+    // config build.
     stubFetch(throws('ETIMEDOUT'))
     assert.equal(
       await resolveSpeciesTreeUri({
@@ -218,6 +236,8 @@ describe('resolveSpeciesTreeUri', () => {
       }),
       undefined,
     )
+    // Both hosts, both rounds: nothing was treated as a definitive answer.
+    assert.equal(calls.length, 4)
   })
 
   it('touches no network with CHECK_404 unset', async () => {

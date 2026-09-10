@@ -53,6 +53,8 @@
  * from. The gate is what keeps the cost at one small request per real
  * alignment.
  */
+import { HttpError, myfetchtextWithRetry } from 'hubtools'
+
 const ALIGNMENT_DIR = /\d+way$/
 
 const OTHER_VOCABULARY = /commonname|scientificname|taxid/i
@@ -79,26 +81,50 @@ function parseAutoindex(html: string) {
     .filter(href => !href.startsWith('?') && !href.startsWith('#'))
 }
 
+// Read through myfetchtextWithRetry, like every other hgdownload read in this
+// pipeline, rather than through a bare fetch. That is three rounds and the
+// hgdownload2 mirror on each, and it matters because a transient failure here
+// is not neutral: the config is rebuilt from scratch every run and written
+// whenever its text changed, so one unanswered listing DELETES the track's
+// nhLocation from the published config. On 2026-09-09 exactly that happened --
+// `TypeError: fetch failed` on hg38/multiz470way -- and the only reason no
+// config moved is that hg38's two trees are also pinned by hand in
+// ucscMixins/hg38.json, which is a backstop for two of the seven bigMaf tracks
+// in the corpus and none of the rest.
+//
+// The 404-vs-transient split stays, and is now also what stops the retry: a
+// directory upstream does not publish answers the same way three times.
+//
+// Two rounds rather than the default three, because the consequences are not
+// the same size. A hub.txt that loses every attempt fails the whole config
+// build, which is why buildConfigs.ts spends the full budget on it; losing a
+// species tree costs one MafTrack its sidebar. Two rounds over both hosts is
+// four chances in two seconds, against a host this repo is deliberately gentle
+// with -- and it is three more than the single attempt that dropped the tree.
+const LISTING_ATTEMPTS = 2
+
 async function listUcscDirectory(dirUrl: string) {
-  const response = await fetch(`${dirUrl}/`)
-  if (response.ok) {
-    return parseAutoindex(await response.text())
-  }
-  // Same 404-vs-transient split the rest of the pipeline draws, for a weaker
-  // reason: nothing here is cached, so either way the track ships without a
-  // tree and the next build asks again. Saying which happened is the point —
-  // "UCSC publishes no tree for this alignment" and "hgdownload was down" look
-  // identical in the config.
-  if (response.status === 404 || response.status === 410) {
-    console.error(
-      `No alignment directory listing (${response.status}): ${dirUrl}`,
+  try {
+    return parseAutoindex(
+      await myfetchtextWithRetry(`${dirUrl}/`, LISTING_ATTEMPTS),
     )
-  } else {
-    console.error(
-      `Could not list the alignment directory (${response.status}), no species tree this run: ${dirUrl}`,
-    )
+  } catch (error) {
+    // "UCSC publishes no tree for this alignment" and "hgdownload was down"
+    // look identical in the config, so say which happened.
+    if (
+      error instanceof HttpError &&
+      (error.status === 404 || error.status === 410)
+    ) {
+      console.error(
+        `No alignment directory listing (${error.status}): ${dirUrl}`,
+      )
+    } else {
+      console.error(
+        `Could not list the alignment directory, no species tree this run: ${dirUrl} (${error})`,
+      )
+    }
+    return undefined
   }
-  return undefined
 }
 
 /**
@@ -120,14 +146,9 @@ export async function resolveSpeciesTreeUri({
   if (!ALIGNMENT_DIR.test(dirUrl.slice(dirUrl.lastIndexOf('/') + 1))) {
     return undefined
   }
-  try {
-    const names = await listUcscDirectory(dirUrl)
-    const file = names ? pickSpeciesTreeFile(names) : undefined
-    return file ? `${dirUrl}/${file}` : undefined
-  } catch (error) {
-    console.error(
-      `Could not reach upstream, no species tree this run: ${dirUrl} (${error})`,
-    )
-    return undefined
-  }
+  // No try/catch here any more: listUcscDirectory owns every failure, and
+  // reports which kind it was. A second catch could only say less.
+  const names = await listUcscDirectory(dirUrl)
+  const file = names ? pickSpeciesTreeFile(names) : undefined
+  return file ? `${dirUrl}/${file}` : undefined
 }
