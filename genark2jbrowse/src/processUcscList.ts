@@ -2,6 +2,8 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
 
+import { FETCH_TIMEOUT_MS } from 'hubtools'
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -19,7 +21,9 @@ const outputPath = path.join(
 )
 
 try {
-  const response = await fetch(ucscApiUrl)
+  const response = await fetch(ucscApiUrl, {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  })
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`)
   }

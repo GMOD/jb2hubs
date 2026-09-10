@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { afterEach, describe, it } from 'node:test'
 
-import { myfetchtextWithRetry } from './util.ts'
+import { HttpError, myfetch, myfetchtextWithRetry } from './util.ts'
 
 const realFetch = globalThis.fetch
 
@@ -18,6 +18,26 @@ function stubFetch(asked: string[], respond: (url: string) => string) {
     return new Response(respond(url))
   }
 }
+
+describe('myfetch', () => {
+  // The failure this guards is a server that accepts the connection and then
+  // says nothing. A bare `fetch` never returns from that -- measured at 45s and
+  // still hanging on node 24.2.0 -- so the retry and the hgdownload2 fallback
+  // below it are unreachable during the one outage they exist for. Without the
+  // deadline this test does not fail, it hangs, which is the point.
+  it('gives up on a host that accepts the connection and never answers', async () => {
+    globalThis.fetch = async (
+      _input: string | URL | Request,
+      init?: RequestInit,
+    ) =>
+      new Promise<Response>((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => {
+          reject(new Error('aborted'))
+        })
+      })
+    await assert.rejects(myfetch('https://hgdownload.soe.ucsc.edu/hub.txt', 50))
+  })
+})
 
 describe('myfetchtextWithRetry', () => {
   it('reads hgdownload2 when the primary refuses the connection', async () => {
@@ -46,6 +66,53 @@ describe('myfetchtextWithRetry', () => {
       'hub',
     )
     assert.deepEqual(asked, ['https://hgdownload.soe.ucsc.edu/hub.txt'])
+  })
+
+  it('stops after one round when both hosts say the file is gone', async () => {
+    // A retired hub is not a bad day: asking a 404 three times over two hosts
+    // was six requests and six seconds of backoff to be told the same thing.
+    const asked: string[] = []
+    globalThis.fetch = async (input: string | URL | Request) => {
+      asked.push(String(input))
+      return new Response('gone', { status: 404 })
+    }
+    const started = Date.now()
+    await assert.rejects(
+      myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hubs/gone/hub.txt'),
+      (error: unknown) => error instanceof HttpError && error.status === 404,
+    )
+    assert.equal(asked.length, 2)
+    assert.ok(Date.now() - started < 1000)
+  })
+
+  it('keeps retrying a 5xx, which is upstream having a bad day', async () => {
+    const asked: string[] = []
+    globalThis.fetch = async (input: string | URL | Request) => {
+      asked.push(String(input))
+      return new Response('busy', { status: 503 })
+    }
+    await assert.rejects(
+      myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 2),
+    )
+    assert.equal(asked.length, 4)
+  })
+
+  it('does not take a mirror 404 as proof while the primary is unreachable', async () => {
+    // The mirror saying "gone" and the primary saying nothing at all is not the
+    // same as both saying gone, so the round does not count as answered.
+    const asked: string[] = []
+    globalThis.fetch = async (input: string | URL | Request) => {
+      const url = String(input)
+      asked.push(url)
+      if (url.includes('hgdownload2')) {
+        return new Response('gone', { status: 404 })
+      }
+      throw new Error('connect ECONNREFUSED')
+    }
+    await assert.rejects(
+      myfetchtextWithRetry('https://hgdownload.soe.ucsc.edu/hub.txt', 2),
+    )
+    assert.equal(asked.length, 4)
   })
 
   it('has no mirror for another host', async () => {

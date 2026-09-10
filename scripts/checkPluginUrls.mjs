@@ -39,6 +39,15 @@ const { values } = parseArgs({
 
 const root = path.join(import.meta.dirname, '..')
 
+// Every fetch below gets a deadline, like checkTrackUrls.mjs and
+// checkSidecarUrls.mjs already do. This one runs in lint.yml and in run.sh's
+// pre-upload gate, and the failure it is exposed to is a stall rather than an
+// error -- a connection that completes and then never answers, which node's
+// fetch waits on forever. Without this, a bad afternoon at the CDN is a CI job
+// that hangs until the runner's own limit kills it rather than a check that
+// fails and says why.
+const TIMEOUT_MS = 30_000
+
 // Configs that compose plugin lists at request time, so they can drift from
 // anything on disk. The merge lambda keeps its own plugin list in
 // aws/config-merger, which is exactly why it belongs here.
@@ -171,7 +180,9 @@ function collectFromDisk() {
 async function collectFromRemote(found) {
   const failures = []
   for (const url of REMOTE_CONFIGS) {
-    const res = await fetch(url)
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    })
     if (res.ok) {
       const config = await res.json()
       for (const p of pluginsOf(config)) {
@@ -202,7 +213,9 @@ function definesGlobal(body, name) {
 async function checkUrl(name, url) {
   const result = { name, url, legacy: isLegacy(url), offStore: isOffStore(url) }
   try {
-    const res = await fetch(url)
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    })
     result.status = res.status
     result.contentType = res.headers.get('content-type') ?? ''
     const body = await res.text()
@@ -327,7 +340,9 @@ if (orphans.length > 0) {
 //     therefore able to be the stale v1 shape again
 const refProblems = []
 if (refs.size > 0) {
-  const res = await fetch(PLUGIN_STORE_URL)
+  const res = await fetch(PLUGIN_STORE_URL, {
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  })
   if (!res.ok) {
     refProblems.push(`plugin store unreachable: HTTP ${res.status}`)
   } else {

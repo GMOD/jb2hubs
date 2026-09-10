@@ -1,6 +1,8 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+import { FETCH_TIMEOUT_MS } from 'hubtools'
+
 import { fetchWikipediaImage, getHubBasePath } from './util.ts'
 // Centralized taxon-level image fetcher.
 //
@@ -59,7 +61,10 @@ interface SparqlResponse {
 async function fetchSparql(query: string): Promise<SparqlResponse> {
   const url = `${SPARQL_ENDPOINT}?query=${encodeURIComponent(query)}&format=json`
   for (let attempt = 0; attempt < 3; attempt++) {
-    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT } })
+    const res = await fetch(url, {
+      headers: { 'User-Agent': USER_AGENT },
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    })
     if (res.ok) {
       return res.json() as Promise<SparqlResponse>
     }

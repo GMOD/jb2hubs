@@ -1,5 +1,7 @@
 import fs from 'fs'
 
+import { FETCH_TIMEOUT_MS } from 'hubtools'
+
 import {
   localChromSizesPath,
   readMitoCache,
@@ -37,6 +39,7 @@ async function fetchMitoCodes(taxIds: number[]) {
     const res = await fetch(
       'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi',
       {
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -123,7 +126,9 @@ async function fetchMitoContigs(
   if (!/^https?:\/\//.test(chromSizes)) {
     return { contigs: undefined, fetched: false }
   }
-  const res = await fetch(chromSizes)
+  const res = await fetch(chromSizes, {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  })
   return {
     contigs: res.ok ? mitoContigsFromChromSizes(await res.text()) : undefined,
     fetched: true,

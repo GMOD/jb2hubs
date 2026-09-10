@@ -11,15 +11,69 @@ export function resolve(uri: string, baseUri: string | URL) {
   return new URL(uri, baseUri).href
 }
 
-export async function myfetch(url: string) {
-  const res = await fetch(url)
+// hgdownload's documented failure mode is a STALL, not an error: the TCP
+// handshake completes, the TLS Client Hello goes out, and no Server Hello ever
+// comes back. node's fetch has no deadline of its own for that -- measured on
+// node 24.2.0 against a socket that accepts the connection and never answers, a
+// bare `fetch` was still hanging at 45 seconds -- so without this the retry
+// loop in myfetchtextWithRetry never gets to retry and the hgdownload2 fallback
+// beneath it is never asked, during exactly the outage both were written for.
+// This is the same deadline website/src/lib/ucscLiveness.ts carries, for the
+// same reason: a probe with no timeout hangs like the thing it is diagnosing.
+//
+// Every caller here reads a small text file -- hub.txt, genomes.txt,
+// trackDb.txt, a GenArk category list -- and the largest of those is a few MB
+// that arrives in about two seconds, so a minute is a deadline only a stall can
+// reach.
+//
+// Exported because it is a policy, not a local constant: every fetch in either
+// pipeline talks to hgdownload, api.genome.ucsc.edu, eutils or wikipedia, all
+// of which can stall, and one number to change beats six. mirrorSidecars.ts and
+// the ucsc/genark probes all read it.
+export const FETCH_TIMEOUT_MS = 60_000
+
+// A response that arrived and said no, as distinct from a request that never
+// got an answer. That is the same 404-vs-transient split checkIfFileAccessible,
+// mirrorSidecars and the GenArk GFF downloader each draw for themselves, and
+// carrying the status on the error is what lets a caller draw it without
+// re-parsing a message or spending a second request to ask again.
+export class HttpError extends Error {
+  // Plain fields, not parameter properties: everything here runs under node's
+  // --experimental-strip-types, which rejects those outright.
+  status: number
+  url: string
+
+  constructor(status: number, url: string) {
+    super(`HTTP ${status} fetching ${url}`)
+    this.name = 'HttpError'
+    this.status = status
+    this.url = url
+  }
+}
+
+// Whether upstream has answered the question, so asking again would only get
+// the same answer. 408 and 429 are the two 4xx that explicitly mean "ask
+// again"; everything else in that range is a decision, and a 5xx or a thrown
+// connection error is not an answer at all.
+function isDefinitive(error: unknown) {
+  return (
+    error instanceof HttpError &&
+    error.status >= 400 &&
+    error.status < 500 &&
+    error.status !== 408 &&
+    error.status !== 429
+  )
+}
+
+export async function myfetch(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
+  const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) })
   if (!res.ok) {
-    throw new Error(`HTTP ${res.status} fetching ${url}`)
+    throw new HttpError(res.status, url)
   }
   return res
 }
-export async function myfetchtext(url: string) {
-  const res = await myfetch(url)
+export async function myfetchtext(url: string, timeoutMs = FETCH_TIMEOUT_MS) {
+  const res = await myfetch(url, timeoutMs)
   return res.text()
 }
 
@@ -93,12 +147,21 @@ export async function myfetchtextWithRetry(url: string, attempts = 3) {
     if (i > 0) {
       await new Promise(r => setTimeout(r, 2000 * i))
     }
+    // Only a round where EVERY host answered definitively ends the loop. A
+    // retired hub costs two requests instead of six and none of the 6s of
+    // backoff -- but a mirror 404 while the primary is unreachable is not
+    // evidence the file is gone, so both have to agree before we stop asking.
+    let answered = true
     for (const candidate of urls) {
       try {
         return await myfetchtext(candidate)
       } catch (e) {
         lastError = e
+        answered = answered && isDefinitive(e)
       }
+    }
+    if (answered) {
+      break
     }
   }
   throw lastError

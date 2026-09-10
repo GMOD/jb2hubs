@@ -1,7 +1,7 @@
 // Re-export utilities from hubtools for backward compatibility
 export { readJSON, readJSONAsync, requireArg, writeJSON } from 'hubtools'
 
-import { accessionChunks } from 'hubtools'
+import { FETCH_TIMEOUT_MS, accessionChunks } from 'hubtools'
 
 export function getHubBasePath(accession: string): string {
   const chunks = accessionChunks(accession)
@@ -26,7 +26,9 @@ async function getWikipediaMainImage(
     redirects: '1',
   }
   const url = `${apiUrl}?${new URLSearchParams(params).toString()}`
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+  })
   if (!response.ok) {
     return undefined
   }

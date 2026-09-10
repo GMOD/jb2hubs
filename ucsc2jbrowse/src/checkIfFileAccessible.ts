@@ -1,5 +1,7 @@
 import fs from 'fs'
 
+import { FETCH_TIMEOUT_MS } from 'hubtools'
+
 import type { FileAccessCache } from './types.ts'
 
 const THREE_MONTHS_MS = 90 * 24 * 60 * 60 * 1000 // 90 days in milliseconds
@@ -146,7 +148,17 @@ export async function checkIfFileAccessible({
     }
 
     try {
-      const response = await fetch(key, { method: 'HEAD' })
+      // The catch below is the right answer to a stalled hgdownload -- keep the
+      // track, cache nothing -- and without a deadline it was unreachable.
+      // hgdownload's documented failure is a connection that completes and then
+      // never answers, and node's fetch waits on that indefinitely, so a probe
+      // that should have taken 200ms hangs the whole config build instead. This
+      // is the busiest fetch in either pipeline: one per big-file track on a
+      // cold cache.
+      const response = await fetch(key, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      })
 
       if (response.ok) {
         saveCheckResult(assembly, key, false, trackName)

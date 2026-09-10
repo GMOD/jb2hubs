@@ -1,6 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 
+import { FETCH_TIMEOUT_MS } from './util.ts'
+
 //
 // Mirroring the assembly sidecar files (chrom.sizes, chromAlias, cytoBand)
 // alongside the config that names them.
@@ -157,7 +159,7 @@ export class SidecarGoneError extends Error {}
 export async function downloadToFile(
   url: string,
   dest: string,
-  { retries = 3, timeoutMs = 60_000 } = {},
+  { retries = 3, timeoutMs = FETCH_TIMEOUT_MS } = {},
 ) {
   let lastError: unknown
   for (let attempt = 0; attempt < retries; attempt++) {
