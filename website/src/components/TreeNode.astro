@@ -19,35 +19,33 @@ const speciesInfo = node.accession
 const stripe = node.depth % 2 === 0 ? 'even' : 'odd'
 ---
 
-{
-  children.length > 0 ? (
-    <details
-      class="tree-node"
-      open
-    >
-      <summary class:list={['tree-summary', stripe]}>
-        <TreeNodeLabel
-          node={node}
-          speciesInfo={speciesInfo}
-        />
-      </summary>
-      {children.map(child => (
-        <Astro.self
-          node={child}
-          speciesDataMap={speciesDataMap}
-        />
-      ))}
-    </details>
-  ) : (
-    <div class:list={['tree-leaf', stripe]}>
-      <span class="tree-bullet">•</span>
+{children.length > 0 ? (
+  <details
+    class="tree-node"
+    open
+  >
+    <summary class:list={['tree-summary', stripe]}>
       <TreeNodeLabel
         node={node}
         speciesInfo={speciesInfo}
       />
-    </div>
-  )
-}
+    </summary>
+    {children.map(child => (
+      <Astro.self
+        node={child}
+        speciesDataMap={speciesDataMap}
+      />
+    ))}
+  </details>
+) : (
+  <div class:list={['tree-leaf', stripe]}>
+    <span class="tree-bullet">•</span>
+    <TreeNodeLabel
+      node={node}
+      speciesInfo={speciesInfo}
+    />
+  </div>
+)}
 
 <style>
   .tree-node {

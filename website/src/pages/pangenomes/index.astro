@@ -29,8 +29,7 @@ const [hprc, mouse, bovine] = PANGENOME_DATASETS
     </p>
     <p class="portal-contents">
       On this page: <a href="#hprc">Human — HPRC</a> ·
-      <a href="#mouse">Mouse strains</a> ·
-      <a href="#bovine">Cattle</a> · and the
+      <a href="#mouse">Mouse strains</a> ·<a href="#bovine">Cattle</a> · and the
       <a href="/pangenomes/explorer">variable loci explorer</a>.
     </p>
 
@@ -49,60 +48,53 @@ const [hprc, mouse, bovine] = PANGENOME_DATASETS
       </a>
     </div>
 
-    {
-      hprc && (
-        <PangenomeSection dataset={hprc}>
-          <p>
-            The{' '}
-            <a href="https://humanpangenome.org/">
-              Human Pangenome Reference Consortium
-            </a>{' '}
-            builds a human pangenome reference from phased diploid assemblies of
-            diverse human populations: 47 in the{' '}
-            <a href="https://www.nature.com/articles/s41586-023-05896-x">
-              Nature 2023 draft
-            </a>
-            , 232 in release 2, which is the release this section serves. It is
-            the one graph of the three with a haplotype-resolved callset beside
-            it, so it is the one that can say who carries what.
-          </p>
-        </PangenomeSection>
-      )
-    }
+    {hprc && (
+      <PangenomeSection dataset={hprc}>
+        <p>
+          The{' '}
+          <a href="https://humanpangenome.org/">
+            Human Pangenome Reference Consortium
+          </a>{' '}
+          builds a human pangenome reference from phased diploid assemblies of
+          diverse human populations: 47 in the{' '}
+          <a href="https://www.nature.com/articles/s41586-023-05896-x">
+            Nature 2023 draft
+          </a>
+          , 232 in release 2, which is the release this section serves. It is
+          the one graph of the three with a haplotype-resolved callset beside
+          it, so it is the one that can say who carries what.
+        </p>
+      </PangenomeSection>
+    )}
 
-    {
-      mouse && (
-        <PangenomeSection dataset={mouse}>
-          <p>
-            A pangenome graph of the inbred and wild-derived mouse strains,
-            built here with <code>minigraph</code> over GRCm39 and the Mouse
-            Genomes Project assemblies as rehosted in UCSC GenArk. No pangenome
-            graph had been published for this panel, so unlike the other two on
-            this page it is constructed rather than redistributed. The
-            individual strain assemblies are browsable on their own{' '}
-            <a href="/search?q=Mus+musculus">accession pages</a>.
-          </p>
-        </PangenomeSection>
-      )
-    }
+    {mouse && (
+      <PangenomeSection dataset={mouse}>
+        <p>
+          A pangenome graph of the inbred and wild-derived mouse strains, built
+          here with <code>minigraph</code> over GRCm39 and the Mouse Genomes
+          Project assemblies as rehosted in UCSC GenArk. No pangenome graph had
+          been published for this panel, so unlike the other two on this page it
+          is constructed rather than redistributed. The individual strain
+          assemblies are browsable on their own{' '}
+          <a href="/search?q=Mus+musculus">accession pages</a>.
+        </p>
+      </PangenomeSection>
+    )}
 
-    {
-      bovine && (
-        <PangenomeSection dataset={bovine}>
-          <p>
-            The bovine super-pangenome of{' '}
-            <a href="https://doi.org/10.1186/s13059-023-02969-y">
-              Leonard et al. 2023
-            </a>
-            , projected onto ARS-UCD1.2. The panel is unusually wide for a
-            livestock pangenome — taurine and indicine breeds plus yak, bison
-            and gaur — and unlike the mouse graph above, its published files
-            carry one path per assembly, so a callset can be projected out of
-            it.
-          </p>
-        </PangenomeSection>
-      )
-    }
+    {bovine && (
+      <PangenomeSection dataset={bovine}>
+        <p>
+          The bovine super-pangenome of{' '}
+          <a href="https://doi.org/10.1186/s13059-023-02969-y">
+            Leonard et al. 2023
+          </a>
+          , projected onto ARS-UCD1.2. The panel is unusually wide for a
+          livestock pangenome — taurine and indicine breeds plus yak, bison and
+          gaur — and unlike the mouse graph above, its published files carry one
+          path per assembly, so a callset can be projected out of it.
+        </p>
+      </PangenomeSection>
+    )}
   </Container>
 </Layout>
 

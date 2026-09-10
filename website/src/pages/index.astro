@@ -13,9 +13,7 @@ import '../styles/common-table.css'
 const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
 ---
 
-<Layout
-  description="Browse and search over 50,000 genome assemblies from UCSC GenArk and the UCSC genome browser, each converted into a JBrowse 2 instance you can open in one click."
->
+<Layout description="Browse and search over 50,000 genome assemblies from UCSC GenArk and the UCSC genome browser, each converted into a JBrowse 2 instance you can open in one click.">
   <Container>
     <h1>JBrowse 2 genome hubs</h1>
 
@@ -34,26 +32,24 @@ const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
             </tr>
           </thead>
           <tbody>
-            {
-              Object.entries(list.ucscGenomes)
-                .filter(([key]) => FEATURED_DBS.has(key))
-                .map(([key, val]) => (
-                  <tr>
-                    <td>
-                      {key} (<a href={`/ucsc/${key}`}>info</a>)
-                    </td>
-                    <td>{val.scientificName}</td>
-                    <td>{val.organism}</td>
-                    <td>{val.description}</td>
-                    <td>
-                      <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
-                    </td>
-                    <td>
-                      <a href={ucscBrowserUrl(key)}>UCSC</a>
-                    </td>
-                  </tr>
-                ))
-            }
+            {Object.entries(list.ucscGenomes)
+              .filter(([key]) => FEATURED_DBS.has(key))
+              .map(([key, val]) => (
+                <tr>
+                  <td>
+                    {key} (<a href={`/ucsc/${key}`}>info</a>)
+                  </td>
+                  <td>{val.scientificName}</td>
+                  <td>{val.organism}</td>
+                  <td>{val.description}</td>
+                  <td>
+                    <a href={jbrowseUrl(ucscConfigPath(key))}>JBrowse</a>
+                  </td>
+                  <td>
+                    <a href={ucscBrowserUrl(key)}>UCSC</a>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -76,10 +72,11 @@ const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
       <p>
         We also created JBrowse 2 instances based on the UCSC GenArk browser
         resources, which is an effort to bulk create genome browsers for
-        numerous plant, animal, and microbial species. See <a
-          href="https://hgdownload.soe.ucsc.edu/hubs/"
-          >https://hgdownload.soe.ucsc.edu/hubs/</a
-        > for more info.
+        numerous plant, animal, and microbial species. See{' '}
+        <a href="https://hgdownload.soe.ucsc.edu/hubs/">
+          https://hgdownload.soe.ucsc.edu/hubs/
+        </a>{' '}
+        for more info.
       </p>
       <GenArk />
     </div>
@@ -99,43 +96,38 @@ const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
       </ul>
     </div>
 
-    {
-      features.pangenome && (
-        <>
-          <div>
-            <h2>Human Pangenome Reference Consortium (HPRC)</h2>
-            <p>
-              232 diploid human genome assemblies (464 haplotypes) from HPRC
-              release 2, representing diverse global populations, with the
-              release 2 Minigraph-Cactus graph against GRCh38 and CHM13.
-            </p>
-            <ul>
-              <li>
-                <a href="/pangenomes#hprc">
-                  Browse HPRC assemblies and pangenome graphs
-                </a>
-              </li>
-            </ul>
-          </div>
+    {features.pangenome && (
+      <>
+        <div>
+          <h2>Human Pangenome Reference Consortium (HPRC)</h2>
+          <p>
+            232 diploid human genome assemblies (464 haplotypes) from HPRC
+            release 2, representing diverse global populations, with the release
+            2 Minigraph-Cactus graph against GRCh38 and CHM13.
+          </p>
+          <ul>
+            <li>
+              <a href="/pangenomes#hprc">
+                Browse HPRC assemblies and pangenome graphs
+              </a>
+            </li>
+          </ul>
+        </div>
 
-          <div>
-            <h2>Mouse strain assemblies</h2>
-            <p>
-              JBrowse 2 instances for inbred mouse strain assemblies from the
-              UCSC Mouse Strains Hub (16 strains, mm10-based) and the Ensembl
-              Mouse Genomes Project (18 strains, newer assemblies including two
-              T2T).
-            </p>
-            <ul>
-              <li>
-                <a href="/pangenomes#mouse">
-                  Browse all mouse strain assemblies
-                </a>
-              </li>
-            </ul>
-          </div>
-        </>
-      )
-    }
+        <div>
+          <h2>Mouse strain assemblies</h2>
+          <p>
+            JBrowse 2 instances for inbred mouse strain assemblies from the UCSC
+            Mouse Strains Hub (16 strains, mm10-based) and the Ensembl Mouse
+            Genomes Project (18 strains, newer assemblies including two T2T).
+          </p>
+          <ul>
+            <li>
+              <a href="/pangenomes#mouse">Browse all mouse strain assemblies</a>
+            </li>
+          </ul>
+        </div>
+      </>
+    )}
   </Container>
 </Layout>

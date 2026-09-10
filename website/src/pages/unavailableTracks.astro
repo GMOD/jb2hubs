@@ -84,21 +84,19 @@ function formatDate(timestamp: number): string {
 >
   <Container>
     <h3>Unavailable tracks</h3>
-    {
-      dataBeingRegenerated && (
-        <p>
-          The pipeline is regenerating this list; it is incomplete until the
-          next site build.
-        </p>
-      )
-    }
+    {dataBeingRegenerated && (
+      <p>
+        The pipeline is regenerating this list; it is incomplete until the next
+        site build.
+      </p>
+    )}
     <p>
       This is a list of tracks that are available at UCSC, but which we were not
-      able to download, generally due to licensing restrictions. See <a
-        href="https://genome.ucsc.edu/license/"
-      >
+      able to download, generally due to licensing restrictions. See{' '}
+      <a href="https://genome.ucsc.edu/license/">
         https://genome.ucsc.edu/license/
-      </a> for more info. Please get in touch if you are interested in seeing these
+      </a>{' '}
+      for more info. Please get in touch if you are interested in seeing these
       tracks and maybe something can be done.
     </p>
 
@@ -112,29 +110,25 @@ function formatDate(timestamp: number): string {
         </tr>
       </thead>
       <tbody>
-        {
-          files.map((file, index) => (
-            <tr>
-              <td>{index + 1}</td>
-              <td>{file.url}</td>
-              <td>{file.trackName ?? '-'}</td>
-              <td>{formatDate(file.lastChecked)}</td>
-            </tr>
-          ))
-        }
+        {files.map((file, index) => (
+          <tr>
+            <td>{index + 1}</td>
+            <td>{file.url}</td>
+            <td>{file.trackName ?? '-'}</td>
+            <td>{formatDate(file.lastChecked)}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
 
     <h3 style="margin-top: 3rem;">Filtered tracks</h3>
     <p>
       Some tracks were intentionally excluded because they require specialized
-      handling or because they would 'bloat' the config. {
-        removedTracks.length.toLocaleString()
-      } tracks are filtered across {assemblyRows.length} assemblies, for {
-        reasonRows.length
-      } reasons. If you would like to see any of these tracks added, please{' '}
-      <a href="https://jbrowse.org/jb2/contact/">contact us</a>{' '}
-      or{' '}
+      handling or because they would 'bloat' the config.{' '}
+      {removedTracks.length.toLocaleString()} tracks are filtered across{' '}
+      {assemblyRows.length} assemblies, for {reasonRows.length} reasons. If you
+      would like to see any of these tracks added, please{' '}
+      <a href="https://jbrowse.org/jb2/contact/">contact us</a> or{' '}
       <a href="https://github.com/GMOD/jb2hubs">open an issue here</a>.
     </p>
 
@@ -148,15 +142,13 @@ function formatDate(timestamp: number): string {
         </tr>
       </thead>
       <tbody>
-        {
-          reasonRows.map(([reason, { tracks, assemblies }]) => (
-            <tr>
-              <td>{reason}</td>
-              <td>{tracks.toLocaleString()}</td>
-              <td>{assemblies.size}</td>
-            </tr>
-          ))
-        }
+        {reasonRows.map(([reason, { tracks, assemblies }]) => (
+          <tr>
+            <td>{reason}</td>
+            <td>{tracks.toLocaleString()}</td>
+            <td>{assemblies.size}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
 
@@ -169,25 +161,23 @@ function formatDate(timestamp: number): string {
         </tr>
       </thead>
       <tbody>
-        {
-          assemblyRows.map(([assembly, tracks]) => (
-            <tr>
-              <td>
-                <a href={`/ucsc/${assembly}`}>{assembly}</a>
-              </td>
-              <td>{tracks.toLocaleString()}</td>
-            </tr>
-          ))
-        }
+        {assemblyRows.map(([assembly, tracks]) => (
+          <tr>
+            <td>
+              <a href={`/ucsc/${assembly}`}>{assembly}</a>
+            </td>
+            <td>{tracks.toLocaleString()}</td>
+          </tr>
+        ))}
       </tbody>
     </table>
 
     <p>
       The full per-track list lives in{' '}
-      <a
-        href="https://github.com/GMOD/jb2hubs/blob/main/ucsc2jbrowse/removedTracks.json"
-        >removedTracks.json</a
-      >.
+      <a href="https://github.com/GMOD/jb2hubs/blob/main/ucsc2jbrowse/removedTracks.json">
+        removedTracks.json
+      </a>
+      .
     </p>
   </Container>
 </Layout>

@@ -205,16 +205,14 @@ const hasAssemblyDetails =
   <Container>
     <UcscStatusBanner client:idle />
     <h1>{scientificName}</h1>
-    {
-      ncbiMissing ? (
-        <p>
-          <em>
-            NCBI metadata not yet available for this assembly. Some details may
-            be missing.
-          </em>
-        </p>
-      ) : null
-    }
+    {ncbiMissing ? (
+      <p>
+        <em>
+          NCBI metadata not yet available for this assembly. Some details may be
+          missing.
+        </em>
+      </p>
+    ) : null}
     <div class={styles.identity}>
       <dl class={styles.statsTable}>
         <dt>Accession</dt>
@@ -225,85 +223,68 @@ const hasAssemblyDetails =
         <dd>{organism}</dd>
         <dt>TaxonID</dt>
         <dd>
-          <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> — <a href={taxonomyUrl}
-            >NCBI taxonomy</a
-          >
+          <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> —{' '}
+          <a href={taxonomyUrl}>NCBI taxonomy</a>
         </dd>
-        {
-          seqReleaseDate ? (
-            <>
-              <dt>Release date</dt>
-              <dd>{seqReleaseDate}</dd>
-            </>
-          ) : null
-        }
-        {
-          assemblyStatus || assemblyType ? (
-            <>
-              <dt>Assembly</dt>
-              <dd>
-                {[assemblyStatus, assemblyType].filter(Boolean).join(', ')}
-              </dd>
-            </>
-          ) : null
-        }
-        {
-          ncbiRefSeqCategory === 'reference genome' ? (
-            <>
-              <dt>NCBI assembly status</dt>
-              <dd>
-                Designated Reference <OrangeStar />
-              </dd>
-            </>
-          ) : null
-        }
-        {
-          suppressed ? (
-            <>
-              <dt>NCBI assembly status</dt>
-              <dd>
-                RefSeq Suppressed <RedX />
-                {suppressionReason ? <> — {suppressionReason}</> : null}
-              </dd>
-            </>
-          ) : null
-        }
-        {
-          genomeNotes?.length ? (
-            <>
-              <dt>NCBI quality notes</dt>
-              <dd>{genomeNotes.join('; ')}</dd>
-            </>
-          ) : null
-        }
+        {seqReleaseDate ? (
+          <>
+            <dt>Release date</dt>
+            <dd>{seqReleaseDate}</dd>
+          </>
+        ) : null}
+        {assemblyStatus || assemblyType ? (
+          <>
+            <dt>Assembly</dt>
+            <dd>{[assemblyStatus, assemblyType].filter(Boolean).join(', ')}</dd>
+          </>
+        ) : null}
+        {ncbiRefSeqCategory === 'reference genome' ? (
+          <>
+            <dt>NCBI assembly status</dt>
+            <dd>
+              Designated Reference <OrangeStar />
+            </dd>
+          </>
+        ) : null}
+        {suppressed ? (
+          <>
+            <dt>NCBI assembly status</dt>
+            <dd>
+              RefSeq Suppressed <RedX />
+              {suppressionReason ? <> — {suppressionReason}</> : null}
+            </dd>
+          </>
+        ) : null}
+        {genomeNotes?.length ? (
+          <>
+            <dt>NCBI quality notes</dt>
+            <dd>{genomeNotes.join('; ')}</dd>
+          </>
+        ) : null}
       </dl>
-      {
-        imageUrl ? (
-          <figure class={styles.figure}>
-            <img
-              src={imageUrl}
-              alt={`${scientificName}${organism ? ` (${organism})` : ''}`}
-              class={styles.image}
-              loading="lazy"
-              decoding="async"
-            />
-            <figcaption>
-              {pageUrl ? <a href={pageUrl}>(source)</a> : null}
-            </figcaption>
-          </figure>
-        ) : null
-      }
+      {imageUrl ? (
+        <figure class={styles.figure}>
+          <img
+            src={imageUrl}
+            alt={`${scientificName}${organism ? ` (${organism})` : ''}`}
+            class={styles.image}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>
+            {pageUrl ? <a href={pageUrl}>(source)</a> : null}
+          </figcaption>
+        </figure>
+      ) : null}
     </div>
     <div>
       <h2>Genome browsers</h2>
-      {
-        ucscDbName && (
-          <p>
-            See <a href={`/ucsc/${ucscDbName}`}>{ucscDbName}</a> for our full
-            JBrowse instance of this assembly.
-          </p>
-        )
-      }
+      {ucscDbName && (
+        <p>
+          See <a href={`/ucsc/${ucscDbName}`}>{ucscDbName}</a> for our full
+          JBrowse instance of this assembly.
+        </p>
+      )}
       <ul>
         <li>
           <a
@@ -311,8 +292,10 @@ const hasAssemblyDetails =
               ucscDbName
                 ? ucscConfigPath(ucscDbName)
                 : genarkConfigPath(accession),
-            )}>JBrowse</a
+            )}
           >
+            JBrowse
+          </a>
         </li>
         <li>
           <a href={igvBrowserLink}>IGV.js</a>
@@ -328,15 +311,13 @@ const hasAssemblyDetails =
     <div>
       <h2>Compare with other genomes</h2>
       <ul>
-        {
-          features.synteny && syntenyName ? (
-            <li>
-              <a href={`/synteny?assembly=${syntenyName}`}>
-                Open a synteny view against an aligned assembly
-              </a>
-            </li>
-          ) : null
-        }
+        {features.synteny && syntenyName ? (
+          <li>
+            <a href={`/synteny?assembly=${syntenyName}`}>
+              Open a synteny view against an aligned assembly
+            </a>
+          </li>
+        ) : null}
         <li>
           <a href="/gene">Look up a gene across the hosted genomes</a>
         </li>
@@ -346,261 +327,249 @@ const hasAssemblyDetails =
           </a>
         </li>
       </ul>
-      {
-        siblings.length ? (
-          <details class={styles.disclosure}>
-            <summary>
-              Other assemblies for {scientificName}
-              {siblingCount > siblings.length
-                ? ` (${siblings.length} of ${siblingCount} shown)`
-                : ` (${siblingCount})`}
-            </summary>
-            <table>
-              <thead>
+      {siblings.length ? (
+        <details class={styles.disclosure}>
+          <summary>
+            Other assemblies for {scientificName}
+            {siblingCount > siblings.length
+              ? ` (${siblings.length} of ${siblingCount} shown)`
+              : ` (${siblingCount})`}
+          </summary>
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Accession</th>
+                <th scope="col">Assembly name</th>
+                <th scope="col">Assembly status</th>
+                <th scope="col">Release date</th>
+                <th scope="col">NCBI status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {siblings.map(sibling => (
                 <tr>
-                  <th scope="col">Accession</th>
-                  <th scope="col">Assembly name</th>
-                  <th scope="col">Assembly status</th>
-                  <th scope="col">Release date</th>
-                  <th scope="col">NCBI status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {siblings.map(sibling => (
-                  <tr>
-                    <td>
-                      <a href={`/accession/${sibling.accession}`}>
-                        {sibling.accession}
-                      </a>
-                    </td>
-                    <td>{sibling.ncbiAssemblyName}</td>
-                    <td>{sibling.assemblyStatus}</td>
-                    <td>{sibling.seqReleaseDate.replace('00:00', '')}</td>
-                    <td>
-                      {sibling.isReference ? <OrangeStar /> : null}
-                      {sibling.suppressed ? <RedX /> : null}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {siblingCount > siblings.length ? (
-              <p>
-                <a href={`/taxonomy/${taxonId}`}>
-                  See all {taxonCount} assemblies for this taxon
-                </a>
-              </p>
-            ) : null}
-          </details>
-        ) : null
-      }
-    </div>
-    {
-      hasAssemblyDetails ? (
-        <details class={styles.disclosure}>
-          <summary>Assembly details</summary>
-          <dl class={styles.statsTable}>
-            {stats?.total_length ? (
-              <>
-                <dt>Total length</dt>
-                <dd>{Number(stats.total_length).toLocaleString()} bp</dd>
-              </>
-            ) : null}
-            {stats?.chromosome_count ? (
-              <>
-                <dt>Chromosomes</dt>
-                <dd>{stats.chromosome_count}</dd>
-              </>
-            ) : null}
-            {stats?.scaffold_count ? (
-              <>
-                <dt>Scaffolds</dt>
-                <dd>{stats.scaffold_count}</dd>
-              </>
-            ) : null}
-            {stats?.scaffold_n50 ? (
-              <>
-                <dt>Scaffold N50</dt>
-                <dd>
-                  {Number(stats.scaffold_n50).toLocaleString()}
-                  {stats.scaffold_l50
-                    ? ` (L50 ${Number(stats.scaffold_l50).toLocaleString()})`
-                    : null}
-                </dd>
-              </>
-            ) : null}
-            {stats?.contig_count ? (
-              <>
-                <dt>Contigs</dt>
-                <dd>{stats.contig_count}</dd>
-              </>
-            ) : null}
-            {stats?.contig_n50 ? (
-              <>
-                <dt>Contig N50</dt>
-                <dd>
-                  {Number(stats.contig_n50).toLocaleString()}
-                  {stats.contig_l50
-                    ? ` (L50 ${Number(stats.contig_l50).toLocaleString()})`
-                    : null}
-                </dd>
-              </>
-            ) : null}
-            {gcPercent !== undefined ? (
-              <>
-                <dt>GC content</dt>
-                <dd>{gcPercent}%</dd>
-              </>
-            ) : null}
-            {genomeCoverage ? (
-              <>
-                <dt>Coverage</dt>
-                <dd>{genomeCoverage}x</dd>
-              </>
-            ) : null}
-            {sequencingTech ? (
-              <>
-                <dt>Sequencing</dt>
-                <dd>{sequencingTech}</dd>
-              </>
-            ) : null}
-            {infraspecificNames && Object.keys(infraspecificNames).length ? (
-              <>
-                <dt>Specimen</dt>
-                <dd>
-                  {Object.entries(infraspecificNames)
-                    .map(([k, v]) => `${k}: ${v}`)
-                    .join(', ')}
-                </dd>
-              </>
-            ) : null}
-            {submitterOrg ? (
-              <>
-                <dt>Submitter</dt>
-                <dd>{submitterOrg}</dd>
-              </>
-            ) : null}
-            {bioprojectAccession ? (
-              <>
-                <dt>BioProject</dt>
-                <dd>
-                  <a href={ncbiBioProjectUrl(bioprojectAccession)}>
-                    {bioprojectAccession}
-                  </a>
-                </dd>
-              </>
-            ) : null}
-            {pairedAccession ? (
-              <>
-                <dt>
-                  {pairedLabel}
-                  <span
-                    class={tooltipStyles.tooltip}
-                    data-tooltip="Same assembly submitted to both GenBank and RefSeq"
-                    style="cursor:help;font-size:0.75em"
-                  >
-                    {' '}
-                    ?
-                  </span>
-                </dt>
-                <dd>
-                  {pairedAssemblyData ? (
-                    <a href={`/accession/${pairedAccession}`}>
-                      {pairedAccession}
+                  <td>
+                    <a href={`/accession/${sibling.accession}`}>
+                      {sibling.accession}
                     </a>
-                  ) : (
-                    <>
-                      {pairedAccession} (
-                      <a href={ncbiGenomeUrl(pairedAccession)}>NCBI</a>)
-                    </>
-                  )}
-                  {pairedAssemblyStatus === 'suppressed' ? (
-                    <>
-                      {' '}
-                      <RedX />
-                    </>
-                  ) : null}
-                  {pairedAssemblyDifferences ? (
-                    <> — {pairedAssemblyDifferences}</>
-                  ) : null}
-                </dd>
-              </>
-            ) : null}
-          </dl>
+                  </td>
+                  <td>{sibling.ncbiAssemblyName}</td>
+                  <td>{sibling.assemblyStatus}</td>
+                  <td>{sibling.seqReleaseDate.replace('00:00', '')}</td>
+                  <td>
+                    {sibling.isReference ? <OrangeStar /> : null}
+                    {sibling.suppressed ? <RedX /> : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {siblingCount > siblings.length ? (
+            <p>
+              <a href={`/taxonomy/${taxonId}`}>
+                See all {taxonCount} assemblies for this taxon
+              </a>
+            </p>
+          ) : null}
         </details>
-      ) : null
-    }
-    {
-      annotationInfo ? (
-        <details class={styles.disclosure}>
-          <summary>Annotation</summary>
-          <dl class={styles.statsTable}>
-            {annotationInfo.name ? (
-              <>
-                <dt>Name</dt>
-                <dd>
-                  {annotationInfo.name}
-                  {annotationInfo.provider
-                    ? ` (${annotationInfo.provider})`
-                    : null}
-                  {annotationInfo.release_date
-                    ? `, ${annotationInfo.release_date}`
-                    : null}
-                </dd>
-              </>
-            ) : null}
-            {annotationInfo.busco?.complete !== undefined ? (
-              <>
-                <dt>BUSCO completeness</dt>
-                <dd>
-                  {`${(annotationInfo.busco.complete * 100).toFixed(1)}% complete`}
-                  {buscoBreakdown.length
-                    ? ` (${buscoBreakdown.join(', ')})`
-                    : null}
-                  {annotationInfo.busco.busco_lineage
-                    ? ` — ${annotationInfo.busco.busco_lineage}`
-                    : null}
-                </dd>
-              </>
-            ) : null}
-            {annotationInfo.stats?.gene_counts ? (
-              <>
-                <dt>Gene counts</dt>
-                <dd>
-                  {annotationInfo.stats.gene_counts.total?.toLocaleString()}{' '}
-                  total —{' '}
-                  {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
-                  protein-coding,{' '}
-                  {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
-                  non-coding,{' '}
-                  {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
-                  pseudogenes
-                </dd>
-              </>
-            ) : null}
-          </dl>
-        </details>
-      ) : null
-    }
-    {
-      comments ? (
-        <details class={styles.disclosure}>
-          <summary>Submitter comments</summary>
-          <div class={styles.comments}>{comments}</div>
-        </details>
-      ) : null
-    }
+      ) : null}
+    </div>
+    {hasAssemblyDetails ? (
+      <details class={styles.disclosure}>
+        <summary>Assembly details</summary>
+        <dl class={styles.statsTable}>
+          {stats?.total_length ? (
+            <>
+              <dt>Total length</dt>
+              <dd>{Number(stats.total_length).toLocaleString()} bp</dd>
+            </>
+          ) : null}
+          {stats?.chromosome_count ? (
+            <>
+              <dt>Chromosomes</dt>
+              <dd>{stats.chromosome_count}</dd>
+            </>
+          ) : null}
+          {stats?.scaffold_count ? (
+            <>
+              <dt>Scaffolds</dt>
+              <dd>{stats.scaffold_count}</dd>
+            </>
+          ) : null}
+          {stats?.scaffold_n50 ? (
+            <>
+              <dt>Scaffold N50</dt>
+              <dd>
+                {Number(stats.scaffold_n50).toLocaleString()}
+                {stats.scaffold_l50
+                  ? ` (L50 ${Number(stats.scaffold_l50).toLocaleString()})`
+                  : null}
+              </dd>
+            </>
+          ) : null}
+          {stats?.contig_count ? (
+            <>
+              <dt>Contigs</dt>
+              <dd>{stats.contig_count}</dd>
+            </>
+          ) : null}
+          {stats?.contig_n50 ? (
+            <>
+              <dt>Contig N50</dt>
+              <dd>
+                {Number(stats.contig_n50).toLocaleString()}
+                {stats.contig_l50
+                  ? ` (L50 ${Number(stats.contig_l50).toLocaleString()})`
+                  : null}
+              </dd>
+            </>
+          ) : null}
+          {gcPercent !== undefined ? (
+            <>
+              <dt>GC content</dt>
+              <dd>{gcPercent}%</dd>
+            </>
+          ) : null}
+          {genomeCoverage ? (
+            <>
+              <dt>Coverage</dt>
+              <dd>{genomeCoverage}x</dd>
+            </>
+          ) : null}
+          {sequencingTech ? (
+            <>
+              <dt>Sequencing</dt>
+              <dd>{sequencingTech}</dd>
+            </>
+          ) : null}
+          {infraspecificNames && Object.keys(infraspecificNames).length ? (
+            <>
+              <dt>Specimen</dt>
+              <dd>
+                {Object.entries(infraspecificNames)
+                  .map(([k, v]) => `${k}: ${v}`)
+                  .join(', ')}
+              </dd>
+            </>
+          ) : null}
+          {submitterOrg ? (
+            <>
+              <dt>Submitter</dt>
+              <dd>{submitterOrg}</dd>
+            </>
+          ) : null}
+          {bioprojectAccession ? (
+            <>
+              <dt>BioProject</dt>
+              <dd>
+                <a href={ncbiBioProjectUrl(bioprojectAccession)}>
+                  {bioprojectAccession}
+                </a>
+              </dd>
+            </>
+          ) : null}
+          {pairedAccession ? (
+            <>
+              <dt>
+                {pairedLabel}
+                <span
+                  class={tooltipStyles.tooltip}
+                  data-tooltip="Same assembly submitted to both GenBank and RefSeq"
+                  style="cursor:help;font-size:0.75em"
+                >
+                  {' '}
+                  ?
+                </span>
+              </dt>
+              <dd>
+                {pairedAssemblyData ? (
+                  <a href={`/accession/${pairedAccession}`}>
+                    {pairedAccession}
+                  </a>
+                ) : (
+                  <>
+                    {pairedAccession} (
+                    <a href={ncbiGenomeUrl(pairedAccession)}>NCBI</a>)
+                  </>
+                )}
+                {pairedAssemblyStatus === 'suppressed' ? (
+                  <>
+                    {' '}
+                    <RedX />
+                  </>
+                ) : null}
+                {pairedAssemblyDifferences ? (
+                  <> — {pairedAssemblyDifferences}</>
+                ) : null}
+              </dd>
+            </>
+          ) : null}
+        </dl>
+      </details>
+    ) : null}
+    {annotationInfo ? (
+      <details class={styles.disclosure}>
+        <summary>Annotation</summary>
+        <dl class={styles.statsTable}>
+          {annotationInfo.name ? (
+            <>
+              <dt>Name</dt>
+              <dd>
+                {annotationInfo.name}
+                {annotationInfo.provider
+                  ? ` (${annotationInfo.provider})`
+                  : null}
+                {annotationInfo.release_date
+                  ? `, ${annotationInfo.release_date}`
+                  : null}
+              </dd>
+            </>
+          ) : null}
+          {annotationInfo.busco?.complete !== undefined ? (
+            <>
+              <dt>BUSCO completeness</dt>
+              <dd>
+                {`${(annotationInfo.busco.complete * 100).toFixed(1)}% complete`}
+                {buscoBreakdown.length
+                  ? ` (${buscoBreakdown.join(', ')})`
+                  : null}
+                {annotationInfo.busco.busco_lineage
+                  ? ` — ${annotationInfo.busco.busco_lineage}`
+                  : null}
+              </dd>
+            </>
+          ) : null}
+          {annotationInfo.stats?.gene_counts ? (
+            <>
+              <dt>Gene counts</dt>
+              <dd>
+                {annotationInfo.stats.gene_counts.total?.toLocaleString()} total
+                —{' '}
+                {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
+                protein-coding,{' '}
+                {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
+                non-coding,{' '}
+                {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
+                pseudogenes
+              </dd>
+            </>
+          ) : null}
+        </dl>
+      </details>
+    ) : null}
+    {comments ? (
+      <details class={styles.disclosure}>
+        <summary>Submitter comments</summary>
+        <div class={styles.comments}>{comments}</div>
+      </details>
+    ) : null}
     <div>
       <small>
-        Assembly data from the <a href={ncbiLink}>NCBI assembly page</a> and the{
-          ' '
-        }
+        Assembly data from the <a href={ncbiLink}>NCBI assembly page</a> and the{' '}
         <a href={ucscDataLink}>UCSC GenArk data folder</a>.
-        {
-          ncbiDownloadedAt
-            ? ` NCBI data retrieved ${new Date(ncbiDownloadedAt * 1000).toLocaleDateString()}.`
-            : null
-        }
+        {ncbiDownloadedAt
+          ? ` NCBI data retrieved ${new Date(ncbiDownloadedAt * 1000).toLocaleDateString()}.`
+          : null}
       </small>
     </div>
   </Container>

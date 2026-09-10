@@ -46,45 +46,37 @@ const jsonLdScript = jsonLd
       type="image/x-icon"
       href="/favicon.ico"
     />
-    {
-      /* Staging is a preview: its traffic is not the site's, and its pages must
-        not be indexed as duplicates of production. */
-    }
-    {
-      !features.staging && (
-        <>
-          <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
-          />
-          <script
-            is:inline
-            set:html={GTAG_BOOTSTRAP}
-          />
-        </>
-      )
-    }
+    {/* Staging is a preview: its traffic is not the site's, and its pages must
+        not be indexed as duplicates of production. */}
+    {!features.staging && (
+      <>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-D9CD3J2V31"
+        ></script>
+        <script
+          is:inline
+          set:html={GTAG_BOOTSTRAP}
+        ></script>
+      </>
+    )}
     <title>{pageTitle}</title>
     <link
       rel="canonical"
       href={canonicalURL}
     />
-    {
-      features.staging && (
-        <meta
-          name="robots"
-          content="noindex"
-        />
-      )
-    }
-    {
-      pageDescription && (
-        <meta
-          name="description"
-          content={pageDescription}
-        />
-      )
-    }
+    {features.staging && (
+      <meta
+        name="robots"
+        content="noindex"
+      />
+    )}
+    {pageDescription && (
+      <meta
+        name="description"
+        content={pageDescription}
+      />
+    )}
     <meta
       property="og:type"
       content="website"
@@ -97,19 +89,15 @@ const jsonLdScript = jsonLd
       property="og:title"
       content={pageTitle}
     />
-    {
-      pageDescription && (
-        <meta
-          property="og:description"
-          content={pageDescription}
-        />
-      )
-    }
-    {
-      /* Absolute: og:image is fetched by scrapers that have no page context to
+    {pageDescription && (
+      <meta
+        property="og:description"
+        content={pageDescription}
+      />
+    )}
+    {/* Absolute: og:image is fetched by scrapers that have no page context to
         resolve a site-relative path against, so a bare "/1.png" yields no card
-        on most of them. */
-    }
+        on most of them. */}
     <meta
       property="og:image"
       content={new URL('/1.png', Astro.site)}
@@ -118,14 +106,12 @@ const jsonLdScript = jsonLd
       name="twitter:card"
       content="summary_large_image"
     />
-    {
-      jsonLdScript && (
-        <script
-          type="application/ld+json"
-          set:html={jsonLdScript}
-        />
-      )
-    }
+    {jsonLdScript && (
+      <script
+        type="application/ld+json"
+        set:html={jsonLdScript}
+      ></script>
+    )}
   </head>
   <body>
     <Header />

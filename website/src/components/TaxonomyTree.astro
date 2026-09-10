@@ -43,22 +43,20 @@ const error = tree
 
 <div id={containerId}>
   <div id="taxonomy-tree-content">
-    {
-      tree ? (
-        <div>
-          <TreeNode
-            node={tree}
-            speciesDataMap={speciesDataMap}
-          />
-        </div>
-      ) : (
-        <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
-          <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
-            Error loading taxonomy
-          </h3>
-          <p style="color: #dc2626;">{error}</p>
-        </div>
-      )
-    }
+    {tree ? (
+      <div>
+        <TreeNode
+          node={tree}
+          speciesDataMap={speciesDataMap}
+        />
+      </div>
+    ) : (
+      <div style="padding: 16px; border: 1px solid #fca5a5; background-color: #fef2f2; border-radius: 4px;">
+        <h3 style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+          Error loading taxonomy
+        </h3>
+        <p style="color: #dc2626;">{error}</p>
+      </div>
+    )}
   </div>
 </div>

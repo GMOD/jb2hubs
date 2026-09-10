@@ -35,25 +35,23 @@ const href = (slug: string) =>
 
 <h1>Recently Added Genomes</h1>
 <p>
-  This page shows the {PER_CATEGORY} most recently added UCSC GenArk assemblies per
-  category. Site last built: {builtAt}
+  This page shows the {PER_CATEGORY} most recently added UCSC GenArk assemblies
+  per category. Site last built: {builtAt}
 </p>
 
 <nav
   class="categories"
   aria-label="Filter by category"
 >
-  {
-    tabs.map(tab => (
-      <a
-        href={href(tab.slug)}
-        class:list={['category', { active: tab.slug === category }]}
-        aria-current={tab.slug === category ? 'page' : undefined}
-      >
-        {tab.label}
-      </a>
-    ))
-  }
+  {tabs.map(tab => (
+    <a
+      href={href(tab.slug)}
+      class:list={['category', { active: tab.slug === category }]}
+      aria-current={tab.slug === category ? 'page' : undefined}
+    >
+      {tab.label}
+    </a>
+  ))}
 </nav>
 
 <p class="count">Showing {rows.length} genomes</p>
@@ -71,35 +69,33 @@ const href = (slug: string) =>
       </tr>
     </thead>
     <tbody>
-      {
-        rows.map(hub => (
-          <tr>
-            <td>
-              <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
-            </td>
-            <td>{hub.commonName}</td>
-            <td>
-              <em>{hub.scientificName}</em>
-            </td>
-            <td>{formatDate(hub.createdDate)}</td>
-            <td>{hub.source}</td>
-            <td>
-              {linkEntries(hub).map(([url, label], i) => (
-                <Fragment key={url}>
-                  {i > 0 ? ' | ' : ''}
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {label}
-                  </a>
-                </Fragment>
-              ))}
-            </td>
-          </tr>
-        ))
-      }
+      {rows.map(hub => (
+        <tr>
+          <td>
+            <a href={`/accession/${hub.accession}`}>{hub.accession}</a>
+          </td>
+          <td>{hub.commonName}</td>
+          <td>
+            <em>{hub.scientificName}</em>
+          </td>
+          <td>{formatDate(hub.createdDate)}</td>
+          <td>{hub.source}</td>
+          <td>
+            {linkEntries(hub).map(([url, label], i) => (
+              <Fragment key={url}>
+                {i > 0 ? ' | ' : ''}
+                <a
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {label}
+                </a>
+              </Fragment>
+            ))}
+          </td>
+        </tr>
+      ))}
     </tbody>
   </table>
 </div>

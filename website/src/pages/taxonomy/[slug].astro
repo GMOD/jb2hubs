@@ -154,78 +154,72 @@ if (isCategory) {
 >
   <Container wide>
     <UcscStatusBanner client:idle />
-    {
-      isCategory && (
-        <div class="page-header">
-          <h1 class="page-title">GenArk taxonomy - {title}</h1>
-          <a
-            href={`/hubs/${slug}`}
-            class="hubs-link"
-          >
-            View list of species as table for {title}
-          </a>
-        </div>
-      )
-    }
+    {isCategory && (
+      <div class="page-header">
+        <h1 class="page-title">GenArk taxonomy - {title}</h1>
+        <a
+          href={`/hubs/${slug}`}
+          class="hubs-link"
+        >
+          View list of species as table for {title}
+        </a>
+      </div>
+    )}
 
-    {
-      precomputedLineage && precomputedLineage.length > 0 && (
-        <div class="lineage-container">
-          <div class="lineage-label">Taxonomy:</div>
-          <div class="lineage-breadcrumbs">
-            {precomputedLineage.slice(0, -1).map(node => (
-              <>
-                <a
-                  href={`/taxonomy/${node.taxonId}`}
-                  class="lineage-link"
-                >
-                  {node.name || 'Unnamed'}
-                </a>
-                <span class="lineage-separator">›</span>
-              </>
-            ))}
-            <span class="lineage-current">
-              {precomputedLineage[precomputedLineage.length - 1]?.name ||
-                'Unnamed'}
-            </span>
-          </div>
+    {precomputedLineage && precomputedLineage.length > 0 && (
+      <div class="lineage-container">
+        <div class="lineage-label">Taxonomy:</div>
+        <div class="lineage-breadcrumbs">
+          {precomputedLineage.slice(0, -1).map(node => (
+            <>
+              <a
+                href={`/taxonomy/${node.taxonId}`}
+                class="lineage-link"
+              >
+                {node.name || 'Unnamed'}
+              </a>
+              <span class="lineage-separator">›</span>
+            </>
+          ))}
+          <span class="lineage-current">
+            {precomputedLineage[precomputedLineage.length - 1]?.name ||
+              'Unnamed'}
+          </span>
         </div>
-      )
-    }
+      </div>
+    )}
 
-    {
-      taxonId && (
-        <div class="taxonomy-info-container">
-          <div class="taxonomy-info-label">Taxonomy information:</div>
-          <a
-            href={ncbiTaxonomyUrl(taxonId)}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="taxonomy-info-link"
+    {taxonId && (
+      <div class="taxonomy-info-container">
+        <div class="taxonomy-info-label">Taxonomy information:</div>
+        <a
+          href={ncbiTaxonomyUrl(taxonId)}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="taxonomy-info-link"
+        >
+          View on NCBI (taxonomy ID: {taxonId})
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="display: inline-block; vertical-align: middle; margin-left: 4px;"
           >
-            View on NCBI (taxonomy ID: {taxonId})
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              style="display: inline-block; vertical-align: middle; margin-left: 4px;"
-            >
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-              <polyline points="15 3 21 3 21 9" />
-              <line
-                x1="10"
-                y1="14"
-                x2="21"
-                y2="3"
-              />
-            </svg>
-          </a>
-        </div>
-      )
-    }
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" />
+            <line
+              x1="10"
+              y1="14"
+              x2="21"
+              y2="3"
+            />
+          </svg>
+        </a>
+      </div>
+    )}
 
     <TaxonomyViewToggle
       table={table}
@@ -240,11 +234,9 @@ if (isCategory) {
       precomputedSubtree={precomputedSubtree}
       containerId="taxonomy-tree-container"
     />
-    {
-      /* The toggle island reads ?view= after it hydrates, so a ?view=table link
+    {/* The toggle island reads ?view= after it hydrates, so a ?view=table link
         would paint the whole tree and then hide it. This runs while the parser
-        is still on this element, before the tree has been painted once. */
-    }
+        is still on this element, before the tree has been painted once. */}
     <script is:inline>
       if (new URLSearchParams(location.search).get('view') === 'table') {
         var tree = document.getElementById('taxonomy-tree-container')

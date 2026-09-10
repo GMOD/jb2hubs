@@ -18,11 +18,16 @@ const canonical = new URL('/pangenomes', Astro.site)
       href={canonical}
     />
     <title>Redirecting to /pangenomes</title>
-    <script is:inline define:vars={{ target }}>
+    <script
+      is:inline
+      define:vars={{ target }}
+    >
       location.replace(target)
     </script>
   </head>
   <body>
-    <p>This page moved to <a href={target}>{target}</a>.</p>
+    <p>
+      This page moved to <a href={target}>{target}</a>.
+    </p>
   </body>
 </html>

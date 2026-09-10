@@ -62,27 +62,23 @@ const pageDescription = [
       </div>
       <div>
         <b>Taxonomy ID:</b>
-        {
-          taxonomyPage ? (
-            <a href={`/taxonomy/${ret.taxId}`}>{ret.taxId}</a>
-          ) : (
-            ret.taxId
-          )
-        }
+        {taxonomyPage ? (
+          <a href={`/taxonomy/${ret.taxId}`}>{ret.taxId}</a>
+        ) : (
+          ret.taxId
+        )}
       </div>
-      {
-        accessions.length > 0 && (
-          <div>
-            <b>NCBI accession:</b>
-            {accessions.map((accession, i) => (
-              <>
-                {i > 0 ? ', ' : ''}
-                <a href={`/accession/${accession}`}>{accession}</a>
-              </>
-            ))}
-          </div>
-        )
-      }
+      {accessions.length > 0 && (
+        <div>
+          <b>NCBI accession:</b>
+          {accessions.map((accession, i) => (
+            <>
+              {i > 0 ? ', ' : ''}
+              <a href={`/accession/${accession}`}>{accession}</a>
+            </>
+          ))}
+        </div>
+      )}
     </div>
 
     <div>
@@ -103,15 +99,13 @@ const pageDescription = [
         <li>
           <a href={ucscGatewayUrl(id)}>UCSC assembly info</a>
         </li>
-        {
-          taxonomyPage && (
-            <li>
-              <a href={`/taxonomy/${ret.taxId}`}>
-                Other assemblies of this species (GenArk taxonomy)
-              </a>
-            </li>
-          )
-        }
+        {taxonomyPage && (
+          <li>
+            <a href={`/taxonomy/${ret.taxId}`}>
+              Other assemblies of this species (GenArk taxonomy)
+            </a>
+          </li>
+        )}
       </ul>
     </div>
   </Container>

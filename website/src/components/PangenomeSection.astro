@@ -68,11 +68,10 @@ function humanBytes(bytes: number) {
     <div class="portal-hero-text">
       <h3 class="portal-hero-title">Open it</h3>
       <p>
-        The graph holds {dataset.panelDescription}, projected onto {
-          dataset.reference.label
-        }. Start from a locus where it varies most, or take the files below. <a
-          href={portal.tutorialUrl}>The tutorial</a
-        > walks what this graph can and cannot say.
+        The graph holds {dataset.panelDescription}, projected onto{' '}
+        {dataset.reference.label}. Start from a locus where it varies most, or
+        take the files below. <a href={portal.tutorialUrl}>The tutorial</a>{' '}
+        walks what this graph can and cannot say.
       </p>
     </div>
     <div class="portal-hero-actions">
@@ -82,88 +81,78 @@ function humanBytes(bytes: number) {
       >
         Open the Pangenome Explorer &rarr;
       </a>
-      {
-        graphUrl && landing && (
+      {graphUrl && landing && (
+        <a
+          class="portal-btn"
+          href={graphUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Draw {landing.gene} as a pangenome graph &rarr;
+        </a>
+      )}
+      {externalUrl && ext && landing && (
+        <a
+          class="portal-btn"
+          href={externalUrl}
+          target="_blank"
+          rel="noreferrer"
+          title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
+        >
+          Draw {landing.gene} as a graph in {ext.name} &#8599;
+        </a>
+      )}
+      {callsetUrl && (
+        <a
+          class="portal-btn"
+          href={callsetUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Browse the callset on {dataset.reference.label} &rarr;
+        </a>
+      )}
+      {portal.links.map(l =>
+        l.url.startsWith('/') ? (
           <a
-            class="portal-btn"
-            href={graphUrl}
+            class="portal-btn portal-btn-ghost"
+            href={l.url}
+          >
+            {l.label} &rarr;
+          </a>
+        ) : (
+          <a
+            class="portal-btn portal-btn-ghost"
+            href={l.url}
             target="_blank"
             rel="noreferrer"
           >
-            Draw {landing.gene} as a pangenome graph &rarr;
+            {l.label} &#8599;
           </a>
-        )
-      }
-      {
-        externalUrl && ext && landing && (
-          <a
-            class="portal-btn"
-            href={externalUrl}
-            target="_blank"
-            rel="noreferrer"
-            title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
-          >
-            Draw {landing.gene} as a graph in {ext.name} &#8599;
-          </a>
-        )
-      }
-      {
-        callsetUrl && (
-          <a
-            class="portal-btn"
-            href={callsetUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Browse the callset on {dataset.reference.label} &rarr;
-          </a>
-        )
-      }
-      {
-        portal.links.map(l =>
-          l.url.startsWith('/') ? (
-            <a
-              class="portal-btn portal-btn-ghost"
-              href={l.url}
-            >
-              {l.label} &rarr;
-            </a>
-          ) : (
-            <a
-              class="portal-btn portal-btn-ghost"
-              href={l.url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {l.label} &#8599;
-            </a>
-          ),
-        )
-      }
+        ),
+      )}
     </div>
-    {
-      !dataset.graphBrowser && (
-        <p class="portal-hero-note">
-          <small>
-            The in-browser graph needs the JBrowse build the staging site links:
-            every adapter that reads these files ships in the GraphGenomeView
-            plugin rather than in JBrowse core, and that plugin boots on v5
-            only. The files below are downloadable either way.
-          </small>
-        </p>
-      )
-    }
+    {!dataset.graphBrowser && (
+      <p class="portal-hero-note">
+        <small>
+          The in-browser graph needs the JBrowse build the staging site links:
+          every adapter that reads these files ships in the GraphGenomeView
+          plugin rather than in JBrowse core, and that plugin boots on v5 only.
+          The files below are downloadable either way.
+        </small>
+      </p>
+    )}
   </div>
 
   <h3>Draw the graph</h3>
   <p>
-    Any {dataset.reference.label} region, cut from the graph and drawn as nodes and
-    edges beside a linear view of the same window. Hovering one panel highlights the
-    other. Past 150 kb both switch to the coarse tier &mdash; one node per top-level
-    bubble &mdash; which is what makes a whole chromosome drawable. Inside JBrowse
-    the same view reopens from any region via the segments track&rsquo;s menu, <em
-      >Launch &rarr; Graph genome view</em
-    >, so the form is only the first cut.
+    Any {dataset.reference.label} region, cut from the graph and drawn as nodes
+    and edges beside a linear view of the same window. Hovering one panel
+    highlights the other. Past 150 kb both switch to the coarse tier &mdash; one
+    node per top-level bubble &mdash; which is what makes a whole chromosome
+    drawable. Inside JBrowse the same view reopens from any region via the
+    segments track&rsquo;s menu, <em>Launch &rarr; Graph genome view</em>, so
+    the form is only the first cut.
   </p>
   <GraphRegionLauncher
     dataset={dataset}
@@ -184,35 +173,33 @@ function humanBytes(bytes: number) {
       </tr>
     </thead>
     <tbody>
-      {
-        portalFiles(portal).map(f => (
-          <tr>
-            <td>
-              <a href={`${portal.filePrefix}${f.suffix}`}>
-                <code>{f.suffix}</code>
-              </a>
-            </td>
-            <td>{f.what}</td>
-            <td>{humanBytes(f.bytes)}</td>
-          </tr>
-        ))
-      }
+      {portalFiles(portal).map(f => (
+        <tr>
+          <td>
+            <a href={`${portal.filePrefix}${f.suffix}`}>
+              <code>{f.suffix}</code>
+            </a>
+          </td>
+          <td>{f.what}</td>
+          <td>{humanBytes(f.bytes)}</td>
+        </tr>
+      ))}
     </tbody>
   </table>
 
   <h3>What this graph can and cannot say</h3>
   <ul class="portal-notes">
-    {portal.notes.map(n => <li>{n}</li>)}
+    {portal.notes.map(n => (
+      <li>{n}</li>
+    ))}
     {dataset.noCallsetReason && <li>{dataset.noCallsetReason}</li>}
-    {
-      dataset.graphVcf && (
-        <li>
-          The callset beside the graph is a reference projection of its
-          haplotype paths, so it answers which assembly carries which allele —
-          which the graph lanes on their own cannot.
-        </li>
-      )
-    }
+    {dataset.graphVcf && (
+      <li>
+        The callset beside the graph is a reference projection of its haplotype
+        paths, so it answers which assembly carries which allele — which the
+        graph lanes on their own cannot.
+      </li>
+    )}
   </ul>
 
   <slot name="after" />

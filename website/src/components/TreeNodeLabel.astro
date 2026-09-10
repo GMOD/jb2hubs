@@ -15,58 +15,46 @@ const name = node.name || 'Unnamed'
 ---
 
 <div class="tree-content">
-  {
-    node.taxonId ? (
+  {node.taxonId ? (
+    <a
+      href={`/taxonomy/${node.taxonId}`}
+      class="tree-node-link"
+    >
+      {name}
+    </a>
+  ) : (
+    <span class="tree-name">{name}</span>
+  )}
+  {speciesInfo?.commonName ? (
+    <span class="tree-muted">({speciesInfo.commonName})</span>
+  ) : null}
+  {node.accession ? (
+    <>
       <a
-        href={`/taxonomy/${node.taxonId}`}
-        class="tree-node-link"
-      >
-        {name}
-      </a>
-    ) : (
-      <span class="tree-name">{name}</span>
-    )
-  }
-  {
-    speciesInfo?.commonName ? (
-      <span class="tree-muted">({speciesInfo.commonName})</span>
-    ) : null
-  }
-  {
-    node.accession ? (
-      <>
-        <a
-          href={`/accession/${node.accession}`}
-          class="tree-link tree-link-underline"
-        >
-          (info)
-        </a>
-        <span class="accession-badge">{node.accession}</span>
-      </>
-    ) : null
-  }
-  {
-    speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
-      <OrangeStar />
-    ) : null
-  }
-  {speciesInfo?.suppressed ? <RedX /> : null}
-  {
-    node.branchLength !== undefined && node.branchLength !== 1.0 ? (
-      <span class="tree-muted">[{node.branchLength.toFixed(4)}]</span>
-    ) : null
-  }
-  {
-    node.hiddenAccessions !== undefined ? (
-      <a
-        href={node.taxonId ? `/taxonomy/${node.taxonId}` : undefined}
+        href={`/accession/${node.accession}`}
         class="tree-link tree-link-underline"
       >
-        {node.hiddenAccessions}{' '}
-        {node.hiddenAccessions === 1 ? 'assembly' : 'assemblies'} not shown
+        (info)
       </a>
-    ) : null
-  }
+      <span class="accession-badge">{node.accession}</span>
+    </>
+  ) : null}
+  {speciesInfo?.ncbiRefSeqCategory === 'reference genome' ? (
+    <OrangeStar />
+  ) : null}
+  {speciesInfo?.suppressed ? <RedX /> : null}
+  {node.branchLength !== undefined && node.branchLength !== 1.0 ? (
+    <span class="tree-muted">[{node.branchLength.toFixed(4)}]</span>
+  ) : null}
+  {node.hiddenAccessions !== undefined ? (
+    <a
+      href={node.taxonId ? `/taxonomy/${node.taxonId}` : undefined}
+      class="tree-link tree-link-underline"
+    >
+      {node.hiddenAccessions}{' '}
+      {node.hiddenAccessions === 1 ? 'assembly' : 'assemblies'} not shown
+    </a>
+  ) : null}
 </div>
 
 <style>

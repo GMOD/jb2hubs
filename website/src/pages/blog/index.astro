@@ -20,22 +20,20 @@ const postsWithContent = await Promise.all(
     <h1>Blog</h1>
     <p>Recent updates and changes to the JBrowse 2 genome hubs database.</p>
 
-    {
-      postsWithContent.map(({ post, Content }, i) => (
-        <>
-          {i > 0 && <hr />}
-          <article>
-            <h2>
-              <a href={`/blog/${post.id}`}>{post.data.title}</a>
-            </h2>
-            <time datetime={post.data.date}>{post.data.date}</time>
-            <div class="post-content">
-              <Content />
-            </div>
-          </article>
-        </>
-      ))
-    }
+    {postsWithContent.map(({ post, Content }, i) => (
+      <>
+        {i > 0 && <hr />}
+        <article>
+          <h2>
+            <a href={`/blog/${post.id}`}>{post.data.title}</a>
+          </h2>
+          <time datetime={post.data.date}>{post.data.date}</time>
+          <div class="post-content">
+            <Content />
+          </div>
+        </article>
+      </>
+    ))}
   </Container>
 </Layout>
 
