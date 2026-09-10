@@ -310,15 +310,34 @@ next test is a one-contig sidecar set for the CFHR window: if it draws, the fix
 is to narrow what the generator emits (or to find why breadth costs anything),
 not to change the track.
 
-**A confound to control for, because it corrupted two of these runs.** The
-reverse bisect (the demo's config with our hg38) errored with
-`MultiWayLaneGenes: one lane failed ... No response from https://jbrowse.org/ucsc/hg38/ncbiRefSeq.gff.gz.csi after 30s (the connection was open and the server sent nothing)`.
-Ten sequential range reads of that object from curl came back in 0.11-0.35s
-every time, so it is not the server: `MultiWaySyntenyDisplay` fetches a gene
-lane per haplotype, and those plus the GBZ adapter's range reads of the 7.9 GB
-haplotype index are **all on jbrowse.org**, against the browser's
-six-connections-per-host limit. Treat any "Loading..." here as possibly that
-rather than as the lane, and measure with the gene track out of the spec.
+**Two corrections to an earlier draft of this section, both from measurement.**
+
+The first draft blamed Chrome's six-connections-per-host limit, on the grounds
+that the per-lane gene fetches and the GBZ adapter's reads of the haplotype
+index are all on jbrowse.org. **That was wrong**, and why is worth keeping,
+because it decides where the limit ever bites: **jbrowse.org negotiates HTTP/2**
+(ALPN `h2`, `SETTINGS_MAX_CONCURRENT_STREAMS` = 128), so it multiplexes one
+connection instead of queueing behind six. Measured in Chrome over a real
+launch: 84 requests to jbrowse.org, **20 concurrent**, protocol `h2`. The cap
+does not apply there. It does apply to `s3-us-west-2.amazonaws.com` and
+`hgdownload.soe.ucsc.edu`, both `http/1.1`.
+
+The second is worse, because it invalidates the premise. "The demo draws 8/8
+lanes" was measured by searching the page text for haplotype names -- and those
+are lane LABELS, which render from the config whether or not data arrived. The
+same launch, instrumented, made **zero requests to
+`s3-us-west-2.amazonaws.com`**, so the database was never read: that run showed
+the track and its lane headers building, not the lane drawing. The table above
+rules out what it says it rules out, but the baseline it was all compared
+against is not established. Re-establish it by counting requests to the database
+host rather than by reading the page, before spending anything on the
+sidecar-breadth hypothesis.
+
+The stall itself is still real and still unattributed: the reverse bisect
+errored with
+`MultiWayLaneGenes: one lane failed ... No response from https://jbrowse.org/ucsc/hg38/ncbiRefSeq.gff.gz.csi after 30s (the connection was open and the server sent nothing)`,
+while ten sequential range reads of that object from curl came back in
+0.11-0.35s every time. Not the server, and not the connection cap.
 
 ### The variant route, for bovine: minutes, on data already extracted
 

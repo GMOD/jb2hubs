@@ -13,15 +13,18 @@
 // haplotypes over a 105 kb window. Numbers and method in
 // `agent-docs/PANGENOME_PORTAL.md`.
 //
-// NOT WIRED INTO A CONFIG YET, and the reason is a measurement rather than a
-// missing edit. The identical track block in `demos/hprc/config.json` draws all
-// eight lanes on a hosted `main` (checked 2026-09-10); the same block in our
-// `hprc-grch38.json` sits on "Loading..." indefinitely. Swapping our hg38
-// assembly for the demo's does NOT fix it, so the difference is elsewhere --
-// the leading suspect is the sidecars' CONTENT rather than their values: the
-// demo's name exactly one contig each, the generated ones name 30-49, and 8
-// lanes x 49 refNames is a different amount of work for the display. See
-// agent-docs/PANGENOME_PORTAL.md for the full bisect.
+// NOT WIRED INTO A CONFIG YET. The identical track block in
+// `demos/hprc/config.json` (they differ only in `name`) builds its display and
+// its lane headers on a hosted `main`; ours sits on "Loading..." Swapping our
+// hg38 assembly block for the demo's does not change that, so the difference is
+// elsewhere.
+//
+// Do not trust the phrase "the demo works" without re-measuring it: the run
+// that established it counted haplotype names in the page text, and those are
+// lane LABELS that render from the config with or without data. That same
+// launch, instrumented, made zero requests to the database host. Count requests
+// to `s3-us-west-2.amazonaws.com` next time. Full bisect and both corrections
+// in `agent-docs/PANGENOME_PORTAL.md`.
 //
 // STAGING ONLY once it is wired, for two independent reasons, both checked
 // rather than assumed:
