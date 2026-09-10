@@ -9,8 +9,8 @@ import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type
 import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
 import { features } from '../config/features.ts'
 import { ucscConfigPath } from '../config/jbrowse.ts'
-import { derivedLoci, landingRegion } from './pangenomeDerivedLoci.ts'
-import { MAX_DETAIL_WINDOW_BP, PANGENOME_LOCI } from './pangenomeLoci.ts'
+import { derivedLoci } from './pangenomeDerivedLoci.ts'
+import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -39,14 +39,6 @@ export interface PangenomeGraphVcf {
   // visible in. A `vg deconstruct` callset over assembly paths is one haploid
   // row per assembly, and asking for phased there draws every second row empty.
   phased?: boolean
-}
-
-// A pairwise synteny comparison to a second assembly (e.g. reference vs T2T),
-// using a synteny/liftover track that already exists in the merged config.
-export interface PangenomeSyntenyTarget {
-  assembly: string
-  trackId: string
-  label: string
 }
 
 // The hosted config that can draw the graph itself, as opposed to its
@@ -129,6 +121,10 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
 // caught; a file that merely grew shows a stale number until someone re-measures.
 export interface PangenomePortal {
   heading: string
+  // The tutorial that explains what this graph can show. Every dataset here is
+  // the hosted arm of one, and the tutorial is the better explanation — the
+  // page's job is to launch it, not to restate it.
+  tutorialUrl: string
   // The published bucket prefix the file table's urls are built from.
   filePrefix: string
   // Bytes per suffix. A suffix absent here is absent from the table, which is
@@ -174,22 +170,18 @@ export interface PangenomeDataset {
   // Structural-variation tracks (already in `reference.configUrl`) to open with
   // the graph — these carry the headline insertions/deletions/inversions/dups.
   svTrackIds: string[]
-  syntenyTarget?: PangenomeSyntenyTarget
-  // URL prefix under which the precomputed per-locus summaries, copy-number
-  // matrices, and MSA files are served (e.g. '/pangenome').
+  // URL prefix under which the precomputed per-locus callset summaries are
+  // served (e.g. '/pangenome'). Only read for a dataset with a `graphVcf`.
   dataPrefix: string
-  // Whole-graph landing region for the "browse everything" launch.
-  landingRegion: string
   // Omitted where a dataset has no hosted graph projection to draw.
   graphBrowser?: PangenomeGraphBrowser
   externalGraphBrowser?: PangenomeExternalGraphBrowser
   loci: PangenomeLocus[]
-  // Present where the /pangenomes page renders this dataset's section from the
-  // dataset rather than by hand. HPRC's section is still hand-written: it
-  // carries a 232-row sample table, two references and a release history that
-  // no other dataset has, and converting it would be a much larger change than
-  // the two it would deduplicate.
-  portal?: PangenomePortal
+  // Every dataset renders its /pangenomes section from this, through one
+  // `PangenomeSection`. HPRC's used to be hand-written for a 232-row sample
+  // table and an upstream-file table that `/hubs/HPRC` and the HPRC resources
+  // repo both do better; dropping those left it the same shape as the others.
+  portal: PangenomePortal
 }
 
 // The config is ours: `website/pangenome-config/hprc-grch38.json`, published
@@ -278,6 +270,43 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // `id` is the `?dataset=` value on /pangenomes/explorer and the section anchor
 // on /pangenomes, so it is short and stable across graph releases; the release
 // is in `label`.
+export const HPRC_PORTAL: PangenomePortal = {
+  heading: 'Human Pangenome Reference Consortium',
+  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
+  filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.0-mc-grch38',
+  // Measured 2026-09-10. No `.rgfa.gz` row — the graph the projections were cut
+  // from is release 2's own `sv.gfa.gz` on S3, linked below rather than
+  // re-hosted, and no `.vcf.gz` row for the same reason: the callset the tracks
+  // stream is the release's, at its own url.
+  sizes: {
+    '.segs.bed.gz': 6_693_943,
+    '.links.bed.gz': 34_193_871,
+    '.bubbles.bed.gz': 60_150_888,
+    '.alleles.bed.gz': 5_322_191,
+    '.tier10000.segs.bed.gz': 104_482,
+  },
+  links: [
+    { label: 'HPRC data portal', url: 'https://humanpangenome.org/' },
+    {
+      label: 'Release 2 file listing (graphs, GBZ, callsets)',
+      url: 'https://github.com/human-pangenomics/hpp_pangenome_resources',
+    },
+    {
+      label: 'The 232 sample assemblies in JBrowse',
+      url: '/hubs/HPRC',
+    },
+    {
+      label: 'How these projections were built',
+      url: 'https://jbrowse.org/demos/hprc/README.txt',
+    },
+  ],
+  notes: [
+    'A redistribution of projections, not of the graph: the five indexed files are cut from release 2’s own SV-resolution `sv.gfa.gz`, and the 464-haplotype callset is streamed from the release’s url rather than copied here.',
+    'The graph is the SV tier. Release 2 also publishes a base-level GFA (59 GB) and a GBZ; neither is what these tracks read, so a variant smaller than the graph records is in the callset and not in the bubbles.',
+    'The panel is 232 phased diploid assemblies, so the callset is 464 haplotype columns — which is what makes carriage readable here and not in the two graphs below.',
+  ],
+}
+
 export const HPRC_DATASET: PangenomeDataset = {
   id: 'hprc',
   label: 'HPRC minigraph-cactus v2.1',
@@ -302,18 +331,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     'hg38-hprcArrInvBedV1',
     'hg38-hprcArrDupBedV1',
   ],
-  syntenyTarget: {
-    assembly: 'hs1',
-    trackId: 'hg38_to_hs1_liftOver',
-    label: 'CHM13',
-  },
   dataPrefix: '/pangenome',
-  // A deliberate wide overview of the MHC — the SV tracks are its subject and
-  // they draw across all 3.8 Mb. The callset lane opens gated at this width and
-  // releases on zoom-in, which is ordinary JBrowse behaviour for an overview;
-  // the per-locus launches open on a window the callset can actually draw (see
-  // graphVcfLgvUrl).
-  landingRegion: 'chr6:29,700,000-33,500,000',
   graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
   // SickKids' public instance, verified answering 2026-08-26. It serves the
   // v1.1 graph, not release 2, so a locus can differ in detail from the graph
@@ -324,6 +342,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     graphLabel: 'HPRC minigraph-cactus v1.1',
   },
   loci: PANGENOME_LOCI,
+  portal: HPRC_PORTAL,
 }
 
 // Both non-human graphs are hosted and configured exactly like HPRC's, which is
@@ -445,6 +464,7 @@ const BOVINE_LOCI = derivedLoci(bovineLociFile)
 // agent-docs/PANGENOME_PORTAL.md.
 export const MOUSE_PORTAL: PangenomePortal = {
   heading: 'Mouse strain pangenome',
+  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_nonhuman/',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
   // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.
   sizes: {
@@ -492,7 +512,6 @@ export const MOUSE_DATASET: PangenomeDataset = {
     'This graph was built with minigraph, which writes no haplotype paths, so nothing in it records which strain carries which allele and there is no callset to project onto GRCm39. The bubbles and allele lanes state what varies and by how much; they cannot state who by.',
   svTrackIds: [],
   dataPrefix: '/pangenome-mouse',
-  landingRegion: landingRegion(MOUSE_LOCI, MAX_DETAIL_WINDOW_BP),
   graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
   loci: MOUSE_LOCI,
   portal: MOUSE_PORTAL,
@@ -508,6 +527,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // genotype columns, hence `phased` unset.
 export const BOVINE_PORTAL: PangenomePortal = {
   heading: 'Bovine super-pangenome',
+  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_nonhuman/',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
   // Measured 2026-09-09.
@@ -560,7 +580,6 @@ export const BOVINE_DATASET: PangenomeDataset = {
   },
   svTrackIds: [],
   dataPrefix: '/pangenome-bovine',
-  landingRegion: landingRegion(BOVINE_LOCI, MAX_DETAIL_WINDOW_BP),
   graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
   loci: BOVINE_LOCI,
   portal: BOVINE_PORTAL,

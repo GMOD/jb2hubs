@@ -88,7 +88,7 @@ const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
 // Vite the dataset has no graphBrowser and every graph builder returns
 // undefined; this probe exists to boot those launches, so put it back.
 const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
-const { graphChromosomeUrl, graphLocusUrl, graphVcfLgvUrl } =
+const { graphLocusUrl, graphRegionUrl, graphVcfLgvUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
 
 const wantStagingDisplay = values.host !== 'latest'
@@ -154,7 +154,15 @@ for (const locus of loci) {
 // One whole-chromosome launch off the bubble tier. chr21 is the shortest
 // autosome, so it is the cheapest proof that the tier track resolves and the
 // raised maxRegionBp is honoured; --loci filtering does not apply to it.
-const chromosome = graphChromosomeUrl(graphDataset, 'chr21')
+//
+// Through `graphRegionUrl` like any other region: a chromosome is past
+// MAX_DETAIL_WINDOW_BP, so it takes the coarse branch and gets the tier.
+const chr21 = graphDataset.graphBrowser.chromosomes.find(
+  c => c.name === 'chr21',
+)
+const chromosome =
+  chr21 &&
+  graphRegionUrl(graphDataset, { chrom: 'chr21', start: 0, end: chr21.length })
 if (chromosome && !wanted) {
   launches.push({
     name: 'chr21: whole-chromosome tier graph',

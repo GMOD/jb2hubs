@@ -4,10 +4,18 @@
 // we attach it inline via `sessionTracks` (see specUrl) pointing at the public,
 // CORS-open VCF — the launch works without first baking the track into the config.
 
-import { panelTracks, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
-import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
+import { specUrl } from './jbrowseLinks.ts'
+import {
+  MAX_DETAIL_WINDOW_BP,
+  detailWindow,
+  preferredLocus,
+  syntenyGene,
+} from './pangenomeLoci.ts'
 
-import type { PangenomeDataset } from './pangenomeDataset.ts'
+import type {
+  PangenomeDataset,
+  PangenomeGraphBrowser,
+} from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 // Pins the linear view's id so the graph can name it as its hover-sync partner.
@@ -115,47 +123,96 @@ function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
   )
 }
 
+// A window of the graph, and the one rule that decides how it is drawn.
+//
+// Under MAX_DETAIL_WINDOW_BP the segment-level lanes are legible: bubbles, the
+// allele inventory drawn at each allele's real size off its CIGAR, and the rGFA
+// segments. Above it they are not — over a full cattle chromosome the fine
+// segments track refuses outright with "Too many features", and the allele
+// inventory is past its fetch limit well before that. So a wide window gets the
+// coarse tier instead: one row per top-level bubble, plus the
+// segments-per-bubble curve, which is what makes a multi-Mb span drawable at
+// all.
+//
+// That split is why there is no separate whole-chromosome builder any more. A
+// chromosome is the widest region, and it takes the same coarse branch — and a
+// multi-megabase catalog locus, which every earlier version of this file either
+// refused a launch for or opened behind a "too much data" banner, now draws.
+export interface GraphRegion {
+  chrom: string
+  start: number
+  end: number
+  label?: string
+}
+
+// The coarse branch needs a tier to switch to. A graph without one can only be
+// drawn fine, however wide the ask.
+function coarseTier(graph: PangenomeGraphBrowser, region: GraphRegion) {
+  return region.end - region.start > MAX_DETAIL_WINDOW_BP
+    ? graph.tierTrackId
+    : undefined
+}
+
+export function isCoarse(dataset: PangenomeDataset, region: GraphRegion) {
+  const graph = dataset.graphBrowser
+  return graph ? coarseTier(graph, region) !== undefined : false
+}
+
+function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
+  const tier = coarseTier(graph, region)
+  return tier
+    ? [
+        graph.geneTrackId,
+        ...(graph.bubbleScoreTrackId ? [graph.bubbleScoreTrackId] : []),
+        tier,
+      ]
+    : [
+        graph.geneTrackId,
+        graph.bubblesTrackId,
+        ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
+        graph.segmentsTrackId,
+      ]
+}
+
+// Bare digits, not toLocaleString: this runs in the visitor's browser, and
+// JBrowse's locstring parser strips commas only, so a locale that groups with
+// '.' or a space (de-DE, fr-FR, ru-RU) would produce a region no view can
+// navigate to.
+const locOf = (region: GraphRegion) =>
+  `${region.chrom}:${region.start}-${region.end}`
+
+export const locusRegionOf = (locus: PangenomeLocus): GraphRegion => ({
+  chrom: locus.chrom,
+  start: locus.start,
+  end: locus.end,
+  label: locus.gene,
+})
+
 // The dataset's own linear lanes over one region, out of the GRAPH config
-// rather than the reference config: the bubbles, the allele inventory drawn at
-// each allele's real size off its CIGAR, and the segments. For a dataset with
-// no callset these lanes ARE the pangenome view of a locus.
+// rather than the reference config. For a dataset with no callset these lanes
+// ARE the pangenome view of a locus.
 //
 // Undefined without a hosted graph config, and that is not a technicality —
 // `RgfaTabixAdapter`, `MinigraphBubbleAdapter` and the rest ship in the
 // graphgenomeviewer plugin rather than in core, so these lanes are exactly as
 // plugin-gated as the graph pane beside them.
-export function graphLanesUrl(dataset: PangenomeDataset, loc: string) {
+export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
   return graph
     ? specUrl(graph.configUrl, [
         {
           type: 'LinearGenomeView',
           assembly: dataset.reference.assembly,
-          loc,
-          tracks: [
-            graph.geneTrackId,
-            graph.bubblesTrackId,
-            ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
-            graph.segmentsTrackId,
-          ],
+          loc: locOf(region),
+          tracks: lanes(graph, region),
         },
       ])
     : undefined
 }
 
-// Whole-graph entry point: lands on the dataset's landing region, in whichever
-// linear view that dataset can actually populate. With a callset that is the
-// reference config with the VCF inlined; without one the reference config would
-// open on its gene track alone, so the graph config's own lanes are the view.
-export function graphBrowserUrl(dataset: PangenomeDataset) {
-  return dataset.graphVcf
-    ? referenceLgvUrl(dataset, dataset.landingRegion)
-    : graphLanesUrl(dataset, dataset.landingRegion)
-}
-
-// The graph variants (plus SV tracks) open at a specific catalog locus.
+// The graph variants (plus SV tracks) open at a catalog locus.
 //
-// The window is the locus's detail window, not its display span. The callset is
+// The window is the locus's detail window where it has one. The callset is
 // fetched per view and runs ~200 bytes/bp of VCF text over these loci, so a
 // multi-Mb span (MHC's is 4.97 Mb, holding 109,988 records) opens the lane
 // behind the "too much data" banner — the button's own subject, undrawn. Every
@@ -164,16 +221,23 @@ export function graphVcfLgvUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
-  return referenceLgvUrl(dataset, launchRegion(locus))
+  return referenceLgvUrl(dataset, locOf(launchRegion(locus)))
 }
 
 // The window a locus launch opens on: its detail window where it has one (or is
-// narrow enough to be its own), else the whole display span.
-function launchRegion(locus: PangenomeLocus) {
+// narrow enough to be its own), else the whole display span. A wide span is not
+// a problem for the lanes any more — `lanes()` switches to the coarse tier —
+// but it still is for the callset, which is why `graphVcfLgvUrl` says so.
+//
+// Exported because the dashboard's "this opens at bubble resolution" note has
+// to be about the region the launch USES, not the locus's display span. MHC's
+// span is 4.97 Mb and its detail window is 90 kb, so asking `isCoarse` about
+// the span said "coarse" over a launch that is nothing of the kind.
+export function launchRegion(locus: PangenomeLocus): GraphRegion {
   const window = detailWindow(locus)
   return window
-    ? `${locus.chrom}:${window.start}-${window.end}`
-    : locusRegion(locus)
+    ? { chrom: locus.chrom, ...window, label: locus.gene }
+    : locusRegionOf(locus)
 }
 
 // The launch a locus's primary button should make: the callset beside the
@@ -189,6 +253,15 @@ export function locusLaunchUrl(
     : graphLanesUrl(dataset, launchRegion(locus))
 }
 
+// Whole-graph entry point. It opens on the catalogue's own landing locus rather
+// than a second constant that could disagree with it — `preferredLocus` is what
+// the explorer's initial card uses too, so the portal and the page land in the
+// same place.
+export function graphBrowserUrl(dataset: PangenomeDataset) {
+  const landing = preferredLocus(dataset.loci)
+  return landing ? locusLaunchUrl(dataset, landing) : undefined
+}
+
 // A region drawn as the graph itself, under a linear view of the same window.
 // `loadedTrackId`/`loadedRegion` are plain persisted view props, so the graph
 // opens on the region directly rather than the user rubberbanding to it; the
@@ -197,101 +270,46 @@ export function locusLaunchUrl(
 // `colorScheme` is the one thing that ties the two panels together under the
 // default force layout, which has no axis to share: the ramp runs red at the
 // start of the loaded window to magenta at its end, and a segment with no
-// reference coordinate comes off the ramp as charcoal. The alleles lane beside
-// it states each allele's size against the reference span it replaces.
+// reference coordinate comes off the ramp as charcoal.
 //
-// Undefined when the dataset has no hosted graph. Width is the caller's
-// concern: `graphLocusUrl` applies the catalog's rules, and the HPRC page's
-// region form applies `MAX_GRAPH_REGION_BP`.
-export interface GraphRegion {
-  chrom: string
-  start: number
-  end: number
-  label: string
-}
-
+// The coarse branch differs in three ways, all forced by the tier. It loads the
+// tier rather than the segments; it raises `maxRegionBp` to the span, since the
+// view refuses a wider cut as a proxy for node count and a tier breaks that
+// proxy (`maxGraphNodes` stays as the real ceiling); and it lays out anchored,
+// because a tier is one node per bubble in reference order — a chain, which a
+// force layout draws as an arc.
+//
+// Undefined when the dataset has no hosted graph.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
-  return graph
-    ? specUrl(graph.configUrl, [
-        {
-          type: 'LinearGenomeView',
-          id: LGV_ID,
-          assembly: dataset.reference.assembly,
-          // Bare digits: this runs in the visitor's browser, and JBrowse's
-          // locstring parser strips commas only, so a locale that groups with
-          // '.' or a space (de-DE, fr-FR, ru-RU) would produce a region no view
-          // can navigate to.
-          loc: `${region.chrom}:${region.start}-${region.end}`,
-          tracks: [
-            graph.geneTrackId,
-            graph.bubblesTrackId,
-            graph.segmentsTrackId,
-            ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
-          ],
-        },
-        {
-          type: 'GraphGenomeView',
-          displayName: `${region.label} graph`,
-          loadedTrackId: graph.segmentsTrackId,
-          loadedRegion: {
-            refName: region.chrom,
-            assemblyName: dataset.reference.assembly,
-            start: region.start,
-            end: region.end,
-          },
-          connectedViewId: LGV_ID,
-          colorScheme: 'reference-position',
-        },
-      ])
-    : undefined
-}
-
-// A whole chromosome drawn from the bubble tier: one node per top-level
-// bubble, so 249 Mb is a few hundred nodes and lays out in milliseconds. The
-// linear view above it gets the tier, the variability curve and genes rather
-// than the segment-level lanes, which would draw nothing useful at this width.
-//
-// `maxRegionBp` is the one setting that has to move: the view refuses a cut
-// over 5 Mb as a proxy for node count, and a tier breaks the proxy.
-// `maxGraphNodes` stays as the real ceiling.
-//
-// Undefined when the dataset has no tier, or no such chromosome.
-export function graphChromosomeUrl(dataset: PangenomeDataset, chrom: string) {
-  const graph = dataset.graphBrowser
-  const entry = graph?.chromosomes?.find(c => c.name === chrom)
-  if (!graph?.tierTrackId || !entry) {
+  if (!graph) {
     return undefined
   }
+  const tier = coarseTier(graph, region)
+  const label = region.label ?? locOf(region)
   return specUrl(graph.configUrl, [
     {
       type: 'LinearGenomeView',
       id: LGV_ID,
       assembly: dataset.reference.assembly,
-      loc: `${chrom}:1-${entry.length}`,
-      tracks: [
-        graph.geneTrackId,
-        ...(graph.bubbleScoreTrackId ? [graph.bubbleScoreTrackId] : []),
-        graph.tierTrackId,
-      ],
+      loc: locOf(region),
+      tracks: lanes(graph, region),
     },
     {
       type: 'GraphGenomeView',
-      displayName: `${chrom} graph (bubble tier)`,
-      loadedTrackId: graph.tierTrackId,
+      displayName: tier ? `${label} graph (bubble tier)` : `${label} graph`,
+      loadedTrackId: tier ?? graph.segmentsTrackId,
       loadedRegion: {
-        refName: chrom,
+        refName: region.chrom,
         assemblyName: dataset.reference.assembly,
-        start: 0,
-        end: entry.length,
+        start: region.start,
+        end: region.end,
       },
-      maxRegionBp: entry.length,
       connectedViewId: LGV_ID,
       colorScheme: 'reference-position',
-      // Anchored: every x is a reference coordinate, so the backbone runs left
-      // to right under the linear view instead of bending into the arc the
-      // force layout makes of a few hundred nodes in a chain.
-      layoutMode: 'auto',
+      ...(tier
+        ? { maxRegionBp: region.end - region.start, layoutMode: 'auto' }
+        : {}),
     },
   ])
 }
@@ -301,7 +319,7 @@ export function graphChromosomeUrl(dataset: PangenomeDataset, chrom: string) {
 // the dataset names none.
 export function externalGraphUrl(
   dataset: PangenomeDataset,
-  region: Omit<GraphRegion, 'label'>,
+  region: GraphRegion,
 ) {
   const ext = dataset.externalGraphBrowser
   return ext
@@ -309,21 +327,22 @@ export function externalGraphUrl(
     : undefined
 }
 
-// A catalog locus as the graph. Undefined when the locus is too wide to draw as
-// one graph and has picked no narrower window, or when the graph is known to
-// collapse the locus (`graphCollapsed`).
+// A catalog locus as the graph. Undefined only when the graph is known to
+// collapse the locus (`graphCollapsed`): minigraph merges near-identical
+// segmental duplications onto one path, so a launch there opens a bare thread
+// and reads as an empty result rather than as a collapsed one.
+//
+// A wide locus is no longer excluded — it draws its coarse tier. That is what
+// makes every card in a derived catalogue openable, which half of both of them
+// were not: 10 of mouse's 20 entries and 12 of cattle's are multi-megabase
+// clusters with no detail window.
 export function graphLocusUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
-  const window = detailWindow(locus)
-  return window && !locus.graphCollapsed
-    ? graphRegionUrl(dataset, {
-        ...window,
-        chrom: locus.chrom,
-        label: locus.gene,
-      })
-    : undefined
+  return locus.graphCollapsed
+    ? undefined
+    : graphRegionUrl(dataset, launchRegion(locus))
 }
 
 // Internal cross-link into the gene hub for the locus's marker gene, seeded
@@ -335,30 +354,5 @@ export function geneHubUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
   const gene = syntenyGene(locus)
   return gene
     ? `/gene?gene=${encodeURIComponent(gene)}&ref=${dataset.reference.taxonId}`
-    : undefined
-}
-
-// Pairwise reference ↔ synteny-target view at the locus (reference-level
-// divergence), through the shared synteny builder so it gets the site's view
-// defaults and opens the reference panel on its gene track rather than empty.
-// Undefined when the dataset defines no synteny target.
-export function referenceSyntenyUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  const target = dataset.syntenyTarget
-  return target
-    ? syntenyViewUrl(
-        [
-          {
-            assembly: dataset.reference.assembly,
-            loc: locusRegion(locus),
-            ...panelTracks(dataset.reference.geneTrackId),
-          },
-          { assembly: target.assembly },
-        ],
-        [target.trackId],
-        { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
-      )
     : undefined
 }

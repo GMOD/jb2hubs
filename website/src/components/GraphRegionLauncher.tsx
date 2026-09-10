@@ -2,18 +2,34 @@ import { useState } from 'react'
 
 import {
   externalGraphUrl,
-  graphChromosomeUrl,
   graphRegionUrl,
+  launchRegion,
 } from './pangenomeLinks.ts'
-import { detailWindow } from './pangenomeLoci.ts'
+import { preferredLocus } from './pangenomeLoci.ts'
 import { formatRegion, parseRegion } from './pangenomeRegion.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
+import type { PangenomeLocus } from './pangenomeLoci.ts'
 
-// Region form for drawing any window of the graph, with the catalog's drawable
-// loci as presets. The JBrowse tutorials reach the same view from the track
-// menu (Launch → Graph genome view (this region)); this is that launch with the
-// region named up front.
+// A locus's presets and the seeded box name the window its launch USES, not its
+// display span. Those differ for exactly one locus and it is the headline one:
+// the MHC's span is 4.97 Mb and its detail window is the 90 kb class II stretch
+// the HPRC tutorial names, so seeding the span opened the form on a region the
+// fine lanes cannot draw.
+function regionText(locus: PangenomeLocus) {
+  const r = launchRegion(locus)
+  return formatRegion(r.chrom, r.start, r.end)
+}
+
+// Region form for drawing any window of the graph, with the catalog's loci and
+// the graph's own chromosomes as presets. The JBrowse tutorials reach the same
+// view from the track menu (Launch → Graph genome view (this region)); this is
+// that launch with the region named up front.
+//
+// The chromosome row used to be a separate control calling a separate builder,
+// because a chromosome needed the coarse tier and a locus did not. `lanes()`
+// picks the tier by span now, so a chromosome is just the widest preset and
+// both rows go through `graphRegionUrl`.
 //
 // Without a hosted `graphBrowser` (production, until core v5) the external
 // browser is the launch rather than the alternative: the form submits to it and
@@ -23,19 +39,12 @@ export default function GraphRegionLauncher({
 }: {
   dataset: PangenomeDataset
 }) {
-  const presets = dataset.loci.flatMap(l => {
-    const w = detailWindow(l)
-    return w && !l.graphCollapsed
-      ? [
-          {
-            id: l.id,
-            gene: l.gene,
-            region: formatRegion(l.chrom, w.start, w.end),
-          },
-        ]
-      : []
-  })
-  const [input, setInput] = useState(presets[0]?.region ?? '')
+  const loci = dataset.loci.filter(l => !l.graphCollapsed)
+  const chromosomes = dataset.graphBrowser?.tierTrackId
+    ? (dataset.graphBrowser.chromosomes ?? [])
+    : []
+  const landing = preferredLocus(loci) ?? loci[0]
+  const [input, setInput] = useState(landing ? regionText(landing) : '')
   const parsed = parseRegion(input)
   const hosted = dataset.graphBrowser !== undefined
   const url = parsed.ok
@@ -43,21 +52,18 @@ export default function GraphRegionLauncher({
         chrom: parsed.chrom,
         start: parsed.start,
         end: parsed.end,
-        label: formatRegion(parsed.chrom, parsed.start, parsed.end),
       })
     : undefined
   const ext = dataset.externalGraphBrowser
   const externalUrl = parsed.ok ? externalGraphUrl(dataset, parsed) : undefined
   const submitUrl = hosted ? url : externalUrl
-  const chromosomes = dataset.graphBrowser?.tierTrackId
-    ? (dataset.graphBrowser.chromosomes ?? [])
-    : []
+  const kb = parsed.ok ? Math.round((parsed.end - parsed.start) / 1000) : 0
 
   const note = parsed.ok
     ? hosted
-      ? parsed.wide
-        ? 'Wider than 150 kb: the layout scales to fit, so nodes shrink to a thread. Zoom the linear panel and relaunch from its track menu for detail.'
-        : `Cuts the ${Math.round((parsed.end - parsed.start) / 1000)} kb subgraph and pairs it with a linear view of the same window.`
+      ? parsed.coarse && chromosomes.length > 0
+        ? `Cuts the ${kb.toLocaleString()} kb window at bubble resolution — one node per top-level bubble, beside a curve of how many segments each holds.`
+        : `Cuts the ${kb.toLocaleString()} kb subgraph at segment resolution and pairs it with a linear view of the same window.`
       : ext
         ? `Opens ${ext.name} on its ${ext.graphLabel} graph at this window.`
         : ''
@@ -74,9 +80,11 @@ export default function GraphRegionLauncher({
           }
         }}
       >
-        <label htmlFor="graph-region">{dataset.reference.label} region</label>
+        <label htmlFor={`graph-region-${dataset.id}`}>
+          {dataset.reference.label} region
+        </label>
         <input
-          id="graph-region"
+          id={`graph-region-${dataset.id}`}
           value={input}
           spellCheck={false}
           onChange={e => {
@@ -115,43 +123,40 @@ export default function GraphRegionLauncher({
         {note}
       </p>
       <div className="graph-launcher-presets">
-        {presets.map(p => (
+        {loci.slice(0, 8).map(l => (
           <button
-            key={p.id}
+            key={l.id}
             type="button"
             className={
-              p.region === input ? 'pg-filter pg-filter-active' : 'pg-filter'
+              regionText(l) === input
+                ? 'pg-filter pg-filter-active'
+                : 'pg-filter'
             }
             onClick={() => {
-              setInput(p.region)
+              setInput(regionText(l))
             }}
           >
-            {p.gene}
+            {l.gene}
+          </button>
+        ))}
+        {chromosomes.map(c => (
+          <button
+            key={c.name}
+            type="button"
+            className={
+              formatRegion(c.name, 0, c.length) === input
+                ? 'pg-filter pg-filter-active'
+                : 'pg-filter'
+            }
+            title={`${c.name} whole, at bubble resolution`}
+            onClick={() => {
+              setInput(formatRegion(c.name, 0, c.length))
+            }}
+          >
+            {c.name}
           </button>
         ))}
       </div>
-      {chromosomes.length > 0 && (
-        <>
-          <p className="graph-launcher-note">
-            Or a whole chromosome at bubble resolution — one node per top-level
-            bubble, a few hundred nodes for the longest, beside a curve of how
-            many segments each bubble holds:
-          </p>
-          <div className="graph-launcher-presets">
-            {chromosomes.map(c => (
-              <a
-                key={c.name}
-                className="pg-filter"
-                href={graphChromosomeUrl(dataset, c.name)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {c.name.replace(/^chr/, '')}
-              </a>
-            ))}
-          </div>
-        </>
-      )}
     </div>
   )
 }

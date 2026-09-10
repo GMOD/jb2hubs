@@ -45,10 +45,11 @@ export interface PangenomeLocus {
   start: number
   end: number
   variation: VariationClass[]
-  // Marker genes (pangene node names) whose per-haplotype copy number is shown as
-  // a matrix. Omitted where gene-level copy number isn't relevant (e.g. an
-  // intragenic VNTR). Names match the lh3/pangene human100 graph.
-  pangeneGenes?: string[]
+  // The genes this locus is about, most representative first. Read by
+  // `syntenyGene` for the cross-species link, and the reason a curated locus
+  // gets a real symbol where a derived one has to fall back to the tier's own
+  // gene list. Omitted where the locus is not gene-shaped (an intragenic VNTR).
+  markerGenes?: string[]
   // Narrower window for the two launches that draw per-haplotype data — the
   // graph and the 464-row genotype matrix — when the display span above is too
   // wide for either (see MAX_DETAIL_WINDOW_BP). Where the JBrowse HPRC tutorial
@@ -105,6 +106,16 @@ export const VARIATION_LABELS: Record<VariationClass, string> = {
   inversion: 'Inversion',
 }
 
+// The display order of the classes, stated rather than taken off
+// VARIATION_LABELS' key order so reading it needs no cast.
+export const VARIATION_CLASSES: VariationClass[] = [
+  'cnv',
+  'pav',
+  'hyperdiversity',
+  'vntr',
+  'inversion',
+]
+
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',
@@ -123,7 +134,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // all: C4A is chr6:31,982,057-32,002,681, which is the separate `c4` locus.
     detailWindow: { start: 32_510_000, end: 32_600_000 },
     variation: ['hyperdiversity', 'cnv'],
-    pangeneGenes: [
+    markerGenes: [
       'HLA-A',
       'HLA-B',
       'HLA-C',
@@ -150,7 +161,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // The tutorial's AMY1 window verbatim.
     detailWindow: { start: 103_690_000, end: 103_780_000 },
     variation: ['cnv'],
-    pangeneGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
+    markerGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
   },
   {
     id: 'c4',
@@ -165,7 +176,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // C4B (32,014,795-32,035,418).
     detailWindow: { start: 31_980_000, end: 32_050_000 },
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['C4A', 'C4B'],
+    markerGenes: ['C4A', 'C4B'],
   },
   {
     id: 'lpa',
@@ -195,7 +206,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     detailWindow: { start: 25_260_000, end: 25_345_000 },
     graphCollapsed: true,
     variation: ['pav'],
-    pangeneGenes: ['RHD', 'RHCE'],
+    markerGenes: ['RHD', 'RHCE'],
   },
   {
     id: 'smn',
@@ -212,7 +223,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     detailWindow: { start: 70_910_000, end: 70_970_000 },
     graphCollapsed: true,
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['SMN1'],
+    markerGenes: ['SMN1'],
   },
   {
     id: 'kir',
@@ -227,7 +238,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // (54,724,442-54,867,207) the display window covers whole.
     detailWindow: { start: 54_750_000, end: 54_840_000 },
     variation: ['hyperdiversity', 'pav'],
-    pangeneGenes: [
+    markerGenes: [
       'KIR3DL3',
       'KIR2DL3',
       'KIR2DL1',
@@ -259,7 +270,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // display window's subject.
     detailWindow: { start: 7_850_000, end: 7_930_000 },
     variation: ['cnv', 'inversion'],
-    pangeneGenes: [
+    markerGenes: [
       'DEFB103A',
       'DEFB104B',
       'DEFB105A',
@@ -281,7 +292,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // i.e. the whole low-affinity receptor cluster.
     detailWindow: { start: 161_495_000, end: 161_640_000 },
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
+    markerGenes: ['FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
   },
   {
     id: 'hp',
@@ -293,7 +304,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 72_040_000,
     end: 72_090_000,
     variation: ['cnv'],
-    pangeneGenes: ['HP', 'HPR'],
+    markerGenes: ['HP', 'HPR'],
   },
   {
     id: 'cyp2d6',
@@ -310,7 +321,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // explicitly rather than by the width rule.
     graphCollapsed: true,
     variation: ['cnv', 'hyperdiversity'],
-    pangeneGenes: ['CYP2D6', 'CYP2D7'],
+    markerGenes: ['CYP2D6', 'CYP2D7'],
   },
   {
     id: 'hba',
@@ -322,7 +333,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 130_000,
     end: 185_000,
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['HBZ', 'HBM', 'HBA2', 'HBQ1'],
+    markerGenes: ['HBZ', 'HBM', 'HBA2', 'HBQ1'],
   },
   {
     id: 'srgap2',
@@ -348,7 +359,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // typo). Exon coordinates from UCSC ncbiRefSeqSelect, checked 2026-08-06.
     detailWindow: { start: 206_190_000, end: 206_330_000 },
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['SRGAP2', 'SRGAP2B', 'SRGAP2C'],
+    markerGenes: ['SRGAP2', 'SRGAP2B', 'SRGAP2C'],
   },
   {
     id: 'mns',
@@ -363,7 +374,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // the pair the hybrid alleles recombine between.
     detailWindow: { start: 143_990_000, end: 144_140_000 },
     variation: ['pav', 'cnv'],
-    pangeneGenes: ['GYPA', 'GYPB', 'GYPE'],
+    markerGenes: ['GYPA', 'GYPB', 'GYPE'],
   },
   {
     id: 'cfhr',
@@ -380,7 +391,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // CFHR1 (196,819,731-196,832,189) with flanks.
     detailWindow: { start: 196_740_000, end: 196_850_000 },
     variation: ['pav', 'cnv'],
-    pangeneGenes: ['CFH', 'CFHR1', 'CFHR2', 'CFHR3', 'CFHR4', 'CFHR5'],
+    markerGenes: ['CFH', 'CFHR1', 'CFHR2', 'CFHR3', 'CFHR4', 'CFHR5'],
   },
   {
     id: 'prss',
@@ -392,7 +403,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 142_740_000,
     end: 142_780_000,
     variation: ['cnv', 'pav'],
-    pangeneGenes: ['PRSS1', 'PRSS2'],
+    markerGenes: ['PRSS1', 'PRSS2'],
   },
   {
     id: 'ugt2b17',
@@ -404,7 +415,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 68_530_000,
     end: 68_680_000,
     variation: ['pav', 'cnv'],
-    pangeneGenes: ['UGT2B17', 'UGT2B15'],
+    markerGenes: ['UGT2B17', 'UGT2B15'],
   },
   {
     id: 'nphp1',
@@ -416,7 +427,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 110_080_000,
     end: 110_210_000,
     variation: ['pav'],
-    pangeneGenes: ['NPHP1', 'MALL'],
+    markerGenes: ['NPHP1', 'MALL'],
   },
   {
     id: 'gstm1',
@@ -428,7 +439,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 109_680_000,
     end: 109_715_000,
     variation: ['pav'],
-    pangeneGenes: ['GSTM1'],
+    markerGenes: ['GSTM1'],
   },
   {
     id: 'pga',
@@ -440,7 +451,7 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 61_195_000,
     end: 61_258_000,
     variation: ['cnv'],
-    pangeneGenes: ['PGA3', 'PGA4', 'PGA5'],
+    markerGenes: ['PGA3', 'PGA4', 'PGA5'],
   },
 ]
 
@@ -448,6 +459,24 @@ export function locusRegion(
   l: Pick<PangenomeLocus, 'chrom' | 'start' | 'end'>,
 ) {
   return `${l.chrom}:${l.start}-${l.end}`
+}
+
+// The entry a catalogue should open on, which is not simply the first: the
+// top-ranked entry in both derived catalogues is a multi-megabase cluster with
+// no detail window, so it has no graph launch and its linear launch would put
+// the allele inventory past its fetch limit — mouse's is 2.24 Mb. Prefer the
+// highest-ranked entry that is drawable AND named, and fall back down the
+// ranking rather than off it.
+//
+// Both the explorer's initial card and a dataset's `landingRegion` read this,
+// so the page and the portal cannot land on different loci.
+export function preferredLocus(loci: PangenomeLocus[]) {
+  const named = (l: PangenomeLocus) => syntenyGene(l) !== undefined
+  return (
+    loci.find(l => detailWindow(l) && named(l)) ??
+    loci.find(l => detailWindow(l)) ??
+    loci[0]
+  )
 }
 
 // A real NCBI gene symbol to seed the cross-species gene-order view, or
@@ -463,7 +492,7 @@ export function locusRegion(
 export function syntenyGene(locus: PangenomeLocus) {
   const derived = locus.derived
   return (
-    locus.pangeneGenes?.[0] ??
+    locus.markerGenes?.[0] ??
     // A cluster's alphabetically-first member is often an unnamed LOC id, which
     // no other species has an ortholog table under; prefer a real symbol.
     (derived

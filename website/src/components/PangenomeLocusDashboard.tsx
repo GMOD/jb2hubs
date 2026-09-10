@@ -2,19 +2,18 @@ import useSWRImmutable from 'swr/immutable'
 
 import { fetchJson } from '../lib/fetchJson.ts'
 import { errorText } from './ErrorMessage.tsx'
-import OpenInDesktop from './OpenInDesktop.tsx'
-import PangeneMatrix from './PangeneMatrix.tsx'
 import PangenomeBarChart from './PangenomeBarChart.tsx'
-import PangenomeMsaSection from './PangenomeMsaSection.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import {
   externalGraphUrl,
   geneHubUrl,
   graphLocusUrl,
+  isCoarse,
+  launchRegion,
   locusLaunchUrl,
-  referenceSyntenyUrl,
+  locusRegionOf,
 } from './pangenomeLinks.ts'
-import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
+import { locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
 import type { LocusSummary } from './pangenomeData.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -32,21 +31,11 @@ function typeBins(typeCounts: Record<string, number>) {
 // pre-sorted descending by the generator, so this slice is the most-divergent N.
 const TOP_DIVERGENT = 12
 
-// Where there is no hosted graph (production, until core v5), the external
-// browser stands in for the locus launch: same reference coordinates, its own
-// graph build.
-function externalLocusUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
-  const window = detailWindow(locus)
-  return window && !dataset.graphBrowser
-    ? externalGraphUrl(dataset, { ...window, chrom: locus.chrom })
-    : undefined
-}
-
 // Everything the tier reported about a derived locus, which is everything known
-// about it. It stands in for the four charts above rather than beside them: a
-// derived catalogue has no callset to decompose, so there is no variant-type
-// breakdown, no allele-frequency histogram and no per-sample burden to draw —
-// those are all arithmetic over carriage.
+// about it. It stands in for the charts above rather than beside them: a derived
+// catalogue has no callset to decompose, so there is no variant-type breakdown,
+// no allele-frequency histogram and no per-sample burden to draw — those are all
+// arithmetic over carriage.
 function DerivedBubbleFacts({
   dataset,
   locus,
@@ -115,43 +104,42 @@ export default function PangenomeLocusDashboard({
     locus.derived ? null : `${dataset.dataPrefix}/${locus.id}.vcfsummary.json`,
     fetchJson,
   )
-  const gene = syntenyGene(locus)
-  const target = dataset.syntenyTarget
-  const syntenyUrl = referenceSyntenyUrl(dataset, locus)
   // The callset beside the reference genes where the dataset has one, else the
-  // graph's own bubbles/alleles/segments lanes — and undefined where neither is
-  // reachable, which on production is every locus of the two non-human
-  // datasets, since all three of their adapters live in the plugin.
+  // graph's own lanes — and undefined where neither is reachable, which on
+  // production is every locus of the two graphs that have no callset, since
+  // their lanes are read by adapters that ship in the plugin.
   const variantsUrl = locusLaunchUrl(dataset, locus)
   const graphUrl = graphLocusUrl(dataset, locus)
-  const externalUrl = externalLocusUrl(dataset, locus)
+  // Where there is no hosted graph (production, until core v5), the external
+  // browser stands in: same reference coordinates, its own graph build.
+  const externalUrl = dataset.graphBrowser
+    ? undefined
+    : externalGraphUrl(dataset, locusRegionOf(locus))
   const ext = dataset.externalGraphBrowser
+  // About the window the launches USE, not the locus's display span: MHC's
+  // span is 4.97 Mb and the window it opens on is 90 kb.
+  const coarse = isCoarse(dataset, launchRegion(locus))
 
   return (
     <div className="pg-dashboard">
-      <div className="pg-dash-header">
-        <div>
-          <h2 className="pg-dash-title">
-            {locus.gene}{' '}
-            <span className="pg-dash-fullname">{locus.fullName}</span>
-          </h2>
-          <PangenomeVariationBadges variation={locus.variation} />
-          <p className="pg-dash-loc">
-            {dataset.reference.label} {locusRegion(locus)}
-            {summary && (
-              <>
-                {' · '}
-                {summary.variantCount.toLocaleString()} pangenome variant sites
-                · {summary.alleleCount.toLocaleString()} alleles ·{' '}
-                {summary.sampleBurden.length} samples
-              </>
-            )}
-          </p>
-          {locus.significance && (
-            <p className="pg-dash-significance">{locus.significance}</p>
-          )}
-        </div>
-      </div>
+      <h2 className="pg-dash-title">
+        {locus.gene} <span className="pg-dash-fullname">{locus.fullName}</span>
+      </h2>
+      <PangenomeVariationBadges variation={locus.variation} />
+      <p className="pg-dash-loc">
+        {dataset.reference.label} {locusRegion(locus)}
+        {summary && (
+          <>
+            {' · '}
+            {summary.variantCount.toLocaleString()} pangenome variant sites ·{' '}
+            {summary.alleleCount.toLocaleString()} alleles ·{' '}
+            {summary.sampleBurden.length} samples
+          </>
+        )}
+      </p>
+      {locus.significance && (
+        <p className="pg-dash-significance">{locus.significance}</p>
+      )}
 
       <div className="pg-launch-bar">
         {variantsUrl && (
@@ -162,8 +150,8 @@ export default function PangenomeLocusDashboard({
             rel="noreferrer"
           >
             {dataset.graphVcf
-              ? `Browse ${dataset.label} variants + structural variation in JBrowse →`
-              : `Browse the ${dataset.label} bubbles and alleles in JBrowse →`}
+              ? 'Browse the variants and structural variation in JBrowse →'
+              : 'Browse the bubbles and alleles in JBrowse →'}
           </a>
         )}
         {graphUrl && (
@@ -173,7 +161,7 @@ export default function PangenomeLocusDashboard({
             target="_blank"
             rel="noreferrer"
           >
-            Draw {gene ?? locus.gene} as a pangenome graph →
+            Draw {locus.gene} as a pangenome graph →
           </a>
         )}
         {externalUrl && ext && (
@@ -184,8 +172,24 @@ export default function PangenomeLocusDashboard({
             rel="noreferrer"
             title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
           >
-            Draw {gene ?? locus.gene} as a graph in {ext.name} ↗
+            Draw {locus.gene} as a graph in {ext.name} ↗
           </a>
+        )}
+        {geneHubUrl(dataset, locus) && (
+          <a
+            className="pg-launch-btn pg-launch-secondary"
+            href={geneHubUrl(dataset, locus)}
+          >
+            {syntenyGene(locus)} across species (gene hub) →
+          </a>
+        )}
+        {coarse && graphUrl && (
+          <p className="pg-hint pg-launch-note">
+            Wider than 150 kb, so both launches open at bubble resolution — one
+            row per top-level bubble rather than per segment. Zoom the linear
+            panel in and relaunch from its track menu for the segments and the
+            allele inventory.
+          </p>
         )}
         {!variantsUrl && !graphUrl && !externalUrl && (
           <p className="pg-hint pg-launch-note">
@@ -201,33 +205,8 @@ export default function PangenomeLocusDashboard({
           <p className="pg-hint pg-launch-note">
             No graph launch: minigraph collapses this locus&rsquo;s
             near-identical paralogs onto a single path, so the graph holds no
-            alternative route to draw here. The variant and copy-number views
-            below are unaffected.
+            alternative route to draw here. The variant view is unaffected.
           </p>
-        )}
-        {variantsUrl && (
-          <OpenInDesktop
-            className="pg-launch-btn pg-launch-secondary"
-            webUrl={variantsUrl}
-          />
-        )}
-        {target && (
-          <a
-            className="pg-launch-btn pg-launch-secondary"
-            href={syntenyUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Compare {dataset.reference.label} ↔ {target.label} (synteny) →
-          </a>
-        )}
-        {geneHubUrl(dataset, locus) && gene && (
-          <a
-            className="pg-launch-btn pg-launch-secondary"
-            href={geneHubUrl(dataset, locus)}
-          >
-            {gene} across species (gene hub) →
-          </a>
         )}
       </div>
 
@@ -263,7 +242,7 @@ export default function PangenomeLocusDashboard({
               bins={typeBins(summary.typeCounts)}
             />
             <PangenomeBarChart
-              title="Allele frequency (across HPRC assembly panel)"
+              title={`Allele frequency (across the ${summary.sampleBurden.length}-sample panel)`}
               bins={summary.afHistogram}
             />
             <PangenomeBarChart
@@ -279,7 +258,7 @@ export default function PangenomeLocusDashboard({
                 .slice(0, TOP_DIVERGENT)
                 .map(s => ({ label: s.sample, count: s.count }))}
             />
-            <p className="pg-hint pg-pangene-caption">
+            <p className="pg-hint pg-caption">
               Per sample, the count of variant sites in this locus where the
               assembly differs from {summary.ref} (a site counts once whether
               heterozygous or homozygous). Dominated by common SNVs, so this
@@ -288,21 +267,6 @@ export default function PangenomeLocusDashboard({
             </p>
           </div>
         </>
-      )}
-
-      {locus.pangeneGenes?.length ? (
-        <PangeneMatrix
-          dataPrefix={dataset.dataPrefix}
-          locus={locus}
-        />
-      ) : null}
-
-      {locus.derived ? null : (
-        <PangenomeMsaSection
-          dataPrefix={dataset.dataPrefix}
-          referenceLabel={dataset.reference.label}
-          locus={locus}
-        />
       )}
     </div>
   )

@@ -12,8 +12,6 @@
 // reported are all there is — HPRC's catalogue is curated and has summaries,
 // and a dataset could one day hold both kinds.
 
-import { locusRegion } from './pangenomeLoci.ts'
-
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 // One row of `public/pangenome-<id>/loci.json`, as the generator writes it.
@@ -62,25 +60,4 @@ export function derivedLoci(file: DerivedLociFile): PangenomeLocus[] {
       genes: l.genes,
     },
   }))
-}
-
-// The region a dataset's "browse the whole graph" launch should land on: the
-// highest-ranked entry the linear lanes can draw in full AND that carries a
-// gene name. Both conditions earn their place — the top entry in both derived
-// catalogues is a multi-megabase cluster, which puts the allele inventory past
-// its fetch limit, and a landing region with no name greets a reader with a
-// coordinate. Falls back down the ranking rather than off it, so a catalogue
-// where nothing satisfies both still lands somewhere the graph varies.
-export function landingRegion(loci: PangenomeLocus[], maxBp: number) {
-  const drawable = (l: PangenomeLocus) => l.end - l.start <= maxBp
-  const landing =
-    loci.find(
-      l => drawable(l) && l.derived !== undefined && l.derived.genes.length > 0,
-    ) ??
-    loci.find(drawable) ??
-    loci[0]
-  if (landing === undefined) {
-    throw new Error('no locus to land on: the derived catalogue is empty')
-  }
-  return locusRegion(landing)
 }

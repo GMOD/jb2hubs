@@ -85,14 +85,15 @@ and `ncbiRefSeq.gff.gz` probed 200 for hg38, mm39 and bosTau9.
 
 ### The version drift, which is a symptom rather than an accident
 
-The tutorials moved to HPRC **v2.1**. This repo is entirely on **v2.0** — 14
-pins across four files:
+The tutorials moved to HPRC **v2.1**. This repo is entirely on **v2.0** — 13
+pins across three files (recounted 2026-09-10, after the fourth file's download
+table was deleted):
 
 - `website/pangenome-config/hprc-grch38.json` — all six track URIs
-- `website/src/components/pangenomeDataset.ts` — `graphVcf.url` and its trackId
+- `website/src/components/pangenomeDataset.ts` — `graphVcf.url`, its trackId and
+  `HPRC_PORTAL.filePrefix`
 - `ucsc2jbrowse/ucscExtensions/hg38.json` — the served VCF and the allele
   inventory
-- `website/src/pages/pangenomes/index.astro` — the four download-table rows
 
 Both versions are live in `demos/hprc/` (v2.0 `segs.bed.gz` 6,693,943 bytes,
 v2.1 6,686,172), so nothing errors — we are just quietly serving the older
@@ -390,11 +391,11 @@ has already changed once.
   comparative" and `HOSTING.md`.
 
 - **HPRC v2.1, as one atomic pass.** The 14 pins listed above, plus
-  `node website/generatePangenomeData.ts` and `generatePangenomeMsa.ts` to
-  rebuild the 20 locus summaries and MSAs against the v2.1 `wave` VCF
-  (2,291,014,302 bytes, probed live), plus the four download-table rows, whose
-  v2.1 paths differ in shape — upstream added a `/v2.1/` directory segment, so
-  each has to be probed rather than string-substituted.
+  `node website/generatePangenomeData.ts` to rebuild the 20 locus summaries
+  against the v2.1 `wave` VCF (2,291,014,302 bytes, probed live), plus the four
+  download-table rows, whose v2.1 paths differ in shape — upstream added a
+  `/v2.1/` directory segment, so each has to be probed rather than
+  string-substituted.
 
 - **Bovine's variant route.** `vg convert` + `vg deconstruct -p` per chromosome
   over the minigraph set already extracted, PanSN-renaming each P line first so
@@ -420,9 +421,17 @@ has already changed once.
   `7d9aa7433c5`._ Both graphs are `PANGENOME_DATASETS` entries, so the explorer,
   the locus dashboard and every launch builder work on all three, and
   `PangenomeSection.astro` renders the mouse and cattle sections off the
-  dataset. HPRC's section stays hand-written — a 232-row sample table, two
-  references and a release history that nothing else has — so `portal` is
-  optional on the type.
+  dataset. HPRC's section stayed hand-written for another day — a 232-row sample
+  table, two references and a release history that nothing else has — so
+  `portal` was optional on the type.
+
+  _Amended 2026-09-10._ It no longer is. `/hubs/HPRC` is a searchable version of
+  that sample table and the page's own prose already linked it, and the
+  release-history table was a table of upstream files the HPRC resources repo
+  maintains — so both became links, and with them gone HPRC is the same shape as
+  the other two and renders through the same component. `portal` is required.
+  The section gained what it had never had: the projections table, the caveats
+  list, and its own region launcher.
 
   `graphVcf` became optional as planned, and the thing to hold onto is that its
   absence is a property of the FILE rather than a stage of the wiring: mouse's
@@ -435,9 +444,9 @@ has already changed once.
   Locus catalogues came from neither seed list in the end: `04d62efa1ec` derives
   them from the graph's own coarse tier, and `locus.derived` carries the four
   numbers the tier reported. Its presence is also the per-locus signal that
-  nothing was precomputed — no `<id>.vcfsummary.json`, no MSA — so the dashboard
-  shows the tier's facts rather than a load error over a locus that is working
-  as intended.
+  nothing was precomputed — no `<id>.vcfsummary.json` — so the dashboard shows
+  the tier's facts rather than a load error over a locus that is working as
+  intended.
 
   One defect worth remembering, because a URL-shape test could not see it:
   `syntenyGene` split a derived locus's COMPOSED label and produced text that is
@@ -481,5 +490,10 @@ the per-dataset `notes[]`.
   `/mnt/sdb/cdiesh/mousePangenome/` plus its own build tree. Its
   `mouse-loci.tsv` is worth keeping for step 5 regardless. Retire or finish, but
   do not leave it as a third half-built mouse route.
+
+  The case for finishing it got weaker on 2026-09-10: the site's per-locus MSA
+  panel is deleted (see CLAUDE.md, "What the /pangenomes page is not"), so the
+  step that never ran no longer has a consumer. Retiring is now the default.
+
 - `agent-docs/MOUSE_PANGENOME_PLAN.md` — superseded by this file for everything
   except its locus table. Its §3 parameterisation plan is done.

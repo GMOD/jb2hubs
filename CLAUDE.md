@@ -1801,6 +1801,66 @@ The genomes.jbrowse.org side of the JBrowse docs
 (`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) describes
 this page, so a visible change here should be reflected there.
 
+### One rule decides how wide a window is drawn, and it removed four surfaces
+
+`lanes()` in `website/src/components/pangenomeLinks.ts` picks the segment-level
+lanes under `MAX_DETAIL_WINDOW_BP` (150 kb) and the coarse bubble tier above it,
+and `graphRegionUrl` follows with the tier as `loadedTrackId`, `maxRegionBp`
+raised to the span and the anchored layout. Everything below fell out of that on
+2026-09-10, so a change here is a change to all of it:
+
+- **`graphChromosomeUrl` is gone.** A chromosome is the widest region and takes
+  the coarse branch, so the whole-chromosome launch and the region launch are
+  one builder — and the launcher's chromosome row is a row of presets rather
+  than a second control.
+- **A wide catalog locus has a launch at all.** `graphLocusUrl` used to return
+  undefined without a detail window, and `locusLaunchUrl` opened the allele
+  inventory (an AlignmentsTrack, 379 rows over mouse's top entry) across
+  multi-megabase spans. Half of each derived catalogue is such a cluster — 10 of
+  mouse's 20, 12 of cattle's.
+- **`pangenomeRegion.ts` has no upper bound.** `MAX_GRAPH_REGION_BP` existed
+  because the view refuses a cut past its `maxRegionBp`; the coarse branch
+  raises it.
+- **The `landingRegion` field is gone.** `preferredLocus` (in
+  `pangenomeLoci.ts`) is the one answer to "which locus does this catalogue open
+  on" — the first that is both drawable and named — and the explorer's initial
+  card, the portal's headline launch and the region form all read it, so they
+  cannot disagree. HPRC's hand-written 3.8 Mb MHC overview is what it replaced,
+  and that opened the 464-column callset behind the "too much data" banner.
+
+The one asymmetry that stays: the callset does **not** get a coarse tier, so
+`graphVcfLgvUrl` still opens on `launchRegion` and a wide locus's variant lane
+is still gated. That is a property of a VCF, not of the wiring.
+
+### What the /pangenomes page is not
+
+It was 15,286 px rendered, and ~10,000 of that was a static 232-row HPRC sample
+table plus two mouse-strain tables. `/hubs/HPRC` is a searchable version of the
+first and the page's own prose already linked it; the accession pages cover the
+other two. All three are links now, `website/src/hprcSamples.json` and its two
+siblings are deleted, and HPRC renders through `PangenomeSection` like the other
+two rather than being hand-written beside it — which is what finally gave it the
+projections table and the caveats list the other two always had.
+
+Two whole features came out with them, and neither is worth rebuilding as-is:
+
+- **The per-locus MSA panel** (`generatePangenomeMsa.ts`, `PangenomeMsaSection`,
+  `MsaPanel`) reconstructed 465 haplotypes over one 800 bp window per locus. It
+  was 8.1 MB of the 8.4 MB committed under `public/pangenome/`, HPRC-only, and
+  its first paint on the headline locus is 465 rows of dashes, because the
+  window-picker ranks by indel-weighted variation and lands inside a `GAA`
+  expansion one haplotype carries. Note that this did **not** remove the
+  react-msaview dependency or the `@jbrowse/core` patch — `/protein-browser`
+  uses `MSAViewer` directly.
+- **The pangene copy-number matrix** (`generatePangenomePangene.ts`,
+  `PangeneMatrix`) drew 100 haplotypes from lh3's `human100` graph under charts
+  computed over HPRC's 232 samples. Two cohorts, one locus, and the caption was
+  the only thing saying so.
+
+`markerGenes` on a `PangenomeLocus` is the surviving half of the second: it is
+read by `syntenyGene` for the gene-hub link and no longer has anything to do
+with pangene, which is why it is no longer called `pangeneGenes`.
+
 ## The protein browser launches a session the plugins have to agree with
 
 `/protein-browser` (`website/src/components/ProteinBrowser.tsx` and the files

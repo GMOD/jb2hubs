@@ -39,13 +39,6 @@ const manifests = { [HPRC_DATASET.id]: hprcManifest }
     margin: 1.25rem 0;
   }
 
-  /* Pushes the sort chips to the right edge of the filter bar (collapses to 0
-     when the bar wraps, so the sort chips just flow underneath on narrow view). */
-  .pg-filter-spacer {
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
   .pg-filter {
     padding: 6px 12px;
     font-size: 13px;
@@ -277,86 +270,6 @@ const manifests = { [HPRC_DATASET.id]: hprcManifest }
     grid-template-columns: 110px 1fr 52px;
   }
 
-  .pg-pangene {
-    margin-bottom: 1.5rem;
-  }
-
-  .pg-pangene-caption {
-    max-width: 75ch;
-    margin: 0 0 0.75rem;
-  }
-
-  .pg-matrix-scroll {
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-
-  .pg-matrix {
-    display: grid;
-    gap: 2px;
-    align-items: center;
-    width: max-content;
-  }
-
-  .pg-matrix-gene {
-    font-size: 11px;
-    color: #333;
-    text-align: right;
-    padding-right: 8px;
-    white-space: nowrap;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-
-  .pg-matrix-range {
-    font-size: 11px;
-    color: #888;
-    text-align: right;
-    padding-right: 8px;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  }
-
-  .pg-matrix-cell {
-    width: 13px;
-    height: 13px;
-    border-radius: 2px;
-  }
-
-  /* Absent = red, but hatched so it survives grayscale / color-blind viewing. */
-  .pg-matrix-cell-absent {
-    background-image: repeating-linear-gradient(
-      45deg,
-      rgba(0, 0, 0, 0.34) 0 1.5px,
-      transparent 1.5px 4px
-    );
-  }
-
-  /* Divider drawn in the gap after the last reference column (no layout shift). */
-  .pg-matrix-cell-refdiv {
-    box-shadow: 3px 0 0 -1px #b0b0b0;
-  }
-
-  .pg-matrix-legend {
-    display: flex;
-    gap: 12px;
-    margin-top: 0.6rem;
-    font-size: 12px;
-    color: #555;
-  }
-
-  .pg-legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .pg-legend-swatch {
-    width: 13px;
-    height: 13px;
-    border-radius: 2px;
-  }
-
   /* The derived-catalogue facts block, in place of the four charts a curated
      locus draws. Grid rather than a plain dl so the four pairs sit in a row on
      a wide screen and stack on a narrow one. */
@@ -380,45 +293,10 @@ const manifests = { [HPRC_DATASET.id]: hprcManifest }
     font-variant-numeric: tabular-nums;
   }
 
-  .pg-msa {
-    padding: 1rem 1.2rem;
-    background: #fafafa;
-    border: 1px dashed #ccc;
-    border-radius: 8px;
-  }
-
-  .pg-msa-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .pg-msa-controls {
-    display: flex;
-    gap: 0.4rem;
-  }
-
-  .pg-msa-toggle {
-    padding: 4px 10px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--accent);
-    background: white;
-    border: 1px solid #cdd9e6;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
-  .pg-msa-toggle:hover {
-    background: var(--accent-wash);
-  }
-
-  .pg-msa-toggle-on {
-    color: white;
-    background: var(--accent);
-    border-color: var(--accent);
+  /* Caption under a chart, narrower than the prose measure above it. */
+  .pg-caption {
+    max-width: 75ch;
+    margin: 0 0 0.75rem;
   }
 
   .pg-hint {
@@ -435,11 +313,6 @@ const manifests = { [HPRC_DATASET.id]: hprcManifest }
   .pg-provenance code {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     font-size: 12px;
-  }
-
-  .pg-legend-count {
-    font-weight: 600;
-    color: #333;
   }
 
   .pg-error {

@@ -5,8 +5,8 @@ import { desktopUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
 import {
   graphBrowserUrl,
+  graphLocusUrl,
   graphVcfLgvUrl,
-  referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
@@ -31,7 +31,7 @@ function everyLaunchUrl() {
     graphBrowserUrl(HPRC_DATASET),
     ...PANGENOME_LOCI.flatMap(locus => [
       graphVcfLgvUrl(HPRC_DATASET, locus),
-      referenceSyntenyUrl(HPRC_DATASET, locus),
+      graphLocusUrl(HPRC_DATASET, locus),
     ]),
     syntenyViewUrl(
       [

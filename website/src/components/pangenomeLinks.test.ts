@@ -14,21 +14,28 @@ import {
   geneHubUrl,
   externalGraphUrl,
   graphBrowserUrl,
-  graphChromosomeUrl,
   graphLanesUrl,
   graphLocusUrl,
   graphRegionUrl,
   graphVcfLgvUrl,
+  isCoarse,
   locusLaunchUrl,
-  referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
 import {
   MAX_DETAIL_WINDOW_BP,
   PANGENOME_LOCI,
   detailWindow,
   locusRegion,
+  preferredLocus,
   syntenyGene,
 } from './pangenomeLoci.ts'
+
+// The loc a locus's own launch opens on, so a test can assert two builders
+// agree without restating the detail-window rule.
+function locusLaunchLoc(locus: (typeof PANGENOME_LOCI)[number]) {
+  const w = detailWindow(locus)
+  return w ? `${locus.chrom}:${w.start}-${w.end}` : locusRegion(locus)
+}
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
 // both back so the tests assert on the real spec the browser will expand.
@@ -107,9 +114,14 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.ok(filters.some(f => f.includes('alleleLength(feature)>=50')))
 })
 
-test('graphBrowserUrl lands on the dataset landing region', () => {
+test('graphBrowserUrl lands on the same locus the explorer opens on', () => {
+  // Not a second constant. `preferredLocus` is what the explorer's initial card
+  // and the portal's headline launch both read, so the two cannot disagree —
+  // and the hand-written HPRC landing region it replaced was a 3.8 Mb MHC
+  // overview that opened the callset behind the "too much data" banner.
+  const landing = preferredLocus(HPRC_DATASET.loci)!
   const { spec } = parseLaunch(graphBrowserUrl(HPRC_DATASET)!)
-  assert.equal(spec.views[0]!.loc, HPRC_DATASET.landingRegion)
+  assert.equal(spec.views[0]!.loc, locusLaunchLoc(landing))
 })
 
 // --- a dataset with no reference-projected callset -------------------------
@@ -167,15 +179,27 @@ test('an unphased callset does not ask for haplotype rows', () => {
 })
 
 test('without a callset the primary launch is the graph configs own lanes', () => {
-  const locus = mouseGraph.loci[0]!
-  const url = locusLaunchUrl(mouseGraph, locus)!
-  const { config, spec } = parseLaunch(url)
+  const narrow = mouseGraph.loci.find(l => detailWindow(l))!
+  const { config, spec } = parseLaunch(locusLaunchUrl(mouseGraph, narrow)!)
   assert.equal(config, mouseGraph.graphBrowser.configUrl)
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
     'mouse_minigraph_bubbles',
     'mouse_minigraph_alleles',
     'mouse_minigraph_segments',
+  ])
+})
+
+// The same builder, the other branch. `loci[0]` is the 2.24 Mb Vmn cluster, and
+// this launch used to open the allele inventory — an AlignmentsTrack over 379
+// rows — across the whole of it, which is past its fetch limit. It opens the
+// tier instead, and the dashboard says why.
+test('and over a span the fine lanes cannot draw, it is the tier', () => {
+  const wide = mouseGraph.loci.find(l => detailWindow(l) === undefined)!
+  const { spec } = parseLaunch(locusLaunchUrl(mouseGraph, wide)!)
+  assert.deepEqual(spec.views[0]!.tracks, [
+    'mm39_ncbiRefSeq_ucsc',
+    'mouse_minigraph_tier',
   ])
 })
 
@@ -186,33 +210,33 @@ test('and with a callset it is still the reference view', () => {
 
 test('the lanes launch is undefined without a hosted graph config', () => {
   const noGraph = { ...MOUSE_DATASET, graphBrowser: undefined }
-  assert.equal(graphLanesUrl(noGraph, 'chr11:1-1000'), undefined)
+  assert.equal(
+    graphLanesUrl(noGraph, { chrom: 'chr11', start: 1, end: 1000 }),
+    undefined,
+  )
   assert.equal(graphBrowserUrl(noGraph), undefined)
   assert.equal(locusLaunchUrl(noGraph, noGraph.loci[0]!), undefined)
 })
 
-test('every dataset lands on a region a view can navigate to', () => {
-  // Commas are allowed and grouped digits are not, which is the same rule the
-  // locale test below applies: JBrowse's locstring parser strips commas only,
-  // so a hand-written `chr6:29,700,000-33,500,000` is fine and anything
-  // `toLocaleString` produced under de-DE is not.
+test('every dataset lands on a locus its own catalogue names, and a drawable one', () => {
+  // The top-ranked entry in both derived catalogues is a multi-megabase cluster
+  // with no detail window -- mouse's is 2.24 Mb -- so `loci[0]` put the allele
+  // inventory or the 464-column callset past its fetch limit. `preferredLocus`
+  // falls down the ranking to the first entry that is drawable AND named.
   for (const d of PANGENOME_DATASETS) {
-    assert.match(
-      d.landingRegion,
-      /^[A-Za-z0-9_.]+:[\d,]+-[\d,]+$/,
-      `${d.id} landing region "${d.landingRegion}"`,
-    )
-  }
-})
-
-test('a derived dataset lands on a locus its own catalogue ranked', () => {
-  // HPRC's is a hand-picked MHC overview; a derived dataset has no such
-  // knowledge, so its landing region must come out of the ranking rather than
-  // out of a constant nobody would maintain.
-  for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
+    const landing = preferredLocus(d.loci)
+    assert.ok(landing, `${d.id} has a landing locus`)
     assert.ok(
-      d.loci.some(l => locusRegion(l) === d.landingRegion),
-      `${d.id} lands on ${d.landingRegion}, which its catalogue does not name`,
+      d.loci.includes(landing),
+      `${d.id} lands on a locus its catalogue names`,
+    )
+    assert.ok(
+      detailWindow(landing),
+      `${d.id} lands on ${landing.id}, which has no drawable window`,
+    )
+    assert.ok(
+      syntenyGene(landing),
+      `${d.id} lands on ${landing.id}, which greets a reader with a coordinate`,
     )
   }
 })
@@ -240,44 +264,6 @@ test('a derived catalogue carries what the tier said and claims nothing else', (
       [...counts].sort((a, b) => b - a),
     )
   }
-})
-
-test('referenceSyntenyUrl builds a reference↔target synteny view', () => {
-  const target = HPRC_DATASET.syntenyTarget!
-  const url = referenceSyntenyUrl(HPRC_DATASET, locus)
-  if (url) {
-    const { config, spec } = parseLaunch(url)
-
-    // Merge config stitches the two assemblies together.
-    assert.ok(config.includes(HPRC_DATASET.reference.assembly))
-    assert.ok(config.includes(target.assembly))
-
-    const view = spec.views[0]!
-    assert.equal(view.type, 'LinearSyntenyView')
-    assert.deepEqual(view.tracks, [target.trackId])
-    // The reference panel opens on its gene track rather than as an empty
-    // browser; the target panel has no locus of its own.
-    assert.deepEqual(view.views, [
-      {
-        assembly: HPRC_DATASET.reference.assembly,
-        loc: locusRegion(locus),
-        tracks: [HPRC_DATASET.reference.geneTrackId],
-      },
-      { assembly: target.assembly },
-    ])
-    // Through the shared builder, so the site's synteny defaults apply.
-    assert.equal(view.cigarMode, 'off')
-    assert.equal(view.colorBy, 'query')
-    assert.equal(view.drawCurves, true)
-    assert.equal(view.autoDiagonalize, true)
-  } else {
-    assert.fail('HPRC dataset has a synteny target, so a URL is produced')
-  }
-})
-
-test('referenceSyntenyUrl is undefined when the dataset has no synteny target', () => {
-  const noTarget = { ...HPRC_DATASET, syntenyTarget: undefined }
-  assert.equal(referenceSyntenyUrl(noTarget, locus), undefined)
 })
 
 test('geneHubUrl seeds the marker gene and reference taxon', () => {
@@ -359,20 +345,18 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   )
 })
 
-test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp raised', () => {
-  const url = graphChromosomeUrl(graphDataset, 'chr21')
-  assert.ok(url)
-  const { config, spec } = parseLaunch(url)
+// The whole-chromosome launch used to be its own builder. `lanes()` picks the
+// tier by span now, so a chromosome is the widest region and takes the same
+// coarse branch as any window past MAX_DETAIL_WINDOW_BP.
+test('a wide region is drawn from the tier, with maxRegionBp raised', () => {
+  const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
+  assert.ok(isCoarse(graphDataset, chr21))
+  const { config, spec } = parseLaunch(graphRegionUrl(graphDataset, chr21)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   const [lgv, graph] = spec.views
-  assert.equal(lgv!.loc, 'chr21:1-46709983')
-  // `hprc_minigraph_tier`, not `hprc_tier`: the rename to one trackId shape
-  // across all three datasets landed in the config and the dataset and left
-  // this literal behind, so this assertion has been red on main since. Which
-  // is worth more than the fix — the SERVED config still says `hprc_tier`, so
-  // until `website/pangenome-config/upload.sh` runs, this launch names a track
-  // the visitor's copy does not have. `pnpm check-pangenome-assets` reports
-  // that as of 2026-09-09.
+  assert.equal(lgv!.loc, 'chr21:0-46709983')
+  // The tier's own lane and the variability curve, not the segment-level lanes
+  // -- over a span this wide the fine segments track refuses outright.
   assert.deepEqual(lgv!.tracks, [
     'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
@@ -381,14 +365,44 @@ test('graphChromosomeUrl draws a whole chromosome off the tier, with maxRegionBp
   assert.equal(graph!.loadedTrackId, 'hprc_minigraph_tier')
   // the 5 Mb default would refuse the cut outright
   assert.equal(graph!.maxRegionBp, 46_709_983)
+  // a tier is one node per bubble in reference order, which a force layout
+  // draws as an arc
   assert.equal(graph!.layoutMode, 'auto')
   assert.equal(graph!.connectedViewId, lgv!.id)
-  assert.equal(graphChromosomeUrl(graphDataset, 'chrM'), undefined)
+})
+
+test('a graph with no tier is drawn fine however wide the ask', () => {
   const noTier = {
-    ...HPRC_DATASET,
+    ...graphDataset,
     graphBrowser: { ...HPRC_GRAPH_BROWSER, tierTrackId: undefined },
   }
-  assert.equal(graphChromosomeUrl(noTier, 'chr21'), undefined)
+  const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
+  assert.equal(isCoarse(noTier, chr21), false)
+  const { spec } = parseLaunch(graphRegionUrl(noTier, chr21)!)
+  const [lgv, graph] = spec.views
+  assert.deepEqual(lgv!.tracks, [
+    HPRC_GRAPH_BROWSER.geneTrackId,
+    HPRC_GRAPH_BROWSER.bubblesTrackId,
+    HPRC_GRAPH_BROWSER.allelesTrackId,
+    HPRC_GRAPH_BROWSER.segmentsTrackId,
+  ])
+  assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
+  assert.equal(graph!.maxRegionBp, undefined)
+})
+
+// Half of each derived catalogue is a multi-megabase cluster, and every one of
+// them used to have no graph launch at all: `graphLocusUrl` returned undefined
+// without a detail window. They draw their tier now, so every card in a
+// catalogue is openable.
+test('a wide catalog locus gets a launch rather than nothing', () => {
+  const wide = MOUSE_DATASET.loci.filter(l => detailWindow(l) === undefined)
+  assert.ok(wide.length > 0, 'the mouse catalogue has wide entries')
+  for (const l of wide) {
+    assert.ok(
+      graphLocusUrl(mouseGraph, l),
+      `${l.id} (${l.end - l.start} bp) has no graph launch`,
+    )
+  }
 })
 
 test('the owned graph config names every track the launches open', () => {

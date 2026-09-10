@@ -1,27 +1,9 @@
 ---
-import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
-import hprcSamples from '../../hprcSamples.json'
-import mouseStrains from '../../mouseStrains.json'
-import ensemblMouseStrains from '../../ensemblMouseStrains.json'
-import { features } from '../../config/features.ts'
-import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
-import {
-  externalGraphUrl,
-  graphBrowserUrl,
-  graphLocusUrl,
-} from '../../components/pangenomeLinks.ts'
-import OpenInDesktop from '../../components/OpenInDesktop.tsx'
-import GraphRegionLauncher from '../../components/GraphRegionLauncher.tsx'
 import PangenomeSection from '../../components/PangenomeSection.astro'
-import {
-  BOVINE_DATASET,
-  BOVINE_PORTAL,
-  HPRC_DATASET,
-  MOUSE_DATASET,
-  MOUSE_PORTAL,
-} from '../../components/pangenomeDataset.ts'
-import { detailWindow } from '../../components/pangenomeLoci.ts'
+import { PANGENOME_DATASETS } from '../../components/pangenomeDataset.ts'
+import { features } from '../../config/features.ts'
+import Layout from '../../layouts/Layout.astro'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
 
@@ -30,71 +12,20 @@ if (!features.pangenome) {
   return Astro.redirect('/')
 }
 
-// `string | undefined` since a dataset with no callset falls back to the
-// graph config's lanes, which need a hosted graph config. HPRC always has
-// one to fall back FROM, but the guard costs nothing and the type is honest.
-const browserUrl = graphBrowserUrl(HPRC_DATASET)
-// The hero's graph launch opens the catalog's headline locus, the MHC — in the
-// hosted graph view where the dataset has one (staging, until core v5), else
-// in the external browser at the same window.
-const mhc = HPRC_DATASET.loci.find(l => l.id === 'mhc-hla')
-const graphUrl = mhc && graphLocusUrl(HPRC_DATASET, mhc)
-const mhcWindow = mhc && detailWindow(mhc)
-const ext = HPRC_DATASET.externalGraphBrowser
-const externalMhcUrl =
-  !graphUrl && mhc && mhcWindow
-    ? externalGraphUrl(HPRC_DATASET, { ...mhcWindow, chrom: mhc.chrom })
-    : undefined
-const hostedGraph = HPRC_DATASET.graphBrowser !== undefined
-
-const RELEASE2 =
-  'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2'
-
-// Sizes are stated because the spread is four orders of magnitude: the
-// base-level GFA is ~60 GB and the SV-resolution rGFA beside it is under one.
-// Release 2 publishes no plain-minigraph graph, and its PGGB graph is
-// per-chromosome under a different naming scheme, so neither has a row.
-const MC21 = `${RELEASE2}/minigraph-cactus/v2.1`
-const pangenomeGraphs = [
-  {
-    name: 'Minigraph-Cactus v2.1',
-    refs: [
-      {
-        ref: 'GRCh38',
-        vcf: `${MC21}/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz`,
-        vcfSize: '2.3 GB',
-        gbz: `${MC21}/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.gbz`,
-        gbzSize: '5.5 GB',
-        gfa: `${MC21}/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.gfa.gz`,
-        gfaSize: '64 GB',
-        svGfa: `${MC21}/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.sv.gfa.gz`,
-        svGfaSize: '841 MB',
-      },
-      {
-        ref: 'CHM13',
-        vcf: `${MC21}/hprc-v2.1-mc-chm13/hprc-v2.1-mc-chm13.wave.vcf.gz`,
-        vcfSize: '2.5 GB',
-        gbz: `${MC21}/hprc-v2.1-mc-chm13/hprc-v2.1-mc-chm13.gbz`,
-        gbzSize: '6.2 GB',
-        gfa: `${MC21}/hprc-v2.1-mc-chm13/hprc-v2.1-mc-chm13.gfa.gz`,
-        gfaSize: '66 GB',
-        svGfa: `${MC21}/hprc-v2.1-mc-chm13/hprc-v2.1-mc-chm13.sv.gfa.gz`,
-        svGfaSize: '902 MB',
-      },
-    ],
-  },
-]
+const [hprc, mouse, bovine] = PANGENOME_DATASETS
 ---
 
 <Layout
   title="Pangenomes"
-  description="Pangenome resources in JBrowse 2: the HPRC human graph and assemblies, a mouse strain pangenome, and the bovine super-pangenome."
+  description="Pangenome resources in JBrowse 2: the HPRC human graph, a mouse strain pangenome, and the bovine super-pangenome — each drawable as a graph by region."
 >
   <Container>
     <h1>Pangenomes</h1>
     <p>
-      Pangenome resources — many assemblies and the structural variation between
-      them.
+      Three pangenome graphs, hosted the same way: the same five tabix-indexed
+      projections per graph, read by the same adapters, on references JBrowse
+      already serves. What differs between them is not the mechanism but what
+      each graph is able to say.
     </p>
     <p class="portal-contents">
       On this page: <a href="#hprc">Human — HPRC</a> ·
@@ -118,344 +49,60 @@ const pangenomeGraphs = [
       </a>
     </div>
 
-    <section id="hprc">
-      <h2>Human Pangenome Reference Consortium</h2>
-      <p>
-        The <a href="https://humanpangenome.org/"
-          >Human Pangenome Reference Consortium (HPRC)</a
-        > builds a human pangenome reference from phased diploid assemblies of diverse
-        human populations: 47 in the <a
-          href="https://www.nature.com/articles/s41586-023-05896-x"
-          >Nature 2023 draft</a
-        >, 232 in release 2, which is what this section links. See the <a
-          href="https://github.com/human-pangenomics/hpp_pangenome_resources"
-          >pangenome resources repository</a
-        > for full details.
-      </p>
-      <div class="portal-hero">
-        <div class="portal-hero-text">
-          <h3 class="portal-hero-title">Explore the pangenome interactively</h3>
+    {
+      hprc && (
+        <PangenomeSection dataset={hprc}>
           <p>
-            Skip the file downloads — draw the graph itself, or open the HPRC
-            pangenome on GRCh38 and see structural variants, presence/absence,
-            and hypervariable loci across haplotypes.
+            The{' '}
+            <a href="https://humanpangenome.org/">
+              Human Pangenome Reference Consortium
+            </a>{' '}
+            builds a human pangenome reference from phased diploid assemblies of
+            diverse human populations: 47 in the{' '}
+            <a href="https://www.nature.com/articles/s41586-023-05896-x">
+              Nature 2023 draft
+            </a>
+            , 232 in release 2, which is the release this section serves. It is
+            the one graph of the three with a haplotype-resolved callset beside
+            it, so it is the one that can say who carries what.
           </p>
-        </div>
-        <div class="portal-hero-actions">
-          {
-            graphUrl && (
-              <a
-                class="portal-btn portal-btn-primary"
-                href={graphUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Draw the MHC as a graph →
-              </a>
-            )
-          }
-          {
-            externalMhcUrl && ext && (
-              <a
-                class="portal-btn portal-btn-primary"
-                href={externalMhcUrl}
-                target="_blank"
-                rel="noreferrer"
-                title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
-              >
-                Draw the MHC as a graph in {ext.name} ↗
-              </a>
-            )
-          }
-          <a
-            class="portal-btn"
-            href="/pangenomes/explorer?dataset=hprc"
-          >
-            Open the Pangenome Explorer →
-          </a>
-          {
-            browserUrl && (
-              <a
-                class="portal-btn"
-                href={browserUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Browse the pangenome on GRCh38 →
-              </a>
-            )
-          }
-          {
-            browserUrl && (
-              <OpenInDesktop
-                className="portal-btn portal-btn-ghost"
-                webUrl={browserUrl}
-              />
-            )
-          }
-          <a
-            class="portal-btn portal-btn-ghost"
-            href="https://humanpangenome.org/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            HPRC data portal ↗
-          </a>
-        </div>
-      </div>
+        </PangenomeSection>
+      )
+    }
 
-      <p>
-        This section also lists the 232 individual sample assemblies (464
-        haplotypes total) available in JBrowse. See <a href="/hubs/HPRC"
-          >the full GenArk HPRC listing</a
-        > for a searchable table of all assemblies.
-      </p>
+    {
+      mouse && (
+        <PangenomeSection dataset={mouse}>
+          <p>
+            A pangenome graph of the inbred and wild-derived mouse strains,
+            built here with <code>minigraph</code> over GRCm39 and the Mouse
+            Genomes Project assemblies as rehosted in UCSC GenArk. No pangenome
+            graph had been published for this panel, so unlike the other two on
+            this page it is constructed rather than redistributed. The
+            individual strain assemblies are browsable on their own{' '}
+            <a href="/search?q=Mus+musculus">accession pages</a>.
+          </p>
+        </PangenomeSection>
+      )
+    }
 
-      {
-        (hostedGraph || ext) && (
-          <>
-            <h3>Draw the graph</h3>
-            {hostedGraph ? (
-              <p>
-                The minigraph-cactus graph on GRCh38, cut to a window and drawn
-                as nodes and edges beside a linear view of the same window:
-                bubbles are the alternative haplotypes, node color runs along
-                the reference, and hovering one panel highlights the other. Type
-                any GRCh38 region, or start from a locus where structure is
-                known to vary. Inside JBrowse the same view opens from any
-                region via the segments track&rsquo;s menu,{' '}
-                <em>Launch → Graph genome view</em>, so the form is only the
-                first cut.
-              </p>
-            ) : (
-              ext && (
-                <p>
-                  Drawing the graph inside JBrowse needs a release newer than
-                  the one this site links (the GraphGenomeView plugin boots on
-                  v5 only). Until then, {ext.name} draws its {ext.graphLabel}{' '}
-                  graph at any GRCh38 region — type one, or start from a locus
-                  where structure is known to vary.
-                </p>
-              )
-            )}
-            <GraphRegionLauncher
-              dataset={HPRC_DATASET}
-              client:load
-            />
-            {hostedGraph && (
-              <p>
-                <small>
-                  Needs the JBrowse build the staging site links; the
-                  GraphGenomeView plugin does not load on released v4 hosts.
-                  Loci that minigraph collapses onto one path (SMN1/2, RHD/RHCE,
-                  CYP2D6) draw as a bare thread and are left out of the presets.
-                </small>
-              </p>
-            )}
-          </>
-        )
-      }
-
-      <h3>Pangenome Graphs</h3>
-      <p>
-        Release 2's minigraph-cactus graph, against both references (<a
-          href="https://github.com/human-pangenomics/hpp_pangenome_resources"
-          >full file listing</a
-        >).
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Graph</th>
-            <th>Reference</th>
-            <th>VCF</th>
-            <th>GBZ</th>
-            <th>SV GFA</th>
-            <th>GFA</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            pangenomeGraphs.flatMap(g =>
-              g.refs.map(r => (
-                <tr>
-                  <td>{g.name}</td>
-                  <td>{r.ref}</td>
-                  <td>
-                    <a href={r.vcf}>VCF</a> <small>{r.vcfSize}</small>
-                  </td>
-                  <td>
-                    <a href={r.gbz}>GBZ</a> <small>{r.gbzSize}</small>
-                  </td>
-                  <td>
-                    <a href={r.svGfa}>SV GFA</a> <small>{r.svGfaSize}</small>
-                  </td>
-                  <td>
-                    <a href={r.gfa}>GFA</a> <small>{r.gfaSize}</small>
-                  </td>
-                </tr>
-              )),
-            )
-          }
-        </tbody>
-      </table>
-
-      <h3>Individual Sample Assemblies</h3>
-      <p>
-        232 samples with phased diploid assemblies (haplotype 1 and haplotype
-        2). Assemblies are from the UCSC Genomics Institute via the UCSC GenArk
-        hub.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Sample</th>
-            <th>Year</th>
-            <th>Haplotype 1</th>
-            <th>Haplotype 2</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            hprcSamples.map(s => (
-              <tr>
-                <td>{s.sampleId}</td>
-                <td>{s.hap1?.year ?? s.hap2?.year ?? ''}</td>
-                <td>
-                  {s.hap1 ? (
-                    <a href={retargetJbrowseUrl(s.hap1.jbrowseLink)}>
-                      {s.hap1.accession}
-                    </a>
-                  ) : (
-                    '—'
-                  )}
-                </td>
-                <td>
-                  {s.hap2 ? (
-                    <a href={retargetJbrowseUrl(s.hap2.jbrowseLink)}>
-                      {s.hap2.accession}
-                    </a>
-                  ) : (
-                    '—'
-                  )}
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </section>
-
-    <PangenomeSection
-      dataset={MOUSE_DATASET}
-      portal={MOUSE_PORTAL}
-    >
-      <p>
-        A pangenome graph of the inbred and wild-derived mouse strains, built
-        here with <code>minigraph</code> over GRCm39 and the Mouse Genomes Project
-        assemblies as rehosted in UCSC GenArk. No pangenome graph had been published
-        for this panel, so unlike the other two on this page it is constructed rather
-        than redistributed — the <a
-          href="https://jbrowse.org/docs/tutorials/pangenome_nonhuman/"
-          >tutorial</a
-        > walks through what it can show and the script that builds it.
-      </p>
-
-      <Fragment slot="after">
-        <h3>Ensembl Mouse Genomes Project</h3>
-        <p>
-          18 inbred mouse strain assemblies from the <a
-            href="https://projects.ensembl.org/mouse_genomes/"
-            >Ensembl Mouse Genomes Project</a
-          >, including two T2T assemblies, with GENCODE M30 annotation.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Strain</th>
-              <th>Year</th>
-              <th>Accession</th>
-              <th>JAX</th>
-              <th>JBrowse</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              ensemblMouseStrains.map(strain => (
-                <tr>
-                  <td>{strain.strain}</td>
-                  <td>{strain.assemblyYear}</td>
-                  <td>
-                    <a href={`/accession/${strain.accession}/`}>
-                      {strain.accession}
-                    </a>
-                  </td>
-                  <td>
-                    {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
-                  </td>
-                  <td>
-                    <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-
-        <h3>UCSC Mouse Strains Hub (2016)</h3>
-        <p>
-          16 inbred mouse strain assemblies from the <a
-            href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
-            >UCSC Mouse Strains Hub</a
-          >, aligned to mm10 via Cactus with RNA-seq and cross-strain alignment
-          tracks.
-        </p>
-        <table>
-          <thead>
-            <tr>
-              <th>Strain</th>
-              <th>Year</th>
-              <th>Organism</th>
-              <th>JAX</th>
-              <th>JBrowse</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              mouseStrains.map(strain => (
-                <tr>
-                  <td>{strain.genomeName.replaceAll('_', '/')}</td>
-                  <td>{strain.assemblyYear}</td>
-                  <td>{strain.organism}</td>
-                  <td>
-                    {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
-                  </td>
-                  <td>
-                    <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
-                  </td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </Fragment>
-    </PangenomeSection>
-
-    <PangenomeSection
-      dataset={BOVINE_DATASET}
-      portal={BOVINE_PORTAL}
-    >
-      <p>
-        The bovine super-pangenome of <a
-          href="https://doi.org/10.1186/s13059-023-02969-y"
-          >Leonard et al. 2023</a
-        >, projected onto ARS-UCD1.2. The panel is unusually wide for a
-        livestock pangenome — taurine and indicine breeds plus yak, bison and
-        gaur — and unlike the mouse graph beside it, its published files carry
-        one path per assembly, so a callset can be projected out of it that says
-        which assembly carries which allele.
-      </p>
-    </PangenomeSection>
+    {
+      bovine && (
+        <PangenomeSection dataset={bovine}>
+          <p>
+            The bovine super-pangenome of{' '}
+            <a href="https://doi.org/10.1186/s13059-023-02969-y">
+              Leonard et al. 2023
+            </a>
+            , projected onto ARS-UCD1.2. The panel is unusually wide for a
+            livestock pangenome — taurine and indicine breeds plus yak, bison
+            and gaur — and unlike the mouse graph above, its published files
+            carry one path per assembly, so a callset can be projected out of
+            it.
+          </p>
+        </PangenomeSection>
+      )
+    }
   </Container>
 </Layout>
 

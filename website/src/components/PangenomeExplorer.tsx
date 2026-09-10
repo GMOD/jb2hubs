@@ -2,53 +2,31 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import PangenomeLocusDashboard from './PangenomeLocusDashboard.tsx'
 import PangenomeVariationBadges from './PangenomeVariationBadges.tsx'
 import { DEFAULT_DATASET_ID, PANGENOME_DATASETS } from './pangenomeDataset.ts'
-import { VARIATION_LABELS } from './pangenomeLoci.ts'
+import {
+  VARIATION_CLASSES,
+  VARIATION_LABELS,
+  preferredLocus,
+} from './pangenomeLoci.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
-import type { PangenomeLocus, VariationClass } from './pangenomeLoci.ts'
+import type { PangenomeLocus } from './pangenomeLoci.ts'
 
-type Filter = VariationClass | 'all'
-type Sort = 'catalog' | 'count'
-
-const FILTERS: Filter[] = [
-  'all',
-  'cnv',
-  'pav',
-  'hyperdiversity',
-  'vntr',
-  'inversion',
-]
-
-const SORTS: { value: Sort; label: string }[] = [
-  { value: 'catalog', label: 'Catalog order' },
-  { value: 'count', label: 'Most variants' },
-]
-
-// The generated `<dataPrefix>/manifest.json`, imported at build by the page
-// and handed down rather than fetched again from the browser.
+// The generated `<dataPrefix>/manifest.json`, imported at build by the page and
+// handed down rather than fetched again from the browser.
 //
-// Only a dataset whose per-locus summaries were generated has one, which today
-// is HPRC alone: a derived catalogue is a ranking of a tier file and nothing
-// per locus was computed, so there is no variant count to put on a card. The
-// grid falls back to the segment count the ranking is over, which is the
-// better number for those datasets anyway — it is what "this is where the
+// Only a dataset whose per-locus callset summaries were generated has one,
+// which is HPRC alone: a derived catalogue is a ranking of a tier file and
+// nothing per locus was computed, so there is no variant count to put on a
+// card. The grid falls back to the segment count the ranking is over, which is
+// the better number for those datasets anyway — it is what "this is where the
 // graph varies" means.
 export interface PangenomeManifest {
   samples: string[]
   loci: { id: string; gene: string; variantCount: number }[]
 }
 
-// A dataset whose catalogue came out of the tier ranking rather than out of a
-// curated list. Read off the loci rather than off "no manifest was passed":
-// those coincide today, and only one of them is the actual question — a
-// dataset could have summaries generated for derived loci, and HPRC rendered
-// without its manifest is still curated.
-function isDerived(dataset: PangenomeDataset) {
-  return dataset.loci.every(l => l.derived !== undefined)
-}
-
-// What a card counts, and what the sort orders by. `variants` needs a manifest;
-// `segments` needs only the catalogue.
+// What a card counts. `variants` needs a manifest; `segments` needs only the
+// catalogue.
 function cardCounts(dataset: PangenomeDataset, manifest?: PangenomeManifest) {
   return manifest
     ? {
@@ -65,10 +43,26 @@ function cardCounts(dataset: PangenomeDataset, manifest?: PangenomeManifest) {
       }
 }
 
-const filterLabel = (f: Filter) => (f === 'all' ? 'All' : VARIATION_LABELS[f])
+// The class filters are offered only where the catalogue actually carries
+// classes, which is the curated one. A derived entry's only claimable class is
+// the tier's inversion flag (see `derivedLoci`), so on mouse exactly 1 of 20
+// loci had one and four of the five chips filtered the grid to nothing — an
+// empty grid, silently, under a dashboard still showing a locus the filter
+// excluded. A control that cannot work on the data in front of it should not be
+// drawn.
+function classesPresent(loci: PangenomeLocus[]) {
+  const present = new Set(loci.flatMap(l => l.variation))
+  return VARIATION_CLASSES.filter(c => present.has(c))
+}
 
-const matchesFilter = (l: PangenomeLocus, f: Filter) =>
-  f === 'all' || l.variation.includes(f)
+// A catalogue that came out of the tier ranking rather than out of a curated
+// list. Read off the loci rather than off "no manifest was passed": those
+// coincide today, and only one of them is the actual question — a dataset could
+// have summaries generated for derived loci, and HPRC rendered without its
+// manifest is still curated.
+function isDerived(dataset: PangenomeDataset) {
+  return dataset.loci.every(l => l.derived !== undefined)
+}
 
 // Only a dataset with a locus catalog can be explored.
 const EXPLORABLE = PANGENOME_DATASETS.filter(d => d.loci.length > 0)
@@ -81,44 +75,29 @@ function LocusGrid({
   manifest?: PangenomeManifest
 }) {
   const loci = dataset.loci
-  // ?locus=<id>, ?filter=<class>, ?sort=<mode> all deep-link via useUrlState so a
-  // shared URL restores the full grid view (back/forward included); each param is
-  // dropped when it equals its default. Unknown param values fall back to the
-  // default rather than breaking the view.
-  const [selectedId, setSelectedId] = useUrlState('locus', loci[0]?.id ?? '')
+  const classes = classesPresent(loci)
+  // ?locus=<id> and ?filter=<class> deep-link via useUrlState so a shared URL
+  // restores the grid view (back/forward included); each param is dropped when
+  // it equals its default. An unknown value falls back to the default rather
+  // than breaking the view.
+  //
+  // The default locus is `preferredLocus`, not `loci[0]`: the top-ranked entry
+  // in both derived catalogues is a multi-megabase cluster, so landing on it
+  // opened the callset or the allele inventory over 2.24 Mb.
+  const [selectedId, setSelectedId] = useUrlState(
+    'locus',
+    preferredLocus(loci)?.id ?? '',
+  )
   const [rawFilter, setRawFilter] = useUrlState('filter', 'all')
-  const [rawSort, setRawSort] = useUrlState('sort', 'catalog')
-  const filter = FILTERS.find(f => f === rawFilter) ?? 'all'
-  const sort = SORTS.find(s => s.value === rawSort)?.value ?? 'catalog'
+  const filter = classes.find(c => c === rawFilter) ?? 'all'
 
-  // Per-locus counts, shown on the cards so the grid is informative before you
-  // drill in.
   const counts = cardCounts(dataset, manifest)
-
-  const visible = loci
-    .filter(l => matchesFilter(l, filter))
-    .sort((a, b) =>
-      sort === 'count'
-        ? (counts.of.get(b.id) ?? 0) - (counts.of.get(a.id) ?? 0)
-        : 0,
-    )
-  // An unknown ?locus= falls back to the first card, and the grid highlights
+  const visible =
+    filter === 'all' ? loci : loci.filter(l => l.variation.includes(filter))
+  // An unknown ?locus= falls back to the landing locus, and the grid highlights
   // what the dashboard actually shows rather than the id in the url.
-  const selected = loci.find(l => l.id === selectedId) ?? loci[0]
-  const activeId = selected ? selected.id : ''
-
-  // Keep the dashboard in sync with the grid: if a new filter would hide the
-  // selected locus, jump to the first locus that survives it (no effect needed —
-  // the selection change happens in the same click that changes the filter).
-  const applyFilter = (f: Filter) => {
-    setRawFilter(f)
-    if (selected && !matchesFilter(selected, f)) {
-      const first = loci.find(l => matchesFilter(l, f))
-      if (first) {
-        setSelectedId(first.id)
-      }
-    }
-  }
+  const selected =
+    visible.find(l => l.id === selectedId) ?? visible[0] ?? loci[0]
 
   return (
     <div>
@@ -126,7 +105,9 @@ function LocusGrid({
         {dataset.reference.label} loci where structure varies between the
         assemblies in the {dataset.label} graph ({dataset.panelDescription}),
         with JBrowse launches. The graph files and assemblies are on{' '}
-        <a href={`/pangenomes#${dataset.id}`}>the pangenomes page</a>.
+        <a href={`/pangenomes#${dataset.id}`}>the pangenomes page</a>, and{' '}
+        <a href={dataset.portal.tutorialUrl}>its tutorial</a> walks what this
+        graph can and cannot show.
       </p>
       {isDerived(dataset) && (
         <p className="pg-hint">
@@ -138,33 +119,22 @@ function LocusGrid({
         </p>
       )}
 
-      <div className="pg-filters">
-        {FILTERS.map(f => (
-          <button
-            key={f}
-            className={`pg-filter${filter === f ? ' pg-filter-active' : ''}`}
-            aria-pressed={filter === f}
-            onClick={() => {
-              applyFilter(f)
-            }}
-          >
-            {filterLabel(f)}
-          </button>
-        ))}
-        <span className="pg-filter-spacer" />
-        {SORTS.map(s => (
-          <button
-            key={s.value}
-            className={`pg-filter${sort === s.value ? ' pg-filter-active' : ''}`}
-            aria-pressed={sort === s.value}
-            onClick={() => {
-              setRawSort(s.value)
-            }}
-          >
-            {s.label}
-          </button>
-        ))}
-      </div>
+      {classes.length > 1 && (
+        <div className="pg-filters">
+          {['all' as const, ...classes].map(f => (
+            <button
+              key={f}
+              className={`pg-filter${filter === f ? ' pg-filter-active' : ''}`}
+              aria-pressed={filter === f}
+              onClick={() => {
+                setRawFilter(f)
+              }}
+            >
+              {f === 'all' ? 'All' : VARIATION_LABELS[f]}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="pg-grid">
         {visible.map(l => {
@@ -172,8 +142,8 @@ function LocusGrid({
           return (
             <button
               key={l.id}
-              className={`pg-card${l.id === activeId ? ' pg-card-active' : ''}`}
-              aria-pressed={l.id === activeId}
+              className={`pg-card${l.id === selected?.id ? ' pg-card-active' : ''}`}
+              aria-pressed={l.id === selected?.id}
               onClick={() => {
                 setSelectedId(l.id)
               }}

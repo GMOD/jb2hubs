@@ -2,11 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
-import {
-  MAX_GRAPH_REGION_BP,
-  formatRegion,
-  parseRegion,
-} from './pangenomeRegion.ts'
+import { formatRegion, parseRegion } from './pangenomeRegion.ts'
 
 test('parseRegion takes a typed locstring and returns half-open coordinates', () => {
   for (const input of [
@@ -19,7 +15,7 @@ test('parseRegion takes a typed locstring and returns half-open coordinates', ()
       chrom: 'chr6',
       start: 32_510_000,
       end: 32_600_000,
-      wide: false,
+      coarse: false,
     })
   }
 })
@@ -28,13 +24,18 @@ test('parseRegion refuses what the view cannot navigate to', () => {
   assert.equal(parseRegion('chr6').ok, false)
   assert.equal(parseRegion('chr6:10-5').ok, false)
   assert.equal(parseRegion('chr6:0-5').ok, false)
-  assert.equal(parseRegion(`chr1:1-${MAX_GRAPH_REGION_BP + 2}`).ok, false)
-  assert.equal(parseRegion(`chr1:1-${MAX_GRAPH_REGION_BP}`).ok, true)
 })
 
-test('parseRegion flags a window past the readable ceiling without refusing it', () => {
-  const r = parseRegion(`chr1:1-${MAX_DETAIL_WINDOW_BP + 1}`)
-  assert.ok(r.ok && r.wide)
+// A whole chromosome used to be refused outright, because the fine lanes and
+// the 5 Mb `maxRegionBp` default could not take it. It is now the coarse
+// branch's job, so the parser passes it through and flags it.
+test('parseRegion flags a wide window as coarse rather than refusing it', () => {
+  const detail = parseRegion(`chr1:1-${MAX_DETAIL_WINDOW_BP}`)
+  assert.ok(detail.ok && !detail.coarse)
+  const wide = parseRegion(`chr1:1-${MAX_DETAIL_WINDOW_BP + 1}`)
+  assert.ok(wide.ok && wide.coarse)
+  const chromosome = parseRegion('chr1:1-248,956,422')
+  assert.ok(chromosome.ok && chromosome.coarse)
 })
 
 test('formatRegion round-trips through parseRegion', () => {
