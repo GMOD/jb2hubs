@@ -333,6 +333,10 @@ so there is nothing to log for it beyond this file.
 
 ## Order of work
 
+Open items and their order live in
+[handoffs/pangenome-2026-09-09.md](handoffs/pangenome-2026-09-09.md); this
+section is the durable shape of the work rather than its state.
+
 Sequenced so nothing waits on the long job. Unnumbered on purpose — the order
 has already changed once.
 

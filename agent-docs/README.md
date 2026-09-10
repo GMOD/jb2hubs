@@ -46,6 +46,8 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   doing so
 - [PANGENOME_PORTAL.md](PANGENOME_PORTAL.md) — one approach across the human,
   mouse and bovine pangenomes, and the one place the mouse graph refuses
+- [handoffs/pangenome-2026-09-09.md](handoffs/pangenome-2026-09-09.md) — what is
+  open on the portal and the demos, and in what order
 - [MOUSE_PANGENOME_PLAN.md](MOUSE_PANGENOME_PLAN.md) — mm39 analog of the HPRC
   pangenome explorer (superseded except for its locus table)
 - [ucsc-ncbi-gff-detection-handoff.md](ucsc-ncbi-gff-detection-handoff.md) —
