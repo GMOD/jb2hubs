@@ -213,6 +213,52 @@ Three routes, and the gap is only ever in the second and third.
   lacks. Nobody publishes a GBZ for cattle or mouse, so this route was never
   symmetric work.
 
+### The GBZ route, measured rather than assumed
+
+`@gmod/gbz-base` ([GMOD/gbz-base-js](https://github.com/GMOD/gbz-base-js), 2.6.2
+on npm, one dependency — `generic-filehandle2`) is a pure TypeScript reader with
+no server side: it pulls SQLite pages out of the `.gbz.db` by HTTP range
+request. Run from node on 2026-09-10 against the two published files, with no
+local copy of either:
+
+| call                                           | result                    | time  |
+| ---------------------------------------------- | ------------------------- | ----- |
+| `GBZBase.open` (10.0 GB db + 7.9 GB index)     | —                         | 0.32s |
+| `getAlignmentsForRange`, `keep` = the demo's 8 | 16 records                | 1.40s |
+| `getAlignmentsForRange`, no filter             | **468 records**           | 0.34s |
+| `getSubgraphForRange`                          | 7,088 nodes, 469 paths    | 0.21s |
+| `toSubgraphJson`                               | —                         | 0.04s |
+| `paths()`                                      | 53,150 paths, 233 samples | 1.01s |
+
+Two things in that table are the argument. **All 464 haplotypes answer in a
+third of a second** over a 105 kb window, so the lane does not have to be a
+curated eight — the adapter is not the constraint. And the records carry what no
+other route here can: the CFHR window returns
+`HG01123#1#CM089081.1[191896727-191917111]` with CIGAR
+`6605M4D3940M2D349M1D3594M84684D405M1I4226M1D1264M`. That **84,684 bp deletion
+is the CFHR3–CFHR1 deletion**, read out of the graph, attributed to a named
+haplotype, in that haplotype's own contig coordinates.
+
+Two things it does not hand over for free, and both bear on wiring it up:
+
+- **`MultiWaySyntenyDisplay` draws one lane per assembly, so each haplotype has
+  to BE an assembly in the config.** `demos/hprc/config.json` declares nine
+  (hg38 plus eight), each a `ChromSizesAdapter` over a one-line
+  `hprc_cfhr_<hap>.chrom.sizes` naming just the contig that demo's locus sits
+  on. A lane that works across a whole catalogue needs more than one line each.
+- **`haplotypeLength(handle)` is the FRAGMENT length, not the contig length.**
+  Paths are fragmented — `pathsForSample('HG00097')` returns 210, five of them
+  on `CM094060.1` at 104 Mb / 17.8 Mb / 263 kb / 1.6 Mb / 1.5 Mb — and
+  `name.fragment` is the offset into the contig. So a per-haplotype
+  `chrom.sizes` is derivable from the database alone, but as
+  `max(fragment + length)` per contig rather than by reading a field.
+
+Both blockers on shipping it are the same shape as everything else here:
+`GbzBaseSyntenyAdapter` lives in the graphgenomeviewer plugin, and
+`MultiWaySyntenyDisplay` landed on jbrowse-components `main` on 2026-09-09 and
+is **absent from v4.3.0** (`git cat-file -e` against the newest tag). So the GBZ
+lane is v5-only, exactly like the graph pane it would sit beside.
+
 ### The variant route, for bovine: minutes, on data already extracted
 
 `vg deconstruct` over the P-line minigraph GFA gives exactly the file the
