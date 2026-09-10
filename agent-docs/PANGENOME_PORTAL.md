@@ -272,55 +272,73 @@ so there is nothing to log for it beyond this file.
 
 ## Order of work
 
-Sequenced so nothing waits on the long job.
+Sequenced so nothing waits on the long job. Unnumbered on purpose — the order
+has already changed once.
 
-1. **Normalize the plumbing.** _Landed 2026-09-09._ Adopted the orphaned
-   `mouse-mm39.json` as a committed source (verified byte-identical to what is
-   serving); wrote `bovine-arsucd12.json`; moved human's assembly block to the
-   mouse shape; renamed `hprc_tier` → `hprc_minigraph_tier` in both the config
-   and `pangenomeDataset.ts`; added `check-pangenome-assets` and wired it into
-   `gate_configs`. All 62 urls across the three configs resolve.
+- **Normalize the plumbing.** _Landed 2026-09-09, `0be8ce7f39c`._ Adopted the
+  orphaned `mouse-mm39.json` as a committed source (verified byte-identical to
+  what is serving); wrote `bovine-arsucd12.json`; moved human's assembly block
+  to the mouse shape; renamed `hprc_tier` → `hprc_minigraph_tier` in both the
+  config and `pangenomeDataset.ts`; added `check-pangenome-assets` and wired it
+  into `gate_configs`. All 62 urls across the three configs resolve.
 
-   **The v2.1 bump was deliberately NOT included.** It is not a url edit: the
-   committed per-locus summaries under `website/public/pangenome/` are derived
-   from the v2.0 VCF, so bumping the config without regenerating them would
-   leave the charts describing one file and the launches opening another —
-   strictly worse than being consistently a version behind. It is step 1b, and
-   it processes raw data, so it owes the section above. `check-pangenome-assets`
-   now reports the gap on every run rather than letting it stay silent.
+  The human assembly-block change turned out to be more than cosmetic. Its
+  sequence was `hg38.prefix.fa.gz`, whose refnames are bare numeric, while the
+  graph's GRCh38 stable names are all `chr`-prefixed — 195 of them, zero
+  bare-numeric — so `assemblyNameToPanSN` was composing `GRCh38#0#1` against a
+  file holding only `GRCh38#0#chr1`, and whether that resolved depended on the
+  plugin undoing it through aliases. Wants a launch check when v5 lands; the
+  plugin cannot be exercised from this checkout.
 
-   **Ordering hazard from this step:** `pangenomeDataset.ts` names
-   `hprc_minigraph_tier`, which the _live_ config does not have until
-   `website/pangenome-config/upload.sh` runs. Upload before deploying, or the
-   whole-chromosome launches name a trackId their config lacks. Only staging is
-   affected today, since `features.pangenomeGraph` is closed on production.
+  **Ordering hazard:** `pangenomeDataset.ts` names `hprc_minigraph_tier`, which
+  the _live_ config does not have until `website/pangenome-config/upload.sh`
+  runs. Upload before deploying, or the whole-chromosome launches name a trackId
+  their config lacks. Only staging is affected today, since
+  `features.pangenomeGraph` is closed on production.
 
-1b. **HPRC v2.1, as one atomic pass.** The 14 pins listed above, plus
-`node website/generatePangenomeData.ts` and `generatePangenomeMsa.ts` to rebuild
-the 20 locus summaries and MSAs against the v2.1 `wave` VCF (2,291,014,302
-bytes, probed live), plus the four download-table rows, whose v2.1 paths differ
-in shape — upstream added a `/v2.1/` directory segment, so each has to be probed
-rather than string-substituted. 2. **Commit the two builders** into
-jbrowse-components `scripts/` as `build_mouse_pangenome.sh` and
-`build_bovine_pangenome.sh`, with rows in `DEMO_DATASETS.md` §"Pangenome and
-comparative" and `HOSTING.md`. Two published datasets currently have no
-reproducible provenance in git, which is the hazard HOSTING.md's own "Demo
-assets drift from their build scripts" section names. 3. **Bovine to base level
-with carriage.** Extract `Zenodo/cactus` (or `pggb`), rebuild the BEDs through
-`pggb_gfa_to_bed.py` so `SM:Z:` survives, `vg deconstruct` for the VCF, then
-`vg` → `gbz2db` for the `.gbz.db` and its haplotype index. No new downloads. 4.
-**Mouse `--call` pass** over the 19 assemblies on disk, then `mgutils merge -r0`
-for the VCF, and rebuild its BEDs with the carriage the calls provide. 5.
-**Registry-driven `/pangenomes`.** `pages/pangenomes/index.astro` is 529
-hand-written lines that read `PANGENOME_DATASETS` not at all. Extend
-`PangenomeDataset` with what the page hardcodes — species and common name,
-graph-file table rows, sample-table source, outbound portal links, a `notes[]`
-for the coverage caveats — and loop one section component. Locus catalogs are
-seeded: the bovine README lists 8 windows with gene and insertion size,
-`pangenome-build/mouse-loci.tsv` has 9 anchor-gene mouse loci. 6. **Start the
-mouse minigraph-cactus rebuild** as its own deliberate run. Only after it lands
-does mouse get walks, a base-level graph and a GBZ, and only then is the
-exception in the table above gone.
+- **Commit the two builders.** _Landed 2026-09-09, jbrowse-components
+  `d89f7c3025`._ `scripts/build_mouse_pangenome.sh` (constructs the graph) and
+  `scripts/build_bovine_pangenome.sh` (projects Leonard et al.'s), plus
+  `scripts/gfa_paths_to_rgfa.py` — the generalized form of the `make_rgfa.py`
+  that produced the live bovine data, with the path names, reference name and id
+  step as arguments. Verified equivalent before committing: on chr10 and chr25
+  of the real Zenodo graphs the two emit byte-identical output (152,796,350
+  bytes) and identical stderr. It also gained two refusals the original lacked —
+  a path list that does not match the file, and non-trivial link CIGARs, since
+  the offset walk adds segment lengths and a real overlap would shift every
+  later coordinate. Rows added to `DEMO_DATASETS.md` §"Pangenome and
+  comparative" and `HOSTING.md`.
+
+- **HPRC v2.1, as one atomic pass.** The 14 pins listed above, plus
+  `node website/generatePangenomeData.ts` and `generatePangenomeMsa.ts` to
+  rebuild the 20 locus summaries and MSAs against the v2.1 `wave` VCF
+  (2,291,014,302 bytes, probed live), plus the four download-table rows, whose
+  v2.1 paths differ in shape — upstream added a `/v2.1/` directory segment, so
+  each has to be probed rather than string-substituted.
+
+- **Bovine to base level with carriage.** Extract `Zenodo/cactus` (or `pggb`)
+  from the tarball already on disk, rebuild the BEDs through
+  `pggb_gfa_to_bed.py` so `SM:Z:` survives, `vg deconstruct` for the VCF, then
+  `vg` → `gbz2db` for the `.gbz.db` and its haplotype index. No new downloads.
+
+- **Mouse `--call` pass** over the 19 assemblies on disk, then
+  `mgutils.js merge -r0` for the VCF, and rebuild its BEDs with the carriage the
+  calls provide. Honest at bubble resolution, and explicitly not a substitute
+  for the rebuild below.
+
+- **Registry-driven `/pangenomes`.** `pages/pangenomes/index.astro` is 529
+  hand-written lines that read `PANGENOME_DATASETS` not at all. Extend
+  `PangenomeDataset` with what the page hardcodes — species and common name,
+  graph-file table rows, sample-table source, outbound portal links, a `notes[]`
+  for the coverage caveats — and loop one section component. This is also where
+  `graphVcf` has to become optional, since mouse and bovine have none until the
+  two steps above land. Locus catalogs are seeded: the bovine README lists 8
+  windows with gene and insertion size, `pangenome-build/mouse-loci.tsv` has 9
+  anchor-gene mouse loci.
+
+- **Start the mouse minigraph-cactus rebuild** as its own deliberate run. Only
+  after it lands does mouse get walks, a base-level graph and a GBZ, and only
+  then is the exception in the table above gone.
 
 ## Coverage facts to surface on the page, not paper over
 
