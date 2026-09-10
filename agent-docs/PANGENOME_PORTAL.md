@@ -157,54 +157,115 @@ that build would have produced
 probed **404**). Substituting plain minigraph in September is precisely what
 left mouse unable to match the other two.
 
-## The barrier, stated exactly
+## Base level is not the target, and thinking it was cost a planning round
 
-Maximum alignment means all three on the GBZ route. Two of the three have no
-barrier; one does.
+The first version of this file had bovine going base-level, on the reasoning
+that human's minigraph-cactus graph is base-level and bovine's minigraph one is
+not. **That is wrong about human.** Corrected 2026-09-09 by reading the HPRC
+tutorial rather than inferring from the pipeline's name:
 
-- **bovine: no barrier, and an upgrade already on disk.** Its P-line GFA
-  converts to a GBZ directly (`vg` 1.76.1 and `gbz-base` 0.6.1 with `gbz2db` are
-  both installed, and the same loop is already exercised end to end for E. coli
-  in `~/ecoli-gbz-oracle/`: `ecoli.gbz`, `ecoli.gbz.db`,
-  `ecoli.haplotype-index.db`). Better still, the 12 GB
-  `Zenodo_pangenomes.tar.gz` holds **base-level `cactus/` (29 files, 26.1 GB)
-  and `pggb/` (29 files, 23.7 GB) sets that were never extracted** — only
-  `Zenodo/minigraph` was. A base-level bovine graph is the true peer of human's
-  minigraph-cactus one, and it needs no new download.
-- **mouse: a real barrier.** A GBZ is a GBWT over haplotype paths; with zero
-  paths there is nothing to index, and `gbz-base`'s entire value is querying
-  walks. There is no way to make a GBZ _of the graph we display_. The two ways
-  out both cost something:
-  - **Rebuild with minigraph-cactus** — the March script. Correct, and gives
-    paths, a VCF and a HAL in one pass. The plain-minigraph run alone was 27.4 h
-    of wall time over 21 chromosomes two at a time; MC adds base-level alignment
-    per chromosome on top, so this is a multi-day job on one box and the March
-    attempt is evidence it is not turnkey. It is a run to start deliberately,
-    the way the PIF regeneration was.
-  - **`minigraph --call` per assembly, then a VCF-derived graph.**
-    `minigraph -cxasm --call -t16 graph.gfa sample-asm.fa` gives each assembly's
-    traversal of every bubble, and `misc/mgutils.js merge -r0` combines the
-    calls **and generates a VCF** (both documented in
-    `~/src/minigraph/README.md`). All 19 assemblies are already downloaded, 30
-    GB in `/mnt/sdb/cdiesh/mousePangenome/fasta/`, so this is hours.
-    `vg autoindex` over that VCF would then yield a GBZ — but a graph built
-    _from the VCF_, not the minigraph graph, so mouse would display one object
-    and query another. That trades one inconsistency for a subtler one.
+> the SV-resolution graph (`sv.gfa`), the minigraph backbone our rGFA tabix
+> [tracks read] … `build_rgfa_tabix.sh` is what we ran on HPRC's `sv.gfa.gz` …
+> the reason this page reads `sv.gfa` rather than the base-level `gfa.gz` beside
+> it
 
-So: `--call` is the right cheap step because its carriage and its VCF are honest
-at bubble resolution and they unblock the page. It is not a substitute for the
-cactus rebuild, and it should not be described as one.
+Its own file table makes the sizes explicit — `*.sv.gfa.gz` 842 MB is the
+SV-resolution rGFA, `*.gfa.gz` 63 GB is base-level and is **deliberately not
+used** — and it states the split in one line: "the `sv.gfa` is the graph route;
+the VCF is the variant route."
+
+The arithmetic agrees. These BED projections run about 9.6 bytes per segment
+(bovine 425,796 segments → 4.07 MB; mouse 1,321,274 → 12.3 MB), and human's
+`segs.bed.gz` is 6.69 MB, so its graph holds on the order of 700,000 segments. A
+base-level 464-haplotype human graph has that many nodes several hundred times
+over.
+
+So **all three graph routes are already at parity**, at SV resolution, from a
+minigraph rGFA. Taking bovine base-level would make it the odd one out — more
+detailed than the reference implementation, on a route that implementation
+examined and declined. The site's own headline filter says the same thing from
+the other end: `SV_FILTER` in `pangenomeLinks.ts` is
+`INFO.LV[0]==0 && alleleLength(feature)>=50`, so every human graph launch is
+already showing only the structural tier.
+
+Extracting `Zenodo/cactus` or `Zenodo/pggb` is therefore **not** on the plan.
+The 12 GB tarball does hold them (29 files each, 26.1 GB and 23.7 GB, never
+extracted), and they remain the route to a base-level bovine graph if one is
+ever wanted for its own sake. Nothing here wants one.
+
+## What is actually missing, per route
+
+Three routes, and the gap is only ever in the second and third.
+
+- **Graph route (SV-resolution BEDs).** All three, at parity, today. Nothing
+  owed.
+- **Variant route (a reference-projected VCF).** Human has HPRC's published
+  `wave` VCF. Bovine and mouse have none, and this is the gap that matters: it
+  is what the explorer's type, size, allele-frequency and per-sample panels are
+  computed from.
+- **GBZ route (query-time carriage and per-haplotype alignment).** Human only —
+  and worth being precise about why, because it is not a design decision here:
+  **HPRC publishes the `.gbz.db` itself** (10,050,412,544 bytes, probed live),
+  and all we build is the companion haplotype index that upstream's database
+  lacks. Nobody publishes a GBZ for cattle or mouse, so this route was never
+  symmetric work.
+
+### The variant route, for bovine: minutes, on data already extracted
+
+`vg deconstruct` over the P-line minigraph GFA gives exactly the file the
+explorer reads. Measured 2026-09-09 on the smallest chromosome,
+`Zenodo/minigraph/25.gfa` (43.9 MB):
+
+```
+vg convert -g 25.gfa -p     1.6 s
+vg deconstruct -p HER -a    0.42 s wall  ->  2,593 records
+```
+
+and the records carry the vocabulary the generator already parses, plus a GT
+column per assembly:
+
+```
+AC=1,1;AF=0.0909091,0.0909091;AN=11;AT=...;NS=11;LV=0;RC=HER   FORMAT GT
+ANG BIS BRA BSW GAU HIG NEL OBV PIE SIM YAK
+```
+
+`AF` and per-sample `GT` are carriage, allele frequency and per-sample burden in
+one file. `LV` is present, so `SV_FILTER` applies unchanged. The whole 2.63 GB
+minigraph set extrapolates to roughly two minutes of `vg` and a few MB of VCF —
+small precisely because it is SV-resolution, where HPRC's base-level `wave` VCF
+is 2.3 GB.
+
+One thing to handle: `deconstruct` names CHROM after the path it was given, so
+these say `HER`, not `chr25`. Rename the P line to the PanSN form before
+converting (the mapping `gfa_paths_to_rgfa.py` already applies) rather than
+rewriting CHROM afterwards, so one rule produces both files' names.
+
+### The variant route, for mouse: hours, and no shortcut
+
+No P or W lines means `vg deconstruct` has nothing to project.
+`minigraph -cxasm --call -t16 graph.gfa sample-asm.fa` per assembly gives each
+one's traversal of every bubble and `misc/mgutils.js merge -r0` turns the calls
+into a VCF (both documented in `~/src/minigraph/README.md`). All 19 assemblies
+are already downloaded, 30 GB in `/mnt/sdb/cdiesh/mousePangenome/fasta/`.
+
+### The minigraph-cactus rebuild is optional, which is a correction
+
+An earlier draft called it "what makes mouse a peer of demos/hprc". It is not,
+now that the routes are separated properly: mouse is already a peer on the graph
+route, and `--call` closes the variant route. The rebuild buys the **GBZ route
+only** — and that is a route human got from upstream rather than one we built,
+so parity there was never on offer. Multi-day on one box, for one route out of
+three, on the one dataset where nobody upstream has done it. Worth doing if
+query-time carriage for mouse is wanted for its own sake; not a prerequisite for
+anything on the page.
 
 ## The target, per dataset
 
-|        | graph                                               | carriage                              | VCF                     | GBZ                        |
-| ------ | --------------------------------------------------- | ------------------------------------- | ----------------------- | -------------------------- |
-| human  | HPRC v2.1, upstream                                 | `.gbz.db` (have)                      | HPRC `wave` v2.1 (have) | have, upstream + our index |
-| bovine | base-level cactus or pggb, from the tarball on disk | `SM:Z:` via `pggb_gfa_to_bed.py`      | `vg deconstruct`        | `vg` → `gbz2db`            |
-| mouse  | **minigraph-cactus rebuild**                        | `--call` now; walks after the rebuild | `mgutils merge -r0` now | only after the rebuild     |
-
-That is one recipe with one honest exception, and the exception is scheduled
-rather than permanent.
+|        | graph route                  | variant route               | GBZ route                                 |
+| ------ | ---------------------------- | --------------------------- | ----------------------------------------- |
+| human  | v2.1 `sv.gfa` — **have**     | HPRC `wave` — **have**      | upstream `.gbz.db` + our index — **have** |
+| bovine | Leonard minigraph — **have** | `vg deconstruct`, ~2 min    | `vg` → `gbz2db`, if wanted                |
+| mouse  | built here — **have**        | `--call` + `mgutils`, hours | needs the rebuild                         |
 
 ## Decision: the configs stay in this repo
 
@@ -316,15 +377,25 @@ has already changed once.
   v2.1 paths differ in shape — upstream added a `/v2.1/` directory segment, so
   each has to be probed rather than string-substituted.
 
-- **Bovine to base level with carriage.** Extract `Zenodo/cactus` (or `pggb`)
-  from the tarball already on disk, rebuild the BEDs through
-  `pggb_gfa_to_bed.py` so `SM:Z:` survives, `vg deconstruct` for the VCF, then
-  `vg` → `gbz2db` for the `.gbz.db` and its haplotype index. No new downloads.
+- **Bovine's variant route.** `vg convert` + `vg deconstruct -p` per chromosome
+  over the minigraph set already extracted, PanSN-renaming each P line first so
+  CHROM comes out `chr<k>`, then concatenate, bgzip and tabix. Measured at ~2
+  minutes for the corpus. This is the whole bovine gap; base level is explicitly
+  not part of it (see above).
 
-- **Mouse `--call` pass** over the 19 assemblies on disk, then
-  `mgutils.js merge -r0` for the VCF, and rebuild its BEDs with the carriage the
-  calls provide. Honest at bubble resolution, and explicitly not a substitute
-  for the rebuild below.
+  Optionally, and asymmetrically: rebuilding bovine's BEDs through
+  `pggb_gfa_to_bed.py` instead of the rGFA producer would carry `SM:Z:` into the
+  graph view's node tooltips, which human's rGFA-derived tracks cannot have.
+  PANGENOME_GRAPHS.md's rule is "pick the producer that matches your file", so
+  that IS the consistent decision applied to a path-bearing input — but it makes
+  one dataset show something the others do not, and the VCF above already
+  supplies carriage everywhere it is computed on. Decide it on its own merits,
+  not as a consistency fix.
+
+- **Mouse's variant route.** `minigraph -cxasm --call` over the 19 assemblies on
+  disk, then `mgutils.js merge -r0` for the VCF. Hours. Honest at bubble
+  resolution, and it closes the mouse gap on its own — the rebuild below is a
+  separate question, not a follow-up to this.
 
 - **Registry-driven `/pangenomes`.** `pages/pangenomes/index.astro` is 529
   hand-written lines that read `PANGENOME_DATASETS` not at all. Extend
@@ -336,9 +407,10 @@ has already changed once.
   windows with gene and insertion size, `pangenome-build/mouse-loci.tsv` has 9
   anchor-gene mouse loci.
 
-- **Start the mouse minigraph-cactus rebuild** as its own deliberate run. Only
-  after it lands does mouse get walks, a base-level graph and a GBZ, and only
-  then is the exception in the table above gone.
+- **Optionally, the mouse minigraph-cactus rebuild**, as its own deliberate
+  multi-day run. It buys the GBZ route and nothing else — which is a route human
+  got from upstream rather than one we built, so there is no parity argument for
+  it. Do it if query-time carriage for mouse is wanted for its own sake.
 
 ## Coverage facts to surface on the page, not paper over
 
