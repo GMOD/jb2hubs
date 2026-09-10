@@ -388,6 +388,29 @@ order indexed a freshly generated config before enhance had put the policy on it
 otherwise. The CLI rewrites `config.json` in its own layout; `formatConfigs.ts`
 puts those back.
 
+### A derived url that 404s is not a download that has not happened yet
+
+`hubtools`' `parseAssemblyEntry` **builds** each hub's `ncbiGff` url from the
+accession; NCBI does not publish it. For an assembly NCBI never annotated the
+directory is there and the `*_genomic.gff.gz` simply is not — checked by hand on
+`GCF_002986165.1`, which has the fna, the gbff and the assembly report and no
+gff. Existence of the download was the only gate, so those urls were requested
+again on **every run, forever**: measured 2026-09-09, the same 71 attempted and
+the same 71 failed in every log going back weeks, 27s and 142 lines of
+`Fetching…/Failed…` per run against ftp.ncbi.nlm.nih.gov.
+
+`downloadNcbiGff.sh` now writes a `gff/<file>.notfound` sentinel, the way
+`ncbi.json.notfound` records a missing metadata record, and only on a 404/410 —
+classified with one HEAD, and only on a failure, so the steady state is zero
+requests rather than 71. A timeout or 5xx leaves no sentinel, so an
+ftp.ncbi.nlm.nih.gov blip cannot switch off an annotation we do have a url for.
+`NOTFOUND_TTL_DAYS` (90) expires it so an annotation published later is still
+picked up, `FETCH_UPDATES=1` ignores it, and a successful fetch clears it. The
+count of suppressed urls is printed, because a suppression nobody can see is how
+a whole class of assembly quietly stops getting an annotation. mtime is a safe
+clock here, unlike in `buildNcbiQueue.ts`, because `gff/` is gitignored and so
+survives no clone to have its mtimes reset.
+
 ## A hub.txt is refreshed by rsync, not fetched once and kept forever
 
 `downloadHubs.ts` fetched a hub's `hub.txt` the first time the assembly list
@@ -571,8 +594,23 @@ first is structural and still worth knowing:
   run.sh's `gate_configs`) fails the upload on the rest: a real, named config
   for a db UCSC no longer lists. **Retiring one stays manual** — these are
   permanent urls that published links and desktop installs keep naming, so it is
-  a decision, not a cleanup. `hgFixed` is the one legitimate extra (make.sh
-  rsyncs it deliberately).
+  a decision, not a cleanup.
+
+  It walks the **built tree** as well as the two mirrors, and that half is the
+  one that was missing. `uploadAll.sh` syncs `$UCSC_BUILT_DIR`, not `configs/`,
+  so a `<db>/` directory there is served at `/ucsc/<db>/` whether or not a
+  mirror of it survives — and every gate in this repo reads the mirror.
+  `hgFixed` is the live proof: retired from `configs/` and from every walk that
+  regenerates it on 2026-08-30, and `s3://jbrowse.org/ucsc/hgFixed/` has served
+  it ever since. What it serves is a config with
+  `"displayName": "undefined (hgFixed)"`, no tracks, a 2bit and a chrom.sizes
+  that 404 so `loadPre()` rejects it outright, and four plugin urls on the
+  frozen unversioned `/plugins/…/dist/` path that `checkPluginUrls.mjs`'s own
+  `isLegacy` rule would reject if it could still see them. Deleting
+  `$UCSC_BUILT_DIR/hgFixed` is what makes the next sync drop the prefix — except
+  `liftOver/.checked` and `config.json.bak`, which the sync's `*.checked` and
+  `*.bak` excludes leave behind, so clearing it outright takes an
+  `rclone delete`.
 
   Both **refuse rather than act vacuously**: a genome list under 100 names, a
   missing or empty config directory, or no list at all is "could not run", never
@@ -976,6 +1014,26 @@ exited the whole config build. Only the **text** comes from the mirror — the
 caller keeps naming the primary in the `trackDbUrl` it writes — so a fallback
 cannot put hgdownload2 in a published config.
 
+Two things about it moved on 2026-09-09, and the first is why the mirror was
+never reached during the outage it exists for. **`myfetch` had no deadline.**
+node's fetch has none of its own for a connection that completes and then goes
+quiet — measured on node 24.2.0 against a socket that accepts and never answers,
+a bare `fetch` was still hanging at 45 seconds — so during a stall the first
+attempt never returns, the retry never happens and the mirror is never asked.
+`FETCH_TIMEOUT_MS` (60s, exported from `hubtools/src/util.ts`) is now the one
+number for every fetch in either pipeline: `mirrorSidecars`' downloader,
+`checkIfFileAccessible`'s HEAD, `addGeneticCodes`' eutils and chrom.sizes calls,
+`processUcscList`, the Wikipedia and Wikidata lookups. `checkPluginUrls.mjs`
+carries its own 30s copy, being outside the workspace's dependency on hubtools;
+`checkTrackUrls.mjs` and `checkSidecarUrls.mjs` already had theirs.
+
+**And it no longer retries a definitive answer.** `myfetch` throws an
+`HttpError` carrying the status, and a round ends the loop only when _every_
+host answered definitively — a mirror 404 while the primary is unreachable is
+not evidence the file is gone. A retired hub cost 6 requests and 6s of backoff
+to be told the same thing three times; it now costs 2 and no backoff. 408 and
+429 stay transient, being the two 4xx that mean "ask again".
+
 ### What the gate caught once it could run
 
 Three broken references across the UCSC configs, all invisible to every other
@@ -999,7 +1057,11 @@ layer and each a different shape:
   produced a file it could not index, `run_for_assemblies_lenient` warned and
   moved on, `needs_rebuild`'s stamp was never written so every later run redid
   the same broken work, and the config shipped naming an index that did not
-  exist. Nothing in the tree asked "did the index get written". The cheap
+  exist. That warning said only "parallel reported failures (exit 1)" — a count
+  hides a systematic breakage exactly as well as it hides a one-off, so both
+  assembly runners now go through a `--joblog` and name the assemblies that
+  failed, the way `run_parallel_reporting` has always done for the genark
+  sweeps. Nothing in the tree asked "did the index get written". The cheap
   whole-tree version of that question is worth keeping in mind:
   `find $UCSC_BUILT_DIR \( -name '*.gff.gz' -o -name '*.bed.gz' \)` and check
   each for a `.csi`/`.tbi` beside it — 5,793 files, seconds, and as of
@@ -1603,6 +1665,69 @@ dropped. `agent-docs/ENCODE_TRACKS.md` records why, what was measured, and what
 would have to come first (UCSC's own faceted metadata TSVs) if they are ever
 loaded as connections.
 
+## The UCSC genome list timestamps itself, and that rebuilt the website every run
+
+`api.genome.ucsc.edu/list/ucscGenomes` stamps every response with the time of
+**your request**:
+
+```
+"downloadTime": "2026:09:10T00:00:14Z", "downloadTimeStamp": 1788998414,
+"dataTime": "2026-08-18T15:38:37",      "dataTimeStamp": 1787092717,
+```
+
+`dataTime` is the real data clock and is stable; `downloadTime` is not, so
+make.sh's `curl > list.json.raw` writes different bytes on every run whether or
+not UCSC moved anything — verified by fetching twice, two seconds apart, and
+diffing at byte 39.
+
+That file was being rsynced to the bucket, and the rclone changed-object count
+is what gates **both** the `/ucsc/*` CloudFront invalidation and run.sh's
+decision to rebuild the website. So every run invalidated, rebuilt astro,
+shipped the 5.4GB tree and invalidated `/*` — and the branch that reads "No
+genark/ucsc/website changes detected; skipping website build, deploy, and
+CloudFront invalidation" **could never once fire**. Confirmed across the last 12
+run logs: `list.json.raw: Copied` in every completed one, `ucsc=1` in every RUN
+SUMMARY. On 2026-09-09 that was a 5.4GB deploy whose only input change was a
+timestamp.
+
+`list.json.raw` is now excluded from the sync, for the same reason
+`.pipeline_hash` and `tracks.json` are: it is build state, nothing reads it from
+the bucket, and `src/transformGenomeList.ts` turns it into the `list.json` that
+is published, which drops the timestamps. The stale copy already in the bucket
+stays — rclone leaves excluded objects alone on both sides.
+
+The general shape is worth keeping: **anything synced whose bytes are a function
+of the clock turns a change-gated deploy into an unconditional one**, and it
+does so silently, because "changed" is exactly what the pipeline is built to act
+on.
+
+## A derivation phase that prints nothing is indistinguishable from a hung one
+
+`createBedTracksForGoldenPath.sh`'s `process_assembly` emitted no output at all,
+and `PARALLEL_OPTS` correctly drops `--bar` when stdout is not a terminal, so a
+re-derivation run was a wall of silence. Recovered from the 2026-09-07 log: BED
+tracks **37m56s**, RepeatMasker **8m14s**, gene tracks **9m40s**.
+
+Recovered, because those three markers were not readable. `xxhsum` 0.8.1 writes
+a 72-byte carriage-return progress line to stderr per invocation and has no flag
+to stop it (`-q` is about benchmark and check mode). `detect_changed_assemblies`
+already dropped it deliberately; `needs_rebuild`, `save_rebuild_stamp`,
+`source_tree_hash` and the trackDb stamp did not — and those run per derived
+file. The result was a **single 297,917-character line** of 8,275 CR segments,
+and since a CR segment ends without a newline, the `log` lines that followed
+were appended onto it: `[09:33:41] Creating RepeatMasker tracks...` was inside
+that line, invisible to `grep '^\[2026'` and to anyone scrolling. Three of the
+last eight run logs have a ~298KB line like it. All four call sites now drop
+that stderr; a failed hash still reads as "changed" and rebuilds, which is the
+safe direction, and `save_rebuild_stamp`'s pipefail still fails the job.
+
+`run_for_assemblies` and `run_for_assemblies_lenient` now share one body with a
+`--joblog`, and print one line per phase naming the assemblies that dominated
+it. Verified against real `parallel` in all four combinations of strict/lenient
+× success/failure; `ucsc2jbrowse/common.test.sh` pins that the lenient runner
+survives, names the failing assembly and reports timing, and that the strict one
+still aborts under `set -e`.
+
 ## The website deploy is a symlink swap, and the old one was a scheduled outage
 
 `website/deploy.sh` (`pnpm run deploy`, `pnpm run deploy:staging`) unpacks the
@@ -1714,6 +1839,25 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   (ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both)
 - `src/recentlyUpdated.json` — build-time generated data for recently-updated
   page, from `genark2jbrowse/hubFirstSeen.json` (below)
+- `astroBuild.sh` — `astro build` with its per-route log collapsed into a
+  counter. Astro logs one line per generated route at info level
+  (`core/build/generate.js`, `logRenderTime`) and offers no knob short of
+  `--silent`, which would also drop the vite warnings and the build summary.
+  This site has one route per GenArk accession, so on 2026-09-09 those lines
+  were **129,261 of run.sh's 130,796** — 98.8% of a full pipeline log, burying
+  every line the pipeline itself wrote and making each `logs/run_*.log` ~50MB.
+  Only the route lines match the filter; errors pass through, and a build that
+  dies mid-generation still reports how far it got.
+- `taxonomyBuilder/` — one `build_taxonomy.py` process for all 19 categories,
+  not one each. It parses `nodes.dmp` + `names.dmp` (477MB, 2.6s) before it can
+  build anything, and those cannot change between two categories of the same
+  run, so the per-category loop spent ~50s re-reading the same two files:
+  **52.9s → 4.7s**, with all 19 `.newick` files byte-identical. It still takes
+  each category as its own `--input`/`--output` pair and still carries on past
+  one it cannot build, so a bad input costs one tree rather than all 19. The
+  `&& pnpm format` that used to follow it was vestigial — it ran _before_
+  `pnpm generate`, and everything `generate` writes is either under `public/`
+  (oxfmt-ignored) or gitignored.
 
 ## UCSC hubs vs GenArk aliases (two-flavor configs)
 
