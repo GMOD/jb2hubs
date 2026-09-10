@@ -190,16 +190,34 @@ if (values.local) {
     .readdirSync(dir)
     .filter(f => f.endsWith('.json') && !f.startsWith('.'))
   for (const name of configs) {
+    const base = name.replace(/\.json$/, '')
     localConfigs.set(
-      `https://jbrowse.org/pangenome/${name.replace(/\.json$/, '')}/config.json`,
+      `https://jbrowse.org/pangenome/${base}/config.json`,
       fs.readFileSync(new URL(name, dir), 'utf8'),
     )
+    // And the config's SIDECARS, from `<basename>/` beside it. Without these
+    // --local is a trap rather than a gate: a config naming a chrom.sizes that
+    // is not published yet builds its display perfectly and reads `ok`, while
+    // every assembly it declares fails `loadPre()` on a 404 and its lanes draw
+    // nothing. Which is the state this check was in the first time the GBZ lane
+    // passed it.
+    const sidecars = new URL(`${base}/`, dir)
+    if (fs.existsSync(sidecars)) {
+      for (const f of fs
+        .readdirSync(sidecars)
+        .filter(f => !f.startsWith('.'))) {
+        localConfigs.set(
+          `https://jbrowse.org/pangenome/${base}/${f}`,
+          fs.readFileSync(new URL(f, sidecars), 'utf8'),
+        )
+      }
+    }
   }
   if (localConfigs.size === 0) {
     throw new Error('--local found no configs in website/pangenome-config/')
   }
   console.log(
-    `--local: serving ${localConfigs.size} working-tree config(s) to the app`,
+    `--local: serving ${localConfigs.size} working-tree file(s) to the app`,
   )
 }
 
