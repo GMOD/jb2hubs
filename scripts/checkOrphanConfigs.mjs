@@ -63,8 +63,9 @@ function refuse(message) {
 // is make.sh's committed copy of the same file, which is what makes this
 // runnable in CI and in a checkout with no built tree at all -- the case that
 // must never be mistaken for "every config is an orphan".
+const builtDir = resolveBuiltDir(values['built-dir'])
+
 function readGenomeNames() {
-  const builtDir = resolveBuiltDir(values['built-dir'])
   const candidates = [
     values.list,
     builtDir && path.join(builtDir, 'list.json'),
@@ -106,6 +107,33 @@ const { source, names } = readGenomeNames()
 // together with that append, so a config named hgFixed is now an orphan like any
 // other.
 const expected = new Set(names)
+
+// The mirrors are not what is published. uploadAll.sh syncs the whole built
+// tree, so a <db>/ directory there that the genome list does not name is served
+// at its permanent url whether or not configs/ still mirrors it -- and every
+// gate in this repo reads the mirror. hgFixed is the live instance: its config
+// was retired from configs/ and from every walk that regenerates it on
+// 2026-08-30, and s3://jbrowse.org/ucsc/hgFixed/ has served it ever since,
+// naming a 2bit and a chrom.sizes that 404 and four plugin urls on the frozen
+// unversioned path that checkPluginUrls.mjs no longer sees.
+//
+// Absent rather than empty is the CI case and is not a finding: a checkout with
+// no built tree has nothing to say about what is published from one. An empty
+// one is a build that did not happen, which the mirror half already refuses on.
+function builtTreeConfigDbs() {
+  if (!builtDir || !fs.existsSync(builtDir)) {
+    return undefined
+  }
+  const dbs = fs
+    .readdirSync(builtDir, { withFileTypes: true })
+    .filter(e => e.isDirectory())
+    .map(e => e.name)
+    .filter(name => fs.existsSync(path.join(builtDir, name, 'config.json')))
+  if (dbs.length === 0) {
+    refuse(`${builtDir} holds no built configs`)
+  }
+  return dbs
+}
 
 const contents = new Map()
 for (const dir of CONFIG_DIRS) {
@@ -158,14 +186,34 @@ if (onlyMinimal.length > 0) {
   )
 }
 
-if (orphans.length > 0) {
+// Listed separately because the remedy is a different one: a mirror orphan is a
+// file to delete from the working tree, a built-tree orphan is a directory whose
+// removal is what makes the next rclone sync drop the prefix from the bucket.
+const builtDbs = builtTreeConfigDbs()
+const builtOrphans = builtDbs
+  ? builtDbs.filter(name => !expected.has(name))
+  : []
+if (builtDbs) {
+  console.log(`${builtDir}: ${builtDbs.length} built configs`)
+} else {
+  console.log('no built tree here, so nothing to say about what it publishes')
+}
+
+if (orphans.length > 0 || builtOrphans.length > 0) {
   for (const orphan of orphans) {
     console.log(`  FAIL  ${orphan}`)
   }
+  for (const name of builtOrphans) {
+    console.log(
+      `  FAIL  ${path.join(builtDir, name)}/ (published at /ucsc/${name}/)`,
+    )
+  }
   console.error(
-    `\n${orphans.length} orphaned config file(s): the UCSC genome list has no such db. ` +
-      `Each one is published and merged into all.json anyway. Delete it if the db ` +
-      `really disappeared upstream; that call is deliberately left to a human.`,
+    `\n${orphans.length + builtOrphans.length} orphaned config(s): the UCSC genome list has ` +
+      `no such db. Each one is published anyway -- the mirrors are merged into ` +
+      `all.json, and a built-tree directory is synced to /ucsc/<db>/ at its ` +
+      `permanent url. Delete it if the db really disappeared upstream; that call ` +
+      `is deliberately left to a human.`,
   )
   process.exit(1)
 }
