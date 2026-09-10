@@ -5,7 +5,7 @@
 # Main entry point for the jb2hubs pipeline.
 #
 # Usage:
-#   ./run.sh                # Full pipeline: build + upload + deploy (default).
+#   ./run.sh                # Full pipeline: build + upload + deploy prod & staging.
 #                           # Incremental: only new/changed assemblies rebuilt.
 #   ./run.sh --dry-run      # Build only, no upload or deploy
 #   ./run.sh --upload-only  # Upload + deploy only, skip build (run after --dry-run)
@@ -33,8 +33,9 @@ EXPLAIN=false
 USAGE="Usage: $0 [OPTIONS]
 
 Options:
-  (default)        Full pipeline: build + upload + deploy. Builds are
-                   incremental: only new/changed assemblies are reprocessed.
+  (default)        Full pipeline: build + upload + deploy, to both production
+                   and staging. Builds are incremental: only new/changed
+                   assemblies are reprocessed.
   --dry-run        Build only, no upload or deploy
   --upload-only    Upload + deploy only, skip build (run after --dry-run)
   --explain        Report what both pipelines would rebuild, then exit. Note
@@ -279,23 +280,27 @@ gate_configs() {
   echo "Pre-upload gate passed."
 }
 
+# A staging build links every launch at config-staging.json, and neither site
+# serves configs -- jbrowse-web resolves ?config= against its own origin, so
+# they come from the jbrowse.org bucket. Deploy staging before that file is
+# uploaded and every staging launch 404s its config. Cheap to just check.
+staging_config_present() {
+  staging_config="https://jbrowse.org/ucsc/hg38/config-staging.json"
+  if [ "$(curl -s -o /dev/null -w '%{http_code}' -L "$staging_config")" != "200" ]; then
+    echo "Error: $staging_config is not in the bucket."
+    echo "Run ./ucsc2jbrowse/make.sh (which writes it) and upload before deploying staging,"
+    echo "or every staging launch fails to fetch its config."
+    return 1
+  fi
+}
+
 if [ "$DRY_RUN" = false ] && [ "$STAGING" = true ]; then
   # Staging deploys only the website. Data is shared with production (the site
   # references jbrowse.org S3 via absolute URLs), so there is no S3 upload, and
   # staging must not commit/push to main. The website is built with
   # --mode staging (PUBLIC_STAGING=true) which enables in-progress pages.
   echo "Staging mode: skipping S3 data upload and git commit/push."
-  # A staging build links every launch at config-staging.json, and neither site
-  # serves configs -- jbrowse-web resolves ?config= against its own origin, so
-  # they come from the jbrowse.org bucket. Deploy staging before that file is
-  # uploaded and every staging launch 404s its config. Cheap to just check.
-  staging_config="https://jbrowse.org/ucsc/hg38/config-staging.json"
-  if [ "$(curl -s -o /dev/null -w '%{http_code}' -L "$staging_config")" != "200" ]; then
-    echo "Error: $staging_config is not in the bucket."
-    echo "Run ./ucsc2jbrowse/make.sh (which writes it) and upload before deploying staging,"
-    echo "or every staging launch fails to fetch its config."
-    exit 1
-  fi
+  staging_config_present || exit 1
   log "Deploying website to staging..."
   pnpm --filter website2 run deploy:staging
   echo "Staging deploy complete"
@@ -355,15 +360,31 @@ elif [ "$DRY_RUN" = false ]; then
     pnpm --filter website2 run deploy
     rm -f "$DEPLOY_STAMP"
     WEBSITE_DEPLOYED=yes
+
+    # Staging serves the same data from the same bucket, so anything that
+    # changed production changed it too. Deploying both here is what keeps
+    # staging from drifting weeks behind main. It is a separate release
+    # directory and symlink, so a failure here leaves production alone -- and
+    # production is already live, so a missing config-staging.json skips
+    # staging with a warning rather than failing the run.
+    if staging_config_present; then
+      log "Deploying website to staging..."
+      pnpm --filter website2 run deploy:staging
+      STAGING_DEPLOYED=yes
+    else
+      echo "Skipping staging deploy."
+      STAGING_DEPLOYED=no
+    fi
   else
     echo "No genark/ucsc/website changes detected; skipping website build, deploy, and CloudFront invalidation."
     WEBSITE_DEPLOYED=no
+    STAGING_DEPLOYED=no
   fi
 
   # One-line summary so it's easy to confirm from logs that incremental
   # detection is doing its job (e.g. a quiet run should read "all unchanged").
   describe() { [ "$1" = 1 ] && echo "changed" || echo "unchanged"; }
-  log "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED"
+  log "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED | staging deployed: $STAGING_DEPLOYED"
 
   # Scope the commit to pipeline-generated paths so stray edits in the working
   # tree don't ride along to origin. hubs/ was committed above.
