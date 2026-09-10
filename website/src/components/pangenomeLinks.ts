@@ -61,38 +61,51 @@ const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 // intact.
 //
 // `phased` splits each sample into its two haplotypes — 464 rows rather than 232
-// — which is the only form co-inherited blocks are visible in.
+// — which is the only form co-inherited blocks are visible in. Requested only
+// where the dataset says its genotypes are phased: a `vg deconstruct` callset
+// over assembly paths is one haploid column per assembly, and asking for it
+// there draws every second row empty.
 //
 // Omitted entirely where the host lacks the display, because this declaration
 // has no graceful degradation: see HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY. Without
 // it the launch still opens, on the single-row display.
+//
+// Undefined where the dataset has no reference-projected callset. That is not a
+// gap in the wiring: whether a graph can be deconstructed into one is a property
+// of the graph file. `minigraph -cxggs` writes no P or W lines, so the mouse
+// graph records no haplotype paths and there is nothing to project — see
+// `noCallsetReason` on the dataset, which is what the pages say instead.
 function graphVcfTrack(dataset: PangenomeDataset) {
-  return {
-    type: 'VariantTrack',
-    trackId: dataset.graphVcf.trackId,
-    name: dataset.graphVcf.name,
-    assemblyNames: [dataset.reference.assembly],
-    adapter: { type: 'VcfTabixAdapter', uri: dataset.graphVcf.url },
-    ...(HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY
-      ? {
-          displays: [
-            {
-              type: 'LinearMultiSampleVariantDisplay',
-              displayId: `${dataset.graphVcf.trackId}-multisample`,
-              renderingMode: 'phased',
-              jexlFilters: SV_FILTER,
-              height: 340,
-            },
-          ],
-        }
-      : {}),
-  }
+  const vcf = dataset.graphVcf
+  return vcf
+    ? {
+        type: 'VariantTrack',
+        trackId: vcf.trackId,
+        name: vcf.name,
+        assemblyNames: [dataset.reference.assembly],
+        adapter: { type: 'VcfTabixAdapter', uri: vcf.url },
+        ...(HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY
+          ? {
+              displays: [
+                {
+                  type: 'LinearMultiSampleVariantDisplay',
+                  displayId: `${vcf.trackId}-multisample`,
+                  ...(vcf.phased ? { renderingMode: 'phased' } : {}),
+                  jexlFilters: SV_FILTER,
+                  height: 340,
+                },
+              ],
+            }
+          : {}),
+      }
+    : undefined
 }
 
 // Reference LinearGenomeView open at `loc`: reference genes, the graph VCF
 // (inlined) as a haplotype matrix, and the dataset's structural-variation
 // tracks.
 function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
+  const vcfTrack = graphVcfTrack(dataset)
   return specUrl(
     dataset.reference.configUrl,
     [
@@ -102,18 +115,51 @@ function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
         loc,
         tracks: [
           dataset.reference.geneTrackId,
-          dataset.graphVcf.trackId,
+          ...(vcfTrack ? [vcfTrack.trackId] : []),
           ...dataset.svTrackIds,
         ],
       },
     ],
-    [graphVcfTrack(dataset)],
+    vcfTrack ? [vcfTrack] : [],
   )
 }
 
-// Whole-graph entry point: lands on the dataset's landing region.
+// The dataset's own linear lanes over one region, out of the GRAPH config
+// rather than the reference config: the bubbles, the allele inventory drawn at
+// each allele's real size off its CIGAR, and the segments. For a dataset with
+// no callset these lanes ARE the pangenome view of a locus.
+//
+// Undefined without a hosted graph config, and that is not a technicality —
+// `RgfaTabixAdapter`, `MinigraphBubbleAdapter` and the rest ship in the
+// graphgenomeviewer plugin rather than in core, so these lanes are exactly as
+// plugin-gated as the graph pane beside them.
+export function graphLanesUrl(dataset: PangenomeDataset, loc: string) {
+  const graph = dataset.graphBrowser
+  return graph
+    ? specUrl(graph.configUrl, [
+        {
+          type: 'LinearGenomeView',
+          assembly: dataset.reference.assembly,
+          loc,
+          tracks: [
+            graph.geneTrackId,
+            graph.bubblesTrackId,
+            ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
+            graph.segmentsTrackId,
+          ],
+        },
+      ])
+    : undefined
+}
+
+// Whole-graph entry point: lands on the dataset's landing region, in whichever
+// linear view that dataset can actually populate. With a callset that is the
+// reference config with the VCF inlined; without one the reference config would
+// open on its gene track alone, so the graph config's own lanes are the view.
 export function graphBrowserUrl(dataset: PangenomeDataset) {
-  return referenceLgvUrl(dataset, dataset.landingRegion)
+  return dataset.graphVcf
+    ? referenceLgvUrl(dataset, dataset.landingRegion)
+    : graphLanesUrl(dataset, dataset.landingRegion)
 }
 
 // The graph variants (plus SV tracks) open at a specific catalog locus.
@@ -127,13 +173,29 @@ export function graphVcfLgvUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
+  return referenceLgvUrl(dataset, launchRegion(locus))
+}
+
+// The window a locus launch opens on: its detail window where it has one (or is
+// narrow enough to be its own), else the whole display span.
+function launchRegion(locus: PangenomeLocus) {
   const window = detailWindow(locus)
-  return referenceLgvUrl(
-    dataset,
-    window
-      ? `${locus.chrom}:${window.start}-${window.end}`
-      : locusRegion(locus),
-  )
+  return window
+    ? `${locus.chrom}:${window.start}-${window.end}`
+    : locusRegion(locus)
+}
+
+// The launch a locus's primary button should make: the callset beside the
+// reference genes where the dataset has one, else the graph's own lanes. Both
+// open on the same window, so the two datasets differ in what is IN the view
+// rather than in where it lands.
+export function locusLaunchUrl(
+  dataset: PangenomeDataset,
+  locus: PangenomeLocus,
+) {
+  return dataset.graphVcf
+    ? graphVcfLgvUrl(dataset, locus)
+    : graphLanesUrl(dataset, launchRegion(locus))
 }
 
 // A region drawn as the graph itself, under a linear view of the same window.

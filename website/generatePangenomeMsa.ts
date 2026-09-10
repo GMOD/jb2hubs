@@ -28,7 +28,13 @@ const TABIX_OPTS = { cwd: os.tmpdir() }
 
 // Read from the dataset rather than restated, so a changed url cannot leave the
 // generators reconstructing haplotypes from a different file than the site opens.
-const VCF_URL = HPRC_DATASET.graphVcf.url
+const graphVcf = HPRC_DATASET.graphVcf
+if (graphVcf === undefined) {
+  throw new Error(
+    `${HPRC_DATASET.id} names no graphVcf, and these alignments are reconstructed from that callset`,
+  )
+}
+const VCF_URL = graphVcf.url
 const UCSC_API = 'https://api.genome.ucsc.edu'
 const WINDOW = 800
 // Skip windows containing a single insertion longer than this: the column-locked

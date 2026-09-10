@@ -5,9 +5,12 @@
 // mouse/plant one — is a matter of adding another PangenomeDataset, not editing
 // component internals. The components and link builders read only this shape.
 
+import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type: 'json' }
+import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
 import { features } from '../config/features.ts'
 import { ucscConfigPath } from '../config/jbrowse.ts'
-import { PANGENOME_LOCI } from './pangenomeLoci.ts'
+import { derivedLoci, landingRegion } from './pangenomeDerivedLoci.ts'
+import { MAX_DETAIL_WINDOW_BP, PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -30,6 +33,12 @@ export interface PangenomeGraphVcf {
   name: string
   // CORS-open, tabix-indexed VCF (a co-located .tbi lets JBrowse stream it).
   url: string
+  // Split each sample into its haplotypes on the matrix display. True only for
+  // a callset whose genotypes are actually phased: HPRC's 232 diploid samples
+  // are 464 haplotype rows, and that is the only form a co-inherited block is
+  // visible in. A `vg deconstruct` callset over assembly paths is one haploid
+  // row per assembly, and asking for phased there draws every second row empty.
+  phased?: boolean
 }
 
 // A pairwise synteny comparison to a second assembly (e.g. reference vs T2T),
@@ -86,7 +95,21 @@ export interface PangenomeDataset {
   // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.0'.
   label: string
   reference: PangenomeReference
-  graphVcf: PangenomeGraphVcf
+  // One line naming the assemblies the graph was built from, shown wherever the
+  // dataset is introduced. Not derived from the callset's sample list: two of
+  // the three datasets have no callset, and one of those has no sample list at
+  // all in any file we serve.
+  panelDescription: string
+  // The reference-projected callset, where the graph has one.
+  //
+  // Absent is a property of the GRAPH, not a gap in the wiring: `vg deconstruct`
+  // projects haplotype paths, and `minigraph -cxggs` writes none, so the mouse
+  // graph cannot state which strain carries which allele and no callset can be
+  // made from it. `noCallsetReason` is what the pages say in its place.
+  graphVcf?: PangenomeGraphVcf
+  // Why there is no callset, in a sentence a reader of the locus dashboard can
+  // act on. Only meaningful with `graphVcf` absent.
+  noCallsetReason?: string
   // Structural-variation tracks (already in `reference.configUrl`) to open with
   // the graph — these carry the headline insertions/deletions/inversions/dups.
   svTrackIds: string[]
@@ -198,10 +221,13 @@ export const HPRC_DATASET: PangenomeDataset = {
     geneTrackId: 'hg38-ncbiRefSeq',
     taxonId: 9606,
   },
+  panelDescription:
+    '232 phased diploid assemblies — 464 haplotypes — from diverse human populations',
   graphVcf: {
     trackId: 'hprc-v2.0-mc-grch38-pangenome-vcf',
     name: 'HPRC pangenome variants (minigraph-cactus v2.0, GRCh38)',
     url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/hprc-v2.0-mc-grch38.wave.vcf.gz',
+    phased: true,
   },
   svTrackIds: [
     'hg38-hprcInsertsV1',
@@ -233,11 +259,182 @@ export const HPRC_DATASET: PangenomeDataset = {
   loci: PANGENOME_LOCI,
 }
 
-// Every dataset the explorer can show, keyed by `id`. The mouse strains on
-// /pangenomes#mouse are not one: there is no mouse pangenome VCF wired up and
-// no curated mm39 loci yet (agent-docs/MOUSE_PANGENOME_PLAN.md is the plan),
-// so the explorer lists only datasets that have loci.
-export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [HPRC_DATASET]
+// Both non-human graphs are hosted and configured exactly like HPRC's, which is
+// what makes one component able to render all three: the same five projected
+// files under the same suffixes, the same three adapters, the same trackId
+// convention. Their configs are `website/pangenome-config/mouse-mm39.json` and
+// `bovine-arsucd12.json`, published by `upload.sh` beside them and gated by
+// `pnpm check-pangenome-assets`, which since 2026-09-09 also checks that the
+// bucket copy exists and matches — `bovine-arsucd12.json` was committed and
+// 404 for a day because nothing asked.
+//
+// Both are staging-only for the same reason HPRC's graph is, and it is a
+// stronger reason here: every adapter in this stack (`RgfaTabixAdapter`,
+// `MinigraphBubbleAdapter`) ships in the graphgenomeviewer plugin rather than
+// in core, so for these two datasets the LINEAR lanes are plugin-gated too, not
+// just the graph pane. Without `graphBrowser` a mouse locus has nothing but its
+// coordinates, which is what the dashboard says.
+const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
+  segmentsTrackId: 'mouse_minigraph_segments',
+  bubblesTrackId: 'mouse_minigraph_bubbles',
+  geneTrackId: 'mm39_ncbiRefSeq_ucsc',
+  allelesTrackId: 'mouse_minigraph_alleles',
+  tierTrackId: 'mouse_minigraph_tier',
+  bubbleScoreTrackId: 'mouse_bubble_score',
+  // The 20 sequences the graph actually holds, read off the tier file's own
+  // refNames rather than off mm39's chrom.sizes: `build_mouse_pangenome.sh`
+  // aligns one sequence per chromosome, so there is no chrY and no chrM in the
+  // graph and a chromosome launch for either would draw an empty pane.
+  chromosomes: [
+    { name: 'chr1', length: 195_154_279 },
+    { name: 'chr2', length: 181_755_017 },
+    { name: 'chr3', length: 159_745_316 },
+    { name: 'chr4', length: 156_860_686 },
+    { name: 'chr5', length: 151_758_149 },
+    { name: 'chr6', length: 149_588_044 },
+    { name: 'chr7', length: 144_995_196 },
+    { name: 'chr8', length: 130_127_694 },
+    { name: 'chr9', length: 124_359_700 },
+    { name: 'chr10', length: 130_530_862 },
+    { name: 'chr11', length: 121_973_369 },
+    { name: 'chr12', length: 120_092_757 },
+    { name: 'chr13', length: 120_883_175 },
+    { name: 'chr14', length: 125_139_656 },
+    { name: 'chr15', length: 104_073_951 },
+    { name: 'chr16', length: 98_008_968 },
+    { name: 'chr17', length: 95_294_699 },
+    { name: 'chr18', length: 90_720_763 },
+    { name: 'chr19', length: 61_420_004 },
+    { name: 'chrX', length: 169_476_592 },
+  ],
+}
+
+const BOVINE_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  configUrl: 'https://jbrowse.org/pangenome/bovine-arsucd12/config.json',
+  segmentsTrackId: 'bovine_minigraph_segments',
+  bubblesTrackId: 'bovine_minigraph_bubbles',
+  geneTrackId: 'bosTau9_ncbiRefSeq_ucsc',
+  allelesTrackId: 'bovine_minigraph_alleles',
+  tierTrackId: 'bovine_minigraph_tier',
+  bubbleScoreTrackId: 'bovine_bubble_score',
+  // Leonard et al. published one graph per autosome and no sex chromosome, so
+  // the tier holds chr1-29 and nothing else.
+  chromosomes: [
+    { name: 'chr1', length: 158_534_110 },
+    { name: 'chr2', length: 136_231_102 },
+    { name: 'chr3', length: 121_005_158 },
+    { name: 'chr4', length: 120_000_601 },
+    { name: 'chr5', length: 120_089_316 },
+    { name: 'chr6', length: 117_806_340 },
+    { name: 'chr7', length: 110_682_743 },
+    { name: 'chr8', length: 113_319_770 },
+    { name: 'chr9', length: 105_454_467 },
+    { name: 'chr10', length: 103_308_737 },
+    { name: 'chr11', length: 106_982_474 },
+    { name: 'chr12', length: 87_216_183 },
+    { name: 'chr13', length: 83_472_345 },
+    { name: 'chr14', length: 82_403_003 },
+    { name: 'chr15', length: 85_007_780 },
+    { name: 'chr16', length: 81_013_979 },
+    { name: 'chr17', length: 73_167_244 },
+    { name: 'chr18', length: 65_820_629 },
+    { name: 'chr19', length: 63_449_741 },
+    { name: 'chr20', length: 71_974_595 },
+    { name: 'chr21', length: 69_862_954 },
+    { name: 'chr22', length: 60_773_035 },
+    { name: 'chr23', length: 52_498_615 },
+    { name: 'chr24', length: 62_317_253 },
+    { name: 'chr25', length: 42_350_435 },
+    { name: 'chr26', length: 51_992_305 },
+    { name: 'chr27', length: 45_612_108 },
+    { name: 'chr28', length: 45_940_150 },
+    { name: 'chr29', length: 51_098_607 },
+  ],
+}
+
+// Derived catalogues, not curated ones: `website/generatePangenomeLoci.ts`
+// ranks each graph's coarse tier by segments per bubble and names the entries
+// off the reference annotation, and its output is committed under
+// `website/public/pangenome-<id>/loci.json`. Imported at build so the loci are
+// a plain array here like HPRC's, and served at the same path so the generator
+// has one output rather than two.
+const MOUSE_LOCI = derivedLoci(mouseLociFile)
+const BOVINE_LOCI = derivedLoci(bovineLociFile)
+
+// The mouse strain graph: UCSC mm39 plus 18 Mouse Genomes Project strain
+// assemblies, aligned here with `minigraph -cxggs` and projected onto GRCm39.
+// Built in jbrowse-components (`scripts/build_mouse_pangenome.sh`) and hosted
+// under `demos/mouse_pangenome/`; the tutorial is /docs/tutorials/
+// pangenome_nonhuman on the JBrowse docs site.
+//
+// It has no `graphVcf` and never will without a rebuild. That is the one
+// structural difference between the three datasets here, and it is worth being
+// precise about: a line-type census of the finished 3.3 GB rGFA finds `H`, `S`
+// and `L` and no `P` or `W` at all, so the graph does not record which strain
+// walks which node. `firstSeenIn` in its allele file is construction order, not
+// carriage. Recovering carriage means `minigraph --call` per assembly plus
+// `mgutils.js merge`, or a minigraph-cactus rebuild — see
+// agent-docs/PANGENOME_PORTAL.md.
+export const MOUSE_DATASET: PangenomeDataset = {
+  id: 'mouse',
+  label: 'Mouse strain pangenome (minigraph, GRCm39)',
+  reference: {
+    assembly: 'mm39',
+    configUrl: ucscConfigPath('mm39'),
+    label: 'GRCm39',
+    geneTrackId: 'mm39-ncbiRefSeq',
+    taxonId: 10090,
+  },
+  panelDescription:
+    '19 assemblies — GRCm39 (C57BL/6J) and 18 inbred and wild-derived strains from the Mouse Genomes Project',
+  noCallsetReason:
+    'This graph was built with minigraph, which writes no haplotype paths, so nothing in it records which strain carries which allele and there is no callset to project onto GRCm39. The bubbles and allele lanes state what varies and by how much; they cannot state who by.',
+  svTrackIds: [],
+  dataPrefix: '/pangenome-mouse',
+  landingRegion: landingRegion(MOUSE_LOCI, MAX_DETAIL_WINDOW_BP),
+  graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
+  loci: MOUSE_LOCI,
+}
+
+// The bovine super-pangenome: 12 assemblies on ARS-UCD1.2, taurine and indicine
+// breeds plus yak, bison and gaur, published by Leonard et al. 2023 (Zenodo
+// 7737904, CC-BY 4.0) and projected here from their minigraph graphs.
+//
+// It DOES have a callset, and the route is worth knowing because it is the one
+// mouse lacks: the published GFAs carry one `P` line per assembly, so
+// `vg deconstruct` projects them onto the reference directly. Eleven haploid
+// genotype columns, hence `phased` unset.
+export const BOVINE_DATASET: PangenomeDataset = {
+  id: 'bovine',
+  label: 'Bovine super-pangenome (minigraph, ARS-UCD1.2)',
+  reference: {
+    assembly: 'bosTau9',
+    configUrl: ucscConfigPath('bosTau9'),
+    label: 'ARS-UCD1.2',
+    geneTrackId: 'bosTau9-ncbiRefSeq',
+    taxonId: 9913,
+  },
+  panelDescription:
+    '12 assemblies — ARS-UCD1.2 (Hereford) and 11 taurine and indicine breeds plus yak, bison and gaur',
+  graphVcf: {
+    trackId: 'bovine-arsucd12-minigraph-vcf',
+    name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
+    url: 'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.vcf.gz',
+  },
+  svTrackIds: [],
+  dataPrefix: '/pangenome-bovine',
+  landingRegion: landingRegion(BOVINE_LOCI, MAX_DETAIL_WINDOW_BP),
+  graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
+  loci: BOVINE_LOCI,
+}
+
+// Every dataset the explorer can show, keyed by `id`.
+export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
+  HPRC_DATASET,
+  MOUSE_DATASET,
+  BOVINE_DATASET,
+]
 
 export const DEFAULT_DATASET_ID = HPRC_DATASET.id
 

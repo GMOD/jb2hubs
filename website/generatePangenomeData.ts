@@ -28,7 +28,13 @@ const TABIX_OPTS = { cwd: os.tmpdir() }
 
 // Read from the dataset rather than restated, so the url the site launches and
 // the url these summaries describe cannot drift apart.
-const VCF_URL = HPRC_DATASET.graphVcf.url
+const graphVcf = HPRC_DATASET.graphVcf
+if (graphVcf === undefined) {
+  throw new Error(
+    `${HPRC_DATASET.id} names no graphVcf, and these summaries are a decomposition of that callset`,
+  )
+}
+const VCF_URL = graphVcf.url
 
 // AF and size bins are fixed edges so every locus is directly comparable.
 // Release 2 is 232 samples → up to 464 haplotypes, so the rarest observable AF is

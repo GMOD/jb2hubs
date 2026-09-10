@@ -12,7 +12,7 @@ import {
   externalGraphUrl,
   geneHubUrl,
   graphLocusUrl,
-  graphVcfLgvUrl,
+  locusLaunchUrl,
   referenceSyntenyUrl,
 } from './pangenomeLinks.ts'
 import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
@@ -43,6 +43,63 @@ function externalLocusUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
     : undefined
 }
 
+// Everything the tier reported about a derived locus, which is everything known
+// about it. It stands in for the four charts above rather than beside them: a
+// derived catalogue has no callset to decompose, so there is no variant-type
+// breakdown, no allele-frequency histogram and no per-sample burden to draw —
+// those are all arithmetic over carriage.
+function DerivedBubbleFacts({
+  dataset,
+  locus,
+}: {
+  dataset: PangenomeDataset
+  locus: PangenomeLocus
+}) {
+  const derived = locus.derived
+  // The catalogue is written in rank order, so the position in it IS the rank.
+  const rank = dataset.loci.indexOf(locus) + 1
+  return derived ? (
+    <>
+      <p className="pg-hint pg-provenance">
+        Ranked #{rank} of {dataset.loci.length} in this graph&rsquo;s derived
+        catalogue, which is its coarse tier sorted by how many segments each
+        top-level bubble holds and named off the {dataset.reference.label}{' '}
+        annotation. Nobody curated this list;{' '}
+        <a href="https://github.com/GMOD/jb2hubs/blob/main/website/generatePangenomeLoci.ts">
+          <code>generatePangenomeLoci.ts</code>
+        </a>{' '}
+        derived it from the graph.
+      </p>
+      <dl className="pg-facts">
+        <div>
+          <dt>Segments in the bubble</dt>
+          <dd>{derived.segments.toLocaleString()}</dd>
+        </div>
+        <div>
+          <dt>Reference span</dt>
+          <dd>{(locus.end - locus.start).toLocaleString()} bp</dd>
+        </div>
+        <div>
+          <dt>Alternative paths</dt>
+          <dd>
+            {derived.shortestAllele.toLocaleString()}&ndash;
+            {derived.longestAllele.toLocaleString()} bp
+          </dd>
+        </div>
+        <div>
+          <dt>Genes covered</dt>
+          <dd>
+            {derived.genes.length > 0 ? derived.genes.join(', ') : 'none'}
+          </dd>
+        </div>
+      </dl>
+      {dataset.noCallsetReason && (
+        <p className="pg-hint pg-provenance">{dataset.noCallsetReason}</p>
+      )}
+    </>
+  ) : null
+}
+
 export default function PangenomeLocusDashboard({
   dataset,
   locus,
@@ -50,14 +107,23 @@ export default function PangenomeLocusDashboard({
   dataset: PangenomeDataset
   locus: PangenomeLocus
 }) {
+  // A derived locus has no precomputed anything: the derivation ranks a tier
+  // file and computes nothing per locus, so there is no `<id>.vcfsummary.json`
+  // to fetch and asking for one would render a load error over a locus that is
+  // working exactly as intended. `derived` is per locus rather than per dataset
+  // because a dataset could hold both kinds.
   const { data: summary, error } = useSWRImmutable<LocusSummary>(
-    `${dataset.dataPrefix}/${locus.id}.vcfsummary.json`,
+    locus.derived ? null : `${dataset.dataPrefix}/${locus.id}.vcfsummary.json`,
     fetchJson,
   )
   const gene = syntenyGene(locus)
   const target = dataset.syntenyTarget
   const syntenyUrl = referenceSyntenyUrl(dataset, locus)
-  const variantsUrl = graphVcfLgvUrl(dataset, locus)
+  // The callset beside the reference genes where the dataset has one, else the
+  // graph's own bubbles/alleles/segments lanes — and undefined where neither is
+  // reachable, which on production is every locus of the two non-human
+  // datasets, since all three of their adapters live in the plugin.
+  const variantsUrl = locusLaunchUrl(dataset, locus)
   const graphUrl = graphLocusUrl(dataset, locus)
   const externalUrl = externalLocusUrl(dataset, locus)
   const ext = dataset.externalGraphBrowser
@@ -89,14 +155,18 @@ export default function PangenomeLocusDashboard({
       </div>
 
       <div className="pg-launch-bar">
-        <a
-          className="pg-launch-btn"
-          href={variantsUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          Browse {dataset.label} variants + structural variation in JBrowse →
-        </a>
+        {variantsUrl && (
+          <a
+            className="pg-launch-btn"
+            href={variantsUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {dataset.graphVcf
+              ? `Browse ${dataset.label} variants + structural variation in JBrowse →`
+              : `Browse the ${dataset.label} bubbles and alleles in JBrowse →`}
+          </a>
+        )}
         {graphUrl && (
           <a
             className="pg-launch-btn"
@@ -118,10 +188,20 @@ export default function PangenomeLocusDashboard({
             Draw {gene} as a graph in {ext.name} ↗
           </a>
         )}
-        {!HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
+        {dataset.graphVcf && !HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
           <p className="pg-hint pg-launch-note">
             On the current JBrowse release the callset opens as a single row;
             the per-haplotype matrix display ships in the next release.
+          </p>
+        )}
+        {!variantsUrl && !graphUrl && !externalUrl && (
+          <p className="pg-hint pg-launch-note">
+            No JBrowse launch for this locus on this build. Every lane this
+            graph has — bubbles, the allele inventory, the segments — is read by
+            an adapter that ships in the GraphGenomeView plugin rather than in
+            JBrowse core, and that plugin boots on v5 only. The coordinates and
+            the numbers below are the whole of what this page can show until
+            then.
           </p>
         )}
         {dataset.graphBrowser && locus.graphCollapsed && (
@@ -132,10 +212,12 @@ export default function PangenomeLocusDashboard({
             below are unaffected.
           </p>
         )}
-        <OpenInDesktop
-          className="pg-launch-btn pg-launch-secondary"
-          webUrl={variantsUrl}
-        />
+        {variantsUrl && (
+          <OpenInDesktop
+            className="pg-launch-btn pg-launch-secondary"
+            webUrl={variantsUrl}
+          />
+        )}
         {target && (
           <a
             className="pg-launch-btn pg-launch-secondary"
@@ -154,13 +236,22 @@ export default function PangenomeLocusDashboard({
         </a>
       </div>
 
-      {error ? (
-        <p className="pg-error">
-          Could not load the precomputed summary for this locus:{' '}
-          {errorText(error)}
-        </p>
-      ) : null}
-      {!summary && !error && <p className="pg-hint">Loading summary…</p>}
+      {locus.derived ? (
+        <DerivedBubbleFacts
+          dataset={dataset}
+          locus={locus}
+        />
+      ) : (
+        <>
+          {error ? (
+            <p className="pg-error">
+              Could not load the precomputed summary for this locus:{' '}
+              {errorText(error)}
+            </p>
+          ) : null}
+          {!summary && !error && <p className="pg-hint">Loading summary…</p>}
+        </>
+      )}
 
       {summary && (
         <>
@@ -211,11 +302,13 @@ export default function PangenomeLocusDashboard({
         />
       ) : null}
 
-      <PangenomeMsaSection
-        dataPrefix={dataset.dataPrefix}
-        referenceLabel={dataset.reference.label}
-        locus={locus}
-      />
+      {locus.derived ? null : (
+        <PangenomeMsaSection
+          dataPrefix={dataset.dataPrefix}
+          referenceLabel={dataset.reference.label}
+          locus={locus}
+        />
+      )}
     </div>
   )
 }

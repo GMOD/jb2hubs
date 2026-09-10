@@ -26,9 +26,34 @@ const SORTS: { value: Sort; label: string }[] = [
 
 // The generated `<dataPrefix>/manifest.json`, imported at build by the page
 // and handed down rather than fetched again from the browser.
+//
+// Only a dataset whose per-locus summaries were generated has one, which today
+// is HPRC alone: a derived catalogue is a ranking of a tier file and nothing
+// per locus was computed, so there is no variant count to put on a card. The
+// grid falls back to the segment count the ranking is over, which is the
+// better number for those datasets anyway — it is what "this is where the
+// graph varies" means.
 export interface PangenomeManifest {
   samples: string[]
   loci: { id: string; gene: string; variantCount: number }[]
+}
+
+// What a card counts, and what the sort orders by. `variants` needs a manifest;
+// `segments` needs only the catalogue.
+function cardCounts(dataset: PangenomeDataset, manifest?: PangenomeManifest) {
+  return manifest
+    ? {
+        unit: 'variants',
+        of: new Map(manifest.loci.map(l => [l.id, l.variantCount])),
+      }
+    : {
+        unit: 'segments',
+        of: new Map(
+          dataset.loci.flatMap(l =>
+            l.derived ? [[l.id, l.derived.segments] as const] : [],
+          ),
+        ),
+      }
 }
 
 const filterLabel = (f: Filter) => (f === 'all' ? 'All' : VARIATION_LABELS[f])
@@ -36,8 +61,7 @@ const filterLabel = (f: Filter) => (f === 'all' ? 'All' : VARIATION_LABELS[f])
 const matchesFilter = (l: PangenomeLocus, f: Filter) =>
   f === 'all' || l.variation.includes(f)
 
-// Only a dataset with a locus catalog can be explored; the mouse strains on
-// /pangenomes#mouse have none yet.
+// Only a dataset with a locus catalog can be explored.
 const EXPLORABLE = PANGENOME_DATASETS.filter(d => d.loci.length > 0)
 
 function LocusGrid({
@@ -45,7 +69,7 @@ function LocusGrid({
   manifest,
 }: {
   dataset: PangenomeDataset
-  manifest: PangenomeManifest
+  manifest?: PangenomeManifest
 }) {
   const loci = dataset.loci
   // ?locus=<id>, ?filter=<class>, ?sort=<mode> all deep-link via useUrlState so a
@@ -58,15 +82,15 @@ function LocusGrid({
   const filter = FILTERS.find(f => f === rawFilter) ?? 'all'
   const sort = SORTS.find(s => s.value === rawSort)?.value ?? 'catalog'
 
-  // Precomputed per-locus variant counts, shown on the cards so the grid is
-  // informative before you drill in.
-  const variantCount = new Map(manifest.loci.map(l => [l.id, l.variantCount]))
+  // Per-locus counts, shown on the cards so the grid is informative before you
+  // drill in.
+  const counts = cardCounts(dataset, manifest)
 
   const visible = loci
     .filter(l => matchesFilter(l, filter))
     .sort((a, b) =>
       sort === 'count'
-        ? (variantCount.get(b.id) ?? 0) - (variantCount.get(a.id) ?? 0)
+        ? (counts.of.get(b.id) ?? 0) - (counts.of.get(a.id) ?? 0)
         : 0,
     )
   // An unknown ?locus= falls back to the first card, and the grid highlights
@@ -90,13 +114,21 @@ function LocusGrid({
   return (
     <div>
       <p>
-        {dataset.reference.label} loci where structure varies between haplotypes
-        (copy number, gene presence/absence, tandem repeats, inversions,
-        hypervariable immune regions), from the {dataset.label} graph (
-        {manifest.samples.length} samples), with JBrowse launches. The graph
-        files and sample assemblies are on{' '}
+        {dataset.reference.label} loci where structure varies between the
+        assemblies in the {dataset.label} graph &mdash;{' '}
+        {dataset.panelDescription} &mdash; with JBrowse launches. The graph
+        files and assemblies are on{' '}
         <a href={`/pangenomes#${dataset.id}`}>the pangenomes page</a>.
       </p>
+      {manifest ? null : (
+        <p className="pg-hint">
+          This catalogue is derived rather than curated: the graph&rsquo;s
+          coarse tier is ranked by how many segments each top-level bubble
+          holds, and each entry named off the {dataset.reference.label}{' '}
+          annotation. Nobody picked these loci, so the cards count segments
+          rather than variant sites &mdash; that count is what the ranking is.
+        </p>
+      )}
 
       <div className="pg-filters">
         {FILTERS.map(f => (
@@ -128,7 +160,7 @@ function LocusGrid({
 
       <div className="pg-grid">
         {visible.map(l => {
-          const n = variantCount.get(l.id)
+          const n = counts.of.get(l.id)
           return (
             <button
               key={l.id}
@@ -143,7 +175,7 @@ function LocusGrid({
               <PangenomeVariationBadges variation={l.variation} />
               {n === undefined ? null : (
                 <span className="pg-card-count">
-                  {n.toLocaleString()} variants
+                  {n.toLocaleString()} {counts.unit}
                 </span>
               )}
             </button>
@@ -171,9 +203,8 @@ export default function PangenomeExplorer({
 }) {
   const [datasetId, setDatasetId] = useUrlState('dataset', DEFAULT_DATASET_ID)
   const dataset = EXPLORABLE.find(d => d.id === datasetId) ?? EXPLORABLE[0]
-  const manifest = dataset && manifests[dataset.id]
 
-  return dataset === undefined || manifest === undefined ? (
+  return dataset === undefined ? (
     <p className="pg-error">
       No pangenome dataset has a locus catalog to explore yet.
     </p>
@@ -195,17 +226,11 @@ export default function PangenomeExplorer({
             </button>
           ))}
         </p>
-      ) : (
-        <p className="pg-hint">
-          {dataset.label} is the only dataset with a locus catalog so far; the{' '}
-          <a href="/pangenomes#mouse">mouse strain assemblies</a> have no
-          pangenome VCF or curated loci wired up yet.
-        </p>
-      )}
+      ) : null}
       <LocusGrid
         key={dataset.id}
         dataset={dataset}
-        manifest={manifest}
+        manifest={manifests[dataset.id]}
       />
     </div>
   )
