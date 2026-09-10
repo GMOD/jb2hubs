@@ -273,17 +273,17 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
 export const HPRC_PORTAL: PangenomePortal = {
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
-  filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.0-mc-grch38',
-  // Measured 2026-09-10. No `.rgfa.gz` row — the graph the projections were cut
-  // from is release 2's own `sv.gfa.gz` on S3, linked below rather than
-  // re-hosted, and no `.vcf.gz` row for the same reason: the callset the tracks
-  // stream is the release's, at its own url.
+  filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
+  // Measured 2026-09-10 against v2.1. No `.rgfa.gz` row — the graph the
+  // projections were cut from is release 2's own `sv.gfa.gz` on S3, linked
+  // below rather than re-hosted, and no `.vcf.gz` row for the same reason: the
+  // callset the tracks stream is the release's, at its own url.
   sizes: {
-    '.segs.bed.gz': 6_693_943,
-    '.links.bed.gz': 34_193_871,
-    '.bubbles.bed.gz': 60_150_888,
-    '.alleles.bed.gz': 5_322_191,
-    '.tier10000.segs.bed.gz': 104_482,
+    '.segs.bed.gz': 6_686_172,
+    '.links.bed.gz': 34_147_909,
+    '.bubbles.bed.gz': 61_453_085,
+    '.alleles.bed.gz': 5_213_294,
+    '.tier10000.segs.bed.gz': 104_044,
   },
   links: [
     { label: 'HPRC data portal', url: 'https://humanpangenome.org/' },

@@ -245,7 +245,7 @@ async function summarizeLocus(
     id: locus.id,
     gene: locus.gene,
     region,
-    ref: 'GRCh38',
+    ref: HPRC_DATASET.reference.label,
     source: SOURCE_LABEL,
     variantCount,
     alleleCount,
