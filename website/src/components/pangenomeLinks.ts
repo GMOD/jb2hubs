@@ -337,8 +337,14 @@ export function graphLocusUrl(
 
 // Internal cross-link into the gene hub for the locus's marker gene, seeded
 // from the reference species' taxon (not a JBrowse spec — a site route).
+// Undefined where the locus names no gene: a derived entry over an intergenic
+// bubble has none, and a hub link built from its coordinate label would be a
+// button that always comes back empty.
 export function geneHubUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
-  return `/gene?gene=${encodeURIComponent(syntenyGene(locus))}&ref=${dataset.reference.taxonId}`
+  const gene = syntenyGene(locus)
+  return gene
+    ? `/gene?gene=${encodeURIComponent(gene)}&ref=${dataset.reference.taxonId}`
+    : undefined
 }
 
 // Pairwise reference ↔ synteny-target view at the locus (reference-level

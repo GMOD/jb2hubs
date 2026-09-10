@@ -28,6 +28,7 @@ import {
   PANGENOME_LOCI,
   detailWindow,
   locusRegion,
+  syntenyGene,
 } from './pangenomeLoci.ts'
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
@@ -292,11 +293,38 @@ test('referenceSyntenyUrl is undefined when the dataset has no synteny target', 
 
 test('geneHubUrl seeds the marker gene and reference taxon', () => {
   const url = geneHubUrl(HPRC_DATASET, locus)
+  assert.ok(url)
   const { pathname, searchParams } = new URL(url, 'https://example.org')
   assert.equal(pathname, '/gene')
   // First pangene marker for MHC is HLA-A.
   assert.equal(searchParams.get('gene'), 'HLA-A')
   assert.equal(searchParams.get('ref'), String(HPRC_DATASET.reference.taxonId))
+})
+
+test('a derived locus seeds the hub from the tiers gene list, or not at all', () => {
+  // Its `gene` is a label the generator composed, so splitting THAT is what
+  // produced `Gm10439,` with the comma on it and `Vmn` from
+  // "Vmn cluster (18 genes)" -- three hub links that find nothing, and one
+  // (`chr9:87,086,686`) that is not a gene name at all.
+  for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
+    for (const l of d.loci) {
+      const gene = syntenyGene(l)
+      const genes = l.derived!.genes
+      if (genes.length === 0) {
+        assert.equal(gene, undefined, `${d.id}/${l.id} offers a hub link`)
+        assert.equal(geneHubUrl(d, l), undefined)
+      } else {
+        assert.ok(gene && genes.includes(gene), `${d.id}/${l.id} seeds ${gene}`)
+        // A cluster's alphabetically-first member is often an unnamed LOC id,
+        // which no ortholog table is keyed on.
+        assert.equal(
+          gene.startsWith('LOC'),
+          genes.every(g => g.startsWith('LOC')),
+          `${d.id}/${l.id} seeds ${gene} out of ${genes.join()}`,
+        )
+      }
+    }
+  }
 })
 
 test('graphLocusUrl opens the graph on the locus, paired with a linear view', () => {

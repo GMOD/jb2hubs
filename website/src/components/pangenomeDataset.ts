@@ -90,15 +90,76 @@ export interface PangenomeExternalGraphBrowser {
   graphLabel: string
 }
 
+// One published file of a graph, for the portal's download table.
+export interface PangenomePortalFile {
+  suffix: string
+  what: string
+  bytes: number
+}
+
+// The five projections every graph in this stack publishes, in the order the
+// portal tables them. Shared rather than restated per dataset because the set
+// is identical by construction — `build_rgfa_tabix.sh`, `build_rgfa_alleles.sh`
+// and `build_bubble_tier.sh` (jbrowse-components) emit it for any rGFA, which
+// is the property that lets one component table any of the three.
+const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
+  { suffix: '.rgfa.gz', what: 'the graph itself' },
+  { suffix: '.segs.bed.gz', what: 'one row per node, with its rank' },
+  { suffix: '.links.bed.gz', what: 'one row per edge per endpoint' },
+  { suffix: '.bubbles.bed.gz', what: 'gfatools bubble output' },
+  {
+    suffix: '.alleles.bed.gz',
+    what: 'one row per allele, with a CIGAR for its size',
+  },
+  {
+    suffix: '.tier10000.segs.bed.gz',
+    what: 'one node per bubble, so a chromosome is drawable',
+  },
+  { suffix: '.vcf.gz', what: 'the reference-projected callset' },
+]
+
+// What the /pangenomes page needs to render a dataset's section: prose, links
+// and file sizes. Kept apart from the rest of the dataset because the other
+// half is coordinates and trackIds that the LAUNCHES read, and nothing here is
+// on any launch path.
+//
+// Sizes are stated rather than fetched — a static build must not need the
+// network — so they are as of a measurement, named per dataset. Every url they
+// label is probed by `pnpm check-pangenome-assets`, so a file that MOVED is
+// caught; a file that merely grew shows a stale number until someone re-measures.
+export interface PangenomePortal {
+  heading: string
+  // The published bucket prefix the file table's urls are built from.
+  filePrefix: string
+  // Bytes per suffix. A suffix absent here is absent from the table, which is
+  // how mouse's row for the callset it does not have stays off the page.
+  sizes: Record<string, number>
+  // Where the assemblies and the graph came from.
+  links: { label: string; url: string }[]
+  // Caveats a reader has to hold before drawing a conclusion from this graph.
+  notes: string[]
+}
+
+// The table rows for one dataset: the shared file kinds, filtered to the ones
+// this dataset actually publishes, with their urls built from its prefix.
+export function portalFiles(portal: PangenomePortal): PangenomePortalFile[] {
+  return GRAPH_FILE_KINDS.flatMap(kind => {
+    const bytes = portal.sizes[kind.suffix]
+    return bytes === undefined ? [] : [{ ...kind, bytes }]
+  })
+}
+
 export interface PangenomeDataset {
   id: string
   // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.0'.
   label: string
   reference: PangenomeReference
   // One line naming the assemblies the graph was built from, shown wherever the
-  // dataset is introduced. Not derived from the callset's sample list: two of
-  // the three datasets have no callset, and one of those has no sample list at
-  // all in any file we serve.
+  // dataset is introduced. A noun phrase with no terminal punctuation and no
+  // em-dash, because every caller sets it inside a sentence of its own.
+  //
+  // Not derived from the callset's sample list: two of the three datasets have
+  // no callset, and one of those has no sample list at all in any file we serve.
   panelDescription: string
   // The reference-projected callset, where the graph has one.
   //
@@ -123,6 +184,12 @@ export interface PangenomeDataset {
   graphBrowser?: PangenomeGraphBrowser
   externalGraphBrowser?: PangenomeExternalGraphBrowser
   loci: PangenomeLocus[]
+  // Present where the /pangenomes page renders this dataset's section from the
+  // dataset rather than by hand. HPRC's section is still hand-written: it
+  // carries a 232-row sample table, two references and a release history that
+  // no other dataset has, and converting it would be a much larger change than
+  // the two it would deduplicate.
+  portal?: PangenomePortal
 }
 
 // The config is ours: `website/pangenome-config/hprc-grch38.json`, published
@@ -222,7 +289,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     taxonId: 9606,
   },
   panelDescription:
-    '232 phased diploid assemblies — 464 haplotypes — from diverse human populations',
+    '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
   graphVcf: {
     trackId: 'hprc-v2.0-mc-grch38-pangenome-vcf',
     name: 'HPRC pangenome variants (minigraph-cactus v2.0, GRCh38)',
@@ -376,6 +443,39 @@ const BOVINE_LOCI = derivedLoci(bovineLociFile)
 // carriage. Recovering carriage means `minigraph --call` per assembly plus
 // `mgutils.js merge`, or a minigraph-cactus rebuild — see
 // agent-docs/PANGENOME_PORTAL.md.
+export const MOUSE_PORTAL: PangenomePortal = {
+  heading: 'Mouse strain pangenome',
+  filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
+  // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.
+  sizes: {
+    '.rgfa.gz': 911_079_492,
+    '.segs.bed.gz': 12_316_003,
+    '.links.bed.gz': 54_683_427,
+    '.bubbles.bed.gz': 173_746_998,
+    '.alleles.bed.gz': 12_838_735,
+    '.tier10000.segs.bed.gz': 184_056,
+  },
+  links: [
+    {
+      label: 'Ensembl Mouse Genomes Project',
+      url: 'https://projects.ensembl.org/mouse_genomes/',
+    },
+    {
+      label: 'UCSC GenArk (the assemblies as fetched)',
+      url: 'https://hgdownload.soe.ucsc.edu/hubs/',
+    },
+    {
+      label: 'How this graph was built',
+      url: 'https://jbrowse.org/demos/mouse_pangenome/README.txt',
+    },
+  ],
+  notes: [
+    'No published pangenome graph existed for these assemblies, so this one was built here rather than redistributed. Its README beside the data records the commands and the audits that ran.',
+    'Rank is not carriage. The allele file names the assembly a segment was first seen in, which for a minigraph graph is the order the assemblies were processed — it says nothing about which other strains carry the same allele.',
+    'One sequence per chromosome was aligned, so the graph holds chr1-19 and chrX and no chrY, chrM or unplaced contigs.',
+  ],
+}
+
 export const MOUSE_DATASET: PangenomeDataset = {
   id: 'mouse',
   label: 'Mouse strain pangenome (minigraph, GRCm39)',
@@ -387,7 +487,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
     taxonId: 10090,
   },
   panelDescription:
-    '19 assemblies — GRCm39 (C57BL/6J) and 18 inbred and wild-derived strains from the Mouse Genomes Project',
+    'GRCm39 (C57BL/6J) plus 18 inbred and wild-derived Mouse Genomes Project strains',
   noCallsetReason:
     'This graph was built with minigraph, which writes no haplotype paths, so nothing in it records which strain carries which allele and there is no callset to project onto GRCm39. The bubbles and allele lanes state what varies and by how much; they cannot state who by.',
   svTrackIds: [],
@@ -395,6 +495,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
   landingRegion: landingRegion(MOUSE_LOCI, MAX_DETAIL_WINDOW_BP),
   graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
   loci: MOUSE_LOCI,
+  portal: MOUSE_PORTAL,
 }
 
 // The bovine super-pangenome: 12 assemblies on ARS-UCD1.2, taurine and indicine
@@ -405,6 +506,41 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // mouse lacks: the published GFAs carry one `P` line per assembly, so
 // `vg deconstruct` projects them onto the reference directly. Eleven haploid
 // genotype columns, hence `phased` unset.
+export const BOVINE_PORTAL: PangenomePortal = {
+  heading: 'Bovine super-pangenome',
+  filePrefix:
+    'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
+  // Measured 2026-09-09.
+  sizes: {
+    '.rgfa.gz': 759_848_507,
+    '.segs.bed.gz': 4_069_833,
+    '.links.bed.gz': 17_296_108,
+    '.bubbles.bed.gz': 50_466_192,
+    '.alleles.bed.gz': 4_265_145,
+    '.tier10000.segs.bed.gz': 47_919,
+    '.vcf.gz': 88_349_570,
+  },
+  links: [
+    {
+      label: 'Leonard et al. 2023, Genome Biology',
+      url: 'https://doi.org/10.1186/s13059-023-02969-y',
+    },
+    {
+      label: 'Source graphs (Zenodo 7737904, CC-BY 4.0)',
+      url: 'https://doi.org/10.5281/zenodo.7737904',
+    },
+    {
+      label: 'What was modified here',
+      url: 'https://jbrowse.org/demos/bovine_pangenome/README.txt',
+    },
+  ],
+  notes: [
+    'A redistribution with modifications, not original data: the published graphs are plain GFA whose coordinates live in path lines, and rGFA tags were recovered from those paths so the same five projections could be built.',
+    'Rank is not carriage here either. The published graphs record no construction rank, so the allele file’s discovery order is the fixed order of the twelve paths — the callset is what answers who carries what.',
+    'Leonard et al. published one graph per autosome, so the set covers chr1-29 and no sex chromosome.',
+  ],
+}
+
 export const BOVINE_DATASET: PangenomeDataset = {
   id: 'bovine',
   label: 'Bovine super-pangenome (minigraph, ARS-UCD1.2)',
@@ -416,7 +552,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     taxonId: 9913,
   },
   panelDescription:
-    '12 assemblies — ARS-UCD1.2 (Hereford) and 11 taurine and indicine breeds plus yak, bison and gaur',
+    'ARS-UCD1.2 (Hereford) plus 11 taurine and indicine breeds, yak, bison and gaur',
   graphVcf: {
     trackId: 'bovine-arsucd12-minigraph-vcf',
     name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
@@ -427,6 +563,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
   landingRegion: landingRegion(BOVINE_LOCI, MAX_DETAIL_WINDOW_BP),
   graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
   loci: BOVINE_LOCI,
+  portal: BOVINE_PORTAL,
 }
 
 // Every dataset the explorer can show, keyed by `id`.

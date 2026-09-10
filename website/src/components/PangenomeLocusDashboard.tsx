@@ -174,7 +174,7 @@ export default function PangenomeLocusDashboard({
             target="_blank"
             rel="noreferrer"
           >
-            Draw {gene} as a pangenome graph →
+            Draw {gene ?? locus.gene} as a pangenome graph →
           </a>
         )}
         {externalUrl && ext && (
@@ -185,7 +185,7 @@ export default function PangenomeLocusDashboard({
             rel="noreferrer"
             title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
           >
-            Draw {gene} as a graph in {ext.name} ↗
+            Draw {gene ?? locus.gene} as a graph in {ext.name} ↗
           </a>
         )}
         {dataset.graphVcf && !HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
@@ -228,12 +228,14 @@ export default function PangenomeLocusDashboard({
             Compare {dataset.reference.label} ↔ {target.label} (synteny) →
           </a>
         )}
-        <a
-          className="pg-launch-btn pg-launch-secondary"
-          href={geneHubUrl(dataset, locus)}
-        >
-          {gene} across species (gene hub) →
-        </a>
+        {geneHubUrl(dataset, locus) && gene && (
+          <a
+            className="pg-launch-btn pg-launch-secondary"
+            href={geneHubUrl(dataset, locus)}
+          >
+            {gene} across species (gene hub) →
+          </a>
+        )}
       </div>
 
       {locus.derived ? (

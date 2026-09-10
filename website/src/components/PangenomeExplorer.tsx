@@ -38,6 +38,15 @@ export interface PangenomeManifest {
   loci: { id: string; gene: string; variantCount: number }[]
 }
 
+// A dataset whose catalogue came out of the tier ranking rather than out of a
+// curated list. Read off the loci rather than off "no manifest was passed":
+// those coincide today, and only one of them is the actual question — a
+// dataset could have summaries generated for derived loci, and HPRC rendered
+// without its manifest is still curated.
+function isDerived(dataset: PangenomeDataset) {
+  return dataset.loci.every(l => l.derived !== undefined)
+}
+
 // What a card counts, and what the sort orders by. `variants` needs a manifest;
 // `segments` needs only the catalogue.
 function cardCounts(dataset: PangenomeDataset, manifest?: PangenomeManifest) {
@@ -115,12 +124,11 @@ function LocusGrid({
     <div>
       <p>
         {dataset.reference.label} loci where structure varies between the
-        assemblies in the {dataset.label} graph &mdash;{' '}
-        {dataset.panelDescription} &mdash; with JBrowse launches. The graph
-        files and assemblies are on{' '}
+        assemblies in the {dataset.label} graph ({dataset.panelDescription}),
+        with JBrowse launches. The graph files and assemblies are on{' '}
         <a href={`/pangenomes#${dataset.id}`}>the pangenomes page</a>.
       </p>
-      {manifest ? null : (
+      {isDerived(dataset) && (
         <p className="pg-hint">
           This catalogue is derived rather than curated: the graph&rsquo;s
           coarse tier is ranked by how many segments each top-level bubble

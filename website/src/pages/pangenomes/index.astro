@@ -16,7 +16,14 @@ import {
 } from '../../components/pangenomeLinks.ts'
 import OpenInDesktop from '../../components/OpenInDesktop.tsx'
 import GraphRegionLauncher from '../../components/GraphRegionLauncher.tsx'
-import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
+import PangenomeSection from '../../components/PangenomeSection.astro'
+import {
+  BOVINE_DATASET,
+  BOVINE_PORTAL,
+  HPRC_DATASET,
+  MOUSE_DATASET,
+  MOUSE_PORTAL,
+} from '../../components/pangenomeDataset.ts'
 import { detailWindow } from '../../components/pangenomeLoci.ts'
 import '../../styles/common-table.css'
 import '../../styles/portal.css'
@@ -26,6 +33,9 @@ if (!features.pangenome) {
   return Astro.redirect('/')
 }
 
+// `string | undefined` since a dataset with no callset falls back to the
+// graph config's lanes, which need a hosted graph config. HPRC always has
+// one to fall back FROM, but the guard costs nothing and the type is honest.
 const browserUrl = graphBrowserUrl(HPRC_DATASET)
 // The hero's graph launch opens the catalog's headline locus, the MHC — in the
 // hosted graph view where the dataset has one (staging, until core v5), else
@@ -80,7 +90,7 @@ const pangenomeGraphs = [
 
 <Layout
   title="Pangenomes"
-  description="Pangenome resources in JBrowse 2: the HPRC human assemblies and graph, and the inbred mouse strain assemblies."
+  description="Pangenome resources in JBrowse 2: the HPRC human graph and assemblies, a mouse strain pangenome, and the bovine super-pangenome."
 >
   <Container>
     <h1>Pangenomes</h1>
@@ -90,8 +100,9 @@ const pangenomeGraphs = [
     </p>
     <p class="portal-contents">
       On this page: <a href="#hprc">Human — HPRC</a> ·
-      <a href="#mouse">Mouse strains</a> · and the
-      <a href="/pangenomes/explorer">variable human loci explorer</a>.
+      <a href="#mouse">Mouse strains</a> ·
+      <a href="#bovine">Cattle</a> · and the
+      <a href="/pangenomes/explorer">variable loci explorer</a>.
     </p>
 
     <div class="portal-cards">
@@ -99,11 +110,12 @@ const pangenomeGraphs = [
         class="portal-card"
         href="/pangenomes/explorer"
       >
-        <h2>Variable human loci</h2>
+        <h2>Variable loci</h2>
         <p>
-          Specific GRCh38 loci where structure varies between haplotypes — copy
-          number, gene presence/absence, tandem repeats, inversions — each with
-          its HPRC variation summary and JBrowse launches.
+          Loci where structure varies between the assemblies in a pangenome —
+          copy number, gene presence/absence, tandem repeats, inversions — each
+          with its JBrowse launches. Curated with prose for human; for mouse and
+          cattle, derived from the graph itself by ranking where it varies most.
         </p>
       </a>
     </div>
@@ -163,18 +175,26 @@ const pangenomeGraphs = [
           >
             Open the Pangenome Explorer →
           </a>
-          <a
-            class="portal-btn"
-            href={browserUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Browse the pangenome on GRCh38 →
-          </a>
-          <OpenInDesktop
-            className="portal-btn portal-btn-ghost"
-            webUrl={browserUrl}
-          />
+          {
+            browserUrl && (
+              <a
+                class="portal-btn"
+                href={browserUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Browse the pangenome on GRCh38 →
+              </a>
+            )
+          }
+          {
+            browserUrl && (
+              <OpenInDesktop
+                className="portal-btn portal-btn-ghost"
+                webUrl={browserUrl}
+              />
+            )
+          }
           <a
             class="portal-btn portal-btn-ghost"
             href="https://humanpangenome.org/"
@@ -339,124 +359,116 @@ const pangenomeGraphs = [
       </table>
     </section>
 
-    <section id="mouse">
-      <h2>Mouse Strain Assemblies</h2>
+    <PangenomeSection
+      dataset={MOUSE_DATASET}
+      portal={MOUSE_PORTAL}
+    >
+      <p>
+        A pangenome graph of the inbred and wild-derived mouse strains, built
+        here with <code>minigraph</code> over GRCm39 and the Mouse Genomes Project
+        assemblies as rehosted in UCSC GenArk. No pangenome graph had been published
+        for this panel, so unlike the other two on this page it is constructed rather
+        than redistributed — the <a
+          href="https://jbrowse.org/docs/tutorials/pangenome_nonhuman/"
+          >tutorial</a
+        > walks through what it can show and the script that builds it.
+      </p>
 
-      <div class="portal-hero">
-        <div class="portal-hero-text">
-          <h3 class="portal-hero-title">Browse strains interactively</h3>
-          <p>
-            Open the strain assemblies in a genome browser rather than starting
-            from the download tables. There is no published mouse pangenome
-            graph yet, but cross-strain variation (MGP, ~52 strains vs GRCm39)
-            is available as data.
-          </p>
-        </div>
-        <div class="portal-hero-actions">
-          <a
-            class="portal-btn portal-btn-primary"
+      <Fragment slot="after">
+        <h3>Ensembl Mouse Genomes Project</h3>
+        <p>
+          18 inbred mouse strain assemblies from the <a
             href="https://projects.ensembl.org/mouse_genomes/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Ensembl Mouse Genomes portal ↗
-          </a>
-          <a
-            class="portal-btn"
+            >Ensembl Mouse Genomes Project</a
+          >, including two T2T assemblies, with GENCODE M30 annotation.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Strain</th>
+              <th>Year</th>
+              <th>Accession</th>
+              <th>JAX</th>
+              <th>JBrowse</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              ensemblMouseStrains.map(strain => (
+                <tr>
+                  <td>{strain.strain}</td>
+                  <td>{strain.assemblyYear}</td>
+                  <td>
+                    <a href={`/accession/${strain.accession}/`}>
+                      {strain.accession}
+                    </a>
+                  </td>
+                  <td>
+                    {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
+                  </td>
+                  <td>
+                    <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+
+        <h3>UCSC Mouse Strains Hub (2016)</h3>
+        <p>
+          16 inbred mouse strain assemblies from the <a
             href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
-            target="_blank"
-            rel="noreferrer"
-          >
-            UCSC Mouse Strains Hub ↗
-          </a>
-          <a
-            class="portal-btn portal-btn-ghost"
-            href="https://ftp.ebi.ac.uk/pub/databases/mousegenomes/REL-2112-v8-SNPs_Indels/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            MGP strain variation (GRCm39) ↗
-          </a>
-        </div>
-      </div>
+            >UCSC Mouse Strains Hub</a
+          >, aligned to mm10 via Cactus with RNA-seq and cross-strain alignment
+          tracks.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Strain</th>
+              <th>Year</th>
+              <th>Organism</th>
+              <th>JAX</th>
+              <th>JBrowse</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              mouseStrains.map(strain => (
+                <tr>
+                  <td>{strain.genomeName.replaceAll('_', '/')}</td>
+                  <td>{strain.assemblyYear}</td>
+                  <td>{strain.organism}</td>
+                  <td>
+                    {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
+                  </td>
+                  <td>
+                    <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </Fragment>
+    </PangenomeSection>
 
-      <h3>Ensembl Mouse Genomes Project</h3>
+    <PangenomeSection
+      dataset={BOVINE_DATASET}
+      portal={BOVINE_PORTAL}
+    >
       <p>
-        18 inbred mouse strain assemblies from the <a
-          href="https://projects.ensembl.org/mouse_genomes/"
-          >Ensembl Mouse Genomes Project</a
-        >, including two T2T assemblies, with GENCODE M30 annotation.
+        The bovine super-pangenome of <a
+          href="https://doi.org/10.1186/s13059-023-02969-y"
+          >Leonard et al. 2023</a
+        >, projected onto ARS-UCD1.2. The panel is unusually wide for a
+        livestock pangenome — taurine and indicine breeds plus yak, bison and
+        gaur — and unlike the mouse graph beside it, its published files carry
+        one path per assembly, so a callset can be projected out of it that says
+        which assembly carries which allele.
       </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Strain</th>
-            <th>Year</th>
-            <th>Accession</th>
-            <th>JAX</th>
-            <th>JBrowse</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            ensemblMouseStrains.map(strain => (
-              <tr>
-                <td>{strain.strain}</td>
-                <td>{strain.assemblyYear}</td>
-                <td>
-                  <a href={`/accession/${strain.accession}/`}>
-                    {strain.accession}
-                  </a>
-                </td>
-                <td>
-                  {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
-                </td>
-                <td>
-                  <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-
-      <h3>UCSC Mouse Strains Hub (2016)</h3>
-      <p>
-        16 inbred mouse strain assemblies from the <a
-          href="https://hgdownload.soe.ucsc.edu/hubs/mouseStrains/hubIndex.html"
-          >UCSC Mouse Strains Hub</a
-        >, aligned to mm10 via Cactus with RNA-seq and cross-strain alignment
-        tracks.
-      </p>
-      <table>
-        <thead>
-          <tr>
-            <th>Strain</th>
-            <th>Year</th>
-            <th>Organism</th>
-            <th>JAX</th>
-            <th>JBrowse</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            mouseStrains.map(strain => (
-              <tr>
-                <td>{strain.genomeName.replaceAll('_', '/')}</td>
-                <td>{strain.assemblyYear}</td>
-                <td>{strain.organism}</td>
-                <td>
-                  {strain.jaxUrl ? <a href={strain.jaxUrl}>JAX</a> : null}
-                </td>
-                <td>
-                  <a href={retargetJbrowseUrl(strain.jbrowseLink)}>JBrowse</a>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </section>
+    </PangenomeSection>
   </Container>
 </Layout>
 

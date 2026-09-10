@@ -1,0 +1,208 @@
+---
+// One dataset's section on /pangenomes, rendered from the dataset rather than
+// by hand. Everything here is the same for every graph in this stack — the
+// same launches off the same builders, the same five projected files under the
+// same suffixes — which is what makes a component possible at all. What is
+// genuinely per-dataset is the prose, and that comes in through the slots: the
+// default one before the launches, `after` for anything that belongs under the
+// same anchor (mouse's strain-assembly tables do).
+//
+// HPRC's section is deliberately NOT rendered through this. It carries a
+// 232-row sample table, two references and a release history, so converting it
+// would be a rewrite rather than a deduplication.
+import {
+  graphBrowserUrl,
+  graphLocusUrl,
+  externalGraphUrl,
+} from './pangenomeLinks.ts'
+import { detailWindow, locusRegion } from './pangenomeLoci.ts'
+import { portalFiles } from './pangenomeDataset.ts'
+import OpenInDesktop from './OpenInDesktop.tsx'
+import type { PangenomeDataset, PangenomePortal } from './pangenomeDataset.ts'
+
+interface Props {
+  dataset: PangenomeDataset
+  // Passed beside the dataset rather than read off it, so this file needs no
+  // assertion that the optional field is set.
+  portal: PangenomePortal
+}
+
+const { dataset, portal } = Astro.props
+
+// The landing region is the top-ranked entry of the dataset's own catalogue
+// that is both drawable and named, so the headline graph launch is that same
+// locus rather than a second constant that could disagree with it.
+const landing = dataset.loci.find(l => locusRegion(l) === dataset.landingRegion)
+const browseUrl = graphBrowserUrl(dataset)
+const graphUrl = landing && graphLocusUrl(dataset, landing)
+const landingWindow = landing && detailWindow(landing)
+const externalUrl =
+  !graphUrl && landing && landingWindow
+    ? externalGraphUrl(dataset, { ...landingWindow, chrom: landing.chrom })
+    : undefined
+const ext = dataset.externalGraphBrowser
+
+// Against the byte counts the bucket reports, so a number here can be compared
+// with `curl -I` without an argument about units.
+function humanBytes(bytes: number) {
+  const scale = [
+    { unit: 'GB', by: 1024 ** 3 },
+    { unit: 'MB', by: 1024 ** 2 },
+    { unit: 'KB', by: 1024 },
+  ].find(s => bytes >= s.by)
+  return scale
+    ? `${(bytes / scale.by).toFixed(bytes / scale.by < 10 ? 1 : 0)} ${scale.unit}`
+    : `${bytes} B`
+}
+---
+
+<section id={dataset.id}>
+  <h2>{portal.heading}</h2>
+
+  <slot />
+
+  <div class="portal-hero">
+    <div class="portal-hero-text">
+      <h3 class="portal-hero-title">Open it</h3>
+      <p>
+        The graph holds {dataset.panelDescription}, projected onto {
+          dataset.reference.label
+        }. Start from a locus where it varies most, or take the files below.
+      </p>
+    </div>
+    <div class="portal-hero-actions">
+      <a
+        class="portal-btn portal-btn-primary"
+        href={`/pangenomes/explorer?dataset=${dataset.id}`}
+      >
+        Open the Pangenome Explorer &rarr;
+      </a>
+      {
+        graphUrl && landing && (
+          <a
+            class="portal-btn"
+            href={graphUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Draw {landing.gene} as a pangenome graph &rarr;
+          </a>
+        )
+      }
+      {
+        externalUrl && ext && landing && (
+          <a
+            class="portal-btn"
+            href={externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
+          >
+            Draw {landing.gene} as a graph in {ext.name} &#8599;
+          </a>
+        )
+      }
+      {
+        browseUrl && (
+          <a
+            class="portal-btn"
+            href={browseUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Browse the graph on {dataset.reference.label} &rarr;
+          </a>
+        )
+      }
+      {
+        browseUrl && (
+          <OpenInDesktop
+            className="portal-btn portal-btn-ghost"
+            webUrl={browseUrl}
+          />
+        )
+      }
+      {
+        portal.links.map(l => (
+          <a
+            class="portal-btn portal-btn-ghost"
+            href={l.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {l.label} &#8599;
+          </a>
+        ))
+      }
+    </div>
+    {
+      !browseUrl && (
+        <p class="portal-hero-note">
+          <small>
+            The in-browser launches need the JBrowse build the staging site
+            links: every adapter that reads these files ships in the
+            GraphGenomeView plugin rather than in JBrowse core, and that plugin
+            boots on v5 only. The files below are downloadable either way.
+          </small>
+        </p>
+      )
+    }
+  </div>
+
+  <h3>Published files</h3>
+  <p>
+    The graph as built, and the tabix-indexed projections JBrowse queries a
+    locus from without downloading it.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>What it holds</th>
+        <th>Size</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        portalFiles(portal).map(f => (
+          <tr>
+            <td>
+              <a href={`${portal.filePrefix}${f.suffix}`}>
+                <code>{f.suffix}</code>
+              </a>
+            </td>
+            <td>{f.what}</td>
+            <td>{humanBytes(f.bytes)}</td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+
+  <h3>What this graph can and cannot say</h3>
+  <ul class="portal-notes">
+    {portal.notes.map(n => <li>{n}</li>)}
+    {dataset.noCallsetReason && <li>{dataset.noCallsetReason}</li>}
+    {
+      dataset.graphVcf && (
+        <li>
+          The callset beside the graph is a reference projection of its
+          haplotype paths, so it answers which assembly carries which allele —
+          which the graph lanes on their own cannot.
+        </li>
+      )
+    }
+  </ul>
+
+  <slot name="after" />
+</section>
+
+<style is:global>
+  .portal-notes {
+    max-width: 80ch;
+  }
+
+  .portal-notes li {
+    margin-bottom: 0.4rem;
+  }
+</style>

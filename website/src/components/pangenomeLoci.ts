@@ -450,9 +450,24 @@ export function locusRegion(
   return `${l.chrom}:${l.start}-${l.end}`
 }
 
-// A real NCBI gene symbol to seed the cross-species gene-order view: the first
-// pangene marker (e.g. HLA-A) when present, else the first token of the display
-// name ("C4A / C4B" -> C4A, "LPA" -> LPA).
+// A real NCBI gene symbol to seed the cross-species gene-order view, or
+// undefined where the locus names none and the link should not be offered.
+//
+// Three sources, strongest first. The DERIVED one is not a nicety: a derived
+// locus's `gene` is a label the generator composed, and splitting it produces
+// text that is not a symbol — "Gm10439, Gm15080, Gm15085 +8" gives `Gm10439,`
+// with the comma still on it, "Vmn cluster (18 genes)" gives `Vmn`, and an
+// intergenic entry gives `chr9:87,086,686`. All three seed a gene hub that
+// finds nothing, and the third is not even a gene. The tier's own gene list is
+// the answer, and its emptiness is what says to offer no link at all.
 export function syntenyGene(locus: PangenomeLocus) {
-  return locus.pangeneGenes?.[0] ?? locus.gene.split(/[\s/]/)[0]!
+  const derived = locus.derived
+  return (
+    locus.pangeneGenes?.[0] ??
+    // A cluster's alphabetically-first member is often an unnamed LOC id, which
+    // no other species has an ortholog table under; prefer a real symbol.
+    (derived
+      ? (derived.genes.find(g => !g.startsWith('LOC')) ?? derived.genes[0])
+      : locus.gene.split(/[\s/]/)[0])
+  )
 }
