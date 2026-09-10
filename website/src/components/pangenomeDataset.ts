@@ -146,7 +146,7 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
   bubblesTrackId: 'hprc_minigraph_bubbles',
   geneTrackId: 'hg38_ncbiRefSeq_ucsc',
   allelesTrackId: 'hprc_minigraph_alleles',
-  tierTrackId: 'hprc_tier',
+  tierTrackId: 'hprc_minigraph_tier',
   bubbleScoreTrackId: 'hprc_bubble_score',
   // hg38.chrom.sizes, primary chromosomes only: the graph's rGFA has no
   // alts or unplaced contigs to draw.

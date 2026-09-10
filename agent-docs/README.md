@@ -44,8 +44,10 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
 - [SYNTENY_PAIR_NAMES.md](SYNTENY_PAIR_NAMES.md) — why a synteny pair carries
   assembly names as well as accessions, and the silent bug that came of not
   doing so
+- [PANGENOME_PORTAL.md](PANGENOME_PORTAL.md) — one approach across the human,
+  mouse and bovine pangenomes, and the one place the mouse graph refuses
 - [MOUSE_PANGENOME_PLAN.md](MOUSE_PANGENOME_PLAN.md) — mm39 analog of the HPRC
-  pangenome explorer
+  pangenome explorer (superseded except for its locus table)
 - [ucsc-ncbi-gff-detection-handoff.md](ucsc-ncbi-gff-detection-handoff.md) —
   running the pipeline after NCBI GFF tracks became detected rather than listed,
   and what the first run should show

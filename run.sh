@@ -242,6 +242,25 @@ gate_configs() {
     echo "later run retries it. Re-run with SKIP_CONFIG_GATE=1 if you accept that."
     return 1
   fi
+  # The pangenome graph configs are the one set here that names data another
+  # repo publishes, so a push over there can strand them with nothing on this
+  # side reporting it. Exit 2 is "could not run" (no config dir), exit 1 is an
+  # unreachable url or a config mixing two dataset versions; a newer upstream
+  # version merely prints, since that must not block an unrelated deploy.
+  echo "Pre-upload gate: checking the pangenome graph configs..."
+  pangenome_rc=0
+  node scripts/checkPangenomeAssets.mjs || pangenome_rc=$?
+  if [ "$pangenome_rc" -eq 2 ]; then
+    echo "Gate failed to run: checkPangenomeAssets found no configs to check, so"
+    echo "it checked nothing. Pass --dir, or re-run with SKIP_CONFIG_GATE=1 to"
+    echo "upload unchecked."
+    return 1
+  elif [ "$pangenome_rc" -ne 0 ]; then
+    echo "Gate failed: a pangenome config names a url that does not resolve, or"
+    echo "mixes two dataset versions. Re-run with SKIP_CONFIG_GATE=1 if you"
+    echo "accept publishing it."
+    return 1
+  fi
   echo "Pre-upload gate: booting working-tree configs on hosted releases..."
   if ! node scripts/checkConfigCompat.mjs --local; then
     echo "Gate failed: a working-tree config does not boot on a hosted JBrowse"
