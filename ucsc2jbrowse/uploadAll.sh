@@ -37,6 +37,21 @@ echo ""
 # them out of future syncs but does not delete what is already in the bucket
 # -- rclone leaves excluded objects alone on both sides -- so clearing those is
 # a one-off `rclone delete --include tracks.json --include '*.bak'`.
+#
+# list.json.raw is the same class of build state, and it was the expensive one.
+# api.genome.ucsc.edu/list/ucscGenomes stamps every response with the time of
+# YOUR request -- `"downloadTime": "2026:09:09T23:25:55Z", "downloadTimeStamp":
+# 1788996355` -- so make.sh's curl writes different bytes on every run whether
+# or not UCSC's data moved (the real data clock is `dataTime`, and it is stable).
+# That guaranteed at least one changed object every run, and the object count is
+# what gates BOTH the CloudFront invalidation here and run.sh's decision to
+# rebuild the website: every run invalidated /ucsc/*, rebuilt astro and shipped
+# the 5.4GB tree, and the "no changes, skipping website build, deploy and
+# CloudFront invalidation" branch in run.sh could never once fire. Verified
+# 2026-09-09 against the last 12 run logs -- `list.json.raw: Copied` in every
+# completed one, and `ucsc=1` in every RUN SUMMARY. Nothing reads it from the
+# bucket; src/transformGenomeList.ts turns it into list.json, which drops the
+# timestamps and is what is published.
 echo "Syncing files (data + indexes via rclone hasher)..."
 total_changed=$(rclone_sync_with_indexes \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
@@ -49,6 +64,7 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "*_meta.json" \
   --exclude "*/vs/*" \
   --exclude "tracks.json" \
+  --exclude "list.json.raw" \
   --exclude "*.bak")
 
 echo ""
