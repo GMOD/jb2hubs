@@ -131,6 +131,11 @@ def load_taxonomy_dump(nodes_file_path="nodes.dmp", names_file_path="names.dmp")
     return tax_nodes, tax_names
 
 
+# Taxonomy IDs a lineage walked through that names.dmp has no scientific name
+# for. Reported per input file rather than per occurrence; see get_lineage_from_dump.
+unnamed_taxon_ids = set()
+
+
 def get_lineage_from_dump(tax_id, tax_nodes, tax_names):
     """
     Reconstructs the full taxonomic lineage for a given NCBI Taxonomy ID
@@ -145,10 +150,10 @@ def get_lineage_from_dump(tax_id, tax_nodes, tax_names):
         current_id == "1" and "1" in tax_nodes and tax_nodes["1"] == "1"
     ):
         if current_id not in tax_names:
-            print(
-                f"Warning: Scientific name not found for Taxonomy ID {current_id} in names.dmp.",
-                file=sys.stderr,
-            )
+            # One line per unnamed ancestor was ~280 lines a run and said the
+            # same thing every time. Collected instead and reported once, with
+            # the ids, so the fact stays checkable without being a wall.
+            unnamed_taxon_ids.add(current_id)
             name = f"Unknown_{current_id}"  # Placeholder name
         else:
             name = tax_names[current_id]
@@ -216,7 +221,6 @@ def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):
     all_lineages = {}
     accession_for_taxon = {}  # Map taxonId to accession
 
-    print("Reconstructing lineages from local taxonomy dump...", file=sys.stderr)
     for taxon_id, accession in taxon_accession_pairs:
         # print(
         #     f"  Reconstructing lineage for Tax ID: {taxon_id} (accession: {accession})",
@@ -349,10 +353,6 @@ def load_taxon_accession_data(json_file_path):
             if taxon_id and accession:
                 taxon_accession_pairs.append((taxon_id, accession))
 
-        print(
-            f"Loaded {len(taxon_accession_pairs)} taxon-accession pairs from {json_file_path}",
-            file=sys.stderr,
-        )
         return taxon_accession_pairs
 
     except FileNotFoundError:
@@ -366,20 +366,60 @@ def load_taxon_accession_data(json_file_path):
         return None
 
 
+def build_one(input_path, output_path, tax_nodes, tax_names):
+    """
+    Builds one category's tree and writes it. Returns True on success; prints
+    why and returns False otherwise, so a caller can carry on with the rest.
+    """
+    taxon_accession_pairs = load_taxon_accession_data(input_path)
+
+    if not taxon_accession_pairs:
+        print(f"No valid taxon-accession pairs in {input_path}.", file=sys.stderr)
+        return False
+
+    root_node = build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names)
+
+    if not root_node:
+        print(f"\nFailed to generate phylogenetic tree for {input_path}.", file=sys.stderr)
+        return False
+
+    newick_string = root_node.to_newick() + ";\n"
+
+    if output_path:
+        output_dir = os.path.dirname(output_path)
+        if output_dir:  # Only create dir if path includes a directory
+            os.makedirs(output_dir, exist_ok=True)
+        with open(output_path, "w") as f:
+            f.write(newick_string)
+        print(
+            f"  {os.path.basename(output_path):<24} {len(taxon_accession_pairs)} taxon-accession pairs",
+            file=sys.stderr,
+        )
+    else:
+        print(newick_string)
+    return True
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Build phylogenetic tree from NCBI taxonomy data"
     )
+    # Repeatable, and paired positionally with --output. nodes.dmp and names.dmp
+    # are 477MB and take 2.6s to parse; generate_taxonomy.sh has 19 categories to
+    # build, so one process per category spent ~50s re-reading the same two files
+    # from a dump that cannot change between them. One process reads them once.
     parser.add_argument(
         "--input",
         "-i",
+        action="append",
         required=True,
-        help="Path to input JSON file containing taxon-accession pairs",
+        help="Path to input JSON file containing taxon-accession pairs (repeatable)",
     )
     parser.add_argument(
         "--output",
         "-o",
-        help="Path to output Newick file (default: stdout)",
+        action="append",
+        help="Path to output Newick file, one per --input (default: stdout)",
     )
     parser.add_argument(
         "--taxonomy-dir",
@@ -389,6 +429,13 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    outputs = args.output or [None] * len(args.input)
+    if len(outputs) != len(args.input):
+        print(
+            f"Got {len(args.input)} --input and {len(outputs)} --output; they pair up positionally.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     # Define paths to NCBI Taxonomy dump files
     nodes_dmp_path = os.path.join(args.taxonomy_dir, "nodes.dmp")
@@ -409,36 +456,23 @@ if __name__ == "__main__":
         print("Exiting due to failure to load taxonomy dump files.", file=sys.stderr)
         sys.exit(1)
 
-    # Load taxon-accession pairs from input JSON file
-    taxon_accession_pairs = load_taxon_accession_data(args.input)
+    # One bad category must not cost the other 18, which is what the per-process
+    # loop gave for free and what this has to keep giving.
+    failed = []
+    for input_path, output_path in zip(args.input, outputs):
+        if not build_one(input_path, output_path, tax_nodes_data, tax_names_data):
+            failed.append(input_path)
 
-    if taxon_accession_pairs is None or len(taxon_accession_pairs) == 0:
-        print("No valid taxon-accession pairs found. Exiting.", file=sys.stderr)
-        sys.exit(1)
+    if unnamed_taxon_ids:
+        sample = sorted(unnamed_taxon_ids)[:20]
+        more = len(unnamed_taxon_ids) - len(sample)
+        print(
+            f"{len(unnamed_taxon_ids)} taxonomy ID(s) have no scientific name in names.dmp "
+            f"and were placed as Unknown_<id>: {' '.join(sample)}"
+            + (f" ... and {more} more" if more else ""),
+            file=sys.stderr,
+        )
 
-    print(
-        f"\nAttempting to build phylogenetic tree for {len(taxon_accession_pairs)} taxon-accession pairs",
-        file=sys.stderr,
-    )
-
-    root_node = build_phylogenetic_tree(
-        taxon_accession_pairs, tax_nodes_data, tax_names_data
-    )
-
-    if root_node:
-        # Convert tree to Newick format
-        newick_string = root_node.to_newick() + ";\n"
-
-        # Write to output file or stdout
-        if args.output:
-            output_dir = os.path.dirname(args.output)
-            if output_dir:  # Only create dir if path includes a directory
-                os.makedirs(output_dir, exist_ok=True)
-            with open(args.output, "w") as f:
-                f.write(newick_string)
-            print(f"\nTree saved to {args.output}", file=sys.stderr)
-        else:
-            print(newick_string)
-    else:
-        print("\nFailed to generate phylogenetic tree.", file=sys.stderr)
+    if failed:
+        print(f"Failed to build: {', '.join(failed)}", file=sys.stderr)
         sys.exit(1)

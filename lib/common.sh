@@ -26,14 +26,29 @@ export LC_ALL=C
 # only make-pif (which reads this) was on the version package.json names.
 export JBROWSE_CLI="${JBROWSE_CLI:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/node_modules/.bin/jbrowse}"
 
-# Suppress GNU parallel's citation notice everywhere; show progress bar only
-# when running interactively.
-if [ -t 1 ]; then
-  PARALLEL_OPTS="--will-cite --bar"
-else
-  PARALLEL_OPTS="--will-cite"
-fi
-export PARALLEL_OPTS
+# Suppress GNU parallel's citation notice everywhere; show the progress bar only
+# when running interactively, because --bar is carriage-return animation that
+# turns into hundreds of KB of overwritten whitespace in a log file.
+#
+# A function, not a bare assignment, because the answer changes inside one
+# process. run.sh sources this file at the top -- to get parse_flags, before it
+# knows whether it is even going to build -- and only redirects stdout into
+# `tee` a hundred lines later. Measured: launched from a terminal it exports
+# `--will-cite --bar`, and still holds that after the redirect, when stdout is
+# the tee pipe. Nothing has been sprayed into logs/run_*.log only because every
+# child re-sources this file after the redirect and recomputes; a child that
+# used the inherited $PARALLEL_OPTS without re-sourcing would not. run.sh calls
+# this again once the redirect is in place, so the exported value is right at
+# the point it starts being inherited.
+set_parallel_opts() {
+  if [ -t 1 ]; then
+    PARALLEL_OPTS="--will-cite --bar"
+  else
+    PARALLEL_OPTS="--will-cite"
+  fi
+  export PARALLEL_OPTS
+}
+set_parallel_opts
 
 # CloudFront distribution that fronts jbrowse.org. Centralized so the upload
 # scripts don't each hardcode the id.
@@ -354,13 +369,22 @@ export -f needs_gff_fetch
 # carriage returns, because their golden-path tables had not moved. The caller
 # sets REDERIVE when its derivation sources changed (see make.sh); this does not
 # hash anything itself, so the common path stays one xxhsum.
+# xxhsum's stderr is dropped here and in the two functions below, the same call
+# ucsc2jbrowse/make.sh's detect_changed_assemblies already drops it on and for
+# the same reason: xxhsum 0.8.1 writes a 72-byte carriage-return progress line
+# per invocation, and these run per derived file -- 12,688 of them, ~0.9MB of
+# nothing, in the 2026-09-07 re-derivation log, interleaved with the "Processing
+# <table>" lines they were burying. There is no quiet flag for it (-q is about
+# benchmark and check mode). A genuine xxhsum failure still leaves the hash
+# empty, which reads as "changed" and rebuilds -- the safe direction -- and in
+# save_rebuild_stamp pipefail fails the job outright.
 # Usage: if needs_rebuild out.bed.gz in.txt.gz out.hash; then ...; fi
 needs_rebuild() {
   local output="$1" source="$2" hash_file="$3"
   local rebuild=0
   if [ -z "${REPROCESS:-}" ] && [ -z "${REDERIVE:-}" ] &&
     [ -f "$output" ] && [ -f "$hash_file" ]; then
-    if [ "$(xxhsum -H3 "$source" | awk '{print $NF}')" = "$(cat "$hash_file")" ]; then
+    if [ "$(xxhsum -H3 "$source" 2>/dev/null | awk '{print $NF}')" = "$(cat "$hash_file")" ]; then
       rebuild=1
     fi
   fi
@@ -392,7 +416,7 @@ save_rebuild_stamp() {
     echo "save_rebuild_stamp: $output was not produced (or is empty); refusing to stamp $hash_file" >&2
     return 1
   fi
-  xxhsum -H3 "$source" | awk '{print $NF}' >"$hash_file"
+  xxhsum -H3 "$source" 2>/dev/null | awk '{print $NF}' >"$hash_file"
 }
 export -f save_rebuild_stamp
 
@@ -504,8 +528,8 @@ source_tree_hash() {
   done
   (
     cd "$root" || exit 1
-    find "$@" -type f ! -name '*.test.*' -print0 | sort -z | xargs -0 -r xxhsum -H3
-  ) | xxhsum -H3 | awk '{print $NF}'
+    find "$@" -type f ! -name '*.test.*' -print0 | sort -z | xargs -0 -r xxhsum -H3 2>/dev/null
+  ) | xxhsum -H3 2>/dev/null | awk '{print $NF}'
 }
 export -f source_tree_hash
 

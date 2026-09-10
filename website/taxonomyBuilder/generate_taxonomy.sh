@@ -3,6 +3,13 @@
 # Script to generate taxonomy trees for all categories
 # This script loops through all JSON files in processedHubJson/ and generates
 # corresponding Newick files in public/taxonomy/
+#
+# One build_taxonomy.py process for all of them, not one per category: it reads
+# nodes.dmp and names.dmp (477MB, 2.6s) before it can build anything, and those
+# cannot change between two categories of the same run, so 19 processes spent
+# ~50s re-parsing the same two files. The script keeps taking each category as a
+# separate --input/--output pair, and build_taxonomy.py still carries on past a
+# category it cannot build, so a bad input costs one tree rather than all 19.
 
 set -e # Exit on error
 
@@ -16,55 +23,31 @@ echo "Input directory: $PROCESSED_HUB_JSON_DIR"
 echo "Output directory: $OUTPUT_DIR"
 echo ""
 
-# Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
-# Counter for success/failure
-SUCCESS_COUNT=0
-FAILURE_COUNT=0
-FAILED_CATEGORIES=""
+# nullglob, so an empty directory yields no iterations rather than one iteration
+# over the literal `*.json` -- which is the same shape as the unset nullglob that
+# put `Gff3TabixAdapter` on a literal `*.gff.gz` into cb1's and hgFixed's configs.
+shopt -s nullglob
 
-# Loop through all JSON files in processedHubJson/
+ARGS=()
+CATEGORIES=()
 for json_file in "$PROCESSED_HUB_JSON_DIR"/*.json; do
-  # Get the base name without path and extension
   filename=$(basename "$json_file")
   category="${filename%.json}"
-
-  # Skip if no JSON files found
-  if [ "$category" = "*" ]; then
-    echo "No JSON files found in $PROCESSED_HUB_JSON_DIR"
-    exit 1
-  fi
-
-  output_file="$OUTPUT_DIR/${category}.newick"
-
-  echo "Processing: $category"
-  echo "  Input: $json_file"
-  echo "  Output: $output_file"
-
-  # Run the taxonomy builder
-  if python3 "$SCRIPT_DIR/build_taxonomy.py" \
-    --input "$json_file" \
-    --output "$output_file" \
-    --taxonomy-dir "$TAXONOMY_DIR"; then
-    echo "  ✓ Successfully generated $category.newick"
-    SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
-  else
-    echo "  ✗ Failed to generate $category.newick"
-    FAILURE_COUNT=$((FAILURE_COUNT + 1))
-    FAILED_CATEGORIES="$FAILED_CATEGORIES\n  - $category"
-  fi
-
-  echo ""
+  CATEGORIES+=("$category")
+  ARGS+=(--input "$json_file" --output "$OUTPUT_DIR/${category}.newick")
 done
 
-echo "=== Generation complete ==="
-echo "Success: $SUCCESS_COUNT"
-echo "Failure: $FAILURE_COUNT"
-
-if [ $FAILURE_COUNT -gt 0 ]; then
-  echo -e "Failed categories:$FAILED_CATEGORIES"
+if [ "${#CATEGORIES[@]}" -eq 0 ]; then
+  echo "No JSON files found in $PROCESSED_HUB_JSON_DIR"
   exit 1
 fi
 
+echo "Building ${#CATEGORIES[@]} categories: ${CATEGORIES[*]}"
+echo ""
+
+python3 "$SCRIPT_DIR/build_taxonomy.py" --taxonomy-dir "$TAXONOMY_DIR" "${ARGS[@]}"
+
+echo ""
 echo "All phylogenies generated successfully!"

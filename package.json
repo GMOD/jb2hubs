@@ -9,7 +9,7 @@
     "lint": "oxlint --type-aware --deny-warnings",
     "lint:fast": "oxlint --deny-warnings",
     "lint:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shellcheck",
-    "format": "oxfmt . && prettier --write \"**/*.astro\"",
+    "format": "oxfmt . && prettier --write --log-level warn \"**/*.astro\"",
     "check-format": "oxfmt --check . && prettier --check \"**/*.astro\"",
     "format:sh": "find . -name '*.sh' -not -path '*/node_modules/*' -print0 | xargs -0 shfmt -w -i 2",
     "typecheck": "pnpm --filter website2 exec astro sync && tsc --noEmit",

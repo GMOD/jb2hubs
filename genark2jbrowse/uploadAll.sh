@@ -47,9 +47,14 @@ hub_changed=$(rclone_sync_with_indexes \
 echo ""
 
 # Save processed hub json, which is used for desktop
+# --no-progress, not --quiet: the per-object `upload:`/`delete:` lines below are
+# what s3_changed counts, and they are also the only record of what moved. What
+# it drops is the "Completed 42.1 MiB/161.8 MiB ... with 12 file(s) remaining"
+# ticker, which is carriage-return animation on a terminal and hundreds of
+# overwritten fragments on one line in logs/run_*.log.
 echo "[3/4] Syncing processed hub JSON..."
 s3_log=$(mktemp)
-aws s3 sync processedHubJson s3://jbrowse.org/processedHubJson/ | tee "$s3_log"
+aws s3 sync --no-progress processedHubJson s3://jbrowse.org/processedHubJson/ | tee "$s3_log"
 s3_changed=$(grep -cE '^(upload|delete):' "$s3_log" || true)
 rm -f "$s3_log"
 

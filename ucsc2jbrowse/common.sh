@@ -108,6 +108,54 @@ require_assembly_args() {
   fi
 }
 
+# Says how much of a phase went where, in one line. The per-assembly derivation
+# phases are the longest thing in the pipeline and printed NOTHING while they
+# ran: on 2026-09-07 the BED phase was 37m56s, RepeatMasker 8m14s and gene
+# tracks 9m40s, and the only reason those three numbers are knowable at all is
+# that the `log` lines marking their boundaries were recovered afterwards from
+# inside a 298KB single line of xxhsum carriage returns. Naming the assemblies
+# that dominated is the part worth having -- the totals are already visible from
+# the phase timestamps, but "which of the 217 took the time" was not recorded
+# anywhere.
+# Usage: _report_assembly_timing <label> <joblog>
+_report_assembly_timing() {
+  local label="$1" joblog="$2" done_count slowest
+  if [ ! -s "$joblog" ]; then
+    return 0
+  fi
+  done_count=$(awk 'END {print (NR > 1 ? NR - 1 : 0)}' "$joblog")
+  if [ "$done_count" -eq 0 ]; then
+    return 0
+  fi
+  # Column 4 is JobRuntime, and the command's last argument is the assembly's
+  # download directory, so its basename is the assembly name.
+  slowest=$(awk -F'\t' 'NR > 1 { name = $NF; sub(/.*\//, "", name); printf "%.0f %s\n", $4, name }' "$joblog" |
+    sort -rn | head -3 | awk '{printf " %s(%ss)", $2, $1}')
+  echo "  $label: $done_count assemblies, slowest:$slowest"
+}
+
+# Shared body of the two runners below. An empty `label` means strict: the
+# caller's `set -e` must see the failure, so the status is returned. A non-empty
+# one means lenient, and is what the failure report is titled with.
+_run_assembly_jobs() {
+  local fn="$1" label="$2"
+  shift 2
+  local joblog status=0
+  joblog=$(mktemp)
+  # shellcheck disable=SC2086 # PARALLEL_OPTS is a deliberate word-split list
+  parallel --joblog "$joblog" ${PARALLEL_JOBS:+-j"$PARALLEL_JOBS"} $PARALLEL_OPTS \
+    _assembly_job "$fn" ::: "$@" || status=$?
+  _report_assembly_timing "${label:-$fn}" "$joblog"
+  # Keeps the joblog only when it named failures, so the "full job log" the
+  # report points at still exists -- same contract as run_parallel_reporting.
+  if _report_parallel_joblog "${label:-$fn}" "$joblog" "$status"; then
+    rm -f "$joblog"
+  fi
+  if [ -z "$label" ]; then
+    return "$status"
+  fi
+}
+
 # Runs an exported per-assembly function over the assembly directories given as
 # arguments. A failed job aborts the caller (via set -e), which is what the
 # config-building steps want: a half-built config must not reach later phases.
@@ -117,21 +165,25 @@ run_for_assemblies() {
   local fn="$1"
   shift
   require_assembly_args "$#"
-  # shellcheck disable=SC2086 # PARALLEL_OPTS is a deliberate word-split list
-  parallel ${PARALLEL_JOBS:+-j"$PARALLEL_JOBS"} $PARALLEL_OPTS _assembly_job "$fn" ::: "$@"
+  _run_assembly_jobs "$fn" "" "$@"
 }
 
 # Same, but a failed job only warns. For steps where one bad assembly should not
 # stop the whole build (track derivation, metadata, text indexing): the outputs
 # are per-assembly and the failed one simply rebuilds on the next run.
+#
+# It now names WHICH assemblies failed, via the same _report_parallel_joblog the
+# genark sweeps use. "parallel reported failures (exit 1)" was all this said,
+# and that is the shape criGriChoV1 hid behind for months: tabix refused an
+# 80MB gff.gz, this warned, the run carried on, and the config shipped naming an
+# index that was never written. A count hides a systematic breakage exactly as
+# well as it hides a one-off.
 # Usage: run_for_assemblies_lenient <function> <label> <dir>...
 run_for_assemblies_lenient() {
   local fn="$1" label="$2"
   shift 2
   require_assembly_args "$#"
-  # shellcheck disable=SC2086 # PARALLEL_OPTS is a deliberate word-split list
-  parallel ${PARALLEL_JOBS:+-j"$PARALLEL_JOBS"} $PARALLEL_OPTS _assembly_job "$fn" ::: "$@" ||
-    echo "WARNING: parallel reported failures while $label (exit $?)" >&2
+  _run_assembly_jobs "$fn" "$label" "$@"
 }
 
 # Removes a configs/<name>.json that the copy loop will never write again and

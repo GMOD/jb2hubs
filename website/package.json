@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "scripts": {
     "clean": "rm -rf dist",
-    "generate-taxonomy": "cd taxonomyBuilder && ./generate_taxonomy.sh && pnpm format",
+    "generate-taxonomy": "./taxonomyBuilder/generate_taxonomy.sh",
     "generate-recently-updated": "node generateRecentlyUpdated.ts",
     "generate-search-index": "node generateSearchIndex.ts",
     "generate-hub-data": "node generateHubData.ts",
@@ -18,9 +18,9 @@
     "prebuild": "pnpm clean && pnpm generate-taxonomy && pnpm generate",
     "predev": "aws s3 sync s3://jbrowse.org/processedHubJson/ processedHubJson/ && pnpm generate",
     "dev": "astro dev",
-    "build": "astro build",
-    "build:fast": "astro build",
-    "build:staging": "pnpm prebuild && astro build --mode staging",
+    "build": "./astroBuild.sh",
+    "build:fast": "./astroBuild.sh",
+    "build:staging": "pnpm prebuild && ./astroBuild.sh --mode staging",
     "preview": "astro preview",
     "astro": "astro",
     "test": "node --experimental-strip-types --no-warnings=ExperimentalWarning --test 'src/**/*.test.ts'",
@@ -32,7 +32,7 @@
     "rollback:staging": "./deploy.sh --staging --rollback",
     "predeploy:staging": "pnpm build:staging",
     "sync:staging": "./deploy.sh --staging",
-    "format": "oxfmt . && prettier --write \"**/*.astro\""
+    "format": "oxfmt . && prettier --write --log-level warn \"**/*.astro\""
   },
   "dependencies": {
     "@astrojs/react": "^6.0.4",

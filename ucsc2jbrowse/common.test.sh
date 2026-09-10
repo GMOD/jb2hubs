@@ -100,11 +100,36 @@ fi
 out=$(run_for_assemblies_lenient reached_end "testing" "$UCSC_DOWNLOADS_DIR/hg38" 2>&1)
 check "run_for_assemblies_lenient survives a failed job" "0" "$?"
 case "$out" in
-*"WARNING: parallel reported failures while testing"*)
+*"WARNING: testing: 1 of 1 jobs failed"*)
   echo "ok   - run_for_assemblies_lenient reports the failure"
   ;;
 *)
   echo "FAIL - run_for_assemblies_lenient did not warn (got '$out')"
+  fail=1
+  ;;
+esac
+
+# And names WHICH assembly, which is the whole reason the count was not enough:
+# a lenient phase that says only "1 job failed" is how criGriChoV1 shipped a
+# config naming a tabix index that was never written.
+case "$out" in
+*"downloads/hg38"*)
+  echo "ok   - run_for_assemblies_lenient names the failing assembly"
+  ;;
+*)
+  echo "FAIL - run_for_assemblies_lenient did not name it (got '$out')"
+  fail=1
+  ;;
+esac
+
+# The timing line is the other half: a phase that ran for 38 minutes and printed
+# nothing is one nobody can tell apart from a hung one.
+case "$out" in
+*"testing: 1 assemblies, slowest: hg38("*)
+  echo "ok   - run_for_assemblies_lenient reports per-assembly timing"
+  ;;
+*)
+  echo "FAIL - run_for_assemblies_lenient printed no timing (got '$out')"
   fail=1
   ;;
 esac

@@ -110,6 +110,11 @@ echo "Logging to $LOG_FILE"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
+# stdout is the tee pipe from here on, not the terminal it was when this script
+# sourced lib/common.sh -- so anything decided from `[ -t 1 ]` back then is now
+# wrong and exported. See set_parallel_opts for what that would cost.
+set_parallel_opts
+
 cleanup() {
   exit_code=$?
   if [ $exit_code -ne 0 ]; then
@@ -177,8 +182,10 @@ gate_configs() {
     return 1
   elif [ "$orphan_rc" -ne 0 ]; then
     echo "Gate failed: a config names a db the UCSC genome list does not have."
-    echo "Delete it and its configs-minimal/ twin if the db really disappeared"
-    echo "upstream. Re-run with SKIP_CONFIG_GATE=1 if you accept publishing it."
+    echo "For a configs/ file, delete it and its configs-minimal/ twin. For a"
+    echo "\$UCSC_BUILT_DIR/<db>/ directory, delete the directory -- that is what"
+    echo "makes the next uploadAll.sh sync drop /ucsc/<db>/ from the bucket."
+    echo "Re-run with SKIP_CONFIG_GATE=1 if you accept publishing it."
     return 1
   fi
   echo "Pre-upload gate: checking every plugin url the configs name..."

@@ -413,17 +413,29 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
   age_days=0 # set by stamp_age_days below
 
   log "Downloading non-hub assemblies..."
-  list_rsync_assemblies | while read -r assembly; do
+
+  # A line per skipped assembly was ~230 of them on every run, saying the least
+  # interesting thing in the log 230 times. --explain has always grouped this;
+  # the run now reports the same shape, including the oldest few, because "could
+  # a table have moved upstream without this run seeing it" is the only question
+  # the skipped set answers and only the ones near the threshold can answer it.
+  #
+  # Process substitution rather than a pipe: the counters have to outlive the
+  # loop, and a piped `while` runs in a subshell where they would not.
+  synced=0
+  skipped=0
+  skip_ages=()
+  while read -r assembly; do
     if ! is_assembly_db "$assembly"; then
-      log "Skipping $assembly genome."
       continue
     fi
 
     sync_stamp="$UCSC_DOWNLOADS_DIR/$assembly/.sync_stamp"
 
     if ! would_rsync "$assembly"; then
-      stamp_age_days age_days "$sync_stamp" || age_days="?"
-      log "Skipping rsync for $assembly (synced ${age_days}d ago)"
+      stamp_age_days age_days "$sync_stamp" || age_days=0
+      skip_ages+=("$age_days $assembly")
+      skipped=$((skipped + 1))
       continue
     fi
 
@@ -431,7 +443,16 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
     ensure_dir "$UCSC_DOWNLOADS_DIR/$assembly/$assembly"
     rsync --max-size=2G -qavzP rsync://hgdownload.cse.ucsc.edu/goldenPath/"$assembly"/database "$UCSC_DOWNLOADS_DIR/$assembly/$assembly/"
     touch "$sync_stamp"
-  done
+    synced=$((synced + 1))
+  done < <(list_rsync_assemblies)
+
+  if [ "$skipped" -gt 0 ]; then
+    oldest=$(printf '%s\n' "${skip_ages[@]}" | sort -rn | head -5 |
+      awk '{printf " %s(%sd)", $2, $1}')
+    log "Synced $synced assembly/assemblies; $skipped synced within ${RSYNC_MONTHLY_DAYS}d and skipped (oldest:$oldest)"
+  else
+    log "Synced $synced assembly/assemblies; none were within ${RSYNC_MONTHLY_DAYS}d of their last sync"
+  fi
 
   log "Downloading hgFixed assembly..."
   ensure_dir "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed"
@@ -623,7 +644,7 @@ if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
       printf '%s\n' "$PIPELINE_HASH" >"$built_dir/.pipeline_hash"
       trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
       if [ -z "${REPROCESS:-}" ] && [ "$SKIP_DOWNLOAD" = false ] && [ -f "$trackdb" ]; then
-        xxhsum -H3 "$trackdb" | awk '{print $NF}' >"$built_dir/.trackdb_hash"
+        xxhsum -H3 "$trackdb" 2>/dev/null | awk '{print $NF}' >"$built_dir/.trackdb_hash"
       fi
     fi
   done
