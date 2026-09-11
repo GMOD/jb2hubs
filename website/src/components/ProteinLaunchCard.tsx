@@ -304,7 +304,7 @@ export default function ProteinLaunchCard({
             <span className="msv-control-label">Isoform</span>
             <span>
               {transcript.name}{' '}
-              <span className="ui-caption">set by the 100-way alignment</span>
+              <span className="ui-caption">set by the alignment</span>
             </span>
           </div>
         ) : (

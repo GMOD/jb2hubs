@@ -128,6 +128,8 @@ test('placeQuery: the seed row that IS the query is replaced, and its leaf renam
   })
   assert.strictEqual(placed.replaced, true)
   assert.strictEqual(placed.kept, 2)
+  // one row fewer is the replacement, not a budget
+  assert.strictEqual(placed.thinned, false)
   assert.ok(!placed.fasta.includes('ROW1_HUMAN'))
   assert.strictEqual(
     placed.newick,
@@ -157,6 +159,7 @@ test('placeQuery: a budget keeps the anchor and the rows nearest the query, and 
   })
   assert.strictEqual(placed.kept, 2)
   assert.strictEqual(placed.total, 3)
+  assert.strictEqual(placed.thinned, true)
   assert.ok(placed.fasta.includes('>ROW1_HUMAN/10-17'))
   assert.strictEqual(placed.newick, undefined)
 })

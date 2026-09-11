@@ -179,9 +179,21 @@ interface InterfaceSummary {
 const MAX_PARTNERS = 12
 const MAX_PDB_PER_PARTNER = 6
 
-// Partners with no molecule behind them: PDBe files unassigned chains and
-// expression tags under these.
+// Partners with no molecule behind them: PDBe files unassigned chains under
+// `Other`, and a fusion or crystallisation tag is a partner in the file but
+// not in the cell. TP53 lists E. coli maltose-binding protein (its DNA-binding
+// core is crystallised as an MBP fusion) and GFP; the viral partners beside
+// them (E6, large T antigen) are real biology and stay.
 const NOT_A_PARTNER = new Set(['Other', 'other', ''])
+const FUSION_TAGS = new Set([
+  'P0AEX9', // maltose-binding protein, E. coli
+  'P42212', // green fluorescent protein
+  'P00720', // T4 lysozyme
+  'P0AA25', // thioredoxin, E. coli
+  'P08515', // glutathione S-transferase, S. japonicum
+  'Q12306', // SUMO (Smt3), yeast
+  'P22629', // streptavidin
+])
 
 // One region per partner, spanning the residues that touch it, ranked by how
 // many do. `residues` keeps the exact positions, since an interface is patchy —
@@ -195,7 +207,11 @@ export function parseInterfaceRegions(
   const regions: ProteinRegion[] = []
   for (const partner of summary?.data ?? []) {
     const accession = partner.accession ?? ''
-    if (NOT_A_PARTNER.has(accession) || NOT_A_PARTNER.has(partner.name ?? '')) {
+    if (
+      NOT_A_PARTNER.has(accession) ||
+      NOT_A_PARTNER.has(partner.name ?? '') ||
+      FUSION_TAGS.has(accession)
+    ) {
       continue
     }
     const residues = new Set<number>()

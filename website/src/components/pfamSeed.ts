@@ -249,6 +249,8 @@ export interface PlacedQuery {
   // how many seed rows the alignment carries, of how many the seed has
   kept: number
   total: number
+  // whether rows were dropped to fit `maxChars` (and the tree with them)
+  thinned: boolean
   // whether the anchor row was the query protein itself, and so replaced
   replaced: boolean
 }
@@ -420,6 +422,7 @@ export function placeQuery(
     domain: { start: firstQ + 1, end: lastQ + 1 },
     kept: kept.length,
     total: seed.rows.length,
+    thinned,
     replaced,
   }
 }

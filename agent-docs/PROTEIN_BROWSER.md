@@ -248,10 +248,20 @@ Where the query protein is itself a seed member — P53_HUMAN is in PF00870 — 
 row is replaced rather than duplicated and the tree leaf renamed, matched on the
 `#=GS AC` accession; elsewhere the query is grafted as a sister of its anchor at
 zero length, which is the honest placement for a row aligned through that
-anchor. A seed that will not fit the 45 KB budget is thinned to the rows the
-query aligns best to, anchor first, and loses its tree with them (its leaves
-would no longer match): BRAF's kinase domain is the case, PF07714 at 111 rows ×
-481 columns, 87 rows kept. The page says both things beside the alignment.
+anchor. A seed that will not fit the budget is thinned to the rows the query
+aligns best to, anchor first, and loses its tree with them (its leaves would no
+longer match). The page says both things beside the alignment.
+
+The budget is the host's (`seedFastaBudget`). A launch on `main` carries the
+session in the hash and the limit is the msaview plugin's 50 KB snapshot field:
+45,000 characters, which BRAF's kinase domain exceeds — PF07714 at 111 rows ×
+481 columns, 87 rows kept. A launch on `latest` carries it in the query string,
+where CloudFront's 8,192-byte request line is the limit and an alignment
+deflates to about 70% of its characters (TP53's PF00870 seed: 11.2 KB of FASTA
+for a 9.7 KB url), so the budget is 8,000 characters and TP53's own seed is
+thinned to about thirty rows there. The alternative was the existing rule for an
+oversize inline alignment — drop it at the door and say so — and a thinned seed
+is still the family where a dropped one is nothing.
 
 The embedded viewer is react-msaview 6.2, which marks columns but not a row's
 residues, so a residue focus reaches it as `highlightColumns` computed off the

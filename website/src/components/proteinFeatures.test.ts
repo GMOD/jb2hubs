@@ -223,6 +223,11 @@ const interfaces = {
         residues: [{ startIndex: 1, endIndex: 5, allPDBEntries: ['9xyz'] }],
       },
       {
+        name: 'Maltose/maltodextrin-binding periplasmic protein',
+        accession: 'P0AEX9',
+        residues: [{ startIndex: 100, endIndex: 290, allPDBEntries: ['4xr8'] }],
+      },
+      {
         name: 'Cellular tumor antigen p53',
         accession: 'P04637',
         residues: [{ startIndex: 326, endIndex: 356, allPDBEntries: ['1c26'] }],

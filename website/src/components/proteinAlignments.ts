@@ -10,6 +10,8 @@
 // are alignments this page holds; the last two are requests the msaview plugin
 // resolves when the session opens, so the page has nothing to draw for them.
 
+import { HOST_READS_HASH_PARAMS } from '../config/jbrowse.ts'
+import { isNcbiGffTrack } from './genomeTarget.ts'
 import {
   HUNDRED_WAY_MSA,
   HUNDRED_WAY_TREE,
@@ -55,9 +57,19 @@ export interface LoadedAlignment {
 // the usual exon's worth of drift, and a miss is reported, not guessed.
 const SEED_WINDOW = 40
 
-// What the msaview plugin's snapshot will carry: its data model drops any field
-// over 50,000 characters, silently, and the alignment is one field.
-const SEED_FASTA_BUDGET = 45_000
+// What a launch can carry. In the hash, the msaview plugin's snapshot is the
+// limit: its data model drops any field over 50,000 characters, silently, and
+// the alignment is one field. In the query string (the production host, see
+// proteinSession.ts) the request line is: CloudFront refuses 8,192 bytes, the
+// rest of the session is ~2 KB, and a protein alignment deflates to about 70%
+// of its characters — measured on TP53's PF00870 seed, 11.2 KB of FASTA for a
+// 9.7 KB url. A seed thinned to fit is still the family, anchored on the rows
+// nearest the query; an alignment dropped at the door is not.
+function seedFastaBudget(structure: GeneStructure) {
+  return HOST_READS_HASH_PARAMS || isNcbiGffTrack(structure.target.geneTrackId)
+    ? 45_000
+    : 8_000
+}
 
 // The Pfam seed of the domain a focus sits in, with the launched translation's
 // own domain segment placed in it as the linked row. Three reads, no job: the
@@ -83,7 +95,7 @@ export async function loadPfam(
       end: domain.end + SEED_WINDOW,
     },
     newick: tree,
-    maxChars: SEED_FASTA_BUDGET,
+    maxChars: seedFastaBudget(structure),
   })
   // A focused residue inside the segment is marked on the query row, in the
   // row's own coordinates.
@@ -105,10 +117,9 @@ export async function loadPfam(
   const anchorNote = placed.replaced
     ? `${symbol} is itself a seed member (${placed.anchor.name}); its row is the linked one.`
     : `${symbol} residues ${placed.domain.start}–${placed.domain.end} placed through ${placed.anchor.name} at ${Math.round(placed.anchor.identity * 100)}% identity.`
-  const thinNote =
-    placed.kept < placed.total
-      ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch; the tree is left out with the rest.`
-      : ''
+  const thinNote = placed.thinned
+    ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch; the tree is left out with the rest.`
+    : ''
   return {
     source: {
       kind: 'inline',
