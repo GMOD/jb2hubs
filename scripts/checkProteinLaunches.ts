@@ -53,11 +53,23 @@ import { launch } from 'puppeteer-core'
 
 import { examplesFor } from '../website/src/components/geneExamples.ts'
 import { fetchGeneStructure } from '../website/src/components/geneStructure.ts'
+import { loadPfam } from '../website/src/components/proteinAlignments.ts'
+import {
+  fetchInterProRegions,
+  fetchInterfaceRegions,
+  focusFamily,
+  focusFromPreset,
+  focusLabel,
+  focusRange,
+} from '../website/src/components/proteinFeatures.ts'
 import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
 import {
   fetchExperimentalStructures,
   pickAlphaFoldModel,
 } from '../website/src/components/structureSources.ts'
+
+import type { GeneStructure } from '../website/src/components/geneStructure.ts'
+import type { SessionOptions } from '../website/src/components/proteinSession.ts'
 
 // Same resolution as checkConfigCompat.mjs: puppeteer-core carries no Chromium.
 function findChrome() {
@@ -138,7 +150,66 @@ type Launch =
       expectGeneTrack: boolean
       expectExact: boolean
       tiled: boolean
+      // an inline alignment the session carries: the MsaView must come up
+      // with this many rows, linked to the genome view
+      expectMsaRows?: number
     }
+
+// The chip's focused launch, built the way the card builds it: the focus
+// resolved against InterPro (and PDBe, for a partner), the domain's Pfam seed
+// as the alignment when there is one, the complex as the structure when the
+// focus is an interface, and the focus lit on open. This is the session whose
+// mapping the unit tests cannot see — a seed row linked through a sliced
+// transcript, a residue highlight in row coordinates — so it is booted too.
+async function focusedLaunch(
+  gene: string,
+  structure: GeneStructure,
+  primary: SessionOptions['primary'],
+  exact: boolean,
+): Promise<Launch | undefined> {
+  const preset = examplesFor(REF).find(e => e.symbol === gene)?.focus
+  if (!preset || !structure.uniprotId) {
+    return undefined
+  }
+  const regions = await fetchInterProRegions(structure.uniprotId)
+  const partners = preset.partner
+    ? await fetchInterfaceRegions(structure.uniprotId)
+    : undefined
+  const focus = focusFromPreset(preset, regions, partners)
+  if (!focus) {
+    return {
+      name: `${gene} focused`,
+      resolveError: `the chip's focus ${JSON.stringify(preset)} matched nothing`,
+    }
+  }
+  const family = focusFamily(focus, regions)
+  const alignment = family
+    ? await loadPfam(structure, family, focus)
+    : undefined
+  const complexId =
+    focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
+  const chosen = complexId ? { pdbId: complexId } : primary
+  const range = focusRange(focus)
+  const { session, url } = buildSessionUrl({
+    structure: { ...structure, ...alignment?.structureOverrides },
+    primary: chosen,
+    msa: alignment?.source,
+    ...(complexId
+      ? { initialResidues: range }
+      : { initialSelection: { start: range.start - 1, end: range.end } }),
+    quiet: true,
+    showAlignment: !exact || !!complexId,
+  })
+  return {
+    name: `${gene} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${complexId ? `, PDB ${complexId}` : ''}`,
+    url: retarget(url),
+    expectStructure: !!chosen,
+    expectGeneTrack: !!structure.target.geneTrackId,
+    expectExact: exact && !complexId,
+    tiled: 'layout' in session,
+    expectMsaRows: alignment?.rowCount,
+  }
+}
 
 const launches: Launch[] = []
 for (const gene of genes) {
@@ -166,16 +237,21 @@ for (const gene of genes) {
       : pdb
         ? `PDB ${pdb.pdbId}`
         : 'no structure'
+    // the transcript's own translation is what the plugin aligns; an
+    // AlphaFold model folded from exactly it should align as an identity
+    const exact = !!model && model.sequence === structure.proteinSequence
     launches.push({
       name: `${gene} (${structure.transcript.name}, ${structureName})`,
       url: retarget(url),
       expectStructure: !!primary,
       expectGeneTrack: !!structure.target.geneTrackId,
-      // the transcript's own translation is what the plugin aligns; an
-      // AlphaFold model folded from exactly it should align as an identity
-      expectExact: !!model && model.sequence === structure.proteinSequence,
+      expectExact: exact,
       tiled: 'layout' in session,
     })
+    const focused = await focusedLaunch(gene, structure, primary, exact)
+    if (focused) {
+      launches.push(focused)
+    }
   } catch (e) {
     launches.push({ name: gene, resolveError: `${e}`.split('\n')[0] ?? '' })
   }
@@ -195,6 +271,12 @@ interface ViewState {
   tracks?: unknown[]
   error?: unknown
   structures?: StructureState[]
+  // MsaView: react-msaview's row count once the data is parsed, and the
+  // codon mapping the connected transcript gives it
+  numRows?: number
+  dataInitialized?: boolean
+  transcriptToMsaMap?: unknown
+  connectedViewId?: string
 }
 interface RootModelState {
   session?: { views?: ViewState[] }
@@ -248,6 +330,7 @@ for (const launchSpec of launches) {
         )
         const views = root?.session?.views ?? []
         const protein = views.find(v => v.type === 'ProteinView')
+        const msa = views.find(v => v.type === 'MsaView')
         return {
           errorText: /JBrowse Error|No matching type for union/.test(
             document.body.innerText,
@@ -258,6 +341,13 @@ for (const launchSpec of launches) {
           lgvTracks: (
             views.find(v => v.type === 'LinearGenomeView')?.tracks ?? []
           ).length,
+          msa: msa
+            ? {
+                error: msa.error ? `${msa.error}` : undefined,
+                rows: msa.dataInitialized ? (msa.numRows ?? 0) : 0,
+                linked: !!msa.transcriptToMsaMap && !!msa.connectedViewId,
+              }
+            : undefined,
           protein: protein
             ? {
                 error: protein.error ? `${protein.error}` : undefined,
@@ -297,6 +387,21 @@ for (const launchSpec of launches) {
         } else if (launchSpec.expectExact && !s.exactMatch) {
           problems.push(
             'model sequence equals the translation, but the plugin did not see an exact match',
+          )
+        }
+      }
+      if (launchSpec.expectMsaRows !== undefined) {
+        if (!state.msa) {
+          problems.push('no MsaView in the session')
+        } else if (state.msa.error) {
+          problems.push(`MsaView error: ${state.msa.error}`)
+        } else if (state.msa.rows !== launchSpec.expectMsaRows) {
+          problems.push(
+            `the alignment came up with ${state.msa.rows} rows, not the ${launchSpec.expectMsaRows} the page placed`,
+          )
+        } else if (!state.msa.linked) {
+          problems.push(
+            'the alignment is not linked to the genome view (no transcript mapping)',
           )
         }
       }

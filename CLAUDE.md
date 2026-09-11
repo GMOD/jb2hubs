@@ -1824,9 +1824,25 @@ residue↔codon mapping bugs that shipped with every unit test green, is
 - **`pnpm check-protein-launches` is the test that matters.** It boots each
   example gene in a hosted build and reads the ProteinView back: structure
   ready, `pairwiseAlignment` present, `exactMatch` where the model's sequence
-  equals the translation. Needs a browser and four live services, so it is
-  by-hand, before touching `geneStructure.ts`/`proteinSession.ts` and before
-  promoting `features.proteinBrowser`.
+  equals the translation — and, for a chip with a preset focus, the focused
+  launch too, reading the MsaView's row count and transcript mapping back. Needs
+  a browser and six live services, so it is by-hand, before touching
+  `geneStructure.ts`/`proteinSession.ts`/`pfamSeed.ts` and before promoting
+  `features.proteinBrowser`.
+- **A Pfam seed row is a domain, not a protein, and the session is linked
+  through the domain's codons alone.** `pfamSeed.ts` puts the translation's own
+  segment into the family's seed (InterPro serves it, 4–15 KB) and
+  `proteinSession.ts` cuts the MsaView's `connectedFeature` to that segment with
+  `sliceCds`, so the row's first residue is the feature's first codon. Carrying
+  the whole translation as the row instead costs a column of gaps per flank
+  residue in every other row: NOTCH1's EGF seed went from 4.9 KB to 174 KB and
+  lost 51 of 67 rows to the plugin's 50 KB snapshot cap.
+- **The map's coordinates are the UniProt canonical's.** InterPro regions and
+  PDBe interface residues are on it; the launched transcript's translation may
+  be another isoform, and `ProteinLaunchCard` says "approximate" whenever the
+  model is not the canonical entry folded from exactly that translation. A
+  focused partner opens the PDB complex by `initialResidues` (author numbering),
+  not `initialSelection`.
 
 ## Key website internals
 

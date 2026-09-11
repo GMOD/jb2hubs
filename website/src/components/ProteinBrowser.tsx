@@ -9,33 +9,30 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import GeneCombobox from './GeneCombobox.tsx'
 import HelpButton from './HelpButton.tsx'
-import ProteinAlignmentSection, {
+import ProteinAlignmentSection from './ProteinAlignmentSection.tsx'
+import { HelpDialog } from './ProteinBrowserDialogs.tsx'
+import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
+import ProteinLaunchCard from './ProteinLaunchCard.tsx'
+import ProteinMap, { type PartnersState } from './ProteinMap.tsx'
+import { type ProteinExample, cacheKey, examplesFor } from './geneExamples.ts'
+import { resolveOrthologSymbol } from './geneSearch.ts'
+import { type GeneStructure, fetchGeneStructure } from './geneStructure.ts'
+import { hasHundredWay } from './hundredWay.ts'
+import { COMMON_SPECIES, geneUrl, syncGeneUrl } from './orthologSearchUtils.ts'
+import {
   type AlignSource,
   loadBuilt,
   loadHundredWay,
   loadLive,
   loadPfam,
-} from './ProteinAlignmentSection.tsx'
-import { HelpDialog } from './ProteinBrowserDialogs.tsx'
-import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
-import ProteinLaunchCard from './ProteinLaunchCard.tsx'
-import ProteinMap, { type PartnersState } from './ProteinMap.tsx'
-import {
-  type ExampleFocus,
-  type ProteinExample,
-  cacheKey,
-  examplesFor,
-} from './geneExamples.ts'
-import { resolveOrthologSymbol } from './geneSearch.ts'
-import { type GeneStructure, fetchGeneStructure } from './geneStructure.ts'
-import { hasHundredWay } from './hundredWay.ts'
-import { COMMON_SPECIES, geneUrl, syncGeneUrl } from './orthologSearchUtils.ts'
+} from './proteinAlignments.ts'
 import {
   type Focus,
   type ProteinRegion,
   fetchInterProRegions,
   fetchInterfaceRegions,
   focusFamily,
+  focusFromPreset,
   sameFocus,
 } from './proteinFeatures.ts'
 import {
@@ -397,28 +394,6 @@ export default function ProteinBrowser() {
   )
 }
 
-// Which of a chip's presets the map can honour yet: a residue at once, a
-// family once InterPro has answered, a partner once PDBe has.
-function presetFocus(
-  preset: ExampleFocus | undefined,
-  regions: ProteinRegion[] | undefined,
-  partners: ProteinRegion[] | undefined,
-): Focus | undefined {
-  if (preset?.residue) {
-    return {
-      kind: 'residue',
-      position: preset.residue,
-      label: preset.residueLabel,
-    }
-  }
-  const region = preset?.pfam
-    ? regions?.find(r => r.pfam === preset.pfam)
-    : preset?.partner
-      ? partners?.find(r => r.accession === preset.partner)
-      : undefined
-  return region ? { kind: 'region', region } : undefined
-}
-
 // How long the canonical sequence is — the coordinate space the map's regions
 // are on. The canonical AlphaFold model is folded from exactly it; failing
 // that, the translation, which is the canonical for most genes.
@@ -507,7 +482,7 @@ function GeneResults({
   const focus =
     focusChoice === null
       ? undefined
-      : (focusChoice ?? presetFocus(preset, regions, partners))
+      : (focusChoice ?? focusFromPreset(preset, regions, partners))
   const setFocus = (next: Focus | undefined) => {
     setFocusChoice(next ?? null)
   }

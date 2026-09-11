@@ -20,7 +20,7 @@ import {
   pickAlphaFoldModel,
 } from './structureSources.ts'
 
-import type { LoadedAlignment } from './ProteinAlignmentSection.tsx'
+import type { LoadedAlignment } from './proteinAlignments.ts'
 import type { ProteinPanelRow } from './proteinMsa.ts'
 
 // How many experimental entries to offer. TP53 has 322; past the first few the

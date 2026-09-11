@@ -20,6 +20,8 @@
 // 504 KB for HBB — well-studied extremes, 9.5 KB for zebrafish tp53 — so it is
 // fetched only when the reader opens the partner list.
 
+import type { ExampleFocus } from './geneExamples.ts'
+
 export type RegionKind = 'domain' | 'repeat' | 'site' | 'interface' | 'residue'
 
 export interface ProteinRegion {
@@ -344,4 +346,26 @@ export function focusFamily(
         : focus.region
       : regionContaining(regions, focus.position)
   return region?.pfam ? region : undefined
+}
+
+// Which of a chip's presets the map can honour yet: a residue at once, a
+// family once InterPro has answered, a partner once PDBe has.
+export function focusFromPreset(
+  preset: ExampleFocus | undefined,
+  regions: ProteinRegion[] | undefined,
+  partners: ProteinRegion[] | undefined,
+): Focus | undefined {
+  if (preset?.residue) {
+    return {
+      kind: 'residue',
+      position: preset.residue,
+      label: preset.residueLabel,
+    }
+  }
+  const region = preset?.pfam
+    ? regions?.find(r => r.pfam === preset.pfam)
+    : preset?.partner
+      ? partners?.find(r => r.accession === preset.partner)
+      : undefined
+  return region ? { kind: 'region', region } : undefined
 }

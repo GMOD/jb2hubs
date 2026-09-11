@@ -165,6 +165,120 @@ example genes are 0.9–6.0 KB without an alignment (DMD is the largest), so the
 genome and structure views always fit; a live 60-row EBI alignment does not, and
 on the current release it stays on the page rather than in the session.
 
+## The session opens on something, and the page is where that is chosen
+
+Added 2026-09-11. Until then a launch opened on everything: the whole gene, the
+whole structure, a hundred-row alignment from column one, with the reader left
+to find the residue they came for in three views of it. The complaint that a
+JBrowse session is busy is mostly this. The views are as complex as they are,
+but a session that opens with one range lit in all three, and an alignment
+scoped to the question the reader asked, reads as an answer rather than as a
+workspace. The `molstar-harness-proto` case studies were the model here — each
+one a sentence, two panels, and one mechanism — and so was William Pearson's
+advice about searching: a narrow database chosen on purpose beats all of them.
+
+Three things carry this, all under the launch card:
+
+**A protein map** (`ProteinMap.tsx`, data in `proteinFeatures.ts`): the query
+protein end to end, from two services that answer by UniProt accession with
+cross-origin headers. InterPro's `entry/all/protein/uniprot/<acc>` gives every
+member-database match integrated into InterPro entries; the map keeps the
+entries typed `domain`, `repeat` and the site types, drops `family` and
+`homologous_superfamily` (they span the protein and say nothing about where to
+look), and keeps only the Pfam accession under each, because that is the member
+with a seed alignment. An unintegrated Pfam match stands on its own; an
+unintegrated CDD or SMART one does not. PDBe-KB's
+`graph-api/uniprot/interface_residues/<acc>` gives every residue seen touching
+another molecule in any PDB entry, grouped by partner, with the entries it was
+seen in. Measured 2026-09-11: InterPro answers TP53 in 13 KB and NOTCH1's 117
+regions in two pages; the interface list is 496 KB for TP53 (56 partners, 12
+kept) and 504 KB for HBB, 9.5 KB for zebrafish tp53 — so it is read when the
+reader asks, or when a chip's preset names a partner. Both sets of coordinates
+are on the UniProt canonical sequence.
+
+**A focus** (`Focus` in `proteinFeatures.ts`): a region of the map, a CDD domain
+off the ortholog cartoon, or a residue typed into the box. The card turns it
+into the plugin's `initialSelection` for an AlphaFold model (0-based, structure
+residues — exact only when the model is the canonical entry folded from the
+launched translation, which the card checks) or `initialResidues` for a PDB
+entry (inclusive author numbering, which is the UniProt numbering for nearly
+every entry and what a paper cites either way). A focused partner also changes
+the structure: the first PDB entry the two were seen in together opens instead
+of the monomer, with the partner's chain loaded — the protein3d plugin loads
+every polymer entity, maps the transcript onto the one whose sequence explains
+it, and offers the rest in its chain picker.
+
+**An alignment chosen by the question.** A focused domain, or a residue inside
+one, offers the Pfam family's **seed** first: the curated few dozen sequences
+the family's HMM was built from, spanning its whole taxonomic reach,
+hand-aligned, and the domain alone. InterPro serves it per family
+(`wwwapi/entry/pfam/<PF>/?annotation=alignment:seed`, gzipped Stockholm, 4–15
+KB, 0.1–14 s) and the tree Pfam distributes for it is hosted beside the msafam
+demo (`jbrowse.org/demos/pfam/trees/<PF>.tree`), leaves named exactly as the
+rows. The ortholog sources stay where they were, relabelled by what they answer:
+the 100-way and the live panel are how conserved each residue of _this_ protein
+is across species; UniRef is the protein's own cluster; phmmer is a search.
+
+### Putting the query into a seed
+
+The seed does not contain the query, so `pfamSeed.ts` puts it in. Every seed row
+is a domain segment. The translation is aligned locally against each row's
+ungapped segment (Smith-Waterman, BLOSUM62, gap open 11 extend 1 — a few million
+cells, 15–670 ms on the four focused chips) and projected through the
+best-scoring row onto the seed's columns: a residue aligned to a row residue
+takes that residue's column, a residue the row lacks opens a column every other
+row gaps. The search is windowed to the InterPro fragment ± 40 residues, so a
+titin-sized query does not cost a full matrix per row, and a miss is reported
+rather than guessed.
+
+The query row is the aligned segment alone, named Pfam-style (`TP53/99-289`),
+and the session's MsaView is linked through the codons of that segment alone:
+`sliceCds` (`geneStructure.ts`) cuts the transcript's CDS to residues
+`start..end` with the phases recomputed, and that is the view's
+`connectedFeature`. The row's first residue is the feature's first codon, so the
+msaview plugin's mapping holds exactly, and residues outside the segment map to
+nothing — which is right, the alignment does not have them. The first draft
+carried the whole translation as the row, flanks as columns of gaps in every
+other row, and NOTCH1 is why it did not survive: 67 EGF seed rows of 50 columns
+became 67 rows of 2,600, 174 KB, and the 50 KB the msaview plugin's data model
+will keep in a snapshot held 16 of them. The segment is 4.9 KB and keeps all 67,
+tree included.
+
+Where the query protein is itself a seed member — P53_HUMAN is in PF00870 — its
+row is replaced rather than duplicated and the tree leaf renamed, matched on the
+`#=GS AC` accession; elsewhere the query is grafted as a sister of its anchor at
+zero length, which is the honest placement for a row aligned through that
+anchor. A seed that will not fit the 45 KB budget is thinned to the rows the
+query aligns best to, anchor first, and loses its tree with them (its leaves
+would no longer match): BRAF's kinase domain is the case, PF07714 at 111 rows ×
+481 columns, 87 rows kept. The page says both things beside the alignment.
+
+The embedded viewer is react-msaview 6.2, which marks columns but not a row's
+residues, so a residue focus reaches it as `highlightColumns` computed off the
+query row; the session's MsaView takes the `highlights` themselves.
+
+### Quieter sessions
+
+`quiet` (`SessionOptions`) drops the genome view's overview bar and gridlines
+(`hideHeaderOverview`, `showGridlines: false`), and the card hides the protein
+view's pairwise panel (`showAlignment: false`) when the structure is the
+translation's own fold — an identity alignment is a wall of matches with nothing
+to read, while the same panel on a crystal or another isoform is what says which
+residues are missing. The card's checkbox is on by default. Neither is a
+different session; both are fewer things on screen.
+
+### The chips carry a focus and a sentence
+
+Four human chips (`geneExamples.ts`) preset a focus and a one-line story the
+card shows: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
+which counts without the initiator), NOTCH1 on one of its thirty-six EGF
+repeats. A preset resolves once the map has what it names — a residue at once, a
+family when InterPro answers, a partner when PDBe does — and a reader who clears
+it does not get it back (`focusChoice === null`). HBB and BRAF are new: HBB was
+dropped from the cartoon-chosen list because its cartoon is one flat bar, and
+the map is what makes it worth a chip again — the globin seed and the α/β
+interface, which Glu7 is not in.
+
 ## Verification
 
 `pnpm check-protein-launches` (`scripts/checkProteinLaunches.ts`) resolves the
@@ -174,12 +288,18 @@ aligns onto the transcript (`pairwiseAlignment` absent) or when a model whose
 sequence equals the translation does not report `exactMatch`. Both bugs above
 would have failed it. It also reads the reader's `useWorkspaces` localStorage
 key back after each launch, which is what catches the preference rewrite above
-on `--host latest`. It needs a browser and live answers from four services, so
-it is run by hand — before promoting `features.proteinBrowser`, and after
-touching the resolution or session code. Its modules run with `features.staging`
-false, so it exercises the production session on whichever host it is pointed
-at; the staging shape (the layout tree itself) is pinned by
-`proteinSession.test.ts`.
+on `--host latest`. For a chip with a preset focus it boots the focused launch
+too — the seed alignment linked through the sliced transcript, the complex where
+the focus is a partner — and reads the MsaView back: no error, the row count the
+page placed, and a transcript mapping to the genome view. It needs a browser and
+live answers from six services, so it is run by hand — before promoting
+`features.proteinBrowser`, and after touching the resolution or session code.
+Its modules run with `features.staging` false, so it exercises the production
+session on whichever host it is pointed at; the staging shape (the layout tree
+itself) is pinned by `proteinSession.test.ts`. The alignment loaders live in
+`proteinAlignments.ts` rather than beside the React that shows them so the
+checker can import them under `--experimental-strip-types`, which does not read
+JSX.
 
 ## Still open
 
@@ -198,5 +318,19 @@ at; the staging shape (the layout tree itself) is pinned by
   not expose it. Structure-based neighbours would be a third alignment source
   where sequence orthology fails (the PANTHER-only taxa), but it is an async job
   like EBI and belongs behind a button if at all.
+- The map reads InterPro and PDBe by Swiss-Prot accession, so a gene with no
+  reviewed entry has no map; a TrEMBL accession would work for InterPro (not
+  tried) and the UniProt search in `geneStructure.ts` asks for reviewed only.
+- A thinned seed loses its tree because pruning a Newick to the kept leaves is
+  not written. `@gmod/newick` is in the tree as react-msaview's dependency but
+  not the website's; a small parser would do it.
+- `initialResidues` on a PDB entry trusts author numbering to be UniProt
+  numbering. Nearly always true; SIFTS (`pdbe/api/mappings/uniprot/<pdb>`) is
+  what would make it exact, and the protein3d plugin already fetches it for its
+  feature tracks.
+- The interface payload is read whole (half a megabyte on TP53 or HBB) to keep
+  twelve partners. PDBe has no per-partner endpoint; if this ever matters,
+  `graph-api/uniprot/summary_stats` may say whether there is anything to read
+  before reading it.
 - The paper's resource hub (GMOD/proteinbrowser) does not link here. Once the
   page is production, it should.
