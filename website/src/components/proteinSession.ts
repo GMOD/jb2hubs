@@ -21,6 +21,7 @@ import {
   type Transcript,
   blockBounds,
   collapsedLoc,
+  sliceCds,
 } from './geneStructure.ts'
 import { isNcbiGffTrack } from './genomeTarget.ts'
 
@@ -32,13 +33,28 @@ function toUrlSafeB64(str: string) {
   return b64.replace(/=+$/, '').replaceAll('+', '-').replaceAll('/', '_')
 }
 
+// A labelled range react-msaview draws over the alignment: `row` + start/end
+// are that row's residues, 1-based inclusive; without a row they are columns.
+export interface MsaHighlight {
+  row?: string
+  start: number
+  end: number
+  label?: string
+  color?: string
+}
+
 // An alignment carried in the session itself — small enough to ride in the URL,
 // and the only way to ship the per-row domain overlay, which no hosted file has.
 interface InlineMsa {
   fasta: string
-  newick: string
-  gff?: string // per-row CDD domains, overlaid in react-msaview
+  newick?: string
+  gff?: string // per-row domains, overlaid in react-msaview
   querySeqName: string
+  highlights?: MsaHighlight[]
+  // when the query row is one segment of the translation rather than all of
+  // it — a Pfam seed row is a domain — the residues (1-based inclusive) it
+  // covers, so the view's connected transcript is cut to those codons
+  residueRange?: { start: number; end: number }
 }
 
 // An alignment the msaview plugin reads for itself at launch, named rather than
@@ -94,9 +110,11 @@ export type StructureSource = { url: string } | { pdbId: string }
 // example, is 6 KB without an alignment.
 const QUERY_URL_BUDGET = 8000
 
-// A 0-based half-open range of structure residues, lit on load across all
-// three views as if it had been clicked — how a domain in the cartoon becomes
-// the thing the session opens on.
+// A range of structure residues, lit on load across all three views as if it
+// had been clicked — how a domain on the map becomes the thing the session
+// opens on. `initialSelection` is 0-based half-open over the structure's own
+// residues, exact for a model folded from the translation; `initialResidues`
+// is inclusive author numbering, which is what a PDB entry is cited by.
 interface ResidueRange {
   start: number
   end: number
@@ -112,18 +130,26 @@ export interface SessionOptions {
   // further structures, superposed on the primary by the plugin (TM-align)
   superposed?: StructureSource[]
   initialSelection?: ResidueRange
+  initialResidues?: ResidueRange
   collapse?: boolean
   flip?: boolean
   msa?: MsaSource
   variantTracks?: boolean
+  // Less on screen: the genome view without its overview bar and gridlines.
+  quiet?: boolean
+  // The structure view's pairwise alignment panel. Off when the structure was
+  // folded from the launched translation — an identity alignment is a wall of
+  // matches with nothing to read — and on when the panel is what says which
+  // residues a crystal or another isoform is missing.
+  showAlignment?: boolean
 }
 
 // The transcript model the MsaView + ProteinView map a residue to its codon
 // through. 0-based interbase, CDS subfeatures only.
-function connectedFeature(transcript: Transcript) {
+function connectedFeature(transcript: Transcript, uniqueId = transcript.name) {
   const { start, end } = blockBounds(transcript.cds)
   return {
-    uniqueId: transcript.name,
+    uniqueId,
     type: 'mRNA',
     refName: transcript.refName,
     start,
@@ -147,11 +173,13 @@ function linearGenomeView(
   assembly: string,
   loc: LocOptions,
   tracks: string[],
+  quiet: boolean,
 ) {
   return {
     id: `lgv-${transcript.geneName}`,
     type: 'LinearGenomeView',
     colorByCDS: true,
+    ...(quiet ? { hideHeaderOverview: true, showGridlines: false } : {}),
     init: { assembly, loc: collapsedLoc(transcript, loc), tracks },
   }
 }
@@ -178,16 +206,37 @@ function msaView(
     treeAreaWidth: 200,
   }
   switch (source.kind) {
-    case 'inline':
+    case 'inline': {
+      const { residueRange, highlights } = source.msa
       return {
         ...base,
+        // A query row that is one segment of the translation is linked
+        // through that segment's codons alone: the row's first residue has to
+        // be the feature's first codon for the plugin's mapping to hold.
+        ...(residueRange
+          ? {
+              connectedFeature: connectedFeature(
+                {
+                  ...transcript,
+                  cds: sliceCds(
+                    transcript,
+                    residueRange.start,
+                    residueRange.end,
+                  ),
+                },
+                `${transcript.name}:${residueRange.start}-${residueRange.end}`,
+              ),
+            }
+          : {}),
+        ...(highlights?.length ? { highlights } : {}),
         querySeqName: source.msa.querySeqName,
         data: {
           msa: source.msa.fasta,
-          tree: source.msa.newick,
+          ...(source.msa.newick ? { tree: source.msa.newick } : {}),
           gff: source.msa.gff,
         },
       }
+    }
     // The hosted 100-way: the session names the file and the gene, and the
     // msaview plugin random-reads that block itself (the .gzi/.idx are found
     // by suffix). The alignment stays out of the URL, which is what keeps a
@@ -230,13 +279,21 @@ function proteinView(
   primary: StructureSource,
   proteinSequence: string,
   superposed: StructureSource[],
-  initialSelection?: ResidueRange,
+  {
+    initialSelection,
+    initialResidues,
+    showAlignment,
+  }: Pick<
+    SessionOptions,
+    'initialSelection' | 'initialResidues' | 'showAlignment'
+  >,
 ) {
   return {
     id: `protein-${transcript.geneName}`,
     type: 'ProteinView',
     height: 500,
     zoomToBaseLevel: false,
+    ...(showAlignment === false ? { showAlignment: false } : {}),
     structures: [
       {
         ...primary,
@@ -244,6 +301,7 @@ function proteinView(
         userProvidedTranscriptSequence: proteinSequence,
         connectedViewId: `lgv-${transcript.geneName}`,
         ...(initialSelection ? { initialSelection } : {}),
+        ...(initialResidues ? { initialResidues } : {}),
       },
       ...superposed,
     ],
@@ -296,10 +354,13 @@ export function buildSessionUrl({
   primary,
   superposed = [],
   initialSelection,
+  initialResidues,
   collapse = true,
   flip = false,
   msa,
   variantTracks = true,
+  quiet = false,
+  showAlignment = true,
 }: SessionOptions) {
   const { target, uniprotId, proteinSequence } = structure
   // The config's own name for the sequence, not NCBI's. Displayed-region
@@ -318,20 +379,18 @@ export function buildSessionUrl({
       ...(target.geneTrackId ? [target.geneTrackId] : []),
       ...(variantTracks ? target.variantTrackIds : []),
     ],
+    quiet,
   )
   const alignment = msa
     ? msaView(transcript, feature, msa, uniprotId, proteinSequence)
     : undefined
   const protein =
     primary && proteinSequence
-      ? proteinView(
-          transcript,
-          feature,
-          primary,
-          proteinSequence,
-          superposed,
+      ? proteinView(transcript, feature, primary, proteinSequence, superposed, {
           initialSelection,
-        )
+          initialResidues,
+          showAlignment,
+        })
       : undefined
 
   // A GFF gene track is readable on the gene-track host only, which is `main`,

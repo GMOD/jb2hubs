@@ -7,11 +7,19 @@ import {
   fetchHundredWayAlignment,
   fetchHundredWayTranscript,
 } from './hundredWay.ts'
+import {
+  fetchPfamSeed,
+  fetchPfamTree,
+  placeQuery,
+  queryLabel,
+  rowResidueColumns,
+} from './pfamSeed.ts'
 import { alignProteinPanel } from './proteinMsa.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
+import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { ProteinAlignment, ProteinPanel } from './proteinMsa.ts'
-import type { MsaSource } from './proteinSession.ts'
+import type { MsaHighlight, MsaSource } from './proteinSession.ts'
 
 // react-msaview pulls in @jbrowse/core + MUI + mobx and renders to canvas, so it
 // only runs client-side; lazy-loading keeps it off the first paint and out of
@@ -20,10 +28,16 @@ const MSAViewer = lazy(() =>
   import('react-msaview').then(m => ({ default: m.MSAViewer })),
 )
 
-// Which alignment the page shows and the session carries. The first two are
+// Which alignment the page shows and the session carries. The first three are
 // alignments this page holds; the last two are requests the msaview plugin
 // resolves when the session opens, so the page has nothing to draw for them.
-export type AlignSource = 'live' | 'hundredWay' | 'uniref' | 'phmmer'
+//
+// They answer different questions, and the page offers them by question rather
+// than by database: `pfam` is what a domain looks like across life (the
+// family's curated seed, a few dozen representatives), `hundredWay` and `live`
+// are how conserved each residue of THIS protein is across species (orthologs),
+// `uniref` is the protein's own cluster, `phmmer` is a search.
+export type AlignSource = 'pfam' | 'live' | 'hundredWay' | 'uniref' | 'phmmer'
 
 export interface LoadedAlignment {
   // what the launched session carries
@@ -36,8 +50,93 @@ export interface LoadedAlignment {
   // what the launch card says the session opens with
   carries: string
   // for the 100-way, the knownCanonical model the alignment was built from —
-  // swapped into the session so genome, alignment and structure share codons
+  // swapped into the session so genome, alignment and structure share codons;
+  // for the seed, the translation the query row was cut from, pinned
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
+  // a caveat about the alignment itself, shown beside it
+  note?: string
+}
+
+// How far either side of a domain's InterPro coordinates the local alignment
+// looks for it in the translation. The coordinates are on the canonical
+// sequence and the translation may be another isoform; forty residues absorbs
+// the usual exon's worth of drift, and a miss is reported, not guessed.
+const SEED_WINDOW = 40
+
+// What the msaview plugin's snapshot will carry: its data model drops any field
+// over 50,000 characters, silently, and the alignment is one field.
+const SEED_FASTA_BUDGET = 45_000
+
+// The Pfam seed of the domain a focus sits in, with the launched translation's
+// own domain segment placed in it as the linked row. Three reads, no job: the
+// seed and its tree in parallel, then milliseconds of alignment here.
+export async function loadPfam(
+  structure: GeneStructure,
+  domain: ProteinRegion,
+  focus: Focus | undefined,
+): Promise<LoadedAlignment> {
+  const { proteinSequence, symbol, uniprotId } = structure
+  if (!proteinSequence || !domain.pfam) {
+    throw new Error('No translation to place in the seed alignment')
+  }
+  const [seed, tree] = await Promise.all([
+    fetchPfamSeed(domain.pfam),
+    fetchPfamTree(domain.pfam),
+  ])
+  const placed = placeQuery(proteinSequence, seed, {
+    queryName: queryLabel(symbol),
+    uniprotId,
+    window: {
+      start: domain.start - 1 - SEED_WINDOW,
+      end: domain.end + SEED_WINDOW,
+    },
+    newick: tree,
+    maxChars: SEED_FASTA_BUDGET,
+  })
+  // A focused residue inside the segment is marked on the query row, in the
+  // row's own coordinates.
+  const highlights: MsaHighlight[] =
+    focus?.kind === 'residue' &&
+    focus.position >= placed.domain.start &&
+    focus.position <= placed.domain.end
+      ? [
+          {
+            row: placed.queryName,
+            start: focus.position - placed.domain.start + 1,
+            end: focus.position - placed.domain.start + 1,
+            label: focus.label ?? `residue ${focus.position}`,
+          },
+        ]
+      : []
+  const rowCount = placed.kept + 1
+  const family = `${domain.pfam} ${seed.id ?? domain.name}`
+  const anchorNote = placed.replaced
+    ? `${symbol} is itself a seed member (${placed.anchor.name}); its row is the linked one.`
+    : `${symbol} residues ${placed.domain.start}–${placed.domain.end} placed through ${placed.anchor.name} at ${Math.round(placed.anchor.identity * 100)}% identity.`
+  const thinNote =
+    placed.kept < placed.total
+      ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch; the tree is left out with the rest.`
+      : ''
+  return {
+    source: {
+      kind: 'inline',
+      msa: {
+        fasta: placed.fasta,
+        newick: placed.newick,
+        querySeqName: placed.queryName,
+        residueRange: placed.domain,
+        highlights,
+      },
+    },
+    fasta: placed.fasta,
+    rowCount,
+    carries: `the ${family} seed alignment (${rowCount} rows)`,
+    structureOverrides: {
+      proteinSequence,
+      transcript: structure.transcript,
+    },
+    note: anchorNote + thinNote,
+  }
 }
 
 // The hosted 100-way for one gene: the alignment block, and the transcript it
@@ -147,22 +246,34 @@ export function loadBuilt(
       }
 }
 
-// What each source is, for the reader choosing one.
+// What each source is, for the reader choosing one: the question it answers,
+// then what it costs.
+interface SourceContext {
+  panelRows: number
+  precomputed: boolean
+  family?: ProteinRegion
+}
+
 const SOURCE_LABELS: Record<
   AlignSource,
   {
-    title: (panelRows: number) => string
-    note: (precomputed: boolean) => string
+    title: (ctx: SourceContext) => string
+    note: (ctx: SourceContext) => string
   }
 > = {
+  pfam: {
+    title: ({ family }) => `${family?.name ?? 'Domain'} family`,
+    note: ({ family }) =>
+      `the ${family?.pfam ?? 'Pfam'} seed: curated representatives across life, the domain alone; three reads, no job`,
+  },
   hundredWay: {
     title: () => '100 vertebrates',
-    note: () => 'instant, no domains',
+    note: () => 'orthologs, whole protein; instant, no domains',
   },
   live: {
-    title: rows => `${rows} species`,
-    note: precomputed =>
-      `domains${precomputed ? ', precomputed' : ', built at EBI'}`,
+    title: ({ panelRows }) => `${panelRows} species`,
+    note: ({ precomputed }) =>
+      `orthologs with their domains${precomputed ? ', precomputed' : ', built at EBI'}`,
   },
   uniref: {
     title: () => 'UniRef cluster',
@@ -191,6 +302,7 @@ export default function ProteinAlignmentSection({
   onSource,
   panelRows,
   precomputed,
+  family,
   wantLive,
   onBuildLive,
   onRetry,
@@ -209,12 +321,15 @@ export default function ProteinAlignmentSection({
   // first MAX_ALIGN_ROWS of the panel's model-organism-first order
   panelRows: number
   precomputed: boolean
+  // the domain whose Pfam seed the `pfam` source opens, when there is one
+  family?: ProteinRegion
   wantLive: boolean
   onBuildLive: () => void
   // re-runs the failed fetch: the SWR key does not change on a retry
   onRetry: () => void
 }) {
   const [open, setOpen] = useState(false)
+  const ctx = { panelRows, precomputed, family }
   // Offering to build only means something on the live arm, and only while it
   // has not already been asked for: `wantLive` is not in the SWR key, so a
   // second click refetches nothing. After a failure the retry beside the error
@@ -232,8 +347,8 @@ export default function ProteinAlignmentSection({
         Residue alignment{' '}
         <span className="ui-caption">
           {alignment?.rowCount
-            ? `${alignment.rowCount} rows`
-            : SOURCE_LABELS[source].title(panelRows)}
+            ? `${SOURCE_LABELS[source].title(ctx)} · ${alignment.rowCount} rows`
+            : SOURCE_LABELS[source].title(ctx)}
         </span>
       </summary>
 
@@ -241,11 +356,11 @@ export default function ProteinAlignmentSection({
         <AlignmentSourceChoice
           source={source}
           sources={sources}
-          panelRows={panelRows}
-          precomputed={precomputed}
+          ctx={ctx}
           onChange={onSource}
         />
       )}
+      {alignment?.note && <p className="ui-caption">{alignment.note}</p>}
       {!aligning && error ? (
         <p className="ui-error">
           {errorText(error)}{' '}
@@ -326,8 +441,19 @@ function AlignmentPanel({
         msa={fasta}
         {...(source.kind === 'inline'
           ? {
-              tree: source.msa.newick,
+              ...(source.msa.newick ? { tree: source.msa.newick } : {}),
               ...(source.msa.gff ? { gff: source.msa.gff } : {}),
+              // the embedded viewer (react-msaview 6.2) marks columns, not a
+              // row's residues; the session's MsaView takes the highlights
+              ...(source.msa.highlights?.length
+                ? {
+                    highlightColumns: source.msa.highlights.flatMap(h =>
+                      h.row
+                        ? rowResidueColumns(fasta, h.row, h.start, h.end)
+                        : [],
+                    ),
+                  }
+                : {}),
             }
           : source.kind === 'indexed'
             ? {
@@ -412,14 +538,12 @@ function useViewportHeight(expanded: boolean) {
 function AlignmentSourceChoice({
   source,
   sources,
-  panelRows,
-  precomputed,
+  ctx,
   onChange,
 }: {
   source: AlignSource
   sources: AlignSource[]
-  panelRows: number
-  precomputed: boolean
+  ctx: SourceContext
   onChange: (s: AlignSource) => void
 }) {
   return (
@@ -438,10 +562,8 @@ function AlignmentSourceChoice({
               onChange(s)
             }}
           />
-          {SOURCE_LABELS[s].title(panelRows)}{' '}
-          <span className="ui-caption">
-            {SOURCE_LABELS[s].note(precomputed)}
-          </span>
+          {SOURCE_LABELS[s].title(ctx)}{' '}
+          <span className="ui-caption">{SOURCE_LABELS[s].note(ctx)}</span>
         </label>
       ))}
     </div>

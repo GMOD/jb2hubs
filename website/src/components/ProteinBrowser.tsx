@@ -14,15 +14,30 @@ import ProteinAlignmentSection, {
   loadBuilt,
   loadHundredWay,
   loadLive,
+  loadPfam,
 } from './ProteinAlignmentSection.tsx'
 import { HelpDialog } from './ProteinBrowserDialogs.tsx'
 import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
-import { cacheKey, examplesFor } from './geneExamples.ts'
+import ProteinMap, { type PartnersState } from './ProteinMap.tsx'
+import {
+  type ExampleFocus,
+  type ProteinExample,
+  cacheKey,
+  examplesFor,
+} from './geneExamples.ts'
 import { resolveOrthologSymbol } from './geneSearch.ts'
 import { type GeneStructure, fetchGeneStructure } from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
 import { COMMON_SPECIES, geneUrl, syncGeneUrl } from './orthologSearchUtils.ts'
+import {
+  type Focus,
+  type ProteinRegion,
+  fetchInterProRegions,
+  fetchInterfaceRegions,
+  focusFamily,
+  sameFocus,
+} from './proteinFeatures.ts'
 import {
   type Domain,
   type ProteinAlignment,
@@ -159,6 +174,9 @@ export default function ProteinBrowser() {
   const [progress, setProgress] = useState<Progress>()
   const [follow, setFollow] = useState<Follow>()
   const [helpOpen, setHelpOpen] = useState(false)
+  // The chip the current query came from, when it did: its focus and story
+  // are applied to the results. A typed query has none.
+  const [example, setExample] = useState<ProteinExample>()
   // Which species switch is the latest, so a slower earlier lookup cannot land
   // on top of it. A new query supersedes a pending switch the same way.
   const followToken = useRef(0)
@@ -181,11 +199,12 @@ export default function ProteinBrowser() {
 
   // Submits a query. The same query again is a no-op for SWR — an equal key is
   // not a refetch — so a failed one is re-run explicitly.
-  const run = (rawQuery: string, ref: number) => {
+  const run = (rawQuery: string, ref: number, chip?: ProteinExample) => {
     const sym = rawQuery.trim()
     if (sym) {
       followToken.current += 1
       setFollow(undefined)
+      setExample(chip)
       setGene(sym)
       setTaxId(ref)
       if (sym === query.gene && ref === query.ref) {
@@ -299,7 +318,7 @@ export default function ProteinBrowser() {
             title={ex.note}
             disabled={loading}
             onClick={() => {
-              run(ex.symbol, taxId)
+              run(ex.symbol, taxId, ex)
             }}
           >
             {ex.symbol}
@@ -356,6 +375,11 @@ export default function ProteinBrowser() {
           {...data}
           taxId={query.ref}
           status={status}
+          example={
+            example?.symbol.toUpperCase() === query.gene.toUpperCase()
+              ? example
+              : undefined
+          }
           onProgress={message => {
             setProgress({ key: queryKey(query.gene, query.ref), message })
           }}
@@ -373,11 +397,56 @@ export default function ProteinBrowser() {
   )
 }
 
+// Which of a chip's presets the map can honour yet: a residue at once, a
+// family once InterPro has answered, a partner once PDBe has.
+function presetFocus(
+  preset: ExampleFocus | undefined,
+  regions: ProteinRegion[] | undefined,
+  partners: ProteinRegion[] | undefined,
+): Focus | undefined {
+  if (preset?.residue) {
+    return {
+      kind: 'residue',
+      position: preset.residue,
+      label: preset.residueLabel,
+    }
+  }
+  const region = preset?.pfam
+    ? regions?.find(r => r.pfam === preset.pfam)
+    : preset?.partner
+      ? partners?.find(r => r.accession === preset.partner)
+      : undefined
+  return region ? { kind: 'region', region } : undefined
+}
+
+// How long the canonical sequence is — the coordinate space the map's regions
+// are on. The canonical AlphaFold model is folded from exactly it; failing
+// that, the translation, which is the canonical for most genes.
+function canonicalLength(structure: GeneStructure, regions: ProteinRegion[]) {
+  return (
+    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence
+      .length ??
+    structure.proteinSequence?.length ??
+    Math.max(0, ...regions.map(r => r.end))
+  )
+}
+
+// A CDD domain off the ortholog cartoon as a focus. Its coordinates are on the
+// panel's query protein rather than the canonical, which the card allows for;
+// no accession is what marks it as such.
+function cartoonFocus(d: Domain): Focus {
+  return {
+    kind: 'region',
+    region: { kind: 'domain', name: d.name, start: d.start, end: d.end },
+  }
+}
+
 // Everything downstream of a resolved gene. The page is a launcher, so the
-// session card leads with the one primary action and the two heavy views — the
-// domain cartoon and the alignment — fold away underneath it. The alignment
-// still loads while its disclosure is closed, because it is what the launched
-// session carries.
+// session card leads with the one primary action; the protein map under it is
+// where the session's focus is chosen, and the two heavy views — the ortholog
+// cartoon and the alignment — fold away beneath. The alignment still loads
+// while its disclosure is closed, because it is what the launched session
+// carries.
 function GeneResults({
   structure,
   panel: panelOutcome,
@@ -386,35 +455,90 @@ function GeneResults({
   taxId,
   status,
   onProgress,
+  example,
 }: Resolved & {
   taxId: number
   status: string
   onProgress: (s: string) => void
+  example?: ProteinExample
 }) {
-  const { symbol } = structure
+  const { symbol, uniprotId } = structure
   const panel = 'panel' in panelOutcome ? panelOutcome.panel : undefined
-  // The 100-way is one indexed read, so where it exists it is the better first
-  // impression: 100 vertebrates with no wait, against a Clustal Omega job.
-  // Elsewhere the UniRef cluster leads, because it costs no job either and
-  // exists for any gene UniProt knows. The live panel keeps the domain overlay,
-  // which is why it stays offered; phmmer is the reach into remote homologs.
+  const preset = example?.focus
+
+  // The map's regions: InterPro's, on the query protein alone, so they are on
+  // screen in a second or two. The partner list is PDBe's and can run to half a
+  // megabyte on a well-studied protein, so it is read when asked for — or when
+  // the chip's preset names a partner.
+  const {
+    data: regions,
+    error: regionsError,
+    isLoading: regionsLoading,
+  } = useSWRImmutable(
+    uniprotId ? (['interpro-regions', uniprotId] as const) : null,
+    ([, id]) => fetchInterProRegions(id),
+    LIVE_QUERY,
+  )
+  const [wantPartners, setWantPartners] = useState(!!preset?.partner)
+  const {
+    data: partners,
+    error: partnersError,
+    isLoading: partnersLoading,
+    mutate: retryPartners,
+  } = useSWRImmutable(
+    uniprotId && wantPartners
+      ? (['pdbe-interfaces', uniprotId] as const)
+      : null,
+    ([, id]) => fetchInterfaceRegions(id),
+    LIVE_QUERY,
+  )
+  const partnersState: PartnersState = !wantPartners
+    ? { status: 'idle' }
+    : partnersLoading
+      ? { status: 'loading' }
+      : partnersError
+        ? { status: 'error', message: errorText(partnersError) }
+        : { status: 'loaded', partners: partners ?? [] }
+
+  // What the session opens on. The chip's preset holds until the reader picks
+  // something else; `null` records that they cleared it, so it does not come
+  // back when the regions it named finish loading.
+  const [focusChoice, setFocusChoice] = useState<Focus | null>()
+  const focus =
+    focusChoice === null
+      ? undefined
+      : (focusChoice ?? presetFocus(preset, regions, partners))
+  const setFocus = (next: Focus | undefined) => {
+    setFocusChoice(next ?? null)
+  }
+  const family = focusFamily(focus, regions ?? [])
+
+  // The alignment offered first is the one the reader's last gesture asks for.
+  // A focused domain asks what the domain looks like across life, and that is
+  // its family's seed. Otherwise the 100-way is one indexed read, so where it
+  // exists it is the better first impression: 100 vertebrates with no wait,
+  // against a Clustal Omega job. Elsewhere the UniRef cluster leads, because it
+  // costs no job either and exists for any gene UniProt knows. The live panel
+  // keeps the domain overlay, which is why it stays offered; phmmer is the
+  // reach into remote homologs. An explicit pick holds while it is on offer.
   const sources: AlignSource[] = [
+    ...(family ? ['pfam' as const] : []),
     ...(hundredWay ? ['hundredWay' as const] : []),
     'uniref',
     ...(panel ? ['live' as const] : []),
     'phmmer',
   ]
-  const [source, setSource] = useState<AlignSource>(sources[0]!)
+  const [sourceChoice, setSourceChoice] = useState<AlignSource>()
+  const source =
+    sourceChoice && sources.includes(sourceChoice) ? sourceChoice : sources[0]!
   // The live alignment is the only one worth gating behind a click — it costs an
   // EBI job here on the page. The others load as soon as they are chosen: the
-  // 100-way is one read, and the built sources are requests the session
-  // carries.
+  // 100-way is one read, the seed is three, and the built sources are requests
+  // the session carries.
   const [wantLive, setWantLive] = useState(false)
   const wantAlignment = source !== 'live' || wantLive
-  // Swiss-Prot accessions of the ortholog rows marked for superposition, and
-  // the query-row domain the session should open on.
+  // Swiss-Prot accessions of the ortholog rows marked for superposition.
   const [superposed, setSuperposed] = useState<string[]>([])
-  const [selectedDomain, setSelectedDomain] = useState<Domain>()
   // Aborting on unmount is what stops the EBI polling for a gene the reader
   // has left; this component is remounted per query, so unmount IS the gene
   // change. The one effect here, because a job at another server is exactly
@@ -427,6 +551,9 @@ function GeneResults({
     [aborter],
   )
 
+  // The seed alignment is keyed on the domain instance and on the residue it
+  // marks, since both are baked into the placed rows.
+  const residueFocus = focus?.kind === 'residue' ? focus.position : 0
   const {
     data: alignment,
     error,
@@ -434,14 +561,30 @@ function GeneResults({
     mutate: retry,
   } = useSWRImmutable(
     wantAlignment
-      ? (['protein-alignment', symbol, taxId, source] as const)
+      ? ([
+          'protein-alignment',
+          symbol,
+          taxId,
+          source,
+          family?.pfam ?? '',
+          family?.start ?? 0,
+          residueFocus,
+        ] as const)
       : null,
-    ([, sym, , src]) =>
-      src === 'hundredWay'
-        ? loadHundredWay(sym)
-        : src === 'live'
-          ? loadLive(panel!, precomputed, onProgress, aborter.signal)
-          : Promise.resolve(loadBuilt(src, structure)),
+    ([, sym, , src]) => {
+      switch (src) {
+        case 'hundredWay':
+          return loadHundredWay(sym)
+        case 'live':
+          return loadLive(panel!, precomputed, onProgress, aborter.signal)
+        case 'pfam':
+          return family
+            ? loadPfam(structure, family, focus)
+            : Promise.reject(new Error('No domain family in focus'))
+        default:
+          return Promise.resolve(loadBuilt(src, structure))
+      }
+    },
     LIVE_QUERY,
   )
 
@@ -469,11 +612,51 @@ function GeneResults({
           toggleSuperpose(u)
         }}
         queryRow={panel?.rows.find(r => r.taxId === panel.query.refTaxonId)}
-        selectedDomain={selectedDomain}
-        onClearDomain={() => {
-          setSelectedDomain(undefined)
+        focus={focus}
+        onClearFocus={() => {
+          setFocus(undefined)
         }}
+        story={example?.story}
       />
+
+      {uniprotId && (
+        <section className="pm-section">
+          <h3 className="pm-title">
+            Protein map{' '}
+            <span className="ui-caption">
+              {uniprotId} · InterPro domains, PDBe interfaces
+            </span>
+          </h3>
+          {regionsLoading && <p className="ui-hint">Reading InterPro…</p>}
+          {regionsError ? (
+            <p className="ui-note">
+              No InterPro annotation could be read: {errorText(regionsError)}
+            </p>
+          ) : null}
+          {regions && (
+            <ProteinMap
+              length={canonicalLength(structure, regions)}
+              regions={regions}
+              partners={partnersState}
+              onLoadPartners={() => {
+                if (wantPartners) {
+                  void retryPartners()
+                } else {
+                  setWantPartners(true)
+                }
+              }}
+              focus={focus}
+              onFocus={setFocus}
+            />
+          )}
+          <p className="ui-caption">
+            Click a domain, a site or a partner and the session opens on it: lit
+            in all three views, and for a domain with a Pfam family, with that
+            family&rsquo;s seed as the alignment. A partner opens the complex
+            PDBe saw the two in, instead of the monomer.
+          </p>
+        </section>
+      )}
 
       {'panelError' in panelOutcome && (
         <p className="ui-note">
@@ -483,15 +666,14 @@ function GeneResults({
       {panel && (
         <DomainSection
           panel={panel}
-          selectedDomain={selectedDomain}
+          selectedDomain={
+            focus?.kind === 'region' && !focus.region.accession
+              ? focus.region
+              : undefined
+          }
           onSelectDomain={d => {
-            setSelectedDomain(
-              selectedDomain &&
-                selectedDomain.name === d.name &&
-                selectedDomain.start === d.start
-                ? undefined
-                : d,
-            )
+            const next = cartoonFocus(d)
+            setFocus(sameFocus(focus, next) ? undefined : next)
           }}
           superposed={superposed}
           onToggleSuperpose={u => {
@@ -509,10 +691,11 @@ function GeneResults({
         source={source}
         sources={sources}
         onSource={s => {
-          setSource(s)
+          setSourceChoice(s)
         }}
         panelRows={panel ? alignedRows(panel).length : 0}
         precomputed={!!precomputed}
+        family={family}
         wantLive={wantLive}
         onBuildLive={() => {
           setWantLive(true)

@@ -16,7 +16,25 @@ import type { Example } from './orthologSearchUtils.ts'
 export const cacheKey = (symbol: string, ref: number) =>
   `${symbol.trim().toUpperCase()}:${ref}`
 
-const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
+// Where a chip opens its session, and why: a residue (a hotspot, a variant), a
+// Pfam family (the domain to read across life), or a binding partner (the
+// complex to open instead of the monomer). Applied once the map has loaded the
+// regions it names; a chip without one opens on the whole protein.
+export interface ExampleFocus {
+  residue?: number
+  residueLabel?: string
+  pfam?: string
+  // UniProt accession of the partner, as PDBe names it
+  partner?: string
+}
+
+export interface ProteinExample extends Example {
+  focus?: ExampleFocus
+  // one sentence on what there is to see once the session opens
+  story?: string
+}
+
+const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
   // The human picks are chosen on what the DOMAIN CARTOON shows at 60 species,
   // measured 2026-08-26 — a chip whose panel is one flat band teaches nothing,
   // however famous the gene. Each note says what there is to see.
@@ -39,10 +57,31 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
   //          titin's real Ig domains with them, because on a 35,000 aa protein
   //          they are the same size. Titin is still typeable; it is the
   //          cartoon it fails, and the chips are picked on the cartoon.
+  // Four of the human chips also carry a focus, which is where the map's two
+  // new sources earn their place: a residue everyone has heard of, opened in
+  // the domain family that residue defines a position in, or in the complex
+  // that gives the residue its meaning. Each was checked live on 2026-09-11.
   9606: [
     {
       symbol: 'TP53',
       note: 'Tumour suppressor — the TAD is missing in most fish, TAD2 is primate-only',
+      focus: { residue: 248, residueLabel: 'R248' },
+      story:
+        'R248 is among the most mutated residues in human cancer. It sits in the DNA-binding domain, whose Pfam seed shows how far the arginine is kept across the family; PDBe’s partner list has the DNA it reaches into and the MDM2 that binds the other end of the protein.',
+    },
+    {
+      symbol: 'BRAF',
+      note: 'Kinase — V600E, the melanoma driver, in the activation segment',
+      focus: { residue: 600, residueLabel: 'V600' },
+      story:
+        'V600 is a kinase-domain position (the seed is 111 kinases across life), and BRAF’s partner list opens the MEK1 and 14-3-3 complexes that explain why the mutation activates it.',
+    },
+    {
+      symbol: 'HBB',
+      note: 'β-globin — E6V, sickle cell, and the α/β interface it does not touch',
+      focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
+      story:
+        'The sickle mutation is E6V in the literature and Glu7 in the translation, because mature haemoglobin is numbered without the initiator. The globin seed places it on the surface, outside the α/β interface PDBe maps; sickling is a contact between tetramers, which no monomer view shows.',
     },
     {
       symbol: 'BRCA2',
@@ -51,6 +90,9 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
     {
       symbol: 'NOTCH1',
       note: 'EGF-repeat array, 13–30 copies; the richest architecture here',
+      focus: { pfam: 'PF00008' },
+      story:
+        'One EGF repeat of thirty-six, read against the EGF seed: the six cysteines that pin the fold are the columns every row agrees on.',
     },
     {
       symbol: 'DMD',
@@ -171,6 +213,6 @@ const EXAMPLES_BY_TAXON: Record<number, Example[]> = {
 
 // Human is the fallback: a species with no curated list still gets chips, and
 // human symbols are the ones most readers can name.
-export function examplesFor(taxId: number): Example[] {
+export function examplesFor(taxId: number): ProteinExample[] {
   return EXAMPLES_BY_TAXON[taxId] ?? EXAMPLES_BY_TAXON[9606]!
 }

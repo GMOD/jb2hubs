@@ -428,6 +428,41 @@ export async function fetchGeneStructure(
   }
 }
 
+// The coding exons cut down to residues `start`..`end` (1-based inclusive), in
+// genomic order with phases recomputed. An alignment row that is one segment of
+// the translation — a Pfam seed row is a domain, not a protein — is linked to
+// the genome through this rather than the whole transcript, so the row's first
+// residue is the feature's first codon and every residue maps exactly.
+export function sliceCds(
+  transcript: Transcript,
+  start: number,
+  end: number,
+): CDS[] {
+  const { strand, cds } = transcript
+  const from = (start - 1) * 3
+  const to = end * 3
+  const order = strand === 1 ? cds : [...cds].reverse()
+  const out: Exon[] = []
+  let coded = 0
+  for (const c of order) {
+    const len = c.end - c.start
+    const a = Math.max(from, coded) - coded
+    const b = Math.min(to, coded + len) - coded
+    if (a < b) {
+      out.push(
+        strand === 1
+          ? { start: c.start + a, end: c.start + b }
+          : { start: c.end - b, end: c.end - a },
+      )
+    }
+    coded += len
+  }
+  return assignPhases(
+    out.sort((x, y) => x.start - y.start),
+    strand,
+  )
+}
+
 // --- collapsed-intron geometry -----------------------------------------------
 
 const DEFAULT_PADDING = 40

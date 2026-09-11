@@ -165,12 +165,33 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           ortholog sets do not cover.
         </dd>
 
+        <dt>Protein map</dt>
+        <dd>
+          The query protein end to end with its{' '}
+          <Link href="https://www.ebi.ac.uk/interpro/">InterPro</Link> domains
+          and sites, and on request the residues{' '}
+          <Link href="https://www.ebi.ac.uk/pdbe/pdbe-kb/">PDBe-KB</Link> has
+          seen touching each binding partner in any PDB entry. Click any of them
+          and the session opens on it; a partner opens the complex the two were
+          seen in rather than the monomer. Coordinates are on the UniProt
+          canonical sequence, and the card says when the launched isoform makes
+          them approximate.
+        </dd>
+
         <dt>Alignment</dt>
         <dd>
+          Offered by the question rather than the database. A focused domain
+          offers its{' '}
+          <Link href="https://www.ebi.ac.uk/interpro/entry/pfam/">Pfam</Link>{' '}
+          family&rsquo;s <em>seed</em> alignment — the curated few dozen
+          representatives the family was built from, spanning its whole reach,
+          the domain alone — with the query&rsquo;s own domain segment aligned
+          in as the linked row, so a residue in the seed still maps to its
+          codon. For conservation of this protein across its orthologs:{' '}
           <Link href="https://www.ebi.ac.uk/jdispatcher/msa/clustalo">
             EBI Clustal Omega
           </Link>{' '}
-          with a guide tree and the CDD domains overlaid, or the hosted
+          over the panel with the CDD domains overlaid, or the hosted
           100-vertebrate alignment — instant, but no domains. Clustal Omega gets
           the first {MAX_ALIGN_ROWS} rows rather than all {MAX_PANEL_ROWS}: on a
           long protein the whole panel takes minutes, and residue alignments get

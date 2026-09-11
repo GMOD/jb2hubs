@@ -326,3 +326,93 @@ test('buildSessionUrl: an inline alignment rides in the session with its domains
   assert.equal(msa.data?.gff, '##gff-version 3')
   assert.equal(msa.init, undefined)
 })
+
+test('buildSessionUrl: a segment alignment is linked through the codons of its residues alone', () => {
+  const { session } = buildSessionUrl({
+    structure,
+    msa: {
+      kind: 'inline',
+      msa: {
+        fasta: '>Test/30-40\nACDEFGHIKLM\n>ROW/1-11\nACDEFGHIKLM',
+        querySeqName: 'Test/30-40',
+        residueRange: { start: 30, end: 40 },
+        highlights: [{ row: 'Test/30-40', start: 3, end: 3, label: 'D32' }],
+      },
+    },
+  })
+  const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
+    connectedFeature: {
+      uniqueId: string
+      start: number
+      end: number
+      subfeatures: { start: number; end: number; phase: number }[]
+    }
+    highlights?: unknown
+    data?: { tree?: string }
+  }
+  // residues 30-40 are coding bases 87-120 of the 180: 13 in the first exon,
+  // 20 in the second
+  assert.deepEqual(msa.connectedFeature.subfeatures, [
+    { type: 'CDS', start: 187, end: 200, strand: 1, phase: 0 },
+    { type: 'CDS', start: 1000, end: 1020, strand: 1, phase: 2 },
+  ])
+  assert.equal(msa.connectedFeature.start, 187)
+  assert.equal(msa.connectedFeature.end, 1020)
+  assert.equal(msa.connectedFeature.uniqueId, 'NM_000001.1:30-40')
+  assert.deepEqual(msa.highlights, [
+    { row: 'Test/30-40', start: 3, end: 3, label: 'D32' },
+  ])
+  assert.equal(msa.data?.tree, undefined)
+  // the structure view keeps the whole transcript
+  const protein = viewsOf(
+    buildSessionUrl({ structure, primary: alphafold }).session,
+  ).find(v => v.type === 'ProteinView')!
+  assert.equal(
+    (protein.structures?.[0]?.feature as { start?: number } | undefined)?.start,
+    100,
+  )
+})
+
+test('buildSessionUrl: quiet drops the overview bar and gridlines, and only then', () => {
+  const quiet = viewsOf(buildSessionUrl({ structure, quiet: true }).session)[0]!
+  assert.deepEqual(
+    (quiet as unknown as { hideHeaderOverview?: boolean }).hideHeaderOverview,
+    true,
+  )
+  assert.equal(
+    (quiet as unknown as { showGridlines?: boolean }).showGridlines,
+    false,
+  )
+  const loud = viewsOf(buildSessionUrl({ structure }).session)[0]!
+  assert.equal(
+    (loud as unknown as { hideHeaderOverview?: boolean }).hideHeaderOverview,
+    undefined,
+  )
+})
+
+test('buildSessionUrl: the pairwise panel is hidden only when asked, and a PDB focus is by author residue', () => {
+  const shown = viewsOf(
+    buildSessionUrl({ structure, primary: alphafold }).session,
+  ).find(v => v.type === 'ProteinView') as unknown as {
+    showAlignment?: boolean
+  }
+  assert.equal(shown.showAlignment, undefined)
+  const { session } = buildSessionUrl({
+    structure,
+    primary: { pdbId: '1ycr' },
+    initialResidues: { start: 17, end: 26 },
+    showAlignment: false,
+  })
+  const protein = viewsOf(session).find(
+    v => v.type === 'ProteinView',
+  )! as unknown as {
+    showAlignment?: boolean
+    structures: { initialResidues?: unknown; initialSelection?: unknown }[]
+  }
+  assert.equal(protein.showAlignment, false)
+  assert.deepEqual(protein.structures[0]!.initialResidues, {
+    start: 17,
+    end: 26,
+  })
+  assert.equal(protein.structures[0]!.initialSelection, undefined)
+})

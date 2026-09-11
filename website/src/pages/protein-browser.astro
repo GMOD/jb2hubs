@@ -244,6 +244,178 @@ if (!features.proteinBrowser) {
     margin-top: 1rem;
     max-width: 640px;
   }
+  .msv-story {
+    margin: 0 0 0.75rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #333;
+    background: var(--accent-wash);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* The protein map (ProteinMap): one protein end to end, lanes of InterPro
+     domains and PDBe partner interfaces, every block a launch target. */
+  .pm-section {
+    margin: 1.25rem 0 1rem;
+  }
+  .pm-title {
+    margin: 0 0 0.5rem;
+    font-size: 1rem;
+  }
+  .pm-lanes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pm-lane {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .pm-lane-name {
+    flex: 0 0 140px;
+    font-size: 12px;
+    color: #555;
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pm-partner {
+    color: #333;
+  }
+  .pm-track {
+    position: relative;
+    flex: 1 1 auto;
+    height: 20px;
+    min-width: 0;
+    background: #f3f5f8;
+    border-radius: 3px;
+  }
+  .pm-lane-thin .pm-track {
+    height: 12px;
+  }
+  .pm-ruler .pm-track {
+    height: 16px;
+    background: none;
+    border-bottom: 1px solid #c9ced6;
+  }
+  .pm-tick {
+    position: absolute;
+    top: 0;
+    font-size: 10px;
+    color: #888;
+    transform: translateX(-50%);
+    font-variant-numeric: tabular-nums;
+  }
+  .pm-tick::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    height: 3px;
+    border-left: 1px solid #c9ced6;
+  }
+  .pm-tick-end {
+    right: 0;
+    transform: none;
+    color: #666;
+  }
+  .pm-tick-end::after {
+    display: none;
+  }
+  .pm-block {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    min-width: 2px;
+    padding: 0 3px;
+    border: 0;
+    border-radius: 3px;
+    color: white;
+    font-size: 11px;
+    line-height: 20px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0.9;
+    cursor: pointer;
+  }
+  .pm-lane-thin .pm-block {
+    line-height: 12px;
+    font-size: 0;
+  }
+  .pm-block:hover,
+  .pm-block:focus-visible,
+  .pm-interface:hover,
+  .pm-interface:focus-visible {
+    opacity: 1;
+    outline: 2px solid #222;
+    outline-offset: 1px;
+  }
+  .pm-block.selected,
+  .pm-interface.selected {
+    opacity: 1;
+    outline: 2px solid #222;
+    outline-offset: 1px;
+    box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
+  }
+  .pm-block-label {
+    pointer-events: none;
+  }
+  .pm-interface {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .pm-run {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    min-width: 2px;
+    background: #d1495b;
+    border-radius: 2px;
+  }
+  .pm-residue {
+    position: absolute;
+    top: -3px;
+    width: 3px;
+    height: 18px;
+    margin-left: -1px;
+    background: #222;
+    border-radius: 1px;
+  }
+  .pm-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0.6rem 0 0 150px;
+    font-size: 13px;
+  }
+  .pm-residue-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .pm-residue-input {
+    width: 6.5rem;
+  }
+  @media (max-width: 767px) {
+    .pm-lane-name {
+      flex-basis: 80px;
+    }
+    .pm-actions {
+      margin-left: 0;
+    }
+  }
   .msv-result h2 {
     margin: 0 0 0.15rem;
     font-size: 1.25rem;

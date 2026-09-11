@@ -6,6 +6,7 @@ import {
   geneStats,
   orderIsoforms,
   parseGeneTableBlocks,
+  sliceCds,
 } from './geneStructure.ts'
 
 // + strand: one UTR-only exon then three coding exons (last partial). Columns are
@@ -130,7 +131,7 @@ const transcript = {
   geneName: 'Test',
   cds: [
     { start: 100, end: 200, phase: 0 },
-    { start: 1000, end: 1080, phase: 1 },
+    { start: 1000, end: 1080, phase: 2 },
   ],
 }
 
@@ -162,4 +163,50 @@ test('geneStats: sums CDS length and the collapse ratio', () => {
     span: 980,
     ratio: '5.4',
   })
+})
+
+test('sliceCds: the codons of a residue range, across an exon boundary, phases recomputed', () => {
+  const transcript = {
+    refName: 'chr1',
+    strand: 1 as const,
+    name: 'NM_1',
+    geneName: 'G',
+    // 100 + 80 coding bases: 60 codons
+    cds: [
+      { start: 100, end: 200, phase: 0 },
+      { start: 1000, end: 1080, phase: 2 },
+    ],
+  }
+  // residues 30-40 are coding bases 87-120: 13 in the first exon, 20 in the next
+  assert.deepEqual(sliceCds(transcript, 30, 40), [
+    { start: 187, end: 200, phase: 0 },
+    { start: 1000, end: 1020, phase: 2 },
+  ])
+  assert.deepEqual(sliceCds(transcript, 1, 10), [
+    { start: 100, end: 130, phase: 0 },
+  ])
+  assert.deepEqual(sliceCds(transcript, 1, 60), transcript.cds)
+})
+
+test('sliceCds: a minus-strand transcript counts codons from the high end', () => {
+  const transcript = {
+    refName: 'chr1',
+    strand: -1 as const,
+    name: 'NM_1',
+    geneName: 'G',
+    cds: [
+      { start: 100, end: 180, phase: 2 },
+      { start: 1000, end: 1100, phase: 0 },
+    ],
+  }
+  // the first exon in translation order is [1000,1100): residues 1-10 are its
+  // top 30 bases
+  assert.deepEqual(sliceCds(transcript, 1, 10), [
+    { start: 1070, end: 1100, phase: 0 },
+  ])
+  // residues 30-40: 13 bases left of the first exon, 20 into the second
+  assert.deepEqual(sliceCds(transcript, 30, 40), [
+    { start: 160, end: 180, phase: 2 },
+    { start: 1000, end: 1013, phase: 0 },
+  ])
 })

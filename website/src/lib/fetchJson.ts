@@ -25,3 +25,12 @@ export function loadJsonOnce<T>(url: string): Promise<T> {
   jsonCache.set(url, promise)
   return promise as Promise<T>
 }
+
+// The text twin of fetchJson, for Stockholm and Newick reads.
+export async function fetchText(url: string): Promise<string> {
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText}`)
+  }
+  return res.text()
+}

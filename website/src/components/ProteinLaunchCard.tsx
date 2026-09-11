@@ -11,6 +11,7 @@ import {
   fetchProteinSequence,
   geneStats,
 } from './geneStructure.ts'
+import { type Focus, focusLabel, focusRange } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
 import {
   type AlphaFoldModel,
@@ -20,7 +21,7 @@ import {
 } from './structureSources.ts'
 
 import type { LoadedAlignment } from './ProteinAlignmentSection.tsx'
-import type { Domain, ProteinPanelRow } from './proteinMsa.ts'
+import type { ProteinPanelRow } from './proteinMsa.ts'
 
 // How many experimental entries to offer. TP53 has 322; past the first few the
 // coverage is a peptide, and the reader who wants a specific entry has the PDB.
@@ -65,31 +66,38 @@ async function superposedModels(accessions: string[]) {
 
 // The launch, and what the page is for — so it leads, and carries one primary
 // action. Everything the session can vary on is decided here: which isoform's
-// exons, which structure (the AlphaFold model or a PDB entry), which ortholog
-// structures to superpose, whether to land on a domain, and the view options.
+// exons, which structure (the AlphaFold model, a PDB entry, or the complex a
+// focused partner was seen in), which ortholog structures to superpose, what
+// to open on, and the view options.
 export default function ProteinLaunchCard({
   structure,
   alignment,
   superposed,
   onRemoveSuperposed,
   queryRow,
-  selectedDomain,
-  onClearDomain,
+  focus,
+  onClearFocus,
+  story,
 }: {
   structure: GeneStructure
   alignment: LoadedAlignment | undefined
   // ortholog rows the reader asked to superpose, by Swiss-Prot accession
   superposed: ProteinPanelRow[]
   onRemoveSuperposed: (uniprot: string) => void
-  // the panel's row for the query gene, whose protein the domains are on
+  // the panel's row for the query gene, whose protein the cartoon's domains
+  // are on
   queryRow: ProteinPanelRow | undefined
-  selectedDomain: Domain | undefined
-  onClearDomain: () => void
+  // what the session opens on, from the map or the cartoon
+  focus: Focus | undefined
+  onClearFocus: () => void
+  // a chip's one sentence on what there is to see
+  story?: string
 }) {
   const { uniprotId, isoforms } = structure
   const [collapse, setCollapse] = useState(true)
   const [flip, setFlip] = useState(structure.transcript.strand === -1)
   const [variants, setVariants] = useState(true)
+  const [quiet, setQuiet] = useState(true)
   const [isoformName, setIsoformName] = useState(structure.transcript.name)
   // undefined is "whatever is best": the AlphaFold model, else the
   // best-covering experimental entry once those have loaded
@@ -145,56 +153,79 @@ export default function ProteinLaunchCard({
       launched.proteinSequence,
     )
     const shown = (experimental ?? []).slice(0, MAX_EXPERIMENTAL)
-    const chosen = choice ?? (model ? 'alphafold' : (shown[0]?.pdbId ?? 'none'))
+    // A focused partner brings the PDB entries the two were seen in together,
+    // and the first of those is the structure to open with unless the reader
+    // has picked one: the point of the focus is the complex.
+    const complexIds =
+      focus?.kind === 'region' && focus.region.kind === 'interface'
+        ? (focus.region.pdbIds ?? [])
+        : []
+    const chosen =
+      choice ??
+      complexIds[0] ??
+      (model ? 'alphafold' : (shown[0]?.pdbId ?? 'none'))
     const primary: StructureSource | undefined =
       chosen === 'alphafold' && model
         ? { url: model.url }
-        : shown.some(e => e.pdbId === chosen)
+        : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
           ? { pdbId: chosen }
           : undefined
     const found = (extras ?? []).flatMap(e => (e.model ? [e.model] : []))
     const missingModels = (extras ?? [])
       .filter(e => !e.model)
       .map(e => e.accession)
-    // A domain is a range on the query row's protein; the plugin lights
-    // structure residues. The two agree when the model was folded from the
-    // transcript's own translation and that is the row's protein. A PDB entry
-    // numbers its observed chain, and a different isoform shifts the range —
-    // either the model's (folded from another isoform) or the row's (the
-    // panel's pick is MANE, else the longest, which need not be the launched
-    // transcript's protein). The row is matched by accession, and by length
-    // where the accession cannot agree: a PANTHER row is a UniProt entry, and
-    // the 100-way's transcript has no RefSeq protein to name.
+    // A focus is a range on some protein sequence; the plugin lights structure
+    // residues. The map's regions are on the UniProt canonical, so they are
+    // exact when the model IS the canonical and was folded from the launched
+    // translation. A cartoon domain is on the panel's query protein instead
+    // (MANE, else longest), which need not be the launched transcript's; the
+    // row is matched by accession, and by length where the accession cannot
+    // agree — a PANTHER row is a UniProt entry, and the 100-way's transcript
+    // has no RefSeq protein to name. A PDB entry is lit by author numbering,
+    // which is the UniProt numbering for nearly every entry, and is what a
+    // paper cites either way.
     const modelExact =
       chosen === 'alphafold' &&
       !!model &&
       model.sequence === launched.proteinSequence
+    const canonicalModel = !!model && !model.accession.includes('-')
     const rowExact =
       !!queryRow &&
       (queryRow.protein === isoform.protein ||
         queryRow.length === launched.proteinSequence?.length)
-    const domainExact = modelExact && rowExact
+    const fromCartoon = focus?.kind === 'region' && !focus.region.accession
+    const focusExact = fromCartoon
+      ? modelExact && rowExact
+      : modelExact && canonicalModel
+    const range = focus ? focusRange(focus) : undefined
     return {
       launched,
       model,
       shown,
+      complexIds,
       chosen,
       primary,
       found,
       missingModels,
       modelExact,
-      domainExact,
+      canonicalModel,
+      fromCartoon,
+      focusExact,
       ...buildSessionUrl({
         structure: launched,
         primary,
         superposed: found.map(m => ({ url: m.url })),
-        initialSelection: selectedDomain
-          ? { start: selectedDomain.start - 1, end: selectedDomain.end }
-          : undefined,
+        ...(range && chosen === 'alphafold'
+          ? { initialSelection: { start: range.start - 1, end: range.end } }
+          : {}),
+        ...(range && chosen !== 'alphafold' ? { initialResidues: range } : {}),
         collapse,
         flip,
         msa: alignment?.source,
         variantTracks: variants,
+        quiet,
+        // an identity alignment is a wall of matches with nothing to read
+        showAlignment: !modelExact,
       }),
     }
   }, [
@@ -207,21 +238,25 @@ export default function ProteinLaunchCard({
     experimental,
     extras,
     queryRow,
-    selectedDomain,
+    focus,
     collapse,
     flip,
     variants,
+    quiet,
   ])
   const {
     launched,
     model,
     shown,
+    complexIds,
     chosen,
     primary,
     found,
     missingModels,
     modelExact,
-    domainExact,
+    canonicalModel,
+    fromCartoon,
+    focusExact,
     session,
     url,
     alignmentOmitted,
@@ -261,6 +296,7 @@ export default function ProteinLaunchCard({
         {transcript.strand === 1 ? '+' : '−'} · {transcript.cds.length} coding
         exons · {codingBp.toLocaleString()} bp CDS
       </p>
+      {story && <p className="msv-story">{story}</p>}
 
       <div className="msv-controls">
         {alignment?.structureOverrides ? (
@@ -321,6 +357,20 @@ export default function ProteinLaunchCard({
                   {e.resolution ? ` · ${e.resolution.toFixed(1)} Å` : ''}
                 </option>
               ))}
+              {focus?.kind === 'region' && complexIds.length > 0 && (
+                <optgroup label={`In complex with ${focus.region.name}`}>
+                  {complexIds
+                    .filter(id => !shown.some(e => e.pdbId === id))
+                    .map(id => (
+                      <option
+                        key={id}
+                        value={id}
+                      >
+                        PDB {id.toUpperCase()} · with {focus.region.name}
+                      </option>
+                    ))}
+                </optgroup>
+              )}
               <option value="none">No structure</option>
             </select>
             <StructureLink
@@ -387,31 +437,34 @@ export default function ProteinLaunchCard({
           </p>
         )}
 
-        {selectedDomain && (
+        {focus && (
           <div className="msv-control">
-            <span className="msv-control-label">Highlight</span>
+            <span className="msv-control-label">Opens on</span>
             <span className="msv-chips">
               <button
                 className="ui-chip-btn"
-                title="Opens with this domain selected in all three views"
+                title="Selected in all three views when the session opens; click to clear"
                 onClick={() => {
-                  onClearDomain()
+                  onClearFocus()
                 }}
               >
-                {selectedDomain.name} {selectedDomain.start}–
-                {selectedDomain.end} ×
+                {focusLabel(focus)} ×
               </button>
             </span>
             <span className="ui-caption">
               {!primary
                 ? 'needs a structure'
-                : domainExact
+                : focusExact
                   ? 'lit on load in all three views'
                   : chosen !== 'alphafold'
-                    ? 'approximate: PDB residue numbering'
-                    : modelExact
-                      ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
-                      : 'approximate: the model is a different isoform'}
+                    ? 'lit by author residue number, as the entry is cited'
+                    : !modelExact
+                      ? 'approximate: the model is a different isoform'
+                      : fromCartoon
+                        ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
+                        : canonicalModel
+                          ? 'approximate'
+                          : 'approximate: an isoform model, and the map counts on the canonical'}
             </span>
           </div>
         )}
@@ -464,6 +517,19 @@ export default function ProteinLaunchCard({
             ClinVar + AlphaMissense
           </label>
         )}
+        <label
+          className="msv-collapse"
+          title="The genome view without its overview bar and gridlines, and no pairwise panel when the structure is the translation's own fold"
+        >
+          <input
+            type="checkbox"
+            checked={quiet}
+            onChange={e => {
+              setQuiet(e.target.checked)
+            }}
+          />
+          Quiet layout
+        </label>
         <button
           className="ui-linkbtn"
           onClick={() => {
@@ -474,7 +540,8 @@ export default function ProteinLaunchCard({
         </button>
       </div>
       <p className="ui-caption">
-        Opens {joinList(carries)} in one connected session.
+        Opens {joinList(carries)} in one connected session
+        {focus && primary ? `, on ${focusLabel(focus)}` : ''}.
       </p>
       {alignment && alignmentOmitted && (
         <p className="ui-caption">
