@@ -3,15 +3,20 @@ import HeaderSearch from './HeaderSearch.astro'
 import Logo from '../logo.astro'
 import { features } from '../config/features.ts'
 
-// Plain links, one per entry point: assemblies (Assembly search), genes (Gene
-// explorer — the /gene hub, which holds the ortholog table and the
-// conserved-gene-order figure), then the tools reached from a gene — the
-// synteny browser and the protein browser — and the pangenome collection.
-// Each staging feature appears when its flag does.
-const primaryNavItems = [
+// Every entry point lives under Explore, ordered the way you reach them: the
+// two you start from with nothing in hand — an assembly (Assembly search) or a
+// gene (Ortholog explorer, the /gene hub holding the ortholog table and the
+// conserved-gene-order figure) — then the tools one of those hands you off to.
+// Each staging feature appears when its flag does, and every label here is the
+// page's own <h1>.
+//
+// One dropdown rather than a row of links because the row did not fit: the
+// five labels are 799px of nowrap text, so on anything under ~1340px they
+// painted over Blog/Demos/About and squeezed the header search to zero width.
+const exploreItems = [
   { name: 'Assembly search', href: '/search' },
-  { name: 'Gene explorer', href: '/gene' },
-  ...(features.synteny ? [{ name: 'Synteny', href: '/synteny' }] : []),
+  { name: 'Ortholog explorer', href: '/gene' },
+  ...(features.synteny ? [{ name: 'Synteny browser', href: '/synteny' }] : []),
   ...(features.proteinBrowser
     ? [{ name: 'Protein browser', href: '/protein-browser' }]
     : []),
@@ -25,6 +30,8 @@ const secondaryNavItems = [
 ]
 
 const { pathname } = Astro.url
+const isActive = (href: string) => pathname.startsWith(href)
+const exploreActive = exploreItems.some(item => isActive(item.href))
 ---
 
 <nav class="nav">
@@ -43,14 +50,46 @@ const { pathname } = Astro.url
         JBrowse 2 Genomes
       </a>
       <div class="primary-nav desktop-nav">
-        {primaryNavItems.map(item => (
-          <a
-            href={item.href}
-            class:list={['navLink', { active: pathname.startsWith(item.href) }]}
+        {/* <details>, so the menu opens with no JS and takes keyboard focus
+            for free; the script below only closes it on an outside click or
+            Escape. */}
+        <details
+          id="explore-dropdown"
+          class="dropdown"
+        >
+          <summary
+            class:list={[
+              'navLink',
+              'dropdownToggle',
+              { active: exploreActive },
+            ]}
           >
-            {item.name}
-          </a>
-        ))}
+            Explore
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="chevron"
+              aria-hidden="true"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </summary>
+          <div class="dropdownMenu">
+            {exploreItems.map(item => (
+              <a
+                href={item.href}
+                class:list={['dropdownItem', { active: isActive(item.href) }]}
+              >
+                {item.name}
+              </a>
+            ))}
+          </div>
+        </details>
       </div>
       {/* A plain GET form, so search works with no JS and is one interaction
           away from every page rather than two clicks into a dropdown. The
@@ -65,7 +104,7 @@ const { pathname } = Astro.url
         {secondaryNavItems.map(item => (
           <a
             href={item.href}
-            class:list={['navLink', { active: pathname.startsWith(item.href) }]}
+            class:list={['navLink', { active: isActive(item.href) }]}
           >
             {item.name}
           </a>
@@ -186,13 +225,13 @@ const { pathname } = Astro.url
     id="mobile-menu"
     class="mobile-menu"
   >
-    {[...primaryNavItems, ...secondaryNavItems].map(item => (
+    {[...exploreItems, ...secondaryNavItems].map(item => (
       <a
         href={item.href}
         class:list={[
           'navLink',
           'mobile-navLink',
-          { active: pathname.startsWith(item.href) },
+          { active: isActive(item.href) },
         ]}
       >
         {item.name}
@@ -233,6 +272,27 @@ const { pathname } = Astro.url
         if (e.key === 'Escape' && isOpen()) {
           setOpen(false)
           button.focus()
+        }
+      })
+    }
+
+    const explore = document.getElementById('explore-dropdown')
+
+    if (explore instanceof HTMLDetailsElement) {
+      document.addEventListener('click', e => {
+        if (
+          explore.open &&
+          e.target instanceof Node &&
+          !explore.contains(e.target)
+        ) {
+          explore.open = false
+        }
+      })
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && explore.open) {
+          explore.open = false
+          explore.querySelector('summary')?.focus()
         }
       })
     }
@@ -304,6 +364,63 @@ const { pathname } = Astro.url
   }
 
   .navLink.active {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdownToggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+  }
+
+  .dropdownToggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .chevron {
+    width: 14px;
+    height: 14px;
+  }
+
+  .dropdown[open] .chevron {
+    transform: rotate(180deg);
+  }
+
+  .dropdownMenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 180px;
+    padding: 4px 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .dropdownItem {
+    display: block;
+    padding: 6px 12px;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .dropdownItem:hover {
+    background: var(--surface-alt);
+  }
+
+  .dropdownItem.active {
     font-weight: 700;
     color: var(--accent);
   }
