@@ -341,7 +341,39 @@ at 1400×1400 now. Worth remembering the shape of it: a negative from the checke
 is a claim about the harness as much as about the session, and the debug script
 that settled it polled the model every five seconds instead of reading it once.
 
+## The url is not the only way to hand over a session
+
+Measured 2026-09-12. Everything under "what fit means" is engineering around one
+fact: the session rides in the url, and on the production host that is a request
+line CloudFront caps at 8,192 bytes. jbrowse-web has carried a second route for
+years: `?session=share-<id>&password=<pw>`, the Share dialog's short link. The
+client AES-encrypts the session with a five-character password it keeps in the
+link, POSTs it (`FormData`: `session`, `dateShared`, `referer`) to
+`https://share.jbrowse.org/api/v1/share`, and gets an id back; the loader
+fetches `load?sessionId=` and decrypts. The endpoint answers a cross-origin
+preflight with `*`, and `encodeSessionParam('short', …)` in `@jbrowse/core` does
+the whole exchange.
+
+Tried from this page's own code with BRAF on V600: the kinase seed placed whole
+against the snapshot cap (87 of 111 rows, tree pruned to them — an inline url of
+24,794 bytes), shared in 1.9 s, and booted on `latest` in 24 s with three views,
+the MsaView at 88 rows and linked, the structure aligned as an exact match. No
+plugin change, no host change. What it costs: the launch becomes a POST at click
+rather than a link the card can hold ready, a dependency on share.jbrowse.org
+being up at that moment, and a copy of every launched session kept on that
+service (encrypted; the key stays in the url, which is what a reader who
+bookmarks it has). The page's own url stays the durable link, since it rebuilds
+the session.
+
+The limit that remains is the msaview plugin's: its data model drops a snapshot
+field over 50,000 characters, so BRAF still loses 24 rows in the hash and in a
+shared session alike. That one is a line in `jbrowse-plugin-msaview`.
+
 ## Still open
+
+- Whether to launch through `share-` links (above) and delete the url budget,
+  the thinning and `HOST_READS_HASH_PARAMS` with it. Not done; it is a change in
+  what a launch is, not in how big it can be.
 
 - The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB
   unfiltered and 326 KB with `?provider=pdbe` (lowercase; `PDBe` 404s), which
