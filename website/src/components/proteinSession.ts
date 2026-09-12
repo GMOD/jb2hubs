@@ -108,7 +108,19 @@ export type StructureSource = { url: string } | { pdbId: string }
 // alignment — the one part of a session that can run to tens of KB — is what
 // gives way. The genome and structure views always fit: DMD, the largest
 // example, is 6 KB without an alignment.
-const QUERY_URL_BUDGET = 8000
+export const QUERY_URL_BUDGET = 8000
+
+// How many bytes a value costs in a launch url, deflated and base64'd the way
+// the session is — so an alignment can be cut to fit before it is dropped.
+export function encodedSessionBytes(value: unknown) {
+  return toUrlSafeB64(JSON.stringify(value)).length
+}
+
+// Whether a session built for this target rides in the hash, where nothing
+// limits its size, or in the query string, where QUERY_URL_BUDGET does.
+export function sessionInHash(target: GeneStructure['target']) {
+  return HOST_READS_HASH_PARAMS || isNcbiGffTrack(target.geneTrackId)
+}
 
 // A range of structure residues, lit on load across all three views as if it
 // had been clicked — how a domain on the map becomes the thing the session

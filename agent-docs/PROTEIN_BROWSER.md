@@ -248,20 +248,24 @@ Where the query protein is itself a seed member — P53_HUMAN is in PF00870 — 
 row is replaced rather than duplicated and the tree leaf renamed, matched on the
 `#=GS AC` accession; elsewhere the query is grafted as a sister of its anchor at
 zero length, which is the honest placement for a row aligned through that
-anchor. A seed that will not fit the budget is thinned to the rows the query
-aligns best to, anchor first, and loses its tree with them (its leaves would no
-longer match). The page says both things beside the alignment.
+anchor. A seed that will not fit is thinned to the rows the query aligns best
+to, anchor first, and loses its tree with them (its leaves would no longer
+match). The page says both things beside the alignment.
 
-The budget is the host's (`seedFastaBudget`). A launch on `main` carries the
-session in the hash and the limit is the msaview plugin's 50 KB snapshot field:
-45,000 characters, which BRAF's kinase domain exceeds — PF07714 at 111 rows ×
-481 columns, 87 rows kept. A launch on `latest` carries it in the query string,
-where CloudFront's 8,192-byte request line is the limit and an alignment
-deflates to about 70% of its characters (TP53's PF00870 seed: 11.2 KB of FASTA
-for a 9.7 KB url), so the budget is 8,000 characters and TP53's own seed is
-thinned to about thirty rows there. The alternative was the existing rule for an
-oversize inline alignment — drop it at the door and say so — and a thinned seed
-is still the family where a dropped one is nothing.
+What "fit" means is the host's (`fitPlacement` in `proteinAlignments.ts`). A
+launch on `main` carries the session in the hash and the limit is the msaview
+plugin's 50 KB snapshot field: 45,000 characters, which BRAF's kinase domain
+exceeds — PF07714 at 111 rows × 481 columns, 87 rows kept. A launch on `latest`
+carries it in the query string, where CloudFront's 8,192-byte request line is
+the limit, so the seed is cut to the room the url has once the genome and
+structure views are paid for: whole with its tree, else whole without the tree,
+else thinned by quarters — measured against the deflated, base64'd payload
+rather than a character count, because a protein alignment deflates to ~70% and
+a Newick tree hardly at all. NOTCH1 is why: its EGF seed is 4.9 KB of FASTA and
+2.8 KB of tree, which a character budget let through and `buildSessionUrl` then
+dropped whole at the door. TP53's own seed is 27 rows on `latest` against 38 on
+`main`, and BRAF's 15 against 87. A thinned seed is still the family where a
+dropped one is nothing.
 
 The embedded viewer is react-msaview 6.2, which marks columns but not a row's
 residues, so a residue focus reaches it as `highlightColumns` computed off the

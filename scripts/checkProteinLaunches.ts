@@ -190,7 +190,7 @@ async function focusedLaunch(
     focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
   const chosen = complexId ? { pdbId: complexId } : primary
   const range = focusRange(focus)
-  const { session, url } = buildSessionUrl({
+  const { session, url, alignmentOmitted } = buildSessionUrl({
     structure: { ...structure, ...alignment?.structureOverrides },
     primary: chosen,
     msa: alignment?.source,
@@ -200,8 +200,11 @@ async function focusedLaunch(
     quiet: true,
     showAlignment: !exact || !!complexId,
   })
+  // The seed is cut to the url's room before the session is built, so an
+  // omitted alignment here is a failure of that fitting, not a size the page
+  // could not help — and the launch is checked for the MsaView regardless.
   return {
-    name: `${gene} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${complexId ? `, PDB ${complexId}` : ''}`,
+    name: `${gene} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${complexId ? `, PDB ${complexId}` : ''}${alignmentOmitted ? ' (alignment omitted: over the query-string budget)' : ''}`,
     url: retarget(url),
     expectStructure: !!chosen,
     expectGeneTrack: !!structure.target.geneTrackId,
