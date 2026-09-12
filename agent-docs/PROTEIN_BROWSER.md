@@ -311,6 +311,18 @@ itself) is pinned by `proteinSession.test.ts`. The alignment loaders live in
 checker can import them under `--experimental-strip-types`, which does not read
 JSX.
 
+Run 2026-09-12 on `main`: TP53 and HBB boot, default and focused, the seed
+MsaView linked with 27 and 49 rows — the production budget, since the checker
+runs the production shape; the same launches from the staging page carry 38
+and 74. The first run that day failed every launch, and the cause was the
+checker, not the sessions: puppeteer's default viewport is 800×600, the
+structure view sits below the fold, and `main` never reported
+`protein-view-ready` there, while the same url at 1400×1000 was ready and
+exactly aligned in 6 s. The browser is launched at 1400×1400 now. Worth
+remembering the shape of it: a negative from the checker is a claim about the
+harness as much as about the session, and the debug script that settled it
+polled the model every five seconds instead of reading it once.
+
 ## Still open
 
 - The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB
