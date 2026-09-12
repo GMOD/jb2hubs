@@ -1841,8 +1841,10 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   PDBe interface residues are on it; the launched transcript's translation may
   be another isoform, and `ProteinLaunchCard` says "approximate" whenever the
   model is not the canonical entry folded from exactly that translation. A
-  focused partner opens the PDB complex by `initialResidues` (author numbering),
-  not `initialSelection`.
+  focused partner opens the PDB complex by `initialResidues` in the entry's
+  author numbering, shifted through SIFTS (`siftsNumbering.ts`) — haemoglobin
+  chains count from the mature protein, one behind UniProt — never by
+  `initialSelection`.
 
 ## Key website internals
 

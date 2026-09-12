@@ -201,8 +201,15 @@ off the ortholog cartoon, or a residue typed into the box. The card turns it
 into the plugin's `initialSelection` for an AlphaFold model (0-based, structure
 residues — exact only when the model is the canonical entry folded from the
 launched translation, which the card checks) or `initialResidues` for a PDB
-entry (inclusive author numbering, which is the UniProt numbering for nearly
-every entry and what a paper cites either way). A focused partner also changes
+entry, in the entry's own author numbering. That numbering is UniProt's for
+most entries and not for all: haemoglobin's chains count from the mature
+protein, so Glu7 of the translation is residue 6 in 2HHB and 1A00, and a
+construct can start anywhere. `siftsNumbering.ts` reads the SIFTS mapping for
+the chosen entry (`pdbe/api/mappings/uniprot/<pdb>`, cross-origin, ~1 KB) and
+shifts the range by the chain segment that covers most of it; the card says
+which chain and by how much, or that no chain covers the range. The launch
+link waits for that read, as it does for an isoform's translation. A focused
+partner also changes
 the structure: the first PDB entry the two were seen in together opens instead
 of the monomer, with the partner's chain loaded — the protein3d plugin loads
 every polymer entity, maps the transcript onto the one whose sequence explains
@@ -249,8 +256,9 @@ row is replaced rather than duplicated and the tree leaf renamed, matched on the
 `#=GS AC` accession; elsewhere the query is grafted as a sister of its anchor at
 zero length, which is the honest placement for a row aligned through that
 anchor. A seed that will not fit is thinned to the rows the query aligns best
-to, anchor first, and loses its tree with them (its leaves would no longer
-match). The page says both things beside the alignment.
+to, anchor first, and its tree is pruned to them (`pruneNewick`: a dropped leaf
+takes its edge, a node left with one child collapses into it with the lengths
+summed). The page says both things beside the alignment.
 
 What "fit" means is the host's (`fitPlacement` in `proteinAlignments.ts`). A
 launch on `main` carries the session in the hash and the limit is the msaview
@@ -259,7 +267,8 @@ exceeds — PF07714 at 111 rows × 481 columns, 87 rows kept. A launch on `lates
 carries it in the query string, where CloudFront's 8,192-byte request line is
 the limit, so the seed is cut to the room the url has once the genome and
 structure views are paid for: whole with its tree, else whole without the tree,
-else thinned by quarters — measured against the deflated, base64'd payload
+else thinned by quarters, the pruned tree tried at each step before the rows
+alone — measured against the deflated, base64'd payload
 rather than a character count, because a protein alignment deflates to ~70% and
 a Newick tree hardly at all. NOTCH1 is why: its EGF seed is 4.9 KB of FASTA and
 2.8 KB of tree, which a character budget let through and `buildSessionUrl` then
@@ -288,7 +297,11 @@ card shows: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
 which counts without the initiator), NOTCH1 on one of its thirty-six EGF
 repeats. A preset resolves once the map has what it names — a residue at once, a
 family when InterPro answers, a partner when PDBe does — and a reader who clears
-it does not get it back (`focusChoice === null`). HBB and BRAF are new: HBB was
+it does not get it back (`focusChoice === null`). The focus is in the page url
+too (`residue=248`, `pfam=PF00008&at=1000`, `partner=P69905`, written on every
+change), so a focused page is a link; a link naming a chip's gene and focus is
+that chip and shows its story, and any other typed or linked query has none.
+HBB and BRAF are new: HBB was
 dropped from the cartoon-chosen list because its cartoon is one flat bar, and
 the map is what makes it worth a chip again — the globin seed and the α/β
 interface, which Glu7 is not in.
@@ -347,13 +360,12 @@ that settled it polled the model every five seconds instead of reading it once.
 - The map reads InterPro and PDBe by Swiss-Prot accession, so a gene with no
   reviewed entry has no map; a TrEMBL accession would work for InterPro (not
   tried) and the UniProt search in `geneStructure.ts` asks for reviewed only.
-- A thinned seed loses its tree because pruning a Newick to the kept leaves is
-  not written. `@gmod/newick` is in the tree as react-msaview's dependency but
-  not the website's; a small parser would do it.
-- `initialResidues` on a PDB entry trusts author numbering to be UniProt
-  numbering. Nearly always true; SIFTS (`pdbe/api/mappings/uniprot/<pdb>`) is
-  what would make it exact, and the protein3d plugin already fetches it for its
-  feature tracks.
+- An interface focus lights the span from its first contact residue to its
+  last, because `initialResidues` is one range; TP53's homo-oligomer interface
+  spans 30–370 that way. The map draws the runs. A residue list on the
+  plugin's side would let the session light what the map shows.
+- A residue focus is the same residue on every host, but a cartoon-domain or
+  site focus is not in the url: it has no name a link could carry.
 - The interface payload is read whole (half a megabyte on TP53 or HBB) to keep
   twelve partners. PDBe has no per-partner endpoint; if this ever matters,
   `graph-api/uniprot/summary_stats` may say whether there is anything to read

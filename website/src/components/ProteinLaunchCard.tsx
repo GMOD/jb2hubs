@@ -237,7 +237,13 @@ export default function ProteinLaunchCard({
         ...(range && chosen === 'alphafold'
           ? { initialSelection: { start: range.start - 1, end: range.end } }
           : {}),
-        ...(range && pdbId ? { initialResidues: author ?? range } : {}),
+        ...(range && pdbId
+          ? {
+              initialResidues: author
+                ? { start: author.start, end: author.end }
+                : range,
+            }
+          : {}),
         collapse,
         flip,
         msa: alignment?.source,
