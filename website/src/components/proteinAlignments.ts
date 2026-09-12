@@ -76,15 +76,31 @@ const SEED_WINDOW = 40
 const SNAPSHOT_FIELD_BUDGET = 45_000
 
 // Room in the url for the alignment: the budget less what the rest of this
-// gene's session costs, which the exons decide (DMD's 79 coding exons are 6 KB
-// on their own). A structure of typical url length stands in for the one the
-// card will pick.
-function urlRoomForAlignment(structure: GeneStructure) {
+// gene's session costs. The exons decide most of it (DMD's 79 coding exons are
+// 6 KB on their own), and the MsaView's own shell the rest — its connected
+// feature is the transcript sliced to the domain, exons again — so the session
+// measured carries a one-residue stand-in for the alignment, on the domain,
+// with the options a focused launch sets. A structure of typical url length
+// stands in for the one the card will pick. Measured 2026-09-12 on BRAF: the
+// shell is 294 bytes beyond the alignment's own, which a room that left it out
+// let a 26-row seed fill and buildSessionUrl then dropped at the door.
+function urlRoomForAlignment(structure: GeneStructure, domain: ProteinRegion) {
   const without = buildSessionUrl({
     structure,
     primary: {
       url: 'https://alphafold.ebi.ac.uk/files/AF-P00000-F1-model_v6.cif',
     },
+    msa: {
+      kind: 'inline',
+      msa: {
+        fasta: '>Q/1-1\nA',
+        querySeqName: 'Q/1-1',
+        residueRange: { start: domain.start, end: domain.end },
+        highlights: [{ row: 'Q/1-1', start: 1, end: 1, label: 'residue 1' }],
+      },
+    },
+    initialSelection: { start: 0, end: 1 },
+    quiet: true,
   }).url.length
   return QUERY_URL_BUDGET - without - 64
 }
@@ -148,7 +164,7 @@ export async function loadPfam(
       }),
     sessionInHash(structure.target)
       ? undefined
-      : urlRoomForAlignment(structure),
+      : urlRoomForAlignment(structure, domain),
     p => encodedSessionBytes({ msa: p.fasta, tree: p.newick }),
   )
   // A focused residue inside the segment is marked on the query row, in the
