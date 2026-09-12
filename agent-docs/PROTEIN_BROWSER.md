@@ -264,15 +264,19 @@ launch on `main` carries the session in the hash and the limit is the msaview
 plugin's 50 KB snapshot field: 45,000 characters, which BRAF's kinase domain
 exceeds — PF07714 at 111 rows × 481 columns, 87 rows kept. A launch on `latest`
 carries it in the query string, where CloudFront's 8,192-byte request line is
-the limit, so the seed is cut to the room the url has once the genome and
-structure views are paid for: whole with its tree, else whole without the tree,
-else thinned by quarters, the pruned tree tried at each step before the rows
-alone — measured against the deflated, base64'd payload rather than a character
-count, because a protein alignment deflates to ~70% and a Newick tree hardly at
-all. NOTCH1 is why: its EGF seed is 4.9 KB of FASTA and 2.8 KB of tree, which a
-character budget let through and `buildSessionUrl` then dropped whole at the
-door. TP53's own seed is 27 rows on `latest` against 38 on `main`, and BRAF's 15
-against 87. A thinned seed is still the family where a dropped one is nothing.
+the limit, so the seed is cut to the room the url has once the genome, the
+structure and the MsaView's own shell are paid for: whole with its tree, else
+whole without the tree, else thinned by quarters, the pruned tree tried at each
+step before the rows alone — measured against the deflated, base64'd payload
+rather than a character count, because a protein alignment deflates to ~70% and
+a Newick tree hardly at all. NOTCH1 is why: its EGF seed is 4.9 KB of FASTA and
+2.8 KB of tree, which a character budget let through and `buildSessionUrl` then
+dropped whole at the door. The shell matters at the edge: the MsaView carries
+the transcript sliced to the domain as its connected feature, 294 bytes on BRAF,
+and a room measured off a session with no MsaView let a 26-row kinase seed
+through to be dropped the same way. TP53's own seed is 27 rows on `latest`
+against 38 on `main`, and BRAF's 19 (tree kept) against 87. A thinned seed is
+still the family where a dropped one is nothing.
 
 The embedded viewer is react-msaview 6.2, which marks columns but not a row's
 residues, so a residue focus reaches it as `highlightColumns` computed off the
@@ -326,8 +330,8 @@ checker can import them under `--experimental-strip-types`, which does not read
 JSX.
 
 Run 2026-09-12 on `main`: all four focused chips boot, default and focused, the
-seed MsaView linked — TP53 with 28 rows, HBB 49, BRAF 15, NOTCH1 all 68 (its
-tree left out) — the production budget, since the checker runs the production
+seed MsaView linked — TP53 with 28 rows, HBB 55, BRAF 20 with its pruned tree,
+NOTCH1 all 68 — the production budget, since the checker runs the production
 shape; the same launches from the staging page carry 38, 74, 88 and 68. The
 first run that day failed every launch, and the cause was the checker, not the
 sessions: puppeteer's default viewport is 800×600, the structure view sits below
