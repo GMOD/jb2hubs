@@ -280,7 +280,6 @@ export default function ProteinLaunchCard({
     focusExact,
     session,
     url,
-    alignmentOmitted,
   } = launch
   const { transcript, assemblyAccession } = launched
   const { codingBp } = geneStats(transcript)
@@ -300,7 +299,7 @@ export default function ProteinLaunchCard({
     hasProteinView && found.length > 0
       ? `${found.length} superposed ortholog ${found.length === 1 ? 'structure' : 'structures'}`
       : undefined,
-    alignment && !alignmentOmitted ? alignment.carries : undefined,
+    alignment?.carries,
     variants && launched.target.variantTrackIds.length > 0
       ? 'variant tracks'
       : undefined,
@@ -572,13 +571,6 @@ export default function ProteinLaunchCard({
         Opens {joinList(carries)} in one connected session
         {focus && primary ? `, on ${focusLabel(focus)}` : ''}.
       </p>
-      {alignment && alignmentOmitted && (
-        <p className="ui-caption">
-          The {alignment.rowCount}-row alignment is too large to ride in a
-          launch link on the current JBrowse release, so the session opens
-          without it; it stays on this page.
-        </p>
-      )}
 
       {detailsOpen && (
         <SessionDetailsDialog

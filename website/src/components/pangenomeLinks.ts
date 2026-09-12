@@ -4,7 +4,6 @@
 // we attach it inline via `sessionTracks` (see specUrl) pointing at the public,
 // CORS-open VCF — the launch works without first baking the track into the config.
 
-import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { panelTracks, specUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { detailWindow, locusRegion, syntenyGene } from './pangenomeLoci.ts'
 
@@ -66,10 +65,6 @@ const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 // over assembly paths is one haploid column per assembly, and asking for it
 // there draws every second row empty.
 //
-// Omitted entirely where the host lacks the display, because this declaration
-// has no graceful degradation: see HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY. Without
-// it the launch still opens, on the single-row display.
-//
 // Undefined where the dataset has no reference-projected callset. That is not a
 // gap in the wiring: whether a graph can be deconstructed into one is a property
 // of the graph file. `minigraph -cxggs` writes no P or W lines, so the mouse
@@ -84,19 +79,15 @@ function graphVcfTrack(dataset: PangenomeDataset) {
         name: vcf.name,
         assemblyNames: [dataset.reference.assembly],
         adapter: { type: 'VcfTabixAdapter', uri: vcf.url },
-        ...(HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY
-          ? {
-              displays: [
-                {
-                  type: 'LinearMultiSampleVariantDisplay',
-                  displayId: `${vcf.trackId}-multisample`,
-                  ...(vcf.phased ? { renderingMode: 'phased' } : {}),
-                  jexlFilters: SV_FILTER,
-                  height: 340,
-                },
-              ],
-            }
-          : {}),
+        displays: [
+          {
+            type: 'LinearMultiSampleVariantDisplay',
+            displayId: `${vcf.trackId}-multisample`,
+            ...(vcf.phased ? { renderingMode: 'phased' } : {}),
+            jexlFilters: SV_FILTER,
+            height: 340,
+          },
+        ],
       }
     : undefined
 }

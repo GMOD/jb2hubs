@@ -233,8 +233,7 @@ export function enhanceConfigObject(
   // So stagingEnhanceOptions sets this for the config-staging.json sibling,
   // and staging (which launches code/jb2/main) gets the display while
   // production does not. Drop the gate and call it unconditionally once a released
-  // `latest` carries the display — the same promotion
-  // HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY in the website is waiting on.
+  // `latest` carries the display.
   const withRepeatClass = repeatClassDisplay
     ? addRepeatClassDisplay
     : (track: Track) => track

@@ -660,10 +660,9 @@ Two things are staged this way today, both in `stagingEnhanceOptions`
 split-by-class multi-row display (`repeatClassDisplay: true`,
 `hubtools/src/repeatClassDisplay.ts`). The second is waiting on a release rather
 than on a decision — delete its gate and call `addRepeatClassDisplay`
-unconditionally once a released `latest` carries `LinearMultiRowFeatureDisplay`,
-which is also what the website's `HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY` is
-waiting on. Re-run the probe rather than assuming, since from this side the
-failure is silent.
+unconditionally once a released `latest` carries `LinearMultiRowFeatureDisplay`.
+Re-run the probe rather than assuming, since from this side the failure is
+silent.
 
 For **this** question the probe is not the cheapest instrument, and the browser
 one cannot answer it at all — the fatal needs the track opened. What decides it
@@ -745,8 +744,8 @@ track. Measured 2026-08-09 on v4.0.0, v4.3.0 and main with
 `LinearMultiRowFeatureDisplay` on `hg38-rmsk`: fatal on both released hosts,
 fine on main, and declaring a `LinearBasicDisplay` entry ahead of it does not
 help. The website side had already found this independently for
-`LinearMultiSampleVariantDisplay` (`website/src/config/jbrowse.ts`,
-`HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY`, measured 2026-08-06).
+`LinearMultiSampleVariantDisplay` (measured 2026-08-06; the website has since
+dropped v4.3.0 as a target and declares the display unconditionally).
 
 So a display type newer than the oldest supported release is a **staging-only**
 config change until it ships in `latest` — see below. It is also the one kind of

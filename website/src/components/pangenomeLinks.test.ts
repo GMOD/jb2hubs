@@ -3,7 +3,6 @@ import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
 import { features } from '../config/features.ts'
-import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import {
   BOVINE_DATASET,
   HPRC_DATASET,
@@ -97,14 +96,6 @@ test('the callset declares the matrix display exactly where the host has it', ()
     | Record<string, unknown>[]
     | undefined
 
-  if (!HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY) {
-    // Naming a display the host lacks fails the track config's MST union and
-    // takes the whole spec session down, so the launch must carry none at all
-    // and fall back to the single-row display.
-    assert.equal(displays, undefined)
-    return
-  }
-
   // A VariantTrack's default display is the single-row LinearVariantDisplay,
   // which is not what a 232-sample / 464-haplotype callset should open as.
   const display = displays?.[0]
@@ -170,11 +161,9 @@ test('an unphased callset does not ask for haplotype rows', () => {
   const display = (
     spec.sessionTracks?.[0]?.displays as Record<string, unknown>[] | undefined
   )?.[0]
-  if (HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY) {
-    // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
-    // empty rows between them.
-    assert.equal(display?.renderingMode, undefined)
-  }
+  // 11 haploid genotype columns from `vg deconstruct`; phased would draw 11
+  // empty rows between them.
+  assert.equal(display?.renderingMode, undefined)
 })
 
 test('without a callset the primary launch is the graph configs own lanes', () => {

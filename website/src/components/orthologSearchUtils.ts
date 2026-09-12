@@ -1,7 +1,6 @@
 import {
   genarkConfigPath,
   jbrowseUrl,
-  onGeneTrackHost,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
 import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
@@ -138,9 +137,7 @@ export function accessionToJbrowseUrl(
   const tracks = ucscDb
     ? ''
     : `&tracks=${encodeURIComponent(`${accession}-ncbiGff`)}`
-  const url = onGeneTrackHost(
-    `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`,
-  )
+  const url = `${jbrowseUrl(config)}&assembly=${encodeURIComponent(assembly)}${tracks}`
   return loc ? `${url}&loc=${encodeURIComponent(loc)}` : url
 }
 
@@ -252,24 +249,22 @@ export function orthoSyntenyUrl(
   // An unnavigated reference panel has nothing to match, and no locstring to
   // carry the suffix.
   const flips = strandFlips(ref ? [r, ref] : [r])
-  return onGeneTrackHost(
-    syntenyViewUrl(
-      [
-        {
-          assembly: link.names[0],
-          loc: windowedLoc(r, flankBp),
-          ...panelTracks(link.geneTracks[0]),
-        },
-        {
-          assembly: link.names[1],
-          ...(ref
-            ? { loc: flipLoc(windowedLoc(ref, flankBp), flips[1] ?? false) }
-            : {}),
-          ...panelTracks(link.geneTracks[1]),
-        },
-      ],
-      [link.trackId],
-    ),
+  return syntenyViewUrl(
+    [
+      {
+        assembly: link.names[0],
+        loc: windowedLoc(r, flankBp),
+        ...panelTracks(link.geneTracks[0]),
+      },
+      {
+        assembly: link.names[1],
+        ...(ref
+          ? { loc: flipLoc(windowedLoc(ref, flankBp), flips[1] ?? false) }
+          : {}),
+        ...panelTracks(link.geneTracks[1]),
+      },
+    ],
+    [link.trackId],
   )
 }
 
@@ -393,15 +388,13 @@ export function buildMultiSyntenyUrl(
   flankBp = SYNTENY_FLANK_BP,
 ) {
   const flips = strandFlips(plan.rows)
-  return onGeneTrackHost(
-    syntenyViewUrl(
-      plan.rows.map((r, i) => ({
-        assembly: plan.names[i] ?? r.assembly.accession,
-        loc: flipLoc(windowedLoc(r, flankBp), flips[i] ?? false),
-        ...panelTracks(plan.geneTracks[i] ?? ''),
-      })),
-      plan.tracks.map(t => [t]),
-    ),
+  return syntenyViewUrl(
+    plan.rows.map((r, i) => ({
+      assembly: plan.names[i] ?? r.assembly.accession,
+      loc: flipLoc(windowedLoc(r, flankBp), flips[i] ?? false),
+      ...panelTracks(plan.geneTracks[i] ?? ''),
+    })),
+    plan.tracks.map(t => [t]),
   )
 }
 

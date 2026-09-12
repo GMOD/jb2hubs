@@ -168,29 +168,11 @@ test('sideBySideLayout: the workspace layout tree, not the dropped init', () => 
 // field and writes `useWorkspaces` into the reader's localStorage — so the
 // production session carries neither. The tree comes back on the gene-track
 // host, which is `main`.
-test('buildSessionUrl: no workspace fields for a host without the tree', () => {
-  const { session } = buildSessionUrl({ structure, primary: alphafold })
-  assert.equal('useWorkspaces' in session, false)
-  assert.equal('layout' in session, false)
-  assert.equal('init' in session, false)
-})
-
-test('buildSessionUrl: a GFF gene track goes to the gene-track host, tiled', () => {
-  const gff = {
-    ...structure,
-    target: { ...target, geneTrackId: 'GCF_000001635.27-ncbiGff' },
-  }
-  const { session, url } = buildSessionUrl({
-    structure: gff,
-    primary: alphafold,
-  })
+test('buildSessionUrl: tiled on main, the session in the hash', () => {
+  const { session, url } = buildSessionUrl({ structure, primary: alphafold })
   assert.ok(url.startsWith('https://jbrowse.org/code/jb2/main/#config='))
   assert.equal('useWorkspaces' in session, true)
   assert.equal('layout' in session, true)
-  const plain = buildSessionUrl({ structure, primary: alphafold })
-  assert.ok(
-    plain.url.startsWith('https://jbrowse.org/code/jb2/latest/?config='),
-  )
 })
 
 test('buildSessionUrl: an indexed alignment is named, not carried', () => {
@@ -264,45 +246,6 @@ test('buildSessionUrl: a built alignment carries the request and the transcript 
     blastDatabase: 'rp15',
     proteinSequence: structure.proteinSequence,
   })
-})
-
-test('buildSessionUrl: the query string for a host that ignores the hash, the hash for main', () => {
-  assert.match(buildSessionUrl({ structure }).url, /\/latest\/\?config=/)
-  const gff = {
-    ...structure,
-    target: { ...structure.target, geneTrackId: 'hg38-ncbiRefSeqGff' },
-  }
-  assert.match(buildSessionUrl({ structure: gff }).url, /\/main\/#config=/)
-})
-
-test('buildSessionUrl: an inline alignment over the query-string budget is dropped, and says so', () => {
-  // pseudo-random residues, so deflate cannot fold the rows away
-  let seed = 7
-  const residue = () => {
-    seed = (seed * 1103515245 + 12345) % 2147483648
-    return 'ACDEFGHIKLMNPQRSTVWY'[seed % 20]
-  }
-  const rows = Array.from(
-    { length: 60 },
-    (_, i) => `>row${i}\n${Array.from({ length: 800 }, residue).join('')}`,
-  )
-  const msa = {
-    kind: 'inline' as const,
-    msa: { fasta: rows.join('\n'), newick: '(row0);', querySeqName: 'row0' },
-  }
-  const big = buildSessionUrl({ structure, msa })
-  assert.equal(big.alignmentOmitted, true)
-  assert.ok(big.url.length <= 8000, `${big.url.length} bytes`)
-  assert.ok(!viewsOf(big.session).some(v => v.type === 'MsaView'))
-  const small = buildSessionUrl({
-    structure,
-    msa: {
-      kind: 'inline',
-      msa: { fasta: '>mouse\nMEEP', newick: '(mouse);', querySeqName: 'mouse' },
-    },
-  })
-  assert.equal(small.alignmentOmitted, false)
-  assert.ok(viewsOf(small.session).some(v => v.type === 'MsaView'))
 })
 
 test('buildSessionUrl: an inline alignment rides in the session with its domains', () => {

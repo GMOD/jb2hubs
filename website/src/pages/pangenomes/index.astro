@@ -5,10 +5,7 @@ import hprcSamples from '../../hprcSamples.json'
 import mouseStrains from '../../mouseStrains.json'
 import ensemblMouseStrains from '../../ensemblMouseStrains.json'
 import { features } from '../../config/features.ts'
-import {
-  HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY,
-  retargetJbrowseUrl,
-} from '../../config/jbrowse.ts'
+import { retargetJbrowseUrl } from '../../config/jbrowse.ts'
 import {
   externalGraphUrl,
   graphBrowserUrl,
@@ -205,17 +202,6 @@ const pangenomeGraphs = [
             HPRC data portal ↗
           </a>
         </div>
-        {
-          !HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
-            <p class="portal-hero-note">
-              <small>
-                On the current JBrowse release the 464-haplotype callset opens
-                as a single row; the per-haplotype matrix display ships in the
-                next release.
-              </small>
-            </p>
-          )
-        }
       </div>
 
       <p>

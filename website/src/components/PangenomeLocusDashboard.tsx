@@ -1,6 +1,5 @@
 import useSWRImmutable from 'swr/immutable'
 
-import { HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY } from '../config/jbrowse.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { errorText } from './ErrorMessage.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
@@ -187,12 +186,6 @@ export default function PangenomeLocusDashboard({
           >
             Draw {gene ?? locus.gene} as a graph in {ext.name} ↗
           </a>
-        )}
-        {dataset.graphVcf && !HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY && (
-          <p className="pg-hint pg-launch-note">
-            On the current JBrowse release the callset opens as a single row;
-            the per-haplotype matrix display ships in the next release.
-          </p>
         )}
         {!variantsUrl && !graphUrl && !externalUrl && (
           <p className="pg-hint pg-launch-note">

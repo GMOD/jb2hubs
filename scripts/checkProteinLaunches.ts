@@ -24,16 +24,6 @@
 // hydrates with a ProteinView whose `pairwiseAlignment` never arrives, or whose
 // structure never becomes ready, is the failure this exists to catch.
 //
-// The host contract is the third thing it reads back. `latest` (v4.3.0) has no
-// workspace `layout` field and persists a session's `useWorkspaces` into the
-// reader's localStorage, so a launch must not carry either there
-// (HOST_HAS_WORKSPACE_LAYOUT in website/src/config/jbrowse.ts). The page's
-// modules run here with `features.staging` false, which is the production
-// shape: the session carries no layout on any host, and the check is that the
-// launch left the reader's `useWorkspaces` preference alone. The staging
-// shape — the layout tree itself, on `main` — is pinned by
-// proteinSession.test.ts and not exercised here.
-//
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
 // website/src/components/{geneStructure,proteinSession,structureSources}.ts or
@@ -42,7 +32,7 @@
 // Usage:
 //   pnpm check-protein-launches                          # human examples, on main
 //   pnpm check-protein-launches --genes TP53,DMD --ref 9606
-//   pnpm check-protein-launches --host latest            # what production would get
+//   pnpm check-protein-launches --host v5.0.0            # a release, once one reads the hash
 //
 import fs from 'node:fs'
 import os from 'node:os'
@@ -135,8 +125,7 @@ globalThis.fetch = (input, init) => {
 
 const genes = values.genes?.split(',') ?? examplesFor(REF).map(e => e.symbol)
 
-// The builder targets whatever the production flag says, and a GFF gene track
-// sends it to the gene-track host; retarget to the host under test either way.
+// The builder targets JBROWSE_BASE; retarget to the host under test.
 function retarget(url: string) {
   return url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`)
 }
@@ -149,7 +138,6 @@ type Launch =
       expectStructure: boolean
       expectGeneTrack: boolean
       expectExact: boolean
-      tiled: boolean
       // an inline alignment the session carries: the MsaView must come up
       // with this many rows, linked to the genome view
       expectMsaRows?: number
@@ -190,7 +178,7 @@ async function focusedLaunch(
     focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
   const chosen = complexId ? { pdbId: complexId } : primary
   const range = focusRange(focus)
-  const { session, url, alignmentOmitted } = buildSessionUrl({
+  const { url } = buildSessionUrl({
     structure: { ...structure, ...alignment?.structureOverrides },
     primary: chosen,
     msa: alignment?.source,
@@ -200,16 +188,12 @@ async function focusedLaunch(
     quiet: true,
     showAlignment: !exact || !!complexId,
   })
-  // The seed is cut to the url's room before the session is built, so an
-  // omitted alignment here is a failure of that fitting, not a size the page
-  // could not help — and the launch is checked for the MsaView regardless.
   return {
-    name: `${gene} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${complexId ? `, PDB ${complexId}` : ''}${alignmentOmitted ? ' (alignment omitted: over the query-string budget)' : ''}`,
+    name: `${gene} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${complexId ? `, PDB ${complexId}` : ''}`,
     url: retarget(url),
     expectStructure: !!chosen,
     expectGeneTrack: !!structure.target.geneTrackId,
     expectExact: exact && !complexId,
-    tiled: 'layout' in session,
     expectMsaRows: alignment?.rowCount,
   }
 }
@@ -234,7 +218,7 @@ for (const gene of genes) {
       : pdb
         ? { pdbId: pdb.pdbId }
         : undefined
-    const { session, url } = buildSessionUrl({ structure, primary })
+    const { url } = buildSessionUrl({ structure, primary })
     const structureName = model
       ? model.entity
       : pdb
@@ -249,7 +233,6 @@ for (const gene of genes) {
       expectStructure: !!primary,
       expectGeneTrack: !!structure.target.geneTrackId,
       expectExact: exact,
-      tiled: 'layout' in session,
     })
     const focused = await focusedLaunch(gene, structure, primary, exact)
     if (focused) {
@@ -368,9 +351,6 @@ for (const launchSpec of launches) {
                 })),
               }
             : undefined,
-          // v4.3.0 persists the session's `useWorkspaces` here; a launch that
-          // flips it rewrites the reader's preference for every later session
-          useWorkspacesPreference: localStorage.getItem('useWorkspaces'),
         }
       })
 
@@ -414,11 +394,6 @@ for (const launchSpec of launches) {
           )
         }
       }
-      if (!launchSpec.tiled && state.useWorkspacesPreference === 'true') {
-        problems.push(
-          'the launch wrote useWorkspaces=true into localStorage: the host persists the session flag as the reader’s preference',
-        )
-      }
     } catch (e) {
       problems.push(`${e}`.split('\n')[0] ?? '')
     }
@@ -437,10 +412,6 @@ for (const launchSpec of launches) {
 }
 
 await browser.close()
-const tiledCount = launches.filter(l => 'tiled' in l && l.tiled).length
-console.log(
-  `\n${tiledCount}/${launches.length} sessions carried a workspace layout (0 is the production shape)`,
-)
 console.log(
   failures
     ? `${failures}/${launches.length} launches failed on ${HOST}`

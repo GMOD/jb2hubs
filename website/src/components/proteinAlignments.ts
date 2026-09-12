@@ -17,19 +17,12 @@ import {
   fetchHundredWayTranscript,
 } from './hundredWay.ts'
 import {
-  type PlacedQuery,
   fetchPfamSeed,
   fetchPfamTree,
   placeQuery,
   queryLabel,
 } from './pfamSeed.ts'
 import { alignProteinPanel } from './proteinMsa.ts'
-import {
-  QUERY_URL_BUDGET,
-  buildSessionUrl,
-  encodedSessionBytes,
-  sessionInHash,
-} from './proteinSession.ts'
 
 import type { GeneStructure } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
@@ -62,77 +55,10 @@ export interface LoadedAlignment {
 // the usual exon's worth of drift, and a miss is reported, not guessed.
 const SEED_WINDOW = 40
 
-// What a launch can carry. In the hash, the msaview plugin's snapshot is the
-// limit: its data model drops any field over 50,000 characters, silently, and
-// the alignment is one field. In the query string (the production host, see
-// proteinSession.ts) the request line is, and buildSessionUrl drops an
-// alignment that would put the url over it. A seed thinned to fit is still the
-// family, anchored on the rows nearest the query; an alignment dropped at the
-// door is not — so the seed is cut to the room the url has before the session
-// is built. Measured 2026-09-12: NOTCH1's EGF seed is 4.9 KB of FASTA and 2.8 KB
-// of tree, which deflate to more than the 6 KB left beside the genome and
-// structure views, and the first draft's fixed character budget let it through
-// to be dropped whole.
+// The msaview plugin's data model drops any snapshot field over 50,000
+// characters, silently, and the alignment is one field. A seed thinned to fit
+// is still the family, anchored on the rows nearest the query.
 const SNAPSHOT_FIELD_BUDGET = 45_000
-
-// Room in the url for the alignment: the budget less what the rest of this
-// gene's session costs. The exons decide most of it (DMD's 79 coding exons are
-// 6 KB on their own), and the MsaView's own shell the rest — its connected
-// feature is the transcript sliced to the domain, exons again — so the session
-// measured carries a one-residue stand-in for the alignment, on the domain,
-// with the options a focused launch sets. A structure of typical url length
-// stands in for the one the card will pick. Measured 2026-09-12 on BRAF: the
-// shell is 294 bytes beyond the alignment's own, which a room that left it out
-// let a 26-row seed fill and buildSessionUrl then dropped at the door.
-function urlRoomForAlignment(structure: GeneStructure, domain: ProteinRegion) {
-  const without = buildSessionUrl({
-    structure,
-    primary: {
-      url: 'https://alphafold.ebi.ac.uk/files/AF-P00000-F1-model_v6.cif',
-    },
-    msa: {
-      kind: 'inline',
-      msa: {
-        fasta: '>Q/1-1\nA',
-        querySeqName: 'Q/1-1',
-        residueRange: { start: domain.start, end: domain.end },
-        highlights: [{ row: 'Q/1-1', start: 1, end: 1, label: 'residue 1' }],
-      },
-    },
-    initialSelection: { start: 0, end: 1 },
-    quiet: true,
-  }).url.length
-  return QUERY_URL_BUDGET - without - 64
-}
-
-// The largest placement whose encoded alignment fits `room`: whole with its
-// tree, whole without it, then thinned by steps, at each step with the tree
-// pruned to the rows that stay before without it. `place` runs the alignment
-// for a FASTA budget and an optional tree; `measure` is what the session would
-// pay to carry the result.
-export function fitPlacement(
-  place: (maxChars: number, withTree: boolean) => PlacedQuery,
-  room: number | undefined,
-  measure: (placed: PlacedQuery) => number,
-): PlacedQuery {
-  const whole = place(SNAPSHOT_FIELD_BUDGET, true)
-  if (room === undefined || measure(whole) <= room) {
-    return whole
-  }
-  let candidate = place(SNAPSHOT_FIELD_BUDGET, false)
-  let maxChars = whole.fasta.length
-  // kept falls monotonically as the budget does, so this ends at the anchor
-  // alone if nothing larger fits
-  while (measure(candidate) > room && candidate.kept > 1) {
-    maxChars = Math.floor(maxChars * 0.75)
-    const withTree = place(maxChars, true)
-    if (measure(withTree) <= room) {
-      return withTree
-    }
-    candidate = place(maxChars, false)
-  }
-  return candidate
-}
 
 // The Pfam seed of the domain a focus sits in, with the launched translation's
 // own domain segment placed in it as the linked row. Three reads, no job: the
@@ -150,23 +76,16 @@ export async function loadPfam(
     fetchPfamSeed(domain.pfam),
     fetchPfamTree(domain.pfam),
   ])
-  const placed = fitPlacement(
-    (maxChars, withTree) =>
-      placeQuery(proteinSequence, seed, {
-        queryName: queryLabel(symbol),
-        uniprotId,
-        window: {
-          start: domain.start - 1 - SEED_WINDOW,
-          end: domain.end + SEED_WINDOW,
-        },
-        newick: withTree ? tree : undefined,
-        maxChars,
-      }),
-    sessionInHash(structure.target)
-      ? undefined
-      : urlRoomForAlignment(structure, domain),
-    p => encodedSessionBytes({ msa: p.fasta, tree: p.newick }),
-  )
+  const placed = placeQuery(proteinSequence, seed, {
+    queryName: queryLabel(symbol),
+    uniprotId,
+    window: {
+      start: domain.start - 1 - SEED_WINDOW,
+      end: domain.end + SEED_WINDOW,
+    },
+    newick: tree,
+    maxChars: SNAPSHOT_FIELD_BUDGET,
+  })
   // A focused residue inside the segment is marked on the query row, in the
   // row's own coordinates.
   const highlights: MsaHighlight[] =
@@ -189,9 +108,7 @@ export async function loadPfam(
     : `${symbol} residues ${placed.domain.start}–${placed.domain.end} placed through ${placed.anchor.name} at ${Math.round(placed.anchor.identity * 100)}% identity.`
   const thinNote = placed.thinned
     ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch${placed.newick ? ', with the tree pruned to them' : '; the tree is left out with the rest'}.`
-    : tree && !placed.newick
-      ? ' The tree does not fit in a launch beside the rows and is left out.'
-      : ''
+    : ''
   return {
     source: {
       kind: 'inline',

@@ -1,60 +1,11 @@
 // Single source for which hosted JBrowse build every launch link on the site
-// points at. Staging tracks `main` so in-development view features (new
-// LaunchView options, bundled msaview/protein3d plugins) can be exercised before
-// release; production pins the released `latest`. Builders that need extra query
-// params compose on JBROWSE_BASE directly.
+// points at. The site targets `main`: the released v4.3.0 reads no session
+// hash, has no workspace layout tree and no LinearMultiSampleVariantDisplay,
+// and labels the NCBI GFF3 with UUIDs, and nothing here works around that any
+// more. Point this at `latest` once v5.0.0 publishes.
 import { features } from './features.ts'
 
-export const JBROWSE_BASE = features.staging
-  ? 'https://jbrowse.org/code/jb2/main'
-  : 'https://jbrowse.org/code/jb2/latest'
-
-// Does the build JBROWSE_BASE points at have LinearMultiSampleVariantDisplay?
-//
-// This is a capability of the HOST, not a feature of the site, and it is one a
-// launch cannot degrade gracefully over: a `displays[]` entry naming a display
-// type the host does not have fails the track config's MST union, which takes
-// down the whole spec session — the launch lands on "Select a view to launch"
-// with an error, rather than on the view minus one display. Measured 2026-08-06
-// against both hosted builds with the same probe: on `main` the display builds
-// with `renderingMode`/`jexlFilters` intact; on `latest` every form of the
-// declaration is rejected, including the bare `{ type, displayId }`, so it is
-// the type that is missing rather than a slot.
-//
-// Keyed on the same flag as the base url because that is what decides which
-// build is asked. DELETE this and inline the declaration once a released
-// `latest` carries the display — re-run the probe rather than assuming, since
-// the failure is silent from this side.
-export const HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY = features.staging
-
-// Does the build JBROWSE_BASE points at read a session-level workspace `layout`
-// tree (`useWorkspaces` + LayoutBranch/LayoutPanel/LayoutTab)?
-//
-// Same kind of fact as above, with a nastier failure: not a fatal, a rewrite of
-// the reader's own settings. Checked against the two hosts' source on
-// 2026-09-01: `main` restores the tree (app-core's WorkspaceLayout) and treats
-// `useWorkspaces` as a per-session override. v4.3.0 (`latest`) has no `layout`
-// field at all — its workspace is `dockviewLayout` — so MST drops the tree in
-// silence, and its `MultipleViews` autorun persists `useWorkspaces` to
-// localStorage, so one launch carrying `useWorkspaces: true` flips the reader's
-// preference for every later session on that host. So on a host without the
-// tree the session must not carry either field.
-//
-// DELETE this and emit the layout unconditionally once a released `latest`
-// restores it — `scripts/checkProteinLaunches.ts --host latest` reads the
-// localStorage key back and fails if it was written.
-export const HOST_HAS_WORKSPACE_LAYOUT = features.staging
-
-// Does the build read `#config=…&session=…` off the URL hash? Measured
-// 2026-09-01 with the protein browser's TP53 session on hg38: `main` hydrates
-// it from the hash; v4.3.0 ignores the hash outright and lands on "Select a
-// view to launch" with no error anywhere, while the same session in the query
-// string hydrates on both hosts (both views, structure aligned, exact match).
-// The hash is preferred where it works because it never leaves the browser —
-// no request line, so no CloudFront 8,192-byte limit — which is why a launch
-// that has to use the query string gets a length budget in proteinSession.ts.
-// DELETE this and always use the hash once a released `latest` reads it.
-export const HOST_READS_HASH_PARAMS = features.staging
+export const JBROWSE_BASE = 'https://jbrowse.org/code/jb2/main'
 
 // `config` is either site-relative (/ucsc/hg38/config.json) or an absolute URL
 // (a hosted hub config, or the merge API).
@@ -116,28 +67,4 @@ export function genarkConfigPath(accession: string) {
 // staging page link into the production bundle (or vice versa).
 export function retargetJbrowseUrl(url: string) {
   return url.replace(/^https:\/\/jbrowse\.org\/code\/jb2\/[^/]+/, JBROWSE_BASE)
-}
-
-// The gene-first launches (the /gene hub's table and figure) go to `main`
-// rather than to whatever JBROWSE_BASE pins, because those are the only launches
-// that open an NCBI RefSeq GFF3 panel and `latest` cannot draw one.
-//
-// `showOnlyGenes` and the label fallback chain that make that track readable
-// (hubtools/src/ncbiGff.ts) are a config slot and a jexl expression the released
-// v4.3.0 has no code for — the slot is dropped from the MST snapshot in silence.
-// Measured 2026-08-28 at the BRCA1 window on hg38: 116 top-level records, 22 of
-// them genes, and on `latest` the panel labels 33 of them with a bare UUID and
-// 51 with `id-GeneID:…`. The reader came for the gene.
-//
-// The trade is deliberate and temporary: `main` is a moving build, which is the
-// whole reason production pins a release, and this accepts that for two pages
-// until v5.0.0 publishes. DELETE this and its callers then — `latest` updates
-// itself, and JBROWSE_BASE is right for every launch on the site again.
-const GENE_TRACK_HOST = 'https://jbrowse.org/code/jb2/main'
-
-export function onGeneTrackHost(url: string) {
-  return url.replace(
-    /^https:\/\/jbrowse\.org\/code\/jb2\/[^/]+/,
-    GENE_TRACK_HOST,
-  )
 }

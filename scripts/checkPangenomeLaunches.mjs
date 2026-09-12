@@ -100,8 +100,7 @@ function retarget(url) {
   if (!wantStagingDisplay) {
     return out.toString()
   }
-  // Staging additionally declares the matrix display on the inlined callset;
-  // see HOST_HAS_MULTISAMPLE_VARIANT_DISPLAY in website/src/config/jbrowse.ts.
+  // Staging additionally declares the matrix display on the inlined callset.
   const session = out.searchParams.get('session')
   if (session?.startsWith('spec-')) {
     const spec = JSON.parse(session.slice('spec-'.length))

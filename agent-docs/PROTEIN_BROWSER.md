@@ -111,59 +111,32 @@ the field; a chip built before that shows no toggles.
   link is disabled while it does. Hidden when the 100-way alignment is the
   source, because that alignment fixes the transcript.
 
-## The session has to agree with the host it lands on
+## The session is built for `main`
 
-Production launches go to `latest` (v4.3.0 as of 2026-09-01) and staging to
-`main`, decided by `JBROWSE_BASE` in `website/src/config/jbrowse.ts`, and the
-session `proteinSession.ts` emits is not the same on both. Two facts about the
-hosts decide what it may carry:
-
-- **The workspace layout tree is `main`-only.** The side-by-side tiling
-  (`useWorkspaces: true` plus a `layout` of LayoutBranch/LayoutPanel/LayoutTab)
-  is read by `main`'s WorkspaceLayout. v4.3.0 has no `layout` field — its
-  workspace is `dockviewLayout` — so MST drops the tree in silence, and its
-  `MultipleViews` autorun persists the session's `useWorkspaces` into
-  localStorage: one launch flipped the reader's preference for every later
-  session on that host. `HOST_HAS_WORKSPACE_LAYOUT` gates both fields, and the
-  production session is the same three views stacked in one column. Delete the
-  constant once a released `latest` restores the tree.
-- **A GFF gene track is readable on `main` only.** `latest` labels the
-  full-resolution NCBI GFF3 with UUIDs (see `onGeneTrackHost`, and the
-  measurement beside it), so a session whose picked gene track is
-  `-ncbiGff`/`-ncbiRefSeqGff` — every GenArk-hosted genome, whose only gene
-  track that is — is routed to the gene-track host the way every `/orthologs`
-  launch already is (`isNcbiGffTrack` in `genomeTarget.ts`). That host has the
-  layout tree, so those sessions are tiled on production too. UCSC-hosted
-  genomes pick a bigBed track (`ncbiRefSeqSelect` first) and stay on `latest`.
+Every launch on the site goes to `main` (`JBROWSE_BASE` in
+`website/src/config/jbrowse.ts`), and the session `proteinSession.ts` emits
+assumes what `main` has: it rides in the url hash
+(`#config=…&session=encoded-…`, never sent to a server, so no request line
+limits it), it carries the workspace layout tree that tiles the structure beside
+the genome and alignment views, and it opens the full-resolution NCBI GFF3 gene
+track where that is the only one. Until 2026-09-12 the page also served the
+released v4.3.0, which reads no hash, has no layout tree, persists a session's
+`useWorkspaces` into the reader's localStorage, and labels the GFF3 with UUIDs;
+three host flags, a gene-track host route and an 8 KB query-string budget with a
+seed-thinning fit behind it worked around that, and all of it is gone. The one
+limit left is the msaview plugin's: its data model drops a snapshot field over
+50,000 characters, so a seed is placed against 45,000 FASTA characters
+(`SNAPSHOT_FIELD_BUDGET`) and BRAF's kinase family keeps 87 of 111 rows, tree
+pruned to them. Point `JBROWSE_BASE` at `latest` once v5.0.0 publishes.
 
 `ProteinBrowser`'s "ClinVar + AlphaMissense" depends on a file this repo
-generates rather than on the hosts: `genomeTarget.ts` reads a UCSC assembly's
+generates rather than on the host: `genomeTarget.ts` reads a UCSC assembly's
 track ids off `/ucsc/<db>/minimal.json`, so a track absent from
 `ucsc2jbrowse/src/createMinimalConfig.ts`'s `MINIMAL_TRACK_PATTERNS` is one the
 launch cannot open however the full config names it. `alphamissense` was missing
 until 2026-09-01, which is why the checkbox opened ClinVar alone. The pattern is
 in the list now; `configs-minimal/hg38.json` and `hg19.json` carry the track
 only after the pipeline regenerates and re-uploads them.
-
-### The hash is the third host difference, and it hid the other two
-
-Until 2026-09-01 the launch URL always carried the session in the hash
-(`#config=…&session=encoded-…`), for a good reason: a hash never leaves the
-browser, so there is no request line for CloudFront to refuse at 8,192 bytes.
-v4.3.0 does not read the hash at all. It lands on "Select a view to launch" with
-nothing in the console, which is also why neither the dropped layout nor the
-UUID gene labels had ever been _seen_ on `latest` — no launch had reached the
-point of showing them. The same session in the query string hydrates on both
-hosts: measured with TP53, both views open, the structure aligns as an exact
-match, and `useWorkspaces` stays `false`.
-
-`HOST_READS_HASH_PARAMS` (`config/jbrowse.ts`) picks `#` or `?`. A `?` launch
-inherits the request-line limit, so `buildSessionUrl` enforces
-`QUERY_URL_BUDGET` (8,000 bytes) and drops the inline alignment when the URL is
-over it, returning `alignmentOmitted: true` for the card to explain. The eight
-example genes are 0.9–6.0 KB without an alignment (DMD is the largest), so the
-genome and structure views always fit; a live 60-row EBI alignment does not, and
-on the current release it stays on the page rather than in the session.
 
 ## The session opens on something, and the page is where that is chosen
 
@@ -259,24 +232,10 @@ to, anchor first, and its tree is pruned to them (`pruneNewick`: a dropped leaf
 takes its edge, a node left with one child collapses into it with the lengths
 summed). The page says both things beside the alignment.
 
-What "fit" means is the host's (`fitPlacement` in `proteinAlignments.ts`). A
-launch on `main` carries the session in the hash and the limit is the msaview
-plugin's 50 KB snapshot field: 45,000 characters, which BRAF's kinase domain
-exceeds — PF07714 at 111 rows × 481 columns, 87 rows kept. A launch on `latest`
-carries it in the query string, where CloudFront's 8,192-byte request line is
-the limit, so the seed is cut to the room the url has once the genome, the
-structure and the MsaView's own shell are paid for: whole with its tree, else
-whole without the tree, else thinned by quarters, the pruned tree tried at each
-step before the rows alone — measured against the deflated, base64'd payload
-rather than a character count, because a protein alignment deflates to ~70% and
-a Newick tree hardly at all. NOTCH1 is why: its EGF seed is 4.9 KB of FASTA and
-2.8 KB of tree, which a character budget let through and `buildSessionUrl` then
-dropped whole at the door. The shell matters at the edge: the MsaView carries
-the transcript sliced to the domain as its connected feature, 294 bytes on BRAF,
-and a room measured off a session with no MsaView let a 26-row kinase seed
-through to be dropped the same way. TP53's own seed is 27 rows on `latest`
-against 38 on `main`, and BRAF's 19 (tree kept) against 87. A thinned seed is
-still the family where a dropped one is nothing.
+What "fit" means is the msaview plugin's snapshot field: 45,000 characters of
+FASTA, which BRAF's kinase domain exceeds — PF07714 at 111 rows × 481 columns,
+87 rows kept, tree pruned to them. A thinned seed is still the family where a
+dropped one is nothing.
 
 The embedded viewer is react-msaview 6.2, which marks columns but not a row's
 residues, so a residue focus reaches it as `highlightColumns` computed off the
@@ -322,17 +281,14 @@ the focus is a partner — and reads the MsaView back: no error, the row count t
 page placed, and a transcript mapping to the genome view. It needs a browser and
 live answers from six services, so it is run by hand — before promoting
 `features.proteinBrowser`, and after touching the resolution or session code.
-Its modules run with `features.staging` false, so it exercises the production
-session on whichever host it is pointed at; the staging shape (the layout tree
-itself) is pinned by `proteinSession.test.ts`. The alignment loaders live in
-`proteinAlignments.ts` rather than beside the React that shows them so the
-checker can import them under `--experimental-strip-types`, which does not read
-JSX.
+Its modules run with `features.staging` false, which changes only which config
+sibling a launch names. The alignment loaders live in `proteinAlignments.ts`
+rather than beside the React that shows them so the checker can import them
+under `--experimental-strip-types`, which does not read JSX.
 
-Run 2026-09-12 on `main`: all four focused chips boot, default and focused, the
-seed MsaView linked — TP53 with 28 rows, HBB 55, BRAF 20 with its pruned tree,
-NOTCH1 all 68 — the production budget, since the checker runs the production
-shape; the same launches from the staging page carry 38, 74, 88 and 68. The
+Run 2026-09-12 on `main`, after the site dropped v4.3.0 as a target: all four
+focused chips boot, default and focused, tiled, the seed MsaView linked — TP53
+with 38 rows, HBB 74, BRAF 88 with its tree pruned to them, NOTCH1 all 68. The
 first run that day failed every launch, and the cause was the checker, not the
 sessions: puppeteer's default viewport is 800×600, the structure view sits below
 the fold, and `main` never reported `protein-view-ready` there, while the same
@@ -341,39 +297,19 @@ at 1400×1400 now. Worth remembering the shape of it: a negative from the checke
 is a claim about the harness as much as about the session, and the debug script
 that settled it polled the model every five seconds instead of reading it once.
 
-## The url is not the only way to hand over a session
+## A share link was measured and not taken
 
-Measured 2026-09-12. Everything under "what fit means" is engineering around one
-fact: the session rides in the url, and on the production host that is a request
-line CloudFront caps at 8,192 bytes. jbrowse-web has carried a second route for
-years: `?session=share-<id>&password=<pw>`, the Share dialog's short link. The
-client AES-encrypts the session with a five-character password it keeps in the
-link, POSTs it (`FormData`: `session`, `dateShared`, `referer`) to
-`https://share.jbrowse.org/api/v1/share`, and gets an id back; the loader
-fetches `load?sessionId=` and decrypts. The endpoint answers a cross-origin
-preflight with `*`, and `encodeSessionParam('short', …)` in `@jbrowse/core` does
-the whole exchange.
-
-Tried from this page's own code with BRAF on V600: the kinase seed placed whole
-against the snapshot cap (87 of 111 rows, tree pruned to them — an inline url of
-24,794 bytes), shared in 1.9 s, and booted on `latest` in 24 s with three views,
-the MsaView at 88 rows and linked, the structure aligned as an exact match. No
-plugin change, no host change. What it costs: the launch becomes a POST at click
-rather than a link the card can hold ready, a dependency on share.jbrowse.org
-being up at that moment, and a copy of every launched session kept on that
-service (encrypted; the key stays in the url, which is what a reader who
-bookmarks it has). The page's own url stays the durable link, since it rebuilds
-the session.
-
-The limit that remains is the msaview plugin's: its data model drops a snapshot
-field over 50,000 characters, so BRAF still loses 24 rows in the hash and in a
-shared session alike. That one is a line in `jbrowse-plugin-msaview`.
+Measured 2026-09-12, while the released v4.3.0 was still a target and the
+query-string budget was live: jbrowse-web's `?session=share-<id>&password=<pw>`
+route (AES-encrypted session POSTed to `share.jbrowse.org/api/v1/share`,
+cross-origin, `encodeSessionParam('short', …)` in `@jbrowse/core`) carried the
+whole BRAF kinase seed session — 24,794 bytes inline — in 1.9 s and booted it on
+`latest` with the MsaView at 88 rows and linked. It was not adopted because
+targeting `main` alone made the hash do the same with no POST, no external
+service and no stored copy of the session. If a release ever stops reading the
+hash again, this is the route.
 
 ## Still open
-
-- Whether to launch through `share-` links (above) and delete the url budget,
-  the thinning and `HOST_READS_HASH_PARAMS` with it. Not done; it is a change in
-  what a launch is, not in how big it can be.
 
 - The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB
   unfiltered and 326 KB with `?provider=pdbe` (lowercase; `PDBe` 404s), which
