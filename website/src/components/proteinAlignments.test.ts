@@ -43,6 +43,14 @@ test('fitPlacement: rows are thinned by steps until the alignment fits', () => {
   assert.strictEqual(placed.thinned, true)
 })
 
+test('fitPlacement: a thinned alignment keeps its tree when the tree fits beside the rows', () => {
+  const cheapTree = (p: PlacedQuery) => p.fasta.length + (p.newick ? 5 : 0)
+  const placed = fitPlacement(fakePlace, 62, cheapTree)
+  assert.strictEqual(placed.kept, 56)
+  assert.strictEqual(placed.newick, 'tree')
+  assert.strictEqual(placed.thinned, true)
+})
+
 test('fitPlacement: a room nothing fits ends at the anchor alone', () => {
   const placed = fitPlacement(fakePlace, 0, measure)
   assert.strictEqual(placed.kept, 1)

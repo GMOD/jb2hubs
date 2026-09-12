@@ -14,11 +14,19 @@ import { HelpDialog } from './ProteinBrowserDialogs.tsx'
 import ProteinDomainCartoon from './ProteinDomainCartoon.tsx'
 import ProteinLaunchCard from './ProteinLaunchCard.tsx'
 import ProteinMap, { type PartnersState } from './ProteinMap.tsx'
-import { type ProteinExample, cacheKey, examplesFor } from './geneExamples.ts'
+import {
+  type ExampleFocus,
+  type ProteinExample,
+  cacheKey,
+  exampleMatching,
+  examplesFor,
+  focusFromParams,
+  focusToParams,
+} from './geneExamples.ts'
 import { resolveOrthologSymbol } from './geneSearch.ts'
 import { type GeneStructure, fetchGeneStructure } from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
-import { COMMON_SPECIES, geneUrl, syncGeneUrl } from './orthologSearchUtils.ts'
+import { COMMON_SPECIES, geneUrl } from './orthologSearchUtils.ts'
 import {
   type AlignSource,
   loadBuilt,
@@ -33,6 +41,7 @@ import {
   fetchInterfaceRegions,
   focusFamily,
   focusFromPreset,
+  presetOf,
   sameFocus,
 } from './proteinFeatures.ts'
 import {
@@ -74,12 +83,28 @@ function usable(entry: CachedExample | undefined) {
   return entry && (entry.alignment || canAlign(entry.panel)) ? entry : undefined
 }
 
-// client:only island, so window is available for the shareable ?gene=&ref= link.
+// client:only island, so window is available for the shareable link.
 function paramsFromUrl() {
   const p = new URLSearchParams(window.location.search)
   const ref = Number(p.get('ref'))
   const known = COMMON_SPECIES.some(s => s.taxId === ref)
-  return { gene: p.get('gene')?.trim() ?? '', ref: known ? ref : 9606 }
+  return {
+    gene: p.get('gene')?.trim() ?? '',
+    ref: known ? ref : 9606,
+    focus: focusFromParams(p),
+  }
+}
+
+// The same shape written onto the page, so what is on screen stays a link:
+// the gene, the species, and what the session opens on.
+function syncProteinUrl(
+  symbol: string,
+  taxId: number,
+  focus: ExampleFocus | undefined,
+) {
+  const p = new URLSearchParams({ gene: symbol, ref: String(taxId) })
+  focusToParams(focus, p)
+  window.history.replaceState(null, '', `?${p}`)
 }
 
 function speciesLabel(taxId: number) {
@@ -165,15 +190,19 @@ export default function ProteinBrowser() {
   // SWR key, so it changes only on Explore/Enter/an example chip. Seeded from the
   // page url, which is what makes a shared ?gene=&ref= link resolve on mount —
   // this island is client:only, so window is readable during the first render.
-  const [query, setQuery] = useState(paramsFromUrl)
+  const [arrival] = useState(paramsFromUrl)
+  const [query, setQuery] = useState({ gene: arrival.gene, ref: arrival.ref })
   const [gene, setGene] = useState(query.gene)
   const [taxId, setTaxId] = useState(query.ref)
   const [progress, setProgress] = useState<Progress>()
   const [follow, setFollow] = useState<Follow>()
   const [helpOpen, setHelpOpen] = useState(false)
   // The chip the current query came from, when it did: its focus and story
-  // are applied to the results. A typed query has none.
-  const [example, setExample] = useState<ProteinExample>()
+  // are applied to the results. A typed query has none; a link that names a
+  // chip's gene and focus is that chip.
+  const [example, setExample] = useState(() =>
+    exampleMatching(arrival.ref, arrival.gene, arrival.focus),
+  )
   // Which species switch is the latest, so a slower earlier lookup cannot land
   // on top of it. A new query supersedes a pending switch the same way.
   const followToken = useRef(0)
@@ -211,7 +240,7 @@ export default function ProteinBrowser() {
       } else {
         setQuery({ gene: sym, ref })
       }
-      syncGeneUrl(sym, ref)
+      syncProteinUrl(sym, ref, chip?.focus)
     }
   }
 
@@ -235,7 +264,7 @@ export default function ProteinBrowser() {
               setFollow({ ref, symbol, outcome: 'none' })
               setGene('')
               setQuery({ gene: '', ref })
-              syncGeneUrl('', ref)
+              syncProteinUrl('', ref, undefined)
             }
           }
         },
@@ -377,6 +406,11 @@ export default function ProteinBrowser() {
               ? example
               : undefined
           }
+          linkFocus={
+            query.gene === arrival.gene && query.ref === arrival.ref
+              ? arrival.focus
+              : undefined
+          }
           onProgress={message => {
             setProgress({ key: queryKey(query.gene, query.ref), message })
           }}
@@ -431,15 +465,18 @@ function GeneResults({
   status,
   onProgress,
   example,
+  linkFocus,
 }: Resolved & {
   taxId: number
   status: string
   onProgress: (s: string) => void
   example?: ProteinExample
+  // what the link the reader arrived by named, when it was not a chip's
+  linkFocus?: ExampleFocus
 }) {
   const { symbol, uniprotId } = structure
   const panel = 'panel' in panelOutcome ? panelOutcome.panel : undefined
-  const preset = example?.focus
+  const preset = example?.focus ?? linkFocus
 
   // The map's regions: InterPro's, on the query protein alone, so they are on
   // screen in a second or two. The partner list is PDBe's and can run to half a
@@ -485,6 +522,7 @@ function GeneResults({
       : (focusChoice ?? focusFromPreset(preset, regions, partners))
   const setFocus = (next: Focus | undefined) => {
     setFocusChoice(next ?? null)
+    syncProteinUrl(symbol, taxId, presetOf(next))
   }
   const family = focusFamily(focus, regions ?? [])
 

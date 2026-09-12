@@ -3,6 +3,7 @@ import { test } from 'node:test'
 
 import {
   graftLeaf,
+  pruneNewick,
   localAlign,
   parseStockholm,
   placeQuery,
@@ -148,7 +149,7 @@ test('placeQuery: a window confines the search but coordinates stay on the whole
   assert.strictEqual(placed.queryName, 'GENE/29-36')
 })
 
-test('placeQuery: a budget keeps the anchor and the rows nearest the query, and drops the tree', () => {
+test('placeQuery: a budget keeps the anchor and the rows nearest the query, and prunes the tree to them', () => {
   const seed = parseStockholm(stockholm)
   const placed = placeQuery('ACDEFGHK', seed, {
     queryName: 'GENE',
@@ -161,7 +162,23 @@ test('placeQuery: a budget keeps the anchor and the rows nearest the query, and 
   assert.strictEqual(placed.total, 3)
   assert.strictEqual(placed.thinned, true)
   assert.ok(placed.fasta.includes('>ROW1_HUMAN/10-17'))
-  assert.strictEqual(placed.newick, undefined)
+  const rows = placed.fasta.match(/^>(\S+)/gm)!.map(r => r.slice(1))
+  const leaves = placed.newick?.match(/[A-Z0-9_]+\/\d+-\d+/g) ?? []
+  assert.deepStrictEqual(leaves.sort(), rows.sort())
+})
+
+test('pruneNewick: a dropped leaf takes its edge, a lone child inherits the sum', () => {
+  const tree = '((A:0.1,B:0.2)ab:0.3,(C:0.4,D:0.5):0.6);'
+  assert.strictEqual(
+    pruneNewick(tree, new Set(['A', 'C', 'D'])),
+    '(A:0.4,(C:0.4,D:0.5):0.6);',
+  )
+  assert.strictEqual(pruneNewick(tree, new Set(['A', 'B'])), '(A:0.1,B:0.2)ab;')
+  assert.strictEqual(pruneNewick(tree, new Set(['A', 'C', 'Z'])), undefined)
+  assert.strictEqual(
+    pruneNewick('(A:0.1,B:0.2)ab:0.3;', new Set(['A', 'B'])),
+    '(A:0.1,B:0.2)ab;',
+  )
 })
 
 test('placeQuery: nothing alignable throws rather than emitting an empty row', () => {

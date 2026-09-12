@@ -249,7 +249,7 @@ export interface PlacedQuery {
   // how many seed rows the alignment carries, of how many the seed has
   kept: number
   total: number
-  // whether rows were dropped to fit `maxChars` (and the tree with them)
+  // whether rows were dropped to fit `maxChars`
   thinned: boolean
   // whether the anchor row was the query protein itself, and so replaced
   replaced: boolean
@@ -267,8 +267,7 @@ export interface PlaceOptions {
   window?: { start: number; end: number }
   newick?: string
   // largest FASTA the caller can carry; rows least like the query are dropped
-  // (anchor kept) to fit, and the tree with them, since its leaves would not
-  // match
+  // (anchor kept) to fit, and the tree is pruned to what stays
   maxChars?: number
 }
 
@@ -301,6 +300,81 @@ export function graftLeaf(newick: string, beside: string, added: string) {
 
 export function renameLeaf(newick: string, from: string, to: string) {
   return newick.replace(leafPattern(from), to)
+}
+
+interface NewickNode {
+  name: string
+  length?: string
+  children?: NewickNode[]
+}
+
+function parseNewick(text: string): NewickNode {
+  let pos = 0
+  const label = () => {
+    const start = pos
+    while (pos < text.length && !'(),:;'.includes(text[pos]!)) {
+      pos++
+    }
+    return text.slice(start, pos).trim()
+  }
+  const node = (): NewickNode => {
+    const out: NewickNode = { name: '' }
+    if (text[pos] === '(') {
+      out.children = []
+      do {
+        pos++
+        out.children.push(node())
+      } while (text[pos] === ',')
+      pos++
+    }
+    out.name = label()
+    if (text[pos] === ':') {
+      pos++
+      out.length = label()
+    }
+    return out
+  }
+  return node()
+}
+
+function serializeNewick(n: NewickNode): string {
+  const kids = n.children
+    ? `(${n.children.map(serializeNewick).join(',')})`
+    : ''
+  return `${kids}${n.name}${n.length === undefined ? '' : `:${n.length}`}`
+}
+
+const sumLengths = (a?: string, b?: string) =>
+  a === undefined ? b : b === undefined ? a : String(Number(a) + Number(b))
+
+// The tree cut down to the named leaves: a dropped leaf takes its edge with
+// it, and a node left with one child collapses into that child with the two
+// edge lengths summed. Undefined when the named leaves are not all in it,
+// since a tree missing a row misdraws the alignment.
+export function pruneNewick(newick: string, keep: Set<string>) {
+  let found = 0
+  const prune = (n: NewickNode): NewickNode | undefined => {
+    if (!n.children) {
+      if (!keep.has(n.name)) {
+        return undefined
+      }
+      found++
+      return n
+    }
+    const children = n.children.flatMap(c => prune(c) ?? [])
+    if (children.length === 0) {
+      return undefined
+    }
+    if (children.length === 1) {
+      const [only] = children
+      return { ...only!, length: sumLengths(n.length, only!.length) }
+    }
+    return { ...n, children }
+  }
+  const root = prune(parseNewick(newick))
+  return root && found === keep.size
+    ? `${serializeNewick({ ...root, length: undefined })};`
+    : undefined
 }
 
 // Puts the query into the seed: aligns it against every row, anchors on the
@@ -401,14 +475,18 @@ export function placeQuery(
     `>${queryRow}\n${project(undefined, true)}`,
     ...kept.map(s => `>${s.row.name}\n${project(s.row.aligned, false)}`),
   ].join('\n')
-  // A tree the anchor is not a leaf of cannot take the query, and a tree missing
-  // a row misdraws the alignment; no tree is the safe answer in both cases.
-  const tree =
-    newick && !thinned && leafPattern(anchor.name).test(newick)
-      ? replaced
-        ? renameLeaf(newick, anchor.name, queryRow)
-        : graftLeaf(newick, anchor.name, queryRow)
+  const leaves = new Set([anchor.name, ...kept.map(s => s.row.name)])
+  const base =
+    newick && leafPattern(anchor.name).test(newick)
+      ? thinned
+        ? pruneNewick(newick, leaves)
+        : newick
       : undefined
+  const tree = base
+    ? replaced
+      ? renameLeaf(base, anchor.name, queryRow)
+      : graftLeaf(base, anchor.name, queryRow)
+    : undefined
   return {
     fasta,
     newick: tree,

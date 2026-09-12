@@ -379,9 +379,27 @@ export function focusFromPreset(
     }
   }
   const region = preset?.pfam
-    ? regions?.find(r => r.pfam === preset.pfam)
+    ? (regions?.find(r => r.pfam === preset.pfam && r.start === preset.start) ??
+      regions?.find(r => r.pfam === preset.pfam))
     : preset?.partner
       ? partners?.find(r => r.accession === preset.partner)
       : undefined
   return region ? { kind: 'region', region } : undefined
+}
+
+// A focus in the shape a chip or a link names one, for the url. A cartoon
+// domain or a site has no such name and is not carried.
+export function presetOf(focus: Focus | undefined): ExampleFocus | undefined {
+  if (!focus) {
+    return undefined
+  }
+  if (focus.kind === 'residue') {
+    return { residue: focus.position, residueLabel: focus.label }
+  }
+  const { region } = focus
+  return region.kind === 'interface' && region.accession
+    ? { partner: region.accession }
+    : region.pfam
+      ? { pfam: region.pfam, start: region.start }
+      : undefined
 }

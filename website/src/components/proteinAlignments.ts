@@ -90,10 +90,10 @@ function urlRoomForAlignment(structure: GeneStructure) {
 }
 
 // The largest placement whose encoded alignment fits `room`: whole with its
-// tree, then whole without the tree, then thinned by steps. `place` runs the
-// alignment for a FASTA budget and an optional tree; `measure` is what the
-// session would pay to carry the result. Rows before tree, because the rows are
-// the family and the tree is how they are drawn.
+// tree, whole without it, then thinned by steps, at each step with the tree
+// pruned to the rows that stay before without it. `place` runs the alignment
+// for a FASTA budget and an optional tree; `measure` is what the session would
+// pay to carry the result.
 export function fitPlacement(
   place: (maxChars: number, withTree: boolean) => PlacedQuery,
   room: number | undefined,
@@ -109,6 +109,10 @@ export function fitPlacement(
   // alone if nothing larger fits
   while (measure(candidate) > room && candidate.kept > 1) {
     maxChars = Math.floor(maxChars * 0.75)
+    const withTree = place(maxChars, true)
+    if (measure(withTree) <= room) {
+      return withTree
+    }
     candidate = place(maxChars, false)
   }
   return candidate
@@ -168,7 +172,7 @@ export async function loadPfam(
     ? `${symbol} is itself a seed member (${placed.anchor.name}); its row is the linked one.`
     : `${symbol} residues ${placed.domain.start}–${placed.domain.end} placed through ${placed.anchor.name} at ${Math.round(placed.anchor.identity * 100)}% identity.`
   const thinNote = placed.thinned
-    ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch; the tree is left out with the rest.`
+    ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch${placed.newick ? ', with the tree pruned to them' : '; the tree is left out with the rest'}.`
     : tree && !placed.newick
       ? ' The tree does not fit in a launch beside the rows and is left out.'
       : ''

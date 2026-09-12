@@ -13,6 +13,7 @@ import {
 } from './geneStructure.ts'
 import { type Focus, focusLabel, focusRange } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
+import { fetchSiftsSegments, toAuthorRange } from './siftsNumbering.ts'
 import {
   type AlphaFoldModel,
   fetchAlphaFoldModels,
@@ -131,11 +132,10 @@ export default function ProteinLaunchCard({
     LIVE_QUERY,
   )
 
-  // One memo for everything derived, because building the url deflates the
-  // whole inline alignment and the card re-renders on every progress message
-  // the live alignment posts. Every input is state, a prop, or SWR data, all of
-  // which hold their identity between renders.
-  const launch = useMemo(() => {
+  // Memoised, because the card re-renders on every progress message the live
+  // alignment posts. Every input is state, a prop, or SWR data, all of which
+  // hold their identity between renders.
+  const pick = useMemo(() => {
     // The 100-way carries its own transcript and query protein; swapping them
     // in here is what keeps the launched session's three views on one
     // coordinate space, rather than pairing that alignment with a different
@@ -170,6 +170,34 @@ export default function ProteinLaunchCard({
         : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
           ? { pdbId: chosen }
           : undefined
+    const range = focus ? focusRange(focus) : undefined
+    return { launched, model, shown, complexIds, chosen, primary, range }
+  }, [
+    structure,
+    isoform,
+    isDefaultIsoform,
+    fetchedTranslation,
+    alignment,
+    choice,
+    experimental,
+    focus,
+  ])
+  const { launched, model, shown, complexIds, chosen, primary, range } = pick
+
+  // A PDB entry is lit by author numbering, which SIFTS maps the UniProt range
+  // onto per chain: the same numbers for most entries, one behind for a chain
+  // numbered from the mature protein (haemoglobin), or a construct's own.
+  const pdbId = primary && 'pdbId' in primary ? primary.pdbId : undefined
+  const { data: sifts, isLoading: numbering } = useSWRImmutable(
+    range && pdbId && uniprotId ? (['sifts', pdbId, uniprotId] as const) : null,
+    ([, pdb, acc]) => fetchSiftsSegments(pdb, acc),
+    LIVE_QUERY,
+  )
+  const author = range && sifts ? toAuthorRange(sifts, range) : undefined
+
+  // Building the url deflates the whole inline alignment, so it is memoised on
+  // its own.
+  const launch = useMemo(() => {
     const found = (extras ?? []).flatMap(e => (e.model ? [e.model] : []))
     const missingModels = (extras ?? [])
       .filter(e => !e.model)
@@ -181,9 +209,7 @@ export default function ProteinLaunchCard({
     // (MANE, else longest), which need not be the launched transcript's; the
     // row is matched by accession, and by length where the accession cannot
     // agree — a PANTHER row is a UniProt entry, and the 100-way's transcript
-    // has no RefSeq protein to name. A PDB entry is lit by author numbering,
-    // which is the UniProt numbering for nearly every entry, and is what a
-    // paper cites either way.
+    // has no RefSeq protein to name.
     const modelExact =
       chosen === 'alphafold' &&
       !!model &&
@@ -197,14 +223,7 @@ export default function ProteinLaunchCard({
     const focusExact = fromCartoon
       ? modelExact && rowExact
       : modelExact && canonicalModel
-    const range = focus ? focusRange(focus) : undefined
     return {
-      launched,
-      model,
-      shown,
-      complexIds,
-      chosen,
-      primary,
       found,
       missingModels,
       modelExact,
@@ -218,7 +237,7 @@ export default function ProteinLaunchCard({
         ...(range && chosen === 'alphafold'
           ? { initialSelection: { start: range.start - 1, end: range.end } }
           : {}),
-        ...(range && chosen !== 'alphafold' ? { initialResidues: range } : {}),
+        ...(range && pdbId ? { initialResidues: author ?? range } : {}),
         collapse,
         flip,
         msa: alignment?.source,
@@ -229,13 +248,15 @@ export default function ProteinLaunchCard({
       }),
     }
   }, [
-    structure,
+    launched,
+    model,
+    chosen,
+    primary,
+    range,
+    pdbId,
+    author,
     isoform,
-    isDefaultIsoform,
-    fetchedTranslation,
     alignment,
-    choice,
-    experimental,
     extras,
     queryRow,
     focus,
@@ -245,12 +266,6 @@ export default function ProteinLaunchCard({
     quiet,
   ])
   const {
-    launched,
-    model,
-    shown,
-    complexIds,
-    chosen,
-    primary,
     found,
     missingModels,
     modelExact,
@@ -456,8 +471,14 @@ export default function ProteinLaunchCard({
                 ? 'needs a structure'
                 : focusExact
                   ? 'lit on load in all three views'
-                  : chosen !== 'alphafold'
-                    ? 'lit by author residue number, as the entry is cited'
+                  : pdbId
+                    ? numbering
+                      ? 'reading how the entry numbers its chains'
+                      : author
+                        ? author.shift
+                          ? `lit as ${author.start === author.end ? author.start : `${author.start}–${author.end}`} in chain ${author.chain}, which numbers ${Math.abs(author.shift)} ${author.shift < 0 ? 'behind' : 'ahead of'} UniProt`
+                          : `lit on load; chain ${author.chain} is numbered as UniProt is`
+                        : 'not in this entry: no chain covers the range'
                     : !modelExact
                       ? 'approximate: the model is a different isoform'
                       : fromCartoon
@@ -471,8 +492,10 @@ export default function ProteinLaunchCard({
       </div>
 
       <div className="msv-actions">
-        {translating ? (
-          <span className="msv-open msv-open-disabled">Resolving isoform…</span>
+        {translating || numbering ? (
+          <span className="msv-open msv-open-disabled">
+            {translating ? 'Resolving isoform…' : 'Resolving numbering…'}
+          </span>
         ) : (
           <a
             className="msv-open"
