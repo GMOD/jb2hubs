@@ -282,9 +282,15 @@ interface RootModelState {
   session?: { views?: ViewState[] }
 }
 
+// Tall enough for every view of a stacked session to be on screen. Measured
+// 2026-09-12 on `main`: the same TP53 launch reports `protein-view-ready` and
+// an exact alignment in 6 s at 1400×1000, and never at puppeteer's default
+// 800×600, where the structure view sits below the fold — so every launch
+// read as a timeout, or as a structure that never aligned.
 const browser = await launch({
   executablePath: findChrome(),
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
+  defaultViewport: { width: 1400, height: 1400 },
 })
 
 let failures = 0

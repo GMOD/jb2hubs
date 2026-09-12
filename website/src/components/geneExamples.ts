@@ -67,7 +67,7 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       note: 'Tumour suppressor — the TAD is missing in most fish, TAD2 is primate-only',
       focus: { residue: 248, residueLabel: 'R248' },
       story:
-        'R248 is among the most mutated residues in human cancer. It sits in the DNA-binding domain, whose Pfam seed shows how far the arginine is kept across the family; PDBe’s partner list has the DNA it reaches into and the MDM2 that binds the other end of the protein.',
+        'R248 is among the most mutated residues in human cancer. It sits in the DNA-binding domain, whose Pfam seed shows how far the arginine is kept across the family; PDBe’s partner list has the DNA it reaches into and the HPV E6 protein that marks p53 for degradation.',
     },
     {
       symbol: 'BRAF',
