@@ -918,8 +918,8 @@ unopened broken track perfectly cleanly:
   `buildBigMafTrack.ts` had always had right and `mergeBigFileTracks.ts` had
   wrong.
 
-Two properties of `checkIfFileAccessible` are load-bearing, and both were
-broken:
+Three properties of `checkIfFileAccessible` are load-bearing, and each was
+broken in turn:
 
 - **The caller passes the assembly.** It used to guess with a regex over seven
   families (`hg\d+|mm\d+|dm\d+|ce\d+|sacCer\d+|danRer\d+|hs\d+`) and return
@@ -930,6 +930,17 @@ broken:
   hgdownload wobble mid-run would have stripped tracks off every assembly it
   touched and kept them off for a quarter. A timeout or 5xx now keeps the track
   and caches nothing. `checkIfFileAccessible.test.ts` pins this.
+- **But a transient answer is asked again**, three times, before it counts as
+  one. "Keep the track, cache nothing" is right for a stalled hgdownload and
+  wrong for a blip, and one attempt could not tell them apart: on 2026-09-13
+  hg38's `alphaGenome` composite lost a single `TypeError: fetch failed` on
+  `/gbdb/hg38/_alphaGenome/a.bw` while `c.bw`, `g.bw` and `t.bw` beside it
+  answered 404 in the same second, so the one file of the four that upstream
+  does not publish is the one that kept its track — the promoterAi shape again,
+  from the opposite direction. Nothing was cached either, so the config shipped
+  a 404 that only the budgeted canary would have found, weeks later. A
+  definitive answer (any 4xx but 408/429) still costs exactly one request; only
+  the failing path retries.
 
 ### The budget is the point, not a limitation
 

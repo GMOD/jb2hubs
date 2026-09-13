@@ -46,6 +46,17 @@ function stubFetch(reply: (target: string) => Promise<unknown>) {
 const responds = (status: number) => () =>
   Promise.resolve({ ok: status >= 200 && status < 300, status })
 const throws = (message: string) => () => Promise.reject(new Error(message))
+// The blip: one failed attempt, then upstream answers.
+const thenResponds = (message: string, status: number) => {
+  let first = true
+  return () => {
+    if (first) {
+      first = false
+      return Promise.reject(new Error(message))
+    }
+    return Promise.resolve({ ok: status >= 200 && status < 300, status })
+  }
+}
 
 beforeEach(() => {
   cwd = process.cwd()
@@ -94,7 +105,7 @@ describe('checkIfFileAccessible', () => {
     const assembly = nextAssembly()
     stubFetch(responds(503))
     assert.equal(
-      await checkIfFileAccessible({ url, assembly }),
+      await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
       true,
       'a server error says nothing about whether the file exists',
     )
@@ -104,7 +115,38 @@ describe('checkIfFileAccessible', () => {
   it('keeps the track when the fetch throws, and caches nothing', async () => {
     const assembly = nextAssembly()
     stubFetch(throws('connect ETIMEDOUT'))
-    assert.equal(await checkIfFileAccessible({ url, assembly }), true)
+    assert.equal(
+      await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
+      true,
+    )
+    assert.deepEqual(readCache(assembly), {})
+    assert.equal(calls.length, 3, 'it asked again before giving up')
+  })
+
+  // hg38's alphaGenome composite: `a.bw` lost one `TypeError: fetch failed`
+  // while c/g/t beside it answered 404 in the same second, so the only one of
+  // the four that shipped was the one nothing had managed to ask about. A blip
+  // is not a stall, and the second attempt gets the same 404 the others did.
+  it('asks again after a blip, and blocks the 404 underneath it', async () => {
+    const assembly = nextAssembly()
+    stubFetch(thenResponds('fetch failed', 404))
+    assert.equal(
+      await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
+      false,
+    )
+    assert.equal(calls.length, 2)
+    assert.equal(readCache(assembly)[url].blocked, true)
+  })
+
+  // A 403 is a decision, not a bad day: asking twice gets the same answer.
+  it('does not retry a definitive answer', async () => {
+    const assembly = nextAssembly()
+    stubFetch(responds(403))
+    assert.equal(
+      await checkIfFileAccessible({ url, assembly, retryDelayMs: 0 }),
+      true,
+    )
+    assert.equal(calls.length, 1)
     assert.deepEqual(readCache(assembly), {})
   })
 

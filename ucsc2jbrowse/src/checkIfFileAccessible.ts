@@ -100,6 +100,59 @@ function saveCheckResult(
   }
 }
 
+const PROBE_ATTEMPTS = 3
+const PROBE_RETRY_DELAY_MS = 2000
+
+// Whether upstream has answered the question, so asking again would only get
+// the same answer. 408 and 429 are the two 4xx that explicitly mean "ask
+// again"; everything else in that range is a decision, and a 5xx or a thrown
+// connection error is not an answer at all. The same split hubtools' myfetch
+// draws, for the same reason.
+function answeredDefinitively(status: number) {
+  return status < 500 && status !== 408 && status !== 429
+}
+
+type ProbeResult = { response: Response } | { unreachable: unknown }
+
+/**
+ * HEADs a url until upstream answers, or until the attempts run out.
+ *
+ * One attempt was enough to ship a 404. On 2026-09-13 hg38's alphaGenome
+ * composite lost a single `TypeError: fetch failed` on `a.bw` while `c.bw`,
+ * `g.bw` and `t.bw` beside it answered 404 in the same second, so the one file
+ * of the four that upstream does not publish is the one that kept its track --
+ * and, nothing having been cached, it stayed in the config until a later run
+ * happened to probe it again. "Keep the track, cache nothing" is the right
+ * answer to a stalled hgdownload and the wrong one to a blip; telling them
+ * apart costs two more requests, and only on the failing path.
+ */
+async function probe(key: string, retryDelayMs: number): Promise<ProbeResult> {
+  let unreachable: unknown
+  for (let i = 0; i < PROBE_ATTEMPTS; i++) {
+    if (i > 0) {
+      await new Promise(resolve => setTimeout(resolve, retryDelayMs * i))
+    }
+    try {
+      // hgdownload's documented failure is a connection that completes and
+      // then never answers, and node's fetch waits on that indefinitely, so a
+      // probe that should have taken 200ms hangs the whole config build
+      // instead. This is the busiest fetch in either pipeline: one per
+      // big-file track on a cold cache.
+      const response = await fetch(key, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+      })
+      if (response.ok || answeredDefinitively(response.status)) {
+        return { response }
+      }
+      unreachable = `HTTP ${response.status}`
+    } catch (error) {
+      unreachable = error
+    }
+  }
+  return { unreachable }
+}
+
 /**
  * HEADs a URL and remembers the answer, so a file upstream does not publish
  * becomes a track we drop rather than a track that 404s in production.
@@ -123,10 +176,13 @@ export async function checkIfFileAccessible({
   url,
   assembly,
   trackName,
+  retryDelayMs = PROBE_RETRY_DELAY_MS,
 }: {
   url: string
   assembly: string
   trackName?: string
+  // Only the tests pass this, to spend their transient cases in no time.
+  retryDelayMs?: number
 }) {
   if (process.env.CHECK_404) {
     // One key per file, whichever spelling the caller had. Callers pass a bare
@@ -147,47 +203,33 @@ export async function checkIfFileAccessible({
       }
     }
 
-    try {
-      // The catch below is the right answer to a stalled hgdownload -- keep the
-      // track, cache nothing -- and without a deadline it was unreachable.
-      // hgdownload's documented failure is a connection that completes and then
-      // never answers, and node's fetch waits on that indefinitely, so a probe
-      // that should have taken 200ms hangs the whole config build instead. This
-      // is the busiest fetch in either pipeline: one per big-file track on a
-      // cold cache.
-      const response = await fetch(key, {
-        method: 'HEAD',
-        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-      })
-
+    const result = await probe(key, retryDelayMs)
+    if ('response' in result) {
+      const { response } = result
       if (response.ok) {
         saveCheckResult(assembly, key, false, trackName)
         return true
-      }
-
-      // Only upstream saying the file is not there counts as blocked. A 5xx or
-      // a rate limit is upstream having a bad day, and recording it would drop
-      // the track and then decline to re-check for 90 days — so a single
-      // hgdownload outage during a pipeline run would quietly strip tracks off
-      // every assembly it touched and keep them off for a quarter. The same
-      // 404-vs-transient distinction mirrorSidecars.ts draws, for the same
-      // reason.
-      if (response.status === 404 || response.status === 410) {
+      } else if (response.status === 404 || response.status === 410) {
+        // Only upstream saying the file is not there counts as blocked. A 5xx
+        // or a rate limit is upstream having a bad day, and recording it would
+        // drop the track and then decline to re-check for 90 days — so a single
+        // hgdownload outage during a pipeline run would quietly strip tracks
+        // off every assembly it touched and keep them off for a quarter. The
+        // same 404-vs-transient distinction mirrorSidecars.ts draws, for the
+        // same reason.
         console.error(`File not published (${response.status}): ${url}`)
         saveCheckResult(assembly, key, true, trackName)
         return false
+      } else {
+        console.error(
+          `Inconclusive (${response.status}), keeping the track and not caching: ${url}`,
+        )
       }
-
-      console.error(
-        `Inconclusive (${response.status}), keeping the track and not caching: ${url}`,
-      )
-      return true
-    } catch (error) {
+    } else {
       // A timeout or a refused connection says nothing about the file.
       console.error(
-        `Could not reach upstream, keeping the track and not caching: ${url} (${error})`,
+        `Could not reach upstream in ${PROBE_ATTEMPTS} attempts, keeping the track and not caching: ${url} (${result.unreachable})`,
       )
-      return true
     }
   }
   return true
