@@ -5,11 +5,10 @@
 # Downloads chain files and converts them to PIF (Pairwise Indexed PAF) format.
 # This script can handle two different sources for chain files: 'liftOver' and 'vs'.
 #
-# Usage: ./createChainTrackPifs.sh <source> <assembly> [outdir] [liftover_base_url]
-#   source:            'liftOver' or 'vs'. This determines the URL and directory structure.
-#   assembly:          The assembly name (e.g., hg38).
-#   outdir:            The root output directory for all assemblies. Defaults to UCSC_BUILT_DIR.
-#   liftover_base_url: Optional. Custom base URL for liftOver files. Overrides the default goldenPath URL.
+# Usage: ./createChainTrackPifs.sh <source> <assembly> [outdir]
+#   source:   'liftOver' or 'vs'. This determines the URL and directory structure.
+#   assembly: The assembly name (e.g., hg38).
+#   outdir:   The root output directory for all assemblies. Defaults to UCSC_BUILT_DIR.
 #
 # `jbrowse make-pif` emits the no-CIGAR coarse tier (uppercase T/Q rows) by
 # default since the coarse-tier release, so whole-genome synteny views auto-
@@ -30,15 +29,14 @@ UCSC_PIFS_DIR="${UCSC_PIFS_DIR:-/mnt/sdb/cdiesh/pifs}"
 source "$SCRIPT_DIR/../lib/chainpif.sh"
 
 # --- Global Variables ---
-declare -g CONFIG_DIR SOURCE ASSEMBLY OUTDIR LIFTOVER_BASE_URL
+declare -g CONFIG_DIR SOURCE ASSEMBLY OUTDIR
 
 # Prints usage information and exits.
 usage() {
-  echo "Usage: $0 <source> <assembly> [outdir] [liftover_base_url]"
-  echo "  source:            'liftOver' or 'vs'"
-  echo "  assembly:          The assembly name (e.g., hg38)"
-  echo "  outdir:            Root output directory. Defaults to UCSC_BUILT_DIR"
-  echo "  liftover_base_url: Optional. Custom base URL for liftOver files."
+  echo "Usage: $0 <source> <assembly> [outdir]"
+  echo "  source:   'liftOver' or 'vs'"
+  echo "  assembly: The assembly name (e.g., hg38)"
+  echo "  outdir:   Root output directory. Defaults to UCSC_BUILT_DIR"
   exit 1
 }
 
@@ -47,7 +45,6 @@ setup_config() {
   SOURCE=${1:-}
   ASSEMBLY=${2:-}
   OUTDIR=${3:-"${UCSC_BUILT_DIR}"}
-  LIFTOVER_BASE_URL=${4:-}
 
   if [[ -z "$SOURCE" || -z "$ASSEMBLY" ]]; then
     usage
@@ -67,6 +64,17 @@ setup_config() {
 
 # --- Source-specific Processing Functions ---
 
+# hs1 publishes seven of its liftOver chains under /gbdb only. Both listings
+# feed one directory and one stamp: as two passes, the goldenPath pass stamped
+# the directory and the gbdb pass then skipped it, so those seven were never
+# rebuilt.
+liftover_listing_urls() {
+  echo "https://hgdownload.soe.ucsc.edu/goldenPath/$1/liftOver/"
+  if [[ "$1" == hs1 ]]; then
+    echo "https://hgdownload.soe.ucsc.edu/gbdb/hs1/liftOver/"
+  fi
+}
+
 # Processes liftOver chain files
 process_liftover() {
   local liftover_dir="$CONFIG_DIR/liftOver"
@@ -79,19 +87,13 @@ process_liftover() {
     return 0
   fi
 
-  local base_url
-  if [[ -n "$LIFTOVER_BASE_URL" ]]; then
-    base_url="$LIFTOVER_BASE_URL"
-  else
-    base_url="https://hgdownload.soe.ucsc.edu/goldenPath/$ASSEMBLY/liftOver/"
-  fi
-
-  # Get chain file URLs, excluding md5sum files
   local urls
-  urls=$(extract_file_urls "$base_url" '\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|")
+  urls=$(liftover_listing_urls "$ASSEMBLY" | while IFS= read -r base_url; do
+    extract_file_urls "$base_url" '\.chain\.gz$' | { grep -v md5sum || true; } | sed "s|^|$base_url|" || exit 1
+  done | awk -F/ '!seen[$NF]++')
 
   if [[ -z "$urls" ]]; then
-    log_info "No liftOver chain files found at $base_url, skipping"
+    log_info "No liftOver chain files found for $ASSEMBLY, skipping"
     write_pif_stamp "$stamp"
     return 0
   fi

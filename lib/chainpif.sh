@@ -75,13 +75,23 @@ parse_href_listing() {
   grep -oP 'href="\K[^"]+' | { grep "$pattern" || true; }
 }
 
-# Extracts file URLs from an HTML directory listing.
+# Extracts file URLs from an HTML directory listing. A 404 is an empty listing;
+# any other failure exits, because every caller stamps an empty listing as done
+# and a stamped directory is never listed again.
 # $1: URL to fetch  $2: grep pattern for files
-# Emits nothing (exit 0) if the URL is unreachable.
 extract_file_urls() {
-  local url="$1" pattern="$2" raw
-  raw=$(wget -q -O - "$url" 2>/dev/null) || return 0
-  printf '%s\n' "$raw" | parse_href_listing "$pattern"
+  local url="$1" pattern="$2" body status
+  body=$(mktemp) || log_error "Failed to create temporary file"
+  status=$(curl -sL --retry 3 -o "$body" -w '%{http_code}' "$url") || status=000
+  case "$status" in
+  200) parse_href_listing "$pattern" <"$body" ;;
+  404) ;;
+  *)
+    rm -f "$body"
+    log_error "Listing $url failed (HTTP $status)"
+    ;;
+  esac
+  rm -f "$body"
 }
 
 # Emits the chain path then the PIF path (one per line) for a chain filename,

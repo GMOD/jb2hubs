@@ -48,6 +48,34 @@ vsMm39/" "$got"
 got=$(printf '%s\n' "$listing" | parse_href_listing '\.nonexistent$')
 check "parse_href_listing returns empty for no matches" "" "$got"
 
+# extract_file_urls: only a 404 may read as "no chains", because the caller
+# stamps an empty listing and never lists that directory again.
+curl() {
+  local out
+  while [ $# -gt 0 ]; do
+    [ "$1" = -o ] && out="$2"
+    shift
+  done
+  printf '%s\n' "$listing" >"$out"
+  printf '%s' "$stub_status"
+  return "$stub_rc"
+}
+stub_status=200 stub_rc=0
+check "extract_file_urls: a 200 listing yields its hrefs" \
+  "hg38ToHg19.over.chain.gz
+hg38ToMm39.over.chain.gz" "$(extract_file_urls https://example.org/ '\.over\.chain\.gz$')"
+stub_status=404
+check "extract_file_urls: a 404 is an empty listing" "0:" \
+  "$(out=$(extract_file_urls https://example.org/ '\.over\.chain\.gz$' 2>/dev/null); echo "$?:$out")"
+stub_status=503
+check "extract_file_urls: a 503 fails rather than reading as empty" "1" \
+  "$( (extract_file_urls https://example.org/ '\.over\.chain\.gz$') >/dev/null 2>&1; echo $?)"
+stub_status=000 stub_rc=7
+check "extract_file_urls: a refused connection fails too" "1" \
+  "$( (extract_file_urls https://example.org/ '\.over\.chain\.gz$') >/dev/null 2>&1; echo $?)"
+unset -f curl
+unset stub_status stub_rc
+
 # generate_file_paths derives chain + pif paths from the configured dirs.
 CHAINS_DIR=/tmp/chains
 PIFS_DIR=/tmp/pifs

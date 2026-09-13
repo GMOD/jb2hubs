@@ -545,9 +545,6 @@ log "Downloading NCBI RefSeq GFFs..."
 log "Creating chain track PIFs..."
 ./makePifs.sh
 
-log "Making hs1 PIFs"
-./processHs1LiftOver.sh
-
 log "Downloading and processing GENCODE annotations..."
 ./downloadGencode.sh
 
