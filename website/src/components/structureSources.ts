@@ -8,11 +8,9 @@
 // The prediction API answers with what is actually there, per model: url,
 // version, sequence and confidence.
 //
-// 3D-Beacons aggregates the experimental side — every PDBe entry mapped to the
-// accession, with the UniProt range it covers and its resolution — in one
-// CORS-enabled call, which is what lets the page offer a crystal structure
-// beside the prediction without a PDB search of its own. The protein3d plugin
-// takes the entry id and fetches the SIFTS residue mapping itself.
+// The experimental side — which PDBe entries cover the accession — is
+// p2s_mapper's `fetchExperimentalStructures`, and so is the SIFTS residue
+// mapping the plugin needs for one.
 
 export interface AlphaFoldModel {
   entity: string // AF-P04637-F1
@@ -84,75 +82,4 @@ export function pickAlphaFoldModel(
     models.find(m => !m.accession.includes('-')) ??
     [...models].sort((a, b) => b.sequence.length - a.sequence.length)[0]
   )
-}
-
-export interface ExperimentalStructure {
-  pdbId: string
-  method: string
-  resolution?: number
-  // 1-based inclusive UniProt residues the entry covers
-  start: number
-  end: number
-  coverage: number // fraction of the UniProt sequence
-}
-
-interface BeaconsSummary {
-  structures?: {
-    summary?: {
-      model_identifier?: string
-      model_category?: string
-      provider?: string
-      experimental_method?: string | null
-      resolution?: number | null
-      uniprot_start?: number
-      uniprot_end?: number
-      coverage?: number
-    }
-  }[]
-}
-
-// PDBe entries only, best-covering first and sharpest within a tie. Predicted
-// entries (AlphaFold, SWISS-MODEL, AlphaFill) are left out because the
-// prediction the page opens comes from AlphaFold's own API above; and 3D-Beacons
-// files SASBDB's small-angle-scattering fits under "experimentally determined"
-// too, with numeric ids and near-full coverage — dystrophin's best "structure"
-// by coverage was SASBDB 436 — which are not entries the plugin can map.
-export function parseExperimentalStructures(
-  json: unknown,
-): ExperimentalStructure[] {
-  const entries = (json as BeaconsSummary | null)?.structures ?? []
-  return entries
-    .flatMap(({ summary: s }) =>
-      s?.model_identifier &&
-      s.provider === 'PDBe' &&
-      s.model_category === 'EXPERIMENTALLY DETERMINED' &&
-      s.uniprot_start !== undefined &&
-      s.uniprot_end !== undefined &&
-      s.coverage !== undefined
-        ? [
-            {
-              pdbId: s.model_identifier.toLowerCase(),
-              method: s.experimental_method ?? 'experimental',
-              resolution: s.resolution ?? undefined,
-              start: s.uniprot_start,
-              end: s.uniprot_end,
-              coverage: s.coverage,
-            },
-          ]
-        : [],
-    )
-    .sort(
-      (a, b) =>
-        b.coverage - a.coverage ||
-        (a.resolution ?? Infinity) - (b.resolution ?? Infinity),
-    )
-}
-
-export async function fetchExperimentalStructures(
-  uniprotId: string,
-): Promise<ExperimentalStructure[]> {
-  const res = await fetch(
-    `https://www.ebi.ac.uk/pdbe/pdbe-kb/3dbeacons/api/uniprot/summary/${encodeURIComponent(uniprotId)}.json?provider=pdbe`,
-  ).catch(() => undefined)
-  return res?.ok ? parseExperimentalStructures(await res.json()) : []
 }

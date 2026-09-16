@@ -1,11 +1,9 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import {
-  parseAlphaFoldModels,
-  parseExperimentalStructures,
-  pickAlphaFoldModel,
-} from './structureSources.ts'
+import { parseExperimentalStructures } from 'p2s_mapper'
+
+import { parseAlphaFoldModels, pickAlphaFoldModel } from './structureSources.ts'
 
 const entry = (
   id: string,

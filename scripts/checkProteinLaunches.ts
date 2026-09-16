@@ -26,8 +26,10 @@
 //
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
-// website/src/components/{geneStructure,proteinSession,structureSources}.ts or
-// the launch card, and before promoting `features.proteinBrowser`.
+// website/src/components/{geneStructure,proteinSession,structureSources}.ts,
+// the launch card, or the `p2s_mapper` version — the entry list and the author
+// numbering this exercises both come from that package — and before promoting
+// `features.proteinBrowser`.
 //
 // Usage:
 //   pnpm check-protein-launches                          # human examples, on main
@@ -39,6 +41,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 
+import { fetchExperimentalStructures } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
 import { examplesFor } from '../website/src/components/geneExamples.ts'
@@ -53,10 +56,7 @@ import {
   focusRange,
 } from '../website/src/components/proteinFeatures.ts'
 import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
-import {
-  fetchExperimentalStructures,
-  pickAlphaFoldModel,
-} from '../website/src/components/structureSources.ts'
+import { pickAlphaFoldModel } from '../website/src/components/structureSources.ts'
 
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
 import type { SessionOptions } from '../website/src/components/proteinSession.ts'

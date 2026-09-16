@@ -1899,9 +1899,10 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   CDS whenever the isoforms differ. Silently.
 - **Structures are asked for, not derived.** `structureSources.ts` reads the
   AlphaFold prediction API (which models exist, at which version, with which
-  sequence) and 3D-Beacons filtered to `provider === 'PDBe'`. A url built from
-  `AF-<acc>-F1-model_v6.cif` 404s for any protein past AlphaFold's length cap
-  (DMD, BRCA2, TTN) and for every version bump.
+  sequence); p2s_mapper's `fetchExperimentalStructures` reads 3D-Beacons
+  filtered to `provider === 'PDBe'`. A url built from `AF-<acc>-F1-model_v6.cif`
+  404s for any protein past AlphaFold's length cap (DMD, BRCA2, TTN) and for
+  every version bump.
 - **`pnpm check-protein-launches` is the test that matters.** It boots each
   example gene in a hosted build and reads the ProteinView back: structure
   ready, `pairwiseAlignment` present, `exactMatch` where the model's sequence
@@ -1923,9 +1924,9 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   be another isoform, and `ProteinLaunchCard` says "approximate" whenever the
   model is not the canonical entry folded from exactly that translation. A
   focused partner opens the PDB complex by `initialResidues` in the entry's
-  author numbering, shifted through SIFTS (`siftsNumbering.ts`) — haemoglobin
-  chains count from the mature protein, one behind UniProt — never by
-  `initialSelection`.
+  author numbering, shifted through SIFTS (p2s_mapper's `toAuthorRange`) —
+  haemoglobin chains count from the mature protein, one behind UniProt — never
+  by `initialSelection`.
 
 ## Key website internals
 

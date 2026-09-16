@@ -58,8 +58,9 @@ AlphaFold's length cap has no F1. Human dystrophin (P11532, 3,685 aa) has
 fourteen isoform models and no canonical one, so the DMD chip named a 404 and
 its card said "opens the AlphaFold structure". Titin has nothing.
 
-`structureSources.ts` asks two APIs, both `access-control-allow-origin: *`,
-measured 2026-09-01:
+`structureSources.ts` asks the AlphaFold API and p2s_mapper's
+`fetchExperimentalStructures` asks 3D-Beacons, both
+`access-control-allow-origin: *`, measured 2026-09-01:
 
 - **AlphaFold prediction API** (`/api/prediction/<acc>`) — every model for the
   accession with url, version, sequence and mean pLDDT. `pickAlphaFoldModel`
@@ -177,7 +178,7 @@ launched translation, which the card checks) or `initialResidues` for a PDB
 entry, in the entry's own author numbering. That numbering is UniProt's for most
 entries and not for all: haemoglobin's chains count from the mature protein, so
 Glu7 of the translation is residue 6 in 2HHB and 1A00, and a construct can start
-anywhere. `siftsNumbering.ts` reads the SIFTS mapping for the chosen entry
+anywhere. p2s_mapper reads the SIFTS mapping for the chosen entry
 (`pdbe/api/mappings/uniprot/<pdb>`, cross-origin, ~1 KB) and shifts the range by
 the chain segment that covers most of it; the card says which chain and by how
 much, or that no chain covers the range. The launch link waits for that read, as
