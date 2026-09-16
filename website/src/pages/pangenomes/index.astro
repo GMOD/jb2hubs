@@ -22,7 +22,8 @@ if (!features.pangenome) {
       {PANGENOME_DATASETS.map(dataset => (
         <li>
           <a href={`/pangenomes/${dataset.id}`}>{dataset.portal.heading}</a>
-          {`: ${dataset.panelDescription}, on ${dataset.reference.label}`}
+          <br />
+          {dataset.panelDescription}, on {dataset.reference.label}
         </li>
       ))}
     </ul>
