@@ -1,0 +1,368 @@
+---
+// One pangenome graph, one page. All three go through this route: they publish
+// the identical five projected files under the same suffixes, read them with
+// the same adapters, and launch off the same builders, so what is per-dataset
+// is the prose below and the numbers the dataset carries.
+//
+// The three were one scrolling page with `#hprc`-style anchors until
+// 2026-09-16. A sub-route per graph is what the tutorials, the explorer and the
+// landing page all link to now.
+import Container from '../../components/Container.astro'
+import GraphRegionLauncher from '../../components/GraphRegionLauncher.tsx'
+import {
+  PANGENOME_DATASETS,
+  portalFiles,
+} from '../../components/pangenomeDataset.ts'
+import {
+  externalGraphUrl,
+  graphBrowserUrl,
+  graphLocusUrl,
+  locusRegionOf,
+} from '../../components/pangenomeLinks.ts'
+import { preferredLocus } from '../../components/pangenomeLoci.ts'
+import { features } from '../../config/features.ts'
+import Layout from '../../layouts/Layout.astro'
+import '../../styles/common-table.css'
+import '../../styles/portal.css'
+
+import type { PangenomeDataset } from '../../components/pangenomeDataset.ts'
+
+interface Props {
+  dataset: PangenomeDataset
+}
+
+export function getStaticPaths() {
+  return PANGENOME_DATASETS.map(dataset => ({
+    params: { dataset: dataset.id },
+    props: { dataset },
+  }))
+}
+
+// The pangenomes section is staging-only while in development.
+if (!features.pangenome) {
+  return Astro.redirect('/')
+}
+
+const { dataset } = Astro.props
+const { portal } = dataset
+const others = PANGENOME_DATASETS.filter(d => d.id !== dataset.id)
+
+// The headline launch is the catalogue's own landing locus, the same one the
+// explorer opens on, rather than a second constant that could disagree with it.
+const landing = preferredLocus(dataset.loci)
+const graphUrl = landing && graphLocusUrl(dataset, landing)
+const externalUrl =
+  !graphUrl && landing
+    ? externalGraphUrl(dataset, locusRegionOf(landing))
+    : undefined
+const ext = dataset.externalGraphBrowser
+// Offered only where the callset is a second thing to look at. Without one the
+// linear lanes are already inside the graph launch above, so a "browse" button
+// beside it would open a subset of it.
+const callsetUrl = dataset.graphVcf ? graphBrowserUrl(dataset) : undefined
+
+// Against the byte counts the bucket reports, so a number here can be compared
+// with `curl -I` without an argument about units.
+function humanBytes(bytes: number) {
+  const scale = [
+    { unit: 'GB', by: 1024 ** 3 },
+    { unit: 'MB', by: 1024 ** 2 },
+    { unit: 'KB', by: 1024 },
+  ].find(s => bytes >= s.by)
+  return scale
+    ? `${(bytes / scale.by).toFixed(bytes / scale.by < 10 ? 1 : 0)} ${scale.unit}`
+    : `${bytes} B`
+}
+---
+
+<Layout
+  title={portal.heading}
+  description={`${dataset.panelDescription}, projected onto ${dataset.reference.label} and drawable as a pangenome graph at any region.`}
+>
+  <Container>
+    <p class="portal-contents">
+      <a href="/pangenomes">Pangenomes</a> &rsaquo; {portal.heading}
+    </p>
+    <h1>{portal.heading}</h1>
+
+    {dataset.id === 'hprc' && (
+      <p>
+        The{' '}
+        <a href="https://humanpangenome.org/">
+          Human Pangenome Reference Consortium
+        </a>{' '}
+        builds a human pangenome reference from phased diploid assemblies of
+        diverse human populations: 47 in the{' '}
+        <a href="https://www.nature.com/articles/s41586-023-05896-x">
+          Nature 2023 draft
+        </a>
+        , 232 in release 2, which is the release this page serves. It is the one
+        graph of the three with a haplotype-resolved callset beside it, so it is
+        the one that can say who carries what.
+      </p>
+    )}
+
+    {dataset.id === 'mouse' && (
+      <p>
+        A pangenome graph of the inbred and wild-derived mouse strains, built
+        here with <code>minigraph</code> over GRCm39 and the Mouse Genomes
+        Project assemblies as rehosted in UCSC GenArk. No pangenome graph had
+        been published for this panel, so unlike the other two it is constructed
+        rather than redistributed. The individual strain assemblies are
+        browsable on their own{' '}
+        <a href="/search?q=Mus+musculus">accession pages</a>.
+      </p>
+    )}
+
+    {dataset.id === 'bovine' && (
+      <p>
+        The bovine super-pangenome of{' '}
+        <a href="https://doi.org/10.1186/s13059-023-02969-y">
+          Leonard et al. 2023
+        </a>
+        , projected onto ARS-UCD1.2. The panel is unusually wide for a livestock
+        pangenome — taurine and indicine breeds plus yak, bison and gaur — and
+        unlike the mouse graph, its published files carry one path per assembly,
+        so a callset can be projected out of it.
+      </p>
+    )}
+
+    <div class="portal-hero">
+      <div class="portal-hero-text">
+        <h2 class="portal-hero-title">Open it</h2>
+        <p>
+          The graph holds {dataset.panelDescription}, projected onto{' '}
+          {dataset.reference.label}. Start from a locus where it varies most, or
+          take the files below. <a href={portal.tutorialUrl}>The tutorial</a>{' '}
+          walks what this graph can and cannot say.
+        </p>
+      </div>
+      <div class="portal-hero-actions">
+        <a
+          class="portal-btn portal-btn-primary"
+          href={`/pangenomes/explorer?dataset=${dataset.id}`}
+        >
+          Open the Pangenome Explorer &rarr;
+        </a>
+        {graphUrl && landing && (
+          <a
+            class="portal-btn"
+            href={graphUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Draw {landing.gene} as a pangenome graph &rarr;
+          </a>
+        )}
+        {externalUrl && ext && landing && (
+          <a
+            class="portal-btn"
+            href={externalUrl}
+            target="_blank"
+            rel="noreferrer"
+            title={`${ext.name} draws the ${ext.graphLabel} graph at this window`}
+          >
+            Draw {landing.gene} as a graph in {ext.name} &#8599;
+          </a>
+        )}
+        {callsetUrl && (
+          <a
+            class="portal-btn"
+            href={callsetUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Browse the callset on {dataset.reference.label} &rarr;
+          </a>
+        )}
+        {portal.links.map(l =>
+          l.url.startsWith('/') ? (
+            <a
+              class="portal-btn portal-btn-ghost"
+              href={l.url}
+            >
+              {l.label} &rarr;
+            </a>
+          ) : (
+            <a
+              class="portal-btn portal-btn-ghost"
+              href={l.url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {l.label} &#8599;
+            </a>
+          ),
+        )}
+      </div>
+      {!dataset.graphBrowser && (
+        <p class="portal-hero-note">
+          <small>
+            The in-browser graph needs the JBrowse build the staging site links:
+            every adapter that reads these files ships in the GraphGenomeView
+            plugin rather than in JBrowse core, and that plugin boots on v5
+            only. The files below are downloadable either way.
+          </small>
+        </p>
+      )}
+    </div>
+
+    <h2>Draw the graph</h2>
+    <p>
+      Any {dataset.reference.label} region, cut from the graph and drawn as
+      nodes and edges beside a linear view of the same window. Hovering one
+      panel highlights the other. Past 150 kb both switch to the coarse tier
+      &mdash; one node per top-level bubble &mdash; which is what makes a whole
+      chromosome drawable. Inside JBrowse the same view reopens from any region
+      via the segments track&rsquo;s menu,{' '}
+      <em>Launch &rarr; Graph genome view</em>, so the form is only the first
+      cut.
+    </p>
+    <GraphRegionLauncher
+      dataset={dataset}
+      client:load
+    />
+
+    <h2>Published files</h2>
+    <p>
+      The tabix-indexed projections JBrowse queries a locus from without
+      downloading the graph.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>File</th>
+          <th>What it holds</th>
+          <th>Size</th>
+        </tr>
+      </thead>
+      <tbody>
+        {portalFiles(portal).map(f => (
+          <tr>
+            <td>
+              <a href={`${portal.filePrefix}${f.suffix}`}>
+                <code>{f.suffix}</code>
+              </a>
+            </td>
+            <td>{f.what}</td>
+            <td>{humanBytes(f.bytes)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    <h2>What this graph can and cannot say</h2>
+    <ul class="portal-notes">
+      {portal.notes.map(n => (
+        <li>{n}</li>
+      ))}
+      {dataset.noCallsetReason && <li>{dataset.noCallsetReason}</li>}
+      {dataset.graphVcf && (
+        <li>
+          The callset beside the graph is a reference projection of its
+          haplotype paths, so it answers which assembly carries which allele —
+          which the graph lanes on their own cannot.
+        </li>
+      )}
+    </ul>
+
+    <h2>The other pangenomes</h2>
+    <div class="portal-cards">
+      {others.map(d => (
+        <a
+          class="portal-card"
+          href={`/pangenomes/${d.id}`}
+        >
+          <h3>{d.portal.heading}</h3>
+          <p>
+            {d.panelDescription}, projected onto {d.reference.label}.
+          </p>
+        </a>
+      ))}
+      <a
+        class="portal-card"
+        href="/pangenomes/explorer"
+      >
+        <h3>Variable loci</h3>
+        <p>
+          Loci where structure varies between the assemblies in a pangenome,
+          each with its JBrowse launches.
+        </p>
+      </a>
+    </div>
+  </Container>
+</Layout>
+
+<style is:global>
+  .portal-contents {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .portal-hero-note {
+    flex: 1 0 100%;
+    margin: 0.25rem 0 0;
+    color: var(--muted);
+  }
+  .portal-notes {
+    max-width: 80ch;
+  }
+  .portal-notes li {
+    margin-bottom: 0.4rem;
+  }
+  .graph-launcher {
+    margin: 1rem 0 1.5rem;
+  }
+  .graph-launcher-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .graph-launcher-form label {
+    font-weight: 600;
+  }
+  .graph-launcher-form input {
+    flex: 1 1 16rem;
+    min-width: 0;
+    padding: 8px 10px;
+    font: inherit;
+    font-family: ui-monospace, monospace;
+    border: 1px solid var(--border, #ccc);
+    border-radius: 6px;
+  }
+  .graph-launcher-form button {
+    font: inherit;
+    cursor: pointer;
+  }
+  .graph-launcher-form button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  .graph-launcher-note {
+    margin: 0.5rem 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .graph-launcher-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .graph-launcher-presets .pg-filter {
+    text-decoration: none;
+    padding: 4px 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: #444;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .graph-launcher-presets .pg-filter-active {
+    color: white;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+</style>

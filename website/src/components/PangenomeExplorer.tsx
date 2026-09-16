@@ -105,7 +105,7 @@ function LocusGrid({
         {dataset.reference.label} loci where structure varies between the
         assemblies in the {dataset.label} graph ({dataset.panelDescription}),
         with JBrowse launches. The graph files and assemblies are on{' '}
-        <a href={`/pangenomes#${dataset.id}`}>the pangenomes page</a>, and{' '}
+        <a href={`/pangenomes/${dataset.id}`}>its pangenome page</a>, and{' '}
         <a href={dataset.portal.tutorialUrl}>its tutorial</a> walks what this
         graph can and cannot show.
       </p>

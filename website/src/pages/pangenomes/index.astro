@@ -1,18 +1,17 @@
 ---
+// The landing page for the three graphs. Each one has its own sub-route
+// (/pangenomes/hprc and siblings), rendered by [dataset].astro; this page is
+// the choice between them and the one place that says what they have in common.
 import Container from '../../components/Container.astro'
-import PangenomeSection from '../../components/PangenomeSection.astro'
 import { PANGENOME_DATASETS } from '../../components/pangenomeDataset.ts'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
-import '../../styles/common-table.css'
 import '../../styles/portal.css'
 
 // The pangenomes section is staging-only while in development.
 if (!features.pangenome) {
   return Astro.redirect('/')
 }
-
-const [hprc, mouse, bovine] = PANGENOME_DATASETS
 ---
 
 <Layout
@@ -27,13 +26,22 @@ const [hprc, mouse, bovine] = PANGENOME_DATASETS
       already serves. What differs between them is not the mechanism but what
       each graph is able to say.
     </p>
-    <p class="portal-contents">
-      On this page: <a href="#hprc">Human — HPRC</a> ·
-      <a href="#mouse">Mouse strains</a> ·<a href="#bovine">Cattle</a> · and the
-      <a href="/pangenomes/explorer">variable loci explorer</a>.
-    </p>
 
     <div class="portal-cards">
+      {PANGENOME_DATASETS.map(dataset => (
+        <a
+          class="portal-card"
+          href={`/pangenomes/${dataset.id}`}
+        >
+          <h2>{dataset.portal.heading}</h2>
+          <p>
+            {`${dataset.panelDescription}, projected onto ${dataset.reference.label}. `}
+            {dataset.graphVcf
+              ? 'A haplotype-resolved callset beside the graph says which assembly carries which allele.'
+              : 'The graph states what varies and by how much; with no haplotype paths in it, nothing states who by.'}
+          </p>
+        </a>
+      ))}
       <a
         class="portal-card"
         href="/pangenomes/explorer"
@@ -47,121 +55,5 @@ const [hprc, mouse, bovine] = PANGENOME_DATASETS
         </p>
       </a>
     </div>
-
-    {hprc && (
-      <PangenomeSection dataset={hprc}>
-        <p>
-          The{' '}
-          <a href="https://humanpangenome.org/">
-            Human Pangenome Reference Consortium
-          </a>{' '}
-          builds a human pangenome reference from phased diploid assemblies of
-          diverse human populations: 47 in the{' '}
-          <a href="https://www.nature.com/articles/s41586-023-05896-x">
-            Nature 2023 draft
-          </a>
-          , 232 in release 2, which is the release this section serves. It is
-          the one graph of the three with a haplotype-resolved callset beside
-          it, so it is the one that can say who carries what.
-        </p>
-      </PangenomeSection>
-    )}
-
-    {mouse && (
-      <PangenomeSection dataset={mouse}>
-        <p>
-          A pangenome graph of the inbred and wild-derived mouse strains, built
-          here with <code>minigraph</code> over GRCm39 and the Mouse Genomes
-          Project assemblies as rehosted in UCSC GenArk. No pangenome graph had
-          been published for this panel, so unlike the other two on this page it
-          is constructed rather than redistributed. The individual strain
-          assemblies are browsable on their own{' '}
-          <a href="/search?q=Mus+musculus">accession pages</a>.
-        </p>
-      </PangenomeSection>
-    )}
-
-    {bovine && (
-      <PangenomeSection dataset={bovine}>
-        <p>
-          The bovine super-pangenome of{' '}
-          <a href="https://doi.org/10.1186/s13059-023-02969-y">
-            Leonard et al. 2023
-          </a>
-          , projected onto ARS-UCD1.2. The panel is unusually wide for a
-          livestock pangenome — taurine and indicine breeds plus yak, bison and
-          gaur — and unlike the mouse graph above, its published files carry one
-          path per assembly, so a callset can be projected out of it.
-        </p>
-      </PangenomeSection>
-    )}
   </Container>
 </Layout>
-
-<style is:global>
-  .portal-contents {
-    color: var(--muted);
-    font-size: 14px;
-  }
-  .portal-hero-note {
-    flex: 1 0 100%;
-    margin: 0.25rem 0 0;
-    color: var(--muted);
-  }
-  .graph-launcher {
-    margin: 1rem 0 1.5rem;
-  }
-  .graph-launcher-form {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .graph-launcher-form label {
-    font-weight: 600;
-  }
-  .graph-launcher-form input {
-    flex: 1 1 16rem;
-    min-width: 0;
-    padding: 8px 10px;
-    font: inherit;
-    font-family: ui-monospace, monospace;
-    border: 1px solid var(--border, #ccc);
-    border-radius: 6px;
-  }
-  .graph-launcher-form button {
-    font: inherit;
-    cursor: pointer;
-  }
-  .graph-launcher-form button:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-  .graph-launcher-note {
-    margin: 0.5rem 0;
-    font-size: 14px;
-    color: var(--muted);
-  }
-  .graph-launcher-presets {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-  .graph-launcher-presets .pg-filter {
-    text-decoration: none;
-    padding: 4px 10px;
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    color: #444;
-    background: #f3f3f3;
-    border: 1px solid #ddd;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-  .graph-launcher-presets .pg-filter-active {
-    color: white;
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-</style>

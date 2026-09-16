@@ -110,10 +110,9 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.vcf.gz', what: 'the reference-projected callset' },
 ]
 
-// What the /pangenomes page needs to render a dataset's section: prose, links
-// and file sizes. Kept apart from the rest of the dataset because the other
-// half is coordinates and trackIds that the LAUNCHES read, and nothing here is
-// on any launch path.
+// What a dataset's /pangenomes/<id> page needs: prose, links and file sizes.
+// Kept apart from the rest of the dataset because the other half is coordinates
+// and trackIds that the LAUNCHES read, and nothing here is on any launch path.
 //
 // Sizes are stated rather than fetched — a static build must not need the
 // network — so they are as of a measurement, named per dataset. Every url they
@@ -177,10 +176,10 @@ export interface PangenomeDataset {
   graphBrowser?: PangenomeGraphBrowser
   externalGraphBrowser?: PangenomeExternalGraphBrowser
   loci: PangenomeLocus[]
-  // Every dataset renders its /pangenomes section from this, through one
-  // `PangenomeSection`. HPRC's used to be hand-written for a 232-row sample
-  // table and an upstream-file table that `/hubs/HPRC` and the HPRC resources
-  // repo both do better; dropping those left it the same shape as the others.
+  // Every dataset renders its own page from this, through one route. HPRC's
+  // used to be hand-written for a 232-row sample table and an upstream-file
+  // table that `/hubs/HPRC` and the HPRC resources repo both do better;
+  // dropping those left it the same shape as the others.
   portal: PangenomePortal
 }
 
@@ -267,8 +266,8 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // generators read `graphVcf.url` from here rather than restating it, so that
 // sentence stays true: a changed url can no longer leave them on the old file.
 //
-// `id` is the `?dataset=` value on /pangenomes/explorer and the section anchor
-// on /pangenomes, so it is short and stable across graph releases; the release
+// `id` is the `?dataset=` value on /pangenomes/explorer and the last segment of
+// /pangenomes/<id>, so it is short and stable across graph releases; the release
 // is in `label`.
 export const HPRC_PORTAL: PangenomePortal = {
   heading: 'Human Pangenome Reference Consortium',

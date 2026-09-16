@@ -1809,8 +1809,19 @@ error-pages every released host (`createSvgIcon` — re-measured 2026-08-26 on
 `pnpm check-pangenome-launches` boots every launch on `main`, including one
 whole-chromosome tier launch; run it after touching `pangenome*` or the config.
 The genomes.jbrowse.org side of the JBrowse docs
-(`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) describes
-this page, so a visible change here should be reflected there.
+(`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) is a
+tutorial for these pages, so a visible change here should be reflected there.
+
+### One graph, one route
+
+`/pangenomes/<id>` — `hprc`, `mouse`, `bovine` — is a page per graph, rendered
+by `website/src/pages/pangenomes/[dataset].astro` from the dataset; `id` is the
+same value the explorer takes as `?dataset=`. `/pangenomes` is the choice
+between them and nothing else. The three were one scrolling page with `#hprc`
+anchors from 2026-09-01 to 2026-09-16, which is why `/pangenomes/hprc` and
+`/pangenomes/mouse` were redirect stubs in `REDIRECT_STUBS` (astro.config.mjs)
+for those two weeks — they are real pages again, and the stub list is down to
+`/orthologs/` and `/conserved-gene-order/`.
 
 ### One rule decides how wide a window is drawn, and it removed four surfaces
 
@@ -1843,13 +1854,13 @@ The one asymmetry that stays: the callset does **not** get a coarse tier, so
 `graphVcfLgvUrl` still opens on `launchRegion` and a wide locus's variant lane
 is still gated. That is a property of a VCF, not of the wiring.
 
-### What the /pangenomes page is not
+### What a pangenome page is not
 
 It was 15,286 px rendered, and ~10,000 of that was a static 232-row HPRC sample
 table plus two mouse-strain tables. `/hubs/HPRC` is a searchable version of the
 first and the page's own prose already linked it; the accession pages cover the
 other two. All three are links now, `website/src/hprcSamples.json` and its two
-siblings are deleted, and HPRC renders through `PangenomeSection` like the other
+siblings are deleted, and HPRC renders through `[dataset].astro` like the other
 two rather than being hand-written beside it — which is what finally gave it the
 projections table and the caveats list the other two always had.
 
