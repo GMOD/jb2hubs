@@ -18,9 +18,19 @@ test('a curated row carries its description and a derived one its segments', () 
   assert.equal(hprc?.segments, undefined)
   assert.equal(hprc?.variation, 'hyperdiversity, copy number')
 
+  assert.equal(hprc?.region, 'chr6:28,510,001-33,480,000')
+
   const [mouse] = lociRows(MOUSE_DATASET)
   assert.equal(mouse?.description, undefined)
   assert.ok(mouse?.segments && mouse.segments > 0)
+})
+
+test('an intergenic derived bubble is labelled as such, not by its coordinate', () => {
+  const rows = lociRows(MOUSE_DATASET)
+  const intergenic = rows.filter(r => r.gene === 'intergenic')
+  assert.ok(intergenic.length > 0)
+  assert.ok(rows.every(r => !r.gene.startsWith('chr')))
+  assert.ok(intergenic.every(r => r.geneHubUrl === undefined))
 })
 
 test('a column no row fills is not drawn', () => {
@@ -30,6 +40,7 @@ test('a column no row fills is not drawn', () => {
 
   const mouse = lociColumns(lociRows(MOUSE_DATASET))
   assert.equal(mouse.description, false)
+  assert.equal(mouse.variation, false)
   assert.equal(mouse.segments, true)
 })
 

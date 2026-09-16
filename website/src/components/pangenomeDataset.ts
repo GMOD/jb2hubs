@@ -279,17 +279,14 @@ export const HPRC_PORTAL: PangenomePortal = {
     '.tier10000.segs.bed.gz': 104_044,
   },
   links: [
-    { label: 'HPRC data portal', url: 'https://humanpangenome.org/' },
+    { label: 'HPRC', url: 'https://humanpangenome.org/' },
     {
-      label: 'Release 2 file listing (graphs, GBZ, callsets)',
+      label: 'Release 2 files',
       url: 'https://github.com/human-pangenomics/hpp_pangenome_resources',
     },
+    { label: 'Sample assemblies', url: '/hubs/HPRC' },
     {
-      label: 'The 232 sample assemblies in JBrowse',
-      url: '/hubs/HPRC',
-    },
-    {
-      label: 'How these projections were built',
+      label: 'How the projections were built',
       url: 'https://jbrowse.org/demos/hprc/README.txt',
     },
   ],
@@ -465,15 +462,12 @@ export const MOUSE_PORTAL: PangenomePortal = {
   },
   links: [
     {
-      label: 'Ensembl Mouse Genomes Project',
+      label: 'Mouse Genomes Project',
       url: 'https://projects.ensembl.org/mouse_genomes/',
     },
+    { label: 'Strain assemblies', url: '/search?q=Mus+musculus' },
     {
-      label: 'UCSC GenArk (the assemblies as fetched)',
-      url: 'https://hgdownload.soe.ucsc.edu/hubs/',
-    },
-    {
-      label: 'How this graph was built',
+      label: 'How the graph was built',
       url: 'https://jbrowse.org/demos/mouse_pangenome/README.txt',
     },
   ],
@@ -523,15 +517,12 @@ export const BOVINE_PORTAL: PangenomePortal = {
   },
   links: [
     {
-      label: 'Leonard et al. 2023, Genome Biology',
+      label: 'Leonard et al. 2023',
       url: 'https://doi.org/10.1186/s13059-023-02969-y',
     },
+    { label: 'Source graphs', url: 'https://doi.org/10.5281/zenodo.7737904' },
     {
-      label: 'Source graphs (Zenodo 7737904, CC-BY 4.0)',
-      url: 'https://doi.org/10.5281/zenodo.7737904',
-    },
-    {
-      label: 'What was modified here',
+      label: 'How the projections were built',
       url: 'https://jbrowse.org/demos/bovine_pangenome/README.txt',
     },
   ],
