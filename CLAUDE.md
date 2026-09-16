@@ -1818,25 +1818,25 @@ tutorial for these pages, so a visible change here should be reflected there.
 by `website/src/pages/pangenomes/[dataset].astro` from the dataset.
 `/pangenomes` is a list of the three and nothing else. A graph's page is one
 sentence, a line of links, the chromosomes as graph links, a table of its loci
-with their launches (`lociRows` in `website/src/components/pangenomeLociRows.ts`),
-and the file table. It is static HTML with one six-line style rule and no
-client JavaScript: the site's table rules and the browser's defaults are the
-whole design, on purpose, after the 2026-09-16 review found the previous page
-a wall of prose and buttons. The free-text region box went the same day — the
-table and the chromosome links cover every launch the page advertises, and the
-view reopens on any region from its own track menu.
+with their launches (`lociRows` in
+`website/src/components/pangenomeLociRows.ts`), and the file table. It is static
+HTML with one six-line style rule and no client JavaScript: the site's table
+rules and the browser's defaults are the whole design, on purpose, after the
+2026-09-16 review found the previous page a wall of prose and buttons. The
+free-text region box went the same day — the table and the chromosome links
+cover every launch the page advertises, and the view reopens on any region from
+its own track menu.
 
 `/pangenomes/explorer` was a separate app until that day — a card grid of loci
 with class filters and a per-locus dashboard of four bar charts computed by
 `generatePangenomeData.ts` over the callset, plus a "hero" banner of seven
 buttons on each graph's page pointing at it. All of that is gone, along with
-`portal.css`, the per-locus `*.vcfsummary.json` summaries, the `notes[]` caveats,
-the per-locus `significance` sentences and the PangyPlot fallback
+`portal.css`, the per-locus `*.vcfsummary.json` summaries, the `notes[]`
+caveats, the per-locus `significance` sentences and the PangyPlot fallback
 (`externalGraphBrowser`), which only the region box ever reached; the locus
-table is what replaced it.
-The route is a redirect stub in `REDIRECT_STUBS` (astro.config.mjs) because the
-JBrowse pangenome tutorial links it, and its inline script carries
-`?dataset=<id>` across to `/pangenomes/<id>`.
+table is what replaced it. The route is a redirect stub in `REDIRECT_STUBS`
+(astro.config.mjs) because the JBrowse pangenome tutorial links it, and its
+inline script carries `?dataset=<id>` across to `/pangenomes/<id>`.
 
 ### One rule decides how wide a window is drawn, and it removed four surfaces
 
@@ -1848,8 +1848,8 @@ raised to the span and the anchored layout. Everything below fell out of that on
 
 - **`graphChromosomeUrl` is gone.** A chromosome is the widest region and takes
   the coarse branch, so the whole-chromosome launch and the region launch are
-  one builder — and the page's chromosome row is a row of links rather than
-  a second control.
+  one builder — and the page's chromosome row is a row of links rather than a
+  second control.
 - **A wide catalog locus has a launch at all.** `graphLocusUrl` used to return
   undefined without a detail window, and `locusLaunchUrl` opened the allele
   inventory (an AlignmentsTrack, 379 rows over mouse's top entry) across
@@ -1858,8 +1858,8 @@ raised to the span and the anchored layout. Everything below fell out of that on
 - **No region has an upper bound.** `MAX_GRAPH_REGION_BP` existed because the
   view refuses a cut past its `maxRegionBp`; the coarse branch raises it.
 - **There is no landing locus.** `landingRegion` and then `preferredLocus`
-  answered "which locus does this catalogue open on" for a headline launch and
-  a region box that no longer exist; a reader picks a row.
+  answered "which locus does this catalogue open on" for a headline launch and a
+  region box that no longer exist; a reader picks a row.
 
 The one asymmetry that stays: the callset does **not** get a coarse tier, so
 `graphVcfLgvUrl` still opens on `launchRegion` and a wide locus's variant lane
