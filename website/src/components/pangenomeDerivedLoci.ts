@@ -36,22 +36,19 @@ export interface DerivedLociFile {
   loci: DerivedLocusEntry[]
 }
 
-// `drawable` is deliberately NOT carried over. It is `end - start <= 150 kb`,
-// which is exactly what `detailWindow()` already computes from the coordinates,
-// and a second copy of a derived boolean is a second thing to keep in step.
+// Three fields are deliberately NOT carried over. `drawable` is
+// `end - start <= 150 kb`, which `detailWindow()` already computes from the
+// coordinates. `fullName` is the region string, which the row already carries.
+// `inversion` is the only kind of variation the tier can name, and a class
+// column that is one flag and nineteen blanks is not drawn.
 export function derivedLoci(file: DerivedLociFile): PangenomeLocus[] {
   return file.loci.map(l => ({
     id: l.id,
     gene: l.gene,
-    fullName: l.fullName,
     chrom: l.chrom,
     start: l.start,
     end: l.end,
-    // The tier records an inversion flag per bubble and nothing else about the
-    // KIND of variation, so that is the only class claimable here. An empty
-    // list is the honest answer for the rest: a blank cell beats a guessed
-    // class.
-    variation: l.inversion ? ['inversion'] : [],
+    variation: [],
     derived: {
       segments: l.segments,
       shortestAllele: l.shortestAllele,

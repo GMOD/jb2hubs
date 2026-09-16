@@ -70,27 +70,15 @@ export interface PangenomeGraphBrowser {
   chromosomes?: { name: string; length: number }[]
 }
 
-// An external graph browser that deep-links by reference coordinate, for the
-// scale the in-browser cut cannot reach: PangyPlot precomputes an odgi layout
-// and LOD tiers server-side, so it draws a whole chromosome where the
-// GraphGenomeView draws a 5 Mb window at most. Its instance carries its own
-// graph build, which is why `graphLabel` is stated beside the url — the
-// coordinates line up only because both are on the same reference.
-export interface PangenomeExternalGraphBrowser {
-  name: string
-  baseUrl: string
-  graphLabel: string
-}
-
-// One published file of a graph, for the portal's download table.
-export interface PangenomePortalFile {
+// One published file of a graph, for the page's file table.
+export interface PangenomePublishedFile {
   suffix: string
   what: string
   bytes: number
 }
 
 // The five projections every graph in this stack publishes, in the order the
-// portal tables them. Shared rather than restated per dataset because the set
+// page tables them. Shared rather than restated per dataset because the set
 // is identical by construction — `build_rgfa_tabix.sh`, `build_rgfa_alleles.sh`
 // and `build_bubble_tier.sh` (jbrowse-components) emit it for any rGFA, which
 // is the property that lets one component table any of the three.
@@ -110,42 +98,24 @@ const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.vcf.gz', what: 'the reference-projected callset' },
 ]
 
-// What a dataset's /pangenomes/<id> page needs: prose, links and file sizes.
-// Kept apart from the rest of the dataset because the other half is coordinates
-// and trackIds that the LAUNCHES read, and nothing here is on any launch path.
-//
-// Sizes are stated rather than fetched — a static build must not need the
-// network — so they are as of a measurement, named per dataset. Every url they
-// label is probed by `pnpm check-pangenome-assets`, so a file that MOVED is
-// caught; a file that merely grew shows a stale number until someone re-measures.
-export interface PangenomePortal {
-  heading: string
-  // The tutorial that explains what this graph can show. Every dataset here is
-  // the hosted arm of one, and the tutorial is the better explanation — the
-  // page's job is to launch it, not to restate it.
-  tutorialUrl: string
-  // The published bucket prefix the file table's urls are built from.
-  filePrefix: string
-  // Bytes per suffix. A suffix absent here is absent from the table, which is
-  // how mouse's row for the callset it does not have stays off the page.
-  sizes: Record<string, number>
-  // Where the assemblies and the graph came from.
-  links: { label: string; url: string }[]
-}
-
 // The table rows for one dataset: the shared file kinds, filtered to the ones
 // this dataset actually publishes, with their urls built from its prefix.
-export function portalFiles(portal: PangenomePortal): PangenomePortalFile[] {
+export function publishedFiles(
+  dataset: PangenomeDataset,
+): PangenomePublishedFile[] {
   return GRAPH_FILE_KINDS.flatMap(kind => {
-    const bytes = portal.sizes[kind.suffix]
+    const bytes = dataset.sizes[kind.suffix]
     return bytes === undefined ? [] : [{ ...kind, bytes }]
   })
 }
 
 export interface PangenomeDataset {
+  // The last segment of /pangenomes/<id>: short and stable across graph
+  // releases, which live in `label`.
   id: string
   // Human-readable graph label, e.g. 'HPRC minigraph-cactus v2.1'.
   label: string
+  heading: string
   reference: PangenomeReference
   // One line naming the assemblies the graph was built from, shown wherever the
   // dataset is introduced. A noun phrase with no terminal punctuation and no
@@ -164,18 +134,23 @@ export interface PangenomeDataset {
   // Structural-variation tracks (already in `reference.configUrl`) to open with
   // the graph — these carry the headline insertions/deletions/inversions/dups.
   svTrackIds: string[]
-  // URL prefix under which the precomputed per-locus callset summaries are
-  // served (e.g. '/pangenome'). Only read for a dataset with a `graphVcf`.
-  dataPrefix: string
   // Omitted where a dataset has no hosted graph projection to draw.
   graphBrowser?: PangenomeGraphBrowser
-  externalGraphBrowser?: PangenomeExternalGraphBrowser
   loci: PangenomeLocus[]
-  // Every dataset renders its own page from this, through one route. HPRC's
-  // used to be hand-written for a 232-row sample table and an upstream-file
-  // table that `/hubs/HPRC` and the HPRC resources repo both do better;
-  // dropping those left it the same shape as the others.
-  portal: PangenomePortal
+  // The tutorial that explains what this graph can show. Every dataset here is
+  // the hosted arm of one, and the tutorial is the better explanation — the
+  // page's job is to launch it, not to restate it.
+  tutorialUrl: string
+  // The published bucket prefix the file table's urls are built from.
+  filePrefix: string
+  // Bytes per suffix, stated rather than fetched so a static build needs no
+  // network, and so as of a measurement named per dataset. A suffix absent here
+  // is absent from the table, which is how mouse's callset row stays off the
+  // page. `pnpm check-pangenome-assets` probes every url, so a file that MOVED
+  // is caught; one that merely grew shows a stale number until re-measured.
+  sizes: Record<string, number>
+  // Where the assemblies and the graph came from.
+  links: { label: string; url: string }[]
 }
 
 // The config is ours: `website/pangenome-config/hprc-grch38.json`, published
@@ -213,7 +188,7 @@ export interface PangenomeDataset {
 // app, and this is a different config on a host we choose per-deploy. It
 // reaches `HPRC_DATASET` only under `features.pangenomeGraph`, which is gated
 // on `latest` being v5 and on nothing else; every builder and surface treats an
-// absent `graphBrowser` as "no hosted graph" and falls back to PangyPlot.
+// absent `graphBrowser` as "no hosted graph" and offers no graph link.
 // Exported on its own so a test or probe can exercise the graph launches on a
 // build where the flag is off.
 export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
@@ -254,16 +229,33 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
   ],
 }
 
-// The HPRC minigraph-cactus v2.1 (release 2) graph projected onto GRCh38 — the
-// one dataset the explorer ships today. Release 2 is 232 samples against release
-// 1's 45, so every precomputed summary under `dataPrefix` has to be regenerated
-// alongside a change to `graphVcf` (`node generatePangenomeData.ts`). The three
-// generators read `graphVcf.url` from here rather than restating it, so that
-// sentence stays true: a changed url can no longer leave them on the old file.
-//
-// `id` is the last segment of /pangenomes/<id>, so it is short and stable
-// across graph releases; the release is in `label`.
-export const HPRC_PORTAL: PangenomePortal = {
+// The HPRC minigraph-cactus v2.1 (release 2) graph projected onto GRCh38.
+export const HPRC_DATASET: PangenomeDataset = {
+  id: 'hprc',
+  label: 'HPRC minigraph-cactus v2.1',
+  reference: {
+    assembly: 'hg38',
+    configUrl: ucscConfigPath('hg38'),
+    label: 'GRCh38',
+    geneTrackId: 'hg38-ncbiRefSeq',
+    taxonId: 9606,
+  },
+  panelDescription:
+    '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
+  graphVcf: {
+    trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
+    name: 'HPRC pangenome variants (minigraph-cactus v2.1, GRCh38)',
+    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz',
+    phased: true,
+  },
+  svTrackIds: [
+    'hg38-hprcInsertsV1',
+    'hg38-hprcDeletionsV1',
+    'hg38-hprcArrInvBedV1',
+    'hg38-hprcArrDupBedV1',
+  ],
+  graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
+  loci: PANGENOME_LOCI,
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
@@ -290,44 +282,6 @@ export const HPRC_PORTAL: PangenomePortal = {
       url: 'https://jbrowse.org/demos/hprc/README.txt',
     },
   ],
-}
-
-export const HPRC_DATASET: PangenomeDataset = {
-  id: 'hprc',
-  label: 'HPRC minigraph-cactus v2.1',
-  reference: {
-    assembly: 'hg38',
-    configUrl: ucscConfigPath('hg38'),
-    label: 'GRCh38',
-    geneTrackId: 'hg38-ncbiRefSeq',
-    taxonId: 9606,
-  },
-  panelDescription:
-    '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
-  graphVcf: {
-    trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
-    name: 'HPRC pangenome variants (minigraph-cactus v2.1, GRCh38)',
-    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz',
-    phased: true,
-  },
-  svTrackIds: [
-    'hg38-hprcInsertsV1',
-    'hg38-hprcDeletionsV1',
-    'hg38-hprcArrInvBedV1',
-    'hg38-hprcArrDupBedV1',
-  ],
-  dataPrefix: '/pangenome',
-  graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
-  // SickKids' public instance, verified answering 2026-08-26. It serves the
-  // v1.1 graph, not release 2, so a locus can differ in detail from the graph
-  // launch above; GRCh38 coordinates are the same on both.
-  externalGraphBrowser: {
-    name: 'PangyPlot',
-    baseUrl: 'https://pangyplot.research.sickkids.ca/',
-    graphLabel: 'HPRC minigraph-cactus v1.1',
-  },
-  loci: PANGENOME_LOCI,
-  portal: HPRC_PORTAL,
 }
 
 // Both non-human graphs are hosted and configured exactly like HPRC's, which is
@@ -447,7 +401,21 @@ const BOVINE_LOCI = derivedLoci(bovineLociFile)
 // carriage. Recovering carriage means `minigraph --call` per assembly plus
 // `mgutils.js merge`, or a minigraph-cactus rebuild — see
 // agent-docs/PANGENOME_PORTAL.md.
-export const MOUSE_PORTAL: PangenomePortal = {
+export const MOUSE_DATASET: PangenomeDataset = {
+  id: 'mouse',
+  label: 'Mouse strain pangenome (minigraph, GRCm39)',
+  reference: {
+    assembly: 'mm39',
+    configUrl: ucscConfigPath('mm39'),
+    label: 'GRCm39',
+    geneTrackId: 'mm39-ncbiRefSeq',
+    taxonId: 10090,
+  },
+  panelDescription:
+    'GRCm39 (C57BL/6J) plus 18 inbred and wild-derived Mouse Genomes Project strains',
+  svTrackIds: [],
+  graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
+  loci: MOUSE_LOCI,
   heading: 'Mouse strain pangenome',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_mouse/',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
@@ -473,25 +441,6 @@ export const MOUSE_PORTAL: PangenomePortal = {
   ],
 }
 
-export const MOUSE_DATASET: PangenomeDataset = {
-  id: 'mouse',
-  label: 'Mouse strain pangenome (minigraph, GRCm39)',
-  reference: {
-    assembly: 'mm39',
-    configUrl: ucscConfigPath('mm39'),
-    label: 'GRCm39',
-    geneTrackId: 'mm39-ncbiRefSeq',
-    taxonId: 10090,
-  },
-  panelDescription:
-    'GRCm39 (C57BL/6J) plus 18 inbred and wild-derived Mouse Genomes Project strains',
-  svTrackIds: [],
-  dataPrefix: '/pangenome-mouse',
-  graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
-  loci: MOUSE_LOCI,
-  portal: MOUSE_PORTAL,
-}
-
 // The bovine super-pangenome: 12 assemblies on ARS-UCD1.2, taurine and indicine
 // breeds plus yak, bison and gaur, published by Leonard et al. 2023 (Zenodo
 // 7737904, CC-BY 4.0) and projected here from their minigraph graphs.
@@ -500,7 +449,26 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // mouse lacks: the published GFAs carry one `P` line per assembly, so
 // `vg deconstruct` projects them onto the reference directly. Eleven haploid
 // genotype columns, hence `phased` unset.
-export const BOVINE_PORTAL: PangenomePortal = {
+export const BOVINE_DATASET: PangenomeDataset = {
+  id: 'bovine',
+  label: 'Bovine super-pangenome (minigraph, ARS-UCD1.2)',
+  reference: {
+    assembly: 'bosTau9',
+    configUrl: ucscConfigPath('bosTau9'),
+    label: 'ARS-UCD1.2',
+    geneTrackId: 'bosTau9-ncbiRefSeq',
+    taxonId: 9913,
+  },
+  panelDescription:
+    'ARS-UCD1.2 (Hereford) plus 11 taurine and indicine breeds, yak, bison and gaur',
+  graphVcf: {
+    trackId: 'bovine-arsucd12-minigraph-vcf',
+    name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
+    url: 'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.vcf.gz',
+  },
+  svTrackIds: [],
+  graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
+  loci: BOVINE_LOCI,
   heading: 'Bovine super-pangenome',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_cattle/',
   filePrefix:
@@ -526,30 +494,6 @@ export const BOVINE_PORTAL: PangenomePortal = {
       url: 'https://jbrowse.org/demos/bovine_pangenome/README.txt',
     },
   ],
-}
-
-export const BOVINE_DATASET: PangenomeDataset = {
-  id: 'bovine',
-  label: 'Bovine super-pangenome (minigraph, ARS-UCD1.2)',
-  reference: {
-    assembly: 'bosTau9',
-    configUrl: ucscConfigPath('bosTau9'),
-    label: 'ARS-UCD1.2',
-    geneTrackId: 'bosTau9-ncbiRefSeq',
-    taxonId: 9913,
-  },
-  panelDescription:
-    'ARS-UCD1.2 (Hereford) plus 11 taurine and indicine breeds, yak, bison and gaur',
-  graphVcf: {
-    trackId: 'bovine-arsucd12-minigraph-vcf',
-    name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
-    url: 'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.vcf.gz',
-  },
-  svTrackIds: [],
-  dataPrefix: '/pangenome-bovine',
-  graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
-  loci: BOVINE_LOCI,
-  portal: BOVINE_PORTAL,
 }
 
 // Every dataset, keyed by `id`.

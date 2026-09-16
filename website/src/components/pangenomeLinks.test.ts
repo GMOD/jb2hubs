@@ -8,23 +8,19 @@ import {
   HPRC_DATASET,
   HPRC_GRAPH_BROWSER,
   MOUSE_DATASET,
-  PANGENOME_DATASETS,
 } from './pangenomeDataset.ts'
 import {
   geneHubUrl,
-  externalGraphUrl,
   graphLanesUrl,
   graphLocusUrl,
   graphRegionUrl,
   graphVcfLgvUrl,
-  isCoarse,
   locusLaunchUrl,
 } from './pangenomeLinks.ts'
 import {
   MAX_DETAIL_WINDOW_BP,
   PANGENOME_LOCI,
   detailWindow,
-  preferredLocus,
   syntenyGene,
 } from './pangenomeLoci.ts'
 
@@ -52,7 +48,6 @@ const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
 
 test('the hosted graph reaches the dataset only under its own flag', () => {
   assert.equal(HPRC_DATASET.graphBrowser !== undefined, features.pangenomeGraph)
-  assert.ok(HPRC_DATASET.externalGraphBrowser, 'PangyPlot is the fallback')
 })
 
 // HPRC is the one dataset here with a callset; `graphVcf` is optional on the
@@ -192,29 +187,6 @@ test('the lanes launch is undefined without a hosted graph config', () => {
   assert.equal(locusLaunchUrl(noGraph, noGraph.loci[0]!), undefined)
 })
 
-test('every dataset lands on a locus its own catalogue names, and a drawable one', () => {
-  // The top-ranked entry in both derived catalogues is a multi-megabase cluster
-  // with no detail window -- mouse's is 2.24 Mb -- so `loci[0]` put the allele
-  // inventory or the 464-column callset past its fetch limit. `preferredLocus`
-  // falls down the ranking to the first entry that is drawable AND named.
-  for (const d of PANGENOME_DATASETS) {
-    const landing = preferredLocus(d.loci)
-    assert.ok(landing, `${d.id} has a landing locus`)
-    assert.ok(
-      d.loci.includes(landing),
-      `${d.id} lands on a locus its catalogue names`,
-    )
-    assert.ok(
-      detailWindow(landing),
-      `${d.id} lands on ${landing.id}, which has no drawable window`,
-    )
-    assert.ok(
-      syntenyGene(landing),
-      `${d.id} lands on ${landing.id}, which greets a reader with a coordinate`,
-    )
-  }
-})
-
 test('a derived catalogue carries what the tier said and claims nothing else', () => {
   for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
     assert.ok(d.loci.length > 0, `${d.id} has a catalogue`)
@@ -324,7 +296,6 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
 // coarse branch as any window past MAX_DETAIL_WINDOW_BP.
 test('a wide region is drawn from the tier, with maxRegionBp raised', () => {
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
-  assert.ok(isCoarse(graphDataset, chr21))
   const { config, spec } = parseLaunch(graphRegionUrl(graphDataset, chr21)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   const [lgv, graph] = spec.views
@@ -351,7 +322,6 @@ test('a graph with no tier is drawn fine however wide the ask', () => {
     graphBrowser: { ...HPRC_GRAPH_BROWSER, tierTrackId: undefined },
   }
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
-  assert.equal(isCoarse(noTier, chr21), false)
   const { spec } = parseLaunch(graphRegionUrl(noTier, chr21)!)
   const [lgv, graph] = spec.views
   assert.deepEqual(lgv!.tracks, [
@@ -398,25 +368,6 @@ test('the owned graph config names every track the launches open', () => {
   ]) {
     assert.ok(id && ids.has(id), `${id} is in hprc-grch38.json`)
   }
-})
-
-test('externalGraphUrl deep-links by a 1-based hash', () => {
-  const url = externalGraphUrl(HPRC_DATASET, {
-    chrom: 'chr6',
-    start: 32_510_000,
-    end: 32_600_000,
-  })
-  assert.equal(
-    url,
-    `${HPRC_DATASET.externalGraphBrowser!.baseUrl}#chr6:32510001-32600000`,
-  )
-  assert.equal(
-    externalGraphUrl(
-      { ...HPRC_DATASET, externalGraphBrowser: undefined },
-      { chrom: 'chr6', start: 0, end: 1 },
-    ),
-    undefined,
-  )
 })
 
 test('graphLocusUrl is undefined without a hosted graph', () => {

@@ -39,8 +39,8 @@ export const features = {
   // The in-browser GraphGenomeView launches on /pangenomes/*. Waits on core v5:
   // the graphgenomeviewer plugin error-pages every released host (`latest` is
   // v4.3.0), so the dataset declares no `graphBrowser` on production and the
-  // pages fall back to the external PangyPlot link. Independent of `pangenome`
-  // so the section can go live without the graph.
+  // pages offer no graph links. Independent of `pangenome` so the section can
+  // go live without the graph.
   pangenomeGraph: staging,
   // "Open in Desktop" beside a launch link. Staged until JBrowse Desktop 5.0
   // ships: the jbrowse:// handler landed after v4.2.1, so on every install in

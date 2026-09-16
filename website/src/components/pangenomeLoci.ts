@@ -37,7 +37,8 @@ export interface DerivedBubble {
 export interface PangenomeLocus {
   id: string
   gene: string
-  fullName: string
+  // Curated entries only; a derived entry has nothing but its gene label.
+  fullName?: string
   chrom: string
   start: number
   end: number
@@ -406,23 +407,6 @@ export function locusRegion(
   l: Pick<PangenomeLocus, 'chrom' | 'start' | 'end'>,
 ) {
   return `${l.chrom}:${l.start}-${l.end}`
-}
-
-// The entry a catalogue should open on, which is not simply the first: the
-// top-ranked entry in both derived catalogues is a multi-megabase cluster with
-// no detail window, so it has no graph launch and its linear launch would put
-// the allele inventory past its fetch limit — mouse's is 2.24 Mb. Prefer the
-// highest-ranked entry that is drawable AND named, and fall back down the
-// ranking rather than off it.
-//
-// The region form seeds itself from this.
-export function preferredLocus(loci: PangenomeLocus[]) {
-  const named = (l: PangenomeLocus) => syntenyGene(l) !== undefined
-  return (
-    loci.find(l => detailWindow(l) && named(l)) ??
-    loci.find(l => detailWindow(l)) ??
-    loci[0]
-  )
 }
 
 // A real NCBI gene symbol to seed the cross-species gene-order view, or

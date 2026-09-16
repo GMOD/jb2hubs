@@ -4,16 +4,14 @@
 
 import { geneHubUrl, graphLocusUrl, locusLaunchUrl } from './pangenomeLinks.ts'
 import { VARIATION_LABELS } from './pangenomeLoci.ts'
-import { formatRegion } from './pangenomeRegion.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 
 export interface LocusRow {
   gene: string
-  // Curated entries only: a derived entry's `fullName` is its region string.
   description?: string
   variation: string
-  // 1-based with separators, the way the region box takes it.
+  // 1-based with separators, the way a browser's location box takes it.
   region: string
   // Derived entries only: the tier's segment count, which is what ranks them.
   segments?: number
@@ -31,9 +29,9 @@ export function lociRows(dataset: PangenomeDataset): LocusRow[] {
       locus.derived && locus.derived.genes.length === 0
         ? 'intergenic'
         : locus.gene,
-    description: locus.derived ? undefined : locus.fullName,
+    description: locus.fullName,
     variation: locus.variation.map(v => VARIATION_LABELS[v]).join(', '),
-    region: formatRegion(locus.chrom, locus.start, locus.end),
+    region: `${locus.chrom}:${(locus.start + 1).toLocaleString('en-US')}-${locus.end.toLocaleString('en-US')}`,
     segments: locus.derived?.segments,
     graphUrl: graphLocusUrl(dataset, locus),
     linearUrl: locusLaunchUrl(dataset, locus),

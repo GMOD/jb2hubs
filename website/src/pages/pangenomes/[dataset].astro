@@ -1,13 +1,13 @@
 ---
-// One pangenome graph, one page: a region form, the locus catalogue as a
-// table of launches, and the published files. All three graphs go through this
-// route, because they publish the same projections and launch off the same
-// builders; what is per-dataset is the numbers the dataset carries.
+// One pangenome graph, one page: the chromosomes as graph links, the locus
+// catalogue as a table of launches, and the published files. All three graphs
+// go through this route, because they publish the same projections and launch
+// off the same builders; what is per-dataset is the numbers the dataset
+// carries. No client JavaScript: every url is built here.
 import Container from '../../components/Container.astro'
-import GraphRegionLauncher from '../../components/GraphRegionLauncher.tsx'
 import {
   PANGENOME_DATASETS,
-  portalFiles,
+  publishedFiles,
 } from '../../components/pangenomeDataset.ts'
 import { graphRegionUrl } from '../../components/pangenomeLinks.ts'
 import { lociColumns, lociRows } from '../../components/pangenomeLociRows.ts'
@@ -34,12 +34,8 @@ if (!features.pangenome) {
 }
 
 const { dataset } = Astro.props
-const { portal } = dataset
 const rows = lociRows(dataset)
 const columns = lociColumns(rows)
-const launcher =
-  dataset.graphBrowser !== undefined ||
-  dataset.externalGraphBrowser !== undefined
 const chromosomes = (dataset.graphBrowser?.chromosomes ?? []).flatMap(c => {
   const url = graphRegionUrl(dataset, {
     chrom: c.name,
@@ -62,20 +58,20 @@ function humanBytes(bytes: number) {
 ---
 
 <Layout
-  title={portal.heading}
+  title={dataset.heading}
   description={`${dataset.panelDescription}, projected onto ${dataset.reference.label} and drawable as a pangenome graph at any region.`}
 >
   <Container>
     <p>
       <a href="/pangenomes">Pangenomes</a>
     </p>
-    <h1>{portal.heading}</h1>
+    <h1>{dataset.heading}</h1>
     <p>
       {dataset.panelDescription}, projected onto {dataset.reference.label}.
     </p>
     <p>
-      <a href={portal.tutorialUrl}>Tutorial</a>
-      {portal.links.map(l => (
+      <a href={dataset.tutorialUrl}>Tutorial</a>
+      {dataset.links.map(l => (
         <>
           {' · '}
           <a href={l.url}>{l.label}</a>
@@ -83,30 +79,24 @@ function humanBytes(bytes: number) {
       ))}
     </p>
 
-    {launcher && (
+    {chromosomes.length > 0 && (
       <>
         <h2>Graph</h2>
-        <GraphRegionLauncher
-          dataset={dataset}
-          client:load
-        />
-        {chromosomes.length > 0 && (
-          <p>
-            Whole chromosome:
-            {chromosomes.map(c => (
-              <>
-                {' '}
-                <a
-                  href={c.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {c.name}
-                </a>
-              </>
-            ))}
-          </p>
-        )}
+        <p>
+          Whole chromosome:
+          {chromosomes.map(c => (
+            <>
+              {' '}
+              <a
+                href={c.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {c.name}
+              </a>
+            </>
+          ))}
+        </p>
       </>
     )}
 
@@ -169,28 +159,30 @@ function humanBytes(bytes: number) {
     )}
 
     <h2>Files</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>File</th>
-          <th>Contents</th>
-          <th>Size</th>
-        </tr>
-      </thead>
-      <tbody>
-        {portalFiles(portal).map(f => (
+    <div class="table-scroll">
+      <table>
+        <thead>
           <tr>
-            <td>
-              <a href={`${portal.filePrefix}${f.suffix}`}>
-                <code>{f.suffix}</code>
-              </a>
-            </td>
-            <td>{f.what}</td>
-            <td>{humanBytes(f.bytes)}</td>
+            <th>File</th>
+            <th>Contents</th>
+            <th>Size</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {publishedFiles(dataset).map(f => (
+            <tr>
+              <td>
+                <a href={`${dataset.filePrefix}${f.suffix}`}>
+                  <code>{f.suffix}</code>
+                </a>
+              </td>
+              <td>{f.what}</td>
+              <td>{humanBytes(f.bytes)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   </Container>
 </Layout>
 

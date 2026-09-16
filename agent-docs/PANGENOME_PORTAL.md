@@ -621,5 +621,5 @@ here and in the tutorials; the pages carry no caveat prose since 2026-09-16.
   panel is deleted (see CLAUDE.md, "What the /pangenomes page is not"), so the
   step that never ran no longer has a consumer. Retiring is now the default.
 
-- `agent-docs/MOUSE_PANGENOME_PLAN.md` — superseded by this file for everything
-  except its locus table. Its §3 parameterisation plan is done.
+- `agent-docs/MOUSE_PANGENOME_PLAN.md` — deleted 2026-09-16; this file
+  superseded it, and the mouse loci are generated now.

@@ -151,11 +151,6 @@ function coarseTier(graph: PangenomeGraphBrowser, region: GraphRegion) {
     : undefined
 }
 
-export function isCoarse(dataset: PangenomeDataset, region: GraphRegion) {
-  const graph = dataset.graphBrowser
-  return graph ? coarseTier(graph, region) !== undefined : false
-}
-
 function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
   const tier = coarseTier(graph, region)
   return tier
@@ -226,10 +221,7 @@ export function graphVcfLgvUrl(
 // narrow enough to be its own), else the whole display span. A wide span is not
 // a problem for the lanes any more — `lanes()` switches to the coarse tier —
 // but it still is for the callset, which is why `graphVcfLgvUrl` says so.
-//
-// Exported so a caller asks `isCoarse` about the region the launch USES, not
-// the locus's display span: MHC's span is 4.97 Mb and its detail window 90 kb.
-export function launchRegion(locus: PangenomeLocus): GraphRegion {
+function launchRegion(locus: PangenomeLocus): GraphRegion {
   const window = detailWindow(locus)
   return window
     ? { chrom: locus.chrom, ...window, label: locus.gene }
@@ -299,19 +291,6 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
         : {}),
     },
   ])
-}
-
-// The same region in the dataset's external graph browser, which navigates by
-// a `#chrom:start-end` hash (1-based, like a typed locstring). Undefined when
-// the dataset names none.
-export function externalGraphUrl(
-  dataset: PangenomeDataset,
-  region: GraphRegion,
-) {
-  const ext = dataset.externalGraphBrowser
-  return ext
-    ? `${ext.baseUrl}#${region.chrom}:${region.start + 1}-${region.end}`
-    : undefined
 }
 
 // A catalog locus as the graph. Undefined only when the graph is known to

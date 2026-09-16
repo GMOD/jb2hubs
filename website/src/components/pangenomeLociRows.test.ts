@@ -30,6 +30,7 @@ test('an intergenic derived bubble is labelled as such, not by its coordinate', 
   const intergenic = rows.filter(r => r.gene === 'intergenic')
   assert.ok(intergenic.length > 0)
   assert.ok(rows.every(r => !r.gene.startsWith('chr')))
+  assert.ok(rows.every(r => r.description === undefined && r.variation === ''))
   assert.ok(intergenic.every(r => r.geneHubUrl === undefined))
 })
 
