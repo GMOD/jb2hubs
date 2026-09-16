@@ -463,7 +463,7 @@ const BOVINE_LOCI = derivedLoci(bovineLociFile)
 // agent-docs/PANGENOME_PORTAL.md.
 export const MOUSE_PORTAL: PangenomePortal = {
   heading: 'Mouse strain pangenome',
-  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_nonhuman/',
+  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_mouse/',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
   // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.
   sizes: {
@@ -526,7 +526,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // genotype columns, hence `phased` unset.
 export const BOVINE_PORTAL: PangenomePortal = {
   heading: 'Bovine super-pangenome',
-  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_nonhuman/',
+  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_cattle/',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
   // Measured 2026-09-09.
