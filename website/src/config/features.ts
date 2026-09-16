@@ -32,10 +32,9 @@ export const features = {
   // on-demand cross-species alignment (EBI Clustal Omega) overlaid with CDD
   // domains — all synthesized live.
   proteinBrowser: staging,
-  // The /pangenomes/* section: the HPRC portal, the mouse strain listing and
-  // the explorer (curated divergence loci + JBrowse / react-msaview launches).
-  // Everything on those pages runs on the released `latest` except the graph
-  // launches, which have their own flag below.
+  // The /pangenomes/* section: one page per graph, with its loci and their
+  // JBrowse launches. Everything on those pages runs on the released `latest`
+  // except the graph launches, which have their own flag below.
   pangenome: staging,
   // The in-browser GraphGenomeView launches on /pangenomes/*. Waits on core v5:
   // the graphgenomeviewer plugin error-pages every released host (`latest` is

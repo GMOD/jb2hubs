@@ -1,4 +1,4 @@
-// JBrowse launch-URL builders for the pangenome explorer. Every graph/reference
+// JBrowse launch-URL builders for the /pangenomes pages. Every graph/reference
 // specific value comes from the PangenomeDataset, so these builders are
 // graph-agnostic. The graph VCF usually isn't in the hosted reference config, so
 // we attach it inline via `sessionTracks` (see specUrl) pointing at the public,
@@ -8,7 +8,6 @@ import { specUrl } from './jbrowseLinks.ts'
 import {
   MAX_DETAIL_WINDOW_BP,
   detailWindow,
-  preferredLocus,
   syntenyGene,
 } from './pangenomeLoci.ts'
 
@@ -76,8 +75,7 @@ const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 // Undefined where the dataset has no reference-projected callset. That is not a
 // gap in the wiring: whether a graph can be deconstructed into one is a property
 // of the graph file. `minigraph -cxggs` writes no P or W lines, so the mouse
-// graph records no haplotype paths and there is nothing to project — see
-// `noCallsetReason` on the dataset, which is what the pages say instead.
+// graph records no haplotype paths and there is nothing to project.
 function graphVcfTrack(dataset: PangenomeDataset) {
   const vcf = dataset.graphVcf
   return vcf
@@ -229,10 +227,8 @@ export function graphVcfLgvUrl(
 // a problem for the lanes any more — `lanes()` switches to the coarse tier —
 // but it still is for the callset, which is why `graphVcfLgvUrl` says so.
 //
-// Exported because the dashboard's "this opens at bubble resolution" note has
-// to be about the region the launch USES, not the locus's display span. MHC's
-// span is 4.97 Mb and its detail window is 90 kb, so asking `isCoarse` about
-// the span said "coarse" over a launch that is nothing of the kind.
+// Exported so a caller asks `isCoarse` about the region the launch USES, not
+// the locus's display span: MHC's span is 4.97 Mb and its detail window 90 kb.
 export function launchRegion(locus: PangenomeLocus): GraphRegion {
   const window = detailWindow(locus)
   return window
@@ -251,15 +247,6 @@ export function locusLaunchUrl(
   return dataset.graphVcf
     ? graphVcfLgvUrl(dataset, locus)
     : graphLanesUrl(dataset, launchRegion(locus))
-}
-
-// Whole-graph entry point. It opens on the catalogue's own landing locus rather
-// than a second constant that could disagree with it — `preferredLocus` is what
-// the explorer's initial card uses too, so the portal and the page land in the
-// same place.
-export function graphBrowserUrl(dataset: PangenomeDataset) {
-  const landing = preferredLocus(dataset.loci)
-  return landing ? locusLaunchUrl(dataset, landing) : undefined
 }
 
 // A region drawn as the graph itself, under a linear view of the same window.

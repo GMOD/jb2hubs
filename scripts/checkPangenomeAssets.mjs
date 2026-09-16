@@ -447,8 +447,8 @@ if (primaryOnly.length > 0 || transient.length > 0) {
 if (stale.length > 0) {
   console.log(
     `\nEvery url resolves, but ${stale.length} newer dataset version(s) are ` +
-      `published. Bumping one means the config, the explorer summaries derived ` +
-      `from it, and the download tables together -- see ` +
+      `published. Bumping one means the config and the download tables ` +
+      `together -- see ` +
       `agent-docs/PANGENOME_PORTAL.md.`,
   )
 } else {

@@ -3,11 +3,7 @@ import { test } from 'node:test'
 
 import { desktopUrl, syntenyViewUrl } from './jbrowseLinks.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
-import {
-  graphBrowserUrl,
-  graphLocusUrl,
-  graphVcfLgvUrl,
-} from './pangenomeLinks.ts'
+import { graphLocusUrl, graphVcfLgvUrl } from './pangenomeLinks.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 // Guards the jbrowse:// launch links against the two ways they break silently.
@@ -28,7 +24,6 @@ const MAX_PROTOCOL_URL_LENGTH = 8000
 // without anyone remembering to update a list of examples.
 function everyLaunchUrl() {
   return [
-    graphBrowserUrl(HPRC_DATASET),
     ...PANGENOME_LOCI.flatMap(locus => [
       graphVcfLgvUrl(HPRC_DATASET, locus),
       graphLocusUrl(HPRC_DATASET, locus),

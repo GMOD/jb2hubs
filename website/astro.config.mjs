@@ -24,7 +24,11 @@ const STAGING_ONLY = ['/protein-browser/', '/pangenomes/', '/synteny/']
 // Redirect stubs kept for old links: each is a meta-refresh page whose
 // canonical points at the page it forwards to, so it never belongs in the
 // sitemap, staging or not.
-const REDIRECT_STUBS = ['/orthologs/', '/conserved-gene-order/']
+const REDIRECT_STUBS = [
+  '/orthologs/',
+  '/conserved-gene-order/',
+  '/pangenomes/explorer/',
+]
 
 // https://astro.build/config
 export default defineConfig({

@@ -20,9 +20,8 @@ const HINT =
  * `specUrl` builder already produced, so the two links cannot describe
  * different sessions.
  *
- * `className` comes from the call site rather than a style of its own — each
- * launch surface has its own button vocabulary (`pg-launch-btn`, `portal-btn`,
- * `synteny-launch`), and a secondary action should look like one of those.
+ * `className` comes from the call site rather than a style of its own, so a
+ * secondary action looks like the launch beside it (`synteny-launch`).
  */
 export default function OpenInDesktop({
   webUrl,

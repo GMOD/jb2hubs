@@ -1,5 +1,9 @@
 # Mouse (mm39) pangenome explorer — handoff plan
 
+> **Status as of 2026-09-16.** Superseded: the explorer, its dashboard and
+> `generatePangenomeData.ts` are deleted, and each graph's page tables its loci
+> (`/pangenomes/mouse`). Only the locus table in §2 is still of use.
+>
 > **Status as of 2026-09-01.** Written against an earlier layout; read the rest
 > with these corrections. There are two routes, both under
 > `website/src/pages/pangenomes/` and gated on `features.pangenome`:

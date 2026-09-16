@@ -3,7 +3,7 @@
 //
 // checkPangenomeLaunches.mjs
 //
-// Boots the pangenome explorer's launch URLs in a real hosted JBrowse build and
+// Boots the /pangenomes launch URLs in a real hosted JBrowse build and
 // reads back what the session ACTUALLY built — which display each track got,
 // which views exist, whether the app error-paged.
 //

@@ -1,322 +1,52 @@
 ---
-import Layout from '../../layouts/Layout.astro'
-import Container from '../../components/Container.astro'
-import PangenomeExplorer from '../../components/PangenomeExplorer.tsx'
-import { features } from '../../config/features.ts'
-import { HPRC_DATASET } from '../../components/pangenomeDataset.ts'
-import hprcManifest from '../../../public/pangenome/manifest.json'
+// /pangenomes/explorer was the variable-loci explorer until 2026-09-16; each
+// graph's page now tables its own loci. The `?dataset=<id>` it took is the
+// page's route, and the inline script carries it across. The meta refresh is
+// the fallback without JavaScript, where the dataset is lost but the page is
+// not.
+import { PANGENOME_DATASETS } from '../../components/pangenomeDataset.ts'
 
-// Staging-only while the pangenome explorer is in development; see synteny/index.astro.
-if (!features.pangenome) {
-  return Astro.redirect('/')
-}
-
-// One generated manifest per explorable dataset, imported here so the browser
-// never fetches it; `?dataset=<id>` picks among them client-side.
-const manifests = { [HPRC_DATASET.id]: hprcManifest }
+const ids = PANGENOME_DATASETS.map(d => d.id)
+const fallback = `/pangenomes/${ids[0]}`
+const target = new URL(fallback, Astro.site)
 ---
 
-<Layout
-  title="Pangenome explorer — variable loci"
-  description="Loci where genome structure varies between the assemblies in a pangenome graph — human, mouse and cattle — with JBrowse launches. Curated for HPRC, derived from the graph itself for the other two."
->
-  <Container>
-    <h1>Pangenome explorer: variable loci</h1>
-
-    <PangenomeExplorer
-      manifests={manifests}
-      client:load
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
     />
-  </Container>
-</Layout>
-
-<style is:global>
-  .pg-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 1.25rem 0;
-  }
-
-  .pg-filter {
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #444;
-    background: #f3f3f3;
-    border: 1px solid #ddd;
-    border-radius: 999px;
-    cursor: pointer;
-  }
-
-  .pg-filter:hover {
-    background: #eaeaea;
-  }
-
-  .pg-filter-active {
-    color: white;
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .pg-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 2rem;
-  }
-
-  .pg-card {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    align-items: flex-start;
-    text-align: left;
-    padding: 12px 14px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  .pg-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 1px 6px rgba(11, 105, 212, 0.12);
-  }
-
-  .pg-card-active {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(11, 105, 212, 0.25);
-  }
-
-  .pg-card-gene {
-    font-size: 15px;
-    font-weight: 700;
-    color: #111;
-  }
-
-  .pg-card-fullname {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .pg-card-count {
-    margin-top: 2px;
-    font-size: 11px;
-    color: #888;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .pg-dash-significance {
-    max-width: 80ch;
-    margin: 8px 0 0;
-    font-size: 14px;
-    color: #333;
-  }
-
-  .pg-badge {
-    display: inline-block;
-    margin: 3px 4px 0 0;
-    padding: 1px 7px;
-    font-size: 10px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    border-radius: 3px;
-  }
-
-  .pg-badge-cnv {
-    color: #8a4b00;
-    background: #fdebd5;
-  }
-
-  .pg-badge-pav {
-    color: #0a5c2e;
-    background: #d8f3e3;
-  }
-
-  .pg-badge-hyperdiversity {
-    color: #5a1a8a;
-    background: #ece0fb;
-  }
-
-  .pg-badge-vntr {
-    color: #0b5a6b;
-    background: #d3eef3;
-  }
-
-  .pg-badge-inversion {
-    color: #8a1a4b;
-    background: #fbe0ec;
-  }
-
-  .pg-dashboard {
-    padding: 1.25rem 0 0;
-    border-top: 2px solid #eee;
-  }
-
-  .pg-dash-title {
-    margin: 0 0 6px;
-    font-size: 22px;
-  }
-
-  .pg-dash-fullname {
-    font-size: 15px;
-    font-weight: 400;
-    color: #666;
-  }
-
-  .pg-dash-loc {
-    margin: 8px 0 4px;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 13px;
-    color: #444;
-  }
-
-  .pg-launch-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin: 1rem 0 1.5rem;
-  }
-
-  .pg-launch-btn {
-    padding: 9px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    border-radius: 6px;
-    text-decoration: none;
-  }
-
-  .pg-launch-btn:hover {
-    background: var(--accent-hover);
-  }
-
-  .pg-launch-secondary {
-    color: var(--accent);
-    background: white;
-  }
-
-  .pg-launch-secondary:hover {
-    background: var(--accent-wash);
-  }
-
-  /* Sits in the launch bar in place of a button, so it takes the whole row
-     rather than being squeezed between two buttons. */
-  .pg-launch-note {
-    flex: 1 0 100%;
-    max-width: 80ch;
-    margin: 0;
-  }
-
-  .pg-charts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .pg-chart-title {
-    margin: 0 0 0.6rem;
-    font-size: 14px;
-    color: #444;
-  }
-
-  .pg-bar-row {
-    display: grid;
-    grid-template-columns: 92px 1fr 52px;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 3px;
-    font-size: 12px;
-  }
-
-  .pg-bar-label {
-    color: #555;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .pg-bar-track {
-    background: #f0f0f0;
-    border-radius: 3px;
-    height: 14px;
-  }
-
-  .pg-bar-fill {
-    display: block;
-    height: 100%;
-    background: var(--accent);
-    border-radius: 3px;
-    min-width: 1px;
-  }
-
-  .pg-bar-count {
-    color: #333;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .pg-burden {
-    margin-bottom: 1.5rem;
-  }
-
-  .pg-burden .pg-bar-row {
-    grid-template-columns: 110px 1fr 52px;
-  }
-
-  /* The derived-catalogue facts block, in place of the four charts a curated
-     locus draws. Grid rather than a plain dl so the four pairs sit in a row on
-     a wide screen and stack on a narrow one. */
-  .pg-facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 0.75rem 1.5rem;
-    margin: 0 0 1.5rem;
-  }
-
-  .pg-facts dt {
-    font-size: 12px;
-    color: #666;
-  }
-
-  .pg-facts dd {
-    margin: 2px 0 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #111;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Caption under a chart, narrower than the prose measure above it. */
-  .pg-caption {
-    max-width: 75ch;
-    margin: 0 0 0.75rem;
-  }
-
-  .pg-hint {
-    color: #666;
-    font-size: 14px;
-  }
-
-  .pg-provenance {
-    max-width: 80ch;
-    margin: 0 0 1.25rem;
-    font-size: 13px;
-  }
-
-  .pg-provenance code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12px;
-  }
-
-  .pg-error {
-    color: #b00020;
-    font-size: 14px;
-  }
-</style>
+    <title>Pangenome explorer</title>
+    <link
+      rel="canonical"
+      href={target.href}
+    />
+    <meta
+      http-equiv="refresh"
+      content={`0; url=${fallback}`}
+    />
+    <script
+      is:inline
+      define:vars={{ ids, fallback }}
+    >
+      const dataset = new URLSearchParams(location.search).get('dataset')
+      location.replace(
+        ids.includes(dataset) ? `/pangenomes/${dataset}` : fallback,
+      )
+    </script>
+  </head>
+  <body>
+    <p>
+      The variable loci are on each pangenome's own page:
+      {ids.map(id => (
+        <>
+          {' '}
+          <a href={`/pangenomes/${id}`}>/pangenomes/{id}</a>
+        </>
+      ))}
+    </p>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-// Turn a derived locus catalogue into the shape the explorer already renders.
+// Turn a derived locus catalogue into the shape the pages render.
 //
 // `website/generatePangenomeLoci.ts` ranks a graph's coarse tier by segments per
 // bubble and names each entry off the reference annotation, writing
@@ -8,9 +8,8 @@
 // maps it onto `PangenomeLocus` without inventing any of that.
 //
 // Which is the point of the `derived` field rather than a dataset-level flag:
-// the dashboard needs to know, per locus, that the four numbers the tier
-// reported are all there is — HPRC's catalogue is curated and has summaries,
-// and a dataset could one day hold both kinds.
+// the table needs to know, per locus, that the tier's numbers are all there
+// is — HPRC's catalogue is curated, and a dataset could one day hold both.
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -50,8 +49,8 @@ export function derivedLoci(file: DerivedLociFile): PangenomeLocus[] {
     end: l.end,
     // The tier records an inversion flag per bubble and nothing else about the
     // KIND of variation, so that is the only class claimable here. An empty
-    // list is the honest answer for the rest — the explorer's class filters
-    // simply do not match them, which is better than a guessed badge.
+    // list is the honest answer for the rest: a blank cell beats a guessed
+    // class.
     variation: l.inversion ? ['inversion'] : [],
     derived: {
       segments: l.segments,

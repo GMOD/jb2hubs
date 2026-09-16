@@ -1,4 +1,4 @@
-// A pangenome "dataset" descriptor: everything that ties the explorer to one
+// A pangenome "dataset" descriptor: everything that ties the pages to one
 // specific pangenome graph + reference. All the HPRC/GRCh38-specific constants
 // live here (they used to be scattered through pangenomeLinks.ts and the
 // components), so standing up a second pangenome — a different human graph, or a
@@ -131,8 +131,6 @@ export interface PangenomePortal {
   sizes: Record<string, number>
   // Where the assemblies and the graph came from.
   links: { label: string; url: string }[]
-  // Caveats a reader has to hold before drawing a conclusion from this graph.
-  notes: string[]
 }
 
 // The table rows for one dataset: the shared file kinds, filtered to the ones
@@ -161,11 +159,8 @@ export interface PangenomeDataset {
   // Absent is a property of the GRAPH, not a gap in the wiring: `vg deconstruct`
   // projects haplotype paths, and `minigraph -cxggs` writes none, so the mouse
   // graph cannot state which strain carries which allele and no callset can be
-  // made from it. `noCallsetReason` is what the pages say in its place.
+  // made from it.
   graphVcf?: PangenomeGraphVcf
-  // Why there is no callset, in a sentence a reader of the locus dashboard can
-  // act on. Only meaningful with `graphVcf` absent.
-  noCallsetReason?: string
   // Structural-variation tracks (already in `reference.configUrl`) to open with
   // the graph — these carry the headline insertions/deletions/inversions/dups.
   svTrackIds: string[]
@@ -266,9 +261,8 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // generators read `graphVcf.url` from here rather than restating it, so that
 // sentence stays true: a changed url can no longer leave them on the old file.
 //
-// `id` is the `?dataset=` value on /pangenomes/explorer and the last segment of
-// /pangenomes/<id>, so it is short and stable across graph releases; the release
-// is in `label`.
+// `id` is the last segment of /pangenomes/<id>, so it is short and stable
+// across graph releases; the release is in `label`.
 export const HPRC_PORTAL: PangenomePortal = {
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
@@ -298,11 +292,6 @@ export const HPRC_PORTAL: PangenomePortal = {
       label: 'How these projections were built',
       url: 'https://jbrowse.org/demos/hprc/README.txt',
     },
-  ],
-  notes: [
-    'A redistribution of projections, not of the graph: the five indexed files are cut from release 2’s own SV-resolution `sv.gfa.gz`, and the 464-haplotype callset is streamed from the release’s url rather than copied here.',
-    'The graph is the SV tier. Release 2 also publishes a base-level GFA (59 GB) and a GBZ; neither is what these tracks read, so a variant smaller than the graph records is in the callset and not in the bubbles.',
-    'The panel is 232 phased diploid assemblies, so the callset is 464 haplotype columns — which is what makes carriage readable here and not in the two graphs below.',
   ],
 }
 
@@ -358,7 +347,7 @@ export const HPRC_DATASET: PangenomeDataset = {
 // `MinigraphBubbleAdapter`) ships in the graphgenomeviewer plugin rather than
 // in core, so for these two datasets the LINEAR lanes are plugin-gated too, not
 // just the graph pane. Without `graphBrowser` a mouse locus has nothing but its
-// coordinates, which is what the dashboard says.
+// coordinates.
 const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
   segmentsTrackId: 'mouse_minigraph_segments',
@@ -488,11 +477,6 @@ export const MOUSE_PORTAL: PangenomePortal = {
       url: 'https://jbrowse.org/demos/mouse_pangenome/README.txt',
     },
   ],
-  notes: [
-    'No published pangenome graph existed for these assemblies, so this one was built here rather than redistributed. Its README beside the data records the commands and the audits that ran.',
-    'Rank is not carriage. The allele file names the assembly a segment was first seen in, which for a minigraph graph is the order the assemblies were processed — it says nothing about which other strains carry the same allele.',
-    'One sequence per chromosome was aligned, so the graph holds chr1-19 and chrX and no chrY, chrM or unplaced contigs.',
-  ],
 }
 
 export const MOUSE_DATASET: PangenomeDataset = {
@@ -507,8 +491,6 @@ export const MOUSE_DATASET: PangenomeDataset = {
   },
   panelDescription:
     'GRCm39 (C57BL/6J) plus 18 inbred and wild-derived Mouse Genomes Project strains',
-  noCallsetReason:
-    'This graph was built with minigraph, which writes no haplotype paths, so nothing in it records which strain carries which allele and there is no callset to project onto GRCm39. The bubbles and allele lanes state what varies and by how much; they cannot state who by.',
   svTrackIds: [],
   dataPrefix: '/pangenome-mouse',
   graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
@@ -553,11 +535,6 @@ export const BOVINE_PORTAL: PangenomePortal = {
       url: 'https://jbrowse.org/demos/bovine_pangenome/README.txt',
     },
   ],
-  notes: [
-    'A redistribution with modifications, not original data: the published graphs are plain GFA whose coordinates live in path lines, and rGFA tags were recovered from those paths so the same five projections could be built.',
-    'Rank is not carriage here either. The published graphs record no construction rank, so the allele file’s discovery order is the fixed order of the twelve paths — the callset is what answers who carries what.',
-    'Leonard et al. published one graph per autosome, so the set covers chr1-29 and no sex chromosome.',
-  ],
 }
 
 export const BOVINE_DATASET: PangenomeDataset = {
@@ -584,15 +561,9 @@ export const BOVINE_DATASET: PangenomeDataset = {
   portal: BOVINE_PORTAL,
 }
 
-// Every dataset the explorer can show, keyed by `id`.
+// Every dataset, keyed by `id`.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
   MOUSE_DATASET,
   BOVINE_DATASET,
 ]
-
-export const DEFAULT_DATASET_ID = HPRC_DATASET.id
-
-export function datasetById(id: string) {
-  return PANGENOME_DATASETS.find(d => d.id === id)
-}

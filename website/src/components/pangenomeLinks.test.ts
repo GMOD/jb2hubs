@@ -13,7 +13,6 @@ import {
 import {
   geneHubUrl,
   externalGraphUrl,
-  graphBrowserUrl,
   graphLanesUrl,
   graphLocusUrl,
   graphRegionUrl,
@@ -25,17 +24,9 @@ import {
   MAX_DETAIL_WINDOW_BP,
   PANGENOME_LOCI,
   detailWindow,
-  locusRegion,
   preferredLocus,
   syntenyGene,
 } from './pangenomeLoci.ts'
-
-// The loc a locus's own launch opens on, so a test can assert two builders
-// agree without restating the detail-window rule.
-function locusLaunchLoc(locus: (typeof PANGENOME_LOCI)[number]) {
-  const w = detailWindow(locus)
-  return w ? `${locus.chrom}:${w.start}-${w.end}` : locusRegion(locus)
-}
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
 // both back so the tests assert on the real spec the browser will expand.
@@ -114,16 +105,6 @@ test('the callset declares the matrix display exactly where the host has it', ()
   assert.ok(filters.some(f => f.includes('alleleLength(feature)>=50')))
 })
 
-test('graphBrowserUrl lands on the same locus the explorer opens on', () => {
-  // Not a second constant. `preferredLocus` is what the explorer's initial card
-  // and the portal's headline launch both read, so the two cannot disagree —
-  // and the hand-written HPRC landing region it replaced was a 3.8 Mb MHC
-  // overview that opened the callset behind the "too much data" banner.
-  const landing = preferredLocus(HPRC_DATASET.loci)!
-  const { spec } = parseLaunch(graphBrowserUrl(HPRC_DATASET)!)
-  assert.equal(spec.views[0]!.loc, locusLaunchLoc(landing))
-})
-
 // --- a dataset with no reference-projected callset -------------------------
 //
 // mouse's graph is `minigraph -cxggs` output, which writes no P or W lines, so
@@ -145,15 +126,9 @@ const mouseGraph = {
   },
 }
 
-test('a dataset with no callset says so rather than half-declaring one', () => {
+test('mouse declares no callset; bovine, whose graph carries path lines, does', () => {
   assert.equal(MOUSE_DATASET.graphVcf, undefined)
-  assert.ok(
-    MOUSE_DATASET.noCallsetReason,
-    'and the reason is stated, since the pages show it in place of the charts',
-  )
-  // bovine's graph DOES carry path lines, which is the whole difference.
   assert.ok(BOVINE_DATASET.graphVcf)
-  assert.equal(BOVINE_DATASET.noCallsetReason, undefined)
 })
 
 test('the reference launch omits the callset track entirely when there is none', () => {
@@ -214,7 +189,6 @@ test('the lanes launch is undefined without a hosted graph config', () => {
     graphLanesUrl(noGraph, { chrom: 'chr11', start: 1, end: 1000 }),
     undefined,
   )
-  assert.equal(graphBrowserUrl(noGraph), undefined)
   assert.equal(locusLaunchUrl(noGraph, noGraph.loci[0]!), undefined)
 })
 

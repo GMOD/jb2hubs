@@ -1812,16 +1812,26 @@ The genomes.jbrowse.org side of the JBrowse docs
 (`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) is a
 tutorial for these pages, so a visible change here should be reflected there.
 
-### One graph, one route
+### One graph, one route, and almost no prose
 
 `/pangenomes/<id>` — `hprc`, `mouse`, `bovine` — is a page per graph, rendered
-by `website/src/pages/pangenomes/[dataset].astro` from the dataset; `id` is the
-same value the explorer takes as `?dataset=`. `/pangenomes` is the choice
-between them and nothing else. The three were one scrolling page with `#hprc`
-anchors from 2026-09-01 to 2026-09-16, which is why `/pangenomes/hprc` and
-`/pangenomes/mouse` were redirect stubs in `REDIRECT_STUBS` (astro.config.mjs)
-for those two weeks — they are real pages again, and the stub list is down to
-`/orthologs/` and `/conserved-gene-order/`.
+by `website/src/pages/pangenomes/[dataset].astro` from the dataset.
+`/pangenomes` is a list of the three and nothing else. A graph's page is one
+sentence, a line of links, a region box, a table of its loci with their launches
+(`lociRows` in `website/src/components/pangenomeLociRows.ts`), and the file
+table. It has no stylesheet of its own: the site's table rules and the browser's
+defaults are the whole design, on purpose, after the 2026-09-16 review found the
+previous page a wall of prose and buttons.
+
+`/pangenomes/explorer` was a separate app until that day — a card grid of loci
+with class filters and a per-locus dashboard of four bar charts computed by
+`generatePangenomeData.ts` over the callset, plus a "hero" banner of seven
+buttons on each graph's page pointing at it. All of that is gone, along with
+`portal.css`, the per-locus `*.vcfsummary.json` summaries, the `notes[]` caveats
+and the per-locus `significance` sentences; the locus table is what replaced it.
+The route is a redirect stub in `REDIRECT_STUBS` (astro.config.mjs) because the
+JBrowse pangenome tutorial links it, and its inline script carries
+`?dataset=<id>` across to `/pangenomes/<id>`.
 
 ### One rule decides how wide a window is drawn, and it removed four surfaces
 
@@ -1845,9 +1855,8 @@ raised to the span and the anchored layout. Everything below fell out of that on
   raises it.
 - **The `landingRegion` field is gone.** `preferredLocus` (in
   `pangenomeLoci.ts`) is the one answer to "which locus does this catalogue open
-  on" — the first that is both drawable and named — and the explorer's initial
-  card, the portal's headline launch and the region form all read it, so they
-  cannot disagree. HPRC's hand-written 3.8 Mb MHC overview is what it replaced,
+  on" — the first that is both drawable and named — and the region form seeds
+  itself from it. HPRC's hand-written 3.8 Mb MHC overview is what it replaced,
   and that opened the 464-column callset behind the "too much data" banner.
 
 The one asymmetry that stays: the callset does **not** get a coarse tier, so

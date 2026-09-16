@@ -1,12 +1,10 @@
 ---
-// The landing page for the three graphs. Each one has its own sub-route
-// (/pangenomes/hprc and siblings), rendered by [dataset].astro; this page is
-// the choice between them and the one place that says what they have in common.
+// The choice between the three graphs. Each has its own page under
+// /pangenomes/<id>, rendered by [dataset].astro.
 import Container from '../../components/Container.astro'
 import { PANGENOME_DATASETS } from '../../components/pangenomeDataset.ts'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
-import '../../styles/portal.css'
 
 // The pangenomes section is staging-only while in development.
 if (!features.pangenome) {
@@ -16,44 +14,17 @@ if (!features.pangenome) {
 
 <Layout
   title="Pangenomes"
-  description="Pangenome resources in JBrowse 2: the HPRC human graph, a mouse strain pangenome, and the bovine super-pangenome — each drawable as a graph by region."
+  description="Pangenome graphs in JBrowse 2: the HPRC human graph, a mouse strain pangenome and the bovine super-pangenome, each drawable by region."
 >
   <Container>
     <h1>Pangenomes</h1>
-    <p>
-      Three pangenome graphs, hosted the same way: the same five tabix-indexed
-      projections per graph, read by the same adapters, on references JBrowse
-      already serves. What differs between them is not the mechanism but what
-      each graph is able to say.
-    </p>
-
-    <div class="portal-cards">
+    <ul>
       {PANGENOME_DATASETS.map(dataset => (
-        <a
-          class="portal-card"
-          href={`/pangenomes/${dataset.id}`}
-        >
-          <h2>{dataset.portal.heading}</h2>
-          <p>
-            {`${dataset.panelDescription}, projected onto ${dataset.reference.label}. `}
-            {dataset.graphVcf
-              ? 'A haplotype-resolved callset beside the graph says which assembly carries which allele.'
-              : 'The graph states what varies and by how much; with no haplotype paths in it, nothing states who by.'}
-          </p>
-        </a>
+        <li>
+          <a href={`/pangenomes/${dataset.id}`}>{dataset.portal.heading}</a>
+          {`: ${dataset.panelDescription}, on ${dataset.reference.label}`}
+        </li>
       ))}
-      <a
-        class="portal-card"
-        href="/pangenomes/explorer"
-      >
-        <h2>Variable loci</h2>
-        <p>
-          Loci where structure varies between the assemblies in a pangenome —
-          copy number, gene presence/absence, tandem repeats, inversions — each
-          with its JBrowse launches. Curated with prose for human; for mouse and
-          cattle, derived from the graph itself by ranking where it varies most.
-        </p>
-      </a>
-    </div>
+    </ul>
   </Container>
 </Layout>

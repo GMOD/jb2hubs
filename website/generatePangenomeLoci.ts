@@ -1,7 +1,7 @@
 // Derive a pangenome's variable-locus catalogue from its own coarse tier,
 // instead of curating one by hand.
 //
-// The HPRC explorer's 20 loci in `pangenomeLoci.ts` are hand-picked and carry
+// HPRC's 20 loci in `pangenomeLoci.ts` are hand-picked and carry
 // hand-written prose, which is what makes them good and also what makes them
 // unrepeatable: standing up a new pangenome meant a human reading the
 // literature for that species. That does not generalise, and "some predefined

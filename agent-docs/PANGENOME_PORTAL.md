@@ -589,8 +589,8 @@ has already changed once.
 
 ## Coverage facts to surface on the page, not paper over
 
-These are properties of the data and no convention fixes them. They belong in
-the per-dataset `notes[]`.
+These are properties of the data and no convention fixes them. They are recorded
+here and in the tutorials; the pages carry no caveat prose since 2026-09-16.
 
 - **Mouse has no chrY.** No strain assembly in the panel has a Y sequence, so
   chrY is a bare reference thread — one segment, zero links — deliberately not
