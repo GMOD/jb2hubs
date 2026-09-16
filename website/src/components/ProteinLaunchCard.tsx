@@ -2,14 +2,12 @@ import { useMemo, useState } from 'react'
 
 import {
   fetchExperimentalStructures,
-  parseUniProtStructureMappings,
-  pdbeSiftsUrl,
+  fetchUniProtStructureMappings,
   segmentsForAccession,
   toAuthorRange,
 } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
-import { fetchJson } from '../lib/fetchJson.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
 import { SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
@@ -194,21 +192,15 @@ export default function ProteinLaunchCard({
   // onto per chain: the same numbers for most entries, one behind for a chain
   // numbered from the mature protein (haemoglobin), or a construct's own.
   const pdbId = primary && 'pdbId' in primary ? primary.pdbId : undefined
-  // The read stays local rather than using p2s_mapper's own
-  // `fetchUniProtStructureMappings`: that one retries twice behind a 20s
-  // deadline, which suits a protein view that reports itself loading until
-  // SIFTS answers, but here SWR already owns retrying and PDBe answers a
-  // definitive 404 for an entry with no UniProt mapping — three requests and
-  // ~4.8s of disabled launch button for an answer that cannot change.
+  // p2s_mapper's own read, which retries a dropped request twice behind a 20s
+  // deadline. That matters because a failed read is not visible as a failure:
+  // `initialResidues` falls back to the UniProt range below, so HBB's E6V chip
+  // on 2HHB would quietly light residue 7 instead of 6. `LIVE_QUERY` turns
+  // SWR's retrying off, so this is the only retry there is.
   const { data: sifts, isLoading: numbering } = useSWRImmutable(
     range && pdbId && uniprotId ? (['sifts', pdbId, uniprotId] as const) : null,
     async ([, pdb, acc]) =>
-      segmentsForAccession(
-        parseUniProtStructureMappings(
-          await fetchJson<unknown>(pdbeSiftsUrl(pdb)),
-        ),
-        acc,
-      ),
+      segmentsForAccession(await fetchUniProtStructureMappings(pdb), acc),
     LIVE_QUERY,
   )
   const author = range && sifts ? toAuthorRange(sifts, range) : undefined
