@@ -81,50 +81,32 @@ const HOST = `https://jbrowse.org/code/jb2/${values.host}`
 const TIMEOUT = Number(values.timeout)
 
 // The site's own builders, so this checks the real thing rather than a copy.
-// They read `features.staging` for the host and for whether the matrix display
-// is declared, and outside Vite that is false — so the spec is rebuilt here
-// against the host actually being tested rather than imported wholesale.
 const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
   await import('../website/src/components/pangenomeDataset.ts')
-// The hosted graph is gated on features.pangenomeGraph the same way, so outside
-// Vite the dataset has no graphBrowser and every graph builder returns
+// The hosted graph is gated on features.pangenomeGraph, off outside Vite, so
+// the dataset has no graphBrowser here and every graph builder returns
 // undefined; this probe exists to boot those launches, so put it back.
 const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
 const { graphLocusUrl, graphRegionUrl, graphVcfLgvUrl, haplotypeLanesUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
+const { annotatedHaplotypes } =
+  await import('../website/src/components/pangenomePanels.ts')
 
-const wantStagingDisplay = values.host !== 'latest'
+// The haplotypes the working-tree config gives gene models. Against the served
+// config (no --local) a lane in this set that draws bare is a config that has
+// not been published yet, which is worth failing on.
+const annotated = annotatedHaplotypes(
+  JSON.parse(
+    fs.readFileSync(
+      new URL('../website/pangenome-config/hprc-grch38.json', import.meta.url),
+      'utf8',
+    ),
+  ),
+  HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
+)
 
-function retarget(url) {
-  const out = new URL(
-    url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`),
-  )
-  if (!wantStagingDisplay) {
-    return out.toString()
-  }
-  // Staging additionally declares the matrix display on the inlined callset.
-  const session = out.searchParams.get('session')
-  if (session?.startsWith('spec-')) {
-    const spec = JSON.parse(session.slice('spec-'.length))
-    for (const track of spec.sessionTracks ?? []) {
-      if (track.trackId === HPRC_DATASET.graphVcf.trackId && !track.displays) {
-        track.displays = [
-          {
-            type: 'LinearMultiSampleVariantDisplay',
-            displayId: `${track.trackId}-multisample`,
-            renderingMode: 'phased',
-            jexlFilters: [
-              'jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50',
-            ],
-            height: 340,
-          },
-        ]
-      }
-    }
-    out.searchParams.set('session', `spec-${JSON.stringify(spec)}`)
-  }
-  return out.toString()
-}
+const retarget = url =>
+  url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`)
 
 const wanted = values.loci?.split(',')
 const loci = HPRC_DATASET.loci.filter(l => !wanted || wanted.includes(l.id))
@@ -136,12 +118,10 @@ for (const locus of loci) {
     url: retarget(graphVcfLgvUrl(HPRC_DATASET, locus)),
     // The callset is the button's subject; a single-row display means the
     // declaration was ignored, which is a silent failure.
-    expectDisplay: wantStagingDisplay
-      ? {
-          trackId: HPRC_DATASET.graphVcf.trackId,
-          type: 'LinearMultiSampleVariantDisplay',
-        }
-      : undefined,
+    expectDisplay: {
+      trackId: HPRC_DATASET.graphVcf.trackId,
+      type: 'LinearMultiSampleVariantDisplay',
+    },
   })
   const graph = graphLocusUrl(graphDataset, locus)
   if (graph) {
@@ -266,26 +246,50 @@ async function serveLocalConfigs(page) {
 }
 
 // The lanes are read from a remote database after the view builds, which takes
-// longer than the fixed settle below, so this polls until they land or fail.
+// longer than the fixed settle below, so this polls until they land or fail --
+// and, for a lane whose haplotype has a gene track, until its genes are fetched
+// too, since a lane that aligns and reads "no annotation" is the silent half.
 async function readLanes(page, expected) {
   const deadline = Date.now() + TIMEOUT
+  const withGenes = expected.filter(h => annotated.has(h))
   let lanes
   while (Date.now() < deadline) {
-    lanes = await page.evaluate(want => {
-      const display = window.JBrowseRootModel?.session?.views
-        ?.flatMap(v => v.tracks ?? [])
-        .map(t => t.displays?.[0])
-        .find(d => d?.type === 'MultiWaySyntenyDisplay')
-      if (!display) {
-        return undefined
-      }
-      const rows = new Set(display.rowAssemblies.map(r => display.laneKey(r)))
-      return {
-        error: display.error ? `${display.error}` : undefined,
-        missing: want.filter(h => !rows.has(display.laneKey(h))),
-      }
-    }, expected)
-    if (lanes?.error || lanes?.missing.length === 0) {
+    lanes = await page.evaluate(
+      (want, withGenes) => {
+        const display = window.JBrowseRootModel?.session?.views
+          ?.flatMap(v => v.tracks ?? [])
+          .map(t => t.displays?.[0])
+          .find(d => d?.type === 'MultiWaySyntenyDisplay')
+        if (!display) {
+          return undefined
+        }
+        const rows = new Map(
+          display.rowAssemblies.map(r => [display.laneKey(r), r]),
+        )
+        const rowOf = h => rows.get(display.laneKey(h))
+        const drawn = withGenes.filter(h => rowOf(h))
+        return {
+          error: display.error ? `${display.error}` : undefined,
+          missing: want.filter(h => !rowOf(h)),
+          bare: drawn.filter(h => !display.laneGeneAdapters.has(rowOf(h))),
+          genes: Object.fromEntries(
+            drawn.flatMap(h => {
+              const held = display.laneGenes?.get(rowOf(h))
+              return held ? [[h, held.genes.length]] : []
+            }),
+          ),
+        }
+      },
+      expected,
+      withGenes,
+    )
+    const settled =
+      lanes &&
+      lanes.missing.length === 0 &&
+      withGenes.every(
+        h => lanes.bare.includes(h) || lanes.genes[h] !== undefined,
+      )
+    if (lanes?.error || settled) {
       return lanes
     }
     await new Promise(r => setTimeout(r, 2000))
@@ -297,6 +301,7 @@ let failures = 0
 for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
   const page = await browser.newPage()
   const problems = []
+  const notes = []
   try {
     if (localConfigs.size > 0) {
       await serveLocalConfigs(page)
@@ -353,6 +358,29 @@ for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
           `${lanes.missing.length} of ${expectLanes.length} lanes never drew: ${lanes.missing.join(', ')}`,
         )
       }
+      if (lanes?.bare.length) {
+        problems.push(
+          `${lanes.bare.length} lanes with a gene track read "no annotation": ${lanes.bare.join(', ')}`,
+        )
+      }
+      const unfetched = expectLanes.filter(
+        h =>
+          annotated.has(h) &&
+          !lanes?.bare.includes(h) &&
+          lanes?.genes[h] === undefined,
+      )
+      if (unfetched.length) {
+        problems.push(`genes never fetched on ${unfetched.join(', ')}`)
+      }
+      if (lanes) {
+        notes.push(
+          `genes on ${Object.keys(lanes.genes).length} of ${expectLanes.length} lanes: ${Object.entries(
+            lanes.genes,
+          )
+            .map(([h, n]) => `${h} ${n}`)
+            .join(', ')}`,
+        )
+      }
     }
     if (expectDisplay) {
       const track = state.views
@@ -379,6 +407,9 @@ for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
     }
   } else {
     console.log(`ok   ${name}`)
+  }
+  for (const n of notes) {
+    console.log(`       ${n}`)
   }
 }
 
