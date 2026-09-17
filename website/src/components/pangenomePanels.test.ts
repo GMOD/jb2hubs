@@ -32,17 +32,29 @@ test('a window with few forms draws every one, a busier one the largest', () => 
 })
 
 test('a lane says how many haplotypes it stands for, largest first', () => {
-  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2', 'C#1', 'C#2', 'D#1', 'D#2']
+  const haplotypes = [
+    'A#1',
+    'A#2',
+    'B#1',
+    'B#2',
+    'C#1',
+    'C#2',
+    'D#1',
+    'D#2',
+    'E#1',
+    'E#2',
+  ]
   const panel = structuralPanel(
     structuralForms(
-      [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t11111000`)],
+      [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t1111100000`)],
       haplotypes,
     ),
-    { size: 8, completeSize: 10 },
   )!
+  // five carry the deletion and five do not; the reference-like form leads an
+  // equal-sized pair
   assert.deepEqual(panel.lanes, [
+    { haplotype: 'C#2', shares: 5 },
     { haplotype: 'A#1', shares: 5 },
-    { haplotype: 'C#2', shares: 3 },
   ])
   assert.equal(panel.forms, 2)
 })

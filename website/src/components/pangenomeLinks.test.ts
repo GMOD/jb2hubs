@@ -403,9 +403,11 @@ test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel orde
 
 test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
   const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
-  const rhd = HPRC_DATASET.loci.find(l => l.id === 'rhd')!
-  assert.equal(HPRC_DATASET.panels?.rhd, undefined)
-  assert.equal(haplotypeLanesUrl(graphDataset, rhd), undefined)
+  // srgap2's window holds no structural record at all, so nothing tells the
+  // haplotypes apart there and it gets no panel
+  const bare = HPRC_DATASET.loci.find(l => l.id === 'srgap2')!
+  assert.equal(HPRC_DATASET.panels?.srgap2, undefined)
+  assert.equal(haplotypeLanesUrl(graphDataset, bare), undefined)
   assert.equal(
     haplotypeLanesUrl({ ...HPRC_DATASET, graphBrowser: undefined }, cfhr),
     undefined,
