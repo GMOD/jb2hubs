@@ -363,8 +363,8 @@ shape of a fix.
 Which member stands for a form is free, since every member draws the same
 structure, so the pick is the alphabetically first whose lane would draw gene
 models. Only HG002's two haplotypes lack an annotation, so that decides one
-thing: not to open a lane reading "no annotation" where a member's would not.
-It is the one place the rule needs to know something the sidecar does not say,
+thing: not to open a lane reading "no annotation" where a member's would not. It
+is the one place the rule needs to know something the sidecar does not say,
 which is why `haplotypesWithoutGenes` is on the dataset rather than derived.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
