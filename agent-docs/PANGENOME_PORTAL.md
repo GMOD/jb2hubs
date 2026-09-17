@@ -360,15 +360,21 @@ deletion carried by 5, which is why hp's panel is 457 against 5. The comment on
 `SV_FILTER` in `pangenomeLinks.ts` has the variant lane's side of it and the
 shape of a fix.
 
-Which member stands for a configuration is free, since every member draws the
-same structure, and the representative used to be the alphabetically first. The
-generator now prefers one whose lane can draw gene models, meaning one with an
-assembly and a CAT track in `hprc-grch38.json`. Measured on 2026-09-17: with
-only the tutorial's eight annotated, the preference took the lanes with genes
-from 24 to 41 of 109. Annotating every haplotype the panels named then took it
-to 108, and the rerun after that swapped 15 lanes, each for another annotated
-member of the same configuration. That is the property that keeps the loop
-closed: a rerun cannot name a bare haplotype while an annotated member exists.
+Which member stands for a form is free, since every member draws the same
+structure, so the pick is the alphabetically first whose lane would draw gene
+models. Only HG002's two haplotypes lack an annotation, so that decides one
+thing: not to open a lane reading "no annotation" where a member's would not.
+It is the one place the rule needs to know something the sidecar does not say,
+which is why `haplotypesWithoutGenes` is on the dataset rather than derived.
+
+**The rule is genome-wide now, and the per-locus panels are its output rather
+than its home.** `structuralForms` reads the sidecar for any window and
+`structuralPanel` picks the lanes; `generatePangenomePanels.ts` runs both over
+the curated loci at build time and the page's **Any region** box runs both in
+the browser. That replaced a bcftools read of the 2.3 GB callset per locus, and
+with it the `LV=0` filter whose blind spot is documented above: 19 of the 20
+loci have a panel where 15 did, and the four that gained one — rhd, smn, defb,
+ugt2b17 — each gained it on the deletion the filter was hiding.
 
 The annotation is HPRC's release 2 CAT, and it has to be rehosted rather than
 pointed at: each file on S3 is plain gzip in gene order, so no index can be

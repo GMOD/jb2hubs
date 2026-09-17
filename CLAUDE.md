@@ -1900,13 +1900,33 @@ with pangene, which is why it is no longer called `pangeneGenes`.
 `hprc_v2_1_gbz_lanes` track, one lane per haplotype walk read from HPRC's
 `.gbz.db` in the browser, narrowed to that locus's panel in
 `website/public/pangenome-hprc/panels.json`: one haplotype per structural
-configuration the callset finds in the launch window, commonest first: every
-configuration where there are at most 10, else the commonest 8.
-`website/generatePangenomePanels.ts` writes it with bcftools; re-run it when a
-window or the callset moves. The panel rides the spec as `laneFilter.only` and
-`domain`, so one track in the config serves every locus. Why a panel and not the
-tutorial's eight, why 10 and 8, and the five loci with none:
-`agent-docs/PANGENOME_PORTAL.md`.
+**form** in the launch window, commonest first, every form where there are at
+most 10 and the commonest 8 otherwise. The panel rides the spec as
+`laneFilter.only` and `domain`, so one track in the config serves every locus.
+
+**The forms come from a genome-wide sidecar, not from a per-locus read of the
+callset**, which is what makes the same question answerable for a window nobody
+curated. `website/pangenome-config/buildHprcSvStates.sh` publishes one
+tabix-indexed file of every structural record in the callset — where it is, what
+each state does to the reference's structure, one character per haplotype, 18 MB
+for the genome — and `structuralForms` (`pangenomeSvStates.ts`) groups a
+window's haplotypes out of a ranged read of it, a few KB and about 300 ms.
+`generatePangenomePanels.ts` runs that over the curated loci and commits the
+result; the **Any region** box on the page (`PangenomeRegionForms.tsx`) runs the
+same two functions in the reader's browser for a locstring or a gene symbol. A
+table row and the same window typed in the box cannot disagree, because neither
+has rules of its own.
+
+Two things the sidecar fixed rather than moved, both measured 2026-09-17. The
+old rule read the 2.3 GB callset with bcftools at five seconds a locus. And it
+filtered on `LV=0`, which is not "top level" in this file: vcfbub pops a parent
+snarl with an allele over 100 kb and keeps its children, and all 425 parents
+that nested records name genome-wide are absent, so the filter dropped real
+variation — HP's panel was 457 against 5 over a rare 302 bp deletion and is now
+260 / 184 over the 1.7 kb deletion 40% of haplotypes carry. 19 of the 20 loci
+have a panel where 15 did; srgap2, whose window holds no structural record at
+all, is the one that does not. Why a panel and not the tutorial's eight, why 10
+and 8, and what a "form" is: `agent-docs/PANGENOME_PORTAL.md`.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
