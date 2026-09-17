@@ -66,12 +66,12 @@ test('a transcript is one BED12 row with its exons as blocks and its CDS as the 
   )
 })
 
-test('a gene longer than any real one is dropped', () => {
+test('a gene longer than any real one is dropped, however short its transcripts', () => {
   assert.deepEqual(
     models([
       row('gene', 1, MAX_GENE_SPAN + 2, 'ID=G9'),
-      row('transcript', 1, MAX_GENE_SPAN + 2, 'ID=T9;gene_name=BIG'),
-      row('exon', 1, MAX_GENE_SPAN + 2, 'Parent=T9'),
+      row('transcript', 1, 1000, 'ID=T9;gene_name=BIG'),
+      row('exon', 1, 1000, 'Parent=T9'),
     ]),
     [],
   )

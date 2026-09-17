@@ -58,21 +58,24 @@ function rank(a: CatTranscript, b: CatTranscript) {
 // each gene ends. It holds one gene, not the genome: all 3.3 million rows at
 // once ran node out of heap. That relies on CAT's own order, a gene row, then
 // its transcripts, then their exons and CDS, so a row whose transcript is not
-// in the current gene throws rather than being dropped. A gene spanning more
-// than MAX_GENE_SPAN is dropped.
+// in the current gene throws rather than being dropped. A gene whose own row
+// spans more than MAX_GENE_SPAN is dropped whole, even where its transcripts
+// are shorter.
 export function catGeneModelReader(emit: (t: CatTranscript) => void) {
   let gene = new Map<string, CatTranscript>()
+  let geneSpan = 0
   const finish = () => {
     let best: CatTranscript | undefined
     for (const t of gene.values()) {
-      if (t.end - t.start <= MAX_GENE_SPAN && (!best || rank(t, best) > 0)) {
+      if (!best || rank(t, best) > 0) {
         best = t
       }
     }
-    if (best) {
+    if (best && geneSpan <= MAX_GENE_SPAN) {
       emit(best)
     }
     gene = new Map()
+    geneSpan = 0
   }
   const add = (line: string) => {
     const f = line.split('\t')
@@ -83,6 +86,7 @@ export function catGeneModelReader(emit: (t: CatTranscript) => void) {
     const range: Range = [Number(f[3]) - 1, Number(f[4])]
     if (type === 'gene') {
       finish()
+      geneSpan = range[1] - range[0]
     } else if (type === 'transcript') {
       const id = attribute(f[8]!, 'ID')!
       gene.set(id, {
