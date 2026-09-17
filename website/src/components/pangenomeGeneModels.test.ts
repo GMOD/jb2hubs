@@ -1,7 +1,11 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { MAX_GENE_SPAN, bed12, catGeneModelReader } from './pangenomeGeneModels.ts'
+import {
+  MAX_GENE_SPAN,
+  bed12,
+  catGeneModelReader,
+} from './pangenomeGeneModels.ts'
 
 import type { CatTranscript } from './pangenomeGeneModels.ts'
 

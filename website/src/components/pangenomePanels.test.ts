@@ -109,10 +109,7 @@ test('the lane track maps every haplotype, and all but HG002 have gene models', 
   )
   assert.ok(mapped.length >= 464, `${mapped.length} haplotypes mapped`)
   const annotated = annotatedHaplotypes(config, trackId)
-  assert.deepEqual(
-    mapped.filter(h => !annotated.has(h)).sort(),
-    UNANNOTATED,
-  )
+  assert.deepEqual(mapped.filter(h => !annotated.has(h)).sort(), UNANNOTATED)
 })
 
 test('every haplotype a panel names has gene models but HG002', () => {

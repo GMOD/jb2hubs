@@ -86,17 +86,29 @@ export function packRecord({
   for (const gt of calls) {
     const parts = gt.replaceAll('/', '|').split('|')
     for (const p of [parts[0], parts[1]]) {
-      called.push(p === undefined || p === '.' || p === '' ? MISSING_STATE : keys[Number(p)]!)
+      called.push(
+        p === undefined || p === '.' || p === ''
+          ? MISSING_STATE
+          : keys[Number(p)]!,
+      )
     }
   }
   const carriers = new Map<string, number>()
   for (const state of called) {
-    if (state !== REFERENCE_STATE && state !== MISSING_STATE && state !== INVERTED_STATE) {
+    if (
+      state !== REFERENCE_STATE &&
+      state !== MISSING_STATE &&
+      state !== INVERTED_STATE
+    ) {
       carriers.set(state, (carriers.get(state) ?? 0) + 1)
     }
   }
-  const ranked = [...carriers].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1))
-  const symbols = new Map(ranked.map(([key], i) => [key, NAMES[i] ?? OTHER_STATE]))
+  const ranked = [...carriers].sort(
+    (a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1),
+  )
+  const symbols = new Map(
+    ranked.map(([key], i) => [key, NAMES[i] ?? OTHER_STATE]),
+  )
   const states = ranked
     .filter(([key]) => symbols.get(key) !== OTHER_STATE)
     .map(([key]) => `${symbols.get(key)}:${key}`)
@@ -107,7 +119,9 @@ export function packRecord({
     states: states.join(',') || '.',
     genotypes: called
       .map(state =>
-        state === REFERENCE_STATE || state === MISSING_STATE || state === INVERTED_STATE
+        state === REFERENCE_STATE ||
+        state === MISSING_STATE ||
+        state === INVERTED_STATE
           ? state
           : symbols.get(state)!,
       )
@@ -151,7 +165,11 @@ export function structuralForms(
   haplotypes: string[],
   minCarriers = MIN_CARRIERS,
 ): StructuralFormsResult {
-  const informative: { genotypes: string; majority: string; common: Set<string> }[] = []
+  const informative: {
+    genotypes: string
+    majority: string
+    common: Set<string>
+  }[] = []
   const carriesRare = new Set<string>()
   for (const row of rows) {
     const counts = new Map<string, number>()
@@ -196,7 +214,10 @@ export function structuralForms(
     informative: informative.length,
     forms: [...byKey]
       .map(([key, members]) => ({ key, members }))
-      .sort((a, b) => b.members.length - a.members.length || (a.key < b.key ? -1 : 1)),
+      .sort(
+        (a, b) =>
+          b.members.length - a.members.length || (a.key < b.key ? -1 : 1),
+      ),
     rareCarriers: haplotypes.filter(h => carriesRare.has(h)),
   }
 }
