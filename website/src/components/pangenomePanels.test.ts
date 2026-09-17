@@ -104,9 +104,10 @@ test('every haplotype a panel names has gene models but HG002#1', () => {
   const named = Object.values(HPRC_DATASET.panels!).flatMap(p =>
     p.lanes.map(l => l.haplotype),
   )
-  assert.deepEqual([...new Set(named.filter(h => !annotated.has(h)))], [
-    'HG002#1',
-  ])
+  assert.deepEqual(
+    [...new Set(named.filter(h => !annotated.has(h)))],
+    ['HG002#1'],
+  )
 })
 
 test('a haplotype with a missing call is left out of the grouping', () => {

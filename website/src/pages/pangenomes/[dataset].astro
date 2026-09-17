@@ -117,7 +117,7 @@ function humanBytes(bytes: number) {
                 <th>Gene</th>
                 {columns.description && <th>Description</th>}
                 {columns.variation && <th>Variation</th>}
-                <th>Region</th>
+                <th>Window</th>
                 {columns.segments && <th>Segments</th>}
                 {columns.launches && <th>Open</th>}
               </tr>
@@ -129,7 +129,7 @@ function humanBytes(bytes: number) {
                   {columns.description && <td>{r.description}</td>}
                   {columns.variation && <td>{r.variation}</td>}
                   <td>
-                    <code>{r.region}</code>
+                    <code>{r.window}</code>
                   </td>
                   {columns.segments && <td>{r.segments?.toLocaleString()}</td>}
                   {columns.launches && (
@@ -206,7 +206,7 @@ function humanBytes(bytes: number) {
 </Layout>
 
 <style>
-  /* A region or a row of launches is one value; the description column is
+  /* A window or a row of launches is one value; the description column is
      the one that wraps. */
   td code,
   td:last-child {

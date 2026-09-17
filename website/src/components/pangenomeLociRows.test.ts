@@ -18,7 +18,8 @@ test('a curated row carries its description and a derived one its segments', () 
   assert.equal(hprc?.segments, undefined)
   assert.equal(hprc?.variation, 'hyperdiversity, copy number')
 
-  assert.equal(hprc?.region, 'chr6:28,510,001-33,480,000')
+  // The class II window every MHC launch opens, not the 5 Mb locus.
+  assert.equal(hprc?.window, 'chr6:32,510,001-32,600,000')
 
   const [mouse] = lociRows(MOUSE_DATASET)
   assert.equal(mouse?.description, undefined)

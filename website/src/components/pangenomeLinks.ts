@@ -174,13 +174,6 @@ function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
 const locOf = (region: GraphRegion) =>
   `${region.chrom}:${region.start}-${region.end}`
 
-export const locusRegionOf = (locus: PangenomeLocus): GraphRegion => ({
-  chrom: locus.chrom,
-  start: locus.start,
-  end: locus.end,
-  label: locus.gene,
-})
-
 // The dataset's own linear lanes over one region, out of the GRAPH config
 // rather than the reference config. For a dataset with no callset these lanes
 // ARE the pangenome view of a locus.
@@ -222,10 +215,8 @@ export function graphVcfLgvUrl(
 // a problem for the lanes any more — `lanes()` switches to the coarse tier —
 // but it still is for the callset, which is why `graphVcfLgvUrl` says so.
 export function launchRegion(locus: PangenomeLocus): GraphRegion {
-  const window = detailWindow(locus)
-  return window
-    ? { chrom: locus.chrom, ...window, label: locus.gene }
-    : locusRegionOf(locus)
+  const { start, end } = detailWindow(locus) ?? locus
+  return { chrom: locus.chrom, start, end, label: locus.gene }
 }
 
 // The launch a locus's primary button should make: the callset beside the
@@ -339,7 +330,14 @@ export function haplotypeLanesUrl(
       assembly: dataset.reference.assembly,
       loc: locOf(launchRegion(locus)),
       tracks: [
-        graph.geneTrackId,
+        // The reference lane draws these genes too, but unnamed, so the track
+        // stays for its names in the part 3 tutorial's genes-only compact row.
+        {
+          trackId: graph.geneTrackId,
+          type: 'LinearBasicDisplay',
+          showOnlyGenes: true,
+          displayMode: 'compact',
+        },
         {
           trackId,
           type: 'MultiWaySyntenyDisplay',

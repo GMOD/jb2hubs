@@ -409,12 +409,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
   },
 ]
 
-export function locusRegion(
-  l: Pick<PangenomeLocus, 'chrom' | 'start' | 'end'>,
-) {
-  return `${l.chrom}:${l.start}-${l.end}`
-}
-
 // A real NCBI gene symbol to seed the cross-species gene-order view, or
 // undefined where the locus names none and the link should not be offered.
 //

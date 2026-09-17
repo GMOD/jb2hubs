@@ -6,6 +6,7 @@ import {
   geneHubUrl,
   graphLocusUrl,
   haplotypeLanesUrl,
+  launchRegion,
   locusLaunchUrl,
 } from './pangenomeLinks.ts'
 import { VARIATION_LABELS } from './pangenomeLoci.ts'
@@ -16,8 +17,10 @@ export interface LocusRow {
   gene: string
   description?: string
   variation: string
+  // The window every launch in the row opens, which for a curated locus is
+  // narrower than the locus: MHC's row opens its class II stretch, not 5 Mb.
   // 1-based with separators, the way a browser's location box takes it.
-  region: string
+  window: string
   // Derived entries only: the tier's segment count, which is what ranks them.
   segments?: number
   graphUrl?: string
@@ -28,22 +31,25 @@ export interface LocusRow {
 }
 
 export function lociRows(dataset: PangenomeDataset): LocusRow[] {
-  return dataset.loci.map(locus => ({
-    // The generator labels an intergenic bubble with its coordinate, which the
-    // region column already says.
-    gene:
-      locus.derived && locus.derived.genes.length === 0
-        ? 'intergenic'
-        : locus.gene,
-    description: locus.fullName,
-    variation: locus.variation.map(v => VARIATION_LABELS[v]).join(', '),
-    region: `${locus.chrom}:${(locus.start + 1).toLocaleString('en-US')}-${locus.end.toLocaleString('en-US')}`,
-    segments: locus.derived?.segments,
-    graphUrl: graphLocusUrl(dataset, locus),
-    linearUrl: locusLaunchUrl(dataset, locus),
-    haplotypesUrl: haplotypeLanesUrl(dataset, locus),
-    geneHubUrl: geneHubUrl(dataset, locus),
-  }))
+  return dataset.loci.map(locus => {
+    const { chrom, start, end } = launchRegion(locus)
+    return {
+      // The generator labels an intergenic bubble with its coordinate, which the
+      // window column already says.
+      gene:
+        locus.derived && locus.derived.genes.length === 0
+          ? 'intergenic'
+          : locus.gene,
+      description: locus.fullName,
+      variation: locus.variation.map(v => VARIATION_LABELS[v]).join(', '),
+      window: `${chrom}:${(start + 1).toLocaleString('en-US')}-${end.toLocaleString('en-US')}`,
+      segments: locus.derived?.segments,
+      graphUrl: graphLocusUrl(dataset, locus),
+      linearUrl: locusLaunchUrl(dataset, locus),
+      haplotypesUrl: haplotypeLanesUrl(dataset, locus),
+      geneHubUrl: geneHubUrl(dataset, locus),
+    }
+  })
 }
 
 // Which optional columns the table draws: a column no row fills is not drawn.

@@ -382,10 +382,15 @@ test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel orde
   const view = spec.views[0]!
   const region = launchRegion(cfhr)
   assert.equal(view.loc, `${region.chrom}:${region.start}-${region.end}`)
-  const [genes, lanes] = view.tracks as [string, Record<string, unknown>]
-  assert.equal(genes, HPRC_GRAPH_BROWSER.geneTrackId)
+  const [genes, lanes] = view.tracks as Record<string, unknown>[]
+  assert.deepEqual(genes, {
+    trackId: HPRC_GRAPH_BROWSER.geneTrackId,
+    type: 'LinearBasicDisplay',
+    showOnlyGenes: true,
+    displayMode: 'compact',
+  })
   const haplotypes = panel.lanes.map(l => l.haplotype)
-  const { height, ...display } = lanes
+  const { height, ...display } = lanes!
   assert.deepEqual(display, {
     trackId: HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
     type: 'MultiWaySyntenyDisplay',
