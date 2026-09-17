@@ -18,9 +18,16 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { HPRC_DATASET } from './src/components/pangenomeDataset.ts'
+import hprcConfig from './pangenome-config/hprc-grch38.json' with { type: 'json' }
+import {
+  HPRC_DATASET,
+  HPRC_GRAPH_BROWSER,
+} from './src/components/pangenomeDataset.ts'
 import { launchRegion } from './src/components/pangenomeLinks.ts'
-import { structuralPanel } from './src/components/pangenomePanels.ts'
+import {
+  annotatedHaplotypes,
+  structuralPanel,
+} from './src/components/pangenomePanels.ts'
 import { structuralForms } from './src/components/pangenomeSvStates.ts'
 import { openSvStates } from './src/components/pangenomeSvStatesFile.ts'
 
@@ -31,13 +38,19 @@ const OUT = path.join(__dirname, 'public/pangenome-hprc/panels.json')
 
 const source = HPRC_DATASET.svStatesUrl!
 const query = openSvStates(source)
+// A lane with no gene track reads "no annotation", so where a form has a
+// member with one, that member stands for it.
+const annotated = annotatedHaplotypes(
+  hprcConfig,
+  HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!,
+)
 
 const panels: Record<string, StructuralPanel> = {}
 for (const locus of HPRC_DATASET.loci) {
   const region = launchRegion(locus)
   const { haplotypes, rows } = await query(region.chrom, region.start, region.end)
   const forms = structuralForms(rows, haplotypes)
-  const panel = structuralPanel(forms)
+  const panel = structuralPanel(forms, { annotated })
   console.log(
     `${locus.id.padEnd(9)} ${region.chrom}:${region.start}-${region.end} ` +
       `${forms.sites} records, ${forms.informative} informative, ` +
