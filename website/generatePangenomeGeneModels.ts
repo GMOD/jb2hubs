@@ -8,8 +8,7 @@ import zlib from 'zlib'
 
 import {
   bed12,
-  catTranscriptReader,
-  representativeTranscripts,
+  catGeneModelReader,
 } from './src/components/pangenomeGeneModels.ts'
 
 const [input] = process.argv.slice(2)
@@ -17,15 +16,13 @@ if (!input) {
   throw new Error('usage: node generatePangenomeGeneModels.ts <cat.gff3.gz>')
 }
 
-const reader = catTranscriptReader()
+const reader = catGeneModelReader(t => {
+  process.stdout.write(`${bed12(t)}\n`)
+})
 for await (const line of readline.createInterface({
   input: fs.createReadStream(input).pipe(zlib.createGunzip()),
   crlfDelay: Infinity,
 })) {
   reader.add(line)
 }
-
-const out = representativeTranscripts(reader.transcripts())
-  .map(bed12)
-  .join('\n')
-process.stdout.write(out ? `${out}\n` : '')
+reader.finish()

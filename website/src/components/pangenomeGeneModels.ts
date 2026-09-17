@@ -12,7 +12,6 @@ type Range = [number, number]
 
 export interface CatTranscript {
   id: string
-  geneId: string
   name: string
   refName: string
   start: number
@@ -26,65 +25,20 @@ export interface CatTranscript {
 // lncRNA on HG01960#1); the longest real human gene is under 2.5 Mb.
 export const MAX_GENE_SPAN = 5_000_000
 
-function attributes(column: string) {
-  const out = new Map<string, string>()
-  for (const pair of column.split(';')) {
-    const at = pair.indexOf('=')
-    if (at > 0) {
-      out.set(pair.slice(0, at), pair.slice(at + 1))
+function attribute(column: string, key: string) {
+  const prefix = `${key}=`
+  let from: number
+  if (column.startsWith(prefix)) {
+    from = prefix.length
+  } else {
+    const at = column.indexOf(`;${prefix}`)
+    if (at === -1) {
+      return undefined
     }
+    from = at + 1 + prefix.length
   }
-  return out
-}
-
-// Collects the transcript, exon and CDS rows of one GFF3 file a line at a
-// time, in any order, and ignores the rest.
-export function catTranscriptReader() {
-  const transcripts: Omit<CatTranscript, 'exons' | 'cds'>[] = []
-  const parts = { exon: new Map<string, Range[]>(), CDS: new Map<string, Range[]>() }
-  return {
-    add(line: string) {
-      const f = line.split('\t')
-      const type = f[2]
-      if (
-        line.startsWith('#') ||
-        f.length < 9 ||
-        (type !== 'transcript' && type !== 'exon' && type !== 'CDS')
-      ) {
-        return
-      }
-      const a = attributes(f[8]!)
-      const range: Range = [Number(f[3]) - 1, Number(f[4])]
-      if (type === 'transcript') {
-        const id = a.get('ID')!
-        transcripts.push({
-          id,
-          geneId: a.get('gene_id') ?? a.get('Parent') ?? id,
-          name: a.get('gene_name') ?? a.get('Name') ?? id,
-          refName: f[0]!,
-          start: range[0],
-          end: range[1],
-          strand: f[6]!,
-        })
-      } else {
-        const byParent = parts[type]
-        const parent = a.get('Parent')!
-        const held = byParent.get(parent)
-        if (held) {
-          held.push(range)
-        } else {
-          byParent.set(parent, [range])
-        }
-      }
-    },
-    transcripts(): CatTranscript[] {
-      return transcripts.map(t => ({
-        ...t,
-        exons: parts.exon.get(t.id) ?? [],
-        cds: parts.CDS.get(t.id) ?? [],
-      }))
-    },
-  }
+  const to = column.indexOf(';', from)
+  return column.slice(from, to === -1 ? undefined : to)
 }
 
 const length = (ranges: Range[]) => ranges.reduce((n, [s, e]) => n + e - s, 0)
@@ -100,21 +54,65 @@ function rank(a: CatTranscript, b: CatTranscript) {
   )
 }
 
-// One transcript per gene. A gene spanning more than MAX_GENE_SPAN is dropped.
-export function representativeTranscripts(transcripts: CatTranscript[]) {
-  const best = new Map<string, CatTranscript>()
-  for (const t of transcripts) {
-    const held = best.get(t.geneId)
-    if (t.end - t.start <= MAX_GENE_SPAN && (!held || rank(t, held) > 0)) {
-      best.set(t.geneId, t)
+// Reads CAT's GFF3 a line at a time and hands `emit` one transcript per gene as
+// each gene ends. It holds one gene, not the genome: all 3.3 million rows at
+// once ran node out of heap. That relies on CAT's own order, a gene row, then
+// its transcripts, then their exons and CDS, so a row whose transcript is not
+// in the current gene throws rather than being dropped. A gene spanning more
+// than MAX_GENE_SPAN is dropped.
+export function catGeneModelReader(emit: (t: CatTranscript) => void) {
+  let gene = new Map<string, CatTranscript>()
+  const finish = () => {
+    let best: CatTranscript | undefined
+    for (const t of gene.values()) {
+      if (t.end - t.start <= MAX_GENE_SPAN && (!best || rank(t, best) > 0)) {
+        best = t
+      }
+    }
+    if (best) {
+      emit(best)
+    }
+    gene = new Map()
+  }
+  const add = (line: string) => {
+    const f = line.split('\t')
+    const type = f[2]
+    if (line.startsWith('#') || f.length < 9) {
+      return
+    }
+    const range: Range = [Number(f[3]) - 1, Number(f[4])]
+    if (type === 'gene') {
+      finish()
+    } else if (type === 'transcript') {
+      const id = attribute(f[8]!, 'ID')!
+      gene.set(id, {
+        id,
+        name: attribute(f[8]!, 'gene_name') ?? attribute(f[8]!, 'Name') ?? id,
+        refName: f[0]!,
+        start: range[0],
+        end: range[1],
+        strand: f[6]!,
+        exons: [],
+        cds: [],
+      })
+    } else if (type === 'exon' || type === 'CDS') {
+      const parent = attribute(f[8]!, 'Parent')!
+      const t = gene.get(parent)
+      if (!t) {
+        throw new Error(
+          `${type} of ${parent} is outside its gene; expected CAT's gene-ordered GFF3`,
+        )
+      }
+      ;(type === 'exon' ? t.exons : t.cds).push(range)
     }
   }
-  return [...best.values()]
+  return { add, finish }
 }
 
 export function bed12(t: CatTranscript) {
-  const exons = (t.exons.length ? [...t.exons] : [[t.start, t.end] as Range])
-    .sort((a, b) => a[0] - b[0])
+  const exons = (
+    t.exons.length ? [...t.exons] : [[t.start, t.end] as Range]
+  ).sort((a, b) => a[0] - b[0])
   const [thickStart, thickEnd] = t.cds.length
     ? [Math.min(...t.cds.map(c => c[0])), Math.max(...t.cds.map(c => c[1]))]
     : [t.start, t.start]
