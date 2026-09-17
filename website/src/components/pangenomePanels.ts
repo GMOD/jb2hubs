@@ -37,13 +37,17 @@ export interface StructuralPanel {
 export const PANEL_SIZE = 8
 export const COMPLETE_PANEL_SIZE = 10
 
-// The haplotype that stands for its form: the alphabetically first that has
-// gene models, else the alphabetically first, so a rerun over the same sidecar
-// names the same lanes. Any member draws the same structure, and all but
-// HG002's two are annotated, so this only ever decides against a bare lane.
-function representative(members: string[], annotated: ReadonlySet<string>) {
+// The haplotype that stands for its form: the alphabetically first whose lane
+// would draw gene models, else the alphabetically first, so a rerun over the
+// same sidecar names the same lanes. Any member draws the same structure, and
+// only HG002's two lack an annotation, so this decides one thing: not to open
+// a lane that reads "no annotation" when a member's would not.
+function representative(
+  members: string[],
+  withoutGenes: ReadonlySet<string>,
+) {
   const sorted = [...members].sort()
-  return sorted.find(m => annotated.has(m)) ?? sorted[0]!
+  return sorted.find(m => !withoutGenes.has(m)) ?? sorted[0]!
 }
 
 // One lane per form a meaningful share of haplotypes carry, largest first: all
@@ -55,11 +59,11 @@ export function structuralPanel(
   {
     size = PANEL_SIZE,
     completeSize = COMPLETE_PANEL_SIZE,
-    annotated = new Set<string>(),
+    withoutGenes = new Set<string>(),
   }: {
     size?: number
     completeSize?: number
-    annotated?: ReadonlySet<string>
+    withoutGenes?: ReadonlySet<string>
   } = {},
 ): StructuralPanel | undefined {
   if (result.informative === 0) {
@@ -69,7 +73,7 @@ export function structuralPanel(
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
-    haplotype: representative(f.members, annotated),
+    haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
   }))
   return {

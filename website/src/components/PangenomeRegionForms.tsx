@@ -60,7 +60,9 @@ export default function PangenomeRegionForms({
       setAnswer({
         region,
         haplotypes: haplotypes.length,
-        panel: structuralPanel(forms),
+        panel: structuralPanel(forms, {
+          withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
+        }),
         sites: forms.sites,
         informative: forms.informative,
         rareCarriers: forms.rareCarriers.length,

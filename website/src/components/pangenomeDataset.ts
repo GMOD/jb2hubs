@@ -153,6 +153,11 @@ export interface PangenomeDataset {
   // precomputed answerable: the page reads it for a region a reader asks for
   // and groups the haplotypes the same way the panels above were grouped.
   svStatesUrl?: string
+  // Haplotypes the lane track draws without gene models, so a form is not
+  // stood for by one of them where another member would draw its genes.
+  // `generatePangenomeHaplotypes.ts` prints them: they are the haplotypes
+  // HPRC's CAT index does not annotate.
+  haplotypesWithoutGenes?: string[]
   // The tutorial that explains what this graph can show. Every dataset here is
   // the hosted arm of one, and the tutorial is the better explanation — the
   // page's job is to launch it, not to restate it.
@@ -276,6 +281,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   panels: hprcPanelsFile.panels,
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.tsv.gz',
+  haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',

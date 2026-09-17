@@ -44,6 +44,9 @@ const annotated = annotatedHaplotypes(
   hprcConfig,
   HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!,
 )
+const withoutGenes = new Set(
+  (HPRC_DATASET.haplotypesWithoutGenes ?? []).filter(h => !annotated.has(h)),
+)
 
 const panels: Record<string, StructuralPanel> = {}
 for (const locus of HPRC_DATASET.loci) {
@@ -54,7 +57,7 @@ for (const locus of HPRC_DATASET.loci) {
     region.end,
   )
   const forms = structuralForms(rows, haplotypes)
-  const panel = structuralPanel(forms, { annotated })
+  const panel = structuralPanel(forms, { withoutGenes })
   console.log(
     `${locus.id.padEnd(9)} ${region.chrom}:${region.start}-${region.end} ` +
       `${forms.sites} records, ${forms.informative} informative, ` +
