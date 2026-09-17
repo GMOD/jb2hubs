@@ -255,24 +255,35 @@ async function probe(url) {
       : { verdict: 'transient', why: `${retry.why}; ${MIRROR} ${mirror.why}` }
 }
 
-// A couple of hundred requests, nearly all against our own bucket, so unlike
-// check-track-urls there is no budget to keep. Sequential rather than parallel
-// so a slow edge cannot look like a failure.
+// About 1,400 requests, all but three against our own bucket (a chrom.sizes, a
+// gene file and its index per HPRC haplotype), so unlike check-track-urls there
+// is no budget to keep. Eight at a time: one after another took minutes in
+// run.sh's gate, and a request only counts as failed after `probe`'s retry, so
+// a slow edge still cannot pass for a missing file.
 const broken = []
 const primaryOnly = []
 const transient = []
-for (const ref of refs) {
-  const problem = await probe(ref.url)
-  if (problem !== undefined) {
-    const entry = { ...ref, problem: problem.why }
-    if (problem.verdict === 'gone') {
-      broken.push(entry)
-    } else if (problem.verdict === 'primary-only') {
-      primaryOnly.push(entry)
-    } else {
-      transient.push(entry)
+let nextRef = 0
+await Promise.all(
+  Array.from({ length: 8 }, async () => {
+    while (nextRef < refs.length) {
+      const ref = refs[nextRef++]
+      const problem = await probe(ref.url)
+      if (problem !== undefined) {
+        const entry = { ...ref, problem: problem.why }
+        if (problem.verdict === 'gone') {
+          broken.push(entry)
+        } else if (problem.verdict === 'primary-only') {
+          primaryOnly.push(entry)
+        } else {
+          transient.push(entry)
+        }
+      }
     }
-  }
+  }),
+)
+for (const list of [broken, primaryOnly, transient]) {
+  list.sort((a, b) => a.url.localeCompare(b.url))
 }
 
 // Read the published copy rather than HEADing it, so "live but stale" is
