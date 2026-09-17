@@ -16,9 +16,10 @@ test('an allele near the reference length is the reference structure', () => {
   assert.equal(stateKey(0, true), 'v')
 })
 
-test('a larger change keys on its size, within a tenth of itself', () => {
+test('a larger change keys on its size, to two significant figures', () => {
   assert.equal(stateKey(-1716, false), '-1700')
   assert.equal(stateKey(-1740, false), '-1700')
+  assert.equal(stateKey(-84_684, false), '-85000')
   assert.equal(stateKey(5600, false), '+5600')
   // two repeat units is a different state from one
   assert.notEqual(stateKey(11200, false), stateKey(5600, false))

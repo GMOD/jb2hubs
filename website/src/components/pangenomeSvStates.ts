@@ -15,8 +15,8 @@
 // - **States, not alleles.** An allele whose length differs from the reference
 //   by under 50 bp is the reference's structure, which folds a poly-A tract's
 //   46 lengths into one; RHD's forms went from 29 to 3, the third being its
-//   known deletion. Larger changes key on their size change with a 10%
-//   tolerance, so one repeat unit is one state and two are another.
+//   known deletion. Larger changes key on their size change to two significant
+//   figures, so one repeat unit is one state and two are another.
 // - **A missing call is a state, not a dropped haplotype.** Where a haplotype's
 //   path skips the site it has no call, which is what a deletion looks like:
 //   229 of 462 haplotypes at UGT2B17, its known deletion, which the old rule
@@ -38,15 +38,19 @@ export const MISSING_STATE = '.'
 export const INVERTED_STATE = 'v'
 export const OTHER_STATE = '~'
 
-// What an allele does to the reference's structure: nothing, an inversion, or a
-// size change rounded to a tenth of itself so one repeat unit reads as one
-// state however the aligner placed its boundaries.
+// What an allele does to the reference's structure: nothing, an inversion, or
+// its size change to two significant figures, so one repeat unit reads as one
+// state wherever the aligner put its boundaries (1,716 bp and 1,740 bp are both
+// `-1700`) while one unit and two stay apart. Rounding to a share of the value
+// itself rather than to a fixed width is what keeps that true across four
+// orders of magnitude, from a 50 bp indel to an 84 kb deletion.
 export function stateKey(delta: number, inverted: boolean) {
-  if (Math.abs(delta) < STRUCTURAL_BP) {
+  const size = Math.abs(delta)
+  if (size < STRUCTURAL_BP) {
     return inverted ? INVERTED_STATE : REFERENCE_STATE
   }
-  const width = Math.max(STRUCTURAL_BP, Math.floor(Math.abs(delta) / 10))
-  return `${delta > 0 ? '+' : '-'}${Math.round(Math.abs(delta) / width) * width}`
+  const unit = 10 ** (Math.floor(Math.log10(size)) - 1)
+  return `${delta > 0 ? '+' : '-'}${Math.round(size / unit) * unit}`
 }
 
 export interface SvStateRow {
@@ -54,7 +58,7 @@ export interface SvStateRow {
   start: number
   end: number
   id: string
-  // symbol to size change, `1:-1710,2:+64740`, or `.`
+  // symbol to size change, `1:-1700,2:+65000`, or `.`
   states: string
   // one character per haplotype, in the sidecar's haplotype order
   genotypes: string
@@ -148,12 +152,22 @@ export function structuralForms(
   minCarriers = MIN_CARRIERS,
 ): StructuralFormsResult {
   const informative: { genotypes: string; majority: string; common: Set<string> }[] = []
+  const carriesRare = new Set<string>()
   for (const row of rows) {
     const counts = new Map<string, number>()
     for (const state of row.genotypes) {
       counts.set(state, (counts.get(state) ?? 0) + 1)
     }
     const ranked = [...counts].sort((a, b) => b[1] - a[1])
+    const majorityState = ranked[0]![0]
+    // Over every site, not only the informative ones: a deletion one haplotype
+    // carries defines no form, and leaving it unsaid reads as a haplotype that
+    // matches the reference here.
+    ;[...row.genotypes].forEach((state, i) => {
+      if (state !== majorityState && counts.get(state)! < minCarriers) {
+        carriesRare.add(haplotypes[i]!)
+      }
+    })
     if (ranked.length > 1 && ranked[1]![1] >= minCarriers) {
       informative.push({
         genotypes: row.genotypes,
@@ -167,22 +181,13 @@ export function structuralForms(
     }
   }
   const byKey = new Map<string, string[]>()
-  const rareCarriers: string[] = []
   haplotypes.forEach((haplotype, i) => {
-    let rare = false
     const key = informative
       .map(site => {
         const state = site.genotypes[i]!
-        if (site.common.has(state)) {
-          return state
-        }
-        rare = true
-        return site.majority
+        return site.common.has(state) ? state : site.majority
       })
       .join('')
-    if (rare) {
-      rareCarriers.push(haplotype)
-    }
     byKey.set(key, [...(byKey.get(key) ?? []), haplotype])
   })
   return {
@@ -191,6 +196,6 @@ export function structuralForms(
     forms: [...byKey]
       .map(([key, members]) => ({ key, members }))
       .sort((a, b) => b.members.length - a.members.length || (a.key < b.key ? -1 : 1)),
-    rareCarriers,
+    rareCarriers: haplotypes.filter(h => carriesRare.has(h)),
   }
 }
