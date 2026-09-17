@@ -6,7 +6,9 @@
 // It reads the same SV-tier records the variant lane draws (`SV_FILTER` in
 // pangenomeLinks.ts, restated in bcftools' expression language), over the same
 // window the lanes open on, so the lanes and the matrix agree on what a
-// "structural site" is. bcftools reads the tabix index over HTTPS, so a locus
+// "structural site" is.
+// Which member stands for a configuration reads the committed graph config:
+// one with a gene track there, so rerun this after adding annotation tracks. bcftools reads the tabix index over HTTPS, so a locus
 // costs one ranged read of the 2.3 GB file, about five seconds.
 //
 // Not wired into the build: it needs the network and bcftools. The output is
@@ -18,9 +20,17 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { HPRC_DATASET } from './src/components/pangenomeDataset.ts'
+import hprcConfig from './pangenome-config/hprc-grch38.json' with { type: 'json' }
+import {
+  HPRC_DATASET,
+  HPRC_GRAPH_BROWSER,
+} from './src/components/pangenomeDataset.ts'
 import { launchRegion } from './src/components/pangenomeLinks.ts'
-import { choosePanel, splitGenotype } from './src/components/pangenomePanels.ts'
+import {
+  annotatedHaplotypes,
+  choosePanel,
+  splitGenotype,
+} from './src/components/pangenomePanels.ts'
 
 import type { HaplotypeGenotypes } from './src/components/pangenomePanels.ts'
 
@@ -36,6 +46,16 @@ const FILTER = 'INFO/LV=0 && (STRLEN(REF)>=50 || STRLEN(ALT)>=50)'
 
 // CHM13 is in the callset as a haploid column, and in the graph as a second
 // reference sample rather than a lane, so it is not a panel candidate.
+const annotated = annotatedHaplotypes(
+  hprcConfig,
+  HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!,
+)
+if (annotated.size === 0) {
+  throw new Error(
+    'no lane haplotype has a gene track in hprc-grch38.json, so every lane would read "no annotation"',
+  )
+}
+
 const samples = execFileSync('bcftools', ['query', '-l', vcf], {
   encoding: 'utf8',
 })
@@ -94,9 +114,9 @@ for (const locus of HPRC_DATASET.loci) {
     region.start,
     region.end,
   )
-  const panel = choosePanel(genotypes)
+  const panel = choosePanel(genotypes, { annotated })
   const summary = panel
-    ? `${panel.configurations} configurations over ${panel.haplotypes} haplotypes, ${panel.lanes.length} lanes: ` +
+    ? `${panel.configurations} configurations over ${panel.haplotypes} haplotypes, ${panel.lanes.length} lanes (${panel.lanes.filter(l => annotated.has(l.haplotype)).length} with genes): ` +
       panel.lanes.map(l => `${l.haplotype} (${l.shares})`).join(' ')
     : 'no structural sites'
   console.log(

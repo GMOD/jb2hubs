@@ -13,8 +13,9 @@
 // form a vector, and haplotypes with identical vectors are one structural
 // configuration. `choosePanel` groups on that and picks representatives, most
 // common configuration first, breaking ties towards the configuration least like
-// the ones already chosen. `website/generatePangenomePanels.ts` runs it over the
-// curated loci and commits the result; nothing here fetches.
+// the ones already chosen, and preferring a member whose lane has gene models.
+// `website/generatePangenomePanels.ts` runs it over the curated loci and commits
+// the result; nothing here fetches.
 
 export interface PanelLane {
   // PanSN prefix, `HG01123#1`, which is how the lane track names a haplotype.
@@ -63,16 +64,23 @@ function hamming(a: number[], b: number[]) {
   return d
 }
 
-// The alphabetically first haplotype stands for a group: a deterministic pick,
-// so a rerun over the same callset names the same lanes.
-function representative(members: string[]) {
-  return [...members].sort()[0]!
+// Any member draws the group's configuration, so the pick is free to favour
+// one whose lane can draw its own gene models: the alphabetically first member
+// with an annotation track, else the alphabetically first. Deterministic, so a
+// rerun over the same callset and config names the same lanes.
+function representative(members: string[], annotated: ReadonlySet<string>) {
+  const sorted = [...members].sort()
+  return sorted.find(m => annotated.has(m)) ?? sorted[0]!
 }
 
 export function choosePanel(
   genotypes: HaplotypeGenotypes[],
-  size = DEFAULT_PANEL_SIZE,
+  {
+    size = DEFAULT_PANEL_SIZE,
+    annotated = new Set<string>(),
+  }: { size?: number; annotated?: ReadonlySet<string> } = {},
 ): StructuralPanel | undefined {
+  const pick = (members: string[]) => representative(members, annotated)
   const sites = genotypes[0]?.alleles.length ?? 0
   if (sites === 0) {
     return undefined
@@ -104,7 +112,7 @@ export function choosePanel(
       (a, b) =>
         b.members.length - a.members.length ||
         distance(b) - distance(a) ||
-        representative(a.members).localeCompare(representative(b.members)),
+        pick(a.members).localeCompare(pick(b.members)),
     )
     chosen.push(remaining.shift()!)
   }
@@ -113,11 +121,43 @@ export function choosePanel(
     haplotypes: [...groups.values()].reduce((n, g) => n + g.members.length, 0),
     configurations: groups.size,
     lanes: chosen.map(g => ({
-      haplotype: representative(g.members),
+      haplotype: pick(g.members),
       shares: g.members.length,
       nonReference: g.alleles.filter(a => a !== 0).length,
     })),
   }
+}
+
+export interface LaneConfig {
+  tracks: {
+    trackId: string
+    type: string
+    assemblyNames: string[]
+    adapter: {
+      assemblyNames?: string[]
+      assemblyNameToPanSN?: Record<string, string>
+    }
+  }[]
+}
+
+// The haplotypes whose lanes draw gene models: those the lane track maps to an
+// assembly that a feature track in the config annotates alone. That is the
+// test `MultiWaySyntenyDisplay` applies when it looks for a lane's genes, so a
+// haplotype outside this set draws its alignment with "no annotation" beside
+// it.
+export function annotatedHaplotypes(config: LaneConfig, laneTrackId: string) {
+  const lanes = config.tracks.find(t => t.trackId === laneTrackId)
+  const anchor = lanes?.adapter.assemblyNames?.[0]
+  const annotated = new Set(
+    config.tracks
+      .filter(t => t.type === 'FeatureTrack' && t.assemblyNames.length === 1)
+      .map(t => t.assemblyNames[0]),
+  )
+  return new Set(
+    Object.entries(lanes?.adapter.assemblyNameToPanSN ?? {})
+      .filter(([assembly]) => assembly !== anchor && annotated.has(assembly))
+      .map(([, haplotype]) => haplotype),
+  )
 }
 
 // One VCF genotype column per sample, `0|1`, into the two haplotypes' allele
