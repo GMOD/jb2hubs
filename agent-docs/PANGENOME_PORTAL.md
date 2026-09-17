@@ -390,8 +390,8 @@ drawing the same exon and coding structure the hg38 row beside it does. The
 first version of this rehosted the GFF3 for 61 haplotypes, 7.7 GB, and was
 replaced the same day. Projecting hg38's genes through each lane's alignment
 would need no hosting at all, but it is viewer work, and it would miss the genes
-a haplotype carries that the reference lacks, which is where a per-haplotype
-annotation earns its place.
+a haplotype carries that the reference lacks, which is what a per-haplotype
+annotation is for.
 
 Every haplotype has an assembly now rather than the ones a panel names, because
 a lane can be any haplotype once rows are chosen genome-wide. The assemblies'
