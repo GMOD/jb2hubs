@@ -10,6 +10,7 @@ import {
   publishedFiles,
 } from '../../components/pangenomeDataset.ts'
 import { graphRegionUrl } from '../../components/pangenomeLinks.ts'
+import PangenomeRegionForms from '../../components/PangenomeRegionForms.tsx'
 import { lociColumns, lociRows } from '../../components/pangenomeLociRows.ts'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
@@ -174,6 +175,21 @@ function humanBytes(bytes: number) {
             </tbody>
           </table>
         </div>
+      </>
+    )}
+
+    {dataset.svStatesUrl && (
+      <>
+        <h2>Any region</h2>
+        <p>
+          The rows above are examples. For any other window, the callset says
+          which structural forms {dataset.panelDescription.split(',')[0]} carry
+          there and how common each is, and the launches open on those.
+        </p>
+        <PangenomeRegionForms
+          dataset={dataset}
+          client:idle
+        />
       </>
     )}
 

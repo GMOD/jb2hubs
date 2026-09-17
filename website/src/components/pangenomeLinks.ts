@@ -199,6 +199,15 @@ export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
     : undefined
 }
 
+// The callset (plus SV tracks) over any window, for a region a reader asked
+// for. Undefined where the dataset has no callset to open.
+export function referenceRegionUrl(
+  dataset: PangenomeDataset,
+  region: GraphRegion,
+) {
+  return dataset.graphVcf ? referenceLgvUrl(dataset, locOf(region)) : undefined
+}
+
 // The graph variants (plus SV tracks) open at a catalog locus.
 //
 // The window is the locus's detail window where it has one. The callset is
@@ -315,24 +324,40 @@ const GENE_ROW_HEIGHT_PX = 60
 // the config's one lane track serves every locus; the track's own assemblies
 // are only what a host that drops the props would open instead.
 //
-// Undefined without the lane track or a panel: a locus with no top-level
-// structural site in its window has no configurations to choose between.
+// Undefined without the lane track or a panel: a locus where nothing tells the
+// haplotypes apart has no forms to choose between.
 export function haplotypeLanesUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
+  const panel = dataset.panels?.[locus.id]
+  return panel
+    ? haplotypeLanesForRegion(
+        dataset,
+        launchRegion(locus),
+        panel.lanes.map(l => l.haplotype),
+      )
+    : undefined
+}
+
+// The same launch over any window, for a region a reader asked for rather than
+// a locus the table lists. Undefined without the lane track or without
+// haplotypes to draw.
+export function haplotypeLanesForRegion(
+  dataset: PangenomeDataset,
+  region: GraphRegion,
+  haplotypes: string[],
+) {
   const graph = dataset.graphBrowser
   const trackId = graph?.haplotypeLanesTrackId
-  const panel = dataset.panels?.[locus.id]
-  if (!graph || !trackId || !panel) {
+  if (!graph || !trackId || haplotypes.length === 0) {
     return undefined
   }
-  const haplotypes = panel.lanes.map(l => l.haplotype)
   return specUrl(graph.configUrl, [
     {
       type: 'LinearGenomeView',
       assembly: dataset.reference.assembly,
-      loc: locOf(launchRegion(locus)),
+      loc: locOf(region),
       tracks: [
         // The reference lane draws these genes too, but unnamed, so the track
         // stays for its names: one compact transcript per gene, in a row short
