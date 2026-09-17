@@ -333,6 +333,23 @@ inside nested; and `srgap2` and `ugt2b17`. ugt2b17's 8 SV-length records are all
 `LV>0`, identical under bcftools' `--regions-overlap record` and `pos`, so that
 empty panel is not an overlap artifact.
 
+Relaxing the level rule does not give those five a panel, measured 2026-09-17.
+`srgap2` has no SV-length record at any level, and `smn` and `defb` have calls
+for too few haplotypes to group. At `ugt2b17` and `rhd` the nested records do
+carry the locus, but as missing calls: 229 of 462 haplotypes are missing at all
+2,538 of ugt2b17's LV>0 records, the size of its common deletion, and
+`choosePanel` drops a haplotype with a missing call. A panel there needs a run
+of missing calls counted as a configuration of its own, which is a change to
+what a missing call means rather than to the filter.
+
+The same measurement found the level rule hiding structure at a locus that has a
+panel. At `hp` all 448 LV=1 records hang off one snarl with no record in the
+file, so they are the top level there, and they include a 1,716 bp deletion
+carried by 190 of 461 haplotypes. The one record the LV=0 rule keeps is a 302 bp
+deletion carried by 5, which is why hp's panel is 457 against 5. The comment on
+`SV_FILTER` in `pangenomeLinks.ts` has the variant lane's side of it and the
+shape of a fix.
+
 Which member stands for a configuration is free, since every member draws the
 same structure, and the representative used to be the alphabetically first. The
 generator now prefers one whose lane can draw gene models, meaning one with an

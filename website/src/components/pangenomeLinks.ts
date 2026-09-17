@@ -33,22 +33,25 @@ const LGV_ID = 'pangenome-locus-lgv'
 //   the graph's own bubbles are.
 //
 // The tutorial's filter verbatim, deliberately: it is what its published figures
-// of this callset use. Do not carry the reasoning over to a count, though —
-// `generatePangenomeData.ts` explains at length why LV>0 records here are real
-// variants rather than duplicates of a parent record, and filtering them out of
-// a summary deletes data (over SMN it would leave 1 site of 11,553).
+// of this callset use. Know what the LV half costs, because it is not free. LV=0
+// and LV>0 records in this file are spatially DISJOINT, so filtering does not
+// thin a region, it blanks the regions that are nested, and LV=0 is not always
+// the top level: where the pipeline dropped a parent snarl's own record, its
+// LV=1 children are the top level and the filter hides them all.
 //
-// Know what the LV half costs on the lane, too, because it is not free and the
-// worst case is our headline locus. LV=0 and LV>0 records in this file are
-// spatially DISJOINT, so filtering does not thin a region — it blanks the
-// regions that are nested. Measured over the MHC detail window
-// (chr6:32,510,000-32,600,000) on 2026-08-06: of 182 records with a >=50 bp
-// allele, 160 survive and 22 are dropped, and all 2,688 nested records in that
-// window fall in one 22 kb stretch, 32,570,542-32,592,610. That stretch is
-// HLA-DRB1 (32,578,775-32,589,848), whose SV tier is 4 records, all nested — so
-// the filter renders DRB1 empty, in a window widened specifically to reach it
-// (see the `mhc-hla` detailWindow comment). Kept anyway, to stay the tutorial's
-// filter verbatim; drop the LV half if the DRB1 hole matters more than that.
+// - MHC's detail window, measured 2026-08-06: all 2,688 nested records fall in
+//   one 22 kb stretch, 32,570,542-32,592,610, which is HLA-DRB1
+//   (32,578,775-32,589,848), so DRB1 draws empty in a window widened to reach
+//   it.
+// - HP's window, measured 2026-09-17: all 448 LV=1 records hang off one snarl,
+//   `>76082598>76084298`, that has no record in the file. They include a
+//   1,716 bp deletion carried by 190 of 461 haplotypes, and the one record the
+//   filter keeps is a 302 bp deletion carried by 5.
+//
+// Kept anyway, to stay the tutorial's filter verbatim. The fix is to keep a
+// record whose `PS` names a snarl with no record of its own, which no jexl over
+// one record can test, so it would be precomputed per window the way the panels
+// are.
 const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
 
 // The graph VCF as an inline session track (public, CORS-open, tabix-indexed).
