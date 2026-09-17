@@ -63,19 +63,15 @@ function hamming(a: number[], b: number[]) {
   return d
 }
 
-// The alphabetically first haplotype the reader can serve stands for a group:
-// a deterministic pick, so a rerun over the same callset names the same lanes.
-function representative(members: string[], unreadable: ReadonlySet<string>) {
-  return members.filter(m => !unreadable.has(m)).sort()[0]
+// The alphabetically first haplotype stands for a group: a deterministic pick,
+// so a rerun over the same callset names the same lanes.
+function representative(members: string[]) {
+  return [...members].sort()[0]!
 }
 
-// `unreadable` names haplotypes the lane reader cannot serve in this window. A
-// configuration none of whose members it can serve still counts, and gets no
-// lane.
 export function choosePanel(
   genotypes: HaplotypeGenotypes[],
   size = DEFAULT_PANEL_SIZE,
-  unreadable: ReadonlySet<string> = new Set(),
 ): StructuralPanel | undefined {
   const sites = genotypes[0]?.alleles.length ?? 0
   if (sites === 0) {
@@ -94,9 +90,7 @@ export function choosePanel(
       groups.set(key, { alleles: g.alleles, members: [g.haplotype] })
     }
   }
-  const remaining = [...groups.values()].filter(
-    g => representative(g.members, unreadable) !== undefined,
-  )
+  const remaining = [...groups.values()]
   const chosen: typeof remaining = []
   while (chosen.length < size && remaining.length > 0) {
     // Most common first; among equally common configurations, the one least
@@ -110,9 +104,7 @@ export function choosePanel(
       (a, b) =>
         b.members.length - a.members.length ||
         distance(b) - distance(a) ||
-        representative(a.members, unreadable)!.localeCompare(
-          representative(b.members, unreadable)!,
-        ),
+        representative(a.members).localeCompare(representative(b.members)),
     )
     chosen.push(remaining.shift()!)
   }
@@ -121,7 +113,7 @@ export function choosePanel(
     haplotypes: [...groups.values()].reduce((n, g) => n + g.members.length, 0),
     configurations: groups.size,
     lanes: chosen.map(g => ({
-      haplotype: representative(g.members, unreadable)!,
+      haplotype: representative(g.members),
       shares: g.members.length,
       nonReference: g.alleles.filter(a => a !== 0).length,
     })),

@@ -86,17 +86,6 @@ function genotypesAt(chrom: string, start: number, end: number) {
   return { sites: rows.length, genotypes }
 }
 
-// Walks the lane reader cannot serve, per locus. A walk that revisits nodes, as
-// one through a copy-number expansion does, falls back in @gmod/gbz-base
-// 2.6.2 to a weighted LCS against the reference whose memory grows with both.
-// Over AMY1 the two expanded haplotypes each exhausted a 3 GB heap in node on
-// 2026-09-17, while every other configuration's members read in 6-15 s; a
-// launch naming one hangs the tab that opens it. Lift an entry once the reader
-// copes.
-const UNREADABLE: Record<string, string[]> = {
-  amy1: ['HG00408#2', 'NA18620#2'],
-}
-
 const panels: Record<string, ReturnType<typeof choosePanel>> = {}
 for (const locus of HPRC_DATASET.loci) {
   const region = launchRegion(locus)
@@ -105,7 +94,7 @@ for (const locus of HPRC_DATASET.loci) {
     region.start,
     region.end,
   )
-  const panel = choosePanel(genotypes, undefined, new Set(UNREADABLE[locus.id]))
+  const panel = choosePanel(genotypes)
   const summary = panel
     ? `${panel.configurations} configurations over ${panel.haplotypes} haplotypes, ${panel.lanes.length} lanes: ` +
       panel.lanes.map(l => `${l.haplotype} (${l.shares})`).join(' ')

@@ -333,17 +333,6 @@ inside nested; and `srgap2` and `ugt2b17`. ugt2b17's 8 SV-length records are all
 `LV>0`, identical under bcftools' `--regions-overlap record` and `pos`, so that
 empty panel is not an overlap artifact.
 
-**The reader cannot serve the most interesting AMY1 lanes.** A walk that
-revisits nodes, as one through the amylase copy-number expansion does, is not
-"ordered", and `@gmod/gbz-base` 2.6.2 falls back to `weightedLcs` over the whole
-walk against the reference (`editsAgainst` in `subgraph.js`). The two expanded
-AMY1 haplotypes, `HG00408#2` (95 non-reference sites) and `NA18620#2` (23), each
-ran node out of a 3 GB heap in about 30 s, while every other configuration's
-members read in 6-15 s. In the browser that is a hung tab, and it was the one
-failure in the first full lane check. `UNREADABLE` in the generator keeps them
-off the panel, `choosePanel` still counts their configurations, and the upstream
-fix is a bounded alignment for a cyclic walk in gbz-base.
-
 ### The variant route, for bovine: minutes, on data already extracted
 
 `vg deconstruct` over the P-line minigraph GFA gives exactly the file the

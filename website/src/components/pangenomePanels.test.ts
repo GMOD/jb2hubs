@@ -62,24 +62,6 @@ test('a haplotype with a missing call is left out of the grouping', () => {
   ])
 })
 
-test('a haplotype the reader cannot serve never stands for a configuration', () => {
-  const panel = choosePanel(
-    [
-      hap('HG00001#1', 0),
-      hap('HG00002#1', 0),
-      hap('HG00003#1', 1),
-      hap('HG00004#1', 2),
-    ],
-    8,
-    new Set(['HG00001#1', 'HG00004#1']),
-  )!
-  assert.equal(panel.configurations, 3)
-  assert.deepEqual(panel.lanes, [
-    { haplotype: 'HG00002#1', shares: 2, nonReference: 0 },
-    { haplotype: 'HG00003#1', shares: 1, nonReference: 1 },
-  ])
-})
-
 test('a window with no structural site has no panel', () => {
   assert.equal(choosePanel([hap('HG00001#1'), hap('HG00001#2')]), undefined)
   assert.equal(choosePanel([]), undefined)
