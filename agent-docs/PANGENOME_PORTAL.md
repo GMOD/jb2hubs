@@ -335,16 +335,23 @@ empty panel is not an overlap artifact.
 
 Which member stands for a configuration is free, since every member draws the
 same structure, and the representative used to be the alphabetically first. The
-tutorial's eight are the only haplotypes whose lanes can draw gene models (each
-has an assembly and a CAT track in `hprc-grch38.json`), so the generator now
-prefers one of them wherever a configuration holds one. Measured on the
-2026-09-17 rerun, which also moved the AMY1 window: 41 of the 109 lanes draw
-genes, against 24 under the alphabetical pick. The ceiling on that number is the
-annotated set, not the rule: 60 of the 61 haplotypes the panels name have a CAT
-annotation in HPRC's index (`HG002#1` is the exception), but each is a plain
-gzip in gene order on S3, so it has to be sorted, bgzipped and hosted before a
-track can read it, which `build_hprc_multiway_synteny.sh` in jbrowse-components
-already does for eight.
+generator now prefers one whose lane can draw gene models, meaning one with an
+assembly and a CAT track in `hprc-grch38.json`. Measured on 2026-09-17: with
+only the tutorial's eight annotated, the preference took the lanes with genes
+from 24 to 41 of 109. Annotating every haplotype the panels named then took it
+to 108, and the rerun after that swapped 15 lanes, each for another annotated
+member of the same configuration. That is the property that keeps the loop
+closed: a rerun cannot name a bare haplotype while an annotated member exists.
+
+The annotation is HPRC's release 2 CAT, and it has to be rehosted rather than
+pointed at: each file on S3 is plain gzip in gene order, so no index can be
+built over it where it sits. `buildHprcGenes.sh` sorts, bgzips and indexes the
+60 that the config names, about 115 MB each, with the filter
+`build_hprc_multiway_synteny.sh` in jbrowse-components applies to its eight. The
+assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each
+bgzipped FASTA, whose contigs are PanSN-prefixed (`HG00126#1#CM090108.1`) where
+the graph and the annotation name them bare, which is also why the FASTA cannot
+serve as the assembly's sequence without an alias file per haplotype.
 
 ### The variant route, for bovine: minutes, on data already extracted
 

@@ -1909,15 +1909,27 @@ Why a panel and not the tutorial's eight, and the five loci with none:
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
-applies; there is no spec key for it. The eight haplotype assemblies in
-`hprc-grch38.json` carry their release 2 CAT annotation, from the whole-genome
-indexed copies `jbrowse.org/demos/hprc_multiway/` already hosts, and the
-generator picks an annotated member to stand for a configuration wherever one
-has any (`annotatedHaplotypes`), so re-run it after adding annotation. That took
-the lanes with genes from 24 to 41 of 109 on 2026-09-17. The rest name
-haplotypes with no assembly in the config. HPRC's own CAT files on S3 are plain
-gzip and not coordinate-sorted, so reaching those lanes means sorting, bgzipping
-and hosting each one, not pointing a track at upstream.
+applies; there is no spec key for it. So every haplotype a panel names is an
+assembly in `hprc-grch38.json` with a CAT gene track, 108 of the 109 lanes as of
+2026-09-17 (HPRC's CAT index has nothing for `HG002#1`). Three steps keep it
+that way, in this order, after anything moves a panel:
+
+- **`website/generatePangenomeHaplotypes.ts`** writes the haplotype half of the
+  config and each assembly's `chrom.sizes`, read off the release 2 assembly's
+  own `.fai`.
+- **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, builds and
+  publishes the gene files those tracks name under
+  `jbrowse.org/pangenome/hprc-grch38/genes/`. HPRC's CAT files on S3 are plain
+  gzip in gene order, so they are sorted, bgzipped and indexed here rather than
+  read in place. It keeps what it has built, so only new haplotypes cost
+  anything.
+- **`website/generatePangenomePanels.ts`** prefers an annotated member to stand
+  for a configuration (`annotatedHaplotypes`), so a rerun only swaps a lane for
+  another haplotype the config already annotates.
+
+Then `upload.sh` publishes the config. `pangenomePanels.test.ts` fails if a
+panel names a bare haplotype other than `HG002#1`, which is what skipping the
+first two steps looks like.
 
 Two things keep it drawing, and both fail silently:
 
