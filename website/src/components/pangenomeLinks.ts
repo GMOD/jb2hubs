@@ -307,6 +307,7 @@ export function graphLocusUrl(
 
 // The tutorial's eight lanes and the reference draw legibly in 460 px.
 const LANE_HEIGHT_PX = 51
+const GENE_ROW_HEIGHT_PX = 60
 
 // A locus's haplotypes as lanes read from the graph: the dataset's panel for
 // it, one lane per structural configuration, commonest first. `laneFilter`
@@ -334,12 +335,14 @@ export function haplotypeLanesUrl(
       loc: locOf(launchRegion(locus)),
       tracks: [
         // The reference lane draws these genes too, but unnamed, so the track
-        // stays for its names in the part 3 tutorial's genes-only compact row.
+        // stays for its names: one compact transcript per gene, in a row short
+        // enough not to push the lanes down.
         {
           trackId: graph.geneTrackId,
           type: 'LinearBasicDisplay',
-          showOnlyGenes: true,
+          geneGlyphMode: 'longestCoding',
           displayMode: 'compact',
+          height: GENE_ROW_HEIGHT_PX,
         },
         {
           trackId,

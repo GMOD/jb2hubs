@@ -386,8 +386,9 @@ test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel orde
   assert.deepEqual(genes, {
     trackId: HPRC_GRAPH_BROWSER.geneTrackId,
     type: 'LinearBasicDisplay',
-    showOnlyGenes: true,
+    geneGlyphMode: 'longestCoding',
     displayMode: 'compact',
+    height: 60,
   })
   const haplotypes = panel.lanes.map(l => l.haplotype)
   const { height, ...display } = lanes!
