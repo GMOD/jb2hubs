@@ -14,7 +14,9 @@ export interface ParsedRegion {
 // coordinates a reader pastes are 1-based, the way a browser's location box
 // shows them, and come back 0-based like everything else here.
 export function parseRegion(text: string): ParsedRegion | undefined {
-  const m = /^\s*([\w.]+)\s*:\s*([\d,_]+)\s*(?:-|\.\.)\s*([\d,_]+)\s*$/.exec(text)
+  const m = /^\s*([\w.]+)\s*:\s*([\d,_]+)\s*(?:-|\.\.)\s*([\d,_]+)\s*$/.exec(
+    text,
+  )
   if (!m) {
     return undefined
   }
@@ -34,7 +36,9 @@ export const GENE_FLANK_BP = 10_000
 
 interface MyGeneHit {
   symbol?: string
-  genomic_pos?: { chr?: string; start?: number; end?: number } | { chr?: string; start?: number; end?: number }[]
+  genomic_pos?:
+    | { chr?: string; start?: number; end?: number }
+    | { chr?: string; start?: number; end?: number }[]
 }
 
 // A gene symbol as a region of the reference, through mygene.info, which the
@@ -55,7 +59,12 @@ export async function resolveGeneRegion(
   for (const hit of json.hits ?? []) {
     const positions = [hit.genomic_pos ?? []].flat()
     for (const pos of positions) {
-      if (pos.chr && pos.start && pos.end && /^([0-9]{1,2}|X|Y|MT?)$/.test(pos.chr)) {
+      if (
+        pos.chr &&
+        pos.start &&
+        pos.end &&
+        /^([0-9]{1,2}|X|Y|MT?)$/.test(pos.chr)
+      ) {
         const start = Math.min(pos.start, pos.end)
         const end = Math.max(pos.start, pos.end)
         return {

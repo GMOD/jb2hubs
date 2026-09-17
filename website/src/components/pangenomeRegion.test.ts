@@ -35,7 +35,12 @@ test('a gene comes back as its span with flanks', async () => {
   const fetchImpl = (async () =>
     new Response(
       JSON.stringify({
-        hits: [{ symbol: 'CFH', genomic_pos: { chr: '1', start: 196_652_043, end: 196_747_504 } }],
+        hits: [
+          {
+            symbol: 'CFH',
+            genomic_pos: { chr: '1', start: 196_652_043, end: 196_747_504 },
+          },
+        ],
       }),
     )) as unknown as typeof fetch
   assert.deepEqual(await resolveRegion('CFH', 9606, fetchImpl), {
@@ -49,7 +54,9 @@ test('a gene placed on no plain chromosome is no window', async () => {
   const fetchImpl = (async () =>
     new Response(
       JSON.stringify({
-        hits: [{ symbol: 'X', genomic_pos: { chr: 'KI270713.1', start: 1, end: 2 } }],
+        hits: [
+          { symbol: 'X', genomic_pos: { chr: 'KI270713.1', start: 1, end: 2 } },
+        ],
       }),
     )) as unknown as typeof fetch
   assert.equal(await resolveRegion('X', 9606, fetchImpl), undefined)

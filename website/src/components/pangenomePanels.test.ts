@@ -27,8 +27,14 @@ function forms(n: number, share = 5) {
 }
 
 test('a window with few forms draws every one, a busier one the largest', () => {
-  assert.equal(structuralPanel(forms(COMPLETE_PANEL_SIZE))!.lanes.length, COMPLETE_PANEL_SIZE)
-  assert.equal(structuralPanel(forms(COMPLETE_PANEL_SIZE + 1))!.lanes.length, PANEL_SIZE)
+  assert.equal(
+    structuralPanel(forms(COMPLETE_PANEL_SIZE))!.lanes.length,
+    COMPLETE_PANEL_SIZE,
+  )
+  assert.equal(
+    structuralPanel(forms(COMPLETE_PANEL_SIZE + 1))!.lanes.length,
+    PANEL_SIZE,
+  )
 })
 
 test('a lane says how many haplotypes it stands for, largest first', () => {

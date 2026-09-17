@@ -66,11 +66,12 @@ export function structuralPanel(
     return undefined
   }
   const common = result.forms.filter(f => f.members.length >= MIN_CARRIERS)
-  const lanes = (common.length <= completeSize ? common : common.slice(0, size))
-    .map(f => ({
-      haplotype: representative(f.members, annotated),
-      shares: f.members.length,
-    }))
+  const lanes = (
+    common.length <= completeSize ? common : common.slice(0, size)
+  ).map(f => ({
+    haplotype: representative(f.members, annotated),
+    shares: f.members.length,
+  }))
   return {
     sites: result.sites,
     informative: result.informative,

@@ -6,9 +6,9 @@ import {
   referenceRegionUrl,
 } from './pangenomeLinks.ts'
 import { structuralPanel } from './pangenomePanels.ts'
+import { formatRegion, resolveRegion } from './pangenomeRegion.ts'
 import { structuralForms } from './pangenomeSvStates.ts'
 import { openSvStates } from './pangenomeSvStatesFile.ts'
-import { formatRegion, resolveRegion } from './pangenomeRegion.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'

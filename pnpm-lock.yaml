@@ -158,6 +158,9 @@ importers:
       '@gmod/bgzf-filehandle':
         specifier: ^6.6.0
         version: 6.6.0
+      '@gmod/tabix':
+        specifier: ^3.0.1
+        version: 3.8.2
       '@jbrowse/core':
         specifier: ^4.3.0
         version: 4.3.0(patch_hash=411e5254a42872f05eacec8d9a67656e0a4f2b47237c096fb07d7723065d8d44)(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0))(@types/react@19.3.0)(react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -811,6 +814,12 @@ packages:
 
   '@gmod/newick@1.0.2':
     resolution: {integrity: sha512-Jfn0SRnSmwECuV6Rk1B61k34/kWcghXXlsu8KeP8BsZ8G04kvKF2U47yUs/mkkmzwglVfSDdA/isy18I1OXDxA==}
+
+  '@gmod/shared-read-cache@1.7.2':
+    resolution: {integrity: sha512-N71dzJHYYSEAZYQCl38QGZ8cx468lFZE9VdS29N2DhRbKMf/X7Qb+cJsuIt1MeVDmpvKui5wDiNILgkQREpwlw==}
+
+  '@gmod/tabix@3.8.2':
+    resolution: {integrity: sha512-5ea1h1EnSouJk2h2pP3IAXhrZZamo7FSH8ASJ9csxAhyGPnLCXy2CZ29w+Zz7Vb4eOECwhPR9yD7Utbo5dwoYQ==}
 
   '@gmod/ucsc-hub@2.0.13':
     resolution: {integrity: sha512-rqIFTGvDA5j8HYtLDXVX9u3ryJAW3r53Wjpp1YS6bxpEpRD0nTG7tZ1Vz3Mo43rhLq8VufnsZrxog98RODmr5w==}
@@ -4404,6 +4413,15 @@ snapshots:
       '@jbrowse/quick-lru': 7.3.5
 
   '@gmod/newick@1.0.2': {}
+
+  '@gmod/shared-read-cache@1.7.2': {}
+
+  '@gmod/tabix@3.8.2':
+    dependencies:
+      '@gmod/bgzf-filehandle': 6.6.0
+      '@gmod/shared-read-cache': 1.7.2
+      '@jbrowse/quick-lru': 7.3.5
+      generic-filehandle2: 2.4.0
 
   '@gmod/ucsc-hub@2.0.13': {}
 

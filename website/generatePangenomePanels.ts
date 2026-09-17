@@ -48,7 +48,11 @@ const annotated = annotatedHaplotypes(
 const panels: Record<string, StructuralPanel> = {}
 for (const locus of HPRC_DATASET.loci) {
   const region = launchRegion(locus)
-  const { haplotypes, rows } = await query(region.chrom, region.start, region.end)
+  const { haplotypes, rows } = await query(
+    region.chrom,
+    region.start,
+    region.end,
+  )
   const forms = structuralForms(rows, haplotypes)
   const panel = structuralPanel(forms, { annotated })
   console.log(
