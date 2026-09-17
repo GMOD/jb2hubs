@@ -59,11 +59,12 @@ test('forms group the haplotypes that match at every informative site', () => {
     3,
   )
   assert.equal(result.informative, 1)
+  // equal-sized forms tie-break on their states, so the reference-like one leads
   assert.deepEqual(
     result.forms.map(f => f.members),
     [
-      ['A#1', 'A#2', 'B#1'],
       ['B#2', 'C#1', 'C#2'],
+      ['A#1', 'A#2', 'B#1'],
     ],
   )
   // the one carrying the rare state is still in the form it otherwise matches

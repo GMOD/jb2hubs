@@ -1910,27 +1910,26 @@ tutorial's eight, why 10 and 8, and the five loci with none:
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
-applies; there is no spec key for it. So every haplotype a panel names is an
-assembly in `hprc-grch38.json` with a CAT gene track, 109 of the 110 lanes as of
-2026-09-17 (HPRC's CAT index has nothing for `HG002#1`). Three steps keep it
-that way, in this order, after anything moves a panel:
+applies; there is no spec key for it. So every HPRC release 2 haplotype is an
+assembly in `hprc-grch38.json`, and the 462 that CAT annotates each carry a gene
+track (HG002's two have none). Two scripts keep it that way:
 
 - **`website/generatePangenomeHaplotypes.ts`** writes the haplotype half of the
   config and each assembly's `chrom.sizes`, read off the release 2 assembly's
-  own `.fai`.
-- **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, builds and
-  publishes the gene files those tracks name under
-  `jbrowse.org/pangenome/hprc-grch38/genes/`. HPRC's CAT files on S3 are plain
-  gzip in gene order, so they are sorted, bgzipped and indexed here rather than
-  read in place. It keeps what it has built, so only new haplotypes cost
-  anything.
-- **`website/generatePangenomePanels.ts`** prefers an annotated member to stand
-  for a configuration (`annotatedHaplotypes`), so a rerun only swaps a lane for
-  another haplotype the config already annotates.
+  own `.fai`. Measured with all 465 assemblies on 2026-09-17: ~0.1 s more at
+  boot and 19 KB gzipped, and nothing per launch beyond the lanes it opens,
+  because jbrowse-web loads an assembly only when something reads it.
+- **`website/pangenome-config/buildHprcGenes.sh`**, on the build box, reduces
+  each CAT annotation to one transcript per gene as BED12
+  (`generatePangenomeGeneModels.ts`) and publishes it under
+  `jbrowse.org/pangenome/hprc-grch38/genes/`. That is ~3.4 MB a haplotype
+  against 129 MB for CAT's own GFF3 bgzipped, because a lane draws one model per
+  gene and CAT repeats a ~30-field attribute block on every exon row. HPRC's
+  files are plain gzip in gene order, so they are rehosted rather than read in
+  place. It keeps what it has built.
 
 Then `upload.sh` publishes the config. `pangenomePanels.test.ts` fails if a
-panel names a bare haplotype other than `HG002#1`, which is what skipping the
-first two steps looks like.
+haplotype the lane track maps has no gene track, other than HG002's.
 
 Two things keep it drawing, and both fail silently:
 

@@ -372,13 +372,27 @@ closed: a rerun cannot name a bare haplotype while an annotated member exists.
 
 The annotation is HPRC's release 2 CAT, and it has to be rehosted rather than
 pointed at: each file on S3 is plain gzip in gene order, so no index can be
-built over it where it sits. `buildHprcGenes.sh` sorts, bgzips and indexes the
-60 that the config names, about 115 MB each, with the filter
-`build_hprc_multiway_synteny.sh` in jbrowse-components applies to its eight. The
-assemblies' `chrom.sizes` come from the `.fai` HPRC publishes beside each
-bgzipped FASTA, whose contigs are PanSN-prefixed (`HG00126#1#CM090108.1`) where
-the graph and the annotation name them bare, which is also why the FASTA cannot
-serve as the assembly's sequence without an alias file per haplotype.
+built over it where it sits. Rehosted as CAT publishes it, one haplotype is 129
+MB bgzipped, 59 GB for all 462, and nearly all of that is not gene models: CAT
+keeps ~5 transcripts per gene and repeats a ~30-field attribute block on every
+exon and CDS row, 3.3 million of them. Measured on HG00097#1 on 2026-09-17, the
+same transcripts as BED12 are 14 MB, one transcript per gene 3.4 MB, and one
+per protein-coding gene 1.5 MB; bigBed came out larger than bgzipped BED at
+every size. A lane draws one model per gene, so `buildHprcGenes.sh` publishes
+the 3.4 MB form for every haplotype, ~1.6 GB in all, and a browser check showed
+it drawing the same exon and coding structure the hg38 row beside it does. The
+first version of this rehosted the GFF3 for 61 haplotypes, 7.7 GB, and was
+replaced the same day. Projecting hg38's genes through each lane's alignment
+would need no hosting at all, but it is viewer work, and it would miss the
+genes a haplotype carries that the reference lacks, which is where a
+per-haplotype annotation earns its place.
+
+Every haplotype has an assembly now rather than the ones a panel names, because
+a lane can be any haplotype once rows are chosen genome-wide. The assemblies'
+`chrom.sizes` come from the `.fai` HPRC publishes beside each bgzipped FASTA,
+whose contigs are PanSN-prefixed (`HG00126#1#CM090108.1`) where the graph and
+the annotation name them bare, which is also why the FASTA cannot serve as the
+assembly's sequence without an alias file per haplotype.
 
 ### The variant route, for bovine: minutes, on data already extracted
 
