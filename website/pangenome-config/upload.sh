@@ -17,7 +17,9 @@ changed=0
 # against the config's own url; a config published ahead of its sidecars names
 # objects that 404, and `loadPre()` fetches sequence regions and aliases in one
 # Promise.all, so one 404 fails the whole assembly rather than costing a track.
-# The reverse order is inert: an uploaded sidecar nothing references yet.
+# The reverse order is inert: an uploaded sidecar nothing references yet. The
+# haplotype gene files under hprc-grch38/genes/ are the same kind of object and
+# too big for git, so buildHprcGenes.sh publishes them, and has to run first.
 #
 # `<name>/` beside `<name>.json` is the directory of them, mirroring the bucket
 # prefix the config is published under. The glob skips dotfiles, which is what
@@ -56,7 +58,7 @@ done
 # `cloudfront_invalidate` call in this repo already uses a trailing wildcard.
 #
 # The wide path is now doing real work rather than costing nothing: the prefix
-# holds the three configs plus the eight GBZ-lane chrom.sizes, and a stale
+# holds the three configs plus the haplotype lanes' chrom.sizes, and a stale
 # cached sidecar beside a fresh config is the same desynchronization the
 # two-phase rclone sync exists to prevent.
 if [ "$changed" = 1 ]; then
