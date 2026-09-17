@@ -51,7 +51,8 @@ export interface PangenomeLocus {
   // Narrower window for the two launches that draw per-haplotype data — the
   // graph and the 464-row genotype matrix — when the display span above is too
   // wide for either (see MAX_DETAIL_WINDOW_BP). Where the JBrowse HPRC tutorial
-  // states a window for this locus, it is that window verbatim.
+  // cuts this locus in 150 kb or less, it is that window verbatim; AMY1 and
+  // CFHR, which it draws wider, say why they differ.
   detailWindow?: { start: number; end: number }
   // Set where minigraph is known to collapse this locus, so no graph launch is
   // offered however narrow the window. The HPRC tutorial's "The Layout dropdown"
@@ -347,10 +348,11 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 196_640_000,
     end: 197_020_000,
-    // The CFHR3–CFHR1 deletion the tutorial's CFHR figure is built on: the wave
-    // VCF writes it as one record at chr1:196,753,075 with an 84,684 bp REF, so
-    // this window holds the whole event plus CFHR3 (196,774,840-196,795,407) and
-    // CFHR1 (196,819,731-196,832,189) with flanks.
+    // The CFHR3–CFHR1 deletion the tutorial's CFHR figure is built on, in less
+    // than the tutorial's 200 kb cut: the wave VCF writes it as one record at
+    // chr1:196,753,075 with an 84,684 bp REF, so this window holds the whole
+    // event plus CFHR3 (196,774,840-196,795,407) and CFHR1
+    // (196,819,731-196,832,189) with flanks.
     detailWindow: { start: 196_740_000, end: 196_850_000 },
     variation: ['pav', 'cnv'],
     markerGenes: ['CFH', 'CFHR1', 'CFHR2', 'CFHR3', 'CFHR4', 'CFHR5'],

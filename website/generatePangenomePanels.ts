@@ -17,6 +17,7 @@
 //   node generatePangenomePanels.ts
 import { execFileSync } from 'child_process'
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -56,8 +57,13 @@ if (annotated.size === 0) {
   )
 }
 
+// bcftools saves a remote file's index into its working directory, so it runs
+// in a scratch one rather than leaving a .tbi in the tree.
+const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'pangenome-panels-'))
+
 const samples = execFileSync('bcftools', ['query', '-l', vcf], {
   encoding: 'utf8',
+  cwd,
 })
   .trim()
   .split('\n')
@@ -76,7 +82,7 @@ function genotypesAt(chrom: string, start: number, end: number) {
       `%POS[\t%SAMPLE=%GT]\n`,
       vcf,
     ],
-    { encoding: 'utf8', maxBuffer: 1 << 28 },
+    { encoding: 'utf8', maxBuffer: 1 << 28, cwd },
   )
     .trim()
     .split('\n')
