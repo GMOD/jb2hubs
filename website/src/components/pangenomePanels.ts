@@ -14,6 +14,7 @@
 // configuration. `choosePanel` groups on that and picks representatives, most
 // common configuration first, breaking ties towards the configuration least like
 // the ones already chosen, and preferring a member whose lane has gene models.
+// A locus with few enough configurations draws every one of them.
 // `website/generatePangenomePanels.ts` runs it over the curated loci and commits
 // the result; nothing here fetches.
 
@@ -42,7 +43,10 @@ export interface HaplotypeGenotypes {
   alleles: (number | undefined)[]
 }
 
-export const DEFAULT_PANEL_SIZE = 8
+// Screen height sets both, not load time, which is flat from 8 lanes to 16:
+// 8 fit a laptop window, and a complete panel of 10 a 1080p one.
+export const PANEL_SIZE = 8
+export const COMPLETE_PANEL_SIZE = 10
 
 // A missing call is not a configuration: it would group haplotypes by where
 // the caller gave up, and a lane opened on one would draw a haplotype the
@@ -76,9 +80,14 @@ function representative(members: string[], annotated: ReadonlySet<string>) {
 export function choosePanel(
   genotypes: HaplotypeGenotypes[],
   {
-    size = DEFAULT_PANEL_SIZE,
+    size = PANEL_SIZE,
+    completeSize = COMPLETE_PANEL_SIZE,
     annotated = new Set<string>(),
-  }: { size?: number; annotated?: ReadonlySet<string> } = {},
+  }: {
+    size?: number
+    completeSize?: number
+    annotated?: ReadonlySet<string>
+  } = {},
 ): StructuralPanel | undefined {
   const pick = (members: string[]) => representative(members, annotated)
   const sites = genotypes[0]?.alleles.length ?? 0
@@ -99,8 +108,9 @@ export function choosePanel(
     }
   }
   const remaining = [...groups.values()]
+  const limit = groups.size <= completeSize ? groups.size : size
   const chosen: typeof remaining = []
-  while (chosen.length < size && remaining.length > 0) {
+  while (chosen.length < limit && remaining.length > 0) {
     // Most common first; among equally common configurations, the one least
     // like anything already on the panel, so a locus of singletons still
     // spreads its lanes across the range rather than stacking near-twins.

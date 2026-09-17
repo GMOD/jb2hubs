@@ -1900,17 +1900,18 @@ with pangene, which is why it is no longer called `pangeneGenes`.
 `hprc_v2_1_gbz_lanes` track, one lane per haplotype walk read from HPRC's
 `.gbz.db` in the browser, narrowed to that locus's panel in
 `website/public/pangenome-hprc/panels.json`: one haplotype per structural
-configuration the callset finds in the launch window, commonest first, at most
-eight. `website/generatePangenomePanels.ts` writes it with bcftools; re-run it
-when a window or the callset moves. The panel rides the spec as
-`laneFilter.only` and `domain`, so one track in the config serves every locus.
-Why a panel and not the tutorial's eight, and the five loci with none:
+configuration the callset finds in the launch window, commonest first: every
+configuration where there are at most 10, else the commonest 8.
+`website/generatePangenomePanels.ts` writes it with bcftools; re-run it when a
+window or the callset moves. The panel rides the spec as `laneFilter.only` and
+`domain`, so one track in the config serves every locus. Why a panel and not the
+tutorial's eight, why 10 and 8, and the five loci with none:
 `agent-docs/PANGENOME_PORTAL.md`.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
 applies; there is no spec key for it. So every haplotype a panel names is an
-assembly in `hprc-grch38.json` with a CAT gene track, 108 of the 109 lanes as of
+assembly in `hprc-grch38.json` with a CAT gene track, 109 of the 110 lanes as of
 2026-09-17 (HPRC's CAT index has nothing for `HG002#1`). Three steps keep it
 that way, in this order, after anything moves a panel:
 

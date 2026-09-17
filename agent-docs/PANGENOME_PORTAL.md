@@ -321,9 +321,19 @@ The lanes launch (`haplotypeLanesUrl`) opens the lane track narrowed to a
 eight the tutorial picked for CFHR. `website/generatePangenomePanels.ts` reads
 the SV-tier records the variant lane draws (`LV=0`, an allele of 50 bp or more)
 over the launch window with bcftools, groups the 464 haplotypes by genotype
-vector, and keeps one representative per configuration, commonest first, up to
-eight. `laneFilter.only` and `domain` on the spec's track entry carry the panel,
-so one track serves every locus.
+vector, and keeps one representative per configuration, commonest first. A locus
+with at most 10 configurations draws all of them, and any other the commonest 8.
+`laneFilter.only` and `domain` on the spec's track entry carry the panel, so one
+track serves every locus.
+
+Height sets those numbers, not load time, measured 2026-09-17 on ada. Warm AMY1
+launches settle in about 5.0 s at 8 and 9 lanes, 5.2 s at 12 and 5.2 to 5.5 s
+at 16. Each lane adds 53 px. Eight lanes and the reference end 760 px down a
+1440×900 window, and ten end at 865 px, still inside a 1080p window. Only AMY1
+reaches the complete rule today, and its ninth configuration, `HG02391#2` alone,
+became a lane. Every other locus with a panel has 3 configurations or fewer, or
+12 or more, where a lane past the eighth is a rare configuration picked by
+tie-break.
 
 Measured 2026-09-17 over the 20 curated loci: 15 have a panel, from `hp` (one
 site, 2 configurations, 457 against 5) to `hba` (71 sites, 259 configurations).

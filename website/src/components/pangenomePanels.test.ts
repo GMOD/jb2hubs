@@ -4,6 +4,8 @@ import { test } from 'node:test'
 
 import { HPRC_DATASET, HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
 import {
+  COMPLETE_PANEL_SIZE,
+  PANEL_SIZE,
   annotatedHaplotypes,
   choosePanel,
   splitGenotype,
@@ -48,13 +50,25 @@ test('the panel size caps the lanes, and a tie goes to the least similar configu
       hap('HG00003#1', 1, 1, 1),
       hap('HG00004#1', 0, 1, 0),
     ],
-    { size: 2 },
+    { size: 2, completeSize: 3 },
   )!
   assert.deepEqual(
     panel.lanes.map(l => l.haplotype),
     ['HG00001#1', 'HG00003#1'],
   )
   assert.equal(panel.configurations, 4)
+})
+
+// n haplotypes, each its own configuration over four sites
+const singletons = (n: number) =>
+  Array.from({ length: n }, (_, i) =>
+    hap(`HG${i}#1`, ...[0, 1, 2, 3].map(bit => (i >> bit) & 1)),
+  )
+
+test('a locus with few enough configurations draws every one', () => {
+  const lanes = (n: number) => choosePanel(singletons(n))!.lanes.length
+  assert.equal(lanes(COMPLETE_PANEL_SIZE), COMPLETE_PANEL_SIZE)
+  assert.equal(lanes(COMPLETE_PANEL_SIZE + 1), PANEL_SIZE)
 })
 
 test('a configuration is drawn by a member whose lane has gene models', () => {
