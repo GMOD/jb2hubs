@@ -105,7 +105,7 @@ const UNANNOTATED = ['HG002#1', 'HG002#2']
 test('the lane track maps every haplotype, and all but HG002 have gene models', () => {
   const lanes = config.tracks.find(t => t.trackId === trackId)!
   const mapped = Object.values(lanes.adapter.assemblyNameToPanSN!).filter(
-    h => h !== 'GRCh38#0',
+    (h): h is string => h !== undefined && h !== 'GRCh38#0',
   )
   assert.ok(mapped.length >= 464, `${mapped.length} haplotypes mapped`)
   const annotated = annotatedHaplotypes(config, trackId)

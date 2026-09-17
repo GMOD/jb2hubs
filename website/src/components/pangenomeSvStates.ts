@@ -163,11 +163,12 @@ export function structuralForms(
     // Over every site, not only the informative ones: a deletion one haplotype
     // carries defines no form, and leaving it unsaid reads as a haplotype that
     // matches the reference here.
-    ;[...row.genotypes].forEach((state, i) => {
+    for (let i = 0; i < row.genotypes.length; i++) {
+      const state = row.genotypes[i]!
       if (state !== majorityState && counts.get(state)! < minCarriers) {
         carriesRare.add(haplotypes[i]!)
       }
-    })
+    }
     if (ranked.length > 1 && ranked[1]![1] >= minCarriers) {
       informative.push({
         genotypes: row.genotypes,
