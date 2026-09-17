@@ -96,31 +96,33 @@ const config = JSON.parse(
 ) as LaneConfig
 const trackId = HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!
 
-// The panels are only as annotated as this set: a lane the track maps to an
-// assembly with no gene track of its own reads "no annotation".
-test('every haplotype the lane track maps to an assembly has gene models', () => {
+// HPRC's CAT index annotates every release 2 haplotype but HG002's two, and
+// generatePangenomeHaplotypes.ts gives each an assembly the lane track maps and
+// a gene track. A haplotype missing from either reads "no annotation" on its
+// lane, which is what skipping that script or buildHprcGenes.sh looks like.
+const UNANNOTATED = ['HG002#1', 'HG002#2']
+
+test('the lane track maps every haplotype, and all but HG002 have gene models', () => {
   const lanes = config.tracks.find(t => t.trackId === trackId)!
   const mapped = Object.values(lanes.adapter.assemblyNameToPanSN!).filter(
     h => h !== 'GRCh38#0',
   )
-  assert.ok(mapped.length > 0)
+  assert.ok(mapped.length >= 464, `${mapped.length} haplotypes mapped`)
+  const annotated = annotatedHaplotypes(config, trackId)
   assert.deepEqual(
-    [...annotatedHaplotypes(config, trackId)].sort(),
-    mapped.sort(),
+    mapped.filter(h => !annotated.has(h)).sort(),
+    UNANNOTATED,
   )
 })
 
-// generatePangenomeHaplotypes.ts annotates every haplotype a panel names that
-// HPRC's CAT index covers, and HG002#1 is the one it does not. Anything else
-// here is a panel regenerated without rerunning it.
-test('every haplotype a panel names has gene models but HG002#1', () => {
+test('every haplotype a panel names has gene models but HG002', () => {
   const annotated = annotatedHaplotypes(config, trackId)
   const named = Object.values(HPRC_DATASET.panels!).flatMap(p =>
     p.lanes.map(l => l.haplotype),
   )
-  assert.deepEqual(
-    [...new Set(named.filter(h => !annotated.has(h)))],
-    ['HG002#1'],
+  assert.ok(
+    named.every(h => annotated.has(h) || UNANNOTATED.includes(h)),
+    named.filter(h => !annotated.has(h)).join(', '),
   )
 })
 

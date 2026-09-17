@@ -1,6 +1,6 @@
-// Write the haplotype half of `pangenome-config/hprc-grch38.json`: one assembly
-// and one CAT gene track per haplotype a lane panel names, and the `chrom.sizes`
-// each assembly reads.
+// Write the haplotype half of `pangenome-config/hprc-grch38.json`: an assembly
+// for every HPRC release 2 haplotype, a gene track for each one CAT annotates,
+// and the `chrom.sizes` each assembly reads.
 //
 // Why assemblies at all: a lane draws under its PanSN name without one, but it
 // reads its gene models from a track declared for its assembly alone, so a
@@ -15,15 +15,15 @@
 // which is short of the real length by whatever telomere minigraph-cactus
 // clipped, and took ~18 GB of range requests to find out.
 //
-// Which haplotypes: every one `public/pangenome-hprc/panels.json` names, plus
-// any the lane track already maps, that HPRC's CAT index annotates. HG002#1 is
-// the one panel haplotype it does not, and its lane stays bare.
+// Which haplotypes: all of them, so any haplotype a view picks has an
+// assembly, and every one but HG002's two has genes. Measured with 465
+// assemblies, the config costs ~0.1 s at boot and nothing per launch beyond the
+// lanes it opens, because jbrowse-web loads an assembly only when something
+// reads it.
 //
 // The gene files are built and published by
 // `pangenome-config/buildHprcGenes.sh` on the build box, from the tracks this
-// writes. After the panels move, rerun in this order: this, buildHprcGenes.sh,
-// generatePangenomePanels.ts (which prefers annotated haplotypes, so it only
-// swaps a lane for one this already annotated), then upload.sh.
+// writes; run it before upload.sh publishes the config.
 //
 // Not wired into the build: it needs the network. Its output is committed.
 //   node generatePangenomeHaplotypes.ts
@@ -33,7 +33,6 @@ import { fileURLToPath } from 'url'
 
 import { formatJson } from 'hubtools'
 
-import panelsFile from './public/pangenome-hprc/panels.json' with { type: 'json' }
 import { HPRC_GRAPH_BROWSER } from './src/components/pangenomeDataset.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -99,19 +98,14 @@ if (!laneMap?.[anchor]) {
 const assemblyIndex = await indexByHaplotype(ASSEMBLY_INDEX)
 const catIndex = await indexByHaplotype(CAT_INDEX)
 
-const wanted = new Set([
-  ...Object.values(panelsFile.panels).flatMap(p =>
-    p.lanes.map(l => l.haplotype),
-  ),
-  ...Object.entries(laneMap)
-    .filter(([assembly]) => assembly !== anchor)
-    .map(([, haplotype]) => haplotype),
-])
-const haplotypes = [...wanted].filter(h => catIndex.has(h)).sort()
-const bare = [...wanted].filter(h => !catIndex.has(h)).sort()
+// `#0` rows are the references the graph is built on, not haplotypes.
+const haplotypes = [...assemblyIndex.keys()]
+  .filter(h => !h.endsWith('#0'))
+  .sort()
+const bare = haplotypes.filter(h => !catIndex.has(h))
 
 fs.mkdirSync(SIDECARS, { recursive: true })
-const annotated: {
+const written: {
   haplotype: string
   assembly: string
   sample: string
@@ -120,9 +114,7 @@ const annotated: {
 for (const haplotype of haplotypes) {
   const fai = assemblyIndex.get(haplotype)?.assembly_fai
   if (!fai) {
-    throw new Error(
-      `${haplotype} has a CAT annotation but no assembly .fai in ${ASSEMBLY_INDEX}`,
-    )
+    throw new Error(`${haplotype} has no assembly .fai in ${ASSEMBLY_INDEX}`)
   }
   const prefix = `${haplotype}#`
   const rows = (await fetchText(httpsOf(fai)))
@@ -141,7 +133,7 @@ for (const haplotype of haplotypes) {
     path.join(SIDECARS, `${assembly}.chrom.sizes`),
     `${rows.join('\n')}\n`,
   )
-  annotated.push({ haplotype, assembly, sample, hap })
+  written.push({ haplotype, assembly, sample, hap })
   console.log(`  ${assembly}: ${rows.length} contigs`)
 }
 
@@ -155,14 +147,14 @@ const geneTrackAt =
 
 laneTrack!.adapter.assemblyNameToPanSN = {
   [anchor]: laneMap[anchor],
-  ...Object.fromEntries(annotated.map(a => [a.assembly, a.haplotype])),
+  ...Object.fromEntries(written.map(a => [a.assembly, a.haplotype])),
 }
 
 const out = {
   ...config,
   assemblies: [
     config.assemblies[0],
-    ...annotated.map(({ haplotype, assembly, sample, hap }) => ({
+    ...written.map(({ haplotype, assembly, sample, hap }) => ({
       name: assembly,
       aliases: [haplotype],
       displayName: `${sample} haplotype ${hap} (HPRC release 2)`,
@@ -178,22 +170,24 @@ const out = {
   ],
   tracks: [
     ...otherTracks.slice(0, geneTrackAt),
-    ...annotated.map(({ assembly, sample, hap }) => ({
-      type: 'FeatureTrack',
-      trackId: catTrackId(assembly),
-      name: `CAT genes (${sample} haplotype ${hap}, HPRC release 2)`,
-      assemblyNames: [assembly],
-      adapter: {
-        type: 'Gff3TabixAdapter',
-        uri: `genes/${assembly}.genes.gff3.gz`,
-      },
-    })),
+    ...written
+      .filter(a => catIndex.has(a.haplotype))
+      .map(({ assembly, sample, hap }) => ({
+        type: 'FeatureTrack',
+        trackId: catTrackId(assembly),
+        name: `CAT genes (${sample} haplotype ${hap}, HPRC release 2)`,
+        assemblyNames: [assembly],
+        adapter: {
+          type: 'BedTabixAdapter',
+          uri: `genes/${assembly}.genes.bed.gz`,
+        },
+      })),
     ...otherTracks.slice(geneTrackAt),
   ],
 }
 fs.writeFileSync(CONFIG, formatJson(out))
 
 console.log(
-  `Wrote ${annotated.length} haplotype assemblies to ${CONFIG}` +
+  `Wrote ${written.length} haplotype assemblies to ${CONFIG}` +
     (bare.length ? `; no CAT annotation for ${bare.join(', ')}` : ''),
 )
