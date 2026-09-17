@@ -256,8 +256,8 @@ async function probe(url) {
 }
 
 // A couple of hundred requests, nearly all against our own bucket, so unlike
-// check-track-urls there is no budget to keep. Sequential rather than parallel so a slow edge cannot look
-// like a failure.
+// check-track-urls there is no budget to keep. Sequential rather than parallel
+// so a slow edge cannot look like a failure.
 const broken = []
 const primaryOnly = []
 const transient = []
