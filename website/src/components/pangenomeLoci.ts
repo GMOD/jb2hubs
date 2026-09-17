@@ -78,10 +78,9 @@ export interface PangenomeLocus {
 //   adapter's `fetchSizeLimit` and the feature-density gate, and the lane opens
 //   behind the "too much data" banner instead of drawing.
 //
-// The tutorial's own windows run 70–130 kb (its widest is LPA's KIV-2 repeat at
-// 130 kb); 150 kb is the ceiling allowed here. Past it a locus needs an explicit
-// `detailWindow`, or it gets no graph launch and its variants open on the full
-// span.
+// The tutorial's segment-level cuts run 70–130 kb, and 150 kb is the ceiling
+// allowed here. A locus wider than that without an explicit `detailWindow`
+// draws its graph from the coarse tier, and its variants open on the full span.
 export const MAX_DETAIL_WINDOW_BP = 150_000
 
 /**
@@ -142,8 +141,13 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 103_540_000,
     end: 103_830_000,
-    // The tutorial's AMY1 window verbatim.
-    detailWindow: { start: 103_690_000, end: 103_780_000 },
+    // Not the tutorial's window, which is 350 kb on purpose: a cut has to hold
+    // the whole bubble or its allele draws as a short arm. The copy-number
+    // bubble is chr1:103,620,901-103,732,636 in the v2.1 bubble index, AMY2A
+    // through AMY1B, and this window holds it, AMY1C (103,749,654-103,758,692)
+    // and no bubble crossing either edge. The window this used to carry was the
+    // tutorial's tabix query, which starts inside that bubble.
+    detailWindow: { start: 103_610_000, end: 103_760_000 },
     variation: ['cnv'],
     markerGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
   },
