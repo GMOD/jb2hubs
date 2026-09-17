@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
-import { HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
+import { HPRC_DATASET, HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
 import {
   annotatedHaplotypes,
   choosePanel,
@@ -74,16 +74,17 @@ test('a configuration is drawn by a member whose lane has gene models', () => {
   )
 })
 
+const config = JSON.parse(
+  readFileSync(
+    new URL('../../pangenome-config/hprc-grch38.json', import.meta.url),
+    'utf8',
+  ),
+) as LaneConfig
+const trackId = HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!
+
 // The panels are only as annotated as this set: a lane the track maps to an
 // assembly with no gene track of its own reads "no annotation".
 test('every haplotype the lane track maps to an assembly has gene models', () => {
-  const config = JSON.parse(
-    readFileSync(
-      new URL('../../pangenome-config/hprc-grch38.json', import.meta.url),
-      'utf8',
-    ),
-  ) as LaneConfig
-  const trackId = HPRC_GRAPH_BROWSER.haplotypeLanesTrackId!
   const lanes = config.tracks.find(t => t.trackId === trackId)!
   const mapped = Object.values(lanes.adapter.assemblyNameToPanSN!).filter(
     h => h !== 'GRCh38#0',
@@ -93,6 +94,19 @@ test('every haplotype the lane track maps to an assembly has gene models', () =>
     [...annotatedHaplotypes(config, trackId)].sort(),
     mapped.sort(),
   )
+})
+
+// generatePangenomeHaplotypes.ts annotates every haplotype a panel names that
+// HPRC's CAT index covers, and HG002#1 is the one it does not. Anything else
+// here is a panel regenerated without rerunning it.
+test('every haplotype a panel names has gene models but HG002#1', () => {
+  const annotated = annotatedHaplotypes(config, trackId)
+  const named = Object.values(HPRC_DATASET.panels!).flatMap(p =>
+    p.lanes.map(l => l.haplotype),
+  )
+  assert.deepEqual([...new Set(named.filter(h => !annotated.has(h)))], [
+    'HG002#1',
+  ])
 })
 
 test('a haplotype with a missing call is left out of the grouping', () => {
