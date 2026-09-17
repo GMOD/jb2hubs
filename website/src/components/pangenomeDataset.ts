@@ -472,7 +472,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     taxonId: 9913,
   },
   panelDescription:
-    'ARS-UCD1.2 (Hereford) plus 11 taurine and indicine breeds, yak, bison and gaur',
+    'ARS-UCD1.2 (Hereford) plus eight taurine and indicine breeds, yak, bison and gaur',
   graphVcf: {
     trackId: 'bovine-arsucd12-minigraph-vcf',
     name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
