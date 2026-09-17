@@ -7,84 +7,58 @@ import {
   COMPLETE_PANEL_SIZE,
   PANEL_SIZE,
   annotatedHaplotypes,
-  choosePanel,
-  splitGenotype,
+  structuralPanel,
 } from './pangenomePanels.ts'
+import { parseSvStateRow, structuralForms } from './pangenomeSvStates.ts'
 
 import type { LaneConfig } from './pangenomePanels.ts'
 
-const hap = (haplotype: string, ...alleles: (number | undefined)[]) => ({
-  haplotype,
-  alleles,
+// n haplotypes, one form each, over enough sites to tell them apart
+function forms(n: number, share = 5) {
+  const haplotypes = Array.from({ length: n * share }, (_, i) => `HG${i}#1`)
+  const sites = Array.from({ length: n }, (_, site) =>
+    parseSvStateRow(
+      `chr1\t100\t200\tsite${site}\t1:-1700\t${haplotypes
+        .map((_, i) => (Math.floor(i / share) === site ? '1' : '0'))
+        .join('')}`,
+    ),
+  )
+  return structuralForms(sites, haplotypes)
+}
+
+test('a window with few forms draws every one, a busier one the largest', () => {
+  assert.equal(structuralPanel(forms(COMPLETE_PANEL_SIZE))!.lanes.length, COMPLETE_PANEL_SIZE)
+  assert.equal(structuralPanel(forms(COMPLETE_PANEL_SIZE + 1))!.lanes.length, PANEL_SIZE)
 })
 
-test('a panel is one lane per configuration, most common first', () => {
-  const panel = choosePanel(
-    [
-      hap('HG00001#1', 0, 0),
-      hap('HG00001#2', 0, 0),
-      hap('HG00002#1', 0, 0),
-      hap('HG00002#2', 1, 0),
-      hap('HG00003#1', 1, 0),
-      hap('HG00003#2', 0, 2),
-    ],
-    { size: 8 },
+test('a lane says how many haplotypes it stands for, largest first', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2', 'C#1', 'C#2', 'D#1', 'D#2']
+  const panel = structuralPanel(
+    structuralForms(
+      [parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t11111000`)],
+      haplotypes,
+    ),
+    { size: 8, completeSize: 10 },
   )!
-  assert.equal(panel.sites, 2)
-  assert.equal(panel.haplotypes, 6)
-  assert.equal(panel.configurations, 3)
   assert.deepEqual(panel.lanes, [
-    { haplotype: 'HG00001#1', shares: 3, nonReference: 0 },
-    { haplotype: 'HG00002#2', shares: 2, nonReference: 1 },
-    { haplotype: 'HG00003#2', shares: 1, nonReference: 1 },
+    { haplotype: 'A#1', shares: 5 },
+    { haplotype: 'C#2', shares: 3 },
   ])
+  assert.equal(panel.forms, 2)
 })
 
-test('the panel size caps the lanes, and a tie goes to the least similar configuration', () => {
-  // Four singletons; after the reference-like one, the next lane should be the
-  // one farthest from it (three differences), not the alphabetically first.
-  const panel = choosePanel(
-    [
-      hap('HG00001#1', 0, 0, 0),
-      hap('HG00002#1', 1, 0, 0),
-      hap('HG00003#1', 1, 1, 1),
-      hap('HG00004#1', 0, 1, 0),
-    ],
-    { size: 2, completeSize: 3 },
-  )!
-  assert.deepEqual(
-    panel.lanes.map(l => l.haplotype),
-    ['HG00001#1', 'HG00003#1'],
-  )
-  assert.equal(panel.configurations, 4)
-})
-
-// n haplotypes, each its own configuration over four sites
-const singletons = (n: number) =>
-  Array.from({ length: n }, (_, i) =>
-    hap(`HG${i}#1`, ...[0, 1, 2, 3].map(bit => (i >> bit) & 1)),
-  )
-
-test('a locus with few enough configurations draws every one', () => {
-  const lanes = (n: number) => choosePanel(singletons(n))!.lanes.length
-  assert.equal(lanes(COMPLETE_PANEL_SIZE), COMPLETE_PANEL_SIZE)
-  assert.equal(lanes(COMPLETE_PANEL_SIZE + 1), PANEL_SIZE)
-})
-
-test('a configuration is drawn by a member whose lane has gene models', () => {
-  const genotypes = [
-    hap('HG00001#1', 0),
-    hap('HG00002#1', 0),
-    hap('HG00003#1', 1),
-  ]
-  const annotated = new Set(['HG00002#1'])
-  assert.deepEqual(
-    choosePanel(genotypes, { annotated })!.lanes.map(l => l.haplotype),
-    ['HG00002#1', 'HG00003#1'],
-  )
-  assert.deepEqual(
-    choosePanel(genotypes)!.lanes.map(l => l.haplotype),
-    ['HG00001#1', 'HG00003#1'],
+test('a window where nothing tells the haplotypes apart is no panel', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1']
+  assert.equal(structuralPanel(structuralForms([], haplotypes)), undefined)
+  // one haplotype differing is a rare form, not a way to split the panel
+  assert.equal(
+    structuralPanel(
+      structuralForms(
+        [parseSvStateRow(`chr1\t1\t2\tid\t1:-1700\t100`)],
+        haplotypes,
+      ),
+    ),
+    undefined,
   )
 })
 
@@ -117,33 +91,9 @@ test('every haplotype a panel names has gene models but HG002', () => {
   const named = Object.values(HPRC_DATASET.panels!).flatMap(p =>
     p.lanes.map(l => l.haplotype),
   )
+  assert.ok(named.length > 0)
   assert.ok(
     named.every(h => annotated.has(h) || UNANNOTATED.includes(h)),
     named.filter(h => !annotated.has(h)).join(', '),
   )
-})
-
-test('a haplotype with a missing call is left out of the grouping', () => {
-  const panel = choosePanel([
-    hap('HG00001#1', 0, 0),
-    hap('HG00001#2', 0, undefined),
-    hap('CHM13#2', undefined, undefined),
-  ])!
-  assert.equal(panel.haplotypes, 1)
-  assert.equal(panel.configurations, 1)
-  assert.deepEqual(panel.lanes, [
-    { haplotype: 'HG00001#1', shares: 1, nonReference: 0 },
-  ])
-})
-
-test('a window with no structural site has no panel', () => {
-  assert.equal(choosePanel([hap('HG00001#1'), hap('HG00001#2')]), undefined)
-  assert.equal(choosePanel([]), undefined)
-})
-
-test('a genotype splits into its two haplotypes, haploid and missing included', () => {
-  assert.deepEqual(splitGenotype('0|1'), [0, 1])
-  assert.deepEqual(splitGenotype('2|.'), [2, undefined])
-  assert.deepEqual(splitGenotype('.'), [undefined, undefined])
-  assert.deepEqual(splitGenotype('1/0'), [1, 0])
 })

@@ -143,10 +143,16 @@ export interface PangenomeDataset {
   // Omitted where a dataset has no hosted graph projection to draw.
   graphBrowser?: PangenomeGraphBrowser
   loci: PangenomeLocus[]
-  // Per locus id, the haplotypes its lanes launch opens, derived from the
-  // callset by `generatePangenomePanels.ts`. A locus without one has no
-  // structural site in its window and gets no haplotypes launch.
+  // Per locus id, the haplotypes its lanes launch opens, read from
+  // `svStatesUrl` by `generatePangenomePanels.ts`. A locus without one has
+  // nothing in its window that tells the haplotypes apart, and gets no
+  // haplotypes launch.
   panels?: Record<string, StructuralPanel>
+  // The structural-state sidecar of this graph's callset, published by
+  // `pangenome-config/buildHprcSvStates.sh`. It is what makes a window nobody
+  // precomputed answerable: the page reads it for a region a reader asks for
+  // and groups the haplotypes the same way the panels above were grouped.
+  svStatesUrl?: string
   // The tutorial that explains what this graph can show. Every dataset here is
   // the hosted arm of one, and the tutorial is the better explanation — the
   // page's job is to launch it, not to restate it.
@@ -268,6 +274,8 @@ export const HPRC_DATASET: PangenomeDataset = {
   graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
   loci: PANGENOME_LOCI,
   panels: hprcPanelsFile.panels,
+  svStatesUrl:
+    'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.tsv.gz',
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
