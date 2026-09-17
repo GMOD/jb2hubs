@@ -80,9 +80,13 @@ xargs -P "$JOBS" -I{} bash -c 'pack_chrom {}' <"$WORK/chroms.txt"
 {
   printf '#haplotypes\t%s\n' "$(paste -sd, "$WORK/haplotypes.txt")"
   while read -r c; do
-    awk -F'\t' 'NR == FNR { present[$0] = 1; next }
+    # The present list is read in BEGIN rather than as a first file: it is empty
+    # wherever no nested record's parent survived, and an empty first file makes
+    # awk's NR == FNR true for the records themselves, which printed nothing.
+    awk -F'\t' -v presentFile="$WORK/present/$c.txt" '
+      BEGIN { while ((getline id < presentFile) > 0) { present[id] = 1 } }
       $5 == "0" || !($6 in present) { print $1 "\t" $2 "\t" $3 "\t" $4 "\t" $7 "\t" $8 }' \
-      "$WORK/present/$c.txt" "$WORK/rows/$c.tsv" | LC_ALL=C sort -k2,2n
+      "$WORK/rows/$c.tsv" | LC_ALL=C sort -k2,2n
   done <"$WORK/chroms.txt"
 } | bgzip -c >"$WORK/out/$NAME.tsv.gz.part"
 mv "$WORK/out/$NAME.tsv.gz.part" "$WORK/out/$NAME.tsv.gz"
