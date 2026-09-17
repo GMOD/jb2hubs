@@ -1,16 +1,17 @@
 // Derive one `chrom.sizes` per HPRC haplotype from the published gbz-base
 // database, for the GBZ synteny lane in `pangenome-config/hprc-grch38.json`.
 //
-// Why these files have to exist at all: `MultiWaySyntenyDisplay` draws one lane
-// per assembly, so every haplotype the lane names has to BE a JBrowse assembly,
-// and an assembly needs a sequence adapter. There is no sequence to serve here
-// — the lane draws alignments, not bases — so each is a `ChromSizesAdapter`
-// over the contig lengths, which is the minimum that makes a coordinate axis.
+// Why these files exist: a lane draws under its PanSN name without an
+// assembly, but only an assembly can carry the lane's gene models and its
+// "Open in" hop, and an assembly needs a sequence adapter. There is no sequence
+// to serve here — the lane draws alignments, not bases — so each is a
+// `ChromSizesAdapter` over the contig lengths.
 //
-// Why derive them rather than take GenArk's: the lengths have to agree with what
-// the ADAPTER reports, and the adapter reads this database. GenArk publishes the
-// same assemblies under UCSC-style contig names; the graph names them by their
-// GenBank accession (`CM094060.1`), so the two do not even share a namespace.
+// Why derive them from the database: it names haplotypes the way the lane
+// does, `HG00097#1`, so no accession lookup stands between a PanSN name and its
+// contigs. GenArk's hub for the same assembly uses the same GenBank contig
+// names (`CM094060.1`), but reaching it means mapping a sample and haplotype to
+// an accession first.
 //
 // The one subtlety, and it is the reason this is a script rather than a field
 // read: `haplotypeLength(handle)` is the length of a path FRAGMENT, not of a
@@ -31,18 +32,45 @@ import { fileURLToPath } from 'url'
 import { GBZBase } from '@gmod/gbz-base'
 import { RemoteFile } from 'generic-filehandle2'
 
-import { HPRC_GBZ, HPRC_GBZ_HAPLOTYPES } from './src/components/pangenomeGbz.ts'
+import hprcConfig from './pangenome-config/hprc-grch38.json' with { type: 'json' }
+import { HPRC_GRAPH_BROWSER } from './src/components/pangenomeDataset.ts'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUT_DIR = path.join(__dirname, 'pangenome-config/hprc-grch38')
 
-const db = await GBZBase.open(new RemoteFile(HPRC_GBZ.dbUrl), {
-  haplotypeIndex: new RemoteFile(HPRC_GBZ.haplotypeIndexUrl),
+// The lane track's own adapter, so the haplotypes and database here are the
+// ones the launch reads.
+interface GbzLaneAdapter {
+  type: string
+  uri: string
+  haplotypeIndexLocation: { uri: string }
+  assemblyNames: string[]
+  assemblyNameToPanSN: Record<string, string>
+}
+const adapter = hprcConfig.tracks.find(
+  t => t.trackId === HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
+)?.adapter as GbzLaneAdapter | undefined
+if (adapter?.type !== 'GbzBaseSyntenyAdapter') {
+  throw new Error(
+    `no GbzBaseSyntenyAdapter track ${HPRC_GRAPH_BROWSER.haplotypeLanesTrackId} in hprc-grch38.json`,
+  )
+}
+const { uri, haplotypeIndexLocation, assemblyNames, assemblyNameToPanSN } =
+  adapter
+const haplotypes = Object.entries(assemblyNameToPanSN)
+  .filter(([assembly]) => assembly !== assemblyNames[0])
+  .map(([assembly, pansn]) => {
+    const [sample, haplotype] = pansn.split('#')
+    return { assembly, sample: sample!, haplotype: Number(haplotype) }
+  })
+
+const db = await GBZBase.open(new RemoteFile(uri), {
+  haplotypeIndex: new RemoteFile(haplotypeIndexLocation.uri),
 })
 
 fs.mkdirSync(OUT_DIR, { recursive: true })
 
-for (const { assembly, sample, haplotype } of HPRC_GBZ_HAPLOTYPES) {
+for (const { assembly, sample, haplotype } of haplotypes) {
   const paths = (await db.pathsForSample(sample)).filter(
     p => p.name.haplotype === haplotype,
   )
@@ -78,4 +106,4 @@ for (const { assembly, sample, haplotype } of HPRC_GBZ_HAPLOTYPES) {
   )
 }
 
-console.log(`Wrote ${HPRC_GBZ_HAPLOTYPES.length} chrom.sizes to ${OUT_DIR}`)
+console.log(`Wrote ${haplotypes.length} chrom.sizes to ${OUT_DIR}`)
