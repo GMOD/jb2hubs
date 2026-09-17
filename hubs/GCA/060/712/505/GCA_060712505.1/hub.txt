@@ -1,0 +1,176 @@
+hub GCA_060712505.1 genome assembly
+shortLabel African harrier-hawk (primary hap 2026)
+longLabel African harrier-hawk (primary hap 2026)/Polyboroides typus/GCA_060712505.1_bPolTyp1.1.rep genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCA_060712505.1_bPolTyp1.1.rep.description.html
+
+genome GCA_060712505.1
+taxId 321072
+groups groups.txt
+description African harrier-hawk (primary hap 2026)
+twoBitPath GCA_060712505.1.2bit
+twoBitBptUrl GCA_060712505.1.2bit.bpt
+chromSizes GCA_060712505.1.chrom.sizes.txt
+chromAliasBb GCA_060712505.1.chromAlias.bb
+chromAuthority ucsc
+organism bPolTyp1.1.rep Sep. 2026
+defaultPos CM193710.1:30892494-30902494
+scientificName Polyboroides typus
+htmlPath html/GCA_060712505.1_bPolTyp1.1.rep.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/060/712/505/GCA_060712505.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/060/712/505/GCA_060712505.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/060/712/505/GCA_060712505.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.assembly.bb
+type bigBed 6
+html html/GCA_060712505.1_bPolTyp1.1.rep.assembly
+searchIndex name
+searchTrix ixIxx/GCA_060712505.1_bPolTyp1.1.rep.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.cytoBand.bb
+
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
+autoScale Off
+viewLimits 30:70
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+html html/GCA_060712505.1_bPolTyp1.1.rep.gcOnFly
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCA_060712505.1_bPolTyp1.1.rep.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.tandemDups.bb
+    type bigBed 12
+
+track repeatMasker
+shortLabel RepeatMasker
+longLabel RepeatMasker Repetitive Elements
+type bigRmsk 9 +
+visibility pack
+group varRep
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.rmsk.bb
+xrefDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.rmsk.align.bb
+maxWindowToDraw 5000000
+html html/GCA_060712505.1_bPolTyp1.1.rep.repeatMasker
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.simpleRepeat.bb
+html html/GCA_060712505.1_bPolTyp1.1.rep.simpleRepeat
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCA_060712505.1_bPolTyp1.1.rep.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.windowMasker.bb
+html html/GCA_060712505.1_bPolTyp1.1.rep.windowMasker
+
+track allGaps
+shortLabel All Gaps
+longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
+group map
+visibility hide
+type bigBed 3
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.allGaps.bb
+html html/GCA_060712505.1_bPolTyp1.1.rep.allGaps
+
+track augustus
+shortLabel Augustus
+longLabel Augustus Gene Predictions
+group genes
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.augustus.bb
+html html/GCA_060712505.1_bPolTyp1.1.rep.augustus
+
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+group rna
+visibility pack
+color 180,0,0
+type bigGenePred
+bigDataUrl bbi/GCA_060712505.1_bPolTyp1.1.rep.xenoRefGene.bb
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+labelFields name,geneName,geneName2
+defaultLabelFields geneName
+searchIndex name
+searchTrix ixIxx/GCA_060712505.1_bPolTyp1.1.rep.xenoRefGene.ix
+html html/GCA_060712505.1_bPolTyp1.1.rep.xenoRefGene
+
