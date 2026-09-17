@@ -124,7 +124,7 @@ if (files.length === 0) {
 // adapter will really ask for, and to their indexes -- a data file whose index
 // is missing is the failure `check-tabix-indexes` exists for, one tree over.
 function urlsForAdapter(adapter) {
-  const uri = adapter.uri
+  const uri = adapter.uri ?? adapter.chromSizesLocation?.uri
   if (typeof uri !== 'string') {
     return []
   }
@@ -134,7 +134,9 @@ function urlsForAdapter(adapter) {
       `${uri}${suffix}.tbi`,
     ])
   }
-  const indexed = ['.bed.gz', '.vcf.gz', '.gff.gz'].some(e => uri.endsWith(e))
+  const indexed = ['.bed.gz', '.vcf.gz', '.gff.gz', '.gff3.gz'].some(e =>
+    uri.endsWith(e),
+  )
   // csi:true says the index is .csi rather than .tbi. Read the flag rather
   // than inferring from the extension: a Gff3TabixAdapter here sets it, a
   // BedTabixAdapter does not, and both are .gz.
@@ -161,6 +163,14 @@ function urlsForAssembly(assembly) {
 
 const VERSION = /-v(\d+)\.(\d+)-/
 
+// Where upload.sh publishes each config: the file's basename is the bucket
+// prefix, and that url is what `graphBrowser.configUrl` in the website names.
+// It is also what a relative url in the config resolves against, since
+// jbrowse-web resolves one against the url it fetched the config from -- which
+// is how the haplotype assemblies name their chrom.sizes and gene files.
+const publishedUrl = file =>
+  `https://jbrowse.org/pangenome/${file.replace(/\.json$/, '')}/config.json`
+
 const refs = []
 const configs = []
 for (const file of files) {
@@ -179,7 +189,7 @@ for (const file of files) {
     ),
     ...(config.assemblies ?? []).flatMap(a => urlsForAssembly(a)),
     ...(config.tracks ?? []).flatMap(t => urlsForAdapter(t.adapter ?? {})),
-  ]
+  ].map(u => new URL(u, publishedUrl(file)).href)
   const versions = [
     ...new Set(
       urls.flatMap(u => {
@@ -245,8 +255,8 @@ async function probe(url) {
       : { verdict: 'transient', why: `${retry.why}; ${MIRROR} ${mirror.why}` }
 }
 
-// ~25 requests against our own bucket, so unlike check-track-urls there is no
-// budget to keep. Sequential rather than parallel so a slow edge cannot look
+// A couple of hundred requests, nearly all against our own bucket, so unlike
+// check-track-urls there is no budget to keep. Sequential rather than parallel so a slow edge cannot look
 // like a failure.
 const broken = []
 const primaryOnly = []
@@ -265,10 +275,8 @@ for (const ref of refs) {
   }
 }
 
-// Where upload.sh publishes each config: the file's basename is the bucket
-// prefix (`s3://jbrowse.org/pangenome/<name>/config.json`), and that url is
-// what `graphBrowser.configUrl` in the website names. Read the published copy
-// rather than HEADing it, so "live but stale" is distinguishable from "live".
+// Read the published copy rather than HEADing it, so "live but stale" is
+// distinguishable from "live".
 async function fetchText(url) {
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(20000) })
@@ -281,8 +289,7 @@ async function fetchText(url) {
 }
 
 async function publishedState(file, localText) {
-  const name = file.replace(/\.json$/, '')
-  const url = `https://jbrowse.org/pangenome/${name}/config.json`
+  const url = publishedUrl(file)
   const edge = await fetchText(url)
   if (edge.text === localText) {
     return { url }
