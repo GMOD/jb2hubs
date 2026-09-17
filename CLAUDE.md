@@ -1894,6 +1894,34 @@ Two whole features came out with them, and neither is worth rebuilding as-is:
 read by `syntenyGene` for the gene-hub link and no longer has anything to do
 with pangene, which is why it is no longer called `pangeneGenes`.
 
+### A locus's haplotypes are lanes, and the callset picks which
+
+`haplotypes` on an HPRC locus row (`haplotypeLanesUrl`) opens the
+`hprc_v2_1_gbz_lanes` track, one lane per haplotype walk read from HPRC's
+`.gbz.db` in the browser, narrowed to that locus's panel in
+`website/public/pangenome-hprc/panels.json`: one haplotype per structural
+configuration the callset finds in the launch window, commonest first, at most
+eight. `website/generatePangenomePanels.ts` writes it with bcftools; re-run it
+when a window or the callset moves. The panel rides the spec as
+`laneFilter.only` and `domain`, so one track in the config serves every locus.
+Why a panel and not the tutorial's eight, and the five loci with none:
+`agent-docs/PANGENOME_PORTAL.md`.
+
+Two things keep it drawing, and both fail silently:
+
+- **A haplotype the track maps to an assembly must be that assembly's alias.**
+  The launch filters by PanSN prefix (`HG00099#1`) and the adapter names a
+  mapped lane after the assembly (`HG00099.1`); only an alias makes the display
+  see one lane. Without it the CFHR panel drew 6 of 8. `pangenomeLinks.test.ts`
+  pins it against the config.
+- **`pnpm check-pangenome-launches` reads the lanes back**, lane by lane, rather
+  than the display type, which passed on 2026-09-17 while every lane on every
+  host errored. That fault was in the graph plugin, which read
+  `@jbrowse/synteny-core` from a host global the RPC worker serves as UI stubs.
+  Its `--local` pauses only the urls it substitutes: puppeteer's request
+  interception stalls every request the worker makes, so under it no track data
+  loads and a lane check can only fail.
+
 ## The protein browser launches a session the plugins have to agree with
 
 `/protein-browser` (`website/src/components/ProteinBrowser.tsx` and the files

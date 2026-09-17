@@ -103,6 +103,13 @@ function humanBytes(bytes: number) {
     {rows.length > 0 && (
       <>
         <h2>Loci</h2>
+        {columns.haplotypes && (
+          <p>
+            Haplotypes opens one lane per structural configuration the callset
+            finds at the locus, commonest first, each read from the graph in its
+            own assembly's coordinates.
+          </p>
+        )}
         <div class="table-scroll">
           <table>
             <thead>
@@ -146,7 +153,19 @@ function humanBytes(bytes: number) {
                           {dataset.graphVcf ? 'variants' : 'bubbles'}
                         </a>
                       )}
-                      {(r.graphUrl || r.linearUrl) && r.geneHubUrl && ' · '}
+                      {(r.graphUrl || r.linearUrl) && r.haplotypesUrl && ' · '}
+                      {r.haplotypesUrl && (
+                        <a
+                          href={r.haplotypesUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          haplotypes
+                        </a>
+                      )}
+                      {(r.graphUrl || r.linearUrl || r.haplotypesUrl) &&
+                        r.geneHubUrl &&
+                        ' · '}
                       {r.geneHubUrl && <a href={r.geneHubUrl}>gene hub</a>}
                     </td>
                   )}

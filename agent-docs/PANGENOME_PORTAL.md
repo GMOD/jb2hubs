@@ -253,8 +253,9 @@ haplotype, in that haplotype's own contig coordinates.
 Two things it does not hand over for free, and both bear on wiring it up:
 
 - **`MultiWaySyntenyDisplay` draws one lane per assembly, so each haplotype has
-  to BE an assembly in the config.** `demos/hprc/config.json` declares nine
-  (hg38 plus eight), each a `ChromSizesAdapter` over a one-line
+  to BE an assembly in the config.** (Wrong, corrected below: a lane draws under
+  its PanSN prefix without one.) `demos/hprc/config.json` declares nine (hg38
+  plus eight), each a `ChromSizesAdapter` over a one-line
   `hprc_cfhr_<hap>.chrom.sizes` naming just the contig that demo's locus sits
   on. A lane that works across a whole catalogue needs more than one line each.
 - **`haplotypeLength(handle)` is the FRAGMENT length, not the contig length.**
@@ -270,74 +271,78 @@ Both blockers on shipping it are the same shape as everything else here:
 is **absent from v4.3.0** (`git cat-file -e` against the newest tag). So the GBZ
 lane is v5-only, exactly like the graph pane it would sit beside.
 
-### Wiring the GBZ lane: what is done, and the one thing that is not
+### Wiring the GBZ lane: it was never our config
 
-Everything under the lane is in the tree and verified. What is not done is the
-lane drawing in OUR config, and the bisect is recorded here because the next
-person should not repeat it.
+Resolved 2026-09-17. The lane track that sat on "Loading..." in our config was
+failing on every host and every config, the demo's included, and the cause was
+in the plugin.
 
-**Done.** `website/src/components/pangenomeGbz.ts` holds the haplotype set (the
-eight the tutorial's figures use), the two urls and the PanSN map.
-`generatePangenomeHaplotypes.ts` derives one `chrom.sizes` per haplotype from
-the database — `max(fragment + haplotypeLength)` per contig, since
-`haplotypeLength` is a fragment's length and paths are fragmented, 103-125
-fragments over 30-49 contigs each. Checked against the demo's own hand-made
-sidecars: two of three match to the byte, HG01123.1 comes out 12,097 bp short at
-the end of a 244 Mb contig. All eight are published under
-`s3://jbrowse.org/pangenome/hprc-grch38/`, CORS-open and range-serving, and
-`upload.sh` uploads sidecars **before** configs — a config published ahead of
-its sidecars names 404s, and `loadPre()` fails the whole assembly on one.
+**The error.** Read back from the display rather than from the page text, the
+tutorial's own CFH launch on hosted `main` made 19 range requests to the
+`.gbz.db` and 13 to the companion index, then held
+`invalid feature data for "HG00099#1#JBHDWO010000059.1@16891314.202:196386984-196914906", start and end must be numbers. start:  end:`.
+gbz-base was clean: called the way the adapter calls it, that record has numeric
+coordinates and a CIGAR whose lengths add up on both axes. The same clip, run in
+the page's main thread on that record, returned the right numbers.
 
-**Not done.** The track block, copied byte-for-byte from
-`demos/hprc/config.json` (they differ only in `name`), draws 8/8 lanes there on
-a hosted `main` and sits on "Loading..." indefinitely in ours. Ruled out:
+**The cause.** jbrowse-web serves the `@jbrowse/synteny-core` barrel to the RPC
+worker as UI stubs (`workerReExports.generated.ts`: a module whose source graph
+reaches React is stubbed whole), and the plugin's copy of `clipFeatureToRegion`
+read `clipSyntenyFeature` and `getAlignmentOps` from that global. A stub called
+for data answers with more stubs, and a stub stringifies to `''`, which is the
+empty `start:` and `end:` in the message. Core's own adapters bundle those
+functions and never notice. Fixed in the plugin (`5d05a20`, deployed as
+`demos/graphgenomeviewer/6c0c0516f485/`) by importing the two source files
+directly; its clip tests now run with the barrel mocked empty.
 
-| hypothesis                          | test                                           | result                                           |
-| ----------------------------------- | ---------------------------------------------- | ------------------------------------------------ |
-| the adapter cannot be read remotely | node, against both published files             | works — 0.34s for all 464                        |
-| CORS on the db or the index         | `Origin:` + `Range:` on both                   | `Access-Control-Allow-Origin: *`, 206            |
-| our config's shape                  | diff of the two track blocks                   | identical apart from `name`                      |
-| the adapter's config slot names     | grep the published plugin bundle               | all four present in its ConfigurationSchema      |
-| our sidecars' VALUES                | vs the demo's hand-made ones                   | 2 of 3 byte-identical, 3rd 12 kb short of 244 Mb |
-| our `hg38` assembly block           | our config + the demo's hg38                   | **still hangs** — not the cause                  |
-| the launch shape                    | the demo's exact spec, only the config swapped | still hangs                                      |
+**Why the earlier bisect found nothing.** Two of its instruments were broken.
+The "8/8 lanes" baseline was lane labels, as the previous draft of this section
+already suspected. And the `No response from …ncbiRefSeq.gff.gz.csi after 30s`
+stall came from puppeteer's `setRequestInterception`, which pauses every request
+the RPC worker makes and never releases them, so under interception no track
+data loads at all. `scripts/checkPangenomeLaunches.mjs --local` used it until
+the same day; it now pauses only the urls it substitutes, over CDP. The
+sidecar-breadth hypothesis was never the cause, and nothing about the eight
+`chrom.sizes` needed to change.
 
-What is left, and the leading suspect: our sidecars name **30-49 contigs each**
-where the demo's name exactly one. Eight lanes x 49 refNames is a different
-amount of work for a display that fetches per lane, and the demo's stubs are
-CFHR-specific precisely because that demo only ever opens at CFHR. The cheap
-next test is a one-contig sidecar set for the CFHR window: if it draws, the fix
-is to narrow what the generator emits (or to find why breadth costs anything),
-not to change the track.
+**Two corrections to the section above.** A haplotype does not have to be an
+assembly to draw a lane: without a mapping the adapter names the lane by its
+PanSN prefix, and the lane draws. An assembly buys only "Open in" on the lane
+and a default lane set for a bare track. And the one mapping that matters is an
+alias: the launch filters lanes by PanSN prefix, the adapter names a mapped
+haplotype's lane after its assembly, and the display compares the two through
+the assembly manager. Without `aliases: ["HG00099#1"]` on `HG00099.1`, the CFHR
+panel drew 6 of its 8 lanes, silently.
 
-**Two corrections to an earlier draft of this section, both from measurement.**
+### Which haplotypes a locus opens on
 
-The first draft blamed Chrome's six-connections-per-host limit, on the grounds
-that the per-lane gene fetches and the GBZ adapter's reads of the haplotype
-index are all on jbrowse.org. **That was wrong**, and why is worth keeping,
-because it decides where the limit ever bites: **jbrowse.org negotiates HTTP/2**
-(ALPN `h2`, `SETTINGS_MAX_CONCURRENT_STREAMS` = 128), so it multiplexes one
-connection instead of queueing behind six. Measured in Chrome over a real
-launch: 84 requests to jbrowse.org, **20 concurrent**, protocol `h2`. The cap
-does not apply there. It does apply to `s3-us-west-2.amazonaws.com` and
-`hgdownload.soe.ucsc.edu`, both `http/1.1`.
+The lanes launch (`haplotypeLanesUrl`) opens the lane track narrowed to a
+**panel** per locus, and the panel comes from the callset rather than from the
+eight the tutorial picked for CFHR. `website/generatePangenomePanels.ts` reads
+the SV-tier records the variant lane draws (`LV=0`, an allele of 50 bp or more)
+over the launch window with bcftools, groups the 464 haplotypes by genotype
+vector, and keeps one representative per configuration, commonest first, up to
+eight. `laneFilter.only` and `domain` on the spec's track entry carry the panel,
+so one track serves every locus.
 
-The second is worse, because it invalidates the premise. "The demo draws 8/8
-lanes" was measured by searching the page text for haplotype names -- and those
-are lane LABELS, which render from the config whether or not data arrived. The
-same launch, instrumented, made **zero requests to
-`s3-us-west-2.amazonaws.com`**, so the database was never read: that run showed
-the track and its lane headers building, not the lane drawing. The table above
-rules out what it says it rules out, but the baseline it was all compared
-against is not established. Re-establish it by counting requests to the database
-host rather than by reading the page, before spending anything on the
-sidecar-breadth hypothesis.
+Measured 2026-09-17 over the 20 curated loci: 15 have a panel, from `hp` (one
+site, 2 configurations, 457 against 5) to `hba` (71 sites, 259 configurations).
+Five have no top-level structural site in the window and get no launch: `rhd`
+and `smn`, which minigraph collapses; `defb`, whose inversion makes everything
+inside nested; and `srgap2` and `ugt2b17`. ugt2b17's 8 SV-length records are all
+`LV>0`, identical under bcftools' `--regions-overlap record` and `pos`, so that
+empty panel is not an overlap artifact.
 
-The stall itself is still real and still unattributed: the reverse bisect
-errored with
-`MultiWayLaneGenes: one lane failed ... No response from https://jbrowse.org/ucsc/hg38/ncbiRefSeq.gff.gz.csi after 30s (the connection was open and the server sent nothing)`,
-while ten sequential range reads of that object from curl came back in
-0.11-0.35s every time. Not the server, and not the connection cap.
+**The reader cannot serve the most interesting AMY1 lanes.** A walk that
+revisits nodes, as one through the amylase copy-number expansion does, is not
+"ordered", and `@gmod/gbz-base` 2.6.2 falls back to `weightedLcs` over the whole
+walk against the reference (`editsAgainst` in `subgraph.js`). The two expanded
+AMY1 haplotypes, `HG00408#2` (95 non-reference sites) and `NA18620#2` (23), each
+ran node out of a 3 GB heap in about 30 s, while every other configuration's
+members read in 6-15 s. In the browser that is a hung tab, and it was the one
+failure in the first full lane check. `UNREADABLE` in the generator keeps them
+off the panel, `choosePanel` still counts their configurations, and the upstream
+fix is a bounded alignment for a cyclic walk in gbz-base.
 
 ### The variant route, for bovine: minutes, on data already extracted
 

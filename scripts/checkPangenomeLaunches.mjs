@@ -90,7 +90,7 @@ const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
 // Vite the dataset has no graphBrowser and every graph builder returns
 // undefined; this probe exists to boot those launches, so put it back.
 const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
-const { graphLocusUrl, graphRegionUrl, graphVcfLgvUrl } =
+const { graphLocusUrl, graphRegionUrl, graphVcfLgvUrl, haplotypeLanesUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
 
 const wantStagingDisplay = values.host !== 'latest'
@@ -149,6 +149,17 @@ for (const locus of loci) {
       name: `${locus.id}: graph`,
       url: retarget(graph),
       expectView: 'GraphGenomeView',
+    })
+  }
+  // The display type alone passed while every lane errored on a clip that
+  // lost its coordinates, so this reads the lanes back: one row per panel
+  // haplotype, and no error.
+  const haplotypes = haplotypeLanesUrl(graphDataset, locus)
+  if (haplotypes) {
+    launches.push({
+      name: `${locus.id}: haplotypes`,
+      url: retarget(haplotypes),
+      expectLanes: HPRC_DATASET.panels[locus.id].lanes.map(l => l.haplotype),
     })
   }
 }
@@ -226,29 +237,69 @@ const browser = await launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 })
 
+// Pauses only the urls --local substitutes, on the page's own CDP session.
+// puppeteer's setRequestInterception, which this used to be, pauses every
+// request the RPC worker makes too and never releases them, so under --local
+// no track data loaded at all; a check that reads only display types could
+// not tell.
+async function serveLocalConfigs(page) {
+  const cdp = await page.createCDPSession()
+  cdp.on('Fetch.requestPaused', ({ requestId, request }) => {
+    const body = localConfigs.get(request.url)
+    void (
+      body === undefined
+        ? cdp.send('Fetch.continueRequest', { requestId })
+        : cdp.send('Fetch.fulfillRequest', {
+            requestId,
+            responseCode: 200,
+            responseHeaders: [
+              { name: 'content-type', value: 'application/json' },
+              { name: 'access-control-allow-origin', value: '*' },
+            ],
+            body: Buffer.from(body).toString('base64'),
+          })
+    ).catch(() => {})
+  })
+  await cdp.send('Fetch.enable', {
+    patterns: [...localConfigs.keys()].map(urlPattern => ({ urlPattern })),
+  })
+}
+
+// The lanes are read from a remote database after the view builds, which takes
+// longer than the fixed settle below, so this polls until they land or fail.
+async function readLanes(page, expected) {
+  const deadline = Date.now() + TIMEOUT
+  let lanes
+  while (Date.now() < deadline) {
+    lanes = await page.evaluate(want => {
+      const display = window.JBrowseRootModel?.session?.views
+        ?.flatMap(v => v.tracks ?? [])
+        .map(t => t.displays?.[0])
+        .find(d => d?.type === 'MultiWaySyntenyDisplay')
+      if (!display) {
+        return undefined
+      }
+      const rows = new Set(display.rowAssemblies.map(r => display.laneKey(r)))
+      return {
+        error: display.error ? `${display.error}` : undefined,
+        missing: want.filter(h => !rows.has(display.laneKey(h))),
+      }
+    }, expected)
+    if (lanes?.error || lanes?.missing.length === 0) {
+      return lanes
+    }
+    await new Promise(r => setTimeout(r, 2000))
+  }
+  return lanes
+}
+
 let failures = 0
-for (const { name, url, expectView, expectDisplay } of launches) {
+for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
   const page = await browser.newPage()
   const problems = []
   try {
     if (localConfigs.size > 0) {
-      await page.setRequestInterception(true)
-      // Fire-and-forget on purpose: an interception handler cannot be awaited
-      // by its emitter, and a rejection here means the request was already
-      // handled or the page is gone, neither of which should fail the probe.
-      page.on('request', request => {
-        const body = localConfigs.get(request.url())
-        void (
-          body === undefined
-            ? request.continue()
-            : request.respond({
-                status: 200,
-                contentType: 'application/json',
-                headers: { 'access-control-allow-origin': '*' },
-                body,
-              })
-        ).catch(() => {})
-      })
+      await serveLocalConfigs(page)
     }
     await page.goto(url, { waitUntil: 'domcontentloaded', timeout: TIMEOUT })
     // Wait for EITHER a session or the error page. Waiting on the session alone
@@ -290,6 +341,18 @@ for (const { name, url, expectView, expectDisplay } of launches) {
     }
     if (expectView && !state.views.some(v => v.type === expectView)) {
       problems.push(`no ${expectView} in the session`)
+    }
+    if (expectLanes) {
+      const lanes = await readLanes(page, expectLanes)
+      if (!lanes) {
+        problems.push('no MultiWaySyntenyDisplay in the session')
+      } else if (lanes.error) {
+        problems.push(`lanes: ${lanes.error.split('\n')[0]}`)
+      } else if (lanes.missing.length) {
+        problems.push(
+          `${lanes.missing.length} of ${expectLanes.length} lanes never drew: ${lanes.missing.join(', ')}`,
+        )
+      }
     }
     if (expectDisplay) {
       const track = state.views

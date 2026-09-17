@@ -6,6 +6,7 @@
 // component internals. The components and link builders read only this shape.
 
 import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type: 'json' }
+import hprcPanelsFile from '../../public/pangenome-hprc/panels.json' with { type: 'json' }
 import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
 import { features } from '../config/features.ts'
 import { ucscConfigPath } from '../config/jbrowse.ts'
@@ -13,6 +14,7 @@ import { derivedLoci } from './pangenomeDerivedLoci.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
+import type { StructuralPanel } from './pangenomePanels.ts'
 
 export interface PangenomeReference {
   // JBrowse assembly name the graph is projected onto (e.g. 'hg38').
@@ -68,6 +70,10 @@ export interface PangenomeGraphBrowser {
   // `maxRegionBp` has to be raised to the span, so the length is needed up
   // front.
   chromosomes?: { name: string; length: number }[]
+  // Optional GBZ lane track: one lane per haplotype walk, each in its own
+  // contig's coordinates, read from the graph database at query time. A locus
+  // launch narrows it to the dataset's panel for that locus.
+  haplotypeLanesTrackId?: string
 }
 
 // One published file of a graph, for the page's file table.
@@ -137,6 +143,10 @@ export interface PangenomeDataset {
   // Omitted where a dataset has no hosted graph projection to draw.
   graphBrowser?: PangenomeGraphBrowser
   loci: PangenomeLocus[]
+  // Per locus id, the haplotypes its lanes launch opens, derived from the
+  // callset by `generatePangenomePanels.ts`. A locus without one has no
+  // structural site in its window and gets no haplotypes launch.
+  panels?: Record<string, StructuralPanel>
   // The tutorial that explains what this graph can show. Every dataset here is
   // the hosted arm of one, and the tutorial is the better explanation — the
   // page's job is to launch it, not to restate it.
@@ -199,6 +209,7 @@ export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
   allelesTrackId: 'hprc_minigraph_alleles',
   tierTrackId: 'hprc_minigraph_tier',
   bubbleScoreTrackId: 'hprc_bubble_score',
+  haplotypeLanesTrackId: 'hprc_v2_1_gbz_lanes',
   // hg38.chrom.sizes, primary chromosomes only: the graph's rGFA has no
   // alts or unplaced contigs to draw.
   chromosomes: [
@@ -256,6 +267,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   ],
   graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
   loci: PANGENOME_LOCI,
+  panels: hprcPanelsFile.panels,
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',

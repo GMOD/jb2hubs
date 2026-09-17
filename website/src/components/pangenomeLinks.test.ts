@@ -15,6 +15,8 @@ import {
   graphLocusUrl,
   graphRegionUrl,
   graphVcfLgvUrl,
+  haplotypeLanesUrl,
+  launchRegion,
   locusLaunchUrl,
 } from './pangenomeLinks.ts'
 import {
@@ -365,8 +367,87 @@ test('the owned graph config names every track the launches open', () => {
     g.allelesTrackId,
     g.tierTrackId,
     g.bubbleScoreTrackId,
+    g.haplotypeLanesTrackId,
   ]) {
     assert.ok(id && ids.has(id), `${id} is in hprc-grch38.json`)
+  }
+})
+
+test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel order', () => {
+  const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
+  const panel = HPRC_DATASET.panels!.cfhr!
+  const { config, spec } = parseLaunch(haplotypeLanesUrl(graphDataset, cfhr)!)
+  assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
+  assert.equal(spec.sessionTracks, undefined)
+  const view = spec.views[0]!
+  const region = launchRegion(cfhr)
+  assert.equal(view.loc, `${region.chrom}:${region.start}-${region.end}`)
+  const [genes, lanes] = view.tracks as [string, Record<string, unknown>]
+  assert.equal(genes, HPRC_GRAPH_BROWSER.geneTrackId)
+  const haplotypes = panel.lanes.map(l => l.haplotype)
+  const { height, ...display } = lanes
+  assert.deepEqual(display, {
+    trackId: HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
+    type: 'MultiWaySyntenyDisplay',
+    laneFilter: { only: haplotypes },
+    domain: haplotypes,
+  })
+  assert.equal(typeof height, 'number')
+})
+
+test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
+  const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
+  const rhd = HPRC_DATASET.loci.find(l => l.id === 'rhd')!
+  assert.equal(HPRC_DATASET.panels?.rhd, undefined)
+  assert.equal(haplotypeLanesUrl(graphDataset, rhd), undefined)
+  assert.equal(
+    haplotypeLanesUrl({ ...HPRC_DATASET, graphBrowser: undefined }, cfhr),
+    undefined,
+  )
+  assert.equal(
+    haplotypeLanesUrl(
+      {
+        ...graphDataset,
+        graphBrowser: {
+          ...HPRC_GRAPH_BROWSER,
+          haplotypeLanesTrackId: undefined,
+        },
+      },
+      cfhr,
+    ),
+    undefined,
+  )
+})
+
+// The adapter names a lane after the assembly `assemblyNameToPanSN` maps its
+// haplotype to, and the launch filters by PanSN prefix; the display compares
+// the two through the assembly manager. Without the alias, a panel naming
+// HG00099#1 silently draws without it: measured on CFHR, 6 of 8 lanes.
+test('every haplotype the lane track maps to an assembly is that assembly alias', () => {
+  const config = JSON.parse(
+    readFileSync(
+      new URL('../../pangenome-config/hprc-grch38.json', import.meta.url),
+      'utf8',
+    ),
+  ) as {
+    assemblies: { name: string; aliases?: string[] }[]
+    tracks: {
+      trackId: string
+      adapter: {
+        assemblyNames?: string[]
+        assemblyNameToPanSN?: Record<string, string>
+      }
+    }[]
+  }
+  const track = config.tracks.find(
+    t => t.trackId === HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
+  )!
+  const anchor = track.adapter.assemblyNames?.[0]
+  const mapped = Object.entries(track.adapter.assemblyNameToPanSN ?? {})
+  assert.ok(mapped.length > 1)
+  for (const [name, pansn] of mapped.filter(([name]) => name !== anchor)) {
+    const assembly = config.assemblies.find(a => a.name === name)
+    assert.ok(assembly?.aliases?.includes(pansn), `${name} is aliased ${pansn}`)
   }
 })
 

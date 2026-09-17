@@ -63,3 +63,18 @@ test('the launch column follows what the build can open', () => {
     assert.equal(r.graphUrl === undefined, collapsed.has(r.gene), r.gene)
   }
 })
+
+test('a locus has a haplotypes launch exactly where its dataset has a panel', () => {
+  const rows = lociRows(hprcGraph)
+  const panels = hprcGraph.panels ?? {}
+  hprcGraph.loci.forEach((locus, i) => {
+    assert.equal(
+      rows[i]?.haplotypesUrl !== undefined,
+      panels[locus.id] !== undefined,
+      locus.id,
+    )
+  })
+  assert.equal(lociColumns(rows).haplotypes, true)
+  assert.equal(lociColumns(lociRows(HPRC_DATASET)).haplotypes, false)
+  assert.equal(lociColumns(lociRows(MOUSE_DATASET)).haplotypes, false)
+})

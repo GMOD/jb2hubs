@@ -2,7 +2,12 @@
 // launches it has on this build. Built at page render, so the page carries no
 // client JavaScript for it.
 
-import { geneHubUrl, graphLocusUrl, locusLaunchUrl } from './pangenomeLinks.ts'
+import {
+  geneHubUrl,
+  graphLocusUrl,
+  haplotypeLanesUrl,
+  locusLaunchUrl,
+} from './pangenomeLinks.ts'
 import { VARIATION_LABELS } from './pangenomeLoci.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -18,6 +23,7 @@ export interface LocusRow {
   graphUrl?: string
   // The callset where the dataset has one, else the graph's own lanes.
   linearUrl?: string
+  haplotypesUrl?: string
   geneHubUrl?: string
 }
 
@@ -35,6 +41,7 @@ export function lociRows(dataset: PangenomeDataset): LocusRow[] {
     segments: locus.derived?.segments,
     graphUrl: graphLocusUrl(dataset, locus),
     linearUrl: locusLaunchUrl(dataset, locus),
+    haplotypesUrl: haplotypeLanesUrl(dataset, locus),
     geneHubUrl: geneHubUrl(dataset, locus),
   }))
 }
@@ -49,6 +56,11 @@ export function lociColumns(rows: LocusRow[]) {
     description,
     variation: description && rows.some(r => r.variation !== ''),
     segments: any('segments'),
-    launches: any('graphUrl') || any('linearUrl') || any('geneHubUrl'),
+    launches:
+      any('graphUrl') ||
+      any('linearUrl') ||
+      any('haplotypesUrl') ||
+      any('geneHubUrl'),
+    haplotypes: any('haplotypesUrl'),
   }
 }

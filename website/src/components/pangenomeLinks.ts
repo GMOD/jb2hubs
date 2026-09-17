@@ -221,7 +221,7 @@ export function graphVcfLgvUrl(
 // narrow enough to be its own), else the whole display span. A wide span is not
 // a problem for the lanes any more — `lanes()` switches to the coarse tier —
 // but it still is for the callset, which is why `graphVcfLgvUrl` says so.
-function launchRegion(locus: PangenomeLocus): GraphRegion {
+export function launchRegion(locus: PangenomeLocus): GraphRegion {
   const window = detailWindow(locus)
   return window
     ? { chrom: locus.chrom, ...window, label: locus.gene }
@@ -309,6 +309,47 @@ export function graphLocusUrl(
   return locus.graphCollapsed
     ? undefined
     : graphRegionUrl(dataset, launchRegion(locus))
+}
+
+// The tutorial's eight lanes and the reference draw legibly in 460 px.
+const LANE_HEIGHT_PX = 51
+
+// A locus's haplotypes as lanes read from the graph: the dataset's panel for
+// it, one lane per structural configuration, commonest first. `laneFilter`
+// decides which walks are fetched and drawn and `domain` pins their order, so
+// the config's one lane track serves every locus; the track's own assemblies
+// are only what a host that drops the props would open instead.
+//
+// Undefined without the lane track or a panel: a locus with no top-level
+// structural site in its window has no configurations to choose between.
+export function haplotypeLanesUrl(
+  dataset: PangenomeDataset,
+  locus: PangenomeLocus,
+) {
+  const graph = dataset.graphBrowser
+  const trackId = graph?.haplotypeLanesTrackId
+  const panel = dataset.panels?.[locus.id]
+  if (!graph || !trackId || !panel) {
+    return undefined
+  }
+  const haplotypes = panel.lanes.map(l => l.haplotype)
+  return specUrl(graph.configUrl, [
+    {
+      type: 'LinearGenomeView',
+      assembly: dataset.reference.assembly,
+      loc: locOf(launchRegion(locus)),
+      tracks: [
+        graph.geneTrackId,
+        {
+          trackId,
+          type: 'MultiWaySyntenyDisplay',
+          laneFilter: { only: haplotypes },
+          domain: haplotypes,
+          height: LANE_HEIGHT_PX * (haplotypes.length + 1),
+        },
+      ],
+    },
+  ])
 }
 
 // Internal cross-link into the gene hub for the locus's marker gene, seeded
