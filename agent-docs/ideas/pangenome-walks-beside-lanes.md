@@ -13,12 +13,14 @@ segments). The GBZ cut is 8–15 s at these windows on top of the lanes' own rea
 so it belongs on a second link (`walks`) rather than folded into `haplotypes`,
 which should stay the fast one. Not built, not measured past that estimate.
 
-**Gene models on the lanes.** The tutorial's demo draws each lane's CAT genes
-from per-haplotype GFF3 slices cut for CFH alone; ours says "no annotation" on
-every lane. A catalogue-wide version needs the full CAT GFF3 per haplotype,
-bgzipped, tabix-indexed and hosted, one for each haplotype any panel names (on
-the order of 80 across the 15 panels), plus an assembly block and alias each.
-Real work on the build box.
+**Gene models on every lane.** Since 2026-09-17 the eight tutorial haplotypes
+carry CAT tracks and the panels prefer them, so 41 of 109 lanes draw genes. The
+other 68 name 53 haplotypes with no assembly in the config. Each needs its CAT
+GFF3 sorted, bgzipped, tabix-indexed and hosted (about 115 MB apiece, so ~6 GB
+for the 52 that have one), a `chrom.sizes`, and an assembly block with its PanSN
+alias. That is `build_hprc_multiway_synteny.sh`'s annotation step run over a
+longer list, on the build box, with a README beside the upload. `HG002#1` has no
+CAT annotation in HPRC's index and stays bare.
 
 **Mouse and bovine.** Bovine has a callset, so `generatePangenomePanels.ts`
 would run over it with `phased` off, but neither graph has a `.gbz.db`, so there

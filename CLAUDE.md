@@ -1907,6 +1907,18 @@ when a window or the callset moves. The panel rides the spec as
 Why a panel and not the tutorial's eight, and the five loci with none:
 `agent-docs/PANGENOME_PORTAL.md`.
 
+A lane draws its haplotype's gene models when the config has a track declared
+for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
+applies; there is no spec key for it. The eight haplotype assemblies in
+`hprc-grch38.json` carry their release 2 CAT annotation, from the whole-genome
+indexed copies `jbrowse.org/demos/hprc_multiway/` already hosts, and the
+generator picks an annotated member to stand for a configuration wherever one
+has any (`annotatedHaplotypes`), so re-run it after adding annotation. That took
+the lanes with genes from 24 to 41 of 109 on 2026-09-17. The rest name
+haplotypes with no assembly in the config. HPRC's own CAT files on S3 are plain
+gzip and not coordinate-sorted, so reaching those lanes means sorting, bgzipping
+and hosting each one, not pointing a track at upstream.
+
 Two things keep it drawing, and both fail silently:
 
 - **A haplotype the track maps to an assembly must be that assembly's alias.**
@@ -1920,7 +1932,9 @@ Two things keep it drawing, and both fail silently:
   `@jbrowse/synteny-core` from a host global the RPC worker serves as UI stubs.
   Its `--local` pauses only the urls it substitutes: puppeteer's request
   interception stalls every request the worker makes, so under it no track data
-  loads and a lane check can only fail.
+  loads and a lane check can only fail. It also fails a lane whose haplotype has
+  a gene track and reads "no annotation" or never fetches its genes, which is
+  how an unpublished `hprc-grch38.json` shows up without `--local`.
 
 ## The protein browser launches a session the plugins have to agree with
 

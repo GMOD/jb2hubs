@@ -333,6 +333,19 @@ inside nested; and `srgap2` and `ugt2b17`. ugt2b17's 8 SV-length records are all
 `LV>0`, identical under bcftools' `--regions-overlap record` and `pos`, so that
 empty panel is not an overlap artifact.
 
+Which member stands for a configuration is free, since every member draws the
+same structure, and the representative used to be the alphabetically first. The
+tutorial's eight are the only haplotypes whose lanes can draw gene models (each
+has an assembly and a CAT track in `hprc-grch38.json`), so the generator now
+prefers one of them wherever a configuration holds one. Measured on the
+2026-09-17 rerun, which also moved the AMY1 window: 41 of the 109 lanes draw
+genes, against 24 under the alphabetical pick. The ceiling on that number is the
+annotated set, not the rule: 60 of the 61 haplotypes the panels name have a CAT
+annotation in HPRC's index (`HG002#1` is the exception), but each is a plain
+gzip in gene order on S3, so it has to be sorted, bgzipped and hosted before a
+track can read it, which `build_hprc_multiway_synteny.sh` in jbrowse-components
+already does for eight.
+
 ### The variant route, for bovine: minutes, on data already extracted
 
 `vg deconstruct` over the P-line minigraph GFA gives exactly the file the
