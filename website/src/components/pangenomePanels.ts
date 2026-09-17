@@ -135,7 +135,7 @@ export interface LaneConfig {
     assemblyNames: string[]
     adapter: {
       assemblyNames?: string[]
-      assemblyNameToPanSN?: Record<string, string>
+      assemblyNameToPanSN?: Record<string, string | undefined>
     }
   }[]
 }
@@ -154,9 +154,12 @@ export function annotatedHaplotypes(config: LaneConfig, laneTrackId: string) {
       .map(t => t.assemblyNames[0]),
   )
   return new Set(
-    Object.entries(lanes?.adapter.assemblyNameToPanSN ?? {})
-      .filter(([assembly]) => assembly !== anchor && annotated.has(assembly))
-      .map(([, haplotype]) => haplotype),
+    Object.entries(lanes?.adapter.assemblyNameToPanSN ?? {}).flatMap(
+      ([assembly, haplotype]) =>
+        haplotype && assembly !== anchor && annotated.has(assembly)
+          ? [haplotype]
+          : [],
+    ),
   )
 }
 
