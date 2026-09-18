@@ -88,11 +88,12 @@ export interface SyntenyViewOptions {
   cigarMode?: 'full' | 'matches' | 'off'
 }
 
-// Applied to every synteny launch unless a caller says otherwise. The indel
-// wedges are noise at the scales these launches open at: an ortholog window is
-// ~200kb across six genome panels, where what a reader is checking is whether
-// the block is there and how it is oriented, not where a 40bp gap falls.
-const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = { cigarMode: 'off' }
+// Applied to every synteny launch unless a caller says otherwise. Filling the
+// indel wedges is noise at the scales these launches open at: an ortholog
+// window is ~200kb across six genome panels, where what a reader is checking is
+// whether the block is there and how it is oriented, not where a 40bp gap
+// falls. Leaving them transparent keeps the gaps visible without painting them.
+const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = { cigarMode: 'matches' }
 
 // A launch URL for a LinearSyntenyView over a stack of genome panels. `tracks`
 // is either a flat list (JBrowse binds each track to its level by matching

@@ -131,14 +131,15 @@ test('orthoSyntenyUrl names each panel the way its synteny track does', () => {
   ])
 })
 
-// The indel wedges are noise at ortholog-window scale. Ignored outright by the
-// released host's launcher (measured 2026-08-27), which is why it is passed
-// unconditionally rather than gated — it starts working when v5 publishes.
-test('every synteny launch turns CIGAR indels off by default', () => {
+// Filled indel wedges are noise at ortholog-window scale, so they launch
+// transparent. Ignored outright by the released host's launcher (measured
+// 2026-08-27), which is why it is passed unconditionally rather than gated — it
+// starts working when v5 publishes.
+test('every synteny launch leaves CIGAR indels transparent by default', () => {
   const spec = sessionOf(
     syntenyViewUrl([{ assembly: 'hg38' }, { assembly: 'mm39' }], ['t']),
   ).views[0]
-  assert.equal(spec.cigarMode, 'off')
+  assert.equal(spec.cigarMode, 'matches')
 })
 
 test('a caller can override the default', () => {
