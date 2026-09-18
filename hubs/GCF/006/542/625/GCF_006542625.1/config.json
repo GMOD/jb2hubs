@@ -16,14 +16,14 @@
             "twoBitBptUrl": "GCF_006542625.1.2bit.bpt",
             "chromSizes": "GCF_006542625.1.chrom.sizes.txt",
             "chromAliasBb": "GCF_006542625.1.chromAlias.bb",
+            "chromAuthority": "ucsc",
             "organism": "Asia_NLE_v1 Jul. 2019",
-            "defaultPos": "chr2:52076265-52086265",
+            "defaultPos": "NC_044382.1:52076265-52086265",
             "scientificName": "Nomascus leucogenys",
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/html/GCF_006542625.1_Asia_NLE_v1.description.html\">html/GCF_006542625.1_Asia_NLE_v1.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/006/542/625/GCF_006542625.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/006/542/625/GCF_006542625.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/006/542/625/GCF_006542625.1",
-            "liftOver.hg38": "liftOver/GCF_006542625.1ToHg38.over.chain.gz"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/006/542/625/GCF_006542625.1"
           }
         },
         "trackId": "GCF_006542625.1-ReferenceSequenceTrack",
@@ -128,33 +128,36 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gc5Base",
+          "track": "gcOnFly",
           "shortLabel": "GC Percent",
           "longLabel": "GC Percent in 5-Base Windows",
           "group": "map",
           "visibility": "dense",
+          "type": "bigWig 0 100",
+          "bigDataUrl": "bbi/GCF_006542625.1_Asia_NLE_v1.gcOnFly.bw",
+          "gcOnFlyMaxDensity": "50000",
+          "syntheticTrack": "on",
+          "calcWinSize": "5",
           "autoScale": "Off",
+          "viewLimits": "30:70",
           "maxHeightPixels": "128:36:16",
           "graphTypeDefault": "Bar",
           "gridDefault": "OFF",
           "windowingFunction": "Mean",
           "color": "0,0,0",
           "altColor": "128,128,128",
-          "viewLimits": "30:70",
-          "type": "bigWig 0 100",
-          "bigDataUrl": "bbi/GCF_006542625.1_Asia_NLE_v1.gc5Base.bw",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/html/GCF_006542625.1_Asia_NLE_v1.gc5Base\">html/GCF_006542625.1_Asia_NLE_v1.gc5Base</a>"
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/html/GCF_006542625.1_Asia_NLE_v1.gcOnFly\">html/GCF_006542625.1_Asia_NLE_v1.gcOnFly</a>"
         }
       },
       "category": ["Mapping and Sequencing"],
-      "trackId": "GCF_006542625.1-gc5Base",
+      "trackId": "GCF_006542625.1-gcOnFly",
       "description": "GC Percent in 5-Base Windows",
       "assemblyNames": ["GCF_006542625.1"],
       "name": "GC Percent",
       "type": "QuantitativeTrack",
       "adapter": {
         "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/bbi/GCF_006542625.1_Asia_NLE_v1.gc5Base.bw"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/bbi/GCF_006542625.1_Asia_NLE_v1.gcOnFly.bw"
       }
     },
     {
@@ -190,7 +193,6 @@
           "visibility": "pack",
           "group": "varRep",
           "bigDataUrl": "bbi/GCF_006542625.1_Asia_NLE_v1.rmsk.bb",
-          "xrefDataUrl": "bbi/GCF_006542625.1_Asia_NLE_v1.rmsk.align.bb",
           "maxWindowToDraw": "5000000",
           "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/html/GCF_006542625.1_Asia_NLE_v1.repeatMasker\">html/GCF_006542625.1_Asia_NLE_v1.repeatMasker</a>"
         }
@@ -590,105 +592,6 @@
       ]
     },
     {
-      "metadata": {
-        "ucsc": {
-          "track": "ensGene",
-          "shortLabel": "Ensembl genes",
-          "longLabel": "Ensembl genes 2022_07",
-          "group": "genes",
-          "priority": "40",
-          "visibility": "pack",
-          "color": "150,0,0",
-          "itemRgb": "on",
-          "type": "bigGenePred",
-          "bigDataUrl": "bbi/GCF_006542625.1_Asia_NLE_v1.ensGene.bb",
-          "searchTrix": "ixIxx/GCF_006542625.1_Asia_NLE_v1.ensGene.ix",
-          "searchIndex": "name",
-          "labelFields": "name,name2",
-          "defaultLabelFields": "name2",
-          "baseColorUseCds": "given",
-          "baseColorDefault": "genomicCodons",
-          "labelSeparator": "\" \"",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/html/GCF_006542625.1_Asia_NLE_v1.ensGene\">html/GCF_006542625.1_Asia_NLE_v1.ensGene</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_006542625.1-ensGene",
-      "description": "Ensembl genes 2022_07",
-      "assemblyNames": ["GCF_006542625.1"],
-      "name": "Ensembl genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/bbi/GCF_006542625.1_Asia_NLE_v1.ensGene.bb",
-        "aggregateField": "name2"
-      },
-      "displays": [
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "GCF_006542625.1-ensGene-LinearBasicDisplay",
-          "labels": {
-            "name": "jexl:get(feature,'name')"
-          }
-        }
-      ]
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "HLTOGAannotvHg38v1",
-          "bigDataUrl": "bbi/HLTOGAannotVsHg38v1.bb",
-          "shortLabel": "TOGA vs. hg38",
-          "longLabel": "TOGA annotations using human/hg38 as reference",
-          "group": "genes",
-          "visibility": "pack",
-          "itemRgb": "on",
-          "type": "bigBed 12",
-          "searchIndex": "name",
-          "searchTrix": "ixIxx/HLTOGAannotVsHg38v1.ix",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/html/TOGAannotation\">html/TOGAannotation</a>"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_006542625.1-HLTOGAannotvHg38v1",
-      "description": "TOGA annotations using human/hg38 as reference",
-      "assemblyNames": ["GCF_006542625.1"],
-      "name": "TOGA vs. hg38",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/bbi/HLTOGAannotVsHg38v1.bb"
-      }
-    },
-    {
-      "metadata": {
-        "ucsc": {
-          "track": "Tiberius",
-          "bigDataUrl": "contrib/tiberius/tiberius.bigGenePred.bb",
-          "shortLabel": "Tiberius genes",
-          "longLabel": "Tiberius ab initio gene prediction",
-          "type": "bigGenePred",
-          "visibility": "pack",
-          "color": "0,102,204",
-          "noScoreFilter": "on",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/contrib/tiberius/Tiberius.html\">contrib/tiberius/Tiberius.html</a>",
-          "group": "genes",
-          "dataVersion": "Tiberius version 2025-01-07",
-          "baseColorDefault": "genomicCodons"
-        }
-      },
-      "category": ["Genes and Gene Predictions"],
-      "trackId": "GCF_006542625.1-Tiberius",
-      "description": "Tiberius ab initio gene prediction",
-      "assemblyNames": ["GCF_006542625.1"],
-      "name": "Tiberius genes",
-      "type": "FeatureTrack",
-      "adapter": {
-        "type": "BigBedAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/006/542/625/GCF_006542625.1/contrib/tiberius/tiberius.bigGenePred.bb"
-      }
-    },
-    {
       "type": "FeatureTrack",
       "trackId": "GCF_006542625.1-ncbiGff",
       "name": "NCBI RefSeq - RefSeq All (GFF)",
@@ -776,7 +679,7 @@
         "id": "initialView",
         "init": {
           "assembly": "GCF_006542625.1",
-          "loc": "chr2:52076265-52086265"
+          "loc": "NC_044382.1:52076265-52086265"
         }
       }
     ]
