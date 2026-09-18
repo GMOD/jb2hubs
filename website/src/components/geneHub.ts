@@ -155,7 +155,7 @@ export function syntenyLaunchUrl(
     assembly: assembly.ucscDb ?? assembly.accession,
     gene: encodeGeneRef(geneId, symbol),
   })
-  return `/synteny?${params.toString()}`
+  return `/synteny/?${params.toString()}`
 }
 
 // Ensembl's cross-site search: the identity carries no Ensembl id, and a

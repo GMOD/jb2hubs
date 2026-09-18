@@ -389,6 +389,6 @@ export function haplotypeLanesForRegion(
 export function geneHubUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
   const gene = syntenyGene(locus)
   return gene
-    ? `/gene?gene=${encodeURIComponent(gene)}&ref=${dataset.reference.taxonId}`
+    ? `/gene/?gene=${encodeURIComponent(gene)}&ref=${dataset.reference.taxonId}`
     : undefined
 }

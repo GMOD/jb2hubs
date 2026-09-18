@@ -3,7 +3,7 @@
 // so the redirect is client-side; the query string (?gene=&ref=&scope=) is the
 // same contract, and the inline script carries it across. The meta refresh is
 // the fallback without JavaScript, where the query is lost but the page is not.
-const target = new URL('/gene', Astro.site)
+const target = new URL('/gene/', Astro.site)
 ---
 
 <!doctype html>
@@ -21,10 +21,10 @@ const target = new URL('/gene', Astro.site)
     />
     <meta
       http-equiv="refresh"
-      content="0; url=/gene"
+      content="0; url=/gene/"
     />
     <script is:inline>
-      location.replace('/gene' + location.search)
+      location.replace('/gene/' + location.search)
     </script>
   </head>
   <body>

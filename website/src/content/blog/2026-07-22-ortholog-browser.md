@@ -25,4 +25,4 @@ back to the reference, a single **Launch multi-species synteny view** link opens
 them together in one multi-row view.
 
 Searches are shareable — the gene and reference species end up in the URL, so
-`/orthologs?gene=BRCA1&ref=9606` sends someone straight to the same table.
+`/orthologs/?gene=BRCA1&ref=9606` sends someone straight to the same table.

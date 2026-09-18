@@ -719,7 +719,7 @@ function GeneResults({
       />
 
       <p className="ui-hint">
-        <a href={geneUrl('/gene', symbol, taxId)}>
+        <a href={geneUrl('/gene/', symbol, taxId)}>
           {symbol} gene page — orthologs and conserved gene order →
         </a>
       </p>

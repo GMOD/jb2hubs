@@ -535,7 +535,7 @@ function LaunchCards({
     ...(features.proteinBrowser
       ? [
           {
-            href: geneUrl('/protein-browser', symbol, refTaxId),
+            href: geneUrl('/protein-browser/', symbol, refTaxId),
             title: 'Protein browser',
             note: 'domain architecture, residue alignment and 3D structure in one connected session',
           },

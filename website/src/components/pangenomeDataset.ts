@@ -459,7 +459,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
       label: 'Mouse Genomes Project',
       url: 'https://projects.ensembl.org/mouse_genomes/',
     },
-    { label: 'Strain assemblies', url: '/search?q=Mus+musculus' },
+    { label: 'Strain assemblies', url: '/search/?q=Mus+musculus' },
     {
       label: 'How the graph was built',
       url: 'https://jbrowse.org/demos/mouse_pangenome/README.txt',

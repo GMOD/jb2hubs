@@ -218,7 +218,7 @@ test('geneHubUrl seeds the marker gene and reference taxon', () => {
   const url = geneHubUrl(HPRC_DATASET, locus)
   assert.ok(url)
   const { pathname, searchParams } = new URL(url, 'https://example.org')
-  assert.equal(pathname, '/gene')
+  assert.equal(pathname, '/gene/')
   // First pangene marker for MHC is HLA-A.
   assert.equal(searchParams.get('gene'), 'HLA-A')
   assert.equal(searchParams.get('ref'), String(HPRC_DATASET.reference.taxonId))
