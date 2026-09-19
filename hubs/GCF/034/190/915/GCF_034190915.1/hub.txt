@@ -20,6 +20,7 @@ htmlPath html/GCF_034190915.1_mCavPor4.1.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/034/190/915/GCF_034190915.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/034/190/915/GCF_034190915.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/034/190/915/GCF_034190915.1
+liftOver.GCF_000151735.1 liftOver/GCF_034190915.1ToGCF_000151735.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -281,6 +282,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_034190915.1_mCavPor4.1.xenoRefGene.ix
 html html/GCF_034190915.1_mCavPor4.1.xenoRefGene
+
+##############################################################################
+# GCF_000151735.1 - domestic guinea pig - Cavia porcellus - taxId: 10141
+##############################################################################
+track chainNetGCF_000151735.1
+compositeTrack on
+shortLabel domestic guinea pig Chain/Net
+longLabel domestic guinea pig (2008-03-03), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_000151735.1
+html html/GCF_034190915.1_mCavPor4.1.chainNet
+
+    track chainNetGCF_000151735.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_000151735.1
+    spectrum on
+
+        track chainGCF_000151735.1
+        parent chainNetGCF_000151735.1Viewchain
+        subGroups view=chain
+        shortLabel domestic guinea pig Chain
+        longLabel domestic guinea pig (2008-03-03) Chained Alignments
+        type bigChain GCF_000151735.1
+        bigDataUrl bbi/GCF_034190915.1_mCavPor4.1.chainGCF_000151735.1.bb
+        linkDataUrl bbi/GCF_034190915.1_mCavPor4.1.chainGCF_000151735.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_000151735.1
+        parent chainNetGCF_000151735.1Viewchain
+        subGroups view=chain
+        shortLabel domestic guinea pig loChain
+        longLabel domestic guinea pig (2008-03-03) Lift Over Chained Alignments
+        type bigChain GCF_000151735.1
+        bigDataUrl bbi/GCF_034190915.1_mCavPor4.1.chainLiftOverGCF_000151735.1.bb
+        linkDataUrl bbi/GCF_034190915.1_mCavPor4.1.chainLiftOverGCF_000151735.1Link.bb
+        priority 2
 
 
 track Tiberius

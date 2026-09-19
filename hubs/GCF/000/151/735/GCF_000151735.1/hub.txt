@@ -20,6 +20,7 @@ htmlPath html/GCF_000151735.1_Cavpor3.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/151/735/GCF_000151735.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/151/735/GCF_000151735.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/151/735/GCF_000151735.1
+liftOver.GCF_034190915.1 liftOver/GCF_000151735.1ToGCF_034190915.1.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -280,6 +281,52 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_000151735.1_Cavpor3.0.xenoRefGene.ix
 html html/GCF_000151735.1_Cavpor3.0.xenoRefGene
+
+##############################################################################
+# GCF_034190915.1 - domestic guinea pig - Cavia porcellus - taxId: 10141
+##############################################################################
+track chainNetGCF_034190915.1
+compositeTrack on
+shortLabel domestic guinea pig Chain/Net
+longLabel domestic guinea pig (2023-12-07), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_034190915.1
+html html/GCF_000151735.1_Cavpor3.0.chainNet
+
+    track chainNetGCF_034190915.1Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_034190915.1
+    spectrum on
+
+        track chainGCF_034190915.1
+        parent chainNetGCF_034190915.1Viewchain
+        subGroups view=chain
+        shortLabel domestic guinea pig Chain
+        longLabel domestic guinea pig (2023-12-07) Chained Alignments
+        type bigChain GCF_034190915.1
+        bigDataUrl bbi/GCF_000151735.1_Cavpor3.0.chainGCF_034190915.1.bb
+        linkDataUrl bbi/GCF_000151735.1_Cavpor3.0.chainGCF_034190915.1Link.bb
+        priority 1
+
+        track chainLiftOverGCF_034190915.1
+        parent chainNetGCF_034190915.1Viewchain
+        subGroups view=chain
+        shortLabel domestic guinea pig loChain
+        longLabel domestic guinea pig (2023-12-07) Lift Over Chained Alignments
+        type bigChain GCF_034190915.1
+        bigDataUrl bbi/GCF_000151735.1_Cavpor3.0.chainLiftOverGCF_034190915.1.bb
+        linkDataUrl bbi/GCF_000151735.1_Cavpor3.0.chainLiftOverGCF_034190915.1Link.bb
+        priority 2
 
 
 track VEuPathDBGeneModels
