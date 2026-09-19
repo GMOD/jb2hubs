@@ -41,6 +41,9 @@ stay true, see [../CLAUDE.md](../CLAUDE.md); for how to run the pipelines, see
   sourcing pairwise synteny from a Cactus/HAL alignment as a pipeline stage
 - [ORTHOLOGS_LAUNCH_FOLLOWUPS.md](ORTHOLOGS_LAUNCH_FOLLOWUPS.md) — what
   `/orthologs` knowingly left behind at launch
+- [SYNTENY_UX_REVIEW.md](SYNTENY_UX_REVIEW.md) — the ortholog page's use of
+  "synteny", the three defaults nobody picked, launch-URL length, and the
+  measurement showing `cigarMode: 'matches'` paints exactly the match fraction
 - [SYNTENY_PAIR_NAMES.md](SYNTENY_PAIR_NAMES.md) — why a synteny pair carries
   assembly names as well as accessions, and the silent bug that came of not
   doing so
