@@ -298,14 +298,30 @@ band into a refName set, then `view.showRegions(subset)`
 "Re-order chromosomes" in the Rows submenu, as "Keep only connected
 chromosomes".
 
-One thing we can do from **this** repo today with no upstream change:
-`views[i].displayedRegionNames` is already a launch key
-(`LinearSyntenyView/afterAttach.ts:39-67`, globs allowed), and `specUrl` passes
-unknown keys through. A multi-panel ortholog launch knows, from the pair
-catalog, which chromosome each panel's gene sits on. Naming it per panel would
-open the stack already narrowed instead of opening thirteen whole genomes and
-asking the reader to find the gene. That is probably the single highest-value
-item in this document.
+One thing we can do from **this** repo today: `views[i].displayedRegionNames` is
+already a launch key (`LinearSyntenyView/afterAttach.ts:39-67`, `types.ts:57`).
+A multi-panel ortholog launch knows, from the pair catalog, which chromosome
+each panel's gene sits on. Naming it per panel opens the stack already narrowed
+instead of opening thirteen whole genomes and asking the reader to find the
+gene. That is probably the single highest-value item in this document.
+
+**Verified in a browser on 2026-09-19**, booting the same two-panel spec on both
+hosts and reading `displayedRegions` back per row. On `main`: one region each,
+`chr17` and `chr11`. Without the key, and on released `latest` with or without
+it: **711 regions on hg38 and 61 on mm39**. So the key is inert on v4.3.0,
+exactly like `cigarMode` and `drawCurves` — its launcher destructures
+`{session, views, tracks}` and rebuilds each row as `{loc, assembly, tracks}`,
+and the key does not exist in that codebase at all.
+
+That is not a blocker, but the reason it works needs stating correctly: it works
+because `JBROWSE_BASE` already targets `main`, not because the key is portable.
+A permanent link opened on a pinned v4.3.0 host loses the narrowing and falls
+back to today's behaviour, which is the same safe degradation `cigarMode` takes.
+Two properties make it safer still: a name list that matches nothing falls back
+to the whole assembly with a warning (`selectNamedRegions.ts:190-193`), and
+matching goes through the assembly's aliases with an exact refName beating the
+anchored, case-insensitive glob reading — so `chr17` resolves whether the config
+spells it `chr17` or `NC_000017.11`.
 
 ## Opacity, and the one data-driven knob nobody turns on
 
@@ -341,12 +357,30 @@ This is the one that inverted. Measured 2026-09-19 against
 `hg38ToMm39.over.pif.gz` on the bucket, fine tier, two real windows pulled by
 tabix range query, run through a faithful port of `visitCigarRenderedSegments`.
 
+Reviewed the same day by two independent reads of the same code and by a browser
+probe against both hosts; their corrections are folded in below.
+
 **Sub-pixel operations are not drawn.** `MIN_INDEL_PX = 1`
 (`packages/cigar-utils/src/cigarRenderedSegments.ts:19`) merges any indel
 narrower than a pixel into the surrounding match before a quad exists, and
 sub-pixel match runs coalesce the same way. At the 200 bp/px launch scale the
 HOXA window's **7,649 raw CIGAR operations become 693 drawn segments, 58 of them
 indels**. There is no haze of hairlines to remove.
+
+Three qualifications on that gate, none of which changes the count but all of
+which narrow the claim:
+
+- **The real threshold is strictly greater than one pixel.** A deletion of
+  exactly 1.0 px fails both `>` comparisons at `cigarRenderedSegments.ts:97-102`
+  and flushes relabelled `CIGAR_M`. No test pins that boundary — the suite
+  checks 0.5 px and 1.5 px.
+- **The gate measures one axis, horizontally, not the ribbon's own thickness.**
+  It compares `len` against `bpPerPx` for the axis the op consumes. On a sheared
+  ribbon an indel can clear it horizontally and still be well under a pixel
+  thick on screen.
+- **A deletion quad is a wedge, not a rectangle** — full width at the target end
+  and exactly zero at the query end. So most of every surviving indel's area is
+  sub-pixel by construction, and that is the part the clamp below acts on.
 
 **What `cigarMode: 'matches'` costs is exactly the deletion fraction.** The mode
 drops the full-span trapezoid and draws one tile per match segment, so the
@@ -357,12 +391,24 @@ ribbon paints only the bp that align:
 | HOXA cluster | 71.2%                  | 0.77×        |
 | BRCA1        | 24.0%                  | 0.24×        |
 
-The ratio _is_ the match fraction, to two decimals, at every scale in both
-windows. `5864913626e` moved the launch default from `'off'` to `'matches'` on
-2026-09-18 so indels would "show as gaps rather than being dropped" — which it
-does, and in a fragmented human–mouse chain that means three quarters of the
-ribbon is now holes. Whether that is better is a judgement, but it should be a
-judgement made on the fragmented case, not the dense one.
+The ratio _is_ the match fraction, to two decimals, at the scales the launches
+open at.
+
+One gate the first pass missed, and it matters only when zoomed out. A feature
+narrower than `MIN_CIGAR_PX_WIDTH = 2` never has its CIGAR walked
+(`buildSyntenyGeometry.ts:70,396-403`), so `isTiled` is false and it keeps a
+solid full-span base even in `matches` mode. Re-measured with that gate in
+place: BRCA1 goes 0.24× → **0.25×** at 200 bp/px — 10 of 18 blocks untiled but
+only 1% of the ink, because the big blocks carry it — and 0.38× → **0.53×** at
+2000 bp/px, where 16 of 18 are untiled. HOXA does not move. So the mode costs
+most at the scale the launches use and recedes as the reader zooms out, which is
+the opposite of the intuition.
+
+`5864913626e` moved the launch default from `'off'` to `'matches'` on 2026-09-18
+so indels would "show as gaps rather than being dropped" — which it does, and in
+a fragmented human–mouse chain that means three quarters of the ribbon is now
+holes. Whether that is better is a judgement, but it should be a judgement made
+on the fragmented case, not the dense one.
 
 An interactive comparison drawn on the real geometry, all three modes at any
 scale: <https://claude.ai/artifact/9evhTGBB6VmY1rUKtkNHc4>
@@ -374,8 +420,16 @@ scale: <https://claude.ai/artifact/9evhTGBB6VmY1rUKtkNHc4>
   `thinWidthFade` returns 1.0 for any `isCigarKind` (`:122-129`) — against a
   ribbon body at alpha 0.2 and in an opaque indel color. The comment justifying
   `MIN_INDEL_PX`'s 2→1 drop says the fill "fades sub-pixel indels by their true
-  MSAA coverage"; the shader excludes exactly those kinds from that fade. One of
-  the two is wrong.
+  MSAA coverage"; the shader excludes exactly those kinds from that fade. The
+  comment is the wrong half, and by more than one step: there is no MSAA on this
+  path at all — `syntenyTypes.slang:712` records MSAA as the **abandoned**
+  approach — and `adr-033` states both positions, repeating the comment's claim
+  and then heading its next section "Why NOT extend the density fade to indels
+  (the rejected 'ideal')". The threshold change may still be right; the reason
+  given for it is the alternative that was rejected. A 0.3 px deletion is
+  therefore painted at the same alpha as a 3 px one, over a 1 px band — roughly
+  3× the ink per unit of true width — while a base ribbon or a match tile at the
+  same width would be at ~30%.
 - The gap is reachable because `bucketBpPerPx` keys the fetch on
   `floor(log2(bpPerPx))`, so geometry is reused across a 2× range. 7% of HOXA's
   indel quads fall under 1 px after a zoom-out inside their own bucket.
@@ -417,7 +471,9 @@ Ordered by value over cost, and the first three need no upstream release:
 
 1. **`displayedRegionNames` per panel on multi-panel launches.** Opens the stack
    narrowed to the chromosomes the genes are on instead of thirteen whole
-   genomes. Launch key already exists; we already know the chromosomes.
+   genomes. Launch key already exists and is verified working on the build we
+   target; we already know the chromosomes. Inert on v4.3.0, degrading to
+   today's behaviour.
 2. **The vocabulary pass on the gene page**, plus making `With alignment` a
    `useUrlState` value so a shared link carries it.
 3. **Shrink the defaults**: `DEFAULT_SUBTREE_GENOMES` to 2–3, and stop arming
