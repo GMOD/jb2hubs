@@ -51,18 +51,29 @@ pnpm install
 output is what `ORTHOLOG_API` in `website/src/components/neighborhoodClient.ts`
 names; if the stack is ever recreated under a new id, update that constant.
 
-**Pending deploy (2026-09-01):** the template gained
-`MinimumCompressionSize: 1024` (the ~1.4 MB neighborhood body was going out
-uncompressed), the handler validates its inputs and renamed its cache header.
-None of it is live until someone runs `./deploy.sh`.
+`sam deploy` keeps the stack's `NcbiApiKey` when none is passed (it sends
+`UsePreviousValue`), so a plain `./deploy.sh` does not drop the key. Check with
+`aws lambda get-function-configuration` rather than trusting that.
 
-**Also pending (2026-09-24):** cache prefix `neighborhood/v4`. The v3 cache can
-hold a symbol's neighborhood assembled while Datasets was failing, when the
-resolver fell back to esearch's single guess and cached that gene under the
-symbol asked for; its keys also upper-cased the symbol, so fly `Dl` (Delta) and
-`dl` (dorsal) shared one. v4 keys keep the case and start empty. The website
-asks by GeneID (`?gene=7157`), which the deployed handler already accepts and
-passes through without resolving, so the page does not wait on this deploy.
+Deployed 2026-09-24, the first deploy since 2026-06-28: input validation, the
+renamed `x-assembler-cache` header, response compression, and cache prefix
+`neighborhood/v4`. v4 keys keep the symbol's case, so fly `Dl` (Delta) and `dl`
+(dorsal) no longer share an entry, and start empty, which drops v3 answers
+cached while a Datasets failure sent the resolver to esearch's single guess.
+
+Two things that deploy found, both silent until then:
+
+- **The bundle needs a real `require`.** esbuild bundles the AWS SDK's CommonJS
+  into an ESM file, and its `require("node:https")` throws "Dynamic require is
+  not supported" at load, so every request was a 502 until the build gained the
+  `createRequire` banner. `node -e 'import("./dist/index.mjs")'` after
+  `pnpm build` reproduces it locally.
+- **`MinimumCompressionSize` needs a new stage deployment.** CloudFormation set
+  it on the API, but SAM makes a new deployment only when the routes change, so
+  the stage kept serving the June snapshot uncompressed.
+  `aws apigateway create-deployment --rest-api-id qkeuv38wf2 --stage-name prod`
+  applied it: TP53's 1.15 MB neighborhood is 151 KB gzipped. Any later API-level
+  setting needs the same step.
 
 ## Optional: fully static repeat hits
 
