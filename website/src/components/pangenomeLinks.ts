@@ -87,7 +87,13 @@ function graphVcfTrack(dataset: PangenomeDataset) {
         trackId: vcf.trackId,
         name: vcf.name,
         assemblyNames: [dataset.reference.assembly],
-        adapter: { type: 'VcfTabixAdapter', uri: vcf.url },
+        adapter: {
+          type: 'VcfTabixAdapter',
+          uri: vcf.url,
+          ...(vcf.samplesTsvUrl
+            ? { samplesTsvLocation: { uri: vcf.samplesTsvUrl } }
+            : {}),
+        },
         displays: [
           {
             type: 'LinearMultiSampleVariantDisplay',
@@ -95,6 +101,8 @@ function graphVcfTrack(dataset: PangenomeDataset) {
             ...(vcf.phased ? { renderingMode: 'phased' } : {}),
             jexlFilters: SV_FILTER,
             height: 340,
+            ...(vcf.rows ? { rows: vcf.rows } : {}),
+            ...(vcf.rowColor ? { rowColor: vcf.rowColor } : {}),
           },
         ],
       }

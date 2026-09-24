@@ -41,6 +41,11 @@ export interface PangenomeGraphVcf {
   // visible in. A `vg deconstruct` callset over assembly paths is one haploid
   // row per assembly, and asking for phased there draws every second row empty.
   phased?: boolean
+  // A `name`-keyed sample table beside the VCF, whose columns `rowColor` can
+  // colour rows by.
+  samplesTsvUrl?: string
+  rows?: { domain: string[]; labels: Record<string, string> }
+  rowColor?: { field: string; domain: string[]; range: string[] }
 }
 
 // The hosted config that can draw the graph itself, as opposed to its
@@ -475,6 +480,41 @@ export const MOUSE_DATASET: PangenomeDataset = {
 // mouse lacks: the published GFAs carry one `P` line per assembly, so
 // `vg deconstruct` projects them onto the reference directly. Eleven haploid
 // genotype columns, hence `phased` unset.
+const BOVINE_ROWS = {
+  domain: [
+    'ANG',
+    'BSW',
+    'HIG',
+    'OBV',
+    'PIE',
+    'SIM',
+    'BRA',
+    'NEL',
+    'GAU',
+    'BIS',
+    'YAK',
+  ],
+  labels: {
+    ANG: 'Angus',
+    BSW: 'Brown Swiss',
+    HIG: 'Highland',
+    OBV: 'Original Braunvieh',
+    PIE: 'Piedmontese',
+    SIM: 'Simmental',
+    BRA: 'Brahman',
+    NEL: 'Nellore',
+    GAU: 'Gaur',
+    BIS: 'Bison',
+    YAK: 'Yak',
+  },
+}
+
+const BOVINE_ROW_COLOR = {
+  field: 'lineage',
+  domain: ['taurine', 'indicine', 'gaur', 'bison', 'yak'],
+  range: ['#0072B2', '#E69F00', '#009E73', '#CC79A7', '#D55E00'],
+}
+
 export const BOVINE_DATASET: PangenomeDataset = {
   id: 'bovine',
   label: 'Bovine super-pangenome (minigraph, ARS-UCD1.2)',
@@ -491,6 +531,10 @@ export const BOVINE_DATASET: PangenomeDataset = {
     trackId: 'bovine-arsucd12-minigraph-vcf',
     name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
     url: 'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.vcf.gz',
+    samplesTsvUrl:
+      'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph.samples.tsv',
+    rows: BOVINE_ROWS,
+    rowColor: BOVINE_ROW_COLOR,
   },
   svTrackIds: [],
   graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
