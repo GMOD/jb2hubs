@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { useResetOnChange } from '../hooks/useResetOnChange.ts'
+import { useUrlState } from '../hooks/useUrlState.ts'
 import {
   DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
@@ -141,8 +142,10 @@ interface Clade {
 }
 
 export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
-  const [mode, setMode] = useState<LayoutMode>('bp')
-  const [orientToRef, setOrientToRef] = useState(true)
+  const [modeParam, setMode] = useUrlState('layout', 'bp')
+  const mode: LayoutMode = modeParam === 'ordinal' ? 'ordinal' : 'bp'
+  const [orientParam, setOrient] = useUrlState('orient', '1')
+  const orientToRef = orientParam !== '0'
   const layout = useMemo(
     () => layoutNeighborhood(neighborhood, { mode, orientToRef }),
     [neighborhood, mode, orientToRef],
@@ -296,7 +299,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
             type="checkbox"
             checked={orientToRef}
             onChange={e => {
-              setOrientToRef(e.target.checked)
+              setOrient(e.target.checked ? '1' : '0')
             }}
           />
           orient to reference
