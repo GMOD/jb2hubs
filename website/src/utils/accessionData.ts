@@ -133,6 +133,17 @@ export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
   return mapAccessionsToUcsc(loadUcscGenomes(), accessions.values())
 }
 
+// The taxa /taxonomy/<id> has a page for, the same set taxonomy/[slug].astro
+// builds them from. all.newick is absent on a checkout that has not run
+// generate-taxonomy; the taxonomy pages are absent then too, so nothing links
+// to them.
+export function taxonomyPageIds() {
+  const newick = path.join('public', 'taxonomy', 'all.newick')
+  return fs.existsSync(newick)
+    ? taxonIdsIn(fs.readFileSync(newick, 'utf-8'))
+    : new Set<string>()
+}
+
 // What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
 // (the reverse of buildUcscMapping, so a link is only ever to a page that
 // exists) and whether the taxonomy tree has a page for its taxon.
@@ -141,12 +152,7 @@ export function ucscPageLinks() {
   for (const [accession, db] of buildUcscMapping(loadAccessionMap())) {
     accessionsByDb.set(db, [...(accessionsByDb.get(db) ?? []), accession])
   }
-  // Absent on a checkout that has not run generate-taxonomy; the taxonomy
-  // pages are absent then too, so nothing links to them.
-  const newick = path.join('public', 'taxonomy', 'all.newick')
-  const taxonPages = fs.existsSync(newick)
-    ? taxonIdsIn(fs.readFileSync(newick, 'utf-8'))
-    : new Set<string>()
+  const taxonPages = taxonomyPageIds()
   return Object.fromEntries(
     Object.entries(loadUcscGenomes()).map(([db, genome]) => [
       db,

@@ -10,6 +10,7 @@ import {
   buildSiblingIndex,
   loadHubImage,
   loadNcbiDetails,
+  taxonomyPageIds,
 } from '../../utils/accessionData.ts'
 import {
   jbrowseUrl,
@@ -42,6 +43,7 @@ export async function getStaticPaths() {
   const accessions = loadAccessionMap()
   const ucscMappings = buildUcscMapping(accessions)
   const siblingIndex = buildSiblingIndex(accessions)
+  const taxonPages = taxonomyPageIds()
   const maxSiblings = 8
 
   return [...accessions.entries()]
@@ -56,6 +58,7 @@ export async function getStaticPaths() {
             ? accessions.get(data.pairedAccession)
             : undefined,
           ucscDbName: ucscMappings.get(id),
+          taxonomyPage: taxonPages.has(String(data.taxonId)),
           siblings: siblings.slice(0, maxSiblings),
           siblingCount: siblings.length,
           taxonCount,
@@ -68,6 +71,7 @@ const {
   data,
   pairedAssemblyData,
   ucscDbName,
+  taxonomyPage,
   siblings,
   siblingCount,
   taxonCount,
@@ -223,8 +227,12 @@ const hasAssemblyDetails =
         <dd>{organism}</dd>
         <dt>TaxonID</dt>
         <dd>
-          <a href={`/taxonomy/${taxonId}`}>{taxonId}</a> —{' '}
-          <a href={taxonomyUrl}>NCBI taxonomy</a>
+          {taxonomyPage ? (
+            <a href={`/taxonomy/${taxonId}`}>{taxonId}</a>
+          ) : (
+            taxonId
+          )}{' '}
+          — <a href={taxonomyUrl}>NCBI taxonomy</a>
         </dd>
         {seqReleaseDate ? (
           <>
@@ -321,11 +329,13 @@ const hasAssemblyDetails =
         <li>
           <a href="/gene">Look up a gene across the hosted genomes</a>
         </li>
-        <li>
-          <a href={`/taxonomy/${taxonId}`}>
-            Browse every assembly we host for this taxon
-          </a>
-        </li>
+        {taxonomyPage ? (
+          <li>
+            <a href={`/taxonomy/${taxonId}`}>
+              Browse every assembly we host for this taxon
+            </a>
+          </li>
+        ) : null}
       </ul>
       {siblings.length ? (
         <details class={styles.disclosure}>
@@ -364,7 +374,7 @@ const hasAssemblyDetails =
               ))}
             </tbody>
           </table>
-          {siblingCount > siblings.length ? (
+          {taxonomyPage && siblingCount > siblings.length ? (
             <p>
               <a href={`/taxonomy/${taxonId}`}>
                 See all {taxonCount} assemblies for this taxon
