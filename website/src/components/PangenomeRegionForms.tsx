@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import useSWRImmutable from 'swr/immutable'
 
+import { useUrlState } from '../hooks/useUrlState.ts'
+import { LIVE_QUERY } from '../lib/swr.ts'
 import {
   graphRegionUrl,
   haplotypeLanesForRegion,
@@ -8,10 +10,8 @@ import {
 import { structuralPanel } from './pangenomePanels.ts'
 import { formatRegion, resolveRegion } from './pangenomeRegion.ts'
 import { structuralForms } from './pangenomeSvStates.ts'
-import { openSvStates } from './pangenomeSvStatesFile.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
-import type { ParsedRegion } from './pangenomeRegion.ts'
 
 // mygene.info answers in well under a second and a sidecar read in a third of
 // one; past this, the button would say "Reading…" for as long as either stalls.
@@ -26,6 +26,40 @@ function deadlineMessage(e: unknown) {
       : String(e)
 }
 
+// The sidecar reader, and @gmod/tabix with it, loads on the first question
+// rather than with the page, since most readers never ask one.
+async function regionAnswer(dataset: PangenomeDataset, text: string) {
+  try {
+    const signal = AbortSignal.timeout(DEADLINE_MS)
+    const asked = await resolveRegion(text, dataset.reference.taxonId, {
+      signal,
+    })
+    if (!asked) {
+      throw new Error(
+        `"${text}" is neither a region like chr1:196,740,001-196,850,000 nor a gene placed on ${dataset.reference.label}`,
+      )
+    }
+    const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
+    const { chrom, haplotypes, rows } = await openSvStates(
+      dataset.svStatesUrl!,
+    )(asked.chrom, asked.start, asked.end, signal)
+    const forms = structuralForms(rows, haplotypes)
+    return {
+      region: { ...asked, chrom },
+      haplotypes: haplotypes.length,
+      panel: structuralPanel(forms, {
+        withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
+      }),
+      sites: forms.sites,
+      informative: forms.informative,
+      rareCarriers: forms.rareCarriers.length,
+      nonReferenceMajority: forms.nonReferenceMajority,
+    }
+  } catch (e) {
+    throw new Error(deadlineMessage(e))
+  }
+}
+
 // Any region of the graph, not only the twenty the table lists.
 //
 // The page is otherwise static; this is the one thing on it that cannot be, as
@@ -35,61 +69,25 @@ function deadlineMessage(e: unknown) {
 // the same launches the table's rows do. The rules are shared with
 // `generatePangenomePanels.ts`, so a locus in the table and the same window
 // typed here answer identically.
+//
+// The question rides in the url as `?region=`, so an answer can be linked to
+// and reloads as itself.
 export default function PangenomeRegionForms({
   dataset,
-  initialQuery = '',
 }: {
   dataset: PangenomeDataset
-  initialQuery?: string
 }) {
-  const [query, setQuery] = useState(initialQuery)
-  const [busy, setBusy] = useState(false)
-  const [error, setError] = useState<string>()
-  const [answer, setAnswer] = useState<{
-    region: ParsedRegion
-    haplotypes: number
-    panel: ReturnType<typeof structuralPanel>
-    sites: number
-    informative: number
-    rareCarriers: number
-    nonReferenceMajority: number
-  }>()
-
-  async function show(text: string) {
-    setBusy(true)
-    setError(undefined)
-    try {
-      const signal = AbortSignal.timeout(DEADLINE_MS)
-      const asked = await resolveRegion(text, dataset.reference.taxonId, {
-        signal,
-      })
-      if (!asked) {
-        throw new Error(
-          `"${text}" is neither a region like chr1:196,740,001-196,850,000 nor a gene placed on ${dataset.reference.label}`,
-        )
-      }
-      const { chrom, haplotypes, rows } = await openSvStates(
-        dataset.svStatesUrl!,
-      )(asked.chrom, asked.start, asked.end, signal)
-      const forms = structuralForms(rows, haplotypes)
-      setAnswer({
-        region: { ...asked, chrom },
-        haplotypes: haplotypes.length,
-        panel: structuralPanel(forms, {
-          withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
-        }),
-        sites: forms.sites,
-        informative: forms.informative,
-        rareCarriers: forms.rareCarriers.length,
-        nonReferenceMajority: forms.nonReferenceMajority,
-      })
-    } catch (e) {
-      setAnswer(undefined)
-      setError(deadlineMessage(e))
-    } finally {
-      setBusy(false)
-    }
-  }
+  const [asked, setAsked] = useUrlState('region', '')
+  const {
+    data: answer,
+    error,
+    isLoading,
+    mutate,
+  } = useSWRImmutable(
+    asked ? ['pangenome-region', dataset.id, asked] : null,
+    ([, , text]) => regionAnswer(dataset, text),
+    LIVE_QUERY,
+  )
 
   const lanes = answer?.panel?.lanes ?? []
   const region = answer?.region
@@ -100,29 +98,36 @@ export default function PangenomeRegionForms({
       <form
         onSubmit={e => {
           e.preventDefault()
-          void show(query)
+          const text = String(
+            new FormData(e.currentTarget).get('region') ?? '',
+          ).trim()
+          if (text === asked) {
+            void mutate()
+          } else {
+            setAsked(text)
+          }
         }}
       >
         <label>
           Region or gene{' '}
           <input
-            value={query}
-            onChange={e => {
-              setQuery(e.target.value)
-            }}
+            key={asked}
+            name="region"
+            defaultValue={asked}
             placeholder="chr1:196,740,001-196,850,000 or CFH"
             size={38}
+            required
           />
         </label>{' '}
         <button
           type="submit"
-          disabled={busy || query.trim() === ''}
+          disabled={isLoading}
         >
-          {busy ? 'Reading…' : 'Show'}
+          {isLoading ? 'Reading…' : 'Show'}
         </button>
       </form>
 
-      {error && <p>{error}</p>}
+      {error instanceof Error && <p>{error.message}</p>}
 
       {answer && region && (
         <>
