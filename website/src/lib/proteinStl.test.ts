@@ -18,11 +18,7 @@ function readTriangles(bytes: Uint8Array<ArrayBuffer>) {
     const offset = 84 + 50 * i
     return {
       normal: vec(offset),
-      vertices: [
-        vec(offset + 12),
-        vec(offset + 24),
-        vec(offset + 36),
-      ] as const,
+      vertices: [vec(offset + 12), vec(offset + 24), vec(offset + 36)] as const,
     }
   })
 }

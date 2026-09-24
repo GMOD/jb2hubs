@@ -224,9 +224,7 @@ export default function ProteinLaunchCard({
     const missingModels = (extras ?? [])
       .filter(e => 'model' in e && !e.model)
       .map(e => e.accession)
-    const unreachable = (extras ?? []).flatMap(e =>
-      'failure' in e ? [e] : [],
-    )
+    const unreachable = (extras ?? []).flatMap(e => ('failure' in e ? [e] : []))
     // A focus is a range on some protein sequence; the plugin lights structure
     // residues. The map's regions are on the UniProt canonical, so they are
     // exact when the model IS the canonical and was folded from the launched

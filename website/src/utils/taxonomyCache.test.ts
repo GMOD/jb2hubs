@@ -221,8 +221,10 @@ test('a quoted label keeps its delimiters and its marker', () => {
 })
 
 test('taxonIdsIn finds the ids inside quoted labels', () => {
-  assert.deepEqual(
-    [...taxonIdsIn(QUOTED)].sort(),
-    ['1', '294381', '33727', '42'],
-  )
+  assert.deepEqual([...taxonIdsIn(QUOTED)].sort(), [
+    '1',
+    '294381',
+    '33727',
+    '42',
+  ])
 })

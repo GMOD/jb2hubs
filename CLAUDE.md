@@ -2062,15 +2062,15 @@ assembly name:
 A UCSC assembly and a GenArk assembly can be the **same biological genome** and
 both get a full config — this is intentional, not a bug. `buildUcscMapping`
 (`mapAccessionsToUcsc` in `website/src/utils/ucscMapping.ts`) maps an NCBI
-accession to a UCSC db name,
-and the accession page prefers the UCSC config (`/ucsc/<db>/config.json`) when
-one exists, falling back to the GenArk config otherwise. The mapping takes an
-accession (or its paired one) that the entry's `sourceName` or description
-names; failing that, an entry of the same taxon whose description spells the
-same assembly name, with a `.pN` patch suffix dropped (`GRCh38.p14` → hg38,
-`GRCg6a` → galGal6). A shared accession base is never enough: GRC keeps one
-base across major versions, and the old base fallback sent GRCm38's
-`GCF_000001635.26` to mm39. When unsure it maps nothing, which costs a launch of
-the GenArk config rather than a launch of the wrong genome. So do **not** "dedup" GenArk aliases by pointing them at the
-GenArk config — that would make them inconsistent with hg38/mm39/etc., and the
+accession to a UCSC db name, and the accession page prefers the UCSC config
+(`/ucsc/<db>/config.json`) when one exists, falling back to the GenArk config
+otherwise. The mapping takes an accession (or its paired one) that the entry's
+`sourceName` or description names; failing that, an entry of the same taxon
+whose description spells the same assembly name, with a `.pN` patch suffix
+dropped (`GRCh38.p14` → hg38, `GRCg6a` → galGal6). A shared accession base is
+never enough: GRC keeps one base across major versions, and the old base
+fallback sent GRCm38's `GCF_000001635.26` to mm39. When unsure it maps nothing,
+which costs a launch of the GenArk config rather than a launch of the wrong
+genome. So do **not** "dedup" GenArk aliases by pointing them at the GenArk
+config — that would make them inconsistent with hg38/mm39/etc., and the
 accession page relies on the `/ucsc/<db>/config.json` build existing.
