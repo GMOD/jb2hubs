@@ -109,8 +109,14 @@ the field; a chip built before that shows no toggles.
   built on. A checkbox on the card turns them off.
 - **Isoform.** Every coding transcript the gene_table lists, representative
   first. Switching fetches that NP record and rebuilds the session; the launch
-  link is disabled while it does. Hidden when the 100-way alignment is the
-  source, because that alignment fixes the transcript.
+  link is disabled while it does. Hidden once the alignment the session carries
+  fixes the transcript, because the msaview plugin maps the query row's residues
+  to codons by position: the 100-way's knownCanonical model, the translation a
+  seed row was cut from, or the live panel's query protein. That last is the
+  panel's own pick (MANE or RefSeq Select, else the longest, `XP_` included),
+  matched to an isoform by accession, or by sequence for a PANTHER row; a row no
+  isoform translates to keeps the representative, and the note beside the
+  alignment says its residues are approximate.
 
 ## The session is built for `main`
 

@@ -592,7 +592,7 @@ function GeneResults({
         case 'hundredWay':
           return loadHundredWay(sym)
         case 'live':
-          return loadLive(panel!, precomputed, onProgress, signal)
+          return loadLive(structure, panel!, precomputed, onProgress, signal)
         case 'pfam':
           return family
             ? loadPfam(structure, family, focus)

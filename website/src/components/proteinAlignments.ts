@@ -22,9 +22,9 @@ import {
   placeQuery,
   queryLabel,
 } from './pfamSeed.ts'
-import { alignProteinPanel } from './proteinMsa.ts'
+import { alignProteinPanel, parseFasta } from './proteinMsa.ts'
 
-import type { GeneStructure } from './geneStructure.ts'
+import type { GeneStructure, Isoform } from './geneStructure.ts'
 import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { ProteinAlignment, ProteinPanel } from './proteinMsa.ts'
 import type { MsaHighlight, MsaSource } from './proteinSession.ts'
@@ -43,7 +43,8 @@ export interface LoadedAlignment {
   carries: string
   // for the 100-way, the knownCanonical model the alignment was built from —
   // swapped into the session so genome, alignment and structure share codons;
-  // for the seed, the translation the query row was cut from, pinned
+  // for the seed, the translation the query row was cut from, pinned; for the
+  // live panel, the isoform its query row is the protein of
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
   // a caveat about the alignment itself, shown beside it
   note?: string
@@ -178,8 +179,31 @@ export function latestJob() {
   }
 }
 
-// The live panel aligned at EBI, with the CDD domains as a per-row overlay.
+const bareAccession = (acc: string) => acc.replace(/\.\d+$/, '')
+
+// The isoform an ortholog panel's query row is the protein of. The panel picks
+// its own (MANE or RefSeq Select, else the longest, XP_ included), and the
+// msaview plugin maps the row's residues to the connected transcript's codons
+// by position, so any other isoform shifts them. A RefSeq row names its
+// protein; a PANTHER row is a UniProt entry, which matches the representative
+// isoform only where the two sequences agree.
+export function queryIsoform(
+  structure: Pick<GeneStructure, 'isoforms' | 'proteinSequence'>,
+  protein: string,
+  sequence: string,
+): Isoform | undefined {
+  const { isoforms, proteinSequence } = structure
+  return (
+    isoforms.find(i => i.protein === protein) ??
+    isoforms.find(i => bareAccession(i.protein) === bareAccession(protein)) ??
+    (sequence === proteinSequence ? isoforms[0] : undefined)
+  )
+}
+
+// The live panel aligned at EBI, with the CDD domains as a per-row overlay,
+// launched on the isoform whose protein the query row is.
 export async function loadLive(
+  structure: GeneStructure,
   panel: ProteinPanel,
   precomputed: ProteinAlignment | undefined,
   onProgress: (s: string) => void,
@@ -190,6 +214,10 @@ export async function loadLive(
   const queryRow =
     panel.rows.find(r => r.taxId === panel.query.refTaxonId) ?? panel.rows[0]!
   const rowCount = (aligned.fasta.match(/^>/gm) ?? []).length
+  const querySequence = (
+    parseFasta(aligned.fasta).get(queryRow.label) ?? ''
+  ).replaceAll(/[-.]/g, '')
+  const isoform = queryIsoform(structure, queryRow.protein, querySequence)
   return {
     source: {
       kind: 'inline',
@@ -203,6 +231,17 @@ export async function loadLive(
     fasta: aligned.fasta,
     rowCount,
     carries: `a ${rowCount}-row alignment`,
+    structureOverrides: isoform
+      ? { transcript: isoform.transcript, proteinSequence: querySequence }
+      : {
+          transcript: structure.transcript,
+          proteinSequence: structure.proteinSequence,
+        },
+    ...(isoform
+      ? {}
+      : {
+          note: `The ${queryRow.label} row is ${queryRow.protein}, which none of ${structure.symbol}'s isoforms translates to, so its residues meet ${structure.transcript.name}'s codons by position and are approximate.`,
+        }),
   }
 }
 

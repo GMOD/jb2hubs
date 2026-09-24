@@ -122,13 +122,16 @@ export default function ProteinLaunchCard({
   const isoform =
     isoforms.find(i => i.transcript.name === isoformName) ?? isoforms[0]!
   const isDefaultIsoform = isoform.transcript.name === structure.transcript.name
+  const pinned = alignment?.structureOverrides
   const {
     data: fetchedTranslation,
     error: translationError,
     isLoading: translating,
     mutate: retryTranslation,
   } = useSWRImmutable(
-    isDefaultIsoform ? null : (['protein-seq', isoform.protein] as const),
+    isDefaultIsoform || pinned
+      ? null
+      : (['protein-seq', isoform.protein] as const),
     ([, protein]) => fetchProteinSequence(protein),
     LIVE_QUERY,
   )
@@ -160,7 +163,7 @@ export default function ProteinLaunchCard({
       proteinSequence: isDefaultIsoform
         ? structure.proteinSequence
         : fetchedTranslation,
-      ...alignment?.structureOverrides,
+      ...pinned,
     }
     const model = pickAlphaFoldModel(
       structure.alphafold,
@@ -191,7 +194,7 @@ export default function ProteinLaunchCard({
     isoform,
     isDefaultIsoform,
     fetchedTranslation,
-    alignment,
+    pinned,
     choice,
     experimental,
     focus,
@@ -238,9 +241,12 @@ export default function ProteinLaunchCard({
       !!model &&
       model.sequence === launched.proteinSequence
     const canonicalModel = !!model && !model.accession.includes('-')
+    const launchedProtein = isoforms.find(
+      i => i.transcript.name === launched.transcript.name,
+    )?.protein
     const rowExact =
       !!queryRow &&
-      (queryRow.protein === isoform.protein ||
+      (queryRow.protein === launchedProtein ||
         queryRow.length === launched.proteinSequence?.length)
     const fromCartoon = focus?.kind === 'region' && !focus.region.accession
     const focusExact = fromCartoon
@@ -285,7 +291,7 @@ export default function ProteinLaunchCard({
     range,
     pdbId,
     author,
-    isoform,
+    isoforms,
     alignment,
     extras,
     queryRow,
@@ -344,7 +350,7 @@ export default function ProteinLaunchCard({
       {story && <p className="msv-story">{story}</p>}
 
       <div className="msv-controls">
-        {alignment?.structureOverrides ? (
+        {pinned ? (
           <div className="msv-control">
             <span className="msv-control-label">Isoform</span>
             <span>
