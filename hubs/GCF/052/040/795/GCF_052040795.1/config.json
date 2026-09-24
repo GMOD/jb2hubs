@@ -23,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCF/052/040/795/GCF_052040795.1/html/GCF_052040795.1_GRCz12ab.description.html\">html/GCF_052040795.1_GRCz12ab.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/052/040/795/GCF_052040795.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/052/040/795/GCF_052040795.1",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/052/040/795/GCF_052040795.1"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/052/040/795/GCF_052040795.1",
+            "liftOver.danRer11": "liftOver/GCF_052040795.1ToDanRer11.over.chain.gz"
           }
         },
         "trackId": "GCF_052040795.1-ReferenceSequenceTrack",
@@ -636,6 +637,27 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_052040795.1_to_danRer11_liftOver",
+      "name": "GCF_052040795.1 (zebrafish (M-AB 2025 refseq)) to Zebrafish (danRer11) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_052040795.1", "danRer11"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_052040795.1",
+        "queryAssembly": "danRer11",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_052040795.1ToDanRer11.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_052040795.1ToDanRer11.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],
