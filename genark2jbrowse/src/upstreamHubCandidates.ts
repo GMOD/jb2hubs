@@ -39,6 +39,16 @@ export function manifestAccessions(text: string) {
     .filter(accession => accession !== undefined)
 }
 
+// Each GCA hub's xenoRefGene bigBed, whose mtime gates its symbol index
+// (buildXenoSymbolIndexes.ts). Named by the manifest alone: the file name
+// carries the assembly name, and a hub the manifest lags gets its first index
+// on the missing-index gate anyway.
+const XENO_BB = /^GCA\/\d{3}\/\d{3}\/\d{3}\/[^/]+\/bbi\/[^/]+\.xenoRefGene\.bb$/
+
+export function manifestXenoRefGenePaths(text: string) {
+  return text.split('\n').filter(line => XENO_BB.test(line))
+}
+
 // The accession directories four levels under hubs/GCA and hubs/GCF. Named
 // rather than checked for a hub.txt: an extra candidate costs one stat, and a
 // hub directory we have with no hub.txt is one we want an upstream answer for.
@@ -107,11 +117,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     console.error('usage: upstreamHubCandidates.ts <genArkFileList.txt.gz>')
     process.exit(1)
   }
+  let text: string
   let fromManifest: string[]
   try {
-    fromManifest = manifestAccessions(
-      zlib.gunzipSync(fs.readFileSync(manifest)).toString(),
-    )
+    text = zlib.gunzipSync(fs.readFileSync(manifest)).toString()
+    fromManifest = manifestAccessions(text)
   } catch (error) {
     console.error(
       `upstreamHubCandidates: ${manifest} is not a usable gzip (${error instanceof Error ? error.message : error}) -- hgdownload's daily manifest regeneration can land mid-write; this is expected occasionally and the caller falls back to the rsync walk`,
@@ -124,6 +134,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     `candidates: ${fromManifest.length} in the manifest, ${fromLocal.length} local, ${fromList.length} in the assembly list`,
   )
   console.log(
-    candidatePaths([...fromManifest, ...fromLocal, ...fromList]).join('\n'),
+    [
+      ...candidatePaths([...fromManifest, ...fromLocal, ...fromList]),
+      ...manifestXenoRefGenePaths(text),
+    ].join('\n'),
   )
 }

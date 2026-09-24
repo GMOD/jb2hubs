@@ -42,6 +42,12 @@ got=$(printf '%s\n' "$listing" | parse_rsync_listing)
 check "parse_rsync_listing keys files by accession, strips size commas, drops directories" \
   "$expected" "$got"
 
+# --files-from prints the module-relative path; a bigBed is keyed by the
+# accession above bbi/, so xenoSymbolIndex.sh can compare its mtime.
+got=$(printf '%s\n' '-rw-rw-r--      2,418,882 2024/02/23 21:01:30 GCA/036/365/475/GCA_036365475.1/bbi/GCA_036365475.1_fAmiCal2.hap2.xenoRefGene.bb' | parse_rsync_listing)
+check "parse_rsync_listing keys a bbi/ file by its hub's accession" \
+  "GCA_036365475.1	bbi/GCA_036365475.1_fAmiCal2.hap2.xenoRefGene.bb	2418882	2024/02/23 21:01:30" "$got"
+
 # rsync prints the module's own "." entry and sender-side chatter on stdout;
 # neither is a file under an accession.
 got=$(printf 'drwxrwsr-x 4,096 2026/07/20 15:27:21 .\nreceiving file list ... done\n' | parse_rsync_listing)
