@@ -2056,12 +2056,21 @@ residue↔codon mapping bugs that shipped with every unit test green, is
 ## Key website internals
 
 - `src/components/SearchPage.tsx` — client-side search over
-  `public/searchIndex.json`
-- `src/pages/recently-updated.astro` — server-rendered table with category
-  dropdown filter
-- `src/hooks/useSearchIndex.ts` — SWR fetch of the search index;
-  `IndexEntry = [accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus]`
-  (ncbiStatus: 0=none, 1=reference genome, 2=suppressed, 3=both)
+  `public/searchIndex.json`, ranked by `rankEntries` (`searchScoring.ts`), which
+  the header typeahead (`headerSearch.ts`) shares. `rankEntries` lowercases each
+  entry's fields once per index, not once per keystroke. Every search box and
+  table filter on the site splits a query with `src/lib/searchTerms.ts` and
+  requires every term.
+- `src/lib/searchIndex.ts` — the `IndexEntry` tuple, declared once for the
+  generator that writes the index, the generators that read it back and the
+  client:
+  `[accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus, year, ucscRank, altAccession]`,
+  where `ncbiStatus` is a bitfield of `IS_REFERENCE` (1) and `IS_SUPPRESSED`
+  (2). `src/hooks/useSearchIndex.ts` fetches it through the same `loadJsonOnce`
+  cache as the typeahead, so the two share one download.
+- `src/pages/recently-updated/` — one server-rendered page per GenArk category
+  (`[category].astro`) plus the all-categories `index.astro`, linked as tabs.
+  The index page forwards the old `?category=` links to the category's page.
 - `src/recentlyUpdated.json` — build-time generated data for recently-updated
   page, from `genark2jbrowse/hubFirstSeen.json` (below)
 - `astroBuild.sh` — `astro build` with its per-route log collapsed into a
