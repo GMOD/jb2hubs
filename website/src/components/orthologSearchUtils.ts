@@ -361,12 +361,14 @@ export interface MultiSyntenyPlan {
   rows: OrthologResult[]
   // names[i] is the assembly name rows[i]'s panel opens under — see
   // orthoSyntenyUrl on why that is not always the accession
-  names: string[]
+  names: (string | undefined)[]
   // geneTracks[i] is the gene track rows[i]'s panel opens, '' where the catalog
   // knows none
   geneTracks: string[]
-  // tracks[i] is the synteny track linking rows[i] and rows[i + 1]
-  tracks: string[]
+  // tracks[i] holds the synteny track linking rows[i] and rows[i + 1], and is
+  // empty where none does: JBrowse binds tracks to levels by position, so a
+  // missing level has to keep its slot
+  tracks: string[][]
 }
 
 // Order the ortholog rows into the longest chain we can build where every
@@ -407,7 +409,9 @@ export function planMultiSynteny(
   // that placed it. A genome our catalog knows under two names (UCSC dm6 and
   // the GenArk accession both appear) can only be one panel, so an extension
   // whose link disagrees with the name already assigned is not a valid step —
-  // taking it would name a panel the neighbouring track cannot bind to.
+  // taking it would name a panel the neighbouring track cannot bind to. Nor is
+  // one whose link names another version of either genome than the row's, as
+  // that panel could not navigate to the row's locus.
   const names = new Map<string, string>()
 
   function bestNeighbor(node: OrthologResult) {
@@ -419,7 +423,13 @@ export function planMultiSynteny(
       const link = used.has(acc) ? undefined : syntenyLink(index, nodeAcc, acc)
       const settled = names.get(nodeAcc)
       const rk = rank.get(acc) ?? Infinity
-      if (link && rk < bestRank && (!settled || settled === link.names[0])) {
+      if (
+        link &&
+        rk < bestRank &&
+        (!settled || settled === link.names[0]) &&
+        isSameGenome(link.names[0], node.assembly) &&
+        isSameGenome(link.names[1], r.assembly)
+      ) {
         best = { result: r, link }
         bestRank = rk
       }
@@ -450,23 +460,22 @@ export function planMultiSynteny(
   if (chain.length < 2) {
     return null
   }
-  // Every adjacency was added through a link whose name agreed, so the resolver
+  // Every adjacency was added through a link the resolver accepts, so it
   // reproduces those names and drops nothing; going through it rather than
   // reading `names` keeps one copy of the panel-naming rule.
   const stack = resolveStackNames(
     chain.map(r => r.assembly.accession),
     index,
+    (i, name) => {
+      const row = chain[i]
+      return row !== undefined && isSameGenome(name, row.assembly)
+    },
   )
-  return {
-    rows: chain,
-    names: stack.names,
-    geneTracks: stack.geneTracks,
-    tracks: stack.tracks.flat(),
-  }
+  return { rows: chain, ...stack }
 }
 
 // Multi-row LinearSyntenyView launch URL for a chain plan. Each adjacent row
-// pair becomes a level carrying its single synteny track; every panel lands on
+// pair becomes a level carrying its synteny track; every panel lands on
 // its ortholog's neighborhood window with that genome's gene track open, which
 // is what makes the launch show the gene in every genome rather than a stack of
 // empty browsers at the right coordinates — flipped, for a row whose ortholog
@@ -482,7 +491,7 @@ export function buildMultiSyntenyUrl(
       loc: flipLoc(windowedLoc(r, flankBp), flips[i] ?? false),
       ...panelTracks(plan.geneTracks[i] ?? ''),
     })),
-    plan.tracks.map(t => [t]),
+    plan.tracks,
   )
 }
 

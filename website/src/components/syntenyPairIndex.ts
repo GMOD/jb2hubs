@@ -43,27 +43,40 @@ export function accessionBase(accession: string) {
   return prefix && id ? `${prefix}_${id.replace(/\.\d+$/, '')}` : accession
 }
 
+// 4 for GCF_000001735.4_TAIR10.1, and 0 for an accession that carries none.
+function accessionVersion(accession: string) {
+  const id = accession.split('_')[1] ?? ''
+  return Number(/\.(\d+)$/.exec(id)?.[1] ?? 0)
+}
+
+// Two keys that differ only in version, a GenArk hub's .1 and .2 against hg38,
+// are one lookup here, and the newer versions win it: those are what the
+// ortholog store resolves a base to, and so the names a panel can open under.
+// generateSyntenyPairIndex.ts keeps the same one, so a collision reaches this
+// only from a catalog written before it did.
 export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
   const index: PairIndex = new Map()
+  const versions = new Map<string, number>()
   let stale = 0
   for (const [key, entry] of Object.entries(pairs)) {
     const [a, b] = key.split(',')
-    // Entries were bare trackId strings until the names were added. A stale
-    // public/synteny_pairs.json is a dev-tree condition, not a shipped one
-    // (`pnpm generate` rewrites it every build) — but destructuring a string by
-    // array pattern yields its first three characters, so skipping is the
-    // difference between no synteny links and links naming a track called "G".
+    // Entries were bare trackId strings until the names were added, and
+    // destructuring one yields its first three characters: skipping is the
+    // difference between no synteny links and a track called "G".
     if (!Array.isArray(entry)) {
       stale += 1
     } else if (a && b) {
-      const [trackId, nameA, nameB, geneA, geneB] = entry
-      index.set(`${accessionBase(a)}|${accessionBase(b)}`, {
-        trackId,
-        names: [nameA, nameB],
-        // A pre-gene-tracks file still has usable names and trackIds, so it
-        // degrades to the old empty-panel launch rather than being skipped.
-        geneTracks: [geneA ?? '', geneB ?? ''],
-      })
+      const id = `${accessionBase(a)}|${accessionBase(b)}`
+      const version = accessionVersion(a) + accessionVersion(b)
+      if (version > (versions.get(id) ?? -1)) {
+        const [trackId, nameA, nameB, geneA, geneB] = entry
+        versions.set(id, version)
+        index.set(id, {
+          trackId,
+          names: [nameA, nameB],
+          geneTracks: [geneA ?? '', geneB ?? ''],
+        })
+      }
     }
   }
   if (stale > 0) {
@@ -76,35 +89,40 @@ export function buildPairIndex(pairs: Record<string, PairEntry>): PairIndex {
 
 // Panel assembly names, the gene track each panel opens, and the per-level
 // synteny tracks for an ordered stack of genomes — the shape a LinearSyntenyView
-// launch needs. A level's track is kept only when both
-// of its ends agree with the names already fixed by earlier levels: a genome our
-// catalog holds under two names (UCSC `dm6` and the GenArk accession both
-// appear) can open as only one panel, and naming the other would leave the
-// neighbouring track with nothing to bind to. A dropped level keeps its empty
-// slot, since JBrowse binds tracks to levels by array position.
-export function resolveStackNames(accessions: string[], index: PairIndex) {
-  const names = accessions.slice()
-  // Which panels a kept link has already named. Comparing against names[i - 1]
-  // alone would not do: a genome whose own level was dropped still holds its
-  // accession there, and that reads as a conflict with the next link even
-  // though nothing has claimed the panel yet.
-  const settled = new Set<number>()
-  const tracks: string[][] = []
-  // Fixed by the same link that fixes the panel's name, so a panel can never be
-  // handed a gene track from the config it did not open under.
+// launch needs. A level keeps its track only when both of its panels can open
+// under the names its link gives them. `opensAs(i, name)` says whether panel i's
+// locus is in the genome `name` stands for: the catalog matches across assembly
+// versions, and a panel opened under another version cannot navigate to the
+// locus it was given. A name an earlier level fixed has to agree too, since a
+// genome the catalog holds under two names (UCSC `dm6` and its GenArk accession)
+// is still one panel.
+//
+// A dropped level keeps its empty slot, because JBrowse binds tracks to levels
+// by array position, and a panel no kept level names comes back undefined for
+// the caller to name.
+export function resolveStackNames(
+  accessions: string[],
+  index: PairIndex,
+  opensAs: (panel: number, name: string) => boolean,
+) {
+  const names: (string | undefined)[] = accessions.map(() => undefined)
   const geneTracks = accessions.map(() => '')
+  const tracks: string[][] = []
   for (let i = 1; i < accessions.length; i++) {
     const a = accessions[i - 1]
     const b = accessions[i]
     const link = a && b ? syntenyLink(index, a, b) : undefined
-    // Only the left end can conflict: the right end is claimed for the first
-    // time by whichever level reaches it first.
-    if (link && (!settled.has(i - 1) || names[i - 1] === link.names[0])) {
+    const left = names[i - 1]
+    if (
+      link &&
+      (left === undefined || left === link.names[0]) &&
+      opensAs(i - 1, link.names[0]) &&
+      opensAs(i, link.names[1])
+    ) {
       names[i - 1] = link.names[0]
       names[i] = link.names[1]
       geneTracks[i - 1] = link.geneTracks[0]
       geneTracks[i] = link.geneTracks[1]
-      settled.add(i - 1).add(i)
       tracks.push([link.trackId])
     } else {
       tracks.push([])

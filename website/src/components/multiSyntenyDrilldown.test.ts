@@ -8,8 +8,9 @@ import {
 } from './multiSyntenyDrilldown.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
-import type { SubtreeLeaf } from './multiSyntenyDrilldown.ts'
+import type { DrilldownData, SubtreeLeaf } from './multiSyntenyDrilldown.ts'
 import type { PlacedGene } from './neighborhood.ts'
+import type { PairEntry } from './syntenyPairIndex.ts'
 
 // Pull the decoded LinearSyntenyView spec back out of a launch URL.
 function viewOf(url: string) {
@@ -23,22 +24,27 @@ const leaf = (assembly: string, flipped = false): SubtreeLeaf => ({
   flipped,
 })
 
+// Every leaf a genome we host at exactly the version NCBI reported, unless a
+// test says otherwise.
+function drilldown(
+  pairs: Record<string, PairEntry>,
+  hosted: DrilldownData['hosted'] = accession => ({ accession }),
+): DrilldownData {
+  return { index: buildPairIndex(pairs), hosted }
+}
+
 test('subtreeSyntenyUrl needs at least two genomes', () => {
-  const index = buildPairIndex({})
-  assert.equal(subtreeSyntenyUrl([], index), undefined)
-  assert.equal(subtreeSyntenyUrl([leaf('GCF_1.1')], index), undefined)
+  assert.equal(subtreeSyntenyUrl([], drilldown({})), undefined)
+  assert.equal(subtreeSyntenyUrl([leaf('GCF_1.1')], drilldown({})), undefined)
 })
 
 // JBrowse binds a synteny track to a level by array position, so a level with no
 // chain must occupy its own empty slot — otherwise later tracks slide up onto the
 // wrong pair of genomes (the bug this guards against).
 test('tracks are one per level, empty where no chain exists', () => {
-  const index = buildPairIndex({
-    'GCF_1.9,GCF_2.9': ['track_1_2', 'GCF_1.9', 'GCF_2.9'],
-  })
   const url = subtreeSyntenyUrl(
-    [leaf('GCF_1.1'), leaf('GCF_2.1'), leaf('GCF_3.1')],
-    index,
+    [leaf('GCF_1.9'), leaf('GCF_2.9'), leaf('GCF_3.1')],
+    drilldown({ 'GCF_1.9,GCF_2.9': ['track_1_2', 'GCF_1.9', 'GCF_2.9'] }),
   )!
   const view = viewOf(url)
   // three genomes -> two levels: [pair 1-2 has a track] then [pair 2-3 empty]
@@ -46,14 +52,27 @@ test('tracks are one per level, empty where no chain exists', () => {
   assert.equal(view.views.length, 3)
 })
 
+const chained: Record<string, PairEntry> = {
+  'GCF_1.4,GCF_2.7': [
+    't12',
+    'GCF_1.4',
+    'GCF_2.7',
+    'GCF_1-ncbiRefSeq',
+    'GCF_2-ncbiRefSeq',
+  ],
+  'GCF_2.7,GCF_3.2': [
+    't23',
+    'GCF_2.7',
+    'GCF_3.2',
+    'GCF_2-ncbiRefSeq',
+    'GCF_3-ncbiRefSeq',
+  ],
+}
+
 test('a fully-chained subtree yields one track slot per level', () => {
-  const index = buildPairIndex({
-    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2'],
-    'GCF_2,GCF_3': ['t23', 'GCF_2', 'GCF_3'],
-  })
   const url = subtreeSyntenyUrl(
     [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],
-    index,
+    drilldown(chained),
   )!
   assert.deepEqual(viewOf(url).tracks, [['t12'], ['t23']])
 })
@@ -61,25 +80,9 @@ test('a fully-chained subtree yields one track slot per level', () => {
 // A synteny sub-view has no defaultSession, so a panel launched without a track
 // draws nothing at the locus it was sent to.
 test('each panel opens the gene track its own link names', () => {
-  const index = buildPairIndex({
-    'GCF_1,GCF_2': [
-      't12',
-      'GCF_1',
-      'GCF_2',
-      'GCF_1-ncbiRefSeq',
-      'GCF_2-ncbiRefSeq',
-    ],
-    'GCF_2,GCF_3': [
-      't23',
-      'GCF_2',
-      'GCF_3',
-      'GCF_2-ncbiRefSeq',
-      'GCF_3-ncbiRefSeq',
-    ],
-  })
   const url = subtreeSyntenyUrl(
     [leaf('GCF_1.4'), leaf('GCF_2.7'), leaf('GCF_3.2')],
-    index,
+    drilldown(chained),
   )!
   assert.deepEqual(
     viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
@@ -90,10 +93,10 @@ test('each panel opens the gene track its own link names', () => {
 // A catalog with no gene tracks (a pre-gene-tracks synteny_pairs.json) launches
 // the panels bare rather than naming a track that does not exist.
 test('a panel with no known gene track carries no tracks field', () => {
-  const index = buildPairIndex({
-    'GCF_1,GCF_2': ['t12', 'GCF_1', 'GCF_2'],
-  })
-  const url = subtreeSyntenyUrl([leaf('GCF_1.4'), leaf('GCF_2.7')], index)!
+  const url = subtreeSyntenyUrl(
+    [leaf('GCF_1.4'), leaf('GCF_2.7')],
+    drilldown({ 'GCF_1.4,GCF_2.7': ['t12', 'GCF_1.4', 'GCF_2.7'] }),
+  )!
   assert.deepEqual(
     viewOf(url).views.map((v: { tracks?: string[] }) => v.tracks),
     [undefined, undefined],
@@ -103,15 +106,69 @@ test('a panel with no known gene track carries no tracks field', () => {
 // A row the page draws mirrored opens its panel mirrored too, or the launch is
 // the mirror image of the figure that was clicked.
 test('a mirrored row opens its panel flipped', () => {
-  const index = buildPairIndex({
-    'GCF_1.1,GCF_2.1': ['t12', 'GCF_1.1', 'GCF_2.1'],
-  })
   const view = viewOf(
-    subtreeSyntenyUrl([leaf('GCF_1.1'), leaf('GCF_2.1', true)], index)!,
+    subtreeSyntenyUrl(
+      [leaf('GCF_1.1'), leaf('GCF_2.1', true)],
+      drilldown({ 'GCF_1.1,GCF_2.1': ['t12', 'GCF_1.1', 'GCF_2.1'] }),
+    )!,
   )
   assert.deepEqual(
     view.views.map((v: { loc: string }) => v.loc),
     ['chr1:1-1000', 'chr1:1-1000[rev]'],
+  )
+})
+
+// NCBI annotated the middle genome's .2, which we host; the catalog's pairs are
+// against its .1. Opening that panel as .1 would hand it a locus from .2, so
+// both of its levels go, and the panel opens as the genome its locus is in.
+test('a level whose link names another version of a leaf is dropped', () => {
+  const view = viewOf(
+    subtreeSyntenyUrl(
+      [leaf('GCF_1.1'), leaf('GCF_2.2'), leaf('GCF_3.1')],
+      drilldown({
+        'GCF_1.1,GCF_2.1': ['t12', 'GCF_1.1', 'GCF_2.1'],
+        'GCF_2.1,GCF_3.1': ['t23', 'GCF_2.1', 'GCF_3.1'],
+      }),
+    )!,
+  )
+  assert.deepEqual(view.tracks, [[], []])
+  assert.deepEqual(
+    view.views.map((v: { assembly: string }) => v.assembly),
+    ['GCF_1.1', 'GCF_2.2', 'GCF_3.1'],
+  )
+})
+
+// The assembly index answers with the version we host, and a link naming that
+// one is the genome the panel opens either way.
+test('a link naming the version the index resolves to is kept', () => {
+  const view = viewOf(
+    subtreeSyntenyUrl(
+      [leaf('GCF_1.9'), leaf('GCF_2.1')],
+      drilldown(
+        { 'GCF_1.5,GCF_2.1': ['t12', 'GCF_1.5', 'GCF_2.1'] },
+        accession => ({
+          accession: accession === 'GCF_1.9' ? 'GCF_1.5' : accession,
+        }),
+      ),
+    )!,
+  )
+  assert.deepEqual(view.tracks, [['t12']])
+})
+
+// Human's GenArk hub has no sequence, so a human panel that no level names
+// still has to open /ucsc/hg38.
+test('a panel no level names opens under its hosted genome', () => {
+  const url = subtreeSyntenyUrl(
+    [leaf('GCF_000001405.40'), leaf('GCF_2.1')],
+    drilldown({}, accession =>
+      accession === 'GCF_000001405.40'
+        ? { accession, ucscDb: 'hg38' }
+        : { accession },
+    ),
+  )!
+  assert.deepEqual(
+    viewOf(url).views.map((v: { assembly: string }) => v.assembly),
+    ['hg38', 'GCF_2.1'],
   )
 })
 

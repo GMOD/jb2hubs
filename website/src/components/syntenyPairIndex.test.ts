@@ -10,6 +10,8 @@ import {
 
 import type { PairEntry } from './syntenyPairIndex.ts'
 
+const anyName = () => true
+
 test('accessionBase strips version and assembly-name suffix', () => {
   assert.equal(accessionBase('GCF_000001405.40'), 'GCF_000001405')
   assert.equal(accessionBase('GCF_000001735.4_TAIR10.1'), 'GCF_000001735')
@@ -88,6 +90,7 @@ test('resolveStackNames takes each panel name from its own link', () => {
   const { names, geneTracks, tracks } = resolveStackNames(
     ['GCF_000002285.5', 'GCF_000001405.40', 'GCF_000001635.26'],
     index,
+    anyName,
   )
   assert.deepEqual(names, ['canFam3', 'hg38', 'mm39'])
   // the gene track comes from the same link that fixed the panel name, so it is
@@ -100,9 +103,9 @@ test('resolveStackNames takes each panel name from its own link', () => {
   assert.deepEqual(tracks, [['canFam3_to_hg38_liftOver'], ['hg38_to_mm39']])
 })
 
-// A panel whose level was dropped opens under its accession, so handing it the
-// gene track the contradicting link named would name a track in a config it did
-// not open.
+// A panel whose level was dropped is named by the caller, so handing it the gene
+// track the contradicting link named would name a track in a config it may not
+// open.
 test('resolveStackNames leaves a dropped panel with no gene track', () => {
   const index = buildPairIndex({
     'GCF_000001405.40,GCF_000002285.5': [
@@ -116,6 +119,7 @@ test('resolveStackNames leaves a dropped panel with no gene track', () => {
   const { geneTracks } = resolveStackNames(
     ['GCF_000000009.9', 'GCF_000001405.40', 'GCF_000002285.5'],
     index,
+    anyName,
   )
   assert.deepEqual(geneTracks, ['', 'hg38-ncbiRefSeq', 'canFam3-ncbiRefSeq'])
 })
@@ -170,8 +174,9 @@ test('resolveStackNames drops a level whose link contradicts a settled name', ()
   const { names, tracks } = resolveStackNames(
     ['GCF_000002335.3', 'GCF_000001215.4', 'GCF_000001635.26'],
     index,
+    anyName,
   )
-  assert.deepEqual(names, ['GCF_000002335.3', 'dm6', 'GCF_000001635.26'])
+  assert.deepEqual(names, ['GCF_000002335.3', 'dm6', undefined])
   assert.deepEqual(tracks, [['dm6_to_beetle'], []])
 })
 
@@ -179,14 +184,15 @@ test('a level with no catalog entry keeps its empty slot', () => {
   const { names, tracks } = resolveStackNames(
     ['GCF_000000001.1', 'GCF_000000002.1'],
     buildPairIndex({}),
+    anyName,
   )
-  assert.deepEqual(names, ['GCF_000000001.1', 'GCF_000000002.1'])
+  assert.deepEqual(names, [undefined, undefined])
   assert.deepEqual(tracks, [[]])
 })
 
-// A genome whose own level was dropped still carries its accession in `names`,
-// so comparing against that would read as a conflict and cascade the drop down
-// the stack — the middle genome here has claimed no panel yet.
+// A genome whose own level was dropped has claimed no panel name, so the level
+// after it is free to name it rather than reading as a conflict that cascades
+// the drop down the stack.
 test('a dropped level does not poison the level after it', () => {
   const index = buildPairIndex({
     'GCF_000001405.40,GCF_000002285.5': ['hg38_to_canFam3', 'hg38', 'canFam3'],
@@ -194,8 +200,9 @@ test('a dropped level does not poison the level after it', () => {
   const { names, tracks } = resolveStackNames(
     ['GCF_000000009.9', 'GCF_000001405.40', 'GCF_000002285.5'],
     index,
+    anyName,
   )
-  assert.deepEqual(names, ['GCF_000000009.9', 'hg38', 'canFam3'])
+  assert.deepEqual(names, [undefined, 'hg38', 'canFam3'])
   assert.deepEqual(tracks, [[], ['hg38_to_canFam3']])
 })
 
@@ -211,4 +218,44 @@ test('an entry in the pre-names format is skipped, not mangled', () => {
   assert.equal(index.size, 1)
   assert.equal(syntenyLink(index, 'GCF_1.1', 'GCF_2.1'), undefined)
   assert.equal(syntenyLink(index, 'GCF_3.1', 'GCF_4.1')?.trackId, 't34')
+})
+
+// NCBI annotated the dog's .5 while the catalog pairs its .3 against human: the
+// dog panel cannot open as .3 with a .5 locus, so the level goes and the
+// human-mouse one below it keeps its own slot.
+test('resolveStackNames drops a level whose panel opens as another genome', () => {
+  const index = buildPairIndex({
+    'GCF_000002285.3,GCF_000001405.40': ['canFam3_to_hg38', 'canFam3', 'hg38'],
+    'GCF_000001405.40,GCF_000001635.26': ['hg38_to_mm39', 'hg38', 'mm39'],
+  })
+  const { names, tracks } = resolveStackNames(
+    ['GCF_000002285.5', 'GCF_000001405.40', 'GCF_000001635.26'],
+    index,
+    (i, name) => i !== 0 || name === 'GCF_000002285.5',
+  )
+  assert.deepEqual(names, [undefined, 'hg38', 'mm39'])
+  assert.deepEqual(tracks, [[], ['hg38_to_mm39']])
+})
+
+// Two keys one base apart are one lookup; which of them answers must not depend
+// on the catalog's key order.
+test('a version collision keeps the newer pair whichever comes first', () => {
+  const older: [string, PairEntry] = [
+    'GCF_001704415.1,GCF_000001405.40',
+    ['goat1_to_hg38', 'GCF_001704415.1', 'hg38'],
+  ]
+  const newer: [string, PairEntry] = [
+    'GCF_001704415.2,GCF_000001405.40',
+    ['goat2_to_hg38', 'GCF_001704415.2', 'hg38'],
+  ]
+  for (const order of [
+    [older, newer],
+    [newer, older],
+  ]) {
+    const index = buildPairIndex(Object.fromEntries(order))
+    assert.equal(
+      syntenyLink(index, 'GCF_001704415.2', 'GCF_000001405.40')?.trackId,
+      'goat2_to_hg38',
+    )
+  }
 })

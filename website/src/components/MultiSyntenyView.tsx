@@ -211,7 +211,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
       .map(t => placementByTaxon.get(t))
       .filter((p): p is SubtreeLeaf => !!p)
   const subtreeHref = (leaves: SubtreeLeaf[]) =>
-    drilldown ? subtreeSyntenyUrl(leaves, drilldown.index) : undefined
+    drilldown ? subtreeSyntenyUrl(leaves, drilldown) : undefined
 
   // Branch points that can launch, each with the band of rows it covers (drawn
   // hidden, lit by the hover rules) and the leaves nearest the reference that a

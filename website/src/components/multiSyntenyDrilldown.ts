@@ -85,12 +85,6 @@ function loadPairs(): Promise<PairIndex> {
   )
 }
 
-// A click cannot wait for a retry: without the catalog it opens the single
-// genome, and the next click asks again.
-function pairsForClick(): Promise<PairIndex> {
-  return loadPairs().catch((): PairIndex => new Map())
-}
-
 // The panel assemblies are the link's names rather than the accessions: a
 // comparison against human lives in /ucsc/hg38/config.json and knows that genome
 // as `hg38`, so merging by accession would fetch a hub without the track. Each
@@ -156,24 +150,36 @@ export function nearestWindow<T>(items: T[], center: number, n: number) {
   return items.slice(start, start + n)
 }
 
-// Build a stacked, tree-ordered LinearSyntenyView URL for a subtree, each genome
+// A stacked, tree-ordered LinearSyntenyView URL for a subtree: each genome
 // navigated to its ortholog locus with its gene track open, and a synteny track
-// between adjacent genomes where a chain exists. JBrowse binds tracks to a level by array position, NOT by
-// assemblyNames, so tracks is one slot per level (the gap between picked[i] and
-// picked[i+1]); a level with no chain gets an empty slot to keep the rest aligned.
-// Pure (no DOM/fetch) so the level binding stays unit-testable. Returns undefined
-// for fewer than two genomes.
-export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
+// between adjacent genomes where a chain links them. Pure, so the level binding
+// stays unit-testable; undefined for fewer than two genomes.
+//
+// A leaf's locus is in the assembly NCBI annotated, and `resolveStackNames`
+// keeps a level only where the catalog's name for each panel is the genome
+// `hosted` resolves that assembly to, the check the gene drill-down makes. A
+// panel no level names opens under that hosted genome too, so human still
+// opens /ucsc/hg38 rather than a GenArk hub with no sequence.
+export function subtreeSyntenyUrl(
+  picked: SubtreeLeaf[],
+  { index, hosted }: DrilldownData,
+) {
   if (picked.length < 2) {
     return undefined
   }
+  const genomes = picked.map(p => hosted(p.assembly))
   const { names, geneTracks, tracks } = resolveStackNames(
     picked.map(p => p.assembly),
     index,
+    (i, name) => {
+      const genome = genomes[i]
+      return genome !== undefined && isSameGenome(name, genome)
+    },
   )
   return syntenyViewUrl(
     picked.map((p, i) => ({
-      assembly: names[i] ?? p.assembly,
+      assembly:
+        names[i] ?? genomes[i]?.ucscDb ?? genomes[i]?.accession ?? p.assembly,
       loc: flipLoc(p.loc, p.flipped ?? false),
       ...panelTracks(geneTracks[i] ?? ''),
     })),
@@ -185,7 +191,7 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
 // The click path for a branch point before the catalog has been prefetched:
 // the caller has already chosen which leaves to open.
 export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
-  const url = subtreeSyntenyUrl(leaves, await pairsForClick())
+  const url = subtreeSyntenyUrl(leaves, await drilldownForClick())
   if (url) {
     window.open(url, '_blank', 'noopener')
   }
@@ -210,10 +216,17 @@ function hostedLookup(store: AssemblyStore | undefined) {
 export async function loadDrilldownData(): Promise<DrilldownData> {
   const [index, store] = await Promise.all([
     loadPairs(),
-    loadStore().then(
-      s => s,
-      () => undefined,
-    ),
+    loadStore().catch(() => undefined),
+  ])
+  return { index, hosted: hostedLookup(store) }
+}
+
+// A click cannot wait for a retry: without the catalog it opens the single
+// genome, and the next click asks again.
+async function drilldownForClick(): Promise<DrilldownData> {
+  const [index, store] = await Promise.all([
+    loadPairs().catch((): PairIndex => new Map()),
+    loadStore().catch(() => undefined),
   ])
   return { index, hosted: hostedLookup(store) }
 }
@@ -290,19 +303,13 @@ export async function openGeneDrilldown(
   refGene: PlacedGene | undefined,
   flipped = false,
 ) {
-  const [index, hosted] = await Promise.all([
-    pairsForClick(),
-    loadStore().then(
-      s => s.find(gene.assembly),
-      () => ({ accession: gene.assembly }),
-    ),
-  ])
+  const { index, hosted } = await drilldownForClick()
   const url = geneDrilldownUrl(
     gene,
     refAccession,
     refGene,
     index,
-    hosted,
+    hosted(gene.assembly),
     flipped,
   )
   if (url) {

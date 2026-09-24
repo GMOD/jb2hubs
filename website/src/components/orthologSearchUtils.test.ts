@@ -488,7 +488,7 @@ test('planMultiSynteny chains a path-shaped catalog top-to-bottom', () => {
     plan?.rows.map(r => r.assembly.accession),
     ['REF', 'A', 'B', 'C'],
   )
-  assert.deepEqual(plan?.tracks, ['tREF_A', 'tA_B', 'tB_C'])
+  assert.deepEqual(plan?.tracks, [['tREF_A'], ['tA_B'], ['tB_C']])
   assert.deepEqual(plan?.geneTracks, ['REF-gene', 'A-gene', 'B-gene', 'C-gene'])
 })
 
@@ -504,20 +504,17 @@ test('planMultiSynteny flanks the reference with its two nearest partners for a 
     plan?.rows.map(r => r.assembly.accession),
     ['B', 'REF', 'A'],
   )
-  assert.deepEqual(plan?.tracks, ['tREF_B', 'tREF_A'])
+  assert.deepEqual(plan?.tracks, [['tREF_B'], ['tREF_A']])
 })
 
 test('planMultiSynteny matches a track regardless of pair key order', () => {
   const plan = planMultiSynteny([REF, A], 'REF', pairs({ 'A,REF': 'tA_REF' }))
-  assert.deepEqual(plan?.tracks, ['tA_REF'])
+  assert.deepEqual(plan?.tracks, [['tA_REF']])
 })
 
-// buildMultiSyntenyUrl turns tracks[i] into level i, and the plan flattens what
-// resolveStackNames returns — so a dropped level would not leave a hole, it would
-// slide every later track up onto the wrong pair of genomes. What prevents that
-// is bestNeighbor refusing an extension whose link disagrees with the name
-// already fixed for the node, which means the chain never contains an adjacency
-// the resolver then drops. Loosen that guard and this is what notices.
+// bestNeighbor refuses an extension whose link disagrees with the name already
+// fixed for the node, so the chain never holds an adjacency the resolver then
+// drops. Loosen that guard and this is what notices.
 test('a plan has exactly one track per adjacency, never a dropped level', () => {
   // dm6 under two names: the catalog knows the fly as `dm6` against the beetle
   // and as its accession against mouse, so only one of the two can be a panel.
@@ -532,7 +529,29 @@ test('a plan has exactly one track per adjacency, never a dropped level', () => 
   )
   assert.ok(plan)
   assert.equal(plan.tracks.length, plan.rows.length - 1)
+  assert.ok(plan.tracks.every(t => t.length === 1))
   assert.equal(plan.geneTracks.length, plan.rows.length)
+})
+
+// The catalog pairs B's .1 against A while the row is B's .2: a panel opened as
+// .1 could not navigate to the row's locus, so B joins the chain through C,
+// whose link names the genome the row is in.
+test('planMultiSynteny does not chain through another version of a row', () => {
+  const plan = planMultiSynteny(
+    [REF, A, res('GCF_B.2', 10116), C],
+    'REF',
+    buildPairIndex({
+      'REF,A': ['tREF_A', 'REF', 'A'],
+      'A,GCF_B.1': ['tA_B1', 'A', 'GCF_B.1'],
+      'REF,C': ['tREF_C', 'REF', 'C'],
+      'C,GCF_B.2': ['tC_B2', 'C', 'GCF_B.2'],
+    }),
+  )
+  assert.deepEqual(
+    plan?.rows.map(r => r.assembly.accession),
+    ['GCF_B.2', 'C', 'REF', 'A'],
+  )
+  assert.deepEqual(plan?.tracks, [['tC_B2'], ['tREF_C'], ['tREF_A']])
 })
 
 test('planMultiSynteny returns null when nothing chains to the reference', () => {
@@ -555,7 +574,7 @@ test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel'
         rows: [r0, r1],
         names: ['REF', 'A'],
         geneTracks: ['REF-gene', 'A-gene'],
-        tracks: ['tREF_A'],
+        tracks: [['tREF_A']],
       },
       100_000,
     ),
@@ -572,6 +591,20 @@ test('buildMultiSyntenyUrl emits one level per adjacency and windows each panel'
   ])
 })
 
+// A level with no track keeps its empty slot, or every track after it binds to
+// the pair above the one it links.
+test('buildMultiSyntenyUrl keeps an empty level in its place', () => {
+  const spec = specOf(
+    buildMultiSyntenyUrl({
+      rows: [res('A', 1), res('B', 2), res('C', 3)],
+      names: ['A', 'B', 'C'],
+      geneTracks: ['', '', ''],
+      tracks: [[], ['tB_C']],
+    }),
+  )
+  assert.deepEqual(spec.tracks, [[], ['tB_C']])
+})
+
 // The defect this fixes: BRCA1 is minus on hg38 chr17 and plus on the chimp and
 // gorilla chromosomes it aligns to, so the human row drew its neighborhood
 // back-to-front and both ribbons crossed the strip diagonally.
@@ -585,7 +618,7 @@ test('buildMultiSyntenyUrl flips a row whose ortholog runs the other way', () =>
         rows: [chimp, human, gorilla],
         names: ['GCF_CHIMP', 'hg38', 'GCF_GOR'],
         geneTracks: ['c-gene', 'h-gene', 'g-gene'],
-        tracks: ['tC_H', 'tH_G'],
+        tracks: [['tC_H'], ['tH_G']],
       },
       100_000,
     ),
