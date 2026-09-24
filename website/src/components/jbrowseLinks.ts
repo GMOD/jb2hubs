@@ -70,15 +70,12 @@ export function panelTracks(trackId: string) {
 
 // LaunchView init options for the LinearSyntenyView.
 //
-// None of these reach the view on the production host, and that is not a bug we
-// can fix from here. Measured 2026-08-27 by booting a launch on both hosts and
-// reading the view model back: on `latest` (v4.3.0) `LaunchLinearSyntenyView`
-// forwards `views` and `tracks` and nothing else, so `drawCurves` set to true
-// comes back false; on `main` the launcher forwards every declared view property
-// verbatim and both `drawCurves` and `cigarMode` land. Unknown keys are ignored
-// rather than rejected on either, so passing them costs nothing and they start
-// working the day v5 publishes — which is why this is not gated behind
-// `features.staging` the way a config-level feature would be.
+// Every launch targets `main` (JBROWSE_BASE), whose launcher forwards every
+// declared view property verbatim. Released v4.3.0's `LaunchLinearSyntenyView`
+// forwards `views` and `tracks` and nothing else, so a link opened on a pinned
+// v4 host drops these and opens on the view's defaults — measured 2026-08-27 by
+// reading the view model back on both. Neither host rejects an unknown key, so
+// that is the whole cost.
 export interface SyntenyViewOptions {
   colorBy?: string
   drawCurves?: boolean

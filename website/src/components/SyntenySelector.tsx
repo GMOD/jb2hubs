@@ -1,8 +1,9 @@
+import '../styles/ui.css'
+
 import { useCallback, useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
-import { features } from '../config/features.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
 import Autocomplete from './Autocomplete.tsx'
@@ -19,6 +20,7 @@ import type {
   SyntenyAssembly,
   SyntenyCatalogData,
 } from '../lib/syntenyCatalog.ts'
+import type { ReactNode } from 'react'
 
 interface Props {
   data: SyntenyCatalogData
@@ -105,13 +107,26 @@ export default function SyntenySelector({ data }: Props) {
       : ortholog.data
     : undefined
 
-  function orthologNote() {
-    let note = ''
+  function orthologNote(): ReactNode {
+    let note: ReactNode = ''
     if (gene && taxon1 !== taxon2) {
       if (ortholog.isLoading) {
         note = `Finding ${gene.symbol} ortholog in ${nameOf(species2)}…`
       } else if (ortholog.error !== undefined) {
-        note = `Ortholog lookup failed (${String(ortholog.error)}); pick the gene again to retry.`
+        note = (
+          <>
+            Ortholog lookup failed ({String(ortholog.error)}).{' '}
+            <button
+              type="button"
+              className="ui-linkbtn"
+              onClick={() => {
+                void ortholog.mutate()
+              }}
+            >
+              Retry
+            </button>
+          </>
+        )
       } else if (ortholog.data) {
         note = `${gene.symbol} → ${ortholog.data}`
       } else {
@@ -192,8 +207,9 @@ export default function SyntenySelector({ data }: Props) {
 
   // Each panel opens its genome's gene track — a synteny sub-view has no
   // defaultSession, so without one it is an empty browser at the right locus —
-  // and, when an ortholog pair resolved, is navigated to that symbol, which
-  // JBrowse resolves through the assembly's text index at load. Otherwise the
+  // and is navigated to its gene's symbol where it has one, which JBrowse
+  // resolves through the assembly's text index at load: the first panel as soon
+  // as a gene is picked, the second once its ortholog resolves. Otherwise the
   // whole genome. The view options make the whole-genome synteny readable on
   // first load (chromosome painting, diagonalized axes, bezier ribbons); see
   // SyntenyViewOptions for which hosts honour them.
@@ -205,9 +221,7 @@ export default function SyntenySelector({ data }: Props) {
   const launchUrl =
     species1 && species2 && selectedTrack
       ? syntenyViewUrl(
-          gene && symbol2
-            ? [panel(species1, gene.symbol), panel(species2, symbol2)]
-            : [panel(species1, undefined), panel(species2, undefined)],
+          [panel(species1, gene?.symbol), panel(species2, symbol2)],
           [selectedTrack.trackId],
           { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
         )
@@ -351,15 +365,6 @@ export default function SyntenySelector({ data }: Props) {
           </button>
         )}
       </div>
-
-      {!features.staging && (
-        <p className="synteny-release-note">
-          The current JBrowse release opens the view without chromosome coloring
-          or diagonalized axes, so a whole-genome comparison starts grey and
-          unsorted; those options apply automatically once the next release
-          ships.
-        </p>
-      )}
 
       <details className="synteny-options">
         <summary>Options</summary>
