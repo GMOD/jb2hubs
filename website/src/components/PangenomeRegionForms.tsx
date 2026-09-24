@@ -168,8 +168,8 @@ export default function PangenomeRegionForms({
           {reading ? (
             <p>
               <code>{formatRegion(region)}</code>: {reading.sites} structural
-              records, {reading.informative} of them telling the{' '}
-              {reading.haplotypes} haplotypes apart
+              records, {reading.informative} of them telling apart the{' '}
+              {reading.haplotypes} haplotypes the callset genotypes
               {reading.panel
                 ? reading.panel.forms > 0
                   ? `, in ${reading.panel.forms} form${reading.panel.forms === 1 ? '' : 's'} carried by 1% or more`
