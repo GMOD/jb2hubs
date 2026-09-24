@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useCombobox } from '../hooks/useCombobox.ts'
 import { searchGenes } from './geneSearch.ts'
-
-const optionId = (i: number) => `msv-gene-option-${i}`
 
 // A gene-symbol box with suggestions. Deliberately free-text: Enter submits what
 // was typed unless a suggestion is highlighted, so a symbol the type-ahead has
@@ -22,8 +21,6 @@ export default function GeneCombobox({
   onSubmit: (v: string) => void
 }) {
   const [fetchedHits, setFetchedHits] = useState<string[]>([])
-  const [open, setOpen] = useState(false)
-  const [highlighted, setHighlighted] = useState(-1)
   // what the user typed, as opposed to a symbol put in the box by a chip or a
   // species switch — only typing should fire a lookup
   const [typed, setTyped] = useState('')
@@ -35,6 +32,25 @@ export default function GeneCombobox({
   // than state to clear: derived here so the effect does the one thing it is
   // for, which is fetching.
   const hits = typed.trim().length < 2 || value !== typed ? [] : fetchedHits
+
+  // A new set of suggestions starts with none highlighted, so Enter runs what
+  // was typed until an arrow key picks one.
+  const {
+    open,
+    setOpen,
+    highlighted,
+    setHighlighted,
+    listboxId,
+    optionId,
+    onKeyDown,
+  } = useCombobox({
+    optionCount: hits.length,
+    resetKey: hits.join('\n'),
+    initialHighlight: -1,
+    onPick: index => {
+      choose(hits[index] ?? value)
+    },
+  })
 
   // Debounced and race-safe: the cleanup drops a slow earlier response so it
   // cannot land on top of a newer one.
@@ -48,7 +64,6 @@ export default function GeneCombobox({
         // set even when empty, so a no-match query clears stale suggestions
         if (!ignore) {
           setFetchedHits(found.map(h => h.symbol))
-          setHighlighted(-1)
         }
       })
     }, 220)
@@ -58,7 +73,7 @@ export default function GeneCombobox({
     }
   }, [typed, taxId])
 
-  const choose = (symbol: string) => {
+  function choose(symbol: string) {
     onChange(symbol)
     setTyped('')
     setOpen(false)
@@ -74,7 +89,7 @@ export default function GeneCombobox({
         value={value}
         role="combobox"
         aria-expanded={showList}
-        aria-controls="msv-gene-listbox"
+        aria-controls={listboxId}
         aria-autocomplete="list"
         aria-activedescendant={
           showList && highlighted >= 0 ? optionId(highlighted) : undefined
@@ -96,25 +111,22 @@ export default function GeneCombobox({
           setOpen(false)
         }}
         onKeyDown={e => {
-          if (e.key === 'ArrowDown' && showList) {
+          onKeyDown(e)
+          // Enter with nothing highlighted submits the box as typed.
+          if (
+            e.key === 'Enter' &&
+            !e.nativeEvent.isComposing &&
+            !e.isDefaultPrevented()
+          ) {
             e.preventDefault()
-            setHighlighted(i => Math.min(i + 1, hits.length - 1))
-          } else if (e.key === 'ArrowUp' && showList) {
-            e.preventDefault()
-            setHighlighted(i => Math.max(i - 1, -1))
-          } else if (e.key === 'Enter') {
-            e.preventDefault()
-            const picked = showList ? hits[highlighted] : undefined
-            choose(picked ?? value)
-          } else if (e.key === 'Escape') {
-            setOpen(false)
+            choose(value)
           }
         }}
       />
       {showList && (
         <ul
           className="msv-listbox"
-          id="msv-gene-listbox"
+          id={listboxId}
           role="listbox"
         >
           {hits.map((symbol, i) => (
