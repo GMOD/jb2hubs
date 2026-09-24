@@ -23,14 +23,17 @@ const index: AssemblyIndex = {
 test('an exact accession resolves to its own entry', () => {
   const found = createStore(index).find('GCF_000001635.9')
   assert.equal(found?.ucscDb, 'mm10')
+  assert.equal(found?.exact, true)
 })
 
-// NCBI's ortholog API routinely names a version of an assembly we do not host,
-// and the whole point of the fallback is that the row still resolves.
+// NCBI sometimes names a version of an assembly we do not host, and the
+// fallback is what keeps that row on a genome we do; `exact` is what tells the
+// caller whose coordinates it holds.
 test('an unhosted version falls back to the same base accession', () => {
   const found = createStore(index).find('GCF_000001405.99')
   assert.equal(found?.accession, 'GCF_000001405.40')
   assert.equal(found?.ucscDb, 'hg38')
+  assert.equal(found?.exact, false)
 })
 
 // Two versions of one base are both hosted here (mm39 and mm10), so "whichever

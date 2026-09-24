@@ -187,19 +187,26 @@ const targets = new Map<string, Promise<GenomeTarget>>()
 // The genome an NCBI accession opens on. Memoized per accession: a session
 // rebuild on every view-option toggle would otherwise re-read the config and the
 // alias file. A failed load is evicted, so a later gene retries.
+//
+// Where NCBI names another version of an assembly we host, the target is ours,
+// for either kind of config: NCBI's own has no hub to load, and its refNames
+// reach ours through the alias file wherever the versions share a sequence (see
+// createStore).
 export function resolveGenomeTarget(accession: string): Promise<GenomeTarget> {
   let target = targets.get(accession)
   if (!target) {
     target = loadStore()
       .then(store => {
-        const ucscDb = store.find(accession)?.ucscDb
+        const hosted = store.find(accession)
+        const ucscDb = hosted?.ucscDb
+        const genArk = hosted?.accession ?? accession
         return ucscDb
           ? loadTarget(ucscConfigPath(ucscDb), ucscDb, [
               `/ucsc/${ucscDb}/minimal.json`,
               ucscConfigPath(ucscDb),
             ])
-          : loadTarget(genarkConfigPath(accession), accession, [
-              genarkConfigPath(accession),
+          : loadTarget(genarkConfigPath(genArk), genArk, [
+              genarkConfigPath(genArk),
             ])
       })
       .catch((e: unknown) => {

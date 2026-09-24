@@ -1,10 +1,11 @@
 import assert from 'node:assert'
-import { test } from 'node:test'
+import { mock, test } from 'node:test'
 
 import {
   parseChromAlias,
   pickGeneTrack,
   pickVariantTracks,
+  resolveGenomeTarget,
 } from './genomeTarget.ts'
 
 // GenArk publishes one column per naming scheme and the config's adapter names
@@ -108,3 +109,34 @@ test('pickVariantTracks: ClinVar and AlphaMissense where the config has them', (
 
 // A GenArk hub's only gene track is its NCBI GFF, which `latest` labels with
 // UUIDs, so a session opening it is routed to the gene-track host.
+
+// NCBI's exon table can sit on a version of an assembly we host another
+// version of. Its own config does not exist, so asking for it failed with "no
+// hosted genome"; ours does, and NCBI's refNames reach it through its alias
+// file wherever the two versions share the sequence.
+test('another version of a hosted GenArk assembly opens the hosted one', async () => {
+  const asked: string[] = []
+  const original = globalThis.fetch
+  const json = (body: unknown) =>
+    Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
+  mock.method(globalThis, 'fetch', (url: string) => {
+    asked.push(url)
+    return url.endsWith('/ortholog_index.json')
+      ? json({
+          schema: 'ortholog-index/2',
+          accessions: ['GCF_965601325.1'],
+          ucscDb: {},
+        })
+      : url.includes('/GCF_965601325.1/config.json')
+        ? json({ tracks: [{ trackId: 'GCF_965601325.1-ncbiGff' }] })
+        : Promise.resolve(new Response('', { status: 404 }))
+  })
+  try {
+    const target = await resolveGenomeTarget('GCF_965601325.2')
+    assert.equal(target.assemblyName, 'GCF_965601325.1')
+    assert.equal(target.geneTrackId, 'GCF_965601325.1-ncbiGff')
+    assert.ok(!asked.some(u => u.includes('GCF_965601325.2')))
+  } finally {
+    globalThis.fetch = original
+  }
+})

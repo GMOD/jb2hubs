@@ -101,6 +101,10 @@ export interface NcbiOrthologResponse {
 
 export interface OrthologResult {
   assembly: Assembly
+  // The accession NCBI placed the ortholog on, set only when that is another
+  // version of the assembly we host (see createStore). The coordinates are
+  // that version's.
+  otherVersion?: string
   geneSymbol: string
   geneId: string
   chromosome: string
@@ -166,16 +170,26 @@ export function isSameGenome(
   return panelName === hosted.accession || panelName === hosted.ucscDb
 }
 
+// Whether a row's coordinates are the hosted version's own, rather than those
+// of a version NCBI annotated and we do not host.
+export function placedOnHosted(r: OrthologResult) {
+  return r.otherVersion === undefined
+}
+
 // The synteny link for a row, kept only when the panel it names is the genome
 // the row's coordinates came from. Every caller that goes on to navigate the
-// panel wants this rather than syntenyLink.
+// panel wants this rather than syntenyLink. A row NCBI placed on another
+// version of our assembly gets none, by the same rule: a panel lands on NCBI's
+// refName only where the two versions share that sequence.
 export function orthologSyntenyLink(
   index: PairIndex,
   r: OrthologResult,
   otherAccession: string,
 ) {
   const link = syntenyLink(index, r.assembly.accession, otherAccession)
-  return link && isSameGenome(link.names[0], r.assembly) ? link : undefined
+  return link && placedOnHosted(r) && isSameGenome(link.names[0], r.assembly)
+    ? link
+    : undefined
 }
 
 // bp of context drawn either side of the ortholog gene, so a launched synteny
@@ -234,17 +248,19 @@ export function strandFlips(rows: OrthologResult[]) {
 // Pairwise reference-vs-ortholog synteny launch. Both panels land on the
 // neighborhood window around their gene and open that genome's gene track, so
 // the ortholog is drawn rather than merely centered; the reference panel is left
-// unnavigated only when the reference ortholog row is unknown, and flipped when
-// its ortholog runs the other way from this row's. The panel assemblies come
-// from the link, not from the accessions, because the track lives in a config
-// that may know a genome as `hg38` rather than as GCF_000001405.40 — naming the
-// accession there merges a hub without the track in it.
+// unnavigated when the reference row is unknown or placed on a version we do
+// not host, and flipped when its ortholog runs the other way from this row's.
+// The panel assemblies come from the link, not from the accessions, because the
+// track lives in a config that may know a genome as `hg38` rather than as
+// GCF_000001405.40 — naming the accession there merges a hub without the track
+// in it.
 export function orthoSyntenyUrl(
   r: OrthologResult,
   link: SyntenyLink,
-  ref: OrthologResult | undefined,
+  refRow: OrthologResult | undefined,
   flankBp = SYNTENY_FLANK_BP,
 ) {
+  const ref = refRow && placedOnHosted(refRow) ? refRow : undefined
   // The reference panel is the one that flips, since this row leads the stack.
   // An unnavigated reference panel has nothing to match, and no locstring to
   // carry the suffix.
@@ -476,41 +492,46 @@ export function buildOrthologResults(
     if (!Number.isFinite(taxonId)) {
       continue
     }
-    // First hosted annotation carrying any placed location. Scans every location
-    // (not just [0]) so an annotation whose first location lacks a range still
-    // resolves off a later placed one, matching locate() in orthologSet.ts.
-    for (const ann of gene.annotations ?? []) {
+    // Every hosted annotation carrying a placed location, scanning every
+    // location (not just [0]) so an annotation whose first location lacks a
+    // range still resolves off a later one, matching locate() in orthologSet.ts.
+    // An annotation on the very version we host beats an earlier one that only
+    // shares its base accession.
+    const placed = (gene.annotations ?? []).flatMap(ann => {
       const hosted = store.find(ann.assembly_accession)
       const loc = ann.genomic_locations?.find(l => l.genomic_range)
-      if (hosted && loc?.genomic_range) {
-        const assembly: Assembly = {
-          accession: hosted.accession,
-          ucscDb: hosted.ucscDb,
-          scientificName: gene.taxname ?? String(taxonId),
-          commonName: gene.common_name,
-          taxonId,
-        }
-        const begin = parseInt(loc.genomic_range.begin)
-        const end = parseInt(loc.genomic_range.end)
-        const strand = loc.genomic_range.orientation === 'minus' ? -1 : 1
-        const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
-        results.push({
-          assembly,
-          geneSymbol: gene.symbol,
-          geneId: gene.gene_id,
-          chromosome: loc.sequence_name,
-          begin,
-          end,
-          locStr,
-          strand,
-          jbrowseUrl: accessionToJbrowseUrl(
-            assembly.accession,
-            locStr,
-            assembly.ucscDb,
-          ),
-        })
-        break
+      const range = loc?.genomic_range
+      return hosted && loc && range ? [{ ann, hosted, loc, range }] : []
+    })
+    const hit = placed.find(p => p.hosted.exact) ?? placed[0]
+    if (hit) {
+      const { ann, hosted, loc, range } = hit
+      const assembly: Assembly = {
+        accession: hosted.accession,
+        ucscDb: hosted.ucscDb,
+        scientificName: gene.taxname ?? String(taxonId),
+        commonName: gene.common_name,
+        taxonId,
       }
+      const begin = parseInt(range.begin)
+      const end = parseInt(range.end)
+      const locStr = `${loc.genomic_accession_version}:${begin}-${end}`
+      results.push({
+        assembly,
+        ...(hosted.exact ? {} : { otherVersion: ann.assembly_accession }),
+        geneSymbol: gene.symbol,
+        geneId: gene.gene_id,
+        chromosome: loc.sequence_name,
+        begin,
+        end,
+        locStr,
+        strand: range.orientation === 'minus' ? -1 : 1,
+        jbrowseUrl: accessionToJbrowseUrl(
+          assembly.accession,
+          locStr,
+          assembly.ucscDb,
+        ),
+      })
     }
   }
 

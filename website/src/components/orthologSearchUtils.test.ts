@@ -7,6 +7,8 @@ import {
   buildMultiSyntenyUrl,
   buildOrthologResults,
   matchesQuery,
+  orthoSyntenyUrl,
+  orthologSyntenyLink,
   orthologsToTsv,
   planMultiSynteny,
   refLabel,
@@ -32,6 +34,7 @@ test('createStore.find returns the hosted accession and its UCSC db', () => {
   const assembly = store.find('GCF_000001405.40')
   assert.equal(assembly?.accession, 'GCF_000001405.40')
   assert.equal(assembly?.ucscDb, 'hg38')
+  assert.equal(assembly?.exact, true)
 })
 
 test('createStore.find falls back to a version-stripped match', () => {
@@ -39,6 +42,7 @@ test('createStore.find falls back to a version-stripped match', () => {
   // NCBI reports .39 but we host .40
   const assembly = store.find('GCF_000001405.39')
   assert.equal(assembly?.accession, 'GCF_000001405.40')
+  assert.equal(assembly?.exact, false)
 })
 
 test('createStore.find returns undefined for an unknown accession', () => {
@@ -340,6 +344,84 @@ test('buildOrthologResults skips annotations lacking a genomic range', () => {
     },
   ]
   assert.equal(buildOrthologResults(reports, store).length, 0)
+})
+
+function salmonReport(
+  annotations: { accession: string; refName: string }[],
+): NcbiOrthologReport {
+  return {
+    gene: {
+      gene_id: '106560000',
+      symbol: 'tp53',
+      tax_id: '8030',
+      taxname: 'Salmo salar',
+      annotations: annotations.map(({ accession, refName }) => ({
+        assembly_accession: accession,
+        genomic_locations: [
+          {
+            genomic_accession_version: refName,
+            sequence_name: 'ssa05',
+            genomic_range: { begin: '1000', end: '2000' },
+          },
+        ],
+      })),
+    },
+  }
+}
+
+// The report's first annotation matched only by its base accession, and it won
+// because it came first — pairing another version's coordinates with ours
+// while an annotation on the very version we host sat right behind it.
+test('buildOrthologResults prefers the annotation on the version we host', () => {
+  const store = createStore({
+    schema: 'ortholog-index/2',
+    accessions: ['GCF_965601325.1', 'GCF_900000001.1'],
+    ucscDb: {},
+  })
+  const [row] = buildOrthologResults(
+    [
+      salmonReport([
+        { accession: 'GCF_965601325.2', refName: 'NC_138294.1' },
+        { accession: 'GCF_900000001.1', refName: 'NC_999999.1' },
+      ]),
+    ],
+    store,
+  )
+  assert.equal(row?.assembly.accession, 'GCF_900000001.1')
+  assert.equal(row?.otherVersion, undefined)
+  assert.equal(row?.locStr, 'NC_999999.1:1000-2000')
+})
+
+// Salmon's .2 kept NC_138294.1 from .1, so the locus resolves on ours through
+// its chromAlias; the row says whose coordinates they are.
+test('a row NCBI placed on another version keeps its locus and names that version', () => {
+  const store = createStore({
+    schema: 'ortholog-index/2',
+    accessions: ['GCF_965601325.1'],
+    ucscDb: {},
+  })
+  const [row] = buildOrthologResults(
+    [salmonReport([{ accession: 'GCF_965601325.2', refName: 'NC_138294.1' }])],
+    store,
+  )
+  assert.equal(row?.assembly.accession, 'GCF_965601325.1')
+  assert.equal(row?.otherVersion, 'GCF_965601325.2')
+  assert.ok(row?.jbrowseUrl.includes('loc=NC_138294.1'))
+})
+
+test('a row placed on another version gets no synteny link, and does not navigate a reference panel', () => {
+  const index = pairs({ 'REF,A': 'tREF_A' })
+  const exact = res('A', 10090)
+  const other = { ...exact, otherVersion: 'A.2' }
+  assert.ok(orthologSyntenyLink(index, exact, 'REF'))
+  assert.equal(orthologSyntenyLink(index, other, 'REF'), undefined)
+
+  const link = orthologSyntenyLink(index, exact, 'REF')!
+  const ref = res('REF', 9606, 5000, 6000, 'NC_REF')
+  const refPanel = (r: OrthologResult) =>
+    specOf(orthoSyntenyUrl(exact, link, r)).views[1]
+  assert.equal(refPanel(ref).loc, 'NC_REF:1-106000')
+  assert.equal(refPanel({ ...ref, otherVersion: 'REF.2' }).loc, undefined)
 })
 
 // Pull the decoded LinearSyntenyView spec back out of a launch URL.

@@ -24,6 +24,8 @@ export interface AssemblyIndex {
 export interface HostedAssembly {
   accession: string
   ucscDb?: string
+  // false when `accession` is another version of the one asked for
+  exact: boolean
 }
 
 function stripVersion(accession: string) {
@@ -36,11 +38,17 @@ function version(accession: string) {
 }
 
 // Wraps the assembly index as a queryable store.
-// NCBI's ortholog API sometimes returns a different assembly version than what
-// we host; find() falls back to a version-stripped match so near-version hits
-// still resolve (JBrowse's refName aliasing handles the rest). When we host
-// several versions of one base, the fallback deterministically picks the newest
-// rather than whichever happened to be first in the list.
+//
+// NCBI sometimes annotates a version of an assembly we do not host — Atlantic
+// salmon on GCF_965601325.2 against our .1 — so find() falls back to the newest
+// hosted version of the same base, and says so with `exact: false`. Whether
+// NCBI's coordinates then carry over is a question per sequence, which the
+// hosted version's chromAlias answers: a version bump re-versions only the
+// sequences it changed, so salmon's NC_138294.1 and NC_138319.1 are in both and
+// resolve on ours, while a changed sequence's new accession is simply unknown
+// there, never a different place on a sequence we have. Measured 2026-09-24
+// over the TP53, BRCA1, HBB and SHH ortholog sets: those two salmon rows were
+// the only inexact matches of about 2,000.
 export function createStore(data: AssemblyIndex) {
   const hosted = new Set(data.accessions)
   const byBase = new Map<string, string>()
@@ -57,7 +65,9 @@ export function createStore(data: AssemblyIndex) {
       const key = hosted.has(accession)
         ? accession
         : byBase.get(stripVersion(accession))
-      return key ? { accession: key, ucscDb: data.ucscDb[key] } : undefined
+      return key
+        ? { accession: key, ucscDb: data.ucscDb[key], exact: key === accession }
+        : undefined
     },
   }
 }

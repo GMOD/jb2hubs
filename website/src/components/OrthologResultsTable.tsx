@@ -11,6 +11,7 @@ import {
   orthoSyntenyUrl,
   orthologSyntenyLink,
   orthologsToTsv,
+  placedOnHosted,
 } from './orthologSearchUtils.ts'
 
 import type { OrthologResult } from './orthologSearchUtils.ts'
@@ -51,6 +52,14 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         <a href={`/accession/${r.assembly.accession}`}>
           {r.assembly.accession}
         </a>
+        {r.otherVersion && (
+          <span
+            className="orthologs-model-label"
+            title={`NCBI places this ortholog on ${r.otherVersion}, another version of the assembly we host. The location opens on ours wherever the two versions share the sequence.`}
+          >
+            NCBI: {r.otherVersion}
+          </span>
+        )}
       </td>
       <td className="orthologs-loc">
         {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}
@@ -173,7 +182,7 @@ export default function OrthologResultsTable({
 
   return (
     <>
-      {refResult && pairIndex && (
+      {refResult && placedOnHosted(refResult) && pairIndex && (
         <MultiSyntenyPicker
           results={results}
           refResult={refResult}
