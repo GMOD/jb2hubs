@@ -4,7 +4,12 @@ import {
   generateJBrowseConfigForAssemblyHub,
 } from 'hubtools'
 
-import type { ChainTrack, JBrowseConfig, Track } from 'hubtools'
+import type {
+  ChainTrack,
+  JBrowseConfig,
+  NcbiGffAnnotation,
+  Track,
+} from 'hubtools'
 
 // Everything a hub's config.json is a function of, gathered by the caller so
 // this stays a pure transform: the whole config is assembled in memory and
@@ -17,11 +22,13 @@ export interface HubBuildInput {
   hubFileText: string
   trackDbUrl: string
   // The sorted/bgzipped NCBI RefSeq GFF, by the basename it has inside the hub
-  // dir, and the per-sequence non-standard genetic codes derived from it
-  // (deriveGeneticCodes.sh), in derivation order.
+  // dir, the per-sequence non-standard genetic codes derived from it
+  // (deriveGeneticCodes.sh) in derivation order, and what its own header says
+  // it is.
   gff?: {
     fileName: string
     geneticCodes: Record<string, number>
+    annotation?: NcbiGffAnnotation
   }
   // trix/<accession>.ix exists from xenoSymbolIndex.sh; a hub with no GFF
   // searches it through the same adapter entry a GFF index gets.
@@ -32,7 +39,11 @@ export interface HubBuildInput {
   chainTracks: (ChainTrack & Track)[]
 }
 
-export function ncbiGffTrack(accession: string, fileName: string): Track {
+export function ncbiGffTrack(
+  accession: string,
+  fileName: string,
+  annotation?: NcbiGffAnnotation,
+): Track {
   return {
     type: 'FeatureTrack',
     trackId: `${accession}-ncbiGff`,
@@ -47,6 +58,7 @@ export function ncbiGffTrack(accession: string, fileName: string): Track {
     },
     category: ['Genes and Gene Predictions'],
     assemblyNames: [accession],
+    ...(annotation ? { metadata: annotation } : {}),
   }
 }
 
@@ -82,7 +94,7 @@ export function buildHubConfig({
   const tracks = config.tracks ?? []
 
   if (gff) {
-    tracks.push(ncbiGffTrack(accession, gff.fileName))
+    tracks.push(ncbiGffTrack(accession, gff.fileName, gff.annotation))
     config.aggregateTextSearchAdapters = [trixAdapter(accession)]
     const assembly = config.assemblies?.[0]
     if (

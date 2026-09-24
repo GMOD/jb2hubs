@@ -46,6 +46,8 @@ export interface UcscTrack {
     addedByJBrowseTeam?: boolean
     multiWigContainer?: boolean
     ucsc?: Record<string, unknown>
+    annotationSource?: string
+    annotationDate?: string
   }
   trackId: string
   description?: string

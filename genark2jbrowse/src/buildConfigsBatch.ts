@@ -11,12 +11,18 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as readline from 'readline'
 
-import { formatJson, linkOrCopy, readJSON } from 'hubtools'
+import {
+  formatJson,
+  linkOrCopy,
+  readJSON,
+  readNcbiGffAnnotation,
+} from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
 import { buildHubConfig } from './buildConfig.ts'
 import { hubFirstSeenPath } from './hubFirstSeen.ts'
 
+import type { HubBuildInput } from './buildConfig.ts'
 import type { JBrowseConfig } from 'hubtools'
 
 const outRootIndex = process.argv.indexOf('--out-root')
@@ -132,9 +138,7 @@ function processOne(metaPath: string) {
 
   const gffFile = gffByAccession.get(accession)
   const gffPath = gffFile ? path.join(bgzDir, gffFile) : undefined
-  let gff:
-    | { fileName: string; geneticCodes: Record<string, number> }
-    | undefined
+  let gff: HubBuildInput['gff']
   if (gffFile && gffPath) {
     const codesPath = `${gffPath}.codes.tsv`
     if (!fs.existsSync(codesPath)) {
@@ -142,7 +146,11 @@ function processOne(metaPath: string) {
         `${codesPath} is missing; deriveGeneticCodes.sh has not run over ${gffFile}`,
       )
     }
-    gff = { fileName: gffFile, geneticCodes: readGeneticCodes(codesPath) }
+    gff = {
+      fileName: gffFile,
+      geneticCodes: readGeneticCodes(codesPath),
+      annotation: readNcbiGffAnnotation(gffPath),
+    }
   }
 
   const config = buildHubConfig({

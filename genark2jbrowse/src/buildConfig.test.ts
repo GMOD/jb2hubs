@@ -84,6 +84,19 @@ describe('buildHubConfig', () => {
     assert.equal('geneticCodes' in (config.assemblies![0] as object), false)
   })
 
+  it("stamps the GFF header's annotation on the track, and nothing without one", () => {
+    const annotation = {
+      annotationSource: 'NCBI RefSeq GCF_000001405.40-RS_2025_08',
+      annotationDate: '2025-08-22',
+    }
+    const stamped = build({
+      gff: { fileName: gffName, geneticCodes: {}, annotation },
+    }).tracks!.at(-1)!
+    assert.deepEqual(stamped.metadata, annotation)
+    const bare = build({ gff: { fileName: gffName, geneticCodes: {} } })
+    assert.equal('metadata' in bare.tracks!.at(-1)!, false)
+  })
+
   it('leaves out the GFF track, trix adapter and codes when there is no GFF', () => {
     const config = build()
     assert.equal(

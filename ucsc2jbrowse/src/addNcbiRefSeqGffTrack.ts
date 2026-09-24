@@ -3,7 +3,7 @@ import fs from 'fs'
 import { gunzipSync } from 'node:zlib'
 import path from 'path'
 
-import { linkOrCopy } from 'hubtools'
+import { linkOrCopy, readNcbiGffAnnotation } from 'hubtools'
 
 import type { FinalizeStep } from './utils/finalizeStep.ts'
 
@@ -128,6 +128,7 @@ export const addNcbiRefSeqGffTrack: FinalizeStep = {
         linkOrCopy(gff, path.join(dir, fileName))
         linkOrCopy(`${gff}.csi`, path.join(dir, `${fileName}.csi`))
       }
+      const annotation = readNcbiGffAnnotation(gff)
       config.tracks.push({
         type: 'FeatureTrack',
         trackId,
@@ -142,6 +143,7 @@ export const addNcbiRefSeqGffTrack: FinalizeStep = {
         },
         category: ['Genes and Gene Predictions'],
         assemblyNames: [asm],
+        ...(annotation ? { metadata: annotation } : {}),
       })
       counts.added = 1
     }

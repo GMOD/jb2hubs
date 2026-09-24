@@ -18,8 +18,7 @@ turns out to be a decision rather than a task belongs in
   2026-09-23 website review left open after two rounds of fixes: two product
   decisions (whether UCSC rows show a borrowed common name, the 12-genome launch
   cap) and the follow-ups the fixes turned up.
-- [ncbi-gff-annotation-release-date.md](ncbi-gff-annotation-release-date.md) —
-  the NCBI GFF track's info dialog says nothing about annotation freshness,
-  though `parseAssemblyEntry.ts` already parses the release date and the
-  accession page already shows it. Implemented once on a branch since deleted;
-  the reason it waits is that `enhanceConfig.ts` is corpus-invalidating.
+- [stale-ncbi-gff-release.md](stale-ncbi-gff-release.md) — about 2% of GenArk
+  GFFs hold an older RefSeq release than NCBI now publishes at the same
+  accession, because a GFF is fetched once. The track names the release it
+  holds; the accession page names the newer one.
