@@ -83,6 +83,7 @@ async function superposedModels(accessions: string[]) {
 export default function ProteinLaunchCard({
   structure,
   alignment,
+  aligning,
   superposed,
   onRemoveSuperposed,
   queryRow,
@@ -92,6 +93,9 @@ export default function ProteinLaunchCard({
 }: {
   structure: GeneStructure
   alignment: LoadedAlignment | undefined
+  // the alignment the session carries is still loading, and it can pin the
+  // transcript, so a launch now would open without it or on another isoform
+  aligning: boolean
   // ortholog rows the reader asked to superpose, by Swiss-Prot accession
   superposed: ProteinPanelRow[]
   onRemoveSuperposed: (uniprot: string) => void
@@ -535,9 +539,13 @@ export default function ProteinLaunchCard({
       </div>
 
       <div className="msv-actions">
-        {translating || numbering ? (
+        {translating || numbering || aligning ? (
           <span className="msv-open msv-open-disabled">
-            {translating ? 'Resolving isoform…' : 'Resolving numbering…'}
+            {translating
+              ? 'Resolving isoform…'
+              : numbering
+                ? 'Resolving numbering…'
+                : 'Loading alignment…'}
           </span>
         ) : (
           <a

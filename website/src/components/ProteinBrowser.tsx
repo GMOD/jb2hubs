@@ -617,6 +617,7 @@ function GeneResults({
       <ProteinLaunchCard
         structure={structure}
         alignment={alignment}
+        aligning={aligning}
         superposed={
           panel
             ? panel.rows.filter(
