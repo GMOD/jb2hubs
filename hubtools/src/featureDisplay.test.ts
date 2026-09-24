@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import {
+  bigGenePredAggregateField,
   getUcscFeatureDisplay,
   mouseOverTemplateToJexl,
   ucscDefaultFilters,
@@ -219,5 +220,44 @@ describe('ucscDefaultFilters', () => {
       }),
       ["get(feature,'start') >= 100"],
     )
+  })
+})
+
+// hg38-knownGene and hg19-knownGene, GENCODE's bigGenePred, spell their type
+// with two more words. ucsc2jbrowse compared the whole string to 'bigGenePred',
+// so neither got an aggregateField and both grouped on the adapter's default,
+// geneName2, which there is each isoform's UniProt accession.
+describe('bigGenePredAggregateField', () => {
+  const knownGene = {
+    type: 'bigGenePred knownGenePep knownGeneMrna',
+    labelFields: 'geneName,name,geneName2,name2',
+    defaultLabelFields: 'geneName',
+  }
+
+  it('groups on the label field whatever follows the type', () => {
+    assert.equal(bigGenePredAggregateField(knownGene), 'geneName')
+    assert.equal(
+      getUcscFeatureDisplay('hg38-knownGene', knownGene).displays?.[0]?.labels
+        ?.name,
+      "jexl:get(feature,'name')",
+    )
+  })
+
+  it('falls back to the first labelFields entry (hg38-mane)', () => {
+    assert.equal(
+      bigGenePredAggregateField({
+        type: 'bigGenePred',
+        labelFields: 'geneName2,name,ensemblProtAcc',
+      }),
+      'geneName2',
+    )
+  })
+
+  it('is unset for any other type, or with no label field', () => {
+    assert.equal(
+      bigGenePredAggregateField({ ...knownGene, type: 'bigBed 12 +' }),
+      undefined,
+    )
+    assert.equal(bigGenePredAggregateField({ type: 'bigGenePred' }), undefined)
   })
 })

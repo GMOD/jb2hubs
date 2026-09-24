@@ -85,6 +85,21 @@ export function baseType(trackType: unknown) {
   return typeof trackType === 'string' ? trackType.split(' ')[0] : undefined
 }
 
+export function ucscLabelField(ucsc: Record<string, unknown>) {
+  return firstField(ucsc.defaultLabelFields) ?? firstField(ucsc.labelFields)
+}
+
+// The field a bigGenePred's transcripts are grouped into genes on: the one UCSC
+// labels them by, name2 on ncbiRefSeq and geneName on GENCODE's knownGene. Left
+// unset, BigBedAdapter groups on its own default, geneName2, which knownGene
+// fills with each isoform's UniProt accession, so TP53 drew as ten genes named
+// P04637, E7EQX7 and so on.
+export function bigGenePredAggregateField(ucsc: Record<string, unknown>) {
+  return baseType(ucsc.type) === 'bigGenePred'
+    ? ucscLabelField(ucsc)
+    : undefined
+}
+
 // Converts a UCSC trackDb `mouseOver` template (e.g. "<b>AF</b>: ${AF} ($ref)")
 // into a jexl template literal, mapping both $field and ${field} to
 // ${get(feature,'field')}. A jexl template literal renders a missing/null field
@@ -202,10 +217,9 @@ export function getUcscFeatureDisplay(
   trackId: string,
   ucsc: Record<string, unknown>,
 ): Partial<FeatureDisplay> {
-  const labelField =
-    firstField(ucsc.defaultLabelFields) ?? firstField(ucsc.labelFields)
-  // A bigGenePred's label field is also what createTrackConfiguration hands the
-  // adapter as `aggregateField`, and BigBedAdapter groups the transcripts under
+  const labelField = ucscLabelField(ucsc)
+  // A bigGenePred's label field is also its adapter's `aggregateField`
+  // (bigGenePredAggregateField), and BigBedAdapter groups the transcripts under
   // a SYNTHESIZED gene parent whose data is exactly type/subfeatures/strand/
   // name/start/end/refName -- every autoSql column stays on the children. The
   // row that draws is that parent, so `get(feature,'geneName2')` resolved to
@@ -215,7 +229,7 @@ export function getUcscFeatureDisplay(
   // accession on a row that did not aggregate. `none` is unchanged: that field
   // never aggregates, and UCSC means no label.
   const aggregatesOnLabelField =
-    baseType(ucsc.type) === 'bigGenePred' && labelField !== 'none'
+    labelField !== 'none' && bigGenePredAggregateField(ucsc) === labelField
   const labels =
     labelField !== undefined
       ? {

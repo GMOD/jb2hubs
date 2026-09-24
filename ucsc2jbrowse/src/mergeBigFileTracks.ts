@@ -1,4 +1,4 @@
-import { dedupe, firstField } from 'hubtools'
+import { baseType, bigGenePredAggregateField, dedupe } from 'hubtools'
 
 import { buildBigMafTrack } from './buildBigMafTrack.ts'
 import { checkIfFileAccessible } from './checkIfFileAccessible.ts'
@@ -136,7 +136,7 @@ export async function addBigDataTracks({
   const newTracks: UcscTrack[] = []
   for (const entry of Object.values(bigDataEntries)) {
     const { settings, tableName } = entry
-    const { type } = settings
+    const type = baseType(settings.type)
     const trackId = `${assemblyName}-${tableName}`
 
     if (consumed.has(tableName)) {
@@ -189,15 +189,7 @@ export async function addBigDataTracks({
             }),
           )
         } else {
-          // bigGenePred groups transcripts into genes; UCSC's own
-          // defaultLabelFields (fallback labelFields) names the gene field to
-          // aggregate on, e.g. name2 for ncbiRefSeq, rather than the adapter's
-          // fixed geneName2 default
-          const aggregateField =
-            type === 'bigGenePred'
-              ? (firstField(settings.defaultLabelFields) ??
-                firstField(settings.labelFields))
-              : undefined
+          const aggregateField = bigGenePredAggregateField(settings)
           newTracks.push({
             trackId,
             name: tableName,
