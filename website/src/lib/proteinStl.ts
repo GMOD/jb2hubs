@@ -139,7 +139,8 @@ export function backboneTubeStl(
   const rings = tubeRings(points, radius, segments)
   const triangles: [Vec3, Vec3, Vec3][] = []
 
-  // stitch neighbouring rings into two triangles per quad
+  // stitch neighbouring rings into two triangles per quad, counter-clockwise
+  // seen from outside, so each normal points away from the backbone
   for (let i = 0; i < rings.length - 1; i++) {
     for (let j = 0; j < segments; j++) {
       const k = (j + 1) % segments
@@ -147,7 +148,7 @@ export function backboneTubeStl(
       const b = rings[i]![k]!
       const c = rings[i + 1]![j]!
       const d = rings[i + 1]![k]!
-      triangles.push([a, c, d], [a, d, b])
+      triangles.push([a, d, c], [a, b, d])
     }
   }
 
