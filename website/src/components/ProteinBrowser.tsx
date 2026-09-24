@@ -549,9 +549,13 @@ function GeneResults({
   // The live alignment is the only one worth gating behind a click — it costs an
   // EBI job here on the page. The others load as soon as they are chosen: the
   // 100-way is one read, the seed is three, and the built sources are requests
-  // the session carries.
+  // the session carries. A residue or a preset family waits for InterPro to
+  // say which seed it opens, rather than loading the 100-way to discard it.
   const [wantLive, setWantLive] = useState(false)
-  const wantAlignment = source !== 'live' || wantLive
+  const familyPending =
+    regionsLoading &&
+    (focus?.kind === 'residue' || (focusChoice === undefined && !!preset?.pfam))
+  const wantAlignment = !familyPending && (source !== 'live' || wantLive)
   // Swiss-Prot accessions of the ortholog rows marked for superposition.
   const [superposed, setSuperposed] = useState<string[]>([])
   // Each alignment fetch abandons the EBI job before it, and unmounting — this
@@ -618,7 +622,7 @@ function GeneResults({
       <ProteinLaunchCard
         structure={structure}
         alignment={alignment}
-        aligning={aligning}
+        aligning={aligning || familyPending}
         superposed={
           panel
             ? panel.rows.filter(
@@ -704,8 +708,8 @@ function GeneResults({
         gene={symbol}
         alignment={alignment}
         error={error}
-        aligning={aligning}
-        status={status}
+        aligning={aligning || familyPending}
+        status={familyPending ? 'Asking InterPro which domain family…' : status}
         source={source}
         sources={sources}
         onSource={s => {
