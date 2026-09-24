@@ -11,6 +11,7 @@ import { ncbiGeneUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
+import ExternalLink from './ExternalLink.tsx'
 import HelpButton from './HelpButton.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import OrthologHelpDialog from './OrthologHelpDialog.tsx'
@@ -44,7 +45,7 @@ import type { GeneIdentity, OrthologSet } from './geneHub.ts'
 import type { DrilldownData } from './multiSyntenyDrilldown.ts'
 import type { OrthologScope } from './orthologClades.ts'
 import type { OrthologResult } from './orthologSearchUtils.ts'
-import type { FormEvent, ReactNode } from 'react'
+import type { FormEvent } from 'react'
 
 function field(fd: FormData, name: string) {
   const v = fd.get(name)
@@ -317,24 +318,6 @@ function refBoxText(
   return identity?.species && String(identity.refTaxId) === ref
     ? identity.species
     : ref
-}
-
-function ExternalLink({
-  href,
-  children,
-}: {
-  href: string
-  children: ReactNode
-}) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {children}
-    </a>
-  )
 }
 
 // What the gene actually is, from the summary the resolution already made. A

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
+import ExternalLink from './ExternalLink.tsx'
 import MultiSyntenyPicker from './MultiSyntenyPicker.tsx'
 import { groupByClade } from './orthologClades.ts'
 import {
@@ -40,13 +41,7 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         )}
       </td>
       <td>
-        <a
-          href={ncbiGeneUrl(r.geneId)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {r.geneSymbol}
-        </a>
+        <ExternalLink href={ncbiGeneUrl(r.geneId)}>{r.geneSymbol}</ExternalLink>
       </td>
       <td>
         <a href={`/accession/${r.assembly.accession}`}>
@@ -65,14 +60,12 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}
       </td>
       <td className="orthologs-actions">
-        <a
+        <ExternalLink
           href={r.jbrowseUrl}
-          target="_blank"
-          rel="noreferrer"
           title={`Open ${r.assembly.scientificName} at ${r.geneSymbol} (${r.chromosome}) in JBrowse`}
         >
           JBrowse
-        </a>
+        </ExternalLink>
         {isRef && (
           <span
             className="orthologs-ref-label"
@@ -84,14 +77,12 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         {link && (
           <>
             {' · '}
-            <a
+            <ExternalLink
               href={orthoSyntenyUrl(r, link, refResult)}
-              target="_blank"
-              rel="noreferrer"
               title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
             >
               Synteny
-            </a>
+            </ExternalLink>
           </>
         )}
       </td>

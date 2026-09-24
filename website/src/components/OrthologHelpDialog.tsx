@@ -1,6 +1,5 @@
+import ExternalLink from './ExternalLink.tsx'
 import Modal from './Modal.tsx'
-
-import type { ReactNode } from 'react'
 
 // Explains what the ortholog search actually does — the question the reference
 // species field keeps raising.
@@ -18,7 +17,9 @@ export default function OrthologHelpDialog({
         A gene symbol on its own is ambiguous — dozens of species have a gene
         called <em>BRCA1</em>. The reference species picks which one you mean:
         we resolve the symbol there to an NCBI GeneID, ask{' '}
-        <Link href="https://www.ncbi.nlm.nih.gov/datasets/">NCBI Datasets</Link>{' '}
+        <ExternalLink href="https://www.ncbi.nlm.nih.gov/datasets/">
+          NCBI Datasets
+        </ExternalLink>{' '}
         for its orthologs, and keep the ones whose genome we host.
       </p>
       <dl className="ui-help">
@@ -57,17 +58,5 @@ export default function OrthologHelpDialog({
         </dd>
       </dl>
     </Modal>
-  )
-}
-
-function Link({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {children}
-    </a>
   )
 }
