@@ -118,11 +118,11 @@ test('syntenyLaunchUrl names a UCSC genome by its db and a GenArk one by accessi
       '7157',
       'TP53',
     ),
-    '/synteny?assembly=hg38&gene=7157%3ATP53',
+    '/synteny/?assembly=hg38&gene=7157%3ATP53',
   )
   assert.equal(
     syntenyLaunchUrl({ accession: 'GCF_000003025.6' }, '397413', 'TP53'),
-    '/synteny?assembly=GCF_000003025.6&gene=397413%3ATP53',
+    '/synteny/?assembly=GCF_000003025.6&gene=397413%3ATP53',
   )
 })
 
