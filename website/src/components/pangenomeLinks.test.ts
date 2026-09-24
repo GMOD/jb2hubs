@@ -66,7 +66,7 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
   // The detail window, not the 5 Mb display span: the callset cannot be fetched
   // over the latter, so the button's own subject would open undrawn.
   const window = detailWindow(locus)!
-  assert.equal(view.loc, `${locus.chrom}:${window.start}-${window.end}`)
+  assert.equal(view.loc, `${locus.chrom}:${window.start + 1}-${window.end}`)
 
   // Reference genes, the graph VCF, then every SV track — in that order.
   assert.deepEqual(view.tracks, [
@@ -279,7 +279,7 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   const region = { chrom: 'chr1', start: 100, end: 5_100, label: 'anywhere' }
   const { spec } = parseLaunch(graphRegionUrl(graphDataset, region)!)
   const [lgv, graph] = spec.views
-  assert.equal(lgv!.loc, 'chr1:100-5100')
+  assert.equal(lgv!.loc, 'chr1:101-5100')
   assert.equal(graph!.displayName, 'anywhere graph')
   assert.deepEqual(graph!.loadedRegion, {
     refName: 'chr1',
@@ -301,7 +301,7 @@ test('a wide region is drawn from the tier, with maxRegionBp raised', () => {
   const { config, spec } = parseLaunch(graphRegionUrl(graphDataset, chr21)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   const [lgv, graph] = spec.views
-  assert.equal(lgv!.loc, 'chr21:0-46709983')
+  assert.equal(lgv!.loc, 'chr21:1-46709983')
   // The tier's own lane and the variability curve, not the segment-level lanes
   // -- over a span this wide the fine segments track refuses outright.
   assert.deepEqual(lgv!.tracks, [
@@ -381,7 +381,7 @@ test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel orde
   assert.equal(spec.sessionTracks, undefined)
   const view = spec.views[0]!
   const region = launchRegion(cfhr)
-  assert.equal(view.loc, `${region.chrom}:${region.start}-${region.end}`)
+  assert.equal(view.loc, `${region.chrom}:${region.start + 1}-${region.end}`)
   const [genes, lanes] = view.tracks as Record<string, unknown>[]
   assert.deepEqual(genes, {
     trackId: HPRC_GRAPH_BROWSER.geneTrackId,
@@ -516,9 +516,10 @@ test('every locus opens its variants on a window the callset can be fetched over
   for (const l of PANGENOME_LOCI) {
     const { spec } = parseLaunch(graphVcfLgvUrl(HPRC_DATASET, l))
     const [, start, end] = /:(\d+)-(\d+)$/.exec(spec.views[0]!.loc as string)!
+    const span = Number(end) - Number(start) + 1
     assert.ok(
-      Number(end) - Number(start) <= MAX_DETAIL_WINDOW_BP,
-      `${l.id} opens its callset over ${Number(end) - Number(start)} bp`,
+      span <= MAX_DETAIL_WINDOW_BP,
+      `${l.id} opens its callset over ${span} bp`,
     )
   }
 })

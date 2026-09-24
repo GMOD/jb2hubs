@@ -170,12 +170,13 @@ function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
       ]
 }
 
-// Bare digits, not toLocaleString: this runs in the visitor's browser, and
-// JBrowse's locstring parser strips commas only, so a locale that groups with
-// '.' or a space (de-DE, fr-FR, ru-RU) would produce a region no view can
-// navigate to.
+// A region is 0-based half-open and a locstring 1-based, as a location box
+// shows it. Bare digits, not toLocaleString: this runs in the visitor's
+// browser, and JBrowse's locstring parser strips commas only, so a locale that
+// groups with '.' or a space (de-DE, fr-FR, ru-RU) would produce a region no
+// view can navigate to.
 const locOf = (region: GraphRegion) =>
-  `${region.chrom}:${region.start}-${region.end}`
+  `${region.chrom}:${region.start + 1}-${region.end}`
 
 // The dataset's own linear lanes over one region, out of the GRAPH config
 // rather than the reference config. For a dataset with no callset these lanes

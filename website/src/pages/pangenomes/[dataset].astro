@@ -42,6 +42,7 @@ const chromosomes = (dataset.graphBrowser?.chromosomes ?? []).flatMap(c => {
     chrom: c.name,
     start: 0,
     end: c.length,
+    label: c.name,
   })
   return url ? [{ name: c.name, url }] : []
 })
