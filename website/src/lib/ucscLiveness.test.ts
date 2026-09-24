@@ -109,10 +109,10 @@ afterEach(restore)
 describe('probeUcscLiveness', () => {
   it('probes UCSC and the control together, both as bodiless HEADs', async () => {
     stubStorage()
-    const calls: { url: string; method?: string }[] = []
+    const calls: { url: string; init?: RequestInit }[] = []
     const result = await probeUcscLiveness({
       fetchImpl: ((url: string, init?: RequestInit) => {
-        calls.push({ url, method: init?.method })
+        calls.push({ url, init })
         return Promise.resolve({ ok: true } as Response)
       }) as unknown as typeof globalThis.fetch,
       now: () => 1000,
@@ -121,8 +121,24 @@ describe('probeUcscLiveness', () => {
       calls.map(c => c.url).sort(),
       [CONTROL_URL, PROBE_URL].sort(),
     )
-    assert.deepEqual([...new Set(calls.map(c => c.method))], ['HEAD'])
+    assert.deepEqual([...new Set(calls.map(c => c.init?.method))], ['HEAD'])
     assert.equal(result.verdict, 'ok')
+  })
+
+  // The control is the favicon the page just loaded. Answered from the HTTP
+  // cache it is fast over a dead connection, and a reader's own outage reads
+  // as "UCSC stalled".
+  it('asks the network rather than the HTTP cache', async () => {
+    stubStorage()
+    const modes: (RequestCache | undefined)[] = []
+    await probeUcscLiveness({
+      fetchImpl: ((_url: string, init?: RequestInit) => {
+        modes.push(init?.cache)
+        return Promise.resolve({ ok: true } as Response)
+      }) as unknown as typeof globalThis.fetch,
+      now: () => 1000,
+    })
+    assert.deepEqual(modes, ['no-store', 'no-store'])
   })
 
   it('reuses a cached verdict rather than re-probing', async () => {

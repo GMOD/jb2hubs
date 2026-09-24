@@ -48,7 +48,10 @@ export const PROBE_URL =
   'https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/hg38.chrom.sizes'
 
 // Same-origin, so it is served by the CDN that just served this page. Chosen
-// because it is tiny and cannot 404 while the site is up.
+// because it is tiny and cannot 404 while the site is up. It is also cached by
+// the page that just loaded, so both probes bypass the HTTP cache: a control
+// answered from it takes no time over a dead link and would turn the reader's
+// own outage into "UCSC stalled".
 export const CONTROL_URL = '/favicon.ico'
 
 // The probes MUST have a hard deadline. The failure they detect is an open
@@ -166,6 +169,7 @@ async function timedHead(
   try {
     const res = await fetchImpl(url, {
       method: 'HEAD',
+      cache: 'no-store',
       signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
     })
     return { timedOut: false, ok: res.ok, elapsedMs: now() - started }
