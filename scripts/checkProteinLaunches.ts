@@ -99,6 +99,16 @@ const TIMEOUT = Number(values.timeout)
 const REF = Number(values.ref)
 const PUBLIC = path.resolve(import.meta.dirname, '../website/public')
 
+// Every launch finds its genome through this generated, gitignored index, and
+// without it each gene fails as "this site does not serve" its assembly.
+const ORTHOLOG_INDEX = path.join(PUBLIC, 'ortholog_index.json')
+if (!fs.existsSync(ORTHOLOG_INDEX)) {
+  console.error(
+    `${ORTHOLOG_INDEX} is missing; run \`pnpm --filter website2 generate-ortholog-index\` first`,
+  )
+  process.exit(2)
+}
+
 // The page's own resolvers run here unchanged, but two things differ outside a
 // browser. Site-relative fetches (`/ortholog_index.json`, the assembly index
 // genomeTarget.ts reads) have no origin to resolve against, so they are served
