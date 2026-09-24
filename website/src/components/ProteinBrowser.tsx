@@ -253,7 +253,8 @@ export default function ProteinBrowser() {
 
   // Symbols do not carry across organisms, so a species switch follows NCBI's
   // ortholog to the new species rather than re-running a symbol that means
-  // nothing there. Nothing to follow just changes the species.
+  // nothing there. With nothing resolved to follow it just changes the
+  // species, and drops a gene still resolving in the old one.
   const switchSpecies = (ref: number) => {
     setTaxId(ref)
     followToken.current += 1
@@ -288,6 +289,10 @@ export default function ProteinBrowser() {
       )
     } else {
       setFollow(undefined)
+      if (query.gene) {
+        setQuery({ gene: '', ref })
+        syncProteinUrl('', ref, undefined)
+      }
     }
   }
 
@@ -299,7 +304,7 @@ export default function ProteinBrowser() {
         <GeneCombobox
           value={gene}
           taxId={taxId}
-          disabled={loading}
+          disabled={false}
           onChange={v => {
             setGene(v)
           }}
@@ -313,7 +318,6 @@ export default function ProteinBrowser() {
           onChange={e => {
             switchSpecies(Number(e.target.value))
           }}
-          disabled={loading}
           aria-label="Reference organism"
         >
           {COMMON_SPECIES.map(s => (
@@ -330,9 +334,9 @@ export default function ProteinBrowser() {
           onClick={() => {
             run(gene, taxId)
           }}
-          disabled={loading || !gene.trim()}
+          disabled={!gene.trim()}
         >
-          {loading ? 'Resolving…' : 'Explore'}
+          Explore
         </button>
         <HelpButton
           label="How the protein browser works"
@@ -349,7 +353,6 @@ export default function ProteinBrowser() {
             key={ex.symbol}
             className="ui-chip-btn"
             title={ex.note}
-            disabled={loading}
             onClick={() => {
               run(ex.symbol, taxId, ex)
             }}
