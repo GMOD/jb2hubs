@@ -1858,13 +1858,20 @@ by `website/src/pages/pangenomes/[dataset].astro` from the dataset.
 `/pangenomes` is a list of the three and nothing else. A graph's page is one
 sentence, a line of links, the chromosomes as graph links, a table of its loci
 with their launches (`lociRows` in
-`website/src/components/pangenomeLociRows.ts`), and the file table. It is static
-HTML with one six-line style rule and no client JavaScript: the site's table
+`website/src/components/pangenomeLociRows.ts`), the **Any region** box where the
+dataset publishes a structural-state sidecar, and the file table. Apart from
+that box the page is static HTML with one six-line style rule: the site's table
 rules and the browser's defaults are the whole design, on purpose, after the
-2026-09-16 review found the previous page a wall of prose and buttons. The
-free-text region box went the same day — the table and the chromosome links
-cover every launch the page advertises, and the view reopens on any region from
-its own track menu.
+2026-09-16 review found the previous page a wall of prose and buttons.
+
+The 2026-09-16 review also removed a free-text region box that did nothing but
+build launches, since the table and the chromosome links cover those. The **Any
+region** box that came back the next day is a different thing: it answers a
+question first, which structural forms the callset's haplotypes carry in the
+window asked for (see "A locus's haplotypes are lanes" below), and its launches
+follow from that answer. It keeps the question in the url as `?region=`, reads
+windows of up to `MAX_DETAIL_WINDOW_BP` (150 kb), and offers only the graph for
+a wider one.
 
 `/pangenomes/explorer` was a separate app until that day — a card grid of loci
 with class filters and a per-locus dashboard of four bar charts computed by
@@ -1872,7 +1879,7 @@ with class filters and a per-locus dashboard of four bar charts computed by
 buttons on each graph's page pointing at it. All of that is gone, along with
 `portal.css`, the per-locus `*.vcfsummary.json` summaries, the `notes[]`
 caveats, the per-locus `significance` sentences and the PangyPlot fallback
-(`externalGraphBrowser`), which only the region box ever reached; the locus
+(`externalGraphBrowser`), which only the old region box ever reached; the locus
 table is what replaced it. The route is a redirect stub in `REDIRECT_STUBS`
 (astro.config.mjs) because the JBrowse pangenome tutorial links it, and its
 inline script carries `?dataset=<id>` across to `/pangenomes/<id>`.
@@ -1897,8 +1904,9 @@ raised to the span and the anchored layout. Everything below fell out of that on
 - **No region has an upper bound.** `MAX_GRAPH_REGION_BP` existed because the
   view refuses a cut past its `maxRegionBp`; the coarse branch raises it.
 - **There is no landing locus.** `landingRegion` and then `preferredLocus`
-  answered "which locus does this catalogue open on" for a headline launch and a
-  region box that no longer exist; a reader picks a row.
+  answered "which locus does this catalogue open on" for a headline launch and
+  the launch-only region box, neither of which exists any more; a reader picks a
+  row.
 
 The one asymmetry that stays: the callset does **not** get a coarse tier, so
 `graphVcfLgvUrl` still opens on `launchRegion` and a wide locus's variant lane
@@ -1952,9 +1960,9 @@ for the genome — and `structuralForms` (`pangenomeSvStates.ts`) groups a
 window's haplotypes out of a ranged read of it, a few KB and about 300 ms.
 `generatePangenomePanels.ts` runs that over the curated loci and commits the
 result; the **Any region** box on the page (`PangenomeRegionForms.tsx`) runs the
-same two functions in the reader's browser for a locstring or a gene symbol. A
-table row and the same window typed in the box cannot disagree, because neither
-has rules of its own.
+same two functions in the reader's browser for a locstring or a gene symbol,
+over a window of up to 150 kb. A table row and the same window typed in the box
+cannot disagree, because neither has rules of its own.
 
 Two things the sidecar fixed rather than moved, both measured 2026-09-17. The
 old rule read the 2.3 GB callset with bcftools at five seconds a locus. And it

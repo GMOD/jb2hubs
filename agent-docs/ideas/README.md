@@ -22,5 +22,3 @@ Work we do intend to finish lives in [../todo/](../todo/).
 - [pangenome-walks-beside-lanes.md](pangenome-walks-beside-lanes.md) — the
   graph's walks as a second pane beside a locus's haplotype lanes, gene models
   on the lanes, and why mouse and bovine have no lanes to narrow
-- [pangenome-region-box.md](pangenome-region-box.md) — a way into the graph for
-  a gene outside the locus table, which the last review removed on purpose
