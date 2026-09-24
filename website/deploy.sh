@@ -99,6 +99,19 @@ if [[ ! -f dist/index.html || ! -f dist/404.html ]]; then
   exit 1
 fi
 
+# run.sh deploys production and then builds staging into the same dist/, so a
+# bare ./deploy.sh afterwards would publish the staging build to production.
+# A staging build marks its pages noindex, which is how to tell them apart.
+if grep -q 'name="robots" content="noindex"' dist/index.html; then
+  built=staging
+else
+  built=production
+fi
+if [[ $built != "$target" ]]; then
+  echo "dist/ holds a $built build, not a $target one — deploy through 'pnpm run deploy' or 'pnpm run deploy:staging', which build first" >&2
+  exit 1
+fi
+
 local_files=$(find dist -type f | wc -l)
 echo "==> deploying $local_files files to $target ($SSH_HOST:$webroot)"
 
