@@ -418,6 +418,30 @@ a whole class of assembly quietly stops getting an annotation. mtime is a safe
 clock here, unlike in `buildNcbiQueue.ts`, because `gff/` is gitignored and so
 survives no clone to have its mtimes reset.
 
+### A GCA hub's gene search comes from xenoRefGene
+
+GCA hubs get no NCBI GFF, so the text index above never covers them. 7,885 of
+them carry UCSC's `xenoRefGene` bigBed, RefSeq mRNAs from other species aligned
+to the assembly and named only by accession. `xenoSymbolIndex.sh` joins those
+accessions to symbols cut from NCBI's `gene2refseq.gz` and writes
+`trix/<accession>.ix` in `jbrowse text-index`'s record format, one record per
+symbol per overlapping cluster, indexing the symbol only. The config gets the
+same `trixAdapter` entry a GCF hub gets, so every JBrowse release that searches
+a GCF hub searches these.
+
+- **The index is built before the config**, and `buildConfigsBatch.ts` adds the
+  entry only when the index exists, so a hub whose bigBed failed to fetch has no
+  search rather than a broken one.
+- **The gate is the upstream bigBed's mtime.** `listUpstreamHubs.sh` stats each
+  GCA hub's `bbi/*.xenoRefGene.bb` in the same rsync pass as `hub.txt` (7,886
+  more paths), so a hub is rebuilt when its index is missing or older than the
+  bigBed, and a bigBed the listing does not name is not requested. The rsync
+  walk fallback never enters `bbi/`, so on those runs only missing indexes are
+  built.
+- **The symbol table is refreshed every 30 days** (`refseqSymbols/`, 4 minutes
+  and 2.4 GB streamed), and a refresh does not rebuild existing indexes;
+  `--reprocess-all` does, at one bigBed download per hub.
+
 ## A hub.txt is refreshed by rsync, not fetched once and kept forever
 
 `downloadHubs.ts` fetched a hub's `hub.txt` the first time the assembly list

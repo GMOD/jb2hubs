@@ -23,6 +23,9 @@ export interface HubBuildInput {
     fileName: string
     geneticCodes: Record<string, number>
   }
+  // trix/<accession>.ix exists from xenoSymbolIndex.sh; a hub with no GFF
+  // searches it through the same adapter entry a GFF index gets.
+  xenoSymbolIndex?: boolean
   // genArkExtensions/<accession>.json: its tracks come first and win on trackId,
   // and any other top-level key it carries overrides the generated one.
   extension?: JBrowseConfig
@@ -68,6 +71,7 @@ export function buildHubConfig({
   hubFileText,
   trackDbUrl,
   gff,
+  xenoSymbolIndex,
   extension,
   chainTracks,
 }: HubBuildInput) {
@@ -88,6 +92,11 @@ export function buildHubConfig({
     ) {
       Object.assign(assembly, { geneticCodes: gff.geneticCodes })
     }
+  } else if (
+    xenoSymbolIndex &&
+    tracks.some(t => t.trackId === `${accession}-xenoRefGene`)
+  ) {
+    config.aggregateTextSearchAdapters = [trixAdapter(accession)]
   }
 
   const withExtension: JBrowseConfig = extension

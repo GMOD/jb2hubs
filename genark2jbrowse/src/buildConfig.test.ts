@@ -93,6 +93,43 @@ describe('buildHubConfig', () => {
     assert.equal('aggregateTextSearchAdapters' in config, false)
   })
 
+  it('gives a GCA xenoRefGene symbol index the entry a GFF index gets', () => {
+    const gca = 'GCA_036365475.1'
+    const gcaHub = `${hubFileText.replaceAll(acc, gca)}
+track xenoRefGene
+shortLabel RefSeq mRNAs
+longLabel RefSeq mRNAs mapped to this assembly
+type bigGenePred
+bigDataUrl bbi/${gca}_fAmiCal2.hap2.xenoRefGene.bb
+`
+    const gcaBuild = (xenoSymbolIndex: boolean, hub = gcaHub) =>
+      buildHubConfig({
+        accession: gca,
+        hubFileText: hub,
+        trackDbUrl: trackDbUrl.replaceAll(acc, gca),
+        chainTracks: [],
+        xenoSymbolIndex,
+      })
+    const withGff = build({ gff: { fileName: gffName, geneticCodes: {} } })
+    const config = gcaBuild(true)
+    assert.deepEqual(
+      config.aggregateTextSearchAdapters,
+      JSON.parse(
+        JSON.stringify(withGff.aggregateTextSearchAdapters).replaceAll(
+          acc,
+          gca,
+        ),
+      ),
+    )
+    assert.deepEqual(Object.keys(config), Object.keys(withGff))
+    assert.equal('aggregateTextSearchAdapters' in gcaBuild(false), false)
+    assert.equal(
+      'aggregateTextSearchAdapters' in
+        gcaBuild(true, hubFileText.replaceAll(acc, gca)),
+      false,
+    )
+  })
+
   it('puts extension tracks first, prefixed, and lets them win on trackId', () => {
     const config = build({
       extension: {

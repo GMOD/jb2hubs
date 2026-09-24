@@ -150,6 +150,8 @@ function processOne(metaPath: string) {
     hubFileText,
     trackDbUrl: meta.hubFileLocation,
     gff,
+    xenoSymbolIndex:
+      !gff && fs.existsSync(path.join(hubDir, 'trix', `${accession}.ix`)),
     extension: readExtension(accession),
     chainTracks: buildChainTracks({
       sourceAccession: accession,
