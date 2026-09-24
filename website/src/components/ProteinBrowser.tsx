@@ -204,6 +204,10 @@ export default function ProteinBrowser() {
   const [example, setExample] = useState(() =>
     exampleMatching(arrival.ref, arrival.gene, arrival.focus),
   )
+  // Counts submissions, so resubmitting the gene on screen (its chip again,
+  // say) starts its results over with what the url now says. The arrival is
+  // submission 0, the only one the link's own focus applies to.
+  const [submission, setSubmission] = useState(0)
   // Which species switch is the latest, so a slower earlier lookup cannot land
   // on top of it. A new query supersedes a pending switch the same way.
   const followToken = useRef(0)
@@ -232,6 +236,7 @@ export default function ProteinBrowser() {
       followToken.current += 1
       setFollow(undefined)
       setExample(chip)
+      setSubmission(n => n + 1)
       setGene(sym)
       setTaxId(ref)
       if (sym === query.gene && ref === query.ref) {
@@ -395,10 +400,10 @@ export default function ProteinBrowser() {
       ) : null}
 
       {data && (
-        // Remounted per query, which is what drops a previous gene's alignment
-        // request, superposition picks and domain selection without an effect.
+        // Remounted per submission, which is what drops a previous gene's
+        // alignment request, superposition picks and focus without an effect.
         <GeneResults
-          key={`${query.gene}:${query.ref}`}
+          key={`${query.gene}:${query.ref}:${submission}`}
           {...data}
           taxId={query.ref}
           status={status}
@@ -407,11 +412,7 @@ export default function ProteinBrowser() {
               ? example
               : undefined
           }
-          linkFocus={
-            query.gene === arrival.gene && query.ref === arrival.ref
-              ? arrival.focus
-              : undefined
-          }
+          linkFocus={submission === 0 ? arrival.focus : undefined}
           onProgress={message => {
             setProgress({ key: queryKey(query.gene, query.ref), message })
           }}
@@ -554,9 +555,9 @@ function GeneResults({
   // Swiss-Prot accessions of the ortholog rows marked for superposition.
   const [superposed, setSuperposed] = useState<string[]>([])
   // Each alignment fetch abandons the EBI job before it, and unmounting — this
-  // component is remounted per query, so a new gene — abandons the last. The
-  // one effect here, because a job at another server is exactly the external
-  // system an effect is for.
+  // component is remounted per submission — abandons the last. The one effect
+  // here, because a job at another server is exactly the external system an
+  // effect is for.
   const [jobs] = useState(latestJob)
   useEffect(
     () => () => {
