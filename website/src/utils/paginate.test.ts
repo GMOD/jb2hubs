@@ -1,7 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { paginate } from './paginate.ts'
+import { pageIndexFromParam, pageSizeFromParam, paginate } from './paginate.ts'
 
 const rows = Array.from({ length: 25 }, (_, i) => i)
 
@@ -39,4 +39,18 @@ test('an empty list is one empty page, not zero pages', () => {
 
 test('an exact multiple does not leave a trailing empty page', () => {
   assert.equal(paginate(rows.slice(0, 20), 0, 10).pageCount, 2)
+})
+
+test('a url page is 1-based and anything else is the first page', () => {
+  assert.equal(pageIndexFromParam('1'), 0)
+  assert.equal(pageIndexFromParam('3'), 2)
+  for (const junk of ['', '0', '-2', '2.5', 'two']) {
+    assert.equal(pageIndexFromParam(junk), 0)
+  }
+})
+
+test('a url page size counts only when the menu offers it', () => {
+  assert.equal(pageSizeFromParam('500', 100), 500)
+  assert.equal(pageSizeFromParam('37', 100), 100)
+  assert.equal(pageSizeFromParam('', 200), 200)
 })

@@ -1,4 +1,4 @@
-import { useDeferredValue, useMemo, useState } from 'react'
+import { useDeferredValue, useMemo } from 'react'
 
 import { Search, X } from 'lucide-react'
 
@@ -7,7 +7,6 @@ import {
   jbrowseUrl,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
-import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useSearchHighlight } from '../hooks/useSearchHighlight.ts'
 import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import { useTaxonomyFilter } from '../hooks/useTaxonomyFilter.ts'
@@ -15,7 +14,11 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../lib/searchIndex.ts'
 import { searchTerms } from '../lib/searchTerms.ts'
 import { CURATED_CLADES, cladeDisplay } from '../lib/taxonomyClades.ts'
-import { paginate } from '../utils/paginate.ts'
+import {
+  pageIndexFromParam,
+  pageSizeFromParam,
+  paginate,
+} from '../utils/paginate.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrangeStar from './OrangeStar.tsx'
 import Pagination from './Pagination.tsx'
@@ -26,6 +29,8 @@ import { entryHref, isCurated, rankEntries } from './searchScoring.ts'
 import type { IndexEntry } from '../lib/searchIndex.ts'
 
 const EXAMPLE_QUERIES = ['human', 'mouse', 'zebrafish', 'GCF_000001405']
+
+const PAGE_SIZE = 100
 
 const statusLegend = (
   <div className={styles.legend}>
@@ -48,16 +53,26 @@ function launchUrl(entry: IndexEntry) {
 
 export default function SearchPage() {
   const { index, loading, error: indexError, retry } = useSearchIndex()
-  const [query, setQuery] = useUrlState('q', '')
-  const [clade, setClade] = useUrlState('clade', '')
+  const [query, writeQuery] = useUrlState('q', '')
+  const [clade, writeClade] = useUrlState('clade', '')
   const clades = useTaxonomyFilter(!!clade)
   const cladeSets = clades.cladeSets
-  const [curatedOnly, setCuratedOnly] = useUrlState('curated', '')
-  const [page, setPage] = useResetOnChange(
-    `${query}\u0000${clade}\u0000${curatedOnly}`,
-    0,
-  )
-  const [pageSize, setPageSize] = useState(100)
+  const [curatedOnly, writeCuratedOnly] = useUrlState('curated', '')
+  const [pageParam, writePage] = useUrlState('page', '1')
+  const [sizeParam, writeSize] = useUrlState('size', String(PAGE_SIZE))
+  const page = pageIndexFromParam(pageParam)
+  const pageSize = pageSizeFromParam(sizeParam, PAGE_SIZE)
+  const setPage = (index: number) => {
+    writePage(String(index + 1))
+  }
+  // A new query or filter asks a different question, so it starts on page one.
+  const fromPageOne = (write: (value: string) => void) => (value: string) => {
+    write(value)
+    setPage(0)
+  }
+  const setQuery = fromPageOne(writeQuery)
+  const setClade = fromPageOne(writeClade)
+  const setCuratedOnly = fromPageOne(writeCuratedOnly)
 
   const trimmedQuery = query.trim()
   // Ranked a render behind the box, so a keystroke paints before the index is
@@ -270,7 +285,7 @@ export default function SearchPage() {
           rowsOnPage={pagedResults.length}
           onPageChange={setPage}
           onPageSizeChange={size => {
-            setPageSize(size)
+            writeSize(String(size))
             setPage(0)
           }}
         />

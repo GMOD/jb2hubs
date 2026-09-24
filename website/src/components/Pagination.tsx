@@ -1,5 +1,6 @@
 import { useId } from 'react'
 
+import { PAGE_SIZES } from '../utils/paginate.ts'
 import styles from './DataTable.module.css'
 
 interface PaginationProps {
@@ -86,10 +87,14 @@ export default function Pagination({
           className={styles.pageSizeSelect}
           disabled={disabled}
         >
-          <option value={100}>100</option>
-          <option value={200}>200</option>
-          <option value={500}>500</option>
-          <option value={1000}>1000</option>
+          {PAGE_SIZES.map(size => (
+            <option
+              key={size}
+              value={size}
+            >
+              {size}
+            </option>
+          ))}
         </select>
         <span>rows</span>
       </div>
