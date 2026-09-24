@@ -1,11 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import {
-  candidatePaths,
-  manifestAccessions,
-  manifestXenoRefGenePaths,
-} from './upstreamHubCandidates.ts'
+import { candidatePaths, manifestAccessions } from './upstreamHubCandidates.ts'
 
 describe('manifestAccessions', () => {
   it('takes a hub accession from its own top-level hub.txt', () => {
@@ -55,23 +51,5 @@ describe('candidatePaths', () => {
   // them must not take the run down.
   it('skips a name with no accession shape', () => {
     assert.deepEqual(candidatePaths(['hg38', 'GC_1', '']), [])
-  })
-})
-
-describe('manifestXenoRefGenePaths', () => {
-  it("takes a GCA hub's own xenoRefGene bigBed and nothing else", () => {
-    const bb =
-      'GCA/036/365/475/GCA_036365475.1/bbi/GCA_036365475.1_fAmiCal2.hap2.xenoRefGene.bb'
-    assert.deepEqual(
-      manifestXenoRefGenePaths(
-        [
-          bb,
-          'GCF/000/001/635/GCF_000001635.27/bbi/GCF_000001635.27_GRCm39.xenoRefGene.bb',
-          'GCA/036/365/475/GCA_036365475.1/ixIxx/GCA_036365475.1_fAmiCal2.hap2.xenoRefGene.ix',
-          'GCA/036/365/475/GCA_036365475.1/bbi/GCA_036365475.1_fAmiCal2.hap2.rmsk.bb',
-        ].join('\n'),
-      ),
-      [bb],
-    )
   })
 })

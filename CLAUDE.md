@@ -432,15 +432,14 @@ a GCF hub searches these.
 - **The index is built before the config**, and `buildConfigsBatch.ts` adds the
   entry only when the index exists, so a hub whose bigBed failed to fetch has no
   search rather than a broken one.
-- **The gate is the upstream bigBed's mtime.** `listUpstreamHubs.sh` stats each
-  GCA hub's `bbi/*.xenoRefGene.bb` in the same rsync pass as `hub.txt` (7,886
-  more paths), so a hub is rebuilt when its index is missing or older than the
-  bigBed, and a bigBed the listing does not name is not requested. The rsync
-  walk fallback never enters `bbi/`, so on those runs only missing indexes are
-  built.
+- **The bigBeds are an rsync mirror** (`genark2jbrowse/xenoRefGene/`, ~2 GB).
+  `rsync -t` over the daemon, 4,000 paths a connection, skips a file whose size
+  and mtime match and keeps upstream's mtime on the copy, so UCSC sends each
+  bigBed once and then only what it changed. A hub is rebuilt when its index is
+  older than its mirrored bigBed or the symbol table, so a symbol refresh and
+  `--reprocess-all` read the mirror and ask UCSC for nothing.
 - **The symbol table is refreshed every 30 days** (`refseqSymbols/`, 4 minutes
-  and 2.4 GB streamed), and a refresh does not rebuild existing indexes;
-  `--reprocess-all` does, at one bigBed download per hub.
+  and 2.4 GB streamed from NCBI), and a refresh rebuilds every index.
 
 ## A hub.txt is refreshed by rsync, not fetched once and kept forever
 

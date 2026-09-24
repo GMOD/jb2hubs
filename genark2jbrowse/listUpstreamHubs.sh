@@ -4,11 +4,10 @@
 #
 # Every GenArk hub's top-level files on hgdownload, as
 # "accession<TAB>file<TAB>size<TAB>mtime" -- hub.txt, the 2bit and the
-# chrom.sizes, plus each GCA hub's xenoRefGene bigBed in the stat shape. Two
-# connections answer what 150,000 HEAD requests would: which hubs changed
-# upstream, which are gone, and which have lost the sequence files their
-# config's assembly names. mtime is as rsync prints it, in this host's local
-# time.
+# chrom.sizes. Two connections answer what 150,000 HEAD requests would: which
+# hubs changed upstream, which are gone, and which have lost the sequence files
+# their config's assembly names. mtime is as rsync prints it, in this host's
+# local time.
 #
 # Two shapes produce that file, and both are here:
 #
@@ -48,14 +47,12 @@ STAT_CHUNK=4000
 
 # rsync --list-only lines ("-rw-rw-r-- 13,636 2026/07/20 15:27:21 001/905/GCA_000001905.1/hub.txt")
 # to TSV rows, dropping directories. Both shapes below print the same format;
-# only the leading path components differ, and just the last two are read --
-# three for a file under bbi/, which is keyed "bbi/<file>".
+# only the leading path components differ, and just the last two are read.
 parse_rsync_listing() {
   awk '$1 ~ /^-/ && $NF ~ /\// {
     n = split($NF, a, "/")
     size = $2; gsub(",", "", size)
-    if (a[n - 1] == "bbi" && n > 2) print a[n - 2] "\tbbi/" a[n] "\t" size "\t" $3 " " $4
-    else print a[n - 1] "\t" a[n] "\t" size "\t" $3 " " $4
+    print a[n - 1] "\t" a[n] "\t" size "\t" $3 " " $4
   }'
 }
 

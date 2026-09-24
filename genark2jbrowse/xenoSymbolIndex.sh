@@ -7,10 +7,14 @@
 # table and writes trix/<accession>.ix beside its config. Reads meta.json paths
 # on stdin; src/buildXenoSymbolIndexes.ts does the per-hub work and gating.
 #
+# The bigBeds are rsynced into xenoRefGene/, which rsync -t keeps in step with
+# upstream by size and mtime: a first run fetches ~2 GB once, later runs only
+# what UCSC changed, and a rebuild reads the mirror rather than UCSC.
+#
 # The symbol table is cut from gene2refseq.gz (2.4 GB, ~8 min) into
 # refseqSymbols/refseqSymbols.tsv.gz (~3 MB) when it is missing or older than
-# SYMBOLS_MAX_AGE_DAYS, or on FETCH_UPDATES. A refreshed table does not rebuild
-# existing indexes; --reprocess-all does.
+# SYMBOLS_MAX_AGE_DAYS, or on FETCH_UPDATES. A refreshed table rebuilds every
+# index, from the mirror.
 
 set -euo pipefail
 
@@ -22,6 +26,10 @@ SYMBOLS="$SCRIPT_DIR/refseqSymbols/refseqSymbols.tsv.gz"
 SYMBOLS_MAX_AGE_DAYS=30
 # 553,362 NM_/NR_ accessions on 2026-09-24; far fewer is a truncated stream.
 SYMBOLS_MIN_ROWS=400000
+MIRROR="$SCRIPT_DIR/xenoRefGene"
+RSYNC_HUBS=rsync://hgdownload.soe.ucsc.edu/hubs/
+# rsync's --files-from is quadratic in list length (see listUpstreamHubs.sh)
+MIRROR_CHUNK=4000
 
 # gene2refseq rows on stdin to "accession<TAB>symbol", the RNA accession
 # unversioned and the first row for it winning. Only NM_/NR_: xenoRefGene is
@@ -57,6 +65,22 @@ fetch_refseq_symbols() {
   echo "xenoSymbolIndex: $rows RefSeq accessions with a symbol"
 }
 
+# Brings the mirror's copy of each bigBed named in $1 (paths under hubs/) up to
+# date. A bigBed gone upstream is left out rather than failing its chunk, and a
+# failed chunk leaves the build to what the mirror already holds.
+mirror_bigbeds() {
+  local work chunk
+  [ -s "$1" ] || return 0
+  work=$(mktemp -d)
+  split -l "$MIRROR_CHUNK" "$1" "$work/c"
+  for chunk in "$work"/c*; do
+    if ! rsync -t --ignore-missing-args --files-from="$chunk" "$RSYNC_HUBS" "$MIRROR/"; then
+      echo "xenoSymbolIndex: rsync of $(wc -l <"$chunk") bigBeds failed; building from what the mirror holds" >&2
+    fi
+  done
+  rm -rf "$work"
+}
+
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   if ! symbols_current; then
     echo "Cutting RefSeq symbols from gene2refseq.gz..."
@@ -66,5 +90,12 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     fi
   fi
   cd "$SCRIPT_DIR"
-  node src/buildXenoSymbolIndexes.ts "$SYMBOLS"
+  meta=$(mktemp)
+  paths=$(mktemp)
+  trap 'rm -f "$meta" "$paths"' EXIT
+  cat >"$meta"
+  node src/buildXenoSymbolIndexes.ts paths <"$meta" >"$paths"
+  mkdir -p "$MIRROR"
+  mirror_bigbeds "$paths"
+  node src/buildXenoSymbolIndexes.ts build "$SYMBOLS" "$MIRROR" <"$meta"
 fi

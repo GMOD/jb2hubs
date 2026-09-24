@@ -1,10 +1,14 @@
-// Builds trix/<accession>.ix/.ixx/_meta.json for every GCA hub with a
-// xenoRefGene track, from its bigBed and the accession -> symbol table
-// xenoSymbolIndex.sh cuts from gene2refseq. Reads meta.json paths on stdin.
+// Reads meta.json paths on stdin, for every GCA hub with a xenoRefGene track:
 //
-// A hub is rebuilt when its index is missing, older than the upstream bigBed
-// (UPSTREAM_HUB_LIST, when the listing ran), or REPROCESS is set. With the
-// listing, a bigBed it does not name is gone upstream and is not asked for.
+//   paths                   prints its bigBed's path under hubs/, which
+//                           xenoSymbolIndex.sh rsyncs into the mirror
+//   build <symbols> <mirror> writes trix/<accession>.ix/.ixx/_meta.json from
+//                           the mirrored bigBed and the accession -> symbol
+//                           table cut from gene2refseq
+//
+// A hub is rebuilt when its index is missing, older than its mirrored bigBed
+// (whose mtime rsync -t keeps from upstream) or than the symbol table, or
+// REPROCESS is set. Building never asks UCSC for anything.
 import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
@@ -13,50 +17,20 @@ import { Readable } from 'stream'
 import * as zlib from 'zlib'
 
 import { BigBed } from '@gmod/bbi'
-import {
-  generateJBrowseConfigForAssemblyHub,
-  myfetch,
-  readJSON,
-} from 'hubtools'
+import { generateJBrowseConfigForAssemblyHub, readJSON } from 'hubtools'
 import { ixIxxStream } from 'ixixx'
 
 import { xenoSymbolIndexLines } from './xenoSymbolIndex.ts'
 
 const CONCURRENCY = 8
 
-const [symbolsFile] = process.argv.slice(2)
-if (!symbolsFile) {
-  console.error('usage: buildXenoSymbolIndexes.ts <symbols.tsv.gz> <meta-list')
+const [mode, symbolsFile, mirror] = process.argv.slice(2)
+if (mode !== 'paths' && !(mode === 'build' && symbolsFile && mirror)) {
+  console.error(
+    'usage: buildXenoSymbolIndexes.ts paths | build <symbols.tsv.gz> <mirror> <meta-list',
+  )
   process.exit(1)
 }
-
-const symbols = new Map<string, string>()
-for (const line of zlib
-  .gunzipSync(fs.readFileSync(symbolsFile))
-  .toString()
-  .split('\n')) {
-  const tab = line.indexOf('\t')
-  if (tab > 0) {
-    symbols.set(line.slice(0, tab), line.slice(tab + 1))
-  }
-}
-
-// accession -> mtime of its bbi/*.xenoRefGene.bb, from listUpstreamHubs.sh
-function readUpstreamBigBeds(file: string) {
-  const mtimes = new Map<string, number>()
-  for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
-    const [accession, name, , mtime] = line.split('\t')
-    if (accession && name?.endsWith('.xenoRefGene.bb') && mtime) {
-      mtimes.set(accession, new Date(mtime.replace(/\//g, '-')).getTime())
-    }
-  }
-  return mtimes
-}
-// Empty when the listing fell back to the rsync walk, which never enters bbi/.
-const listed = process.env.UPSTREAM_HUB_LIST
-  ? readUpstreamBigBeds(process.env.UPSTREAM_HUB_LIST)
-  : undefined
-const upstream = listed?.size ? listed : undefined
 
 function xenoRefGeneUrl(accession: string, hubDir: string, hubUrl: string) {
   const config = generateJBrowseConfigForAssemblyHub({
@@ -74,47 +48,40 @@ function xenoRefGeneUrl(accession: string, hubDir: string, hubUrl: string) {
     : undefined
 }
 
-function isCurrent(ix: string, accession: string) {
+function hubPath(url: string) {
+  return url.split('/hubs/')[1]
+}
+
+function readSymbols(file: string) {
+  const symbols = new Map<string, string>()
+  for (const line of zlib
+    .gunzipSync(fs.readFileSync(file))
+    .toString()
+    .split('\n')) {
+    const tab = line.indexOf('\t')
+    if (tab > 0) {
+      symbols.set(line.slice(0, tab), line.slice(tab + 1))
+    }
+  }
+  return symbols
+}
+
+function isCurrent(ix: string, inputs: string[]) {
   if (process.env.REPROCESS || !fs.existsSync(ix)) {
     return false
   }
-  const upstreamMs = upstream?.get(accession)
-  return upstreamMs === undefined || upstreamMs <= fs.statSync(ix).mtimeMs
+  const built = fs.statSync(ix).mtimeMs
+  return inputs.every(f => fs.statSync(f).mtimeMs <= built)
 }
 
-// hgdownload drops connections and stalls on connect under load, so each round
-// also asks hgdownload2, which serves the same tree from another address block.
-// Whichever host answered last is asked first: with the primary unreachable,
-// every hub otherwise paid its 10 s connect timeout.
-let mirrorFirst = false
-async function fetchBytes(url: string, rounds = 3) {
-  const mirror = url.replace('//hgdownload.soe.', '//hgdownload2.soe.')
-  let lastError: unknown
-  for (let i = 0; i < rounds; i++) {
-    if (i > 0) {
-      await new Promise(r => setTimeout(r, 3000 * i))
-    }
-    for (const u of mirrorFirst ? [mirror, url] : [url, mirror]) {
-      try {
-        const res = await myfetch(u)
-        mirrorFirst = u === mirror && u !== url
-        return res
-      } catch (error) {
-        lastError = error
-      }
-    }
-  }
-  throw lastError
-}
-
-async function buildIndex(accession: string, hubDir: string, url: string) {
+async function buildIndex(
+  symbols: Map<string, string>,
+  { accession, hubDir, url, bigBedPath }: Job,
+) {
   const trackId = `${accession}-xenoRefGene`
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'xeno-'))
   try {
-    const bbPath = path.join(tmp, 'xenoRefGene.bb')
-    const res = await fetchBytes(url)
-    fs.writeFileSync(bbPath, new Uint8Array(await res.arrayBuffer()))
-    const bigBed = new BigBed({ path: bbPath })
+    const bigBed = new BigBed({ path: bigBedPath })
     const { refsByName } = await bigBed.getHeader()
     const refNames = Object.keys(refsByName)
     const features = await bigBed.getFeaturesMulti(
@@ -166,56 +133,80 @@ async function buildIndex(accession: string, hubDir: string, url: string) {
   }
 }
 
-const queue: { accession: string; hubDir: string; url: string }[] = []
+interface Job {
+  accession: string
+  hubDir: string
+  url: string
+  bigBedPath: string
+}
+
+const hubs: Omit<Job, 'bigBedPath'>[] = []
 const failed: string[] = []
 let gca = 0
 let noTrack = 0
-let goneUpstream = 0
 for await (const line of readline.createInterface({ input: process.stdin })) {
   const metaPath = line.trim()
   const hubDir = path.dirname(metaPath)
   const accession = path.basename(hubDir)
   if (metaPath && accession.startsWith('GCA_')) {
     gca++
-    let url: string | undefined
     try {
       const meta = readJSON<{ hubFileLocation: string }>(metaPath)
-      url = xenoRefGeneUrl(accession, hubDir, meta.hubFileLocation)
+      const url = xenoRefGeneUrl(accession, hubDir, meta.hubFileLocation)
+      if (url && hubPath(url)) {
+        hubs.push({ accession, hubDir, url })
+      } else {
+        noTrack++
+      }
     } catch (error) {
       failed.push(`${accession}: ${error}`)
-      continue
-    }
-    if (!url) {
-      noTrack++
-    } else if (upstream && !upstream.has(accession)) {
-      goneUpstream++
-    } else if (
-      !isCurrent(path.join(hubDir, 'trix', `${accession}.ix`), accession)
-    ) {
-      queue.push({ accession, hubDir, url })
     }
   }
 }
 
+if (mode === 'paths') {
+  for (const { url } of hubs) {
+    console.log(hubPath(url))
+  }
+  console.error(
+    `xenoRefGene symbol index: ${gca} GCA hubs, ${noTrack} without the track, ${hubs.length} bigBeds to mirror`,
+  )
+  process.exit(0)
+}
+
+const queue: Job[] = []
+let notMirrored = 0
+for (const hub of hubs) {
+  const bigBedPath = path.join(mirror!, hubPath(hub.url)!)
+  if (!fs.existsSync(bigBedPath)) {
+    notMirrored++
+  } else if (
+    !isCurrent(path.join(hub.hubDir, 'trix', `${hub.accession}.ix`), [
+      bigBedPath,
+      symbolsFile!,
+    ])
+  ) {
+    queue.push({ ...hub, bigBedPath })
+  }
+}
+
 console.error(
-  `xenoRefGene symbol index: ${gca} GCA hubs, ${noTrack} without the track, ${goneUpstream} with its bigBed missing upstream, ${queue.length} to build`,
+  `xenoRefGene symbol index: ${gca} GCA hubs, ${noTrack} without the track, ${notMirrored} not mirrored, ${queue.length} to build`,
 )
 
+const symbols = readSymbols(symbolsFile!)
 let built = 0
 let records = 0
 async function worker() {
   for (let job = queue.shift(); job; job = queue.shift()) {
     try {
-      const result = await buildIndex(job.accession, job.hubDir, job.url)
-      records += result
+      records += await buildIndex(symbols, job)
       built++
       if (built % 500 === 0) {
         console.error(`  ${built} built`)
       }
     } catch (error) {
-      const cause =
-        error instanceof Error && error.cause ? ` (${error.cause})` : ''
-      failed.push(`${job.accession}: ${error}${cause}`)
+      failed.push(`${job.accession}: ${error}`)
     }
   }
 }
