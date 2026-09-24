@@ -54,16 +54,28 @@ export function parseAlphaFoldModels(json: unknown): AlphaFoldModel[] {
   )
 }
 
-// Every model AlphaFold DB has for an accession. Best-effort: an unreachable
-// API reads as "no model", which costs the structure and nothing else. A 404
-// is the API's own way of saying so for an accession it has never folded.
-export async function fetchAlphaFoldModels(
+// Every model AlphaFold DB has for an accession. A 404 is the API's own way of
+// saying it has never folded the accession; a failure to answer throws, so a
+// caller that remembers answers can tell the two apart.
+export async function requestAlphaFoldModels(
   uniprotId: string,
 ): Promise<AlphaFoldModel[]> {
   const res = await fetch(
     `https://alphafold.ebi.ac.uk/api/prediction/${encodeURIComponent(uniprotId)}`,
-  ).catch(() => undefined)
-  return res?.ok ? parseAlphaFoldModels(await res.json()) : []
+  )
+  if (res.status === 404) {
+    return []
+  }
+  if (!res.ok) {
+    throw new Error(`AlphaFold DB ${res.status} for ${uniprotId}`)
+  }
+  return parseAlphaFoldModels(await res.json())
+}
+
+// Best-effort: an unreachable API reads as "no model", which costs the
+// structure and nothing else.
+export function fetchAlphaFoldModels(uniprotId: string) {
+  return requestAlphaFoldModels(uniprotId).catch((): AlphaFoldModel[] => [])
 }
 
 // The model to open for a transcript: the one folded from exactly this

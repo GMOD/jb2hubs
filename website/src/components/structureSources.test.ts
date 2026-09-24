@@ -3,7 +3,12 @@ import { test } from 'node:test'
 
 import { parseExperimentalStructures } from 'p2s_mapper'
 
-import { parseAlphaFoldModels, pickAlphaFoldModel } from './structureSources.ts'
+import {
+  fetchAlphaFoldModels,
+  parseAlphaFoldModels,
+  pickAlphaFoldModel,
+  requestAlphaFoldModels,
+} from './structureSources.ts'
 
 const entry = (
   id: string,
@@ -67,6 +72,27 @@ test('pickAlphaFoldModel: else the canonical entry, else the longest isoform', (
   assert.equal(pickAlphaFoldModel(withCanonical, 'XYZ')?.entity, 'AF-P11532-F1')
   assert.equal(pickAlphaFoldModel(dmd, 'XYZ')?.entity, 'AF-P11532-2-F1')
   assert.equal(pickAlphaFoldModel([], 'XYZ'), undefined)
+})
+
+// A 404 is an answer and a dropped request is not: the card forgets the second
+// kind, so the next ask goes back to the API instead of repeating the failure.
+test('requestAlphaFoldModels: a 404 is no model, a failure to answer throws', async t => {
+  const answers: (() => Promise<Response>)[] = [
+    () => Promise.resolve(new Response('', { status: 404 })),
+    () => Promise.resolve(new Response('', { status: 503 })),
+    () => Promise.reject(new TypeError('Failed to fetch')),
+  ]
+  t.mock.method(globalThis, 'fetch', () => answers.shift()!())
+  assert.deepEqual(await requestAlphaFoldModels('P00000'), [])
+  await assert.rejects(requestAlphaFoldModels('P00000'), /503/)
+  await assert.rejects(requestAlphaFoldModels('P00000'), /Failed to fetch/)
+})
+
+test('fetchAlphaFoldModels: best-effort, every failure reads as no model', async t => {
+  t.mock.method(globalThis, 'fetch', () =>
+    Promise.reject(new TypeError('Failed to fetch')),
+  )
+  assert.deepEqual(await fetchAlphaFoldModels('P00000'), [])
 })
 
 const beacons = {

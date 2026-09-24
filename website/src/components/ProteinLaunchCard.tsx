@@ -21,8 +21,8 @@ import { type Focus, focusLabel, focusRange } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
 import {
   type AlphaFoldModel,
-  fetchAlphaFoldModels,
   pickAlphaFoldModel,
+  requestAlphaFoldModels,
 } from './structureSources.ts'
 
 import type { LoadedAlignment } from './proteinAlignments.ts'
@@ -46,26 +46,32 @@ function isoformLabel(iso: Isoform) {
 // An ortholog's best AlphaFold model, resolved through the API so a species
 // whose canonical is past the length cap still gets its isoform model. Memoized
 // per accession: the SWR key below is the whole list of marked rows, so without
-// this every toggle re-asked the API for every accession already resolved.
+// this every toggle re-asked the API for every accession already resolved. A
+// lookup that failed is forgotten, so asking again reaches the API.
 const modelByAccession = new Map<string, Promise<AlphaFoldModel | undefined>>()
 
-function superposedModel(accession: string) {
-  let pending = modelByAccession.get(accession)
-  if (!pending) {
-    pending = fetchAlphaFoldModels(accession).then(models =>
-      pickAlphaFoldModel(models),
-    )
-    modelByAccession.set(accession, pending)
+async function superposedModel(accession: string) {
+  const pending =
+    modelByAccession.get(accession) ??
+    requestAlphaFoldModels(accession).then(models => pickAlphaFoldModel(models))
+  modelByAccession.set(accession, pending)
+  try {
+    return await pending
+  } catch (e) {
+    modelByAccession.delete(accession)
+    throw e
   }
-  return pending
 }
 
 async function superposedModels(accessions: string[]) {
   return Promise.all(
-    accessions.map(async accession => ({
-      accession,
-      model: await superposedModel(accession),
-    })),
+    accessions.map(async accession => {
+      try {
+        return { accession, model: await superposedModel(accession) }
+      } catch (e) {
+        return { accession, failure: errorText(e) }
+      }
+    }),
   )
 }
 
@@ -128,7 +134,7 @@ export default function ProteinLaunchCard({
     LIVE_QUERY,
   )
   const accessions = superposed.flatMap(r => (r.uniprot ? [r.uniprot] : []))
-  const { data: extras } = useSWRImmutable(
+  const { data: extras, mutate: retryExtras } = useSWRImmutable(
     accessions.length > 0
       ? (['alphafold-models', ...accessions] as const)
       : null,
@@ -208,10 +214,15 @@ export default function ProteinLaunchCard({
   // Building the url deflates the whole inline alignment, so it is memoised on
   // its own.
   const launch = useMemo(() => {
-    const found = (extras ?? []).flatMap(e => (e.model ? [e.model] : []))
+    const found = (extras ?? []).flatMap(e =>
+      'model' in e && e.model ? [e.model] : [],
+    )
     const missingModels = (extras ?? [])
-      .filter(e => !e.model)
+      .filter(e => 'model' in e && !e.model)
       .map(e => e.accession)
+    const unreachable = (extras ?? []).flatMap(e =>
+      'failure' in e ? [e] : [],
+    )
     // A focus is a range on some protein sequence; the plugin lights structure
     // residues. The map's regions are on the UniProt canonical, so they are
     // exact when the model IS the canonical and was folded from the launched
@@ -236,6 +247,7 @@ export default function ProteinLaunchCard({
     return {
       found,
       missingModels,
+      unreachable,
       modelExact,
       canonicalModel,
       fromCartoon,
@@ -284,6 +296,7 @@ export default function ProteinLaunchCard({
   const {
     found,
     missingModels,
+    unreachable,
     modelExact,
     canonicalModel,
     fromCartoon,
@@ -464,6 +477,21 @@ export default function ProteinLaunchCard({
         {missingModels.length > 0 && (
           <p className="ui-note">
             No AlphaFold model for {missingModels.join(', ')}.
+          </p>
+        )}
+        {unreachable.length > 0 && (
+          <p className="ui-error">
+            AlphaFold DB did not answer for{' '}
+            {unreachable.map(e => e.accession).join(', ')} (
+            {unreachable[0]!.failure}).{' '}
+            <button
+              className="ui-linkbtn"
+              onClick={() => {
+                void retryExtras()
+              }}
+            >
+              Try again
+            </button>
           </p>
         )}
 
