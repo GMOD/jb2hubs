@@ -144,6 +144,41 @@ describe('scoreEntry', () => {
     assert.ok(scoreEntry(hg38, ['000001405']) >= 0)
     assert.equal(scoreEntry(hg38, ['gcf_999999999']), -1)
   })
+
+  it('treats a bare accession prefix as no term at all', () => {
+    const human = entry({ accession: 'GCF_000001405.40', commonName: 'human' })
+    assert.equal(scoreEntry(human, ['gcf_']), -1)
+    assert.equal(scoreEntry(entry({ commonName: 'zebrafish' }), ['gca_']), -1)
+    assert.equal(
+      scoreEntry(human, ['gcf_', 'human']),
+      scoreEntry(human, ['human']),
+    )
+  })
+
+  it('ranks the assembly whose accession equals the query above one it prefixes', () => {
+    const hg19 = entry({
+      accession: 'hg19',
+      commonName: 'Human',
+      source: 'ucsc',
+      year: 2009,
+      altAccession: 'GCA_000001405.1',
+    })
+    const hg38 = entry({
+      accession: 'hg38',
+      commonName: 'Human',
+      source: 'ucsc',
+      year: 2013,
+      altAccession: 'GCA_000001405.15',
+    })
+    assert.ok(
+      scoreEntry(hg19, ['gca_000001405.1']) >
+        scoreEntry(hg38, ['gca_000001405.1']),
+    )
+    assert.ok(
+      scoreEntry(hg38, ['gca_000001405.15']) >
+        scoreEntry(hg19, ['gca_000001405.15']),
+    )
+  })
 })
 
 describe('entryHref', () => {

@@ -29,15 +29,28 @@ function recency(year: number) {
   return year ? Math.min(1, Math.max(0, (year - 1995) / 35)) : 0
 }
 
-export function scoreEntry(entry: IndexEntry, terms: string[]) {
+// A bare `gcf_` strips to nothing, and an empty term is a substring of every
+// row: typed alone it matched all 52,727. So it is not a term at all.
+function usableTerms(terms: string[]) {
+  return terms
+    .map(term => term.trim())
+    .filter(term => withoutAccessionPrefix(term) !== '')
+}
+
+export function scoreEntry(entry: IndexEntry, rawTerms: string[]) {
+  const terms = usableTerms(rawTerms)
   const commonName = entry[1].toLowerCase()
   const scientificName = entry[2].toLowerCase()
   const assemblyName = entry[3].toLowerCase()
   const accessions = `${entry[0]} ${entry[10]}`.toLowerCase().trim()
   const accessionText = `${accessions} ${withoutAccessionPrefix(accessions)}`
+  const accessionTokens = new Set(accessionText.split(/\s+/))
   const all = `${accessionText} ${commonName} ${scientificName} ${assemblyName}`
 
-  if (!terms.every(term => all.includes(withoutAccessionPrefix(term.trim())))) {
+  if (
+    terms.length === 0 ||
+    !terms.every(term => all.includes(withoutAccessionPrefix(term)))
+  ) {
     return -1
   }
 
@@ -45,13 +58,17 @@ export function scoreEntry(entry: IndexEntry, terms: string[]) {
   // across fields to avoid rewarding incidental matches in multiple fields
   let score = 0
   for (const term of terms) {
+    const accession = withoutAccessionPrefix(term)
     const best = Math.max(
       scoreTerm(term, commonName) * 4,
       // Weighted equal to the common name: users type genus names ("Arabidopsis",
       // "Drosophila", "Danio") at least as often, and ranking the common name
       // higher put viruses named after a host above the host itself.
       scoreTerm(term, scientificName) * 4,
-      scoreTerm(withoutAccessionPrefix(term), accessionText) * 2,
+      // A whole accession outranks one it is a prefix of: GCA_000001405.1 is
+      // hg19, and as a prefix match it tied hg38's GCA_000001405.15, which then
+      // won on recency.
+      accessionTokens.has(accession) ? 8 : scoreTerm(accession, accessionText) * 2,
       scoreTerm(term, assemblyName),
     )
     score += best
