@@ -30,15 +30,13 @@ interface ApiEvent {
 
 const s3 = new S3Client({})
 const BUCKET = process.env.CACHE_BUCKET
-// Bump when the assembler's output shape or logic changes, so stale cached
-// results are bypassed rather than served indefinitely. v2: PlacedGene gained a
-// `chromosome` field (UCSC chr mapping for the whole-genome alignment launch).
-// v3: resolveGeneId stopped taking NCBI's first hit, which for a symbol that is
-// also another gene's alias resolved to the wrong gene entirely — human `TTN`
-// returned TTR (transthyretin) rather than titin. Every neighborhood assembled
-// for such a symbol before that fix is cached under the same key and would be
-// served as a HIT forever, fixed resolver or not.
-const PREFIX = 'neighborhood/v3'
+// Bump when the assembler's output or its gene resolution changes, or a cached
+// answer from the old code is served as a HIT forever. v3: resolveGeneId stopped
+// taking NCBI's first hit (human `TTN` resolved to TTR). v4: a Datasets failure
+// no longer falls through to esearch's single guess, which cached the wrong gene
+// under the right symbol, and the key keeps the symbol's case, since fly `Dl`
+// (Delta) and `dl` (dorsal) are different genes.
+const PREFIX = 'neighborhood/v4'
 
 const cors = {
   'Access-Control-Allow-Origin': '*',
@@ -89,7 +87,7 @@ export function parseParams(
 }
 
 function cacheKey({ gene, ref, flankBp, maxAnchors }: Params) {
-  const slug = gene.toUpperCase().replace(/[^A-Z0-9]+/g, '_')
+  const slug = gene.replace(/[^A-Za-z0-9]+/g, '_')
   return `${PREFIX}/${ref}/${slug}.f${flankBp}.a${maxAnchors}.json`
 }
 

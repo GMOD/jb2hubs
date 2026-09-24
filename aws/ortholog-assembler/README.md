@@ -17,7 +17,7 @@ per visitor.
 ## Endpoint
 
 ```
-GET /ortholog-set?gene=BRCA1&ref=9606[&flank=150000&maxAnchors=11]
+GET /ortholog-set?gene=672&ref=9606[&flank=150000&maxAnchors=11]    (a GeneID, or a symbol: gene=BRCA1)
 -> { query, anchors[], species[]  (tree-ordered, coords+strand), tree }
 ```
 
@@ -55,6 +55,14 @@ names; if the stack is ever recreated under a new id, update that constant.
 `MinimumCompressionSize: 1024` (the ~1.4 MB neighborhood body was going out
 uncompressed), the handler validates its inputs and renamed its cache header.
 None of it is live until someone runs `./deploy.sh`.
+
+**Also pending (2026-09-24):** cache prefix `neighborhood/v4`. The v3 cache can
+hold a symbol's neighborhood assembled while Datasets was failing, when the
+resolver fell back to esearch's single guess and cached that gene under the
+symbol asked for; its keys also upper-cased the symbol, so fly `Dl` (Delta) and
+`dl` (dorsal) shared one. v4 keys keep the case and start empty. The website
+asks by GeneID (`?gene=7157`), which the deployed handler already accepts and
+passes through without resolving, so the page does not wait on this deploy.
 
 ## Optional: fully static repeat hits
 

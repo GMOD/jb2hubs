@@ -432,13 +432,15 @@ function GeneOrderSection({
   )
   const maxAnchors = choice(ANCHOR_CHOICES, anchorsParam, DEFAULT_MAX_ANCHORS)
   const flankBp = choice(FLANK_CHOICES_BP, flankParam, DEFAULT_FLANK_BP)
-  const { symbol, refTaxId } = identity
+  const { symbol, geneId, refTaxId } = identity
 
-  // Keyed on NCBI's spelling of the symbol rather than what was typed, so
-  // `p53` and `TP53` share one cached neighborhood. keepPreviousData holds the
-  // current figure on screen until the next one lands.
+  // Asked for by GeneID, which the assembler passes straight through, so the
+  // figure is of the gene the header names and the Lambda's cache key names
+  // that gene too. Sending the symbol had the Lambda resolve it a second time,
+  // where a Datasets failure once cached the wrong gene under the right name.
+  // keepPreviousData holds the current figure on screen until the next lands.
   const { data, error, isValidating } = useSWRImmutable(
-    ['neighborhood', symbol, refTaxId, maxAnchors, flankBp],
+    ['neighborhood', geneId, refTaxId, maxAnchors, flankBp],
     ([, g, r, a, f]) => getNeighborhood(g, r, { maxAnchors: a, flankBp: f }),
     { ...LIVE_QUERY, keepPreviousData: true, revalidateOnFocus: false },
   )
