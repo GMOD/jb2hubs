@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import DataTable from '../../components/DataTable.tsx'
-import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import { categoryTable } from '../../components/DataTable/hubRow.ts'
 import type { HubSource } from '../../components/DataTable/hubRow.ts'
 import { hubCategories } from 'hubtools'
@@ -42,7 +42,7 @@ const title = slug.charAt(0).toUpperCase() + slug.slice(1)
   description={`Every ${slug} genome assembly in the UCSC GenArk collection, searchable and sortable, each one openable in JBrowse 2.`}
 >
   <Container wide>
-    <UcscStatusBanner client:idle />
+    <UcscStatusBanner />
     <div class="page-header">
       <h1 class="page-title">GenArk hubs - {title}</h1>
       <a

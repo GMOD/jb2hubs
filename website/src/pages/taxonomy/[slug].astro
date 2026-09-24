@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import TaxonomyTree from '../../components/TaxonomyTree.astro'
 import TaxonomyViewToggle from '../../components/TaxonomyViewToggle.tsx'
-import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import {
   TREE_NODE_BUDGET,
   budgetTree,
@@ -160,7 +160,7 @@ if (isCategory) {
   description={description}
 >
   <Container wide>
-    <UcscStatusBanner client:idle />
+    <UcscStatusBanner />
     {isCategory && (
       <div class="page-header">
         <h1 class="page-title">GenArk taxonomy - {title}</h1>

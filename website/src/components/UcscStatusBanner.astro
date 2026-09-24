@@ -1,0 +1,41 @@
+---
+// A warning shown when UCSC's download server is not answering, hidden until
+// the probe says otherwise, so it renders nothing when healthy or inconclusive.
+// A plain script rather than a React island: it was the only island on the
+// accession and /ucsc/<db> pages, so it shipped React to each of them for a
+// banner that almost never shows.
+import styles from './UcscStatusBanner.module.css'
+---
+
+<aside
+  class={styles.banner}
+  role="status"
+  hidden
+  data-ucsc-status-banner
+>
+  <p
+    class={styles.headline}
+    data-headline
+  ></p>
+  <p>
+    This site is fine, but most track data is served from{' '}
+    <span data-detail></span>
+  </p>
+  <ul
+    class={styles.list}
+    data-consequences
+  ></ul>
+  {/* Earned, not asserted: the verdict comes from comparing hgdownload
+       against a control request to this site, so a slow connection of the
+       reader's own yields no banner at all. */}
+  <p class={styles.footnote}>
+    Measured from your browser against this site as a baseline, so this is not
+    your connection. Reloading will not help; it clears when UCSC recovers.
+  </p>
+</aside>
+
+<script>
+  import { mountUcscStatusBanners } from '../lib/ucscStatusBanner.ts'
+
+  mountUcscStatusBanners()
+</script>

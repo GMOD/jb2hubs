@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
-import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
 import {
@@ -145,7 +145,7 @@ const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
   jsonLd={jsonLd}
 >
   <Container>
-    <UcscStatusBanner client:idle />
+    <UcscStatusBanner />
     <h1>{scientificName}</h1>
     {ncbiMissing ? (
       <p>

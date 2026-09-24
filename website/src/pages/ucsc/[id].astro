@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
-import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
 import { ucscBrowserUrl, ucscGatewayUrl } from '../../lib/externalLinks.ts'
 import { ucscPageLinks } from '../../utils/accessionData.ts'
@@ -44,7 +44,7 @@ const pageDescription = [
   description={pageDescription}
 >
   <Container>
-    <UcscStatusBanner client:idle />
+    <UcscStatusBanner />
     <div>
       <h1>{ret.scientificName}</h1>
 

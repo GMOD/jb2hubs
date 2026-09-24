@@ -1314,7 +1314,8 @@ to the reverted mirroring sweep.
 
 ### Readers get told, because a stall reports nothing on its own
 
-`UcscStatusBanner` (`website/src/components/`, logic in
+`UcscStatusBanner` (`website/src/components/UcscStatusBanner.astro`, wording in
+`website/src/lib/ucscStatusBanner.ts`, probe in
 `website/src/lib/ucscLiveness.ts`) warns on the launch pages when hgdownload is
 not answering. It exists because the stall described above is **completely
 silent to the reader**: jbrowse-core sets no timeout on those fetches, so
@@ -1343,7 +1344,7 @@ nothing. Control fast + UCSC timeout ⇒ `stalled`. Control fast + UCSC over 2.5
 would describe the wrong failure. `ucscLiveness.test.ts` pins every one of those
 branches, the false-alarm ones especially.
 
-Three things not to undo:
+Four things not to undo:
 
 - **The probe's hard deadline.** The failure being detected is a connection that
   never answers, so a probe without `AbortSignal.timeout` would hang exactly
@@ -1354,13 +1355,21 @@ Three things not to undo:
   plus UCSC-served tracks; a GenArk assembly does not open at all, because its
   `chromSizes` and `refNameAliases` are both remote and both in that same
   `Promise.all`. That distinction is the actionable part.
-- **Mounted on launch pages only** (`accession/[id]`, `ucsc/[id]`,
-  `ucsc/index`), `client:idle`, with the verdict shared across tabs and page
-  views in `localStorage` for 2 minutes. Cost to UCSC therefore scales with
-  distinct readers per window rather than with page views, and one bodiless HEAD
-  is a rounding error beside the hundreds of range requests the session that
-  reader is about to launch makes against the same host. Putting it in
-  `Layout.astro` would be simpler and would probe from the blog.
+- **Mounted only on pages a reader launches from** (`accession/[id]`,
+  `ucsc/[id]`, `ucsc/index`, `hubs/[slug]`, `taxonomy/[slug]`, `search` and the
+  recently-updated pages), probing when the browser is idle, with the verdict
+  shared across tabs and page views in `localStorage` for 2 minutes. Cost to
+  UCSC therefore scales with distinct readers per window rather than with page
+  views, and one bodiless HEAD is a rounding error beside the hundreds of range
+  requests the session that reader is about to launch makes against the same
+  host. Putting it in `Layout.astro` would be simpler and would probe from the
+  blog.
+- **A plain script, not a React island.** On the accession and `/ucsc/<db>`
+  pages the banner was the only island, so it shipped React to them: measured
+  2026-09-24 on an accession page, 77 KB of gzipped JavaScript (65 KB of it
+  `react-dom`) plus 4.7 KB of inline island runtime in each of ~52,000 pages'
+  HTML, for a warning that almost never shows. The header search, the page's
+  only other script, is 2.2 KB.
 
 ### And one level down again: the compressor is not in any hash
 

@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import UCSCTable from '../../components/UCSCTable.tsx'
 import type { UcscRow } from '../../components/UCSCTable.tsx'
-import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
+import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
 import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
 import { ucscBrowserUrl } from '../../lib/externalLinks.ts'
 import list from '../../list.json'
@@ -26,7 +26,7 @@ const rows: UcscRow[] = Object.entries(list.ucscGenomes)
   description="Every main assembly from the UCSC genome browser, converted to a JBrowse 2 config — search by db name, species or description, or open all of them in one instance."
 >
   <Container wide>
-    <UcscStatusBanner client:idle />
+    <UcscStatusBanner />
     <UCSCTable
       rows={rows}
       client:load
