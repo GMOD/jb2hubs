@@ -2,11 +2,11 @@ import { useState } from 'react'
 
 import { fetchProteinStl } from '../lib/proteinStl.ts'
 import { errorText } from './ErrorMessage.tsx'
+import ExternalLink from './ExternalLink.tsx'
 import Modal from './Modal.tsx'
 import { MAX_ALIGN_ROWS, MAX_PANEL_ROWS } from './proteinMsa.ts'
 
 import type { AlphaFoldModel } from './structureSources.ts'
-import type { ReactNode } from 'react'
 
 // Copy text and say so inline. A rejected write (denied permission) reports the
 // failure rather than a false confirmation, and so does a missing clipboard —
@@ -142,9 +142,9 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
       <dl className="ui-help">
         <dt>Gene</dt>
         <dd>
-          <Link href="https://www.ncbi.nlm.nih.gov/datasets/">
+          <ExternalLink href="https://www.ncbi.nlm.nih.gov/datasets/">
             NCBI Datasets
-          </Link>{' '}
+          </ExternalLink>{' '}
           for the GeneID and Swiss-Prot accession; coding exons for every
           isoform from the E-utils <code>gene_table</code>, opening on the MANE
           Select (or RefSeq Select) transcript and its own translation. Any
@@ -157,19 +157,23 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           Select, else longest) with its NCBI CDD domains — that is the cartoon.
           Model organisms come first, then outward through NCBI&rsquo;s ortholog
           report. Fly, worm, yeast and plant reference genes go to{' '}
-          <Link href="https://pantherdb.org">PANTHER</Link>, which NCBI&rsquo;s
-          ortholog sets do not cover.
+          <ExternalLink href="https://pantherdb.org">PANTHER</ExternalLink>,
+          which NCBI&rsquo;s ortholog sets do not cover.
         </dd>
 
         <dt>Protein map</dt>
         <dd>
           The query protein end to end with its{' '}
-          <Link href="https://www.ebi.ac.uk/interpro/">InterPro</Link> domains
-          and sites, and on request the residues{' '}
-          <Link href="https://www.ebi.ac.uk/pdbe/pdbe-kb/">PDBe-KB</Link> has
-          seen touching each binding partner in any PDB entry. Click any of them
-          and the session opens on it; a partner opens the complex the two were
-          seen in rather than the monomer. Coordinates are on the UniProt
+          <ExternalLink href="https://www.ebi.ac.uk/interpro/">
+            InterPro
+          </ExternalLink>{' '}
+          domains and sites, and on request the residues{' '}
+          <ExternalLink href="https://www.ebi.ac.uk/pdbe/pdbe-kb/">
+            PDBe-KB
+          </ExternalLink>{' '}
+          has seen touching each binding partner in any PDB entry. Click any of
+          them and the session opens on it; a partner opens the complex the two
+          were seen in rather than the monomer. Coordinates are on the UniProt
           canonical sequence, and the card says when the launched isoform makes
           them approximate.
         </dd>
@@ -178,15 +182,17 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
         <dd>
           Offered by the question rather than the database. A focused domain
           offers its{' '}
-          <Link href="https://www.ebi.ac.uk/interpro/entry/pfam/">Pfam</Link>{' '}
+          <ExternalLink href="https://www.ebi.ac.uk/interpro/entry/pfam/">
+            Pfam
+          </ExternalLink>{' '}
           family&rsquo;s <em>seed</em> alignment — the curated few dozen
           representatives the family was built from, spanning its whole reach,
           the domain alone — with the query&rsquo;s own domain segment aligned
           in as the linked row, so a residue in the seed still maps to its
           codon. For conservation of this protein across its orthologs:{' '}
-          <Link href="https://www.ebi.ac.uk/jdispatcher/msa/clustalo">
+          <ExternalLink href="https://www.ebi.ac.uk/jdispatcher/msa/clustalo">
             EBI Clustal Omega
-          </Link>{' '}
+          </ExternalLink>{' '}
           over the panel with the CDD domains overlaid, or the hosted
           100-vertebrate alignment — instant, but no domains. Clustal Omega gets
           the first {MAX_ALIGN_ROWS} rows rather than all {MAX_PANEL_ROWS}: on a
@@ -203,12 +209,16 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
 
         <dt>Structure</dt>
         <dd>
-          The <Link href="https://alphafold.ebi.ac.uk">AlphaFold</Link> model
-          whose sequence matches the transcript, asked of AlphaFold&rsquo;s API
-          rather than assumed; or an experimental entry from the{' '}
-          <Link href="https://www.ebi.ac.uk/pdbe/pdbe-kb/3dbeacons/">
+          The{' '}
+          <ExternalLink href="https://alphafold.ebi.ac.uk">
+            AlphaFold
+          </ExternalLink>{' '}
+          model whose sequence matches the transcript, asked of
+          AlphaFold&rsquo;s API rather than assumed; or an experimental entry
+          from the{' '}
+          <ExternalLink href="https://www.ebi.ac.uk/pdbe/pdbe-kb/3dbeacons/">
             3D-Beacons
-          </Link>{' '}
+          </ExternalLink>{' '}
           list, best coverage first. The 3D view aligns the structure&rsquo;s
           residues to the transcript&rsquo;s translation, so a structure of
           another isoform or a truncated crystal still lands on the right
@@ -217,17 +227,5 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
         </dd>
       </dl>
     </Modal>
-  )
-}
-
-function Link({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {children}
-    </a>
   )
 }
