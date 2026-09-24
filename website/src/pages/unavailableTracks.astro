@@ -3,6 +3,12 @@ import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
 import { readFile } from 'fs/promises'
 import { join } from 'path'
+import {
+  fileExamples,
+  formatCheckedDate,
+  groupBlockedFiles,
+} from '../lib/blockedFiles.ts'
+import type { BlockedEntry } from '../lib/blockedFiles.ts'
 import '../styles/common-table.css'
 
 // Both files are symlinks into ucsc2jbrowse/, where make.sh deletes them at the
@@ -17,24 +23,14 @@ async function readJsonIfPresent(name: string) {
   )
 }
 
-// blockedFiles.json holds the blocked entries only — the accessible ones stay
-// in ucsc2jbrowse/fileAccessCache/
 const blockedJson = await readJsonIfPresent('blockedFiles.json')
-const blockedData = (blockedJson ?? {}) as Record<
-  string,
-  { blocked: boolean; lastChecked: number; trackName?: string }
->
-
-// The blocked filter is redundant against a freshly merged file, but a checkout
-// whose blockedFiles.json predates the split still holds accessible entries
-const files = Object.entries(blockedData)
-  .filter(([_, value]) => value.blocked)
-  .map(([url, value]) => ({
-    url,
-    lastChecked: value.lastChecked,
-    trackName: value.trackName,
-  }))
-  .sort((a, b) => b.lastChecked - a.lastChecked)
+const blockedDirectories = groupBlockedFiles(
+  (blockedJson ?? {}) as Record<string, BlockedEntry>,
+)
+const blockedCount = blockedDirectories.reduce(
+  (sum, group) => sum + group.files.length,
+  0,
+)
 
 const removedJson = await readJsonIfPresent('removedTracks.json')
 const removedTracks = (removedJson ?? []) as Array<{
@@ -67,15 +63,6 @@ const reasonRows = [...byReason.entries()].sort(
   (a, b) => b[1].tracks - a[1].tracks,
 )
 const assemblyRows = [...byAssembly.entries()].sort((a, b) => b[1] - a[1])
-
-// Format timestamp for display
-function formatDate(timestamp: number): string {
-  return new Date(timestamp).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
 ---
 
 <Layout
@@ -97,29 +84,44 @@ function formatDate(timestamp: number): string {
         https://genome.ucsc.edu/license/
       </a>{' '}
       for more info. Please get in touch if you are interested in seeing these
-      tracks and maybe something can be done.
+      tracks and maybe something can be done. {blockedCount.toLocaleString()}{' '}
+      files are blocked, in {blockedDirectories.length} directories.
     </p>
 
     <table>
       <thead>
         <tr>
-          <th>#</th>
-          <th>File Path</th>
-          <th>Track Name</th>
-          <th>Last Checked</th>
+          <th scope="col">Assembly</th>
+          <th scope="col">Directory</th>
+          <th scope="col">Files</th>
+          <th scope="col">Examples</th>
+          <th scope="col">Last checked</th>
         </tr>
       </thead>
       <tbody>
-        {files.map((file, index) => (
+        {blockedDirectories.map(group => (
           <tr>
-            <td>{index + 1}</td>
-            <td>{file.url}</td>
-            <td>{file.trackName ?? '-'}</td>
-            <td>{formatDate(file.lastChecked)}</td>
+            <td>
+              {group.assembly ? (
+                <a href={`/ucsc/${group.assembly}`}>{group.assembly}</a>
+              ) : null}
+            </td>
+            <td>{group.directory}</td>
+            <td>{group.files.length.toLocaleString()}</td>
+            <td>{fileExamples(group.files)}</td>
+            <td>{formatCheckedDate(group.lastChecked)}</td>
           </tr>
         ))}
       </tbody>
     </table>
+
+    <p>
+      The full per-file list lives in{' '}
+      <a href="https://github.com/GMOD/jb2hubs/blob/main/ucsc2jbrowse/blockedFiles.json">
+        blockedFiles.json
+      </a>
+      .
+    </p>
 
     <h3 style="margin-top: 3rem;">Filtered tracks</h3>
     <p>
