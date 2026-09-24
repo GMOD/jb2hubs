@@ -9,11 +9,14 @@
 import { TabixIndexedFile } from '@gmod/tabix'
 import { RemoteFile } from 'generic-filehandle2'
 
+import { matchRefName } from './pangenomeRegion.ts'
 import { parseSvStateRow } from './pangenomeSvStates.ts'
 
 import type { SvStateRow } from './pangenomeSvStates.ts'
 
 export interface SvStatesQuery {
+  // the file's own name for the chromosome asked for
+  chrom: string
   haplotypes: string[]
   rows: SvStateRow[]
 }
@@ -33,17 +36,22 @@ export function openSvStates(url: string) {
     filehandle: new RemoteFile(url),
     tbiFilehandle: new RemoteFile(`${url}.tbi`),
   })
-  let haplotypes: Promise<string[]> | undefined
   return async function query(
     refName: string,
     start: number,
     end: number,
   ): Promise<SvStatesQuery> {
-    haplotypes ??= file.getHeader().then(haplotypesOf)
+    const chrom = matchRefName(refName, await file.getReferenceSequenceNames())
+    if (chrom === undefined) {
+      throw new Error(`${refName} is not a sequence in the callset`)
+    }
     const rows: SvStateRow[] = []
-    await file.getLines(refName, start, end, line => {
-      rows.push(parseSvStateRow(line))
-    })
-    return { haplotypes: await haplotypes, rows }
+    const [header] = await Promise.all([
+      file.getHeader(),
+      file.getLines(chrom, start, end, line => {
+        rows.push(parseSvStateRow(line))
+      }),
+    ])
+    return { chrom, haplotypes: haplotypesOf(header), rows }
   }
 }

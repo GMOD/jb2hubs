@@ -46,20 +46,18 @@ export default function PangenomeRegionForms({
     setBusy(true)
     setError(undefined)
     try {
-      const region = await resolveRegion(text, dataset.reference.taxonId)
-      if (!region) {
+      const asked = await resolveRegion(text, dataset.reference.taxonId)
+      if (!asked) {
         throw new Error(
           `"${text}" is neither a region like chr1:196,740,001-196,850,000 nor a gene placed on ${dataset.reference.label}`,
         )
       }
-      const { haplotypes, rows } = await openSvStates(dataset.svStatesUrl!)(
-        region.chrom,
-        region.start,
-        region.end,
-      )
+      const { chrom, haplotypes, rows } = await openSvStates(
+        dataset.svStatesUrl!,
+      )(asked.chrom, asked.start, asked.end)
       const forms = structuralForms(rows, haplotypes)
       setAnswer({
-        region,
+        region: { ...asked, chrom },
         haplotypes: haplotypes.length,
         panel: structuralPanel(forms, {
           withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
@@ -71,7 +69,7 @@ export default function PangenomeRegionForms({
       })
     } catch (e) {
       setAnswer(undefined)
-      setError(`${e}`)
+      setError(e instanceof Error ? e.message : String(e))
     } finally {
       setBusy(false)
     }

@@ -21,9 +21,20 @@ export function parseRegion(text: string): ParsedRegion | undefined {
     return undefined
   }
   const digits = (s: string) => Number(s.replaceAll(/[,_]/g, ''))
-  const start = digits(m[2]!) - 1
+  const start = Math.max(0, digits(m[2]!) - 1)
   const end = digits(m[3]!)
   return end > start ? { chrom: m[1]!, start, end } : undefined
+}
+
+// The file's own name for a chromosome a reader typed as `1`, `X` or `MT`, or
+// undefined when it has no such sequence: tabix answers an unknown name with
+// no rows, which would read as a window with no structural variation.
+export function matchRefName(name: string, known: readonly string[]) {
+  const bare = name.replace(/^chr/i, '')
+  const upper = bare.toUpperCase()
+  return [name, `chr${bare}`, `chr${upper === 'MT' ? 'M' : upper}`].find(n =>
+    known.includes(n),
+  )
 }
 
 export function formatRegion({ chrom, start, end }: ParsedRegion) {

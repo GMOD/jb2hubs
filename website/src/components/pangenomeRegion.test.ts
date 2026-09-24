@@ -4,6 +4,7 @@ import { test } from 'node:test'
 import {
   GENE_FLANK_BP,
   formatRegion,
+  matchRefName,
   parseRegion,
   resolveRegion,
 } from './pangenomeRegion.ts'
@@ -23,6 +24,23 @@ test('a locstring is read the way a browser shows it, and comes back 0-based', (
     formatRegion({ chrom: 'chr1', start: 196_740_000, end: 196_850_000 }),
     'chr1:196,740,001-196,850,000',
   )
+})
+
+test('a start at or before the first base clamps to it', () => {
+  assert.deepEqual(parseRegion('chr1:0-1,000'), {
+    chrom: 'chr1',
+    start: 0,
+    end: 1000,
+  })
+})
+
+test('a chromosome is named the way the file names it, or not at all', () => {
+  const known = ['chr1', 'chrX', 'chrM']
+  assert.equal(matchRefName('chr1', known), 'chr1')
+  assert.equal(matchRefName('1', known), 'chr1')
+  assert.equal(matchRefName('x', known), 'chrX')
+  assert.equal(matchRefName('MT', known), 'chrM')
+  assert.equal(matchRefName('chr99', known), undefined)
 })
 
 test('what is not a region is left for a gene lookup', () => {
