@@ -28,30 +28,45 @@ const outputDir = path.join(publicDir, 'hubData')
 
 fs.mkdirSync(outputDir, { recursive: true })
 
-// One file per GenArk category, the only listings /hubs and /taxonomy render.
-// processedHubJson also holds all.json, their union, and ucsc.json, the UCSC
-// genome list, whose rows are dbs rather than hubs.
+function readRows(file: string): HubSource[] {
+  return JSON.parse(fs.readFileSync(path.join(inputDir, file), 'utf-8'))
+}
+
+function writeRows(file: string, rows: HubSource[]) {
+  const encoded = rows
+    .filter(row => row.accession)
+    .sort(byCommonName)
+    .map(encodeHubRow)
+  const outputPath = path.join(outputDir, file)
+  fs.writeFileSync(outputPath, JSON.stringify(encoded))
+  const sizeMB = (fs.statSync(outputPath).size / 1e6).toFixed(2)
+  console.log(`hubData/${file}: ${encoded.length} rows, ${sizeMB} MB`)
+}
+
 for (const file of fs.readdirSync(outputDir)) {
   if (file.endsWith('.json')) {
     fs.rmSync(path.join(outputDir, file))
   }
 }
+
+// One file per GenArk category, the only listings /hubs and /taxonomy render.
+// processedHubJson also holds all.json, their union, and ucsc.json, the UCSC
+// genome list, whose rows are dbs rather than hubs.
 for (const { id } of hubCategories) {
   const file = `${id}.json`
   if (fs.existsSync(path.join(inputDir, file))) {
-    const rows: HubSource[] = JSON.parse(
-      fs.readFileSync(path.join(inputDir, file), 'utf-8'),
-    )
-    const encoded = rows
-      .filter(row => row.accession)
-      .sort(byCommonName)
-      .map(encodeHubRow)
-    const outputPath = path.join(outputDir, file)
-    fs.writeFileSync(outputPath, JSON.stringify(encoded))
-    const sizeMB = (fs.statSync(outputPath).size / 1e6).toFixed(2)
-    console.log(`hubData/${file}: ${encoded.length} rows, ${sizeMB} MB`)
+    writeRows(file, readRows(file))
   }
 }
+
+// A taxon table fetches the file named by each row's all.json source, and
+// all.json files a hub that no main category lists under "uncategorized" (701
+// hubs on 2026-09-24, 106 of them human). Without this file /taxonomy/9606 and
+// every clade above it fetched a 404 and never filled its table.
+writeRows(
+  'uncategorized.json',
+  readRows('all.json').filter(row => row.source === 'uncategorized'),
+)
 
 // One accession list per taxon whose subtree is too large to inline into its
 // /taxonomy page (see subtreeTable). The page names the file only if it exists,
