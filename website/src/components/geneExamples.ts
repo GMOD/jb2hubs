@@ -8,7 +8,11 @@
 // the point of a chip is that someone who does not have a gene in mind still
 // sees the tool do something recognisable.
 
-import type { Example } from './orthologSearchUtils.ts'
+// A curated gene chip: the symbol, and why someone might want to look at it.
+export interface Example {
+  symbol: string
+  note: string
+}
 
 // How the precomputed panels (public/proteinExamples.json) are keyed. One rule,
 // shared by the generator that writes the file and the page that reads it, so

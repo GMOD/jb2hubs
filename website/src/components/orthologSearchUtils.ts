@@ -110,12 +110,6 @@ export const COMMON_TAX_RANK = new Map(
   COMMON_SPECIES.map((s, i) => [s.taxId, i]),
 )
 
-// A curated gene chip: the symbol, and why someone might want to look at it.
-export interface Example {
-  symbol: string
-  note: string
-}
-
 // Case, periods and spacing do not tell two names apart: "S. cerevisiae" and
 // "s cerevisiae" are one query.
 function normalName(text: string) {
@@ -149,13 +143,6 @@ export function refLabel(ref: string) {
 // all read back on mount.
 export function geneUrl(path: string, symbol: string, taxId: number) {
   return `${path}?gene=${encodeURIComponent(symbol)}&ref=${taxId}`
-}
-
-// The same shape written onto the current page, so what is on screen stays
-// shareable and bookmarkable. Takes the resolved taxon id rather than whatever
-// was typed, so the link still means the same thing later.
-export function syncGeneUrl(symbol: string, taxId: number) {
-  window.history.replaceState(null, '', geneUrl('', symbol, taxId))
 }
 
 // NCBI Datasets API response shapes
