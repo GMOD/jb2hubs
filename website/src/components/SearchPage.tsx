@@ -47,9 +47,10 @@ function launchUrl(entry: IndexEntry) {
 
 export default function SearchPage() {
   const { index, loading, error: indexError, retry } = useSearchIndex()
-  const cladeSets = useTaxonomyFilter()
   const [query, setQuery] = useUrlState('q', '')
   const [clade, setClade] = useUrlState('clade', '')
+  const clades = useTaxonomyFilter(!!clade)
+  const cladeSets = clades.cladeSets
   const [curatedOnly, setCuratedOnly] = useUrlState('curated', '')
   const [page, setPage] = useResetOnChange(
     `${query}\u0000${clade}\u0000${curatedOnly}`,
@@ -60,10 +61,13 @@ export default function SearchPage() {
 
   const trimmedQuery = query.trim()
 
+  // A chosen clade whose member list has not arrived is not "no clade": ranking
+  // the whole index meanwhile showed results the filter would have excluded.
+  const cladePending = !!clade && !cladeSets
   const results = useMemo(() => {
     const terms = trimmedQuery.toLowerCase().split(/\s+/).filter(Boolean)
     const cladeSet = clade && cladeSets ? cladeSets.get(clade) : undefined
-    return terms.length === 0
+    return terms.length === 0 || cladePending
       ? []
       : rankEntries(
           index,
@@ -72,7 +76,13 @@ export default function SearchPage() {
             (!cladeSet || cladeSet.has(entry[6])) &&
             (!curatedOnly || isCurated(entry)),
         )
-  }, [index, trimmedQuery, clade, curatedOnly, cladeSets])
+  }, [index, trimmedQuery, clade, curatedOnly, cladeSets, cladePending])
+  const nothingFound =
+    !loading &&
+    !indexError &&
+    !cladePending &&
+    !!trimmedQuery &&
+    results.length === 0
 
   const {
     pageCount,
@@ -155,6 +165,15 @@ export default function SearchPage() {
         context="Couldn't load the genome list"
         className="ui-error"
       />
+      {clades.loading && trimmedQuery && (
+        <div className={styles.noResults}>Loading the clade filter…</div>
+      )}
+      <ErrorWithRetry
+        error={clades.error}
+        onRetry={clades.retry}
+        context="Couldn't load the clade filter"
+        className="ui-error"
+      />
       {!loading && !indexError && !trimmedQuery && (
         <div className={styles.emptyState}>
           <p>
@@ -179,7 +198,7 @@ export default function SearchPage() {
           {statusLegend}
         </div>
       )}
-      {!loading && !indexError && trimmedQuery && results.length === 0 && (
+      {nothingFound && (
         <div className={styles.noResults}>
           No genomes match &ldquo;{trimmedQuery}&rdquo;
           {clade ? ' in this clade' : ''}

@@ -9,7 +9,19 @@ async function fetcher(url: string): Promise<Map<string, Set<number>>> {
   return new Map(Object.entries(data).map(([k, v]) => [k, new Set(v)]))
 }
 
-export function useTaxonomyFilter() {
-  const { data } = useSWRImmutable('/taxonomyFilter.json', fetcher)
-  return data
+// The file is 377 KB and only a clade filter reads it, so it is fetched once
+// one is chosen rather than on every visit to /search.
+export function useTaxonomyFilter(enabled: boolean) {
+  const { data, error, isLoading, mutate } = useSWRImmutable(
+    enabled ? '/taxonomyFilter.json' : null,
+    fetcher,
+  )
+  return {
+    cladeSets: data,
+    loading: isLoading,
+    error: error as unknown,
+    retry: () => {
+      void mutate()
+    },
+  }
 }
