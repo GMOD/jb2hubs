@@ -49,30 +49,29 @@ export const REF_ALIGNMENTS: Record<number, RefAlignment> = {
   },
 }
 
-// NCBI sequence_name -> UCSC chromosome (chr-prefixed; mitochondrion is chrM).
-function toUcscChrom(name: string) {
-  const n = name === 'MT' ? 'M' : name
-  return n.startsWith('chr') ? n : `chr${n}`
-}
-
-// Open the reference's hosted whole-genome multi-species alignment at a locus —
+// The reference's hosted whole-genome multi-species alignment at a gene —
 // base-level alignment across species, zero compute, when the reference has one.
-export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
+// The locus stays on NCBI's sequence accession, which the UCSC config resolves
+// through its chromAlias: `chromosome` is a display name that falls back to that
+// same accession when NCBI gives none, and prefixing it made `chrNC_000017.11`.
+export function refAlignmentUrl(refTaxonId: number, gene: PlacedGene) {
   const a = REF_ALIGNMENTS[refTaxonId]
-  if (a && gene.chromosome) {
-    const loc = `${toUcscChrom(gene.chromosome)}:${gene.start}-${gene.end}`
-    window.open(
-      specUrl(a.configUrl, [
+  return a
+    ? specUrl(a.configUrl, [
         {
           type: 'LinearGenomeView',
           assembly: a.ucscDb,
-          loc,
+          loc: `${gene.refName}:${gene.start}-${gene.end}`,
           tracks: [a.alignmentTrackId],
         },
-      ]),
-      '_blank',
-      'noopener',
-    )
+      ])
+    : undefined
+}
+
+export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
+  const url = refAlignmentUrl(refTaxonId, gene)
+  if (url) {
+    window.open(url, '_blank', 'noopener')
   }
 }
 

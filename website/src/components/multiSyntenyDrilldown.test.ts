@@ -4,6 +4,7 @@ import { test } from 'node:test'
 import {
   geneDrilldownUrl,
   nearestWindow,
+  refAlignmentUrl,
   subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
@@ -353,4 +354,15 @@ test('nearestWindow centers on the reference and clamps at both ends', () => {
 
 test('a reference outside the clade takes the head of the list', () => {
   assert.deepEqual(nearestWindow(['a', 'b', 'c'], -1, 2), ['a', 'b'])
+})
+
+test('the reference alignment opens on the NCBI sequence accession', () => {
+  const human = gene('GCF_000001405.40')
+  const unnamed = { ...human, chromosome: 'NC_000017.11' }
+  for (const g of [human, unnamed]) {
+    const url = refAlignmentUrl(9606, g)!
+    assert.equal(configOf(url), '/ucsc/hg38/config.json')
+    assert.equal(viewOf(url).loc, 'NC_000017.11:7668421-7687490')
+  }
+  assert.equal(refAlignmentUrl(10090, human), undefined)
 })
