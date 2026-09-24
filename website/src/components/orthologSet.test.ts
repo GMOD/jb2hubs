@@ -35,6 +35,26 @@ test('symbol matching ignores case, so a typed lowercase symbol still wins', () 
   )
 })
 
+// Fly symbols differ by case alone, and NCBI's symbol endpoint answers `Dl`
+// with Delta (whose synonym it is) and dorsal (whose symbol is `dl`), in that
+// order. A case-blind match took dorsal.
+const FLY_DL = [
+  { gene_id: '42313', symbol: 'Delta', synonyms: ['Dl', 'CG3619'] },
+  { gene_id: '35047', symbol: 'dl', synonyms: ['dL', 'CG6667'] },
+]
+
+test('a case-exact synonym beats a case-blind symbol match', () => {
+  assert.strictEqual(pickBySymbol('Dl', FLY_DL), '42313')
+})
+
+test('a case-exact symbol beats a synonym of another gene', () => {
+  assert.strictEqual(pickBySymbol('dl', FLY_DL), '35047')
+})
+
+test('with no case-exact match, a case-blind symbol match still wins', () => {
+  assert.strictEqual(pickBySymbol('DL', FLY_DL), '35047')
+})
+
 // Falling back to the first hit is what keeps an alias working: `p53` is nobody's
 // symbol, and TP53 is the right answer.
 test('with no exact match the first hit stands, so an alias still resolves', () => {

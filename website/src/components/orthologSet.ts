@@ -165,24 +165,32 @@ export function collectNames(tree: TaxonNode | undefined) {
   return names
 }
 
+export interface SymbolCandidate {
+  gene_id?: string
+  symbol?: string
+  synonyms?: string[]
+}
+
 // Resolve a gene symbol to an NCBI GeneID in the reference taxon (a numeric query
 // is already a GeneID).
 //
 // Both NCBI symbol lookups match aliases as well as symbols, and neither ranks
 // the exact match first: `TTN` in human returns 7276 (TTR, transthyretin) ahead
 // of 7273 (TTN, titin), on the Datasets symbol endpoint and on an esearch
-// `[Gene Name]` alike. Taking the first hit therefore silently resolved titin to
-// transthyretin — measured 2026-08-26, and TTN is one of the example chips. So
-// ask for the candidates and prefer the one whose own symbol matches.
+// `[Gene Name]` alike. So the candidates are ranked here, and case decides
+// first, because fly symbols differ by case alone: `Dl` comes back as
+// [42313 Delta, 35047 dl], where `Dl` is Delta's synonym and `dl` is dorsal's
+// own symbol, so a case-blind match picked dorsal (measured 2026-09-24).
 //
 // Falling back to the first hit is what keeps an alias working: `p53` returns
 // TP53 and matches nothing exactly, which is the right answer.
-export function pickBySymbol(
-  query: string,
-  candidates: { gene_id?: string; symbol?: string }[],
-) {
-  const wanted = query.trim().toLowerCase()
-  const exact = candidates.find(c => c.symbol?.toLowerCase() === wanted)
+export function pickBySymbol(query: string, candidates: SymbolCandidate[]) {
+  const typed = query.trim()
+  const lower = typed.toLowerCase()
+  const exact =
+    candidates.find(c => c.symbol === typed) ??
+    candidates.find(c => c.synonyms?.includes(typed)) ??
+    candidates.find(c => c.symbol?.toLowerCase() === lower)
   return (exact ?? candidates[0])?.gene_id
 }
 
@@ -192,7 +200,7 @@ export async function resolveGeneId(query: string, refTaxonId: number) {
     return trimmed
   }
   const bySymbol = await ncbiJson<{
-    reports?: { gene?: { gene_id?: string; symbol?: string } }[]
+    reports?: { gene?: SymbolCandidate }[]
   }>(
     `${DATASETS}/gene/symbol/${encodeURIComponent(trimmed)}/taxon/${refTaxonId}`,
   ).catch(() => undefined)
@@ -200,7 +208,7 @@ export async function resolveGeneId(query: string, refTaxonId: number) {
     trimmed,
     (bySymbol?.reports ?? [])
       .map(r => r.gene)
-      .filter((g): g is { gene_id?: string; symbol?: string } => !!g),
+      .filter((g): g is SymbolCandidate => !!g),
   )
   if (hit) {
     return hit
