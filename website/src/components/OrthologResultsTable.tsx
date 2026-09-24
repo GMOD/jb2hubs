@@ -261,28 +261,30 @@ export default function OrthologResultsTable({
                 </button>
               </h3>
               {open && (
-                <table className="orthologs-table">
-                  <thead>
-                    <tr>
-                      <th>Species</th>
-                      <th>Gene</th>
-                      <th>Assembly</th>
-                      <th>Location</th>
-                      <th>Links</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {group.rows.map(r => (
-                      <ResultRow
-                        key={r.assembly.accession}
-                        result={r}
-                        isRef={r.assembly.accession === refAccession}
-                        link={links.get(r.assembly.accession)}
-                        refResult={refResult}
-                      />
-                    ))}
-                  </tbody>
-                </table>
+                <div className="table-scroll">
+                  <table className="orthologs-table">
+                    <thead>
+                      <tr>
+                        <th>Species</th>
+                        <th>Gene</th>
+                        <th>Assembly</th>
+                        <th>Location</th>
+                        <th>Links</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {group.rows.map(r => (
+                        <ResultRow
+                          key={r.assembly.accession}
+                          result={r}
+                          isRef={r.assembly.accession === refAccession}
+                          link={links.get(r.assembly.accession)}
+                          refResult={refResult}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </section>
           )

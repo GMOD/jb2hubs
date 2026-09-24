@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { features } from '../config/features.ts'
+import { useTitlePrefix } from '../hooks/useTitlePrefix.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { ncbiGeneUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
@@ -54,7 +55,9 @@ function field(fd: FormData, name: string) {
 // page shares, plus scope= for the table and anchors=/flank= for the figure.
 // Submitting writes it (with the reference resolved to a taxon id first); the
 // gene is resolved once off what it says, and every section is keyed on that
-// one answer, so a view is shareable and back/forward work.
+// one answer, so a view is shareable and survives a reload. useUrlState
+// replaces the history entry rather than pushing one, so Back leaves the page
+// instead of stepping through earlier searches.
 export default function GenePage() {
   const [geneParam, setGeneParam] = useUrlState('gene', '')
   const [refParam, setRefParam] = useUrlState('ref', String(HUMAN_TAXON))
@@ -109,6 +112,7 @@ export default function GenePage() {
     LIVE_QUERY,
   )
   const refText = refBoxText(ref, typedRef, identity)
+  useTitlePrefix(identity?.symbol)
 
   function show(symbol: string, taxId: number) {
     latestRequest.current += 1

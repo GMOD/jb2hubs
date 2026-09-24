@@ -99,3 +99,12 @@ main :where(ul, ol) {
 main :where(dt) {
   font-weight: 600;
 }
+
+/* A wide table on a narrow screen has to be what scrolls sideways — otherwise
+   it drags the whole document with it and the header, prose, and controls all
+   slide off the left edge. Here rather than in common-table.css so a page that
+   styles its own tables (the /gene ortholog table) can use it too. */
+.table-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
