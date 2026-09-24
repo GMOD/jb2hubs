@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useDeferredValue, useMemo, useState } from 'react'
 
 import { Search, X } from 'lucide-react'
 
@@ -58,15 +58,18 @@ export default function SearchPage() {
     0,
   )
   const [pageSize, setPageSize] = useState(100)
-  const highlightRef = useSearchHighlight(query)
 
   const trimmedQuery = query.trim()
+  // Ranked a render behind the box, so a keystroke paints before the index is
+  // scanned; the results, their count and their highlight all read this one.
+  const rankedQuery = useDeferredValue(trimmedQuery)
+  const highlightRef = useSearchHighlight(rankedQuery)
 
   // A chosen clade whose member list has not arrived is not "no clade": ranking
   // the whole index meanwhile showed results the filter would have excluded.
   const cladePending = !!clade && !cladeSets
   const results = useMemo(() => {
-    const terms = searchTerms(trimmedQuery)
+    const terms = searchTerms(rankedQuery)
     const cladeSet = clade && cladeSets ? cladeSets.get(clade) : undefined
     return terms.length === 0 || cladePending
       ? []
@@ -77,12 +80,12 @@ export default function SearchPage() {
             (!cladeSet || cladeSet.has(entry[6])) &&
             (!curatedOnly || isCurated(entry)),
         )
-  }, [index, trimmedQuery, clade, curatedOnly, cladeSets, cladePending])
+  }, [index, rankedQuery, clade, curatedOnly, cladeSets, cladePending])
   const nothingFound =
     !loading &&
     !indexError &&
     !cladePending &&
-    !!trimmedQuery &&
+    !!rankedQuery &&
     results.length === 0
 
   const {
@@ -201,15 +204,15 @@ export default function SearchPage() {
       )}
       {nothingFound && (
         <div className={styles.noResults}>
-          No genomes match &ldquo;{trimmedQuery}&rdquo;
+          No genomes match &ldquo;{rankedQuery}&rdquo;
           {clade ? ' in this clade' : ''}
           {curatedOnly ? ' among reference assemblies' : ''}. Try a different
           spelling, or broaden your filters.
         </div>
       )}
-      {trimmedQuery && results.length > 0 && (
+      {rankedQuery && results.length > 0 && (
         <div className={styles.resultCount}>
-          {results.length.toLocaleString()} results for &ldquo;{trimmedQuery}
+          {results.length.toLocaleString()} results for &ldquo;{rankedQuery}
           &rdquo;
         </div>
       )}

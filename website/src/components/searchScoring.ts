@@ -37,52 +37,48 @@ function usableTerms(terms: string[]) {
     .filter(term => withoutAccessionPrefix(term) !== '')
 }
 
-export function scoreEntry(entry: IndexEntry, rawTerms: string[]) {
-  const terms = usableTerms(rawTerms)
+// What scoring reads off an entry, lowercased and joined once per index rather
+// than once per entry per keystroke. Measured 2026-09-24 over all 53,056
+// entries under node: rebuilding them cost 28–63 ms a query, reading them
+// prepared costs 1–3 ms, and preparing them is 45 ms once. `bonus` is the
+// tiebreakers, which depend on the entry alone.
+interface Searchable {
+  entry: IndexEntry
+  commonName: string
+  scientificName: string
+  assemblyName: string
+  accessionText: string
+  // accessionText with a space at each end, so a whole token is a substring
+  accessionTokens: string
+  all: string
+  bonus: number
+}
+
+function prepare(entry: IndexEntry): Searchable {
   const commonName = entry[1].toLowerCase()
   const scientificName = entry[2].toLowerCase()
   const assemblyName = entry[3].toLowerCase()
   const accessions = `${entry[0]} ${entry[10]}`.toLowerCase().trim()
   const accessionText = `${accessions} ${withoutAccessionPrefix(accessions)}`
-  const accessionTokens = new Set(accessionText.split(/\s+/))
-  const all = `${accessionText} ${commonName} ${scientificName} ${assemblyName}`
-
-  if (
-    terms.length === 0 ||
-    !terms.every(term => all.includes(withoutAccessionPrefix(term)))
-  ) {
-    return -1
+  return {
+    entry,
+    commonName,
+    scientificName,
+    assemblyName,
+    accessionText,
+    accessionTokens: ` ${accessionText} `,
+    all: `${accessionText} ${commonName} ${scientificName} ${assemblyName}`,
+    bonus: tiebreak(entry, commonName),
   }
+}
 
-  // Score based on best match position per term, using max (not sum)
-  // across fields to avoid rewarding incidental matches in multiple fields
-  let score = 0
-  for (const term of terms) {
-    const accession = withoutAccessionPrefix(term)
-    const best = Math.max(
-      scoreTerm(term, commonName) * 4,
-      // Weighted equal to the common name: users type genus names ("Arabidopsis",
-      // "Drosophila", "Danio") at least as often, and ranking the common name
-      // higher put viruses named after a host above the host itself.
-      scoreTerm(term, scientificName) * 4,
-      // A whole accession outranks one it is a prefix of: GCA_000001405.1 is
-      // hg19, and as a prefix match it tied hg38's GCA_000001405.15, which then
-      // won on recency.
-      accessionTokens.has(accession)
-        ? 8
-        : scoreTerm(accession, accessionText) * 2,
-      scoreTerm(term, assemblyName),
-    )
-    score += best
-  }
-
-  // Tiebreakers between equally-matching rows, each band an order of magnitude
-  // below the one above so a stronger signal always decides. They stay well
-  // under 1 so they never outrank a better textual match.
-
+// Tiebreakers between equally-matching rows, each band an order of magnitude
+// below the one above so a stronger signal always decides. They stay well
+// under 1 so they never outrank a better textual match.
+function tiebreak(entry: IndexEntry, commonName: string) {
   // Prefer the least cluttered common name, so "human (GRCh38.p14 2022)" beats
   // "human papillomavirus type 85 (...)" for the query "human".
-  score += 0.5 / (1 + bareCommonName(commonName).length)
+  let bonus = 0.5 / (1 + bareCommonName(commonName).length)
 
   // Curation: the assembly someone deliberately designated as *the* one for this
   // species. UCSC building a full browser for a db and NCBI designating a
@@ -98,15 +94,15 @@ export function scoreEntry(entry: IndexEntry, rawTerms: string[]) {
   // UCSC db outranks a GenArk reference of the same genome at every pair of
   // years.
   if (entry[5] === 'ucsc') {
-    score += 0.06
+    bonus += 0.06
   }
   if (entry[7] & IS_REFERENCE) {
-    score += 0.03
+    bonus += 0.03
   }
 
   // Recency, which is what separates current assemblies from retired ones within
   // a species: mm39 (2020) over mm7 (2005), danRer11 (2017) over danRer3 (2005).
-  score += 0.02 * recency(entry[8])
+  bonus += 0.02 * recency(entry[8])
 
   // Prefer more complete assemblies. Note this band never fires for a UCSC db:
   // those rows carry an empty assemblyStatus, so it is a small standing bonus
@@ -114,33 +110,90 @@ export function scoreEntry(entry: IndexEntry, rawTerms: string[]) {
   // an order of magnitude below recency, so nothing above it turns on this.
   const status = entry[4].toLowerCase()
   if (status === 'chromosome') {
-    score += 0.002
+    bonus += 0.002
   } else if (status === 'complete genome') {
-    score += 0.001
+    bonus += 0.001
   }
 
   // Last resort between same-year UCSC dbs: UCSC's own ordering for the species.
   if (entry[9]) {
-    score += 0.0005 / entry[9]
+    bonus += 0.0005 / entry[9]
   }
+  return bonus
+}
 
-  return score
+// A term as typed, and as it matches an accession with its GCA_/GCF_ dropped.
+interface Term {
+  text: string
+  accession: string
+}
+
+function prepareTerms(rawTerms: string[]): Term[] {
+  return usableTerms(rawTerms).map(text => ({
+    text,
+    accession: withoutAccessionPrefix(text),
+  }))
+}
+
+function score(s: Searchable, terms: Term[]) {
+  if (terms.length === 0 || !terms.every(t => s.all.includes(t.accession))) {
+    return -1
+  }
+  // Score based on best match position per term, using max (not sum)
+  // across fields to avoid rewarding incidental matches in multiple fields
+  let total = 0
+  for (const { text, accession } of terms) {
+    total += Math.max(
+      scoreTerm(text, s.commonName) * 4,
+      // Weighted equal to the common name: users type genus names ("Arabidopsis",
+      // "Drosophila", "Danio") at least as often, and ranking the common name
+      // higher put viruses named after a host above the host itself.
+      scoreTerm(text, s.scientificName) * 4,
+      // A whole accession outranks one it is a prefix of: GCA_000001405.1 is
+      // hg19, and as a prefix match it tied hg38's GCA_000001405.15, which then
+      // won on recency.
+      s.accessionTokens.includes(` ${accession} `)
+        ? 8
+        : scoreTerm(accession, s.accessionText) * 2,
+      scoreTerm(text, s.assemblyName),
+    )
+  }
+  return total + s.bonus
+}
+
+export function scoreEntry(entry: IndexEntry, rawTerms: string[]) {
+  return score(prepare(entry), prepareTerms(rawTerms))
+}
+
+const prepared = new WeakMap<IndexEntry[], Searchable[]>()
+
+function searchable(index: IndexEntry[]) {
+  let rows = prepared.get(index)
+  if (!rows) {
+    rows = index.map(prepare)
+    prepared.set(index, rows)
+  }
+  return rows
 }
 
 // Best-first ranking over the whole index, shared by the search page and the
 // header typeahead so both order results the same way. `include` narrows the
-// candidates before scoring (the page's clade / reference-only filters).
+// candidates before scoring (the page's clade / reference-only filters). The
+// index is prepared on its first ranking and reused for every later one.
 export function rankEntries(
   index: IndexEntry[],
   terms: string[],
   include?: (entry: IndexEntry) => boolean,
 ) {
+  const query = prepareTerms(terms)
   const scored: { entry: IndexEntry; score: number }[] = []
-  for (const entry of index) {
-    if (!include || include(entry)) {
-      const score = scoreEntry(entry, terms)
-      if (score >= 0) {
-        scored.push({ entry, score })
+  if (query.length > 0) {
+    for (const s of searchable(index)) {
+      if (!include || include(s.entry)) {
+        const value = score(s, query)
+        if (value >= 0) {
+          scored.push({ entry: s.entry, score: value })
+        }
       }
     }
   }
