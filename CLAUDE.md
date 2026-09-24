@@ -101,11 +101,11 @@ runs.
 This is one situation with several symptoms, and every piece of machinery below
 disappears together when `@jbrowse/core` **v5** publishes. That tree already
 sits on `@mui/material` 9.3, `@mui/icons-material` 9.3, `mobx` 7 and
-`@jbrowse/mobx-state-tree` 6 — the exact set the website and react-msaview 6.x
+`@jbrowse/mobx-state-tree` 6 — the exact set the website and react-msaview 8.x
 already use — so the gap is a release, not a design decision.
 
 The newest **published** core is 4.3.0, on MUI 7 / mobx 6 / MST 5. The website
-and `react-msaview@6.2.0` are on MUI 9 / mobx 7 / MST 6. Install them together
+and `react-msaview@8.1.0` are on MUI 9 / mobx 7 / MST 6. Install them together
 and both copies of each land in the page, at which point the alignment viewer
 does not render **at all**:
 
@@ -155,9 +155,16 @@ grep -rhoE "['\"]@mui/icons-material/[A-Za-z0-9_]+['\"]" package/dist/ | sort -u
 ```
 
 The second line is worth running against **core's** own `esm/` too, which is how
-the `HelpOutline` breakage above was found. As of 6.2.0 react-msaview itself is
-clean against MUI 9 — 20 icon imports, all present — and core is the one that is
-not.
+the `HelpOutline` breakage above was found. As of 8.1.0 react-msaview itself is
+clean against MUI 9 — 21 icon imports, all present in 9.4 — and its 14
+`@jbrowse/core` module paths all exist in the patched 4.3.0; core is the one
+that is not clean.
+
+8.x declares `@jbrowse/core >=5.0.0-0` as a peer, so pnpm warns about the
+installed 4.3.0. The warning is expected until v5 publishes: on 2026-09-24 the
+TP53 page under `astro dev --mode staging` drew the 100-way alignment in
+react-msaview 8.1.0 on the patched 4.3.0, tree and conservation tracks included,
+with no console errors from the page.
 
 ## Generated files — do not hand-edit
 
