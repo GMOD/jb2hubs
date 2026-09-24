@@ -161,7 +161,7 @@ if (isCategory) {
 >
   <Container wide>
     <UcscStatusBanner />
-    {isCategory && (
+    {isCategory ? (
       <div class="page-header">
         <h1 class="page-title">GenArk taxonomy - {title}</h1>
         <a
@@ -170,6 +170,10 @@ if (isCategory) {
         >
           View list of species as table for {title}
         </a>
+      </div>
+    ) : (
+      <div class="page-header">
+        <h1 class="page-title">{title}</h1>
       </div>
     )}
 

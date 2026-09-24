@@ -287,35 +287,37 @@ const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
               ? ` (${siblings.length} of ${siblingCount} shown)`
               : ` (${siblingCount})`}
           </summary>
-          <table>
-            <thead>
-              <tr>
-                <th scope="col">Accession</th>
-                <th scope="col">Assembly name</th>
-                <th scope="col">Assembly status</th>
-                <th scope="col">Release date</th>
-                <th scope="col">NCBI status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {siblings.map(sibling => (
+          <div class="table-scroll">
+            <table>
+              <thead>
                 <tr>
-                  <td>
-                    <a href={`/accession/${sibling.accession}`}>
-                      {sibling.accession}
-                    </a>
-                  </td>
-                  <td>{sibling.ncbiAssemblyName}</td>
-                  <td>{sibling.assemblyStatus}</td>
-                  <td>{sibling.seqReleaseDate}</td>
-                  <td>
-                    {sibling.isReference ? <OrangeStar /> : null}
-                    {sibling.suppressed ? <RedX /> : null}
-                  </td>
+                  <th scope="col">Accession</th>
+                  <th scope="col">Assembly name</th>
+                  <th scope="col">Assembly status</th>
+                  <th scope="col">Release date</th>
+                  <th scope="col">NCBI status</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {siblings.map(sibling => (
+                  <tr>
+                    <td>
+                      <a href={`/accession/${sibling.accession}`}>
+                        {sibling.accession}
+                      </a>
+                    </td>
+                    <td>{sibling.ncbiAssemblyName}</td>
+                    <td>{sibling.assemblyStatus}</td>
+                    <td>{sibling.seqReleaseDate}</td>
+                    <td>
+                      {sibling.isReference ? <OrangeStar /> : null}
+                      {sibling.suppressed ? <RedX /> : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           {taxonomyPage && siblingCount > siblings.length ? (
             <p>
               <a href={`/taxonomy/${taxonId}`}>
