@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -60,6 +60,10 @@ export default function GenePage() {
   const [scopeParam, setScopeParam] = useUrlState('scope', DEFAULT_SCOPE.id)
   const [refError, setRefError] = useState<unknown>(undefined)
   const [typedRef, setTypedRef] = useState<{ taxId: string; text: string }>()
+  const [refPending, setRefPending] = useState(false)
+  // Bumped by every submit and every chip, so a species lookup that answers
+  // after something newer was asked for is dropped rather than applied.
+  const latestRequest = useRef(0)
   const [helpOpen, setHelpOpen] = useState(false)
 
   const gene = geneParam.trim()
@@ -96,6 +100,8 @@ export default function GenePage() {
   const refText = refBoxText(ref, typedRef, identity)
 
   function show(symbol: string, taxId: number) {
+    latestRequest.current += 1
+    setRefPending(false)
     setRefError(undefined)
     setGeneParam(symbol)
     setRefParam(String(taxId))
@@ -107,20 +113,29 @@ export default function GenePage() {
     const g = field(fd, 'gene')
     const typed = field(fd, 'ref')
     if (g && typed) {
+      latestRequest.current += 1
+      const request = latestRequest.current
+      setRefPending(true)
+      setRefError(undefined)
       try {
         const taxId =
           typed === refText && /^\d+$/.test(ref)
             ? Number(ref)
             : await resolveRefTaxon(typed)
-        show(g, taxId)
-        if (!/^\d+$/.test(typed)) {
-          setTypedRef({ taxId: String(taxId), text: typed })
-        }
-        if (error && g === gene && String(taxId) === ref) {
-          void retryIdentity()
+        if (request === latestRequest.current) {
+          show(g, taxId)
+          if (!/^\d+$/.test(typed)) {
+            setTypedRef({ taxId: String(taxId), text: typed })
+          }
+          if (error && g === gene && String(taxId) === ref) {
+            void retryIdentity()
+          }
         }
       } catch (err) {
-        setRefError(err)
+        if (request === latestRequest.current) {
+          setRefPending(false)
+          setRefError(err)
+        }
       }
     }
   }
@@ -181,9 +196,9 @@ export default function GenePage() {
           <button
             type="submit"
             className="ui-btn"
-            disabled={isLoading}
+            disabled={isLoading || refPending}
           >
-            {isLoading ? 'Resolving…' : 'Search'}
+            {isLoading || refPending ? 'Resolving…' : 'Search'}
           </button>
         </form>
         <HelpButton
