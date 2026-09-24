@@ -20,10 +20,14 @@ export interface HubRecord extends HubEntry {
   createdTimestamp: number
 }
 
+// In UTC, the zone hubFirstSeen.json records in: the build host's Pacific time
+// put a hub first seen in the first seven or eight hours of a UTC day on the
+// day before.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   month: 'short',
   day: 'numeric',
   year: 'numeric',
+  timeZone: 'UTC',
 })
 
 export function formatDate(isoString: string): string {
