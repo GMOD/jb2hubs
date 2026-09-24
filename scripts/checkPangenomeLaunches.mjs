@@ -249,6 +249,8 @@ async function serveLocalConfigs(page) {
 // longer than the fixed settle below, so this polls until they land or fail --
 // and, for a lane whose haplotype has a gene track, until its genes are fetched
 // too, since a lane that aligns and reads "no annotation" is the silent half.
+// A lane the graph places nowhere in the window has no genes to fetch either,
+// and is reported as the data it is rather than as an unfetched gene track.
 async function readLanes(page, expected) {
   const deadline = Date.now() + TIMEOUT
   const withGenes = expected.filter(h => annotated.has(h))
@@ -267,10 +269,20 @@ async function readLanes(page, expected) {
           display.rowAssemblies.map(r => [display.laneKey(r), r]),
         )
         const rowOf = h => rows.get(display.laneKey(h))
-        const drawn = withGenes.filter(h => rowOf(h))
+        const records = new Set(
+          (display.features ?? []).map(f =>
+            display.laneKey(f.get('mate')?.assemblyName ?? ''),
+          ),
+        )
+        const placed = h => display.rowFrames.get(rowOf(h)) !== undefined
+        const drawn = withGenes.filter(h => rowOf(h) && placed(h))
         return {
           error: display.error ? `${display.error}` : undefined,
           missing: want.filter(h => !rowOf(h)),
+          noWalk: want.filter(
+            h => !rowOf(h) && !records.has(display.laneKey(h)),
+          ),
+          offWindow: want.filter(h => rowOf(h) && !placed(h)),
           bare: drawn.filter(h => !display.laneGeneAdapters.has(rowOf(h))),
           genes: Object.fromEntries(
             drawn.flatMap(h => {
@@ -353,10 +365,23 @@ for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
         problems.push('no MultiWaySyntenyDisplay in the session')
       } else if (lanes.error) {
         problems.push(`lanes: ${lanes.error.split('\n')[0]}`)
-      } else if (lanes.missing.length) {
-        problems.push(
-          `${lanes.missing.length} of ${expectLanes.length} lanes never drew: ${lanes.missing.join(', ')}`,
-        )
+      } else {
+        const neverDrew = lanes.missing.filter(h => !lanes.noWalk.includes(h))
+        if (neverDrew.length) {
+          problems.push(
+            `${neverDrew.length} of ${expectLanes.length} lanes never drew: ${neverDrew.join(', ')}`,
+          )
+        }
+        if (lanes.noWalk.length) {
+          problems.push(
+            `the graph returned no walk near the window for ${lanes.noWalk.join(', ')}`,
+          )
+        }
+        if (lanes.offWindow.length) {
+          problems.push(
+            `the graph places ${lanes.offWindow.join(', ')} only outside the window, so the lane is empty`,
+          )
+        }
       }
       if (lanes?.bare.length) {
         problems.push(
@@ -366,6 +391,8 @@ for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
       const unfetched = expectLanes.filter(
         h =>
           annotated.has(h) &&
+          !lanes?.missing.includes(h) &&
+          !lanes?.offWindow.includes(h) &&
           !lanes?.bare.includes(h) &&
           lanes?.genes[h] === undefined,
       )

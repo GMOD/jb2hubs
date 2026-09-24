@@ -23,20 +23,19 @@ Delete an entry when it lands, and the file when it is empty.
   past ~8 KB exceeds CloudFront's request line, so a clade launch opens the 12
   genomes nearest the reference. Carrying the launch in the URL hash would lift
   the cap, but no host has been checked with it in a browser.
+- **Haplotype lanes the graph does not place.** `pnpm check-pangenome-launches`
+  fails `defb` and `nphp1` because each panel names a haplotype with no walk in
+  the launch window: the lane adapter returns nothing for HG00097#1 near defb
+  and places HG00544#1 only right of nphp1's window. Both stand for a form with
+  no call in the window, and the sidecar cannot tell a haplotype that jumps a
+  site (a deletion, which draws) from one the graph does not place (which does
+  not); the measurement is in `../PANGENOME_PORTAL.md`. The fix needs placement
+  data, either published per haplotype beside the sidecar or read from the
+  adapter by the panel generator in a browser, and the second would let the loci
+  table disagree with the **Any region** box.
 
 ## Follow-ups
 
-- **Two HPRC haplotype lanes.** `pnpm check-pangenome-launches` fails the `defb`
-  and `nphp1` lanes: genes are never fetched on HG00097#1 and HG00544#1. Main
-  failed both identically on 2026-09-24, before and after that day's pangenome
-  changes. Publishing is ruled out: the published `hprc-grch38.json` is
-  byte-identical to the committed one, and both haplotypes' gene files and
-  `.tbi` indexes answer 200, as a working haplotype's do. So the cause is in how
-  those two lanes resolve their region, not in the files.
-- **Stale fields in the derived loci.** The committed mouse and bovine
-  `loci.json` still carry `drawable`, `fullName` and `inversion`, which the
-  generator no longer writes and nothing reads. They go at the next
-  regeneration.
 - **p2s_mapper's `toAuthorRange` skips a SIFTS segment with no author start.**
   `authorRange` in `website/src/components/proteinFeatures.ts` derives the start
   from the segment's end first (1A3O's HBB chains need it); the same line in

@@ -367,6 +367,25 @@ thing: not to open a lane reading "no annotation" where a member's would not. It
 is the one place the rule needs to know something the sidecar does not say,
 which is why `haplotypesWithoutGenes` is on the dataset rather than derived.
 
+**A form with no call can be made of haplotypes the graph does not place.** `.`
+says a haplotype's path does not pass through the site, and that covers two
+cases the sidecar cannot tell apart: a walk that jumps over the site, which is
+the deletion the rule counts `.` for, and no walk near the window at all. Only
+the first draws. Measured 2026-09-24 against the lane adapter's own records: at
+`defb`, whose one record 391 of 462 haplotypes skip, the adapter returns nothing
+for HG00097#1 anywhere in chr8:7,797,024-7,959,462, so the commonest form's lane
+never appears; at `nphp1`, HG00544#1's only record is reference
+110,276,210-110,335,280, right of the window, so its lane is empty although its
+annotation has NPHP1. Five panel lanes stand for a form with no call in the
+window, and all five sit in an uncalled stretch covering the whole window; rhd,
+smn and ugt2b17 draw anyway. So neither the calls nor the width of that stretch
+separates the cases, and no rule over the sidecar can. The answer is in the
+graph: placement intervals per haplotype published beside the sidecar, or a
+panel generator that asks the lane adapter in a browser, which would give the
+table an answer the **Any region** box cannot reproduce.
+`pnpm check-pangenome-launches` reports such a lane as unplaced rather than as a
+gene track that never loaded.
+
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and
 `structuralPanel` picks the lanes; `generatePangenomePanels.ts` runs both over
