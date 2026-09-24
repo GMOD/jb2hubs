@@ -149,7 +149,8 @@ interface Resolved {
 // The structure comes FIRST so its resolved GeneID can seed the panel: ncbiFetch
 // serializes every request, so running them concurrently would not overlap them
 // anyway, and the structure's id is the gene NCBI actually places on an
-// assembly. The 100-way index is not an NCBI read, so it does overlap.
+// assembly. The example cache and the 100-way index are not NCBI reads, so they
+// do overlap.
 //
 // A failed panel is NOT fatal. The genome view and the structure come from the
 // structure half alone, and they are worth having even when no ortholog set
@@ -160,8 +161,9 @@ async function resolveGene(
   ref: number,
   onProgress: (s: string) => void,
 ): Promise<Resolved> {
-  const cached = usable((await loadExampleCache())[cacheKey(sym, ref)])
+  const cachePending = loadExampleCache()
   const structure = await fetchGeneStructure(sym, ref)
+  const cached = usable((await cachePending)[cacheKey(sym, ref)])
   // keyed on NCBI's canonical spelling of the symbol, which is what the hosted
   // index uses — a typed "tp53" would otherwise miss; the panel is built on the
   // same spelling, so its query row is labelled the way NCBI labels the gene
