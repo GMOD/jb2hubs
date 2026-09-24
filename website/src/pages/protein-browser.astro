@@ -21,7 +21,14 @@ if (!features.proteinBrowser) {
       Hover a residue and its codon lights up in every view; mark other species
       to superpose their structures.
     </p>
-    <ProteinBrowser client:only="react" />
+    <ProteinBrowser client:only="react">
+      <p
+        slot="fallback"
+        class="ui-hint"
+      >
+        Loading the protein browser…
+      </p>
+    </ProteinBrowser>
   </Container>
 </Layout>
 
@@ -409,7 +416,8 @@ if (!features.proteinBrowser) {
     width: 9rem;
   }
   @media (max-width: 767px) {
-    .pm-lane-name {
+    .pm-lane-name,
+    .pdc-name {
       flex-basis: 80px;
     }
     .pm-actions {
