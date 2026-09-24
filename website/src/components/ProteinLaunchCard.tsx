@@ -177,8 +177,14 @@ export default function ProteinLaunchCard({
       focus?.kind === 'region' && focus.region.kind === 'interface'
         ? (focus.region.pdbIds ?? [])
         : []
+    // A pick from the complexes goes when the focus that offered it does.
+    const offered =
+      choice === 'none' ||
+      (choice === 'alphafold' && !!model) ||
+      shown.some(e => e.pdbId === choice) ||
+      complexIds.some(id => id === choice)
     const chosen =
-      choice ??
+      (offered ? choice : undefined) ??
       complexIds[0] ??
       (model ? 'alphafold' : (shown[0]?.pdbId ?? 'none'))
     const primary: StructureSource | undefined =
