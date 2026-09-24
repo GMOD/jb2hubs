@@ -29,6 +29,7 @@ import { hasHundredWay } from './hundredWay.ts'
 import { COMMON_SPECIES, geneUrl } from './orthologSearchUtils.ts'
 import {
   type AlignSource,
+  latestJob,
   loadBuilt,
   loadHundredWay,
   loadLive,
@@ -552,20 +553,21 @@ function GeneResults({
   const wantAlignment = source !== 'live' || wantLive
   // Swiss-Prot accessions of the ortholog rows marked for superposition.
   const [superposed, setSuperposed] = useState<string[]>([])
-  // Aborting on unmount is what stops the EBI polling for a gene the reader
-  // has left; this component is remounted per query, so unmount IS the gene
-  // change. The one effect here, because a job at another server is exactly
-  // the external system an effect is for.
-  const [aborter] = useState(() => new AbortController())
+  // Each alignment fetch abandons the EBI job before it, and unmounting — this
+  // component is remounted per query, so a new gene — abandons the last. The
+  // one effect here, because a job at another server is exactly the external
+  // system an effect is for.
+  const [jobs] = useState(latestJob)
   useEffect(
     () => () => {
-      aborter.abort()
+      jobs.stop()
     },
-    [aborter],
+    [jobs],
   )
 
-  // The seed alignment is keyed on the domain instance and on the residue it
-  // marks, since both are baked into the placed rows.
+  // Only the seed alignment is keyed on the domain instance and the residue it
+  // marks, since both are baked into its placed rows. Keying the others on
+  // them too would submit a fresh EBI job for every residue typed.
   const residueFocus = focus?.kind === 'residue' ? focus.position : 0
   const {
     data: alignment,
@@ -579,17 +581,18 @@ function GeneResults({
           symbol,
           taxId,
           source,
-          family?.pfam ?? '',
-          family?.start ?? 0,
-          residueFocus,
+          ...(source === 'pfam'
+            ? [family?.pfam ?? '', family?.start ?? 0, residueFocus]
+            : []),
         ] as const)
       : null,
     ([, sym, , src]) => {
+      const signal = jobs.next()
       switch (src) {
         case 'hundredWay':
           return loadHundredWay(sym)
         case 'live':
-          return loadLive(panel!, precomputed, onProgress, aborter.signal)
+          return loadLive(panel!, precomputed, onProgress, signal)
         case 'pfam':
           return family
             ? loadPfam(structure, family, focus)

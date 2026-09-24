@@ -160,9 +160,25 @@ export async function loadHundredWay(symbol: string): Promise<LoadedAlignment> {
   }
 }
 
+// One AbortSignal at a time: asking for the next aborts the last. The page asks
+// on every alignment fetch and stops on unmount, so a superseded EBI job stops
+// polling rather than running to its three-minute deadline and posting its
+// progress over its successor's.
+export function latestJob() {
+  let current: AbortController | undefined
+  return {
+    next() {
+      current?.abort()
+      current = new AbortController()
+      return current.signal
+    },
+    stop() {
+      current?.abort()
+    },
+  }
+}
+
 // The live panel aligned at EBI, with the CDD domains as a per-row overlay.
-// The signal is what stops the EBI polling when the reader has moved on to
-// another gene — the job can otherwise run to its three-minute deadline.
 export async function loadLive(
   panel: ProteinPanel,
   precomputed: ProteinAlignment | undefined,
