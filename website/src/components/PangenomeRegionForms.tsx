@@ -39,6 +39,7 @@ export default function PangenomeRegionForms({
     sites: number
     informative: number
     rareCarriers: number
+    nonReferenceMajority: number
   }>()
 
   async function show(text: string) {
@@ -66,6 +67,7 @@ export default function PangenomeRegionForms({
         sites: forms.sites,
         informative: forms.informative,
         rareCarriers: forms.rareCarriers.length,
+        nonReferenceMajority: forms.nonReferenceMajority,
       })
     } catch (e) {
       setAnswer(undefined)
@@ -116,7 +118,9 @@ export default function PangenomeRegionForms({
             {answer.haplotypes} haplotypes apart
             {answer.panel
               ? `, in ${answer.panel.forms} form${answer.panel.forms === 1 ? '' : 's'} carried by 1% or more`
-              : '. Every haplotype here carries what the reference does'}
+              : answer.nonReferenceMajority > 0
+                ? `. The haplotypes agree here, and differ from ${dataset.reference.label} at ${answer.nonReferenceMajority} of the records`
+                : `. The haplotypes agree here, and with ${dataset.reference.label}`}
             {answer.rareCarriers > 0 &&
               `; ${answer.rareCarriers} carry something rarer`}
             .

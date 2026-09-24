@@ -77,4 +77,20 @@ test('a window with nothing informative is one form', () => {
   const result = structuralForms([], haplotypes)
   assert.equal(result.sites, 0)
   assert.deepEqual(result.forms, [{ key: '', members: haplotypes }])
+  assert.equal(result.nonReferenceMajority, 0)
+})
+
+// Haplotypes that all carry a deletion the reference lacks agree with each
+// other, not with the reference, and the result has to say which.
+test('a site the haplotypes share against the reference is counted', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2']
+  const row = (genotypes: string) =>
+    parseSvStateRow(`chr1\t100\t200\tid\t1:-1700\t${genotypes}`)
+  const result = structuralForms(
+    [row('1111'), row('....'), row('0000')],
+    haplotypes,
+    3,
+  )
+  assert.equal(result.informative, 0)
+  assert.equal(result.nonReferenceMajority, 2)
 })

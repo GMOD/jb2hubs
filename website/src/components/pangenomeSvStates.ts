@@ -157,6 +157,9 @@ export interface StructuralFormsResult {
   forms: StructuralForm[]
   // haplotypes carrying a state too rare to define a form of its own
   rareCarriers: string[]
+  // sites whose commonest state is not the reference's structure: a deletion
+  // most haplotypes carry, or a site most of their paths skip
+  nonReferenceMajority: number
 }
 
 // The forms a window's records group `haplotypes` into.
@@ -171,6 +174,7 @@ export function structuralForms(
     common: Set<string>
   }[] = []
   const carriesRare = new Set<string>()
+  let nonReferenceMajority = 0
   for (const row of rows) {
     const counts = new Map<string, number>()
     for (const state of row.genotypes) {
@@ -178,6 +182,9 @@ export function structuralForms(
     }
     const ranked = [...counts].sort((a, b) => b[1] - a[1])
     const majorityState = ranked[0]![0]
+    if (majorityState !== REFERENCE_STATE) {
+      nonReferenceMajority += 1
+    }
     // Over every site, not only the informative ones: a deletion one haplotype
     // carries defines no form, and leaving it unsaid reads as a haplotype that
     // matches the reference here.
@@ -219,5 +226,6 @@ export function structuralForms(
           b.members.length - a.members.length || (a.key < b.key ? -1 : 1),
       ),
     rareCarriers: haplotypes.filter(h => carriesRare.has(h)),
+    nonReferenceMajority,
   }
 }
