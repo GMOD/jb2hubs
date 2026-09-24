@@ -116,6 +116,8 @@ async function readTier(url: string) {
   return bubbles
 }
 
+// Empty only when UCSC answered with an empty list. A failed request used to
+// come back empty too, and was committed as an intergenic locus.
 async function genesAt(
   genome: string,
   geneTrack: string,
@@ -124,27 +126,32 @@ async function genesAt(
   const url =
     `https://api.genome.ucsc.edu/getData/track?genome=${genome};` +
     `track=${geneTrack};chrom=${b.chrom};start=${b.start};end=${b.end}`
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(60000) })
-    if (!res.ok) {
-      return []
+  let failure: unknown
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) {
+      await new Promise(resolve => setTimeout(resolve, 2000 * attempt))
     }
-    const data = (await res.json()) as Record<string, unknown>
-    const items = data[geneTrack]
-    return Array.isArray(items)
-      ? [
-          ...new Set(
-            items
-              .map(i => (i as { name2?: string }).name2)
-              .filter(
-                (n): n is string => typeof n === 'string' && n.length > 0,
-              ),
-          ),
-        ].sort()
-      : []
-  } catch {
-    return []
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(60000) })
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`)
+      }
+      const items = ((await res.json()) as Record<string, unknown>)[geneTrack]
+      if (!Array.isArray(items)) {
+        throw new Error(`no ${geneTrack} list in the answer`)
+      }
+      return [
+        ...new Set(
+          items
+            .map(i => (i as { name2?: string }).name2)
+            .filter((n): n is string => typeof n === 'string' && n.length > 0),
+        ),
+      ].sort()
+    } catch (e) {
+      failure = e
+    }
   }
+  throw new Error(`${url}: ${String(failure)}`)
 }
 
 // A cluster is named for the family rather than for all of its members: the
