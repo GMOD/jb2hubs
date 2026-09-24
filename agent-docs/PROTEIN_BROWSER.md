@@ -50,6 +50,20 @@ rather than assuming `-F1` turns out to matter here too: it has an isoform model
 model exists the plugin aligns what it can and says so; the isoform picker on
 the card is how a reader gets the canonical isoform instead.
 
+## The exon table names the assembly it is on
+
+NCBI places a gene on every assembly it annotates, and the `gene_table` exon
+coordinates are on one of them, which need not come first: zebrafish tp53 is
+placed on GRCz12ab and GRCz12tu, 386 kb apart on their chromosome 5s, and its
+table is GRCz12ab's. Until 2026-09-24 the page opened the first hosted
+placement, so a tp53 session on GRCz12tu lit every codon on the wrong bases and
+nothing failed. `geneTableReference` reads the sequence off the table's header
+(human and mouse write
+`Reference GRCh38.p14 Primary Assembly NC_000017.11 … from:`; yeast, fly, worm
+and plant start at the accession), and `tablePlacement` opens the placement on
+that sequence. A table on a sequence no placement names is refused, since no
+assembly would put its coordinates on the right bases.
+
 ## A structure is asked for, not assumed
 
 `AF-<accession>-F1-model_v6.cif` is derivable for most proteins and wrong for
@@ -217,6 +231,17 @@ row gaps. The search is windowed to the InterPro fragment ± 40 residues, so a
 titin-sized query does not cost a full matrix per row, and a miss is reported
 rather than guessed.
 
+A miss needs a bar, because Smith-Waterman returns its best positive cell
+whether or not the domain is there, and one W–W pair scores 11. Since 2026-09-24
+the best hit has to reach an E-value of 1e-3 under BLAST's gapped statistics for
+BLOSUM62 at these gap costs (λ 0.267, K 0.041), taking the window against every
+seed row as the search space, and has to span half its anchor row. On the four
+focused chips' families the real placements score 96 to 1,042 at E 7.5e-8 or
+less; shuffled translations, and SOD1, which has none of these domains, reach
+1.2e-2 at best, and a shuffled globin 2.9e-4. Under the bar `placeQuery` throws,
+and the page shows why beside the alignment rather than linking a few chance
+residues to the genome as the domain.
+
 The query row is the aligned segment alone, named Pfam-style (`TP53/99-289`),
 and the session's MsaView is linked through the codons of that segment alone:
 `sliceCds` (`geneStructure.ts`) cuts the transcript's CDS to residues
@@ -244,9 +269,10 @@ FASTA, which BRAF's kinase domain exceeds — PF07714 at 111 rows × 481 columns
 87 rows kept, tree pruned to them. A thinned seed is still the family where a
 dropped one is nothing.
 
-The embedded viewer is react-msaview 6.2, which marks columns but not a row's
-residues, so a residue focus reaches it as `highlightColumns` computed off the
-query row; the session's MsaView takes the `highlights` themselves.
+The embedded viewer (react-msaview 8.1) and the session's MsaView take the same
+`highlights`: a residue focus inside the segment, marked and labelled on the
+query row. The embedded one also opens on it, zoomed to thirty residues either
+side (`region`).
 
 ### Quieter sessions
 
