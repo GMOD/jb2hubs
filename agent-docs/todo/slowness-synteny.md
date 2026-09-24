@@ -18,8 +18,10 @@ What changed the same day, and what is left:
   the 15-call browser assembler per visitor. The url is now a constant in
   `neighborhoodClient.ts` and the browser assembler is gone from the client
   path; the Lambda still imports `assembleNeighborhood`.
-- **The body goes out compressed** once `MinimumCompressionSize: 1024` is
-  deployed (`aws/ortholog-assembler/template.yaml`, needs a `sam deploy`).
+- **The body goes out compressed.** `MinimumCompressionSize: 1024` reached the
+  stage on 2026-09-24, through a `sam deploy` plus a manual stage deployment
+  (see the ortholog-assembler README). TP53's 1.15 MB neighborhood is 151 KB
+  over the wire.
 - **The page renders before the bundle.** `client:load` instead of
   `client:only`: the form and example chips are in the HTML, and the state is
   the URL (`useUrlState`), which is SSR-safe by design. The fetch waits for
@@ -44,4 +46,7 @@ Still open:
 - **N × chrom.sizes/chromAlias from hgdownload** per launch is the GenArk
   sidecar trade recorded in `../../CLAUDE.md`; nothing here changes it.
 - **The 29 s API Gateway limit** against a 120 s Lambda: a slow cold miss is a
-  504 the client retries once. Measure in CloudWatch before moving either.
+  504 the client retries once. Measure in CloudWatch before moving either, but
+  the log group keeps 7 days, and with the gene-order figure staging-only that
+  was 23 invocations on 2026-09-24: none over 29 s, cold assemblies 10–13 s on
+  the new v4 cache. Raising the retention is the first step to a real answer.
