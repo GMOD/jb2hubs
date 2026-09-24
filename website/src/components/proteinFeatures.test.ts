@@ -2,6 +2,7 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
+  authorRange,
   parseInterProRegions,
   parseInterfaceRegions,
   parseResidue,
@@ -331,4 +332,43 @@ test('parseResidue: unreadable or out-of-range input is an error, not nothing', 
   assert.ok('error' in past)
   assert.match(past.error, /runs 1–147/)
   assert.ok('error' in parseResidue('0', hbb, 147))
+})
+
+// 1A3O's HBB chains as PDBe's SIFTS mapping gives them (2026-09-24): Val1 has
+// no coordinates, so the segment's start carries no author number.
+const hbbChain = (
+  chainId: string,
+  author: { authorStart?: number; authorEnd?: number } = { authorEnd: 146 },
+) => ({
+  entityId: '2',
+  chainId,
+  unpStart: 2,
+  unpEnd: 147,
+  structStart: 0,
+  structEnd: 145,
+  ...author,
+})
+
+test('a segment with no author start is numbered back from its end', () => {
+  assert.deepEqual(
+    authorRange([hbbChain('B'), hbbChain('D')], { start: 7, end: 7 }),
+    { start: 6, end: 6, chain: 'B', shift: -1 },
+  )
+})
+
+test('a segment that names its author start is read as it is', () => {
+  assert.deepEqual(
+    authorRange([hbbChain('B', { authorStart: 1, authorEnd: 146 })], {
+      start: 2,
+      end: 147,
+    }),
+    { start: 1, end: 146, chain: 'B', shift: -1 },
+  )
+})
+
+test('a segment with neither author endpoint still covers nothing', () => {
+  assert.equal(
+    authorRange([hbbChain('B', {})], { start: 7, end: 7 }),
+    undefined,
+  )
 })

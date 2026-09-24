@@ -20,7 +20,10 @@
 // 504 KB for HBB — well-studied extremes, 9.5 KB for zebrafish tp53 — so it is
 // fetched only when the reader opens the partner list.
 
+import { toAuthorRange } from 'p2s_mapper'
+
 import type { ExampleFocus } from './geneExamples.ts'
+import type { UniProtStructureSegment } from 'p2s_mapper'
 
 export type RegionKind = 'domain' | 'repeat' | 'site' | 'interface' | 'residue'
 
@@ -320,6 +323,25 @@ export function focusRange(focus: Focus) {
   return focus.kind === 'region'
     ? { start: focus.region.start, end: focus.region.end }
     : { start: focus.position, end: focus.position }
+}
+
+// The author-numbered range a PDB entry cites a UniProt range by. SIFTS leaves
+// an endpoint's author number out when that residue has no coordinates — 1A3O's
+// and 1A3N's HBB chains lack Val1 — and `toAuthorRange` passes over a segment
+// with no author start, so those entries read as covering nothing. A segment
+// is one run of consecutive SEQRES residues, so its end gives its start.
+export function authorRange(
+  segments: readonly UniProtStructureSegment[],
+  range: { start: number; end: number },
+) {
+  return toAuthorRange(
+    segments.map(s =>
+      s.authorStart === undefined && s.authorEnd !== undefined
+        ? { ...s, authorStart: s.authorEnd - (s.structEnd - s.structStart) }
+        : s,
+    ),
+    range,
+  )
 }
 
 export function focusLabel(focus: Focus) {

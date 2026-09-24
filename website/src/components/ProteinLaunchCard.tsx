@@ -4,7 +4,6 @@ import {
   fetchExperimentalStructures,
   fetchUniProtStructureMappings,
   segmentsForAccession,
-  toAuthorRange,
 } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
@@ -17,7 +16,12 @@ import {
   fetchProteinSequence,
   geneStats,
 } from './geneStructure.ts'
-import { type Focus, focusLabel, focusRange } from './proteinFeatures.ts'
+import {
+  type Focus,
+  authorRange,
+  focusLabel,
+  focusRange,
+} from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
 import {
   type AlphaFoldModel,
@@ -258,7 +262,7 @@ export default function ProteinLaunchCard({
       segmentsForAccession(await fetchUniProtStructureMappings(pdb), acc),
     LIVE_QUERY,
   )
-  const author = range && sifts ? toAuthorRange(sifts, range) : undefined
+  const author = range && sifts ? authorRange(sifts, range) : undefined
   const unnumbered = !!pdbId && !!numberingError && !numbering
 
   // Building the url deflates the whole inline alignment, so it is memoised on
