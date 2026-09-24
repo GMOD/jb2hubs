@@ -77,7 +77,8 @@ export default function GenePage() {
   )
 
   // The pair catalog and assembly index behind the table's synteny links and
-  // the figure's drill-downs, fetched once there is a gene to show them for.
+  // the figure's drill-downs, fetched once there is a gene to show them for. A
+  // failed catalog is an error SWR retries, not an empty index kept until reload.
   const { data: drilldown } = useSWRImmutable(
     identity ? 'gene-drilldown' : null,
     loadDrilldownData,

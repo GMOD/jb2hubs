@@ -76,16 +76,19 @@ export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
   }
 }
 
-// The pair catalog is fetched once on first drill-down (loadJsonOnce shares the
-// request and, unlike the old inline fetch, doesn't cache a 404 forever) and
-// indexed for tolerant (version/suffix/order-insensitive) lookup. Any load
-// failure degrades to an empty index — the click falls back to single-genome —
-// and a later drill-down retries.
+// The pair catalog, fetched once and indexed for tolerant
+// (version/suffix/order-insensitive) lookup. A failure rejects, and
+// loadJsonOnce forgets it, so whoever asks next fetches again.
 function loadPairs(): Promise<PairIndex> {
   return loadJsonOnce<Record<string, PairEntry>>('/synteny_pairs.json').then(
     buildPairIndex,
-    () => new Map(),
   )
+}
+
+// A click cannot wait for a retry: without the catalog it opens the single
+// genome, and the next click asks again.
+function pairsForClick(): Promise<PairIndex> {
+  return loadPairs().catch((): PairIndex => new Map())
 }
 
 // The panel assemblies are the link's names rather than the accessions: a
@@ -182,7 +185,7 @@ export function subtreeSyntenyUrl(picked: SubtreeLeaf[], index: PairIndex) {
 // The click path for a branch point before the catalog has been prefetched:
 // the caller has already chosen which leaves to open.
 export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
-  const url = subtreeSyntenyUrl(leaves, await loadPairs())
+  const url = subtreeSyntenyUrl(leaves, await pairsForClick())
   if (url) {
     window.open(url, '_blank', 'noopener')
   }
@@ -191,8 +194,9 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
 // Everything a drill-down url needs besides the clicked gene, loaded once so
 // the figure can render real links: a click that only follows an href is not a
 // popup for the blocker to eat, and it does not wait on an 806 KB index first.
-// Each half degrades the way the click path does — an unloadable catalog is an
-// empty index, an unloadable assembly index answers with the accession verbatim.
+// An unloadable catalog rejects, so the page's SWR retries it rather than
+// holding an empty index (and no synteny links) until reload; an unloadable
+// assembly index answers with the accession verbatim.
 export interface DrilldownData {
   index: PairIndex
   hosted: (accession: string) => HostedGenome
@@ -287,7 +291,7 @@ export async function openGeneDrilldown(
   flipped = false,
 ) {
   const [index, hosted] = await Promise.all([
-    loadPairs(),
+    pairsForClick(),
     loadStore().then(
       s => s.find(gene.assembly),
       () => ({ accession: gene.assembly }),
