@@ -26,6 +26,7 @@ import { notEmpty } from '../../components/DataTable/utils.ts'
 import { ncbiTaxonomyUrl } from '../../lib/externalLinks.ts'
 import fs from 'fs'
 import path from 'path'
+import { hubCategories } from 'hubtools'
 
 interface Props {
   table: HubTableData
@@ -41,34 +42,39 @@ interface Props {
 
 export async function getStaticPaths() {
   // One page per GenArk category, from the processed listing it is named after.
-  // all.json is the union of the others, and has its own handling below.
+  // all.json is the union of the others, and has its own handling below;
+  // ucsc.json is the UCSC genome list, whose rows are dbs rather than hubs.
+  const categorySlugs = new Set(hubCategories.map(c => c.id))
   const modules = import.meta.glob('../../../processedHubJson/*.json')
   const categories = await Promise.all(
-    Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = (await resolver()) as { default: HubSource[] }
-      return { slug: filepath.split('/').pop()!.replace('.json', ''), data }
-    }),
+    Object.entries(modules)
+      .map(([filepath, resolver]) => ({
+        slug: filepath.split('/').pop()!.replace('.json', ''),
+        resolver,
+      }))
+      .filter(({ slug }) => categorySlugs.has(slug))
+      .map(async ({ slug, resolver }) => {
+        const { default: data } = (await resolver()) as {
+          default: HubSource[]
+        }
+        return { slug, data }
+      }),
   )
 
   const paths: { params: { slug: string }; props: Props }[] = []
   for (const { slug, data } of categories) {
-    if (slug !== 'all') {
-      const tree = getCachedTree(slug)
-      paths.push({
-        params: { slug },
-        props: {
-          table: categoryTable(slug, data),
-          rowCount: data.length,
-          speciesData: data,
-          isCategory: true,
-          precomputedSubtree: tree && budgetTree(tree, TREE_NODE_BUDGET),
-        },
-      })
-    }
+    const tree = getCachedTree(slug)
+    paths.push({
+      params: { slug },
+      props: {
+        table: categoryTable(slug, data),
+        rowCount: data.length,
+        speciesData: data,
+        isCategory: true,
+        precomputedSubtree: tree && budgetTree(tree, TREE_NODE_BUDGET),
+      },
+    })
   }
-  // A category page wins a slug collision, so the taxon pass below skips these.
-  const categorySlugs = new Set(paths.map(p => p.params.slug))
-
   try {
     const newick = fs.readFileSync(
       path.join(process.cwd(), 'public', 'taxonomy', 'all.newick'),
@@ -91,6 +97,7 @@ export async function getStaticPaths() {
       )
 
     for (const taxonId of taxonIdsIn(newick)) {
+      // A category page wins a slug collision.
       if (categorySlugs.has(taxonId)) {
         console.warn(`Skipping taxonId ${taxonId} - conflicts with a category`)
         continue

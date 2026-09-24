@@ -32,9 +32,14 @@ shopt -s nullglob
 
 ARGS=()
 CATEGORIES=()
+# ucsc.json is the UCSC genome list, not a GenArk category, and nothing renders
+# a tree of it.
 for json_file in "$PROCESSED_HUB_JSON_DIR"/*.json; do
   filename=$(basename "$json_file")
   category="${filename%.json}"
+  if [ "$category" = ucsc ]; then
+    continue
+  fi
   CATEGORIES+=("$category")
   ARGS+=(--input "$json_file" --output "$OUTPUT_DIR/${category}.newick")
 done

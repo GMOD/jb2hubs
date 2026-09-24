@@ -5,6 +5,8 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { hubCategories } from 'hubtools'
+
 import {
   INLINE_ACCESSION_LIMIT,
   byCommonName,
@@ -26,8 +28,17 @@ const outputDir = path.join(publicDir, 'hubData')
 
 fs.mkdirSync(outputDir, { recursive: true })
 
-for (const file of fs.readdirSync(inputDir)) {
-  if (file.endsWith('.json') && file !== 'all.json') {
+// One file per GenArk category, the only listings /hubs and /taxonomy render.
+// processedHubJson also holds all.json, their union, and ucsc.json, the UCSC
+// genome list, whose rows are dbs rather than hubs.
+for (const file of fs.readdirSync(outputDir)) {
+  if (file.endsWith('.json')) {
+    fs.rmSync(path.join(outputDir, file))
+  }
+}
+for (const { id } of hubCategories) {
+  const file = `${id}.json`
+  if (fs.existsSync(path.join(inputDir, file))) {
     const rows: HubSource[] = JSON.parse(
       fs.readFileSync(path.join(inputDir, file), 'utf-8'),
     )

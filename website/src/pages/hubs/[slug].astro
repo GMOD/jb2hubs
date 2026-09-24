@@ -5,23 +5,30 @@ import DataTable from '../../components/DataTable.tsx'
 import UcscStatusBanner from '../../components/UcscStatusBanner.tsx'
 import { categoryTable } from '../../components/DataTable/hubRow.ts'
 import type { HubSource } from '../../components/DataTable/hubRow.ts'
+import { hubCategories } from 'hubtools'
 
 // Only the first page is rendered into the document; the rest arrives from
 // public/hubData/<slug>.json (generateHubData.ts). Serializing whole categories as
 // island props made this page 43MB for bacteria and showed a spinner until all of
 // it had parsed.
+//
+// One page per GenArk category. processedHubJson also holds all.json, their
+// union, and ucsc.json, the UCSC genome list, whose rows are dbs rather than hubs.
 export async function getStaticPaths() {
+  const categories = new Set(hubCategories.map(c => c.id))
   const modules = import.meta.glob('../../../processedHubJson/*.json')
-  const paths = await Promise.all(
-    Object.entries(modules).map(async ([filepath, resolver]) => {
-      const { default: data } = (await resolver()) as { default: HubSource[] }
-      const slug = filepath.split('/').pop()!.replace('.json', '')
-      return slug !== 'all'
-        ? { params: { slug }, props: { table: categoryTable(slug, data) } }
-        : undefined
-    }),
+  return Promise.all(
+    Object.entries(modules)
+      .map(([filepath, resolver]) => ({
+        slug: filepath.split('/').pop()!.replace('.json', ''),
+        resolver,
+      }))
+      .filter(({ slug }) => categories.has(slug))
+      .map(async ({ slug, resolver }) => {
+        const { default: data } = (await resolver()) as { default: HubSource[] }
+        return { params: { slug }, props: { table: categoryTable(slug, data) } }
+      }),
   )
-  return paths.filter(f => !!f)
 }
 
 const { slug } = Astro.params
