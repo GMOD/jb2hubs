@@ -7,6 +7,7 @@ import {
   refAlignmentUrl,
   subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
+import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
 import { buildPairIndex } from './syntenyPairIndex.ts'
 
 import type { DrilldownData, SubtreeLeaf } from './multiSyntenyDrilldown.ts'
@@ -171,6 +172,31 @@ test('a panel no level names opens under its hosted genome', () => {
     viewOf(url).views.map((v: { assembly: string }) => v.assembly),
     ['hg38', 'GCF_2.1'],
   )
+})
+
+// CloudFront refuses a request line over 8,192 bytes, which is why the view's
+// "open more of this clade" stops at MAX_PICKED_GENOMES. Every name here is as
+// long as the catalog's longest, and every panel flipped.
+test('the widest clade launch fits the request line', () => {
+  const acc = (i: number) => `GCF_${String(900_000_000 + i)}.1`
+  const pairs: Record<string, PairEntry> = {}
+  for (let i = 1; i < MAX_PICKED_GENOMES; i++) {
+    const [a, b] = [acc(i - 1), acc(i)]
+    pairs[`${a},${b}`] = [
+      `${a}_to_${b}_liftOver`,
+      a,
+      b,
+      `${a}-ncbiRefSeq`,
+      `${b}-ncbiRefSeq`,
+    ]
+  }
+  const leaves = Array.from({ length: MAX_PICKED_GENOMES }, (_, i) => ({
+    assembly: acc(i),
+    loc: 'NC_000000000.1:100000000-200000000',
+    flipped: true,
+  }))
+  const url = subtreeSyntenyUrl(leaves, drilldown(pairs))!
+  assert.ok(url.length < 8192, `${url.length} bytes`)
 })
 
 const gene = (assembly: string): PlacedGene => ({

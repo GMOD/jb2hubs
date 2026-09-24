@@ -20,6 +20,7 @@ import {
   layoutNeighborhood,
   ribbonPath,
 } from './multiSyntenyLayout.ts'
+import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
 
 import type { Anchor, Neighborhood } from './neighborhood.ts'
 import type { MouseEvent, ReactNode } from 'react'
@@ -134,7 +135,8 @@ function Launch({
 }
 
 interface Clade {
-  leaves: SubtreeLeaf[]
+  widest: SubtreeLeaf[]
+  total: number
   opened: number
 }
 
@@ -215,10 +217,13 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
 
   // Branch points that can launch, each with the band of rows it covers (drawn
   // hidden, lit by the hover rules) and the leaves nearest the reference that a
-  // click opens. The rest of a big clade is a second, explicit choice.
+  // click opens. More of a big clade is a second, explicit choice, and it stops
+  // at MAX_PICKED_GENOMES: a clade holds up to 80 species, and the launch url
+  // for all of them runs past the 8,192-byte request line CloudFront accepts.
   const clades = layout.treeNodes
     .map(n => {
       const placed = n.leafTaxonIds.filter(t => placementByTaxon.has(t))
+      const center = placed.indexOf(refTaxonId)
       const ys = layout.rows
         .filter(r => placed.includes(r.taxonId))
         .map(r => r.y)
@@ -226,11 +231,8 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
         x: n.x,
         y: n.y,
         placed,
-        nearest: nearestWindow(
-          placed,
-          placed.indexOf(refTaxonId),
-          DEFAULT_SUBTREE_GENOMES,
-        ),
+        nearest: nearestWindow(placed, center, DEFAULT_SUBTREE_GENOMES),
+        widest: nearestWindow(placed, center, MAX_PICKED_GENOMES),
         top: Math.min(...ys) - 4,
         bottom: Math.max(...ys) + H + 4,
       }
@@ -243,7 +245,12 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
     `${queryId}:${refTaxonId}:${neighborhood.anchors.length}:${neighborhood.species.length}:${orientToRef}`,
     null,
   )
-  const allHref = clade && subtreeHref(clade.leaves)
+  const widestHref = clade && subtreeHref(clade.widest)
+  const widestLabel =
+    clade &&
+    (clade.widest.length === clade.total
+      ? `Open all ${clade.total} →`
+      : `Open the ${clade.widest.length} nearest →`)
 
   return (
     <div
@@ -310,28 +317,30 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
         colors={layout.anchorColors}
       />
 
-      {clade && clade.leaves.length > clade.opened && (
+      {clade && clade.total > clade.opened && (
         <p className="ui-hint">
           Opened the {clade.opened} species nearest the reference of the{' '}
-          {clade.leaves.length} in that clade.{' '}
-          {allHref ? (
+          {clade.total} in that clade.{' '}
+          {widestHref ? (
             <a
-              href={allHref}
+              href={widestHref}
               target="_blank"
               rel="noopener"
             >
-              Open all {clade.leaves.length} →
+              {widestLabel}
             </a>
           ) : (
             <button
               className="ui-linkbtn"
               onClick={() => {
-                void openSubtreeSynteny(clade.leaves)
+                void openSubtreeSynteny(clade.widest)
               }}
             >
-              Open all {clade.leaves.length} →
+              {widestLabel}
             </button>
           )}
+          {clade.widest.length < clade.total &&
+            ` A stacked view opens at most ${MAX_PICKED_GENOMES} genomes, one full browser each.`}
         </p>
       )}
 
@@ -392,7 +401,11 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                   ? `Open a stacked synteny view of the ${c.nearest.length} species nearest the reference, of ${c.placed.length} in this clade`
                   : `Open a stacked synteny view of these ${c.placed.length} species`
               const remember = () => {
-                setClade({ leaves: leavesOf(c.placed), opened: leaves.length })
+                setClade({
+                  widest: leavesOf(c.widest),
+                  total: c.placed.length,
+                  opened: leaves.length,
+                })
               }
               const href = subtreeHref(leaves)
               return (
