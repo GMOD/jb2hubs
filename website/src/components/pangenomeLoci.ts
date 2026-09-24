@@ -16,19 +16,13 @@ export type VariationClass =
   | 'inversion' // inversion polymorphism
 
 // What a dataset's coarse tier says about one bubble, for a catalogue that was
-// derived rather than curated (`website/generatePangenomeLoci.ts`). Its presence
-// is also the signal that nothing was precomputed for this locus — no
-// `<id>.vcfsummary.json`, no pangene matrix, no MSA — because the derivation
-// ranks a 50-200 KB tier file and computes nothing per locus.
+// derived rather than curated (`website/generatePangenomeLoci.ts`) by ranking a
+// 50-200 KB tier file: its presence says the tier's numbers are all there is.
 export interface DerivedBubble {
   // Segments the bubble holds. This is `cn:i:`, and the metric the catalogue is
   // ranked by; `cw` (path count) is clamped at INT32_MAX by gfatools for every
   // bubble at the top of the ranking, so it carries no information there.
   segments: number
-  // Shortest and longest path through the bubble, in bp — the size range of the
-  // alternatives to the reference span.
-  shortestAllele: number
-  longestAllele: number
   // Reference genes the bubble overlaps, which is what `gene` is named from.
   // Empty where the bubble is intergenic.
   genes: string[]
@@ -63,8 +57,7 @@ export interface PangenomeLocus {
   // would open a bare thread and read as an empty result.
   graphCollapsed?: boolean
   // Set on a locus that came out of the tier ranking rather than out of a
-  // curated list. See DerivedBubble: it carries what the tier reported, and its
-  // presence says there is nothing precomputed to fetch.
+  // curated list. See DerivedBubble.
   derived?: DerivedBubble
 }
 

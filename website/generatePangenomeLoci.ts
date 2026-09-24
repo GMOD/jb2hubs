@@ -40,6 +40,8 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import zlib from 'zlib'
 
+import type { DerivedLocusEntry } from './src/components/pangenomeDerivedLoci.ts'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 interface Bubble {
@@ -47,9 +49,6 @@ interface Bubble {
   start: number
   end: number
   segments: number
-  shortest: number
-  longest: number
-  inversion: number
 }
 
 // Which datasets can be derived, and the two things that differ per dataset.
@@ -68,18 +67,6 @@ const DATASETS = {
     geneTrack: 'ncbiRefSeqCurated',
   },
 }
-
-// The graph view lays a cut out to a target node size, so ten times the nodes is
-// the same ink a tenth the size. `MAX_DETAIL_WINDOW_BP` in pangenomeLoci.ts is
-// 150 kb for that reason, and the same ceiling applies to a derived locus: past
-// it the entry is still worth listing (it IS where the graph varies) but it gets
-// no graph launch, exactly as an over-wide curated locus does.
-const MAX_DRAWABLE_BP = 150_000
-
-// gfatools clamps a bubble's path count at INT32_MAX rather than overflowing,
-// and every bubble at the top of this ranking is clamped — so `cw` carries no
-// information precisely where the ranking is interesting, and `cn` is the metric.
-const GFATOOLS_PATH_CLAMP = 2_147_483_647
 
 function tagInt(tags: string, key: string) {
   const m = new RegExp(`${key}:i:(-?\\d+)`).exec(tags)
@@ -107,10 +94,9 @@ async function readTier(url: string) {
       chrom: f[0]!.split('#').at(-1)!,
       start: Number(f[1]),
       end: Number(f[2]),
+      // `cn`, not `cw`: gfatools clamps the path count at INT32_MAX, and every
+      // bubble at the top of this ranking is clamped.
       segments: tagInt(tags, 'cn'),
-      shortest: tagInt(tags, 'cs'),
-      longest: tagInt(tags, 'cl'),
-      inversion: tagInt(tags, 'cv'),
     })
   }
   return bubbles
@@ -200,31 +186,20 @@ async function main() {
 
   console.log(`Reading ${spec.tier}`)
   const bubbles = await readTier(spec.tier)
-  const clamped = bubbles.filter(b => b.segments >= GFATOOLS_PATH_CLAMP).length
-  console.log(
-    `${bubbles.length} bubbles in the tier` +
-      (clamped > 0 ? ` (${clamped} at the gfatools clamp)` : ''),
-  )
+  console.log(`${bubbles.length} bubbles in the tier`)
 
   const ranked = [...bubbles].sort((a, b) => b.segments - a.segments)
-  const loci = []
+  const loci: DerivedLocusEntry[] = []
   for (const b of ranked.slice(0, topN)) {
     const genes = await genesAt(spec.genome, spec.geneTrack, b)
     const label = labelFor(genes)
     loci.push({
       id: `${b.chrom}_${b.start}`,
       gene: label ?? `${b.chrom}:${b.start.toLocaleString()}`,
-      fullName: label
-        ? `${b.chrom}:${b.start.toLocaleString()}-${b.end.toLocaleString()}`
-        : 'intergenic; the graph varies here but no gene is annotated',
       chrom: b.chrom,
       start: b.start,
       end: b.end,
       segments: b.segments,
-      shortestAllele: b.shortest,
-      longestAllele: b.longest,
-      inversion: b.inversion > 0,
-      drawable: b.end - b.start <= MAX_DRAWABLE_BP,
       genes,
     })
     process.stdout.write(
