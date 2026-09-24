@@ -50,12 +50,10 @@ function svStatesFile(url: string) {
 
 export function openSvStates(url: string) {
   const file = svStatesFile(url)
-  return async function query(
-    refName: string,
-    start: number,
-    end: number,
-    signal?: AbortSignal,
-  ): Promise<SvStatesQuery> {
+
+  // The file's own name for a chromosome, or an error: tabix answers an unknown
+  // name with no rows, which would read as a window with no variation.
+  async function chromOf(refName: string, signal?: AbortSignal) {
     const chrom = matchRefName(
       refName,
       await file.getReferenceSequenceNames({ signal }),
@@ -63,6 +61,16 @@ export function openSvStates(url: string) {
     if (chrom === undefined) {
       throw new Error(`${refName} is not a sequence in the callset`)
     }
+    return chrom
+  }
+
+  async function query(
+    refName: string,
+    start: number,
+    end: number,
+    signal?: AbortSignal,
+  ): Promise<SvStatesQuery> {
+    const chrom = await chromOf(refName, signal)
     const rows: SvStateRow[] = []
     const [header] = await Promise.all([
       file.getHeader({ signal }),
@@ -75,4 +83,6 @@ export function openSvStates(url: string) {
     ])
     return { chrom, haplotypes: haplotypesOf(header), rows }
   }
+
+  return { chromOf, query }
 }

@@ -9,6 +9,7 @@ import {
   launchLinks,
   regionLaunchUrl,
 } from './pangenomeLinks.ts'
+import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import { formatRegion, resolveRegion } from './pangenomeRegion.ts'
 import { structuralForms } from './pangenomeSvStates.ts'
@@ -30,6 +31,11 @@ function deadlineMessage(e: unknown) {
 
 // The sidecar reader, and @gmod/tabix with it, loads on the first question
 // rather than with the page, since most readers never ask one.
+//
+// A window past MAX_DETAIL_WINDOW_BP gets no reading. Its forms would be
+// hundreds of singletons, the callset opens behind "too much data", and the
+// lanes pass the GBZ reader's node limit, so all it is offered is the graph,
+// which draws a window that wide from its coarse tier.
 async function regionAnswer(dataset: PangenomeDataset, text: string) {
   try {
     const signal = AbortSignal.timeout(DEADLINE_MS)
@@ -42,20 +48,34 @@ async function regionAnswer(dataset: PangenomeDataset, text: string) {
       )
     }
     const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
-    const { chrom, haplotypes, rows } = await openSvStates(
-      dataset.svStatesUrl!,
-    )(asked.chrom, asked.start, asked.end, signal)
+    const svStates = openSvStates(dataset.svStatesUrl!)
+    if (asked.end - asked.start > MAX_DETAIL_WINDOW_BP) {
+      return {
+        region: {
+          ...asked,
+          chrom: await svStates.chromOf(asked.chrom, signal),
+        },
+      }
+    }
+    const { chrom, haplotypes, rows } = await svStates.query(
+      asked.chrom,
+      asked.start,
+      asked.end,
+      signal,
+    )
     const forms = structuralForms(rows, haplotypes)
     return {
       region: { ...asked, chrom },
-      haplotypes: haplotypes.length,
-      panel: structuralPanel(forms, {
-        withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
-      }),
-      sites: forms.sites,
-      informative: forms.informative,
-      rareCarriers: forms.rareCarriers.length,
-      nonReferenceMajority: forms.nonReferenceMajority,
+      reading: {
+        haplotypes: haplotypes.length,
+        panel: structuralPanel(forms, {
+          withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
+        }),
+        sites: forms.sites,
+        informative: forms.informative,
+        rareCarriers: forms.rareCarriers.length,
+        nonReferenceMajority: forms.nonReferenceMajority,
+      },
     }
   } catch (e) {
     throw new Error(deadlineMessage(e))
@@ -91,13 +111,14 @@ export default function PangenomeRegionForms({
     LIVE_QUERY,
   )
 
-  const lanes = answer?.panel?.lanes ?? []
+  const reading = answer?.reading
+  const lanes = reading?.panel?.lanes ?? []
   const region = answer?.region
   const graphRegion = region && { ...region, label: formatRegion(region) }
   const launches = graphRegion
     ? launchLinks(dataset, {
         graph: graphRegionUrl(dataset, graphRegion),
-        linear: regionLaunchUrl(dataset, graphRegion),
+        linear: reading && regionLaunchUrl(dataset, graphRegion),
         haplotypes: haplotypeLanesForRegion(
           dataset,
           graphRegion,
@@ -142,25 +163,41 @@ export default function PangenomeRegionForms({
 
       {error instanceof Error && <p>{error.message}</p>}
 
-      {answer && region && (
+      {region && (
         <>
-          <p>
-            <code>{formatRegion(region)}</code>: {answer.sites} structural
-            records, {answer.informative} of them telling the{' '}
-            {answer.haplotypes} haplotypes apart
-            {answer.panel
-              ? `, in ${answer.panel.forms} form${answer.panel.forms === 1 ? '' : 's'} carried by 1% or more`
-              : answer.nonReferenceMajority > 0
-                ? `. The haplotypes agree here, and differ from ${dataset.reference.label} at ${answer.nonReferenceMajority} of the records`
-                : `. The haplotypes agree here, and with ${dataset.reference.label}`}
-            {answer.rareCarriers > 0 &&
-              `; ${answer.rareCarriers} carry something rarer`}
-            .
-          </p>
-          <p>
-            <PangenomeLaunchLinks links={launches} />
-          </p>
-          {lanes.length > 0 && (
+          {reading ? (
+            <p>
+              <code>{formatRegion(region)}</code>: {reading.sites} structural
+              records, {reading.informative} of them telling the{' '}
+              {reading.haplotypes} haplotypes apart
+              {reading.panel
+                ? reading.panel.forms > 0
+                  ? `, in ${reading.panel.forms} form${reading.panel.forms === 1 ? '' : 's'} carried by 1% or more`
+                  : ', in no form carried by 1% or more'
+                : reading.nonReferenceMajority > 0
+                  ? `. The haplotypes agree here, and differ from ${dataset.reference.label} at ${reading.nonReferenceMajority} of the records`
+                  : `. The haplotypes agree here, and with ${dataset.reference.label}`}
+              {reading.rareCarriers > 0 &&
+                `; ${reading.rareCarriers} carry something rarer`}
+              .
+            </p>
+          ) : (
+            <p>
+              <code>{formatRegion(region)}</code> spans{' '}
+              {(region.end - region.start).toLocaleString('en-US')} bp. Forms,
+              variants and haplotype lanes are read over{' '}
+              {MAX_DETAIL_WINDOW_BP / 1000} kb or less,{' '}
+              {launches.length > 0
+                ? "so a window this wide opens as the graph's bubble tier alone."
+                : 'so narrow it to see them.'}
+            </p>
+          )}
+          {launches.length > 0 && (
+            <p>
+              <PangenomeLaunchLinks links={launches} />
+            </p>
+          )}
+          {reading && lanes.length > 0 && (
             <div className="table-scroll">
               <table>
                 <thead>
@@ -178,7 +215,7 @@ export default function PangenomeRegionForms({
                       </td>
                       <td>{lane.shares}</td>
                       <td>
-                        {((100 * lane.shares) / answer.haplotypes).toFixed(1)}%
+                        {((100 * lane.shares) / reading.haplotypes).toFixed(1)}%
                       </td>
                     </tr>
                   ))}

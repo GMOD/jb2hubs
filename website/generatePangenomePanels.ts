@@ -37,7 +37,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const OUT = path.join(__dirname, 'public/pangenome-hprc/panels.json')
 
 const source = HPRC_DATASET.svStatesUrl!
-const query = openSvStates(source)
+const { query } = openSvStates(source)
 // A lane with no gene track reads "no annotation", so where a form has a
 // member with one, that member stands for it.
 const annotated = annotatedHaplotypes(
