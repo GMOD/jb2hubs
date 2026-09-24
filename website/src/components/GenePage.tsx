@@ -463,7 +463,9 @@ function GeneOrderSection({
     { ...LIVE_QUERY, keepPreviousData: true },
   )
   const current =
-    data?.query.geneId === geneId && data.query.refTaxonId === refTaxId && !error
+    data?.query.geneId === geneId &&
+    data.query.refTaxonId === refTaxId &&
+    !error
       ? data
       : undefined
   const trimmed = useMemo(

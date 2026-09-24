@@ -79,7 +79,10 @@ export function replacementOf(summary: GeneSummary | undefined) {
 // An id NCBI does not know still gets a summary, `{ uid, error: "cannot get
 // document summary" }`, and the page built a gene card out of it: the typed
 // number as the symbol, and nothing else.
-export function checkedSummary(geneId: string, summary: GeneSummary | undefined) {
+export function checkedSummary(
+  geneId: string,
+  summary: GeneSummary | undefined,
+) {
   if (!summary?.name || summary.error) {
     throw new Error(
       `NCBI Gene has no record ${geneId}${summary?.error ? ` (${summary.error})` : ''}.`,

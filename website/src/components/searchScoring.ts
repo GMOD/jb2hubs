@@ -68,7 +68,9 @@ export function scoreEntry(entry: IndexEntry, rawTerms: string[]) {
       // A whole accession outranks one it is a prefix of: GCA_000001405.1 is
       // hg19, and as a prefix match it tied hg38's GCA_000001405.15, which then
       // won on recency.
-      accessionTokens.has(accession) ? 8 : scoreTerm(accession, accessionText) * 2,
+      accessionTokens.has(accession)
+        ? 8
+        : scoreTerm(accession, accessionText) * 2,
       scoreTerm(term, assemblyName),
     )
     score += best
