@@ -165,7 +165,7 @@ test('without a callset the primary launch is the graph configs own lanes', () =
 // The same builder, the other branch. `loci[0]` is the 2.24 Mb Vmn cluster, and
 // this launch used to open the allele inventory — an AlignmentsTrack over 379
 // rows — across the whole of it, which is past its fetch limit. It opens the
-// tier instead, and the dashboard says why.
+// tier instead.
 test('and over a span the fine lanes cannot draw, it is the tier', () => {
   const wide = mouseGraph.loci.find(l => detailWindow(l) === undefined)!
   const { spec } = parseLaunch(locusLaunchUrl(mouseGraph, wide)!)
@@ -219,7 +219,7 @@ test('geneHubUrl seeds the marker gene and reference taxon', () => {
   assert.ok(url)
   const { pathname, searchParams } = new URL(url, 'https://example.org')
   assert.equal(pathname, '/gene/')
-  // First pangene marker for MHC is HLA-A.
+  // MHC's first marker gene is HLA-A.
   assert.equal(searchParams.get('gene'), 'HLA-A')
   assert.equal(searchParams.get('ref'), String(HPRC_DATASET.reference.taxonId))
 })

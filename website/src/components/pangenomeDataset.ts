@@ -21,7 +21,7 @@ export interface PangenomeReference {
   assembly: string
   // A hosted JBrowse config that already defines `assembly` and its gene track.
   configUrl: string
-  // Display name for the reference (e.g. 'GRCh38'); also the MSA reference row.
+  // Display name for the reference (e.g. 'GRCh38').
   label: string
   // Reference gene track in `configUrl`, opened alongside the graph variants.
   geneTrackId: string
@@ -83,11 +83,11 @@ export interface PangenomePublishedFile {
   bytes: number
 }
 
-// The five projections every graph in this stack publishes, in the order the
-// page tables them. Shared rather than restated per dataset because the set
-// is identical by construction — `build_rgfa_tabix.sh`, `build_rgfa_alleles.sh`
-// and `build_bubble_tier.sh` (jbrowse-components) emit it for any rGFA, which
-// is the property that lets one component table any of the three.
+// The files a graph in this stack can publish, in the order the page tables
+// them: the graph, the five projections `build_rgfa_tabix.sh`,
+// `build_rgfa_alleles.sh` and `build_bubble_tier.sh` (jbrowse-components) emit
+// for any rGFA, and the callset. Shared rather than restated per dataset, which
+// is what lets one page table any of the three.
 const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.rgfa.gz', what: 'the graph itself' },
   { suffix: '.segs.bed.gz', what: 'one row per node, with its rank' },
