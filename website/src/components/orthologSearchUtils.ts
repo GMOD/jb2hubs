@@ -25,23 +25,84 @@ export interface Assembly {
   ucscDb?: string
 }
 
-export const COMMON_SPECIES = [
-  { label: 'Human', taxId: 9606 },
-  { label: 'Mouse', taxId: 10090 },
-  { label: 'Rat', taxId: 10116 },
-  { label: 'Zebrafish', taxId: 7955 },
-  { label: 'Chicken', taxId: 9031 },
-  { label: 'Dog', taxId: 9615 },
-  { label: 'Cow', taxId: 9913 },
-  { label: 'Pig', taxId: 9823 },
-  { label: 'Frog (X. tropicalis)', taxId: 8364 },
-  { label: 'Fruitfly', taxId: 7227 },
-  { label: 'C. elegans', taxId: 6239 },
+// The suggested reference species. `names` are the other things a reader
+// types for one, resolved here rather than by NCBI's taxonomy search, which
+// puts the answer second for some of them: "fruit fly" is Drosophila
+// gunungcola (103775) first and D. melanogaster second, both filed under that
+// common name, and "Saccharomyces cerevisiae" is the species taxon 4932, which
+// has no gene records (measured 2026-09-24). `replaces` is a taxon id to read
+// as this one.
+interface CommonSpecies {
+  label: string
+  taxId: number
+  names: string[]
+  replaces?: number[]
+}
+
+export const COMMON_SPECIES: CommonSpecies[] = [
+  { label: 'Human', taxId: 9606, names: ['Homo sapiens', 'H. sapiens'] },
+  {
+    label: 'Mouse',
+    taxId: 10090,
+    names: ['Mus musculus', 'M. musculus', 'house mouse'],
+  },
+  {
+    label: 'Rat',
+    taxId: 10116,
+    names: ['Rattus norvegicus', 'R. norvegicus', 'Norway rat', 'brown rat'],
+  },
+  { label: 'Zebrafish', taxId: 7955, names: ['Danio rerio', 'D. rerio'] },
+  { label: 'Chicken', taxId: 9031, names: ['Gallus gallus', 'G. gallus'] },
+  {
+    label: 'Dog',
+    taxId: 9615,
+    names: ['Canis lupus familiaris', 'Canis familiaris'],
+  },
+  { label: 'Cow', taxId: 9913, names: ['Bos taurus', 'cattle'] },
+  { label: 'Pig', taxId: 9823, names: ['Sus scrofa'] },
+  {
+    label: 'Frog (X. tropicalis)',
+    taxId: 8364,
+    names: ['Xenopus tropicalis', 'X. tropicalis', 'tropical clawed frog'],
+  },
+  {
+    label: 'Fruitfly',
+    taxId: 7227,
+    names: [
+      'Drosophila melanogaster',
+      'D. melanogaster',
+      'Drosophila',
+      'fruit fly',
+      'fly',
+    ],
+  },
+  {
+    label: 'C. elegans',
+    taxId: 6239,
+    names: ['Caenorhabditis elegans', 'worm'],
+  },
   // S288C, the reference strain — NOT the species taxon 4932, which NCBI files
   // no gene records under: every symbol lookup against it comes back empty, and
   // the ortholog and genome reports name 559292 too.
-  { label: 'Yeast (S. cerevisiae)', taxId: 559292 },
-  { label: 'Arabidopsis', taxId: 3702 },
+  {
+    label: 'Yeast (S. cerevisiae)',
+    taxId: 559292,
+    names: [
+      'Saccharomyces cerevisiae',
+      'Saccharomyces cerevisiae S288C',
+      'S. cerevisiae',
+      'yeast',
+      "baker's yeast",
+      "brewer's yeast",
+      'budding yeast',
+    ],
+    replaces: [4932],
+  },
+  {
+    label: 'Arabidopsis',
+    taxId: 3702,
+    names: ['Arabidopsis thaliana', 'A. thaliana', 'thale cress'],
+  },
 ]
 
 export const COMMON_TAX_RANK = new Map(
@@ -52,6 +113,29 @@ export const COMMON_TAX_RANK = new Map(
 export interface Example {
   symbol: string
   note: string
+}
+
+// Case, periods and spacing do not tell two names apart: "S. cerevisiae" and
+// "s cerevisiae" are one query.
+function normalName(text: string) {
+  return text.trim().toLowerCase().replaceAll('.', '').replace(/\s+/g, ' ')
+}
+
+const KNOWN_NAMES = new Map(
+  COMMON_SPECIES.flatMap(s =>
+    [s.label, ...s.names].map(n => [normalName(n), s.taxId] as const),
+  ),
+)
+
+// A reference resolved without a request: a taxon id, or a suggested species by
+// its label or any of its names. Undefined for anything NCBI has to answer.
+export function knownTaxon(input: string) {
+  const q = normalName(input)
+  if (/^\d+$/.test(q)) {
+    const id = Number(q)
+    return COMMON_SPECIES.find(s => s.replaces?.includes(id))?.taxId ?? id
+  }
+  return KNOWN_NAMES.get(q)
 }
 
 // Display text for a reference-species field whose value may be a taxon id (as

@@ -10,7 +10,7 @@ import {
   ncbiFetch,
   ncbiJson,
 } from './ncbiFetch.ts'
-import { COMMON_SPECIES } from './orthologSearchUtils.ts'
+import { knownTaxon } from './orthologSearchUtils.ts'
 
 import type { TaxonNode } from './multiSyntenyTaxonTree.ts'
 
@@ -234,29 +234,58 @@ export async function resolveGeneId(query: string, refTaxonId: number) {
   return json.esearchresult?.idlist?.[0]
 }
 
-// Resolve a free-text reference — a numeric taxon id, a common-species label, or
-// any scientific/common name — to an NCBI taxon id, so the reference organism is
-// not limited to a fixed dropdown. Common species resolve locally (no request);
-// anything else goes through NCBI taxonomy search.
+export interface TaxonCandidate {
+  uid: string
+  scientificname?: string
+  commonname?: string
+  rank?: string
+}
+
+const SPECIES_RANKS = new Set(['species', 'subspecies', 'strain'])
+
+// NCBI's taxonomy search does not rank an exact name first: "platypus" is the
+// beetle genus Platypus (122836) ahead of Ornithorhynchus anatinus (9258),
+// whose common name it is (measured 2026-09-24). So a candidate named exactly
+// what was typed wins, a species over any other rank, and the search's own
+// first hit stands only when nothing matches.
+export function pickTaxon(query: string, candidates: TaxonCandidate[]) {
+  const q = query.trim().toLowerCase()
+  const named = candidates.filter(
+    c =>
+      c.scientificname?.toLowerCase() === q ||
+      c.commonname?.toLowerCase() === q,
+  )
+  const species = named.find(c => SPECIES_RANKS.has(c.rank ?? ''))
+  return (species ?? named[0] ?? candidates[0])?.uid
+}
+
+// Resolve a free-text reference — a taxon id, a suggested species by any of its
+// names, or any other scientific or common name — to an NCBI taxon id, so the
+// reference organism is not limited to a fixed list. knownTaxon answers without
+// a request; anything else goes through NCBI's taxonomy search, and through
+// pickTaxon when that finds more than one.
 export async function resolveRefTaxon(input: string): Promise<number> {
+  const known = knownTaxon(input)
+  if (known !== undefined) {
+    return known
+  }
   const q = input.trim()
-  const known = COMMON_SPECIES.find(
-    s => s.label.toLowerCase() === q.toLowerCase(),
+  const search = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
+    `${EUTILS}/esearch.fcgi?db=taxonomy&term=${encodeURIComponent(q)}&retmode=json&retmax=20`,
   )
-  if (/^\d+$/.test(q)) {
-    return Number(q)
-  }
-  if (known) {
-    return known.taxId
-  }
-  const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
-    `${EUTILS}/esearch.fcgi?db=taxonomy&term=${encodeURIComponent(q)}&retmode=json&retmax=1`,
-  )
-  const id = json.esearchresult?.idlist?.[0]
+  const ids = search.esearchresult?.idlist ?? []
+  const id = ids.length > 1 ? pickTaxon(q, await taxonSummaries(ids)) : ids[0]
   if (!id) {
     throw new Error(`no NCBI taxon found for "${input}"`)
   }
   return Number(id)
+}
+
+async function taxonSummaries(ids: string[]) {
+  const json = await ncbiJson<{
+    result?: Record<string, Omit<TaxonCandidate, 'uid'>>
+  }>(`${EUTILS}/esummary.fcgi?db=taxonomy&id=${ids.join(',')}&retmode=json`)
+  return ids.map(uid => ({ uid, ...json.result?.[uid] }))
 }
 
 // One ortholog gene per species, with coordinates + strand, in a single Datasets

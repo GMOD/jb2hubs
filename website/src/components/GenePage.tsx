@@ -59,6 +59,7 @@ export default function GenePage() {
   const [refParam, setRefParam] = useUrlState('ref', String(HUMAN_TAXON))
   const [scopeParam, setScopeParam] = useUrlState('scope', DEFAULT_SCOPE.id)
   const [refError, setRefError] = useState<unknown>(undefined)
+  const [typedRef, setTypedRef] = useState<{ taxId: string; text: string }>()
   const [helpOpen, setHelpOpen] = useState(false)
 
   const gene = geneParam.trim()
@@ -92,6 +93,7 @@ export default function GenePage() {
   const refResult = orthologs.data?.results.find(
     r => r.assembly.taxonId === identity?.refTaxId,
   )
+  const refText = refBoxText(ref, typedRef, identity)
 
   function show(symbol: string, taxId: number) {
     setRefError(undefined)
@@ -103,11 +105,17 @@ export default function GenePage() {
     e.preventDefault()
     const fd = new FormData(e.currentTarget)
     const g = field(fd, 'gene')
-    const refText = field(fd, 'ref')
-    if (g && refText) {
+    const typed = field(fd, 'ref')
+    if (g && typed) {
       try {
-        const taxId = await resolveRefTaxon(refText)
+        const taxId =
+          typed === refText && /^\d+$/.test(ref)
+            ? Number(ref)
+            : await resolveRefTaxon(typed)
         show(g, taxId)
+        if (!/^\d+$/.test(typed)) {
+          setTypedRef({ taxId: String(taxId), text: typed })
+        }
         if (error && g === gene && String(taxId) === ref) {
           void retryIdentity()
         }
@@ -152,11 +160,11 @@ export default function GenePage() {
             </label>
             <input
               id="species-input"
-              key={refParam}
+              key={refText}
               name="ref"
               className="ui-select"
               list="gene-ref-species"
-              defaultValue={refLabel(refParam)}
+              defaultValue={refText}
               placeholder="Species name or taxid"
               title="Any species name or NCBI taxon id — common model organisms are suggested"
               required
@@ -223,7 +231,7 @@ export default function GenePage() {
       />
       {isLoading && (
         <p className="ui-hint">
-          Resolving {gene} in {refLabel(ref)}…
+          Resolving {gene} in {refText}…
         </p>
       )}
 
@@ -259,6 +267,26 @@ export default function GenePage() {
       )}
     </div>
   )
+}
+
+// What the species box shows for the reference: a suggested species' label,
+// the name it was typed as, or, for a taxon id that came in a link, the species
+// NCBI's gene record names. A bare taxon id only where no name is known.
+function refBoxText(
+  ref: string,
+  typed: { taxId: string; text: string } | undefined,
+  identity: GeneIdentity | undefined,
+) {
+  const label = refLabel(ref)
+  if (label !== ref) {
+    return label
+  }
+  if (typed?.taxId === ref) {
+    return typed.text
+  }
+  return identity?.species && String(identity.refTaxId) === ref
+    ? identity.species
+    : ref
 }
 
 function ExternalLink({

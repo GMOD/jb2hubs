@@ -5,7 +5,7 @@
 import { encodeGeneRef } from './geneSearch.ts'
 import { EUTILS, fetchOrthologReports, ncbiJson } from './ncbiFetch.ts'
 import { loadStore } from './orthologDb.ts'
-import { COMMON_SPECIES, buildOrthologResults } from './orthologSearchUtils.ts'
+import { buildOrthologResults, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveGeneId, resolveRefTaxon } from './orthologSet.ts'
 
 import type { Neighborhood } from './neighborhood.ts'
@@ -136,16 +136,13 @@ export async function fetchOrthologSet(geneId: string, scope: OrthologScope) {
 
 export type OrthologSet = Awaited<ReturnType<typeof fetchOrthologSet>>
 
-// A reference the page can resolve without a request — a taxon id, or one of
-// the suggested species — as the taxon id string; anything else as typed, for
-// the fetcher to look up. Keying the fetch on this rather than the raw text is
-// what makes `human`, `Human` and `9606` one fetch instead of three.
+// A reference the page can resolve without a request (knownTaxon) as the taxon
+// id string; anything else as typed, for the fetcher to look up. Keying the
+// fetch on this rather than the raw text is what makes `human`, `Homo sapiens`
+// and `9606` one fetch instead of three.
 export function localRef(ref: string) {
-  const q = ref.trim()
-  const known = COMMON_SPECIES.find(
-    s => s.label.toLowerCase() === q.toLowerCase(),
-  )
-  return /^\d+$/.test(q) ? q : known ? String(known.taxId) : q
+  const known = knownTaxon(ref)
+  return known === undefined ? ref.trim() : String(known)
 }
 
 export function choice(choices: number[], raw: string, fallback: number) {

@@ -67,9 +67,12 @@ test('identityFromSummary falls back to what was typed and the typed taxon', () 
   assert.deepEqual(id.aliases, [])
 })
 
-test('localRef resolves a known label or a taxid without a request', () => {
+test('localRef resolves a known label, name or taxid without a request', () => {
   assert.equal(localRef('human'), '9606')
+  assert.equal(localRef('Homo sapiens'), '9606')
+  assert.equal(localRef('fruit fly'), '7227')
   assert.equal(localRef(' 10090 '), '10090')
+  assert.equal(localRef('4932'), '559292')
   assert.equal(localRef('axolotl'), 'axolotl')
 })
 

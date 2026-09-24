@@ -5,7 +5,9 @@ import {
   buildRows,
   oneAssemblyPerSpecies,
   pickBySymbol,
+  pickTaxon,
   resolveGeneId,
+  resolveRefTaxon,
 } from './orthologSet.ts'
 
 import type { OrthologRow } from './orthologSet.ts'
@@ -273,4 +275,87 @@ test('a numeric query is already a GeneID and asks NCBI nothing', async () => {
   const { result, asked } = await resolveWith(() => json({}), '7273')
   assert.strictEqual(result, '7273')
   assert.strictEqual(asked.length, 0)
+})
+
+// What NCBI's taxonomy search answered on 2026-09-24, in its order.
+const PLATYPUS = [
+  { uid: '122836', scientificname: 'Platypus', rank: 'genus' },
+  {
+    uid: '9258',
+    scientificname: 'Ornithorhynchus anatinus',
+    commonname: 'platypus',
+    rank: 'species',
+  },
+]
+
+test('pickTaxon prefers an exact name at species rank over the first hit', () => {
+  assert.equal(pickTaxon('platypus', PLATYPUS), '9258')
+  assert.equal(pickTaxon('Ornithorhynchus anatinus', PLATYPUS), '9258')
+})
+
+test('pickTaxon keeps the first hit when no name matches', () => {
+  assert.equal(pickTaxon('platyp', PLATYPUS), '122836')
+  assert.equal(pickTaxon('x', []), undefined)
+})
+
+async function refTaxonWith(
+  input: string,
+  answer: (url: string) => Promise<Response> = () => json({}),
+) {
+  const asked: string[] = []
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', (url: string) => {
+    asked.push(url)
+    return answer(url)
+  })
+  try {
+    return { taxId: await resolveRefTaxon(input), asked }
+  } finally {
+    globalThis.fetch = original
+  }
+}
+
+// NCBI answers "fruit fly" with Drosophila gunungcola first, and both it and
+// D. melanogaster carry that common name, so no ranking of NCBI's answer can
+// pick the model organism. The alias table does, without asking.
+test('a suggested species resolves by any of its names without a request', async () => {
+  for (const [input, taxId] of [
+    ['fruit fly', 7227],
+    ['Drosophila melanogaster', 7227],
+    ['S. cerevisiae', 559292],
+    ['Saccharomyces cerevisiae', 559292],
+    ['homo  sapiens', 9606],
+  ] as const) {
+    const { taxId: got, asked } = await refTaxonWith(input)
+    assert.equal(got, taxId, input)
+    assert.equal(asked.length, 0, input)
+  }
+})
+
+// The species taxon has no gene records; the strain has them all.
+test('the yeast species taxon id reads as the reference strain', async () => {
+  assert.equal((await refTaxonWith('4932')).taxId, 559292)
+  assert.equal((await refTaxonWith('8296')).taxId, 8296)
+})
+
+test('an ambiguous name is settled by the summaries, not by search order', async () => {
+  const { taxId, asked } = await refTaxonWith('platypus', url =>
+    url.includes('esearch')
+      ? json({ esearchresult: { idlist: ['122836', '9258'] } })
+      : json({
+          result: Object.fromEntries(
+            PLATYPUS.map(({ uid, ...rest }) => [uid, rest]),
+          ),
+        }),
+  )
+  assert.equal(taxId, 9258)
+  assert.equal(asked.length, 2)
+})
+
+test('a name with one hit needs no summary', async () => {
+  const { taxId, asked } = await refTaxonWith('axolotl', () =>
+    json({ esearchresult: { idlist: ['8296'] } }),
+  )
+  assert.equal(taxId, 8296)
+  assert.equal(asked.length, 1)
 })
