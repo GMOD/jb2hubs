@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -19,7 +19,6 @@ import type {
   SyntenyAssembly,
   SyntenyCatalogData,
 } from '../lib/syntenyCatalog.ts'
-import type { AutocompleteOption } from './Autocomplete.tsx'
 
 interface Props {
   data: SyntenyCatalogData
@@ -44,7 +43,6 @@ export default function SyntenySelector({ data }: Props) {
   const [trackOverride, setTrackOverride] = useUrlState('track', '')
   const [showUcsc, setShowUcsc] = useState(true)
   const [showGenark, setShowGenark] = useState(true)
-  const [searchError, setSearchError] = useState<unknown>(undefined)
 
   const catalog = useMemo(() => createStaticCatalog(data), [data])
   const filter = useMemo(
@@ -122,44 +120,30 @@ export default function SyntenySelector({ data }: Props) {
     }
     return note
   }
-  const geneNote =
-    searchError === undefined
-      ? orthologNote()
-      : `Gene search failed (${String(searchError)}).`
-
   // Gene-name typeahead in the first assembly's taxon. Each option carries the
   // NCBI gene id so selection can resolve the ortholog in the second taxon —
   // so a suggestion mygene holds without one is dropped rather than offered as
-  // a choice that could not resolve. A failed search is kept as the error it
-  // was, so an outage does not read as "no gene by that name".
-  const queryGeneOptions = async (search: string) => {
-    let options: AutocompleteOption[] = []
-    if (taxon1 !== undefined) {
-      try {
-        const hits = await queryGenes(search, taxon1)
-        setSearchError(undefined)
-        options = hits.flatMap(h =>
+  // a choice that could not resolve. A failed search rejects, and the box shows
+  // it as the error it was rather than as "no gene by that name".
+  const queryGeneOptions = useCallback(
+    async (search: string) => {
+      const hits = taxon1 === undefined ? [] : await queryGenes(search, taxon1)
+      return {
+        options: hits.flatMap(h =>
           h.geneId
             ? [{ value: encodeGeneRef(h.geneId, h.symbol), label: h.symbol }]
             : [],
-        )
-      } catch (error) {
-        setSearchError(error)
+        ),
       }
-    }
-    return options
-  }
-
-  const resetGene = () => {
-    setGeneValue('')
-    setSearchError(undefined)
-  }
+    },
+    [taxon1],
+  )
 
   const handleSpecies1Change = (value: string) => {
     setSpecies1(value)
     setSpecies2('')
     setTrackOverride('')
-    resetGene()
+    setGeneValue('')
   }
 
   // The gene is searched in the first assembly's taxon, so a new partner keeps
@@ -173,7 +157,7 @@ export default function SyntenySelector({ data }: Props) {
     setSpecies1(species2)
     setSpecies2(species1)
     setTrackOverride('')
-    resetGene()
+    setGeneValue('')
   }
 
   // Unticking a source can strip the current selection out of the lists it was
@@ -337,7 +321,7 @@ export default function SyntenySelector({ data }: Props) {
             className="synteny-gene-note"
             aria-live="polite"
           >
-            {geneNote}
+            {orthologNote()}
           </div>
         </div>
       )}

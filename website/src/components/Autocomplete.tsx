@@ -8,13 +8,20 @@ export interface AutocompleteOption {
   label: string
 }
 
+// What an async backend answered for one search. A rejection is shown the same
+// way as an `error`, so an outage does not read as "no results".
+export interface QueryAnswer {
+  options: AutocompleteOption[]
+  error?: string
+}
+
 interface Props {
   // Static option list (fuzzy-ranked locally). Omit when using queryOptions.
   options?: AutocompleteOption[]
   // Database-like async backend: given the current search string, returns the
-  // ranked options to show. Lets a data adapter (e.g. the ortholog adapter)
-  // own all the querying, keeping this component presentational.
-  queryOptions?: (search: string) => Promise<AutocompleteOption[]>
+  // ranked options to show. Its identity is the backend's, so a caller keeps it
+  // stable (useCallback): a new function asks again.
+  queryOptions?: (search: string) => Promise<QueryAnswer>
   value: string
   onChange: (value: string) => void
   placeholder?: string
@@ -45,7 +52,7 @@ export default function Autocomplete({
   id,
 }: Props) {
   const [inputValue, setInputValue] = useState('')
-  const [asyncResults, setAsyncResults] = useState<AutocompleteOption[]>([])
+  const [answered, setAnswered] = useState<QueryAnswer & { search: string }>()
   // Remembers the picked option so async mode can label the input without the
   // selection necessarily being in the latest query results.
   const [pickedOption, setPickedOption] = useState<AutocompleteOption | null>(
@@ -58,11 +65,16 @@ export default function Autocomplete({
       ? pickedOption
       : options.find(o => o.value === value)
 
-  // Async (adapter) mode shows whatever the backend returned; static mode runs
-  // the shared ranked + capped fuzzy match locally, so a thousand-gene list
-  // ranks the best symbol first instead of dumping every hit in source order.
+  // Async (adapter) mode shows the backend's answer for exactly the text in the
+  // box, and nothing while that answer is on its way, so Enter cannot pick from
+  // the previous search's list. Static mode runs the shared ranked + capped
+  // fuzzy match locally, so a thousand-gene list ranks the best symbol first
+  // instead of dumping every hit in source order.
+  const answer =
+    queryOptions && answered?.search === inputValue ? answered : undefined
+  const searching = queryOptions !== undefined && answer === undefined
   const filteredOptions = queryOptions
-    ? asyncResults
+    ? (answer?.options ?? [])
     : rankOptions(inputValue, options)
 
   const close = () => {
@@ -90,20 +102,32 @@ export default function Autocomplete({
     combobox
   const showList = open && !disabled
 
-  // Debounced and race-safe: the cleanup drops a slow earlier response so it
-  // cannot land on top of a newer one. Runs whenever the list is open, so
-  // focusing the box asks the backend for its default (empty-query) list.
+  // Debounced, and a slow earlier answer, success or failure, never lands on a
+  // newer one. Runs whenever the list is open, so focusing the box asks the
+  // backend for its default (empty-query) list.
   useEffect(() => {
     if (!queryOptions || !showList) {
       return
     }
     let ignore = false
+    const search = inputValue
     const timer = setTimeout(() => {
-      void queryOptions(inputValue).then(res => {
-        if (!ignore) {
-          setAsyncResults(res)
-        }
-      })
+      void queryOptions(search).then(
+        res => {
+          if (!ignore) {
+            setAnswered({ search, ...res })
+          }
+        },
+        (e: unknown) => {
+          if (!ignore) {
+            setAnswered({
+              search,
+              options: [],
+              error: e instanceof Error ? e.message : String(e),
+            })
+          }
+        },
+      )
     }, 220)
     return () => {
       ignore = true
@@ -173,8 +197,15 @@ export default function Autocomplete({
           id={listboxId}
           className="autocomplete-list"
           role="listbox"
+          aria-busy={searching}
         >
-          {filteredOptions.length === 0 ? (
+          {searching ? (
+            <li className="autocomplete-no-results">Searching…</li>
+          ) : answer?.error ? (
+            <li className="autocomplete-no-results">
+              Search failed ({answer.error})
+            </li>
+          ) : filteredOptions.length === 0 ? (
             <li className="autocomplete-no-results">No results found</li>
           ) : (
             filteredOptions.map((option, index) => (
