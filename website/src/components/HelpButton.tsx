@@ -12,6 +12,7 @@ export default function HelpButton({
 }) {
   return (
     <button
+      type="button"
       className="ui-btn-help"
       title={label}
       aria-label={label}
