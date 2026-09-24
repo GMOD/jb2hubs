@@ -37,7 +37,6 @@ import {
 } from './proteinAlignments.ts'
 import {
   type Focus,
-  type ProteinRegion,
   fetchInterProRegions,
   fetchInterfaceRegions,
   focusFamily,
@@ -430,15 +429,13 @@ export default function ProteinBrowser() {
   )
 }
 
-// How long the canonical sequence is — the coordinate space the map's regions
-// are on. The canonical AlphaFold model is folded from exactly it; failing
-// that, the translation, which is the canonical for most genes.
-function canonicalLength(structure: GeneStructure, regions: ProteinRegion[]) {
+// The canonical sequence — the coordinate space the map's regions are on. The
+// canonical AlphaFold model is folded from exactly it; failing that, the
+// translation, which is the canonical for most genes.
+function canonicalSequence(structure: GeneStructure) {
   return (
-    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence
-      .length ??
-    structure.proteinSequence?.length ??
-    Math.max(0, ...regions.map(r => r.end))
+    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence ??
+    structure.proteinSequence
   )
 }
 
@@ -477,6 +474,7 @@ function GeneResults({
   linkFocus?: ExampleFocus
 }) {
   const { symbol, uniprotId } = structure
+  const canonical = canonicalSequence(structure)
   const panel = 'panel' in panelOutcome ? panelOutcome.panel : undefined
   const preset = example?.focus ?? linkFocus
 
@@ -657,7 +655,10 @@ function GeneResults({
           ) : null}
           {regions && (
             <ProteinMap
-              length={canonicalLength(structure, regions)}
+              length={
+                canonical?.length ?? Math.max(0, ...regions.map(r => r.end))
+              }
+              sequence={canonical}
               regions={regions}
               partners={partnersState}
               onLoadPartners={() => {

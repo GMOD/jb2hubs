@@ -4,6 +4,7 @@ import { test } from 'node:test'
 import {
   parseInterProRegions,
   parseInterfaceRegions,
+  parseResidue,
   regionContaining,
   residueRuns,
 } from './proteinFeatures.ts'
@@ -270,4 +271,64 @@ test('regionContaining: the narrowest domain holding the residue', () => {
   assert.strictEqual(regionContaining(regions, 248)?.accession, 'IPR011615')
   assert.strictEqual(regionContaining(regions, 340)?.accession, 'IPR010991')
   assert.strictEqual(regionContaining(regions, 10), undefined)
+})
+
+// The first 12 residues of HBB (P68871): Glu7 is the sickle position, E6 in a
+// numbering that skips the initiator methionine.
+const hbb = 'MVHLTPEEKSAV'
+
+test('parseResidue: a position, or a variant as papers write it', () => {
+  assert.deepStrictEqual(parseResidue('7', hbb, 147), {
+    position: 7,
+    label: 'E7',
+  })
+  assert.deepStrictEqual(parseResidue('E7', hbb, 147), {
+    position: 7,
+    label: 'E7',
+  })
+  assert.deepStrictEqual(parseResidue(' p.E7V ', hbb, 147), {
+    position: 7,
+    label: 'E7V',
+  })
+  assert.deepStrictEqual(parseResidue('p.(Glu7Val)', hbb, 147), {
+    position: 7,
+    label: 'E7V',
+  })
+  assert.deepStrictEqual(parseResidue('e7v', hbb, 147), {
+    position: 7,
+    label: 'E7V',
+  })
+  assert.deepStrictEqual(parseResidue('K9*', hbb, 147), {
+    position: 9,
+    label: 'K9*',
+  })
+})
+
+test('parseResidue: without a sequence the letter is taken on trust', () => {
+  assert.deepStrictEqual(parseResidue('R248Q', undefined, 393), {
+    position: 248,
+    label: 'R248Q',
+  })
+  assert.deepStrictEqual(parseResidue('248', undefined, 393), {
+    position: 248,
+  })
+})
+
+test('parseResidue: a wrong wild-type letter says what is there', () => {
+  const sickle = parseResidue('E6V', hbb, 147)
+  assert.ok('error' in sickle)
+  assert.match(sickle.error, /Residue 6 is P, not E\. Residue 7 is E/)
+  const wrong = parseResidue('R3', hbb, 147)
+  assert.ok('error' in wrong)
+  assert.strictEqual(wrong.error, 'Residue 3 is H, not R.')
+})
+
+test('parseResidue: unreadable or out-of-range input is an error, not nothing', () => {
+  for (const text of ['', 'p.', 'R248fs', 'Xyz12', '12B7', 'R-248']) {
+    assert.ok('error' in parseResidue(text, hbb, 147), text)
+  }
+  const past = parseResidue('148', hbb, 147)
+  assert.ok('error' in past)
+  assert.match(past.error, /runs 1–147/)
+  assert.ok('error' in parseResidue('0', hbb, 147))
 })

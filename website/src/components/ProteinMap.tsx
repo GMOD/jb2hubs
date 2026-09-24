@@ -3,6 +3,7 @@ import { useState } from 'react'
 import {
   type Focus,
   type ProteinRegion,
+  parseResidue,
   residueRuns,
   sameFocus,
 } from './proteinFeatures.ts'
@@ -74,6 +75,7 @@ export type PartnersState =
 
 export default function ProteinMap({
   length,
+  sequence,
   regions,
   partners,
   onLoadPartners,
@@ -82,6 +84,9 @@ export default function ProteinMap({
 }: {
   // residues in the canonical sequence
   length: number
+  // the canonical sequence itself, when it is known, which a typed variant's
+  // wild-type letter is checked against
+  sequence: string | undefined
   // InterPro domains, repeats and sites
   regions: ProteinRegion[]
   partners: PartnersState
@@ -90,6 +95,7 @@ export default function ProteinMap({
   onFocus: (focus: Focus | undefined) => void
 }) {
   const [residueText, setResidueText] = useState('')
+  const [residueError, setResidueError] = useState<string>()
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
   )
@@ -120,6 +126,7 @@ export default function ProteinMap({
     </button>
   )
 
+  const middle = Math.ceil(length / 2)
   const step = tickStep(length)
   const ticks = Array.from(
     { length: Math.floor(length / step) },
@@ -279,13 +286,12 @@ export default function ProteinMap({
           className="pm-residue-form"
           onSubmit={e => {
             e.preventDefault()
-            const position = Number(residueText)
-            if (
-              Number.isInteger(position) &&
-              position >= 1 &&
-              position <= length
-            ) {
-              onFocus({ kind: 'residue', position })
+            const parsed = parseResidue(residueText, sequence, length)
+            if ('error' in parsed) {
+              setResidueError(parsed.error)
+            } else {
+              setResidueError(undefined)
+              onFocus({ kind: 'residue', ...parsed })
             }
           }}
         >
@@ -293,11 +299,16 @@ export default function ProteinMap({
             Residue{' '}
             <input
               className="ui-input pm-residue-input"
-              inputMode="numeric"
-              placeholder={`1–${length}`}
+              placeholder={
+                sequence
+                  ? `1–${length} or ${sequence[middle - 1]}${middle}`
+                  : `1–${length}`
+              }
+              aria-invalid={!!residueError}
               value={residueText}
               onChange={e => {
                 setResidueText(e.target.value)
+                setResidueError(undefined)
               }}
             />
           </label>
@@ -308,6 +319,14 @@ export default function ProteinMap({
             Focus
           </button>
         </form>
+        {residueError && (
+          <span
+            className="ui-error"
+            role="alert"
+          >
+            {residueError}
+          </span>
+        )}
       </div>
     </div>
   )

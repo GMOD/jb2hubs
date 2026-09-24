@@ -336,6 +336,87 @@ export function focusLabel(focus: Focus) {
     : `${region.name} ${span}`
 }
 
+const THREE_LETTER: Record<string, string> = {
+  ALA: 'A',
+  ARG: 'R',
+  ASN: 'N',
+  ASP: 'D',
+  CYS: 'C',
+  GLN: 'Q',
+  GLU: 'E',
+  GLY: 'G',
+  HIS: 'H',
+  ILE: 'I',
+  LEU: 'L',
+  LYS: 'K',
+  MET: 'M',
+  PHE: 'F',
+  PRO: 'P',
+  SER: 'S',
+  THR: 'T',
+  TRP: 'W',
+  TYR: 'Y',
+  VAL: 'V',
+  SEC: 'U',
+  TER: '*',
+}
+
+const ONE_LETTER = /^[ACDEFGHIKLMNPQRSTVWYU*]$/
+
+function aminoAcid(code: string | undefined) {
+  if (!code) {
+    return undefined
+  }
+  const upper = code.toUpperCase()
+  return upper.length === 3
+    ? THREE_LETTER[upper]
+    : ONE_LETTER.test(upper)
+      ? upper
+      : undefined
+}
+
+// What the residue box reads: a position, or a variant the way a paper writes
+// one — `248`, `R248`, `V600E`, `p.R175H`, `p.Arg248Gln`. A wild-type letter
+// is checked against the sequence, because a mismatch is almost always another
+// numbering: the sickle mutation is E6V in the literature and Glu7 here.
+export function parseResidue(
+  text: string,
+  sequence: string | undefined,
+  length: number,
+): { position: number; label?: string } | { error: string } {
+  const compact = text.replaceAll(/[\s()]/g, '')
+  const m =
+    /^(?:p\.)?([A-Za-z]{3}|[A-Za-z])?(\d+)([A-Za-z]{3}|[A-Za-z*])?$/.exec(
+      compact,
+    )
+  const wildType = aminoAcid(m?.[1])
+  const variant = aminoAcid(m?.[3])
+  if (!m || (m[1] && !wildType) || (m[3] && !variant)) {
+    return {
+      error: compact
+        ? `${compact} is not a residue: type a position (248) or a variant (R248Q, p.Arg248Gln).`
+        : 'Type a position (248) or a variant (R248Q, p.Arg248Gln).',
+    }
+  }
+  const position = Number(m[2])
+  if (position < 1 || position > length) {
+    return {
+      error: `Residue ${position} is not on this protein, which runs 1–${length}.`,
+    }
+  }
+  const actual = sequence?.[position - 1]
+  if (wildType && actual && wildType !== actual) {
+    const next = sequence[position] === wildType
+    return {
+      error: `Residue ${position} is ${actual}, not ${wildType}.${next ? ` Residue ${position + 1} is ${wildType}, which a numbering without the initiator methionine calls ${position}.` : ''}`,
+    }
+  }
+  const letter = wildType ?? actual
+  return letter
+    ? { position, label: `${letter}${position}${variant ?? ''}` }
+    : { position }
+}
+
 export function sameFocus(a: Focus | undefined, b: Focus | undefined) {
   if (!a || !b || a.kind !== b.kind) {
     return a === b
