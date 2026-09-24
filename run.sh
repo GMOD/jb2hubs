@@ -388,10 +388,32 @@ elif [ "$DRY_RUN" = false ]; then
   # the website source + list.json (tracked under website/). If none of those
   # changed, the built site would be byte-identical, so skip the expensive
   # astro build + 4.7GB ship + CloudFront /* invalidation.
+  #
+  # "Changed" for the source means changed since the last deploy, not
+  # uncommitted: this checkout pulls code as commits, so a website change that
+  # arrives with no data change left `git status` clean and never deployed. The
+  # stamp is the tree hash of website/ as it stands on disk, taken through a
+  # throwaway index so untracked files count and ignored ones do not. It is the
+  # same hash once the "Updates" commit below records the pipeline's own
+  # website/src/*.json, and it is written only after a deploy succeeds.
+  website_tree() {
+    local index status
+    index=$(mktemp)
+    cp "$(git rev-parse --git-path index)" "$index" &&
+      GIT_INDEX_FILE=$index git add -A -- website/ &&
+      GIT_INDEX_FILE=$index git write-tree --prefix=website/
+    status=$?
+    rm -f "$index"
+    return $status
+  }
   GENARK_CHANGED=$(cat genark2jbrowse/.upload-changed 2>/dev/null || echo 1)
   UCSC_CHANGED=$(cat ucsc2jbrowse/.upload-changed 2>/dev/null || echo 1)
-  WEBSITE_DIRTY=0
-  [ -n "$(git status --porcelain website/)" ] && WEBSITE_DIRTY=1
+  WEBSITE_STAMP=".website-deployed-tree"
+  # A hash that cannot be taken reads as changed: one deploy too many, never one
+  # too few.
+  WEBSITE_TREE=$(website_tree) || WEBSITE_TREE=
+  WEBSITE_CHANGED=0
+  [ "$WEBSITE_TREE" != "$(cat "$WEBSITE_STAMP" 2>/dev/null)" ] && WEBSITE_CHANGED=1
 
   # Persist a "deploy pending" marker the moment data is uploaded to S3, and
   # only clear it after a successful website deploy. This guarantees that if a
@@ -399,14 +421,15 @@ elif [ "$DRY_RUN" = false ]; then
   # still deploys (instead of seeing "nothing changed" and leaving the site
   # permanently stale relative to S3).
   DEPLOY_STAMP=".deploy-pending"
-  if [ "$GENARK_CHANGED" = 1 ] || [ "$UCSC_CHANGED" = 1 ] || [ "$WEBSITE_DIRTY" = 1 ]; then
+  if [ "$GENARK_CHANGED" = 1 ] || [ "$UCSC_CHANGED" = 1 ] || [ "$WEBSITE_CHANGED" = 1 ]; then
     touch "$DEPLOY_STAMP"
   fi
 
   if [ -f "$DEPLOY_STAMP" ]; then
-    echo "Changes detected (genark=$GENARK_CHANGED ucsc=$UCSC_CHANGED website=$WEBSITE_DIRTY) or prior deploy incomplete; running website deploy..."
+    echo "Changes detected (genark=$GENARK_CHANGED ucsc=$UCSC_CHANGED website=$WEBSITE_CHANGED) or prior deploy incomplete; running website deploy..."
     pnpm --filter website2 run deploy
     rm -f "$DEPLOY_STAMP"
+    [ -n "$WEBSITE_TREE" ] && echo "$WEBSITE_TREE" >"$WEBSITE_STAMP"
     WEBSITE_DEPLOYED=yes
 
     # Staging serves the same data from the same bucket, so anything that
@@ -432,7 +455,7 @@ elif [ "$DRY_RUN" = false ]; then
   # One-line summary so it's easy to confirm from logs that incremental
   # detection is doing its job (e.g. a quiet run should read "all unchanged").
   describe() { [ "$1" = 1 ] && echo "changed" || echo "unchanged"; }
-  log "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_DIRTY") | website deployed: $WEBSITE_DEPLOYED | staging deployed: $STAGING_DEPLOYED"
+  log "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_CHANGED") | website deployed: $WEBSITE_DEPLOYED | staging deployed: $STAGING_DEPLOYED"
 
   # Scope the commit to pipeline-generated paths so stray edits in the working
   # tree don't ride along to origin. hubs/ was committed above.
