@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -453,13 +453,23 @@ function GeneOrderSection({
   // figure is of the gene the header names and the Lambda's cache key names
   // that gene too. Sending the symbol had the Lambda resolve it a second time,
   // where a Datasets failure once cached the wrong gene under the right name.
-  // keepPreviousData holds the current figure on screen until the next lands.
+  //
+  // keepPreviousData holds the figure on screen while an anchors or flank
+  // change rebuilds it; a figure of the previous gene is dropped instead,
+  // since it would sit under this gene's heading for the 1–20 s a build takes.
   const { data, error, isValidating, mutate } = useSWRImmutable(
     ['neighborhood', geneId, refTaxId, maxAnchors, flankBp],
     ([, g, r, a, f]) => getNeighborhood(g, r, { maxAnchors: a, flankBp: f }),
-    { ...LIVE_QUERY, keepPreviousData: true, revalidateOnFocus: false },
+    { ...LIVE_QUERY, keepPreviousData: true },
   )
-  const trimmed = data && !error ? trimNeighborhood(data) : undefined
+  const current =
+    data?.query.geneId === geneId && data.query.refTaxonId === refTaxId && !error
+      ? data
+      : undefined
+  const trimmed = useMemo(
+    () => (current ? trimNeighborhood(current) : undefined),
+    [current],
+  )
   const nb = trimmed?.nb
   const eligible = trimmed?.eligible ?? 0
 
