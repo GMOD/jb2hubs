@@ -162,10 +162,11 @@ export default function SyntenySelector({ data }: Props) {
     resetGene()
   }
 
+  // The gene is searched in the first assembly's taxon, so a new partner keeps
+  // it; the gene page links here with the gene and no partner.
   const handleSpecies2Change = (value: string) => {
     setSpecies2(value)
     setTrackOverride('')
-    resetGene()
   }
 
   const handleSwap = () => {
