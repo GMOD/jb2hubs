@@ -100,19 +100,17 @@ interface DatasetsGeneReport {
   }[]
 }
 
-interface PlacedAnnotation {
+export interface PlacedAnnotation {
   assemblyAccession: string
   refName: string
   strand: 1 | -1
 }
 
 // EVERY assembly NCBI places the gene on, in its order — not just the first.
-// NCBI annotates several assemblies per species and leads with the newest, which
-// is routinely one nothing here hosts yet: as of 2026-08-26 it places zebrafish
-// genes on GCF_052040795.1, which has no GenArk hub and no entry in the assembly
-// index, while GRCz11 beside it has both. Taking annotations[0] therefore
-// stranded a whole species. The caller walks these in order and keeps the first
-// it can open.
+// NCBI annotates several assemblies per species, and the exon table covers one
+// of them, which need not lead: zebrafish tp53 is placed on GRCz12ab and
+// GRCz12tu, 386 kb apart on their chromosome 5s, and its table is GRCz12ab's.
+// The caller keeps the placement the table is on.
 export function placedAnnotations(
   gene: NonNullable<DatasetsGeneReport['reports']>[number]['gene'],
 ): PlacedAnnotation[] {
@@ -206,7 +204,38 @@ export async function fetchUniProtAccession(
 // --- gene_table parsing ------------------------------------------------------
 // `efetch db=gene rettype=gene_table` lists, per transcript, an exon table whose
 // "Genomic Interval Coding" column gives each CDS exon's genomic coordinates
-// (1-based inclusive) — all the collapsed-intron view needs.
+// (1-based inclusive) — all the collapsed-intron view needs. Those coordinates
+// are on the one sequence the table's header names, and on no other assembly.
+
+// The sequence the table's coordinates are on, off its header. Human and mouse
+// write `Reference GRCh38.p14 Primary Assembly NC_000017.11  (minus strand)
+// from: …`; yeast, fly, worm and plant drop the words and start at the
+// accession.
+const TABLE_REFERENCE =
+  /^(?:.*?\s)?([A-Z]{1,4}_?\d+\.\d+)\s+(?:\([^)\n]*\)\s+)?from:/m
+
+export function geneTableReference(text: string) {
+  return TABLE_REFERENCE.exec(text)?.[1]
+}
+
+// The placement whose sequence the exon table is on. Any other assembly's
+// coordinates differ, so a session there would light every codon in the wrong
+// place without failing.
+export function tablePlacement(
+  symbol: string,
+  placements: PlacedAnnotation[],
+  reference: string | undefined,
+) {
+  const placement = placements.find(p => p.refName === reference)
+  if (!placement) {
+    throw new Error(
+      reference
+        ? `NCBI's exon table for "${symbol}" is on ${reference}, which none of its placements (${placements.map(p => p.refName).join(', ')}) name`
+        : `NCBI's gene_table for "${symbol}" names no genomic sequence, so there are no exons to place`,
+    )
+  }
+  return placement
+}
 
 // Parse "a-b" with start <= end; minus-strand rows list intervals high-to-low.
 function parseInterval(token: string) {
@@ -356,27 +385,17 @@ export async function fetchProteinSequence(accession: string) {
 
 // --- assembling a GeneStructure ----------------------------------------------
 
-// The first of the gene's placements whose genome we can actually open, with the
-// coordinates NCBI reported against THAT assembly — a fallback that kept the
-// locus from the newest annotation would be a locus in the wrong coordinate
-// space.
-async function firstHostedPlacement(
-  symbol: string,
-  placements: PlacedAnnotation[],
-) {
-  for (const placement of placements) {
-    const target = await resolveGenomeTarget(placement.assemblyAccession).catch(
-      () => undefined,
-    )
-    if (target) {
-      return { placement, target }
-    }
-  }
-  throw new Error(
-    `No hosted genome for "${symbol}": NCBI places it on ${placements
-      .map(p => p.assemblyAccession)
-      .join(', ')}, none of which this site serves`,
+// The genome the exon table's assembly opens on, or why there is none.
+async function hostedTarget(symbol: string, placement: PlacedAnnotation) {
+  const target = await resolveGenomeTarget(placement.assemblyAccession).catch(
+    () => undefined,
   )
+  if (!target) {
+    throw new Error(
+      `No hosted genome for "${symbol}": NCBI's exon table is on ${placement.assemblyAccession}, which this site does not serve`,
+    )
+  }
+  return target
 }
 
 export async function fetchGeneStructure(
@@ -384,10 +403,6 @@ export async function fetchGeneStructure(
   taxId: number,
 ): Promise<GeneStructure> {
   const gene = await resolveGene(symbol, taxId)
-  const { placement, target } = await firstHostedPlacement(
-    symbol,
-    gene.placements,
-  )
   const uniprotId =
     gene.uniprotId ?? (await fetchUniProtAccession(symbol, taxId))
   // Neither of these is an NCBI call, so they overlap the throttled ones below.
@@ -398,6 +413,12 @@ export async function fetchGeneStructure(
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
   )
+  const placement = tablePlacement(
+    gene.symbol,
+    gene.placements,
+    geneTableReference(text),
+  )
+  const target = await hostedTarget(gene.symbol, placement)
   const isoforms = orderIsoforms(
     parseGeneTableBlocks(text, placement.strand),
     tags,

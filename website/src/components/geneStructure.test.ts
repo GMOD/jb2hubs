@@ -4,9 +4,11 @@ import { test } from 'node:test'
 import {
   collapsedLoc,
   geneStats,
+  geneTableReference,
   orderIsoforms,
   parseGeneTableBlocks,
   sliceCds,
+  tablePlacement,
 } from './geneStructure.ts'
 
 // + strand: one UTR-only exon then three coding exons (last partial). Columns are
@@ -77,6 +79,92 @@ test('parseGeneTableBlocks: minus-strand high-to-low intervals normalize', () =>
     ],
   )
   assert.ok(tx.cds.every(c => c.end > c.start))
+})
+
+// Zebrafish tp53 as NCBI served it on 2026-09-24: placed on GRCz12ab and
+// GRCz12tu, with the exon table on GRCz12ab alone. GRCz12tu has the gene 386 kb
+// further left, so its coordinates cannot stand in.
+const zebrafishTable = [
+  'tp53 tumor protein p53[Danio rerio]',
+  'Gene ID: 30590, updated on 23-Sep-2026',
+  '',
+  '',
+  'Reference GRCz12ab Primary Assembly NC_141025.1  from: 25128576 to: 25140154',
+  'mRNA transcript variant 1 NM_001271820.1, 11 exons,  total annotated spliced exon length: 2219',
+  '',
+  'Exon table for  mRNA  NM_001271820.1 and protein NP_001258749.1',
+  'Genomic Interval Exon\t\tGenomic Interval Coding\t\tExon Length',
+  '----',
+  '25128576-25128744\t\t25128700-25128744\t\t169',
+].join('\n')
+const zebrafishPlacements = [
+  {
+    assemblyAccession: 'GCF_049306965.2',
+    refName: 'NC_133180.1',
+    strand: 1 as const,
+  },
+  {
+    assemblyAccession: 'GCF_052040795.1',
+    refName: 'NC_141025.1',
+    strand: 1 as const,
+  },
+]
+
+test('geneTableReference: the sequence the header names, in every species layout', () => {
+  assert.equal(geneTableReference(zebrafishTable), 'NC_141025.1')
+  assert.equal(
+    geneTableReference(
+      'Reference GRCh38.p14 Primary Assembly NC_000017.11  (minus strand) from: 7687490 to: 7668421',
+    ),
+    'NC_000017.11',
+  )
+  assert.equal(
+    geneTableReference(
+      'Reference GRCm39 C57BL/6J NC_000077.7  from: 69471174 to: 69482699',
+    ),
+    'NC_000077.7',
+  )
+  assert.equal(
+    geneTableReference(
+      'NC_001136.10  from: ( &lt; ) 808324 to:  ( &gt; ) 810381',
+    ),
+    'NC_001136.10',
+  )
+  assert.equal(
+    geneTableReference('NT_033777.3  (minus strand) from: 6999228 to: 6896253'),
+    'NT_033777.3',
+  )
+  assert.equal(
+    geneTableReference(
+      'There is no table for this gene because it has no annotated transcribed products.',
+    ),
+    undefined,
+  )
+})
+
+test('tablePlacement: the placement the exon table is on, wherever it comes in the list', () => {
+  const placement = tablePlacement(
+    'tp53',
+    zebrafishPlacements,
+    geneTableReference(zebrafishTable),
+  )
+  assert.equal(placement.assemblyAccession, 'GCF_052040795.1')
+})
+
+test('tablePlacement: refuses a table on a sequence no placement names', () => {
+  assert.throws(
+    () =>
+      tablePlacement(
+        'tp53',
+        zebrafishPlacements.slice(0, 1),
+        geneTableReference(zebrafishTable),
+      ),
+    /NC_141025\.1.*NC_133180\.1/,
+  )
+  assert.throws(
+    () => tablePlacement('MT-CO1', zebrafishPlacements, undefined),
+    /no genomic sequence/,
+  )
 })
 
 const base = { refName: 'NC_000017.11', strand: 1 as const, geneName: 'PAX6' }
