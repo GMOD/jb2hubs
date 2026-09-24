@@ -269,6 +269,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
         <span className="msv-modes">
           <button
             className={mode === 'bp' ? 'active' : ''}
+            aria-pressed={mode === 'bp'}
             onClick={() => {
               setMode('bp')
             }}
@@ -278,6 +279,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           </button>
           <button
             className={mode === 'ordinal' ? 'active' : ''}
+            aria-pressed={mode === 'ordinal'}
             onClick={() => {
               setMode('ordinal')
             }}
@@ -348,7 +350,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
         <svg
           width={layout.width}
           height={layout.height}
-          role="img"
+          role="group"
           aria-label={`${neighborhood.query.symbol} and its neighbors across ${layout.rows.length} species, in taxonomy order`}
         >
           <g className="msv-bands">
