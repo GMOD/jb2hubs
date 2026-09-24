@@ -383,5 +383,5 @@ export function buildSessionUrl({
       : {}),
   }
   const url = `${JBROWSE_BASE}/#config=${encodeURIComponent(target.configUrl)}&session=encoded-${toUrlSafeB64(JSON.stringify(session))}`
-  return { session, url }
+  return { session, url, loc: lgv.init.loc }
 }

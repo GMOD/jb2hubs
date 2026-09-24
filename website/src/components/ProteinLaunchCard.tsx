@@ -322,6 +322,7 @@ export default function ProteinLaunchCard({
     focusExact,
     session,
     url,
+    loc,
   } = launch
   const { transcript, assemblyAccession } = launched
   const { codingBp } = geneStats(transcript)
@@ -653,10 +654,9 @@ export default function ProteinLaunchCard({
           onClose={() => {
             setDetailsOpen(false)
           }}
-          transcript={transcript}
+          geneName={transcript.geneName}
           session={session}
-          collapse={collapse}
-          flip={flip}
+          loc={loc}
           model={model}
         />
       )}

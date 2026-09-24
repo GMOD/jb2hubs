@@ -98,12 +98,12 @@ test('buildSessionUrl: variant tracks can be left out', () => {
 // the connectedFeature must BOTH carry the config's own name for the sequence.
 // One of the two left on NCBI's accession is the silent-no-highlight failure.
 test('buildSessionUrl: renames the sequence everywhere the session names it', () => {
-  const views = viewsOf(
-    buildSessionUrl({ structure, primary: alphafold }).session,
-  )
+  const { session, loc } = buildSessionUrl({ structure, primary: alphafold })
+  const views = viewsOf(session)
   const lgv = views[0]!
   const protein = views.find(v => v.type === 'ProteinView')!
   assert.equal(lgv.init?.loc, 'chr11:61-240 chr11:961-1120')
+  assert.equal(loc, lgv.init?.loc)
   assert.equal(protein.structures?.[0]?.feature?.refName, 'chr11')
 })
 

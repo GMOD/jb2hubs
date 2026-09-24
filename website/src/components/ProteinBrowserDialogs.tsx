@@ -3,10 +3,8 @@ import { useState } from 'react'
 import { fetchProteinStl } from '../lib/proteinStl.ts'
 import { errorText } from './ErrorMessage.tsx'
 import Modal from './Modal.tsx'
-import { collapsedLoc } from './geneStructure.ts'
 import { MAX_ALIGN_ROWS, MAX_PANEL_ROWS } from './proteinMsa.ts'
 
-import type { Transcript } from './geneStructure.ts'
 import type { AlphaFoldModel } from './structureSources.ts'
 import type { ReactNode } from 'react'
 
@@ -49,23 +47,21 @@ function triggerDownload(bytes: Uint8Array<ArrayBuffer>, filename: string) {
 
 export function SessionDetailsDialog({
   onClose,
-  transcript,
+  geneName,
   session,
-  collapse,
-  flip,
+  loc,
   model,
 }: {
   onClose: () => void
-  transcript: Transcript
+  geneName: string
   session: object
-  collapse: boolean
-  flip: boolean
+  // the genome view's locstring, as the session names it
+  loc: string
   model: AlphaFoldModel | undefined
 }) {
   const { copy, message } = useCopy()
   const [stlBusy, setStlBusy] = useState(false)
   const [stlError, setStlError] = useState<Error>()
-  const loc = collapsedLoc(transcript, { collapse, flip })
   const sessionJson = JSON.stringify(session, null, 2)
 
   function downloadStl({ pdbUrl, entity }: AlphaFoldModel) {
@@ -73,7 +69,7 @@ export function SessionDetailsDialog({
     setStlError(undefined)
     fetchProteinStl(pdbUrl)
       .then(bytes => {
-        triggerDownload(bytes, `${transcript.geneName}-${entity}.stl`)
+        triggerDownload(bytes, `${geneName}-${entity}.stl`)
       })
       .catch((e: unknown) => {
         setStlError(e instanceof Error ? e : new Error(String(e)))
@@ -88,7 +84,7 @@ export function SessionDetailsDialog({
       title="Session details"
       onClose={onClose}
     >
-      <p>The locstring that collapses the introns:</p>
+      <p>The locstring the genome view opens on:</p>
       <pre className="msv-code">{loc}</pre>
 
       <div className="msv-dialog-actions">
@@ -112,12 +108,12 @@ export function SessionDetailsDialog({
           <button
             className="ui-btn-secondary"
             disabled={stlBusy}
-            title="A solid tube swept along the protein backbone, ready to slice"
+            title={`A solid tube swept along the backbone of the AlphaFold model ${model.entity}, whichever structure the session opens, ready to slice`}
             onClick={() => {
               downloadStl(model)
             }}
           >
-            {stlBusy ? 'Preparing STL…' : '3D print (STL)'}
+            {stlBusy ? 'Preparing STL…' : `3D print ${model.entity} (STL)`}
           </button>
         )}
       </div>
