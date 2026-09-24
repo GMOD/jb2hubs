@@ -5,6 +5,7 @@ import {
   checkedSummary,
   choice,
   ensemblSearchUrl,
+  fetchReferenceResult,
   identityFromSummary,
   localRef,
   replacementOf,
@@ -196,4 +197,56 @@ test('a replaced GeneID resolves to its replacement', async () => {
   )
   assert.equal(id.geneId, '5625')
   assert.equal(id.symbol, 'PRODH')
+})
+
+// A table scoped to fish has no human row, and the Synteny launch lost the
+// genome it opens on with it. The reference row is asked for on its own,
+// scoped to the gene's own taxon, and names the hosted genome.
+test('the reference row is fetched scoped to its own taxon', async () => {
+  const asked: string[] = []
+  const original = globalThis.fetch
+  const json = (body: unknown) =>
+    Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
+  mock.method(globalThis, 'fetch', (url: string) => {
+    asked.push(url)
+    return url.endsWith('/ortholog_index.json')
+      ? json({
+          schema: 'ortholog-index/2',
+          accessions: ['GCF_000001405.40'],
+          ucscDb: { 'GCF_000001405.40': 'hg38' },
+        })
+      : json({
+          reports: [
+            {
+              gene: {
+                gene_id: '7157',
+                symbol: 'TP53',
+                tax_id: 9606,
+                taxname: 'Homo sapiens',
+                annotations: [
+                  {
+                    assembly_accession: 'GCF_000001405.40',
+                    genomic_locations: [
+                      {
+                        genomic_accession_version: 'NC_000017.11',
+                        sequence_name: '17',
+                        genomic_range: { begin: '7668421', end: '7687490' },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          ],
+        })
+  })
+  try {
+    const row = await fetchReferenceResult('7157', 9606)
+    assert.equal(row?.assembly.ucscDb, 'hg38')
+    const scoped =
+      '/gene/id/7157/orthologs?returned_content=COMPLETE&taxon_filter=9606'
+    assert.ok(asked.some(u => u.endsWith(scoped)))
+  } finally {
+    globalThis.fetch = original
+  }
 })

@@ -20,6 +20,7 @@ import {
   choice,
   ensemblSearchUrl,
   fetchOrthologSet,
+  fetchReferenceResult,
   localRef,
   resolveGeneIdentity,
   syntenyLaunchUrl,
@@ -91,11 +92,21 @@ export default function GenePage() {
 
   const orthologs = useSWRImmutable(
     identity ? ['orthologs', identity.geneId, scope.id] : null,
-    ([, geneId, scopeId]) => fetchOrthologSet(geneId, scopeById(scopeId)),
+    ([, geneId, scopeId]) => fetchOrthologSet(geneId, scopeById(scopeId).taxa),
     LIVE_QUERY,
   )
   const refResult = orthologs.data?.results.find(
     r => r.assembly.taxonId === identity?.refTaxId,
+  )
+  // A clade scope that leaves out the reference species leaves its row out of
+  // the table too, and with it the genome the Synteny launch opens on, so that
+  // is asked for on its own.
+  const { data: outOfScopeRef } = useSWRImmutable(
+    identity && orthologs.data && !refResult && scope.taxa.length > 0
+      ? ['reference-row', identity.geneId, identity.refTaxId]
+      : null,
+    ([, geneId, refTaxId]) => fetchReferenceResult(geneId, refTaxId),
+    LIVE_QUERY,
   )
   const refText = refBoxText(ref, typedRef, identity)
 
@@ -276,7 +287,7 @@ export default function GenePage() {
           )}
           <LaunchCards
             identity={identity}
-            refResult={refResult}
+            refResult={refResult ?? outOfScopeRef}
           />
         </>
       )}

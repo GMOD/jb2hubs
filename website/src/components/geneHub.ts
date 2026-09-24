@@ -9,7 +9,6 @@ import { buildOrthologResults, knownTaxon } from './orthologSearchUtils.ts'
 import { resolveGeneId, resolveRefTaxon } from './orthologSet.ts'
 
 import type { Neighborhood } from './neighborhood.ts'
-import type { OrthologScope } from './orthologClades.ts'
 import type { NcbiOrthologResponse } from './orthologSearchUtils.ts'
 
 // Curated human example chips: two with vertebrate gene-order rearrangements
@@ -119,13 +118,14 @@ export async function resolveGeneIdentity(gene: string, ref: string) {
   )
 }
 
-// The ortholog rows for one resolved gene, restricted to the assemblies we
-// host. The assembly index is awaited alongside NCBI, so a query submitted
-// before it has landed simply waits.
-export async function fetchOrthologSet(geneId: string, scope: OrthologScope) {
+// The ortholog rows for one resolved gene within the clades `taxa` names (every
+// species when empty), restricted to the assemblies we host. The assembly index
+// is awaited alongside NCBI, so a query submitted before it has landed simply
+// waits.
+export async function fetchOrthologSet(geneId: string, taxa: number[]) {
   const [store, res] = await Promise.all([
     loadStore(),
-    fetchOrthologReports<NcbiOrthologResponse>(geneId, scope.taxa),
+    fetchOrthologReports<NcbiOrthologResponse>(geneId, taxa),
   ])
   const reports = res.reports ?? []
   return {
@@ -135,6 +135,14 @@ export async function fetchOrthologSet(geneId: string, scope: OrthologScope) {
 }
 
 export type OrthologSet = Awaited<ReturnType<typeof fetchOrthologSet>>
+
+// The reference gene's own row, for when the table's clade scope leaves its
+// species out: NCBI's ortholog set of a gene scoped to the gene's own taxon is
+// the gene alone, which names the genome a launch opens on.
+export async function fetchReferenceResult(geneId: string, refTaxId: number) {
+  const { results } = await fetchOrthologSet(geneId, [refTaxId])
+  return results.find(r => r.geneId === geneId)
+}
 
 // A reference the page can resolve without a request (knownTaxon) as the taxon
 // id string; anything else as typed, for the fetcher to look up. Keying the
