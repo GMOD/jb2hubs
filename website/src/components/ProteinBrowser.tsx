@@ -28,6 +28,7 @@ import { type GeneStructure, fetchGeneStructure } from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
 import { COMMON_SPECIES, geneUrl } from './orthologSearchUtils.ts'
 import {
+  ALIGN_SOURCES,
   type AlignSource,
   latestJob,
   loadBuilt,
@@ -83,6 +84,36 @@ function usable(entry: CachedExample | undefined) {
   return entry && (entry.alignment || canAlign(entry.panel)) ? entry : undefined
 }
 
+// What the reader set on the card and the alignment beyond the focus, so a
+// copied link reopens the same launch: `isoform=NM_000546.6`,
+// `structure=alphafold` (or `none`, or a PDB id), `align=hundredWay`,
+// `superpose=P02340,P79734`. Each is checked where it is used, and one that is
+// no longer on offer is ignored.
+interface LaunchPicks {
+  isoform?: string
+  structure?: string
+  align?: AlignSource
+  superpose: string[]
+}
+
+type LaunchParam = 'isoform' | 'structure' | 'align' | 'superpose'
+
+const TOKEN = /^[\w.-]+$/
+
+function picksFromParams(p: URLSearchParams): LaunchPicks {
+  const token = (name: LaunchParam) => {
+    const value = p.get(name)
+    return value && TOKEN.test(value) ? value : undefined
+  }
+  const align = p.get('align')
+  return {
+    isoform: token('isoform'),
+    structure: token('structure'),
+    align: ALIGN_SOURCES.find(s => s === align),
+    superpose: (p.get('superpose') ?? '').split(',').filter(a => TOKEN.test(a)),
+  }
+}
+
 // client:only island, so window is available for the shareable link.
 function paramsFromUrl() {
   const p = new URLSearchParams(window.location.search)
@@ -92,11 +123,13 @@ function paramsFromUrl() {
     gene: p.get('gene')?.trim() ?? '',
     ref: known ? ref : 9606,
     focus: focusFromParams(p),
+    picks: picksFromParams(p),
   }
 }
 
-// The same shape written onto the page, so what is on screen stays a link:
-// the gene, the species, and what the session opens on.
+// The same shape written onto the page, so what is on screen stays a link: a
+// submission starts it over with the gene, the species and the chip's focus,
+// and every later pick edits it in place.
 function syncProteinUrl(
   symbol: string,
   taxId: number,
@@ -105,6 +138,22 @@ function syncProteinUrl(
   const p = new URLSearchParams({ gene: symbol, ref: String(taxId) })
   focusToParams(focus, p)
   window.history.replaceState(null, '', `?${p}`)
+}
+
+function editProteinUrl(edit: (p: URLSearchParams) => void) {
+  const p = new URLSearchParams(window.location.search)
+  edit(p)
+  window.history.replaceState(null, '', `?${p}`)
+}
+
+function setLaunchParam(name: LaunchParam, value: string | undefined) {
+  editProteinUrl(p => {
+    if (value) {
+      p.set(name, value)
+    } else {
+      p.delete(name)
+    }
+  })
 }
 
 function speciesLabel(taxId: number) {
@@ -417,6 +466,7 @@ export default function ProteinBrowser() {
               : undefined
           }
           linkFocus={submission === 0 ? arrival.focus : undefined}
+          linkPicks={submission === 0 ? arrival.picks : undefined}
           onProgress={message => {
             setProgress({ key: queryKey(query.gene, query.ref), message })
           }}
@@ -470,6 +520,7 @@ function GeneResults({
   onProgress,
   example,
   linkFocus,
+  linkPicks,
 }: Resolved & {
   taxId: number
   status: string
@@ -477,6 +528,7 @@ function GeneResults({
   example?: ProteinExample
   // what the link the reader arrived by named, when it was not a chip's
   linkFocus?: ExampleFocus
+  linkPicks?: LaunchPicks
 }) {
   const { symbol, uniprotId } = structure
   const canonical = canonicalSequence(structure)
@@ -527,7 +579,9 @@ function GeneResults({
       : (focusChoice ?? focusFromPreset(preset, regions, partners))
   const setFocus = (next: Focus | undefined) => {
     setFocusChoice(next ?? null)
-    syncProteinUrl(symbol, taxId, presetOf(next))
+    editProteinUrl(p => {
+      focusToParams(presetOf(next), p)
+    })
   }
   const family = focusFamily(focus, regions ?? [])
 
@@ -546,7 +600,7 @@ function GeneResults({
     ...(panel ? ['live' as const] : []),
     'phmmer',
   ]
-  const [sourceChoice, setSourceChoice] = useState<AlignSource>()
+  const [sourceChoice, setSourceChoice] = useState(linkPicks?.align)
   const source =
     sourceChoice && sources.includes(sourceChoice) ? sourceChoice : sources[0]!
   // The live alignment is the only one worth gating behind a click — it costs an
@@ -560,7 +614,7 @@ function GeneResults({
     (focus?.kind === 'residue' || (focusChoice === undefined && !!preset?.pfam))
   const wantAlignment = !familyPending && (source !== 'live' || wantLive)
   // Swiss-Prot accessions of the ortholog rows marked for superposition.
-  const [superposed, setSuperposed] = useState<string[]>([])
+  const [superposed, setSuperposed] = useState(linkPicks?.superpose ?? [])
   // Each alignment fetch abandons the EBI job before it, and unmounting — this
   // component is remounted per submission — abandons the last. The one effect
   // here, because a job at another server is exactly the external system an
@@ -613,11 +667,11 @@ function GeneResults({
   )
 
   const toggleSuperpose = (uniprot: string) => {
-    setSuperposed(
-      superposed.includes(uniprot)
-        ? superposed.filter(u => u !== uniprot)
-        : [...superposed, uniprot],
-    )
+    const next = superposed.includes(uniprot)
+      ? superposed.filter(u => u !== uniprot)
+      : [...superposed, uniprot]
+    setSuperposed(next)
+    setLaunchParam('superpose', next.join(','))
   }
 
   return (
@@ -642,6 +696,8 @@ function GeneResults({
           setFocus(undefined)
         }}
         story={example?.story}
+        picks={linkPicks}
+        onPick={setLaunchParam}
       />
 
       {uniprotId && (
@@ -720,6 +776,7 @@ function GeneResults({
         sources={sources}
         onSource={s => {
           setSourceChoice(s)
+          setLaunchParam('align', s)
         }}
         panelRows={panel ? alignedRows(panel).length : 0}
         precomputed={!!precomputed}

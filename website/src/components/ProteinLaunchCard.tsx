@@ -90,6 +90,8 @@ export default function ProteinLaunchCard({
   focus,
   onClearFocus,
   story,
+  picks,
+  onPick,
 }: {
   structure: GeneStructure
   alignment: LoadedAlignment | undefined
@@ -107,16 +109,22 @@ export default function ProteinLaunchCard({
   onClearFocus: () => void
   // a chip's one sentence on what there is to see
   story?: string
+  // the isoform and structure the link the reader arrived by named
+  picks?: { isoform?: string; structure?: string }
+  // writes a pick onto the page url; undefined takes it off
+  onPick: (name: 'isoform' | 'structure', value: string | undefined) => void
 }) {
   const { uniprotId, isoforms } = structure
   const [collapse, setCollapse] = useState(true)
   const [flip, setFlip] = useState(structure.transcript.strand === -1)
   const [variants, setVariants] = useState(true)
   const [quiet, setQuiet] = useState(true)
-  const [isoformName, setIsoformName] = useState(structure.transcript.name)
+  const [isoformName, setIsoformName] = useState(
+    picks?.isoform ?? structure.transcript.name,
+  )
   // undefined is "whatever is best": the AlphaFold model, else the
   // best-covering experimental entry once those have loaded
-  const [choice, setChoice] = useState<string>()
+  const [choice, setChoice] = useState(picks?.structure)
   const [detailsOpen, setDetailsOpen] = useState(false)
 
   const isoform =
@@ -135,7 +143,7 @@ export default function ProteinLaunchCard({
     ([, protein]) => fetchProteinSequence(protein),
     LIVE_QUERY,
   )
-  const { data: experimental } = useSWRImmutable(
+  const { data: experimental, isLoading: listing } = useSWRImmutable(
     uniprotId ? (['experimental-structures', uniprotId] as const) : null,
     ([, id]) => fetchExperimentalStructures(id),
     LIVE_QUERY,
@@ -194,7 +202,16 @@ export default function ProteinLaunchCard({
           ? { pdbId: chosen }
           : undefined
     const range = focus ? focusRange(focus) : undefined
-    return { launched, model, shown, complexIds, chosen, primary, range }
+    return {
+      launched,
+      model,
+      shown,
+      complexIds,
+      chosen,
+      primary,
+      range,
+      offered,
+    }
   }, [
     structure,
     isoform,
@@ -205,7 +222,18 @@ export default function ProteinLaunchCard({
     experimental,
     focus,
   ])
-  const { launched, model, shown, complexIds, chosen, primary, range } = pick
+  const {
+    launched,
+    model,
+    shown,
+    complexIds,
+    chosen,
+    primary,
+    range,
+    offered,
+  } = pick
+  // a linked PDB entry is not on offer until the entries have loaded
+  const structurePending = !!choice && !offered && listing
 
   // A PDB entry is lit by author numbering, which SIFTS maps the UniProt range
   // onto per chain: the same numbers for most entries, one behind for a chain
@@ -379,6 +407,12 @@ export default function ProteinLaunchCard({
                 value={isoform.transcript.name}
                 onChange={e => {
                   setIsoformName(e.target.value)
+                  onPick(
+                    'isoform',
+                    e.target.value === structure.transcript.name
+                      ? undefined
+                      : e.target.value,
+                  )
                 }}
               >
                 {isoforms.map(iso => (
@@ -402,6 +436,7 @@ export default function ProteinLaunchCard({
               value={chosen}
               onChange={e => {
                 setChoice(e.target.value)
+                onPick('structure', e.target.value)
               }}
             >
               {model && (
@@ -570,13 +605,15 @@ export default function ProteinLaunchCard({
       </div>
 
       <div className="msv-actions">
-        {translating || numbering || aligning ? (
+        {translating || structurePending || numbering || aligning ? (
           <span className="msv-open msv-open-disabled">
             {translating
               ? 'Resolving isoform…'
-              : numbering
-                ? 'Resolving numbering…'
-                : 'Loading alignment…'}
+              : structurePending
+                ? 'Resolving structure…'
+                : numbering
+                  ? 'Resolving numbering…'
+                  : 'Loading alignment…'}
           </span>
         ) : (
           <a

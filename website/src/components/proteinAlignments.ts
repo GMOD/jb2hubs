@@ -29,7 +29,14 @@ import type { Focus, ProteinRegion } from './proteinFeatures.ts'
 import type { ProteinAlignment, ProteinPanel } from './proteinMsa.ts'
 import type { MsaHighlight, MsaSource } from './proteinSession.ts'
 
-export type AlignSource = 'pfam' | 'live' | 'hundredWay' | 'uniref' | 'phmmer'
+export const ALIGN_SOURCES = [
+  'pfam',
+  'live',
+  'hundredWay',
+  'uniref',
+  'phmmer',
+] as const
+export type AlignSource = (typeof ALIGN_SOURCES)[number]
 
 export interface LoadedAlignment {
   // what the launched session carries

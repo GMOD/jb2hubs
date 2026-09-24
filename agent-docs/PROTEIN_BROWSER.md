@@ -299,6 +299,13 @@ and BRAF are new: HBB was dropped from the cartoon-chosen list because its
 cartoon is one flat bar, and the map is what makes it worth a chip again — the
 globin seed and the α/β interface, which Glu7 is not in.
 
+The rest of what the reader sets rides in the page url beside the focus:
+`isoform=`, `structure=` (`alphafold`, `none` or a PDB id), `align=` and
+`superpose=` (Swiss-Prot accessions, comma-separated), so "Copy page link"
+reopens the same launch. Each applies to the page the link opens and is ignored
+where it is no longer on offer, and a new submission, a chip included, starts
+the url over.
+
 ## Verification
 
 `pnpm check-protein-launches` (`scripts/checkProteinLaunches.ts`) resolves the
