@@ -13,8 +13,9 @@
 # Which haplotypes is whatever the config names: run
 # website/generatePangenomeHaplotypes.ts first. On the build box, not in run.sh:
 # the first run downloads ~50 GB of CAT GFF3. The download and the BED are kept,
-# so a rerun costs only what is new. Publish these before upload.sh publishes a
-# config that names them.
+# and each BED is stamped with the source_tree_hash of the converter that wrote
+# it, so a rerun rebuilds what is new or was written by other rules. Publish
+# these before upload.sh publishes a config that names them.
 #
 # Usage: website/pangenome-config/buildHprcGenes.sh
 #   HPRC_GENES_DIR  work dir (default /mnt/sdb/cdiesh/hprcCatGenes)
@@ -28,9 +29,12 @@ JOBS="${JOBS:-8}"
 CAT_INDEX=https://raw.githubusercontent.com/human-pangenomics/hprc_intermediate_assembly/main/data_tables/annotation/cat/cat_genes_hprc_r2_v1.3.index.csv
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/genes
 CONVERTER="$(pwd)/../generatePangenomeGeneModels.ts"
+CONVERTER_HASH=$(source_tree_hash ../.. \
+  website/generatePangenomeGeneModels.ts \
+  website/src/components/pangenomeGeneModels.ts)
 
 assert_bgzip_toolchain
-mkdir -p "$WORK/raw" "$WORK/genes"
+mkdir -p "$WORK/raw" "$WORK/genes" "$WORK/stamps"
 exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building gene models in $WORK"
 
@@ -41,7 +45,11 @@ build_genes() {
   local assembly=$1 url=$2
   local raw="$WORK/raw/$assembly.cat.gff3.gz"
   local out="$WORK/genes/$assembly.genes.bed.gz"
-  if [ -f "$out" ] && [ -f "$out.tbi" ]; then
+  local stamp="$WORK/stamps/$assembly.converter" built=''
+  if [ -f "$stamp" ]; then
+    read -r built <"$stamp"
+  fi
+  if [ -f "$out" ] && [ -f "$out.tbi" ] && [ "$built" = "$CONVERTER_HASH" ]; then
     return
   fi
   if [ ! -f "$raw" ]; then
@@ -52,10 +60,11 @@ build_genes() {
   tabix -f -p bed "$out.part"
   mv "$out.part.tbi" "$out.tbi"
   mv "$out.part" "$out"
+  echo "$CONVERTER_HASH" >"$stamp"
   echo "  $assembly: $(gzip -dc "$out" | wc -l) genes"
 }
 export -f build_genes
-export WORK CONVERTER
+export WORK CONVERTER CONVERTER_HASH
 
 # `HG00097.1` is the assembly for PanSN `HG00097#1`; the index is keyed by
 # sample and haplotype number.

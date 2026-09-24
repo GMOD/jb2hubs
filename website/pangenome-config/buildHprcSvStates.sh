@@ -65,8 +65,10 @@ pack_chrom() {
   # under that ID or as the origin of a vcfwave decomposition.
   awk -F'\t' '$5 != "0" {print $6}' "$WORK/rows/$c.tsv" | sort -u >"$WORK/present/$c.named"
   if [ -s "$WORK/present/$c.named" ]; then
+    # grep exits 1 when no named parent is present, which is an answer; 2 is not.
     bcftools query -r "$c" -f '%ID\n%INFO/ORIGIN\n' "$WORK/wave.vcf.gz" |
-      grep -Fxf "$WORK/present/$c.named" | sort -u >"$WORK/present/$c.txt" || true
+      { grep -Fxf "$WORK/present/$c.named" || [ $? -eq 1 ]; } |
+      sort -u >"$WORK/present/$c.txt"
   else
     : >"$WORK/present/$c.txt"
   fi
@@ -75,7 +77,7 @@ pack_chrom() {
 export -f pack_chrom
 export WORK PACKER
 
-xargs -P "$JOBS" -I{} bash -c 'pack_chrom {}' <"$WORK/chroms.txt"
+xargs -P "$JOBS" -n 1 bash -c 'pack_chrom "$@"' _ <"$WORK/chroms.txt"
 
 {
   printf '#haplotypes\t%s\n' "$(paste -sd, "$WORK/haplotypes.txt")"
