@@ -39,10 +39,10 @@ function attach(
   // The index is several megabytes; nothing downloads it until the user focuses
   // the box, so the other pages on the site are unaffected by this being in the
   // header of every one of them. loadJsonOnce is also what useSearchIndex
-  // fetches through, so the /search page and this box share one download.
+  // fetches through, so the /search page and this box share one download, and
+  // it forgets a failed one, so asking again downloads again.
   let index: IndexEntry[] = []
-  let loading = false
-  let engaged = false
+  let status: 'idle' | 'loading' | 'ready' | 'failed' = 'idle'
   let open = false
   // -1 means "no suggestion picked", which is what makes Enter run the full
   // search rather than jumping to whichever assembly happens to rank first.
@@ -117,6 +117,22 @@ function attach(
     return li
   }
 
+  // A failed download used to read as "No genomes match", and stayed that way:
+  // nothing asked for the index a second time.
+  const failedRow = () => {
+    const li = messageRow("Couldn't load the genome list. ")
+    const retry = document.createElement('button')
+    retry.type = 'button'
+    retry.className = 'header-search-retry'
+    retry.textContent = 'Retry'
+    retry.addEventListener('click', () => {
+      load()
+      input.focus()
+    })
+    li.append(retry)
+    return li
+  }
+
   const allResultsRow = (trimmed: string) => {
     const li = document.createElement('li')
     const button = document.createElement('button')
@@ -138,9 +154,13 @@ function attach(
       for (const [i, entry] of suggestions.entries()) {
         rows.push(optionRow(entry, i))
       }
-      if (suggestions.length === 0) {
+      if (status === 'failed') {
+        rows.push(failedRow())
+      } else if (suggestions.length === 0) {
         rows.push(
-          messageRow(loading ? 'Loading…' : `No genomes match “${trimmed}”`),
+          messageRow(
+            status === 'ready' ? `No genomes match “${trimmed}”` : 'Loading…',
+          ),
         )
       }
       rows.push(allResultsRow(trimmed))
@@ -156,28 +176,33 @@ function attach(
     render()
   }
 
-  input.addEventListener('focus', () => {
-    open = true
-    if (!engaged) {
-      engaged = true
-      loading = true
+  function load() {
+    if (status === 'idle' || status === 'failed') {
+      status = 'loading'
+      render()
       loadJsonOnce<IndexEntry[]>(SEARCH_INDEX_URL)
         .then(data => {
           index = data
-          loading = false
+          status = 'ready'
           requery()
         })
         .catch(() => {
-          loading = false
+          status = 'failed'
           render()
         })
     }
+  }
+
+  input.addEventListener('focus', () => {
+    open = true
+    load()
     render()
   })
 
   input.addEventListener('input', () => {
     open = true
     highlighted = -1
+    load()
     requery()
   })
 

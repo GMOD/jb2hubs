@@ -15,6 +15,7 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../lib/searchIndex.ts'
 import { CURATED_CLADES, cladeDisplay } from '../lib/taxonomyClades.ts'
 import { paginate } from '../utils/paginate.ts'
+import ErrorWithRetry from './ErrorWithRetry.tsx'
 import OrangeStar from './OrangeStar.tsx'
 import Pagination from './Pagination.tsx'
 import RedX from './RedX.tsx'
@@ -45,7 +46,7 @@ function launchUrl(entry: IndexEntry) {
 }
 
 export default function SearchPage() {
-  const { index, loading } = useSearchIndex()
+  const { index, loading, error: indexError, retry } = useSearchIndex()
   const cladeSets = useTaxonomyFilter()
   const [query, setQuery] = useUrlState('q', '')
   const [clade, setClade] = useUrlState('clade', '')
@@ -148,7 +149,13 @@ export default function SearchPage() {
       {/* The index is several megabytes, so the controls above stay usable while
           it downloads rather than the whole page being replaced by a message. */}
       {loading && <div className={styles.noResults}>Loading search index…</div>}
-      {!loading && !trimmedQuery && (
+      <ErrorWithRetry
+        error={indexError}
+        onRetry={retry}
+        context="Couldn't load the genome list"
+        className="ui-error"
+      />
+      {!loading && !indexError && !trimmedQuery && (
         <div className={styles.emptyState}>
           <p>
             Search {index.length.toLocaleString()} genome assemblies by common
@@ -172,7 +179,7 @@ export default function SearchPage() {
           {statusLegend}
         </div>
       )}
-      {!loading && trimmedQuery && results.length === 0 && (
+      {!loading && !indexError && trimmedQuery && results.length === 0 && (
         <div className={styles.noResults}>
           No genomes match &ldquo;{trimmedQuery}&rdquo;
           {clade ? ' in this clade' : ''}

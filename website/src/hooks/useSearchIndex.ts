@@ -9,10 +9,19 @@ export type { IndexEntry }
 
 // The fetcher is loadJsonOnce rather than fetchJson so this shares one download
 // with the header typeahead (headerSearch.ts), which is not a React island and
-// loads the same several-megabyte file through the same promise cache.
+// loads the same several-megabyte file through the same promise cache. A failed
+// load is evicted there, so `retry` downloads again rather than replaying it.
 export function useSearchIndex() {
-  const { data, isLoading } = useSWRImmutable(SEARCH_INDEX_URL, url =>
-    loadJsonOnce<IndexEntry[]>(url),
+  const { data, error, isLoading, mutate } = useSWRImmutable(
+    SEARCH_INDEX_URL,
+    url => loadJsonOnce<IndexEntry[]>(url),
   )
-  return { index: data ?? [], loading: isLoading }
+  return {
+    index: data ?? [],
+    loading: isLoading,
+    error: error as unknown,
+    retry: () => {
+      void mutate()
+    },
+  }
 }

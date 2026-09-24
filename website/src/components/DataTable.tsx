@@ -19,6 +19,7 @@ import { useTableColumns } from './DataTable/hooks/useTableColumns.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { decodeHubRow } from './DataTable/hubRow.ts'
 import { makeComparator } from './DataTable/utils.ts'
+import ErrorWithRetry from './ErrorWithRetry.tsx'
 import Pagination from './Pagination.tsx'
 import TableOptions from './TableOptions.tsx'
 
@@ -49,20 +50,26 @@ export default function DataTable({
   // taxonomy subtrees are under 200 rows, and the category files behind them
   // are megabytes.
   const complete = totalRows <= initialRows.length
-  const { data: allRows } = useSWRImmutable(complete ? null : dataUrls, () =>
-    loadRows(dataUrls),
-  )
+  const {
+    data: allRows,
+    error: rowsError,
+    mutate: retryRows,
+  } = useSWRImmutable(complete ? null : dataUrls, () => loadRows(dataUrls))
   // One of `accessions` (inline) or `accessionsUrl` (a file, for a large
   // subtree) is set when this table shows a taxonomic subtree rather than a
   // whole category, so the fetched category files get narrowed to it.
-  const { data: fetchedAccessions } = useSWRImmutable(
-    complete ? null : accessionsUrl,
-    fetchJson<string[]>,
-  )
+  const {
+    data: fetchedAccessions,
+    error: accessionsError,
+    mutate: retryAccessions,
+  } = useSWRImmutable(complete ? null : accessionsUrl, fetchJson<string[]>)
   const subset = accessions ?? fetchedAccessions
   // Until the full set lands, searching and sorting would silently apply to only
   // the first page, so the controls stay disabled and these rows are shown as-is.
+  // A failed load keeps them that way and says so, rather than "Loading…" for
+  // good.
   const loading = !complete && (!allRows || (!!accessionsUrl && !subset))
+  const loadError: unknown = rowsError ?? accessionsError
   const rows = useMemo(() => {
     if (!allRows || loading) {
       return initialRows
@@ -139,11 +146,20 @@ export default function DataTable({
             </button>
           )}
         </div>
-        {loading && (
+        {loading && !loadError && (
           <span className={styles.loadingNote}>
             Loading all {totalRows.toLocaleString()} assemblies…
           </span>
         )}
+        <ErrorWithRetry
+          error={loadError}
+          onRetry={() => {
+            void retryRows()
+            void retryAccessions()
+          }}
+          context={`Couldn't load all ${totalRows.toLocaleString()} assemblies, so search and sort are off`}
+          className={`ui-error ${styles.loadError}`}
+        />
       </div>
 
       <TableOptions
