@@ -1,11 +1,14 @@
 import assert from 'node:assert'
-import { test } from 'node:test'
+import { mock, test } from 'node:test'
 
 import {
+  checkedSummary,
   choice,
   ensemblSearchUrl,
   identityFromSummary,
   localRef,
+  replacementOf,
+  resolveGeneIdentity,
   syntenyLaunchUrl,
   trimNeighborhood,
 } from './geneHub.ts'
@@ -128,4 +131,66 @@ test('ensemblSearchUrl encodes the symbol', () => {
     ensemblSearchUrl('HLA-A'),
     'https://www.ensembl.org/Multi/Search/Results?q=HLA-A;site=ensembl_all',
   )
+})
+
+test('a summary NCBI could not build is an error, not a gene card', () => {
+  assert.throws(
+    () =>
+      checkedSummary('999999999', {
+        error: 'cannot get document summary',
+      }),
+    /no record 999999999/,
+  )
+  assert.throws(() => checkedSummary('1', undefined), /no record 1/)
+  assert.equal(checkedSummary('7157', { name: 'TP53' }).name, 'TP53')
+})
+
+test('replacementOf reads currentid only when NCBI names a replacement', () => {
+  assert.equal(replacementOf({ name: 'LOC102724788', currentid: 5625 }), '5625')
+  assert.equal(replacementOf({ name: 'TP53', currentid: '' }), undefined)
+  assert.equal(replacementOf({ name: 'X', currentid: 0 }), undefined)
+  assert.equal(replacementOf(undefined), undefined)
+})
+
+// Answers esummary for each id from the table, so the page's whole resolution
+// runs without NCBI. A numeric gene and a numeric ref need no other request.
+async function identityWith(summaries: Record<string, object>, gene: string) {
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', (url: string) => {
+    const id = /[?&]id=(\d+)/.exec(url)?.[1] ?? ''
+    const body = { result: { uids: [id], [id]: summaries[id] ?? {} } }
+    return Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
+  })
+  try {
+    return await resolveGeneIdentity(gene, '9606')
+  } finally {
+    globalThis.fetch = original
+  }
+}
+
+test('a GeneID NCBI does not know rejects', async () => {
+  await assert.rejects(
+    identityWith(
+      { 999999999: { uid: '999999999', error: 'cannot get document summary' } },
+      '999999999',
+    ),
+    /no record 999999999/,
+  )
+})
+
+test('a replaced GeneID resolves to its replacement', async () => {
+  const id = await identityWith(
+    {
+      102724788: { name: 'LOC102724788', currentid: 5625 },
+      5625: {
+        name: 'PRODH',
+        description: 'proline dehydrogenase 1',
+        currentid: '',
+        organism: { scientificname: 'Homo sapiens', taxid: 9606 },
+      },
+    },
+    '102724788',
+  )
+  assert.equal(id.geneId, '5625')
+  assert.equal(id.symbol, 'PRODH')
 })

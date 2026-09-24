@@ -29,6 +29,8 @@ export interface GeneSummary {
   maplocation?: string
   otheraliases?: string
   organism?: { scientificname?: string; commonname?: string; taxid?: number }
+  error?: string
+  currentid?: number | string
 }
 
 export interface GeneIdentity {
@@ -67,19 +69,51 @@ export function identityFromSummary(
   }
 }
 
-// Symbol (or numeric GeneID) plus a free-text reference to the gene NCBI
-// settles on. Throws when the taxon or the gene is unknown; SWR surfaces that
-// as the page's error line.
-export async function resolveGeneIdentity(gene: string, ref: string) {
-  const taxId = await resolveRefTaxon(ref)
-  const geneId = await resolveGeneId(gene, taxId)
-  if (!geneId) {
-    throw new Error(`No gene found for "${gene}" in taxon ${taxId}.`)
+// The GeneID NCBI replaced this record with (LOC102724788 is now 5625, PRODH),
+// or undefined for a live record, whose `currentid` is ''.
+export function replacementOf(summary: GeneSummary | undefined) {
+  const id = String(summary?.currentid ?? '')
+  return /^[1-9]\d*$/.test(id) ? id : undefined
+}
+
+// An id NCBI does not know still gets a summary, `{ uid, error: "cannot get
+// document summary" }`, and the page built a gene card out of it: the typed
+// number as the symbol, and nothing else.
+export function checkedSummary(geneId: string, summary: GeneSummary | undefined) {
+  if (!summary?.name || summary.error) {
+    throw new Error(
+      `NCBI Gene has no record ${geneId}${summary?.error ? ` (${summary.error})` : ''}.`,
+    )
   }
+  return summary
+}
+
+async function fetchGeneSummary(geneId: string) {
   const res = await ncbiJson<{ result?: Record<string, GeneSummary> }>(
     `${EUTILS}/esummary.fcgi?db=gene&id=${geneId}&retmode=json`,
   )
-  return identityFromSummary(gene, taxId, geneId, res.result?.[geneId] ?? {})
+  return res.result?.[geneId]
+}
+
+// Symbol (or numeric GeneID) plus a free-text reference to the gene NCBI
+// settles on, following a replaced record to its replacement. Throws when the
+// taxon or the gene is unknown; SWR surfaces that as the page's error line.
+export async function resolveGeneIdentity(gene: string, ref: string) {
+  const taxId = await resolveRefTaxon(ref)
+  const resolved = await resolveGeneId(gene, taxId)
+  if (!resolved) {
+    throw new Error(`No gene found for "${gene}" in taxon ${taxId}.`)
+  }
+  const first = await fetchGeneSummary(resolved)
+  const replacement = replacementOf(first)
+  const geneId = replacement ?? resolved
+  const summary = replacement ? await fetchGeneSummary(replacement) : first
+  return identityFromSummary(
+    gene,
+    taxId,
+    geneId,
+    checkedSummary(geneId, summary),
+  )
 }
 
 // The ortholog rows for one resolved gene, restricted to the assemblies we
