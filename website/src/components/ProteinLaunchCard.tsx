@@ -205,18 +205,22 @@ export default function ProteinLaunchCard({
   // onto per chain: the same numbers for most entries, one behind for a chain
   // numbered from the mature protein (haemoglobin), or a construct's own.
   const pdbId = primary && 'pdbId' in primary ? primary.pdbId : undefined
-  // p2s_mapper's own read, which retries a dropped request twice behind a 20s
-  // deadline. That matters because a failed read is not visible as a failure:
-  // `initialResidues` falls back to the UniProt range below, so HBB's E6V chip
-  // on 2HHB would quietly light residue 7 instead of 6. `LIVE_QUERY` turns
-  // SWR's retrying off, so this is the only retry there is.
-  const { data: sifts, isLoading: numbering } = useSWRImmutable(
+  // p2s_mapper's own read retries a dropped request twice behind a 20s
+  // deadline. A read that still fails lights nothing rather than the UniProt
+  // range, which on 2HHB would put HBB's E6V chip on residue 7 instead of 6.
+  const {
+    data: sifts,
+    error: numberingError,
+    isLoading: numbering,
+    mutate: retryNumbering,
+  } = useSWRImmutable(
     range && pdbId && uniprotId ? (['sifts', pdbId, uniprotId] as const) : null,
     async ([, pdb, acc]) =>
       segmentsForAccession(await fetchUniProtStructureMappings(pdb), acc),
     LIVE_QUERY,
   )
   const author = range && sifts ? toAuthorRange(sifts, range) : undefined
+  const unnumbered = !!pdbId && !!numberingError && !numbering
 
   // Building the url deflates the whole inline alignment, so it is memoised on
   // its own.
@@ -267,7 +271,7 @@ export default function ProteinLaunchCard({
         ...(range && chosen === 'alphafold'
           ? { initialSelection: { start: range.start - 1, end: range.end } }
           : {}),
-        ...(range && pdbId
+        ...(range && pdbId && !unnumbered
           ? {
               initialResidues: author
                 ? { start: author.start, end: author.end }
@@ -291,6 +295,7 @@ export default function ProteinLaunchCard({
     range,
     pdbId,
     author,
+    unnumbered,
     isoforms,
     alignment,
     extras,
@@ -517,27 +522,42 @@ export default function ProteinLaunchCard({
                 {focusLabel(focus)} ×
               </button>
             </span>
-            <span className="ui-caption">
-              {!primary
-                ? 'needs a structure'
-                : focusExact
-                  ? 'lit on load in all three views'
-                  : pdbId
-                    ? numbering
-                      ? 'reading how the entry numbers its chains'
-                      : author
-                        ? author.shift
-                          ? `lit as ${author.start === author.end ? author.start : `${author.start}–${author.end}`} in chain ${author.chain}, which numbers ${Math.abs(author.shift)} ${author.shift < 0 ? 'behind' : 'ahead of'} UniProt`
-                          : `lit on load; chain ${author.chain} is numbered as UniProt is`
-                        : 'not in this entry: no chain covers the range'
-                    : !modelExact
-                      ? 'approximate: the model is a different isoform'
-                      : fromCartoon
-                        ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
-                        : canonicalModel
-                          ? 'approximate'
-                          : 'approximate: an isoform model, and the map counts on the canonical'}
-            </span>
+            {unnumbered ? (
+              <span className="ui-error">
+                not lit: PDBe did not say how this entry numbers its chains (
+                {errorText(numberingError)}).{' '}
+                <button
+                  className="ui-linkbtn"
+                  onClick={() => {
+                    void retryNumbering()
+                  }}
+                >
+                  Try again
+                </button>
+              </span>
+            ) : (
+              <span className="ui-caption">
+                {!primary
+                  ? 'needs a structure'
+                  : focusExact
+                    ? 'lit on load in all three views'
+                    : pdbId
+                      ? numbering
+                        ? 'reading how the entry numbers its chains'
+                        : author
+                          ? author.shift
+                            ? `lit as ${author.start === author.end ? author.start : `${author.start}–${author.end}`} in chain ${author.chain}, which numbers ${Math.abs(author.shift)} ${author.shift < 0 ? 'behind' : 'ahead of'} UniProt`
+                            : `lit on load; chain ${author.chain} is numbered as UniProt is`
+                          : 'not in this entry: no chain covers the range'
+                      : !modelExact
+                        ? 'approximate: the model is a different isoform'
+                        : fromCartoon
+                          ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
+                          : canonicalModel
+                            ? 'approximate'
+                            : 'approximate: an isoform model, and the map counts on the canonical'}
+              </span>
+            )}
           </div>
         )}
       </div>
@@ -619,7 +639,7 @@ export default function ProteinLaunchCard({
       </div>
       <p className="ui-caption">
         Opens {joinList(carries)} in one connected session
-        {focus && primary ? `, on ${focusLabel(focus)}` : ''}.
+        {focus && primary && !unnumbered ? `, on ${focusLabel(focus)}` : ''}.
       </p>
 
       {detailsOpen && (
