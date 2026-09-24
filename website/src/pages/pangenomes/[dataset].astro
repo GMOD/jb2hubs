@@ -10,6 +10,7 @@ import {
   publishedFiles,
 } from '../../components/pangenomeDataset.ts'
 import { graphRegionUrl } from '../../components/pangenomeLinks.ts'
+import PangenomeLaunchLinks from '../../components/PangenomeLaunchLinks.tsx'
 import PangenomeRegionForms from '../../components/PangenomeRegionForms.tsx'
 import { lociColumns, lociRows } from '../../components/pangenomeLociRows.ts'
 import { features } from '../../config/features.ts'
@@ -136,39 +137,7 @@ function humanBytes(bytes: number) {
                   {columns.segments && <td>{r.segments?.toLocaleString()}</td>}
                   {columns.launches && (
                     <td>
-                      {r.graphUrl && (
-                        <a
-                          href={r.graphUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          graph
-                        </a>
-                      )}
-                      {r.graphUrl && r.linearUrl && ' · '}
-                      {r.linearUrl && (
-                        <a
-                          href={r.linearUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {dataset.graphVcf ? 'variants' : 'bubbles'}
-                        </a>
-                      )}
-                      {(r.graphUrl || r.linearUrl) && r.haplotypesUrl && ' · '}
-                      {r.haplotypesUrl && (
-                        <a
-                          href={r.haplotypesUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          haplotypes
-                        </a>
-                      )}
-                      {(r.graphUrl || r.linearUrl || r.haplotypesUrl) &&
-                        r.geneHubUrl &&
-                        ' · '}
-                      {r.geneHubUrl && <a href={r.geneHubUrl}>gene hub</a>}
+                      <PangenomeLaunchLinks links={r.launches} />
                     </td>
                   )}
                 </tr>

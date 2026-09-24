@@ -382,6 +382,45 @@ export function haplotypeLanesForRegion(
   ])
 }
 
+// The launches a locus row or an asked-for region offers, in one order, and
+// only those this build can open: a builder that answers undefined (no hosted
+// graph, no panel, no callset) leaves no link rather than one to nowhere.
+export type LaunchKind = 'graph' | 'linear' | 'haplotypes' | 'geneHub'
+
+export interface LaunchLink {
+  kind: LaunchKind
+  label: string
+  url: string
+  // A JBrowse launch opens beside the page; a site route replaces it.
+  newTab: boolean
+}
+
+export function launchLinks(
+  dataset: PangenomeDataset,
+  urls: Partial<Record<LaunchKind, string>>,
+): LaunchLink[] {
+  const labels: [LaunchKind, string][] = [
+    ['graph', 'graph'],
+    ['linear', dataset.graphVcf ? 'variants' : 'bubbles'],
+    ['haplotypes', 'haplotypes'],
+    ['geneHub', 'gene hub'],
+  ]
+  return labels.flatMap(([kind, label]) => {
+    const url = urls[kind]
+    return url ? [{ kind, label, url, newTab: kind !== 'geneHub' }] : []
+  })
+}
+
+// The same choice locusLaunchUrl makes, for a region a reader asked for.
+export function regionLaunchUrl(
+  dataset: PangenomeDataset,
+  region: GraphRegion,
+) {
+  return dataset.graphVcf
+    ? referenceRegionUrl(dataset, region)
+    : graphLanesUrl(dataset, region)
+}
+
 // Internal cross-link into the gene hub for the locus's marker gene, seeded
 // from the reference species' taxon (not a JBrowse spec — a site route).
 // Undefined where the locus names no gene: a derived entry over an intergenic

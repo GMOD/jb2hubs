@@ -2,10 +2,12 @@ import useSWRImmutable from 'swr/immutable'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
+import PangenomeLaunchLinks from './PangenomeLaunchLinks.tsx'
 import {
   graphRegionUrl,
   haplotypeLanesForRegion,
-  referenceRegionUrl,
+  launchLinks,
+  regionLaunchUrl,
 } from './pangenomeLinks.ts'
 import { structuralPanel } from './pangenomePanels.ts'
 import { formatRegion, resolveRegion } from './pangenomeRegion.ts'
@@ -92,6 +94,17 @@ export default function PangenomeRegionForms({
   const lanes = answer?.panel?.lanes ?? []
   const region = answer?.region
   const graphRegion = region && { ...region, label: formatRegion(region) }
+  const launches = graphRegion
+    ? launchLinks(dataset, {
+        graph: graphRegionUrl(dataset, graphRegion),
+        linear: regionLaunchUrl(dataset, graphRegion),
+        haplotypes: haplotypeLanesForRegion(
+          dataset,
+          graphRegion,
+          lanes.map(l => l.haplotype),
+        ),
+      })
+    : []
 
   return (
     <div>
@@ -145,43 +158,7 @@ export default function PangenomeRegionForms({
             .
           </p>
           <p>
-            {lanes.length > 0 && (
-              <>
-                <a
-                  href={haplotypeLanesForRegion(
-                    dataset,
-                    graphRegion!,
-                    lanes.map(l => l.haplotype),
-                  )}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  haplotypes
-                </a>
-                {' · '}
-              </>
-            )}
-            {graphRegionUrl(dataset, graphRegion!) && (
-              <a
-                href={graphRegionUrl(dataset, graphRegion!)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                graph
-              </a>
-            )}
-            {dataset.graphVcf && (
-              <>
-                {graphRegionUrl(dataset, graphRegion!) ? ' · ' : ''}
-                <a
-                  href={referenceRegionUrl(dataset, graphRegion!)}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  variants
-                </a>
-              </>
-            )}
+            <PangenomeLaunchLinks links={launches} />
           </p>
           {lanes.length > 0 && (
             <div className="table-scroll">
