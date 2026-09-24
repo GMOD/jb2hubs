@@ -179,6 +179,21 @@ def get_lineage_from_dump(tax_id, tax_nodes, tax_names):
     return lineage[::-1]
 
 
+NEWICK_DELIMITERS = set("(),:;'")
+
+
+def newick_label(label):
+    """Single-quote a label holding a Newick delimiter, doubling any quote in it.
+
+    "Marburg virus - Musoke, Kenya, 1980" otherwise splits into three nodes,
+    and the colon in "HM-1:IMSS" turns the leaf's [accession|taxonId] into a
+    branch length.
+    """
+    if any(c in NEWICK_DELIMITERS for c in label):
+        return "'" + label.replace("'", "''") + "'"
+    return label
+
+
 class SimpleTreeNode:
     """Simple tree node class to replace BioPython Clade"""
 
@@ -190,18 +205,14 @@ class SimpleTreeNode:
 
     def to_newick(self):
         """Convert this node and its subtree to Newick format"""
+        name_str = self.name if self.name else ""
         if not self.children:
-            # Leaf node - name already includes [accession|taxonId]
-            name_str = self.name if self.name else ""
-            return f"{name_str}:{self.branch_length}"
-        else:
-            # Internal node with children
-            children_str = ",".join(child.to_newick() for child in self.children)
-            name_str = self.name if self.name else ""
-            # Add taxonId to internal nodes using {taxonId} format
-            if self.taxon_id:
-                name_str = f"{name_str}{{{self.taxon_id}}}"
-            return f"({children_str}){name_str}:{self.branch_length}"
+            # A leaf's name already ends in [accession|taxonId]
+            return f"{newick_label(name_str)}:{self.branch_length}"
+        children_str = ",".join(child.to_newick() for child in self.children)
+        if self.taxon_id:
+            name_str = f"{name_str}{{{self.taxon_id}}}"
+        return f"({children_str}){newick_label(name_str)}:{self.branch_length}"
 
 
 def build_phylogenetic_tree(taxon_accession_pairs, tax_nodes, tax_names):

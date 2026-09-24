@@ -52,8 +52,23 @@ function parseNewick(newick: string): ParsedNode | null {
       }
     }
 
-    // Parse node name
+    // build_taxonomy.py single-quotes a label holding a delimiter ("Marburg
+    // virus - Musoke, Kenya, 1980", "HM-1:IMSS") and doubles a quote inside it.
     let name = ''
+    if (cleanNewick[index] === "'") {
+      index++
+      while (index < cleanNewick.length) {
+        if (cleanNewick[index] === "'") {
+          if (cleanNewick[index + 1] !== "'") {
+            index++
+            break
+          }
+          index++
+        }
+        name += cleanNewick[index]
+        index++
+      }
+    }
     while (
       index < cleanNewick.length &&
       cleanNewick[index] !== ',' &&

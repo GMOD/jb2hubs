@@ -202,3 +202,27 @@ test('budgetTree keeps depth and taxonId on what it renders', () => {
   assert.equal(cut.children![0]!.depth, 1)
   assert.equal(cut.children![0]!.children, undefined)
 })
+
+// The quoting build_taxonomy.py's newick_label writes: a label holding a
+// delimiter is single-quoted, and a quote inside it doubled.
+const QUOTED =
+  "('Marburg virus - Musoke, Kenya, 1980[GCF_000857325.2|33727]':1.0,'Entamoeba histolytica HM-1:IMSS[GCF_000208925.1|294381]':1.0,'Fisher''s (sp.){42}':1.0)root{1};"
+
+test('a quoted label keeps its delimiters and its marker', () => {
+  const [marburg, entamoeba, fisher] = parseTaxonomyNewick(QUOTED)!.children!
+  assert.equal(marburg!.name, 'Marburg virus - Musoke, Kenya, 1980')
+  assert.equal(marburg!.accession, 'GCF_000857325.2')
+  assert.equal(marburg!.taxonId, '33727')
+  assert.equal(entamoeba!.name, 'Entamoeba histolytica HM-1:IMSS')
+  assert.equal(entamoeba!.accession, 'GCF_000208925.1')
+  assert.equal(entamoeba!.branchLength, 1)
+  assert.equal(fisher!.name, "Fisher's (sp.)")
+  assert.equal(fisher!.taxonId, '42')
+})
+
+test('taxonIdsIn finds the ids inside quoted labels', () => {
+  assert.deepEqual(
+    [...taxonIdsIn(QUOTED)].sort(),
+    ['1', '294381', '33727', '42'],
+  )
+})
