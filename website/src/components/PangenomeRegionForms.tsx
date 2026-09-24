@@ -13,6 +13,19 @@ import { openSvStates } from './pangenomeSvStatesFile.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { ParsedRegion } from './pangenomeRegion.ts'
 
+// mygene.info answers in well under a second and a sidecar read in a third of
+// one; past this, the button would say "Reading…" for as long as either stalls.
+const DEADLINE_MS = 20_000
+
+function deadlineMessage(e: unknown) {
+  return e instanceof DOMException &&
+    (e.name === 'TimeoutError' || e.name === 'AbortError')
+    ? `No answer from mygene.info or the callset in ${DEADLINE_MS / 1000} s; try again.`
+    : e instanceof Error
+      ? e.message
+      : String(e)
+}
+
 // Any region of the graph, not only the twenty the table lists.
 //
 // The page is otherwise static; this is the one thing on it that cannot be, as
@@ -46,7 +59,10 @@ export default function PangenomeRegionForms({
     setBusy(true)
     setError(undefined)
     try {
-      const asked = await resolveRegion(text, dataset.reference.taxonId)
+      const signal = AbortSignal.timeout(DEADLINE_MS)
+      const asked = await resolveRegion(text, dataset.reference.taxonId, {
+        signal,
+      })
       if (!asked) {
         throw new Error(
           `"${text}" is neither a region like chr1:196,740,001-196,850,000 nor a gene placed on ${dataset.reference.label}`,
@@ -54,7 +70,7 @@ export default function PangenomeRegionForms({
       }
       const { chrom, haplotypes, rows } = await openSvStates(
         dataset.svStatesUrl!,
-      )(asked.chrom, asked.start, asked.end)
+      )(asked.chrom, asked.start, asked.end, signal)
       const forms = structuralForms(rows, haplotypes)
       setAnswer({
         region: { ...asked, chrom },
@@ -69,7 +85,7 @@ export default function PangenomeRegionForms({
       })
     } catch (e) {
       setAnswer(undefined)
-      setError(e instanceof Error ? e.message : String(e))
+      setError(deadlineMessage(e))
     } finally {
       setBusy(false)
     }

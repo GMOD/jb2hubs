@@ -31,25 +31,46 @@ function haplotypesOf(header: string) {
   return line.slice('#haplotypes\t'.length).split(',')
 }
 
+// One reader per url for the life of the page, so the index and the header are
+// read once rather than per query. Tabix drops a failed read of either instead
+// of keeping it, so the next query retries what a transient failure lost.
+const files = new Map<string, TabixIndexedFile>()
+
+function svStatesFile(url: string) {
+  let file = files.get(url)
+  if (!file) {
+    file = new TabixIndexedFile({
+      filehandle: new RemoteFile(url),
+      tbiFilehandle: new RemoteFile(`${url}.tbi`),
+    })
+    files.set(url, file)
+  }
+  return file
+}
+
 export function openSvStates(url: string) {
-  const file = new TabixIndexedFile({
-    filehandle: new RemoteFile(url),
-    tbiFilehandle: new RemoteFile(`${url}.tbi`),
-  })
+  const file = svStatesFile(url)
   return async function query(
     refName: string,
     start: number,
     end: number,
+    signal?: AbortSignal,
   ): Promise<SvStatesQuery> {
-    const chrom = matchRefName(refName, await file.getReferenceSequenceNames())
+    const chrom = matchRefName(
+      refName,
+      await file.getReferenceSequenceNames({ signal }),
+    )
     if (chrom === undefined) {
       throw new Error(`${refName} is not a sequence in the callset`)
     }
     const rows: SvStateRow[] = []
     const [header] = await Promise.all([
-      file.getHeader(),
-      file.getLines(chrom, start, end, line => {
-        rows.push(parseSvStateRow(line))
+      file.getHeader({ signal }),
+      file.getLines(chrom, start, end, {
+        signal,
+        lineCallback: line => {
+          rows.push(parseSvStateRow(line))
+        },
       }),
     ])
     return { chrom, haplotypes: haplotypesOf(header), rows }

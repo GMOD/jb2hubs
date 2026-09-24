@@ -54,6 +54,7 @@ interface MyGeneHit {
 
 export interface LookupOptions {
   fetchImpl?: typeof fetch
+  signal?: AbortSignal
 }
 
 // One mygene.info query on one field, quoted so the text is one term: the
@@ -63,11 +64,12 @@ async function mygeneHits(
   field: 'symbol' | 'alias',
   text: string,
   taxId: number,
-  { fetchImpl = fetch }: LookupOptions,
+  { fetchImpl = fetch, signal }: LookupOptions,
 ) {
   const q = `${field}:"${text.replaceAll(/["\\]/g, '\\$&')}"`
   const res = await fetchImpl(
     `https://mygene.info/v3/query?q=${encodeURIComponent(q)}&species=${taxId}&fields=symbol,genomic_pos&size=5`,
+    { signal },
   )
   if (
     res.status >= 400 &&

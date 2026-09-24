@@ -140,3 +140,14 @@ test('a server error is an error, not a gene that does not exist', async () => {
   })
   await assert.rejects(resolveRegion('CFH', 9606, { fetchImpl }), /HTTP 503/)
 })
+
+test('the lookup carries the deadline it is given', async () => {
+  const signal = AbortSignal.timeout(60_000)
+  const seen: (AbortSignal | null | undefined)[] = []
+  const fetchImpl = (async (_url: string, init?: RequestInit) => {
+    seen.push(init?.signal)
+    return new Response(JSON.stringify({ hits: [] }))
+  }) as unknown as typeof fetch
+  await resolveRegion('CFH', 9606, { fetchImpl, signal })
+  assert.deepEqual(seen, [signal, signal])
+})
