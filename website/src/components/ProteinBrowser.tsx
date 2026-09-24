@@ -635,6 +635,8 @@ function GeneResults({
     regionsLoading &&
     (focus?.kind === 'residue' || (focusChoice === undefined && !!preset?.pfam))
   const wantAlignment = !familyPending && (source !== 'live' || wantLive)
+  const partnerPending =
+    partnersLoading && focusChoice === undefined && !!preset?.partner
   // Swiss-Prot accessions of the ortholog rows marked for superposition.
   const [superposed, setSuperposed] = useState(linkPicks?.superpose ?? [])
   // Each alignment fetch abandons the EBI job before it, and unmounting — this
@@ -714,6 +716,7 @@ function GeneResults({
         }}
         queryRow={panel?.rows.find(r => r.taxId === panel.query.refTaxonId)}
         focus={focus}
+        partnerPending={partnerPending}
         onClearFocus={() => {
           setFocus(undefined)
         }}

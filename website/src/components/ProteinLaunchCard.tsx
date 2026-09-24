@@ -88,6 +88,7 @@ export default function ProteinLaunchCard({
   onRemoveSuperposed,
   queryRow,
   focus,
+  partnerPending,
   onClearFocus,
   story,
   picks,
@@ -106,6 +107,9 @@ export default function ProteinLaunchCard({
   queryRow: ProteinPanelRow | undefined
   // what the session opens on, from the map or the cartoon
   focus: Focus | undefined
+  // a partner the link or chip names is still being read from PDBe, and it
+  // decides both the focus and the complex the session opens
+  partnerPending: boolean
   onClearFocus: () => void
   // a chip's one sentence on what there is to see
   story?: string
@@ -232,8 +236,9 @@ export default function ProteinLaunchCard({
     range,
     offered,
   } = pick
-  // a linked PDB entry is not on offer until the entries have loaded
-  const structurePending = !!choice && !offered && listing
+  // a linked PDB entry is not on offer until the entries have loaded, nor a
+  // linked complex until the partner that names it has
+  const structurePending = partnerPending || (!!choice && !offered && listing)
 
   // A PDB entry is lit by author numbering, which SIFTS maps the UniProt range
   // onto per chain: the same numbers for most entries, one behind for a chain
