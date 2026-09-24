@@ -9,6 +9,7 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { ncbiGeneUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import ErrorMessage from './ErrorMessage.tsx'
+import ErrorWithRetry from './ErrorWithRetry.tsx'
 import HelpButton from './HelpButton.tsx'
 import MultiSyntenyView from './MultiSyntenyView.tsx'
 import OrthologHelpDialog from './OrthologHelpDialog.tsx'
@@ -68,6 +69,7 @@ export default function GenePage() {
     data: identity,
     error,
     isLoading,
+    mutate: retryIdentity,
   } = useSWRImmutable(
     gene ? ['gene', gene, ref] : null,
     ([, g, r]) => resolveGeneIdentity(g, r),
@@ -103,7 +105,11 @@ export default function GenePage() {
     const refText = field(fd, 'ref')
     if (g && refText) {
       try {
-        show(g, await resolveRefTaxon(refText))
+        const taxId = await resolveRefTaxon(refText)
+        show(g, taxId)
+        if (error && g === gene && String(taxId) === ref) {
+          void retryIdentity()
+        }
       } catch (err) {
         setRefError(err)
       }
@@ -207,8 +213,11 @@ export default function GenePage() {
         error={refError}
         className="ui-error"
       />
-      <ErrorMessage
+      <ErrorWithRetry
         error={error}
+        onRetry={() => {
+          void retryIdentity()
+        }}
         className="ui-error"
       />
       {isLoading && (
@@ -229,6 +238,9 @@ export default function GenePage() {
             orthologs={orthologs.data}
             error={orthologs.error}
             loading={orthologs.isLoading}
+            onRetry={() => {
+              void orthologs.mutate()
+            }}
             refResult={refResult}
             drilldown={drilldown}
           />
@@ -317,6 +329,7 @@ function OrthologSection({
   orthologs,
   error,
   loading,
+  onRetry,
   refResult,
   drilldown,
 }: {
@@ -326,6 +339,7 @@ function OrthologSection({
   orthologs: OrthologSet | undefined
   error: unknown
   loading: boolean
+  onRetry: () => void
   refResult: OrthologResult | undefined
   drilldown: DrilldownData | undefined
 }) {
@@ -369,8 +383,9 @@ function OrthologSection({
         </label>
       </div>
       {loading && <p className="ui-hint">Fetching orthologs of {symbol}…</p>}
-      <ErrorMessage
+      <ErrorWithRetry
         error={error}
+        onRetry={onRetry}
         className="ui-error"
       />
       {orthologs && results && (
@@ -439,7 +454,7 @@ function GeneOrderSection({
   // that gene too. Sending the symbol had the Lambda resolve it a second time,
   // where a Datasets failure once cached the wrong gene under the right name.
   // keepPreviousData holds the current figure on screen until the next lands.
-  const { data, error, isValidating } = useSWRImmutable(
+  const { data, error, isValidating, mutate } = useSWRImmutable(
     ['neighborhood', geneId, refTaxId, maxAnchors, flankBp],
     ([, g, r, a, f]) => getNeighborhood(g, r, { maxAnchors: a, flankBp: f }),
     { ...LIVE_QUERY, keepPreviousData: true, revalidateOnFocus: false },
@@ -499,8 +514,11 @@ function GeneOrderSection({
           s of NCBI lookups and is then cached for everyone.
         </p>
       )}
-      <ErrorMessage
+      <ErrorWithRetry
         error={error}
+        onRetry={() => {
+          void mutate()
+        }}
         className="ui-error"
       />
       {nb?.species.length === 0 && !isValidating && (
