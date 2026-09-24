@@ -46,9 +46,11 @@
   top: calc(100% + 2px);
   left: 0;
   /* Wider than the input, which is too narrow for an accession plus an assembly
-     name; anchored on the left so it still lines up with the box. */
-  min-width: 24rem;
-  max-width: 90vw;
+     name; anchored on the left so it still lines up with the box, and shifted
+     back by headerSearch.ts where that would run off the right of a phone. A
+     bare 24rem minimum beat the 90vw maximum and did exactly that. */
+  min-width: min(24rem, calc(100vw - 16px));
+  max-width: calc(100vw - 16px);
   max-height: 70vh;
   overflow-y: auto;
   margin: 0;

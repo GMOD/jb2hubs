@@ -143,6 +143,17 @@ function attach(
     return li
   }
 
+  // The list starts at the box's left edge, which on a phone leaves too little
+  // room to its right, so it moves left by whatever would overflow.
+  const keepInViewport = () => {
+    list.style.left = ''
+    const { left, right } = list.getBoundingClientRect()
+    const overflow = right - (document.documentElement.clientWidth - 8)
+    if (overflow > 0) {
+      list.style.left = `${-Math.min(overflow, Math.max(0, left - 8))}px`
+    }
+  }
+
   const render = () => {
     const trimmed = input.value.trim()
     const show = shown()
@@ -165,6 +176,7 @@ function attach(
       }
       rows.push(allResultsRow(trimmed))
       list.replaceChildren(...rows)
+      keepInViewport()
     } else {
       list.replaceChildren()
     }
@@ -207,6 +219,11 @@ function attach(
   })
 
   input.addEventListener('keydown', e => {
+    // Enter and the arrows belong to an input method while it is composing a
+    // character, not to the list.
+    if (e.isComposing) {
+      return
+    }
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       // Rebuild only when the arrow is what opened the list: rebuilding while it
@@ -247,6 +264,20 @@ function attach(
   document.addEventListener('mousedown', e => {
     if (e.target instanceof Node && !form.contains(e.target)) {
       open = false
+      render()
+    }
+  })
+
+  // Tabbing away closes the list too. A press inside it keeps focus in the box,
+  // or a browser that does not focus a clicked link (Safari) would close the
+  // list under the pointer before its click landed.
+  list.addEventListener('mousedown', e => {
+    e.preventDefault()
+  })
+  form.addEventListener('focusout', e => {
+    if (!(e.relatedTarget instanceof Node && form.contains(e.relatedTarget))) {
+      open = false
+      highlighted = -1
       render()
     }
   })

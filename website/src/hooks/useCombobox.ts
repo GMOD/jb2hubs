@@ -35,6 +35,10 @@ export function useCombobox({
   const optionId = (index: number) => `${listboxId}-option-${index}`
 
   const onKeyDown = (e: KeyboardEvent) => {
+    // Keys pressed while an input method composes a character are its own.
+    if (e.nativeEvent.isComposing) {
+      return
+    }
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       if (!open) {
