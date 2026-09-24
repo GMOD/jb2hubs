@@ -186,6 +186,29 @@ test('placeQuery: nothing alignable throws rather than emitting an empty row', (
   assert.throws(() => placeQuery('PPPP', seed, { queryName: 'GENE' }), /align/)
 })
 
+// Two EGF repeats of human NOTCH1, as a seed would carry them.
+const egfSeed = parseStockholm(`EGF1/1-31  CSPNPCQNGGTCVDGVNSYRCECPPGFTGKY
+EGF2/1-31  CSSSPCLHGGTCRDGVDSFTCLCPRGFTGKY
+//
+`)
+
+test('placeQuery: a translation without the domain is refused, not placed through a chance hit', () => {
+  // unrelated sequence with a W, which alone scores 11 against a W anywhere
+  const query = 'MSTQLLKAWEEVAQRLSDLLKAAQEEVARQLSDLKKMSTQLLKAWEEVAQ'
+  assert.throws(
+    () => placeQuery(query, egfSeed, { queryName: 'GENE' }),
+    /GENE residues 1–50 do not align to the seed alignment/,
+  )
+})
+
+test('placeQuery: a strong hit over under half the anchor row is refused', () => {
+  // the first twelve residues exactly, which score well above chance
+  assert.throws(
+    () => placeQuery('CSPNPCQNGGTC', egfSeed, { queryName: 'GENE' }),
+    /covers 39% of EGF1\/1-31/,
+  )
+})
+
 test('placeQuery: an anchor the tree does not name leaves the tree out', () => {
   const seed = parseStockholm(stockholm)
   const placed = placeQuery('ACDEFGHK', seed, {

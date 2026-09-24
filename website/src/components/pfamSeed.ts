@@ -149,6 +149,22 @@ const UNKNOWN = -1
 const GAP_OPEN = 11
 const GAP_EXTEND = 1
 
+// Smith-Waterman returns its best positive cell whether or not the domain is
+// there, and one W–W pair scores 11. So a placement has to be one chance would
+// not produce: an E-value under BLAST's gapped statistics for this matrix and
+// these gaps (λ 0.267, K 0.041), taking the window against every seed row as
+// the search space, and a span over half the anchor row. Measured 2026-09-24
+// on the four focused chips' families — all twenty NOTCH1 EGF repeats, TP53's
+// DNA-binding domain, BRAF's kinase, HBB's globin — the real placements score
+// 96 to 1,042 at E 7.5e-8 or less. Five shuffles of each translation in place,
+// and SOD1, which has none of these domains, reach 1.2e-2 at best — except a
+// shuffled globin at 2.9e-4, which keeps the family's composition and which no
+// isoform missing the domain resembles.
+const LAMBDA = 0.267
+const K = 0.041
+const MAX_EVALUE = 1e-3
+const MIN_ANCHOR_COVERAGE = 0.5
+
 function score(a: string, b: string) {
   const i = INDEX.get(a)
   const j = INDEX.get(b)
@@ -398,9 +414,16 @@ export function placeQuery(
     0,
   )
   const { row: anchor, alignment } = scored[bestIdx]!
-  if (alignment.pairs.length === 0) {
+  const seedResidues = rows.reduce((n, r) => n + r.seq.length, 0)
+  const evalue =
+    K * slice.length * seedResidues * Math.exp(-LAMBDA * alignment.score)
+  const coverage = alignment.pairs.length
+    ? (alignment.pairs.at(-1)![1] - alignment.pairs[0]![1] + 1) /
+      anchor.seq.length
+    : 0
+  if (evalue > MAX_EVALUE || coverage < MIN_ANCHOR_COVERAGE) {
     throw new Error(
-      `${queryName} does not align to any row of the ${seed.accession ?? 'seed'} alignment`,
+      `${queryName} residues ${ws + 1}–${we} do not align to the ${seed.accession ?? 'seed'} alignment: the best match covers ${Math.round(coverage * 100)}% of ${anchor.name} at E ${evalue.toExponential(1)}`,
     )
   }
   const pairs = alignment.pairs.map(([q, t]): [number, number] => [q + ws, t])
