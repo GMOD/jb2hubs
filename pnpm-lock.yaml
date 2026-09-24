@@ -109,9 +109,15 @@ importers:
 
   genark2jbrowse:
     dependencies:
+      '@gmod/bbi':
+        specifier: ^11.2.3
+        version: 11.2.3
       hubtools:
         specifier: workspace:*
         version: link:../hubtools
+      ixixx:
+        specifier: ^3.0.13
+        version: 3.0.13
 
   hubtools:
     dependencies:
@@ -811,6 +817,9 @@ packages:
 
   '@gmod/abortable-promise-cache@3.0.4':
     resolution: {integrity: sha512-kxRJj5fyRKFuZDp/YvnHeadYCV2EEUKyH2T4a2Iz9O7T/thOWWHUDiiD/Mg6WZP/RNNDIcfSHl/xVHHy/+j8qg==}
+
+  '@gmod/bbi@11.2.3':
+    resolution: {integrity: sha512-FIN66AsUHKHwbWLdfG4f520OmHKxvVUDmaMqhSFJk1z3dGcn/L+DF76aqw5JEQMbbaOfDe5vqIQVkg+OhZbWDw==}
 
   '@gmod/bgzf-filehandle@6.6.0':
     resolution: {integrity: sha512-rCKRWfN4KXf4YYH4TeMKKq+56Viu+FX/l2B53uBIx2+ThP9yVbupFMtspteh7Z/lnP6R3vn2kfIytB0wt+bFbA==}
@@ -4419,6 +4428,11 @@ snapshots:
   '@floating-ui/utils@0.2.12': {}
 
   '@gmod/abortable-promise-cache@3.0.4': {}
+
+  '@gmod/bbi@11.2.3':
+    dependencies:
+      '@gmod/shared-read-cache': 1.7.2
+      generic-filehandle2: 2.4.0
 
   '@gmod/bgzf-filehandle@6.6.0':
     dependencies:

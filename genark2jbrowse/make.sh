@@ -142,6 +142,12 @@ mkdir -p bgz
 log "Deriving genetic codes from NCBI GFF files..."
 ./deriveGeneticCodes.sh
 
+# GCA hubs have no NCBI GFF, so their gene search is built from xenoRefGene's
+# RefSeq accessions mapped to symbols. Before the config build, which gives a
+# hub the trix entry only once its index exists.
+log "Building xenoRefGene gene-symbol indexes for GCA hubs..."
+./xenoSymbolIndex.sh <"$ALL_META_FILE"
+
 # Each hub's liftOver directory is probed for chain files once, recorded by its
 # .checked stamp, which names the @jbrowse/cli that wrote the PIFs. The gate
 # reads that name rather than testing for the file, because a PIF's bytes are a
