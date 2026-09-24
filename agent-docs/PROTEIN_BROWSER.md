@@ -201,12 +201,17 @@ Glu7 of the translation is residue 6 in 2HHB and 1A00, and a construct can start
 anywhere. p2s_mapper reads the SIFTS mapping for the chosen entry
 (`pdbe/api/mappings/uniprot/<pdb>`, cross-origin, ~1 KB) and shifts the range by
 the chain segment that covers most of it; the card says which chain and by how
-much, or that no chain covers the range. The launch link waits for that read, as
-it does for an isoform's translation. A focused partner also changes the
-structure: the first PDB entry the two were seen in together opens instead of
-the monomer, with the partner's chain loaded — the protein3d plugin loads every
-polymer entity, maps the transcript onto the one whose sequence explains it, and
-offers the rest in its chain picker.
+much, or that no chain covers the range. SIFTS leaves an endpoint's author
+number out when that residue has no coordinates — 1A3O's and 1A3N's HBB chains
+lack Val1 — so `authorRange` derives a missing start from the segment's end
+before shifting; without it those entries read as covering nothing and lit the
+UniProt numbers. The launch link waits for that read, as it does for an
+isoform's translation, and for a linked partner it waits for the PDBe list that
+names the partner's complex. A focused partner also changes the structure: the
+first PDB entry the two were seen in together opens instead of the monomer, with
+the partner's chain loaded — the protein3d plugin loads every polymer entity,
+maps the transcript onto the one whose sequence explains it, and offers the rest
+in its chain picker.
 
 **An alignment chosen by the question.** A focused domain, or a residue inside
 one, offers the Pfam family's **seed** first: the curated few dozen sequences

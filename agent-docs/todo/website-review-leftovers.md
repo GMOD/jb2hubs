@@ -26,11 +26,6 @@ Delete an entry when it lands, and the file when it is empty.
 
 ## Follow-ups
 
-- **Protein browser.** A replaced gene query's NCBI requests keep running and
-  hold queue slots ahead of the new one; cancelling them needs an abort signal
-  passed through the resolver. A linked complex id waits on the partner list
-  without holding the launch. 1A3O's HBB homo-oligomer interface reads "no chain
-  covers the range" and falls back to UniProt numbering.
 - **Two HPRC haplotype lanes.** `pnpm check-pangenome-launches` fails the `defb`
   and `nphp1` lanes: genes are never fetched on HG00097#1 and HG00544#1. Main
   failed both identically on 2026-09-24, before and after that day's pangenome
@@ -42,5 +37,7 @@ Delete an entry when it lands, and the file when it is empty.
   `loci.json` still carry `drawable`, `fullName` and `inversion`, which the
   generator no longer writes and nothing reads. They go at the next
   regeneration.
-- **One more external link.** `ProteinBrowserDialogs` builds its own new-tab
-  link; `ExternalLink.tsx` could replace it.
+- **p2s_mapper's `toAuthorRange` skips a SIFTS segment with no author start.**
+  `authorRange` in `website/src/components/proteinFeatures.ts` derives the start
+  from the segment's end first (1A3O's HBB chains need it); the same line in
+  p2s_mapper would let the wrapper go.
