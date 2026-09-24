@@ -52,12 +52,30 @@ fetches the GenArk hub, which does not contain the track (and whose sequence
 with both assemblies and `GCF_049354715.1_to_hg38_liftOver` among its 610
 tracks.
 
-**11 assemblies appear in the catalog under both names** (dm6, canFam3, danRer7,
-galGal5, sacCer3, susScr3, bosTau6, xenTro3, felCat5, melGal1, triMan1). A
-`LinearSyntenyView` opens one panel per genome, so such a genome can only be one
-of them, and a stack whose two flanking links disagree has to give one of them
-up. `resolveStackNames` in `syntenyPairIndex.ts` is the single copy of that
-rule: names are fixed left to right, and a level whose link contradicts a
-settled name keeps its slot but loses its track — which is exactly what a level
-with no alignment already did, so the failure mode is one missing ribbon rather
-than a panel nothing binds to.
+**16 assemblies appear in the catalog under both names**, a UCSC db and the
+GenArk accession of the same assembly: dm6, danRer11, sacCer3, triMan1, canFam4,
+canFam6, galGal6, susScr11, bosTau8, bosTau9, xenTro10, felCat9, equCab3,
+panTro6, rheMac10 and neoSch1 (counted 2026-09-24). A `LinearSyntenyView` opens
+one panel per genome, so such a genome can only be one of them, and a stack
+whose two flanking links disagree has to give one of them up.
+`resolveStackNames` in `syntenyPairIndex.ts` is the single copy of that rule:
+names are fixed left to right, and a level whose link contradicts a settled name
+keeps its slot but loses its track — which is exactly what a level with no
+alignment already did, so the failure mode is one missing ribbon rather than a
+panel nothing binds to.
+
+An earlier count here named 11 such assemblies, and seven of them — danRer7,
+galGal5, susScr3, bosTau6, xenTro3, felCat5 and melGal1 — were a different
+assembly that happens to share the accession's base. NCBI keeps one base across
+major versions: GCF_000002315.6 is GRCg6a (galGal6), not Gallus_gallus-5.0, and
+GCF_000001635.26 is GRCm38 (mm10), not mm39. `buildUcscMapping` fell back to the
+newest UCSC db claiming the base, so accession pages launched those genomes and
+this index keyed their tracks under the wrong accession. The mapping now needs
+an accession the UCSC entry names or an assembly name that agrees
+(`website/src/utils/ucscMapping.ts`).
+
+A shared base still reaches the client, which matches on it, so the generator
+indexes a UCSC db's tracks only while its accession is the newest hosted version
+of its base. mm10's and canFam3's stay out: a lookup of mouse or dog means
+GRCm39 or Dog10K_Boxer_Tasha, and a panel of the older assembly would land on
+the wrong coordinates.

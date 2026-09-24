@@ -41,27 +41,43 @@ const hosted = new Set(orthologIndex.accessions)
 // host: 586 of the 3,094 tracks name hg38, and none of them survived. So
 // resolve a name to its accession here, and carry the original name through to
 // the client, which needs it to merge the right hub and label the right panel.
+//
+// Several accessions can map to one db (anoCar2 is GCF_000090745.1 and .2), so
+// each db and each accession base resolves to its newest hosted version rather
+// than to whichever the index happened to list last.
+const base = (accession: string) => accession.replace(/\.\d+$/, '')
+const version = (accession: string) => Number(/\.(\d+)$/.exec(accession)?.[1])
+function keepNewest(map: Map<string, string>, key: string, accession: string) {
+  const existing = map.get(key)
+  if (!existing || version(accession) > version(existing)) {
+    map.set(key, accession)
+  }
+}
 const ucscToAccession = new Map<string, string>()
 const byBase = new Map<string, string>()
-const version = (accession: string) => Number(/\.(\d+)$/.exec(accession)?.[1])
 for (const [accession, ucscDb] of Object.entries(orthologIndex.ucscDb)) {
-  ucscToAccession.set(ucscDb, accession)
+  keepNewest(ucscToAccession, ucscDb, accession)
 }
 for (const accession of orthologIndex.accessions) {
-  const base = accession.replace(/\.\d+$/, '')
-  const existing = byBase.get(base)
-  if (!existing || version(accession) > version(existing)) {
-    byBase.set(base, accession)
-  }
+  keepNewest(byBase, base(accession), accession)
 }
 
 // A track's assembly name -> the hosted RefSeq accession it stands for, or
 // undefined when the ortholog table could never show that assembly anyway.
+//
+// A UCSC db stands for its accession only while that is the newest hosted
+// version of its base, because the client matches on the base and the ortholog
+// store resolves a base to its newest version. mm10 is GCF_000001635.26, and
+// indexing its tracks would answer a lookup of mouse, which means GRCm39's .27,
+// with a panel of GRCm38 coordinates.
 function toAccession(name: string) {
-  return (
-    ucscToAccession.get(name) ??
-    (hosted.has(name) ? name : byBase.get(name.replace(/\.\d+$/, '')))
-  )
+  const ucscAccession = ucscToAccession.get(name)
+  if (ucscAccession) {
+    return byBase.get(base(ucscAccession)) === ucscAccession
+      ? ucscAccession
+      : undefined
+  }
+  return hosted.has(name) ? name : byBase.get(base(name))
 }
 
 // The gene track a launched panel opens for one genome, under whichever name
@@ -91,11 +107,17 @@ function geneTrackFor(name: string) {
 // itself. The /synteny catalog's own isSelfPair keeps the version — hg19 and
 // hg38 share GCA_000001405 and are a real comparison there — which this file
 // cannot, because its keys are base-matched.
-const pairs: Record<string, [string, string, string, string, string]> = {}
-const base = (accession: string) => accession.replace(/\.\d+$/, '')
-let viaUcscDb = 0
+//
+// For the same reason, two tracks whose keys differ only in version — a GenArk
+// hub's .1 and .2 against hg38 — are one lookup on the client. The index keeps
+// the track whose halves are the versions the ortholog store resolves their
+// bases to, the newest hosted, not whichever came last in the catalog.
+type PairEntry = [string, string, string, string, string]
+const pairs = new Map<string, { key: string; entry: PairEntry }>()
+const newestHalves = (key: string) =>
+  key.split(',').filter(a => byBase.get(base(a)) === a).length
 let selfPairs = 0
-let collisions = 0
+let superseded = 0
 const noGeneTrack = new Set<string>()
 for (const track of data.tracks) {
   const [name1, name2] = track.assemblyNames
@@ -106,9 +128,6 @@ for (const track of data.tracks) {
       selfPairs += 1
     } else {
       const key = `${acc1},${acc2}`
-      if (pairs[key]) {
-        collisions += 1
-      }
       const gene1 = geneTrackFor(name1)
       const gene2 = geneTrackFor(name2)
       if (!gene1) {
@@ -117,22 +136,36 @@ for (const track of data.tracks) {
       if (!gene2) {
         noGeneTrack.add(name2)
       }
-      pairs[key] = [track.trackId, name1, name2, gene1, gene2]
-      if (acc1 !== name1 || acc2 !== name2) {
-        viaUcscDb += 1
+      const bases = `${base(acc1)},${base(acc2)}`
+      const incumbent = pairs.get(bases)
+      if (incumbent) {
+        superseded += 1
+      }
+      if (!incumbent || newestHalves(key) >= newestHalves(incumbent.key)) {
+        pairs.set(bases, {
+          key,
+          entry: [track.trackId, name1, name2, gene1, gene2],
+        })
       }
     }
   }
 }
+const kept = [...pairs.values()]
+const viaUcscDb = kept.filter(({ key, entry: [, name1, name2] }) => {
+  const [acc1, acc2] = key.split(',')
+  return acc1 !== name1 || acc2 !== name2
+}).length
+const output = Object.fromEntries(kept.map(({ key, entry }) => [key, entry]))
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true })
-fs.writeFileSync(outputPath, JSON.stringify(pairs))
+fs.writeFileSync(outputPath, JSON.stringify(output))
 
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)
 console.log(
-  `Synteny pair index: ${Object.keys(pairs).length} tracks ` +
+  `Synteny pair index: ${kept.length} tracks ` +
     `(${viaUcscDb} named by UCSC db rather than accession), ${sizeKB} KB; ` +
-    `skipped ${selfPairs} same-genome pairs, ${collisions} duplicate keys`,
+    `skipped ${selfPairs} same-base pairs and ${superseded} tracks ` +
+    'for a pair already indexed',
 )
 if (noGeneTrack.size > 0) {
   // A panel with no gene track opens on the right locus with nothing drawn,

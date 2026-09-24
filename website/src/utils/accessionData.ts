@@ -4,10 +4,12 @@ import path from 'path'
 import { accessionChunks } from 'hubtools'
 
 import { taxonIdsIn } from './taxonomyCache.ts'
+import { mapAccessionsToUcsc } from './ucscMapping.ts'
 
+import type { UcscGenomeEntry } from './ucscMapping.ts'
 import type { AnnotationInfo } from 'hubtools'
 
-export type { AnnotationInfo }
+export type { AnnotationInfo, UcscGenomeEntry }
 
 export interface AssemblyData {
   accession: string
@@ -119,32 +121,6 @@ export function loadAccessionMap() {
   )
 }
 
-// Which UCSC browser db an assembly accession is, from the accessions UCSC's own
-// genome list spells out in each entry's sourceName.
-//
-// The version is load-bearing and used not to be. Nine accession bases are
-// claimed by more than one UCSC assembly — GCA_000002035 is danRer7 (Zv9),
-// danRer10 AND danRer11 (GRCz11); GCA_000001405 is both hg19 and hg38 — so a
-// version-stripped key collapsed them and kept whichever iterated last. That is
-// not a near-miss: it named danRer7 for a GRCz11 accession, and a launch built
-// on it opened Zv9 coordinates for a GRCz11 locus, silently and plausibly. So
-// match the full accession first, and keep a base map only as the fallback for
-// an accession whose exact version UCSC does not list, resolved to the newest
-// claimant rather than to iteration order.
-function accessionVersion(accession: string) {
-  const m = /\.(\d+)$/.exec(accession)
-  return m ? Number(m[1]) : 0
-}
-
-// One entry of list.json's ucscGenomes, as much of it as the pages read.
-export interface UcscGenomeEntry {
-  description: string
-  organism: string
-  scientificName: string
-  sourceName?: string
-  taxId: number
-}
-
 function loadUcscGenomes() {
   return (
     JSON.parse(fs.readFileSync(path.join('src', 'list.json'), 'utf-8')) as {
@@ -154,36 +130,7 @@ function loadUcscGenomes() {
 }
 
 export function buildUcscMapping(accessions: Map<string, AssemblyData>) {
-  const exactToUcsc = new Map<string, string>()
-  const newestForBase = new Map<string, { id: string; version: number }>()
-  for (const [id, genome] of Object.entries(loadUcscGenomes())) {
-    const accession = genome.sourceName?.match(/GC[AF]_\d+(?:\.\d+)?/)?.[0]
-    if (accession) {
-      const version = accessionVersion(accession)
-      exactToUcsc.set(accession, id)
-      const base = accession.replace(/\.\d+$/, '')
-      const incumbent = newestForBase.get(base)
-      if (!incumbent || version > incumbent.version) {
-        newestForBase.set(base, { id, version })
-      }
-    }
-  }
-
-  const mapping = new Map<string, string>()
-  for (const [accession, data] of accessions) {
-    const candidates = [accession, data.pairedAccession].filter(
-      (a): a is string => !!a,
-    )
-    const ucscId =
-      candidates.map(a => exactToUcsc.get(a)).find(Boolean) ??
-      candidates
-        .map(a => newestForBase.get(a.replace(/\.\d+$/, ''))?.id)
-        .find(Boolean)
-    if (ucscId) {
-      mapping.set(accession, ucscId)
-    }
-  }
-  return mapping
+  return mapAccessionsToUcsc(loadUcscGenomes(), accessions.values())
 }
 
 // What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
