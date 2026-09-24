@@ -209,9 +209,10 @@ async function resolveGene(
   sym: string,
   ref: number,
   onProgress: (s: string) => void,
+  signal: AbortSignal,
 ): Promise<Resolved> {
   const cachePending = loadExampleCache()
-  const structure = await fetchGeneStructure(sym, ref)
+  const structure = await fetchGeneStructure(sym, ref, signal)
   const cached = usable((await cachePending)[cacheKey(sym, ref)])
   // keyed on NCBI's canonical spelling of the symbol, which is what the hosted
   // index uses — a typed "tp53" would otherwise miss; the panel is built on the
@@ -223,11 +224,13 @@ async function resolveGene(
       : assembleProteinPanel(structure.symbol, ref, {
           onProgress,
           geneId: structure.geneId,
+          signal,
         })
   ).then(
     (panel): PanelOutcome => ({ panel }),
     (e: unknown): PanelOutcome => ({ panelError: errorText(e) }),
   )
+  signal.throwIfAborted()
   return {
     structure,
     panel,
@@ -261,6 +264,12 @@ export default function ProteinBrowser() {
   // Which species switch is the latest, so a slower earlier lookup cannot land
   // on top of it. A new query supersedes a pending switch the same way.
   const followToken = useRef(0)
+  // The lookup in flight, so a replaced query gives up the NCBI requests it
+  // still has queued instead of holding them ahead of the new one. Its abort
+  // lands as an error on the replaced query's key, which nothing shows.
+  const resolving = useRef<{ key: string; controller: AbortController }>(
+    undefined,
+  )
 
   const {
     data,
@@ -269,10 +278,22 @@ export default function ProteinBrowser() {
     mutate: retry,
   } = useSWRImmutable(
     query.gene ? (['protein-gene', query.gene, query.ref] as const) : null,
-    ([, sym, ref]) =>
-      resolveGene(sym, ref, message => {
-        setProgress({ key: queryKey(sym, ref), message })
-      }),
+    ([, sym, ref]) => {
+      const key = queryKey(sym, ref)
+      if (resolving.current?.key !== key) {
+        resolving.current?.controller.abort()
+      }
+      const controller = new AbortController()
+      resolving.current = { key, controller }
+      return resolveGene(
+        sym,
+        ref,
+        message => {
+          setProgress({ key, message })
+        },
+        controller.signal,
+      )
+    },
     LIVE_QUERY,
   )
   const status =
@@ -339,6 +360,7 @@ export default function ProteinBrowser() {
     } else {
       setFollow(undefined)
       if (query.gene) {
+        resolving.current?.controller.abort()
         setQuery({ gene: '', ref })
         syncProteinUrl('', ref, undefined)
       }

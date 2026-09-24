@@ -136,6 +136,7 @@ export interface ProteinPanelOptions {
   // serializes every call — so the duplicate costs a whole rate-limit slot.
   // Ignored by the PANTHER source, which resolves on the symbol.
   geneId?: string
+  signal?: AbortSignal // drops its queued NCBI requests once nobody wants the panel
 }
 
 export interface ProteinAlignOptions {
@@ -175,7 +176,10 @@ interface OrthologGene {
 }
 
 // One ortholog gene per species from the NCBI Datasets orthologs endpoint.
-async function fetchOrthologGenes(geneId: string): Promise<OrthologGene[]> {
+async function fetchOrthologGenes(
+  geneId: string,
+  signal?: AbortSignal,
+): Promise<OrthologGene[]> {
   const json = await fetchOrthologReports<{
     reports?: {
       gene?: {
@@ -186,7 +190,7 @@ async function fetchOrthologGenes(geneId: string): Promise<OrthologGene[]> {
         swiss_prot_accessions?: string[]
       }
     }[]
-  }>(geneId)
+  }>(geneId, [], signal)
   const genes: OrthologGene[] = []
   for (const { gene } of json.reports ?? []) {
     const taxId = Number(gene?.tax_id)
@@ -221,6 +225,7 @@ const MAX_PRODUCT_PAGES = 50
 
 async function fetchRepresentativeProteins(
   geneIds: string[],
+  signal?: AbortSignal,
 ): Promise<Map<string, string>> {
   const byGene = new Map<string, string>()
   let pageToken: string | undefined
@@ -234,6 +239,7 @@ async function fetchRepresentativeProteins(
       `${DATASETS}/gene/id/${geneIds.join(',')}/product_report?page_size=${PRODUCT_PAGE_SIZE}${
         pageToken ? `&page_token=${encodeURIComponent(pageToken)}` : ''
       }`,
+      { signal },
     )
     for (const { product } of json.reports ?? []) {
       const candidates = (product?.transcripts ?? [])
@@ -491,6 +497,7 @@ async function ncbiProteins(
   maxRows: number,
   onProgress: (message: string) => void,
   resolvedGeneId?: string,
+  signal?: AbortSignal,
 ): Promise<Sourced> {
   onProgress('Resolving orthologs across species…')
   const queryGeneId = resolvedGeneId ?? (await resolveGeneId(query, refTaxonId))
@@ -498,7 +505,7 @@ async function ncbiProteins(
     throw new Error(`no gene found for "${query}"`)
   }
   // One ortholog per species, in the report's own order.
-  const orthologs = await fetchOrthologGenes(queryGeneId)
+  const orthologs = await fetchOrthologGenes(queryGeneId, signal)
   const total = new Set(orthologs.map(g => g.taxId)).size
   const byTaxon = new Map<number, OrthologGene>()
   for (const g of orthologs) {
@@ -516,6 +523,7 @@ async function ncbiProteins(
   onProgress('Selecting a representative protein per species…')
   const proteinByGene = await fetchRepresentativeProteins(
     genes.map(g => g.geneId),
+    signal,
   )
   const withProtein = genes.filter(g => proteinByGene.has(g.geneId))
   if (withProtein.length < 2) {
@@ -528,6 +536,7 @@ async function ncbiProteins(
   const accessions = withProtein.map(g => proteinByGene.get(g.geneId)!)
   const seqById = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=fasta&retmode=text`,
+    { signal },
   ).then(parseFasta)
 
   const proteins = withProtein.flatMap(g => {
@@ -605,6 +614,7 @@ export async function assembleProteinPanel(
     source = defaultOrthologSource(refTaxonId),
     onProgress = () => undefined,
     geneId,
+    signal,
   }: ProteinPanelOptions = {},
 ): Promise<ProteinPanel> {
   // No `taxa` asks the source for everything it has; naming one still scopes the
@@ -612,7 +622,15 @@ export async function assembleProteinPanel(
   const wanted = taxa ? new Set([...taxa, refTaxonId]) : undefined
   const { proteins, total } = await (source === 'panther'
     ? pantherProteins(query, refTaxonId, wanted, maxRows, onProgress)
-    : ncbiProteins(query, refTaxonId, wanted, maxRows, onProgress, geneId))
+    : ncbiProteins(
+        query,
+        refTaxonId,
+        wanted,
+        maxRows,
+        onProgress,
+        geneId,
+        signal,
+      ))
 
   // Ordered by the common-species rank (reference and close relatives first) so
   // the panel reads as a curated set rather than whatever order a source used.
@@ -625,7 +643,11 @@ export async function assembleProteinPanel(
   )
 
   onProgress('Fetching conserved domains…')
-  const domainsByAcc = await fetchDomains(ordered.map(p => p.protein))
+  const domainsByAcc = await fetchDomains(
+    ordered.map(p => p.protein),
+    signal,
+  )
+  signal?.throwIfAborted()
 
   const rows = ordered.map((p, i) => ({
     ...p,
@@ -654,9 +676,10 @@ function byCommonRank(a: number, b: number) {
 // as it serves a RefSeq one, and answers a TrEMBL accession with HTTP 400 — a
 // mixed batch returns what it can, so PANTHER rows get domains wherever the
 // accession is reviewed, and an all-TrEMBL batch costs the domains, not the run.
-async function fetchDomains(accessions: string[]) {
+async function fetchDomains(accessions: string[], signal?: AbortSignal) {
   return ncbiText(
     `${EUTILS}/efetch.fcgi?db=protein&id=${accessions.join(',')}&rettype=gp&retmode=text`,
+    { signal },
   )
     .then(parseAllDomains)
     .catch(() => new Map<string, Domain[]>())

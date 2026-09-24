@@ -29,7 +29,7 @@ function withKey(url: string) {
 async function fetchOnce(url: string, init?: RequestInit) {
   const gap = MIN_GAP_MS - (Date.now() - lastStart)
   if (gap > 0) {
-    await delay(gap)
+    await delay(gap, init?.signal ?? undefined)
   }
   lastStart = Date.now()
   return fetch(withKey(url), init)
@@ -39,13 +39,17 @@ export async function ncbiFetch(
   url: string,
   init?: RequestInit,
 ): Promise<Response> {
-  // Serialize through a single chain so concurrent callers still space out.
+  // Serialize through a single chain so concurrent callers still space out. A
+  // request whose signal fired while it waited in line gives its turn up
+  // unspent, so a query the reader has replaced does not hold slots ahead of
+  // the one that replaced it.
   const run = async () => {
+    init?.signal?.throwIfAborted()
     let attempt = 0
     let res = await fetchOnce(url, init)
     while ((res.status === 429 || res.status >= 500) && attempt < MAX_RETRIES) {
       attempt += 1
-      await delay(MIN_GAP_MS * 2 ** attempt)
+      await delay(MIN_GAP_MS * 2 ** attempt, init?.signal ?? undefined)
       res = await fetchOnce(url, init)
     }
     return res
@@ -79,10 +83,12 @@ export async function ncbiJson<T>(url: string, init?: RequestInit): Promise<T> {
 export function fetchOrthologReports<T>(
   geneId: string,
   taxa: number[] = [],
+  signal?: AbortSignal,
 ): Promise<T> {
   const filters = taxa.map(t => `&taxon_filter=${t}`).join('')
   return ncbiJson<T>(
     `${DATASETS}/gene/id/${geneId}/orthologs?returned_content=COMPLETE${filters}`,
+    { signal },
   )
 }
 

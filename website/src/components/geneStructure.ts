@@ -157,9 +157,11 @@ function pickReport(json: DatasetsGeneReport, symbol: string) {
 export async function resolveGene(
   symbol: string,
   taxId: number,
+  signal?: AbortSignal,
 ): Promise<ResolvedGene> {
   const json = await ncbiJson<DatasetsGeneReport>(
     `${DATASETS}/gene/symbol/${encodeURIComponent(symbol)}/taxon/${taxId}`,
+    { signal },
   )
   const gene = pickReport(json, symbol)
   const placements = placedAnnotations(gene)
@@ -180,12 +182,14 @@ export async function resolveGene(
 export async function fetchUniProtAccession(
   symbol: string,
   taxId: number,
+  signal?: AbortSignal,
 ): Promise<string | undefined> {
   const query = encodeURIComponent(
     `gene_exact:${symbol} AND organism_id:${taxId} AND reviewed:true`,
   )
   const res = await fetch(
     `${UNIPROT}/search?query=${query}&fields=accession&format=json&size=1`,
+    { signal },
   ).catch(() => undefined)
   const json: unknown = res?.ok ? await res.json() : undefined
   const results =
@@ -326,6 +330,7 @@ export function parseGeneTableBlocks(
 // curated isoform, which is what it always was.
 export async function fetchSelectTranscripts(
   geneId: string,
+  signal?: AbortSignal,
 ): Promise<Map<string, TranscriptTag>> {
   const json = await ncbiJson<{
     reports?: {
@@ -333,7 +338,9 @@ export async function fetchSelectTranscripts(
         transcripts?: { accession_version?: string; select_category?: string }[]
       }
     }[]
-  }>(`${DATASETS}/gene/id/${geneId}/product_report`).catch(() => undefined)
+  }>(`${DATASETS}/gene/id/${geneId}/product_report`, { signal }).catch(
+    () => undefined,
+  )
   const tags = new Map<string, TranscriptTag>()
   for (const t of json?.reports?.[0]?.product?.transcripts ?? []) {
     const tag: TranscriptTag | undefined =
@@ -375,9 +382,13 @@ export function orderIsoforms(
 }
 
 // The protein a RefSeq transcript encodes, off its NP_/XP_ record.
-export async function fetchProteinSequence(accession: string) {
+export async function fetchProteinSequence(
+  accession: string,
+  signal?: AbortSignal,
+) {
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=protein&id=${accession}&rettype=fasta&retmode=text`,
+    { signal },
   )
   const [, ...seq] = text.trim().split('\n')
   return seq.join('')
@@ -398,20 +409,24 @@ async function hostedTarget(symbol: string, placement: PlacedAnnotation) {
   return target
 }
 
+// A fired `signal` rejects with its reason, including where a best-effort step
+// would otherwise swallow the abort and hand back a partial structure.
 export async function fetchGeneStructure(
   symbol: string,
   taxId: number,
+  signal?: AbortSignal,
 ): Promise<GeneStructure> {
-  const gene = await resolveGene(symbol, taxId)
+  const gene = await resolveGene(symbol, taxId, signal)
   const uniprotId =
-    gene.uniprotId ?? (await fetchUniProtAccession(symbol, taxId))
+    gene.uniprotId ?? (await fetchUniProtAccession(symbol, taxId, signal))
   // Neither of these is an NCBI call, so they overlap the throttled ones below.
   const alphafoldPending = uniprotId
     ? fetchAlphaFoldModels(uniprotId)
     : Promise.resolve([])
-  const tags = await fetchSelectTranscripts(gene.geneId)
+  const tags = await fetchSelectTranscripts(gene.geneId, signal)
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
+    { signal },
   )
   const placement = tablePlacement(
     gene.symbol,
@@ -432,9 +447,11 @@ export async function fetchGeneStructure(
   if (!picked) {
     throw new Error(`No coding transcript in gene_table for ${symbol}`)
   }
-  const proteinSequence = await fetchProteinSequence(picked.protein).catch(
-    () => undefined,
-  )
+  const proteinSequence = await fetchProteinSequence(
+    picked.protein,
+    signal,
+  ).catch(() => undefined)
+  signal?.throwIfAborted()
   return {
     symbol: gene.symbol,
     geneId: gene.geneId,

@@ -39,3 +39,27 @@ test('each scope taxon becomes its own taxon_filter param', async () => {
 test('an empty scope is the same request as no scope', async () => {
   assert.equal(await urlFor('672', []), await urlFor('672'))
 })
+
+// A replaced gene query aborts its lookup, and whatever of it is still waiting
+// in the throttle's line has to give its turn up rather than spend it.
+test('a request aborted while queued never reaches NCBI', async () => {
+  const asked: string[] = []
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', (url: string) => {
+    asked.push(/gene\/id\/(\d+)/.exec(url)?.[1] ?? url)
+    return Promise.resolve(new Response('{}', { status: 200 }))
+  })
+  const controller = new AbortController()
+  try {
+    const first = fetchOrthologReports('1')
+    const second = fetchOrthologReports('2', [], controller.signal)
+    const third = fetchOrthologReports('3')
+    controller.abort()
+    await first
+    await assert.rejects(second, { name: 'AbortError' })
+    await third
+  } finally {
+    globalThis.fetch = original
+  }
+  assert.deepEqual(asked, ['1', '3'])
+})
