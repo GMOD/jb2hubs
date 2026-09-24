@@ -417,3 +417,40 @@ test('cladogram right-aligns every leaf tip regardless of tree depth', () => {
   assert.ok(Math.min(...xs) < DEFAULT_TREE_WIDTH)
   assert.ok(Math.max(...xs) < DEFAULT_TREE_WIDTH)
 })
+
+const drawing = (taxonIds: number[]): Neighborhood => ({
+  ...withTree,
+  species: taxonIds.map(taxonId => ({
+    taxonId,
+    commonName: String(taxonId),
+    genes: [gene('A', 0)],
+  })),
+})
+
+// Rat is not drawn, so Rodentia holds one drawn leaf: a dot there would repeat
+// mouse's own row, and Euarchontoglires would be a second dot over the same
+// two species as the root.
+test('a branch point left with one drawn child is not drawn', () => {
+  const l = layoutNeighborhood(drawing([13616, 9606, 10090]))
+  assert.deepEqual(
+    l.treeNodes.map(n => [...n.leafTaxonIds].sort((a, b) => a - b)),
+    [
+      [9606, 10090],
+      [9606, 10090, 13616],
+    ],
+  )
+})
+
+// Without the opossum the root has one drawn child, and Euarchontoglires is the
+// root of what is drawn: one dot at the left edge, and Rodentia halfway, where
+// depth taken from the undrawn tree put them a third and two thirds of the way.
+test('depth comes from the tree as drawn', () => {
+  const l = layoutNeighborhood(drawing([9606, 10090, 10116]))
+  assert.deepEqual(
+    l.treeNodes.map(n => [n.leafTaxonIds.length, n.x]),
+    [
+      [2, DEFAULT_TREE_WIDTH / 2],
+      [3, 0],
+    ],
+  )
+})

@@ -231,6 +231,23 @@ function mirrorRow(genes: GeneBox[]): GeneBox[] {
   }))
 }
 
+// The tree as drawn: the taxonomy covers every species the neighborhood
+// fetched, and the view may draw fewer. A branch point left with one drawn child
+// is no branch point, so the child takes its place; kept, it would draw a
+// second clickable dot over the same clade and push every depth one step left.
+function drawnTree(
+  node: TaxonNode,
+  rowY: Map<number, number>,
+): TaxonNode | undefined {
+  if (node.children.length === 0) {
+    return rowY.has(node.taxonId) ? node : undefined
+  }
+  const children = node.children
+    .map(c => drawnTree(c, rowY))
+    .filter((c): c is TaxonNode => c !== undefined)
+  return children.length > 1 ? { ...node, children } : children[0]
+}
+
 // Cladogram (rectangular): rows are the vertical axis (a leaf sits at its row y),
 // topological depth is the horizontal axis. Every node is positioned at
 // `rootHeight - height` — where a node's height is its longest link chain down to
@@ -247,7 +264,8 @@ function layoutTree(
 ) {
   const edges: TreeEdge[] = []
   const nodes: TreeNodeHit[] = []
-  if (!tree) {
+  const drawn = tree && drawnTree(tree, rowY)
+  if (!drawn) {
     return { edges, nodes }
   }
   const height = new Map<TaxonNode, number>()
@@ -259,7 +277,7 @@ function layoutTree(
     height.set(node, h)
     return h
   }
-  const rootHeight = heightOf(tree)
+  const rootHeight = heightOf(drawn)
   const xAt = (h: number) =>
     rootHeight === 0 ? treeWidth : ((rootHeight - h) / rootHeight) * treeWidth
 
@@ -268,19 +286,15 @@ function layoutTree(
     y: number
     leaves: number[]
   }
-  function place(node: TaxonNode): Placed | undefined {
+  function place(node: TaxonNode): Placed {
     if (node.children.length === 0) {
-      const y = rowY.get(node.taxonId)
-      return y === undefined
-        ? undefined
-        : { x: treeWidth, y, leaves: [node.taxonId] }
+      return {
+        x: treeWidth,
+        y: rowY.get(node.taxonId) ?? 0,
+        leaves: [node.taxonId],
+      }
     }
-    const kids = node.children
-      .map(place)
-      .filter((r): r is Placed => r !== undefined)
-    if (kids.length === 0) {
-      return undefined
-    }
+    const kids = node.children.map(place)
     const x = xAt(height.get(node) ?? 0)
     for (const kid of kids) {
       edges.push({ x1: x, y1: kid.y, x2: kid.x, y2: kid.y }) // horizontal to child
@@ -291,7 +305,7 @@ function layoutTree(
     nodes.push({ x, y, leafTaxonIds: leaves })
     return { x, y, leaves }
   }
-  place(tree)
+  place(drawn)
   return { edges, nodes }
 }
 
