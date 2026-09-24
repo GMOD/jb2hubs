@@ -52,22 +52,42 @@ interface MyGeneHit {
     | { chr?: string; start?: number; end?: number }[]
 }
 
-// A gene symbol as a region of the reference, through mygene.info, which the
-// symbol type-ahead already uses. Its human coordinates are GRCh38, and a
-// symbol on an unplaced contig or a patch comes back without a plain
-// chromosome, which is not a window this graph can draw.
-export async function resolveGeneRegion(
-  symbol: string,
+export interface LookupOptions {
+  fetchImpl?: typeof fetch
+}
+
+// One mygene.info query on one field, quoted so the text is one term: the
+// table's own `C4A / C4B` unquoted is a query syntax error. A 4xx other than a
+// timeout or a rate limit is mygene saying nothing matches, not a failure.
+async function mygeneHits(
+  field: 'symbol' | 'alias',
+  text: string,
   taxId: number,
-  fetchImpl: typeof fetch = fetch,
-): Promise<ParsedRegion | undefined> {
-  const url = `https://mygene.info/v3/query?q=symbol:${encodeURIComponent(symbol)}&species=${taxId}&fields=symbol,genomic_pos&size=5`
-  const res = await fetchImpl(url)
+  { fetchImpl = fetch }: LookupOptions,
+) {
+  const q = `${field}:"${text.replaceAll(/["\\]/g, '\\$&')}"`
+  const res = await fetchImpl(
+    `https://mygene.info/v3/query?q=${encodeURIComponent(q)}&species=${taxId}&fields=symbol,genomic_pos&size=5`,
+  )
+  if (
+    res.status >= 400 &&
+    res.status < 500 &&
+    ![408, 429].includes(res.status)
+  ) {
+    return []
+  }
   if (!res.ok) {
     throw new Error(`mygene.info: HTTP ${res.status}`)
   }
   const json = (await res.json()) as { hits?: MyGeneHit[] }
-  for (const hit of json.hits ?? []) {
+  return json.hits ?? []
+}
+
+// Its human coordinates are GRCh38, and a symbol on an unplaced contig or a
+// patch comes back without a plain chromosome, which is not a window this
+// graph can draw.
+function placedRegion(hits: MyGeneHit[]): ParsedRegion | undefined {
+  for (const hit of hits) {
     const positions = [hit.genomic_pos ?? []].flat()
     for (const pos of positions) {
       if (
@@ -89,11 +109,25 @@ export async function resolveGeneRegion(
   return undefined
 }
 
+// A gene symbol as a region of the reference, through mygene.info, which the
+// symbol type-ahead already uses. Text that is no gene's symbol is tried as an
+// alias, which is how HER2 finds ERBB2.
+export async function resolveGeneRegion(
+  symbol: string,
+  taxId: number,
+  options: LookupOptions = {},
+): Promise<ParsedRegion | undefined> {
+  const hits = await mygeneHits('symbol', symbol, taxId, options)
+  return placedRegion(
+    hits.length > 0 ? hits : await mygeneHits('alias', symbol, taxId, options),
+  )
+}
+
 // What the box takes: a locstring, else a gene symbol.
 export async function resolveRegion(
   text: string,
   taxId: number,
-  fetchImpl: typeof fetch = fetch,
+  options: LookupOptions = {},
 ) {
   const parsed = parseRegion(text)
   if (parsed) {
@@ -103,5 +137,5 @@ export async function resolveRegion(
   if (!symbol) {
     return undefined
   }
-  return resolveGeneRegion(symbol, taxId, fetchImpl)
+  return resolveGeneRegion(symbol, taxId, options)
 }
