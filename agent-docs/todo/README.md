@@ -15,9 +15,9 @@ turns out to be a decision rather than a task belongs in
   than junk, which is why the gate must mirror the drop rules rather than
   observe the config.
 - [website-review-leftovers.md](website-review-leftovers.md) — what the
-  2026-09-23 website review left open after two rounds of fixes: three product
-  decisions (UCSC search names, assembly-name ranking, the 12-genome launch cap)
-  and the follow-ups the fixes turned up.
+  2026-09-23 website review left open after two rounds of fixes: two product
+  decisions (whether UCSC rows show a borrowed common name, the 12-genome launch
+  cap) and the follow-ups the fixes turned up.
 - [ncbi-gff-annotation-release-date.md](ncbi-gff-annotation-release-date.md) —
   the NCBI GFF track's info dialog says nothing about annotation freshness,
   though `parseAssemblyEntry.ts` already parses the release date and the

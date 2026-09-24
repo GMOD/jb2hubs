@@ -9,19 +9,16 @@ Delete an entry when it lands, and the file when it is empty.
 
 ## Decisions
 
-- **UCSC search rows name 50 organisms by an abbreviated binomial.**
-  `generateSearchIndex.ts` takes a UCSC row's common name from the genome list's
-  `organism` field, which reads `D. melanogaster`, `S. cerevisiae` or
-  `C. elegans` for 50 of the 238 dbs, so `fly`, `yeast` and `worm` never reach
-  dm6, sacCer3 or ce11. GenArk rows for the same taxa carry NCBI's names
-  (`fly D.melanogaster`, `baker's yeast S288C`, `tropical clawed frog`), and
-  borrowing the commonest one by taxon id would fix search for 49 of the 50; C.
-  elegans's commonest, `nematode C.elegans`, still misses `worm`. It waits
-  because it changes what /search and /ucsc display for those rows.
-- **Search ranking for assembly names.** The review reported `GRCh38` ranking
-  the GenArk GCF_000001405.40 row above hg38, and `t2t` placing hs1 18th. Not
-  re-measured since the search changes of 2026-09-24, which changed only the
-  order of equal scores.
+- **UCSC rows still display an abbreviated binomial.** 50 of the 238 dbs show
+  UCSC's `organism` field (`D. melanogaster`, `S. cerevisiae`) as their common
+  name on /search and /ucsc. Search no longer depends on it: each such db
+  carries the common names GenArk gives its organism as match-only `aliases`
+  (`generateSearchIndex.ts`), so `yeast` puts sacCer3 first, `nematode` ce11,
+  `honey bee` apiMel2, and `fly` puts the 19 UCSC Drosophila dbs first with dm6
+  7th (shorter names such as `fly D.erecta` win the clutter tiebreak). `worm`
+  reaches ce11 only 40th, through `roundworm`, below rows named as worms. What
+  is left is whether to show a borrowed name, and the /ucsc table's own filter
+  (`UCSCTable.tsx`), which reads `list.json` and still misses `fly`.
 - **The 12-genome cap on "Open all N"** (`MAX_PICKED_GENOMES`). A launch URL
   past ~8 KB exceeds CloudFront's request line, so a clade launch opens the 12
   genomes nearest the reference. Carrying the launch in the URL hash would lift
@@ -47,5 +44,3 @@ Delete an entry when it lands, and the file when it is empty.
   regeneration.
 - **One more external link.** `ProteinBrowserDialogs` builds its own new-tab
   link; `ExternalLink.tsx` could replace it.
-- **State not yet in the URL:** the /search page number and the synteny view
-  mode.
