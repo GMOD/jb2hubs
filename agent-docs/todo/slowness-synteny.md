@@ -46,7 +46,9 @@ Still open:
 - **N × chrom.sizes/chromAlias from hgdownload** per launch is the GenArk
   sidecar trade recorded in `../../CLAUDE.md`; nothing here changes it.
 - **The 29 s API Gateway limit** against a 120 s Lambda: a slow cold miss is a
-  504 the client retries once. Measure in CloudWatch before moving either, but
-  the log group keeps 7 days, and with the gene-order figure staging-only that
-  was 23 invocations on 2026-09-24: none over 29 s, cold assemblies 10–13 s on
-  the new v4 cache. Raising the retention is the first step to a real answer.
+  504 the client retries once. Measure in CloudWatch before moving either. With
+  the gene-order figure staging-only, 2026-09-24 saw 23 invocations: none over
+  29 s, cold assemblies 10–13 s on the new v4 cache. The log group kept 7 days,
+  too few invocations to answer from; it keeps 30 since 2026-09-24 (set live
+  with `aws logs put-retention-policy` and in `template.yaml` to match), so read
+  it again in late October.
