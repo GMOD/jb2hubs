@@ -61,10 +61,3 @@ export function genarkConfigPath(accession: string) {
   ]
   return `/hubs/genark/${prefix}/${b1}/${b2}/${b3}/${accession}/config.json`
 }
-
-// processedHubJson and the mouse-strain JSON bake launch URLs against whichever
-// build the generator was written for, so retarget them rather than letting a
-// staging page link into the production bundle (or vice versa).
-export function retargetJbrowseUrl(url: string) {
-  return url.replace(/^https:\/\/jbrowse\.org\/code\/jb2\/[^/]+/, JBROWSE_BASE)
-}

@@ -8,9 +8,7 @@ import { desktopUrl } from './jbrowseLinks.ts'
 // The fallback names THIS link rather than the sibling "open in JBrowse" one,
 // because Desktop's link parser unwraps a jbrowse:// url to the web url inside
 // it — so either one pastes. Same release as the handler itself, so a build that
-// can act on the link can also accept it pasted. Kept as a right-click rather
-// than a copy button: hprc.astro renders this island without a client directive,
-// so nothing here hydrates.
+// can act on the link can also accept it pasted.
 const HINT =
   'Opens in JBrowse Desktop 5.0 or newer. If nothing happens, copy this link (right-click → Copy link address) and use File → Session → Open JBrowse Web link...'
 
