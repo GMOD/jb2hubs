@@ -694,6 +694,15 @@ unconditionally once a released `latest` carries `LinearMultiRowFeatureDisplay`.
 Re-run the probe rather than assuming, since from this side the failure is
 silent.
 
+A third is added by `ucsc2jbrowse/src/buildConfigs.ts` itself, since it reads
+the build's trackDb: one multi-way synteny track over every liftOver PIF the
+anchor's config already names (`multiwayStarTrack.ts`), 165 of the 238 UCSC
+configs. It opens on the anchor's multiz `speciesDefaultOn` where UCSC curated
+one, and the lane picker offers every other mate grouped by the multiz clades.
+The display fetches only the lanes it draws from jbrowse-components `64199e02e9`
+on; a `jb2/main` built before it reads every child on every window, 240 for
+hg38. So deploy `jb2/main` before uploading these siblings.
+
 For **this** question the probe is not the cheapest instrument, and the browser
 one cannot answer it at all — the fatal needs the track opened. What decides it
 is whether a release has happened since the display landed, which a

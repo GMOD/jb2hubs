@@ -47,7 +47,7 @@ import { addNcbiRefSeqGffTrack } from './addNcbiRefSeqGffTrack.ts'
 import { addOrigAssemblyToTrackName } from './addOrigAssemblyToTrackName.ts'
 import { addDerivedTabixTracks } from './addTabixTrackToConfig.ts'
 import { createAssemblyConfig } from './createAssembly.ts'
-import { addChainTracks } from './createChainTracks.ts'
+import { addChainTracks, liftOverTargetLabel } from './createChainTracks.ts'
 import { minimalConfig } from './createMinimalConfig.ts'
 import { dropGlobTracks } from './dropGlobTracks.ts'
 import { ensureAssemblyAliasesAndCytobands } from './ensureAssemblyAliasesAndCytobands.ts'
@@ -57,13 +57,18 @@ import {
 } from './ensureTextSearchAdapters.ts'
 import { ensureUcscAssemblyNames } from './ensureUcscAssemblyNames.ts'
 import { addGencodeTracks } from './gencodeTracks.ts'
-import { generateDefaultSessions } from './generateDefaultSessions.ts'
+import {
+  defaultGeneTrackId,
+  generateDefaultSessions,
+} from './generateDefaultSessions.ts'
 import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { addBigDataTracks } from './mergeBigFileTracks.ts'
 import { mirrorAssemblySidecars } from './mirrorAssemblySidecars.ts'
+import { alignmentSettings, multiwayStarTrack } from './multiwayStarTrack.ts'
 import { removeOutdatedTracks } from './removeEverythingButLatest.ts'
 import { rewriteUcscTrackNames } from './rewriteUcscTrackNames.ts'
 import { readJSON, requireArg } from './util.ts'
+import { parseTrackDbSettings } from './utils/trackDbSettings.ts'
 
 import type {
   JBrowseConfig,
@@ -107,6 +112,32 @@ function hubUrl(genome: UcscGenome) {
 
 function ucscOrganism(db: string) {
   return ucscGenomes[db]?.organism ?? ''
+}
+
+// The staging sibling's one multi-way track over the config's liftOver pairs;
+// see multiwayStarTrack.ts for why it is staging-only
+function withMultiwayStar(config: JBrowseConfig, ctx: FinalizeContext) {
+  const { assemblyName } = ctx
+  const star = multiwayStarTrack({
+    config,
+    assemblyName,
+    genomes: ucscGenomes,
+    labelOf: mate => liftOverTargetLabel(mate, ucscOrganism),
+    geneTrackId: defaultGeneTrackId(
+      config,
+      config.assemblies[0]?.name ?? assemblyName,
+    ),
+    alignments: alignmentSettings(
+      config,
+      Object.values(ctx.tracksDb ?? {}).map(entry =>
+        parseTrackDbSettings(entry.settings),
+      ),
+    ),
+  })
+  if (star) {
+    config.tracks.push(star)
+  }
+  return config
 }
 
 const step = (
@@ -260,9 +291,11 @@ await mapWithConcurrency(names, 4, async assemblyName => {
     // staging.genomes.jbrowse.org gets. A sibling file rather than a parallel
     // tree, because a UCSC config names most of its data relatively and
     // jbrowse-web resolves those against the config's own url.
+    const staging = structuredClone(ctx.config)
+    enhanceConfigObject(staging, stagingEnhanceOptions)
     written += writeIfChanged(
       path.join(outDir, 'config-staging.json'),
-      enhanceConfigObject(structuredClone(ctx.config), stagingEnhanceOptions),
+      withMultiwayStar(staging, ctx),
     )
 
     const plan = textIndexPlan(ctx)

@@ -8,14 +8,13 @@ import type { FinalizeStep } from './utils/finalizeStep.ts'
 // does not exist in the config, which makes the hubs plugin fire its
 // Core-handleUnrecognizedAssembly handler and load the very same config again
 // as a connection, duplicating every track.
-function generateDefaultSession(
-  genome: UcscGenome,
+/** the gene track a session on this config opens with, if it has one */
+export function defaultGeneTrackId(
   config: JBrowseConfig,
-): DefaultSession {
-  const assemblyId = genome.id
-  const assemblyName = config.assemblies[0]?.name ?? assemblyId
+  assemblyName: string,
+) {
   const trackIds = new Set(config.tracks.map(t => t.trackId))
-  const candidates = [
+  return [
     `${assemblyName}-ncbiRefSeq`,
     `${assemblyName}-ncbiRefSeqCurated`,
     `${assemblyName}-ncbiGene`,
@@ -23,8 +22,16 @@ function generateDefaultSession(
     `${assemblyName}-ensGene`,
     `${assemblyName}-augustusGene`,
     `${assemblyName}-xenoRefGene`,
-  ]
-  const trackId = candidates.find(t => trackIds.has(t))
+  ].find(t => trackIds.has(t))
+}
+
+function generateDefaultSession(
+  genome: UcscGenome,
+  config: JBrowseConfig,
+): DefaultSession {
+  const assemblyId = genome.id
+  const assemblyName = config.assemblies[0]?.name ?? assemblyId
+  const trackId = defaultGeneTrackId(config, assemblyName)
 
   return {
     name: `${assemblyId} ${genome.description}`,

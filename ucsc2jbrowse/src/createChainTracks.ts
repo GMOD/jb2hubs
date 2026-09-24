@@ -34,6 +34,22 @@ function getAccessionCommonName(accession: string) {
 
 const SRC_DIR = 'liftOver'
 
+/**
+ * What a liftOver track calls its target: `Chimp (panTro6)` off the UCSC
+ * genome list, the common name for a GenArk accession, '' when neither knows
+ * it. Takes the NORMALIZED name: all.json is keyed by bare accession, so an
+ * asmId-spelled target (dm6ToGCA_003448975.1_ASM344897v1) found nothing
+ */
+export function liftOverTargetLabel(
+  target: string,
+  ucscOrganism: (db: string) => string,
+) {
+  const commonName = isAccession(target)
+    ? getAccessionCommonName(target)
+    : ucscOrganism(target)
+  return commonName ? `${commonName} (${target})` : ''
+}
+
 function createChainTrackConfig({
   pifFile,
   sourceAssembly,
@@ -66,19 +82,13 @@ function createChainTrackConfig({
   const targetAssembly = normalizeAssemblyName(targetAssemblyOrig)
   const trackSrcDir = isChainBridge ? `${SRC_DIR}_chainBridge` : SRC_DIR
 
-  // both lookups take the NORMALIZED name: all.json is keyed by bare accession,
-  // so an asmId-spelled target (dm6ToGCA_003448975.1_ASM344897v1) found nothing
-  const commonName = isAccession(targetAssemblyOrig)
-    ? getAccessionCommonName(targetAssembly)
-    : ucscOrganism(targetAssembly)
+  const label = liftOverTargetLabel(targetAssembly, ucscOrganism)
 
   const trackId = `${sourceAssembly}_to_${targetAssembly}_${trackSrcDir}`
   return {
     type: 'SyntenyTrack',
     trackId,
-    name: commonName
-      ? `${sourceAssembly} to ${commonName} (${targetAssembly}) ${trackSrcDir}`
-      : `${sourceAssembly} to ${targetAssembly} ${trackSrcDir}`,
+    name: `${sourceAssembly} to ${label || targetAssembly} ${trackSrcDir}`,
     category: ['Pairwise alignments', SRC_DIR],
     assemblyNames: [sourceAssembly, targetAssembly],
     adapter: {
