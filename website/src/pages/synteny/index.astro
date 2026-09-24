@@ -2,7 +2,6 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import SyntenySelector from '../../components/SyntenySelector.tsx'
-import syntenyData from '../../syntenyTracks.json'
 import { features } from '../../config/features.ts'
 import '../../styles/common-table.css'
 
@@ -24,12 +23,7 @@ if (!features.synteny) {
       conserved regions between them.
     </p>
 
-    {/* syntenyTracks.json is already the pruned island shape (track ids and
-        names, info for participating assemblies) — see SyntenyCatalogData. */}
-    <SyntenySelector
-      client:load
-      data={syntenyData}
-    />
+    <SyntenySelector client:load />
 
     <p>
       <a href="/synteny/info">About synteny tracks &rarr;</a>

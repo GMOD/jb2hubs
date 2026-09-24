@@ -123,9 +123,9 @@ describe('createStaticCatalog over the real blob', () => {
   })
 })
 
-// The pruned island shape: only assemblies a track names, each carrying the
-// gene track its panel opens, and a taxon for every UCSC assembly the genome
-// list knows — hs1 in particular, whose config knows no organism at all.
+// The pruned shape the selector fetches: only assemblies a track names, each
+// carrying the gene track its panel opens, and a taxon for every UCSC assembly
+// the genome list knows — hs1 in particular, whose config knows no organism.
 describe('syntenyTracks.json is the pruned selector shape', () => {
   it('holds info only for assemblies a track names', () => {
     const named = new Set(data.tracks.flatMap(t => t.assemblyNames))

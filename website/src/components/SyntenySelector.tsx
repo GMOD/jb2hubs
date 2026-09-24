@@ -5,7 +5,9 @@ import { useCallback, useMemo, useState } from 'react'
 import useSWRImmutable from 'swr/immutable'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { fetchJson } from '../lib/fetchJson.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
+import syntenyTracksUrl from '../syntenyTracks.json?url'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import {
@@ -35,7 +37,24 @@ function formatOption(asm: SyntenyAssembly) {
   return parts.join('  ·  ')
 }
 
-export default function SyntenySelector({ data }: Props) {
+// The catalog is a static asset rather than island props: serialized into the
+// page it was ~950 KB of inline HTML, fetched it is one cacheable file.
+export default function SyntenySelector() {
+  const { data, error } = useSWRImmutable(syntenyTracksUrl, (url: string) =>
+    fetchJson<SyntenyCatalogData>(url),
+  )
+  return data ? (
+    <SyntenyPicker data={data} />
+  ) : (
+    <p className="synteny-hint">
+      {error
+        ? `Could not load the synteny catalog (${String(error)}).`
+        : 'Loading the synteny catalog…'}
+    </p>
+  )
+}
+
+function SyntenyPicker({ data }: Props) {
   // Everything that makes the link shareable is URL state: the pair, the gene
   // (as "<NCBI GeneID>:<symbol>", so a load can re-resolve the ortholog without
   // a search) and an alignment other than the default.

@@ -1,10 +1,10 @@
 // The synteny catalog is the set of assemblies and synteny tracks that the
 // /synteny page lets you browse, backed by the build-time `syntenyTracks.json`
-// that `scripts/extractSyntenyTracks.ts` writes and the page hands to the
-// selector as island props. That file is already the pruned shape below — track
-// ids, names and assembly names, plus info for the assemblies that take part —
-// not the configs' adapters, which nothing on the client reads and which made
-// the props 8 MB. The queries are synchronous because the data is: an earlier
+// that `scripts/extractSyntenyTracks.ts` writes and the selector fetches as a
+// static asset. That file is already the pruned shape below — track ids, names
+// and assembly names, plus info for the assemblies that take part — not the
+// configs' adapters, which nothing on the client reads and which made it 8 MB.
+// The queries are synchronous because the data is, once loaded: an earlier
 // Promise-returning version bought nothing but forced the selector to mirror
 // every list into state behind an effect.
 
