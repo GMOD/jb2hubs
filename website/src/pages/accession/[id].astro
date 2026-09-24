@@ -6,6 +6,7 @@ import OrangeStar from '../../components/OrangeStar.tsx'
 import RedX from '../../components/RedX.tsx'
 import {
   loadAccessionMap,
+  loadSyntenyAssemblies,
   buildUcscMapping,
   buildSiblingIndex,
   loadHubImage,
@@ -13,11 +14,21 @@ import {
   taxonomyPageIds,
 } from '../../utils/accessionData.ts'
 import {
+  accessionHead,
+  buscoSummary,
+  geneCountSummary,
+  hasAssemblyDetails,
+  pairedLabel,
+  retrievedDate,
+  specimenSummary,
+  speciesLabel,
+  syntenyName,
+} from '../../utils/accessionPage.ts'
+import {
   jbrowseUrl,
   genarkConfigPath,
   ucscConfigPath,
 } from '../../config/jbrowse.ts'
-import { bareCommonName } from '../../utils/names.ts'
 import { usefulComments } from '../../utils/comments.ts'
 import {
   ncbiBioProjectUrl,
@@ -27,15 +38,8 @@ import {
 import { features } from '../../config/features.ts'
 import tooltipStyles from '../../components/Tooltip.module.css'
 import styles from './accession.module.css'
-import syntenyAccessions from '../../syntenyAccessions.json'
 
 import '../../styles/common-table.css'
-
-// The assembly names the /synteny selector lists, precomputed by
-// generateSyntenyAccessions.ts so accession pages avoid loading
-// syntenyTracks.json. A UCSC-hosted genome is listed under its db name (hg38),
-// which is why the link below tries ucscDbName before the accession.
-const syntenyAssemblies = new Set<string>(syntenyAccessions)
 
 export async function getStaticPaths() {
   // Astro extracts getStaticPaths into its own module and tree-shakes the rest of
@@ -43,6 +47,7 @@ export async function getStaticPaths() {
   const accessions = loadAccessionMap()
   const ucscMappings = buildUcscMapping(accessions)
   const siblingIndex = buildSiblingIndex(accessions)
+  const syntenyAssemblies = loadSyntenyAssemblies()
   const taxonPages = taxonomyPageIds()
   const maxSiblings = 8
 
@@ -50,14 +55,15 @@ export async function getStaticPaths() {
     .filter(([id]) => !!id)
     .map(([id, data]) => {
       const { siblings = [], taxonCount = 1 } = siblingIndex.get(id) ?? {}
+      const ucscDbName = ucscMappings.get(id)
       return {
         params: { id },
         props: {
           data,
-          pairedAssemblyData: data.pairedAccession
-            ? accessions.get(data.pairedAccession)
-            : undefined,
-          ucscDbName: ucscMappings.get(id),
+          pairedHosted:
+            !!data.pairedAccession && accessions.has(data.pairedAccession),
+          ucscDbName,
+          syntenyAssembly: syntenyName([ucscDbName, id], syntenyAssemblies),
           taxonomyPage: taxonPages.has(String(data.taxonId)),
           siblings: siblings.slice(0, maxSiblings),
           siblingCount: siblings.length,
@@ -69,8 +75,9 @@ export async function getStaticPaths() {
 
 const {
   data,
-  pairedAssemblyData,
+  pairedHosted,
   ucscDbName,
+  syntenyAssembly,
   taxonomyPage,
   siblings,
   siblingCount,
@@ -81,12 +88,10 @@ const {
   accession,
   scientificName,
   ncbiAssemblyName,
-  commonName,
   igvBrowserLink,
   ncbiBrowserLink,
   ucscBrowserLink,
   ucscDataLink,
-  ncbiLink,
   taxonId,
   seqReleaseDate,
   assemblyStatus,
@@ -98,107 +103,40 @@ const {
   ncbiMissing,
 } = data
 
-const syntenyName = [ucscDbName, accession].find(
-  name => name !== undefined && syntenyAssemblies.has(name),
-)
-
+const details = loadNcbiDetails(accession)
 const {
   stats,
   pairedAssemblyStatus,
   pairedAssemblyDifferences,
   genomeNotes,
   suppressionReason,
-  infraspecificNames,
-  comments: rawComments,
   gcPercent,
   genomeCoverage,
   sequencingTech,
   bioprojectAccession,
   annotationInfo,
   ncbiDownloadedAt,
-} = loadNcbiDetails(accession)
-
-// GCA = GenBank, GCF = RefSeq
-const pairedLabel = pairedAccession?.startsWith('GCF')
-  ? 'Paired RefSeq'
-  : 'Paired GenBank'
+} = details
 
 const imageData = loadHubImage(accession)
 const imageUrl = imageData?.imageUrl
 const pageUrl = imageData?.pageUrl
 
-const comments = usefulComments(rawComments)
-
+const comments = usefulComments(details.comments)
 const taxonomyUrl = ncbiTaxonomyUrl(taxonId)
+const ncbiUrl = ncbiGenomeUrl(accession)
 
-const buscoBreakdown = annotationInfo?.busco
-  ? [
-      annotationInfo.busco.single_copy !== undefined
-        ? `${(annotationInfo.busco.single_copy * 100).toFixed(1)}% single-copy`
-        : null,
-      annotationInfo.busco.duplicated !== undefined
-        ? `${(annotationInfo.busco.duplicated * 100).toFixed(1)}% duplicated`
-        : null,
-      annotationInfo.busco.fragmented !== undefined
-        ? `${(annotationInfo.busco.fragmented * 100).toFixed(1)}% fragmented`
-        : null,
-      annotationInfo.busco.missing !== undefined
-        ? `${(annotationInfo.busco.missing * 100).toFixed(1)}% missing`
-        : null,
-    ].filter(Boolean)
-  : []
-
-// These 50K pages are the site's main entry point from a search engine, and until
-// now they carried only a bare scientific-name title — identical across every
-// assembly of the same species — and no description at all.
-const assemblyLabel = [ncbiAssemblyName, accession].filter(Boolean).join(' ')
-const pageTitle = `${scientificName} — ${assemblyLabel}`
-// The bare common name: GenArk's own already repeats the assembly and year, which
-// the label beside it states outright.
-const organism = bareCommonName(commonName)
-const pageDescription = [
-  `${scientificName}${organism ? ` (${organism})` : ''} genome assembly`,
-  `${assemblyLabel}.`,
-  'Open it in the JBrowse 2 genome browser, see assembly statistics and',
-  'annotation, and follow links to NCBI and UCSC.',
-].join(' ')
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Dataset',
-  name: pageTitle,
+const {
+  organism,
+  title: pageTitle,
   description: pageDescription,
-  identifier: accession,
-  url: new URL(Astro.url.pathname, Astro.site).href,
-  sameAs: ncbiLink,
-  ...(seqReleaseDate ? { datePublished: seqReleaseDate } : {}),
-  ...(submitterOrg
-    ? { creator: { '@type': 'Organization', name: submitterOrg } }
-    : {}),
-  keywords: [scientificName, organism, accession, ncbiAssemblyName].filter(
-    Boolean,
-  ),
-  about: {
-    '@type': 'Taxon',
-    name: scientificName,
-    ...(organism ? { alternateName: organism } : {}),
-    identifier: `NCBI:txid${taxonId}`,
-    sameAs: taxonomyUrl,
-  },
-}
-
-const hasAssemblyDetails =
-  stats?.total_length ||
-  stats?.chromosome_count ||
-  stats?.scaffold_count ||
-  stats?.contig_count ||
-  gcPercent !== undefined ||
-  genomeCoverage ||
-  sequencingTech ||
-  submitterOrg ||
-  bioprojectAccession ||
-  pairedAccession ||
-  (infraspecificNames && Object.keys(infraspecificNames).length)
+  jsonLd,
+} = accessionHead(data, new URL(Astro.url.pathname, Astro.site).href)
+const busco = buscoSummary(annotationInfo?.busco)
+const geneCounts = geneCountSummary(annotationInfo?.stats?.gene_counts)
+const specimen = specimenSummary(details.infraspecificNames)
+const showAssemblyDetails = hasAssemblyDetails(details, data)
+const showAnnotation = !!(annotationInfo?.name || busco || geneCounts)
 ---
 
 <Layout
@@ -223,8 +161,12 @@ const hasAssemblyDetails =
         <dd>{accession}</dd>
         <dt>Assembly name</dt>
         <dd>{ncbiAssemblyName}</dd>
-        <dt>Common name</dt>
-        <dd>{organism}</dd>
+        {organism ? (
+          <>
+            <dt>Common name</dt>
+            <dd>{organism}</dd>
+          </>
+        ) : null}
         <dt>TaxonID</dt>
         <dd>
           {taxonomyPage ? (
@@ -274,7 +216,7 @@ const hasAssemblyDetails =
         <figure class={styles.figure}>
           <img
             src={imageUrl}
-            alt={`${scientificName}${organism ? ` (${organism})` : ''}`}
+            alt={speciesLabel(scientificName, organism)}
             class={styles.image}
             loading="lazy"
             decoding="async"
@@ -319,9 +261,9 @@ const hasAssemblyDetails =
     <div>
       <h2>Compare with other genomes</h2>
       <ul>
-        {features.synteny && syntenyName ? (
+        {features.synteny && syntenyAssembly ? (
           <li>
-            <a href={`/synteny/?assembly=${syntenyName}`}>
+            <a href={`/synteny/?assembly=${syntenyAssembly}`}>
               Open a synteny view against an aligned assembly
             </a>
           </li>
@@ -365,7 +307,7 @@ const hasAssemblyDetails =
                   </td>
                   <td>{sibling.ncbiAssemblyName}</td>
                   <td>{sibling.assemblyStatus}</td>
-                  <td>{sibling.seqReleaseDate.replace('00:00', '')}</td>
+                  <td>{sibling.seqReleaseDate}</td>
                   <td>
                     {sibling.isReference ? <OrangeStar /> : null}
                     {sibling.suppressed ? <RedX /> : null}
@@ -384,7 +326,7 @@ const hasAssemblyDetails =
         </details>
       ) : null}
     </div>
-    {hasAssemblyDetails ? (
+    {showAssemblyDetails ? (
       <details class={styles.disclosure}>
         <summary>Assembly details</summary>
         <dl class={styles.statsTable}>
@@ -452,14 +394,10 @@ const hasAssemblyDetails =
               <dd>{sequencingTech}</dd>
             </>
           ) : null}
-          {infraspecificNames && Object.keys(infraspecificNames).length ? (
+          {specimen ? (
             <>
               <dt>Specimen</dt>
-              <dd>
-                {Object.entries(infraspecificNames)
-                  .map(([k, v]) => `${k}: ${v}`)
-                  .join(', ')}
-              </dd>
+              <dd>{specimen}</dd>
             </>
           ) : null}
           {submitterOrg ? (
@@ -481,7 +419,7 @@ const hasAssemblyDetails =
           {pairedAccession ? (
             <>
               <dt>
-                {pairedLabel}
+                {pairedLabel(pairedAccession)}
                 <span
                   class={tooltipStyles.tooltip}
                   data-tooltip="Same assembly submitted to both GenBank and RefSeq"
@@ -492,7 +430,7 @@ const hasAssemblyDetails =
                 </span>
               </dt>
               <dd>
-                {pairedAssemblyData ? (
+                {pairedHosted ? (
                   <a href={`/accession/${pairedAccession}`}>
                     {pairedAccession}
                   </a>
@@ -517,7 +455,7 @@ const hasAssemblyDetails =
         </dl>
       </details>
     ) : null}
-    {annotationInfo ? (
+    {annotationInfo && showAnnotation ? (
       <details class={styles.disclosure}>
         <summary>Annotation</summary>
         <dl class={styles.statsTable}>
@@ -535,33 +473,16 @@ const hasAssemblyDetails =
               </dd>
             </>
           ) : null}
-          {annotationInfo.busco?.complete !== undefined ? (
+          {busco ? (
             <>
               <dt>BUSCO completeness</dt>
-              <dd>
-                {`${(annotationInfo.busco.complete * 100).toFixed(1)}% complete`}
-                {buscoBreakdown.length
-                  ? ` (${buscoBreakdown.join(', ')})`
-                  : null}
-                {annotationInfo.busco.busco_lineage
-                  ? ` — ${annotationInfo.busco.busco_lineage}`
-                  : null}
-              </dd>
+              <dd>{busco}</dd>
             </>
           ) : null}
-          {annotationInfo.stats?.gene_counts ? (
+          {geneCounts ? (
             <>
               <dt>Gene counts</dt>
-              <dd>
-                {annotationInfo.stats.gene_counts.total?.toLocaleString()} total
-                —{' '}
-                {annotationInfo.stats.gene_counts.protein_coding?.toLocaleString()}{' '}
-                protein-coding,{' '}
-                {annotationInfo.stats.gene_counts.non_coding?.toLocaleString()}{' '}
-                non-coding,{' '}
-                {annotationInfo.stats.gene_counts.pseudogene?.toLocaleString()}{' '}
-                pseudogenes
-              </dd>
+              <dd>{geneCounts}</dd>
             </>
           ) : null}
         </dl>
@@ -575,10 +496,10 @@ const hasAssemblyDetails =
     ) : null}
     <div>
       <small>
-        Assembly data from the <a href={ncbiLink}>NCBI assembly page</a> and the{' '}
+        Assembly data from the <a href={ncbiUrl}>NCBI assembly page</a> and the{' '}
         <a href={ucscDataLink}>UCSC GenArk data folder</a>.
         {ncbiDownloadedAt
-          ? ` NCBI data retrieved ${new Date(ncbiDownloadedAt * 1000).toLocaleDateString()}.`
+          ? ` NCBI data retrieved ${retrievedDate(ncbiDownloadedAt)}.`
           : null}
       </small>
     </div>

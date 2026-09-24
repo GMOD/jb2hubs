@@ -144,6 +144,17 @@ export function taxonomyPageIds() {
     : new Set<string>()
 }
 
+// The assembly names the /synteny selector lists, written by
+// generateSyntenyAccessions.ts so accession pages avoid loading
+// syntenyTracks.json.
+export function loadSyntenyAssemblies() {
+  return new Set(
+    JSON.parse(
+      fs.readFileSync(path.join('src', 'syntenyAccessions.json'), 'utf-8'),
+    ) as string[],
+  )
+}
+
 // What /ucsc/<db> links out to: the hosted GenArk accessions the db maps to
 // (the reverse of buildUcscMapping, so a link is only ever to a page that
 // exists) and whether the taxonomy tree has a page for its taxon.
