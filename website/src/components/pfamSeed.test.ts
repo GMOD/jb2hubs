@@ -9,7 +9,6 @@ import {
   placeQuery,
   queryLabel,
   renameLeaf,
-  rowResidueColumns,
 } from './pfamSeed.ts'
 
 const stockholm = `# STOCKHOLM 1.0
@@ -234,14 +233,6 @@ test('graftLeaf / renameLeaf: match whole leaf names only', () => {
     renameLeaf(tree, 'X/1-2', 'GENE/1-2'),
     '(P53_HUMAN/99-289:0.1,P53_HUMAN/99-2890:0.2,GENE/1-2);',
   )
-})
-
-test('rowResidueColumns: gaps are skipped, other rows ignored', () => {
-  const fasta = '>A/1-5\nAC-DE-F\n>B/1-7\nACDEFGH'
-  assert.deepStrictEqual(rowResidueColumns(fasta, 'A/1-5', 3, 4), [3, 4])
-  assert.deepStrictEqual(rowResidueColumns(fasta, 'A/1-5', 5, 5), [6])
-  assert.deepStrictEqual(rowResidueColumns(fasta, 'B/1-7', 3, 4), [2, 3])
-  assert.deepStrictEqual(rowResidueColumns(fasta, 'C', 1, 1), [])
 })
 
 test('queryLabel: a safe token', () => {

@@ -1,7 +1,6 @@
 import { Suspense, lazy, useState, useSyncExternalStore } from 'react'
 
 import { errorText } from './ErrorMessage.tsx'
-import { rowResidueColumns } from './pfamSeed.ts'
 
 import type { AlignSource, LoadedAlignment } from './proteinAlignments.ts'
 import type { ProteinRegion } from './proteinFeatures.ts'
@@ -184,10 +183,6 @@ export default function ProteinAlignmentSection({
 // live inside the article's measure — it is a hundred rows of a wide matrix, and
 // at 60rem you read a sliver of it — so inline it breaks out to the window width
 // (see .msv-align in the page styles), and Expand hands it the whole viewport.
-//
-// MSAViewer builds its MST model once, from the props it first mounts with, so
-// changing the height means a new instance: `key` makes the remount deliberate.
-// Both alignments are already strings in memory, so nothing is re-fetched.
 function AlignmentPanel({
   alignment,
   fasta,
@@ -204,22 +199,14 @@ function AlignmentPanel({
   const viewer = (
     <Suspense fallback={<p className="ui-hint">Loading alignment viewer…</p>}>
       <MSAViewer
-        key={expanded ? 'expanded' : 'inline'}
         msa={fasta}
+        {...(alignment.region ? { region: alignment.region } : {})}
         {...(source.kind === 'inline'
           ? {
               ...(source.msa.newick ? { tree: source.msa.newick } : {}),
               ...(source.msa.gff ? { gff: source.msa.gff } : {}),
-              // the embedded viewer (react-msaview 6.2) marks columns, not a
-              // row's residues; the session's MsaView takes the highlights
               ...(source.msa.highlights?.length
-                ? {
-                    highlightColumns: source.msa.highlights.flatMap(h =>
-                      h.row
-                        ? rowResidueColumns(fasta, h.row, h.start, h.end)
-                        : [],
-                    ),
-                  }
+                ? { highlights: source.msa.highlights }
                 : {}),
             }
           : source.kind === 'indexed'

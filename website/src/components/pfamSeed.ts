@@ -528,32 +528,6 @@ export function placeQuery(
   }
 }
 
-// The alignment columns (0-based) holding residues `start`..`end` (1-based
-// inclusive) of the named row — for a viewer that highlights columns rather
-// than a row's residues.
-export function rowResidueColumns(
-  fasta: string,
-  rowName: string,
-  start: number,
-  end: number,
-): number[] {
-  const record = fasta
-    .split(/^>/m)
-    .find(r => r.split('\n')[0]?.trim() === rowName)
-  const aligned = record?.split('\n').slice(1).join('') ?? ''
-  const columns: number[] = []
-  let residue = 0
-  for (let c = 0; c < aligned.length && residue < end; c++) {
-    if (aligned[c] !== '-') {
-      residue++
-      if (residue >= start) {
-        columns.push(c)
-      }
-    }
-  }
-  return columns
-}
-
 // A FASTA/Newick token for the query row: the gene symbol, made safe.
 export function queryLabel(symbol: string) {
   return (

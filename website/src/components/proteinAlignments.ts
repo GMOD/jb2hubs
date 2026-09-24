@@ -48,6 +48,8 @@ export interface LoadedAlignment {
   structureOverrides?: Pick<GeneStructure, 'proteinSequence' | 'transcript'>
   // a caveat about the alignment itself, shown beside it
   note?: string
+  // where the embedded viewer opens, in the named row's residues
+  region?: { row: string; start: number; end: number }
 }
 
 // How far either side of a domain's InterPro coordinates the local alignment
@@ -60,6 +62,9 @@ const SEED_WINDOW = 40
 // characters, silently, and the alignment is one field. A seed thinned to fit
 // is still the family, anchored on the rows nearest the query.
 const SNAPSHOT_FIELD_BUDGET = 45_000
+
+// Residues either side of a focused one that the embedded viewer opens on.
+const REGION_FLANK = 30
 
 // The Pfam seed of the domain a focus sits in, with the launched translation's
 // own domain segment placed in it as the linked row. Three reads, no job: the
@@ -88,20 +93,24 @@ export async function loadPfam(
     maxChars: SNAPSHOT_FIELD_BUDGET,
   })
   // A focused residue inside the segment is marked on the query row, in the
-  // row's own coordinates.
-  const highlights: MsaHighlight[] =
+  // row's own coordinates, and the embedded viewer opens around it.
+  const focused =
     focus?.kind === 'residue' &&
     focus.position >= placed.domain.start &&
     focus.position <= placed.domain.end
-      ? [
-          {
-            row: placed.queryName,
-            start: focus.position - placed.domain.start + 1,
-            end: focus.position - placed.domain.start + 1,
-            label: focus.label ?? `residue ${focus.position}`,
-          },
-        ]
-      : []
+      ? focus
+      : undefined
+  const at = focused ? focused.position - placed.domain.start + 1 : 0
+  const highlights: MsaHighlight[] = focused
+    ? [
+        {
+          row: placed.queryName,
+          start: at,
+          end: at,
+          label: focused.label ?? `residue ${focused.position}`,
+        },
+      ]
+    : []
   const rowCount = placed.kept + 1
   const family = `${domain.pfam} ${seed.id ?? domain.name}`
   const anchorNote = placed.replaced
@@ -129,6 +138,18 @@ export async function loadPfam(
       transcript: structure.transcript,
     },
     note: anchorNote + thinNote,
+    ...(focused
+      ? {
+          region: {
+            row: placed.queryName,
+            start: Math.max(1, at - REGION_FLANK),
+            end: Math.min(
+              placed.domain.end - placed.domain.start + 1,
+              at + REGION_FLANK,
+            ),
+          },
+        }
+      : {}),
   }
 }
 
