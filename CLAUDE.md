@@ -2080,10 +2080,14 @@ residue↔codon mapping bugs that shipped with every unit test green, is
 - `src/lib/searchIndex.ts` — the `IndexEntry` tuple, declared once for the
   generator that writes the index, the generators that read it back and the
   client:
-  `[accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus, year, ucscRank, altAccession]`,
+  `[accession, commonName, scientificName, assemblyName, assemblyStatus, source, taxonId, ncbiStatus, year, ucscRank, altAccession, aliases?]`,
   where `ncbiStatus` is a bitfield of `IS_REFERENCE` (1) and `IS_SUPPRESSED`
-  (2). `src/hooks/useSearchIndex.ts` fetches it through the same `loadJsonOnce`
-  cache as the typeahead, so the two share one download.
+  (2). `aliases` is on UCSC rows only: for the 50 dbs whose organism UCSC spells
+  as an abbreviated binomial (`D. melanogaster`), the common names GenArk gives
+  the same organism, which search matches and no page shows — so `fly`, `yeast`
+  and `worm` reach dm6, sacCer3 and ce11. `src/hooks/useSearchIndex.ts` fetches
+  it through the same `loadJsonOnce` cache as the typeahead, so the two share
+  one download.
 - `src/pages/recently-updated/` — one server-rendered page per GenArk category
   (`[category].astro`) plus the all-categories `index.astro`, linked as tabs.
   The index page forwards the old `?category=` links to the category's page.

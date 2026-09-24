@@ -16,6 +16,9 @@ export type IndexEntry = [
   number, // year the assembly was released, 0 if unknown
   number, // UCSC's preference order within the species (1 = first), 0 = unranked
   string, // altAccession: the GC[AF] accession of a UCSC db, '' for GenArk
+  // names search matches but no page shows, for a UCSC db whose organism field
+  // is an abbreviated binomial: the common names GenArk gives the same taxon
+  string[]?,
 ]
 
 // The ncbiStatus bits, also what the hub tables' rows carry.

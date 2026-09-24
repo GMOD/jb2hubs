@@ -5,3 +5,10 @@
 export function bareCommonName(commonName: string) {
   return commonName.split('(')[0]!.trim()
 }
+
+// The parenthetical bareCommonName drops: "GRCh38.p14 2022" for
+// "human (GRCh38.p14 2022)", '' when there is none.
+export function commonNameLabel(commonName: string) {
+  const open = commonName.indexOf('(')
+  return open === -1 ? '' : commonName.slice(open + 1).replace(/\)\s*$/, '')
+}

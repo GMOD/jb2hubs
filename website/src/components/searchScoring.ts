@@ -1,5 +1,5 @@
 import { IS_REFERENCE } from '../lib/searchIndex.ts'
-import { bareCommonName } from '../utils/names.ts'
+import { bareCommonName, commonNameLabel } from '../utils/names.ts'
 
 import type { IndexEntry } from '../lib/searchIndex.ts'
 
@@ -40,12 +40,19 @@ function usableTerms(terms: string[]) {
 // What scoring reads off an entry, lowercased and joined once per index rather
 // than once per entry per keystroke. Measured 2026-09-24 over all 53,056
 // entries under node: rebuilding them cost 28–63 ms a query, reading them
-// prepared costs 1–3 ms, and preparing them is 45 ms once. `bonus` is the
+// prepared costs 1–3 ms, and preparing them is under 80 ms once. `bonus` is the
 // tiebreakers, which depend on the entry alone.
 interface Searchable {
   entry: IndexEntry
+  // Without GenArk's parenthetical, which is scored with the assembly name
   commonName: string
+  // Names the index borrowed for a UCSC db, matched like the common name
+  aliases: string[]
   scientificName: string
+  // Then the parenthetical, which in "human (GRCh38.p14 2022)" names the
+  // assembly and its year. Scored as the common name, it outranked hg38's own
+  // assembly field for "GRCh38", and put hs1 18th for "t2t", under rows such as
+  // "Swan (goose T2T HZ-2024a 2024)".
   assemblyName: string
   accessionText: string
   // accessionText with a space at each end, so a whole token is a substring
@@ -54,31 +61,42 @@ interface Searchable {
   bonus: number
 }
 
+const NO_ALIASES: string[] = []
+
 function prepare(entry: IndexEntry): Searchable {
   const commonName = entry[1].toLowerCase()
+  const aliases = entry[11]?.length
+    ? entry[11].map(name => name.toLowerCase())
+    : NO_ALIASES
   const scientificName = entry[2].toLowerCase()
   const assemblyName = entry[3].toLowerCase()
+  const bare = bareCommonName(commonName)
+  const label = commonNameLabel(commonName)
   const accessions = `${entry[0]} ${entry[10]}`.toLowerCase().trim()
   const accessionText = `${accessions} ${withoutAccessionPrefix(accessions)}`
   return {
     entry,
-    commonName,
+    commonName: bare,
+    aliases,
     scientificName,
-    assemblyName,
+    assemblyName: label ? `${assemblyName} ${label}` : assemblyName,
     accessionText,
     accessionTokens: ` ${accessionText} `,
-    all: `${accessionText} ${commonName} ${scientificName} ${assemblyName}`,
-    bonus: tiebreak(entry, commonName),
+    all: `${accessionText} ${commonName} ${aliases.join(' ')} ${scientificName} ${assemblyName}`,
+    bonus: tiebreak(entry, aliases[0] ? bareCommonName(aliases[0]) : bare),
   }
 }
 
 // Tiebreakers between equally-matching rows, each band an order of magnitude
 // below the one above so a stronger signal always decides. They stay well
-// under 1 so they never outrank a better textual match.
-function tiebreak(entry: IndexEntry, commonName: string) {
+// under 1 so they never outrank a better textual match. A row with borrowed
+// names is measured by the first of them, which is the name search matches it
+// by: "A. gambiae" is short because it is abbreviated, and put anoGam3 above
+// "African clawed frog" for "african".
+function tiebreak(entry: IndexEntry, bareName: string) {
   // Prefer the least cluttered common name, so "human (GRCh38.p14 2022)" beats
   // "human papillomavirus type 85 (...)" for the query "human".
-  let bonus = 0.5 / (1 + bareCommonName(commonName).length)
+  let bonus = 0.5 / (1 + bareName.length)
 
   // Curation: the assembly someone deliberately designated as *the* one for this
   // species. UCSC building a full browser for a db and NCBI designating a
@@ -135,6 +153,14 @@ function prepareTerms(rawTerms: string[]): Term[] {
   }))
 }
 
+function scoreNames(term: string, commonName: string, aliases: string[]) {
+  let best = scoreTerm(term, commonName)
+  for (const name of aliases) {
+    best = Math.max(best, scoreTerm(term, name))
+  }
+  return best
+}
+
 function score(s: Searchable, terms: Term[]) {
   if (terms.length === 0 || !terms.every(t => s.all.includes(t.accession))) {
     return -1
@@ -144,7 +170,7 @@ function score(s: Searchable, terms: Term[]) {
   let total = 0
   for (const { text, accession } of terms) {
     total += Math.max(
-      scoreTerm(text, s.commonName) * 4,
+      scoreNames(text, s.commonName, s.aliases) * 4,
       // Weighted equal to the common name: users type genus names ("Arabidopsis",
       // "Drosophila", "Danio") at least as often, and ranking the common name
       // higher put viruses named after a host above the host itself.

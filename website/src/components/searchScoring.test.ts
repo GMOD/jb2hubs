@@ -17,6 +17,7 @@ interface EntryOverrides {
   year?: number
   rank?: number
   altAccession?: string
+  aliases?: string[]
 }
 
 function entry(o: EntryOverrides = {}) {
@@ -32,6 +33,7 @@ function entry(o: EntryOverrides = {}) {
     o.year ?? 0,
     o.rank ?? 0,
     o.altAccession ?? '',
+    o.aliases ?? [],
   ]
   return e
 }
@@ -122,6 +124,82 @@ describe('scoreEntry', () => {
       altAccession: 'GCA_000001405.15',
     })
     assert.ok(scoreEntry(hg38, ['human']) > scoreEntry(genark, ['human']))
+  })
+
+  // The real rows, verbatim from searchIndex.json.
+  const grch38p14 = entry({
+    accession: 'GCF_000001405.40',
+    commonName: 'human (GRCh38.p14 2022)',
+    scientificName: 'Homo sapiens',
+    assemblyName: 'GRCh38.p14',
+    assemblyStatus: 'Chromosome',
+    source: 'uncategorized',
+    ncbiStatus: 1,
+    year: 2022,
+  })
+  const hg38 = entry({
+    accession: 'hg38',
+    commonName: 'Human',
+    scientificName: 'Homo sapiens',
+    assemblyName: 'GRCh38',
+    source: 'ucsc',
+    year: 2013,
+    rank: 2,
+    altAccession: 'GCA_000001405.15',
+  })
+
+  it('scores the parenthetical of a GenArk common name as its assembly', () => {
+    assert.ok(scoreEntry(hg38, ['grch38']) > scoreEntry(grch38p14, ['grch38']))
+    const hs1 = entry({
+      accession: 'hs1',
+      commonName: 'Human',
+      scientificName: 'Homo sapiens',
+      assemblyName: 'T2T CHM13v2.0',
+      source: 'ucsc',
+      year: 2022,
+      rank: 1,
+      altAccession: 'GCA_009914755.4',
+    })
+    const goose = entry({
+      accession: 'GCA_040182565.1',
+      commonName: 'Swan (goose T2T HZ-2024a 2024)',
+      scientificName: 'Anser cygnoides',
+      assemblyName: 'Taihu_goose_T2T_genome',
+      assemblyStatus: 'Chromosome',
+      source: 'birds',
+      ncbiStatus: 1,
+      year: 2024,
+    })
+    assert.ok(scoreEntry(hs1, ['t2t']) > scoreEntry(goose, ['t2t']))
+    // Still found by it, and by the year it carries.
+    assert.ok(scoreEntry(goose, ['goose']) >= 0)
+    assert.ok(scoreEntry(grch38p14, ['2022']) >= 0)
+  })
+
+  it('matches a borrowed name as a common name, without it being shown', () => {
+    const dm6Fields = {
+      accession: 'dm6',
+      commonName: 'D. melanogaster',
+      scientificName: 'Drosophila melanogaster',
+      source: 'ucsc',
+      year: 2014,
+    }
+    const dm6 = entry({ ...dm6Fields, aliases: ['fly D.melanogaster'] })
+    const genark = entry({
+      accession: 'GCF_000001215.4',
+      commonName: 'fly D.melanogaster (Release 6 plus ISO1 MT 2014)',
+      scientificName: 'Drosophila melanogaster',
+      ncbiStatus: 1,
+      year: 2014,
+    })
+    assert.equal(scoreEntry(entry(dm6Fields), ['fly']), -1)
+    assert.ok(scoreEntry(dm6, ['fly']) > scoreEntry(genark, ['fly']))
+    const ce11 = entry({
+      commonName: 'C. elegans',
+      source: 'ucsc',
+      aliases: ['nematode C.elegans', 'roundworm'],
+    })
+    assert.ok(scoreEntry(ce11, ['worm']) >= 0)
   })
 
   it('breaks a same-year tie on UCSC preference order', () => {

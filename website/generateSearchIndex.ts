@@ -3,6 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 import { ncbiStatusOf } from './src/lib/searchIndex.ts'
+import { bareCommonName } from './src/utils/names.ts'
 
 import type { IndexEntry } from './src/lib/searchIndex.ts'
 
@@ -101,6 +102,52 @@ const index: IndexEntry[] = allHubs
     '',
   ])
 
+// UCSC names 50 of its dbs by an abbreviated binomial ("D. melanogaster",
+// "S. cerevisiae", "C. elegans"), so "fly", "yeast" and "worm" matched none of
+// them. GenArk's rows for the same taxa carry NCBI's common names ("fly
+// D.melanogaster", "baker's yeast", "roundworm"), and the db borrows all of
+// them as match-only names; /search and /ucsc still show UCSC's own. Only these
+// rows borrow, because a db UCSC already calls "Human" would otherwise pick up
+// every HPRC sample's population label ("Gambia, Gambia").
+//
+// Names are pooled per UCSC organism rather than per taxon, so every db of one
+// organism borrows the same list: sacCer3 is taxon 559292 and sacCer1 and 2 are
+// 4932, and with different names the older two outranked sacCer3 on name length.
+function buildBorrowedNames() {
+  const genarkNames = new Map<number, string[]>()
+  for (const [, commonName, , , , , taxonId] of index) {
+    const name = bareCommonName(commonName)
+    if (name && taxonId) {
+      genarkNames.set(taxonId, [...(genarkNames.get(taxonId) ?? []), name])
+    }
+  }
+  const taxaByOrganism = new Map<string, Set<number>>()
+  for (const { organism, taxId } of Object.values(ucscGenomes)) {
+    if (organism && taxId && /^[A-Z]\. [a-z]/.test(organism)) {
+      taxaByOrganism.set(
+        organism,
+        (taxaByOrganism.get(organism) ?? new Set()).add(taxId),
+      )
+    }
+  }
+  return new Map(
+    [...taxaByOrganism].map(([organism, taxa]) => {
+      const counts = new Map<string, number>()
+      for (const name of [...taxa].flatMap(t => genarkNames.get(t) ?? [])) {
+        if (name.toLowerCase() !== organism.toLowerCase()) {
+          counts.set(name, (counts.get(name) ?? 0) + 1)
+        }
+      }
+      const names = [...counts]
+        .sort(([a, m], [b, n]) => n - m || a.localeCompare(b))
+        .map(([name]) => name)
+      return [organism, names]
+    }),
+  )
+}
+
+const borrowedNames = buildBorrowedNames()
+
 // Add UCSC genomes (hg38, mm39, etc.)
 for (const [id, genome] of Object.entries(ucscGenomes)) {
   index.push([
@@ -117,6 +164,7 @@ for (const [id, genome] of Object.entries(ucscGenomes)) {
     // altAccession: the GC[AF] accession the sourceName records, so the db is
     // reachable by accession search
     /GC[AF]_\d+(?:\.\d+)?/.exec(genome.sourceName ?? '')?.[0] ?? '',
+    borrowedNames.get(genome.organism ?? '') ?? [],
   ])
 }
 
