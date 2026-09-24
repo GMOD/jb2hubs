@@ -7,6 +7,7 @@ import {
   DATASETS,
   EUTILS,
   fetchOrthologReports,
+  ncbiFetch,
   ncbiJson,
 } from './ncbiFetch.ts'
 import { COMMON_SPECIES } from './orthologSearchUtils.ts'
@@ -194,27 +195,38 @@ export function pickBySymbol(query: string, candidates: SymbolCandidate[]) {
   return (exact ?? candidates[0])?.gene_id
 }
 
+// Datasets answers a symbol it does not know with `{}`, and one it cannot route
+// (`a/b`) with a 404; both mean "no candidates". Any other failure throws.
+// Reading a 5xx as "no candidates" sent the query on to esearch's single best
+// guess, which is exactly the TTN→TTR answer pickBySymbol exists to prevent,
+// and the assembler Lambda then cached that wrong gene under the right name.
+async function symbolCandidates(symbol: string, refTaxonId: number) {
+  const res = await ncbiFetch(
+    `${DATASETS}/gene/symbol/${encodeURIComponent(symbol)}/taxon/${refTaxonId}`,
+  )
+  if (res.status === 400 || res.status === 404) {
+    return []
+  }
+  if (!res.ok) {
+    throw new Error(`NCBI request failed (${res.status})`)
+  }
+  const json = (await res.json()) as { reports?: { gene?: SymbolCandidate }[] }
+  return (json.reports ?? [])
+    .map(r => r.gene)
+    .filter((g): g is SymbolCandidate => !!g)
+}
+
 export async function resolveGeneId(query: string, refTaxonId: number) {
   const trimmed = query.trim()
   if (/^\d+$/.test(trimmed)) {
     return trimmed
   }
-  const bySymbol = await ncbiJson<{
-    reports?: { gene?: SymbolCandidate }[]
-  }>(
-    `${DATASETS}/gene/symbol/${encodeURIComponent(trimmed)}/taxon/${refTaxonId}`,
-  ).catch(() => undefined)
-  const hit = pickBySymbol(
-    trimmed,
-    (bySymbol?.reports ?? [])
-      .map(r => r.gene)
-      .filter((g): g is SymbolCandidate => !!g),
-  )
-  if (hit) {
-    return hit
+  const candidates = await symbolCandidates(trimmed, refTaxonId)
+  if (candidates.length > 0) {
+    return pickBySymbol(trimmed, candidates)
   }
   // Datasets knows symbols and aliases; esearch also reaches descriptions, so it
-  // stays as the wider net for a query neither matches.
+  // stays as the wider net for a query Datasets has no candidate for.
   const term = `${encodeURIComponent(trimmed)}[Gene+Name]+AND+${refTaxonId}[taxid]`
   const json = await ncbiJson<{ esearchresult?: { idlist?: string[] } }>(
     `${EUTILS}/esearch.fcgi?db=gene&term=${term}&retmode=json&retmax=1`,

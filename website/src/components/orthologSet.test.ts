@@ -1,10 +1,11 @@
 import assert from 'node:assert'
-import { test } from 'node:test'
+import { mock, test } from 'node:test'
 
 import {
   buildRows,
   oneAssemblyPerSpecies,
   pickBySymbol,
+  resolveGeneId,
 } from './orthologSet.ts'
 
 import type { OrthologRow } from './orthologSet.ts'
@@ -69,8 +70,8 @@ test('no candidates resolves to nothing, so the caller can fall through', () => 
 })
 
 // A report carrying a symbol but no gene_id cannot be used even when it matches
-// exactly; returning undefined sends the caller to its wider search rather than
-// silently handing back a different gene's id.
+// exactly; returning undefined leaves the gene unresolved rather than silently
+// handing back a different gene's id.
 test('an exact match without a gene_id does not fall through to another gene', () => {
   assert.strictEqual(
     pickBySymbol('TTN', [
@@ -196,4 +197,80 @@ test('buildRows emits one row per placement, not just the first', () => {
       ['GCF_009914755.1', 'NC_060941.1', 7, -1],
     ],
   )
+})
+
+// Answers each NCBI url by which endpoint it names, and records the urls asked
+// for. The throttle spaces the calls, so each test costs a few hundred ms.
+async function resolveWith(
+  answer: (url: string) => Promise<Response>,
+  query = 'TTN',
+) {
+  const asked: string[] = []
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', (url: string) => {
+    asked.push(url)
+    return answer(url)
+  })
+  try {
+    return { result: await resolveGeneId(query, 9606), asked }
+  } catch (error) {
+    return { error, asked }
+  } finally {
+    globalThis.fetch = original
+  }
+}
+
+const json = (body: unknown) =>
+  Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
+
+// The bug: a Datasets failure was read as "no candidates", so the query went on
+// to esearch retmax=1 — TTR for `TTN` — and the Lambda cached that answer under
+// the right name for good.
+test('a Datasets failure is an error, not a reason to guess with esearch', async () => {
+  const { error, asked } = await resolveWith(url =>
+    url.includes('/datasets/')
+      ? Promise.reject(new TypeError('fetch failed'))
+      : json({ esearchresult: { idlist: ['7276'] } }),
+  )
+  assert.ok(error instanceof Error)
+  assert.ok(!asked.some(u => u.includes('esearch')))
+})
+
+test('a symbol Datasets does not know falls back to esearch', async () => {
+  const { result } = await resolveWith(url =>
+    url.includes('/datasets/')
+      ? json({})
+      : json({ esearchresult: { idlist: ['12345'] } }),
+  )
+  assert.strictEqual(result, '12345')
+})
+
+test('a symbol Datasets cannot route (404) falls back to esearch too', async () => {
+  const { result } = await resolveWith(
+    url =>
+      url.includes('/datasets/')
+        ? Promise.resolve(new Response('', { status: 404 }))
+        : json({ esearchresult: { idlist: ['12345'] } }),
+    'a/b',
+  )
+  assert.strictEqual(result, '12345')
+})
+
+test('Datasets candidates are ranked, and esearch is not asked', async () => {
+  const { result, asked } = await resolveWith(() =>
+    json({
+      reports: [
+        { gene: { gene_id: '7276', symbol: 'TTR' } },
+        { gene: { gene_id: '7273', symbol: 'TTN' } },
+      ],
+    }),
+  )
+  assert.strictEqual(result, '7273')
+  assert.strictEqual(asked.length, 1)
+})
+
+test('a numeric query is already a GeneID and asks NCBI nothing', async () => {
+  const { result, asked } = await resolveWith(() => json({}), '7273')
+  assert.strictEqual(result, '7273')
+  assert.strictEqual(asked.length, 0)
 })
