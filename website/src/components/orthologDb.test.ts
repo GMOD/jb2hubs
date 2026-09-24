@@ -1,7 +1,7 @@
 import assert from 'node:assert'
-import { test } from 'node:test'
+import { mock, test } from 'node:test'
 
-import { createStore } from './orthologDb.ts'
+import { createStore, loadStore } from './orthologDb.ts'
 
 import type { AssemblyIndex } from './orthologDb.ts'
 
@@ -48,4 +48,27 @@ test('an unknown accession is undefined rather than a half-built assembly', () =
 
 test('ucscDb is absent for GenArk-only assemblies', () => {
   assert.equal(createStore(index).find('GCA_009914755.4')?.ucscDb, undefined)
+})
+
+// The memo used to keep the rejected promise, so one failed download left every
+// ortholog search on the page failing until a reload.
+test('a failed index load is retried by the next caller', async () => {
+  let calls = 0
+  const original = globalThis.fetch
+  mock.method(globalThis, 'fetch', () => {
+    calls += 1
+    return Promise.resolve(
+      calls === 1
+        ? new Response('', { status: 503 })
+        : new Response(JSON.stringify(index), { status: 200 }),
+    )
+  })
+  try {
+    await assert.rejects(loadStore())
+    const store = await loadStore()
+    assert.equal(store.find('GCF_000001635.9')?.ucscDb, 'mm10')
+    assert.equal(calls, 2)
+  } finally {
+    globalThis.fetch = original
+  }
 })

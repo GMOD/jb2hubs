@@ -66,12 +66,16 @@ export type AssemblyStore = ReturnType<typeof createStore>
 
 // The store, fetched and built at most once per page. Async callers take it
 // from here rather than being handed one, so a search can start before the
-// index has landed and simply await it.
+// index has landed and simply await it. A failed load is forgotten, so the next
+// caller retries instead of replaying the failure.
 let storePromise: Promise<AssemblyStore> | undefined
 
 export function loadStore() {
-  storePromise ??= loadJsonOnce<AssemblyIndex>('/ortholog_index.json').then(
-    createStore,
-  )
+  storePromise ??= loadJsonOnce<AssemblyIndex>('/ortholog_index.json')
+    .then(createStore)
+    .catch((e: unknown) => {
+      storePromise = undefined
+      throw e
+    })
   return storePromise
 }
