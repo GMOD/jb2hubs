@@ -3,6 +3,7 @@ import {
   jbrowseUrl,
   ucscConfigPath,
 } from '../config/jbrowse.ts'
+import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
 import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { resolveStackNames, syntenyLink } from './syntenyPairIndex.ts'
 
@@ -545,19 +546,15 @@ export function orthologsToTsv(results: OrthologResult[]) {
 // LOC…), and the assembly accession. Whitespace-separated terms are ANDed, so
 // "mus brca" narrows rather than widening.
 export function matchesQuery(r: OrthologResult, query: string) {
-  const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
-  if (terms.length === 0) {
-    return true
-  }
-  const haystack = [
-    r.assembly.scientificName,
-    r.assembly.commonName ?? '',
-    r.geneSymbol,
-    r.assembly.accession,
-  ]
-    .join(' ')
-    .toLowerCase()
-  return terms.every(t => haystack.includes(t))
+  return matchesAllTerms(
+    [
+      r.assembly.scientificName,
+      r.assembly.commonName ?? '',
+      r.geneSymbol,
+      r.assembly.accession,
+    ].join(' '),
+    searchTerms(query),
+  )
 }
 
 export function buildOrthologResults(

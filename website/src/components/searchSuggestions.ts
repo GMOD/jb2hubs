@@ -1,3 +1,4 @@
+import { searchTerms } from '../lib/searchTerms.ts'
 import { bareCommonName } from '../utils/names.ts'
 import { rankEntries } from './searchScoring.ts'
 
@@ -16,7 +17,7 @@ export function suggestEntries(
   limit = MAX_SUGGESTIONS,
 ) {
   const trimmed = query.trim()
-  const terms = trimmed.toLowerCase().split(/\s+/).filter(Boolean)
+  const terms = searchTerms(trimmed)
   return trimmed.length >= MIN_SUGGEST_LENGTH && terms.length > 0
     ? rankEntries(index, terms).slice(0, limit)
     : []

@@ -94,8 +94,10 @@ export default function DataTable({
   const { columns } = useTableColumns({ showAllColumns })
   const highlightRef = useSearchHighlight(searchQuery)
 
+  // Back to the first page whenever the rows or their order change: page 7 of a
+  // new sort is an arbitrary slice of it.
   const [pageIndex, setPageIndex] = useResetOnChange(
-    `${searchQuery}\u0000${filterOption}`,
+    `${searchQuery}\u0000${filterOption}\u0000${sortId}\u0000${sortDesc}`,
     0,
   )
 
@@ -185,6 +187,11 @@ export default function DataTable({
           <TableBody
             columns={columns}
             rows={pagedRows}
+            emptyMessage={
+              searchQuery.trim()
+                ? `No assemblies match “${searchQuery.trim()}”${filterOption === 'all' ? '' : ' with this filter'}.`
+                : 'No assemblies match this filter.'
+            }
           />
         </table>
       </div>

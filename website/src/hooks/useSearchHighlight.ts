@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react'
 
+import { searchTerms } from '../lib/searchTerms.ts'
+
 const HIGHLIGHT_NAME = 'search-result'
 
 // These tables are server-rendered before they hydrate, and React warns that a
@@ -20,8 +22,8 @@ const SUPPORTED =
 
 function applyHighlight(container: Element, query: string) {
   const highlight = new Highlight()
-  if (query.trim()) {
-    const terms = query.toLowerCase().split(/\s+/).filter(Boolean)
+  const terms = searchTerms(query)
+  if (terms.length > 0) {
     const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT)
     let node: Node | null
     while ((node = walker.nextNode())) {

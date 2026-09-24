@@ -13,6 +13,7 @@ import { useSearchIndex } from '../hooks/useSearchIndex.ts'
 import { useTaxonomyFilter } from '../hooks/useTaxonomyFilter.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { IS_REFERENCE, IS_SUPPRESSED } from '../lib/searchIndex.ts'
+import { searchTerms } from '../lib/searchTerms.ts'
 import { CURATED_CLADES, cladeDisplay } from '../lib/taxonomyClades.ts'
 import { paginate } from '../utils/paginate.ts'
 import ErrorWithRetry from './ErrorWithRetry.tsx'
@@ -65,7 +66,7 @@ export default function SearchPage() {
   // the whole index meanwhile showed results the filter would have excluded.
   const cladePending = !!clade && !cladeSets
   const results = useMemo(() => {
-    const terms = trimmedQuery.toLowerCase().split(/\s+/).filter(Boolean)
+    const terms = searchTerms(trimmedQuery)
     const cladeSet = clade && cladeSets ? cladeSets.get(clade) : undefined
     return terms.length === 0 || cladePending
       ? []

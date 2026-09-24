@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 
 import { jbrowseUrl, ucscAllConfigPath } from '../config/jbrowse.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { matchesAllTerms, searchTerms } from '../lib/searchTerms.ts'
 import TableHeader from './DataTable/components/TableHeader.tsx'
 import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
@@ -48,14 +49,15 @@ export default function UCSCTable({ rows }: { rows: UcscRow[] }) {
     columns.find(col => col.id === rawSortId && col.enableSorting)?.id ?? ''
 
   const matchingRows = useMemo(() => {
-    const query = search.trim().toLowerCase()
-    return query
-      ? rows.filter(row =>
-          `${row.name} ${row.scientificName} ${row.organism} ${row.description}`
-            .toLowerCase()
-            .includes(query),
+    const terms = searchTerms(search)
+    return terms.length === 0
+      ? rows
+      : rows.filter(row =>
+          matchesAllTerms(
+            `${row.name} ${row.scientificName} ${row.organism} ${row.description}`,
+            terms,
+          ),
         )
-      : rows
   }, [rows, search])
 
   const sortedRows = useMemo(
@@ -107,6 +109,13 @@ export default function UCSCTable({ rows }: { rows: UcscRow[] }) {
             sortDesc={sortDesc}
           />
           <tbody>
+            {sortedRows.length === 0 && (
+              <tr>
+                <td colSpan={columns.length}>
+                  No genomes match &ldquo;{search.trim()}&rdquo;.
+                </td>
+              </tr>
+            )}
             {sortedRows.map(row => (
               <tr key={row.name}>
                 <td>
