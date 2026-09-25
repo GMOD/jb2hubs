@@ -427,3 +427,21 @@ test('translationRanges: a short shared start survives a long skip', () => {
     [{ start: 5, end: 20 }],
   )
 })
+
+test('translationRanges: a short exon shared at the end carries, bounded by a gap', () => {
+  // VEGFA's exon 8a: six residues after a skipped exon, then the end
+  const canonical = tp53.slice(0, 60) + 'CDKPRR'
+  const skipped = tp53.slice(0, 40) + 'CDKPRR'
+  assert.deepStrictEqual(
+    translationRanges([{ start: 61, end: 66 }], canonical, skipped),
+    [{ start: 41, end: 46 }],
+  )
+})
+
+test('translationRanges: a lone substitution between shared stretches carries', () => {
+  const conflict = `${tp53.slice(0, 50)}W${tp53.slice(51)}`
+  assert.deepStrictEqual(
+    translationRanges([{ start: 51, end: 51 }], tp53, conflict),
+    [{ start: 51, end: 51 }],
+  )
+})

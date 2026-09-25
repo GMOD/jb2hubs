@@ -273,7 +273,7 @@ export default function ProteinLaunchCard({
       ? undefined
       : !placed
         ? 'approximate'
-        : numberedOn === translation
+        : JSON.stringify(placed) === JSON.stringify(ranges)
           ? 'exact'
           : 'aligned'
     const selection = placed ?? ranges

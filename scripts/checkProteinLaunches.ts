@@ -163,6 +163,9 @@ type Launch =
       expectSelected?: string[]
       // another launch whose selection this one must equal residue for residue
       expectSameAs?: string
+      // the canonical, when the structure numbers residues as UniProt does:
+      // each lit residue's letter must be the canonical's at its number
+      expectLettersOf?: string
     }
 
 // A focused launch: a chip's preset, or one of NUMBERING_CASES. `isoform`
@@ -173,6 +176,8 @@ interface FocusCase {
   isoform?: string
   pdbId?: string
   selects?: string[]
+  // the PDB entry this case opens numbers its chain as UniProt does
+  numberedAsUniProt?: boolean
 }
 
 // Focuses no chip reaches, each a numbering the page used to work out from
@@ -192,11 +197,15 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
           },
         ],
         TP53: [
-          { focus: { partner: 'P04637' } },
-          { focus: { partner: 'Q12888' } },
-          { focus: { partner: 'Q12888' }, isoform: 'NM_001126118.2' },
+          { focus: { partner: 'P04637' }, numberedAsUniProt: true },
+          { focus: { partner: 'Q12888' }, numberedAsUniProt: true },
+          {
+            focus: { partner: 'Q12888' },
+            isoform: 'NM_001126118.2',
+            numberedAsUniProt: true,
+          },
         ],
-        KMT2A: [{ focus: { partner: 'P61964' } }],
+        KMT2A: [{ focus: { partner: 'P61964' }, numberedAsUniProt: true }],
       }
     : {}
 
@@ -212,7 +221,14 @@ async function focusedLaunch(
   structure: GeneStructure,
   primary: SessionOptions['primary'],
   exact: boolean,
-  { focus: preset, isoform: isoformName, pdbId, selects }: FocusCase,
+  canonicalModel: boolean,
+  {
+    focus: preset,
+    isoform: isoformName,
+    pdbId,
+    selects,
+    numberedAsUniProt,
+  }: FocusCase,
 ): Promise<Launch> {
   const regions = structure.uniprotId
     ? await fetchInterProRegions(structure.uniprotId)
@@ -277,6 +293,9 @@ async function focusedLaunch(
     expectSelection: !!chosen,
     expectSelected: selects,
     expectSameAs: isoform ? `${gene} ${opened}` : undefined,
+    expectLettersOf: (structureId ? numberedAsUniProt : canonicalModel)
+      ? canonical
+      : undefined,
   }
 }
 
@@ -322,7 +341,14 @@ for (const gene of genes) {
       ...(NUMBERING_CASES[gene] ?? []),
     ]) {
       launches.push(
-        await focusedLaunch(gene, structure, primary, exact, focusCase),
+        await focusedLaunch(
+          gene,
+          structure,
+          primary,
+          exact,
+          !!model && !model.accession.includes('-'),
+          focusCase,
+        ),
       )
     }
   } catch (e) {
@@ -495,6 +521,17 @@ for (const launchSpec of launches) {
         }
         if (launchSpec.expectSelection) {
           selections.set(launchSpec.name, s?.selected ?? [])
+        }
+        const letters = launchSpec.expectLettersOf
+        const misread = letters
+          ? (s?.selected ?? []).filter(
+              r => letters[Number(r.slice(1)) - 1] !== r[0],
+            )
+          : []
+        if (misread.length) {
+          problems.push(
+            `lit ${misread.join(',')}, whose letters are not the canonical's at those numbers`,
+          )
         }
         const same = launchSpec.expectSameAs
         if (same && problems.length === 0) {

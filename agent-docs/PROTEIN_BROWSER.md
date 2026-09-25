@@ -210,17 +210,23 @@ wrong. A cartoon domain is numbered on the panel's query protein. Where that
 protein is not the launched translation, `translationRanges` carries the ranges
 across, and the card says so.
 
-`translationRanges` aligns the two end to end and keeps a residue only inside a
-stretch of at least ten the two share letter for letter. Measured 2026-09-25
-against codon identity on the genome, over every isoform of TP53, PKM, CDKN2A,
-FGFR2, TPM1, BRAF and EGFR (51,550 residues truly shared): the local alignment
-the first version used placed 2,982 residues on the wrong one and missed 30, one
-EGFR isoform's far end among them; the stretch rule places 290 wrongly and
-misses 1, and no truly shared residue sat in a stretch shorter than 12. What it
-still places are paralogous mutually exclusive exons (PKM's 9 and 10 share an
-8-residue stretch, FGFR2's IIIb and IIIc another) and the residues where such an
-exon meets a shared one. On CDKN2A, p16's residues carried onto ARF, read in
-another frame, went from 85 to 1.
+`translationRanges` aligns the two end to end and carries a residue only inside
+a stretch the two share letter for letter: a stretch of ten or more, or of three
+or more bounded on both sides by a gap or a sequence end, the shape a short
+shared exon takes (VEGFA's six-residue exon 8a, which binds NRP1). A lone
+substitution between two such stretches carries too, as one codon UniProt and
+RefSeq read differently. Measured 2026-09-25 against codon identity on the
+genome, over every isoform of TP53, PKM, CDKN2A, FGFR2, TPM1, BRAF, EGFR, SCN8A,
+MAPT, BIN1, VEGFA, TPM3 and CD44 (89,927 residues truly shared): this rule
+places 335 residues wrongly and misses 28; every identical residue, 1,885 and
+28; long stretches alone, 328 and 64. The local alignment the first version used
+placed 2,982 wrongly and missed 30 on the first seven genes, one EGFR isoform's
+far end among them. What the rule still places wrongly are paralogous mutually
+exclusive exons (PKM's 9 and 10 share an 8-residue stretch, FGFR2's IIIb and
+IIIc another) and the residues where such an exon meets a shared one; what it
+misses are single residues at exon junctions, where the gap fits either side. On
+CDKN2A, p16's residues carried onto ARF, read in another frame, went from 85
+to 1.
 
 Three captions still read "approximate": a cartoon domain on a cached panel
 (whose rows keep no sequence) when the row is not the launched isoform, a

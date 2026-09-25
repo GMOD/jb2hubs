@@ -2090,14 +2090,14 @@ residue↔codon mapping bugs that shipped with every unit test green, is
 - **The map's coordinates are the UniProt canonical's.** InterPro regions and
   PDBe interface residues are on it; the launched transcript's translation may
   be another isoform. `ProteinLaunchCard` carries a focus onto the translation
-  (`translationRanges`, residues the two share in stretches of ten or more) and
-  sends it as `initialTranscriptResidues`, which the plugin resolves onto any
-  structure through its own alignment — haemoglobin's mature-numbered chains
-  included. Do not reintroduce `initialSelection` or author numbering on the
-  page: both were exact for only some structures. The canonical is
-  `GeneStructure.canonical`, read from UniProt, and never the translation: MANE
-  is not the canonical for KMT2A, PLEC or TTN, and none has an AlphaFold model
-  to say so.
+  (`translationRanges`, the residues the two share, measured against codon
+  identity) and sends it as `initialTranscriptResidues`, which the plugin
+  resolves onto any structure through its own alignment — haemoglobin's
+  mature-numbered chains included. Do not reintroduce `initialSelection` or
+  author numbering on the page: both were exact for only some structures. The
+  canonical is `GeneStructure.canonical`, read from UniProt, and never the
+  translation: MANE is not the canonical for KMT2A, PLEC or TTN, and none has an
+  AlphaFold model to say so.
 
 ## Key website internals
 

@@ -329,42 +329,64 @@ export function focusRanges(focus: Focus): ResidueRange[] {
   return residues?.length ? residueRuns(residues) : [{ start, end }]
 }
 
-// How long a stretch two isoforms must share letter for letter before its
-// residues carry over. Measured 2026-09-25 against codon identity on the
-// genome, over the isoforms of TP53, PKM, CDKN2A, FGFR2, TPM1, BRAF and EGFR
-// (51,550 shared residues): every residue two isoforms truly share sat in a
-// stretch of 12 or more, while the paralogous mutually exclusive exons of PKM
-// (9 and 10) and FGFR2 (IIIb and IIIc) share stretches of 8.
-const SHARED_STRETCH = 10
+// Which stretches two isoforms share letter for letter carry over: a long one,
+// or a short one bounded on both sides by a gap or a sequence end, the shape a
+// short shared exon takes (VEGFA's six-residue exon 8a). A short stretch between
+// mismatches is chance or a paralogous exon: PKM's exons 9 and 10 share an
+// 8-residue stretch, FGFR2's IIIb and IIIc another. Measured 2026-09-25 against
+// codon identity on the genome, over every isoform of 13 genes (TP53, PKM,
+// CDKN2A, FGFR2, TPM1, BRAF, EGFR, SCN8A, MAPT, BIN1, VEGFA, TPM3, CD44; 89,927
+// truly shared residues): 335 placed wrongly and 28 missed, against 1,885 and
+// 28 for every identical residue and 328 and 64 for long stretches alone. The
+// misses are single residues at exon junctions, where the gap fits either side.
+const LONG_STRETCH = 10
+const SHORT_EXON = 3
 
-// Each residue of `from` that `translation` shares, by 0-based index. A global
-// alignment, because a local one dropped the far end of an EGFR isoform, and
-// only residues inside a shared stretch: an alignment also pairs a mutually
-// exclusive exon, or ARF's reading frame with p16's, residue for residue.
+// Each residue of `from` that `translation` shares, by 0-based index. A lone
+// substitution between two shared stretches carries too: it is one codon that
+// UniProt and RefSeq read differently, as MUC1's repeats do.
 function sharedResidues(from: string, translation: string) {
   const { alignedSeq1: a, alignedSeq2: b } = needlemanWunsch(from, translation)
-  const shared = new Map<number, number>()
-  const stretch: [number, number][] = []
-  let i = 0
-  let j = 0
-  for (let col = 0; col <= a.length; col++) {
-    if (col < a.length && a[col] !== '-' && a[col] === b[col]) {
-      stretch.push([i, j])
-    } else {
-      if (stretch.length >= SHARED_STRETCH) {
-        for (const [x, y] of stretch) {
-          shared.set(x, y)
-        }
-      }
-      stretch.length = 0
+  const cols: { x: number; y: number; kind: 'same' | 'mismatch' | 'gap' }[] = []
+  let x = 0
+  let y = 0
+  for (let c = 0; c < a.length; c++) {
+    const inA = a[c] !== '-'
+    const inB = b[c] !== '-'
+    cols.push({
+      x,
+      y,
+      kind: !inA || !inB ? 'gap' : a[c] === b[c] ? 'same' : 'mismatch',
+    })
+    if (inA) {
+      x++
     }
-    if (a[col] !== undefined && a[col] !== '-') {
-      i++
-    }
-    if (b[col] !== undefined && b[col] !== '-') {
-      j++
+    if (inB) {
+      y++
     }
   }
+  const bounded = (c: number) => cols[c]?.kind !== 'mismatch'
+  const kept = cols.map(() => false)
+  for (let start = 0; start < cols.length;) {
+    let end = start
+    while (cols[end]?.kind === 'same') {
+      end++
+    }
+    const length = end - start
+    if (
+      length >= LONG_STRETCH ||
+      (length >= SHORT_EXON && bounded(start - 1) && bounded(end))
+    ) {
+      kept.fill(true, start, end)
+    }
+    start = Math.max(end, start + 1)
+  }
+  const shared = new Map<number, number>()
+  cols.forEach((col, c) => {
+    if (kept[c] || (col.kind === 'mismatch' && kept[c - 1] && kept[c + 1])) {
+      shared.set(col.x, col.y)
+    }
+  })
   return shared
 }
 

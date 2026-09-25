@@ -94,12 +94,18 @@ export function canonicalSequence(structure: GeneStructure) {
   )
 }
 
-async function fetchUniProtSequence(accession: string, signal?: AbortSignal) {
-  const res = await fetch(`${UNIPROT}/${accession}.fasta`, { signal }).catch(
-    () => undefined,
-  )
-  const fasta = res?.ok ? await res.text() : ''
-  return fasta.split('\n').slice(1).join('') || undefined
+// Best effort, and never a rejection: without it the map counts on the
+// canonical AlphaFold model, and the card calls a focus approximate.
+async function fetchUniProtSequence(accession: string) {
+  try {
+    const res = await fetch(`${UNIPROT}/${accession}.fasta`, {
+      signal: AbortSignal.timeout(20_000),
+    })
+    const fasta = res.ok ? await res.text() : ''
+    return fasta.split('\n').slice(1).join('') || undefined
+  } catch {
+    return undefined
+  }
 }
 
 // --- gene resolution ---------------------------------------------------------
@@ -445,7 +451,7 @@ export async function fetchGeneStructure(
     ? fetchAlphaFoldModels(uniprotId)
     : Promise.resolve([])
   const canonicalPending = uniprotId
-    ? fetchUniProtSequence(uniprotId, signal)
+    ? fetchUniProtSequence(uniprotId)
     : Promise.resolve(undefined)
   const tags = await fetchSelectTranscripts(gene.geneId, signal)
   const text = await ncbiText(
