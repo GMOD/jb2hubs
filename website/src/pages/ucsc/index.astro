@@ -2,23 +2,10 @@
 import Layout from '../../layouts/Layout.astro'
 import Container from '../../components/Container.astro'
 import UCSCTable from '../../components/UCSCTable.tsx'
-import type { UcscRow } from '../../components/UCSCTable.tsx'
 import UcscStatusBanner from '../../components/UcscStatusBanner.astro'
-import { jbrowseUrl, ucscConfigPath } from '../../config/jbrowse.ts'
-import { ucscBrowserUrl } from '../../lib/externalLinks.ts'
-import list from '../../list.json'
+import { ucscRows } from '../../lib/ucscRows.ts'
 
-const rows: UcscRow[] = Object.entries(list.ucscGenomes)
-  .sort(([, a], [, b]) => a.orderKey - b.orderKey)
-  .map(([key, val]) => ({
-    name: key,
-    scientificName: val.scientificName,
-    organism: val.organism,
-    description: val.description,
-    year: Number(/\b(?:19|20)\d{2}\b/.exec(val.description)?.[0] ?? 0),
-    jbrowseLink: jbrowseUrl(ucscConfigPath(key)),
-    ucscLink: ucscBrowserUrl(key),
-  }))
+const rows = ucscRows()
 ---
 
 <Layout

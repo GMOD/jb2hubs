@@ -16,9 +16,9 @@ Delete an entry when it lands, and the file when it is empty.
   (`generateSearchIndex.ts`), so `yeast` puts sacCer3 first, `nematode` ce11,
   `honey bee` apiMel2, and `fly` puts the 19 UCSC Drosophila dbs first with dm6
   7th (shorter names such as `fly D.erecta` win the clutter tiebreak). `worm`
-  reaches ce11 only 40th, through `roundworm`, below rows named as worms. What
-  is left is whether to show a borrowed name, and the /ucsc table's own filter
-  (`UCSCTable.tsx`), which reads `list.json` and still misses `fly`.
+  reaches ce11 only 40th, through `roundworm`, below rows named as worms. The
+  /ucsc table's filter matches the same names (`src/ucscAliases.json`). What is
+  left is whether to show one.
 - **The 12-genome cap on "Open all N"** (`MAX_PICKED_GENOMES`). A launch URL
   past ~8 KB exceeds CloudFront's request line, so a clade launch opens the 12
   genomes nearest the reference. Carrying the launch in the URL hash would lift

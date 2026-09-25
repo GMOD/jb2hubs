@@ -13,6 +13,7 @@ const __dirname = path.dirname(__filename)
 const allHubsPath = path.join(__dirname, 'processedHubJson/all.json')
 const listPath = path.join(__dirname, 'src/list.json')
 const outputPath = path.join(__dirname, 'public/searchIndex.json')
+const ucscAliasesPath = path.join(__dirname, 'src/ucscAliases.json')
 
 interface HubRecord {
   accession: string | null
@@ -106,7 +107,8 @@ const index: IndexEntry[] = allHubs
 // "S. cerevisiae", "C. elegans"), so "fly", "yeast" and "worm" matched none of
 // them. GenArk's rows for the same taxa carry NCBI's common names ("fly
 // D.melanogaster", "baker's yeast", "roundworm"), and the db borrows all of
-// them as match-only names; /search and /ucsc still show UCSC's own. Only these
+// them as match-only names, here and in the /ucsc table's filter
+// (src/ucscAliases.json); /search and /ucsc still show UCSC's own. Only these
 // rows borrow, because a db UCSC already calls "Human" would otherwise pick up
 // every HPRC sample's population label ("Gambia, Gambia").
 //
@@ -170,6 +172,17 @@ for (const [id, genome] of Object.entries(ucscGenomes)) {
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 fs.writeFileSync(outputPath, JSON.stringify(index))
+fs.writeFileSync(
+  ucscAliasesPath,
+  JSON.stringify(
+    Object.fromEntries(
+      Object.entries(ucscGenomes).flatMap(([id, genome]) => {
+        const names = borrowedNames.get(genome.organism ?? '')
+        return names?.length ? [[id, names]] : []
+      }),
+    ),
+  ),
+)
 
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)
 console.log(

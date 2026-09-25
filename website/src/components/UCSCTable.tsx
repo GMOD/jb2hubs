@@ -10,12 +10,14 @@ import { useTableSort } from './DataTable/hooks/useTableSort.ts'
 import { makeComparator } from './DataTable/utils.ts'
 import styles from './UCSCTable.module.css'
 
-// Built by pages/ucsc/index.astro from list.json, which is 144KB the island has
-// no other use for.
+// Built by lib/ucscRows.ts from list.json, which is 144KB the island has no
+// other use for.
 export interface UcscRow {
   name: string
   scientificName: string
   organism: string
+  // Match-only, e.g. "fly" for "D. melanogaster"; see generateSearchIndex.ts
+  aliases: string[]
   description: string
   // Off the description ("Dec. 2013 (GRCh38/hg38)"), which is what that column
   // sorts by: its text would order by month name.
@@ -54,7 +56,7 @@ export default function UCSCTable({ rows }: { rows: UcscRow[] }) {
       ? rows
       : rows.filter(row =>
           matchesAllTerms(
-            `${row.name} ${row.scientificName} ${row.organism} ${row.description}`,
+            `${row.name} ${row.scientificName} ${row.organism} ${row.aliases.join(' ')} ${row.description}`,
             terms,
           ),
         )

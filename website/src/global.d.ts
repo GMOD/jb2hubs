@@ -22,3 +22,11 @@ declare module '*/recentlyUpdated.json' {
   const rows: unknown[]
   export default rows
 }
+
+// Written beside public/searchIndex.json by `pnpm generate-search-index`, for
+// the same reason and with the same shape as its borrowed names: db -> the
+// common names GenArk gives that organism.
+declare module '*/ucscAliases.json' {
+  const aliases: Record<string, string[]>
+  export default aliases
+}
