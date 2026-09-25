@@ -161,6 +161,8 @@ type Launch =
       // and when given, exactly these residues (letter and author number)
       expectSelection?: boolean
       expectSelected?: string[]
+      // another launch whose selection this one must equal residue for residue
+      expectSameAs?: string
     }
 
 // A focused launch: a chip's preset, or one of NUMBERING_CASES. `isoform`
@@ -175,8 +177,10 @@ interface FocusCase {
 
 // Focuses no chip reaches, each a numbering the page used to work out from
 // SIFTS before handing the plugin a range: a crystal counted from the mature
-// protein, an interface lit as its contact runs in the complex, and an isoform
-// that lacks the canonical's first 39 residues.
+// protein, an interface lit as its contact runs in the complex, the same
+// interface from an isoform that lacks the canonical's first 39 residues, and
+// a gene whose MANE translation is not the canonical and has no AlphaFold model
+// to say so.
 const NUMBERING_CASES: Record<string, FocusCase[]> =
   REF === 9606
     ? {
@@ -190,13 +194,9 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
         TP53: [
           { focus: { partner: 'P04637' } },
           { focus: { partner: 'Q12888' } },
-          {
-            focus: { residue: 248, residueLabel: 'R248' },
-            isoform: 'NM_001126118.2',
-            pdbId: '1tup',
-            selects: ['R248'],
-          },
+          { focus: { partner: 'Q12888' }, isoform: 'NM_001126118.2' },
         ],
+        KMT2A: [{ focus: { partner: 'P61964' } }],
       }
     : {}
 
@@ -266,8 +266,9 @@ async function focusedLaunch(
     quiet: true,
     showAlignment: !exact || !!structureId,
   })
+  const opened = `on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`
   return {
-    name: `${gene}${isoform ? ` ${isoform.transcript.name}` : ''} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`,
+    name: `${gene}${isoform ? ` ${isoform.transcript.name}` : ''} ${opened}`,
     url: retarget(url),
     expectStructure: !!chosen,
     expectGeneTrack: !!structure.target.geneTrackId,
@@ -275,6 +276,7 @@ async function focusedLaunch(
     expectMsaRows: alignment?.rowCount,
     expectSelection: !!chosen,
     expectSelected: selects,
+    expectSameAs: isoform ? `${gene} ${opened}` : undefined,
   }
 }
 
@@ -369,7 +371,7 @@ const browser = await launch({
 
 // Residues read back as `R248`; the first and last few when there are many.
 function compactResidues(residues: string[]) {
-  return residues.length > 12
+  return residues.length > 40
     ? `${residues.slice(0, 6).join(',')} … ${residues.slice(-6).join(',')}`
     : residues.join(',')
 }
@@ -493,6 +495,17 @@ for (const launchSpec of launches) {
         }
         if (launchSpec.expectSelection) {
           selections.set(launchSpec.name, s?.selected ?? [])
+        }
+        const same = launchSpec.expectSameAs
+        if (same && problems.length === 0) {
+          const other = selections.get(same)
+          if (!other) {
+            problems.push(`no launch "${same}" to compare the selection with`)
+          } else if (other.join(',') !== s?.selected.join(',')) {
+            problems.push(
+              `lit ${s?.selected.join(',')}, where "${same}" lit ${other.join(',')}`,
+            )
+          }
         }
       }
       if (launchSpec.expectMsaRows !== undefined) {

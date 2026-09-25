@@ -1,6 +1,6 @@
 import '../styles/ui.css'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import useSWRImmutable from 'swr/immutable'
 
@@ -589,10 +589,13 @@ function GeneResults({
   // something else; `null` records that they cleared it, so it does not come
   // back when the regions it named finish loading.
   const [focusChoice, setFocusChoice] = useState<Focus | null>()
-  const focus =
-    focusChoice === null
-      ? undefined
-      : (focusChoice ?? focusFromPreset(preset, regions, partners))
+  // memoised, since the card carries the focus onto another isoform by
+  // alignment, and the page re-renders on every live-alignment message
+  const presetFocus = useMemo(
+    () => focusFromPreset(preset, regions, partners),
+    [preset, regions, partners],
+  )
+  const focus = focusChoice === null ? undefined : (focusChoice ?? presetFocus)
   const setFocus = (next: Focus | undefined) => {
     setFocusChoice(next ?? null)
     editProteinUrl(p => {

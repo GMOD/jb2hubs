@@ -195,19 +195,39 @@ translation, and the plugin carries those onto whichever structure opens through
 its own pairwise alignment. One numbering therefore serves an AlphaFold model, a
 PDB fragment, and haemoglobin's crystals, whose chains count from the mature
 protein (Glu7 of the translation is residue 6 in 2HHB and 1A00). An interface
-focus sends its contact runs, the ones the map draws (`residueRuns`), not one
-span from its first contact to its last: TP53's homo-oligomer contacts are 15
-runs, 201 residues, between 17 and 356 (PDBe, 2026-09-25), and 6XRE lights
+focus sends its contact runs, the ones the map draws (`residueRuns`, which
+bridges gaps of up to two residues), not one span from its first contact to its
+last: TP53's 165 homo-oligomer contacts make 15 runs of 201 residues between 17
+and 356 (PDBe, 2026-09-25), where the span would be 340, and 6XRE lights
 all 201.
 
-The map's regions and a typed residue are numbered on the canonical, and a
-cartoon domain on the panel's query protein. Where that protein is not the
-launched translation, `translationRanges` carries the ranges across a local
-alignment of the two, splitting them where the isoform lacks residues, and the
-card says so. The one caption still reading "approximate" is a cartoon domain on
-a cached panel, whose rows keep no sequence, when the row is not the launched
-isoform. Before a launch the card can still say a PDB entry misses the focus
-altogether, from the UniProt span 3D-Beacons lists for it.
+The map's regions and a typed residue are numbered on the canonical, which
+`GeneStructure.canonical` holds as UniProt serves it. Not the canonical
+AlphaFold model alone, which a gene may lack, and never the translation: MANE
+and the canonical differ for KMT2A (3972 and 3969 residues), PLEC and TTN, and
+reading one as the other sent KMT2A's WDR5 interface with 34 of 37 residues
+wrong. A cartoon domain is numbered on the panel's query protein. Where that
+protein is not the launched translation, `translationRanges` carries the ranges
+across, and the card says so.
+
+`translationRanges` aligns the two end to end and keeps a residue only inside a
+stretch of at least ten the two share letter for letter. Measured 2026-09-25
+against codon identity on the genome, over every isoform of TP53, PKM, CDKN2A,
+FGFR2, TPM1, BRAF and EGFR (51,550 residues truly shared): the local alignment
+the first version used placed 2,982 residues on the wrong one and missed 30, one
+EGFR isoform's far end among them; the stretch rule places 290 wrongly and
+misses 1, and no truly shared residue sat in a stretch shorter than 12. What it
+still places are paralogous mutually exclusive exons (PKM's 9 and 10 share an
+8-residue stretch, FGFR2's IIIb and IIIc another) and the residues where such an
+exon meets a shared one. On CDKN2A, p16's residues carried onto ARF, read in
+another frame, went from 85 to 1.
+
+Three captions still read "approximate": a cartoon domain on a cached panel
+(whose rows keep no sequence) when the row is not the launched isoform, a
+cartoon domain with no panel row, and a pair too long to align (TTN). Before a
+launch the card can still say a PDB entry misses the focus altogether, from the
+UniProt span 3D-Beacons lists for it; a cartoon focus is carried onto the
+canonical for that check.
 
 Until 2026-09-25 the card sent `initialSelection` (0-based structure positions,
 exact only for the canonical AlphaFold model folded from the launched

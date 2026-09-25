@@ -245,7 +245,7 @@ export default function ProteinLaunchCard({
   // an alignment, which a view toggle has no reason to repeat.
   const translation = launched.proteinSequence
   const launchedName = launched.transcript.name
-  const { fromCartoon, placement, selection } = useMemo(() => {
+  const { fromCartoon, placement, selection, onCanonical } = useMemo(() => {
     // A focus is numbered on some protein; the plugin lights residues of the
     // launched translation, and carries them onto the structure itself. The
     // map's regions and a typed residue are on the canonical. A cartoon domain
@@ -261,9 +261,10 @@ export default function ProteinLaunchCard({
       !!queryRow &&
       (queryRow.protein === launchedProtein ||
         queryRow.length === translation?.length)
+    const canonical = canonicalSequence(structure)
     const numberedOn = fromCartoon
       ? (queryRow?.sequence ?? (rowIsTranslation ? translation : undefined))
-      : canonicalSequence(structure)
+      : canonical
     const placed =
       ranges && translation && numberedOn
         ? translationRanges(ranges, numberedOn, translation)
@@ -276,13 +277,20 @@ export default function ProteinLaunchCard({
           ? 'exact'
           : 'aligned'
     const selection = placed ?? ranges
-    return { fromCartoon, placement, selection }
+    // the focus on the canonical, which a PDB entry's listed span counts on
+    const onCanonical = !fromCartoon
+      ? ranges
+      : ranges && numberedOn && canonical
+        ? translationRanges(ranges, numberedOn, canonical)
+        : undefined
+    return { fromCartoon, placement, selection, onCanonical }
   }, [focus, ranges, queryRow, structure, translation, launchedName, isoforms])
-  // A PDB entry's UniProt span, which a map focus is checked against before
-  // launch: a range outside it lights nothing.
+  // A focus outside the chosen PDB entry's UniProt span lights nothing.
   const entry = shown.find(e => e.pdbId === chosen)
-  const inEntry =
-    !entry || !!ranges?.some(r => r.start <= entry.end && r.end >= entry.start)
+  const outsideEntry =
+    !!entry &&
+    !!onCanonical &&
+    !onCanonical.some(r => r.start <= entry.end && r.end >= entry.start)
 
   // Building the url deflates the whole inline alignment, so it is memoised on
   // its own.
@@ -549,12 +557,12 @@ export default function ProteinLaunchCard({
                   ? "needs the isoform's translation"
                   : selection?.length === 0
                     ? `not on ${transcript.name}, which lacks these residues`
-                    : entry && !fromCartoon && !inEntry
+                    : outsideEntry
                       ? `not in this entry, which covers ${entry.start}–${entry.end}`
                       : placement === 'approximate'
                         ? fromCartoon
                           ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
-                          : `approximate: ${transcript.name} is too long to align with the canonical isoform`
+                          : `approximate: ${transcript.name} was not aligned to the canonical isoform the map counts on`
                         : placement === 'aligned'
                           ? `lit on load, carried onto ${transcript.name} by alignment`
                           : 'lit on load in all three views'}

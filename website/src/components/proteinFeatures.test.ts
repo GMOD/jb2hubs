@@ -404,3 +404,26 @@ test('translationRanges: a skipped exon drops its residues and closes the gap', 
     [],
   )
 })
+
+test('translationRanges: a mutually exclusive exon carries nothing, though it shares a stretch', () => {
+  // the exon between residues 51 and 70 swapped for a paralogue sharing only
+  // an 8-residue stretch, as PKM's exons 9 and 10 do
+  const exon = tp53.slice(50, 70)
+  const paralogue = 'WYHKCW' + exon.slice(6, 14) + 'YWHCKW'
+  const swapped = tp53.slice(0, 50) + paralogue + tp53.slice(70)
+  assert.deepStrictEqual(
+    translationRanges([{ start: 45, end: 75 }], tp53, swapped),
+    [
+      { start: 45, end: 50 },
+      { start: 71, end: 75 },
+    ],
+  )
+})
+
+test('translationRanges: a short shared start survives a long skip', () => {
+  const skipped = tp53.slice(0, 20) + tp53.slice(60)
+  assert.deepStrictEqual(
+    translationRanges([{ start: 5, end: 25 }], tp53, skipped),
+    [{ start: 5, end: 20 }],
+  )
+})

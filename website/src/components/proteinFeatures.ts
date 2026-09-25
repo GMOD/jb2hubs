@@ -20,11 +20,7 @@
 // 504 KB for HBB — well-studied extremes, 9.5 KB for zebrafish tp53 — so it is
 // fetched only when the reader opens the partner list.
 
-import {
-  alignmentTooLarge,
-  runLocalAlignment,
-  structureSeqVsTranscriptSeqMap,
-} from 'p2s_mapper'
+import { alignmentTooLarge, needlemanWunsch } from 'p2s_mapper'
 
 import type { ExampleFocus } from './geneExamples.ts'
 import type { ResidueRange } from './proteinSession.ts'
@@ -333,9 +329,48 @@ export function focusRanges(focus: Focus): ResidueRange[] {
   return residues?.length ? residueRuns(residues) : [{ start, end }]
 }
 
-// Ranges on one isoform carried onto another's translation through a local
-// alignment of the two, split wherever the translation lacks residues and
-// dropped where it lacks them all. Undefined for a pair too long to align.
+// How long a stretch two isoforms must share letter for letter before its
+// residues carry over. Measured 2026-09-25 against codon identity on the
+// genome, over the isoforms of TP53, PKM, CDKN2A, FGFR2, TPM1, BRAF and EGFR
+// (51,550 shared residues): every residue two isoforms truly share sat in a
+// stretch of 12 or more, while the paralogous mutually exclusive exons of PKM
+// (9 and 10) and FGFR2 (IIIb and IIIc) share stretches of 8.
+const SHARED_STRETCH = 10
+
+// Each residue of `from` that `translation` shares, by 0-based index. A global
+// alignment, because a local one dropped the far end of an EGFR isoform, and
+// only residues inside a shared stretch: an alignment also pairs a mutually
+// exclusive exon, or ARF's reading frame with p16's, residue for residue.
+function sharedResidues(from: string, translation: string) {
+  const { alignedSeq1: a, alignedSeq2: b } = needlemanWunsch(from, translation)
+  const shared = new Map<number, number>()
+  const stretch: [number, number][] = []
+  let i = 0
+  let j = 0
+  for (let col = 0; col <= a.length; col++) {
+    if (col < a.length && a[col] !== '-' && a[col] === b[col]) {
+      stretch.push([i, j])
+    } else {
+      if (stretch.length >= SHARED_STRETCH) {
+        for (const [x, y] of stretch) {
+          shared.set(x, y)
+        }
+      }
+      stretch.length = 0
+    }
+    if (a[col] !== undefined && a[col] !== '-') {
+      i++
+    }
+    if (b[col] !== undefined && b[col] !== '-') {
+      j++
+    }
+  }
+  return shared
+}
+
+// Ranges on one isoform carried onto another's translation, split wherever the
+// translation lacks residues and dropped where it lacks them all. Undefined
+// for a pair too long to align.
 export function translationRanges(
   ranges: readonly ResidueRange[],
   from: string,
@@ -347,14 +382,11 @@ export function translationRanges(
   if (alignmentTooLarge(translation.length, from.length)) {
     return undefined
   }
-  const { structureSeqToTranscriptSeqPosition: onTranslation } =
-    structureSeqVsTranscriptSeqMap(
-      runLocalAlignment(translation, from, 'smith_waterman'),
-    )
+  const onTranslation = sharedResidues(from, translation)
   const runs: ResidueRange[] = []
   for (const { start, end } of ranges) {
     for (let residue = start; residue <= end; residue++) {
-      const index = onTranslation[residue - 1]
+      const index = onTranslation.get(residue - 1)
       if (index !== undefined) {
         const last = runs.at(-1)
         if (last?.end === index) {

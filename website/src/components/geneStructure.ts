@@ -77,18 +77,29 @@ export interface GeneStructure {
   // over as the transcript's would make the pairwise alignment an identity and
   // index the CDS with the wrong protein whenever the isoforms differ.
   proteinSequence?: string
+  // UniProt's canonical sequence for `uniprotId`, as UniProt serves it
+  canonical?: string
   // every AlphaFold model the accession has, in the API's order
   alphafold: AlphaFoldModel[]
 }
 
-// The canonical sequence — the coordinate space the map's regions are on. The
-// canonical AlphaFold model is folded from exactly it; failing that, the
-// translation, which is the canonical for most genes.
+// The canonical sequence — the coordinate space the map's regions are on —
+// else the canonical AlphaFold model, folded from it. Never the translation:
+// MANE and the canonical differ for KMT2A (3972 and 3969 residues), PLEC and
+// TTN, and a range on one read as the other lands residues away.
 export function canonicalSequence(structure: GeneStructure) {
   return (
-    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence ??
-    structure.proteinSequence
+    structure.canonical ??
+    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence
   )
+}
+
+async function fetchUniProtSequence(accession: string, signal?: AbortSignal) {
+  const res = await fetch(`${UNIPROT}/${accession}.fasta`, { signal }).catch(
+    () => undefined,
+  )
+  const fasta = res?.ok ? await res.text() : ''
+  return fasta.split('\n').slice(1).join('') || undefined
 }
 
 // --- gene resolution ---------------------------------------------------------
@@ -433,6 +444,9 @@ export async function fetchGeneStructure(
   const alphafoldPending = uniprotId
     ? fetchAlphaFoldModels(uniprotId)
     : Promise.resolve([])
+  const canonicalPending = uniprotId
+    ? fetchUniProtSequence(uniprotId, signal)
+    : Promise.resolve(undefined)
   const tags = await fetchSelectTranscripts(gene.geneId, signal)
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
@@ -472,6 +486,7 @@ export async function fetchGeneStructure(
     proteinSequence,
     transcript: picked.transcript,
     isoforms,
+    canonical: await canonicalPending,
     alphafold: await alphafoldPending,
   }
 }
