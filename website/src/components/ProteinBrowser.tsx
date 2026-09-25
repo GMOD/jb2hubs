@@ -24,7 +24,11 @@ import {
   focusToParams,
 } from './geneExamples.ts'
 import { resolveOrthologSymbol } from './geneSearch.ts'
-import { type GeneStructure, fetchGeneStructure } from './geneStructure.ts'
+import {
+  type GeneStructure,
+  canonicalSequence,
+  fetchGeneStructure,
+} from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
 import { COMMON_SPECIES, geneUrl } from './orthologSearchUtils.ts'
 import {
@@ -503,16 +507,6 @@ export default function ProteinBrowser() {
         />
       )}
     </div>
-  )
-}
-
-// The canonical sequence — the coordinate space the map's regions are on. The
-// canonical AlphaFold model is folded from exactly it; failing that, the
-// translation, which is the canonical for most genes.
-function canonicalSequence(structure: GeneStructure) {
-  return (
-    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence ??
-    structure.proteinSequence
   )
 }
 

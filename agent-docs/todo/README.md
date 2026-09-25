@@ -17,4 +17,4 @@ turns out to be a decision rather than a task belongs in
 - [website-review-leftovers.md](website-review-leftovers.md) — what the
   2026-09-23 website review left open after two rounds of fixes: three decisions
   (whether UCSC rows show a borrowed common name, the 12-genome launch cap,
-  where HPRC lanes get placement data) and one upstream follow-up.
+  where HPRC lanes get placement data).

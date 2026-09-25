@@ -95,12 +95,12 @@ export type MsaSource =
 // lets the plugin fetch the SIFTS UniProt mapping for it.
 export type StructureSource = { url: string } | { pdbId: string }
 
-// A range of structure residues, lit on load across all three views as if it
-// had been clicked — how a domain on the map becomes the thing the session
-// opens on. `initialSelection` is 0-based half-open over the structure's own
-// residues, exact for a model folded from the translation; `initialResidues`
-// is inclusive author numbering, which is what a PDB entry is cited by.
-interface ResidueRange {
+// Residues of the launched translation, 1-based inclusive, lit on load across
+// all three views as if they had been clicked — how a domain on the map becomes
+// the thing the session opens on. The plugin carries them onto whichever
+// structure opens through its own alignment, so one numbering serves an
+// AlphaFold model, a crystal numbered from the mature protein, and a complex.
+export interface ResidueRange {
   start: number
   end: number
 }
@@ -114,8 +114,7 @@ export interface SessionOptions {
   primary?: StructureSource
   // further structures, superposed on the primary by the plugin (TM-align)
   superposed?: StructureSource[]
-  initialSelection?: ResidueRange
-  initialResidues?: ResidueRange
+  initialTranscriptResidues?: readonly ResidueRange[]
   collapse?: boolean
   flip?: boolean
   msa?: MsaSource
@@ -265,13 +264,9 @@ function proteinView(
   proteinSequence: string,
   superposed: StructureSource[],
   {
-    initialSelection,
-    initialResidues,
+    initialTranscriptResidues,
     showAlignment,
-  }: Pick<
-    SessionOptions,
-    'initialSelection' | 'initialResidues' | 'showAlignment'
-  >,
+  }: Pick<SessionOptions, 'initialTranscriptResidues' | 'showAlignment'>,
 ) {
   return {
     id: `protein-${transcript.geneName}`,
@@ -285,8 +280,9 @@ function proteinView(
         feature,
         userProvidedTranscriptSequence: proteinSequence,
         connectedViewId: `lgv-${transcript.geneName}`,
-        ...(initialSelection ? { initialSelection } : {}),
-        ...(initialResidues ? { initialResidues } : {}),
+        ...(initialTranscriptResidues?.length
+          ? { initialTranscriptResidues }
+          : {}),
       },
       ...superposed,
     ],
@@ -334,8 +330,7 @@ export function buildSessionUrl({
   structure,
   primary,
   superposed = [],
-  initialSelection,
-  initialResidues,
+  initialTranscriptResidues,
   collapse = true,
   flip = false,
   msa,
@@ -368,8 +363,7 @@ export function buildSessionUrl({
   const protein =
     primary && proteinSequence
       ? proteinView(transcript, feature, primary, proteinSequence, superposed, {
-          initialSelection,
-          initialResidues,
+          initialTranscriptResidues,
           showAlignment,
         })
       : undefined

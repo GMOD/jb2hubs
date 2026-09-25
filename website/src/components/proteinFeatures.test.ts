@@ -2,12 +2,13 @@ import assert from 'node:assert'
 import { test } from 'node:test'
 
 import {
-  authorRange,
+  focusRanges,
   parseInterProRegions,
   parseInterfaceRegions,
   parseResidue,
   regionContaining,
   residueRuns,
+  translationRanges,
 } from './proteinFeatures.ts'
 
 // The shape InterPro's entry/all/protein/uniprot answers with, pared down to
@@ -334,41 +335,72 @@ test('parseResidue: unreadable or out-of-range input is an error, not nothing', 
   assert.ok('error' in parseResidue('0', hbb, 147))
 })
 
-// 1A3O's HBB chains as PDBe's SIFTS mapping gives them (2026-09-24): Val1 has
-// no coordinates, so the segment's start carries no author number.
-const hbbChain = (
-  chainId: string,
-  author: { authorStart?: number; authorEnd?: number } = { authorEnd: 146 },
-) => ({
-  entityId: '2',
-  chainId,
-  unpStart: 2,
-  unpEnd: 147,
-  structStart: 0,
-  structEnd: 145,
-  ...author,
-})
-
-test('a segment with no author start is numbered back from its end', () => {
-  assert.deepEqual(
-    authorRange([hbbChain('B'), hbbChain('D')], { start: 7, end: 7 }),
-    { start: 6, end: 6, chain: 'B', shift: -1 },
-  )
-})
-
-test('a segment that names its author start is read as it is', () => {
-  assert.deepEqual(
-    authorRange([hbbChain('B', { authorStart: 1, authorEnd: 146 })], {
-      start: 2,
-      end: 147,
+test('focusRanges: an interface is its contact runs, not first to last', () => {
+  assert.deepStrictEqual(
+    focusRanges({
+      kind: 'region',
+      region: {
+        kind: 'interface',
+        name: 'MDM2',
+        start: 17,
+        end: 40,
+        residues: [17, 18, 19, 20, 22, 23, 25, 26, 40],
+      },
     }),
-    { start: 1, end: 146, chain: 'B', shift: -1 },
+    [
+      { start: 17, end: 26 },
+      { start: 40, end: 40 },
+    ],
+  )
+  assert.deepStrictEqual(
+    focusRanges({
+      kind: 'region',
+      region: { kind: 'domain', name: 'P53', start: 95, end: 288 },
+    }),
+    [{ start: 95, end: 288 }],
+  )
+  assert.deepStrictEqual(focusRanges({ kind: 'residue', position: 248 }), [
+    { start: 248, end: 248 },
+  ])
+})
+
+// TP53's first 102 residues. Δ40p53 starts at Met40, so canonical residue n is
+// its n − 39.
+const tp53 =
+  'MEEPQSDPSVEPPLSQETFSDLWKLLPENNVLSPLPSQAMDDLMLSPDDIEQWFTEDPGPDEAPRMPEAAPPVAPAPAAPTPAAPAPAPSWPLSSSVPSQKT'
+
+test('translationRanges: the same sequence keeps its numbering', () => {
+  const ranges = [{ start: 17, end: 26 }]
+  assert.strictEqual(translationRanges(ranges, tp53, tp53), ranges)
+})
+
+test('translationRanges: an isoform missing the N-terminus renumbers, clips and drops', () => {
+  const delta40 = tp53.slice(39)
+  assert.deepStrictEqual(
+    translationRanges(
+      [
+        { start: 45, end: 50 },
+        { start: 30, end: 42 },
+        { start: 1, end: 20 },
+      ],
+      tp53,
+      delta40,
+    ),
+    [
+      { start: 6, end: 11 },
+      { start: 1, end: 3 },
+    ],
   )
 })
 
-test('a segment with neither author endpoint still covers nothing', () => {
-  assert.equal(
-    authorRange([hbbChain('B', {})], { start: 7, end: 7 }),
-    undefined,
+test('translationRanges: a skipped exon drops its residues and closes the gap', () => {
+  const skipped = tp53.slice(0, 50) + tp53.slice(70)
+  assert.deepStrictEqual(
+    translationRanges([{ start: 45, end: 75 }], tp53, skipped),
+    [{ start: 45, end: 55 }],
+  )
+  assert.deepStrictEqual(
+    translationRanges([{ start: 55, end: 65 }], tp53, skipped),
+    [],
   )
 })

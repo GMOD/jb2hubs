@@ -81,6 +81,16 @@ export interface GeneStructure {
   alphafold: AlphaFoldModel[]
 }
 
+// The canonical sequence — the coordinate space the map's regions are on. The
+// canonical AlphaFold model is folded from exactly it; failing that, the
+// translation, which is the canonical for most genes.
+export function canonicalSequence(structure: GeneStructure) {
+  return (
+    structure.alphafold.find(m => !m.accession.includes('-'))?.sequence ??
+    structure.proteinSequence
+  )
+}
+
 // --- gene resolution ---------------------------------------------------------
 
 interface DatasetsGeneReport {

@@ -33,10 +33,3 @@ Delete an entry when it lands, and the file when it is empty.
   data, either published per haplotype beside the sidecar or read from the
   adapter by the panel generator in a browser, and the second would let the loci
   table disagree with the **Any region** box.
-
-## Follow-ups
-
-- **p2s_mapper's `toAuthorRange` skips a SIFTS segment with no author start.**
-  `authorRange` in `website/src/components/proteinFeatures.ts` derives the start
-  from the segment's end first (1A3O's HBB chains need it); the same line in
-  p2s_mapper would let the wrapper go.

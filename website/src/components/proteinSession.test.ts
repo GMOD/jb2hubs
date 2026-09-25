@@ -56,7 +56,7 @@ interface SessionView {
     connectedViewId?: string
     userProvidedTranscriptSequence?: string
     feature?: { refName: string }
-    initialSelection?: { start: number; end: number }
+    initialTranscriptResidues?: { start: number; end: number }[]
   }[]
 }
 
@@ -130,16 +130,15 @@ test('buildSessionUrl: a PDB entry is named by id, superposed models by url, a d
     structure,
     primary: { pdbId: '1tup' },
     superposed: [{ url: 'https://example.org/AF-P04637-F1.cif' }],
-    initialSelection: { start: 93, end: 292 },
+    initialTranscriptResidues: [{ start: 94, end: 292 }],
   })
   const protein = viewsOf(session).find(v => v.type === 'ProteinView')!
   assert.equal(protein.structures?.length, 2)
   assert.equal(protein.structures?.[0]?.pdbId, '1tup')
   assert.equal(protein.structures?.[0]?.url, undefined)
-  assert.deepEqual(protein.structures?.[0]?.initialSelection, {
-    start: 93,
-    end: 292,
-  })
+  assert.deepEqual(protein.structures?.[0]?.initialTranscriptResidues, [
+    { start: 94, end: 292 },
+  ])
   // the superposed model is a plain structure: no feature, nothing connected
   assert.deepEqual(protein.structures?.[1], {
     url: 'https://example.org/AF-P04637-F1.cif',
@@ -333,7 +332,7 @@ test('buildSessionUrl: quiet drops the overview bar and gridlines, and only then
   )
 })
 
-test('buildSessionUrl: the pairwise panel is hidden only when asked, and a PDB focus is by author residue', () => {
+test('buildSessionUrl: the pairwise panel is hidden only when asked, and a focus with no residues is left out', () => {
   const shown = viewsOf(
     buildSessionUrl({ structure, primary: alphafold }).session,
   ).find(v => v.type === 'ProteinView') as unknown as {
@@ -343,19 +342,13 @@ test('buildSessionUrl: the pairwise panel is hidden only when asked, and a PDB f
   const { session } = buildSessionUrl({
     structure,
     primary: { pdbId: '1ycr' },
-    initialResidues: { start: 17, end: 26 },
+    initialTranscriptResidues: [],
     showAlignment: false,
   })
-  const protein = viewsOf(session).find(
-    v => v.type === 'ProteinView',
-  )! as unknown as {
-    showAlignment?: boolean
-    structures: { initialResidues?: unknown; initialSelection?: unknown }[]
-  }
-  assert.equal(protein.showAlignment, false)
-  assert.deepEqual(protein.structures[0]!.initialResidues, {
-    start: 17,
-    end: 26,
-  })
-  assert.equal(protein.structures[0]!.initialSelection, undefined)
+  const protein = viewsOf(session).find(v => v.type === 'ProteinView')!
+  assert.equal(
+    (protein as unknown as { showAlignment?: boolean }).showAlignment,
+    false,
+  )
+  assert.equal('initialTranscriptResidues' in protein.structures![0]!, false)
 })

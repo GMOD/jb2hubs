@@ -2089,12 +2089,12 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   lost 51 of 67 rows to the plugin's 50 KB snapshot cap.
 - **The map's coordinates are the UniProt canonical's.** InterPro regions and
   PDBe interface residues are on it; the launched transcript's translation may
-  be another isoform, and `ProteinLaunchCard` says "approximate" whenever the
-  model is not the canonical entry folded from exactly that translation. A
-  focused partner opens the PDB complex by `initialResidues` in the entry's
-  author numbering, shifted through SIFTS (p2s_mapper's `toAuthorRange`) —
-  haemoglobin chains count from the mature protein, one behind UniProt — never
-  by `initialSelection`.
+  be another isoform. `ProteinLaunchCard` carries a focus onto the translation
+  (`translationRanges`, a local alignment where the two differ) and sends it as
+  `initialTranscriptResidues`, which the plugin resolves onto any structure
+  through its own alignment — haemoglobin's mature-numbered chains included. Do
+  not reintroduce `initialSelection` or author numbering on the page: both were
+  exact for only some structures.
 
 ## Key website internals
 

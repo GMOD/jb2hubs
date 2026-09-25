@@ -27,9 +27,9 @@
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser and
 // live NCBI/EBI/AlphaFold answers. Run it by hand when touching
 // website/src/components/{geneStructure,proteinSession,structureSources}.ts,
-// the launch card, or the `p2s_mapper` version — the entry list and the author
-// numbering this exercises both come from that package — and before promoting
-// `features.proteinBrowser`.
+// the launch card, or the `p2s_mapper` version — the entry list and the
+// isoform alignment a focus is carried across by both come from that package —
+// and before promoting `features.proteinBrowser`.
 //
 // Usage:
 //   pnpm check-protein-launches                          # human examples, on main
@@ -45,7 +45,11 @@ import { fetchExperimentalStructures } from 'p2s_mapper'
 import { launch } from 'puppeteer-core'
 
 import { examplesFor } from '../website/src/components/geneExamples.ts'
-import { fetchGeneStructure } from '../website/src/components/geneStructure.ts'
+import {
+  canonicalSequence,
+  fetchGeneStructure,
+  fetchProteinSequence,
+} from '../website/src/components/geneStructure.ts'
 import { loadPfam } from '../website/src/components/proteinAlignments.ts'
 import {
   fetchInterProRegions,
@@ -53,11 +57,13 @@ import {
   focusFamily,
   focusFromPreset,
   focusLabel,
-  focusRange,
+  focusRanges,
+  translationRanges,
 } from '../website/src/components/proteinFeatures.ts'
 import { buildSessionUrl } from '../website/src/components/proteinSession.ts'
 import { pickAlphaFoldModel } from '../website/src/components/structureSources.ts'
 
+import type { ExampleFocus } from '../website/src/components/geneExamples.ts'
 import type { GeneStructure } from '../website/src/components/geneStructure.ts'
 import type { SessionOptions } from '../website/src/components/proteinSession.ts'
 
@@ -151,60 +157,124 @@ type Launch =
       // an inline alignment the session carries: the MsaView must come up
       // with this many rows, linked to the genome view
       expectMsaRows?: number
+      // a focus the session opens on: the structure must hold a selection,
+      // and when given, exactly these residues (letter and author number)
+      expectSelection?: boolean
+      expectSelected?: string[]
     }
 
-// The chip's focused launch, built the way the card builds it: the focus
-// resolved against InterPro (and PDBe, for a partner), the domain's Pfam seed
-// as the alignment when there is one, the complex as the structure when the
-// focus is an interface, and the focus lit on open. This is the session whose
-// mapping the unit tests cannot see — a seed row linked through a sliced
-// transcript, a residue highlight in row coordinates — so it is booted too.
+// A focused launch: a chip's preset, or one of NUMBERING_CASES. `isoform`
+// launches another of the gene's transcripts and `pdbId` another structure
+// than the card's default.
+interface FocusCase {
+  focus: ExampleFocus
+  isoform?: string
+  pdbId?: string
+  selects?: string[]
+}
+
+// Focuses no chip reaches, each a numbering the page used to work out from
+// SIFTS before handing the plugin a range: a crystal counted from the mature
+// protein, an interface lit as its contact runs in the complex, and an isoform
+// that lacks the canonical's first 39 residues.
+const NUMBERING_CASES: Record<string, FocusCase[]> =
+  REF === 9606
+    ? {
+        HBB: [
+          {
+            focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
+            pdbId: '2hhb',
+            selects: ['E6'],
+          },
+        ],
+        TP53: [
+          { focus: { partner: 'P04637' } },
+          { focus: { partner: 'Q12888' } },
+          {
+            focus: { residue: 248, residueLabel: 'R248' },
+            isoform: 'NM_001126118.2',
+            pdbId: '1tup',
+            selects: ['R248'],
+          },
+        ],
+      }
+    : {}
+
+// A focused launch built the way the card builds it: the focus resolved
+// against InterPro (and PDBe, for a partner), the domain's Pfam seed as the
+// alignment when there is one, the complex as the structure when the focus is
+// an interface, and the focus carried onto the launched translation and lit on
+// open. This is the session whose mapping the unit tests cannot see — a seed
+// row linked through a sliced transcript, a residue highlight in row
+// coordinates, a selection resolved onto the structure — so it is booted too.
 async function focusedLaunch(
   gene: string,
   structure: GeneStructure,
   primary: SessionOptions['primary'],
   exact: boolean,
-): Promise<Launch | undefined> {
-  const preset = examplesFor(REF).find(e => e.symbol === gene)?.focus
-  if (!preset || !structure.uniprotId) {
-    return undefined
-  }
-  const regions = await fetchInterProRegions(structure.uniprotId)
-  const partners = preset.partner
-    ? await fetchInterfaceRegions(structure.uniprotId)
-    : undefined
+  { focus: preset, isoform: isoformName, pdbId, selects }: FocusCase,
+): Promise<Launch> {
+  const regions = structure.uniprotId
+    ? await fetchInterProRegions(structure.uniprotId)
+    : []
+  const partners =
+    preset.partner && structure.uniprotId
+      ? await fetchInterfaceRegions(structure.uniprotId)
+      : undefined
   const focus = focusFromPreset(preset, regions, partners)
   if (!focus) {
     return {
       name: `${gene} focused`,
-      resolveError: `the chip's focus ${JSON.stringify(preset)} matched nothing`,
+      resolveError: `the focus ${JSON.stringify(preset)} matched nothing`,
     }
   }
-  const family = focusFamily(focus, regions)
-  const alignment = family
-    ? await loadPfam(structure, family, focus)
+  const isoform = isoformName
+    ? structure.isoforms.find(i => i.transcript.name === isoformName)
     : undefined
+  if (isoformName && !isoform) {
+    return {
+      name: `${gene} ${isoformName}`,
+      resolveError: `${gene} has no isoform ${isoformName}`,
+    }
+  }
+  const translated = isoform
+    ? {
+        ...structure,
+        transcript: isoform.transcript,
+        proteinSequence: await fetchProteinSequence(isoform.protein),
+      }
+    : structure
+  const family = focusFamily(focus, regions)
+  const alignment =
+    family && !isoform ? await loadPfam(structure, family, focus) : undefined
   const complexId =
     focus.kind === 'region' ? focus.region.pdbIds?.[0] : undefined
-  const chosen = complexId ? { pdbId: complexId } : primary
-  const range = focusRange(focus)
+  const structureId = pdbId ?? complexId
+  const chosen = structureId ? { pdbId: structureId } : primary
+  const launched = { ...translated, ...alignment?.structureOverrides }
+  const ranges = focusRanges(focus)
+  const canonical = canonicalSequence(structure)
   const { url } = buildSessionUrl({
-    structure: { ...structure, ...alignment?.structureOverrides },
+    structure: launched,
     primary: chosen,
     msa: alignment?.source,
-    ...(complexId
-      ? { initialResidues: range }
-      : { initialSelection: { start: range.start - 1, end: range.end } }),
+    initialTranscriptResidues:
+      canonical && launched.proteinSequence
+        ? (translationRanges(ranges, canonical, launched.proteinSequence) ??
+          ranges)
+        : ranges,
     quiet: true,
-    showAlignment: !exact || !!complexId,
+    showAlignment: !exact || !!structureId,
   })
   return {
-    name: `${gene} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${complexId ? `, PDB ${complexId}` : ''}`,
+    name: `${gene}${isoform ? ` ${isoform.transcript.name}` : ''} on ${focusLabel(focus)}${alignment ? `, ${alignment.carries}` : ''}${structureId ? `, PDB ${structureId}` : ''}`,
     url: retarget(url),
     expectStructure: !!chosen,
     expectGeneTrack: !!structure.target.geneTrackId,
-    expectExact: exact && !complexId,
+    expectExact: exact && !structureId && !isoform,
     expectMsaRows: alignment?.rowCount,
+    expectSelection: !!chosen,
+    expectSelected: selects,
   }
 }
 
@@ -244,9 +314,14 @@ for (const gene of genes) {
       expectGeneTrack: !!structure.target.geneTrackId,
       expectExact: exact,
     })
-    const focused = await focusedLaunch(gene, structure, primary, exact)
-    if (focused) {
-      launches.push(focused)
+    const chip = examplesFor(REF).find(e => e.symbol === gene)?.focus
+    for (const focusCase of [
+      ...(chip ? [{ focus: chip }] : []),
+      ...(NUMBERING_CASES[gene] ?? []),
+    ]) {
+      launches.push(
+        await focusedLaunch(gene, structure, primary, exact, focusCase),
+      )
     }
   } catch (e) {
     launches.push({ name: gene, resolveError: `${e}`.split('\n')[0] ?? '' })
@@ -261,6 +336,9 @@ interface StructureState {
   pairwiseAlignment?: unknown
   exactMatch?: boolean
   error?: unknown
+  clickedStructureRanges?: { start: number; end: number }[]
+  mappedStructureSeq?: string
+  residueNumber?: (pos: number) => number
 }
 interface ViewState {
   type: string
@@ -289,7 +367,15 @@ const browser = await launch({
   defaultViewport: { width: 1400, height: 1400 },
 })
 
+// Residues read back as `R248`; the first and last few when there are many.
+function compactResidues(residues: string[]) {
+  return residues.length > 12
+    ? `${residues.slice(0, 6).join(',')} … ${residues.slice(-6).join(',')}`
+    : residues.join(',')
+}
+
 let failures = 0
+const selections = new Map<string, string[]>()
 for (const launchSpec of launches) {
   const problems: string[] = []
   if ('resolveError' in launchSpec) {
@@ -358,6 +444,14 @@ for (const launchSpec of launches) {
                   aligned: !!s.pairwiseAlignment,
                   exactMatch: s.exactMatch,
                   error: s.error ? `${s.error}` : undefined,
+                  // every selected residue as its letter and author number
+                  selected: (s.clickedStructureRanges ?? []).flatMap(r =>
+                    Array.from(
+                      { length: r.end - r.start },
+                      (_, i) =>
+                        `${s.mappedStructureSeq?.[r.start + i] ?? '?'}${s.residueNumber?.(r.start + i) ?? '?'}`,
+                    ),
+                  ),
                 })),
               }
             : undefined,
@@ -387,6 +481,18 @@ for (const launchSpec of launches) {
           problems.push(
             'model sequence equals the translation, but the plugin did not see an exact match',
           )
+        } else if (launchSpec.expectSelection && s.selected.length === 0) {
+          problems.push('the focus lit nothing on the structure')
+        } else if (
+          launchSpec.expectSelected &&
+          s.selected.join(',') !== launchSpec.expectSelected.join(',')
+        ) {
+          problems.push(
+            `the focus lit ${s.selected.join(',')}, not ${launchSpec.expectSelected.join(',')}`,
+          )
+        }
+        if (launchSpec.expectSelection) {
+          selections.set(launchSpec.name, s?.selected ?? [])
         }
       }
       if (launchSpec.expectMsaRows !== undefined) {
@@ -418,6 +524,12 @@ for (const launchSpec of launches) {
     }
   } else {
     console.log(`ok   ${launchSpec.name}`)
+  }
+  const selected = selections.get(launchSpec.name)
+  if (selected?.length) {
+    console.log(
+      `       lit ${selected.length} residues: ${compactResidues(selected)}`,
+    )
   }
 }
 

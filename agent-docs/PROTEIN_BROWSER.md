@@ -111,12 +111,10 @@ the field; a chip built before that shows no toggles.
 
 ## Other launch options, and where each is decided
 
-- **Domain → `initialSelection`.** Clicking a CDD domain on the query row opens
-  the session with that residue range lit in all three views. The range is in
-  the row's protein coordinates and the plugin wants structure residues, so it
-  is exact when the model was folded from the transcript's own translation and
-  that is the row's protein; a different isoform shifts it and a PDB entry
-  numbers its observed chain. The card says which, beside the chip.
+- **Domain → `initialTranscriptResidues`.** Clicking a CDD domain on the query
+  row opens the session with that residue range lit in all three views. The
+  range is in the row's protein coordinates, carried onto the launched
+  translation as described under **A focus** below.
 - **Variant tracks.** `pickVariantTracks` in `genomeTarget.ts` opens
   `<db>-clinvarMain` and `<db>-alphaMissense` where the config has them (hg38
   and hg19 today), which is the pairing the paper's BRAF V600 case study is
@@ -191,27 +189,39 @@ reader asks, or when a chip's preset names a partner. Both sets of coordinates
 are on the UniProt canonical sequence.
 
 **A focus** (`Focus` in `proteinFeatures.ts`): a region of the map, a CDD domain
-off the ortholog cartoon, or a residue typed into the box. The card turns it
-into the plugin's `initialSelection` for an AlphaFold model (0-based, structure
-residues — exact only when the model is the canonical entry folded from the
-launched translation, which the card checks) or `initialResidues` for a PDB
-entry, in the entry's own author numbering. That numbering is UniProt's for most
-entries and not for all: haemoglobin's chains count from the mature protein, so
-Glu7 of the translation is residue 6 in 2HHB and 1A00, and a construct can start
-anywhere. p2s_mapper reads the SIFTS mapping for the chosen entry
-(`pdbe/api/mappings/uniprot/<pdb>`, cross-origin, ~1 KB) and shifts the range by
-the chain segment that covers most of it; the card says which chain and by how
-much, or that no chain covers the range. SIFTS leaves an endpoint's author
-number out when that residue has no coordinates — 1A3O's and 1A3N's HBB chains
-lack Val1 — so `authorRange` derives a missing start from the segment's end
-before shifting; without it those entries read as covering nothing and lit the
-UniProt numbers. The launch link waits for that read, as it does for an
-isoform's translation, and for a linked partner it waits for the PDBe list that
-names the partner's complex. A focused partner also changes the structure: the
-first PDB entry the two were seen in together opens instead of the monomer, with
-the partner's chain loaded — the protein3d plugin loads every polymer entity,
-maps the transcript onto the one whose sequence explains it, and offers the rest
-in its chain picker.
+off the ortholog cartoon, or a residue typed into the box. The card sends it as
+the plugin's `initialTranscriptResidues`, 1-based residues of the launched
+translation, and the plugin carries those onto whichever structure opens through
+its own pairwise alignment. One numbering therefore serves an AlphaFold model, a
+PDB fragment, and haemoglobin's crystals, whose chains count from the mature
+protein (Glu7 of the translation is residue 6 in 2HHB and 1A00). An interface
+focus sends its contact runs, the ones the map draws (`residueRuns`), not one
+span from its first contact to its last: TP53's homo-oligomer contacts are 15
+runs, 201 residues, between 17 and 356 (PDBe, 2026-09-25), and 6XRE lights
+all 201.
+
+The map's regions and a typed residue are numbered on the canonical, and a
+cartoon domain on the panel's query protein. Where that protein is not the
+launched translation, `translationRanges` carries the ranges across a local
+alignment of the two, splitting them where the isoform lacks residues, and the
+card says so. The one caption still reading "approximate" is a cartoon domain on
+a cached panel, whose rows keep no sequence, when the row is not the launched
+isoform. Before a launch the card can still say a PDB entry misses the focus
+altogether, from the UniProt span 3D-Beacons lists for it.
+
+Until 2026-09-25 the card sent `initialSelection` (0-based structure positions,
+exact only for the canonical AlphaFold model folded from the launched
+translation) or `initialResidues` in the entry's author numbering, which it
+worked out from PDBe's SIFTS mapping before enabling the link. The plugin
+resolves both through the same alignment now, so the SIFTS read, its retry and
+its "reading how the entry numbers its chains" wait are gone.
+
+A focused partner also changes the structure: the first PDB entry the two were
+seen in together opens instead of the monomer, with the partner's chain loaded —
+the protein3d plugin loads every polymer entity, maps the transcript onto the
+one whose sequence explains it, and offers the rest in its chain picker. The
+launch link waits for the PDBe list that names the partner's complex, as it does
+for an isoform's translation.
 
 **An alignment chosen by the question.** A focused domain, or a residue inside
 one, offers the Pfam family's **seed** first: the curated few dozen sequences
@@ -374,10 +384,6 @@ hash again, this is the route.
 - The map reads InterPro and PDBe by Swiss-Prot accession, so a gene with no
   reviewed entry has no map; a TrEMBL accession would work for InterPro (not
   tried) and the UniProt search in `geneStructure.ts` asks for reviewed only.
-- An interface focus lights the span from its first contact residue to its last,
-  because `initialResidues` is one range; TP53's homo-oligomer interface spans
-  30–370 that way. The map draws the runs. A residue list on the plugin's side
-  would let the session light what the map shows.
 - A residue focus is the same residue on every host, but a cartoon-domain or
   site focus is not in the url: it has no name a link could carry.
 - The interface payload is read whole (half a megabyte on TP53 or HBB) to keep

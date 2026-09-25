@@ -1,10 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import {
-  fetchExperimentalStructures,
-  fetchUniProtStructureMappings,
-  segmentsForAccession,
-} from 'p2s_mapper'
+import { fetchExperimentalStructures } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
@@ -13,14 +9,15 @@ import { SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
 import {
   type GeneStructure,
   type Isoform,
+  canonicalSequence,
   fetchProteinSequence,
   geneStats,
 } from './geneStructure.ts'
 import {
   type Focus,
-  authorRange,
   focusLabel,
-  focusRange,
+  focusRanges,
+  translationRanges,
 } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
 import {
@@ -209,7 +206,7 @@ export default function ProteinLaunchCard({
         : shown.some(e => e.pdbId === chosen) || complexIds.includes(chosen)
           ? { pdbId: chosen }
           : undefined
-    const range = focus ? focusRange(focus) : undefined
+    const ranges = focus ? focusRanges(focus) : undefined
     return {
       launched,
       model,
@@ -217,7 +214,7 @@ export default function ProteinLaunchCard({
       complexIds,
       chosen,
       primary,
-      range,
+      ranges,
       offered,
     }
   }, [
@@ -237,33 +234,55 @@ export default function ProteinLaunchCard({
     complexIds,
     chosen,
     primary,
-    range,
+    ranges,
     offered,
   } = pick
   // a linked PDB entry is not on offer until the entries have loaded, nor a
   // linked complex until the partner that names it has
   const structurePending = partnerPending || (!!choice && !offered && listing)
 
-  // A PDB entry is lit by author numbering, which SIFTS maps the UniProt range
-  // onto per chain: the same numbers for most entries, one behind for a chain
-  // numbered from the mature protein (haemoglobin), or a construct's own.
-  const pdbId = primary && 'pdbId' in primary ? primary.pdbId : undefined
-  // p2s_mapper's own read retries a dropped request twice behind a 20s
-  // deadline. A read that still fails lights nothing rather than the UniProt
-  // range, which on 2HHB would put HBB's E6V chip on residue 7 instead of 6.
-  const {
-    data: sifts,
-    error: numberingError,
-    isLoading: numbering,
-    mutate: retryNumbering,
-  } = useSWRImmutable(
-    range && pdbId && uniprotId ? (['sifts', pdbId, uniprotId] as const) : null,
-    async ([, pdb, acc]) =>
-      segmentsForAccession(await fetchUniProtStructureMappings(pdb), acc),
-    LIVE_QUERY,
-  )
-  const author = range && sifts ? authorRange(sifts, range) : undefined
-  const unnumbered = !!pdbId && !!numberingError && !numbering
+  // Memoised apart from the url: carrying a focus onto another isoform runs
+  // an alignment, which a view toggle has no reason to repeat.
+  const translation = launched.proteinSequence
+  const launchedName = launched.transcript.name
+  const { fromCartoon, placement, selection } = useMemo(() => {
+    // A focus is numbered on some protein; the plugin lights residues of the
+    // launched translation, and carries them onto the structure itself. The
+    // map's regions and a typed residue are on the canonical. A cartoon domain
+    // is on the panel's query protein (MANE, else longest), whose sequence a
+    // cached panel no longer carries, so there the row is matched to the
+    // translation by accession, else by length — a PANTHER row is a UniProt
+    // entry, and the 100-way's transcript has no RefSeq protein to name.
+    const fromCartoon = focus?.kind === 'region' && !focus.region.accession
+    const launchedProtein = isoforms.find(
+      i => i.transcript.name === launchedName,
+    )?.protein
+    const rowIsTranslation =
+      !!queryRow &&
+      (queryRow.protein === launchedProtein ||
+        queryRow.length === translation?.length)
+    const numberedOn = fromCartoon
+      ? (queryRow?.sequence ?? (rowIsTranslation ? translation : undefined))
+      : canonicalSequence(structure)
+    const placed =
+      ranges && translation && numberedOn
+        ? translationRanges(ranges, numberedOn, translation)
+        : undefined
+    const placement = !translation
+      ? undefined
+      : !placed
+        ? 'approximate'
+        : numberedOn === translation
+          ? 'exact'
+          : 'aligned'
+    const selection = placed ?? ranges
+    return { fromCartoon, placement, selection }
+  }, [focus, ranges, queryRow, structure, translation, launchedName, isoforms])
+  // A PDB entry's UniProt span, which a map focus is checked against before
+  // launch: a range outside it lights nothing.
+  const entry = shown.find(e => e.pdbId === chosen)
+  const inEntry =
+    !entry || !!ranges?.some(r => r.start <= entry.end && r.end >= entry.start)
 
   // Building the url deflates the whole inline alignment, so it is memoised on
   // its own.
@@ -275,52 +294,19 @@ export default function ProteinLaunchCard({
       .filter(e => 'model' in e && !e.model)
       .map(e => e.accession)
     const unreachable = (extras ?? []).flatMap(e => ('failure' in e ? [e] : []))
-    // A focus is a range on some protein sequence; the plugin lights structure
-    // residues. The map's regions are on the UniProt canonical, so they are
-    // exact when the model IS the canonical and was folded from the launched
-    // translation. A cartoon domain is on the panel's query protein instead
-    // (MANE, else longest), which need not be the launched transcript's; the
-    // row is matched by accession, and by length where the accession cannot
-    // agree — a PANTHER row is a UniProt entry, and the 100-way's transcript
-    // has no RefSeq protein to name.
     const modelExact =
       chosen === 'alphafold' &&
       !!model &&
       model.sequence === launched.proteinSequence
-    const canonicalModel = !!model && !model.accession.includes('-')
-    const launchedProtein = isoforms.find(
-      i => i.transcript.name === launched.transcript.name,
-    )?.protein
-    const rowExact =
-      !!queryRow &&
-      (queryRow.protein === launchedProtein ||
-        queryRow.length === launched.proteinSequence?.length)
-    const fromCartoon = focus?.kind === 'region' && !focus.region.accession
-    const focusExact = fromCartoon
-      ? modelExact && rowExact
-      : modelExact && canonicalModel
     return {
       found,
       missingModels,
       unreachable,
-      modelExact,
-      canonicalModel,
-      fromCartoon,
-      focusExact,
       ...buildSessionUrl({
         structure: launched,
         primary,
         superposed: found.map(m => ({ url: m.url })),
-        ...(range && chosen === 'alphafold'
-          ? { initialSelection: { start: range.start - 1, end: range.end } }
-          : {}),
-        ...(range && pdbId && !unnumbered
-          ? {
-              initialResidues: author
-                ? { start: author.start, end: author.end }
-                : range,
-            }
-          : {}),
+        initialTranscriptResidues: selection,
         collapse,
         flip,
         msa: alignment?.source,
@@ -335,32 +321,15 @@ export default function ProteinLaunchCard({
     model,
     chosen,
     primary,
-    range,
-    pdbId,
-    author,
-    unnumbered,
-    isoforms,
+    selection,
     alignment,
     extras,
-    queryRow,
-    focus,
     collapse,
     flip,
     variants,
     quiet,
   ])
-  const {
-    found,
-    missingModels,
-    unreachable,
-    modelExact,
-    canonicalModel,
-    fromCartoon,
-    focusExact,
-    session,
-    url,
-    loc,
-  } = launch
+  const { found, missingModels, unreachable, session, url, loc } = launch
   const { transcript, assemblyAccession } = launched
   const { codingBp } = geneStats(transcript)
 
@@ -573,56 +542,35 @@ export default function ProteinLaunchCard({
                 {focusLabel(focus)} ×
               </button>
             </span>
-            {unnumbered ? (
-              <span className="ui-error">
-                not lit: PDBe did not say how this entry numbers its chains (
-                {errorText(numberingError)}).{' '}
-                <button
-                  className="ui-linkbtn"
-                  onClick={() => {
-                    void retryNumbering()
-                  }}
-                >
-                  Try again
-                </button>
-              </span>
-            ) : (
-              <span className="ui-caption">
-                {!primary
-                  ? 'needs a structure'
-                  : focusExact
-                    ? 'lit on load in all three views'
-                    : pdbId
-                      ? numbering
-                        ? 'reading how the entry numbers its chains'
-                        : author
-                          ? author.shift
-                            ? `lit as ${author.start === author.end ? author.start : `${author.start}–${author.end}`} in chain ${author.chain}, which numbers ${Math.abs(author.shift)} ${author.shift < 0 ? 'behind' : 'ahead of'} UniProt`
-                            : `lit on load; chain ${author.chain} is numbered as UniProt is`
-                          : 'not in this entry: no chain covers the range'
-                      : !modelExact
-                        ? 'approximate: the model is a different isoform'
-                        : fromCartoon
+            <span className="ui-caption">
+              {!primary
+                ? 'needs a structure'
+                : !placement
+                  ? "needs the isoform's translation"
+                  : selection?.length === 0
+                    ? `not on ${transcript.name}, which lacks these residues`
+                    : entry && !fromCartoon && !inEntry
+                      ? `not in this entry, which covers ${entry.start}–${entry.end}`
+                      : placement === 'approximate'
+                        ? fromCartoon
                           ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
-                          : canonicalModel
-                            ? 'approximate'
-                            : 'approximate: an isoform model, and the map counts on the canonical'}
-              </span>
-            )}
+                          : `approximate: ${transcript.name} is too long to align with the canonical isoform`
+                        : placement === 'aligned'
+                          ? `lit on load, carried onto ${transcript.name} by alignment`
+                          : 'lit on load in all three views'}
+            </span>
           </div>
         )}
       </div>
 
       <div className="msv-actions">
-        {translating || structurePending || numbering || aligning ? (
+        {translating || structurePending || aligning ? (
           <span className="msv-open msv-open-disabled">
             {translating
               ? 'Resolving isoform…'
               : structurePending
                 ? 'Resolving structure…'
-                : numbering
-                  ? 'Resolving numbering…'
-                  : 'Loading alignment…'}
+                : 'Loading alignment…'}
           </span>
         ) : (
           <a
@@ -692,7 +640,10 @@ export default function ProteinLaunchCard({
       </div>
       <p className="ui-caption">
         Opens {joinList(carries)} in one connected session
-        {focus && primary && !unnumbered ? `, on ${focusLabel(focus)}` : ''}.
+        {focus && primary && selection?.length
+          ? `, on ${focusLabel(focus)}`
+          : ''}
+        .
       </p>
 
       {detailsOpen && (

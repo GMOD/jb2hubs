@@ -13,17 +13,21 @@
 //
 // Both sets of coordinates are on the UniProt canonical sequence, 1-based
 // inclusive. The launched transcript may translate to another isoform, and
-// where it does the card says the range is approximate — see ProteinLaunchCard.
+// where it does `translationRanges` carries a focus across by alignment.
 //
 // Measured 2026-09-11: InterPro answers TP53 in 13 KB (22 entries, 2 pages at
 // page_size 50 for NOTCH1's 56); the interface list is 496 KB for TP53 and
 // 504 KB for HBB — well-studied extremes, 9.5 KB for zebrafish tp53 — so it is
 // fetched only when the reader opens the partner list.
 
-import { toAuthorRange } from 'p2s_mapper'
+import {
+  alignmentTooLarge,
+  runLocalAlignment,
+  structureSeqVsTranscriptSeqMap,
+} from 'p2s_mapper'
 
 import type { ExampleFocus } from './geneExamples.ts'
-import type { UniProtStructureSegment } from 'p2s_mapper'
+import type { ResidueRange } from './proteinSession.ts'
 
 export type RegionKind = 'domain' | 'repeat' | 'site' | 'interface' | 'residue'
 
@@ -319,29 +323,49 @@ export type Focus =
   | { kind: 'region'; region: ProteinRegion }
   | { kind: 'residue'; position: number; label?: string }
 
-export function focusRange(focus: Focus) {
-  return focus.kind === 'region'
-    ? { start: focus.region.start, end: focus.region.end }
-    : { start: focus.position, end: focus.position }
+// The residues a focus names. An interface is its contact runs, as the map
+// draws them: TP53's homo-oligomer contacts span 17–356 end to end.
+export function focusRanges(focus: Focus): ResidueRange[] {
+  if (focus.kind === 'residue') {
+    return [{ start: focus.position, end: focus.position }]
+  }
+  const { start, end, residues } = focus.region
+  return residues?.length ? residueRuns(residues) : [{ start, end }]
 }
 
-// The author-numbered range a PDB entry cites a UniProt range by. SIFTS leaves
-// an endpoint's author number out when that residue has no coordinates — 1A3O's
-// and 1A3N's HBB chains lack Val1 — and `toAuthorRange` passes over a segment
-// with no author start, so those entries read as covering nothing. A segment
-// is one run of consecutive SEQRES residues, so its end gives its start.
-export function authorRange(
-  segments: readonly UniProtStructureSegment[],
-  range: { start: number; end: number },
+// Ranges on one isoform carried onto another's translation through a local
+// alignment of the two, split wherever the translation lacks residues and
+// dropped where it lacks them all. Undefined for a pair too long to align.
+export function translationRanges(
+  ranges: readonly ResidueRange[],
+  from: string,
+  translation: string,
 ) {
-  return toAuthorRange(
-    segments.map(s =>
-      s.authorStart === undefined && s.authorEnd !== undefined
-        ? { ...s, authorStart: s.authorEnd - (s.structEnd - s.structStart) }
-        : s,
-    ),
-    range,
-  )
+  if (from === translation) {
+    return ranges
+  }
+  if (alignmentTooLarge(translation.length, from.length)) {
+    return undefined
+  }
+  const { structureSeqToTranscriptSeqPosition: onTranslation } =
+    structureSeqVsTranscriptSeqMap(
+      runLocalAlignment(translation, from, 'smith_waterman'),
+    )
+  const runs: ResidueRange[] = []
+  for (const { start, end } of ranges) {
+    for (let residue = start; residue <= end; residue++) {
+      const index = onTranslation[residue - 1]
+      if (index !== undefined) {
+        const last = runs.at(-1)
+        if (last?.end === index) {
+          last.end = index + 1
+        } else {
+          runs.push({ start: index + 1, end: index + 1 })
+        }
+      }
+    }
+  }
+  return runs
 }
 
 export function focusLabel(focus: Focus) {
