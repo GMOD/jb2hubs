@@ -42,6 +42,10 @@ export const features = {
   // pages offer no graph links. Independent of `pangenome` so the section can
   // go live without the graph.
   pangenomeGraph: staging,
+  // The conserved-gene-order section's launch into the reference's multi-way
+  // synteny star. Waits on core v5: only config-staging.json carries the star,
+  // since a display type a released host lacks is fatal once the track opens.
+  multiwayStar: staging,
   // "Open in Desktop" beside a launch link. Staged until JBrowse Desktop 5.0
   // ships: the jbrowse:// handler landed after v4.2.1, so on every install in
   // the wild today the link silently does nothing.

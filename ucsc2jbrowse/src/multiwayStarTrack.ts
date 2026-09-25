@@ -1,7 +1,7 @@
 import type { JBrowseConfig, UcscGenome, UcscTrack } from './types.ts'
 
 // a star of fewer pairs than this says nothing its pairwise tracks do not
-const MIN_MATES = 3
+export const MIN_MATES = 3
 // the most lanes a star opens on; the lane picker offers every other mate
 const MAX_DEFAULT_LANES = 9
 // MultiWaySyntenyDisplay's MIN_LANE_PITCH: a track this tall per lane never
@@ -13,21 +13,29 @@ interface Mate {
   adapter: Record<string, unknown>
 }
 
-// `<anchor>_to_<mate>_liftOver`, as createChainTracks.ts names them; the
-// chainBridge variant is a second file for the same pair and would draw its
-// lane twice
+/**
+ * The mate of a `<anchor>_to_<mate>_liftOver` track, as createChainTracks.ts
+ * names them; the chainBridge variant is a second file for the same pair and
+ * would draw its lane twice
+ */
+export function liftOverMateOf(
+  track: { trackId: string; assemblyNames: string[] },
+  anchor: string,
+) {
+  const [first, mate] = track.assemblyNames
+  return track.trackId.startsWith(`${anchor}_to_`) &&
+    track.trackId.endsWith('_liftOver') &&
+    first === anchor &&
+    mate !== anchor
+    ? mate
+    : undefined
+}
+
 function liftOverMates(config: JBrowseConfig, anchor: string): Mate[] {
-  const prefix = `${anchor}_to_`
   return config.tracks.flatMap(track => {
-    const [first, mate] = track.assemblyNames
-    return track.type === 'SyntenyTrack' &&
-      track.trackId.startsWith(prefix) &&
-      track.trackId.endsWith('_liftOver') &&
-      first === anchor &&
-      mate !== undefined &&
-      mate !== anchor
-      ? [{ name: mate, adapter: track.adapter }]
-      : []
+    const mate =
+      track.type === 'SyntenyTrack' ? liftOverMateOf(track, anchor) : undefined
+    return mate === undefined ? [] : [{ name: mate, adapter: track.adapter }]
   })
 }
 

@@ -2,10 +2,12 @@
 //  - a clicked gene -> pairwise LinearSyntenyView when a precomputed chain
 //    (synteny_pairs.json) links it to the reference, else single-genome;
 //  - a clicked branch point -> stacked LinearSyntenyView of the whole subtree;
-//  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus).
+//  - the reference's hosted whole-genome alignment (e.g. hg38 447-way Cactus);
+//  - the reference's multi-way liftOver star, laned by the page's species.
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
+import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
 import {
   flipLoc,
   panelTracks,
@@ -66,6 +68,52 @@ export function refAlignmentUrl(refTaxonId: number, gene: PlacedGene) {
         },
       ])
     : undefined
+}
+
+// MultiWaySyntenyDisplay's MIN_LANE_PITCH: a track this tall per lane never
+// scrolls
+const LANE_PITCH = 22
+
+// The reference's multi-way synteny star over the window the page draws, one
+// lane per species the page shows that the star holds. Undefined where the
+// reference has no star.
+export function starUrl(
+  refAccession: string | undefined,
+  refLoc: string | undefined,
+  rows: { taxonId: number; assembly?: string }[],
+  { hosted, stars }: DrilldownData,
+) {
+  const ucscDb = refAccession ? hosted(refAccession)?.ucscDb : undefined
+  const starLanes = ucscDb ? stars[ucscDb] : undefined
+  if (!ucscDb || !refLoc || !starLanes) {
+    return undefined
+  }
+  const lanes = [
+    ...new Set(
+      rows
+        .map(row => starLane(starLanes, row, hosted))
+        .filter((mate): mate is string => mate !== undefined),
+    ),
+  ]
+  return specUrl(ucscConfigPath(ucscDb), [
+    {
+      type: 'LinearGenomeView',
+      assembly: ucscDb,
+      loc: refLoc,
+      tracks: [
+        {
+          trackId: `${ucscDb}_liftOver_multiway`,
+          type: 'MultiWaySyntenyDisplay',
+          ...(lanes.length > 0
+            ? {
+                laneFilter: { only: lanes },
+                height: (lanes.length + 1) * LANE_PITCH,
+              }
+            : {}),
+        },
+      ],
+    },
+  ])
 }
 
 export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
@@ -205,6 +253,7 @@ export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
 export interface DrilldownData {
   index: PairIndex
   hosted: (accession: string) => HostedGenome
+  stars: StarIndex
 }
 
 function hostedLookup(store: AssemblyStore | undefined) {
@@ -212,12 +261,20 @@ function hostedLookup(store: AssemblyStore | undefined) {
     store ? store.find(accession) : { accession }
 }
 
+// A star index that will not load costs only the star link
+function loadStars() {
+  return loadJsonOnce<StarIndex>('/synteny_stars.json').catch(
+    (): StarIndex => ({}),
+  )
+}
+
 export async function loadDrilldownData(): Promise<DrilldownData> {
-  const [index, store] = await Promise.all([
+  const [index, store, stars] = await Promise.all([
     loadPairs(),
     loadStore().catch(() => undefined),
+    loadStars(),
   ])
-  return { index, hosted: hostedLookup(store) }
+  return { index, hosted: hostedLookup(store), stars }
 }
 
 // A click cannot wait for a retry: without the catalog it opens the single
@@ -227,7 +284,7 @@ async function drilldownForClick(): Promise<DrilldownData> {
     loadPairs().catch((): PairIndex => new Map()),
     loadStore().catch(() => undefined),
   ])
-  return { index, hosted: hostedLookup(store) }
+  return { index, hosted: hostedLookup(store), stars: {} }
 }
 
 // What the assembly index says about the genome a clicked gene sits on:

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { features } from '../config/features.ts'
 import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import {
@@ -12,6 +13,7 @@ import {
   openGeneDrilldown,
   openRefAlignment,
   openSubtreeSynteny,
+  starUrl,
   subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
 import {
@@ -217,6 +219,15 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
       .filter((p): p is SubtreeLeaf => !!p)
   const subtreeHref = (leaves: SubtreeLeaf[]) =>
     drilldown ? subtreeSyntenyUrl(leaves, drilldown) : undefined
+  const starHref =
+    features.multiwayStar && drilldown
+      ? starUrl(
+          refAssembly,
+          placementByTaxon.get(refTaxonId)?.loc,
+          layout.rows.filter(row => row.taxonId !== refTaxonId),
+          drilldown,
+        )
+      : undefined
 
   // Branch points that can launch, each with the band of rows it covers (drawn
   // hidden, lit by the hover rules) and the leaves nearest the reference that a
@@ -314,6 +325,17 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           >
             ▤ {refAlignment.alignmentLabel}
           </button>
+        )}
+        {starHref && (
+          <a
+            className="msv-align-btn"
+            href={starHref}
+            target="_blank"
+            rel="noopener"
+            title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
+          >
+            ☰ Multi-way synteny lanes
+          </a>
         )}
       </div>
 

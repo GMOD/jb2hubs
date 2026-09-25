@@ -5,6 +5,7 @@ import {
   geneDrilldownUrl,
   nearestWindow,
   refAlignmentUrl,
+  starUrl,
   subtreeSyntenyUrl,
 } from './multiSyntenyDrilldown.ts'
 import { MAX_PICKED_GENOMES } from './multiSyntenyPicker.ts'
@@ -31,8 +32,9 @@ const leaf = (assembly: string, flipped = false): SubtreeLeaf => ({
 function drilldown(
   pairs: Record<string, PairEntry>,
   hosted: DrilldownData['hosted'] = accession => ({ accession }),
+  stars: DrilldownData['stars'] = {},
 ): DrilldownData {
-  return { index: buildPairIndex(pairs), hosted }
+  return { index: buildPairIndex(pairs), hosted, stars }
 }
 
 test('subtreeSyntenyUrl needs at least two genomes', () => {
@@ -391,4 +393,72 @@ test('the reference alignment opens on the NCBI sequence accession', () => {
     assert.equal(viewOf(url).loc, 'NC_000017.11:7668421-7687490')
   }
   assert.equal(refAlignmentUrl(10090, human), undefined)
+})
+
+const HUMAN = 'GCF_000001405.40'
+const hostedHuman: DrilldownData['hosted'] = accession =>
+  accession === HUMAN
+    ? { accession, ucscDb: 'hg38' }
+    : accession === 'GCF_000002285.5'
+      ? { accession, ucscDb: 'canFam3' }
+      : { accession }
+const CHIMP = 9598
+const DOG = 9615
+const stars = {
+  hg38: {
+    mates: ['panTro6', 'canFam3', 'canFam6', 'mm39'],
+    taxa: { [CHIMP]: 'panTro6', [DOG]: 'canFam6', 10090: 'mm39' },
+  },
+}
+
+function starTrackOf(url: string) {
+  return viewOf(url).tracks[0]
+}
+
+test("the star opens on the page's window, one lane per species it holds", () => {
+  const url = starUrl(
+    HUMAN,
+    'NC_000017.11:7000000-7100000',
+    [
+      { taxonId: CHIMP, assembly: 'GCF_028858775.2' },
+      { taxonId: DOG, assembly: 'GCF_000002285.5' },
+      { taxonId: 9999, assembly: 'GCF_1.1' },
+      { taxonId: CHIMP, assembly: 'GCF_002880755.1' },
+    ],
+    drilldown({}, hostedHuman, stars),
+  )!
+  assert.match(url, /config=%2Fucsc%2Fhg38%2Fconfig/)
+  assert.equal(viewOf(url).assembly, 'hg38')
+  assert.equal(viewOf(url).loc, 'NC_000017.11:7000000-7100000')
+  assert.deepEqual(starTrackOf(url), {
+    trackId: 'hg38_liftOver_multiway',
+    type: 'MultiWaySyntenyDisplay',
+    laneFilter: { only: ['panTro6', 'canFam3'] },
+    height: 66,
+  })
+})
+
+test('no star for a reference without one, or one that is not a UCSC genome', () => {
+  const chimp = [{ taxonId: CHIMP }]
+  assert.equal(
+    starUrl(HUMAN, 'chr1:1-2', chimp, drilldown({}, hostedHuman)),
+    undefined,
+  )
+  assert.equal(
+    starUrl(HUMAN, 'chr1:1-2', chimp, drilldown({}, undefined, stars)),
+    undefined,
+  )
+})
+
+test("with none of the page's species a lane, the star opens on its own lanes", () => {
+  const url = starUrl(
+    HUMAN,
+    'chr1:1-2',
+    [{ taxonId: 9999 }],
+    drilldown({}, hostedHuman, stars),
+  )!
+  assert.deepEqual(starTrackOf(url), {
+    trackId: 'hg38_liftOver_multiway',
+    type: 'MultiWaySyntenyDisplay',
+  })
 })
