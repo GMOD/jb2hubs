@@ -8,10 +8,11 @@ import { constants, gunzipSync } from 'zlib'
 //   #!annotation-source NCBI RefSeq GCF_020076305.1-RS_2025_11_22
 //
 // The track's metadata reads that header rather than ncbi.json, because the two
-// drift apart. NCBI re-annotates at the same accession, and we refresh ncbi.json
-// every 90 days but fetch a GFF once; on 2026-09-24, 103 of a 2,976-hub sample
-// named a different RS_ release in the two, in both directions. The header
-// describes the file we serve. A third of the sample has no such header (almost
+// drift apart. NCBI re-annotates at the same accession, ncbi.json is refreshed
+// every 90 days, and a GFF is fetched again only once ncbi.json names a later
+// release (genark2jbrowse/src/staleNcbiGffs.ts); on 2026-09-24, 103 of a
+// 2,976-hub sample named a different RS_ release in the two, in both directions.
+// The header describes the file we serve. A third of the sample has no such header (almost
 // all "Annotation submitted by NCBI RefSeq" in ncbi.json), and those get no
 // metadata rather than a claim we cannot check against the file.
 
@@ -63,4 +64,28 @@ export function readNcbiGffAnnotation(gffGzPath: string) {
   } finally {
     fs.closeSync(fd)
   }
+}
+
+// Where an annotation name says which release it is. RefSeq's current scheme
+// dates each one (`GCF_000092205.1-RS_2026_07_03`), the one before it numbered
+// them (`NCBI Bos taurus Annotation Release 106`), and every dated release is
+// later than every numbered one. Anything else ("Annotation submitted by NCBI
+// RefSeq", "FlyBase Release 6.54", "INSDC submitter") says nothing about order,
+// and is what a superseded assembly's report reads: 9 of the 72 UCSC GFFs
+// differ from their ncbi.json only that way.
+function releaseRank(name: string): [number, number] | undefined {
+  const dated = /-RS_(\d{4})_(\d{2})(?:_(\d{2}))?\b/.exec(name)
+  if (dated) {
+    return [2, Number(`${dated[1]}${dated[2]}${dated[3] ?? '00'}`)]
+  }
+  const numbered = /Annotation Release (\d+(?:\.\d+)?)/.exec(name)
+  return numbered ? [1, Number(numbered[1])] : undefined
+}
+
+// Whether `published` names a later release than `served`, as far as the names
+// can say; two names that cannot be ordered are not a newer release.
+export function isLaterRelease(published: string, served: string) {
+  const a = releaseRank(published)
+  const b = releaseRank(served)
+  return !!a && !!b && (a[0] === b[0] ? a[1] > b[1] : a[0] > b[0])
 }

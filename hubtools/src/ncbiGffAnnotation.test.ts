@@ -6,6 +6,7 @@ import { describe, it } from 'node:test'
 import { gzipSync } from 'node:zlib'
 
 import {
+  isLaterRelease,
   parseNcbiGffAnnotation,
   readNcbiGffAnnotation,
 } from './ncbiGffAnnotation.ts'
@@ -78,5 +79,56 @@ describe('readNcbiGffAnnotation', () => {
       annotationDate: '2025-11-22',
     })
     fs.rmSync(dir, { recursive: true })
+  })
+})
+
+describe('isLaterRelease', () => {
+  it('orders dated RefSeq releases, with or without a day', () => {
+    const served = 'NCBI RefSeq GCF_000092205.1-RS_2025_07_03'
+    assert.equal(isLaterRelease('GCF_000092205.1-RS_2026_07_03', served), true)
+    assert.equal(isLaterRelease('GCF_000092205.1-RS_2024_10_21', served), false)
+    assert.equal(isLaterRelease('GCF_000092205.1-RS_2025_07_03', served), false)
+    assert.equal(
+      isLaterRelease(
+        'GCF_000001405.40-RS_2025_08',
+        'GCF_000001405.40-RS_2024_08',
+      ),
+      true,
+    )
+  })
+
+  it('orders numbered releases, and puts every dated one after them', () => {
+    const served = 'NCBI Bos taurus Annotation Release 106'
+    assert.equal(
+      isLaterRelease('NCBI Bos taurus Annotation Release 107', served),
+      true,
+    )
+    assert.equal(
+      isLaterRelease('NCBI Bos taurus Annotation Release 106', served),
+      false,
+    )
+    assert.equal(isLaterRelease('GCF_002263795.3-RS_2024_05', served), true)
+    assert.equal(
+      isLaterRelease(
+        'NCBI Mus musculus Annotation Release 109',
+        'GCF_000001635.27-RS_2024_02',
+      ),
+      false,
+    )
+  })
+
+  it('does not order names that carry no release', () => {
+    assert.equal(
+      isLaterRelease(
+        'Annotation submitted by NCBI RefSeq',
+        'NCBI Bos taurus Annotation Release 106',
+      ),
+      false,
+    )
+    assert.equal(
+      isLaterRelease('FlyBase Release 6.55', 'FlyBase Release 6.54'),
+      false,
+    )
+    assert.equal(isLaterRelease('GCF_1.1-RS_2026_01', 'INSDC submitter'), false)
   })
 })

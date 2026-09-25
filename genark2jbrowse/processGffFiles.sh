@@ -13,8 +13,9 @@ echo "Phase 1: Building queue of GFF files to process..."
 # These are cheap per-file stat checks; a single inline pass is faster than a
 # parallel fan-out, where the per-job shell spawn dominates the actual work.
 # Reprocess when there is no output yet, when the downloaded GFF is newer than
-# the existing output (an in-place re-annotation pulled by FETCH_UPDATES), or
-# when REPROCESS forces it.
+# the existing output (a re-annotation downloadNcbiGff.sh fetched again, which it
+# stamps with the time of the fetch for this reason), or when REPROCESS forces
+# it.
 QUEUE_FILE=$(mktemp)
 trap 'rm -f "$QUEUE_FILE"' EXIT
 while IFS= read -r input_file; do

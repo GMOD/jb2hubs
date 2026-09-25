@@ -418,6 +418,33 @@ a whole class of assembly quietly stops getting an annotation. mtime is a safe
 clock here, unlike in `buildNcbiQueue.ts`, because `gff/` is gitignored and so
 survives no clone to have its mtimes reset.
 
+### A GFF NCBI re-annotated in place is fetched again
+
+NCBI re-annotates an assembly at the same url (`GCF_000092205.1-RS_2025_07_03`
+became `-RS_2026_07_03` in the same `*_genomic.gff.gz`), and a GFF was fetched
+once, so on 2026-09-24 1,049 of 44,648 held an older release than NCBI
+publishes. `src/staleNcbiGffs.ts` finds them without a request, by comparing
+each download's `#!annotation-source` header with its hub's `ncbi.json`, and
+`downloadNcbiGff.sh` fetches those again, at most `STALE_GFF_MAX` (1,000) a run.
+Only a provably later release counts (`isLaterRelease`, hubtools): a later `RS_`
+date, a higher "Annotation Release" number, or the step from numbered to dated.
+A superseded assembly's report reads "Annotation submitted by NCBI RefSeq",
+which orders against nothing, so it asks NCBI for nothing.
+
+Every fetch is a `curl -z` into a temp file, and both halves matter:
+
+- **The new copy's mtime is the fetch time.** `wget -N` kept upstream's
+  Last-Modified, and `processGffFiles.sh` rebuilds `bgz/` only from a GFF newer
+  than it, so a re-annotation published before our last rebuild was downloaded
+  and never processed. GCF_000092205.1's was: replaced upstream 2026-07-04,
+  `bgz/` rebuilt 2026-07-21. That hole was in `FETCH_UPDATES=1` all along.
+- **A transfer cut short leaves the previous file.** wget wrote in place, and a
+  truncated download "exists" to every gate after it.
+
+`downloadNcbiGff.test.sh` pins both against a stub curl. The UCSC side needs
+none of this: `ucsc2jbrowse/downloadNcbiGff.sh` rebuilds from a fresh `datasets`
+zip whenever it fetches, and its 72 GFFs surveyed clean the same day.
+
 ### A GCA hub's gene search comes from xenoRefGene
 
 GCA hubs get no NCBI GFF, so the text index above never covers them. 7,885 of
