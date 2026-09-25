@@ -15,9 +15,9 @@ turns out to be a decision rather than a task belongs in
   than junk, which is why the gate must mirror the drop rules rather than
   observe the config.
 - [website-review-leftovers.md](website-review-leftovers.md) — what the
-  2026-09-23 website review left open after two rounds of fixes: three
-  decisions (whether UCSC rows show a borrowed common name, the 12-genome launch
-  cap, where HPRC lanes get placement data) and one upstream follow-up.
+  2026-09-23 website review left open after two rounds of fixes: three decisions
+  (whether UCSC rows show a borrowed common name, the 12-genome launch cap,
+  where HPRC lanes get placement data) and one upstream follow-up.
 - [stale-ncbi-gff-release.md](stale-ncbi-gff-release.md) — about 2% of GenArk
   GFFs hold an older RefSeq release than NCBI now publishes at the same
   accession, because a GFF is fetched once. The track names the release it
