@@ -126,6 +126,10 @@ _report_assembly_timing() {
 # Shared body of the two runners below. An empty `label` means strict: the
 # caller's `set -e` must see the failure, so the status is returned. A non-empty
 # one means lenient, and is what the failure report is titled with.
+#
+# When ASSEMBLY_FAILURES_FILE is set, the name of every assembly whose job failed
+# is appended to it. make.sh reads it to leave those assemblies unstamped, since
+# a failed job also skipped every table after the one that failed.
 _run_assembly_jobs() {
   local fn="$1" label="$2"
   shift 2
@@ -135,6 +139,10 @@ _run_assembly_jobs() {
   parallel --joblog "$joblog" ${PARALLEL_JOBS:+-j"$PARALLEL_JOBS"} $PARALLEL_OPTS \
     _assembly_job "$fn" ::: "$@" || status=$?
   _report_assembly_timing "${label:-$fn}" "$joblog"
+  if [ -n "${ASSEMBLY_FAILURES_FILE:-}" ]; then
+    awk -F'\t' 'NR > 1 && ($7 != 0 || $8 != 0) { name = $NF; sub(/.*\//, "", name); print name }' \
+      "$joblog" >>"$ASSEMBLY_FAILURES_FILE"
+  fi
   # Keeps the joblog only when it named failures, so the "full job log" the
   # report points at still exists -- same contract as run_parallel_reporting.
   if _report_parallel_joblog "${label:-$fn}" "$joblog" "$status"; then

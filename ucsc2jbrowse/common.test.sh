@@ -134,6 +134,18 @@ case "$out" in
   ;;
 esac
 
+# make.sh leaves a failed assembly unstamped, so the runner has to say which one
+# failed, and only that one.
+ASSEMBLY_FAILURES_FILE=$(mktemp)
+export ASSEMBLY_FAILURES_FILE
+fails_on_hg38() { [ "$(basename "$1")" != hg38 ]; }
+export -f fails_on_hg38
+run_for_assemblies_lenient fails_on_hg38 "testing" \
+  "$UCSC_DOWNLOADS_DIR/hg38" "$UCSC_DOWNLOADS_DIR/mm39" >/dev/null 2>&1
+check "the runner records only the failed assembly" "hg38" "$(cat "$ASSEMBLY_FAILURES_FILE")"
+rm -f "$ASSEMBLY_FAILURES_FILE"
+unset ASSEMBLY_FAILURES_FILE
+
 # No arguments is a usage error, not a silent no-op over everything.
 (run_for_assemblies touched) >/dev/null 2>&1
 check "run_for_assemblies rejects an empty assembly list" "1" "$?"

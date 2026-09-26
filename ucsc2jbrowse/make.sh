@@ -520,6 +520,10 @@ node src/transformGenomeList.ts "$UCSC_BUILT_DIR/list.json.raw" "$UCSC_BUILT_DIR
 log "Creating a copy for the website..."
 cp "$UCSC_BUILT_DIR/list.json" "$SCRIPT_DIR/../website/src/list.json"
 
+ASSEMBLY_FAILURES_FILE=$(mktemp)
+export ASSEMBLY_FAILURES_FILE
+trap 'rm -f "$ASSEMBLY_FAILURES_FILE"' EXIT
+
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
   log "Extracting track definitions from trackDb..."
   ./createTracksJsonForGoldenPath.sh "${CHANGED_DL_DIRS[@]}"
@@ -633,10 +637,24 @@ node src/mergeRemovedTracks.ts
 # the next incremental run from reprocessing all 238 again. The trackDb stamp
 # keeps its narrower condition -- --skip-download may have processed a copy
 # older than upstream, and REPROCESS ignores the stamp anyway.
+#
+# An assembly whose derivation job failed gets neither stamp, so the next run
+# visits it again: the job stopped at the failing table and never reached the
+# ones after it.
+declare -A failed_assemblies=()
+while read -r assembly; do
+  failed_assemblies[$assembly]=1
+done <"$ASSEMBLY_FAILURES_FILE"
+if [ "${#failed_assemblies[@]}" -gt 0 ]; then
+  log "Leaving ${#failed_assemblies[@]} assembly/assemblies unstamped after failed derivation jobs: ${!failed_assemblies[*]}"
+fi
 if [ "${#CHANGED_DL_DIRS[@]}" -gt 0 ]; then
   for assembly_data_dir in "${CHANGED_DL_DIRS[@]}"; do
     assembly=$(basename "$assembly_data_dir")
     built_dir="$UCSC_BUILT_DIR/$assembly"
+    if [ -n "${failed_assemblies[$assembly]:-}" ]; then
+      continue
+    fi
     if [ -d "$built_dir" ]; then
       printf '%s\n' "$PIPELINE_HASH" >"$built_dir/.pipeline_hash"
       trackdb="$assembly_data_dir/$assembly/database/trackDb.txt.gz"
@@ -651,7 +669,13 @@ fi
 # retried rather than recorded as done. Safe to write unconditionally here: it
 # either bootstraps a missing stamp, is already equal, or REDERIVE was set --
 # and REDERIVE implies PIPELINE_HASH moved too, which means every assembly was
-# reprocessed and every derived file was therefore visited.
-printf '%s\n' "$DERIVATION_HASH" >"$DERIVATION_STAMP"
+# reprocessed and every derived file was therefore visited. A failed job breaks
+# that last step, so a re-derivation with failures leaves the stamp alone and
+# the next run re-derives again.
+if [ -n "${REDERIVE:-}" ] && [ "${#failed_assemblies[@]}" -gt 0 ]; then
+  log "Not advancing $DERIVATION_STAMP: the re-derivation had failed jobs."
+else
+  printf '%s\n' "$DERIVATION_HASH" >"$DERIVATION_STAMP"
+fi
 
 log "Pipeline finished successfully!"
