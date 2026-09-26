@@ -84,6 +84,25 @@ const star = (
   })
 
 describe('multiwayStarTrack', () => {
+  it('anchors a GenArk-backed alias on its accession, not its db name', () => {
+    const acc = 'GCF_036323735.1'
+    const track = multiwayStarTrack({
+      config: config([
+        chain(acc, 'hg38'),
+        chain(acc, 'mm39'),
+        chain(acc, 'galGal6'),
+      ]),
+      assemblyName: 'rn8',
+      anchor: acc,
+      genomes,
+      labelOf: () => '',
+      geneTrackId: undefined,
+    })!
+    assert.equal(track.trackId, `${acc}_liftOver_multiway`)
+    assert.equal(track.assemblyNames[0], acc)
+    assert.equal((track.adapter as { adapters: unknown[] }).adapters.length, 3)
+  })
+
   it('stars every liftOver pair the config holds, one child per mate', () => {
     const track = star([
       chain('hg38', 'panTro6'),

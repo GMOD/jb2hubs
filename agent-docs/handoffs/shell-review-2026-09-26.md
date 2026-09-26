@@ -49,7 +49,9 @@ passing on ada with `BGZIP_STRICT=1` plus a new
 11. Both PIF gates load the CLI-version memo in the parent shell; an empty
     `--version` is an error.
 12. Deadlines on every fetch listed, and `--timeout=600` on the rsyncs.
-13. Not fixed, see below.
+13. The 14 GenArk-backed aliases with chains (rn8, GRCg7b, the T2T primates,
+    …) name their GenArk twin's published PIFs, 71 tracks in all. hs1 was
+    never affected: it has a download dir and 25 PIFs.
 14. `deploy.sh` compares plain `readlink`, removes a partial release, and runs
     the remote `zstd -d | tar` under pipefail.
 15. All six small ones.
@@ -62,9 +64,6 @@ is now keyed by its basename.
 
 Still open:
 
-- **`makePifs.sh` visits only rsynced download dirs**, so hub-backed UCSC
-  assemblies (hs1, rn8, …) get no liftOver PIFs. Check how the deleted
-  `processHs1LiftOver.sh` found their chains before changing it.
 - An ssh failure during `deploy.sh`'s verification step still exits under
   `set -e` and leaves the partial release.
 

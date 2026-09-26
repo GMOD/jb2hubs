@@ -118,15 +118,14 @@ function ucscOrganism(db: string) {
 // see multiwayStarTrack.ts for why it is staging-only
 function withMultiwayStar(config: JBrowseConfig, ctx: FinalizeContext) {
   const { assemblyName } = ctx
+  const anchor = config.assemblies[0]?.name ?? assemblyName
   const star = multiwayStarTrack({
     config,
     assemblyName,
+    anchor,
     genomes: ucscGenomes,
     labelOf: mate => liftOverTargetLabel(mate, ucscOrganism),
-    geneTrackId: defaultGeneTrackId(
-      config,
-      config.assemblies[0]?.name ?? assemblyName,
-    ),
+    geneTrackId: defaultGeneTrackId(config, anchor),
     alignments: alignmentSettings(
       config,
       Object.values(ctx.tracksDb ?? {}).map(entry =>

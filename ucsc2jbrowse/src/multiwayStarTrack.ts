@@ -154,13 +154,17 @@ export function alignmentSettings(
 export function multiwayStarTrack({
   config,
   assemblyName,
+  anchor = assemblyName,
   genomes,
   labelOf,
   geneTrackId,
   alignments = [],
 }: {
   config: JBrowseConfig
+  /** the UCSC db name, which the genome list is keyed by */
   assemblyName: string
+  /** the config's own assembly name, which the tracks name */
+  anchor?: string
   genomes: Record<string, UcscGenome>
   /** what the pairwise liftOver track calls a mate, '' when nothing */
   labelOf: (mate: string) => string
@@ -168,7 +172,7 @@ export function multiwayStarTrack({
   /** see `alignmentSettings` */
   alignments?: Record<string, unknown>[]
 }): UcscTrack | undefined {
-  const mates = liftOverMates(config, assemblyName)
+  const mates = liftOverMates(config, anchor)
   if (mates.length < MIN_MATES) {
     return undefined
   }
@@ -194,10 +198,10 @@ export function multiwayStarTrack({
   const lanes = defaultLanes(ordered, assemblyName, genomes, defaultOn)
   return {
     type: 'SyntenyTrack',
-    trackId: `${assemblyName}_liftOver_multiway`,
+    trackId: `${anchor}_liftOver_multiway`,
     name: `${assemblyName} vs ${mates.length} genomes (liftOver, multi-way)`,
     category: ['Pairwise alignments'],
-    assemblyNames: [assemblyName, ...lanes],
+    assemblyNames: [anchor, ...lanes],
     adapter: {
       type: 'MultiPairwiseSyntenyAdapter',
       adapters: ordered.map(mate => mate.adapter),
@@ -214,7 +218,7 @@ export function multiwayStarTrack({
     displays: [
       {
         type: 'MultiWaySyntenyDisplay',
-        displayId: `${assemblyName}_liftOver_multiway-MultiWaySyntenyDisplay`,
+        displayId: `${anchor}_liftOver_multiway-MultiWaySyntenyDisplay`,
         height: Math.ceil(((1 + lanes.length) * LANE_PITCH) / 10) * 10,
         ...(geneTrackId ? { laneGeneTracks: [geneTrackId] } : {}),
       },
