@@ -69,7 +69,10 @@ set -euo pipefail
 releases_dir=$1
 webroot=$2
 
-current=$(readlink -f "$webroot")
+# Plain readlink, not -f: the symlink holds the path exactly as find prints it,
+# and -f would resolve any symlink above it (a /var/www on another volume) into
+# a path that no longer compares equal.
+current=$(readlink "$webroot")
 newest=$(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d | sort | tail -1)
 previous=$(find "$releases_dir" -mindepth 1 -maxdepth 1 -type d | sort | awk -v cur="$current" '$0 < cur' | tail -1)
 
@@ -141,7 +144,7 @@ fi
 # Retain (keep - 1) of the existing releases -- the one being served plus
 # (keep - 2) older -- so that once the incoming release lands there are exactly
 # $keep, not $keep + 1.
-current=$(readlink -f "$webroot" 2>/dev/null || true)
+current=$(readlink "$webroot" 2>/dev/null || true)
 find "$releases_dir" -mindepth 1 -maxdepth 1 -type d |
   sort -r |
   awk -v cur="$current" '$0 != cur' |
@@ -154,17 +157,28 @@ find "$releases_dir" -mindepth 1 -maxdepth 1 -type d |
 mkdir -p "$release"
 REMOTE
 
+# A partial release is removed rather than kept: it would be the newest
+# release, and --rollback refuses to move while the newest is not the one
+# being served.
+discard_release() {
+  echo "leaving $target untouched and removing $SSH_HOST:$release" >&2
+  ssh "$SSH_HOST" "rm -rf '$release'"
+  exit 1
+}
+
 echo "==> streaming to $release"
-tar -cf - -C dist . |
+if ! tar -cf - -C dist . |
   zstd -3 -T0 |
-  ssh "$SSH_HOST" "zstd -d | tar -xf - -C '$release'"
+  ssh "$SSH_HOST" "bash -o pipefail -c \"zstd -d | tar -xf - -C '$release'\""; then
+  echo "transfer failed" >&2
+  discard_release
+fi
 
 echo "==> verifying $release"
 remote_files=$(ssh "$SSH_HOST" "find '$release' -type f | wc -l")
 if [[ $remote_files -ne $local_files ]]; then
-  echo "transfer incomplete: $remote_files of $local_files files landed — leaving $target untouched" >&2
-  echo "the partial release is at $SSH_HOST:$release" >&2
-  exit 1
+  echo "transfer incomplete: $remote_files of $local_files files landed" >&2
+  discard_release
 fi
 
 echo "==> switching $webroot -> $release"

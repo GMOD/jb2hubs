@@ -436,12 +436,17 @@ elif [ "$DRY_RUN" = false ]; then
     # changed production changed it too. Deploying both here is what keeps
     # staging from drifting weeks behind main. It is a separate release
     # directory and symlink, so a failure here leaves production alone -- and
-    # production is already live, so a missing config-staging.json skips
-    # staging with a warning rather than failing the run.
+    # production is already live, so a missing config-staging.json or a failed
+    # staging deploy is reported rather than failing the run: the summary,
+    # commit and push below record what production now serves.
     if staging_config_present; then
       log "Deploying website to staging..."
-      pnpm --filter website2 run deploy:staging
-      STAGING_DEPLOYED=yes
+      if pnpm --filter website2 run deploy:staging; then
+        STAGING_DEPLOYED=yes
+      else
+        echo "WARNING: staging deploy failed; production is unaffected." >&2
+        STAGING_DEPLOYED=failed
+      fi
     else
       echo "Skipping staging deploy."
       STAGING_DEPLOYED=no
