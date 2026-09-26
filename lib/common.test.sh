@@ -348,6 +348,23 @@ check "a failed sync aborts a set -e caller" "" "$out"
 
 rm -rf "$rc"
 
+# --- write_indexed_gz ---
+wg=$(mktemp -d)
+printf 'chr1\t1\t5\ta\nchr1\t10\t20\tb\n' | write_indexed_gz "$wg/t.bed.gz" bed
+check "write_indexed_gz writes the data and its index" "2 yes" \
+  "$(bgzip -dc "$wg/t.bed.gz" | wc -l | tr -d ' ') $([ -s "$wg/t.bed.gz.csi" ] && echo yes)"
+ln "$wg/t.bed.gz" "$wg/link.bed.gz"
+before=$(md5sum <"$wg/t.bed.gz")
+# Unsorted input: tabix refuses, and the previous pair must survive intact.
+printf 'chr1\t10\t20\tb\nchr1\t1\t5\ta\n' | write_indexed_gz "$wg/t.bed.gz" bed 2>/dev/null
+check "a tabix refusal fails the call" 1 "$?"
+check "a tabix refusal keeps the previous data" "$before" "$(md5sum <"$wg/t.bed.gz")"
+check "a tabix refusal leaves no temp files" "link.bed.gz t.bed.gz t.bed.gz.csi" \
+  "$(ls -A "$wg" | tr '\n' ' ' | sed 's/ $//')"
+printf 'chr1\t1\t5\tc\n' | write_indexed_gz "$wg/t.bed.gz" bed
+check "a rewrite does not write through a hard link" "$before" "$(md5sum <"$wg/link.bed.gz")"
+rm -rf "$wg"
+
 # --- source_tree_hash ---
 # This is the stamp that makes a converter change invalidate built configs, so
 # every property below is load-bearing: a miss ships stale output silently, and

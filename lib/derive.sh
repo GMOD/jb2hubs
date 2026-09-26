@@ -71,6 +71,25 @@ sort_if_needed() {
 }
 export -f sort_if_needed
 
+# Bgzips stdin into <out.gz> and indexes it with tabix -C, under a temp name
+# that replaces the pair only once both exist. Writing <out.gz> in place let a
+# tabix refusal leave the new data beside the old index, and wrote through any
+# hard link to it.
+# Usage: ... | write_indexed_gz <out.gz> <tabix preset: bed|gff>
+write_indexed_gz() {
+  local out="$1" preset="$2" tmp
+  tmp="$(dirname "$out")/.tmp.$(basename "$out")"
+  rm -f "$tmp" "$tmp.csi"
+  if ! bgzip -@4 >"$tmp" || ! tabix -p "$preset" -C "$tmp"; then
+    rm -f "$tmp" "$tmp.csi"
+    return 1
+  fi
+  rm -f "$out.csi" "$out.tbi"
+  mv "$tmp" "$out"
+  mv "$tmp.csi" "$out.csi"
+}
+export -f write_indexed_gz
+
 # bgzip's bytes depend on its build, not only its version: htslib 1.23.1 on
 # libz emits ~6% more than on libdeflate with identical content, and a silent
 # swap on 2026-08-27 rewrote and re-sent 76.7 GB and left fresh .gz beside stale

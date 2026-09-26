@@ -52,6 +52,9 @@ echo ""
 # completed one, and `ucsc=1` in every RUN SUMMARY. Nothing reads it from the
 # bucket; src/transformGenomeList.ts turns it into list.json, which drops the
 # timestamps and is what is published.
+#
+# The last five are the derivation scripts' intermediates and temp names, which
+# a failed job leaves behind and no config names.
 echo "Syncing files (data + indexes via rclone hasher)..."
 total_changed=$(rclone_sync_with_indexes \
   ucsc-results-hashed: jbrowse-data:jbrowse.org/ucsc \
@@ -65,7 +68,12 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "*/vs/*" \
   --exclude "tracks.json" \
   --exclude "list.json.raw" \
-  --exclude "*.bak")
+  --exclude "*.bak" \
+  --exclude ".tmp.*" \
+  --exclude "*.tmp" \
+  --exclude "*.bed" \
+  --exclude "*.gff" \
+  --exclude "*.isoforms.txt")
 
 echo ""
 

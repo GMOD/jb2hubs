@@ -39,10 +39,9 @@ process_assembly() {
           else
             (echo "$header" && pigz -dc "${infile}.txt.gz" | hck -Ld$'\t' -f2-) >"${outfile}.tmp"
           fi
-          sort_if_needed "${outfile}.tmp" | bgzip -@2 >"${outfile}.bed.gz"
-          tabix -p bed -C "${outfile}.bed.gz"
-          save_rebuild_stamp "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"
+          sort_if_needed "${outfile}.tmp" | write_indexed_gz "${outfile}.bed.gz" bed
           rm -f "${outfile}.tmp"
+          save_rebuild_stamp "${outfile}.bed.gz" "${infile}.txt.gz" "$hash_file"
         fi
       fi
     done

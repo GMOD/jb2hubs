@@ -85,8 +85,7 @@ process_db() {
     datasets download genome accession "$acc" --include gff3 --no-progressbar --filename "$zip"
     rm -rf "$extract"
     unzip -o "$zip" -d "$extract" >/dev/null
-    "$JBROWSE_CLI" sort-gff "$extract/ncbi_dataset/data/$acc/genomic.gff" | bgzip -@4 >"$gff"
-    tabix -C "$gff"
+    "$JBROWSE_CLI" sort-gff "$extract/ncbi_dataset/data/$acc/genomic.gff" | write_indexed_gz "$gff" gff
     rm -rf "$zip" "$extract"
   fi
 }

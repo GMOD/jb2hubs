@@ -42,6 +42,7 @@ hub_changed=$(rclone_sync_with_indexes \
   --exclude "*.notfound" \
   --exclude "*.checked" \
   --exclude "image.json" \
+  --exclude "*.tmp" \
   --exclude "hub.txt")
 
 echo ""

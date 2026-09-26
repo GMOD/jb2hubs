@@ -53,13 +53,11 @@ process_assembly() {
         "$BED2GFF" -t1 --bed "${outfile}.bed" --output "${outfile}.gff" --isoforms "${outfile}.isoforms.txt"
         if [ -f "${infile}Link.sql" ]; then
           node src/enhanceGffWithLinkTable.ts "${outfile}.gff" "${infile}Link.txt.gz" "${infile}Link.sql" >"${outfile}.enhanced.gff"
-          "$JBROWSE_CLI" sort-gff "${outfile}.enhanced.gff" | bgzip >"${outfile}.gff.gz"
+          "$JBROWSE_CLI" sort-gff "${outfile}.enhanced.gff" | write_indexed_gz "${outfile}.gff.gz" gff
         else
-          "$JBROWSE_CLI" sort-gff "${outfile}.gff" | bgzip >"${outfile}.gff.gz"
+          "$JBROWSE_CLI" sort-gff "${outfile}.gff" | write_indexed_gz "${outfile}.gff.gz" gff
         fi
         rm -f "${outfile}.bed" "${outfile}.isoforms.txt" "${outfile}.enhanced.gff" "${outfile}.gff"
-
-        tabix -C "${outfile}.gff.gz"
 
         save_rebuild_stamp "${outfile}.gff.gz" "${infile}.txt.gz" "$hash_file"
       fi
