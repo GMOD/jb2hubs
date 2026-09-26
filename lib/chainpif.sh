@@ -127,16 +127,16 @@ download_file() {
 # Decompresses a chain into a PAF. Returns 2 when the chain itself would not
 # decompress and 1 when chain2paf refused it: a cached chain is never
 # re-fetched, so a truncated one fails every run forever, and that is worth
-# telling apart from bad chain content.
+# telling apart from bad chain content. pigz's own exit status cannot decide
+# it: a chain2paf that exits early SIGPIPEs pigz on a perfectly good chain, so
+# the failure path asks pigz -t instead.
 # $1: chain path  $2: output PAF path
 chain_to_paf() {
   local chain_path="$1" paf_path="$2"
-  local -a st
   if pigz -dc "$chain_path" | chain2paf --input /dev/stdin >"$paf_path"; then
     return 0
   fi
-  st=("${PIPESTATUS[@]}")
-  [ "${st[0]}" = 0 ] && return 1 || return 2
+  pigz -t "$chain_path" 2>/dev/null && return 1 || return 2
 }
 
 # Converts a chain file to a PIF file, unless a PIF built by the current CLI is
@@ -147,6 +147,7 @@ create_pif() {
   local chain_path="$1" pif_path="$2" chain_url="${3:-}" rc
   if [ -n "${REPROCESS:-}" ] || ! pif_current "$pif_path"; then
     log_info "Creating PIF file for $(basename "$chain_path")..."
+    rm -f "$pif_path.cli"
     local paf_path
     paf_path=$(mktemp) || log_error "Failed to create temporary file"
 
@@ -185,9 +186,13 @@ pif_current() {
 # Copies a PIF file and its index to a destination directory.
 # $1: source PIF path  $2: destination directory
 copy_pif_files() {
-  local pif_path="$1" dest_dir="$2"
-  cp "$pif_path" "$dest_dir/" || log_error "Failed to copy $pif_path"
-  cp "$pif_path.csi" "$dest_dir/" || log_error "Failed to copy $pif_path.csi"
+  local pif_path="$1" dest_dir="$2" name
+  name=$(basename "$pif_path")
+  cp "$pif_path" "$dest_dir/.$name.tmp" || log_error "Failed to copy $pif_path"
+  cp "$pif_path.csi" "$dest_dir/.$name.csi.tmp" || log_error "Failed to copy $pif_path.csi"
+  rm -f "$dest_dir/$name.csi"
+  mv "$dest_dir/.$name.tmp" "$dest_dir/$name"
+  mv "$dest_dir/.$name.csi.tmp" "$dest_dir/$name.csi"
 }
 
 # Runs the full pipeline for one chain file: skip if the PIF already exists in

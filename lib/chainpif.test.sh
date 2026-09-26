@@ -158,6 +158,13 @@ chain2paf() { cat >/dev/null; return 1; }
 check "chain_to_paf: chain2paf refusing good input is 1" "1" \
   "$(chain_to_paf "$tmp/good.chain.gz" "$tmp/out.paf" >/dev/null 2>&1; echo $?)"
 
+# An early chain2paf exit SIGPIPEs pigz. On a chain bigger than a pipe buffer
+# that is a non-zero pigz status on good input, which must still read as 1.
+head -c 8000000 /dev/urandom | pigz >"$tmp/big.chain.gz"
+chain2paf() { head -c 10 >/dev/null; return 1; }
+check "chain_to_paf: an early chain2paf exit on a good chain is 1" "1" \
+  "$(chain_to_paf "$tmp/big.chain.gz" "$tmp/out.paf" >/dev/null 2>&1; echo $?)"
+
 # create_pif repairs the corrupt cached copy rather than failing every run.
 # The download and make-pif are stubbed; the refetch is what is under test.
 chain2paf() { cat >/dev/null; }
@@ -177,6 +184,27 @@ check "create_pif: says it is refetching" "yes" \
 cp "$tmp/truncated.chain.gz" "$tmp/nourl.chain.gz"
 check "create_pif: no url still fails on a corrupt chain" "1" \
   "$( (create_pif "$tmp/nourl.chain.gz" "$tmp/nourl.pif.gz") >/dev/null 2>&1; echo $?)"
+# A rebuild that dies part-way must not leave the old stamp vouching for it.
+touch "$tmp/cached.pif.gz" "$tmp/cached.pif.gz.csi"
+write_pif_stamp "$tmp/cached.pif.gz.cli"
+JBROWSE_CLI=false
+( REPROCESS=1 create_pif "$tmp/cached.chain.gz" "$tmp/cached.pif.gz") >/dev/null 2>&1
+check "create_pif: a failed rebuild leaves the PIF stale" "stale" \
+  "$(pif_current "$tmp/cached.pif.gz" && echo current || echo stale)"
+JBROWSE_CLI=true
+
+# copy_pif_files replaces both files and leaves no temp names behind.
+mkdir "$tmp/dest"
+echo new >"$tmp/p.pif.gz"
+echo newidx >"$tmp/p.pif.gz.csi"
+echo old >"$tmp/dest/p.pif.gz"
+echo oldidx >"$tmp/dest/p.pif.gz.csi"
+copy_pif_files "$tmp/p.pif.gz" "$tmp/dest"
+check "copy_pif_files: replaces the PIF and its index" "new newidx" \
+  "$(cat "$tmp/dest/p.pif.gz" "$tmp/dest/p.pif.gz.csi" | tr '\n' ' ' | sed 's/ $//')"
+check "copy_pif_files: leaves no temp files" "p.pif.gz p.pif.gz.csi" \
+  "$(ls -A "$tmp/dest" | tr '\n' ' ' | sed 's/ $//')"
+
 unset -f chain2paf download_file
 rm -r "$tmp"
 
