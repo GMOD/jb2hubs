@@ -128,7 +128,7 @@ PIPELINE_HASH=$(source_tree_hash "$SCRIPT_DIR/.." "${PIPELINE_SOURCES[@]}")
 # containment and REDERIVE would fire on a run that visits only some assemblies,
 # and the stamp written at the end would claim the rest were re-derived too.
 DERIVATION_SOURCES=(
-  lib/common.sh
+  lib/derive.sh
   bed2gff/src
   ucsc2jbrowse/src/utils
   ucsc2jbrowse/src/bedLike.ts

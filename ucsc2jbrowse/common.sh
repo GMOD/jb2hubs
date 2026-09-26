@@ -75,17 +75,6 @@ assembly_paths() {
 }
 export -f assembly_paths
 
-# Sorts a file by (chrom, start) unless it is already sorted. The -c probe reads
-# the file a second time but skips a full sort on the common already-sorted
-# case, which matters for the largest golden-path tables.
-sort_if_needed() {
-  if sort -c -k1,1 -k2,2n "$1" >/dev/null 2>&1; then
-    cat "$1"
-  else
-    sort -k1,1 -k2,2n "$1"
-  fi
-}
-export -f sort_if_needed
 
 # GNU parallel runs exported functions in a fresh bash that does NOT inherit the
 # parent's `set -euo pipefail`. Every per-assembly job is wrapped in this so a
