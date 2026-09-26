@@ -41,15 +41,18 @@ mkdir -p "$WORK/rows" "$WORK/present" "$WORK/out"
 exec > >(tee -a "$WORK/build.log") 2>&1
 log "Building $NAME in $WORK from $VCF"
 
+# Cached under the callset's own name, so a config naming a new one fetches it
+# rather than packing the old one again.
+LOCAL_VCF="$WORK/$(basename "$VCF")"
 for suffix in '' .tbi; do
-  if [ ! -f "$WORK/wave.vcf.gz$suffix" ]; then
-    curl -fsS -C - -o "$WORK/wave.vcf.gz$suffix.part" "$VCF$suffix"
-    mv "$WORK/wave.vcf.gz$suffix.part" "$WORK/wave.vcf.gz$suffix"
+  if [ ! -f "$LOCAL_VCF$suffix" ]; then
+    curl -fsS -C - -o "$LOCAL_VCF$suffix.part" "$VCF$suffix"
+    mv "$LOCAL_VCF$suffix.part" "$LOCAL_VCF$suffix"
   fi
 done
-bcftools query -l "$WORK/wave.vcf.gz" >"$WORK/samples.txt"
+bcftools query -l "$LOCAL_VCF" >"$WORK/samples.txt"
 grep -v '^CHM13$' "$WORK/samples.txt" | sed 's/$/#1/;p;s/#1$/#2/' >"$WORK/haplotypes.txt"
-tabix -l "$WORK/wave.vcf.gz" >"$WORK/chroms.txt"
+tabix -l "$LOCAL_VCF" >"$WORK/chroms.txt"
 
 pack_chrom() {
   set -euo pipefail
@@ -58,7 +61,7 @@ pack_chrom() {
   # reference is the tier the graph itself records.
   bcftools query -r "$c" -i 'STRLEN(REF)>=50 || STRLEN(ALT)>=50' \
     -f '%CHROM\t%POS\t%ID\t%INFO/LV\t%INFO/PS\t%INFO/INV\t%REF\t%ALT[\t%GT]\n' \
-    "$WORK/wave.vcf.gz" |
+    "$LOCAL_VCF" |
     node "$PACKER" "$WORK/samples.txt" >"$WORK/rows/$c.tsv.part"
   mv "$WORK/rows/$c.tsv.part" "$WORK/rows/$c.tsv"
   # Which parent snarls the nested records name have a record of their own,
@@ -66,7 +69,7 @@ pack_chrom() {
   awk -F'\t' '$5 != "0" {print $6}' "$WORK/rows/$c.tsv" | sort -u >"$WORK/present/$c.named"
   if [ -s "$WORK/present/$c.named" ]; then
     # grep exits 1 when no named parent is present, which is an answer; 2 is not.
-    bcftools query -r "$c" -f '%ID\n%INFO/ORIGIN\n' "$WORK/wave.vcf.gz" |
+    bcftools query -r "$c" -f '%ID\n%INFO/ORIGIN\n' "$LOCAL_VCF" |
       { grep -Fxf "$WORK/present/$c.named" || [ $? -eq 1 ]; } |
       sort -u >"$WORK/present/$c.txt"
   else
@@ -75,7 +78,7 @@ pack_chrom() {
   echo "  $c: $(wc -l <"$WORK/rows/$c.tsv") records, $(wc -l <"$WORK/present/$c.named") parents named, $(wc -l <"$WORK/present/$c.txt") of them present"
 }
 export -f pack_chrom
-export WORK PACKER
+export WORK PACKER LOCAL_VCF
 
 xargs -P "$JOBS" -n 1 bash -c 'pack_chrom "$@"' _ <"$WORK/chroms.txt"
 

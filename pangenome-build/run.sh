@@ -119,4 +119,6 @@ fi
 echo
 echo "Done."
 echo "  MSAs:   $OUT/msa/*.fa  ->  copy into website/public/pangenome/msa/"
-"$DO_GRAPH" && echo "  Graphs: $OUT/graph/*.gfa"
+if "$DO_GRAPH"; then
+  echo "  Graphs: $OUT/graph/*.gfa"
+fi

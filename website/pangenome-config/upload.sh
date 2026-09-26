@@ -11,6 +11,7 @@ cd "$(dirname "$0")"
 source ../../lib/common.sh
 
 changed=0
+failed=0
 
 # Sidecars FIRST, and the order is load-bearing rather than tidy. A config's
 # assembly block names its `chrom.sizes` relatively, so jbrowse-web resolves it
@@ -30,7 +31,10 @@ for dir in */; do
   for f in "$name"/*; do
     [ -f "$f" ] || continue
     base="$(basename "$f")"
-    n=$(upload_if_changed "$f" "s3://jbrowse.org/pangenome/$name/$base" "$name/.$base-uploaded")
+    n=$(upload_if_changed "$f" "s3://jbrowse.org/pangenome/$name/$base" "$name/.$base-uploaded") || {
+      failed=1
+      continue
+    }
     if [ "$n" = 1 ]; then
       echo "uploaded $name/$base"
       changed=1
@@ -40,7 +44,10 @@ done
 
 for f in *.json; do
   name="${f%.json}"
-  n=$(upload_if_changed "$f" "s3://jbrowse.org/pangenome/$name/config.json" ".$name-uploaded.json")
+  n=$(upload_if_changed "$f" "s3://jbrowse.org/pangenome/$name/config.json" ".$name-uploaded.json") || {
+    failed=1
+    continue
+  }
   if [ "$n" = 1 ]; then
     echo "uploaded $name"
     changed=1
@@ -61,8 +68,11 @@ done
 # holds the three configs plus the haplotype lanes' chrom.sizes, and a stale
 # cached sidecar beside a fresh config is the same desynchronization the
 # two-phase rclone sync exists to prevent.
+# A failed upload does not skip the invalidation the successful ones need: their
+# stamps are already written, so no later run would invalidate for them.
 if [ "$changed" = 1 ]; then
   cloudfront_invalidate "/pangenome/*"
 else
   echo "pangenome configs unchanged"
 fi
+exit "$failed"
