@@ -4,6 +4,7 @@ import { test } from 'node:test'
 
 import { features } from '../config/features.ts'
 import {
+  ARABIDOPSIS_DATASET,
   BOVINE_DATASET,
   HPRC_DATASET,
   HPRC_GRAPH_BROWSER,
@@ -190,7 +191,7 @@ test('the lanes launch is undefined without a hosted graph config', () => {
 })
 
 test('a derived catalogue carries what the tier said and claims nothing else', () => {
-  for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
+  for (const d of [MOUSE_DATASET, BOVINE_DATASET, ARABIDOPSIS_DATASET]) {
     assert.ok(d.loci.length > 0, `${d.id} has a catalogue`)
     for (const l of d.loci) {
       const derived = l.derived
@@ -229,7 +230,7 @@ test('a derived locus seeds the hub from the tiers gene list, or not at all', ()
   // produced `Gm10439,` with the comma on it and `Vmn` from
   // "Vmn cluster (18 genes)" -- three hub links that find nothing, and one
   // (`chr9:87,086,686`) that is not a gene name at all.
-  for (const d of [MOUSE_DATASET, BOVINE_DATASET]) {
+  for (const d of [MOUSE_DATASET, BOVINE_DATASET, ARABIDOPSIS_DATASET]) {
     for (const l of d.loci) {
       const gene = syntenyGene(l)
       const genes = l.derived!.genes

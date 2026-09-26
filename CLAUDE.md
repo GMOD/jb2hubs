@@ -1889,9 +1889,9 @@ tutorial for these pages, so a visible change here should be reflected there.
 
 ### One graph, one route, and almost no prose
 
-`/pangenomes/<id>` — `hprc`, `mouse`, `bovine` — is a page per graph, rendered
-by `website/src/pages/pangenomes/[dataset].astro` from the dataset.
-`/pangenomes` is a list of the three and nothing else. A graph's page is one
+`/pangenomes/<id>` — `hprc`, `mouse`, `bovine`, `arabidopsis` — is a page per
+graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
+dataset. `/pangenomes` is a list of them and nothing else. A graph's page is one
 sentence, a line of links, the chromosomes as graph links, a table of its loci
 with their launches (`lociRows` in
 `website/src/components/pangenomeLociRows.ts`), the **Any region** box where the

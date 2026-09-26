@@ -5,6 +5,7 @@
 // mouse/plant one — is a matter of adding another PangenomeDataset, not editing
 // component internals. The components and link builders read only this shape.
 
+import arabidopsisLociFile from '../../public/pangenome-arabidopsis/loci.json' with { type: 'json' }
 import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type: 'json' }
 import hprcPanelsFile from '../../public/pangenome-hprc/panels.json' with { type: 'json' }
 import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
@@ -163,10 +164,10 @@ export interface PangenomeDataset {
   // `generatePangenomeHaplotypes.ts` prints them: they are the haplotypes
   // HPRC's CAT index does not annotate.
   haplotypesWithoutGenes?: string[]
-  // The tutorial that explains what this graph can show. Every dataset here is
-  // the hosted arm of one, and the tutorial is the better explanation — the
-  // page's job is to launch it, not to restate it.
-  tutorialUrl: string
+  // The tutorial that explains what this graph can show, where one exists. The
+  // tutorial is the better explanation — the page's job is to launch it, not
+  // to restate it.
+  tutorialUrl?: string
   // The published bucket prefix the file table's urls are built from.
   filePrefix: string
   // Bytes per suffix, stated rather than fetched so a static build needs no
@@ -409,6 +410,26 @@ const BOVINE_GRAPH_BROWSER: PangenomeGraphBrowser = {
   ],
 }
 
+const ARABIDOPSIS_CONFIG =
+  'https://jbrowse.org/pangenome/arabidopsis-tair10/config.json'
+
+const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
+  configUrl: ARABIDOPSIS_CONFIG,
+  segmentsTrackId: 'arabidopsis_minigraph_segments',
+  bubblesTrackId: 'arabidopsis_minigraph_bubbles',
+  geneTrackId: 'TAIR10_genes',
+  allelesTrackId: 'arabidopsis_minigraph_alleles',
+  tierTrackId: 'arabidopsis_minigraph_tier',
+  bubbleScoreTrackId: 'arabidopsis_bubble_score',
+  chromosomes: [
+    { name: 'Chr1', length: 30_427_671 },
+    { name: 'Chr2', length: 19_698_289 },
+    { name: 'Chr3', length: 23_459_830 },
+    { name: 'Chr4', length: 18_585_056 },
+    { name: 'Chr5', length: 26_975_502 },
+  ],
+}
+
 // Derived catalogues, not curated ones: `website/generatePangenomeLoci.ts`
 // ranks each graph's coarse tier by segments per bubble and names the entries
 // off the reference annotation, and its output is committed under
@@ -417,6 +438,7 @@ const BOVINE_GRAPH_BROWSER: PangenomeGraphBrowser = {
 // has one output rather than two.
 const MOUSE_LOCI = derivedLoci(mouseLociFile)
 const BOVINE_LOCI = derivedLoci(bovineLociFile)
+const ARABIDOPSIS_LOCI = derivedLoci(arabidopsisLociFile)
 
 // The mouse strain graph: UCSC mm39 plus 18 Mouse Genomes Project strain
 // assemblies, aligned here with `minigraph -cxggs` and projected onto GRCm39.
@@ -566,9 +588,60 @@ export const BOVINE_DATASET: PangenomeDataset = {
   ],
 }
 
+// 26 1001 Genomes Plus Phase 1 accessions and TAIR10, aligned with
+// `minigraph -cxggs` in jbrowse-components
+// (`scripts/build_arabidopsis_pangenome.sh`) and hosted under
+// `demos/arabidopsis_pangenome/`. No callset, for mouse's reason.
+//
+// The reference is the graph config's `TAIR10`, not GenArk's
+// `GCF_000001735.4`. The config lists the accession as an alias, and a linear
+// view resolves it, but the GraphGenomeView compares the name literally and
+// refuses a cut asked of `GCF_000001735.4`. Without a callset no launch opens
+// a second config, so this one serves as the reference config too.
+export const ARABIDOPSIS_DATASET: PangenomeDataset = {
+  id: 'arabidopsis',
+  label: '1001 Genomes Plus pangenome (minigraph, TAIR10)',
+  reference: {
+    assembly: 'TAIR10',
+    configUrl: ARABIDOPSIS_CONFIG,
+    label: 'TAIR10',
+    geneTrackId: 'TAIR10_genes',
+    taxonId: 3702,
+  },
+  panelDescription:
+    'TAIR10 (Col-0) plus 26 1001 Genomes Plus Phase 1 accessions',
+  svTrackIds: [],
+  graphBrowser: features.pangenomeGraph ? ARABIDOPSIS_GRAPH_BROWSER : undefined,
+  loci: ARABIDOPSIS_LOCI,
+  heading: 'Arabidopsis 1001 Genomes Plus pangenome',
+  filePrefix:
+    'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',
+  // Measured 2026-09-25. No `.vcf.gz` row, because there is no callset.
+  sizes: {
+    '.rgfa.gz': 65_317_227,
+    '.segs.bed.gz': 1_719_822,
+    '.links.bed.gz': 7_909_977,
+    '.bubbles.bed.gz': 27_400_980,
+    '.alleles.bed.gz': 1_668_634,
+    '.tier10000.segs.bed.gz': 49_228,
+  },
+  links: [
+    { label: '1001 Genomes', url: 'https://1001genomes.org/' },
+    {
+      label: 'Igolkina et al. 2025',
+      url: 'https://doi.org/10.1038/s41588-025-02293-0',
+    },
+    {
+      label: 'How the graph was built',
+      url: 'https://jbrowse.org/demos/arabidopsis_pangenome/README.txt',
+    },
+  ],
+}
+
 // Every dataset, keyed by `id`.
 export const PANGENOME_DATASETS: readonly PangenomeDataset[] = [
   HPRC_DATASET,
   MOUSE_DATASET,
   BOVINE_DATASET,
+  ARABIDOPSIS_DATASET,
 ]

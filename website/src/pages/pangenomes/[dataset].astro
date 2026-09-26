@@ -1,7 +1,7 @@
 ---
 // One pangenome graph, one page: the chromosomes as graph links, the locus
 // catalogue as a table of launches, the region box, and the published files.
-// All three graphs go through this route, because they publish the same
+// Every graph goes through this route, because they publish the same
 // projections and launch off the same builders; what is per-dataset is the
 // numbers the dataset carries. The region box is the page's only client
 // JavaScript; every other url is built here.
@@ -38,6 +38,12 @@ if (!features.pangenome) {
 }
 
 const { dataset } = Astro.props
+const links = [
+  ...(dataset.tutorialUrl
+    ? [{ label: 'Tutorial', url: dataset.tutorialUrl }]
+    : []),
+  ...dataset.links,
+]
 const rows = lociRows(dataset)
 const columns = lociColumns(rows)
 const chromosomes = (dataset.graphBrowser?.chromosomes ?? []).flatMap(c => {
@@ -75,10 +81,9 @@ function humanBytes(bytes: number) {
       {dataset.panelDescription}, projected onto {dataset.reference.label}.
     </p>
     <p>
-      <a href={dataset.tutorialUrl}>Tutorial</a>
-      {dataset.links.map(l => (
+      {links.map((l, i) => (
         <>
-          {' · '}
+          {i > 0 && ' · '}
           <a href={l.url}>{l.label}</a>
         </>
       ))}

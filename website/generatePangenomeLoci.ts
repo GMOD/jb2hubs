@@ -66,6 +66,11 @@ const DATASETS = {
     genome: 'bosTau9',
     geneTrack: 'ncbiRefSeqCurated',
   },
+  arabidopsis: {
+    tier: 'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.tier10000.segs.bed.gz',
+    genome: 'GCF_000001735.4',
+    geneTrack: 'ncbiRefSeqCurated',
+  },
 }
 
 function tagInt(tags: string, key: string) {

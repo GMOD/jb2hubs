@@ -6,8 +6,9 @@
 // whether a newer version of the dataset each one pins has been published.
 //
 // These configs are the one place in this tree that reads data written by
-// ANOTHER repo. `demos/hprc/`, `demos/mouse_pangenome/` and
-// `demos/bovine_pangenome/` are produced by jbrowse-components' build scripts;
+// ANOTHER repo. `demos/hprc/`, `demos/mouse_pangenome/`,
+// `demos/bovine_pangenome/` and `demos/arabidopsis_pangenome/` are produced by
+// jbrowse-components' build scripts;
 // `website/pangenome-config/*.json` names those objects and is their only
 // consumer here. So a publish over there can leave a config here pointing at a
 // file that moved, and push-triggered CI on this side cannot see it -- the same
@@ -154,7 +155,8 @@ function urlsForAssembly(assembly) {
       out.push(seq.chromSizes)
     }
   }
-  const aliases = assembly.refNameAliases?.adapter?.uri
+  const aliases =
+    assembly.refNameAliases?.adapter?.uri ?? assembly.refNameAliases?.uri
   if (typeof aliases === 'string') {
     out.push(aliases)
   }

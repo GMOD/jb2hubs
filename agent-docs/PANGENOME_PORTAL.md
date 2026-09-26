@@ -44,13 +44,14 @@ and range-served (probed 2026-09-09, every one 200):
 <prefix>.tier10000.segs.bed.gz
 ```
 
-| dataset | prefix                                             |
-| ------- | -------------------------------------------------- |
-| human   | `demos/hprc/hprc-v2.1-mc-grch38`                   |
-| mouse   | `demos/mouse_pangenome/mouse-mm39-minigraph`       |
-| bovine  | `demos/bovine_pangenome/bovine-arsucd12-minigraph` |
+| dataset     | prefix                                                     |
+| ----------- | ---------------------------------------------------------- |
+| human       | `demos/hprc/hprc-v2.1-mc-grch38`                           |
+| mouse       | `demos/mouse_pangenome/mouse-mm39-minigraph`               |
+| bovine      | `demos/bovine_pangenome/bovine-arsucd12-minigraph`         |
+| arabidopsis | `demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph` |
 
-Built by the same three scripts in all three cases — `build_rgfa_tabix.sh`,
+Built by the same three scripts in every case — `build_rgfa_tabix.sh`,
 `build_rgfa_alleles.sh`, `build_bubble_tier.sh` from jbrowse-components. The
 mouse `buildJbrowse.sh` calls copies of them; the bovine README cites them by
 path. Layer one of the stack needs no work.
