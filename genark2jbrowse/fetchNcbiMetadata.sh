@@ -36,8 +36,15 @@ cut -d'|' -f2 "$QUEUE_FILE" >"$ACCESSION_FILE"
 # Create a temp dir for per-accession results
 RESULT_DIR=$(mktemp -d)
 
+# Accessions whose batch NCBI answered. Only these can be marked not found: an
+# accession missing from an answered batch is one NCBI does not have, while one
+# whose batch never got an answer tells us nothing, and marking it would hide
+# the hub from the queue for NOTFOUND_TTL_DAYS after a single outage.
+ANSWERED_FILE=$(mktemp)
+
 # Process a batch result JSON: split into per-accession files in RESULT_DIR.
 # One jq call produces all output; awk splits it into files (no per-report subprocesses).
+# Callers run it inside `if`, where errexit is off, so they check its status.
 process_batch_result() {
   local batch_result="$1"
   # jq outputs pairs of lines: first line is the filename, second is the JSON data
@@ -60,11 +67,12 @@ fetch_batch() {
     if datasets summary genome accession --inputfile "$batch_file" >"$batch_result" 2>"$DATASETS_ERR"; then
       # Valid response: either has .reports array, or has total_count:0 (no results)
       if jq -e '.total_count' "$batch_result" >/dev/null 2>&1; then
-        if jq -e '.reports' "$batch_result" >/dev/null 2>&1; then
-          process_batch_result "$batch_result"
+        if ! jq -e '.reports' "$batch_result" >/dev/null 2>&1 ||
+          process_batch_result "$batch_result"; then
+          cat "$batch_file" >>"$ANSWERED_FILE"
+          rm -f "$batch_result"
+          return 0
         fi
-        rm -f "$batch_result"
-        return 0
       fi
     fi
 
@@ -119,9 +127,11 @@ if [ -s "$FAILED_FILE" ]; then
     echo "  Retrying batch of $retry_count accessions..."
 
     retry_result=$(mktemp)
-    if datasets summary genome accession --inputfile "$retry_batch" >"$retry_result" 2>/dev/null; then
-      if jq -e '.reports' "$retry_result" >/dev/null 2>&1; then
-        process_batch_result "$retry_result"
+    if datasets summary genome accession --inputfile "$retry_batch" >"$retry_result" 2>/dev/null &&
+      jq -e '.total_count' "$retry_result" >/dev/null 2>&1; then
+      if ! jq -e '.reports' "$retry_result" >/dev/null 2>&1 ||
+        process_batch_result "$retry_result"; then
+        cat "$retry_batch" >>"$ANSWERED_FILE"
       fi
     fi
     rm -f "$retry_result" "$retry_batch"
@@ -129,9 +139,15 @@ if [ -s "$FAILED_FILE" ]; then
   done
 fi
 
+declare -A answered=()
+while read -r id; do
+  answered[$id]=1
+done <"$ANSWERED_FILE"
+
 # Copy results to the correct hub directories and track what's missing
 found=0
 not_found=0
+unanswered=0
 while IFS='|' read -r dir id common_name; do
   ncbi_file="$dir/ncbi.json"
   if [ -f "$RESULT_DIR/$id.json" ]; then
@@ -139,6 +155,8 @@ while IFS='|' read -r dir id common_name; do
     # Remove any previous notfound sentinel
     rm -f "$dir/ncbi.json.notfound"
     found=$((found + 1))
+  elif [ -z "${answered[$id]:-}" ]; then
+    unanswered=$((unanswered + 1))
   else
     # Write sentinel so we don't keep re-queuing this accession
     echo "Not found in NCBI Datasets API as of $(date -I)" >"$dir/ncbi.json.notfound"
@@ -148,8 +166,8 @@ while IFS='|' read -r dir id common_name; do
 done <"$QUEUE_FILE"
 
 # Clean up (QUEUE_FILE and DATASETS_ERR handled by trap)
-rm -f "$ACCESSION_FILE" "$FAILED_FILE"
+rm -f "$ACCESSION_FILE" "$FAILED_FILE" "$ANSWERED_FILE"
 rm -rf "$RESULT_DIR"
 
 echo ""
-echo "NCBI metadata fetching complete: $found found, $not_found not found"
+echo "NCBI metadata fetching complete: $found found, $not_found not found, $unanswered unanswered (queued again next run)"
