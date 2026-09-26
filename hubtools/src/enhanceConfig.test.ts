@@ -285,7 +285,7 @@ describe('enhanceConfig repeat-class display gate', () => {
     )
     // the jexl form, not `repClass`: a bigRmskBed has no class column
     assert.equal(
-      t.displays[1].partitionField,
+      t.displays[1].rows.field,
       "jexl:split(split(feature.name,'#')[1],'/')[0]",
     )
   })

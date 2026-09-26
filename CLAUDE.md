@@ -751,7 +751,7 @@ GenArk hubs are not staged (thousands of configs, nothing staged so far is
 GenArk-specific), so a staged feature reaches `/ucsc/*` launches only. That is
 the one gap in the repeat display: `addRepeatClassDisplay` handles a GenArk
 `-repeatMasker` track too (its `bigRmskBed` has no class column, so the class is
-derived off the name suffix `L1HS#LINE/L1` with a jexl `partitionField`), and it
+derived off the name suffix `L1HS#LINE/L1` with a jexl `rows.field`), and it
 matches ~16% of GenArk configs — 78 of a 500-config sample, one track each — but
 nothing sets `RMSK_MULTIROW_DISPLAY` for the GenArk pipeline, so that branch is
 written and tested rather than live.

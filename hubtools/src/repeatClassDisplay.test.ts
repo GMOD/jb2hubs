@@ -12,6 +12,10 @@ const rmsk = {
   adapter: { type: 'BedTabixAdapter', bedGzLocation: { uri: 'rmsk.bed.gz' } },
 }
 
+function fieldOf(display: Record<string, unknown>) {
+  return isRecord(display.rows) ? display.rows.field : undefined
+}
+
 // A config read off disk is unknown all the way down (see the Track type), so
 // walk into it rather than asserting a shape onto it.
 function displaysOf(track: Track) {
@@ -25,7 +29,7 @@ describe('addRepeatClassDisplay', () => {
     const displays = displaysOf(rmsk)
     assert.equal(displays.length, 2)
     assert.equal(displays[1]!.type, 'LinearMultiRowFeatureDisplay')
-    assert.equal(displays[1]!.partitionField, 'repClass')
+    assert.equal(fieldOf(displays[1]!), 'repClass')
     assert.equal(
       displays[1]!.displayId,
       'hg38-rmsk-LinearMultiRowFeatureDisplay',
@@ -56,17 +60,21 @@ describe('addRepeatClassDisplay', () => {
   })
 
   it('colors and orders every class it names', () => {
-    const { sampleColorMap, rowOrder } = displaysOf(rmsk)[1]!
-    assert.ok(isRecord(sampleColorMap))
-    assert.ok(Array.isArray(rowOrder))
+    const { rows, rowColor } = displaysOf(rmsk)[1]!
+    assert.ok(isRecord(rows) && Array.isArray(rows.domain))
+    assert.ok(isRecord(rowColor))
+    const { domain, range } = rowColor
+    assert.ok(Array.isArray(domain) && Array.isArray(range))
+    assert.equal(domain.length, range.length)
+    const colorOf = new Map(domain.map((cls, i) => [cls, range[i]] as const))
     // Every ordered row has a color and every colored class has a position: a
     // class in one and not the other is the case where a row silently falls
     // back to a palette color assigned by row index, which moves when the row
     // set does.
     assert.deepEqual(
-      Object.keys(sampleColorMap).sort(),
-      [...rowOrder].sort(),
-      'sampleColorMap and rowOrder must name the same classes',
+      [...domain].sort(),
+      [...rows.domain].sort(),
+      'rowColor and rows.domain must name the same classes',
     )
     // The vocabulary measured off the shipped files: 8 Mb windows on hg38,
     // mm39, danRer11, dm6, ce11 and galGal6.
@@ -91,7 +99,7 @@ describe('addRepeatClassDisplay', () => {
       'scRNA',
       'srpRNA',
     ]) {
-      assert.ok(sampleColorMap[cls], `no color for measured class ${cls}`)
+      assert.ok(colorOf.get(cls), `no color for measured class ${cls}`)
     }
   })
 
@@ -105,14 +113,11 @@ describe('addRepeatClassDisplay', () => {
     })
     assert.equal(displays[1]!.type, 'LinearMultiRowFeatureDisplay')
     assert.equal(
-      displays[1]!.partitionField,
+      fieldOf(displays[1]!),
       "jexl:split(split(feature.name,'#')[1],'/')[0]",
     )
     // one vocabulary for both pipelines, because both are RepeatMasker
-    assert.deepEqual(
-      displays[1]!.sampleColorMap,
-      displaysOf(rmsk)[1]!.sampleColorMap,
-    )
+    assert.deepEqual(displays[1]!.rowColor, displaysOf(rmsk)[1]!.rowColor)
   })
 
   it('leaves the joined-rmsk tables and everything else alone', () => {

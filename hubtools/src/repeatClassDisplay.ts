@@ -5,12 +5,12 @@
 // - **UCSC golden path** (`<db>-rmsk`, BedTabixAdapter): a real `repClass`
 //   column. `ucsc2jbrowse/src/rmskLike.ts` writes the header
 //   `#genoName genoStart genoEnd name strand repFamily repClass ...` and the
-//   adapter picks the names up off it, so `partitionField: 'repClass'`.
+//   adapter picks the names up off it, so `rows.field` is `repClass`.
 // - **GenArk** (`<acc>-repeatMasker`, BigBedAdapter): a `bigRmskBed`, whose
 //   autoSql has no class column — the class is a suffix on the name
 //   (`L1HS#LINE/L1`, `(ACCTA)n#Simple_repeat`). Partitioning on `name` would be
 //   thousands of rows, one per repeat, so the class is derived with a jexl
-//   `partitionField` instead. Verified against the real files: 0 of 3,429
+//   `rows.field` instead. Verified against the real files: 0 of 3,429
 //   features sampled on GCF_950023065.1 lack the `#`.
 //
 // Neither needs data preparation: LinearMultiRowFeatureDisplay discovers its
@@ -20,11 +20,12 @@
 // What the config DOES have to supply is stability. Rows are the union of the
 // values in the loaded regions, so a class drops out of the stack the moment you
 // pan somewhere it has no annotation (measured on hg38: 11 classes over a 1 Mb
-// 17q window, 5 over 100 kb of chr1). Any row not named in `sampleColorMap` then
+// 17q window, 5 over 100 kb of chr1). Any row `rowColor` does not name then
 // takes a palette color BY ROW INDEX, so a Satellite row appearing at the top
-// recolors every row under it. Naming the whole vocabulary keeps a class's color
-// and position fixed no matter which classes the window happens to contain, and
-// one vocabulary serves both pipelines because both are RepeatMasker.
+// recolors every row under it. Naming the whole vocabulary in `rowColor` and
+// `rows.domain` keeps a class's color and position fixed no matter which classes
+// the window happens to contain, and one vocabulary serves both pipelines
+// because both are RepeatMasker.
 import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
@@ -100,13 +101,15 @@ const BASIC = 'LinearBasicDisplay'
 // family. Swap the final [0] for [1] to split by family instead.
 const RMSK_NAME_CLASS = "jexl:split(split(feature.name,'#')[1],'/')[0]"
 
-export function repeatClassDisplay(trackId: string, partitionField: string) {
+export function repeatClassDisplay(trackId: string, field: string) {
   return {
     type: MULTI_ROW,
     displayId: `${trackId}-${MULTI_ROW}`,
-    partitionField,
-    sampleColorMap: REPEAT_CLASS_COLORS,
-    rowOrder: REPEAT_CLASS_ORDER,
+    rows: { field, domain: REPEAT_CLASS_ORDER },
+    rowColor: {
+      domain: Object.keys(REPEAT_CLASS_COLORS),
+      range: Object.values(REPEAT_CLASS_COLORS),
+    },
     showRowSeparators: true,
   }
 }
@@ -116,7 +119,7 @@ export function repeatClassDisplay(trackId: string, partitionField: string) {
 // whole trackId segment excludes `rmskJoinedCurrent` (a different table with
 // different columns), and pairing each trackId with the adapter the pipeline
 // built for it excludes anything a trackDb happens to have named similarly.
-function repeatClassPartitionField(track: Track) {
+function repeatClassField(track: Track) {
   if (track.type !== 'FeatureTrack' || !isRecord(track.adapter)) {
     return undefined
   }
@@ -142,8 +145,8 @@ function repeatClassPartitionField(track: Track) {
  * baseTrackConfig injects exactly that entry anyway, and it pins the default.
  */
 export function addRepeatClassDisplay(track: Track): Track {
-  const partitionField = repeatClassPartitionField(track)
-  if (partitionField === undefined) {
+  const field = repeatClassField(track)
+  if (field === undefined) {
     return track
   }
   const existing: unknown[] | undefined = Array.isArray(track.displays)
@@ -157,6 +160,6 @@ export function addRepeatClassDisplay(track: Track): Track {
   ]
   return {
     ...track,
-    displays: [...before, repeatClassDisplay(track.trackId, partitionField)],
+    displays: [...before, repeatClassDisplay(track.trackId, field)],
   }
 }
