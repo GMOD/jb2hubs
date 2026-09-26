@@ -1,0 +1,197 @@
+{
+  "plugins": [
+    {
+      "name": "GraphGenomeView",
+      "esmUrl": "https://jbrowse.org/plugins/jbrowse-plugin-graphgenomeviewer/latest/dist/jbrowse-plugin-graphgenomeviewer.esm.js"
+    }
+  ],
+  "assemblies": [
+    {
+      "name": "GCF_000001735.4",
+      "displayName": "thale cress (tair10.1 Columbia 2018)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "trackId": "GCF_000001735.4-ReferenceSequenceTrack",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/735/GCF_000001735.4/GCF_000001735.4.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/735/GCF_000001735.4/GCF_000001735.4.chrom.sizes.txt"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "refNameColumnHeaderName": "ucsc",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/735/GCF_000001735.4/GCF_000001735.4.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "ncbiRefSeqCurated",
+          "color": "12,12,120",
+          "parent": "refSeqComposite on",
+          "shortLabel": "RefSeq Curated",
+          "longLabel": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+          "type": "bigGenePred",
+          "urls": "name2=\"https://www.ncbi.nlm.nih.gov/gene/?term=$$\" geneName=\"https://www.ncbi.nlm.nih.gov/gene/$$\" geneName2=\"https://www.ncbi.nlm.nih.gov/nuccore/$$\"",
+          "labelFields": "name2,geneName,geneName2",
+          "defaultLabelFields": "name2",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCF_000001735.4_TAIR10.1.ncbiRefSeqCurated.ix",
+          "idXref": "ncbiRefSeqLink mrnaAcc name",
+          "bigDataUrl": "bbi/GCF_000001735.4_TAIR10.1.ncbiRefSeqCurated.bb",
+          "baseColorUseCds": "given",
+          "baseColorDefault": "genomicCodons",
+          "priority": "2"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCF_000001735.4-ncbiRefSeqCurated",
+      "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
+      "assemblyNames": ["GCF_000001735.4"],
+      "name": "NCBI RefSeq - RefSeq Curated",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/001/735/GCF_000001735.4/bbi/GCF_000001735.4_TAIR10.1.ncbiRefSeqCurated.bb",
+        "aggregateField": "name2"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCF_000001735.4-ncbiRefSeqCurated-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "arabidopsis_minigraph_segments",
+      "name": "1001G+ minigraph pangenome (rGFA segments)",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "RgfaTabixAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph",
+        "assemblyNameToPanSN": {
+          "GCF_000001735.4": "TAIR10"
+        },
+        "coarse": {
+          "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.tier10000",
+          "aboveBpPerPx": 117
+        }
+      },
+      "displayDefaults": {
+        "color": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "arabidopsis_minigraph_tier",
+      "name": "1001G+ minigraph pangenome: bubble tier (one node per bubble)",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "RgfaTabixAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.tier10000",
+        "assemblyNameToPanSN": {
+          "GCF_000001735.4": "TAIR10"
+        }
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "arabidopsis_minigraph_bubbles",
+      "name": "1001G+ minigraph pangenome bubbles",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "MinigraphBubbleAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.bubbles.bed.gz",
+        "assemblyNameToPanSN": {
+          "GCF_000001735.4": "TAIR10"
+        }
+      },
+      "displayDefaults": {
+        "color": "rgb(130,130,130)"
+      }
+    },
+    {
+      "type": "QuantitativeTrack",
+      "trackId": "arabidopsis_bubble_score",
+      "name": "1001G+ minigraph pangenome: variability (segments per bubble)",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "MinigraphBubbleAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.bubbles.bed.gz",
+        "assemblyNameToPanSN": {
+          "GCF_000001735.4": "TAIR10"
+        }
+      }
+    },
+    {
+      "type": "AlignmentsTrack",
+      "trackId": "arabidopsis_minigraph_alleles",
+      "name": "1001G+ minigraph pangenome: allele inventory",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.alleles.bed.gz"
+      }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "arabidopsis_syri_regions",
+      "name": "SyRI regions on TAIR10, one row per 1001G+ accession",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/syri_regions.bed.gz",
+        "disableGeneHeuristic": true
+      },
+      "displays": [
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "arabidopsis_syri_regions-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "query",
+            "domain": [
+              "Col-0.6909",
+              "KBS-Mac-74",
+              "Sq-1",
+              "TueWa1-2",
+              "HSm",
+              "Stiav-1",
+              "Fly2-2",
+              "T690",
+              "Nyl-7",
+              "TRA-01",
+              "Angit-1",
+              "Lerik1-4",
+              "IP-Cum-1",
+              "IP-Pva-1",
+              "IP-Gra-0",
+              "IP-Ven-0",
+              "Qar-8a",
+              "Noveg-3",
+              "35-1",
+              "85-3",
+              "Areeiro-1",
+              "ET-86.4",
+              "Elh-2",
+              "Rabacal-1",
+              "Taz-0",
+              "Tnz-1"
+            ]
+          },
+          "color": {
+            "domain": ["SYN", "INV", "TRANS", "INVTR", "DUP", "INVDP"]
+          }
+        }
+      ]
+    }
+  ]
+}
