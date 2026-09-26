@@ -18,7 +18,7 @@
 //     other way, as an inline display prop on the view's `tracks` entry, is
 //     silently ignored instead and the callset opens as a single squashed row.
 //     Neither shows up in a URL-shape test.
-//   - The GraphGenomeView bundle that jbrowse.org/demos/hprc/config.json pins
+//   - The graph plugin bundle that jbrowse.org/demos/hprc/config.json pins
 //     boots on `main` and error-pages on `latest`
 //     (`TypeError: (0,N.createSvgIcon) is not a function`). That config lives in
 //     the jbrowse-components repo, so it can change with nothing pushed here —
@@ -105,6 +105,11 @@ const annotated = annotatedHaplotypes(
   HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
 )
 
+const graphDisplay = {
+  trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
+  type: 'LinearGraphDisplay',
+}
+
 const retarget = url =>
   url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`)
 
@@ -118,17 +123,20 @@ for (const locus of loci) {
     url: retarget(graphVcfLgvUrl(HPRC_DATASET, locus)),
     // The callset is the button's subject; a single-row display means the
     // declaration was ignored, which is a silent failure.
-    expectDisplay: {
-      trackId: HPRC_DATASET.graphVcf.trackId,
-      type: 'LinearMultiSampleVariantDisplay',
-    },
+    expectDisplays: [
+      {
+        trackId: HPRC_DATASET.graphVcf.trackId,
+        type: 'LinearMultiSampleVariantDisplay',
+      },
+    ],
   })
   const graph = graphLocusUrl(graphDataset, locus)
   if (graph) {
     launches.push({
       name: `${locus.id}: graph`,
       url: retarget(graph),
-      expectView: 'GraphGenomeView',
+      expectDisplays: [graphDisplay],
+      expectTier: 'fine',
     })
   }
   // The display type alone passed while every lane errored on a clip that
@@ -144,12 +152,10 @@ for (const locus of loci) {
   }
 }
 
-// One whole-chromosome launch off the bubble tier. chr21 is the shortest
-// autosome, so it is the cheapest proof that the tier track resolves and the
-// raised maxRegionBp is honoured; --loci filtering does not apply to it.
-//
-// Through `graphRegionUrl` like any other region: a chromosome is past
-// MAX_DETAIL_WINDOW_BP, so it takes the coarse branch and gets the tier.
+// One whole-chromosome launch. chr21 is the shortest autosome, so it is the
+// cheapest proof that the graph track cuts its coarse tier at that zoom and the
+// tier lane opens as a lane rather than as a second graph; --loci filtering
+// does not apply to it.
 const chr21 = graphDataset.graphBrowser.chromosomes.find(
   c => c.name === 'chr21',
 )
@@ -160,7 +166,14 @@ if (chromosome && !wanted) {
   launches.push({
     name: 'chr21: whole-chromosome tier graph',
     url: retarget(chromosome),
-    expectView: 'GraphGenomeView',
+    expectDisplays: [
+      {
+        trackId: HPRC_GRAPH_BROWSER.tierTrackId,
+        type: 'LinearBasicDisplay',
+      },
+      graphDisplay,
+    ],
+    expectTier: 'coarse',
   })
 }
 
@@ -309,8 +322,38 @@ async function readLanes(page, expected) {
   return lanes
 }
 
+// A graph display that built is not a graph that drew, so this polls the pane
+// until its cut lands or fails.
+async function readGraph(page, trackId) {
+  const deadline = Date.now() + TIMEOUT
+  let graph
+  while (Date.now() < deadline) {
+    graph = await page.evaluate(trackId => {
+      const display = window.JBrowseRootModel?.session?.views
+        ?.flatMap(v => v.tracks ?? [])
+        .find(t => t.configuration?.trackId === trackId)?.displays?.[0]
+      const pane =
+        display?.type === 'LinearGraphDisplay' ? display.pane : undefined
+      return (
+        pane && {
+          error: pane.error ? `${pane.error}` : undefined,
+          nodes: pane.hasGraph ? pane.nodeCount : undefined,
+          tier: pane.cutTier,
+          layout: pane.layoutMode,
+          cutNote: pane.cutNote,
+        }
+      )
+    }, trackId)
+    if (graph?.error || graph?.nodes !== undefined) {
+      return graph
+    }
+    await new Promise(r => setTimeout(r, 2000))
+  }
+  return graph
+}
+
 let failures = 0
-for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
+for (const { name, url, expectDisplays, expectTier, expectLanes } of launches) {
   const page = await browser.newPage()
   const problems = []
   const notes = []
@@ -356,8 +399,26 @@ for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
     if (state.views.length === 0) {
       problems.push('the spec session built no views')
     }
-    if (expectView && !state.views.some(v => v.type === expectView)) {
-      problems.push(`no ${expectView} in the session`)
+    if (expectTier) {
+      const graph = await readGraph(page, graphDisplay.trackId)
+      if (!graph) {
+        problems.push(`no LinearGraphDisplay on ${graphDisplay.trackId}`)
+      } else if (graph.error) {
+        problems.push(`graph: ${graph.error.split('\n')[0]}`)
+      } else if (!graph.nodes) {
+        problems.push(
+          `the graph never drew${graph.cutNote ? `: ${graph.cutNote}` : ''}`,
+        )
+      } else {
+        if (graph.tier !== expectTier) {
+          problems.push(
+            `the graph cut its ${graph.tier} tier, wanted ${expectTier}`,
+          )
+        }
+        notes.push(
+          `graph: ${graph.nodes} nodes, ${graph.tier} tier, ${graph.layout} layout`,
+        )
+      }
     }
     if (expectLanes) {
       const lanes = await readLanes(page, expectLanes)
@@ -409,15 +470,15 @@ for (const { name, url, expectView, expectDisplay, expectLanes } of launches) {
         )
       }
     }
-    if (expectDisplay) {
+    for (const expected of expectDisplays ?? []) {
       const track = state.views
         .flatMap(v => v.tracks)
-        .find(t => t.trackId === expectDisplay.trackId)
+        .find(t => t.trackId === expected.trackId)
       if (!track) {
-        problems.push(`track ${expectDisplay.trackId} never opened`)
-      } else if (track.display !== expectDisplay.type) {
+        problems.push(`track ${expected.trackId} never opened`)
+      } else if (track.display !== expected.type) {
         problems.push(
-          `${expectDisplay.trackId} opened as ${track.display}, wanted ${expectDisplay.type}`,
+          `${expected.trackId} opened as ${track.display}, wanted ${expected.type}`,
         )
       }
     }

@@ -17,11 +17,6 @@ import type {
 } from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
-// Pins the linear view's id so the graph can name it as its hover-sync partner.
-// A session spec may set a view id (LaunchLinearGenomeView takes one for exactly
-// this), and both views come from the same spec, so the constant is safe.
-const LGV_ID = 'pangenome-locus-lgv'
-
 // The two halves of the standard pangenome-VCF filter, which the HPRC tutorial
 // argues belong together and which this file applies wherever it opens the
 // callset:
@@ -162,7 +157,20 @@ function coarseTier(graph: PangenomeGraphBrowser, region: GraphRegion) {
     : undefined
 }
 
-function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
+// An rGFA track opens as the graph, its first display, so a lane over one
+// names the linear display.
+const linearLane = (trackId: string) => ({
+  trackId,
+  type: 'LinearBasicDisplay',
+})
+
+// The segments lane is the graph track itself, and a view shows a track once,
+// so a graph launch leaves it out.
+function lanes(
+  graph: PangenomeGraphBrowser,
+  region: GraphRegion,
+  { segments = true } = {},
+) {
   const tier = coarseTier(graph, region)
   const rearrangements = graph.rearrangementTrack
     ? [graph.rearrangementTrack]
@@ -171,14 +179,14 @@ function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
     ? [
         graph.geneTrackId,
         ...(graph.bubbleScoreTrackId ? [graph.bubbleScoreTrackId] : []),
-        tier,
+        linearLane(tier),
         ...rearrangements,
       ]
     : [
         graph.geneTrackId,
         graph.bubblesTrackId,
         ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
-        graph.segmentsTrackId,
+        ...(segments ? [linearLane(graph.segmentsTrackId)] : []),
         ...rearrangements,
       ]
 }
@@ -198,7 +206,7 @@ const locOf = (region: GraphRegion) =>
 // Undefined without a hosted graph config, and that is not a technicality —
 // `RgfaTabixAdapter`, `MinigraphBubbleAdapter` and the rest ship in the
 // graphgenomeviewer plugin rather than in core, so these lanes are exactly as
-// plugin-gated as the graph pane beside them.
+// plugin-gated as the graph track.
 export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
   return graph
@@ -258,22 +266,14 @@ export function locusLaunchUrl(
     : graphLanesUrl(dataset, launchRegion(locus))
 }
 
-// A region drawn as the graph itself, under a linear view of the same window.
-// `loadedTrackId`/`loadedRegion` are plain persisted view props, so the graph
-// opens on the region directly rather than the user rubberbanding to it; the
-// shared `id`/`connectedViewId` pairs the two panels for hover sync.
-//
-// `colorScheme` is the one thing that ties the two panels together under the
-// default force layout, which has no axis to share: the ramp runs red at the
-// start of the loaded window to magenta at its end, and a segment with no
-// reference coordinate comes off the ramp as charcoal.
-//
-// The graph follows the linear view above it, anchored so x is reference bp,
-// and re-cuts as the view moves; past the segments track's own `coarse`
-// handover it cuts the one-node-per-bubble tier that track names. A wide
-// launch says so with `coarseCut`, so the first cut reads the tier rather than
-// refusing the span; the linear lanes still switch by span, since a segments
-// lane cannot pick a tier by zoom yet.
+// A region drawn as the graph itself: one linear view, its lanes above the
+// segments track opened as the graph. The graph track cuts the view's window,
+// re-cuts as the view moves, and past the adapter's `coarse` handover cuts the
+// bubble tier on its own; the lanes above still pick their tier by span.
+// The anchored layout (`auto`) draws the graph on the view's own x, and
+// `reference-position` colours a node by where it sits on the reference. The
+// launch names both because a pane stated in a launch skips the config's
+// layout.
 //
 // Undefined when the dataset has no hosted graph.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
@@ -281,31 +281,21 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
   if (!graph) {
     return undefined
   }
-  const tier = coarseTier(graph, region)
   const label = region.label ?? locOf(region)
   return specUrl(graph.configUrl, [
     {
       type: 'LinearGenomeView',
-      id: LGV_ID,
+      displayName: `${label} graph`,
       assembly: dataset.reference.assembly,
       loc: locOf(region),
-      tracks: lanes(graph, region),
-    },
-    {
-      type: 'GraphGenomeView',
-      displayName: `${label} graph`,
-      loadedTrackId: graph.segmentsTrackId,
-      loadedRegion: {
-        refName: region.chrom,
-        assemblyName: dataset.reference.assembly,
-        start: region.start,
-        end: region.end,
-      },
-      connectedViewId: LGV_ID,
-      followLinearView: true,
-      layoutMode: 'auto',
-      colorScheme: 'reference-position',
-      ...(tier ? { coarseCut: true } : {}),
+      tracks: [
+        ...lanes(graph, region, { segments: false }),
+        {
+          trackId: graph.segmentsTrackId,
+          type: 'LinearGraphDisplay',
+          pane: { layoutMode: 'auto', colorScheme: 'reference-position' },
+        },
+      ],
     },
   ])
 }

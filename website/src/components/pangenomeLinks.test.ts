@@ -90,7 +90,8 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
 test('the callset declares the matrix display exactly where the host has it', () => {
   const { spec } = parseLaunch(graphVcfLgvUrl(HPRC_DATASET, locus))
   const displays = spec.sessionTracks?.[0]?.displays as
-    Record<string, unknown>[] | undefined
+    | Record<string, unknown>[]
+    | undefined
 
   // A VariantTrack's default display is the single-row LinearVariantDisplay,
   // which is not what a 232-sample / 464-haplotype callset should open as.
@@ -176,7 +177,7 @@ test('without a callset the primary launch is the graph configs own lanes', () =
     'mm39_ncbiRefSeq_ucsc',
     'mouse_minigraph_bubbles',
     'mouse_minigraph_alleles',
-    'mouse_minigraph_segments',
+    { trackId: 'mouse_minigraph_segments', type: 'LinearBasicDisplay' },
   ])
 })
 
@@ -189,7 +190,7 @@ test('and over a span the fine lanes cannot draw, it is the tier', () => {
   const { spec } = parseLaunch(locusLaunchUrl(mouseGraph, wide)!)
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
-    'mouse_minigraph_tier',
+    { trackId: 'mouse_minigraph_tier', type: 'LinearBasicDisplay' },
   ])
 })
 
@@ -268,89 +269,131 @@ test('a derived locus seeds the hub from the tiers gene list, or not at all', ()
   }
 })
 
-test('graphLocusUrl opens the graph on the locus, paired with a linear view', () => {
+const graphTrack = {
+  trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
+  type: 'LinearGraphDisplay',
+  pane: { layoutMode: 'auto', colorScheme: 'reference-position' },
+}
+
+test('graphLocusUrl opens one linear view with the graph under its lanes', () => {
   const url = graphLocusUrl(graphDataset, locus)
   assert.ok(url, 'MHC has a detailWindow, so a URL is produced')
   const { config, spec } = parseLaunch(url)
   // the graph plugin is declared only in this config, never in the UCSC ones
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
 
-  const [lgv, graph] = spec.views
+  assert.equal(spec.views.length, 1)
+  const [lgv] = spec.views
   assert.equal(lgv!.type, 'LinearGenomeView')
-  assert.equal(graph!.type, 'GraphGenomeView')
-  // the pairing that gives the two panels their hover sync
-  assert.equal(graph!.connectedViewId, lgv!.id)
-  assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
-  // under the default force layout there is no shared axis, so the ramp is what
-  // ties a node to the block above it
-  assert.equal(graph!.colorScheme, 'reference-position')
   // the narrow detailWindow, not the 5 Mb display window the locus lists
-  assert.deepEqual(graph!.loadedRegion, {
-    refName: 'chr6',
-    assemblyName: 'hg38',
-    start: 32_510_000,
-    end: 32_600_000,
-  })
+  assert.equal(lgv!.loc, 'chr6:32510001-32600000')
+  // The segments lane is the graph track itself, so it opens once, as the graph
+  assert.deepEqual(lgv!.tracks, [
+    HPRC_GRAPH_BROWSER.geneTrackId,
+    HPRC_GRAPH_BROWSER.bubblesTrackId,
+    HPRC_GRAPH_BROWSER.allelesTrackId,
+    graphTrack,
+  ])
 })
 
 test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   const region = { chrom: 'chr1', start: 100, end: 5_100, label: 'anywhere' }
   const { spec } = parseLaunch(graphRegionUrl(graphDataset, region)!)
-  const [lgv, graph] = spec.views
+  const [lgv] = spec.views
   assert.equal(lgv!.loc, 'chr1:101-5100')
-  assert.equal(graph!.displayName, 'anywhere graph')
-  assert.deepEqual(graph!.loadedRegion, {
-    refName: 'chr1',
-    assemblyName: 'hg38',
-    start: 100,
-    end: 5_100,
-  })
+  assert.equal(lgv!.displayName, 'anywhere graph')
   assert.equal(
     graphRegionUrl({ ...HPRC_DATASET, graphBrowser: undefined }, region),
     undefined,
   )
 })
 
-// The graph always loads the segments track and follows the linear view; the
-// track's own `coarse` slot names the tier the view cuts past the handover. A
-// wide launch says its first cut is coarse, and `lanes()` still picks the
-// tier's lane by span.
-test('a wide region opens as a following coarse cut of the segments track', () => {
+// The graph track picks its own tier by zoom; the lanes above it pick theirs by
+// span, so a wide launch opens the tier lane over the same graph track.
+test('a wide region opens the tier lane over the graph track', () => {
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
   const { config, spec } = parseLaunch(graphRegionUrl(graphDataset, chr21)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
-  const [lgv, graph] = spec.views
+  assert.equal(spec.views.length, 1)
+  const [lgv] = spec.views
   assert.equal(lgv!.loc, 'chr21:1-46709983')
   assert.deepEqual(lgv!.tracks, [
     'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
-    'hprc_minigraph_tier',
+    { trackId: 'hprc_minigraph_tier', type: 'LinearBasicDisplay' },
+    graphTrack,
   ])
-  assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
-  assert.equal(graph!.coarseCut, true)
-  assert.equal(graph!.followLinearView, true)
-  assert.equal(graph!.layoutMode, 'auto')
-  assert.equal(graph!.maxRegionBp, undefined)
-  assert.equal(graph!.connectedViewId, lgv!.id)
 })
 
-test('a graph with no tier is drawn fine however wide the ask', () => {
+test('a graph with no tier opens the fine lanes however wide the ask', () => {
   const noTier = {
     ...graphDataset,
     graphBrowser: { ...HPRC_GRAPH_BROWSER, tierTrackId: undefined },
   }
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
   const { spec } = parseLaunch(graphRegionUrl(noTier, chr21)!)
-  const [lgv, graph] = spec.views
-  assert.deepEqual(lgv!.tracks, [
+  assert.deepEqual(spec.views[0]!.tracks, [
     HPRC_GRAPH_BROWSER.geneTrackId,
     HPRC_GRAPH_BROWSER.bubblesTrackId,
     HPRC_GRAPH_BROWSER.allelesTrackId,
-    HPRC_GRAPH_BROWSER.segmentsTrackId,
+    graphTrack,
   ])
-  assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
-  assert.equal(graph!.coarseCut, undefined)
-  assert.equal(graph!.followLinearView, true)
+})
+
+// A bare trackId opens a track's first display, and an rGFA track's first is
+// the graph, so a launch that means its linear lane has to say so.
+test('every rGFA track a launch opens names the display its config declares', () => {
+  const arabidopsis = {
+    ...ARABIDOPSIS_DATASET,
+    graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
+  }
+  const launches = [
+    [graphDataset, { chrom: 'chr6', start: 32_510_000, end: 32_600_000 }],
+    [graphDataset, { chrom: 'chr21', start: 0, end: 46_709_983 }],
+    [mouseGraph, { chrom: 'chr7', start: 0, end: 5_000_000 }],
+    [arabidopsis, { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }],
+  ] as const
+  for (const [dataset, region] of launches) {
+    const base = /pangenome\/([^/]+)\/config\.json$/.exec(
+      dataset.graphBrowser.configUrl,
+    )![1]
+    const config = JSON.parse(
+      readFileSync(
+        new URL(`../../pangenome-config/${base}.json`, import.meta.url),
+        'utf8',
+      ),
+    ) as {
+      tracks: {
+        trackId: string
+        adapter: { type: string }
+        displays?: { type: string }[]
+      }[]
+    }
+    const byId = new Map(config.tracks.map(t => [t.trackId, t]))
+    for (const url of [
+      graphRegionUrl(dataset, region)!,
+      graphLanesUrl(dataset, region)!,
+    ]) {
+      for (const entry of parseLaunch(url).spec.views[0]!.tracks as (
+        | string
+        | { trackId: string; type?: string }
+      )[]) {
+        const { trackId, type } =
+          typeof entry === 'string'
+            ? { trackId: entry, type: undefined }
+            : entry
+        const track = byId.get(trackId)
+        assert.ok(track, `${trackId} is in ${base}.json`)
+        if (track.adapter.type === 'RgfaTabixAdapter') {
+          assert.ok(type, `${base}: ${trackId} opens without naming a display`)
+          assert.ok(
+            track.displays?.some(d => d.type === type),
+            `${base}: ${trackId} declares no ${type}`,
+          )
+        }
+      }
+    }
+  }
 })
 
 // Half of each derived catalogue is a multi-megabase cluster, and every one of
@@ -515,15 +558,13 @@ test('every locus either draws a window a graph can hold, or none at all', () =>
     const url = graphLocusUrl(graphDataset, l)
     if (url) {
       const { spec } = parseLaunch(url)
-      const region = spec.views[1]!.loadedRegion as {
-        start: number
-        end: number
-      }
+      const [, start, end] = /:(\d+)-(\d+)$/.exec(spec.views[0]!.loc as string)!
+      const span = Number(end) - Number(start) + 1
       // A wide locus with no explicit detailWindow must produce no launch rather
       // than one that opens and draws an unreadable thread.
       assert.ok(
-        region.end - region.start <= MAX_DETAIL_WINDOW_BP,
-        `${l.id} launches a ${region.end - region.start} bp graph window`,
+        span <= MAX_DETAIL_WINDOW_BP,
+        `${l.id} launches a ${span} bp graph window`,
       )
     }
   }

@@ -51,12 +51,12 @@ export interface PangenomeGraphVcf {
 
 // The hosted config that can draw the graph itself, as opposed to its
 // reference-projected VCF. Deliberately a different config from
-// `reference.configUrl`: the GraphGenomeView plugin is declared only here, so a
+// `reference.configUrl`: the graph plugin is declared only here, so a
 // dead plugin url costs the graph launch rather than every launch on the site
 // (a config's `plugins[]` is the one field that can error-page a whole session).
 export interface PangenomeGraphBrowser {
   configUrl: string
-  // rGFA segments track the subgraph is cut from
+  // rGFA segments track, which a graph launch opens as the graph
   segmentsTrackId: string
   bubblesTrackId: string
   geneTrackId: string
@@ -72,9 +72,8 @@ export interface PangenomeGraphBrowser {
   // Optional segments-per-bubble curve, drawn beside the tier as where the
   // graph varies and by how much.
   bubbleScoreTrackId?: string
-  // Chromosomes the tier can draw whole, with their lengths — the view's
-  // `maxRegionBp` has to be raised to the span, so the length is needed up
-  // front.
+  // Chromosomes the tier can draw whole, with the lengths their launches open
+  // on.
   chromosomes?: { name: string; length: number }[]
   // Optional GBZ lane track: one lane per haplotype walk, each in its own
   // contig's coordinates, read from the graph database at query time. A locus
@@ -199,7 +198,7 @@ export interface PangenomeDataset {
 // the unversioned one is what gets rebuilt to follow it.
 //
 // STAGING ONLY until JBrowse v5 ships, and the reason is settled rather than
-// open. The GraphGenomeView bundle boots on `main` and error-pages the whole
+// open. The graph plugin bundle boots on `main` and error-pages the whole
 // app on the released `latest` (`TypeError: (0,N.createSvgIcon) is not a
 // function`) because it reads `createSvgIcon` off the host's re-export map,
 // and core only started exposing it there in GMOD/jbrowse-components#5607
@@ -333,7 +332,7 @@ export const HPRC_DATASET: PangenomeDataset = {
 // stronger reason here: every adapter in this stack (`RgfaTabixAdapter`,
 // `MinigraphBubbleAdapter`) ships in the graphgenomeviewer plugin rather than
 // in core, so for these two datasets the LINEAR lanes are plugin-gated too, not
-// just the graph pane. Without `graphBrowser` a mouse locus has nothing but its
+// just the graph. Without `graphBrowser` a mouse locus has nothing but its
 // coordinates.
 const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',

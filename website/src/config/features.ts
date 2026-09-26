@@ -36,7 +36,7 @@ export const features = {
   // JBrowse launches. Everything on those pages runs on the released `latest`
   // except the graph launches, which have their own flag below.
   pangenome: staging,
-  // The in-browser GraphGenomeView launches on /pangenomes/*. Waits on core v5:
+  // The graph launches on /pangenomes/*. Waits on core v5:
   // the graphgenomeviewer plugin error-pages every released host (`latest` is
   // v4.3.0), so the dataset declares no `graphBrowser` on production and the
   // pages offer no graph links. Independent of `pangenome` so the section can
