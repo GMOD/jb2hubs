@@ -74,6 +74,14 @@ if [ "$UPLOAD_ONLY" = true ] && [ "$PROCESS_ALL" = true ]; then
   exit 1
 fi
 
+# Flags to forward to both make.sh scripts, which accept the same vocabulary.
+BUILD_FLAGS=()
+if [ -n "${REPROCESS:-}" ]; then
+  BUILD_FLAGS+=(--reprocess-all)
+elif [ "$PROCESS_ALL" = true ]; then
+  BUILD_FLAGS+=(--all)
+fi
+
 # --explain is forwarded rather than reimplemented: the question is entirely
 # about what the two make.sh runs would rebuild, and each already answers it
 # against its own gates. Handled before every other mode check, because it must
@@ -85,20 +93,12 @@ fi
 # downstream of a build that has not happened, so predicting them would mean
 # guessing. Say what is known.
 if [ "$EXPLAIN" = true ]; then
-  ./genark2jbrowse/make.sh --explain
-  ./ucsc2jbrowse/make.sh --explain
+  ./genark2jbrowse/make.sh --explain ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
+  ./ucsc2jbrowse/make.sh --explain ${BUILD_FLAGS[@]+"${BUILD_FLAGS[@]}"}
   echo "This covers the build only. Whether run.sh then uploads, deploys the"
   echo "website or invalidates CloudFront depends on what the build changes,"
   echo "which is not knowable until it runs."
   exit 0
-fi
-
-# Flags to forward to both make.sh scripts, which accept the same vocabulary.
-BUILD_FLAGS=()
-if [ -n "${REPROCESS:-}" ]; then
-  BUILD_FLAGS+=(--reprocess-all)
-elif [ "$PROCESS_ALL" = true ]; then
-  BUILD_FLAGS+=(--all)
 fi
 
 # --- Setup logging ---
