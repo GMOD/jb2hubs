@@ -5,6 +5,7 @@ import { test } from 'node:test'
 import { features } from '../config/features.ts'
 import {
   ARABIDOPSIS_DATASET,
+  ARABIDOPSIS_GRAPH_BROWSER,
   BOVINE_DATASET,
   HPRC_DATASET,
   HPRC_GRAPH_BROWSER,
@@ -137,6 +138,23 @@ test('the reference launch omits the callset track entirely when there is none',
   // pointing at a file that was never built: the lane is simply absent.
   assert.deepEqual(spec.views[0]!.tracks, [MOUSE_DATASET.reference.geneTrackId])
   assert.equal(spec.sessionTracks, undefined)
+})
+
+test('a rearrangement track opens under the lanes at either tier', () => {
+  const dataset = {
+    ...ARABIDOPSIS_DATASET,
+    graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
+  }
+  const fine = { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }
+  const coarse = { chrom: 'Chr4', start: 0, end: 4_000_000 }
+  for (const region of [fine, coarse]) {
+    const tracks = parseLaunch(graphLanesUrl(dataset, region)!).spec.views[0]!
+      .tracks as unknown[]
+    assert.deepEqual(
+      tracks.at(-1),
+      ARABIDOPSIS_GRAPH_BROWSER.rearrangementTrack,
+    )
+  }
 })
 
 test('an unphased callset does not ask for haplotype rows', () => {

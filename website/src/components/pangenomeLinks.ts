@@ -164,17 +164,22 @@ function coarseTier(graph: PangenomeGraphBrowser, region: GraphRegion) {
 
 function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
   const tier = coarseTier(graph, region)
+  const rearrangements = graph.rearrangementTrack
+    ? [graph.rearrangementTrack]
+    : []
   return tier
     ? [
         graph.geneTrackId,
         ...(graph.bubbleScoreTrackId ? [graph.bubbleScoreTrackId] : []),
         tier,
+        ...rearrangements,
       ]
     : [
         graph.geneTrackId,
         graph.bubblesTrackId,
         ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
         graph.segmentsTrackId,
+        ...rearrangements,
       ]
 }
 

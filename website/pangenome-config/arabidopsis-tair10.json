@@ -49,14 +49,10 @@
           "priority": "2"
         }
       },
-      "category": [
-        "Genes and Gene Predictions"
-      ],
+      "category": ["Genes and Gene Predictions"],
       "trackId": "GCF_000001735.4-ncbiRefSeqCurated",
       "description": "NCBI RefSeq genes, curated subset (NM_*, NR_*, NP_* or YP_*)",
-      "assemblyNames": [
-        "GCF_000001735.4"
-      ],
+      "assemblyNames": ["GCF_000001735.4"],
       "name": "NCBI RefSeq - RefSeq Curated",
       "type": "FeatureTrack",
       "adapter": {
@@ -78,9 +74,7 @@
       "type": "FeatureTrack",
       "trackId": "arabidopsis_minigraph_segments",
       "name": "1001G+ minigraph pangenome (rGFA segments)",
-      "assemblyNames": [
-        "GCF_000001735.4"
-      ],
+      "assemblyNames": ["GCF_000001735.4"],
       "adapter": {
         "type": "RgfaTabixAdapter",
         "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph",
@@ -96,9 +90,7 @@
       "type": "FeatureTrack",
       "trackId": "arabidopsis_minigraph_tier",
       "name": "1001G+ minigraph pangenome: bubble tier (one node per bubble)",
-      "assemblyNames": [
-        "GCF_000001735.4"
-      ],
+      "assemblyNames": ["GCF_000001735.4"],
       "adapter": {
         "type": "RgfaTabixAdapter",
         "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.tier10000",
@@ -111,9 +103,7 @@
       "type": "FeatureTrack",
       "trackId": "arabidopsis_minigraph_bubbles",
       "name": "1001G+ minigraph pangenome bubbles",
-      "assemblyNames": [
-        "GCF_000001735.4"
-      ],
+      "assemblyNames": ["GCF_000001735.4"],
       "adapter": {
         "type": "MinigraphBubbleAdapter",
         "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.bubbles.bed.gz",
@@ -129,9 +119,7 @@
       "type": "QuantitativeTrack",
       "trackId": "arabidopsis_bubble_score",
       "name": "1001G+ minigraph pangenome: variability (segments per bubble)",
-      "assemblyNames": [
-        "GCF_000001735.4"
-      ],
+      "assemblyNames": ["GCF_000001735.4"],
       "adapter": {
         "type": "MinigraphBubbleAdapter",
         "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.bubbles.bed.gz",
@@ -144,13 +132,62 @@
       "type": "AlignmentsTrack",
       "trackId": "arabidopsis_minigraph_alleles",
       "name": "1001G+ minigraph pangenome: allele inventory",
-      "assemblyNames": [
-        "GCF_000001735.4"
-      ],
+      "assemblyNames": ["GCF_000001735.4"],
       "adapter": {
         "type": "BedTabixAdapter",
         "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph.alleles.bed.gz"
       }
+    },
+    {
+      "type": "FeatureTrack",
+      "trackId": "arabidopsis_syri_regions",
+      "name": "SyRI regions on TAIR10, one row per 1001G+ accession",
+      "assemblyNames": ["GCF_000001735.4"],
+      "adapter": {
+        "type": "BedTabixAdapter",
+        "uri": "https://jbrowse.org/demos/arabidopsis_pangenome/syri_regions.bed.gz",
+        "disableGeneHeuristic": true
+      },
+      "displays": [
+        {
+          "type": "LinearMultiRowFeatureDisplay",
+          "displayId": "arabidopsis_syri_regions-LinearMultiRowFeatureDisplay",
+          "rows": {
+            "field": "query",
+            "domain": [
+              "Col-0.6909",
+              "KBS-Mac-74",
+              "Sq-1",
+              "TueWa1-2",
+              "HSm",
+              "Stiav-1",
+              "Fly2-2",
+              "T690",
+              "Nyl-7",
+              "TRA-01",
+              "Angit-1",
+              "Lerik1-4",
+              "IP-Cum-1",
+              "IP-Pva-1",
+              "IP-Gra-0",
+              "IP-Ven-0",
+              "Qar-8a",
+              "Noveg-3",
+              "35-1",
+              "85-3",
+              "Areeiro-1",
+              "ET-86.4",
+              "Elh-2",
+              "Rabacal-1",
+              "Taz-0",
+              "Tnz-1"
+            ]
+          },
+          "color": {
+            "domain": ["SYN", "INV", "TRANS", "INVTR", "DUP", "INVDP"]
+          }
+        }
+      ]
     }
   ]
 }

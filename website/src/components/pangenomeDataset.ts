@@ -80,6 +80,10 @@ export interface PangenomeGraphBrowser {
   // contig's coordinates, read from the graph database at query time. A locus
   // launch narrows it to the dataset's panel for that locus.
   haplotypeLanesTrackId?: string
+  // Optional rearrangements called between the assemblies, opened under the
+  // lanes in both tiers: the Arabidopsis graph has no bubble for its chromosome
+  // 4 inversion, and SyRI's rows show it.
+  rearrangementTrack?: { trackId: string; height: number }
 }
 
 // One published file of a graph, for the page's file table.
@@ -289,7 +293,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
   heading: 'Human Pangenome Reference Consortium',
-  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_hprc/',
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_hprc/',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
   // Measured 2026-09-10 against v2.1. No `.rgfa.gz` row — the graph the
   // projections were cut from is release 2's own `sv.gfa.gz` on S3, linked
@@ -413,7 +417,7 @@ const BOVINE_GRAPH_BROWSER: PangenomeGraphBrowser = {
 const ARABIDOPSIS_CONFIG =
   'https://jbrowse.org/pangenome/arabidopsis-tair10/config.json'
 
-const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
+export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: ARABIDOPSIS_CONFIG,
   segmentsTrackId: 'arabidopsis_minigraph_segments',
   bubblesTrackId: 'arabidopsis_minigraph_bubbles',
@@ -421,6 +425,7 @@ const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
   allelesTrackId: 'arabidopsis_minigraph_alleles',
   tierTrackId: 'arabidopsis_minigraph_tier',
   bubbleScoreTrackId: 'arabidopsis_bubble_score',
+  rearrangementTrack: { trackId: 'arabidopsis_syri_regions', height: 644 },
   chromosomes: [
     { name: 'Chr1', length: 30_427_671 },
     { name: 'Chr2', length: 19_698_289 },
@@ -470,7 +475,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
   graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
   loci: MOUSE_LOCI,
   heading: 'Mouse strain pangenome',
-  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_mouse/',
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_mouse/',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
   // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.
   sizes: {
@@ -562,7 +567,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
   graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
   loci: BOVINE_LOCI,
   heading: 'Bovine super-pangenome',
-  tutorialUrl: 'https://jbrowse.org/docs/tutorials/pangenome_cattle/',
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_cattle/',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
   // Measured 2026-09-09.
@@ -608,6 +613,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   graphBrowser: features.pangenomeGraph ? ARABIDOPSIS_GRAPH_BROWSER : undefined,
   loci: ARABIDOPSIS_LOCI,
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
+  tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/syri_synteny/',
   filePrefix:
     'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',
   // Measured 2026-09-25. No `.vcf.gz` row, because there is no callset.
@@ -628,6 +634,10 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
     {
       label: 'How the graph was built',
       url: 'https://jbrowse.org/demos/arabidopsis_pangenome/README.txt',
+    },
+    {
+      label: 'Every accession as SyRI lanes',
+      url: 'https://jbrowse.org/code/jb2/main/?config=https%3A%2F%2Fjbrowse.org%2Fdemos%2Farabidopsis_pangenome%2Fconfig.json',
     },
   ],
 }
