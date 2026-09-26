@@ -10,7 +10,7 @@ import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type
 import hprcPanelsFile from '../../public/pangenome-hprc/panels.json' with { type: 'json' }
 import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
 import { features } from '../config/features.ts'
-import { ucscConfigPath } from '../config/jbrowse.ts'
+import { genarkConfigPath, ucscConfigPath } from '../config/jbrowse.ts'
 import { derivedLoci } from './pangenomeDerivedLoci.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
@@ -417,7 +417,7 @@ const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: ARABIDOPSIS_CONFIG,
   segmentsTrackId: 'arabidopsis_minigraph_segments',
   bubblesTrackId: 'arabidopsis_minigraph_bubbles',
-  geneTrackId: 'TAIR10_genes',
+  geneTrackId: 'GCF_000001735.4-ncbiRefSeqCurated',
   allelesTrackId: 'arabidopsis_minigraph_alleles',
   tierTrackId: 'arabidopsis_minigraph_tier',
   bubbleScoreTrackId: 'arabidopsis_bubble_score',
@@ -592,20 +592,14 @@ export const BOVINE_DATASET: PangenomeDataset = {
 // `minigraph -cxggs` in jbrowse-components
 // (`scripts/build_arabidopsis_pangenome.sh`) and hosted under
 // `demos/arabidopsis_pangenome/`. No callset, for mouse's reason.
-//
-// The reference is the graph config's `TAIR10`, not GenArk's
-// `GCF_000001735.4`. The config lists the accession as an alias, and a linear
-// view resolves it, but the GraphGenomeView compares the name literally and
-// refuses a cut asked of `GCF_000001735.4`. Without a callset no launch opens
-// a second config, so this one serves as the reference config too.
 export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   id: 'arabidopsis',
   label: '1001 Genomes Plus pangenome (minigraph, TAIR10)',
   reference: {
-    assembly: 'TAIR10',
-    configUrl: ARABIDOPSIS_CONFIG,
-    label: 'TAIR10',
-    geneTrackId: 'TAIR10_genes',
+    assembly: 'GCF_000001735.4',
+    configUrl: genarkConfigPath('GCF_000001735.4'),
+    label: 'TAIR10.1',
+    geneTrackId: 'GCF_000001735.4-ncbiRefSeqCurated',
     taxonId: 3702,
   },
   panelDescription:
