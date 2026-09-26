@@ -90,8 +90,7 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
 test('the callset declares the matrix display exactly where the host has it', () => {
   const { spec } = parseLaunch(graphVcfLgvUrl(HPRC_DATASET, locus))
   const displays = spec.sessionTracks?.[0]?.displays as
-    | Record<string, unknown>[]
-    | undefined
+    Record<string, unknown>[] | undefined
 
   // A VariantTrack's default display is the single-row LinearVariantDisplay,
   // which is not what a 232-sample / 464-haplotype callset should open as.
@@ -312,28 +311,26 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   )
 })
 
-// The whole-chromosome launch used to be its own builder. `lanes()` picks the
-// tier by span now, so a chromosome is the widest region and takes the same
-// coarse branch as any window past MAX_DETAIL_WINDOW_BP.
-test('a wide region is drawn from the tier, with maxRegionBp raised', () => {
+// The graph always loads the segments track and follows the linear view; the
+// track's own `coarse` slot names the tier the view cuts past the handover. A
+// wide launch says its first cut is coarse, and `lanes()` still picks the
+// tier's lane by span.
+test('a wide region opens as a following coarse cut of the segments track', () => {
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
   const { config, spec } = parseLaunch(graphRegionUrl(graphDataset, chr21)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   const [lgv, graph] = spec.views
   assert.equal(lgv!.loc, 'chr21:1-46709983')
-  // The tier's own lane and the variability curve, not the segment-level lanes
-  // -- over a span this wide the fine segments track refuses outright.
   assert.deepEqual(lgv!.tracks, [
     'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
     'hprc_minigraph_tier',
   ])
-  assert.equal(graph!.loadedTrackId, 'hprc_minigraph_tier')
-  // the 5 Mb default would refuse the cut outright
-  assert.equal(graph!.maxRegionBp, 46_709_983)
-  // a tier is one node per bubble in reference order, which a force layout
-  // draws as an arc
+  assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
+  assert.equal(graph!.coarseCut, true)
+  assert.equal(graph!.followLinearView, true)
   assert.equal(graph!.layoutMode, 'auto')
+  assert.equal(graph!.maxRegionBp, undefined)
   assert.equal(graph!.connectedViewId, lgv!.id)
 })
 
@@ -352,7 +349,8 @@ test('a graph with no tier is drawn fine however wide the ask', () => {
     HPRC_GRAPH_BROWSER.segmentsTrackId,
   ])
   assert.equal(graph!.loadedTrackId, HPRC_GRAPH_BROWSER.segmentsTrackId)
-  assert.equal(graph!.maxRegionBp, undefined)
+  assert.equal(graph!.coarseCut, undefined)
+  assert.equal(graph!.followLinearView, true)
 })
 
 // Half of each derived catalogue is a multi-megabase cluster, and every one of

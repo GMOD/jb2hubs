@@ -268,12 +268,12 @@ export function locusLaunchUrl(
 // start of the loaded window to magenta at its end, and a segment with no
 // reference coordinate comes off the ramp as charcoal.
 //
-// The coarse branch differs in three ways, all forced by the tier. It loads the
-// tier rather than the segments; it raises `maxRegionBp` to the span, since the
-// view refuses a wider cut as a proxy for node count and a tier breaks that
-// proxy (`maxGraphNodes` stays as the real ceiling); and it lays out anchored,
-// because a tier is one node per bubble in reference order — a chain, which a
-// force layout draws as an arc.
+// The graph follows the linear view above it, anchored so x is reference bp,
+// and re-cuts as the view moves; past the segments track's own `coarse`
+// handover it cuts the one-node-per-bubble tier that track names. A wide
+// launch says so with `coarseCut`, so the first cut reads the tier rather than
+// refusing the span; the linear lanes still switch by span, since a segments
+// lane cannot pick a tier by zoom yet.
 //
 // Undefined when the dataset has no hosted graph.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
@@ -293,8 +293,8 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
     },
     {
       type: 'GraphGenomeView',
-      displayName: tier ? `${label} graph (bubble tier)` : `${label} graph`,
-      loadedTrackId: tier ?? graph.segmentsTrackId,
+      displayName: `${label} graph`,
+      loadedTrackId: graph.segmentsTrackId,
       loadedRegion: {
         refName: region.chrom,
         assemblyName: dataset.reference.assembly,
@@ -302,10 +302,10 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
         end: region.end,
       },
       connectedViewId: LGV_ID,
+      followLinearView: true,
+      layoutMode: 'auto',
       colorScheme: 'reference-position',
-      ...(tier
-        ? { maxRegionBp: region.end - region.start, layoutMode: 'auto' }
-        : {}),
+      ...(tier ? { coarseCut: true } : {}),
     },
   ])
 }
