@@ -22,86 +22,51 @@ same and `rclone -c` re-sends nothing. The cost is about 56 minutes of CPU. The
 bed/rmsk/gene fixes in item 6 move the same hash, so land them before that run
 and pay the cost once.
 
-## Bugs, most important first
+## Bugs
 
-1. **A failed rclone upload reports success** (verified). `lib/common.sh`
-   `rclone_sync_with_indexes` runs inside `changed=$(…)`, which turns off
-   errexit. A failed data pass is ignored, the index pass still uploads new
-   `.csi` files next to old `.gz` files, and run.sh deploys. Fix: check
-   `PIPESTATUS[0]` after each `rclone | tee` and return 1, and never start the
-   index pass after a failed data pass. Affects both `uploadAll.sh` and both
-   `buildHprc*.sh`. Add a stub-rclone test.
-2. **A failed UCSC table job is stamped as done** (verified).
-   `run_for_assemblies_lenient` only warns, then `ucsc2jbrowse/make.sh` writes
-   `.pipeline_hash`/`.trackdb_hash` for every changed assembly, failed ones
-   included. `_assembly_job`'s `set -e` also skips every table after the failing
-   one. Nothing revisits them until upstream or the code changes. Fix:
-   `_run_assembly_jobs` writes the failed dirs (joblog Exitval ≠ 0) to a file,
-   and make.sh skips their stamps. Don't write `.derivation_hash` while REDERIVE
-   is set and the failure list is non-empty.
-3. **An NCBI outage marks every queued hub "not found" for 90 days** (verified).
-   `genark2jbrowse/fetchNcbiMetadata.sh` writes `ncbi.json.notfound` for every
-   accession without a result, including ones whose batch never got an answer.
-   Fix: write the sentinel only for accessions whose batch was answered, and
-   check `process_batch_result`'s status explicitly (it runs under `if !`, so
-   errexit is off).
-4. **The final `Updates` commit takes the whole index** (verified). In `run.sh`
-   the `git add -A -- <paths>` is scoped, but `git diff --cached --quiet` and
-   `git commit -m Updates` are not. Scope both to the same path array.
-   `genark2jbrowse/hubs` is a symlink to `../hubs`, so check it before listing
-   it.
-5. **A good chain can be treated as corrupt and fetched again on every run**
-   (verified). In `lib/chainpif.sh` `chain_to_paf`, an early `chain2paf` exit
-   SIGPIPEs pigz, so `PIPESTATUS[0] != 0` returns 2. Decide on the failure path
-   with `pigz -t` instead, and test with an early-exiting stub on a
-   multi-megabyte input.
-6. **A rebuilt `.gz` can keep its old index.** The bed, rmsk and gene scripts
-   overwrite `out.gz` in place, then run `tabix`. If tabix refuses, the old
-   `.csi` stays, and `check-tabix-indexes` only checks that one exists. Remove
-   the index first, or build under a temp name and `mv` both.
-   `ucsc2jbrowse/downloadNcbiGff.sh` also writes through the hard link the built
-   dir shares, so an interrupted fetch truncates the built copy too. Failed jobs
-   also leave `*.tmp`/`.bed`/`.isoforms.txt` intermediates that `uploadAll.sh`
-   publishes.
-7. **An interrupted PIF rebuild counts as current.** `create_pif` rewrites the
-   PIF while the old `.cli` stamp and `.csi` survive, and `copy_pif_files` is a
-   plain `cp`. Write to temp names and `mv`.
-8. **`./run.sh --all --explain` describes an incremental run.** The explain
-   block runs before `BUILD_FLAGS` is built, so forward the flags.
-9. **New chains can be missed.** GenArk: if a run copies hub.txt files and dies
-   before the `git status` step that deletes `liftOver/.checked`
-   (`genark2jbrowse/make.sh:90`), the stamps survive, so run that step
-   unconditionally. UCSC: nothing clears `.checked`, so give it a TTL through
-   `stamp_age_days`.
-10. **One vanished hub.txt aborts the GenArk run.** The `rsync -t --files-from`
-    in `genark2jbrowse/make.sh` lacks `--ignore-missing-args`.
-11. **The CLI-version memo never reaches the `parallel` jobs.**
-    `load_jbrowse_cli_version` first runs inside a `while` in a pipe subshell,
-    in both `genark2jbrowse/make.sh` and `ucsc2jbrowse/makePifs.sh`. After a CLI
-    bump that is 52k `node jbrowse --version` starts. Call it in the parent
-    before the pipeline, and fail when `--version` prints nothing.
-12. **No deadlines on several hgdownload fetches**: `download_file`'s wget (900s
-    × 20 tries), `extract_file_urls`' curl, the rsyncs in
-    `listUpstreamHubs.sh`/`xenoSymbolIndex.sh`/genark `make.sh`, and run.sh's
-    curl.
-13. **`makePifs.sh` visits only rsynced download dirs**, so hub-backed UCSC
-    assemblies (hs1, rn8, …) get no liftOver PIFs. Check how the deleted
-    `processHs1LiftOver.sh` found their chains before changing it.
-14. **`website/deploy.sh` can prune the live release.** `readlink -f` resolves
-    symlinks that `find` does not, so the two paths stop matching if `/var/www`
-    is ever a symlink. Use plain `readlink`. A partial release left by a failed
-    deploy also blocks `--rollback`. The remote `zstd -d | tar -x` has no
-    pipefail.
-15. **Smaller ones:**
-    - A failed staging deploy aborts before the summary and push.
-    - `pangenome-build/run.sh` exits 1 without `--graph`.
-    - `buildHprcSvStates.sh` caches the VCF under a fixed name, so a new callset
-      would publish the old one.
-    - `pangenome-config/upload.sh` skips the invalidation after a partial
-      failure.
-    - The genome-list `curl` in ucsc make.sh has no `-f`.
-    - `createGeneTracksForGoldenPath.sh` reads `tracks.json` without the `-f`
-      guard the other two scripts have.
+Fixed on 2026-09-26, second session, one commit each, all six shell suites
+passing on ada with `BGZIP_STRICT=1` plus a new
+`genark2jbrowse/fetchNcbiMetadata.test.sh`:
+
+1. A failed rclone pass fails `rclone_sync_with_indexes`, and a failed data
+   pass skips the index pass.
+2. `_run_assembly_jobs` records failed assemblies in `ASSEMBLY_FAILURES_FILE`;
+   ucsc `make.sh` leaves them unstamped and does not advance `.derivation_hash`
+   after a re-derivation with failures.
+3. `fetchNcbiMetadata.sh` writes `ncbi.json.notfound` only for accessions from
+   an answered batch.
+4. run.sh's `Updates` add, check and commit share one path list.
+5. `chain_to_paf` decides "corrupt" with `pigz -t` on the failure path.
+6. `write_indexed_gz` (`lib/derive.sh`) bgzips and indexes under a temp name
+   and swaps the pair in; the bed, rmsk, gene and ucsc NCBI GFF writes use it.
+   The ucsc upload excludes intermediates and temp names.
+7. `create_pif` drops the `.cli` stamp before rebuilding; `copy_pif_files`
+   copies through temp names.
+8. `run.sh --explain` forwards `--all`/`--reprocess-all`.
+9. GenArk drops `.checked` for moved hub.txt files on every run; UCSC's
+   `.checked` ages out after `LIFTOVER_RECHECK_DAYS` (30).
+10. The hub.txt rsync takes `--ignore-missing-args`.
+11. Both PIF gates load the CLI-version memo in the parent shell; an empty
+    `--version` is an error.
+12. Deadlines on every fetch listed, and `--timeout=600` on the rsyncs.
+13. Not fixed, see below.
+14. `deploy.sh` compares plain `readlink`, removes a partial release, and runs
+    the remote `zstd -d | tar` under pipefail.
+15. All six small ones.
+
+**The next `run.sh`** re-derives every UCSC track file once (the
+`DERIVATION_HASH` move, now including item 6; output bytes unchanged) and
+re-lists every UCSC liftOver directory once the `.checked` stamps pass 30 days.
+The next `buildHprcSvStates.sh` downloads the callset again, because the cache
+is now keyed by its basename.
+
+Still open:
+
+- **`makePifs.sh` visits only rsynced download dirs**, so hub-backed UCSC
+  assemblies (hs1, rn8, …) get no liftOver PIFs. Check how the deleted
+  `processHs1LiftOver.sh` found their chains before changing it.
+- An ssh failure during `deploy.sh`'s verification step still exits under
+  `set -e` and leaves the partial release.
 
 ## Simplifications
 
