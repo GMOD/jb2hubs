@@ -28,8 +28,8 @@ Fixed on 2026-09-26, second session, one commit each, all six shell suites
 passing on ada with `BGZIP_STRICT=1` plus a new
 `genark2jbrowse/fetchNcbiMetadata.test.sh`:
 
-1. A failed rclone pass fails `rclone_sync_with_indexes`, and a failed data
-   pass skips the index pass.
+1. A failed rclone pass fails `rclone_sync_with_indexes`, and a failed data pass
+   skips the index pass.
 2. `_run_assembly_jobs` records failed assemblies in `ASSEMBLY_FAILURES_FILE`;
    ucsc `make.sh` leaves them unstamped and does not advance `.derivation_hash`
    after a re-derivation with failures.
@@ -37,9 +37,9 @@ passing on ada with `BGZIP_STRICT=1` plus a new
    an answered batch.
 4. run.sh's `Updates` add, check and commit share one path list.
 5. `chain_to_paf` decides "corrupt" with `pigz -t` on the failure path.
-6. `write_indexed_gz` (`lib/derive.sh`) bgzips and indexes under a temp name
-   and swaps the pair in; the bed, rmsk, gene and ucsc NCBI GFF writes use it.
-   The ucsc upload excludes intermediates and temp names.
+6. `write_indexed_gz` (`lib/derive.sh`) bgzips and indexes under a temp name and
+   swaps the pair in; the bed, rmsk, gene and ucsc NCBI GFF writes use it. The
+   ucsc upload excludes intermediates and temp names.
 7. `create_pif` drops the `.cli` stamp before rebuilding; `copy_pif_files`
    copies through temp names.
 8. `run.sh --explain` forwards `--all`/`--reprocess-all`.
