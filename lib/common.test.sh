@@ -320,6 +320,32 @@ chmod +x "$rc/rclone"
 out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
 check "rclone_sync_with_indexes reports 0 when nothing changed" 0 "$out"
 
+# A failed data pass must fail the call and must not start the index pass: new
+# indexes over old data is the "invalid bgzf header" state.
+cat >"$rc/rclone" <<STUB
+#!/bin/bash
+echo "\$*" >>"$rc/calls"
+[[ "\$*" == *'--include'* ]] || exit 1
+STUB
+chmod +x "$rc/rclone"
+out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
+check "a failed data sync fails the call" "1:" "$?:$out"
+check "a failed data sync skips the index sync" 1 "$(wc -l <"$rc/calls")"
+
+rm -f "$rc/calls"
+cat >"$rc/rclone" <<STUB
+#!/bin/bash
+[[ "\$*" == *'--include'* ]] && exit 1
+echo "2024/01/01 INFO  : file1.gz: Copied (new)"
+STUB
+chmod +x "$rc/rclone"
+out=$(PATH="$rc:$PATH" rclone_sync_with_indexes src: dest: 2>/dev/null)
+check "a failed index sync fails the call" "1:" "$?:$out"
+
+# The callers' own shape: under set -e the assignment must abort the script.
+out=$(PATH="$rc:$PATH" bash -c 'set -e; source "$1"; c=$(rclone_sync_with_indexes s: d:); echo "reached $c"' _ "$(dirname "$0")/common.sh" 2>/dev/null)
+check "a failed sync aborts a set -e caller" "" "$out"
+
 rm -rf "$rc"
 
 # --- source_tree_hash ---

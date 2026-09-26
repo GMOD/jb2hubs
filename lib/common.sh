@@ -253,6 +253,11 @@ export -f upload_if_changed
 # Extra args are passed only to the data phase (e.g. --exclude rules). Verbose
 # rclone output goes to stderr; the changed-object count is printed to stdout.
 #
+# A failed pass returns 1 and prints no count, and a failed data pass skips the
+# index pass, which would otherwise pair new indexes with the old data. Callers
+# run this inside `changed=$(...)`, where errexit is off, so the function checks
+# each pass itself; the assignment then fails and aborts the caller.
+#
 # --checkers is deliberately low: the hasher source lives on a single spinning
 # HDD, so many concurrent hashers just thrash the disk head on random seeks and
 # collapse aggregate read throughput. Fewer parallel readers keeps the re-hash
@@ -271,6 +276,11 @@ rclone_sync_with_indexes() {
     --exclude "*.csi" --exclude "*.tbi" "$@" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$data_log" >&2
+  if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+    echo "rclone_sync_with_indexes: data sync to $dest failed; skipping the index sync" >&2
+    rm -f "$data_log" "$idx_log"
+    return 1
+  fi
 
   echo "Syncing tabix/CSI indexes (Cache-Control: no-cache)..." >&2
   rclone sync -c -v \
@@ -278,6 +288,11 @@ rclone_sync_with_indexes() {
     --header-upload "Cache-Control: no-cache" \
     "$src" "$dest" \
     --s3-storage-class INTELLIGENT_TIERING --fast-list --checkers 4 2>&1 | tee "$idx_log" >&2
+  if [ "${PIPESTATUS[0]}" -ne 0 ]; then
+    echo "rclone_sync_with_indexes: index sync to $dest failed" >&2
+    rm -f "$data_log" "$idx_log"
+    return 1
+  fi
 
   local changed=$(($(count_rclone_changes "$data_log") + $(count_rclone_changes "$idx_log")))
   rm -f "$data_log" "$idx_log"
