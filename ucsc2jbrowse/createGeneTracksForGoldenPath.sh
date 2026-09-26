@@ -28,8 +28,10 @@ process_assembly() {
   assembly_paths "$1"
 
   mkdir -p "$assembly_results_dir"
+  if [ ! -f "$assembly_results_dir/tracks.json" ]; then
+    return 0
+  fi
 
-  # Use jq to extract gene prediction tracks
   jq -r 'to_entries | .[] | select(.value.type | startswith("genePred")) | .key' "$assembly_results_dir/tracks.json" | while read -r key; do
     if is_skipped_track "$key"; then
       continue

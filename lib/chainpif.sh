@@ -93,7 +93,7 @@ parse_href_listing() {
 extract_file_urls() {
   local url="$1" pattern="$2" body status
   body=$(mktemp) || log_error "Failed to create temporary file"
-  status=$(curl -sL --retry 3 -o "$body" -w '%{http_code}' "$url") || status=000
+  status=$(curl -sL --retry 3 --connect-timeout 30 --max-time 120 -o "$body" -w '%{http_code}' "$url") || status=000
   case "$status" in
   200) parse_href_listing "$pattern" <"$body" ;;
   404) ;;
@@ -124,7 +124,9 @@ download_file() {
     if [ "$CHAINPIF_DOWNLOAD_DELAY" != 0 ]; then
       sleep "$CHAINPIF_DOWNLOAD_DELAY"
     fi
-    if wget -q -O "$output_path.tmp" "$url"; then
+    # wget's defaults are a 900s read timeout and 20 tries, over an hour on
+    # one stalled hgdownload connection.
+    if wget -q --timeout=60 --tries=3 -O "$output_path.tmp" "$url"; then
       mv "$output_path.tmp" "$output_path"
     else
       rm -f "$output_path.tmp"

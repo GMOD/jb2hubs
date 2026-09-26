@@ -50,7 +50,7 @@ symbols_current() {
 fetch_refseq_symbols() {
   local tmp="$SYMBOLS.tmp" rows
   mkdir -p "$(dirname "$SYMBOLS")"
-  if ! curl -fsS "$GENE2REFSEQ_URL" | pigz -dc | cut_refseq_symbols | pigz -9 >"$tmp"; then
+  if ! curl -fsS --connect-timeout 30 --speed-limit 1024 --speed-time 120 "$GENE2REFSEQ_URL" | pigz -dc | cut_refseq_symbols | pigz -9 >"$tmp"; then
     rm -f "$tmp"
     echo "xenoSymbolIndex: fetching $GENE2REFSEQ_URL failed" >&2
     return 1
@@ -74,7 +74,7 @@ mirror_bigbeds() {
   work=$(mktemp -d)
   split -l "$MIRROR_CHUNK" "$1" "$work/c"
   for chunk in "$work"/c*; do
-    if ! rsync -t --ignore-missing-args --files-from="$chunk" "$RSYNC_HUBS" "$MIRROR/"; then
+    if ! rsync --timeout=600 -t --ignore-missing-args --files-from="$chunk" "$RSYNC_HUBS" "$MIRROR/"; then
       echo "xenoSymbolIndex: rsync of $(wc -l <"$chunk") bigBeds failed; building from what the mirror holds" >&2
     fi
   done

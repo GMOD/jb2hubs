@@ -73,7 +73,7 @@ check_listing_count() {
 walk_upstream_hubs() {
   local prefix
   for prefix in GCA GCF; do
-    rsync --list-only -r \
+    rsync --timeout=600 --list-only -r \
       --include='/*/' --include='/*/*/' --include='/*/*/*/' --include='/*/*/*/*/' \
       --include='/*/*/*/*/hub.txt' --include='/*/*/*/*/*.2bit' \
       --include='/*/*/*/*/*.chrom.sizes.txt' --exclude='*' \
@@ -88,7 +88,7 @@ walk_upstream_hubs() {
 stat_upstream_paths() {
   local chunk
   for chunk in "$1"/*; do
-    rsync --list-only -t --ignore-missing-args --files-from="$chunk" \
+    rsync --timeout=600 --list-only -t --ignore-missing-args --files-from="$chunk" \
       "$RSYNC_HUBS" . | parse_rsync_listing
   done
 }

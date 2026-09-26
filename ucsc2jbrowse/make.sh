@@ -404,11 +404,19 @@ fi
 
 ensure_dir "$UCSC_BUILT_DIR"
 
+# -f and a temp file: an error page or a cut transfer must stop the run, not
+# replace the list every later phase reads.
+fetch_genome_list() {
+  log "Fetching latest UCSC genome list..."
+  curl -fsS --connect-timeout 30 --max-time 300 -o "$UCSC_BUILT_DIR/list.json.raw.tmp" \
+    https://api.genome.ucsc.edu/list/ucscGenomes
+  mv "$UCSC_BUILT_DIR/list.json.raw.tmp" "$UCSC_BUILT_DIR/list.json.raw"
+}
+
 if [ "$SKIP_DOWNLOAD" = false ]; then
   log "Starting UCSC data download."
 
-  log "Fetching latest UCSC genome list..."
-  curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_BUILT_DIR/list.json.raw"
+  fetch_genome_list
 
   age_days=0 # set by stamp_age_days below
 
@@ -441,7 +449,7 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
 
     log "Syncing $assembly data..."
     ensure_dir "$UCSC_DOWNLOADS_DIR/$assembly/$assembly"
-    rsync --max-size=2G -qavzP rsync://hgdownload.cse.ucsc.edu/goldenPath/"$assembly"/database "$UCSC_DOWNLOADS_DIR/$assembly/$assembly/"
+    rsync --timeout=600 --max-size=2G -qavzP rsync://hgdownload.cse.ucsc.edu/goldenPath/"$assembly"/database "$UCSC_DOWNLOADS_DIR/$assembly/$assembly/"
     touch "$sync_stamp"
     synced=$((synced + 1))
   done < <(list_rsync_assemblies)
@@ -456,7 +464,7 @@ if [ "$SKIP_DOWNLOAD" = false ]; then
 
   log "Downloading hgFixed assembly..."
   ensure_dir "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed"
-  rsync --max-size=2G -azP rsync://hgdownload.cse.ucsc.edu/goldenPath/hgFixed/database "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed/"
+  rsync --timeout=600 --max-size=2G -azP rsync://hgdownload.cse.ucsc.edu/goldenPath/hgFixed/database "$UCSC_DOWNLOADS_DIR/hgFixed/hgFixed/"
 
   log "Download finished successfully!"
 else
@@ -507,8 +515,7 @@ rm -f blockedFiles.txt blockedFiles.json removedTracks.json
 # The download phase already wrote list.json.raw; fetch it here only if we
 # skipped that phase.
 if [ "$SKIP_DOWNLOAD" = true ]; then
-  log "Fetching latest UCSC genome list..."
-  curl -s https://api.genome.ucsc.edu/list/ucscGenomes >"$UCSC_BUILT_DIR/list.json.raw"
+  fetch_genome_list
 fi
 
 # Keeps the ucscGenomes object shape (later phases and

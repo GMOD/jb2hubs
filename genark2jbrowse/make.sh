@@ -90,7 +90,7 @@ if ./listUpstreamHubs.sh "$UPSTREAM_HUB_LIST"; then
   if [ -s "$STALE_HUB_TXT" ]; then
     # --ignore-missing-args: a hub removed upstream since the listing is one
     # stale path, not a reason to abort the run.
-    rsync -t --ignore-missing-args --files-from="$STALE_HUB_TXT" \
+    rsync --timeout=600 -t --ignore-missing-args --files-from="$STALE_HUB_TXT" \
       rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/
   fi
 else
