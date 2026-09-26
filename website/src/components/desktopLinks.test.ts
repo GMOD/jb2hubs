@@ -34,7 +34,7 @@ function everyLaunchUrl() {
         { assembly: 'hs1' },
       ],
       ['hg38_to_hs1_liftOver'],
-      { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+      { color: { field: 'query' }, drawCurves: true, autoDiagonalize: true },
     ),
   ].filter(url => url !== undefined)
 }

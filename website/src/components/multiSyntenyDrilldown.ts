@@ -168,7 +168,7 @@ function pairwiseSyntenyUrl(
       },
     ],
     [link.trackId],
-    { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+    { color: { field: 'query' }, drawCurves: true, autoDiagonalize: true },
   )
 }
 

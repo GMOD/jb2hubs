@@ -242,7 +242,11 @@ function SyntenyPicker({ data }: Props) {
       ? syntenyViewUrl(
           [panel(species1, gene?.symbol), panel(species2, symbol2)],
           [selectedTrack.trackId],
-          { colorBy: 'query', drawCurves: true, autoDiagonalize: true },
+          {
+            color: { field: 'query' },
+            drawCurves: true,
+            autoDiagonalize: true,
+          },
         )
       : null
 
