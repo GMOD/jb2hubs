@@ -228,7 +228,7 @@ copy_pif_files "$tmp/p.pif.gz" "$tmp/dest"
 check "copy_pif_files: replaces the PIF and its index" "new newidx" \
   "$(cat "$tmp/dest/p.pif.gz" "$tmp/dest/p.pif.gz.csi" | tr '\n' ' ' | sed 's/ $//')"
 check "copy_pif_files: leaves no temp files" "p.pif.gz p.pif.gz.csi" \
-  "$(ls -A "$tmp/dest" | tr '\n' ' ' | sed 's/ $//')"
+  "$(find "$tmp/dest" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
 
 unset -f chain2paf download_file
 rm -r "$tmp"

@@ -360,7 +360,7 @@ printf 'chr1\t10\t20\tb\nchr1\t1\t5\ta\n' | write_indexed_gz "$wg/t.bed.gz" bed 
 check "a tabix refusal fails the call" 1 "$?"
 check "a tabix refusal keeps the previous data" "$before" "$(md5sum <"$wg/t.bed.gz")"
 check "a tabix refusal leaves no temp files" "link.bed.gz t.bed.gz t.bed.gz.csi" \
-  "$(ls -A "$wg" | tr '\n' ' ' | sed 's/ $//')"
+  "$(find "$wg" -mindepth 1 -printf "%f\n" | sort | paste -sd " ")"
 printf 'chr1\t1\t5\tc\n' | write_indexed_gz "$wg/t.bed.gz" bed
 check "a rewrite does not write through a hard link" "$before" "$(md5sum <"$wg/link.bed.gz")"
 rm -rf "$wg"
