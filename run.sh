@@ -457,21 +457,22 @@ elif [ "$DRY_RUN" = false ]; then
   describe() { [ "$1" = 1 ] && echo "changed" || echo "unchanged"; }
   log "=== RUN SUMMARY === genark data: $(describe "$GENARK_CHANGED") | ucsc data: $(describe "$UCSC_CHANGED") | website source: $(describe "$WEBSITE_CHANGED") | website deployed: $WEBSITE_DEPLOYED | staging deployed: $STAGING_DEPLOYED"
 
-  # Scope the commit to pipeline-generated paths so stray edits in the working
-  # tree don't ride along to origin. hubs/ was committed above.
-  git add -A -- \
-    genark2jbrowse/hubs genark2jbrowse/taxon_images \
-    genark2jbrowse/processedHubJson genark2jbrowse/speciesDescriptions \
-    ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal \
-    ucsc2jbrowse/fileAccessCache ucsc2jbrowse/removedTracks \
-    ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json \
+  # Scoped to pipeline-generated paths, in the add, the check and the commit,
+  # for the reason the hubs commit above gives. hubs/ was committed there;
+  # genark2jbrowse/hubs is only a symlink to it.
+  generated_paths=(
+    genark2jbrowse/taxon_images
+    genark2jbrowse/processedHubJson genark2jbrowse/speciesDescriptions
+    ucsc2jbrowse/configs ucsc2jbrowse/configs-minimal
+    ucsc2jbrowse/fileAccessCache ucsc2jbrowse/removedTracks
+    ucsc2jbrowse/blockedFiles.json ucsc2jbrowse/removedTracks.json
     'website/src/*.json'
-  # Same reasoning as the hubs commit above: an empty index is fine, a failed
-  # commit is not, and this is the last chance to notice before `git push`.
-  if git diff --cached --quiet; then
+  )
+  git add -A -- "${generated_paths[@]}"
+  if git diff --cached --quiet -- "${generated_paths[@]}"; then
     echo "No additional changes to commit"
   else
-    git commit -m "Updates"
+    git commit -m "Updates" -- "${generated_paths[@]}"
   fi
   git push
 
