@@ -1273,7 +1273,7 @@ warned and moved on, and the config shipped naming an index that was never
 written. `checkTrackUrls.mjs` eventually caught it by probing urls; this catches
 it on disk, before the upload.
 
-`save_rebuild_stamp` (`lib/common.sh`) closes the other half at the point of
+`save_rebuild_stamp` (`lib/derive.sh`) closes the other half at the point of
 derivation: it now takes the **output** as well — argument order matching
 `needs_rebuild`, since the two are always a pair — and refuses to stamp when
 that output is missing or empty. A recipe that exits 0 having written nothing
@@ -1446,7 +1446,7 @@ The next `REDERIVE` rewrote **5,757 files / 76.7 GB** with no content change,
 `.csi` in the bucket for every assembly it reached — `invalid bgzf header` on
 hg19 and hg38 in production, traced to nothing anyone had pushed.
 
-`assert_bgzip_toolchain` (`lib/common.sh`, called from both `make.sh` before any
+`assert_bgzip_toolchain` (`lib/derive.sh`, called from both `make.sh` before any
 derivation) pins the property that matters: **the bytes bgzip emits**, compared
 against `BGZIP_TOOLCHAIN_SIGNATURE`. Three things about it are load-bearing:
 
