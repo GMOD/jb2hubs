@@ -1875,9 +1875,11 @@ change that touches it**; a launch naming a config the bucket lacks fails to
 fetch. The data it names stays under `jbrowse.org/demos/hprc/`, built in the
 jbrowse-components repo (its README there says how).
 
-The plugin url is the unversioned `demos/graphgenomeviewer/…esm.js` entry point,
-not a content-hashed sibling: the plugin links an unreleased
-`@jbrowse/render-core`, so an old bundle stops booting as `main` moves. It
+The plugin url is the plugin store's `latest/` entry point
+(`jbrowse.org/plugins/jbrowse-plugin-graphgenomeviewer/latest/…esm.js`), where
+jbrowse-plugin-list rehosts the release its `GraphGenomeView` entry pins. The
+plugin links an unreleased `@jbrowse/render-core`, so a pinned release stops
+booting as `main` moves, and keeping it booting means bumping that pin. It
 error-pages every released host (`createSvgIcon` — re-measured 2026-08-26 on
 `latest` = v4.3.0), which is why `features.pangenome` stays staging until v5.
 
