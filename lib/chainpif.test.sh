@@ -136,8 +136,33 @@ check "the CLI is asked its version once per shell, not once per stamp" "1" \
   "$(wc -l <"$tmp/asked")"
 check "and the memoized answer still matches the stamp" "current" \
   "$(pif_stamp_current "$tmp/.checked" && echo current || echo stale)"
+
+# A pipe subshell's memo dies with it, so the parent must load it before the
+# gate pipeline for the parallel jobs to inherit it.
+: >"$tmp/asked"
+unset JBROWSE_CLI_VERSION
+load_jbrowse_cli_version
+printf '%s\n' a b | while read -r _; do pif_stamp_current "$tmp/.checked"; done |
+  bash -c 'test -n "$JBROWSE_CLI_VERSION"'
+check "a loaded memo reaches the pipeline's jobs" "0:1" "$?:$(wc -l <"$tmp/asked")"
+
+printf '#!/bin/bash\n' >"$tmp/jbrowse"
+unset JBROWSE_CLI_VERSION
+check "a CLI that prints no version is an error" "1" \
+  "$( (load_jbrowse_cli_version) >/dev/null 2>&1; echo $?)"
+
 JBROWSE_CLI=false
 export JBROWSE_CLI_VERSION="@jbrowse/cli version 5.0.0-test"
+rm -r "$tmp"
+
+# A UCSC liftOver stamp ages out, so a chain added upstream later is found.
+tmp=$(mktemp -d)
+write_pif_stamp "$tmp/.checked"
+check "a fresh liftOver stamp is current" "current" \
+  "$(liftover_stamp_current "$tmp/.checked" && echo current || echo stale)"
+touch -d '40 days ago' "$tmp/.checked"
+check "a liftOver stamp older than LIFTOVER_RECHECK_DAYS is stale" "stale" \
+  "$(liftover_stamp_current "$tmp/.checked" && echo current || echo stale)"
 rm -r "$tmp"
 
 # chain_to_paf tells a chain that will not decompress (exit 2) apart from one

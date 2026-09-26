@@ -83,7 +83,7 @@ process_liftover() {
 
   if [[ -n "${REPROCESS:-}" ]]; then
     rm -f "$stamp"
-  elif pif_stamp_current "$stamp"; then
+  elif liftover_stamp_current "$stamp"; then
     return 0
   fi
 

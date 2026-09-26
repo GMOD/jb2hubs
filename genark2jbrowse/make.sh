@@ -88,19 +88,23 @@ if ./listUpstreamHubs.sh "$UPSTREAM_HUB_LIST"; then
   log "Refreshing hub.txt files that changed upstream..."
   node src/staleHubTxt.ts "$UPSTREAM_HUB_LIST" >"$STALE_HUB_TXT"
   if [ -s "$STALE_HUB_TXT" ]; then
-    rsync -t --files-from="$STALE_HUB_TXT" rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/
-    # `$1 ~ /M/` rather than `== "M"`: porcelain's status is two columns, and a
-    # hub.txt that is both staged and modified reads `MM`, which an equality
-    # test misses -- so a chain the refreshed hub.txt names would never be
-    # probed for, silently.
-    git -C .. status --porcelain -- ':(glob)hubs/**/hub.txt' |
-      awk '$1 ~ /M/ { sub(/\/hub\.txt$/, "/liftOver/.checked", $2); print $2 }' |
-      xargs -r rm -f
+    # --ignore-missing-args: a hub removed upstream since the listing is one
+    # stale path, not a reason to abort the run.
+    rsync -t --ignore-missing-args --files-from="$STALE_HUB_TXT" \
+      rsync://hgdownload.soe.ucsc.edu/hubs/ hubs/
   fi
 else
   log "Upstream listing failed; existing hub.txt files are not refreshed this run"
   unset UPSTREAM_HUB_LIST
 fi
+# Every hub.txt whose content moved since the last commit loses its chain-probe
+# stamp. Unconditional, so a run that copied hub.txt files and died before this
+# point still has them re-probed by the next one. `$1 ~ /M/` rather than
+# `== "M"`: porcelain's status is two columns, and a staged-and-modified hub.txt
+# reads `MM`.
+git -C .. status --porcelain -- ':(glob)hubs/**/hub.txt' |
+  awk '$1 ~ /M/ { sub(/\/hub\.txt$/, "/liftOver/.checked", $2); print $2 }' |
+  xargs -r rm -f
 
 # Fetches hubs with no hub.txt yet, and reports hubs the assembly list names
 # that the walk above did not find (their configs name files that 404).
@@ -155,6 +159,8 @@ log "Building xenoRefGene gene-symbol indexes for GCA hubs..."
 # did until 2026-09-02) pinned all 52,720 hubs to whichever CLI first visited
 # them, and the 5.0 coarse tier reached none of them. REPROCESS forces it.
 log "Processing liftOver chain files and creating PIFs..."
+# In this shell, so the memo reaches the pipeline's subshells and every job.
+load_jbrowse_cli_version
 if [ -n "${REPROCESS:-}" ]; then
   run_parallel_reporting 'chain PIFs' './createChainTrackPifs.sh {}' <"$ALL_META_FILE"
 else

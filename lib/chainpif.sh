@@ -31,6 +31,7 @@
 load_jbrowse_cli_version() {
   if [ -z "${JBROWSE_CLI_VERSION:-}" ]; then
     JBROWSE_CLI_VERSION=$("$JBROWSE_CLI" --version) || log_error "$JBROWSE_CLI --version failed; run pnpm install"
+    [ -n "$JBROWSE_CLI_VERSION" ] || log_error "$JBROWSE_CLI --version printed nothing"
     export JBROWSE_CLI_VERSION
   fi
 }
@@ -48,6 +49,16 @@ pif_stamp_current() {
   [ -f "$1" ] || return 1
   IFS= read -r stamp <"$1" || true
   [ "$stamp" = "$JBROWSE_CLI_VERSION" ]
+}
+
+# $1: a UCSC liftOver dir's .checked stamp. True when it is current and younger
+# than LIFTOVER_RECHECK_DAYS. Nothing else tells a UCSC assembly that upstream
+# added a chain, so the listing is asked again once the stamp ages out; the
+# PIFs already built are kept.
+LIFTOVER_RECHECK_DAYS=${LIFTOVER_RECHECK_DAYS:-30}
+liftover_stamp_current() {
+  local age
+  pif_stamp_current "$1" && stamp_age_days age "$1" && [ "$age" -lt "$LIFTOVER_RECHECK_DAYS" ]
 }
 
 # $1: stamp path
