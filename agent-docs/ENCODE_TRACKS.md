@@ -28,7 +28,7 @@ resolution we ship none. Verified end to end: hg19 "Layered H3K27Ac" renders as
 
 Convertible containers become one `MultiQuantitativeTrack` each, with a
 `MultiWiggleAdapter` `subadapters` entry per subtrack carrying its UCSC name and
-color, and `defaultRendering: multixyplot` when UCSC declares an overlay
+color, and `defaultRendering: xyplot` when UCSC declares an overlay
 aggregate (see `mergeMultiWigTracks.ts`). One track, N rows, one config entry.
 Verified rendering against live UCSC bigWigs in jbrowse-web: 51-row CTCF and
 55-row H3K27ac paint with per-organ colors and a legend, no console errors; the

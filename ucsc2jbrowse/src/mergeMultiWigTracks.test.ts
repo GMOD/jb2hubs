@@ -79,7 +79,7 @@ describe('buildMultiWigTracks', () => {
 
   it('maps a UCSC overlay aggregate onto the overlapping rendering', () => {
     assert.deepEqual(tracks[0]!.displays, [
-      { type: 'MultiLinearWiggleDisplay', defaultRendering: 'multixyplot' },
+      { type: 'MultiLinearWiggleDisplay', defaultRendering: 'xyplot' },
     ])
   })
 
