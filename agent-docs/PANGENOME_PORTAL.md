@@ -29,8 +29,8 @@ jbrowse-components, which is the authority for the graph half.
 not core** — `RgfaTabixAdapter`, `MinigraphBubbleAdapter` and
 `GbzBaseSyntenyAdapter` are all absent from a grep of jbrowse-components'
 `plugins/` and `packages/`. So the linear tracks are as plugin-gated as the
-graph view, and none of this reaches production before core v5 regardless of how
-it is wired. That is the reason to spend the interim on normalization rather
+graph track, and none of this reaches production before core v5 regardless of
+how it is wired. That is the reason to spend the interim on normalization rather
 than on racing datasets out.
 
 ## What is already consistent
@@ -270,7 +270,7 @@ Both blockers on shipping it are the same shape as everything else here:
 `GbzBaseSyntenyAdapter` lives in the graphgenomeviewer plugin, and
 `MultiWaySyntenyDisplay` landed on jbrowse-components `main` on 2026-09-09 and
 is **absent from v4.3.0** (`git cat-file -e` against the newest tag). So the GBZ
-lane is v5-only, exactly like the graph pane it would sit beside.
+lane is v5-only, exactly like the graph track it would sit beside.
 
 ### Wiring the GBZ lane: it was never our config
 
@@ -612,7 +612,7 @@ has already changed once.
 
   Optionally, and asymmetrically: rebuilding bovine's BEDs through
   `pggb_gfa_to_bed.py` instead of the rGFA producer would carry `SM:Z:` into the
-  graph view's node tooltips, which human's rGFA-derived tracks cannot have.
+  graph's node tooltips, which human's rGFA-derived tracks cannot have.
   PANGENOME_GRAPHS.md's rule is "pick the producer that matches your file", so
   that IS the consistent decision applied to a path-bearing input — but it makes
   one dataset show something the others do not, and the VCF above already

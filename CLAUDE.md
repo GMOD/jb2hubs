@@ -1884,10 +1884,11 @@ error-pages every released host (`createSvgIcon` — re-measured 2026-08-26 on
 `latest` = v4.3.0), which is why `features.pangenome` stays staging until v5.
 
 `pnpm check-pangenome-launches` boots every launch on `main`, including one
-whole-chromosome tier launch; run it after touching `pangenome*` or the config.
-The genomes.jbrowse.org side of the JBrowse docs
-(`website/docs/tutorials/genomes_pangenome.md` in jbrowse-components) is a
-tutorial for these pages, so a visible change here should be reflected there.
+whole-chromosome tier launch, and reads back which tier the graph track cut; run
+it after touching `pangenome*` or the config. The genomes.jbrowse.org side of
+the JBrowse docs (`website/docs/tutorials/genomes_pangenome.md` in
+jbrowse-components) is a tutorial for these pages, so a visible change here
+should be reflected there.
 
 ### One graph, one route, and almost no prose
 
@@ -1925,10 +1926,15 @@ inline script carries `?dataset=<id>` across to `/pangenomes/<id>`.
 ### One rule decides how wide a window is drawn, and it removed four surfaces
 
 `lanes()` in `website/src/components/pangenomeLinks.ts` picks the segment-level
-lanes under `MAX_DETAIL_WINDOW_BP` (150 kb) and the coarse bubble tier above it,
-and `graphRegionUrl` follows with the tier as `loadedTrackId`, `maxRegionBp`
-raised to the span and the anchored layout. Everything below fell out of that on
-2026-09-10, so a change here is a change to all of it:
+lanes under `MAX_DETAIL_WINDOW_BP` (150 kb) and the coarse bubble tier above it.
+A graph launch (`graphRegionUrl`) is one linear view: those lanes, then the
+segments track opened as its `LinearGraphDisplay`, which picks its own tier by
+zoom past the adapter's `coarse.aboveBpPerPx`. The segments lane and the graph
+are one track and a view shows a track once, so a graph launch has no segments
+lane. Every rGFA track in the four configs opens as the graph, its first
+display, so a lane over one names `LinearBasicDisplay`; `pangenomeLinks.test.ts`
+checks every launch against the configs. Everything below fell out of the width
+rule on 2026-09-10, so a change here is a change to all of it:
 
 - **`graphChromosomeUrl` is gone.** A chromosome is the widest region and takes
   the coarse branch, so the whole-chromosome launch and the region launch are
@@ -1940,7 +1946,7 @@ raised to the span and the anchored layout. Everything below fell out of that on
   multi-megabase spans. Half of each derived catalogue is such a cluster — 10 of
   mouse's 20, 12 of cattle's.
 - **No region has an upper bound.** `MAX_GRAPH_REGION_BP` existed because the
-  view refuses a cut past its `maxRegionBp`; the coarse branch raises it.
+  view refuses a cut past its `maxRegionBp`; a coarse cut has no bp cap.
 - **There is no landing locus.** `landingRegion` and then `preferredLocus`
   answered "which locus does this catalogue open on" for a headline launch and
   the launch-only region box, neither of which exists any more; a reader picks a
