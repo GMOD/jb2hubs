@@ -391,6 +391,19 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     markerGenes: ['GSTM1'],
   },
   {
+    id: 'gstt1',
+    gene: 'GSTT1',
+    fullName: 'Glutathione S-transferase theta 1',
+    chrom: 'chr22',
+    // GRCh38 carries GSTT1 only on the alt contig chr22_KI270879v1_alt, so on
+    // chr22 the gene is a side branch of the graph beside GSTT4, walked by
+    // about half the haplotypes
+    start: 23_940_000,
+    end: 24_070_000,
+    variation: ['pav'],
+    markerGenes: ['GSTT1'],
+  },
+  {
     id: 'pga',
     gene: 'PGA3/4/5',
     fullName: 'Pepsinogen A cluster',
@@ -399,6 +412,18 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     end: 61_258_000,
     variation: ['cnv'],
     markerGenes: ['PGA3', 'PGA4', 'PGA5'],
+  },
+  {
+    id: 'flna',
+    gene: 'FLNA / EMD',
+    fullName: 'Filamin A and emerin',
+    chrom: 'chrX',
+    // the block between the inverted repeats flanking FLNA and EMD, which the
+    // graph walks reversed on about half the haplotypes
+    start: 154_340_000,
+    end: 154_440_000,
+    variation: ['inversion'],
+    markerGenes: ['FLNA', 'EMD'],
   },
 ]
 
