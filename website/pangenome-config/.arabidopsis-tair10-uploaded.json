@@ -27,6 +27,22 @@
       }
     }
   ],
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCF_000001735.4-index",
+      "ixFilePath": {
+        "uri": "https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4.ix"
+      },
+      "ixxFilePath": {
+        "uri": "https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4.ixx"
+      },
+      "metaFilePath": {
+        "uri": "https://jbrowse.org/hubs/genark/GCF/000/001/735/GCF_000001735.4/trix/GCF_000001735.4_meta.json"
+      },
+      "assemblyNames": ["GCF_000001735.4"]
+    }
+  ],
   "tracks": [
     {
       "metadata": {
@@ -71,7 +87,7 @@
       ]
     },
     {
-      "type": "FeatureTrack",
+      "type": "GraphTrack",
       "trackId": "arabidopsis_minigraph_segments",
       "name": "1001G+ minigraph pangenome (rGFA segments)",
       "assemblyNames": ["GCF_000001735.4"],
@@ -86,22 +102,12 @@
           "aboveBpPerPx": 117
         }
       },
-      "displays": [
-        {
-          "type": "LinearGraphDisplay",
-          "displayId": "arabidopsis_minigraph_segments-LinearGraphDisplay"
-        },
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "arabidopsis_minigraph_segments-LinearBasicDisplay"
-        }
-      ],
       "displayDefaults": {
         "color": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
       }
     },
     {
-      "type": "FeatureTrack",
+      "type": "GraphTrack",
       "trackId": "arabidopsis_minigraph_tier",
       "name": "1001G+ minigraph pangenome: bubble tier (one node per bubble)",
       "assemblyNames": ["GCF_000001735.4"],
@@ -111,17 +117,7 @@
         "assemblyNameToPanSN": {
           "GCF_000001735.4": "TAIR10"
         }
-      },
-      "displays": [
-        {
-          "type": "LinearGraphDisplay",
-          "displayId": "arabidopsis_minigraph_tier-LinearGraphDisplay"
-        },
-        {
-          "type": "LinearBasicDisplay",
-          "displayId": "arabidopsis_minigraph_tier-LinearBasicDisplay"
-        }
-      ]
+      }
     },
     {
       "type": "FeatureTrack",
