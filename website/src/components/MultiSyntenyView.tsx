@@ -9,6 +9,7 @@ import {
   REF_ALIGNMENTS,
   type SubtreeLeaf,
   geneDrilldownUrl,
+  nearestFirst,
   nearestWindow,
   openGeneDrilldown,
   openRefAlignment,
@@ -224,7 +225,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
       ? starUrl(
           refAssembly,
           placementByTaxon.get(refTaxonId)?.loc,
-          layout.rows.filter(row => row.taxonId !== refTaxonId),
+          nearestFirst(layout.rows, refTaxonId, layout.treeNodes),
           drilldown,
         )
       : undefined

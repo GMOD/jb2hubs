@@ -74,9 +74,36 @@ export function refAlignmentUrl(refTaxonId: number, gene: PlacedGene) {
 // lane (laneStack.ts): a track this tall per lane never scrolls
 const LANE_PITCH = 34
 
+// The page's rows other than the reference, nearest it first: by the smallest
+// clade of the drawn tree holding both, then by how many rows away it sits
+export function nearestFirst<T extends { taxonId: number }>(
+  rows: T[],
+  refTaxonId: number,
+  clades: { leafTaxonIds: number[] }[],
+) {
+  const aroundRef = clades
+    .filter(clade => clade.leafTaxonIds.includes(refTaxonId))
+    .sort((a, b) => a.leafTaxonIds.length - b.leafTaxonIds.length)
+  const kinship = (taxonId: number) => {
+    const i = aroundRef.findIndex(clade => clade.leafTaxonIds.includes(taxonId))
+    return i < 0 ? Number.POSITIVE_INFINITY : i
+  }
+  const refRow = rows.findIndex(row => row.taxonId === refTaxonId)
+  return rows
+    .map((row, i) => ({
+      row,
+      kinship: kinship(row.taxonId),
+      rowsAway: Math.abs(i - refRow),
+    }))
+    .filter(({ row }) => row.taxonId !== refTaxonId)
+    .sort((a, b) => a.kinship - b.kinship || a.rowsAway - b.rowsAway)
+    .map(({ row }) => row)
+}
+
 // The reference's multi-way synteny star over the window the page draws, one
-// lane per species the page shows that the star holds. Undefined where the
-// reference has no star.
+// lane per species the page shows that the star holds, in the order of `rows`:
+// `domain` pins it, since the display otherwise sorts lanes densest-first.
+// Undefined where the reference has no star.
 export function starUrl(
   refAccession: string | undefined,
   refLoc: string | undefined,
@@ -107,6 +134,7 @@ export function starUrl(
           ...(lanes.length > 0
             ? {
                 laneFilter: { only: lanes },
+                domain: lanes,
                 height: (lanes.length + 1) * LANE_PITCH,
               }
             : {}),

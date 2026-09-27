@@ -3,6 +3,7 @@ import { test } from 'node:test'
 
 import {
   geneDrilldownUrl,
+  nearestFirst,
   nearestWindow,
   refAlignmentUrl,
   starUrl,
@@ -434,8 +435,27 @@ test("the star opens on the page's window, one lane per species it holds", () =>
     trackId: 'hg38_liftOver_multiway',
     type: 'MultiWaySyntenyDisplay',
     laneFilter: { only: ['panTro6', 'canFam3'] },
+    domain: ['panTro6', 'canFam3'],
     height: 102,
   })
+})
+
+test('lanes run nearest the reference first, by the smallest clade shared with it', () => {
+  // rows in the page's tree order: ((mouse, rat), ((human, chimp), gorilla), platypus)
+  const rows = [10090, 10116, 9606, 9598, 9593, 9258].map(taxonId => ({
+    taxonId,
+  }))
+  const clades = [
+    { leafTaxonIds: [10090, 10116] },
+    { leafTaxonIds: [9606, 9598] },
+    { leafTaxonIds: [9606, 9598, 9593] },
+    { leafTaxonIds: [10090, 10116, 9606, 9598, 9593] },
+    { leafTaxonIds: [10090, 10116, 9606, 9598, 9593, 9258] },
+  ]
+  assert.deepEqual(
+    nearestFirst(rows, 9606, clades).map(row => row.taxonId),
+    [9598, 9593, 10116, 10090, 9258],
+  )
 })
 
 test('no star for a reference without one, or one that is not a UCSC genome', () => {
