@@ -125,6 +125,24 @@ on 2026-08-26 and the script re-does the migration by itself against a webroot
 that is still a real directory. nginx sets no `disable_symlinks`, so it follows
 them and resolves the path per request — the swap takes effect immediately.
 
+### CORS
+
+Every genomes.jbrowse.org response says `Access-Control-Allow-Origin: *` and
+exposes `Accept-Ranges`, `Content-Range`, `Content-Encoding` and
+`Content-Length`, as jbrowse.org's S3 CORS does. Other pages can therefore read
+the site: BandageJS searches `searchIndex.json` for genomes by name, and a
+browser can range-read any file here.
+
+CloudFront sets these headers, not nginx. The response headers policy
+`genomes-jbrowse-org-cors` (`4fbb760c-f309-4dcb-914a-68451362488d`) is on the
+default cache behavior of distribution `E12EBG02P68TDO`; it was added on
+2026-09-27. It applies to cached objects too, so changing it needs no
+invalidation. The behavior allows only GET and HEAD, so a preflighted request
+isn't served. A plain fetch or a single-range read needs no preflight.
+
+The response-headers-policy commands need an AWS CLI newer than 2.0.4, e.g.
+`uvx --from awscli aws cloudfront get-response-headers-policy --id 4fbb760c-f309-4dcb-914a-68451362488d`.
+
 `.astro` frontmatter is **not** typechecked (`astro check` was dropped with the
 move to TypeScript 7), so anything type-sensitive belongs in a `.ts`/`.tsx`
 module the page imports. See CLAUDE.md for the full toolchain notes.
