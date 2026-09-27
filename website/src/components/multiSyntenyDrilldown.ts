@@ -70,9 +70,9 @@ export function refAlignmentUrl(refTaxonId: number, gene: PlacedGene) {
     : undefined
 }
 
-// MultiWaySyntenyDisplay's MIN_LANE_PITCH: a track this tall per lane never
-// scrolls
-const LANE_PITCH = 22
+// MultiWaySyntenyDisplay's MIN_LANE_PITCH plus the gene-name row under each
+// lane (laneStack.ts): a track this tall per lane never scrolls
+const LANE_PITCH = 34
 
 // The reference's multi-way synteny star over the window the page draws, one
 // lane per species the page shows that the star holds. Undefined where the

@@ -434,7 +434,7 @@ test("the star opens on the page's window, one lane per species it holds", () =>
     trackId: 'hg38_liftOver_multiway',
     type: 'MultiWaySyntenyDisplay',
     laneFilter: { only: ['panTro6', 'canFam3'] },
-    height: 66,
+    height: 102,
   })
 })
 
