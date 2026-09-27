@@ -332,8 +332,7 @@ async function readGraph(page, trackId) {
       const display = window.JBrowseRootModel?.session?.views
         ?.flatMap(v => v.tracks ?? [])
         .find(t => t.configuration?.trackId === trackId)?.displays?.[0]
-      const pane =
-        display?.type === 'LinearGraphDisplay' ? display.pane : undefined
+      const pane = display?.type === 'LinearGraphDisplay' ? display : undefined
       return (
         pane && {
           error: pane.error ? `${pane.error}` : undefined,
