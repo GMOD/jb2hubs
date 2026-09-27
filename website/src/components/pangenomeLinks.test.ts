@@ -272,7 +272,8 @@ test('a derived locus seeds the hub from the tiers gene list, or not at all', ()
 const graphTrack = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',
-  pane: { layoutMode: 'auto', colorScheme: 'reference-position' },
+  layoutMode: 'auto',
+  colorScheme: 'reference-position',
 }
 
 test('graphLocusUrl opens one linear view with the graph under its lanes', () => {

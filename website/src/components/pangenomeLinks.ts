@@ -272,8 +272,8 @@ export function locusLaunchUrl(
 // bubble tier on its own; the lanes above still pick their tier by span.
 // The anchored layout (`auto`) draws the graph on the view's own x, and
 // `reference-position` colours a node by where it sits on the reference. The
-// launch names both because a pane stated in a launch skips the config's
-// layout.
+// launch names both, flat on the display entry (graph plugin 4.0.7; a 4.0
+// `pane: {...}` still loads).
 //
 // Undefined when the dataset has no hosted graph.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
@@ -293,7 +293,8 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
         {
           trackId: graph.segmentsTrackId,
           type: 'LinearGraphDisplay',
-          pane: { layoutMode: 'auto', colorScheme: 'reference-position' },
+          layoutMode: 'auto',
+          colorScheme: 'reference-position',
         },
       ],
     },
