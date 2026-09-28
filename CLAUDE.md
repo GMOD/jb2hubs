@@ -2166,8 +2166,8 @@ assembly name:
 - **GenArk-backed alias** (e.g. `rn8` = GRCr8): `hub:/gbdb/genark/<GC[AF] path>`
   → `/hubs/<GC[AF] path>/hub.txt` (served from `/hubs/`, not `/gbdb/genark/`)
 
-A GenArk-backed alias has no golden-path `liftOver/` directory; UCSC
-publishes its chains only in the GenArk hub. So `addChainTracks`
+A GenArk-backed alias has no golden-path `liftOver/` directory; UCSC publishes
+its chains only in the GenArk hub. So `addChainTracks`
 (`src/createChainTracks.ts`) names the PIFs the GenArk twin's committed config
 already lists, by absolute `jbrowse.org/hubs/genark/…` url, instead of building
 a second copy. That makes the UCSC build read `hubs/`, so genark `make.sh` has

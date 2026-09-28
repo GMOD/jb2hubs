@@ -2,12 +2,14 @@ import {
   dedupe,
   enhanceConfigObject,
   generateJBrowseConfigForAssemblyHub,
+  multiwayStarTrack,
 } from 'hubtools'
 
 import type {
   ChainTrack,
   JBrowseConfig,
   NcbiGffAnnotation,
+  StarGenome,
   Track,
 } from 'hubtools'
 
@@ -135,4 +137,52 @@ export function buildHubConfig({
   ]
 
   return enhanceConfigObject(withExtension)
+}
+
+// the annotation a multi-way lane draws for this hub, the NCBI GFF first and
+// then the hub's own gene tracks in the order the Hubs plugin picks them
+const GENE_TRACK_SUFFIXES = [
+  'ncbiGff',
+  'ncbiRefSeq',
+  'ncbiRefSeqCurated',
+  'ncbiGene',
+  'refGene',
+  'ensGene',
+  'augustusGene',
+  'xenoRefGene',
+]
+
+export function genarkGeneTrackId(config: JBrowseConfig, accession: string) {
+  const ids = new Set(config.tracks?.map(track => track.trackId))
+  return GENE_TRACK_SUFFIXES.map(suffix => `${accession}-${suffix}`).find(id =>
+    ids.has(id),
+  )
+}
+
+/**
+ * The staging sibling of a hub's config: the config plus one multi-way
+ * synteny track over its liftOver pairs, for a hub with enough of them.
+ * Undefined for the rest, so no sibling is written
+ */
+export function stagingHubConfig(
+  config: JBrowseConfig,
+  accession: string,
+  {
+    genomes,
+    labelOf,
+  }: {
+    genomes: Record<string, StarGenome>
+    labelOf: (mate: string) => string
+  },
+): JBrowseConfig | undefined {
+  const star = multiwayStarTrack({
+    config,
+    assemblyName: accession,
+    genomes,
+    labelOf,
+    geneTrackId: genarkGeneTrackId(config, accession),
+  })
+  return star
+    ? { ...config, tracks: [...(config.tracks ?? []), star] }
+    : undefined
 }

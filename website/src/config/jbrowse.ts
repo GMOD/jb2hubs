@@ -3,6 +3,7 @@
 // hash, has no workspace layout tree and no LinearMultiSampleVariantDisplay,
 // and labels the NCBI GFF3 with UUIDs, and nothing here works around that any
 // more. Point this at `latest` once v5.0.0 publishes.
+import genarkStars from '../genarkStars.json' with { type: 'json' }
 import { features } from './features.ts'
 
 export const JBROWSE_BASE = 'https://jbrowse.org/code/jb2/main'
@@ -49,8 +50,11 @@ export function ucscAllConfigPath() {
 // GenArk hub configs are sharded by the accession's digits, so the config path is
 // derivable from the accession alone — no need to ship a URL per row:
 // GCF_000298275.1 -> /hubs/genark/GCF/000/298/275/GCF_000298275.1/config.json
-// Not staged: there are thousands of them, and nothing staged so far is
-// GenArk-specific.
+// A staging sibling exists only for the hubs whose liftOver pairs make a
+// multi-way star (genarkStars.json, written by generateSyntenyStars.ts), and a
+// staging launch goes there for those.
+const GENARK_STARS = new Set(genarkStars)
+
 export function genarkConfigPath(accession: string) {
   const [prefix = '', rest = ''] = accession.split('_')
   const digits = rest.replace(/\.\d+$/, '')
@@ -59,5 +63,9 @@ export function genarkConfigPath(accession: string) {
     digits.slice(3, 6),
     digits.slice(6, 9),
   ]
-  return `/hubs/genark/${prefix}/${b1}/${b2}/${b3}/${accession}/config.json`
+  const file = stagingSibling(
+    'config.json',
+    features.multiwayStar && GENARK_STARS.has(accession),
+  )
+  return `/hubs/genark/${prefix}/${b1}/${b2}/${b3}/${accession}/${file}`
 }

@@ -37,6 +37,8 @@ import {
   formatJson,
   generateJBrowseConfigForAssemblyHub,
   mapWithConcurrency,
+  alignmentSettings,
+  multiwayStarTrack,
   myfetchtextWithRetry,
   stagingEnhanceOptions,
 } from 'hubtools'
@@ -64,7 +66,6 @@ import {
 import { applyUcscExtension, readUcscExtension } from './makeUcscExtensions.ts'
 import { addBigDataTracks } from './mergeBigFileTracks.ts'
 import { mirrorAssemblySidecars } from './mirrorAssemblySidecars.ts'
-import { alignmentSettings, multiwayStarTrack } from './multiwayStarTrack.ts'
 import { removeOutdatedTracks } from './removeEverythingButLatest.ts'
 import { rewriteUcscTrackNames } from './rewriteUcscTrackNames.ts'
 import { readJSON, requireArg } from './util.ts'

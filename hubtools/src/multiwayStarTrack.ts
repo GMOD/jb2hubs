@@ -1,4 +1,4 @@
-import type { JBrowseConfig, UcscGenome, UcscTrack } from './types.ts'
+import type { JBrowseConfig, Track } from './types.ts'
 
 // a star of fewer pairs than this says nothing its pairwise tracks do not
 export const MIN_MATES = 3
@@ -13,10 +13,30 @@ interface Mate {
   adapter: Record<string, unknown>
 }
 
+/** what a star needs to know about a genome: UCSC's genome list, or nothing */
+export interface StarGenome {
+  organism?: string
+  orderKey?: unknown
+  [key: string]: unknown
+}
+
+export interface MultiwayStarTrack extends Track {
+  type: 'SyntenyTrack'
+  name: string
+  category: string[]
+  assemblyNames: string[]
+  adapter: {
+    type: 'MultiPairwiseSyntenyAdapter'
+    adapters: Record<string, unknown>[]
+    lanes: { name: string; label?: string; group?: string }[]
+  }
+  displays: Record<string, unknown>[]
+}
+
 /**
- * The mate of a `<anchor>_to_<mate>_liftOver` track, as createChainTracks.ts
- * names them; the chainBridge variant is a second file for the same pair and
- * would draw its lane twice
+ * The mate of a `<anchor>_to_<mate>_liftOver` track, as the chain-track
+ * builders name them; the chainBridge variant is a second file for the same
+ * pair and would draw its lane twice
  */
 export function liftOverMateOf(
   track: { trackId: string; assemblyNames: string[] },
@@ -31,11 +51,28 @@ export function liftOverMateOf(
     : undefined
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 function liftOverMates(config: JBrowseConfig, anchor: string): Mate[] {
-  return config.tracks.flatMap(track => {
+  return (config.tracks ?? []).flatMap(track => {
+    const { assemblyNames, adapter } = track
     const mate =
-      track.type === 'SyntenyTrack' ? liftOverMateOf(track, anchor) : undefined
-    return mate === undefined ? [] : [{ name: mate, adapter: track.adapter }]
+      track.type === 'SyntenyTrack' &&
+      Array.isArray(assemblyNames) &&
+      isRecord(adapter)
+        ? liftOverMateOf(
+            {
+              trackId: track.trackId,
+              assemblyNames: assemblyNames as string[],
+            },
+            anchor,
+          )
+        : undefined
+    return mate === undefined
+      ? []
+      : [{ name: mate, adapter: adapter as Record<string, unknown> }]
   })
 }
 
@@ -81,7 +118,7 @@ function buildOf(db: string) {
   return Number(/(\d+)$/.exec(db)?.[1] ?? 0)
 }
 
-function orderKeyOf(genome: UcscGenome | undefined) {
+function orderKeyOf(genome: StarGenome | undefined) {
   const key = genome?.orderKey
   return typeof key === 'number' ? key : Number.POSITIVE_INFINITY
 }
@@ -95,7 +132,7 @@ function orderKeyOf(genome: UcscGenome | undefined) {
 function defaultLanes(
   mates: Mate[],
   anchor: string,
-  genomes: Record<string, UcscGenome>,
+  genomes: Record<string, StarGenome>,
   defaultOn: string[],
 ) {
   const names = new Set(mates.map(mate => mate.name))
@@ -133,9 +170,12 @@ export function alignmentSettings(
   trackDb: Record<string, string>[] = [],
 ) {
   return [
-    ...config.tracks.flatMap(track =>
-      track.metadata?.ucsc ? [track.metadata.ucsc] : [],
-    ),
+    ...(config.tracks ?? []).flatMap(track => {
+      const { metadata } = track
+      return isRecord(metadata) && isRecord(metadata.ucsc)
+        ? [metadata.ucsc]
+        : []
+    }),
     ...trackDb,
   ].filter(settings => typeof settings.speciesDefaultOn === 'string')
 }
@@ -161,17 +201,17 @@ export function multiwayStarTrack({
   alignments = [],
 }: {
   config: JBrowseConfig
-  /** the UCSC db name, which the genome list is keyed by */
+  /** the UCSC db name or the GenArk accession, which `genomes` is keyed by */
   assemblyName: string
   /** the config's own assembly name, which the tracks name */
   anchor?: string
-  genomes: Record<string, UcscGenome>
+  genomes: Record<string, StarGenome>
   /** what the pairwise liftOver track calls a mate, '' when nothing */
   labelOf: (mate: string) => string
   geneTrackId: string | undefined
   /** see `alignmentSettings` */
   alignments?: Record<string, unknown>[]
-}): UcscTrack | undefined {
+}): MultiwayStarTrack | undefined {
   const mates = liftOverMates(config, anchor)
   if (mates.length < MIN_MATES) {
     return undefined

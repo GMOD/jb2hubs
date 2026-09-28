@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-import { starIndex } from './src/lib/syntenyStarIndex.ts'
+import { genarkStarAnchors, starIndex } from './src/lib/syntenyStarIndex.ts'
 
 import type { SyntenyCatalogData } from './src/lib/syntenyCatalog.ts'
 
@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const inputPath = path.join(__dirname, 'src/syntenyTracks.json')
 const orthologIndexPath = path.join(__dirname, 'public/ortholog_index.json')
 const outputPath = path.join(__dirname, 'public/synteny_stars.json')
+const genarkStarsPath = path.join(__dirname, 'src/genarkStars.json')
 
 if (!fs.existsSync(orthologIndexPath)) {
   throw new Error(
@@ -26,6 +27,12 @@ const stars = starIndex(data, new Set(Object.values(orthologIndex.ucscDb)))
 
 fs.mkdirSync(path.dirname(outputPath), { recursive: true })
 fs.writeFileSync(outputPath, JSON.stringify(stars))
+
+// The GenArk hubs whose config-staging.json carries a star, which is where a
+// launch on staging points; committed, since the config paths are built into
+// every page
+const genarkStars = Object.keys(starIndex(data, genarkStarAnchors(data))).sort()
+fs.writeFileSync(genarkStarsPath, `${JSON.stringify(genarkStars, null, 2)}\n`)
 const sizeKB = (fs.statSync(outputPath).size / 1024).toFixed(0)
 console.log(
   `Synteny stars: ${Object.keys(stars).length} references, ${sizeKB} KB (${Object.entries(

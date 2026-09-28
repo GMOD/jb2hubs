@@ -1,7 +1,4 @@
-import {
-  MIN_MATES,
-  liftOverMateOf,
-} from '../../../ucsc2jbrowse/src/multiwayStarTrack.ts'
+import { MIN_MATES, liftOverMateOf } from 'hubtools'
 
 import type { SyntenyCatalogData } from './syntenyCatalog.ts'
 import type { StarIndex } from './syntenyStars.ts'
@@ -26,6 +23,16 @@ function newer(a: string, b: string) {
     }
   }
   return false
+}
+
+/** every GenArk accession a liftOver track lifts over from */
+export function genarkStarAnchors(data: SyntenyCatalogData) {
+  return new Set(
+    data.tracks.flatMap(track => {
+      const [anchor] = track.assemblyNames
+      return anchor !== undefined && /^GC[AF]_/.test(anchor) ? [anchor] : []
+    }),
+  )
 }
 
 /**

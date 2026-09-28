@@ -3,9 +3,10 @@ import { describe, it } from 'node:test'
 
 import { alignmentSettings, multiwayStarTrack } from './multiwayStarTrack.ts'
 
-import type { JBrowseConfig, UcscGenome, UcscTrack } from './types.ts'
+import type { StarGenome } from './multiwayStarTrack.ts'
+import type { JBrowseConfig, Track } from './types.ts'
 
-function chain(anchor: string, mate: string, suffix = 'liftOver'): UcscTrack {
+function chain(anchor: string, mate: string, suffix = 'liftOver'): Track {
   return {
     type: 'SyntenyTrack',
     trackId: `${anchor}_to_${mate}_${suffix}`,
@@ -20,7 +21,7 @@ function chain(anchor: string, mate: string, suffix = 'liftOver'): UcscTrack {
   }
 }
 
-const genomes: Record<string, UcscGenome> = {
+const genomes: Record<string, StarGenome> = {
   hg38: {
     id: 'hg38',
     description: '',
@@ -65,12 +66,12 @@ const genomes: Record<string, UcscGenome> = {
   },
 }
 
-function config(tracks: UcscTrack[]): JBrowseConfig {
+function config(tracks: Track[]): JBrowseConfig {
   return { assemblies: [], tracks }
 }
 
 const star = (
-  tracks: UcscTrack[],
+  tracks: Track[],
   labelOf = (_: string) => '',
   trackDb: Record<string, string>[] = [],
 ) =>
@@ -111,9 +112,9 @@ describe('multiwayStarTrack', () => {
       chain('hg38', 'galGal6'),
       { ...chain('mm39', 'hg38'), trackId: 'mm39_to_hg38_liftOver' },
     ])!
-    const adapter = track.adapter as { adapters: { queryAssembly: string }[] }
+    const children = track.adapter.adapters as { queryAssembly: string }[]
     assert.deepEqual(
-      adapter.adapters.map(child => child.queryAssembly).sort(),
+      children.map(child => child.queryAssembly).sort(),
       ['galGal6', 'mm39', 'panTro6'],
     )
     assert.equal(track.trackId, 'hg38_liftOver_multiway')
@@ -149,7 +150,7 @@ describe('multiwayStarTrack', () => {
   })
 
   it("opens on the anchor alignment's curated species, grouped by its clades", () => {
-    const multiz: UcscTrack = {
+    const multiz: Track = {
       trackId: 'hg38-multiz470way',
       name: 'Multiz',
       assemblyNames: ['hg38'],

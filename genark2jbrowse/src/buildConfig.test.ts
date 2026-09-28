@@ -2,7 +2,11 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
 import { buildChainTracks, parseTargetAssembly } from './buildChainTracks.ts'
-import { buildHubConfig } from './buildConfig.ts'
+import {
+  buildHubConfig,
+  genarkGeneTrackId,
+  stagingHubConfig,
+} from './buildConfig.ts'
 
 const acc = 'GCF_000001405.40'
 const hubFileText = `hub GCF_000001405.40
@@ -182,5 +186,63 @@ describe('parseTargetAssembly', () => {
     assert.equal(parseTargetAssembly('GCF_1ToGCF_2'), 'GCF_2')
     assert.equal(parseTargetAssembly('hg38.mm39'), 'mm39')
     assert.equal(parseTargetAssembly('nonsense'), undefined)
+  })
+})
+
+describe('stagingHubConfig', () => {
+  const chains = (targets: string[]) =>
+    buildChainTracks({
+      sourceAccession: acc,
+      sourceCommonName: 'human',
+      pifFiles: targets.map(target => `${acc}To${target}.pif.gz`),
+      targetCommonName: target => (target === 'mm39' ? 'mouse' : ''),
+    })
+  const options = {
+    genomes: {},
+    labelOf: (mate: string) => (mate === 'mm39' ? 'mouse' : ''),
+  }
+
+  it('adds one multi-way star over three or more liftOver pairs', () => {
+    const config = build({
+      gff: { fileName: gffName, geneticCodes: {} },
+      chainTracks: chains(['mm39', 'GCF_000001635.27', 'GCA_000001905.1']),
+    })
+    const staging = stagingHubConfig(config, acc, options)!
+    const star = staging.tracks!.at(-1)!
+    assert.equal(star.trackId, `${acc}_liftOver_multiway`)
+    assert.deepEqual(star.assemblyNames, [
+      acc,
+      'GCA_000001905.1',
+      'GCF_000001635.27',
+      'mm39',
+    ])
+    assert.deepEqual(
+      (star.displays as { laneGeneTracks?: string[] }[])[0]!.laneGeneTracks,
+      [`${acc}-ncbiGff`],
+    )
+    assert.equal(staging.tracks!.length, config.tracks!.length + 1)
+    assert.equal(
+      config.tracks!.some(t => t.trackId === star.trackId),
+      false,
+    )
+  })
+
+  it('is nothing under three pairs', () => {
+    const config = build({ chainTracks: chains(['mm39', 'GCA_000001905.1']) })
+    assert.equal(stagingHubConfig(config, acc, options), undefined)
+  })
+
+  it('names the NCBI GFF first and the hub gene tracks after it', () => {
+    assert.equal(
+      genarkGeneTrackId(
+        build({ gff: { fileName: gffName, geneticCodes: {} } }),
+        acc,
+      ),
+      `${acc}-ncbiGff`,
+    )
+    const xeno = build()
+    xeno.tracks!.push({ trackId: `${acc}-xenoRefGene` })
+    assert.equal(genarkGeneTrackId(xeno, acc), `${acc}-xenoRefGene`)
+    assert.equal(genarkGeneTrackId(build(), acc), undefined)
   })
 })

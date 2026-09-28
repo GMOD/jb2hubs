@@ -49,9 +49,9 @@ passing on ada with `BGZIP_STRICT=1` plus a new
 11. Both PIF gates load the CLI-version memo in the parent shell; an empty
     `--version` is an error.
 12. Deadlines on every fetch listed, and `--timeout=600` on the rsyncs.
-13. The 14 GenArk-backed aliases with chains (rn8, GRCg7b, the T2T primates,
-    …) name their GenArk twin's published PIFs, 71 tracks in all. hs1 was
-    never affected: it has a download dir and 25 PIFs.
+13. The 14 GenArk-backed aliases with chains (rn8, GRCg7b, the T2T primates, …)
+    name their GenArk twin's published PIFs, 71 tracks in all. hs1 was never
+    affected: it has a download dir and 25 PIFs.
 14. `deploy.sh` compares plain `readlink`, removes a partial release, and runs
     the remote `zstd -d | tar` under pipefail.
 15. All six small ones.

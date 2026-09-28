@@ -13,13 +13,14 @@ import * as readline from 'readline'
 
 import {
   formatJson,
+  isAccession,
   linkOrCopy,
   readJSON,
   readNcbiGffAnnotation,
 } from 'hubtools'
 
 import { buildChainTracks } from './buildChainTracks.ts'
-import { buildHubConfig } from './buildConfig.ts'
+import { buildHubConfig, stagingHubConfig } from './buildConfig.ts'
 import { hubFirstSeenPath } from './hubFirstSeen.ts'
 
 import type { HubBuildInput } from './buildConfig.ts'
@@ -88,6 +89,33 @@ function targetCommonName(target: string, isGenArk: boolean) {
   return isGenArk
     ? (commonNameByAccession.get(target) ?? '')
     : ucscDisplayName(target)
+}
+
+// a star opens on the newest assembly per organism, and GenArk's common name
+// carries the strain, so each strain of a species is its own lane
+const starGenomes = Object.fromEntries(
+  [...commonNameByAccession].map(([accession, name]) => [
+    accession,
+    { organism: name },
+  ]),
+)
+
+function writeIfChanged(file: string, text: string | undefined) {
+  let existing: string | undefined
+  try {
+    existing = fs.readFileSync(file, 'utf8')
+  } catch {}
+  if (text === undefined) {
+    if (existing !== undefined) {
+      fs.rmSync(file)
+    }
+    return existing !== undefined
+  }
+  if (text !== existing) {
+    fs.mkdirSync(path.dirname(file), { recursive: true })
+    fs.writeFileSync(file, text)
+  }
+  return text !== existing
 }
 
 function readGeneticCodes(codesPath: string) {
@@ -168,6 +196,15 @@ function processOne(metaPath: string) {
       targetCommonName,
     }),
   })
+
+  const staging = stagingHubConfig(config, accession, {
+    genomes: starGenomes,
+    labelOf: target => targetCommonName(target, isAccession(target)),
+  })
+  writeIfChanged(
+    path.join(outRoot ?? '', hubDir, 'config-staging.json'),
+    staging && formatJson(staging),
+  )
 
   const configPath = path.join(outRoot ?? '', hubDir, 'config.json')
   const text = formatJson(config)
