@@ -56,6 +56,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
           "parent": "uniprot",
           "priority": "3",
           "shortLabel": "Signal Peptide",
@@ -66,7 +67,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipLocExtra",
@@ -84,6 +92,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Extracellular",
@@ -94,7 +103,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipInterest",
@@ -111,6 +127,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Interest",
@@ -121,7 +138,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipLocTransMemb",
@@ -139,6 +163,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "5",
           "shortLabel": "Transmembrane",
@@ -149,7 +174,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipLocCytopl",
@@ -167,6 +199,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "6",
           "shortLabel": "Cytoplasmic",
@@ -177,7 +210,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipChain",
@@ -193,6 +233,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipChain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "7",
           "shortLabel": "Chains",
@@ -204,7 +245,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipDisulfBond",
@@ -220,6 +268,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipDisulfBond.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Disulfide Bonds",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Disulf. Bonds",
@@ -230,7 +279,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipDomain",
@@ -246,6 +302,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipDomain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Domains",
@@ -257,7 +314,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipModif",
@@ -273,6 +337,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipModif.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "9",
           "shortLabel": "AA Modifications",
@@ -284,7 +349,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipMut",
@@ -299,6 +371,7 @@
         "ucsc": {
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipMut.bb",
           "longLabel": "UniProt Amino Acid Mutations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "10",
           "shortLabel": "Mutations",
@@ -310,7 +383,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipOther",
@@ -326,6 +406,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipOther.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Other Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Other Annot.",
@@ -337,7 +418,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipStruct",
@@ -354,6 +442,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "group": "genes",
           "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Structure",
@@ -365,7 +454,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipRepeat",
@@ -381,6 +477,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipRepeat.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "12",
           "shortLabel": "Repeats",
@@ -392,7 +489,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "sacCer2-unipConflict",
@@ -408,6 +512,7 @@
           "bigDataUrl": "/gbdb/sacCer2/uniprot/unipConflict.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot off",
           "priority": "13",
           "shortLabel": "Seq. Conflicts",
@@ -419,7 +524,49 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
+      "trackId": "sacCer2-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["sacCer2"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/sacCer2/uniprot/unipSplice.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/sacCer2/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "sacCer2-unipSplice-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -923,7 +1070,7 @@
           "track": "ensGene",
           "type": "genePred ensPep",
           "visibility": "hide",
-          "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"http://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for sacCer2 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer2/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer2/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/sacCer2/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://uswest.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
+          "html": "<h2>Description</h2>\n\n<p>\nThese gene predictions were generated by <a href=\"https://www.ensembl.org/index.html\"\ntarget=\"_blank\">Ensembl</a>.\n</p>\n\n<p>\nFor more information on the different gene tracks, see our <a target=_blank \nhref=\"/FAQ/FAQgenes.html\">Genes FAQ</a>.</p>\n\n<h2>Methods</h2>\n\n<p>\nFor a description of the methods used in Ensembl gene predictions, please refer to\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">Hubbard <em>et al</em>. (2002)</a>, also listed in the References section below. \n</p>\n\n<h2>Data access</h2>\n<p>\nEnsembl Gene data can be explored interactively using the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgTables\" target=\"_blank\">Table Browser</a> or the\n<a href=\"https://genome.ucsc.edu/cgi-bin/hgIntegrator\" target=\"_blank\">Data Integrator</a>. \nFor local downloads, the genePred format files for sacCer2 are available in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer2/database/\">\ndownloads directory</a> as ensGene.txt.gz or in our\n<a target=\"_blank\" href=\"http://hgdownload.soe.ucsc.edu/goldenPath/sacCer2/bigZips/genes\">\ngenes download directory</a> in GTF format.<br><br>\nFor programmatic access, the data can be queried from the \n<a href=\"https://genome.ucsc.edu/goldenPath/help/api.html\" target=\"_blank\">REST API</a> or\ndirectly from our public MySQL\nservers. Instructions on this method are available on our\n<a target=\"_blank\" href=\"/goldenPath/help/mysql.html\">MySQL help page</a> and on\n<a target=\"_blank\" href=\"http://genome.ucsc.edu/blog/tag/mysql/\">our blog</a>.</p>\n\n<p>\nPrevious versions of this track can be found on our <a href=\"http://hgdownload.soe.ucsc.edu/goldenPath/archive/sacCer2/ensGene\">archive download server</a>.\n</p>\n\n<h2>Credits</h2>\n\n<p>\nWe would like to thank Ensembl for providing these gene annotations. For more information, please see\n<a href=\"https://www.ensembl.org/info/genome/genebuild/index.html\"\ntarget=_blank>Ensembl&#39s genome annotation page.</a>\n</p> \n\n<h2>References</h2>\n\n<p>\nHubbard T, Barker D, Birney E, Cameron G, Chen Y, Clark L, Cox T, Cuff J,\nCurwen V, Down T <em>et al</em>.\n<a href=\"https://academic.oup.com/nar/article/30/1/38/1332872/The-Ensembl-genome-database-project\"\ntarget=\"_blank\">The Ensembl genome database project</a>.\n<em>Nucleic Acids Res</em>. 2002 Jan 1;30(1):38-41.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/11752248\" target=\"_blank\">11752248</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99161/\" target=\"_blank\">PMC99161</a>\n</p>\n"
         }
       },
       "description": "Ensembl Genes",

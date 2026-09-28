@@ -319,6 +319,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Signal Peptides",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt record name</b>: $status<br>",
           "parent": "uniprot",
           "priority": "3",
           "shortLabel": "Signal Peptide",
@@ -329,7 +330,14 @@
         }
       },
       "description": "UniProt Signal Peptides",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocSignal-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt record name</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A0206",
@@ -393,6 +401,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Extracellular Domain",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Extracellular",
@@ -403,7 +412,14 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocExtra-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-unipInterest",
@@ -420,6 +436,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Regions of Interest",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status<br>",
           "parent": "uniprot",
           "priority": "4",
           "shortLabel": "Interest",
@@ -430,7 +447,14 @@
         }
       },
       "description": "UniProt Regions of Interest",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipInterest-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}<br>`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A0301",
@@ -494,6 +518,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Transmembrane Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "5",
           "shortLabel": "Transmembrane",
@@ -504,7 +529,14 @@
         }
       },
       "description": "UniProt Transmembrane Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocTransMemb-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A1101",
@@ -568,6 +600,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "itemRgb": "off",
           "longLabel": "UniProt Cytoplasmic Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "6",
           "shortLabel": "Cytoplasmic",
@@ -578,7 +611,14 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipLocCytopl-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A2301",
@@ -640,6 +680,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipChain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Mature Protein Products (Polypeptide Chains)",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "7",
           "shortLabel": "Chains",
@@ -651,7 +692,14 @@
         }
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipChain-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A2402",
@@ -713,6 +761,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipDisulfBond.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Disulfide Bonds",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Disulf. Bonds",
@@ -723,7 +772,14 @@
         }
       },
       "description": "UniProt Disulfide Bonds",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipDisulfBond-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-unipDomain",
@@ -739,6 +795,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipDomain.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Domains",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "8",
           "shortLabel": "Domains",
@@ -750,7 +807,14 @@
         }
       },
       "description": "UniProt Domains",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipDomain-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A2601",
@@ -789,6 +853,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipModif.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Amino Acid Modifications",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "9",
           "shortLabel": "AA Modifications",
@@ -800,7 +865,14 @@
         }
       },
       "description": "UniProt Amino Acid Modifications",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipModif-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp2B00101",
@@ -844,7 +916,7 @@
           "track": "gire2014SpecificSnps",
           "type": "bigBed 9 +",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nthat are specific to the 2014 strain. At least one 2014 isolate carries a base not found \nelsewhere in the EBOV alignment.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by ancestral nucleotide and 2014-derived nucleotide.\nNon-coding variants are black, synonymous variants are green,\nand missense variants are red and also labeled by gene and amino acid change.\nClick on an item to view more details such as the derived allele frequency\nin 2014 isolates and, for missense changes, the\n<A HREF=\"https://en.wikipedia.org/wiki/BLOSUM\" TARGET=\"_BLANK\">BLOSUM62</A> substitution score.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"http://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nthat are specific to the 2014 strain. At least one 2014 isolate carries a base not found \nelsewhere in the EBOV alignment.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by ancestral nucleotide and 2014-derived nucleotide.\nNon-coding variants are black, synonymous variants are green,\nand missense variants are red and also labeled by gene and amino acid change.\nClick on an item to view more details such as the derived allele frequency\nin 2014 isolates and, for missense changes, the\n<A HREF=\"https://en.wikipedia.org/wiki/BLOSUM\" TARGET=\"_BLANK\">BLOSUM62</A> substitution score.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"https://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
         }
       },
       "description": "Sites that Carry a Unique Base in 81 Sequences from 2014 Outbreak",
@@ -915,9 +987,9 @@
           "shortLabel": "IEDB B Cell",
           "track": "iedbBcell",
           "type": "bigBed 12 .",
-          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=http://www.iedb.org/assayId/$$ referenceID=http://www.iedb.org/refId/$$ epitopeID=http://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
+          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=https://www.iedb.org/assayId/$$ referenceID=https://www.iedb.org/refId/$$ epitopeID=https://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
           "visibility": "dense",
-          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences recognized by antibodies \nas annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"http://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with a positive assay outcome are shown on the track. All fields annotated by\nIEDB and exported in their &quot;compact&quot; file are shown on the details page, which also \nprovides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nPeptide matches are labeled with the name of the antibody and the host organism, separated by a \nslash.\nWhen the antibody does not have a name in IEDB, the first six letters of the peptide are shown \ninstead.\n</p>\n\n<p>\nMouse over the features to see the authors of the study that described the epitope.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences recognized by antibodies \nas annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"https://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with a positive assay outcome are shown on the track. All fields annotated by\nIEDB and exported in their &quot;compact&quot; file are shown on the details page, which also \nprovides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nPeptide matches are labeled with the name of the antibody and the host organism, separated by a \nslash.\nWhen the antibody does not have a name in IEDB, the first six letters of the peptide are shown \ninstead.\n</p>\n\n<p>\nMouse over the features to see the authors of the study that described the epitope.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
         }
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes",
@@ -943,6 +1015,7 @@
         "ucsc": {
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipMut.bb",
           "longLabel": "UniProt Amino Acid Mutations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>UniProt variant</b>: $variationId<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "10",
           "shortLabel": "Mutations",
@@ -954,7 +1027,14 @@
         }
       },
       "description": "UniProt Amino Acid Mutations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipMut-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>UniProt variant</b>: ${get(feature,'variationId')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A3002",
@@ -1016,6 +1096,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipOther.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Other Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Other Annot.",
@@ -1027,7 +1108,14 @@
         }
       },
       "description": "UniProt Other Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipOther-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-unipStruct",
@@ -1044,6 +1132,7 @@
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "group": "genes",
           "longLabel": "UniProt Protein Primary/Secondary Structure Annotations",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "11",
           "shortLabel": "Structure",
@@ -1055,7 +1144,14 @@
         }
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipStruct-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A3101",
@@ -1117,6 +1213,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipRepeat.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Repeats",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot",
           "priority": "12",
           "shortLabel": "Repeats",
@@ -1128,7 +1225,14 @@
         }
       },
       "description": "UniProt Repeats",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipRepeat-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A3201",
@@ -1190,6 +1294,7 @@
           "bigDataUrl": "/gbdb/eboVir3/uniprot/unipConflict.bb",
           "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
           "longLabel": "UniProt Sequence Conflicts",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
           "parent": "uniprot off",
           "priority": "13",
           "shortLabel": "Seq. Conflicts",
@@ -1201,7 +1306,14 @@
         }
       },
       "description": "UniProt Sequence Conflicts",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipConflict-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A3301",
@@ -1248,6 +1360,41 @@
       },
       "description": "IEDB Predicted binding Macaque HLA T-Cell Class I B*06601",
       "category": ["immu"]
+    },
+    {
+      "trackId": "eboVir3-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["eboVir3"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/eboVir3/uniprot/unipSplice.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/eboVir3/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "eboVir3-unipSplice-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
     },
     {
       "trackId": "eboVir3-iedbsupp1A6801",
@@ -1314,7 +1461,7 @@
           "track": "gire2014FixedMissense",
           "type": "bigBed 4 +",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nthat are specific to the 2014 strain, fixed (i.e. present in all 81 isolates),\nand that cause protein-coding changes.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by gene and amino acid change. The labels of two items also contain \"*CONS\"\nto indicate that the changed position is fully conserved across the Ebola genus.\nClick on an item to view the\n<A HREF=\"https://en.wikipedia.org/wiki/BLOSUM\" TARGET=\"_BLANK\">BLOSUM62</A> substitution score.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"http://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nthat are specific to the 2014 strain, fixed (i.e. present in all 81 isolates),\nand that cause protein-coding changes.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by gene and amino acid change. The labels of two items also contain \"*CONS\"\nto indicate that the changed position is fully conserved across the Ebola genus.\nClick on an item to view the\n<A HREF=\"https://en.wikipedia.org/wiki/BLOSUM\" TARGET=\"_BLANK\">BLOSUM62</A> substitution score.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"https://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
         }
       },
       "description": "Protein Changes That Are Fixed in 81 Sequences from 2014 Outbreak",
@@ -1385,7 +1532,7 @@
           "track": "gire2014PolymorphicMissense",
           "type": "bigBed 4 +",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nthat are specific to the 2014 strain, polymorphic in 2014 isolates,\nand that cause protein-coding changes.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by gene and amino acid change. The labels of two items also contain \"*CONS\"\nto indicate that the changed position is fully conserved across the Ebola genus.\nClick on an item to view the\n<A HREF=\"https://en.wikipedia.org/wiki/BLOSUM\" TARGET=\"_BLANK\">BLOSUM62</A> substitution score.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"http://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nthat are specific to the 2014 strain, polymorphic in 2014 isolates,\nand that cause protein-coding changes.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by gene and amino acid change. The labels of two items also contain \"*CONS\"\nto indicate that the changed position is fully conserved across the Ebola genus.\nClick on an item to view the\n<A HREF=\"https://en.wikipedia.org/wiki/BLOSUM\" TARGET=\"_BLANK\">BLOSUM62</A> substitution score.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"https://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
         }
       },
       "description": "Protein Changes That Are Polymorphic in 81 Sequences from 2014 Outbreak",
@@ -1456,7 +1603,7 @@
           "track": "gire2014KikwitMissense",
           "type": "bigBed 4 +",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nrelative to a Kikwit isolate\n(<A HREF=\"https://www.ncbi.nlm.nih.gov/nuccore/JQ352763\" TARGET=_BLANK>JQ352763</A>)\nthat cause protein-coding changes in the GP gene.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by amino acid change and the frequency of the change in 2014 isolates.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"http://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nrelative to a Kikwit isolate\n(<A HREF=\"https://www.ncbi.nlm.nih.gov/nuccore/JQ352763\" TARGET=_BLANK>JQ352763</A>)\nthat cause protein-coding changes in the GP gene.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by amino acid change and the frequency of the change in 2014 isolates.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"https://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
         }
       },
       "description": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Kikwit 1995 (JQ352763)",
@@ -1527,7 +1674,7 @@
           "track": "gire2014MayingaMissense",
           "type": "bigBed 4 +",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nrelative to a Mayinga isolate\n(<A HREF=\"https://www.ncbi.nlm.nih.gov/nuccore/NC002549\" TARGET=_BLANK>NC002549</A>)\nthat cause protein-coding changes in the GP gene.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by amino acid change and the frequency of the change in 2014 isolates.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"http://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track displays variants identified by Gire <em>et al.</em> in 81 isolates\nfrom the 2014 strain of Ebola virus (78 from Sierra Leone and 3 from Guinea)\nrelative to a Mayinga isolate\n(<A HREF=\"https://www.ncbi.nlm.nih.gov/nuccore/NC002549\" TARGET=_BLANK>NC002549</A>)\nthat cause protein-coding changes in the GP gene.\n</p>\n\n<H2>Display Conventions</H2>\n<p>\nItems are labeled by amino acid change and the frequency of the change in 2014 isolates.\n</p>\n\n<H2>Methods</H2>\n<P>\nBlood samples were collected from 78 patients at Kenema Government Hospital\nin Sierra Leone.  For details of RNA preservation, PCR, human RNA depletion,\nlibrary construction and sequencing, see Supplemental Materials and Methods\nof Gire <em>et al.</em>\n</P>\n<P>\nGire <em>et al.</em> analyzed the 78 Sierra Leone patient sequences together with\n3 sequences from the 2014 outbreak in Guinea (Baize <em>et al.</em>;\nsuspected sequencing errors were masked, see Supplemental Materials and Methods of\nGire <em>et al.</em>), for a total of 81 sequences from 2014.\nIn addition, some analyses included 20 sequences from past outbreaks of Zaire Ebola\nvirus, 1976-2008, for a total of 101 sequences.  Sequence variants were extracted\ndirectly from multiple sequence alignments of the group of 101 sequences (1976-2014).\nA custom release of\n<A HREF=\"https://snpeff.sourceforge.net/\" TARGET=\"_BLANK\">SnpEff</A>\n(v4.0, build 2014-07-01, to support ribosomal slippage in transcription of GP gene)\nwas used to predict functional effect of variants on genes (noncoding, synonymous\nor missense).\n</P>\n\n\n<H2>References</H2>\n<p>\nBaize S, Pannetier D, Oestereich L, Rieger T, Koivogui L, Magassouba N, Soropogui B, Sow MS,\nKe&#239;ta S, De Clerck H <em>et al</em>.\n<a href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa1404505\" target=\"_blank\">\nEmergence of Zaire Ebola virus disease in Guinea</a>.\n<em>N Engl J Med</em>. 2014 Oct 9;371(15):1418-25.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/24738640\" target=\"_blank\">24738640</a>\n</p>\n\n<p>\nGire SK, Goba A, Andersen KG, Sealfon RS, Park DJ, Kanneh L, Jalloh S, Momoh M,\nFullah M, Dudas G <em>et al.</em>\n<A HREF=\"https://science.sciencemag.org/content/345/6202/1369\"\nTARGET=\"_BLANK\">Genomic surveillance elucidates Ebola virus origin and transmission \nduring the 2014 outbreak</A>.\n<em>Science</em> 2014 Sep 12;345(6202):1369-72.\nPMID: <A HREF=\"https://www.ncbi.nlm.nih.gov/pubmed/25214632\" TARGET=_BLANK>25214632</A>\n<BR>\n<A HREF=\"https://science.sciencemag.org/content/suppl/2014/08/27/science.1259657.DC1\"\nTARGET=\"_BLANK\">Supplemental Materials and Methods</A>\n</p>\n\n"
         }
       },
       "description": "Protein Changes in GP Between 81 Sequences from 2014 Outbreak and Mayinga 1976 (NC002549)",
@@ -1621,9 +1768,9 @@
           "shortLabel": "IEDB B Cell Neg",
           "track": "iedbBcellNeg",
           "type": "bigBed 12 .",
-          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=http://www.iedb.org/assayId/$$ referenceID=http://www.iedb.org/refId/$$ epitopeID=http://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
+          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=https://www.iedb.org/assayId/$$ referenceID=https://www.iedb.org/refId/$$ epitopeID=https://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences assayed but not recognized by antibodies.\nThey were annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"http://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with at least one negative assay outcome are shown on the track.\nAll fields annotated by IEDB and exported in their &quot;compact&quot; file are shown on\nthe details page, which also provides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nPeptide matches are labeled with the name of the antibody and the host organism, separated by a \nslash.\nWhen the antibody does not have a name in IEDB, the first six letters of the peptide are shown \ninstead.\n</p>\n\n<p>\nMouse over the features to see the authors of the study that described the epitope.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences assayed but not recognized by antibodies.\nThey were annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"https://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with at least one negative assay outcome are shown on the track.\nAll fields annotated by IEDB and exported in their &quot;compact&quot; file are shown on\nthe details page, which also provides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nPeptide matches are labeled with the name of the antibody and the host organism, separated by a \nslash.\nWhen the antibody does not have a name in IEDB, the first six letters of the peptide are shown \ninstead.\n</p>\n\n<p>\nMouse over the features to see the authors of the study that described the epitope.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
         }
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes with Negative Assay Result",
@@ -1816,9 +1963,9 @@
           "shortLabel": "IEDB T Cell I",
           "track": "iedbTcellI",
           "type": "bigBed 12 .",
-          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=http://www.iedb.org/assayId/$$ referenceID=http://www.iedb.org/refId/$$ epitopeID=http://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
+          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=https://www.iedb.org/assayId/$$ referenceID=https://www.iedb.org/refId/$$ epitopeID=https://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences displayed by virus-infected cells to T-cells\nas annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"http://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with a positive assay outcome are shown on the track. All fields annotated by\nIEDB and exported in their &quot;compact&quot; file are shown on the details page, which also \nprovides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<p>\nTo enrich for MHC Class I epitopes, this track shows epitopes with annotated\nClass I alleles or, if the allele was not annotated, alleles with less than or\nequal to 12 amino acids.  </p>\n\n<h2>Display Conventions</h2>\n<p>\nMatching peptide sequences are shown. Mouse over the features to see the\nexact MHC allele, if annotated.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences displayed by virus-infected cells to T-cells\nas annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"https://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with a positive assay outcome are shown on the track. All fields annotated by\nIEDB and exported in their &quot;compact&quot; file are shown on the details page, which also \nprovides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<p>\nTo enrich for MHC Class I epitopes, this track shows epitopes with annotated\nClass I alleles or, if the allele was not annotated, alleles with less than or\nequal to 12 amino acids.  </p>\n\n<h2>Display Conventions</h2>\n<p>\nMatching peptide sequences are shown. Mouse over the features to see the\nexact MHC allele, if annotated.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
         }
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) Curated T-Cell Epitopes, MHC Class I",
@@ -1850,9 +1997,9 @@
           "shortLabel": "IEDB T Cell II",
           "track": "iedbTcellII",
           "type": "bigBed 12 .",
-          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=http://www.iedb.org/assayId/$$ referenceID=http://www.iedb.org/refId/$$ epitopeID=http://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
+          "urls": "pubMedID=https://www.ncbi.nlm.nih.gov/pubmed/$$ bCellID=https://www.iedb.org/assayId/$$ referenceID=https://www.iedb.org/refId/$$ epitopeID=https://www.iedb.org/epId/$$ epitopeSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$ antigenSourceMoleculeAccession=https://www.ncbi.nlm.nih.gov/protein/$$",
           "visibility": "hide",
-          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences displayed by virus-infected cells to T-cells\nas annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"http://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with a positive assay outcome are shown on the track. All fields annotated by\nIEDB and exported in their &quot;compact&quot; file are shown on the details page, which also \nprovides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<p>\nTo enrich for MHC Class II epitopes, this track shows epitopes with annotated Class II alleles or, \nif the allele was not annotated, alleles with more than 12 amino acids.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nMatching peptide sequences are shown. Mouse over the features to see the \nexact MHC allele, if annotated.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
+          "html": "<H2>Description</H2>\n<p>\nThis track shows protein sequences displayed by virus-infected cells to T-cells\nas annotated by the National Institute for Allergy and Infectious Diseases (NIAID) \n<a href=\"https://www.iedb.org/\" target=\"_blank\">Immune Epitope Database</a> (IEDB). \nOnly sequences with a positive assay outcome are shown on the track. All fields annotated by\nIEDB and exported in their &quot;compact&quot; file are shown on the details page, which also \nprovides links back to the IEDB.  </p>\n\n<p>\nSee also the detailed explanation of the curated Ebola data in the \n<a href=\"https://help.iedb.org/hc/en-us/articles/114094150431\"\ntarget=\"_blank\">IEDB Knowledgebase</a>.\n</p>\n\n<p>\nTo enrich for MHC Class II epitopes, this track shows epitopes with annotated Class II alleles or, \nif the allele was not annotated, alleles with more than 12 amino acids.\n</p>\n\n<h2>Display Conventions</h2>\n<p>\nMatching peptide sequences are shown. Mouse over the features to see the \nexact MHC allele, if annotated.\n</p>\n\n<h2>References</h2>\n<p>\nVita R, Zarebski L, Greenbaum JA, Emami H, Hoof I, Salimi N, Damle R, Sette A, Peters B.\n<a href=\"https://academic.oup.com/nar/article/38/suppl_1/D854/3112153\" target=\"_blank\">\nThe immune epitope database 2.0</a>.\n<em>Nucleic Acids Res</em>. 2010 Jan;38(Database issue):D854-62.\nPMID: <a href=\"https://www.ncbi.nlm.nih.gov/pubmed/19906713\" target=\"_blank\">19906713</a>; PMC: <a\nhref=\"https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2808938/\" target=\"_blank\">PMC2808938</a>\n</p>\n"
         }
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) Curated T-Cell Epitopes, MHC Class II",
@@ -1889,7 +2036,7 @@
           "type": "bigBed 12 .",
           "useScore": "on",
           "visibility": "hide",
-          "html": "<h2>Description</h2>\n<p>\nThis track shows peptides that are predicted to be displayed by \nhuman class II MHCs.</p>\n\n<H2>Display Conventions and Configuration</H2>\nPeptides are shaded by percentile.\n\n<h2>Methods</h2>\nFor human epitope predictions, 15-mer peptides overlapping by 10 aa residues\nwere generated from aligned sequences, to avoid redundant peptides that share\nthe same 9-mer binding core. For each 15-mer peptide, the\nbinding affinity was predicted (expressed as the IEDB consensus percentile\nrank) for seven class II human HLA alleles (HLA-DRB1*03:01, HLA-DRB1*07:01,\nHLA-DRB1*15:01, HLA-DRB3*01:01, HLA-DRB3*02:02, HLADRB4*01:01 and\nHLA-DRB5*01:01), using the <a\nhref=\"http://tools.immuneepitope.org/main/tcell/\" target=\"_blank\">MHC\nclass I binding prediction tool</a> (&quot;IEDB recommended&quot; method). Predicted\nbinders were selected based on the median consensus percentile rank estimated from the\nconsensus percentile ranks for the seven alleles. All peptides with median\nconsensus percentile rank &lt;= 20.0 were selected as predicted binders, the\nthreshold being previously optimized for capturing 50% of class II human T cell\nresponses.\n\n<!--\n<h2>References</h2>\n<p>\nPonomarenko J, Vaughan K, Paul S, Haeussler M, Maurer-Stroh S, Peters B, Sette A.\n<a href=\"#\" target=\"_blank\">\nEbola: an analysis of immunity at the molecular level\n</a>.\n<em>submitted.\n</p>\n-->\n"
+          "html": "<h2>Description</h2>\n<p>\nThis track shows peptides that are predicted to be displayed by \nhuman class II MHCs.</p>\n\n<H2>Display Conventions and Configuration</H2>\nPeptides are shaded by percentile.\n\n<h2>Methods</h2>\nFor human epitope predictions, 15-mer peptides overlapping by 10 aa residues\nwere generated from aligned sequences, to avoid redundant peptides that share\nthe same 9-mer binding core. For each 15-mer peptide, the\nbinding affinity was predicted (expressed as the IEDB consensus percentile\nrank) for seven class II human HLA alleles (HLA-DRB1*03:01, HLA-DRB1*07:01,\nHLA-DRB1*15:01, HLA-DRB3*01:01, HLA-DRB3*02:02, HLADRB4*01:01 and\nHLA-DRB5*01:01), using the <a\nhref=\"https://tools.iedb.org/main/tcell/\" target=\"_blank\">MHC\nclass I binding prediction tool</a> (&quot;IEDB recommended&quot; method). Predicted\nbinders were selected based on the median consensus percentile rank estimated from the\nconsensus percentile ranks for the seven alleles. All peptides with median\nconsensus percentile rank &lt;= 20.0 were selected as predicted binders, the\nthreshold being previously optimized for capturing 50% of class II human T cell\nresponses.\n\n<!--\n<h2>References</h2>\n<p>\nPonomarenko J, Vaughan K, Paul S, Haeussler M, Maurer-Stroh S, Peters B, Sette A.\n<a href=\"#\" target=\"_blank\">\nEbola: an analysis of immunity at the molecular level\n</a>.\n<em>submitted.\n</p>\n-->\n"
         }
       },
       "description": "IEDB Epitope Predictions, Human T-Cell Class II",
@@ -2145,7 +2292,7 @@
         "ucsc": {
           "group": "genes",
           "iframeOptions": "width='1000' height='800' scrolling='yes'",
-          "iframeUrl": "http://www.pdb.org/pdb/explore/explore.do?structureId=$$",
+          "iframeUrl": "https://www.rcsb.org/structure/$$",
           "longLabel": "Protein Data Bank (PDB) Sequence Matches",
           "priority": "30",
           "shortLabel": "PDB",

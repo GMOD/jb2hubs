@@ -1217,6 +1217,41 @@
       ]
     },
     {
+      "trackId": "mm39-unipSplice",
+      "name": "UniProt - Splice Variants",
+      "type": "FeatureTrack",
+      "assemblyNames": ["mm39"],
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/gbdb/mm39/uniprot/unipSplice.bb"
+      },
+      "metadata": {
+        "ucsc": {
+          "bigDataUrl": "/gbdb/mm39/uniprot/unipSplice.bb",
+          "filterValues.status": "Manually reviewed (Swiss-Prot),Unreviewed (TrEMBL)",
+          "longLabel": "UniProt Splice Variants",
+          "mouseOver": "<b>UniProt record</b>: $uniProtId<br> <b>Position</b>: $position<br> <b>UniProt status</b>: $status",
+          "parent": "uniprot",
+          "priority": "14",
+          "shortLabel": "Splice Variants",
+          "track": "unipSplice",
+          "type": "bigBed 12 +",
+          "urls": "uniProtId=\"http://www.uniprot.org/uniprot/$$#sequences\" pmids=\"https://www.ncbi.nlm.nih.gov/pubmed/$$\"",
+          "visibility": "dense",
+          "html": ""
+        }
+      },
+      "description": "UniProt Splice Variants",
+      "category": ["Genes and Gene Predictions"],
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "mm39-unipSplice-LinearBasicDisplay",
+          "mouseover": "jexl:`<b>UniProt record</b>: ${get(feature,'uniProtId')}<br> <b>Position</b>: ${get(feature,'position')}<br> <b>UniProt status</b>: ${get(feature,'status')}`"
+        }
+      ]
+    },
+    {
       "trackId": "mm39-cytoBandIdeo",
       "name": "Chromosome Band (Ideogram)",
       "type": "FeatureTrack",
@@ -2128,6 +2163,10 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["mm39"],
+      "metadata": {
+        "annotationDate": "2024-02-01",
+        "annotationSource": "NCBI RefSeq GCF_000001635.27-RS_2024_02"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -3889,10 +3928,6 @@
       },
       "ixxFilePath": {
         "uri": "trix/mm39.ixx",
-        "locationType": "UriLocation"
-      },
-      "metaFilePath": {
-        "uri": "trix/mm39_meta.json",
         "locationType": "UriLocation"
       },
       "assemblyNames": ["mm39"]
