@@ -22,6 +22,7 @@ blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/880/755/GCF_002880755.1
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/880/755/GCF_002880755.1
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/880/755/GCF_002880755.1
 liftOver.GCF_012559485.2 liftOver/GCF_002880755.1ToGCF_012559485.2.over.chain.gz
+liftOver.hg38 liftOver/GCF_002880755.1ToHg38.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -283,110 +284,167 @@ searchIndex name
 searchTrix ixIxx/GCF_002880755.1_Clint_PTRv2.xenoRefGene.ix
 html html/GCF_002880755.1_Clint_PTRv2.xenoRefGene
 
-##############################################################################
-# GCF_012559485.2 - crab-eating macaque - Macaca fascicularis - taxId: 9541
-##############################################################################
-track chainNetGCF_012559485.2
+track GCF_002880755.1_Clint_PTRv2ChainNet
 compositeTrack on
-shortLabel crab-eating macaque Chain/Net
-longLabel crab-eating macaque (2021-10-26), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCF_002880755.1_Clint_PTRv2
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=hg38 s001=GCF_012559485.2
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-otherDb GCF_012559485.2
+chainLinearGap loose
+chainMinScore 5000
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCF_002880755.1_Clint_PTRv2.chainNet
 
-    track chainNetGCF_012559485.2Viewchain
-    shortLabel Chain
+    track GCF_002880755.1_Clint_PTRv2ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetGCF_012559485.2
+    visibility dense
+    parent GCF_002880755.1_Clint_PTRv2ChainNet
     spectrum on
 
+        track chainHg38
+        parent GCF_002880755.1_Clint_PTRv2ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel hg38 Chain
+        longLabel hg38/hg38 () Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainHg38.bb
+        linkDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainHg38Link.bb
+        otherDb hg38
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 7.682
+
         track chainGCF_012559485.2
-        parent chainNetGCF_012559485.2Viewchain
-        subGroups view=chain
-        shortLabel crab-eating macaque Chain
-        longLabel crab-eating macaque (2021-10-26) Chained Alignments
+        parent GCF_002880755.1_Clint_PTRv2ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel GCF_012559485.2 Chain
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigChain GCF_012559485.2
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainGCF_012559485.2.bb
         linkDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainGCF_012559485.2Link.bb
-        priority 1
+        otherDb GCF_012559485.2
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
+
+    track GCF_002880755.1_Clint_PTRv2ChainNetViewSynTen
+    shortLabel Syntenic
+    view synten
+    visibility hide
+    parent GCF_002880755.1_Clint_PTRv2ChainNet
+    spectrum on
 
         track chainSynGCF_012559485.2
-        parent chainNetGCF_012559485.2Viewchain
-        subGroups view=chain
-        shortLabel crab-eating macaque synChain
-        longLabel crab-eating macaque (2021-10-26) Syntenic Chained Alignments
+        parent GCF_002880755.1_Clint_PTRv2ChainNetViewSynTen off
+        subGroups view=synten species=s001 chainType=c01
+        shortLabel GCF_012559485.2 synChain
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigChain GCF_012559485.2
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainSynGCF_012559485.2.bb
         linkDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainSynGCF_012559485.2Link.bb
-        priority 2
+        otherDb GCF_012559485.2
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
+
+    track GCF_002880755.1_Clint_PTRv2ChainNetViewRBest
+    shortLabel Reciprocal best
+    view rbest
+    visibility hide
+    parent GCF_002880755.1_Clint_PTRv2ChainNet
+    spectrum on
 
         track chainRBestGCF_012559485.2
-        parent chainNetGCF_012559485.2Viewchain
-        subGroups view=chain
-        shortLabel crab-eating macaque rbChain
-        longLabel crab-eating macaque (2021-10-26) Reciprocal Best Chained Alignments
+        parent GCF_002880755.1_Clint_PTRv2ChainNetViewRBest off
+        subGroups view=rbest species=s001 chainType=c02
+        shortLabel GCF_012559485.2 rbChain
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigChain GCF_012559485.2
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainRBestGCF_012559485.2.bb
         linkDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainRBestGCF_012559485.2Link.bb
-        priority 3
+        otherDb GCF_012559485.2
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
+
+    track GCF_002880755.1_Clint_PTRv2ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCF_002880755.1_Clint_PTRv2ChainNet
+    spectrum on
+
+        track chainLiftOverHg38
+        parent GCF_002880755.1_Clint_PTRv2ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel hg38 loChain
+        longLabel hg38/hg38_MFA1912RKSv2 () Chained Alignments
+        type bigChain hg38
+        bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainLiftOverHg38.bb
+        linkDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainLiftOverHg38Link.bb
+        otherDb hg38
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 7.682
 
         track chainLiftOverGCF_012559485.2
-        parent chainNetGCF_012559485.2Viewchain
-        subGroups view=chain
-        shortLabel crab-eating macaque loChain
-        longLabel crab-eating macaque (2021-10-26) Lift Over Chained Alignments
+        parent GCF_002880755.1_Clint_PTRv2ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel GCF_012559485.2 loChain
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigChain GCF_012559485.2
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainLiftOverGCF_012559485.2.bb
         linkDataUrl bbi/GCF_002880755.1_Clint_PTRv2.chainLiftOverGCF_012559485.2Link.bb
-        priority 4
+        otherDb GCF_012559485.2
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
 
-    track mafNetGCF_012559485.2Viewnet
-    shortLabel Net
-    view net
-    visibility full
-    parent chainNetGCF_012559485.2
+    track GCF_002880755.1_Clint_PTRv2MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCF_002880755.1_Clint_PTRv2ChainNet
 
         track netGCF_012559485.2
-        parent mafNetGCF_012559485.2Viewnet
-        subGroups view=net
-        shortLabel crab-eating macaque net
-        longLabel crab-eating macaque (2021-10-26) Net Alignment
+        parent GCF_002880755.1_Clint_PTRv2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c04
+        shortLabel GCF_012559485.2 mafNet
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.GCF_012559485.2.net.bb
         summary bbi/GCF_002880755.1_Clint_PTRv2.GCF_012559485.2.net.summary.bb
         speciesOrder GCF_012559485.2
-        priority 5
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
 
         track synNetGCF_012559485.2
-        parent mafNetGCF_012559485.2Viewnet
-        subGroups view=net
-        shortLabel crab-eating macaque synNet
-        longLabel crab-eating macaque (2021-10-26) Syntenic Net Alignment
+        parent GCF_002880755.1_Clint_PTRv2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c05
+        shortLabel GCF_012559485.2 synNet
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.GCF_012559485.2.synNet.bb
         summary bbi/GCF_002880755.1_Clint_PTRv2.GCF_012559485.2.synNet.summary.bb
         speciesOrder GCF_012559485.2
-        priority 6
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
 
         track rbestNetGCF_012559485.2
-        parent mafNetGCF_012559485.2Viewnet
-        subGroups view=net
-        shortLabel crab-eating macaque rbestNet
-        longLabel crab-eating macaque (2021-10-26) Reciprocal Best Net Alignment
+        parent GCF_002880755.1_Clint_PTRv2MafNetViewnet off
+        subGroups view=align species=s001 chainType=c06
+        shortLabel GCF_012559485.2 rbestNet
+        longLabel GCF_012559485.2/GCF_012559485.2_MFA1912RKSv2 (2021-10-26) Chained Alignments
         type bigMaf
         bigDataUrl bbi/GCF_002880755.1_Clint_PTRv2.GCF_012559485.2.rbestNet.bb
         summary bbi/GCF_002880755.1_Clint_PTRv2.GCF_012559485.2.rbestNet.summary.bb
         speciesOrder GCF_012559485.2
-        priority 7
+        html html/GCF_002880755.1_Clint_PTRv2.chainNet
+        priority 18.336
 
 
 track Tiberius

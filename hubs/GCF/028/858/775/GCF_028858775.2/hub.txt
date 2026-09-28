@@ -1,9 +1,9 @@
 hub GCF_028858775.2 genome assembly
 shortLabel chimpanzee (v2 AG18354 primary hap 2024 refseq)
-longLabel chimpanzee (v2 AG18354 primary hap 2024 refseq)/Pan troglodytes/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri genome assembly
+longLabel chimpanzee (v2 AG18354 primary hap 2024 refseq)/Pan troglodytes/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri genome assembly
 useOneFile on
 email genome-www@soe.ucsc.edu
-descriptionUrl html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.description.html
+descriptionUrl html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.description.html
 
 genome GCF_028858775.2
 taxId 9598
@@ -14,16 +14,13 @@ twoBitBptUrl GCF_028858775.2.2bit.bpt
 chromSizes GCF_028858775.2.chrom.sizes.txt
 chromAliasBb GCF_028858775.2.chromAlias.bb
 chromAuthority ucsc
-organism NHGRI_mPanTro3-v2.0_pri Jan. 2024
+organism NHGRI_mPanTro3-v2.1_pri Jan. 2024
 defaultPos NC_072398.2:77099816-77109816
 scientificName Pan troglodytes
-htmlPath html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.description.html
+htmlPath html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/858/775/GCF_028858775.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/858/775/GCF_028858775.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/858/775/GCF_028858775.2
-liftOver.hg18 liftOver/GCF_028858775.2ToHg18.over.chain.gz
-liftOver.hg38 liftOver/GCF_028858775.2ToHg38.over.chain.gz
-liftOver.panTro6 liftOver/GCF_028858775.2ToPanTro6.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -32,11 +29,11 @@ visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.assembly.bb
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.assembly.bb
 type bigBed 6
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.assembly
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.assembly
 searchIndex name
-searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.assembly.ix
+searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.assembly.ix
 url https://www.ncbi.nlm.nih.gov/nuccore/$$
 urlLabel NCBI Nucleotide database:
 group map
@@ -47,24 +44,30 @@ longLabel Ideogram for Orientation
 group map
 visibility dense
 type bigBed 4 +
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.cytoBand.bb
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.cytoBand.bb
 
-track gc5Base
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
 visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
 autoScale Off
+viewLimits 30:70
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
 gridDefault OFF
 windowingFunction Mean
 color 0,0,0
 altColor 128,128,128
-viewLimits 30:70
-type bigWig 0 100
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.gc5Base.bw
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.gc5Base
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.gcOnFly
 
 track tanDups
 shortLabel Tandem Dups
@@ -73,13 +76,13 @@ compositeTrack on
 visibility hide
 type bigBed 12
 group map
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.tanDups
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.tanDups
 
     track tandemDups
     parent tanDups on
     shortLabel Tandem Dups
     longLabel Paired exactly identical sequence survey over entire genome assembly
-    bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.tandemDups.bb
+    bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.tandemDups.bb
     type bigBed 12
 
 track repeatMasker
@@ -88,21 +91,10 @@ longLabel RepeatMasker Repetitive Elements
 type bigRmsk 9 +
 visibility pack
 group varRep
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.rmsk.bb
-xrefDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.rmsk.align.bb
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.rmsk.bb
+xrefDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.rmsk.align.bb
 maxWindowToDraw 5000000
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.repeatMasker
-
-track repeatModeler
-shortLabel RepeatModeler
-longLabel RepeatModeler Repetitive Elements
-type bigRmsk 9 +
-visibility hide
-group varRep
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.rModel.bb
-xrefDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.rModel.align.bb
-maxWindowToDraw 5000000
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.repeatModeler
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.repeatMasker
 
 track simpleRepeat
 shortLabel Simple Repeats
@@ -110,8 +102,8 @@ longLabel Simple Tandem Repeats by TRF
 group varRep
 visibility dense
 type bigBed 4 +
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.simpleRepeat.bb
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.simpleRepeat
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.simpleRepeat.bb
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.simpleRepeat
 
 track refSeqComposite
 compositeTrack on
@@ -122,8 +114,8 @@ visibility pack
 type bigBed
 dragAndDrop subTracks
 allButtonPair on
-dataVersion NCBI RefSeq GCF_028858775.2-RS_2024_02 (2024-03-14)
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.refSeqComposite
+dataVersion NCBI RefSeq GCF_028858775.2-RS_2026_05 (2026-05-22)
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.refSeqComposite
 priority 2
 
         track ncbiRefSeq
@@ -135,8 +127,8 @@ priority 2
         labelFields name2,geneName,geneName2
         defaultLabelFields name2
         searchIndex name
-        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeq.ix
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeq.bb
+        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeq.ix
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeq.bb
         longLabel NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)
         idXref ncbiRefSeqLink mrnaAcc name
         baseColorUseCds given
@@ -153,9 +145,9 @@ priority 2
         labelFields name2,geneName,geneName2
         defaultLabelFields name2
         searchIndex name
-        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqCurated.ix
+        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqCurated.bb
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeqCurated.bb
         baseColorUseCds given
         baseColorDefault genomicCodons
         priority 2
@@ -170,9 +162,9 @@ priority 2
         labelFields name2,geneName,geneName2
         defaultLabelFields name2
         searchIndex name
-        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqPredicted.ix
+        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqPredicted.bb
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeqPredicted.bb
         baseColorUseCds given
         baseColorDefault genomicCodons
         priority 3
@@ -184,8 +176,8 @@ priority 2
         longLabel NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)
         priority 4
         searchIndex name
-        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqOther.ix
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.ncbiRefSeqOther.bb
+        searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeqOther.ix
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.ncbiRefSeqOther.bb
         type bigBed 12 +
         labelFields name
         skipEmptyFields on
@@ -198,7 +190,7 @@ priority 2
         longLabel RefSeq Alignments of RNAs
         type bigPsl
         searchIndex name
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.bigPsl.bb
+        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.bigPsl.bb
         indelDoubleInsert on
         indelQueryInsert on
         showDiffBasesAllScales .
@@ -218,7 +210,7 @@ longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
 visibility dense
 type bigBed 4 +
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.cpgIslands
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.cpgIslands
 
     track cpgIslandExt
     parent cpgIslands off
@@ -226,7 +218,7 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.cpgIslands
     longLabel CpG Islands (Islands < 300 Bases are Light Green)
     type bigBed 4 +
     priority 1
-    bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.cpgIslandExt.bb
+    bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.cpgIslandExt.bb
 
     track cpgIslandExtUnmasked
     parent cpgIslands on
@@ -234,7 +226,7 @@ html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.cpgIslands
     longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
     type bigBed 4 +
     priority 2
-    bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.cpgIslandExtUnmasked.bb
+    bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.cpgIslandExtUnmasked.bb
 
 track windowMasker
 shortLabel WM + SDust
@@ -242,8 +234,8 @@ longLabel Genomic Intervals Masked by WindowMasker + SDust
 group varRep
 visibility dense
 type bigBed 3
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.windowMasker.bb
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.windowMasker
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.windowMasker.bb
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.windowMasker
 
 track allGaps
 shortLabel All Gaps
@@ -251,8 +243,8 @@ longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
 visibility hide
 type bigBed 3
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.allGaps.bb
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.allGaps
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.allGaps.bb
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.allGaps
 
 track augustus
 shortLabel Augustus
@@ -261,8 +253,8 @@ group genes
 visibility dense
 color 180,0,0
 type bigGenePred
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.augustus.bb
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.augustus
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.augustus.bb
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.augustus
 
 track xenoRefGene
 shortLabel RefSeq mRNAs
@@ -271,331 +263,12 @@ group rna
 visibility pack
 color 180,0,0
 type bigGenePred
-bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.xenoRefGene.bb
+bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.xenoRefGene.bb
 url https://www.ncbi.nlm.nih.gov/nuccore/$$
 urlLabel NCBI Nucleotide database:
 labelFields name,geneName,geneName2
 defaultLabelFields geneName
 searchIndex name
-searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.xenoRefGene.ix
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.xenoRefGene
+searchTrix ixIxx/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.xenoRefGene.ix
+html html/GCF_028858775.2_NHGRI_mPanTro3-v2.1_pri.xenoRefGene
 
-track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-compositeTrack on
-shortLabel Chain/Net
-longLabel Chain alignments to target sequence: GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri
-subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=panTro6 s001=hg38 s002=hg18
-subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
-dragAndDrop subTracks
-visibility hide
-group compGeno
-color 0,0,0
-altColor 255,255,0
-type bed 3
-chainLinearGap loose
-chainMinScore 5000
-dimensions dimensionX=chainType dimensionY=species
-sortOrder species=+ view=+ chainType=+
-configurable on
-html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewchain
-    shortLabel Chains
-    view chain
-    visibility dense
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
-        track chainPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewchain on
-        subGroups view=chain species=s000 chainType=c00
-        shortLabel Chimp/panTro6 Chain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewchain off
-        subGroups view=chain species=s001 chainType=c00
-        shortLabel Human/hg38 Chain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainHg38.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainHg38Link.bb
-        otherDb hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track chainHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewchain off
-        subGroups view=chain species=s002 chainType=c00
-        shortLabel Human/hg18 Chain
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigChain hg18
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainHg18.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainHg18Link.bb
-        otherDb hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen
-    shortLabel Syntenic
-    view synten
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
-        track chainSynPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen off
-        subGroups view=synten species=s000 chainType=c01
-        shortLabel Chimp/panTro6 synChain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainSynHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen off
-        subGroups view=synten species=s001 chainType=c01
-        shortLabel Human/hg38 synChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynHg38.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynHg38Link.bb
-        otherDb hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track chainSynHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewSynTen off
-        subGroups view=synten species=s002 chainType=c01
-        shortLabel Human/hg18 synChain
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigChain hg18
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynHg18.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainSynHg18Link.bb
-        otherDb hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest
-    shortLabel Reciprocal best
-    view rbest
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
-        track chainRBestPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest off
-        subGroups view=rbest species=s000 chainType=c02
-        shortLabel Chimp/panTro6 rbChain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainRBestHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest off
-        subGroups view=rbest species=s001 chainType=c02
-        shortLabel Human/hg38 rbChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestHg38.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestHg38Link.bb
-        otherDb hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track chainRBestHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewRBest off
-        subGroups view=rbest species=s002 chainType=c02
-        shortLabel Human/hg18 rbChain
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigChain hg18
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestHg18.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainRBestHg18Link.bb
-        otherDb hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver
-    shortLabel Lift over
-    view liftover
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-    spectrum on
-
-        track chainLiftOverPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver off
-        subGroups view=liftover species=s000 chainType=c03
-        shortLabel Chimp/panTro6 loChain
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigChain panTro6
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverPanTro6.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverPanTro6Link.bb
-        otherDb panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track chainLiftOverHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
-        shortLabel Human/hg38 loChain
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigChain hg38
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverHg38.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverHg38Link.bb
-        otherDb hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track chainLiftOverHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNetViewLiftOver off
-        subGroups view=liftover species=s002 chainType=c03
-        shortLabel Human/hg18 loChain
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigChain hg18
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverHg18.bb
-        linkDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainLiftOverHg18Link.bb
-        otherDb hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-    track GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet
-    shortLabel Nets
-    view align
-    visibility hide
-    parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priChainNet
-
-        track netPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s000 chainType=c04
-        shortLabel Chimp/panTro6 mafNet
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.panTro6.net.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.panTro6.net.summary.bb
-        speciesOrder panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track synNetPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s000 chainType=c05
-        shortLabel Chimp/panTro6 synNet
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.panTro6.synNet.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.panTro6.synNet.summary.bb
-        speciesOrder panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track rbestNetPanTro6
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s000 chainType=c06
-        shortLabel Chimp/panTro6 rbestNet
-        longLabel Chimp/panTro6/panTro6 (Jan. 2018) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.panTro6.rbestNet.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.panTro6.rbestNet.summary.bb
-        speciesOrder panTro6
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 5.319
-
-        track netHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s001 chainType=c04
-        shortLabel Human/hg38 mafNet
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg38.net.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg38.net.summary.bb
-        speciesOrder hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track synNetHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s001 chainType=c05
-        shortLabel Human/hg38 synNet
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg38.synNet.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg38.synNet.summary.bb
-        speciesOrder hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track rbestNetHg38
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s001 chainType=c06
-        shortLabel Human/hg38 rbestNet
-        longLabel Human/hg38/hg38 (Dec. 2013) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg38.rbestNet.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg38.rbestNet.summary.bb
-        speciesOrder hg38
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 9.893
-
-        track netHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s002 chainType=c04
-        shortLabel Human/hg18 mafNet
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg18.net.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg18.net.summary.bb
-        speciesOrder hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-        track synNetHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s002 chainType=c05
-        shortLabel Human/hg18 synNet
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg18.synNet.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg18.synNet.summary.bb
-        speciesOrder hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-        track rbestNetHg18
-        parent GCF_028858775.2_NHGRI_mPanTro3-v2.0_priMafNetViewnet off
-        subGroups view=align species=s002 chainType=c06
-        shortLabel Human/hg18 rbestNet
-        longLabel Human/hg18/hg18 (Mar. 2006) Chained Alignments
-        type bigMaf
-        bigDataUrl bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg18.rbestNet.bb
-        summary bbi/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.hg18.rbestNet.summary.bb
-        speciesOrder hg18
-        html html/GCF_028858775.2_NHGRI_mPanTro3-v2.0_pri.chainNet
-        priority 10.174
-
-
-track Tiberius
-bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb
-shortLabel Tiberius genes
-longLabel Tiberius ab initio gene prediction
-type bigGenePred
-visibility pack
-color 0,102,204
-noScoreFilter on
-html contrib/tiberius/Tiberius.html
-group genes
-dataVersion Tiberius version 2025-01-07
-baseColorDefault genomicCodons

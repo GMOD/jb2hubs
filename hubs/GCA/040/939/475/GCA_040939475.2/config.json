@@ -23,7 +23,8 @@
             "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/html/GCA_040939475.2_M.murinus_Inina_pat1.0.description.html\">html/GCA_040939475.2_M.murinus_Inina_pat1.0.description.html</a>",
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2",
-            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2"
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2",
+            "liftOver.hg38": "liftOver/GCA_040939475.2ToHg38.over.chain.gz"
           }
         },
         "trackId": "GCA_040939475.2-ReferenceSequenceTrack",
@@ -100,33 +101,36 @@
     {
       "metadata": {
         "ucsc": {
-          "track": "gc5Base",
+          "track": "gcOnFly",
           "shortLabel": "GC Percent",
           "longLabel": "GC Percent in 5-Base Windows",
           "group": "map",
           "visibility": "dense",
+          "type": "bigWig 0 100",
+          "bigDataUrl": "bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.gcOnFly.bw",
+          "gcOnFlyMaxDensity": "50000",
+          "syntheticTrack": "on",
+          "calcWinSize": "5",
           "autoScale": "Off",
+          "viewLimits": "30:70",
           "maxHeightPixels": "128:36:16",
           "graphTypeDefault": "Bar",
           "gridDefault": "OFF",
           "windowingFunction": "Mean",
           "color": "0,0,0",
           "altColor": "128,128,128",
-          "viewLimits": "30:70",
-          "type": "bigWig 0 100",
-          "bigDataUrl": "bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.gc5Base.bw",
-          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/html/GCA_040939475.2_M.murinus_Inina_pat1.0.gc5Base\">html/GCA_040939475.2_M.murinus_Inina_pat1.0.gc5Base</a>"
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/html/GCA_040939475.2_M.murinus_Inina_pat1.0.gcOnFly\">html/GCA_040939475.2_M.murinus_Inina_pat1.0.gcOnFly</a>"
         }
       },
       "category": ["Mapping and Sequencing"],
-      "trackId": "GCA_040939475.2-gc5Base",
+      "trackId": "GCA_040939475.2-gcOnFly",
       "description": "GC Percent in 5-Base Windows",
       "assemblyNames": ["GCA_040939475.2"],
       "name": "GC Percent",
       "type": "QuantitativeTrack",
       "adapter": {
         "type": "BigWigAdapter",
-        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.gc5Base.bw"
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.gcOnFly.bw"
       }
     },
     {
@@ -384,6 +388,27 @@
           }
         }
       ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_040939475.2_to_hg38_liftOver",
+      "name": "GCA_040939475.2 (gray mouse lemur (pat1 Inina 2025)) to Human (hg38) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_040939475.2", "hg38"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_040939475.2",
+        "queryAssembly": "hg38",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_040939475.2ToHg38.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_040939475.2ToHg38.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     }
   ],
   "defaultSession": {
@@ -409,6 +434,25 @@
       }
     ]
   },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCA_040939475.2-index",
+      "ixFilePath": {
+        "uri": "trix/GCA_040939475.2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCA_040939475.2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCA_040939475.2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCA_040939475.2"]
+    }
+  ],
   "plugins": [
     {
       "name": "MafViewer",

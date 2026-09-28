@@ -1,9 +1,9 @@
 hub GCF_028885625.2 genome assembly
 shortLabel Bornean orangutan (v2 AG05252 primary hap 2024 refseq)
-longLabel Bornean orangutan (v2 AG05252 primary hap 2024 refseq)/Pongo pygmaeus/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri genome assembly
+longLabel Bornean orangutan (v2 AG05252 primary hap 2024 refseq)/Pongo pygmaeus/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri genome assembly
 useOneFile on
 email genome-www@soe.ucsc.edu
-descriptionUrl html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.description.html
+descriptionUrl html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.description.html
 
 genome GCF_028885625.2
 taxId 9600
@@ -14,10 +14,10 @@ twoBitBptUrl GCF_028885625.2.2bit.bpt
 chromSizes GCF_028885625.2.chrom.sizes.txt
 chromAliasBb GCF_028885625.2.chromAlias.bb
 chromAuthority ucsc
-organism NHGRI_mPonPyg2-v2.0_pri Jan. 2024
+organism NHGRI_mPonPyg2-v2.1_pri Jan. 2024
 defaultPos NC_072373.2:76935800-76945800
 scientificName Pongo pygmaeus
-htmlPath html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.description.html
+htmlPath html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/885/625/GCF_028885625.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/885/625/GCF_028885625.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/028/885/625/GCF_028885625.2
@@ -29,11 +29,11 @@ visibility hide
 colorByStrand 150,100,30 230,170,40
 color 150,100,30
 altColor 230,170,40
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.assembly.bb
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.assembly.bb
 type bigBed 6
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.assembly
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.assembly
 searchIndex name
-searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.assembly.ix
+searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.assembly.ix
 url https://www.ncbi.nlm.nih.gov/nuccore/$$
 urlLabel NCBI Nucleotide database:
 group map
@@ -44,24 +44,30 @@ longLabel Ideogram for Orientation
 group map
 visibility dense
 type bigBed 4 +
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.cytoBand.bb
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.cytoBand.bb
 
-track gc5Base
+# gcOnFly is a synthetic track, computed at run time
+# this trackDb entry will allow it to operate properly with
+# correct visibility when a saved session is restored
+track gcOnFly
 shortLabel GC Percent
 longLabel GC Percent in 5-Base Windows
 group map
 visibility dense
+type bigWig 0 100
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.gcOnFly.bw
+gcOnFlyMaxDensity 50000
+syntheticTrack on
+calcWinSize 5
 autoScale Off
+viewLimits 30:70
 maxHeightPixels 128:36:16
 graphTypeDefault Bar
 gridDefault OFF
 windowingFunction Mean
 color 0,0,0
 altColor 128,128,128
-viewLimits 30:70
-type bigWig 0 100
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.gc5Base.bw
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.gc5Base
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.gcOnFly
 
 track tanDups
 shortLabel Tandem Dups
@@ -70,13 +76,13 @@ compositeTrack on
 visibility hide
 type bigBed 12
 group map
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.tanDups
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.tanDups
 
     track tandemDups
     parent tanDups on
     shortLabel Tandem Dups
     longLabel Paired exactly identical sequence survey over entire genome assembly
-    bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.tandemDups.bb
+    bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.tandemDups.bb
     type bigBed 12
 
 track repeatMasker
@@ -85,21 +91,10 @@ longLabel RepeatMasker Repetitive Elements
 type bigRmsk 9 +
 visibility pack
 group varRep
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.rmsk.bb
-xrefDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.rmsk.align.bb
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.rmsk.bb
+xrefDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.rmsk.align.bb
 maxWindowToDraw 5000000
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.repeatMasker
-
-track repeatModeler
-shortLabel RepeatModeler
-longLabel RepeatModeler Repetitive Elements
-type bigRmsk 9 +
-visibility hide
-group varRep
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.rModel.bb
-xrefDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.rModel.align.bb
-maxWindowToDraw 5000000
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.repeatModeler
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.repeatMasker
 
 track simpleRepeat
 shortLabel Simple Repeats
@@ -107,8 +102,8 @@ longLabel Simple Tandem Repeats by TRF
 group varRep
 visibility dense
 type bigBed 4 +
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.simpleRepeat.bb
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.simpleRepeat
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.simpleRepeat.bb
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.simpleRepeat
 
 track refSeqComposite
 compositeTrack on
@@ -119,8 +114,8 @@ visibility pack
 type bigBed
 dragAndDrop subTracks
 allButtonPair on
-dataVersion NCBI RefSeq GCF_028885625.2-RS_2024_02 (2024-03-08)
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.refSeqComposite
+dataVersion NCBI RefSeq GCF_028885625.2-RS_2026_05 (2026-05-12)
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.refSeqComposite
 priority 2
 
         track ncbiRefSeq
@@ -132,8 +127,8 @@ priority 2
         labelFields name2,geneName,geneName2
         defaultLabelFields name2
         searchIndex name
-        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeq.ix
-        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeq.bb
+        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeq.ix
+        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeq.bb
         longLabel NCBI RefSeq genes, curated and predicted sets (NM_*, XM_*, NR_*, XR_*, NP_* or YP_*)
         idXref ncbiRefSeqLink mrnaAcc name
         baseColorUseCds given
@@ -150,9 +145,9 @@ priority 2
         labelFields name2,geneName,geneName2
         defaultLabelFields name2
         searchIndex name
-        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeqCurated.ix
+        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeqCurated.ix
         idXref ncbiRefSeqLink mrnaAcc name
-        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeqCurated.bb
+        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeqCurated.bb
         baseColorUseCds given
         baseColorDefault genomicCodons
         priority 2
@@ -167,9 +162,9 @@ priority 2
         labelFields name2,geneName,geneName2
         defaultLabelFields name2
         searchIndex name
-        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeqPredicted.ix
+        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeqPredicted.ix
         idXref ncbiRefSeqLink mrnaAcc name
-        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeqPredicted.bb
+        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeqPredicted.bb
         baseColorUseCds given
         baseColorDefault genomicCodons
         priority 3
@@ -181,8 +176,8 @@ priority 2
         longLabel NCBI RefSeq other annotations (not NM_*, NR_*, XM_*, XR_*, NP_* or YP_*)
         priority 4
         searchIndex name
-        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeqOther.ix
-        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.ncbiRefSeqOther.bb
+        searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeqOther.ix
+        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.ncbiRefSeqOther.bb
         type bigBed 12 +
         labelFields name
         skipEmptyFields on
@@ -195,7 +190,7 @@ priority 2
         longLabel RefSeq Alignments of RNAs
         type bigPsl
         searchIndex name
-        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.bigPsl.bb
+        bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.bigPsl.bb
         indelDoubleInsert on
         indelQueryInsert on
         showDiffBasesAllScales .
@@ -215,7 +210,7 @@ longLabel CpG Islands (Islands < 300 Bases are Light Green)
 group regulation
 visibility dense
 type bigBed 4 +
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.cpgIslands
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.cpgIslands
 
     track cpgIslandExt
     parent cpgIslands off
@@ -223,7 +218,7 @@ html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.cpgIslands
     longLabel CpG Islands (Islands < 300 Bases are Light Green)
     type bigBed 4 +
     priority 1
-    bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.cpgIslandExt.bb
+    bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.cpgIslandExt.bb
 
     track cpgIslandExtUnmasked
     parent cpgIslands on
@@ -231,7 +226,7 @@ html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.cpgIslands
     longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
     type bigBed 4 +
     priority 2
-    bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.cpgIslandExtUnmasked.bb
+    bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.cpgIslandExtUnmasked.bb
 
 track windowMasker
 shortLabel WM + SDust
@@ -239,8 +234,8 @@ longLabel Genomic Intervals Masked by WindowMasker + SDust
 group varRep
 visibility dense
 type bigBed 3
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.windowMasker.bb
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.windowMasker
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.windowMasker.bb
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.windowMasker
 
 track allGaps
 shortLabel All Gaps
@@ -248,8 +243,8 @@ longLabel All gaps of unknown nucleotides (N's), including AGP annotated gaps
 group map
 visibility hide
 type bigBed 3
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.allGaps.bb
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.allGaps
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.allGaps.bb
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.allGaps
 
 track augustus
 shortLabel Augustus
@@ -258,8 +253,8 @@ group genes
 visibility dense
 color 180,0,0
 type bigGenePred
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.augustus.bb
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.augustus
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.augustus.bb
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.augustus
 
 track xenoRefGene
 shortLabel RefSeq mRNAs
@@ -268,25 +263,12 @@ group rna
 visibility pack
 color 180,0,0
 type bigGenePred
-bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.xenoRefGene.bb
+bigDataUrl bbi/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.xenoRefGene.bb
 url https://www.ncbi.nlm.nih.gov/nuccore/$$
 urlLabel NCBI Nucleotide database:
 labelFields name,geneName,geneName2
 defaultLabelFields geneName
 searchIndex name
-searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.xenoRefGene.ix
-html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.0_pri.xenoRefGene
+searchTrix ixIxx/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.xenoRefGene.ix
+html html/GCF_028885625.2_NHGRI_mPonPyg2-v2.1_pri.xenoRefGene
 
-
-track Tiberius
-bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb
-shortLabel Tiberius genes
-longLabel Tiberius ab initio gene prediction
-type bigGenePred
-visibility pack
-color 0,102,204
-noScoreFilter on
-html contrib/tiberius/Tiberius.html
-group genes
-dataVersion Tiberius version 2025-01-07
-baseColorDefault genomicCodons

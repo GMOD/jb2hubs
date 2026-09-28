@@ -24,7 +24,8 @@
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/880/755/GCF_002880755.1",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/880/755/GCF_002880755.1",
             "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCF/002/880/755/GCF_002880755.1",
-            "liftOver.GCF_012559485.2": "liftOver/GCF_002880755.1ToGCF_012559485.2.over.chain.gz"
+            "liftOver.GCF_012559485.2": "liftOver/GCF_002880755.1ToGCF_012559485.2.over.chain.gz",
+            "liftOver.hg38": "liftOver/GCF_002880755.1ToHg38.over.chain.gz"
           }
         },
         "trackId": "GCF_002880755.1-ReferenceSequenceTrack",
@@ -660,6 +661,9 @@
       },
       "category": ["Genes and Gene Predictions"],
       "assemblyNames": ["GCF_002880755.1"],
+      "metadata": {
+        "annotationSource": "NCBI Pan troglodytes Annotation Release 105"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -704,6 +708,27 @@
         "index": {
           "location": {
             "uri": "liftOver/GCF_002880755.1ToGCF_012559485.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCF_002880755.1_to_hg38_liftOver",
+      "name": "GCF_002880755.1 (chimpanzee (Clint C0471 2018 refseq)) to Human (hg38) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCF_002880755.1", "hg38"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCF_002880755.1",
+        "queryAssembly": "hg38",
+        "pifGzLocation": {
+          "uri": "liftOver/GCF_002880755.1ToHg38.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCF_002880755.1ToHg38.pif.gz.csi"
           },
           "indexType": "CSI"
         }
