@@ -195,6 +195,7 @@ export function multiwayStarTrack({
   config,
   assemblyName,
   anchor = assemblyName,
+  label,
   genomes,
   labelOf,
   geneTrackId,
@@ -205,6 +206,8 @@ export function multiwayStarTrack({
   assemblyName: string
   /** the config's own assembly name, which the tracks name */
   anchor?: string
+  /** a reader's name for the anchor, which the track name puts before `assemblyName` */
+  label?: string
   genomes: Record<string, StarGenome>
   /** what the pairwise liftOver track calls a mate, '' when nothing */
   labelOf: (mate: string) => string
@@ -239,7 +242,7 @@ export function multiwayStarTrack({
   return {
     type: 'SyntenyTrack',
     trackId: `${anchor}_liftOver_multiway`,
-    name: `${assemblyName} vs ${mates.length} genomes (liftOver, multi-way)`,
+    name: `${label ? `${label} (${assemblyName})` : assemblyName} vs ${mates.length} genomes (liftOver, multi-way)`,
     category: ['Pairwise alignments'],
     assemblyNames: [anchor, ...lanes],
     adapter: {

@@ -1,5 +1,6 @@
+import { bareCommonName } from 'hubtools/commonName'
+
 import { ncbiGenomeUrl, ncbiTaxonomyUrl } from '../lib/externalLinks.ts'
-import { bareCommonName } from './names.ts'
 
 import type {
   AnnotationInfo,

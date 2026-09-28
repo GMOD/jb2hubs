@@ -198,6 +198,7 @@ describe('stagingHubConfig', () => {
       targetCommonName: target => (target === 'mm39' ? 'mouse' : ''),
     })
   const options = {
+    commonName: 'human (GRCh38.p14 2022)',
     genomes: {},
     labelOf: (mate: string) => (mate === 'mm39' ? 'mouse' : ''),
   }
@@ -210,6 +211,7 @@ describe('stagingHubConfig', () => {
     const staging = stagingHubConfig(config, acc, options)!
     const star = staging.tracks!.at(-1)!
     assert.equal(star.trackId, `${acc}_liftOver_multiway`)
+    assert.equal(star.name, `human (${acc}) vs 3 genomes (liftOver, multi-way)`)
     assert.deepEqual(star.assemblyNames, [
       acc,
       'GCA_000001905.1',

@@ -4,6 +4,7 @@ import {
   generateJBrowseConfigForAssemblyHub,
   multiwayStarTrack,
 } from 'hubtools'
+import { bareCommonName } from 'hubtools/commonName'
 
 import type {
   ChainTrack,
@@ -168,9 +169,11 @@ export function stagingHubConfig(
   config: JBrowseConfig,
   accession: string,
   {
+    commonName,
     genomes,
     labelOf,
   }: {
+    commonName: string
     genomes: Record<string, StarGenome>
     labelOf: (mate: string) => string
   },
@@ -178,6 +181,7 @@ export function stagingHubConfig(
   const star = multiwayStarTrack({
     config,
     assemblyName: accession,
+    label: bareCommonName(commonName),
     genomes,
     labelOf,
     geneTrackId: genarkGeneTrackId(config, accession),

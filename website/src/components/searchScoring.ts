@@ -1,5 +1,6 @@
+import { bareCommonName, commonNameLabel } from 'hubtools/commonName'
+
 import { IS_REFERENCE } from '../lib/searchIndex.ts'
-import { bareCommonName, commonNameLabel } from '../utils/names.ts'
 
 import type { IndexEntry } from '../lib/searchIndex.ts'
 

@@ -198,6 +198,7 @@ function processOne(metaPath: string) {
   })
 
   const staging = stagingHubConfig(config, accession, {
+    commonName: meta.commonName ?? meta.scientificName ?? '',
     genomes: starGenomes,
     labelOf: target => targetCommonName(target, isAccession(target)),
   })

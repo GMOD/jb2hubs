@@ -2,8 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+import { bareCommonName } from 'hubtools/commonName'
+
 import { ncbiStatusOf } from './src/lib/searchIndex.ts'
-import { bareCommonName } from './src/utils/names.ts'
 
 import type { IndexEntry } from './src/lib/searchIndex.ts'
 
