@@ -45,10 +45,14 @@ export function starIndex(
 ) {
   const stars: StarIndex = {}
   for (const anchor of references) {
-    const mates = data.tracks.flatMap(track => {
-      const mate = liftOverMateOf(track, anchor)
-      return mate === undefined ? [] : [mate]
-    })
+    const mates = [
+      ...new Set(
+        data.tracks.flatMap(track => {
+          const mate = liftOverMateOf(track, anchor)
+          return mate === undefined ? [] : [mate]
+        }),
+      ),
+    ]
     if (mates.length >= MIN_MATES) {
       const taxa: Record<string, string> = {}
       for (const mate of mates) {

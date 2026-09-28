@@ -76,3 +76,16 @@ test("a row whose own assembly the star holds opens that assembly's lane", () =>
 test('a reference with fewer mates than the builder stars has no entry', () => {
   assert.deepEqual(starIndex(data, ['rn6', 'mm39']), {})
 })
+
+test('a mate the catalog lists twice counts once toward the floor', () => {
+  const twice: SyntenyCatalogData = {
+    tracks: [
+      liftOver('GCF_040939455.1', 'hg38'),
+      liftOver('GCF_040939455.1', 'hg38'),
+      liftOver('GCF_040939455.1', 'GCF_000165445.2'),
+      liftOver('GCF_040939455.1', 'GCF_000165445.2'),
+    ],
+    assemblyInfo: {},
+  }
+  assert.deepEqual(starIndex(twice, ['GCF_040939455.1']), {})
+})
