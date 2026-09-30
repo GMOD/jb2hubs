@@ -1,5 +1,9 @@
 import { getUcscFeatureDisplay } from './featureDisplay.ts'
-import { addNcbiGffLabelDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
+import {
+  addNcbiGffLabelDisplay,
+  addNcbiGffLinks,
+  addNcbiGffTextSearching,
+} from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { ucscFormatDetails } from './ucscDetailLinks.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
@@ -250,6 +254,7 @@ export function enhanceConfigObject(
     ?.map(track => deriveFeatureDisplay(track, ucscDb))
     .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)
+    .map(addNcbiGffLinks)
     .map(withRepeatClass)
 
   config.configuration ??= {}

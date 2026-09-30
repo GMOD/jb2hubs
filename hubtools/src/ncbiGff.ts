@@ -231,3 +231,34 @@ export function addNcbiGffLabelDisplay(track: Track): Track {
         ],
   }
 }
+
+const NCBI = 'https://www.ncbi.nlm.nih.gov'
+
+function ncbiLink(path: string, id: string, text = id) {
+  return `'<a href="${NCBI}/${path}/'+${id}+'">'+${text}+'</a>'`
+}
+
+// The panel hands the callback attribute names lowercased, and `Dbxref` as an
+// array when it has more than one entry (a string otherwise), on v4.0.0 and
+// main alike; `''+` joins either into one comma string. NCBI lists GeneID first
+// on every record that has one, the regulatory records included, so the gene
+// link reads the first entry and needs no search.
+const GENE_ID = "split(''+feature.dbxref,',')[0]"
+const LINKS = {
+  feature: `jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,${GENE_ID},${ncbiLink('gene', `substring(${GENE_ID},7)`, GENE_ID)}):feature.dbxref}`,
+  subfeatures: `jexl:{transcript_id:feature.transcript_id?${ncbiLink('nuccore', 'feature.transcript_id')}:undefined}`,
+}
+
+/**
+ * Links an NCBI GFF track's identifiers to NCBI in the details panel: the
+ * gene's GeneID on the top-level record, each transcript's accession on its
+ * subfeatures. The UCSC tracks get theirs from trackDb (ucscDetailLinks.ts);
+ * this file has no trackDb, so the links come from its own attributes. The
+ * protein accession is on the CDS, a level the panel does not draw on v4.0.0
+ * or main, so linking it would cost every config bytes nobody sees.
+ */
+export function addNcbiGffLinks(track: Track): Track {
+  return isNcbiGffTrack(track) && track.formatDetails === undefined
+    ? { ...track, formatDetails: LINKS }
+    : track
+}

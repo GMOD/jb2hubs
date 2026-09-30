@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 
-import { addNcbiGffLabelDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
+import {
+  addNcbiGffLabelDisplay,
+  addNcbiGffLinks,
+  addNcbiGffTextSearching,
+} from './ncbiGff.ts'
 import { isRecord } from './util.ts'
 
 import type { Track } from './types.ts'
@@ -225,5 +229,25 @@ describe('addNcbiGffTextSearching', () => {
       adapter: { type: 'BigBedAdapter', bigBedLocation: { uri: 'x.bb' } },
     }
     assert.deepEqual(addNcbiGffTextSearching(bigBed), bigBed)
+  })
+})
+
+describe('addNcbiGffLinks', () => {
+  it("links both pipelines' NCBI GFF tracks, gene and transcripts apart", () => {
+    for (const track of [ucsc, genark]) {
+      const formatDetails = addNcbiGffLinks(track).formatDetails as {
+        feature: string
+        subfeatures: string
+      }
+      assert.match(formatDetails.feature, /^jexl:\{dbxref:/)
+      assert.match(formatDetails.subfeatures, /^jexl:\{transcript_id:/)
+    }
+  })
+
+  it('leaves another GFF track, and a hand-authored formatDetails, alone', () => {
+    const gencode = { ...ucsc, trackId: 'hg38-gencodeV48' }
+    assert.equal(addNcbiGffLinks(gencode), gencode)
+    const mine = { ...genark, formatDetails: { feature: 'jexl:{}' } }
+    assert.equal(addNcbiGffLinks(mine), mine)
   })
 })
