@@ -1931,9 +1931,11 @@ A graph launch (`graphRegionUrl`) is one linear view: those lanes, then the
 segments track opened as its `LinearGraphDisplay`, which picks its own tier by
 zoom past the adapter's `coarse.aboveBpPerPx`. The segments lane and the graph
 are one track and a view shows a track once, so a graph launch has no segments
-lane. Every rGFA track in the four configs opens as the graph, its first
-display, so a lane over one names `LinearBasicDisplay`; `pangenomeLinks.test.ts`
-checks every launch against the configs. Everything below fell out of the width
+lane. Every rGFA track in the four configs is a `GraphTrack`, which opens as the
+graph, its first display, so a lane over one names `LinearBasicDisplay`. A
+GraphTrack's displays come from the plugin, not the config, so
+`pangenomeLinks.test.ts` checks every launch against the ones the plugin
+registers on it. Everything below fell out of the width
 rule on 2026-09-10, so a change here is a change to all of it:
 
 - **`graphChromosomeUrl` is gone.** A chromosome is the widest region and takes

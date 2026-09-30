@@ -341,9 +341,15 @@ test('a graph with no tier opens the fine lanes however wide the ask', () => {
   ])
 })
 
+// The display types jbrowse-plugin-graphgenomeviewer registers on a
+// GraphTrack, read off its published bundle: the graph first, then the linear
+// lane. A GraphTrack's displays come from its track type, so its config
+// declares none, and a launch is checked against these instead.
+const GRAPH_TRACK_DISPLAYS = ['LinearGraphDisplay', 'LinearBasicDisplay']
+
 // A bare trackId opens a track's first display, and an rGFA track's first is
 // the graph, so a launch that means its linear lane has to say so.
-test('every rGFA track a launch opens names the display its config declares', () => {
+test('every rGFA track a launch opens names a display its track has', () => {
   const arabidopsis = {
     ...ARABIDOPSIS_DATASET,
     graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
@@ -366,6 +372,7 @@ test('every rGFA track a launch opens names the display its config declares', ()
     ) as {
       tracks: {
         trackId: string
+        type: string
         adapter: { type: string }
         displays?: { type: string }[]
       }[]
@@ -387,9 +394,13 @@ test('every rGFA track a launch opens names the display its config declares', ()
         assert.ok(track, `${trackId} is in ${base}.json`)
         if (track.adapter.type === 'RgfaTabixAdapter') {
           assert.ok(type, `${base}: ${trackId} opens without naming a display`)
+          const displays =
+            track.type === 'GraphTrack'
+              ? GRAPH_TRACK_DISPLAYS
+              : (track.displays ?? []).map(d => d.type)
           assert.ok(
-            track.displays?.some(d => d.type === type),
-            `${base}: ${trackId} declares no ${type}`,
+            displays.includes(type),
+            `${base}: ${trackId} (${track.type}) has no ${type}`,
           )
         }
       }
