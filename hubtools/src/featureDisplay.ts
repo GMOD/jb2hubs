@@ -17,43 +17,65 @@ export function firstField(value: unknown) {
   return typeof value === 'string' ? value.split(',')[0]! : undefined
 }
 
+// Where a UCSC `hgTracks?db=…&position=…` link goes instead: a
+// genomes.jbrowse.org page that reads the same query and launches JBrowse on
+// our config for that db.
+export const UCSC_LAUNCH_URL = 'https://genomes.jbrowse.org/ucsc/launch/'
+
+// Columns holding html links relative to UCSC's own /cgi-bin/, by trackDb track
+// name. In a JBrowse feature-details panel such a link resolves against the
+// app's page, so NCBI Orthologs' links to a gene's orthologs in the other four
+// assemblies carrying the track all landed on
+// jbrowse.org/code/jb2/main/hgTracks?db=…, which serves nothing. The converter
+// cannot see a bigBed's columns without fetching it, hence a list.
+const RELATIVE_HGTRACKS_COLUMNS: Record<string, string[]> = {
+  ncbiOrtho: ['url'],
+}
+
 /**
- * The `formatDetails.feature` jexl that hides UCSC's out-of-line detail
- * plumbing from the feature-details panel, or undefined when a track has none.
+ * The `formatDetails.feature` jexl for a UCSC track, or undefined when it
+ * needs none. A jexl callback returning `undefined` for a key removes that row
+ * (see FormatDetails in the JBrowse config docs); any other value replaces it.
  *
- * `detailsTabUrls` names a column holding an offset into a sidecar file, which
- * hgc reads to build the tables `detailsDynamicTable` lists. JBrowse does not
- * follow it, so the columns reach the panel as-is: on gnomAD v4.1 that is
- * `_dataOffset` (a twelve-digit number) and its `_dataLen` companion, two rows
- * of file plumbing among the variant's real fields. Measured 2026-08-13: three
- * hg38 tracks carry the setting, all gnomAD.
+ * The panel evaluates it against the feature as a plain object, so a column is
+ * `feature.<name>`: `get(feature,…)` throws there, and a throwing callback
+ * replaces the whole panel with an error.
  *
- * The data itself is reachable -- the sidecar is bgzip'd with a published
- * `.gzi`, and `_dataOffset` is an uncompressed-stream offset, so the record
- * decodes to the VEP consequences and the per-ancestry frequency table. Serving
- * that needs an adapter that fetches a sidecar by offset; hiding two useless
- * rows does not, and is what this does.
+ * It hides UCSC's out-of-line detail plumbing. `detailsTabUrls` names a column
+ * holding an offset into a sidecar file, which hgc reads to build the tables
+ * `detailsDynamicTable` lists. JBrowse does not follow it, so on gnomAD v4.1
+ * the panel shows `_dataOffset` (a twelve-digit number) and its `_dataLen`
+ * companion among the variant's real fields. Measured 2026-08-13: three hg38
+ * tracks carry the setting, all gnomAD. The data itself is reachable -- the
+ * sidecar is bgzip'd with a published `.gzi` -- but serving it needs an adapter
+ * that fetches a sidecar by offset; hiding two useless rows does not.
  *
- * A jexl callback returning `undefined` for a key removes that row (see
- * FormatDetails in the JBrowse config docs).
+ * It also points relative `hgTracks?` links at UCSC_LAUNCH_URL.
  */
-export function ucscHiddenDetailFields(ucsc: Record<string, unknown>) {
+export function ucscFormatDetails(ucsc: Record<string, unknown>) {
+  const entries = [
+    ...hiddenDetailFields(ucsc).map(f => `${f}:undefined`),
+    ...(RELATIVE_HGTRACKS_COLUMNS[String(ucsc.track)] ?? []).map(
+      f =>
+        `${f}:feature.${f}?replaceAll(feature.${f},'href="hgTracks?','href="${UCSC_LAUNCH_URL}?'):feature.${f}`,
+    ),
+  ]
+  return entries.length > 0 ? `jexl:{${entries.join(',')}}` : undefined
+}
+
+function hiddenDetailFields(ucsc: Record<string, unknown>) {
   const setting = ucsc.detailsTabUrls
   if (typeof setting !== 'string') {
-    return undefined
+    return []
   }
   // "_dataOffset=/gbdb/…,_other=/gbdb/…" -> the column names on the left
   const fields = setting
     .split(',')
     .map(s => s.split('=')[0]!.trim())
     .filter(Boolean)
-  if (fields.length === 0) {
-    return undefined
-  }
   // `_dataLen` is the length companion of an offset column and is never named
   // by the setting itself
-  const all = [...new Set([...fields, '_dataLen'])]
-  return `jexl:{${all.map(f => `${f}:undefined`).join(',')}}`
+  return fields.length > 0 ? [...new Set([...fields, '_dataLen'])] : []
 }
 
 // Escapes literal text destined for the static portion of a jexl template

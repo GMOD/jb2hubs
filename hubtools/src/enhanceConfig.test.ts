@@ -129,7 +129,40 @@ describe('enhanceConfig feature display derivation', () => {
     assert.equal(t.formatDetails.feature, 'jexl:{mine:1}')
   })
 
-  it('sets no formatDetails on a track with no detailsTabUrls', () => {
+  it("points ncbiOrtho's relative hgTracks links at /ucsc/launch/", () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'hg38-ncbiOrtho',
+        type: 'FeatureTrack',
+        metadata: { ucsc: { track: 'ncbiOrtho', mouseOver: '$url' } },
+      },
+    ])
+    assert.equal(
+      t.formatDetails.feature,
+      `jexl:{url:feature.url?replaceAll(feature.url,'href="hgTracks?','href="https://genomes.jbrowse.org/ucsc/launch/?'):feature.url}`,
+    )
+  })
+
+  it('hides columns and rewrites links in one formatDetails', () => {
+    const [t] = runOnConfig([
+      {
+        trackId: 'a-ncbiOrtho',
+        type: 'FeatureTrack',
+        metadata: {
+          ucsc: {
+            track: 'ncbiOrtho',
+            detailsTabUrls: '_dataOffset=/gbdb/hg38/x/details.tab.gz',
+          },
+        },
+      },
+    ])
+    assert.match(
+      t.formatDetails.feature,
+      /^jexl:\{_dataOffset:undefined,_dataLen:undefined,url:feature\.url\?/,
+    )
+  })
+
+  it('sets no formatDetails on a track that needs none', () => {
     const [t] = runOnConfig([
       {
         trackId: 'a-x',

@@ -1,7 +1,4 @@
-import {
-  getUcscFeatureDisplay,
-  ucscHiddenDetailFields,
-} from './featureDisplay.ts'
+import { getUcscFeatureDisplay, ucscFormatDetails } from './featureDisplay.ts'
 import { addNcbiGffLabelDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
@@ -124,10 +121,10 @@ function deriveFeatureDisplay(track: Track): Track {
   }
   // Track-level rather than display-level, so it rides both branches below.
   // Left alone when the track already carries a hand-authored formatDetails.
-  const hidden = ucscHiddenDetailFields(ucsc)
+  const formatDetails = ucscFormatDetails(ucsc)
   const base: Track =
-    hidden !== undefined && track.formatDetails === undefined
-      ? { ...track, formatDetails: { feature: hidden } }
+    formatDetails !== undefined && track.formatDetails === undefined
+      ? { ...track, formatDetails: { feature: formatDetails } }
       : track
 
   const derived = getUcscFeatureDisplay(base.trackId, ucsc).displays?.[0]

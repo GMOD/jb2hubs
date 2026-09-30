@@ -1,0 +1,48 @@
+---
+// Takes a UCSC hgTracks query and opens the same place in JBrowse. The configs
+// point UCSC's relative `hgTracks?db=…` links here (UCSC_LAUNCH_URL in
+// hubtools), so the JBrowse build a link opens is decided by this site rather
+// than frozen into every config. See ucscLaunchUrl for the mapping.
+import { ucscDefaultTracks } from '../../utils/ucscDefaultTracks.ts'
+
+const defaultTracks = JSON.stringify(ucscDefaultTracks())
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta
+      name="robots"
+      content="noindex"
+    />
+    <title>Opening JBrowse</title>
+    <script
+      is:inline
+      type="application/json"
+      id="ucsc-default-tracks"
+      set:html={defaultTracks}
+    ></script>
+    <script>
+      import { ucscLaunchUrl } from '../../lib/ucscLaunch.ts'
+
+      const tracks = document.getElementById('ucsc-default-tracks')
+      location.replace(
+        ucscLaunchUrl(
+          location.search,
+          JSON.parse(tracks?.textContent ?? '{}') as Record<string, string[]>,
+        ),
+      )
+    </script>
+  </head>
+  <body>
+    <p>Opening JBrowse…</p>
+    <noscript>
+      <p>This page needs JavaScript to open the genome browser.</p>
+    </noscript>
+  </body>
+</html>

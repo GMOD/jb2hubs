@@ -2131,6 +2131,15 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   The index page forwards the old `?category=` links to the category's page.
 - `src/recentlyUpdated.json` — build-time generated data for recently-updated
   page, from `genark2jbrowse/hubFirstSeen.json` (below)
+- `src/pages/ucsc/launch.astro` — turns a UCSC `hgTracks?db=…&position=…` query
+  into a JBrowse launch on `/ucsc/<db>/config.json`, opening the
+  defaultSession's tracks (read from `configs-minimal/`) plus any
+  `<track>=pack`. Some UCSC bigBeds carry html links relative to UCSC's
+  `/cgi-bin/` in a data column (NCBI Orthologs' `url`), which in JBrowse's
+  details panel resolve against the app's own page and 404; hubtools'
+  `ucscFormatDetails` points them here. A `formatDetails` callback sees the
+  feature as a plain object, so it reads `feature.url`: `get(feature,…)` throws
+  there and replaces the whole panel with an error.
 - `astroBuild.sh` — `astro build` with its per-route log collapsed into a
   counter. Astro logs one line per generated route at info level
   (`core/build/generate.js`, `logRenderTime`) and offers no knob short of
