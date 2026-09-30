@@ -179,8 +179,8 @@ const STEPS: FinalizeStep[] = [
   addMetadata,
   addOrigAssemblyToTrackName,
   rewriteUcscTrackNames,
-  step('enhance', ({ config }) => {
-    enhanceConfigObject(config)
+  step('enhance', ({ config, assemblyName }) => {
+    enhanceConfigObject(config, { ucscDb: assemblyName })
   }),
   addGeneticCodes,
   addGencodeTracks,

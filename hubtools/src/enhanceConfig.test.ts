@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, it } from 'node:test'
 
-import { enhanceConfig } from './enhanceConfig.ts'
+import { enhanceConfig, enhanceConfigObject } from './enhanceConfig.ts'
 
 import type { JBrowsePlugin } from './types.ts'
 
@@ -159,6 +159,24 @@ describe('enhanceConfig feature display derivation', () => {
     assert.match(
       t.formatDetails.feature,
       /^jexl:\{_dataOffset:undefined,_dataLen:undefined,url:feature\.url\?/,
+    )
+  })
+
+  it('links trackDb url only when told the UCSC db', () => {
+    const track = () => ({
+      trackId: 'hg38-ucscToRefSeq',
+      type: 'FeatureTrack',
+      adapter: { type: 'BedTabixAdapter' },
+      metadata: {
+        ucsc: { track: 'ucscToRefSeq', url: 'https://x/$$?db=$D' },
+      },
+    })
+    const genark = enhanceConfigObject({ tracks: [track()] })
+    assert.equal('formatDetails' in genark.tracks![0]!, false)
+    const ucsc = enhanceConfigObject({ tracks: [track()] }, { ucscDb: 'hg38' })
+    assert.match(
+      String((ucsc.tracks![0]!.formatDetails as { feature: string }).feature),
+      /'hg38'/,
     )
   })
 

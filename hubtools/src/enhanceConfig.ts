@@ -1,6 +1,7 @@
-import { getUcscFeatureDisplay, ucscFormatDetails } from './featureDisplay.ts'
+import { getUcscFeatureDisplay } from './featureDisplay.ts'
 import { addNcbiGffLabelDisplay, addNcbiGffTextSearching } from './ncbiGff.ts'
 import { addRepeatClassDisplay } from './repeatClassDisplay.ts'
+import { ucscFormatDetails } from './ucscDetailLinks.ts'
 import { isRecord, readJSON, writeJSON } from './util.ts'
 
 import type { JBrowseConfig, JBrowsePlugin, Track } from './types.ts'
@@ -112,7 +113,7 @@ const DERIVED_KEYS = ['labels', 'mouseover', 'jexlFilters'] as const
 // track that had earned a display from one trackDb setting could never receive a
 // second one, which is how the JASPAR score filter would have reached no
 // already-built config.
-function deriveFeatureDisplay(track: Track): Track {
+function deriveFeatureDisplay(track: Track, ucscDb?: string): Track {
   const { metadata } = track
   const ucsc =
     isRecord(metadata) && isRecord(metadata.ucsc) ? metadata.ucsc : undefined
@@ -121,10 +122,14 @@ function deriveFeatureDisplay(track: Track): Track {
   }
   // Track-level rather than display-level, so it rides both branches below.
   // Left alone when the track already carries a hand-authored formatDetails.
-  const formatDetails = ucscFormatDetails(ucsc)
+  const formatDetails = ucscFormatDetails(
+    ucsc,
+    isRecord(track.adapter) ? track.adapter : undefined,
+    ucscDb,
+  )
   const base: Track =
     formatDetails !== undefined && track.formatDetails === undefined
-      ? { ...track, formatDetails: { feature: formatDetails } }
+      ? { ...track, formatDetails }
       : track
 
   const derived = getUcscFeatureDisplay(base.trackId, ucsc).displays?.[0]
@@ -188,7 +193,12 @@ export function enhanceConfigObject(
   {
     plugins = defaultPlugins,
     repeatClassDisplay = !!process.env.RMSK_MULTIROW_DISPLAY,
-  }: { plugins?: JBrowsePlugin[]; repeatClassDisplay?: boolean } = {},
+    ucscDb,
+  }: {
+    plugins?: JBrowsePlugin[]
+    repeatClassDisplay?: boolean
+    ucscDb?: string
+  } = {},
 ) {
   config.plugins ??= []
 
@@ -237,7 +247,7 @@ export function enhanceConfigObject(
   // Unconditional, unlike withRepeatClass: it names a display type every
   // supported host has, so it needs no boot-matrix gate.
   config.tracks = config.tracks
-    ?.map(deriveFeatureDisplay)
+    ?.map(track => deriveFeatureDisplay(track, ucscDb))
     .map(addNcbiGffLabelDisplay)
     .map(addNcbiGffTextSearching)
     .map(withRepeatClass)

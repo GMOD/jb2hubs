@@ -64,7 +64,7 @@ describe('ncbiOrtho links', () => {
     'mouse:<a href="hgTracks?db=mm39&position=chr11:69471173-69482698&ncbiOrtho=pack">Trp53</a><br>'
 
   const formatted = stringToJexlExpression(
-    ucscFormatDetails({ track: 'ncbiOrtho' })!,
+    ucscFormatDetails({ track: 'ncbiOrtho' }, undefined)!.feature!,
   ).eval({ feature: { url } }) as { url: string }
   const hrefs = [...formatted.url.matchAll(/href="([^"]+)"/g)].map(m => m[1]!)
 
@@ -78,7 +78,7 @@ describe('ncbiOrtho links', () => {
 
   it('leaves a feature without the column alone', () => {
     const empty = stringToJexlExpression(
-      ucscFormatDetails({ track: 'ncbiOrtho' })!,
+      ucscFormatDetails({ track: 'ncbiOrtho' }, undefined)!.feature!,
     ).eval({ feature: {} }) as { url?: string }
     assert.equal(empty.url, undefined)
   })

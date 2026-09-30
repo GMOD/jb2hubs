@@ -17,53 +17,18 @@ export function firstField(value: unknown) {
   return typeof value === 'string' ? value.split(',')[0]! : undefined
 }
 
-// Where a UCSC `hgTracks?db=…&position=…` link goes instead: a
-// genomes.jbrowse.org page that reads the same query and launches JBrowse on
-// our config for that db.
-export const UCSC_LAUNCH_URL = 'https://genomes.jbrowse.org/ucsc/launch/'
-
-// Columns holding html links relative to UCSC's own /cgi-bin/, by trackDb track
-// name. In a JBrowse feature-details panel such a link resolves against the
-// app's page, so NCBI Orthologs' links to a gene's orthologs in the other four
-// assemblies carrying the track all landed on
-// jbrowse.org/code/jb2/main/hgTracks?db=…, which serves nothing. The converter
-// cannot see a bigBed's columns without fetching it, hence a list.
-const RELATIVE_HGTRACKS_COLUMNS: Record<string, string[]> = {
-  ncbiOrtho: ['url'],
-}
-
 /**
- * The `formatDetails.feature` jexl for a UCSC track, or undefined when it
- * needs none. A jexl callback returning `undefined` for a key removes that row
- * (see FormatDetails in the JBrowse config docs); any other value replaces it.
+ * The columns a track's `detailsTabUrls` names, which JBrowse cannot follow.
  *
- * The panel evaluates it against the feature as a plain object, so a column is
- * `feature.<name>`: `get(feature,…)` throws there, and a throwing callback
- * replaces the whole panel with an error.
- *
- * It hides UCSC's out-of-line detail plumbing. `detailsTabUrls` names a column
- * holding an offset into a sidecar file, which hgc reads to build the tables
- * `detailsDynamicTable` lists. JBrowse does not follow it, so on gnomAD v4.1
- * the panel shows `_dataOffset` (a twelve-digit number) and its `_dataLen`
- * companion among the variant's real fields. Measured 2026-08-13: three hg38
- * tracks carry the setting, all gnomAD. The data itself is reachable -- the
- * sidecar is bgzip'd with a published `.gzi` -- but serving it needs an adapter
- * that fetches a sidecar by offset; hiding two useless rows does not.
- *
- * It also points relative `hgTracks?` links at UCSC_LAUNCH_URL.
+ * Each holds an offset into a sidecar file, which hgc reads to build the
+ * tables `detailsDynamicTable` lists. On gnomAD v4.1 the panel shows
+ * `_dataOffset` (a twelve-digit number) and its `_dataLen` companion among the
+ * variant's real fields. Measured 2026-08-13: three hg38 tracks carry the
+ * setting, all gnomAD. The data itself is reachable -- the sidecar is bgzip'd
+ * with a published `.gzi` -- but serving it needs an adapter that fetches a
+ * sidecar by offset; hiding two useless rows does not.
  */
-export function ucscFormatDetails(ucsc: Record<string, unknown>) {
-  const entries = [
-    ...hiddenDetailFields(ucsc).map(f => `${f}:undefined`),
-    ...(RELATIVE_HGTRACKS_COLUMNS[String(ucsc.track)] ?? []).map(
-      f =>
-        `${f}:feature.${f}?replaceAll(feature.${f},'href="hgTracks?','href="${UCSC_LAUNCH_URL}?'):feature.${f}`,
-    ),
-  ]
-  return entries.length > 0 ? `jexl:{${entries.join(',')}}` : undefined
-}
-
-function hiddenDetailFields(ucsc: Record<string, unknown>) {
+export function ucscHiddenDetailFields(ucsc: Record<string, unknown>) {
   const setting = ucsc.detailsTabUrls
   if (typeof setting !== 'string') {
     return []
