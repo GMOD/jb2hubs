@@ -105,6 +105,11 @@ const annotated = annotatedHaplotypes(
   HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
 )
 
+// Panels that name a haplotype the graph places no walk for in the window. The
+// sidecar cannot tell those from a deletion, so the panel keeps them until the
+// build box publishes per-haplotype placement (agent-docs/PANGENOME_PORTAL.md).
+const KNOWN_UNPLACED = { defb: ['HG00097#1'], nphp1: ['HG00544#1'] }
+
 const graphDisplay = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',
@@ -148,6 +153,7 @@ for (const locus of loci) {
       name: `${locus.id}: haplotypes`,
       url: retarget(haplotypes),
       expectLanes: HPRC_DATASET.panels[locus.id].lanes.map(l => l.haplotype),
+      knownUnplaced: KNOWN_UNPLACED[locus.id] ?? [],
     })
   }
 }
@@ -352,7 +358,14 @@ async function readGraph(page, trackId) {
 }
 
 let failures = 0
-for (const { name, url, expectDisplays, expectTier, expectLanes } of launches) {
+for (const {
+  name,
+  url,
+  expectDisplays,
+  expectTier,
+  expectLanes,
+  knownUnplaced = [],
+} of launches) {
   const page = await browser.newPage()
   const problems = []
   const notes = []
@@ -426,21 +439,30 @@ for (const { name, url, expectDisplays, expectTier, expectLanes } of launches) {
       } else if (lanes.error) {
         problems.push(`lanes: ${lanes.error.split('\n')[0]}`)
       } else {
+        const unplaced = h => !knownUnplaced.includes(h)
         const neverDrew = lanes.missing.filter(h => !lanes.noWalk.includes(h))
         if (neverDrew.length) {
           problems.push(
             `${neverDrew.length} of ${expectLanes.length} lanes never drew: ${neverDrew.join(', ')}`,
           )
         }
-        if (lanes.noWalk.length) {
+        const noWalk = lanes.noWalk.filter(unplaced)
+        if (noWalk.length) {
           problems.push(
-            `the graph returned no walk near the window for ${lanes.noWalk.join(', ')}`,
+            `the graph returned no walk near the window for ${noWalk.join(', ')}`,
           )
         }
-        if (lanes.offWindow.length) {
+        const offWindow = lanes.offWindow.filter(unplaced)
+        if (offWindow.length) {
           problems.push(
-            `the graph places ${lanes.offWindow.join(', ')} only outside the window, so the lane is empty`,
+            `the graph places ${offWindow.join(', ')} only outside the window, so the lane is empty`,
           )
+        }
+        const known = [...lanes.noWalk, ...lanes.offWindow].filter(
+          h => !unplaced(h),
+        )
+        if (known.length) {
+          notes.push(`known unplaced: ${known.join(', ')}`)
         }
       }
       if (lanes?.bare.length) {

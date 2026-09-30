@@ -385,7 +385,22 @@ graph: placement intervals per haplotype published beside the sidecar, or a
 panel generator that asks the lane adapter in a browser, which would give the
 table an answer the **Any region** box cannot reproduce.
 `pnpm check-pangenome-launches` reports such a lane as unplaced rather than as a
-gene track that never loaded.
+gene track that never loaded, and lists the two known ones (`defb` HG00097#1,
+`nphp1` HG00544#1, `KNOWN_UNPLACED` in the script) as notes instead of failures,
+so a third still fails.
+
+The defb lane is a placement artifact, not a structural form: the ~395
+haplotypes it stands for read `.` at all five records across the 130 kb window,
+in one pattern, which is what "not on the reference path here" looks like and
+not what one skipped site looks like. Choosing a different representative does
+not fix it, and neither does preferring less-fragmented haplotypes (HG00097#1
+has 75 contigs and HG00544#1 61, against a median of 81). Per-haplotype
+placement intervals from the build box are therefore a prerequisite for
+promoting `features.pangenome`: `structuralForms` would treat an unplaced
+haplotype as missing in both the generator and the **Any region** box, not as a
+deletion. Before building that, count how many of defb's form members the lane
+adapter places in chr8:7,797,024-7,959,462. Mostly unplaced means the data is
+required; mostly placed means a placed representative is enough for defb.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and

@@ -233,8 +233,9 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
   // Branch points that can launch, each with the band of rows it covers (drawn
   // hidden, lit by the hover rules) and the leaves nearest the reference that a
   // click opens. More of a big clade is a second, explicit choice, and it stops
-  // at MAX_PICKED_GENOMES: a clade holds up to 80 species, and the launch url
-  // for all of them runs past the 8,192-byte request line CloudFront accepts.
+  // at MAX_PICKED_GENOMES: a clade holds up to 80 species, and a stack of them
+  // is unreadable before its launch url reaches the 8,192-byte request line
+  // CloudFront accepts.
   const clades = layout.treeNodes
     .map(n => {
       const placed = n.leafTaxonIds.filter(t => placementByTaxon.has(t))

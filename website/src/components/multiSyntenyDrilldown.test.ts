@@ -177,9 +177,9 @@ test('a panel no level names opens under its hosted genome', () => {
   )
 })
 
-// CloudFront refuses a request line over 8,192 bytes, which is why the view's
-// "open more of this clade" stops at MAX_PICKED_GENOMES. Every name here is as
-// long as the catalog's longest, and every panel flipped.
+// CloudFront refuses a request line over 8,192 bytes, so the widest launch the
+// view offers, "open more of this clade" at MAX_PICKED_GENOMES, has to fit. Every
+// name here is as long as the catalog's longest, and every panel flipped.
 test('the widest clade launch fits the request line', () => {
   const acc = (i: number) => `GCF_${String(900_000_000 + i)}.1`
   const pairs: Record<string, PairEntry> = {}
