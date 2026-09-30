@@ -137,7 +137,7 @@ export function buildHubConfig({
     ...chainTracks.filter(t => !ids.has(t.trackId)),
   ]
 
-  return enhanceConfigObject(withExtension)
+  return enhanceConfigObject(withExtension, { ucscDb: accession })
 }
 
 // the annotation a multi-way lane draws for this hub, the NCBI GFF first and

@@ -65,6 +65,16 @@ describe('buildHubConfig', () => {
     ])
   })
 
+  it("links a track's trackDb url, naming the accession as the db", () => {
+    const config = build({
+      hubFileText: `${hubFileText}url https://example.org/$D/$$\nurlLabel Example:\n`,
+    })
+    const track = config.tracks!.find(t => t.trackId === `${acc}-assembly`)!
+    const { feature } = track.formatDetails as { feature: string }
+    assert.ok(feature.startsWith(`jexl:{'Example':`), feature)
+    assert.ok(feature.includes(`'${acc}'`), feature)
+  })
+
   it('adds the NCBI GFF track last, enhanced, with a trix adapter for it', () => {
     const config = build({ gff: { fileName: gffName, geneticCodes: {} } })
     const track = config.tracks!.at(-1)!

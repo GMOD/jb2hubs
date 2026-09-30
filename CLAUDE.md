@@ -2139,9 +2139,9 @@ residue↔codon mapping bugs that shipped with every unit test green, is
   them here: the ones inside a data column (NCBI Orthologs' `url`), and those in
   trackDb `url`/`urls`, which it turns into details-panel links the way hgc does
   (kent's `replaceInUrl` and `printIdOrLinks`). A comma list stays unlinked,
-  since jexl has no map. The trackDb links are on for UCSC configs only, through
-  `enhanceConfigObject`'s `ucscDb`: every GenArk config carries a `url` too, so
-  turning them on there rewrites all 52,700. A `formatDetails` callback sees the
+  since jexl has no map. `enhanceConfigObject`'s `ucscDb` turns the trackDb
+  links on and names `$D`: the db for a UCSC config, the accession for a GenArk
+  one, which UCSC uses as the hub's db name. A `formatDetails` callback sees the
   feature as a plain object, so it reads `feature.url`: `get(feature,…)` throws
   there and replaces the whole panel with an error.
 - `astroBuild.sh` — `astro build` with its per-route log collapsed into a
