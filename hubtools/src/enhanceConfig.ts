@@ -72,6 +72,10 @@ const blatPlugin: JBrowsePlugin[] = process.env.BLAT_PLUGIN_URL
 // against a published 0.8.0, leaving the protein view on a perpetual "Loading
 // pairwise alignment".
 //
+// Protein3d's url is the exception: pinned to 0.15.3, its last UMD build. Later
+// releases are ESM-only for JBrowse >=5.0.0, which resolves the ref, so the url
+// only ever reaches a v4 host and should stay the build that host was tested on.
+//
 // MafViewer names no store entry on purpose. Core vendors it now, so it was
 // removed from the store's plugins.json and a ref to it cannot resolve; jbrowse-web
 // drops the entry before loading anyway (`vendoredPluginNames`), and the url is
@@ -90,7 +94,7 @@ const defaultPlugins: JBrowsePlugin[] = [
   {
     name: 'Protein3d',
     storePlugin: 'Protein3d',
-    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js',
+    url: 'https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js',
   },
   {
     name: 'MsaView',

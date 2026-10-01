@@ -58,12 +58,14 @@ const REMOTE_CONFIGS = [
   'https://0hifvzakej.execute-api.us-east-1.amazonaws.com/merge?hubIds=GCF_000001405.40',
 ]
 
-// The plugin store's v1 layout. No longer republished, so a config naming it
-// pins whatever version was there when it was frozen — this is how protein3d
-// served 0.4.1 against a published 0.8.0. Not a hard failure: most configs still
-// carry these until the next full regeneration flips them to `latest/`.
-const LEGACY_PATH = /jbrowse\.org\/plugins\/[^"]*?\/dist\//
-const isLegacy = url => LEGACY_PATH.test(url) && !url.includes('/latest/dist/')
+// The plugin store's v1 layout, `plugins/<pkg>/dist/`. No longer republished,
+// so a config naming it pins whatever version was there when it was frozen —
+// this is how protein3d served 0.4.1 against a published 0.8.0. Not a hard
+// failure: most configs still carry these until the next full regeneration
+// flips them to `latest/`. A version dir (`plugins/<pkg>/0.15.3/dist/`) is a
+// deliberate pin, not this.
+const LEGACY_PATH = /jbrowse\.org\/plugins\/(@[^/]+\/)?[^/]+\/dist\//
+const isLegacy = url => LEGACY_PATH.test(url)
 
 // Anything not served from the plugin store at all. This class was invisible:
 // ucsc2jbrowse/configs/renames.json named four unpkg.com bundles, frozen since
