@@ -142,6 +142,9 @@
       },
       "description": "UniProt/SwissProt Protein Annotations",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#section_features'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -249,6 +252,9 @@
       },
       "description": "UniProt/SwissProt Protein Primary/Secondary Structure Annotations",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#section_features'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -693,6 +699,9 @@
       },
       "description": "UniProt Mature Protein Products (Polypeptide Chains)",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -808,6 +817,9 @@
       },
       "description": "UniProt Domains",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -866,6 +878,9 @@
       },
       "description": "UniProt Amino Acid Modifications",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -994,6 +1009,9 @@
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes",
       "category": ["immu"],
+      "formatDetails": {
+        "feature": "jexl:{'pubMedID':feature.pubMedID?(replaceAll((''+feature.pubMedID),',','')==(''+feature.pubMedID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pubMedID),'|')[0]+'\">'+(split((''+feature.pubMedID),'|')[1]?split((''+feature.pubMedID),'|')[1]:(''+feature.pubMedID))+'</a>':feature.pubMedID):feature.pubMedID,'bCellID':feature.bCellID?(replaceAll((''+feature.bCellID),',','')==(''+feature.bCellID)?'<a href=\"'+'https://www.iedb.org/assayId/'+split((''+feature.bCellID),'|')[0]+'\">'+(split((''+feature.bCellID),'|')[1]?split((''+feature.bCellID),'|')[1]:(''+feature.bCellID))+'</a>':feature.bCellID):feature.bCellID,'referenceID':feature.referenceID?(replaceAll((''+feature.referenceID),',','')==(''+feature.referenceID)?'<a href=\"'+'https://www.iedb.org/refId/'+split((''+feature.referenceID),'|')[0]+'\">'+(split((''+feature.referenceID),'|')[1]?split((''+feature.referenceID),'|')[1]:(''+feature.referenceID))+'</a>':feature.referenceID):feature.referenceID,'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epId/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID,'epitopeSourceMoleculeAccession':feature.epitopeSourceMoleculeAccession?(replaceAll((''+feature.epitopeSourceMoleculeAccession),',','')==(''+feature.epitopeSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.epitopeSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.epitopeSourceMoleculeAccession),'|')[1]?split((''+feature.epitopeSourceMoleculeAccession),'|')[1]:(''+feature.epitopeSourceMoleculeAccession))+'</a>':feature.epitopeSourceMoleculeAccession):feature.epitopeSourceMoleculeAccession,'antigenSourceMoleculeAccession':feature.antigenSourceMoleculeAccession?(replaceAll((''+feature.antigenSourceMoleculeAccession),',','')==(''+feature.antigenSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.antigenSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.antigenSourceMoleculeAccession),'|')[1]?split((''+feature.antigenSourceMoleculeAccession),'|')[1]:(''+feature.antigenSourceMoleculeAccession))+'</a>':feature.antigenSourceMoleculeAccession):feature.antigenSourceMoleculeAccession}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1028,6 +1046,9 @@
       },
       "description": "UniProt Amino Acid Mutations",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1109,6 +1130,9 @@
       },
       "description": "UniProt Other Annotations",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1145,6 +1169,9 @@
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1226,6 +1253,9 @@
       },
       "description": "UniProt Repeats",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1307,6 +1337,9 @@
       },
       "description": "UniProt Sequence Conflicts",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#Sequence_conflict_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1388,6 +1421,9 @@
       },
       "description": "UniProt Splice Variants",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#sequences'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1775,6 +1811,9 @@
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) B-Cell Epitopes with Negative Assay Result",
       "category": ["immu"],
+      "formatDetails": {
+        "feature": "jexl:{'pubMedID':feature.pubMedID?(replaceAll((''+feature.pubMedID),',','')==(''+feature.pubMedID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pubMedID),'|')[0]+'\">'+(split((''+feature.pubMedID),'|')[1]?split((''+feature.pubMedID),'|')[1]:(''+feature.pubMedID))+'</a>':feature.pubMedID):feature.pubMedID,'bCellID':feature.bCellID?(replaceAll((''+feature.bCellID),',','')==(''+feature.bCellID)?'<a href=\"'+'https://www.iedb.org/assayId/'+split((''+feature.bCellID),'|')[0]+'\">'+(split((''+feature.bCellID),'|')[1]?split((''+feature.bCellID),'|')[1]:(''+feature.bCellID))+'</a>':feature.bCellID):feature.bCellID,'referenceID':feature.referenceID?(replaceAll((''+feature.referenceID),',','')==(''+feature.referenceID)?'<a href=\"'+'https://www.iedb.org/refId/'+split((''+feature.referenceID),'|')[0]+'\">'+(split((''+feature.referenceID),'|')[1]?split((''+feature.referenceID),'|')[1]:(''+feature.referenceID))+'</a>':feature.referenceID):feature.referenceID,'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epId/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID,'epitopeSourceMoleculeAccession':feature.epitopeSourceMoleculeAccession?(replaceAll((''+feature.epitopeSourceMoleculeAccession),',','')==(''+feature.epitopeSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.epitopeSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.epitopeSourceMoleculeAccession),'|')[1]?split((''+feature.epitopeSourceMoleculeAccession),'|')[1]:(''+feature.epitopeSourceMoleculeAccession))+'</a>':feature.epitopeSourceMoleculeAccession):feature.epitopeSourceMoleculeAccession,'antigenSourceMoleculeAccession':feature.antigenSourceMoleculeAccession?(replaceAll((''+feature.antigenSourceMoleculeAccession),',','')==(''+feature.antigenSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.antigenSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.antigenSourceMoleculeAccession),'|')[1]?split((''+feature.antigenSourceMoleculeAccession),'|')[1]:(''+feature.antigenSourceMoleculeAccession))+'</a>':feature.antigenSourceMoleculeAccession):feature.antigenSourceMoleculeAccession}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1970,6 +2009,9 @@
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) Curated T-Cell Epitopes, MHC Class I",
       "category": ["immu"],
+      "formatDetails": {
+        "feature": "jexl:{'pubMedID':feature.pubMedID?(replaceAll((''+feature.pubMedID),',','')==(''+feature.pubMedID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pubMedID),'|')[0]+'\">'+(split((''+feature.pubMedID),'|')[1]?split((''+feature.pubMedID),'|')[1]:(''+feature.pubMedID))+'</a>':feature.pubMedID):feature.pubMedID,'bCellID':feature.bCellID?(replaceAll((''+feature.bCellID),',','')==(''+feature.bCellID)?'<a href=\"'+'https://www.iedb.org/assayId/'+split((''+feature.bCellID),'|')[0]+'\">'+(split((''+feature.bCellID),'|')[1]?split((''+feature.bCellID),'|')[1]:(''+feature.bCellID))+'</a>':feature.bCellID):feature.bCellID,'referenceID':feature.referenceID?(replaceAll((''+feature.referenceID),',','')==(''+feature.referenceID)?'<a href=\"'+'https://www.iedb.org/refId/'+split((''+feature.referenceID),'|')[0]+'\">'+(split((''+feature.referenceID),'|')[1]?split((''+feature.referenceID),'|')[1]:(''+feature.referenceID))+'</a>':feature.referenceID):feature.referenceID,'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epId/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID,'epitopeSourceMoleculeAccession':feature.epitopeSourceMoleculeAccession?(replaceAll((''+feature.epitopeSourceMoleculeAccession),',','')==(''+feature.epitopeSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.epitopeSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.epitopeSourceMoleculeAccession),'|')[1]?split((''+feature.epitopeSourceMoleculeAccession),'|')[1]:(''+feature.epitopeSourceMoleculeAccession))+'</a>':feature.epitopeSourceMoleculeAccession):feature.epitopeSourceMoleculeAccession,'antigenSourceMoleculeAccession':feature.antigenSourceMoleculeAccession?(replaceAll((''+feature.antigenSourceMoleculeAccession),',','')==(''+feature.antigenSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.antigenSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.antigenSourceMoleculeAccession),'|')[1]?split((''+feature.antigenSourceMoleculeAccession),'|')[1]:(''+feature.antigenSourceMoleculeAccession))+'</a>':feature.antigenSourceMoleculeAccession):feature.antigenSourceMoleculeAccession}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -2004,6 +2046,9 @@
       },
       "description": "Immune Epitope Database and Analysis Resource (IEDB) Curated T-Cell Epitopes, MHC Class II",
       "category": ["immu"],
+      "formatDetails": {
+        "feature": "jexl:{'pubMedID':feature.pubMedID?(replaceAll((''+feature.pubMedID),',','')==(''+feature.pubMedID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pubMedID),'|')[0]+'\">'+(split((''+feature.pubMedID),'|')[1]?split((''+feature.pubMedID),'|')[1]:(''+feature.pubMedID))+'</a>':feature.pubMedID):feature.pubMedID,'bCellID':feature.bCellID?(replaceAll((''+feature.bCellID),',','')==(''+feature.bCellID)?'<a href=\"'+'https://www.iedb.org/assayId/'+split((''+feature.bCellID),'|')[0]+'\">'+(split((''+feature.bCellID),'|')[1]?split((''+feature.bCellID),'|')[1]:(''+feature.bCellID))+'</a>':feature.bCellID):feature.bCellID,'referenceID':feature.referenceID?(replaceAll((''+feature.referenceID),',','')==(''+feature.referenceID)?'<a href=\"'+'https://www.iedb.org/refId/'+split((''+feature.referenceID),'|')[0]+'\">'+(split((''+feature.referenceID),'|')[1]?split((''+feature.referenceID),'|')[1]:(''+feature.referenceID))+'</a>':feature.referenceID):feature.referenceID,'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epId/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID,'epitopeSourceMoleculeAccession':feature.epitopeSourceMoleculeAccession?(replaceAll((''+feature.epitopeSourceMoleculeAccession),',','')==(''+feature.epitopeSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.epitopeSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.epitopeSourceMoleculeAccession),'|')[1]?split((''+feature.epitopeSourceMoleculeAccession),'|')[1]:(''+feature.epitopeSourceMoleculeAccession))+'</a>':feature.epitopeSourceMoleculeAccession):feature.epitopeSourceMoleculeAccession,'antigenSourceMoleculeAccession':feature.antigenSourceMoleculeAccession?(replaceAll((''+feature.antigenSourceMoleculeAccession),',','')==(''+feature.antigenSourceMoleculeAccession)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.antigenSourceMoleculeAccession),'|')[0]+'\">'+(split((''+feature.antigenSourceMoleculeAccession),'|')[1]?split((''+feature.antigenSourceMoleculeAccession),'|')[1]:(''+feature.antigenSourceMoleculeAccession))+'</a>':feature.antigenSourceMoleculeAccession):feature.antigenSourceMoleculeAccession}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -2103,6 +2148,9 @@
       },
       "description": "UniProt/SwissProt Amino Acid Substitutions",
       "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'MuPIT protein structures':'<a href=\"'+'http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20'+feature.start+'\">'+'MuPIT protein structures'+'</a>','variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId,'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -2237,7 +2285,10 @@
         }
       },
       "description": "muPIT - Mapping Genomic Positions on Protein Structures",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'MuPIT protein structures':'<a href=\"'+'http://mupit-ebola.icm.jhu.edu/ResidueFileUpload?residues=chr1%20'+feature.start+'\">'+'MuPIT protein structures'+'</a>'}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -2269,7 +2320,10 @@
         }
       },
       "description": "Pfam Domains in NCBI Genes",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'http://pfam.sanger.ac.uk/family/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -2423,12 +2477,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

@@ -274,7 +274,10 @@
         }
       },
       "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -341,7 +344,10 @@
         }
       },
       "description": "BDGP Gene Disruption Project P-element Insertion Locations",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'GDP Strain ID':feature.name?'<a href=\"'+'http://flypush.imgen.bcm.tmc.edu/pscreen/plqlsearch2.cgi?gene=&mapping=&chromosome=Any&bg='+(''+feature.name)+'&remarks=&orderby=Chromosome&submit=%20%20%20%20Start%20Query%20%20%20%20'+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -643,12 +649,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

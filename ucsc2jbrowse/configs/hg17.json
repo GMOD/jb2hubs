@@ -408,7 +408,10 @@
         }
       },
       "description": "Affymetrix Human Exon 1.0 Probe Sets",
-      "category": ["Expression"]
+      "category": ["Expression"],
+      "formatDetails": {
+        "feature": "jexl:{'Netaffx Link':feature.name?'<a href=\"'+'https://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -861,7 +864,10 @@
         }
       },
       "description": "Alternate Haplotypes to Reference Sequence Correspondence",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'Corresponding position':feature.name?'<a href=\"'+'https://genomes.jbrowse.org/ucsc/launch/?db='+'hg17'+'&position='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1638,7 +1644,10 @@
         }
       },
       "description": "FirstEF: First-Exon and Promoter Prediction",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':'<a href=\"'+'https://esefinder.ahc.umn.edu/cgi-bin/tools/ESE3/esefinder.cgiReadme/README.html'+'\">'+'Outside Link'+'</a>'}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -2775,7 +2784,10 @@
         }
       },
       "description": "Quantitative Trait Locus (from RGD)",
-      "category": ["Phenotypes, Variants, and Literature"]
+      "category": ["Phenotypes, Variants, and Literature"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':'<a href=\"'+'http://rgd.mcw.edu/generalSearch/RgdSearch.jsp?quickSearch=1&searchKeyword='+'\">'+'Outside Link'+'</a>'}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -3233,7 +3245,10 @@
         }
       },
       "description": "HMR Conserved Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'Transfac matrix link':feature.name?'<a href=\"'+'http://www.gene-regulation.com/cgi-bin/pub/databases/transfac/getTF.cgi?AC='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -3303,7 +3318,10 @@
         }
       },
       "description": "C/D and H/ACA Box snoRNAs, scaRNAs, and microRNAs from snoRNABase and miRBase",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'Laboratoire de Biologie Moleculaire Eucaryote':feature.name?'<a href=\"'+'http://www-snorna.biotoul.fr/plus.php?id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -4629,12 +4647,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

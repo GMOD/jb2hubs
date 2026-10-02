@@ -1064,7 +1064,10 @@
         }
       },
       "description": "Jackson Laboratory / Mouse Genome Informatics Allele",
-      "category": ["phenoAllele"]
+      "category": ["phenoAllele"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI Phenotypic Allele':feature.name?'<a href=\"'+'https://www.informatics.jax.org//javawi2/servlet/WIFetch?page=alleleDetail&id='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1099,7 +1102,10 @@
         }
       },
       "description": "Jackson Laboratory / Mouse Genome Informatics Phenotype",
-      "category": ["phenoAllele"]
+      "category": ["phenoAllele"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI Phenotypic Allele(s)':feature.name?'<a href=\"'+'https://www.informatics.jax.org//searches/allele_report.cgi?markerID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1134,7 +1140,10 @@
         }
       },
       "description": "Quantitative Trait Loci From Jackson Laboratory / Mouse Genome Informatics",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'MGI QTL Detail':feature.name?'<a href=\"'+'https://www.informatics.jax.org//marker/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1169,7 +1178,10 @@
         }
       },
       "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -2227,12 +2239,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

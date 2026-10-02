@@ -78,7 +78,10 @@
         }
       },
       "description": "Affymetrix Human Exon 1.0 Probe Sets",
-      "category": ["Expression"]
+      "category": ["Expression"],
+      "formatDetails": {
+        "feature": "jexl:{'Netaffx Link':feature.name?'<a href=\"'+'http://www.affymetrix.com/analysis/netaffx/exon/probe_set.affx?pk=1:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -726,7 +729,10 @@
         }
       },
       "description": "FirstEF: First-Exon and Promoter Prediction",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':'<a href=\"'+'https://esefinder.ahc.umn.edu/cgi-bin/tools/ESE3/esefinder.cgiReadme/README.html'+'\">'+'Outside Link'+'</a>'}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1014,7 +1020,10 @@
         }
       },
       "description": "MicroRNAs from miRBase",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'miRBase':feature.name?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -1504,7 +1513,10 @@
         }
       },
       "description": "HMR Conserved Transcription Factor Binding Sites",
-      "category": ["Regulation"]
+      "category": ["Regulation"],
+      "formatDetails": {
+        "feature": "jexl:{'Transfac matrix link':feature.name?'<a href=\"'+'http://www.gene-regulation.com/cgi-bin/pub/databases/transfac/getTF.cgi?AC='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -2435,12 +2447,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

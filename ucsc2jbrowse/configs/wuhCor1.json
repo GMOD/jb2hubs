@@ -70,7 +70,10 @@
         }
       },
       "description": "Nextstrain year-letter clade designations (19A, 19B, 20A, etc.)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'View in Nextstrain':feature.name?'<a href=\"'+'https://nextstrain.org/ncov?d=tree&m=div&label=clade:'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "trackId": "wuhCor1-A_bind_avg",
@@ -173,7 +176,10 @@
         }
       },
       "description": "Alpha VOC (B.1.1.7 UK Sep-2020) amino acid mutations in 9838 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.1.7 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.1.7'+'\">'+'B.1.1.7 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-bCellEpitopes",
@@ -415,6 +421,9 @@
       },
       "description": "NCBI Genes from NC_045512.2",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "subfeatures": "jexl:{'product':feature.product?(replaceAll((''+feature.product),',','')==(''+feature.product)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.product),'|')[0]+'\">'+(split((''+feature.product),'|')[1]?split((''+feature.product),'|')[1]:(''+feature.product))+'</a>':feature.product):feature.product,'geneId':feature.geneId?(replaceAll((''+feature.geneId),',','')==(''+feature.geneId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneId),'|')[0]+'\">'+(split((''+feature.geneId),'|')[1]?split((''+feature.geneId),'|')[1]:(''+feature.geneId))+'</a>':feature.geneId):feature.geneId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -460,6 +469,9 @@
       },
       "description": "NCBI Proteins: annotated mature peptide products",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "subfeatures": "jexl:{'product':feature.product?(replaceAll((''+feature.product),',','')==(''+feature.product)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.product),'|')[0]+'\">'+(split((''+feature.product),'|')[1]?split((''+feature.product),'|')[1]:(''+feature.product))+'</a>':feature.product):feature.product,'geneId':feature.geneId?(replaceAll((''+feature.geneId),',','')==(''+feature.geneId)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneId),'|')[0]+'\">'+(split((''+feature.geneId),'|')[1]?split((''+feature.geneId),'|')[1]:(''+feature.geneId))+'</a>':feature.geneId):feature.geneId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -627,6 +639,9 @@
       },
       "description": "UniProt Precursor Proteins (before cleavage into protein products)",
       "category": ["uniprot"],
+      "formatDetails": {
+        "subfeatures": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -738,7 +753,10 @@
         }
       },
       "description": "Alpha VOC (B.1.1.7 UK Sep-2020) nucleotide mutations in 9838 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.1.7 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.1.7'+'\">'+'B.1.1.7 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-C_bind_avg",
@@ -1123,6 +1141,9 @@
       },
       "description": "UniProt Protein Products (Polypeptide Chains, after cleavage)",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#ptm_processing'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1207,7 +1228,10 @@
         }
       },
       "description": "Beta VOC (B.1.351 SA Dec-2020) amino acid mutations in 793 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.351 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.351'+'\">'+'B.1.351 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-cd8Epitopes",
@@ -1363,6 +1387,9 @@
       },
       "description": "UniProt highlighted \"Regions of Interest\"",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1526,6 +1553,9 @@
       },
       "description": "UniProt Signal Peptides",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1610,7 +1640,10 @@
         }
       },
       "description": "Beta VOC (B.1.351 SA Dec-2020) nucleotide mutations in 793 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.351 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.351'+'\">'+'B.1.351 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_Ctrl_LC169",
@@ -1737,7 +1770,10 @@
         }
       },
       "description": "UniProt Extracellular Domain",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId}"
+      }
     },
     {
       "trackId": "wuhCor1-Kim_TRS_sgmRNAs",
@@ -2091,7 +2127,10 @@
         }
       },
       "description": "Gamma VOC (P.1 Brazil Nov-2020) amino acid mutations in 78 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'P.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=P.1'+'\">'+'P.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-Kim_non-TRS_sgmRNAs",
@@ -2300,6 +2339,9 @@
       },
       "description": "UniProt Transmembrane Domains",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -2417,7 +2459,10 @@
         }
       },
       "description": "UniProt Cytoplasmic Domains",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'acc':feature.acc?(replaceAll((''+feature.acc),',','')==(''+feature.acc)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.acc),'|')[0]+'\">'+(split((''+feature.acc),'|')[1]?split((''+feature.acc),'|')[1]:(''+feature.acc))+'</a>':feature.acc):feature.acc,'hgncId':feature.hgncId?(replaceAll((''+feature.hgncId),',','')==(''+feature.hgncId)?'<a href=\"'+'https://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.hgncId),'|')[0]+'\">'+(split((''+feature.hgncId),'|')[1]?split((''+feature.hgncId),'|')[1]:(''+feature.hgncId))+'</a>':feature.hgncId):feature.hgncId}"
+      }
     },
     {
       "trackId": "wuhCor1-G_bind_avg",
@@ -2494,7 +2539,10 @@
         }
       },
       "description": "Gamma VOC (P.1 Brazil Nov-2020) nucleotide mutations in 78 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'P.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=P.1'+'\">'+'P.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-COV2-2479Total",
@@ -2722,7 +2770,10 @@
         }
       },
       "description": "Delta VOC (B.1.617.2 India Oct-2020) amino acid mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.617.2 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.617.2'+'\">'+'B.1.617.2 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-H_bind_avg",
@@ -2917,7 +2968,10 @@
         }
       },
       "description": "Delta VOC (B.1.617.2 India Oct-2020) nucleotide mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.617.2 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.617.2'+'\">'+'B.1.617.2 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-unipCov2DisulfBond",
@@ -2948,6 +3002,9 @@
       },
       "description": "UniProt Disulfide Bonds",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -3104,6 +3161,9 @@
       },
       "description": "UniProt Domains",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -3240,6 +3300,9 @@
       },
       "description": "UniProt Amino Acid Glycosylation/Phosphorylation sites",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#aaMod_section'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -3347,7 +3410,10 @@
         }
       },
       "description": "Omicron (BA.1 SA Nov-2021) amino acid mutations from cov-lineages.org (Nov 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.1'+'\">'+'BA.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P52",
@@ -3730,6 +3796,9 @@
       },
       "description": "UniProt Amino Acid Mutations",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#pathology_and_biotech'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids,'variationId':feature.variationId?(replaceAll((''+feature.variationId),',','')==(''+feature.variationId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.variationId),'|')[0]+'\">'+(split((''+feature.variationId),'|')[1]?split((''+feature.variationId),'|')[1]:(''+feature.variationId))+'</a>':feature.variationId):feature.variationId}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -3763,7 +3832,10 @@
         }
       },
       "description": "Omicron VOC (BA.1 SA Nov-2021) nucleotide mutations identified from GISAID sequences (Nov 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.1'+'\">'+'BA.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-IgM_Z-score-_COVID-19_patients_P6",
@@ -3840,6 +3912,9 @@
       },
       "description": "Human Interacting Proteins from Gordon et al. (* = druggable)",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'pmid':feature.pmid?(replaceAll((''+feature.pmid),',','')==(''+feature.pmid)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmid),'|')[0]+'\">'+(split((''+feature.pmid),'|')[1]?split((''+feature.pmid),'|')[1]:(''+feature.pmid))+'</a>':feature.pmid):feature.pmid}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -3995,7 +4070,10 @@
         }
       },
       "description": "Omicron BA.2 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2'+'\">'+'BA.2 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-unipCov2Other",
@@ -4024,6 +4102,9 @@
       },
       "description": "UniProt Other Annotations",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -4059,6 +4140,9 @@
       },
       "description": "UniProt Protein Primary/Secondary Structure Annotations",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#structure'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -4244,7 +4328,10 @@
         }
       },
       "description": "Omicron VOC (BA.2) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2'+'\">'+'BA.2 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-unipCov2Repeat",
@@ -4273,6 +4360,9 @@
       },
       "description": "UniProt Repeats",
       "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -4408,7 +4498,10 @@
         }
       },
       "description": "Omicron BA.2.75 amino acid mutations from 287 GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2.75 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2.75'+'\">'+'BA.2.75 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-P_bind_avg",
@@ -4587,7 +4680,10 @@
         }
       },
       "description": "Omicron VOC (BA.2.75) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2.75 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2.75'+'\">'+'BA.2.75 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-Q_bind_avg",
@@ -4742,7 +4838,10 @@
         }
       },
       "description": "Lambda VOI (C.37 Peru Mar-2020) amino acid mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'C.37 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=C.37'+'\">'+'C.37 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-R_bind_avg",
@@ -4921,7 +5020,10 @@
         }
       },
       "description": "Lambda VOI (C.37 Peru Mar-2020) nucleotide mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'C.37 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=C.37'+'\">'+'C.37 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-S_bind_avg",
@@ -5100,7 +5202,10 @@
         }
       },
       "description": "Mu VOI (B.1.621 Columbia Jan-2021) amino acid mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.621 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.621'+'\">'+'B.1.621 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-A_120Total",
@@ -5279,7 +5384,10 @@
         }
       },
       "description": "Mu VOI (B.1.621 Columbia Jan-2021) nucleotide mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.621 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.621'+'\">'+'B.1.621 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-B_26Total",
@@ -5458,7 +5566,10 @@
         }
       },
       "description": "Omicron XBB.1.5 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.5 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.5'+'\">'+'XBB.1.5 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-B_113Total",
@@ -5794,7 +5905,10 @@
         }
       },
       "description": "Omicron VOC (XBB.1.5) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.5 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.5'+'\">'+'XBB.1.5 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-PhyloCSFpower",
@@ -6161,7 +6275,10 @@
         }
       },
       "description": "Omicron XBB.1.16 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.16 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.16'+'\">'+'XBB.1.16 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-C_104Total",
@@ -6290,7 +6407,10 @@
         }
       },
       "description": "Omicron VOC (XBB.1.16) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.16 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.16'+'\">'+'XBB.1.16 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-D_33Total",
@@ -6419,7 +6539,10 @@
         }
       },
       "description": "Omicron EG.5.1 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'EG.5.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=EG.5.1'+'\">'+'EG.5.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-D_76Total",
@@ -6548,7 +6671,10 @@
         }
       },
       "description": "Omicron VOC (EG.5.1) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'EG.5.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=EG.5.1'+'\">'+'EG.5.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-E_28Total",
@@ -6677,7 +6803,10 @@
         }
       },
       "description": "Omicron XBB.1.5.70 amino acid mutations from GISAID sequences (Jan 29, 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.5.70 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.5.70'+'\">'+'XBB.1.5.70 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-E_104Total",
@@ -6806,7 +6935,10 @@
         }
       },
       "description": "Omicron VOC (XBB.1.5.70) nucleotide mutations identified from GISAID sequences (Jan 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.5.70 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.5.70'+'\">'+'XBB.1.5.70 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-F_48Total",
@@ -6935,7 +7067,10 @@
         }
       },
       "description": "Omicron HK.3 amino acid mutations from GISAID sequences (Jan 29, 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'HK.3 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=HK.3'+'\">'+'HK.3 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-F_115Total",
@@ -7064,7 +7199,10 @@
         }
       },
       "description": "Omicron VOC (HK.3) nucleotide mutations identified from GISAID sequences (Jan 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'HK.3 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=HK.3'+'\">'+'HK.3 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-G_18Total",
@@ -7163,7 +7301,10 @@
         }
       },
       "description": "Omicron JN.1 amino acid mutations from GISAID sequences (Jan 29, 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'JN.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=JN.1'+'\">'+'JN.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-G_94Total",
@@ -7424,7 +7565,10 @@
         }
       },
       "description": "Omicron VOC (JN.1) nucleotide mutations identified from GISAID sequences (Jan 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'JN.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=JN.1'+'\">'+'JN.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-pdb",
@@ -7454,7 +7598,10 @@
         }
       },
       "description": "Protein Data Bank (PDB) Sequence Matches",
-      "category": ["Genes and Gene Predictions"]
+      "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'Link to PDB Covid Portal at the EBI':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/pdbe/pdbe-kb/covid19/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "trackId": "wuhCor1-H_61Total",
@@ -8399,7 +8546,10 @@
         }
       },
       "description": "Omicron BA.2.86 amino acid mutations from GISAID sequences (Jan 29, 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2.86 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2.86'+'\">'+'BA.2.86 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-contacts",
@@ -8428,6 +8578,9 @@
       },
       "description": "Potential contact residues in PDB structures of viral proteins",
       "category": ["Genes and Gene Predictions"],
+      "formatDetails": {
+        "feature": "jexl:{'Link to 3D structure viewer':feature.name?'<a href=\"'+'http://soe.ucsc.edu/~afyfe/covid/hub/t12.html?struct='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -8771,7 +8924,10 @@
         }
       },
       "description": "Omicron VOC (BA.2.86) nucleotide mutations identified from GISAID sequences (Jan 2024)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2.86 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2.86'+'\">'+'BA.2.86 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-I_26Total",
@@ -8900,7 +9056,10 @@
         }
       },
       "description": "Epsilon VUM (B.1.429 USA Mar-2020) amino acid mutations in 1360 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.429 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.429'+'\">'+'B.1.429 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-I_102Total",
@@ -9123,7 +9282,10 @@
         }
       },
       "description": "Epsilon VUM (B.1.429 USA Mar-2020) nucleotide mutations in 1360 GISAID sequences (Feb 5, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.429 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.429'+'\">'+'B.1.429 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-J_15Total",
@@ -9252,7 +9414,10 @@
         }
       },
       "description": "Eta VUM (B.1.525 Dec-2020) amino acid mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.525 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.525'+'\">'+'B.1.525 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-J_121Total",
@@ -9381,7 +9546,10 @@
         }
       },
       "description": "Eta VUM (B.1.525 Dec-2020) nucleotide mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.525 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.525'+'\">'+'B.1.525 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-K_29Total",
@@ -9510,7 +9678,10 @@
         }
       },
       "description": "Iota VUM (B.1.526 USA Nov-2020) amino acid mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.526 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.526'+'\">'+'B.1.526 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-K_103Total",
@@ -9639,7 +9810,10 @@
         }
       },
       "description": "Iota VUM (B.1.526 USA Nov-2020) nucleotide mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.526 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.526'+'\">'+'B.1.526 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-mRNA-seq_24hr_2",
@@ -9744,7 +9918,10 @@
         }
       },
       "description": "Kappa VUM (B.1.617.1 India Oct-2020) amino acid mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.617.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.617.1'+'\">'+'B.1.617.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-nextstrainFreq20B",
@@ -10011,7 +10188,10 @@
         }
       },
       "description": "Kappa VUM (B.1.617.1 India Oct-2020) nucleotide  mutations in 3000 GISAID sequences (Sep 10, 2021)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'B.1.617.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=B.1.617.1'+'\">'+'B.1.617.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_509",
@@ -10086,7 +10266,10 @@
         }
       },
       "description": "Omicron BA.4 amino acid mutations from 573 GISAID sequences (May 4, 2022)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.4 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.4'+'\">'+'BA.4 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igm_COVID_14",
@@ -10161,7 +10344,10 @@
         }
       },
       "description": "Omicron VOC (BA.4) nucleotide mutations identified from 573 GISAID sequences (May 2022)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.4 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.4'+'\">'+'BA.4 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igm_COVID_406",
@@ -10236,7 +10422,10 @@
         }
       },
       "description": "Omicron BA.5 amino acid mutations from 287 GISAID sequences (May 4, 2022)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.5 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.5'+'\">'+'BA.5 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_415",
@@ -10311,7 +10500,10 @@
         }
       },
       "description": "Omicron VOC (BA.5) nucleotide mutations identified from 287 GISAID sequences (May 2022)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.5 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.5'+'\">'+'BA.5 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_405",
@@ -10386,7 +10578,10 @@
         }
       },
       "description": "Omicron BA.2.12.1 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2.12.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2.12.1'+'\">'+'BA.2.12.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_404",
@@ -10461,7 +10656,10 @@
         }
       },
       "description": "Omicron VOC (BA.2.12.1) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BA.2.12.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BA.2.12.1'+'\">'+'BA.2.12.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_528",
@@ -10536,7 +10734,10 @@
         }
       },
       "description": "Omicron BQ.1 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BQ.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BQ.1'+'\">'+'BQ.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_508",
@@ -10611,7 +10812,10 @@
         }
       },
       "description": "Omicron VOC (BQ.1) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'BQ.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=BQ.1'+'\">'+'BQ.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_406",
@@ -10686,7 +10890,10 @@
         }
       },
       "description": "Omicron XBB amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB'+'\">'+'XBB Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-nextstrainFreq20C",
@@ -11625,7 +11832,10 @@
         }
       },
       "description": "Omicron VOC (XBB) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB'+'\">'+'XBB Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_11",
@@ -11700,7 +11910,10 @@
         }
       },
       "description": "Omicron CH.1.1 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'CH.1.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=CH.1.1'+'\">'+'CH.1.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_12",
@@ -11775,7 +11988,10 @@
         }
       },
       "description": "Omicron VOC (CH.1.1) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'CH.1.1 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=CH.1.1'+'\">'+'CH.1.1 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_510",
@@ -11850,7 +12066,10 @@
         }
       },
       "description": "Omicron XBB.1.9 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.9 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.9'+'\">'+'XBB.1.9 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igm_COVID_12",
@@ -11925,7 +12144,10 @@
         }
       },
       "description": "Omicron VOC (XBB.1.9) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.1.9 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.1.9'+'\">'+'XBB.1.9 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igg_COVID_530",
@@ -12000,7 +12222,10 @@
         }
       },
       "description": "Omicron XBB.2.3 amino acid mutations from GISAID sequences (Sep 22, 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.2.3 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.2.3'+'\">'+'XBB.2.3 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igm_COVID_4371",
@@ -12075,7 +12300,10 @@
         }
       },
       "description": "Omicron VOC (XBB.2.3) nucleotide mutations identified from GISAID sequences (Sep 2023)",
-      "category": ["Variation and Repeats"]
+      "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'XBB.2.3 Situation Report at outbreak.info':'<a href=\"'+'https://outbreak.info/situation-reports?pango=XBB.2.3'+'\">'+'XBB.2.3 Situation Report at outbreak.info'+'</a>'}"
+      }
     },
     {
       "trackId": "wuhCor1-igm_COVID_407",
@@ -12873,7 +13101,10 @@
         }
       },
       "description": "Addgene Plasmid Sequences alignable to the Genome",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'Link to the Addgene plasmid page':feature.name?'<a href=\"'+'https://www.addgene.org/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "trackId": "wuhCor1-cd8escape",
@@ -12925,7 +13156,10 @@
         }
       },
       "description": "CD8 Epitopes predicted by NetMHC and Rosetta",
-      "category": ["immu"]
+      "category": ["immu"],
+      "formatDetails": {
+        "feature": "jexl:{'Link to Rosetta Model':feature.name?'<a href=\"'+'https://rosettamhc.chemistry.ucsc.edu/?epitope='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined,'name':feature.name?(replaceAll((''+feature.name),',','')==(''+feature.name)?'<a href=\"'+'https://rosettamhc.chemistry.ucsc.edu/?epitope='+split((''+feature.name),'|')[0]+'\">'+(split((''+feature.name),'|')[1]?split((''+feature.name),'|')[1]:(''+feature.name))+'</a>':feature.name):feature.name}"
+      }
     },
     {
       "trackId": "wuhCor1-igm_COVID_409",
@@ -13003,6 +13237,9 @@
       },
       "description": "Mutations that confer drug resistance (Anna Niewiadomska, BV-BRC)",
       "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'urls':feature.urls?(replaceAll((''+feature.urls),',','')==(''+feature.urls)?'<a href=\"'+split((''+feature.urls),'|')[0]+'\">'+(split((''+feature.urls),'|')[1]?split((''+feature.urls),'|')[1]:(''+feature.urls))+'</a>':feature.urls):feature.urls}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -13242,7 +13479,10 @@
         }
       },
       "description": "Protease Cleavage Sites",
-      "category": ["uniprot"]
+      "category": ["uniprot"],
+      "formatDetails": {
+        "feature": "jexl:{'uniProtId':feature.uniProtId?(replaceAll((''+feature.uniProtId),',','')==(''+feature.uniProtId)?'<a href=\"'+'http://www.uniprot.org/uniprot/'+split((''+feature.uniProtId),'|')[0]+'#family_and_domains'+'\">'+(split((''+feature.uniProtId),'|')[1]?split((''+feature.uniProtId),'|')[1]:(''+feature.uniProtId))+'</a>':feature.uniProtId):feature.uniProtId,'pmids':feature.pmids?(replaceAll((''+feature.pmids),',','')==(''+feature.pmids)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/pubmed/'+split((''+feature.pmids),'|')[0]+'\">'+(split((''+feature.pmids),'|')[1]?split((''+feature.pmids),'|')[1]:(''+feature.pmids))+'</a>':feature.pmids):feature.pmids}"
+      }
     },
     {
       "trackId": "wuhCor1-recomb",
@@ -13300,6 +13540,9 @@
       },
       "description": "Spike protein mutations from community annotation (Feb 2021)",
       "category": ["Variation and Repeats"],
+      "formatDetails": {
+        "feature": "jexl:{'geographyChartsUrl':feature.geographyChartsUrl?(replaceAll((''+feature.geographyChartsUrl),',','')==(''+feature.geographyChartsUrl)?'<a href=\"'+split((''+feature.geographyChartsUrl),'|')[0]+'\">'+(split((''+feature.geographyChartsUrl),'|')[1]?split((''+feature.geographyChartsUrl),'|')[1]:(''+feature.geographyChartsUrl))+'</a>':feature.geographyChartsUrl):feature.geographyChartsUrl,'nextstrainBuildUrl':feature.nextstrainBuildUrl?(replaceAll((''+feature.nextstrainBuildUrl),',','')==(''+feature.nextstrainBuildUrl)?'<a href=\"'+split((''+feature.nextstrainBuildUrl),'|')[0]+'\">'+(split((''+feature.nextstrainBuildUrl),'|')[1]?split((''+feature.nextstrainBuildUrl),'|')[1]:(''+feature.nextstrainBuildUrl))+'</a>':feature.nextstrainBuildUrl):feature.nextstrainBuildUrl}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -13331,7 +13574,10 @@
         }
       },
       "description": "Validated epitopes from IEDB",
-      "category": ["immu"]
+      "category": ["immu"],
+      "formatDetails": {
+        "feature": "jexl:{'epitopeID':feature.epitopeID?(replaceAll((''+feature.epitopeID),',','')==(''+feature.epitopeID)?'<a href=\"'+'https://www.iedb.org/epitope/'+split((''+feature.epitopeID),'|')[0]+'\">'+(split((''+feature.epitopeID),'|')[1]?split((''+feature.epitopeID),'|')[1]:(''+feature.epitopeID))+'</a>':feature.epitopeID):feature.epitopeID}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -13550,7 +13796,10 @@
         }
       },
       "description": "Rfam families",
-      "category": ["mRNA and EST"]
+      "category": ["mRNA and EST"],
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://rfam.org/family/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -13648,7 +13897,10 @@
         }
       },
       "description": "Accession at INSDC - International Nucleotide Sequence Database Collaboration",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'INSDC link':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -13681,7 +13933,10 @@
         }
       },
       "description": "RefSeq Accession",
-      "category": ["Mapping and Sequencing"]
+      "category": ["Mapping and Sequencing"],
+      "formatDetails": {
+        "feature": "jexl:{'RefSeq accession':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
     },
     {
       "type": "FeatureTrack",
@@ -13826,6 +14081,10 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
     }
   ],
@@ -13861,12 +14120,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {
