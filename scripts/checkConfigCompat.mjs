@@ -17,7 +17,7 @@
 //   - the app renders its error page instead of a session (fatal: an unknown
 //     track type throws out of config hydration, and a plugin url that fails to
 //     load rejects PluginLoader's Promise.all, which fails the whole session)
-//   - a plugin named by the config did not define its global
+//   - a plugin named by the config did not load
 //   - fewer tracks are readable than the config declares
 //   - (--offline-ucsc only) the assembly never loaded, so the session's view
 //     has no displayedRegions
@@ -248,9 +248,9 @@ async function declaredContent(url, localBody) {
   return {
     plugins: config.plugins ?? [],
     trackCount: config.tracks?.length ?? 0,
-    pluginGlobals: (config.plugins ?? [])
+    expectedPlugins: (config.plugins ?? [])
       .filter(p => !VENDORED_BY_HOST.has(p.name))
-      .map(p => `JBrowsePlugin${p.name}`),
+      .map(p => ({ name: p.name, storePlugin: p.storePlugin })),
     vendored: (config.plugins ?? [])
       .filter(p => VENDORED_BY_HOST.has(p.name))
       .map(p => p.name),
@@ -336,10 +336,27 @@ async function probe(browser, hostVersion, configUrl, declared, localBody) {
         : undefined
     })
 
-    result.missingPluginGlobals = await page.evaluate(
-      globals => globals.filter(g => !(g in window)),
-      declared.pluginGlobals,
-    )
+    // A UMD build defines `JBrowsePlugin<name>` on window; an ESM build, which
+    // a v5 host loads when it resolves a `storePlugin` ref, defines nothing
+    // there. Both land in the plugin manager's runtime definitions, which
+    // records only the loads that succeeded. The resolved ESM definition keeps
+    // the ref but not the name, so match on either.
+    result.missingPlugins = await page.evaluate(expected => {
+      const w = /** @type {Record<string, any>} */ (window)
+      const loaded = w.JBrowseRootModel?.pluginManager?.runtimePluginDefinitions
+      return expected
+        .filter(
+          p =>
+            !(`JBrowsePlugin${p.name}` in w) &&
+            !loaded?.some(
+              d =>
+                d.name === p.name ||
+                (p.storePlugin !== undefined &&
+                  d.storePlugin === p.storePlugin),
+            ),
+        )
+        .map(p => p.name)
+    }, declared.expectedPlugins)
 
     // Track count as the host itself sees it, so a config the host silently
     // truncates (rather than throwing on) is still caught.
@@ -441,7 +458,7 @@ for (const name of configNames) {
   const declared = await declaredContent(configUrl, localBody)
   console.log(
     `\n${name}${localBody === undefined ? '' : ' (working tree)'}: ` +
-      `${declared.trackCount} tracks, ${declared.pluginGlobals.length} plugins` +
+      `${declared.trackCount} tracks, ${declared.expectedPlugins.length} plugins` +
       (declared.vendored.length > 0
         ? ` (+${declared.vendored.join(', ')} vendored by newer hosts)`
         : ''),
@@ -459,8 +476,8 @@ for (const name of configNames) {
       r.fatal && `FATAL ${r.fatal}`,
       r.threw && `threw ${r.threw}`,
       !r.settled && !r.fatal && 'never settled (no session, no error page)',
-      r.missingPluginGlobals?.length > 0 &&
-        `plugins did not load: ${r.missingPluginGlobals.join(', ')}`,
+      r.missingPlugins?.length > 0 &&
+        `plugins did not load: ${r.missingPlugins.join(', ')}`,
       r.readableTracks !== undefined &&
         r.readableTracks < declared.trackCount &&
         `only ${r.readableTracks}/${declared.trackCount} tracks readable`,

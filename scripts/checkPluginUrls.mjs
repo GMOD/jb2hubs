@@ -339,7 +339,11 @@ if (orphans.length > 0) {
 //     ref gets the store's name, one that loads the url looks up
 //     `JBrowsePlugin<name>` and finds nothing.
 //   - the fallback url is not the store's `latestUrl`, i.e. hand-composed and
-//     therefore able to be the stale v1 shape again
+//     therefore able to be the stale v1 shape again. Only for an entry that
+//     still publishes a UMD build: once a plugin is ESM-only, its `latestUrl`
+//     is an ES module no v4 host can load, and the fallback is that host's
+//     pin to the last UMD (jbrowse-plugin-list ADR 0009). The url pass above
+//     already checks that pin loads and defines its global.
 const refProblems = []
 if (refs.size > 0) {
   const res = await fetch(PLUGIN_STORE_URL, {
@@ -361,7 +365,10 @@ if (refs.size > 0) {
         if (ref !== name) {
           problems.push(`ref is "${ref}" but the entry's name is "${name}"`)
         }
-        if (url && entry.latestUrl && url !== entry.latestUrl) {
+        const publishesUmd = [entry, ...(entry.versions ?? [])].some(
+          b => b.url ?? b.umdUrl,
+        )
+        if (url && entry.latestUrl && publishesUmd && url !== entry.latestUrl) {
           problems.push(`fallback url is not the store's latestUrl`)
         }
       }
