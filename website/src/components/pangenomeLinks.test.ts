@@ -94,14 +94,11 @@ test('the callset declares the matrix display exactly where the host has it', ()
     | undefined
 
   // A VariantTrack's default display is the single-row LinearVariantDisplay,
-  // which is not what a 232-sample / 464-haplotype callset should open as.
+  // which is not what a 231-sample / 462-haplotype callset should open as.
   const display = displays?.[0]
   assert.equal(display?.type, 'LinearMultiSampleVariantDisplay')
   assert.equal(display?.renderingMode, 'phased')
-  // Both halves of the standard pangenome-VCF filter.
-  const filters = display?.jexlFilters as string[]
-  assert.ok(filters.some(f => f.includes('LV[0]==0')))
-  assert.ok(filters.some(f => f.includes('alleleLength(feature)>=50')))
+  assert.deepEqual(display?.jexlFilters, ['jexl:alleleLength(feature)>=50'])
 })
 
 // --- a dataset with no reference-projected callset -------------------------

@@ -200,8 +200,8 @@ minigraph rGFA. Taking bovine base-level would make it the odd one out — more
 detailed than the reference implementation, on a route that implementation
 examined and declined. The site's own headline filter says the same thing from
 the other end: `SV_FILTER` in `pangenomeLinks.ts` is
-`INFO.LV[0]==0 && alleleLength(feature)>=50`, so every human graph launch is
-already showing only the structural tier.
+`alleleLength(feature)>=50`, so every human graph launch is already showing only
+the structural tier.
 
 Extracting `Zenodo/cactus` or `Zenodo/pggb` is therefore **not** on the plan.
 The 12 GB tarball does hold them (29 files each, 26.1 GB and 23.7 GB, never
@@ -357,9 +357,9 @@ The same measurement found the level rule hiding structure at a locus that has a
 panel. At `hp` all 448 LV=1 records hang off one snarl with no record in the
 file, so they are the top level there, and they include a 1,716 bp deletion
 carried by 190 of 461 haplotypes. The one record the LV=0 rule keeps is a 302 bp
-deletion carried by 5, which is why hp's panel is 457 against 5. The comment on
-`SV_FILTER` in `pangenomeLinks.ts` has the variant lane's side of it and the
-shape of a fix.
+deletion carried by 5, which is why hp's panel is 457 against 5. The variants
+launch dropped the rule on 2026-10-02 by moving to `pgbi.vcf.gz`, one record per
+whole allele, which has the HP deletion as a single record in 189 of 462.
 
 Which member stands for a form is free, since every member draws the same
 structure, so the pick is the alphabetically first whose lane would draw gene
@@ -455,10 +455,10 @@ ANG BIS BRA BSW GAU HIG NEL OBV PIE SIM YAK
 ```
 
 `AF` and per-sample `GT` are carriage, allele frequency and per-sample burden in
-one file. `LV` is present, so `SV_FILTER` applies unchanged. The whole 2.63 GB
-minigraph set extrapolates to roughly two minutes of `vg` and a few MB of VCF —
-small precisely because it is SV-resolution, where HPRC's base-level `wave` VCF
-is 2.3 GB.
+one file. `SV_FILTER` applies unchanged. The whole 2.63 GB minigraph set
+extrapolates to roughly two minutes of `vg` and a few MB of VCF — small
+precisely because it is SV-resolution, where HPRC's base-level `wave` VCF is 2.3
+GB.
 
 One thing to handle: `deconstruct` names CHROM after the path it was given, so
 these say `HER`, not `chr25`. Rename the P line to the PanSN form before

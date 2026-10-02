@@ -275,8 +275,8 @@ export const HPRC_DATASET: PangenomeDataset = {
     '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
   graphVcf: {
     trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
-    name: 'HPRC pangenome variants (minigraph-cactus v2.1, GRCh38)',
-    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz',
+    name: 'HPRC pangenome variants, one record per allele (minigraph-cactus v2.1, GRCh38)',
+    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.pgbi.vcf.gz',
     phased: true,
   },
   svTrackIds: [

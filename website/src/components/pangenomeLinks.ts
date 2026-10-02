@@ -17,44 +17,19 @@ import type {
 } from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
-// The two halves of the standard pangenome-VCF filter, which the HPRC tutorial
-// argues belong together and which this file applies wherever it opens the
-// callset:
-//
-// - `alleleLength(feature)>=50` is the structural tier, the tier the graph
-//   itself records. `end - start` would not do: an insertion consumes no
-//   reference, so a span filter keeps only deletions.
-// - `INFO.LV[0]==0` keeps the top level of vg's snarl tree, which is the tier
-//   the graph's own bubbles are.
-//
-// The tutorial's filter verbatim, deliberately: it is what its published figures
-// of this callset use. Know what the LV half costs, because it is not free. LV=0
-// and LV>0 records in this file are spatially DISJOINT, so filtering does not
-// thin a region, it blanks the regions that are nested, and LV=0 is not always
-// the top level: where the pipeline dropped a parent snarl's own record, its
-// LV=1 children are the top level and the filter hides them all.
-//
-// - MHC's detail window, measured 2026-08-06: all 2,688 nested records fall in
-//   one 22 kb stretch, 32,570,542-32,592,610, which is HLA-DRB1
-//   (32,578,775-32,589,848), so DRB1 draws empty in a window widened to reach
-//   it.
-// - HP's window, measured 2026-09-17: all 448 LV=1 records hang off one snarl,
-//   `>76082598>76084298`, that has no record in the file. They include a
-//   1,716 bp deletion carried by 190 of 461 haplotypes, and the one record the
-//   filter keeps is a 302 bp deletion carried by 5.
-//
-// Kept anyway, to stay the tutorial's filter verbatim. The fix is to keep a
-// record whose `PS` names a snarl with no record of its own, which no jexl over
-// one record can test, so it would be precomputed per window the way the panels
-// are.
-const SV_FILTER = ['jexl:feature.INFO.LV[0]==0 && alleleLength(feature)>=50']
+// The structural tier, the HPRC tutorial's filter. A span filter (`end -
+// start`) would keep only deletions, since an insertion consumes no reference.
+// No `INFO.LV[0]==0`: where a parent snarl has no record (vcfwave's HLA-DRB5 and
+// HP) it blanks the region, and where it has one (bovine DEFB) it keeps a single
+// locus-wide record with a different allele per haplotype.
+const SV_FILTER = ['jexl:alleleLength(feature)>=50']
 
 // The graph VCF as an inline session track (public, CORS-open, tabix-indexed).
 //
 // The matrix display is declared HERE, in the track's own config, rather than
 // requested from the view's `tracks` entry. A VariantTrack's default display is
-// LinearVariantDisplay, which draws one squashed row for what is a 232-sample /
-// 464-haplotype callset, so something has to say otherwise — and the two ways of
+// LinearVariantDisplay, which draws one squashed row for what is a 231-sample /
+// 462-haplotype callset, so something has to say otherwise — and the two ways of
 // saying it are not equally portable. A session-spec track init carrying inline
 // display props relies on core folding them into the display snapshot, which the
 // hosted builds ignore: measured against `latest`, that form booted the launch
