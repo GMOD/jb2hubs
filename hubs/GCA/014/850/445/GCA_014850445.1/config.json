@@ -71,6 +71,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/014/850/445/GCA_014850445.1/bbi/GCA_014850445.1_ASM1485044v1.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -373,6 +376,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/014/850/445/GCA_014850445.1/bbi/GCA_014850445.1_ASM1485044v1.xenoRefGene.bb",
         "aggregateField": "geneName"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -439,12 +445,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

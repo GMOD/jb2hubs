@@ -70,6 +70,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/900/108/605/GCA_900108605.1/bbi/GCA_900108605.1_NNQGG.v01.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -397,6 +400,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/900/108/605/GCA_900108605.1/bbi/GCA_900108605.1_NNQGG.v01.xenoRefGene.bb",
         "aggregateField": "geneName"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -500,6 +506,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/900/108/605/GCA_900108605.1/contrib/evaSnp8/evaSnp8.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'Outside Link':feature.name?'<a href=\"'+'https://www.ebi.ac.uk/eva/?variant&accessionID='+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -592,12 +601,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

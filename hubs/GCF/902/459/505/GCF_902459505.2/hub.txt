@@ -20,6 +20,7 @@ htmlPath html/GCF_902459505.2_aGeoSer1.2.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/459/505/GCF_902459505.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/459/505/GCF_902459505.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/902/459/505/GCF_902459505.2
+liftOver.GCF_901001135.2 liftOver/GCF_902459505.2ToGCF_901001135.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -105,6 +106,17 @@ bigDataUrl bbi/GCF_902459505.2_aGeoSer1.2.rmsk.bb
 xrefDataUrl bbi/GCF_902459505.2_aGeoSer1.2.rmsk.align.bb
 maxWindowToDraw 5000000
 html html/GCF_902459505.2_aGeoSer1.2.repeatMasker
+
+track repeatModeler
+shortLabel RepeatModeler
+longLabel RepeatModeler Repetitive Elements
+type bigRmsk 9 +
+visibility hide
+group varRep
+bigDataUrl bbi/GCF_902459505.2_aGeoSer1.2.rModel.bb
+xrefDataUrl bbi/GCF_902459505.2_aGeoSer1.2.rModel.align.bb
+maxWindowToDraw 5000000
+html html/GCF_902459505.2_aGeoSer1.2.repeatModeler
 
 track simpleRepeat
 shortLabel Simple Repeats
@@ -264,4 +276,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_902459505.2_aGeoSer1.2.xenoRefGene.ix
 html html/GCF_902459505.2_aGeoSer1.2.xenoRefGene
+
+##############################################################################
+# GCF_901001135.2 - two-lined caecilian - Rhinatrema bivittatum - taxId: 194408
+##############################################################################
+track chainNetGCF_901001135.2
+compositeTrack on
+shortLabel two-lined caecilian Chain/Net
+longLabel two-lined caecilian (2021-04-24), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_901001135.2
+html html/GCF_902459505.2_aGeoSer1.2.chainNet
+
+    track chainNetGCF_901001135.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_901001135.2
+    spectrum on
+
+        track chainGCF_901001135.2
+        parent chainNetGCF_901001135.2Viewchain
+        subGroups view=chain
+        shortLabel two-lined caecilian Chain
+        longLabel two-lined caecilian (2021-04-24) Chained Alignments
+        type bigChain GCF_901001135.2
+        bigDataUrl bbi/GCF_902459505.2_aGeoSer1.2.chainGCF_901001135.2.bb
+        linkDataUrl bbi/GCF_902459505.2_aGeoSer1.2.chainGCF_901001135.2Link.bb
+        priority 1
+
+        track chainLiftOverGCF_901001135.2
+        parent chainNetGCF_901001135.2Viewchain
+        subGroups view=chain
+        shortLabel two-lined caecilian loChain
+        longLabel two-lined caecilian (2021-04-24) Lift Over Chained Alignments
+        type bigChain GCF_901001135.2
+        bigDataUrl bbi/GCF_902459505.2_aGeoSer1.2.chainLiftOverGCF_901001135.2.bb
+        linkDataUrl bbi/GCF_902459505.2_aGeoSer1.2.chainLiftOverGCF_901001135.2Link.bb
+        priority 2
 

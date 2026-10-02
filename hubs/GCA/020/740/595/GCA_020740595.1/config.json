@@ -71,6 +71,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/020/740/595/GCA_020740595.1/bbi/GCA_020740595.1_mLemCat1.alt.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -351,6 +354,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/020/740/595/GCA_020740595.1/bbi/GCA_020740595.1_mLemCat1.alt.xenoRefGene.bb",
         "aggregateField": "geneName"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -387,6 +393,27 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/020/740/595/GCA_020740595.1/contrib/tiberius/tiberius.bigGenePred.bb"
+      }
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_020740595.1_to_GCF_020740605.2_liftOver",
+      "name": "GCA_020740595.1 (ring-tailed lemur (mLemCat1 alternate hap 2021)) to ring-tailed lemur (primary hap 2021 refseq) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_020740595.1", "GCF_020740605.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_020740595.1",
+        "queryAssembly": "GCF_020740605.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_020740595.1ToGCF_020740605.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_020740595.1ToGCF_020740605.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
       }
     }
   ],
@@ -445,12 +472,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

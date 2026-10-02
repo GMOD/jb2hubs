@@ -167,6 +167,59 @@ searchIndex name
 searchTrix ixIxx/GCA_020740595.1_mLemCat1.alt.xenoRefGene.ix
 html html/GCA_020740595.1_mLemCat1.alt.xenoRefGene
 
+##############################################################################
+# GCF_020740605.2 - Ring-tailed lemur - Lemur catta - taxId: 9447
+##############################################################################
+track chainNetMiniMap2GCF_020740605.2
+compositeTrack on
+shortLabel Ring-tailed lemur miniMap2 Chain/Net
+longLabel Ring-tailed lemur (2021-11-04), minimap2 Chain and Lift Over Alignments
+subGroup1 view Views chain=Chain liftover=LiftOver
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_020740605.2
+html html/GCA_020740595.1_mLemCat1.alt.miniMap2ChainNet
+
+    track chainNetMiniMap2GCF_020740605.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetMiniMap2GCF_020740605.2
+    spectrum on
+
+        track chainMiniMap2GCF_020740605.2
+        parent chainNetMiniMap2GCF_020740605.2Viewchain
+        subGroups view=chain
+        shortLabel Ring-tailed lemur mm2 Chain
+        longLabel Ring-tailed lemur (2021-11-04) minimap2 Chained Alignments
+        type bigChain GCF_020740605.2
+        bigDataUrl bbi/GCA_020740595.1_mLemCat1.alt.chainMiniMap2GCF_020740605.2.bb
+        linkDataUrl bbi/GCA_020740595.1_mLemCat1.alt.chainMiniMap2GCF_020740605.2Link.bb
+        priority 1
+
+    track chainNetMiniMap2GCF_020740605.2ViewLiftOver
+    shortLabel Lift Over
+    view liftover
+    visibility hide
+    parent chainNetMiniMap2GCF_020740605.2
+    spectrum on
+
+        track chainLiftOverMiniMap2GCF_020740605.2
+        parent chainNetMiniMap2GCF_020740605.2ViewLiftOver
+        subGroups view=liftover
+        shortLabel Ring-tailed lemur mm2 loChain
+        longLabel Ring-tailed lemur (2021-11-04) minimap2 Lift Over Chained Alignments
+        type bigChain GCF_020740605.2
+        bigDataUrl bbi/GCA_020740595.1_mLemCat1.alt.chainLiftOverMiniMap2GCF_020740605.2.bb
+        linkDataUrl bbi/GCA_020740595.1_mLemCat1.alt.chainLiftOverMiniMap2GCF_020740605.2Link.bb
+        priority 2
+
 
 track Tiberius
 bigDataUrl contrib/tiberius/tiberius.bigGenePred.bb

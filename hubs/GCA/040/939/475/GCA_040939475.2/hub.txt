@@ -21,6 +21,7 @@ htmlPath html/GCA_040939475.2_M.murinus_Inina_pat1.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2
+liftOver.GCF_000165445.2 liftOver/GCA_040939475.2ToGCF_000165445.2.over.chain.gz
 liftOver.hg38 liftOver/GCA_040939475.2ToHg38.over.chain.gz
 
 track assembly
@@ -182,53 +183,91 @@ searchIndex name
 searchTrix ixIxx/GCA_040939475.2_M.murinus_Inina_pat1.0.xenoRefGene.ix
 html html/GCA_040939475.2_M.murinus_Inina_pat1.0.xenoRefGene
 
-##############################################################################
-# hg38 - Human - Homo sapiens - taxId: 9606
-##############################################################################
-track chainNetHg38
+track GCA_040939475.2_M.murinus_Inina_pat1.0ChainNet
 compositeTrack on
-shortLabel Human Chain/Net
-longLabel Human (Dec. 2013 (GRCh38/hg38)), Chain and Net Alignments
-subGroup1 view Views chain=Chain net=Net
+shortLabel Chain/Net
+longLabel Chain alignments to target sequence: GCA_040939475.2_M.murinus_Inina_pat1.0
+subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
+subGroup2 species Assembly s000=GCF_000165445.2 s001=hg38
+subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
 group compGeno
-priority 100.1
 color 0,0,0
-altColor 100,50,0
+altColor 255,255,0
 type bed 3
-sortOrder view=+
-matrix 16 91,-114,-31,-123,-114,100,-125,-31,-31,-125,100,-114,-123,-31,-114,91
+chainLinearGap loose
 chainMinScore 5000
-chainLinearGap medium
-matrixHeader A, C, G, T
-otherDb hg38
+dimensions dimensionX=chainType dimensionY=species
+sortOrder species=+ view=+ chainType=+
+configurable on
 html html/GCA_040939475.2_M.murinus_Inina_pat1.0.chainNet
 
-    track chainNetHg38Viewchain
-    shortLabel Chain
+    track GCA_040939475.2_M.murinus_Inina_pat1.0ChainNetViewchain
+    shortLabel Chains
     view chain
-    visibility pack
-    parent chainNetHg38
+    visibility dense
+    parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNet
     spectrum on
 
+        track chainGCF_000165445.2
+        parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNetViewchain on
+        subGroups view=chain species=s000 chainType=c00
+        shortLabel GCF_000165445.2 Chain
+        longLabel GCF_000165445.2/GCF_000165445.2_Mmur_3.0 (2017-02-06) Chained Alignments
+        type bigChain GCF_000165445.2
+        bigDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainGCF_000165445.2.bb
+        linkDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainGCF_000165445.2Link.bb
+        otherDb GCF_000165445.2
+        html html/GCA_040939475.2_M.murinus_Inina_pat1.0.chainNet
+        priority 2.688
+
         track chainHg38
-        parent chainNetHg38Viewchain
-        subGroups view=chain
-        shortLabel Human Chain
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Chained Alignments
+        parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
+        shortLabel hg38 Chain
+        longLabel hg38/hg38 () Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainHg38.bb
         linkDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainHg38Link.bb
-        priority 1
+        otherDb hg38
+        html html/GCA_040939475.2_M.murinus_Inina_pat1.0.chainNet
+        priority 63.547
+
+    track GCA_040939475.2_M.murinus_Inina_pat1.0ChainNetViewLiftOver
+    shortLabel Lift over
+    view liftover
+    visibility hide
+    parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNet
+    spectrum on
+
+        track chainLiftOverGCF_000165445.2
+        parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCF_000165445.2 loChain
+        longLabel GCF_000165445.2/GCF_000165445.2_Mmur_3.0 (2017-02-06) Chained Alignments
+        type bigChain GCF_000165445.2
+        bigDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainLiftOverGCF_000165445.2.bb
+        linkDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainLiftOverGCF_000165445.2Link.bb
+        otherDb GCF_000165445.2
+        html html/GCA_040939475.2_M.murinus_Inina_pat1.0.chainNet
+        priority 2.688
 
         track chainLiftOverHg38
-        parent chainNetHg38Viewchain
-        subGroups view=chain
-        shortLabel Human loChain
-        longLabel Human (Dec. 2013 (GRCh38/hg38)) Lift Over Chained Alignments
+        parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
+        shortLabel hg38 loChain
+        longLabel hg38/hg38_Mmur_3.0 () Chained Alignments
         type bigChain hg38
         bigDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainLiftOverHg38.bb
         linkDataUrl bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.chainLiftOverHg38Link.bb
-        priority 2
+        otherDb hg38
+        html html/GCA_040939475.2_M.murinus_Inina_pat1.0.chainNet
+        priority 63.547
+
+    track GCA_040939475.2_M.murinus_Inina_pat1.0MafNetViewnet
+    shortLabel Nets
+    view align
+    visibility hide
+    parent GCA_040939475.2_M.murinus_Inina_pat1.0ChainNet
 

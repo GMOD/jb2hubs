@@ -21,6 +21,7 @@ htmlPath html/GCF_000165445.2_Mmur_3.0.description.html
 blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
 transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
 isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/000/165/445/GCF_000165445.2
+liftOver.GCA_040939475.2 liftOver/GCF_000165445.2ToGCA_040939475.2.over.chain.gz
 liftOver.GCF_040939455.1 liftOver/GCF_000165445.2ToGCF_040939455.1.over.chain.gz
 liftOver.hs1 liftOver/GCF_000165445.2ToHs1.over.chain.gz
 
@@ -289,7 +290,7 @@ compositeTrack on
 shortLabel Chain/Net
 longLabel Chain alignments to target sequence: GCF_000165445.2_Mmur_3.0
 subGroup1 view Views chain=Chains synten=Syntenic rbest=Reciprocal_best liftover=Lift_over align=Alignment
-subGroup2 species Assembly s000=GCF_040939455.1 s001=hs1
+subGroup2 species Assembly s000=GCA_040939475.2 s001=GCF_040939455.1 s002=hs1
 subGroup3 chainType chain_type c00=chain c01=syntenic c02=reciprocal_best c03=lift_over c04=chain_align c05=syntenic_align c06=reciprocal_align c07=lift_over_align
 dragAndDrop subTracks
 visibility hide
@@ -311,9 +312,21 @@ html html/GCF_000165445.2_Mmur_3.0.chainNet
     parent GCF_000165445.2_Mmur_3.0ChainNet
     spectrum on
 
-        track chainGCF_040939455.1
+        track chainGCA_040939475.2
         parent GCF_000165445.2_Mmur_3.0ChainNetViewchain on
         subGroups view=chain species=s000 chainType=c00
+        shortLabel GCA_040939475.2 Chain
+        longLabel GCA_040939475.2/GCA_040939475.2_M.murinus_Inina_pat1.0 (2025-06-05) Chained Alignments
+        type bigChain GCA_040939475.2
+        bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainGCA_040939475.2.bb
+        linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainGCA_040939475.2Link.bb
+        otherDb GCA_040939475.2
+        html html/GCF_000165445.2_Mmur_3.0.chainNet
+        priority 7.699
+
+        track chainGCF_040939455.1
+        parent GCF_000165445.2_Mmur_3.0ChainNetViewchain off
+        subGroups view=chain species=s001 chainType=c00
         shortLabel GCF_040939455.1 Chain
         longLabel GCF_040939455.1/GCF_040939455.1_M.murinus_Inina_mat1.0 (2025-06-05) Chained Alignments
         type bigChain GCF_040939455.1
@@ -325,7 +338,7 @@ html html/GCF_000165445.2_Mmur_3.0.chainNet
 
         track chainHs1
         parent GCF_000165445.2_Mmur_3.0ChainNetViewchain off
-        subGroups view=chain species=s001 chainType=c00
+        subGroups view=chain species=s002 chainType=c00
         shortLabel hs1 Chain
         longLabel hs1/hs1 () Chained Alignments
         type bigChain hs1
@@ -342,9 +355,21 @@ html html/GCF_000165445.2_Mmur_3.0.chainNet
     parent GCF_000165445.2_Mmur_3.0ChainNet
     spectrum on
 
-        track chainLiftOverGCF_040939455.1
+        track chainLiftOverGCA_040939475.2
         parent GCF_000165445.2_Mmur_3.0ChainNetViewLiftOver off
         subGroups view=liftover species=s000 chainType=c03
+        shortLabel GCA_040939475.2 loChain
+        longLabel GCA_040939475.2/GCA_040939475.2_M.murinus_Inina_pat1.0 (2025-06-05) Chained Alignments
+        type bigChain GCA_040939475.2
+        bigDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverGCA_040939475.2.bb
+        linkDataUrl bbi/GCF_000165445.2_Mmur_3.0.chainLiftOverGCA_040939475.2Link.bb
+        otherDb GCA_040939475.2
+        html html/GCF_000165445.2_Mmur_3.0.chainNet
+        priority 7.699
+
+        track chainLiftOverGCF_040939455.1
+        parent GCF_000165445.2_Mmur_3.0ChainNetViewLiftOver off
+        subGroups view=liftover species=s001 chainType=c03
         shortLabel GCF_040939455.1 loChain
         longLabel GCF_040939455.1/GCF_040939455.1_M.murinus_Inina_mat1.0 (2025-06-05) Chained Alignments
         type bigChain GCF_040939455.1
@@ -356,7 +381,7 @@ html html/GCF_000165445.2_Mmur_3.0.chainNet
 
         track chainLiftOverHs1
         parent GCF_000165445.2_Mmur_3.0ChainNetViewLiftOver off
-        subGroups view=liftover species=s001 chainType=c03
+        subGroups view=liftover species=s002 chainType=c03
         shortLabel hs1 loChain
         longLabel hs1/hs1_M.murinus_Inina_mat1.0 () Chained Alignments
         type bigChain hs1

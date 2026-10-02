@@ -24,6 +24,7 @@
             "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2",
             "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2",
             "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/040/939/475/GCA_040939475.2",
+            "liftOver.GCF_000165445.2": "liftOver/GCA_040939475.2ToGCF_000165445.2.over.chain.gz",
             "liftOver.hg38": "liftOver/GCA_040939475.2ToHg38.over.chain.gz"
           }
         },
@@ -73,6 +74,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -379,6 +383,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/040/939/475/GCA_040939475.2/bbi/GCA_040939475.2_M.murinus_Inina_pat1.0.xenoRefGene.bb",
         "aggregateField": "geneName"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -388,6 +395,27 @@
           }
         }
       ]
+    },
+    {
+      "type": "SyntenyTrack",
+      "trackId": "GCA_040939475.2_to_GCF_000165445.2_liftOver",
+      "name": "GCA_040939475.2 (gray mouse lemur (pat1 Inina 2025)) to gray mouse lemur (2017) liftOver",
+      "category": ["Pairwise alignments", "liftOver"],
+      "assemblyNames": ["GCA_040939475.2", "GCF_000165445.2"],
+      "adapter": {
+        "type": "PairwiseIndexedPAFAdapter",
+        "targetAssembly": "GCA_040939475.2",
+        "queryAssembly": "GCF_000165445.2",
+        "pifGzLocation": {
+          "uri": "liftOver/GCA_040939475.2ToGCF_000165445.2.pif.gz"
+        },
+        "index": {
+          "location": {
+            "uri": "liftOver/GCA_040939475.2ToGCF_000165445.2.pif.gz.csi"
+          },
+          "indexType": "CSI"
+        }
+      }
     },
     {
       "type": "SyntenyTrack",
@@ -466,12 +494,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

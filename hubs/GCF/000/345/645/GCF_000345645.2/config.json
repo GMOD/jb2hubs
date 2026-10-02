@@ -115,6 +115,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/bbi/GCF_000345645.2_ASM34564v2.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -277,6 +280,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/bbi/GCF_000345645.2_ASM34564v2.ncbiGene.bb",
         "aggregateField": "geneName2"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -412,6 +418,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/codingGene.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'protein_id':feature.protein_id?(replaceAll((''+feature.protein_id),',','')==(''+feature.protein_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/protein/'+split((''+feature.protein_id),'|')[0]+'\">'+(split((''+feature.protein_id),'|')[1]?split((''+feature.protein_id),'|')[1]:(''+feature.protein_id))+'</a>':feature.protein_id):feature.protein_id,'cog_id':feature.cog_id?(replaceAll((''+feature.cog_id),',','')==(''+feature.cog_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/research/cog/cog/'+split((''+feature.cog_id),'|')[0]+'/'+'\">'+(split((''+feature.cog_id),'|')[1]?split((''+feature.cog_id),'|')[1]:(''+feature.cog_id))+'</a>':feature.cog_id):feature.cog_id,'EC_number':feature.EC_number?(replaceAll((''+feature.EC_number),',','')==(''+feature.EC_number)?'<a href=\"'+'https://enzyme.expasy.org/EC/'+split((''+feature.EC_number),'|')[0]+'\">'+(split((''+feature.EC_number),'|')[1]?split((''+feature.EC_number),'|')[1]:(''+feature.EC_number))+'</a>':feature.EC_number):feature.EC_number,'protein_seq':feature.protein_seq?(replaceAll((''+feature.protein_seq),',','')==(''+feature.protein_seq)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/protein/'+split((''+feature.protein_seq),'|')[0]+'\">'+(split((''+feature.protein_seq),'|')[1]?split((''+feature.protein_seq),'|')[1]:(''+feature.protein_seq))+'</a>':feature.protein_seq):feature.protein_seq}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -453,6 +462,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/Pfam.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'pfam_acc':feature.pfam_acc?(replaceAll((''+feature.pfam_acc),',','')==(''+feature.pfam_acc)?'<a href=\"'+'https://www.ebi.ac.uk/interpro/entry/pfam/'+split((''+feature.pfam_acc),'|')[0]+'/'+'\">'+(split((''+feature.pfam_acc),'|')[1]?split((''+feature.pfam_acc),'|')[1]:(''+feature.pfam_acc))+'</a>':feature.pfam_acc):feature.pfam_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -493,6 +505,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/cddInfo.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'pssm_id':feature.pssm_id?(replaceAll((''+feature.pssm_id),',','')==(''+feature.pssm_id)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/Structure/cdd/cddsrv.cgi?uid='+split((''+feature.pssm_id),'|')[0]+'\">'+(split((''+feature.pssm_id),'|')[1]?split((''+feature.pssm_id),'|')[1]:(''+feature.pssm_id))+'</a>':feature.pssm_id):feature.pssm_id}"
       },
       "displays": [
         {
@@ -642,6 +657,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/selfHomologs.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/selfHomologs/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -680,6 +698,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Thermoproteales.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -720,6 +741,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Sulfolobales.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -758,6 +782,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Desulfurococcales.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -798,6 +825,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Halobacteria.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -836,6 +866,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Methanobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -876,6 +909,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Methanococci.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -914,6 +950,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Methanomicrobia.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -954,6 +993,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Methanopyri.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -992,6 +1034,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Thermococci.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1032,6 +1077,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Thermoplasmata.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1070,6 +1118,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Archaeoglobi.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1110,6 +1161,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Aquificae.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1148,6 +1202,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Thermotogae.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1188,6 +1245,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_DeinococcusThermus.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1226,6 +1286,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Firmicutes.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1266,6 +1329,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Gammaproteobacteria.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1304,6 +1370,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Alphaproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1344,6 +1413,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Betaproteobacteria.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1382,6 +1454,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Deltaproteobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1422,6 +1497,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Epsilonproteobacteria.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1460,6 +1538,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Actinobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1500,6 +1581,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Bacteroidetes.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1538,6 +1622,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Cyanobacteria.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1578,6 +1665,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_BacteriaOther.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1616,6 +1706,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Spirochaetes.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1659,6 +1752,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Related.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1700,6 +1796,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Viruses.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -1743,6 +1842,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_ArchaeaOther.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -1784,6 +1886,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/BlastP_Thaumarchaeota.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'result_link':feature.result_link?(replaceAll((''+feature.result_link),',','')==(''+feature.result_link)?'<a href=\"'+'https://microbes.ucsc.edu/GCF_000345645.2/blastp/'+split((''+feature.result_link),'|')[0]+'\">'+(split((''+feature.result_link),'|')[1]?split((''+feature.result_link),'|')[1]:(''+feature.result_link))+'</a>':feature.result_link):feature.result_link,'target_rs_acc':feature.target_rs_acc?(replaceAll((''+feature.target_rs_acc),',','')==(''+feature.target_rs_acc)?'<a href=\"'+'https://genome.ucsc.edu/h/'+split((''+feature.target_rs_acc),'|')[0]+'\">'+(split((''+feature.target_rs_acc),'|')[1]?split((''+feature.target_rs_acc),'|')[1]:(''+feature.target_rs_acc))+'</a>':feature.target_rs_acc):feature.target_rs_acc}"
       },
       "displays": [
         {
@@ -2022,6 +2127,9 @@
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/tRNAs.bb"
       },
+      "formatDetails": {
+        "feature": "jexl:{'GtRNAdb annotation':feature.name?'<a href=\"'+'https://gtrnadb.ucsc.edu/genomes/bacteria/Heli_pylo_GAM83T/genes/'+(''+feature.name)+'.html'+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -2062,6 +2170,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/000/345/645/GCF_000345645.2/contrib/lowelab/Rfam.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'rfam_acc':feature.rfam_acc?(replaceAll((''+feature.rfam_acc),',','')==(''+feature.rfam_acc)?'<a href=\"'+'https://rfam.org/family/'+split((''+feature.rfam_acc),'|')[0]+'\">'+(split((''+feature.rfam_acc),'|')[1]?split((''+feature.rfam_acc),'|')[1]:(''+feature.rfam_acc))+'</a>':feature.rfam_acc):feature.rfam_acc}"
       },
       "displays": [
         {
@@ -2124,6 +2235,10 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
     }
   ],
@@ -2182,12 +2297,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

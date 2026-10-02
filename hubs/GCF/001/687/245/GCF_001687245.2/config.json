@@ -71,6 +71,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/687/245/GCF_001687245.2/bbi/GCF_001687245.2_Rhagoletis_zephyria_1.1.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -281,6 +284,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/687/245/GCF_001687245.2/bbi/GCF_001687245.2_Rhagoletis_zephyria_1.1.ncbiRefSeq.bb",
         "aggregateField": "name2"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -323,6 +329,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/687/245/GCF_001687245.2/bbi/GCF_001687245.2_Rhagoletis_zephyria_1.1.ncbiRefSeqPredicted.bb",
         "aggregateField": "name2"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -360,6 +369,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/687/245/GCF_001687245.2/bbi/GCF_001687245.2_Rhagoletis_zephyria_1.1.ncbiRefSeqOther.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'GeneID':feature.GeneID?(replaceAll((''+feature.GeneID),',','')==(''+feature.GeneID)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.GeneID),'|')[0]+'\">'+(split((''+feature.GeneID),'|')[1]?split((''+feature.GeneID),'|')[1]:(''+feature.GeneID))+'</a>':feature.GeneID):feature.GeneID,'MIM':feature.MIM?(replaceAll((''+feature.MIM),',','')==(''+feature.MIM)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/omim/'+split((''+feature.MIM),'|')[0]+'\">'+(split((''+feature.MIM),'|')[1]?split((''+feature.MIM),'|')[1]:(''+feature.MIM))+'</a>':feature.MIM):feature.MIM,'HGNC':feature.HGNC?(replaceAll((''+feature.HGNC),',','')==(''+feature.HGNC)?'<a href=\"'+'http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id='+split((''+feature.HGNC),'|')[0]+'\">'+(split((''+feature.HGNC),'|')[1]?split((''+feature.HGNC),'|')[1]:(''+feature.HGNC))+'</a>':feature.HGNC):feature.HGNC,'FlyBase':feature.FlyBase?(replaceAll((''+feature.FlyBase),',','')==(''+feature.FlyBase)?'<a href=\"'+'http://flybase.org/reports/'+split((''+feature.FlyBase),'|')[0]+'\">'+(split((''+feature.FlyBase),'|')[1]?split((''+feature.FlyBase),'|')[1]:(''+feature.FlyBase))+'</a>':feature.FlyBase):feature.FlyBase,'WormBase':feature.WormBase?(replaceAll((''+feature.WormBase),',','')==(''+feature.WormBase)?'<a href=\"'+'http://www.wormbase.org/db/gene/gene?name='+split((''+feature.WormBase),'|')[0]+'\">'+(split((''+feature.WormBase),'|')[1]?split((''+feature.WormBase),'|')[1]:(''+feature.WormBase))+'</a>':feature.WormBase):feature.WormBase,'RGD':feature.RGD?(replaceAll((''+feature.RGD),',','')==(''+feature.RGD)?'<a href=\"'+'https://rgd.mcw.edu/rgdweb/search/search.html?term='+split((''+feature.RGD),'|')[0]+'\">'+(split((''+feature.RGD),'|')[1]?split((''+feature.RGD),'|')[1]:(''+feature.RGD))+'</a>':feature.RGD):feature.RGD,'SGD':feature.SGD?(replaceAll((''+feature.SGD),',','')==(''+feature.SGD)?'<a href=\"'+'https://www.yeastgenome.org/locus/'+split((''+feature.SGD),'|')[0]+'\">'+(split((''+feature.SGD),'|')[1]?split((''+feature.SGD),'|')[1]:(''+feature.SGD))+'</a>':feature.SGD):feature.SGD,'miRBase':feature.miRBase?(replaceAll((''+feature.miRBase),',','')==(''+feature.miRBase)?'<a href=\"'+'http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc='+split((''+feature.miRBase),'|')[0]+'\">'+(split((''+feature.miRBase),'|')[1]?split((''+feature.miRBase),'|')[1]:(''+feature.miRBase))+'</a>':feature.miRBase):feature.miRBase,'ZFIN':feature.ZFIN?(replaceAll((''+feature.ZFIN),',','')==(''+feature.ZFIN)?'<a href=\"'+'https://zfin.org/'+split((''+feature.ZFIN),'|')[0]+'\">'+(split((''+feature.ZFIN),'|')[1]?split((''+feature.ZFIN),'|')[1]:(''+feature.ZFIN))+'</a>':feature.ZFIN):feature.ZFIN,'MGI':feature.MGI?(replaceAll((''+feature.MGI),',','')==(''+feature.MGI)?'<a href=\"'+'http://www.informatics.jax.org/marker/'+split((''+feature.MGI),'|')[0]+'\">'+(split((''+feature.MGI),'|')[1]?split((''+feature.MGI),'|')[1]:(''+feature.MGI))+'</a>':feature.MGI):feature.MGI}"
       },
       "displays": [
         {
@@ -556,6 +568,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/001/687/245/GCF_001687245.2/bbi/GCF_001687245.2_Rhagoletis_zephyria_1.1.xenoRefGene.bb",
         "aggregateField": "geneName"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -616,6 +631,10 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
     }
   ],
@@ -674,12 +693,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

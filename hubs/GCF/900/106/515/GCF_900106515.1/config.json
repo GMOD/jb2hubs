@@ -76,6 +76,9 @@
       "adapter": {
         "type": "BigBedAdapter",
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/106/515/GCF_900106515.1/bbi/GCF_900106515.1_PRJEB16530.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
       }
     },
     {
@@ -213,6 +216,9 @@
         "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCF/900/106/515/GCF_900106515.1/bbi/GCF_900106515.1_PRJEB16530.ncbiGene.bb",
         "aggregateField": "geneName2"
       },
+      "formatDetails": {
+        "subfeatures": "jexl:{'name2':feature.name2?(replaceAll((''+feature.name2),',','')==(''+feature.name2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/?term='+split((''+feature.name2),'|')[0]+'\">'+(split((''+feature.name2),'|')[1]?split((''+feature.name2),'|')[1]:(''+feature.name2))+'</a>':feature.name2):feature.name2,'geneName':feature.geneName?(replaceAll((''+feature.geneName),',','')==(''+feature.geneName)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/gene/'+split((''+feature.geneName),'|')[0]+'\">'+(split((''+feature.geneName),'|')[1]?split((''+feature.geneName),'|')[1]:(''+feature.geneName))+'</a>':feature.geneName):feature.geneName,'geneName2':feature.geneName2?(replaceAll((''+feature.geneName2),',','')==(''+feature.geneName2)?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+split((''+feature.geneName2),'|')[0]+'\">'+(split((''+feature.geneName2),'|')[1]?split((''+feature.geneName2),'|')[1]:(''+feature.geneName2))+'</a>':feature.geneName2):feature.geneName2}"
+      },
       "displays": [
         {
           "type": "LinearBasicDisplay",
@@ -343,6 +349,10 @@
           "transcriptional_cis_regulatory_region",
           "nucleotide_motif"
         ]
+      },
+      "formatDetails": {
+        "feature": "jexl:{dbxref:startsWith(''+feature.dbxref,'GeneID:')?replace(''+feature.dbxref,split(''+feature.dbxref,',')[0],'<a href=\"https://www.ncbi.nlm.nih.gov/gene/'+substring(split(''+feature.dbxref,',')[0],7)+'\">'+split(''+feature.dbxref,',')[0]+'</a>'):feature.dbxref}",
+        "subfeatures": "jexl:{transcript_id:feature.transcript_id?'<a href=\"https://www.ncbi.nlm.nih.gov/nuccore/'+feature.transcript_id+'\">'+feature.transcript_id+'</a>':undefined}"
       }
     }
   ],
@@ -401,12 +411,12 @@
     {
       "name": "Protein3d",
       "storePlugin": "Protein3d",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/latest/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
     },
     {
       "name": "MsaView",
       "storePlugin": "MsaView",
-      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/latest/dist/jbrowse-plugin-msaview.umd.production.min.js"
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
     }
   ],
   "configuration": {

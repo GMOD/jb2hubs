@@ -20,6 +20,7 @@ htmlPath html/GCF_901001135.2_aRhiBiv1.2.description.html
 blat dynablat-01.soe.ucsc.edu 4041 dynamic GCF/901/001/135/GCF_901001135.2
 transBlat dynablat-01.soe.ucsc.edu 4041 dynamic GCF/901/001/135/GCF_901001135.2
 isPcr dynablat-01.soe.ucsc.edu 4041 dynamic GCF/901/001/135/GCF_901001135.2
+liftOver.GCF_902459505.2 liftOver/GCF_901001135.2ToGCF_902459505.2.over.chain.gz
 
 track assembly
 longLabel Assembly
@@ -105,6 +106,17 @@ bigDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.rmsk.bb
 xrefDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.rmsk.align.bb
 maxWindowToDraw 5000000
 html html/GCF_901001135.2_aRhiBiv1.2.repeatMasker
+
+track repeatModeler
+shortLabel RepeatModeler
+longLabel RepeatModeler Repetitive Elements
+type bigRmsk 9 +
+visibility hide
+group varRep
+bigDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.rModel.bb
+xrefDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.rModel.align.bb
+maxWindowToDraw 5000000
+html html/GCF_901001135.2_aRhiBiv1.2.repeatModeler
 
 track simpleRepeat
 shortLabel Simple Repeats
@@ -281,4 +293,50 @@ defaultLabelFields geneName
 searchIndex name
 searchTrix ixIxx/GCF_901001135.2_aRhiBiv1.2.xenoRefGene.ix
 html html/GCF_901001135.2_aRhiBiv1.2.xenoRefGene
+
+##############################################################################
+# GCF_902459505.2 - Gabon caecilian - Geotrypetes seraphini - taxId: 260995
+##############################################################################
+track chainNetGCF_902459505.2
+compositeTrack on
+shortLabel Gabon caecilian Chain/Net
+longLabel Gabon caecilian (2021-04-24), Chain and Net Alignments
+subGroup1 view Views chain=Chain net=Net
+dragAndDrop subTracks
+visibility hide
+group compGeno
+priority 100.1
+color 0,0,0
+altColor 100,50,0
+type bed 3
+sortOrder view=+
+otherDb GCF_902459505.2
+html html/GCF_901001135.2_aRhiBiv1.2.chainNet
+
+    track chainNetGCF_902459505.2Viewchain
+    shortLabel Chain
+    view chain
+    visibility pack
+    parent chainNetGCF_902459505.2
+    spectrum on
+
+        track chainGCF_902459505.2
+        parent chainNetGCF_902459505.2Viewchain
+        subGroups view=chain
+        shortLabel Gabon caecilian Chain
+        longLabel Gabon caecilian (2021-04-24) Chained Alignments
+        type bigChain GCF_902459505.2
+        bigDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.chainGCF_902459505.2.bb
+        linkDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.chainGCF_902459505.2Link.bb
+        priority 1
+
+        track chainLiftOverGCF_902459505.2
+        parent chainNetGCF_902459505.2Viewchain
+        subGroups view=chain
+        shortLabel Gabon caecilian loChain
+        longLabel Gabon caecilian (2021-04-24) Lift Over Chained Alignments
+        type bigChain GCF_902459505.2
+        bigDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.chainLiftOverGCF_902459505.2.bb
+        linkDataUrl bbi/GCF_901001135.2_aRhiBiv1.2.chainLiftOverGCF_902459505.2Link.bb
+        priority 2
 
