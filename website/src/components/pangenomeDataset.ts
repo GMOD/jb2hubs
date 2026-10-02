@@ -45,6 +45,8 @@ export interface PangenomeGraphVcf {
   // A `name`-keyed sample table beside the VCF, whose columns `rowColor` can
   // colour rows by.
   samplesTsvUrl?: string
+  // Bytes the adapter may fetch for one view, over VcfTabixAdapter's 5 MB.
+  fetchSizeLimit?: number
   rows?: { domain: string[]; labels: Record<string, string> }
   rowColor?: { field: string; domain: string[]; range: string[] }
 }
@@ -278,6 +280,8 @@ export const HPRC_DATASET: PangenomeDataset = {
     name: 'HPRC pangenome variants, one record per allele (minigraph-cactus v2.1, GRCh38)',
     url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.pgbi.vcf.gz',
     phased: true,
+    // pgbi spells out each inserted allele, which puts LPA's window over 14 MB
+    fetchSizeLimit: 20_000_000,
   },
   svTrackIds: [
     'hg38-hprcInsertsV1',

@@ -84,6 +84,7 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
   assert.deepEqual(inlined?.adapter, {
     type: 'VcfTabixAdapter',
     uri: HPRC_VCF.url,
+    fetchSizeLimit: 20_000_000,
   })
 })
 

@@ -63,6 +63,7 @@ function graphVcfTrack(dataset: PangenomeDataset) {
           ...(vcf.samplesTsvUrl
             ? { samplesTsvLocation: { uri: vcf.samplesTsvUrl } }
             : {}),
+          ...(vcf.fetchSizeLimit ? { fetchSizeLimit: vcf.fetchSizeLimit } : {}),
         },
         displays: [
           {
