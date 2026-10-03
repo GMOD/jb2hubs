@@ -144,9 +144,9 @@ records haplotype paths.
 - **human — yes.** The minigraph-cactus graph carries 464 haplotype walks, and
   HPRC now publishes `.gbz.db` itself:
   `…/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.gbz.db`,
-  10,050,412,544 bytes, probed 200. Our companion anchored haplotype index is
-  live at `demos/hprc/hprc-v2.1-mc-grch38.haplotype-index.anchored.db`,
-  7,873,716,224 bytes.
+  10,050,412,544 bytes, probed 200. Our companion haplotype index, format 3 (the
+  only one `@gmod/gbz-base` 7 reads), is live at
+  `demos/hprc/hprc-v2.1-mc-grch38.haplotype-index.f3.db`, 5,088,018,432 bytes.
 - **bovine — yes, and it was thrown away.** The Zenodo source GFA carries **12 P
   lines per chromosome** (`P HER 1+,2+,3+,…`; census of
   `Zenodo/minigraph/10.gfa`: 1 H, 15,349 S, 21,854 L, **12 P**), still on disk
