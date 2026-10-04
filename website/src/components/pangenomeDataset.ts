@@ -9,7 +9,6 @@ import arabidopsisLociFile from '../../public/pangenome-arabidopsis/loci.json' w
 import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type: 'json' }
 import hprcPanelsFile from '../../public/pangenome-hprc/panels.json' with { type: 'json' }
 import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
-import { features } from '../config/features.ts'
 import { genarkConfigPath, ucscConfigPath } from '../config/jbrowse.ts'
 import { derivedLoci } from './pangenomeDerivedLoci.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
@@ -203,30 +202,11 @@ export interface PangenomeDataset {
 // @jbrowse/render-core, so an old bundle stops booting as `main` moves, and
 // the unversioned one is what gets rebuilt to follow it.
 //
-// STAGING ONLY until JBrowse v5 ships, and the reason is settled rather than
-// open. The graph plugin bundle boots on `main` and error-pages the whole
-// app on the released `latest` (`TypeError: (0,N.createSvgIcon) is not a
-// function`) because it reads `createSvgIcon` off the host's re-export map,
-// and core only started exposing it there in GMOD/jbrowse-components#5607
-// (merged to main 2026-07-23). v4.3.0 shipped 2026-05-21, so no released host
-// has it — `git tag --contains` on that merge finds no tag, and v4.3.0's
-// `ReExports/modules.ts` has no `@mui/material/SvgIcon` entry at all, only the
-// generic lazyMap sweep that exposes the component and no named exports.
-//
-// The host is the variable, not the bundle: both the content-addressed url
-// pinned here and the unversioned one the HPRC tutorial tells readers to paste
-// read the util from `JBrowseExports["@mui/material/SvgIcon"]`, so they behave
-// identically on a given host. Nothing in this repo or in the plugin needs to
-// change — the graph launch deliberately targets v5+ only.
-//
-// So this is NOT held to the v4.0.0 floor in CLAUDE.md's "Old JBrowse versions
-// read these configs": that floor is about the `/ucsc/*` configs on the hosted
-// app, and this is a different config on a host we choose per-deploy. It
-// reaches `HPRC_DATASET` only under `features.pangenomeGraph`, which is gated
-// on `latest` being v5 and on nothing else; every builder and surface treats an
-// absent `graphBrowser` as "no hosted graph" and offers no graph link.
-// Exported on its own so a test or probe can exercise the graph launches on a
-// build where the flag is off.
+// Every launch goes to `main` (`JBROWSE_BASE`), which has what the plugin
+// reads off the host. No released host does: v4.3.0 error-pages on it
+// (`(0,N.createSvgIcon) is not a function`), which is why the whole section is
+// staging-only until v5, and why this config is not held to the v4.0.0 floor in
+// CLAUDE.md's "Old JBrowse versions read these configs".
 export const HPRC_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: 'https://jbrowse.org/pangenome/hprc-grch38/config.json',
   segmentsTrackId: 'hprc_minigraph_segments',
@@ -293,7 +273,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     'hg38-hprcArrInvBedV1',
     'hg38-hprcArrDupBedV1',
   ],
-  graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
+  graphBrowser: HPRC_GRAPH_BROWSER,
   bandageGbz: 'hprc',
   loci: PANGENOME_LOCI,
   panels: hprcPanelsFile.panels,
@@ -337,12 +317,9 @@ export const HPRC_DATASET: PangenomeDataset = {
 // bucket copy exists and matches — `bovine-arsucd12.json` was committed and
 // 404 for a day because nothing asked.
 //
-// Both are staging-only for the same reason HPRC's graph is, and it is a
-// stronger reason here: every adapter in this stack (`RgfaTabixAdapter`,
-// `MinigraphBubbleAdapter`) ships in the graphgenomeviewer plugin rather than
-// in core, so for these two datasets the LINEAR lanes are plugin-gated too, not
-// just the graph. Without `graphBrowser` a mouse locus has nothing but its
-// coordinates.
+// Every adapter in this stack (`RgfaTabixAdapter`, `MinigraphBubbleAdapter`)
+// ships in the graphgenomeviewer plugin rather than in core, so for these
+// datasets the linear lanes need the plugin too, not just the graph.
 const MOUSE_GRAPH_BROWSER: PangenomeGraphBrowser = {
   configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
   segmentsTrackId: 'mouse_minigraph_segments',
@@ -480,7 +457,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
   panelDescription:
     'GRCm39 (C57BL/6J) plus 18 inbred and wild-derived Mouse Genomes Project strains',
   svTrackIds: [],
-  graphBrowser: features.pangenomeGraph ? MOUSE_GRAPH_BROWSER : undefined,
+  graphBrowser: MOUSE_GRAPH_BROWSER,
   loci: MOUSE_LOCI,
   heading: 'Mouse strain pangenome',
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_mouse/',
@@ -572,7 +549,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     rowColor: BOVINE_ROW_COLOR,
   },
   svTrackIds: [],
-  graphBrowser: features.pangenomeGraph ? BOVINE_GRAPH_BROWSER : undefined,
+  graphBrowser: BOVINE_GRAPH_BROWSER,
   loci: BOVINE_LOCI,
   heading: 'Bovine super-pangenome',
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_cattle/',
@@ -618,7 +595,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   panelDescription:
     'TAIR10 (Col-0) plus 26 1001 Genomes Plus Phase 1 accessions',
   svTrackIds: [],
-  graphBrowser: features.pangenomeGraph ? ARABIDOPSIS_GRAPH_BROWSER : undefined,
+  graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
   loci: ARABIDOPSIS_LOCI,
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/syri_synteny/',

@@ -1,11 +1,7 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import {
-  HPRC_DATASET,
-  HPRC_GRAPH_BROWSER,
-  MOUSE_DATASET,
-} from './pangenomeDataset.ts'
+import { HPRC_DATASET, MOUSE_DATASET } from './pangenomeDataset.ts'
 import { lociColumns, lociRows } from './pangenomeLociRows.ts'
 
 import type { LaunchKind } from './pangenomeLinks.ts'
@@ -14,9 +10,7 @@ import type { LocusRow } from './pangenomeLociRows.ts'
 const urlOf = (r: LocusRow | undefined, kind: LaunchKind) =>
   r?.launches.find(l => l.kind === kind)?.url
 
-// Outside Vite the datasets declare no graphBrowser (the flag is off), so put
-// it back where a test is about the graph column.
-const hprcGraph = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
+const hprcNoGraph = { ...HPRC_DATASET, graphBrowser: undefined }
 
 test('a curated row carries its description and a derived one its segments', () => {
   const [hprc] = lociRows(HPRC_DATASET)
@@ -54,18 +48,17 @@ test('a column no row fills is not drawn', () => {
 
 test('the launch column follows what the build can open', () => {
   // Without a hosted graph HPRC still opens its callset; mouse has nothing.
-  const hprc = lociRows(HPRC_DATASET)
+  const hprc = lociRows(hprcNoGraph)
   assert.ok(hprc.every(r => urlOf(r, 'graph') === undefined))
   assert.ok(hprc.every(r => urlOf(r, 'linear') !== undefined))
-  assert.equal(lociColumns(lociRows(MOUSE_DATASET)).launches, true)
-  assert.ok(
-    lociRows(MOUSE_DATASET).every(r => urlOf(r, 'linear') === undefined),
-  )
+  const mouse = lociRows({ ...MOUSE_DATASET, graphBrowser: undefined })
+  assert.equal(lociColumns(mouse).launches, true)
+  assert.ok(mouse.every(r => urlOf(r, 'linear') === undefined))
 
   // With one, every locus the graph does not collapse gets a graph link.
-  const rows = lociRows(hprcGraph)
+  const rows = lociRows(HPRC_DATASET)
   const collapsed = new Set(
-    hprcGraph.loci.filter(l => l.graphCollapsed).map(l => l.gene),
+    HPRC_DATASET.loci.filter(l => l.graphCollapsed).map(l => l.gene),
   )
   assert.ok(collapsed.size > 0)
   for (const r of rows) {
@@ -74,9 +67,9 @@ test('the launch column follows what the build can open', () => {
 })
 
 test('a locus has a haplotypes launch exactly where its dataset has a panel', () => {
-  const rows = lociRows(hprcGraph)
-  const panels = hprcGraph.panels ?? {}
-  hprcGraph.loci.forEach((locus, i) => {
+  const rows = lociRows(HPRC_DATASET)
+  const panels = HPRC_DATASET.panels ?? {}
+  HPRC_DATASET.loci.forEach((locus, i) => {
     assert.equal(
       urlOf(rows[i], 'haplotypes') !== undefined,
       panels[locus.id] !== undefined,
@@ -84,14 +77,14 @@ test('a locus has a haplotypes launch exactly where its dataset has a panel', ()
     )
   })
   assert.equal(lociColumns(rows).haplotypes, true)
-  assert.equal(lociColumns(lociRows(HPRC_DATASET)).haplotypes, false)
+  assert.equal(lociColumns(lociRows(hprcNoGraph)).haplotypes, false)
   assert.equal(lociColumns(lociRows(MOUSE_DATASET)).haplotypes, false)
 })
 
 // BandageJS reads the graph's gbz-base database itself, so it needs a panel but
 // no hosted graph.
 test('a locus has a BandageJS launch exactly where its dataset has a panel', () => {
-  const rows = lociRows(HPRC_DATASET)
+  const rows = lociRows(hprcNoGraph)
   const panels = HPRC_DATASET.panels ?? {}
   HPRC_DATASET.loci.forEach((locus, i) => {
     assert.equal(
@@ -107,7 +100,7 @@ test('a locus has a BandageJS launch exactly where its dataset has a panel', () 
 // One order for every row, and the gene hub, a page of this site, is the one
 // launch that does not open a new tab.
 test('a row lists its launches in one order, only those it can open', () => {
-  const rows = lociRows(hprcGraph)
+  const rows = lociRows(HPRC_DATASET)
   const order: LaunchKind[] = [
     'graph',
     'linear',

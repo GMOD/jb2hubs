@@ -596,8 +596,8 @@ has already changed once.
   **Ordering hazard:** `pangenomeDataset.ts` names `hprc_minigraph_tier`, which
   the _live_ config does not have until `website/pangenome-config/upload.sh`
   runs. Upload before deploying, or the whole-chromosome launches name a trackId
-  their config lacks. Only staging is affected today, since
-  `features.pangenomeGraph` is closed on production.
+  their config lacks. Only staging is affected today, since `features.pangenome`
+  is closed on production.
 
 - **Commit the two builders.** _Landed 2026-09-09, jbrowse-components
   `d89f7c3025`._ `scripts/build_mouse_pangenome.sh` (constructs the graph) and

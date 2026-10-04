@@ -2,7 +2,6 @@ import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
-import { features } from '../config/features.ts'
 import {
   ARABIDOPSIS_DATASET,
   ARABIDOPSIS_GRAPH_BROWSER,
@@ -45,15 +44,6 @@ function parseLaunch(url: string) {
 }
 
 const locus = HPRC_DATASET.loci.find(l => l.id === 'mhc-hla')!
-
-// The shipped dataset carries the hosted graph only under features.pangenomeGraph
-// (off outside Vite, and on production), so the graph launches are exercised on
-// a copy that always has it.
-const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
-
-test('the hosted graph reaches the dataset only under its own flag', () => {
-  assert.equal(HPRC_DATASET.graphBrowser !== undefined, features.pangenomeGraph)
-})
 
 // HPRC is the one dataset here with a callset; `graphVcf` is optional on the
 // type because mouse's graph records no haplotype paths to project.
@@ -109,21 +99,6 @@ test('the callset declares the matrix display exactly where the host has it', ()
 // there is nothing to deconstruct into a VCF. Everything below is about the
 // site staying correct rather than empty when that is true.
 
-// The shipped mouse dataset only carries `graphBrowser` under
-// features.pangenomeGraph, and for mouse that gates the LINEAR lanes too — all
-// three adapters ship in the graphgenomeviewer plugin.
-const mouseGraph = {
-  ...MOUSE_DATASET,
-  graphBrowser: MOUSE_DATASET.graphBrowser ?? {
-    configUrl: 'https://jbrowse.org/pangenome/mouse-mm39/config.json',
-    segmentsTrackId: 'mouse_minigraph_segments',
-    bubblesTrackId: 'mouse_minigraph_bubbles',
-    geneTrackId: 'mm39_ncbiRefSeq_ucsc',
-    allelesTrackId: 'mouse_minigraph_alleles',
-    tierTrackId: 'mouse_minigraph_tier',
-  },
-}
-
 test('mouse declares no callset; bovine, whose graph carries path lines, does', () => {
   assert.equal(MOUSE_DATASET.graphVcf, undefined)
   assert.ok(BOVINE_DATASET.graphVcf)
@@ -140,10 +115,7 @@ test('the reference launch omits the callset track entirely when there is none',
 })
 
 test('a rearrangement track opens under the lanes at either tier', () => {
-  const dataset = {
-    ...ARABIDOPSIS_DATASET,
-    graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
-  }
+  const dataset = ARABIDOPSIS_DATASET
   const fine = { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }
   const coarse = { chrom: 'Chr4', start: 0, end: 4_000_000 }
   for (const region of [fine, coarse]) {
@@ -169,9 +141,9 @@ test('an unphased callset does not ask for haplotype rows', () => {
 })
 
 test('without a callset the primary launch is the graph configs own lanes', () => {
-  const narrow = mouseGraph.loci.find(l => detailWindow(l))!
-  const { config, spec } = parseLaunch(locusLaunchUrl(mouseGraph, narrow)!)
-  assert.equal(config, mouseGraph.graphBrowser.configUrl)
+  const narrow = MOUSE_DATASET.loci.find(l => detailWindow(l))!
+  const { config, spec } = parseLaunch(locusLaunchUrl(MOUSE_DATASET, narrow)!)
+  assert.equal(config, MOUSE_DATASET.graphBrowser!.configUrl)
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
     'mouse_minigraph_bubbles',
@@ -185,10 +157,11 @@ test('without a callset the primary launch is the graph configs own lanes', () =
 // rows — across the whole of it, which is past its fetch limit. It opens the
 // tier instead.
 test('and over a span the fine lanes cannot draw, it is the tier', () => {
-  const wide = mouseGraph.loci.find(l => detailWindow(l) === undefined)!
-  const { spec } = parseLaunch(locusLaunchUrl(mouseGraph, wide)!)
+  const wide = MOUSE_DATASET.loci.find(l => detailWindow(l) === undefined)!
+  const { spec } = parseLaunch(locusLaunchUrl(MOUSE_DATASET, wide)!)
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
+    'mouse_bubble_score',
     { trackId: 'mouse_minigraph_tier', type: 'LinearBasicDisplay' },
   ])
 })
@@ -271,12 +244,10 @@ test('a derived locus seeds the hub from the tiers gene list, or not at all', ()
 const graphTrack = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',
-  layoutMode: 'auto',
-  colorScheme: 'reference-position',
 }
 
 test('graphLocusUrl opens one linear view with the graph under its lanes', () => {
-  const url = graphLocusUrl(graphDataset, locus)
+  const url = graphLocusUrl(HPRC_DATASET, locus)
   assert.ok(url, 'MHC has a detailWindow, so a URL is produced')
   const { config, spec } = parseLaunch(url)
   // the graph plugin is declared only in this config, never in the UCSC ones
@@ -298,7 +269,7 @@ test('graphLocusUrl opens one linear view with the graph under its lanes', () =>
 
 test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   const region = { chrom: 'chr1', start: 100, end: 5_100, label: 'anywhere' }
-  const { spec } = parseLaunch(graphRegionUrl(graphDataset, region)!)
+  const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region)!)
   const [lgv] = spec.views
   assert.equal(lgv!.loc, 'chr1:101-5100')
   assert.equal(lgv!.displayName, 'anywhere graph')
@@ -308,11 +279,11 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   )
 })
 
-// The graph track picks its own tier by zoom; the lanes above it pick theirs by
-// span, so a wide launch opens the tier lane over the same graph track.
-test('a wide region opens the tier lane over the graph track', () => {
+// The graph track picks its own tier by zoom, so a wide launch opens no tier
+// lane beside it that could disagree.
+test('a wide region opens the graph alone, under the lanes that read at any width', () => {
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
-  const { config, spec } = parseLaunch(graphRegionUrl(graphDataset, chr21)!)
+  const { config, spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, chr21)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   assert.equal(spec.views.length, 1)
   const [lgv] = spec.views
@@ -320,14 +291,19 @@ test('a wide region opens the tier lane over the graph track', () => {
   assert.deepEqual(lgv!.tracks, [
     'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
-    { trackId: 'hprc_minigraph_tier', type: 'LinearBasicDisplay' },
     graphTrack,
+  ])
+  const lanes = parseLaunch(graphLanesUrl(HPRC_DATASET, chr21)!).spec
+  assert.deepEqual(lanes.views[0]!.tracks, [
+    'hg38_ncbiRefSeq_ucsc',
+    'hprc_bubble_score',
+    { trackId: 'hprc_minigraph_tier', type: 'LinearBasicDisplay' },
   ])
 })
 
 test('a graph with no tier opens the fine lanes however wide the ask', () => {
   const noTier = {
-    ...graphDataset,
+    ...HPRC_DATASET,
     graphBrowser: { ...HPRC_GRAPH_BROWSER, tierTrackId: undefined },
   }
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
@@ -349,19 +325,15 @@ const GRAPH_TRACK_DISPLAYS = ['LinearGraphDisplay', 'LinearBasicDisplay']
 // A bare trackId opens a track's first display, and an rGFA track's first is
 // the graph, so a launch that means its linear lane has to say so.
 test('every rGFA track a launch opens names a display its track has', () => {
-  const arabidopsis = {
-    ...ARABIDOPSIS_DATASET,
-    graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
-  }
   const launches = [
-    [graphDataset, { chrom: 'chr6', start: 32_510_000, end: 32_600_000 }],
-    [graphDataset, { chrom: 'chr21', start: 0, end: 46_709_983 }],
-    [mouseGraph, { chrom: 'chr7', start: 0, end: 5_000_000 }],
-    [arabidopsis, { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }],
+    [HPRC_DATASET, { chrom: 'chr6', start: 32_510_000, end: 32_600_000 }],
+    [HPRC_DATASET, { chrom: 'chr21', start: 0, end: 46_709_983 }],
+    [MOUSE_DATASET, { chrom: 'chr7', start: 0, end: 5_000_000 }],
+    [ARABIDOPSIS_DATASET, { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }],
   ] as const
   for (const [dataset, region] of launches) {
     const base = /pangenome\/([^/]+)\/config\.json$/.exec(
-      dataset.graphBrowser.configUrl,
+      dataset.graphBrowser!.configUrl,
     )![1]
     const config = JSON.parse(
       readFileSync(
@@ -416,7 +388,7 @@ test('a wide catalog locus gets a launch rather than nothing', () => {
   assert.ok(wide.length > 0, 'the mouse catalogue has wide entries')
   for (const l of wide) {
     assert.ok(
-      graphLocusUrl(mouseGraph, l),
+      graphLocusUrl(MOUSE_DATASET, l),
       `${l.id} (${l.end - l.start} bp) has no graph launch`,
     )
   }
@@ -447,7 +419,7 @@ test('the owned graph config names every track the launches open', () => {
 test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel order', () => {
   const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
   const panel = HPRC_DATASET.panels!.cfhr!
-  const { config, spec } = parseLaunch(haplotypeLanesUrl(graphDataset, cfhr)!)
+  const { config, spec } = parseLaunch(haplotypeLanesUrl(HPRC_DATASET, cfhr)!)
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   assert.equal(spec.sessionTracks, undefined)
   const view = spec.views[0]!
@@ -478,7 +450,7 @@ test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
   // haplotypes apart there and it gets no panel
   const bare = HPRC_DATASET.loci.find(l => l.id === 'srgap2')!
   assert.equal(HPRC_DATASET.panels?.srgap2, undefined)
-  assert.equal(haplotypeLanesUrl(graphDataset, bare), undefined)
+  assert.equal(haplotypeLanesUrl(HPRC_DATASET, bare), undefined)
   assert.equal(
     haplotypeLanesUrl({ ...HPRC_DATASET, graphBrowser: undefined }, cfhr),
     undefined,
@@ -486,7 +458,7 @@ test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
   assert.equal(
     haplotypeLanesUrl(
       {
-        ...graphDataset,
+        ...HPRC_DATASET,
         graphBrowser: {
           ...HPRC_GRAPH_BROWSER,
           haplotypeLanesTrackId: undefined,
@@ -498,8 +470,6 @@ test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
   )
 })
 
-// BandageJS reads the gbz-base database itself, so the link needs no hosted
-// graph: HPRC_DATASET here has none.
 test('bandageLocusUrl cuts the launch window around the locus panel, laid out by force', () => {
   const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
   const url = new URL(bandageLocusUrl(HPRC_DATASET, cfhr)!)
@@ -516,8 +486,11 @@ test('bandageLocusUrl cuts the launch window around the locus panel, laid out by
   })
 })
 
+// BandageJS reads the gbz-base database itself, so the link needs no hosted
+// graph.
 test('bandageLocusUrl is undefined without a gbz preset or a panel', () => {
   const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
+  assert.ok(bandageLocusUrl({ ...HPRC_DATASET, graphBrowser: undefined }, cfhr))
   const bare = HPRC_DATASET.loci.find(l => l.id === 'srgap2')!
   assert.equal(bandageLocusUrl(HPRC_DATASET, bare), undefined)
   assert.equal(
@@ -572,7 +545,7 @@ test('graphLocusUrl is undefined where the graph collapses the locus', () => {
   const collapsed = PANGENOME_LOCI.find(l => l.id === 'cyp2d6')!
   assert.ok(collapsed.graphCollapsed)
   assert.ok(detailWindow(collapsed), 'and it is not the width rule doing it')
-  assert.equal(graphLocusUrl(graphDataset, collapsed), undefined)
+  assert.equal(graphLocusUrl(HPRC_DATASET, collapsed), undefined)
 })
 
 test('every launched region is bare digits, in every locale', () => {
@@ -583,7 +556,7 @@ test('every launched region is bare digits, in every locale', () => {
   for (const l of PANGENOME_LOCI) {
     for (const url of [
       graphVcfLgvUrl(HPRC_DATASET, l),
-      graphLocusUrl(graphDataset, l),
+      graphLocusUrl(HPRC_DATASET, l),
     ]) {
       if (url) {
         for (const view of parseLaunch(url).spec.views) {
@@ -598,7 +571,7 @@ test('every launched region is bare digits, in every locale', () => {
 
 test('every locus either draws a window a graph can hold, or none at all', () => {
   for (const l of PANGENOME_LOCI) {
-    const url = graphLocusUrl(graphDataset, l)
+    const url = graphLocusUrl(HPRC_DATASET, l)
     if (url) {
       const { spec } = parseLaunch(url)
       const [, start, end] = /:(\d+)-(\d+)$/.exec(spec.views[0]!.loc as string)!

@@ -33,15 +33,9 @@ export const features = {
   // domains — all synthesized live.
   proteinBrowser: staging,
   // The /pangenomes/* section: one page per graph, with its loci and their
-  // JBrowse launches. Everything on those pages runs on the released `latest`
-  // except the graph launches, which have their own flag below.
+  // JBrowse launches. Waits on core v5, because the graphgenomeviewer plugin
+  // every graph launch loads error-pages each released host.
   pangenome: staging,
-  // The graph launches on /pangenomes/*. Waits on core v5:
-  // the graphgenomeviewer plugin error-pages every released host (`latest` is
-  // v4.3.0), so the dataset declares no `graphBrowser` on production and the
-  // pages offer no graph links. Independent of `pangenome` so the section can
-  // go live without the graph.
-  pangenomeGraph: staging,
   // The conserved-gene-order section's launch into the reference's multi-way
   // synteny star. Waits on core v5: only config-staging.json carries the star,
   // since a display type a released host lacks is fatal once the track opens.

@@ -1930,7 +1930,9 @@ A graph launch (`graphRegionUrl`) is one linear view: those lanes, then the
 segments track opened as its `LinearGraphDisplay`, which picks its own tier by
 zoom past the adapter's `coarse.aboveBpPerPx`. The segments lane and the graph
 are one track and a view shows a track once, so a graph launch has no segments
-lane. Every rGFA track in the four configs is a `GraphTrack`, which opens as the
+lane, and no tier lane either: the graph's handover turns on the view's width,
+so at 1000 px HPRC's graph stays fine to ~1 Mb while a lane switched at 150 kb
+would already be coarse. Every rGFA track in the four configs is a `GraphTrack`, which opens as the
 graph, its first display, so a lane over one names `LinearBasicDisplay`. A
 GraphTrack's displays come from the plugin, not the config, so
 `pangenomeLinks.test.ts` checks every launch against the ones the plugin

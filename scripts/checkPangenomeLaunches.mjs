@@ -18,18 +18,18 @@
 //     other way, as an inline display prop on the view's `tracks` entry, is
 //     silently ignored instead and the callset opens as a single squashed row.
 //     Neither shows up in a URL-shape test.
-//   - The graph plugin bundle that jbrowse.org/demos/hprc/config.json pins
-//     boots on `main` and error-pages on `latest`
-//     (`TypeError: (0,N.createSvgIcon) is not a function`). That config lives in
-//     the jbrowse-components repo, so it can change with nothing pushed here —
-//     the same reason check-plugin-urls and the config canary exist.
+//   - The graph plugin boots on `main` and error-pages on `latest`
+//     (`TypeError: (0,N.createSvgIcon) is not a function`). Its `latest/`
+//     bundle is published from another repo, so a launch can break with nothing
+//     pushed here — the same reason check-plugin-urls and the config canary
+//     exist.
 //
 // Deliberately NOT in lint.yml or run.sh's gate_configs: it needs a browser, and
-// its subject is a third-party demo config plus an unreleased host, so a failure
-// here should not block an unrelated deploy. Run it by hand when touching
-// website/src/components/pangenome*, when bumping the graph plugin, and — this
-// is the one that matters — BEFORE setting `features.pangenome` on production,
-// since that repoints every launch below from `main` to `latest`.
+// its subject is a plugin published elsewhere plus an unreleased host, so a
+// failure here should not block an unrelated deploy. Run it by hand when
+// touching website/src/components/pangenome*, when bumping the graph plugin, and
+// with `--host latest` before pointing `JBROWSE_BASE` (config/jbrowse.ts) at a
+// release, since every launch below targets `main` until then.
 //
 // Usage:
 //   node scripts/checkPangenomeLaunches.mjs                 # staging (main)
@@ -83,10 +83,6 @@ const TIMEOUT = Number(values.timeout)
 // The site's own builders, so this checks the real thing rather than a copy.
 const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
   await import('../website/src/components/pangenomeDataset.ts')
-// The hosted graph is gated on features.pangenomeGraph, off outside Vite, so
-// the dataset has no graphBrowser here and every graph builder returns
-// undefined; this probe exists to boot those launches, so put it back.
-const graphDataset = { ...HPRC_DATASET, graphBrowser: HPRC_GRAPH_BROWSER }
 const { graphLocusUrl, graphRegionUrl, graphVcfLgvUrl, haplotypeLanesUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
 const { annotatedHaplotypes } =
@@ -135,7 +131,7 @@ for (const locus of loci) {
       },
     ],
   })
-  const graph = graphLocusUrl(graphDataset, locus)
+  const graph = graphLocusUrl(HPRC_DATASET, locus)
   if (graph) {
     launches.push({
       name: `${locus.id}: graph`,
@@ -147,7 +143,7 @@ for (const locus of loci) {
   // The display type alone passed while every lane errored on a clip that
   // lost its coordinates, so this reads the lanes back: one row per panel
   // haplotype, and no error.
-  const haplotypes = haplotypeLanesUrl(graphDataset, locus)
+  const haplotypes = haplotypeLanesUrl(HPRC_DATASET, locus)
   if (haplotypes) {
     launches.push({
       name: `${locus.id}: haplotypes`,
@@ -159,26 +155,17 @@ for (const locus of loci) {
 }
 
 // One whole-chromosome launch. chr21 is the shortest autosome, so it is the
-// cheapest proof that the graph track cuts its coarse tier at that zoom and the
-// tier lane opens as a lane rather than as a second graph; --loci filtering
-// does not apply to it.
-const chr21 = graphDataset.graphBrowser.chromosomes.find(
-  c => c.name === 'chr21',
-)
+// cheapest proof that the graph track cuts its coarse tier at that zoom; --loci
+// filtering does not apply to it.
+const chr21 = HPRC_GRAPH_BROWSER.chromosomes.find(c => c.name === 'chr21')
 const chromosome =
   chr21 &&
-  graphRegionUrl(graphDataset, { chrom: 'chr21', start: 0, end: chr21.length })
+  graphRegionUrl(HPRC_DATASET, { chrom: 'chr21', start: 0, end: chr21.length })
 if (chromosome && !wanted) {
   launches.push({
     name: 'chr21: whole-chromosome tier graph',
     url: retarget(chromosome),
-    expectDisplays: [
-      {
-        trackId: HPRC_GRAPH_BROWSER.tierTrackId,
-        type: 'LinearBasicDisplay',
-      },
-      graphDisplay,
-    ],
+    expectDisplays: [graphDisplay],
     expectTier: 'coarse',
   })
 }
@@ -344,8 +331,8 @@ async function readGraph(page, trackId) {
           error: pane.error ? `${pane.error}` : undefined,
           nodes: pane.hasGraph ? pane.nodeCount : undefined,
           tier: pane.cutTier,
-          layout: pane.layoutMode,
-          cutNote: pane.cutNote,
+          layout: pane.chosenLayoutMode,
+          tooLarge: pane.regionTooLarge ? pane.regionTooLargeReason : undefined,
         }
       )
     }, trackId)
@@ -419,7 +406,7 @@ for (const {
         problems.push(`graph: ${graph.error.split('\n')[0]}`)
       } else if (!graph.nodes) {
         problems.push(
-          `the graph never drew${graph.cutNote ? `: ${graph.cutNote}` : ''}`,
+          `the graph never drew${graph.tooLarge ? `: ${graph.tooLarge}` : ''}`,
         )
       } else {
         if (graph.tier !== expectTier) {

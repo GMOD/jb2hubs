@@ -140,12 +140,16 @@ const linearLane = (trackId: string) => ({
   type: 'LinearBasicDisplay',
 })
 
-// The segments lane is the graph track itself, and a view shows a track once,
-// so a graph launch leaves it out.
+// Over the graph, neither the segments nor the tier lane opens. The segments
+// lane is the graph track itself, and a view shows a track once. The graph cuts
+// its own tier past the adapter's `coarse.aboveBpPerPx`, which turns on the
+// view's width, so a tier lane switched by span would disagree with it: at 1000
+// px, HPRC's graph stays fine up to ~1 Mb, and Arabidopsis's goes coarse at
+// ~117 kb.
 function lanes(
   graph: PangenomeGraphBrowser,
   region: GraphRegion,
-  { segments = true } = {},
+  { overGraph = false } = {},
 ) {
   const tier = coarseTier(graph, region)
   const rearrangements = graph.rearrangementTrack
@@ -155,14 +159,14 @@ function lanes(
     ? [
         graph.geneTrackId,
         ...(graph.bubbleScoreTrackId ? [graph.bubbleScoreTrackId] : []),
-        linearLane(tier),
+        ...(overGraph ? [] : [linearLane(tier)]),
         ...rearrangements,
       ]
     : [
         graph.geneTrackId,
         graph.bubblesTrackId,
         ...(graph.allelesTrackId ? [graph.allelesTrackId] : []),
-        ...(segments ? [linearLane(graph.segmentsTrackId)] : []),
+        ...(overGraph ? [] : [linearLane(graph.segmentsTrackId)]),
         ...rearrangements,
       ]
 }
@@ -245,11 +249,9 @@ export function locusLaunchUrl(
 // A region drawn as the graph itself: one linear view, its lanes above the
 // segments track opened as the graph. The graph track cuts the view's window,
 // re-cuts as the view moves, and past the adapter's `coarse` handover cuts the
-// bubble tier on its own; the lanes above still pick their tier by span.
-// The anchored layout (`auto`) draws the graph on the view's own x, and
-// `reference-position` colours a node by where it sits on the reference. The
-// launch names both, flat on the display entry (graph plugin 4.0.7; a 4.0
-// `pane: {...}` still loads).
+// bubble tier on its own. Its default layout draws an rGFA graph on the view's
+// own x and colours a node by where it sits on the reference, so the launch
+// names neither.
 //
 // Undefined when the dataset has no hosted graph.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
@@ -265,13 +267,8 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
       assembly: dataset.reference.assembly,
       loc: locOf(region),
       tracks: [
-        ...lanes(graph, region, { segments: false }),
-        {
-          trackId: graph.segmentsTrackId,
-          type: 'LinearGraphDisplay',
-          layoutMode: 'auto',
-          colorScheme: 'reference-position',
-        },
+        ...lanes(graph, region, { overGraph: true }),
+        { trackId: graph.segmentsTrackId, type: 'LinearGraphDisplay' },
       ],
     },
   ])
