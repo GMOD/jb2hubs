@@ -27,7 +27,6 @@ const STAGING_ONLY = ['/protein-browser/', '/pangenomes/', '/synteny/']
 const REDIRECT_STUBS = [
   '/orthologs/',
   '/conserved-gene-order/',
-  '/pangenomes/explorer/',
   '/ucsc/launch/',
 ]
 

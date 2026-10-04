@@ -1919,9 +1919,8 @@ buttons on each graph's page pointing at it. All of that is gone, along with
 `portal.css`, the per-locus `*.vcfsummary.json` summaries, the `notes[]`
 caveats, the per-locus `significance` sentences and the PangyPlot fallback
 (`externalGraphBrowser`), which only the old region box ever reached; the locus
-table is what replaced it. The route is a redirect stub in `REDIRECT_STUBS`
-(astro.config.mjs) because the JBrowse pangenome tutorial links it, and its
-inline script carries `?dataset=<id>` across to `/pangenomes/<id>`.
+table is what replaced it. Its redirect stub went on 2026-10-04, once neither
+the JBrowse tutorials nor the published docs linked the route.
 
 ### One rule decides how wide a window is drawn, and it removed four surfaces
 
