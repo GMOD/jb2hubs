@@ -292,7 +292,7 @@ async function readLanes(page, expected) {
           bare: drawn.filter(h => !display.laneGeneAdapters.has(rowOf(h))),
           genes: Object.fromEntries(
             drawn.flatMap(h => {
-              const held = display.laneGenes?.get(rowOf(h))
+              const held = display.laneGenes?.held?.get(rowOf(h))
               return held ? [[h, held.genes.length]] : []
             }),
           ),
