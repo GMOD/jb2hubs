@@ -32,7 +32,9 @@ WORK="${HPRC_SV_STATES_DIR:-/mnt/sdb/cdiesh/hprcSvStates}"
 JOBS="${JOBS:-12}"
 DEST=jbrowse-data:jbrowse.org/pangenome/hprc-grch38/sv-states
 PACKER="$(pwd)/../generatePangenomeSvStates.ts"
-# The callset the config's own variant track names, so one file names it.
+# The wave callset the graph config's variant track names. The page's variants
+# launch reads the pgbi callset instead, which has neither the INV nor the
+# ORIGIN field this reads.
 VCF=$(jq -r '.tracks[] | select(.type == "VariantTrack") | .adapter.uri' hprc-grch38.json | head -1)
 NAME="$(basename "${VCF%.wave.vcf.gz}").sv-states"
 
