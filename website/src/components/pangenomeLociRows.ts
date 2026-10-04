@@ -2,6 +2,7 @@
 // launches it has on this build, built at page render.
 
 import {
+  bandageLocusUrl,
   geneHubUrl,
   graphLocusUrl,
   haplotypeLanesUrl,
@@ -44,6 +45,7 @@ export function lociRows(dataset: PangenomeDataset): LocusRow[] {
       graph: graphLocusUrl(dataset, locus),
       linear: locusLaunchUrl(dataset, locus),
       haplotypes: haplotypeLanesUrl(dataset, locus),
+      bandage: bandageLocusUrl(dataset, locus),
       geneHub: geneHubUrl(dataset, locus),
     }),
   }))
@@ -60,5 +62,6 @@ export function lociColumns(rows: LocusRow[]) {
     segments: rows.some(r => r.segments !== undefined),
     launches: rows.some(r => r.launches.length > 0),
     haplotypes: rows.some(r => r.launches.some(l => l.kind === 'haplotypes')),
+    bandage: rows.some(r => r.launches.some(l => l.kind === 'bandage')),
   }
 }

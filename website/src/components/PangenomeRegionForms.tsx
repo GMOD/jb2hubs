@@ -4,6 +4,7 @@ import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
 import PangenomeLaunchLinks from './PangenomeLaunchLinks.tsx'
 import {
+  bandageRegionUrl,
   graphRegionUrl,
   haplotypeLanesForRegion,
   launchLinks,
@@ -115,15 +116,13 @@ export default function PangenomeRegionForms({
   const lanes = reading?.panel?.lanes ?? []
   const region = answer?.region
   const graphRegion = region && { ...region, label: formatRegion(region) }
+  const haplotypes = lanes.map(l => l.haplotype)
   const launches = graphRegion
     ? launchLinks(dataset, {
         graph: graphRegionUrl(dataset, graphRegion),
         linear: reading && regionLaunchUrl(dataset, graphRegion),
-        haplotypes: haplotypeLanesForRegion(
-          dataset,
-          graphRegion,
-          lanes.map(l => l.haplotype),
-        ),
+        haplotypes: haplotypeLanesForRegion(dataset, graphRegion, haplotypes),
+        bandage: bandageRegionUrl(dataset, graphRegion, haplotypes),
       })
     : []
 

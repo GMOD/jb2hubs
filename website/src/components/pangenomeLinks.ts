@@ -299,26 +299,27 @@ export function graphLocusUrl(
 const LANE_HEIGHT_PX = 51
 const GENE_ROW_HEIGHT_PX = 60
 
-// A locus's haplotypes as lanes read from the graph: the dataset's panel for
-// it, one lane per structural configuration, commonest first. `laneFilter`
-// decides which walks are fetched and drawn and `domain` pins their order, so
-// the config's one lane track serves every locus; the track's own assemblies
-// are only what a host that drops the props would open instead.
+// The dataset's panel for a locus: one haplotype per structural configuration,
+// commonest first. Empty where nothing in the window tells the haplotypes
+// apart, which leaves no forms to choose between.
+const panelHaplotypes = (dataset: PangenomeDataset, locus: PangenomeLocus) =>
+  dataset.panels?.[locus.id]?.lanes.map(l => l.haplotype) ?? []
+
+// A locus's haplotypes as lanes read from the graph. `laneFilter` decides which
+// walks are fetched and drawn and `domain` pins their order, so the config's
+// one lane track serves every locus; the track's own assemblies are only what a
+// host that drops the props would open instead.
 //
-// Undefined without the lane track or a panel: a locus where nothing tells the
-// haplotypes apart has no forms to choose between.
+// Undefined without the lane track or a panel.
 export function haplotypeLanesUrl(
   dataset: PangenomeDataset,
   locus: PangenomeLocus,
 ) {
-  const panel = dataset.panels?.[locus.id]
-  return panel
-    ? haplotypeLanesForRegion(
-        dataset,
-        launchRegion(locus),
-        panel.lanes.map(l => l.haplotype),
-      )
-    : undefined
+  return haplotypeLanesForRegion(
+    dataset,
+    launchRegion(locus),
+    panelHaplotypes(dataset, locus),
+  )
 }
 
 // The same launch over any window, for a region a reader asked for rather than
@@ -362,10 +363,57 @@ export function haplotypeLanesForRegion(
   ])
 }
 
+const BANDAGE_URL = 'https://jbrowse.org/demos/bandagejs/'
+
+// The same haplotypes cut out of the graph in BandageJS and laid out by force,
+// the topology no JBrowse launch here draws. The layout is always named, since
+// BandageJS otherwise opens in whichever one the visitor last picked, and so
+// are the haplotypes, since without them it cuts all 464.
+//
+// Not walk rows, which would mostly repeat the haplotypes launch and cut whole
+// snarls rather than the window. Measured 2026-10-04 over the 19 panels, the
+// whole-snarl cut passes BandageJS's 100,000-node limit on SMN, DEFB and HP,
+// which then open on an error, while the window alone is 1,315–33,010 nodes.
+// MHC and KIR are over the 20,000 BandageJS draws without asking first.
+//
+// Undefined without a gbz preset or without haplotypes to draw.
+export function bandageRegionUrl(
+  dataset: PangenomeDataset,
+  region: GraphRegion,
+  haplotypes: string[],
+) {
+  if (!dataset.bandageGbz || haplotypes.length === 0) {
+    return undefined
+  }
+  const query = new URLSearchParams({
+    gbz: dataset.bandageGbz,
+    loc: locOf(region),
+    haps: haplotypes.join(','),
+    layout: 'force',
+  })
+  return `${BANDAGE_URL}?${query}`
+}
+
+export function bandageLocusUrl(
+  dataset: PangenomeDataset,
+  locus: PangenomeLocus,
+) {
+  return bandageRegionUrl(
+    dataset,
+    launchRegion(locus),
+    panelHaplotypes(dataset, locus),
+  )
+}
+
 // The launches a locus row or an asked-for region offers, in one order, and
 // only those this build can open: a builder that answers undefined (no hosted
 // graph, no panel, no callset) leaves no link rather than one to nowhere.
-export type LaunchKind = 'graph' | 'linear' | 'haplotypes' | 'geneHub'
+export type LaunchKind =
+  | 'graph'
+  | 'linear'
+  | 'haplotypes'
+  | 'bandage'
+  | 'geneHub'
 
 export interface LaunchLink {
   kind: LaunchKind
@@ -383,6 +431,7 @@ export function launchLinks(
     ['graph', 'graph'],
     ['linear', dataset.graphVcf ? 'variants' : 'bubbles'],
     ['haplotypes', 'haplotypes'],
+    ['bandage', 'BandageJS'],
     ['geneHub', 'gene hub'],
   ]
   return labels.flatMap(([kind, label]) => {

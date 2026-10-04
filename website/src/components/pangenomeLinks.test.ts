@@ -12,6 +12,7 @@ import {
   MOUSE_DATASET,
 } from './pangenomeDataset.ts'
 import {
+  bandageLocusUrl,
   geneHubUrl,
   graphLanesUrl,
   graphLocusUrl,
@@ -495,6 +496,38 @@ test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
     ),
     undefined,
   )
+})
+
+// BandageJS reads the gbz-base database itself, so the link needs no hosted
+// graph: HPRC_DATASET here has none.
+test('bandageLocusUrl cuts the launch window around the locus panel, laid out by force', () => {
+  const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
+  const url = new URL(bandageLocusUrl(HPRC_DATASET, cfhr)!)
+  const region = launchRegion(cfhr)
+  assert.equal(
+    url.origin + url.pathname,
+    'https://jbrowse.org/demos/bandagejs/',
+  )
+  assert.deepEqual(Object.fromEntries(url.searchParams), {
+    gbz: 'hprc',
+    loc: `${region.chrom}:${region.start + 1}-${region.end}`,
+    haps: HPRC_DATASET.panels!.cfhr!.lanes.map(l => l.haplotype).join(','),
+    layout: 'force',
+  })
+})
+
+test('bandageLocusUrl is undefined without a gbz preset or a panel', () => {
+  const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
+  const bare = HPRC_DATASET.loci.find(l => l.id === 'srgap2')!
+  assert.equal(bandageLocusUrl(HPRC_DATASET, bare), undefined)
+  assert.equal(
+    bandageLocusUrl({ ...HPRC_DATASET, bandageGbz: undefined }, cfhr),
+    undefined,
+  )
+  assert.ok(MOUSE_DATASET.loci.length > 0)
+  for (const l of MOUSE_DATASET.loci) {
+    assert.equal(bandageLocusUrl(MOUSE_DATASET, l), undefined)
+  }
 })
 
 // The adapter names a lane after the assembly `assemblyNameToPanSN` maps its

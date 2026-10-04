@@ -153,6 +153,10 @@ export interface PangenomeDataset {
   svTrackIds: string[]
   // Omitted where a dataset has no hosted graph projection to draw.
   graphBrowser?: PangenomeGraphBrowser
+  // The `gbz=` preset BandageJS cuts this graph's windows from. BandageJS cuts
+  // a region only out of a gbz-base database, and the other graphs here are
+  // published as whole GFA files.
+  bandageGbz?: string
   loci: PangenomeLocus[]
   // Per locus id, the haplotypes its lanes launch opens, read from
   // `svStatesUrl` by `generatePangenomePanels.ts`. A locus without one has
@@ -290,6 +294,7 @@ export const HPRC_DATASET: PangenomeDataset = {
     'hg38-hprcArrDupBedV1',
   ],
   graphBrowser: features.pangenomeGraph ? HPRC_GRAPH_BROWSER : undefined,
+  bandageGbz: 'hprc',
   loci: PANGENOME_LOCI,
   panels: hprcPanelsFile.panels,
   svStatesUrl:

@@ -88,11 +88,33 @@ test('a locus has a haplotypes launch exactly where its dataset has a panel', ()
   assert.equal(lociColumns(lociRows(MOUSE_DATASET)).haplotypes, false)
 })
 
+// BandageJS reads the graph's gbz-base database itself, so it needs a panel but
+// no hosted graph.
+test('a locus has a BandageJS launch exactly where its dataset has a panel', () => {
+  const rows = lociRows(HPRC_DATASET)
+  const panels = HPRC_DATASET.panels ?? {}
+  HPRC_DATASET.loci.forEach((locus, i) => {
+    assert.equal(
+      urlOf(rows[i], 'bandage') !== undefined,
+      panels[locus.id] !== undefined,
+      locus.id,
+    )
+  })
+  assert.equal(lociColumns(rows).bandage, true)
+  assert.equal(lociColumns(lociRows(MOUSE_DATASET)).bandage, false)
+})
+
 // One order for every row, and the gene hub, a page of this site, is the one
 // launch that does not open a new tab.
 test('a row lists its launches in one order, only those it can open', () => {
   const rows = lociRows(hprcGraph)
-  const order: LaunchKind[] = ['graph', 'linear', 'haplotypes', 'geneHub']
+  const order: LaunchKind[] = [
+    'graph',
+    'linear',
+    'haplotypes',
+    'bandage',
+    'geneHub',
+  ]
   for (const r of rows) {
     const kinds = r.launches.map(l => l.kind)
     assert.deepEqual(
@@ -105,6 +127,6 @@ test('a row lists its launches in one order, only those it can open', () => {
   }
   assert.deepEqual(
     rows[0]?.launches.map(l => l.label),
-    ['graph', 'variants', 'haplotypes', 'gene hub'],
+    ['graph', 'variants', 'haplotypes', 'BandageJS', 'gene hub'],
   )
 })
