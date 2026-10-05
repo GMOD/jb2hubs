@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useCombobox } from '../hooks/useCombobox.ts'
 import { rankOptions } from '../utils/rankOptions.ts'
 
+const MAX_SHOWN = 100
+
 export interface AutocompleteOption {
   value: string
   label: string
@@ -73,9 +75,11 @@ export default function Autocomplete({
   const answer =
     queryOptions && answered?.search === inputValue ? answered : undefined
   const searching = queryOptions !== undefined && answer === undefined
-  const filteredOptions = queryOptions
+  const ranked = queryOptions
     ? (answer?.options ?? [])
-    : rankOptions(inputValue, options)
+    : rankOptions(inputValue, options, MAX_SHOWN + 1)
+  const truncated = !queryOptions && ranked.length > MAX_SHOWN
+  const filteredOptions = truncated ? ranked.slice(0, MAX_SHOWN) : ranked
 
   const close = () => {
     setInputValue('')
@@ -236,6 +240,11 @@ export default function Autocomplete({
                 {option.label}
               </li>
             ))
+          )}
+          {truncated && !searching && (
+            <li className="autocomplete-no-results">
+              Showing the first {MAX_SHOWN}. Keep typing to narrow the list.
+            </li>
           )}
         </ul>
       )}

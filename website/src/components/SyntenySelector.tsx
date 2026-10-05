@@ -7,6 +7,7 @@ import useSWRImmutable from 'swr/immutable'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
+import { availableExamples } from '../lib/syntenyExamples.ts'
 import syntenyTracksUrl from '../syntenyTracks.json?url'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
@@ -18,6 +19,7 @@ import {
 } from './geneSearch.ts'
 import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 
+import type { SyntenyExample } from '../lib/syntenyExamples.ts'
 import type {
   SyntenyAssembly,
   SyntenyCatalogData,
@@ -194,6 +196,18 @@ function SyntenyPicker({ data }: Props) {
     setGeneValue('')
   }
 
+  const examples = useMemo(
+    () => availableExamples(catalog, filter),
+    [catalog, filter],
+  )
+
+  const handleExample = (example: SyntenyExample) => {
+    setSpecies1(example.assembly)
+    setSpecies2(example.assembly2)
+    setTrackOverride('')
+    setGeneValue(example.gene ?? '')
+  }
+
   // Unticking a source can strip the current selection out of the lists it was
   // picked from, so the pair is re-validated here, where the change happens,
   // rather than by an effect watching the lists afterwards.
@@ -280,7 +294,7 @@ function SyntenyPicker({ data }: Props) {
             onChange={value => {
               handleSpecies1Change(value)
             }}
-            placeholder="Search species or accession…"
+            placeholder={`Type to search ${assemblies.length} assemblies…`}
           />
         </div>
 
@@ -308,7 +322,7 @@ function SyntenyPicker({ data }: Props) {
             }}
             placeholder={
               species1
-                ? 'Search comparable species…'
+                ? `Type to search ${partners.length} comparable assemblies…`
                 : 'Choose a first assembly'
             }
             disabled={!species1}
@@ -339,6 +353,28 @@ function SyntenyPicker({ data }: Props) {
           </span>
         )}
       </div>
+
+      {examples.length > 0 && (
+        <div
+          className="synteny-examples"
+          role="group"
+          aria-label="Example comparisons"
+        >
+          <span className="ui-caption">Examples:</span>
+          {examples.map(example => (
+            <button
+              key={example.label}
+              type="button"
+              className="ui-chip-btn"
+              onClick={() => {
+                handleExample(example)
+              }}
+            >
+              {example.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {canSearchGenes && (
         <div className="synteny-field synteny-gene">
