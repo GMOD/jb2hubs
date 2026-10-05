@@ -7,7 +7,7 @@ import useSWRImmutable from 'swr/immutable'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
-import { availableExamples } from '../lib/syntenyExamples.ts'
+import { availableExamples, featuredFirst } from '../lib/syntenyExamples.ts'
 import syntenyTracksUrl from '../syntenyTracks.json?url'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
@@ -73,6 +73,9 @@ function SyntenyPicker({ data }: Props) {
     [showUcsc, showGenark],
   )
   const nameOf = (id: string) => data.assemblyInfo[id]?.commonName ?? id
+  // Human is hg38 and hs1, Mouse is mm10 and mm39: the id says which was picked.
+  const labelOf = (id: string) =>
+    nameOf(id) === id ? id : `${nameOf(id)} (${id})`
 
   // Every list is a filter over the blob the page already handed us, so it is
   // derived during render rather than mirrored into state by an effect. The
@@ -266,7 +269,7 @@ function SyntenyPicker({ data }: Props) {
 
   const species1Options = useMemo(
     () =>
-      assemblies.map(asm => ({
+      featuredFirst(assemblies).map(asm => ({
         value: asm.id,
         label: formatOption(asm),
       })),
@@ -275,7 +278,7 @@ function SyntenyPicker({ data }: Props) {
 
   const species2Options = useMemo(
     () =>
-      partners.map(asm => ({
+      featuredFirst(partners).map(asm => ({
         value: asm.id,
         label: formatOption(asm),
       })),
@@ -348,8 +351,8 @@ function SyntenyPicker({ data }: Props) {
           } a synteny comparison with ${nameOf(species1)}.`}
         {species1 && species2 && (
           <span>
-            Comparing <strong>{nameOf(species1)}</strong> ⇄{' '}
-            <strong>{nameOf(species2)}</strong>
+            Comparing <strong>{labelOf(species1)}</strong> ⇄{' '}
+            <strong>{labelOf(species2)}</strong>
           </span>
         )}
       </div>

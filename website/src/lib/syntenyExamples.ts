@@ -1,4 +1,8 @@
-import type { SourceFilter, SyntenyCatalog } from './syntenyCatalog.ts'
+import type {
+  SourceFilter,
+  SyntenyAssembly,
+  SyntenyCatalog,
+} from './syntenyCatalog.ts'
 
 export interface SyntenyExample {
   label: string
@@ -41,4 +45,33 @@ export function availableExamples(
         .listPartners(ex.assembly, filter)
         .some(a => a.id === ex.assembly2),
   )
+}
+
+// The model organisms' current builds, in the order a visitor expects them. An
+// unfiltered picker lists alphabetically, which opens on "A. gambiae".
+export const FEATURED_ASSEMBLIES = [
+  'hg38',
+  'mm39',
+  'rn7',
+  'panTro6',
+  'rheMac10',
+  'canFam4',
+  'bosTau9',
+  'susScr11',
+  'galGal6',
+  'xenTro10',
+  'danRer11',
+  'dm6',
+  'ce11',
+  'sacCer3',
+]
+
+// Featured assemblies first, in FEATURED_ASSEMBLIES order; the rest keep the
+// order they came in.
+export function featuredFirst(assemblies: SyntenyAssembly[]) {
+  const rank = new Map(FEATURED_ASSEMBLIES.map((id, i) => [id, i]))
+  const featured = assemblies
+    .filter(a => rank.has(a.id))
+    .sort((a, b) => rank.get(a.id)! - rank.get(b.id)!)
+  return [...featured, ...assemblies.filter(a => !rank.has(a.id))]
 }

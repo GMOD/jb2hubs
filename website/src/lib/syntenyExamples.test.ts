@@ -4,7 +4,12 @@ import { describe, it } from 'node:test'
 import { fileURLToPath } from 'node:url'
 
 import { createStaticCatalog } from './syntenyCatalog.ts'
-import { SYNTENY_EXAMPLES, availableExamples } from './syntenyExamples.ts'
+import {
+  FEATURED_ASSEMBLIES,
+  SYNTENY_EXAMPLES,
+  availableExamples,
+  featuredFirst,
+} from './syntenyExamples.ts'
 
 import type { SyntenyCatalogData } from './syntenyCatalog.ts'
 
@@ -38,6 +43,19 @@ describe('synteny examples', () => {
     assert.equal(
       availableExamples(catalog, { ucsc: false, genark: true }).length,
       0,
+    )
+  })
+
+  it('lists the featured assemblies first, then the rest in order', () => {
+    const all = catalog.listAssemblies(filter)
+    const listed = featuredFirst(all).map(a => a.id)
+    assert.deepEqual(
+      listed.slice(0, FEATURED_ASSEMBLIES.length),
+      FEATURED_ASSEMBLIES,
+    )
+    assert.deepEqual(
+      listed.slice(FEATURED_ASSEMBLIES.length),
+      all.map(a => a.id).filter(id => !FEATURED_ASSEMBLIES.includes(id)),
     )
   })
 })
