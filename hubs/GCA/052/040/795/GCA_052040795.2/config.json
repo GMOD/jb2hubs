@@ -1,0 +1,426 @@
+{
+  "assemblies": [
+    {
+      "name": "GCA_052040795.2",
+      "displayName": "zebrafish (M-AB 2026)",
+      "sequence": {
+        "type": "ReferenceSequenceTrack",
+        "metadata": {
+          "blatDb": "GCA_052040795.2",
+          "ucsc": {
+            "genome": "GCA_052040795.2",
+            "taxId": "7955",
+            "groups": "groups.txt",
+            "description": "zebrafish (M-AB 2026)",
+            "twoBitPath": "GCA_052040795.2.2bit",
+            "twoBitBptUrl": "GCA_052040795.2.2bit.bpt",
+            "chromSizes": "GCA_052040795.2.chrom.sizes.txt",
+            "chromAliasBb": "GCA_052040795.2.chromAlias.bb",
+            "chromAuthority": "ucsc",
+            "organism": "GRCz13ab Aug. 2026",
+            "defaultPos": "CM124810.2:27138458-27148458",
+            "scientificName": "Danio rerio",
+            "htmlPath": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.description.html\">html/GCA_052040795.2_GRCz13ab.description.html</a>",
+            "blat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/052/040/795/GCA_052040795.2",
+            "transBlat": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/052/040/795/GCA_052040795.2",
+            "isPcr": "dynablat-01.soe.ucsc.edu 4040 dynamic GCA/052/040/795/GCA_052040795.2"
+          }
+        },
+        "trackId": "GCA_052040795.2-ReferenceSequenceTrack",
+        "adapter": {
+          "type": "TwoBitAdapter",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/GCA_052040795.2.2bit",
+          "chromSizes": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/GCA_052040795.2.chrom.sizes.txt"
+        }
+      },
+      "refNameAliases": {
+        "adapter": {
+          "type": "RefNameAliasAdapter",
+          "refNameColumnHeaderName": "ucsc",
+          "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/GCA_052040795.2.chromAlias.txt"
+        }
+      }
+    }
+  ],
+  "tracks": [
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "assembly",
+          "longLabel": "Assembly",
+          "shortLabel": "Assembly",
+          "visibility": "hide",
+          "colorByStrand": "150,100,30 230,170,40",
+          "color": "150,100,30",
+          "altColor": "230,170,40",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.assembly.bb",
+          "type": "bigBed 6",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.assembly\">html/GCA_052040795.2_GRCz13ab.assembly</a>",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_052040795.2_GRCz13ab.assembly.ix",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "group": "map"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_052040795.2-assembly",
+      "description": "Assembly",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "Assembly",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.assembly.bb"
+      },
+      "formatDetails": {
+        "feature": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cytoBandIdeo",
+          "shortLabel": "Chromosome Band (Ideogram)",
+          "longLabel": "Ideogram for Orientation",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.cytoBand.bb"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_052040795.2-cytoBandIdeo",
+      "description": "Ideogram for Orientation",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "Chromosome Band (Ideogram)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.cytoBand.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "gcOnFly",
+          "shortLabel": "GC Percent",
+          "longLabel": "GC Percent in 5-Base Windows",
+          "group": "map",
+          "visibility": "dense",
+          "type": "bigWig 0 100",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.gcOnFly.bw",
+          "gcOnFlyMaxDensity": "50000",
+          "syntheticTrack": "on",
+          "calcWinSize": "5",
+          "autoScale": "Off",
+          "viewLimits": "30:70",
+          "maxHeightPixels": "128:36:16",
+          "graphTypeDefault": "Bar",
+          "gridDefault": "OFF",
+          "windowingFunction": "Mean",
+          "color": "0,0,0",
+          "altColor": "128,128,128",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.gcOnFly\">html/GCA_052040795.2_GRCz13ab.gcOnFly</a>"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_052040795.2-gcOnFly",
+      "description": "GC Percent in 5-Base Windows",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "GC Percent",
+      "type": "QuantitativeTrack",
+      "adapter": {
+        "type": "BigWigAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.gcOnFly.bw"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "tandemDups",
+          "parent": "tanDups on",
+          "shortLabel": "Tandem Dups",
+          "longLabel": "Paired exactly identical sequence survey over entire genome assembly",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.tandemDups.bb",
+          "type": "bigBed 12"
+        }
+      },
+      "category": ["Mapping and Sequencing"],
+      "trackId": "GCA_052040795.2-tandemDups",
+      "description": "Paired exactly identical sequence survey over entire genome assembly",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "Tandem Dups",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.tandemDups.bb",
+        "disableGeneHeuristic": true
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "repeatMasker",
+          "shortLabel": "RepeatMasker",
+          "longLabel": "RepeatMasker Repetitive Elements",
+          "type": "bigRmsk 9 +",
+          "visibility": "pack",
+          "group": "varRep",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.rmsk.bb",
+          "xrefDataUrl": "bbi/GCA_052040795.2_GRCz13ab.rmsk.align.bb",
+          "maxWindowToDraw": "5000000",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.repeatMasker\">html/GCA_052040795.2_GRCz13ab.repeatMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_052040795.2-repeatMasker",
+      "description": "RepeatMasker Repetitive Elements",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "RepeatMasker",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.rmsk.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "simpleRepeat",
+          "shortLabel": "Simple Repeats",
+          "longLabel": "Simple Tandem Repeats by TRF",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 4 +",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.simpleRepeat.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.simpleRepeat\">html/GCA_052040795.2_GRCz13ab.simpleRepeat</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_052040795.2-simpleRepeat",
+      "description": "Simple Tandem Repeats by TRF",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "Simple Repeats",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.simpleRepeat.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExt",
+          "parent": "cpgIslands off",
+          "shortLabel": "CpG Islands",
+          "longLabel": "CpG Islands (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "1",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.cpgIslandExt.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_052040795.2-cpgIslandExt",
+      "description": "CpG Islands (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "CpG Islands",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.cpgIslandExt.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "cpgIslandExtUnmasked",
+          "parent": "cpgIslands on",
+          "shortLabel": "Unmasked CpG",
+          "longLabel": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+          "type": "bigBed 4 +",
+          "priority": "2",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.cpgIslandExtUnmasked.bb"
+        }
+      },
+      "category": ["Regulation"],
+      "trackId": "GCA_052040795.2-cpgIslandExtUnmasked",
+      "description": "CpG Islands on All Sequence (Islands < 300 Bases are Light Green)",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "CpG Islands - Unmasked CpG",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.cpgIslandExtUnmasked.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "windowMasker",
+          "shortLabel": "WM + SDust",
+          "longLabel": "Genomic Intervals Masked by WindowMasker + SDust",
+          "group": "varRep",
+          "visibility": "dense",
+          "type": "bigBed 3",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.windowMasker.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.windowMasker\">html/GCA_052040795.2_GRCz13ab.windowMasker</a>"
+        }
+      },
+      "category": ["Variation and Repeats"],
+      "trackId": "GCA_052040795.2-windowMasker",
+      "description": "Genomic Intervals Masked by WindowMasker + SDust",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "WM + SDust",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.windowMasker.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "augustus",
+          "shortLabel": "Augustus",
+          "longLabel": "Augustus Gene Predictions",
+          "group": "genes",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.augustus.bb",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.augustus\">html/GCA_052040795.2_GRCz13ab.augustus</a>"
+        }
+      },
+      "category": ["Genes and Gene Predictions"],
+      "trackId": "GCA_052040795.2-augustus",
+      "description": "Augustus Gene Predictions",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "Augustus",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.augustus.bb"
+      }
+    },
+    {
+      "metadata": {
+        "ucsc": {
+          "track": "xenoRefGene",
+          "shortLabel": "RefSeq mRNAs",
+          "longLabel": "RefSeq mRNAs mapped to this assembly",
+          "group": "rna",
+          "visibility": "pack",
+          "color": "180,0,0",
+          "type": "bigGenePred",
+          "bigDataUrl": "bbi/GCA_052040795.2_GRCz13ab.xenoRefGene.bb",
+          "url": "https://www.ncbi.nlm.nih.gov/nuccore/$$",
+          "urlLabel": "NCBI Nucleotide database:",
+          "labelFields": "name,geneName,geneName2",
+          "defaultLabelFields": "geneName",
+          "searchIndex": "name",
+          "searchTrix": "ixIxx/GCA_052040795.2_GRCz13ab.xenoRefGene.ix",
+          "html": "<a href=\"https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/html/GCA_052040795.2_GRCz13ab.xenoRefGene\">html/GCA_052040795.2_GRCz13ab.xenoRefGene</a>"
+        }
+      },
+      "category": ["mRNA and EST"],
+      "trackId": "GCA_052040795.2-xenoRefGene",
+      "description": "RefSeq mRNAs mapped to this assembly",
+      "assemblyNames": ["GCA_052040795.2"],
+      "name": "RefSeq mRNAs (xeno)",
+      "type": "FeatureTrack",
+      "adapter": {
+        "type": "BigBedAdapter",
+        "uri": "https://hgdownload.soe.ucsc.edu/hubs/GCA/052/040/795/GCA_052040795.2/bbi/GCA_052040795.2_GRCz13ab.xenoRefGene.bb",
+        "aggregateField": "geneName"
+      },
+      "formatDetails": {
+        "subfeatures": "jexl:{'NCBI Nucleotide database':feature.name?'<a href=\"'+'https://www.ncbi.nlm.nih.gov/nuccore/'+(''+feature.name)+'\">'+(''+feature.name)+'</a>':undefined}"
+      },
+      "displays": [
+        {
+          "type": "LinearBasicDisplay",
+          "displayId": "GCA_052040795.2-xenoRefGene-LinearBasicDisplay",
+          "labels": {
+            "name": "jexl:get(feature,'name')"
+          }
+        }
+      ]
+    }
+  ],
+  "defaultSession": {
+    "name": "GCA_052040795.2",
+    "widgets": {
+      "hierarchicalTrackSelector": {
+        "id": "hierarchicalTrackSelector",
+        "type": "HierarchicalTrackSelectorWidget",
+        "view": "initialView"
+      }
+    },
+    "activeWidgets": {
+      "hierarchicalTrackSelector": "hierarchicalTrackSelector"
+    },
+    "views": [
+      {
+        "type": "LinearGenomeView",
+        "id": "initialView",
+        "init": {
+          "assembly": "GCA_052040795.2",
+          "loc": "CM124810.2:27138458-27148458"
+        }
+      }
+    ]
+  },
+  "aggregateTextSearchAdapters": [
+    {
+      "type": "TrixTextSearchAdapter",
+      "textSearchAdapterId": "GCA_052040795.2-index",
+      "ixFilePath": {
+        "uri": "trix/GCA_052040795.2.ix",
+        "locationType": "UriLocation"
+      },
+      "ixxFilePath": {
+        "uri": "trix/GCA_052040795.2.ixx",
+        "locationType": "UriLocation"
+      },
+      "metaFilePath": {
+        "uri": "trix/GCA_052040795.2_meta.json",
+        "locationType": "UriLocation"
+      },
+      "assemblyNames": ["GCA_052040795.2"]
+    }
+  ],
+  "plugins": [
+    {
+      "name": "MafViewer",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-mafviewer/latest/dist/jbrowse-plugin-mafviewer.umd.production.min.js"
+    },
+    {
+      "name": "Hubs",
+      "storePlugin": "Hubs",
+      "url": "https://jbrowse.org/plugins/@cmdcolin/jbrowse-plugin-hubs/latest/dist/jbrowse-plugin-hubs.umd.production.min.js"
+    },
+    {
+      "name": "Protein3d",
+      "storePlugin": "Protein3d",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-protein3d/0.15.3/dist/jbrowse-plugin-protein3d.umd.production.min.js"
+    },
+    {
+      "name": "MsaView",
+      "storePlugin": "MsaView",
+      "url": "https://jbrowse.org/plugins/jbrowse-plugin-msaview/3.10.0/dist/jbrowse-plugin-msaview.umd.production.min.js"
+    }
+  ],
+  "configuration": {
+    "hierarchical": {
+      "sort": {
+        "trackNames": true,
+        "categories": true
+      },
+      "defaultCollapsed": {
+        "topLevelCategories": true,
+        "subCategories": true
+      }
+    }
+  }
+}

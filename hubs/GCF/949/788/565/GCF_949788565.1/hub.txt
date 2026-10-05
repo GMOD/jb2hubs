@@ -1,0 +1,141 @@
+hub GCF_949788565.1 genome assembly
+shortLabel Streptococcus agalactiae (MRI Z2-174 2023)
+longLabel Streptococcus agalactiae (MRI Z2-174 2023)/Streptococcus agalactiae/GCF_949788565.1_23495_7_283_h_nanopore genome assembly
+useOneFile on
+email genome-www@soe.ucsc.edu
+descriptionUrl html/GCF_949788565.1_23495_7_283_h_nanopore.description.html
+
+genome GCF_949788565.1
+taxId 1311
+groups groups.txt
+description Streptococcus agalactiae (MRI Z2-174 2023)
+twoBitPath GCF_949788565.1.2bit
+twoBitBptUrl GCF_949788565.1.2bit.bpt
+chromSizes GCF_949788565.1.chrom.sizes.txt
+chromAliasBb GCF_949788565.1.chromAlias.bb
+organism 23495_7_283_h_nanopore Apr. 2023
+defaultPos NZ_OX460931.1:670847-680847
+scientificName Streptococcus agalactiae
+htmlPath html/GCF_949788565.1_23495_7_283_h_nanopore.description.html
+blat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/949/788/565/GCF_949788565.1
+transBlat dynablat-01.soe.ucsc.edu 4040 dynamic GCF/949/788/565/GCF_949788565.1
+isPcr dynablat-01.soe.ucsc.edu 4040 dynamic GCF/949/788/565/GCF_949788565.1
+
+track assembly
+longLabel Assembly
+shortLabel Assembly
+visibility hide
+colorByStrand 150,100,30 230,170,40
+color 150,100,30
+altColor 230,170,40
+bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.assembly.bb
+type bigBed 6
+html html/GCF_949788565.1_23495_7_283_h_nanopore.assembly
+searchIndex name
+searchTrix ixIxx/GCF_949788565.1_23495_7_283_h_nanopore.assembly.ix
+url https://www.ncbi.nlm.nih.gov/nuccore/$$
+urlLabel NCBI Nucleotide database:
+group map
+
+track cytoBandIdeo
+shortLabel Chromosome Band (Ideogram)
+longLabel Ideogram for Orientation
+group map
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.cytoBand.bb
+
+track gc5Base
+shortLabel GC Percent
+longLabel GC Percent in 5-Base Windows
+group map
+visibility dense
+autoScale Off
+maxHeightPixels 128:36:16
+graphTypeDefault Bar
+gridDefault OFF
+windowingFunction Mean
+color 0,0,0
+altColor 128,128,128
+viewLimits 30:70
+type bigWig 0 100
+bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.gc5Base.bw
+html html/GCF_949788565.1_23495_7_283_h_nanopore.gc5Base
+
+track tanDups
+shortLabel Tandem Dups
+longLabel Paired identical sequences
+compositeTrack on
+visibility hide
+type bigBed 12
+group map
+html html/GCF_949788565.1_23495_7_283_h_nanopore.tanDups
+
+    track tandemDups
+    parent tanDups on
+    shortLabel Tandem Dups
+    longLabel Paired exactly identical sequence survey over entire genome assembly
+    bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.tandemDups.bb
+    type bigBed 12
+
+track simpleRepeat
+shortLabel Simple Repeats
+longLabel Simple Tandem Repeats by TRF
+group varRep
+visibility dense
+type bigBed 4 +
+bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.simpleRepeat.bb
+html html/GCF_949788565.1_23495_7_283_h_nanopore.simpleRepeat
+
+track ncbiGene
+longLabel Gene models submitted to GenBank, ENA, DDBJ
+shortLabel NCBI GenBank
+visibility pack
+color 0,80,150
+altColor 150,80,0
+colorByStrand 0,80,150 150,80,0
+bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.ncbiGene.bb
+type bigGenePred
+urls name2="https://www.ncbi.nlm.nih.gov/gene/?term=$$" geneName="https://www.ncbi.nlm.nih.gov/gene/$$" geneName2="https://www.ncbi.nlm.nih.gov/nuccore/$$"
+html html/GCF_949788565.1_23495_7_283_h_nanopore.ncbiGene
+searchIndex name
+searchTrix ixIxx/GCF_949788565.1_23495_7_283_h_nanopore.ncbiGene.ix
+urlLabel Entrez gene:
+labelFields geneName,geneName2
+defaultLabelFields geneName2
+group genes
+
+track cpgIslands
+compositeTrack on
+shortLabel CpG Islands
+longLabel CpG Islands (Islands < 300 Bases are Light Green)
+group regulation
+visibility dense
+type bigBed 4 +
+html html/GCF_949788565.1_23495_7_283_h_nanopore.cpgIslands
+
+    track cpgIslandExt
+    parent cpgIslands off
+    shortLabel CpG Islands
+    longLabel CpG Islands (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 1
+    bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.cpgIslandExt.bb
+
+    track cpgIslandExtUnmasked
+    parent cpgIslands on
+    shortLabel Unmasked CpG
+    longLabel CpG Islands on All Sequence (Islands < 300 Bases are Light Green)
+    type bigBed 4 +
+    priority 2
+    bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.cpgIslandExtUnmasked.bb
+
+track windowMasker
+shortLabel WM + SDust
+longLabel Genomic Intervals Masked by WindowMasker + SDust
+group varRep
+visibility dense
+type bigBed 3
+bigDataUrl bbi/GCF_949788565.1_23495_7_283_h_nanopore.windowMasker.bb
+html html/GCF_949788565.1_23495_7_283_h_nanopore.windowMasker
+
