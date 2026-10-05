@@ -100,13 +100,6 @@ export default function ProteinDomainCartoon({
 
   return (
     <div className="pdc">
-      {onToggleSuperpose && (
-        <p className="ui-caption pdc-howto">
-          Click a domain on the query row to open the session with it
-          highlighted. Mark other species to superpose their AlphaFold model on
-          the query&rsquo;s.
-        </p>
-      )}
       <div className="pdc-rows">
         {rows.map(r => {
           const isQuery = r.taxId === queryTaxId

@@ -332,7 +332,7 @@ export default function ProteinLaunchCard({
     quiet,
   ])
   const { missingModels, unreachable, session, url, loc } = launch
-  const { transcript, assemblyAccession } = launched
+  const { transcript } = launched
   const { codingBp } = geneStats(transcript)
 
   // The structure view is omitted when there is no translation to align it to,
@@ -362,7 +362,7 @@ export default function ProteinLaunchCard({
         {transcript.geneName} <span className="msv-sub">{transcript.name}</span>
       </h2>
       <p className="msv-meta">
-        {assemblyAccession} · {launched.target.assemblyName} ·{' '}
+        {launched.target.assemblyName} ·{' '}
         {launched.target.canonicalRefName(transcript.refName)}{' '}
         {transcript.strand === 1 ? '+' : '−'} · {transcript.cds.length} coding
         exons · {codingBp.toLocaleString()} bp CDS

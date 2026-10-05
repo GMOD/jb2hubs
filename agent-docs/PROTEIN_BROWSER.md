@@ -339,7 +339,11 @@ the alignment disclosure already say it; the story is a plain line; the map's
 instructions moved into the help dialog, which already had them. What the reader
 loses is being told the focus is "lit on load in all three views", which is the
 expected case and so goes unsaid — the caption still appears for the approximate
-and missing cases, which are the ones worth a sentence.
+and missing cases, which are the ones worth a sentence. A second pass the same
+day cut the chip stories to one sentence each, dropped the assembly accession
+from the meta line (the assembly name says it), moved each alignment source's
+cost note onto its radio's tooltip, and removed the cartoon's how-to caption
+(its blocks and buttons carry titles).
 
 ### The chips carry a focus and a sentence
 

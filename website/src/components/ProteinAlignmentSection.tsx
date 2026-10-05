@@ -12,8 +12,8 @@ const MSAViewer = lazy(() =>
   import('react-msaview').then(m => ({ default: m.MSAViewer })),
 )
 
-// What each source is, for the reader choosing one: the question it answers,
-// then what it costs.
+// What each source is, for the reader choosing one: the question it answers
+// as the label, and what it costs on the tooltip.
 interface SourceContext {
   panelRows: number
   precomputed: boolean
@@ -288,7 +288,7 @@ function useViewportHeight(expanded: boolean) {
 }
 
 // The choice between the alignment sources, rendered only where there is a
-// choice to make. Each option says what it costs and what it gives up.
+// choice to make.
 function AlignmentSourceChoice({
   source,
   sources,
@@ -307,6 +307,7 @@ function AlignmentSourceChoice({
         <label
           key={s}
           className="msv-source-option"
+          title={SOURCE_LABELS[s].note(ctx)}
         >
           <input
             type="radio"
@@ -316,8 +317,7 @@ function AlignmentSourceChoice({
               onChange(s)
             }}
           />
-          {SOURCE_LABELS[s].title(ctx)}{' '}
-          <span className="ui-caption">{SOURCE_LABELS[s].note(ctx)}</span>
+          {SOURCE_LABELS[s].title(ctx)}
         </label>
       ))}
     </div>

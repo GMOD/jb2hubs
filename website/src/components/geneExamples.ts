@@ -142,21 +142,21 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
       note: 'Tumour suppressor — the TAD is missing in most fish, TAD2 is primate-only',
       focus: { residue: 248, residueLabel: 'R248' },
       story:
-        'R248 is among the most mutated residues in human cancer. It sits in the DNA-binding domain, whose Pfam seed shows how far the arginine is kept across the family; PDBe’s partner list has the DNA it reaches into and the HPV E6 protein that marks p53 for degradation.',
+        'R248, among the most mutated residues in human cancer, sits in the DNA-binding domain and reaches into the DNA; the partner list opens that complex, and the HPV E6 one that marks p53 for degradation.',
     },
     {
       symbol: 'BRAF',
       note: 'Kinase — V600E, the melanoma driver, in the activation segment',
       focus: { residue: 600, residueLabel: 'V600' },
       story:
-        'V600 is a kinase-domain position (the seed is 111 kinases across life), and BRAF’s partner list opens the MEK1 and 14-3-3 complexes that explain why the mutation activates it.',
+        'V600 is a kinase-domain position, and the MEK1 and 14-3-3 complexes in the partner list are why the mutation activates it.',
     },
     {
       symbol: 'HBB',
       note: 'β-globin — E6V, sickle cell, and the α/β interface it does not touch',
       focus: { residue: 7, residueLabel: 'E6V (Glu7)' },
       story:
-        'The sickle mutation is E6V in the literature and Glu7 in the translation, because mature haemoglobin is numbered without the initiator. The globin seed places it on the surface, outside the α/β interface PDBe maps; sickling is a contact between tetramers, which no monomer view shows.',
+        'E6V in the literature is Glu7 here, since mature haemoglobin is numbered without the initiator; the residue sits on the surface, outside the α/β interface, because sickling is a contact between tetramers.',
     },
     {
       symbol: 'BRCA2',
