@@ -20,7 +20,11 @@ export const SYNTENY_EXAMPLES: SyntenyExample[] = [
   { label: 'Human ⇄ Chicken', assembly: 'hg38', assembly2: 'galGal6' },
   { label: 'Human ⇄ Zebrafish', assembly: 'hg38', assembly2: 'danRer11' },
   { label: 'Mouse ⇄ Rat', assembly: 'mm39', assembly2: 'rn7' },
-  { label: 'D. melanogaster ⇄ D. simulans', assembly: 'dm6', assembly2: 'droSim1' },
+  {
+    label: 'D. melanogaster ⇄ D. simulans',
+    assembly: 'dm6',
+    assembly2: 'droSim1',
+  },
 ]
 
 // An example whose pair the catalog does not list under the enabled sources
@@ -33,6 +37,8 @@ export function availableExamples(
   return examples.filter(
     ex =>
       catalog.listAssemblies(filter).some(a => a.id === ex.assembly) &&
-      catalog.listPartners(ex.assembly, filter).some(a => a.id === ex.assembly2),
+      catalog
+        .listPartners(ex.assembly, filter)
+        .some(a => a.id === ex.assembly2),
   )
 }

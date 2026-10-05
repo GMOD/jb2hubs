@@ -19,11 +19,11 @@ import {
 } from './geneSearch.ts'
 import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 
-import type { SyntenyExample } from '../lib/syntenyExamples.ts'
 import type {
   SyntenyAssembly,
   SyntenyCatalogData,
 } from '../lib/syntenyCatalog.ts'
+import type { SyntenyExample } from '../lib/syntenyExamples.ts'
 import type { ReactNode } from 'react'
 
 interface Props {
