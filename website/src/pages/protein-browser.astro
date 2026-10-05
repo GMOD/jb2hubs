@@ -48,8 +48,8 @@ if (!features.proteinBrowser) {
     list-style: none;
     max-height: 260px;
     overflow-y: auto;
-    background: white;
-    border: 1px solid #ccc;
+    background: var(--surface);
+    border: 1px solid var(--field-border);
     border-radius: 4px;
     box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
   }
@@ -73,13 +73,13 @@ if (!features.proteinBrowser) {
   }
   .msv-source-label {
     font-weight: 600;
-    color: #444;
+    color: var(--muted);
   }
   .msv-source-option {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    color: #333;
+    color: var(--text);
     cursor: pointer;
   }
 
@@ -125,7 +125,7 @@ if (!features.proteinBrowser) {
   .msv-align-title {
     font-size: 13px;
     font-weight: 600;
-    color: #444;
+    color: var(--muted);
   }
 
   .msv-dialog-actions {
@@ -156,7 +156,7 @@ if (!features.proteinBrowser) {
     gap: 0.4rem;
     margin: 0 0 1rem;
     font-size: 13px;
-    color: #666;
+    color: var(--muted);
   }
 
   /* Domain-architecture cartoon (ProteinDomainCartoon) */
@@ -207,7 +207,7 @@ if (!features.proteinBrowser) {
   .pdc-len {
     flex: 0 0 auto;
     font-size: 11px;
-    color: #999;
+    color: var(--faint);
     font-variant-numeric: tabular-nums;
   }
   .pdc-legend {
@@ -216,7 +216,7 @@ if (!features.proteinBrowser) {
     gap: 4px 14px;
     margin-top: 12px;
     font-size: 12px;
-    color: #444;
+    color: var(--muted);
   }
   .pdc-legend-item {
     display: inline-flex;
@@ -269,14 +269,14 @@ if (!features.proteinBrowser) {
   .pm-lane-name {
     flex: 0 0 140px;
     font-size: 12px;
-    color: #555;
+    color: var(--muted);
     text-align: right;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
   .pm-partner {
-    color: #333;
+    color: var(--text);
   }
   .pm-track {
     position: relative;
@@ -313,7 +313,7 @@ if (!features.proteinBrowser) {
   .pm-tick-end {
     right: 0;
     transform: none;
-    color: #666;
+    color: var(--muted);
   }
   .pm-tick-end::after {
     display: none;
@@ -326,7 +326,7 @@ if (!features.proteinBrowser) {
     padding: 0 3px;
     border: 0;
     border-radius: 3px;
-    color: white;
+    color: var(--surface);
     font-size: 11px;
     line-height: 20px;
     text-align: left;
@@ -345,13 +345,13 @@ if (!features.proteinBrowser) {
   .pm-interface:hover,
   .pm-interface:focus-visible {
     opacity: 1;
-    outline: 2px solid #222;
+    outline: 2px solid var(--text);
     outline-offset: 1px;
   }
   .pm-block.selected,
   .pm-interface.selected {
     opacity: 1;
-    outline: 2px solid #222;
+    outline: 2px solid var(--text);
     outline-offset: 1px;
     box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
   }
@@ -381,7 +381,7 @@ if (!features.proteinBrowser) {
     width: 3px;
     height: 18px;
     margin-left: -1px;
-    background: #222;
+    background: var(--text);
     border-radius: 1px;
   }
   .pm-actions {
@@ -416,12 +416,12 @@ if (!features.proteinBrowser) {
   .msv-sub {
     font-size: 0.85rem;
     font-weight: 400;
-    color: #666;
+    color: var(--muted);
   }
   .msv-meta {
     margin: 0 0 0.6rem;
     font-size: 13px;
-    color: #666;
+    color: var(--muted);
   }
   .msv-actions {
     display: flex;
@@ -452,7 +452,7 @@ if (!features.proteinBrowser) {
     padding: 8px 18px;
     font-size: 14px;
     font-weight: 600;
-    color: white;
+    color: var(--surface);
     background: var(--accent);
     border-radius: 4px;
     text-decoration: none;
@@ -488,7 +488,7 @@ if (!features.proteinBrowser) {
   .msv-control-label {
     flex: 0 0 5.5rem;
     font-weight: 600;
-    color: #444;
+    color: var(--muted);
   }
   .msv-chips {
     display: inline-flex;
@@ -511,8 +511,8 @@ if (!features.proteinBrowser) {
     padding: 0 4px;
     font-size: 10px;
     line-height: 16px;
-    color: #555;
-    background: white;
+    color: var(--muted);
+    background: var(--surface);
     border: 1px solid #c9ced6;
     border-radius: 3px;
     cursor: pointer;
@@ -522,7 +522,7 @@ if (!features.proteinBrowser) {
     color: var(--accent);
   }
   .pdc-superpose.on {
-    color: white;
+    color: var(--surface);
     background: var(--accent);
     border-color: var(--accent);
   }
@@ -532,12 +532,12 @@ if (!features.proteinBrowser) {
   .pdc-domain.clickable:hover,
   .pdc-domain.clickable:focus-visible {
     opacity: 1;
-    outline: 2px solid #222;
+    outline: 2px solid var(--text);
     outline-offset: 1px;
   }
   .pdc-domain.selected {
     opacity: 1;
-    outline: 2px solid #222;
+    outline: 2px solid var(--text);
     outline-offset: 1px;
     box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
   }
@@ -546,7 +546,7 @@ if (!features.proteinBrowser) {
     align-items: center;
     gap: 5px;
     font-size: 13px;
-    color: #444;
+    color: var(--muted);
   }
   .msv-advanced {
     display: flex;

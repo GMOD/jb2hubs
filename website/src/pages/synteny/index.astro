@@ -54,7 +54,7 @@ if (!features.synteny) {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-    color: #666;
+    color: var(--muted);
     margin-bottom: 4px;
   }
 
@@ -65,20 +65,20 @@ if (!features.synteny) {
     padding: 0;
     font-size: 16px;
     line-height: 1;
-    color: #555;
-    background: white;
-    border: 1px solid #ccc;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--field-border);
     border-radius: 4px;
     cursor: pointer;
   }
 
   .synteny-swap:hover:not(:disabled) {
     border-color: #888;
-    color: #222;
+    color: var(--text);
   }
 
   .synteny-swap:disabled {
-    color: #ccc;
+    color: var(--field-border);
     cursor: default;
   }
 
@@ -86,7 +86,7 @@ if (!features.synteny) {
     min-height: 1.25rem;
     margin: 0.75rem 0;
     font-size: 13px;
-    color: #666;
+    color: var(--muted);
   }
 
   .synteny-examples {
@@ -105,7 +105,7 @@ if (!features.synteny) {
     min-height: 1.25rem;
     margin-top: 4px;
     font-size: 13px;
-    color: #666;
+    color: var(--muted);
   }
 
   .synteny-actions {
@@ -117,7 +117,7 @@ if (!features.synteny) {
     padding: 9px 18px;
     font-size: 14px;
     font-weight: 600;
-    color: white;
+    color: var(--surface);
     background: var(--accent);
     border: 1px solid var(--accent);
     border-radius: 4px;
@@ -132,7 +132,7 @@ if (!features.synteny) {
   .synteny-launch-secondary {
     margin-left: 0.5rem;
     color: var(--accent);
-    background: white;
+    background: var(--surface);
   }
 
   .synteny-launch-secondary:hover {
@@ -140,9 +140,9 @@ if (!features.synteny) {
   }
 
   .synteny-launch:disabled {
-    color: #999;
-    background: #f0f0f0;
-    border-color: #ddd;
+    color: var(--faint);
+    background: var(--disabled-bg);
+    border-color: var(--disabled-border);
     cursor: not-allowed;
   }
 
@@ -153,14 +153,14 @@ if (!features.synteny) {
 
   .synteny-options > summary {
     cursor: pointer;
-    color: #666;
+    color: var(--muted);
     width: fit-content;
   }
 
   .synteny-options-body {
     margin-top: 0.75rem;
     padding-left: 1rem;
-    border-left: 2px solid #eee;
+    border-left: 2px solid var(--border);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -176,7 +176,7 @@ if (!features.synteny) {
   .synteny-option > label:first-child,
   .synteny-option > span:first-child {
     font-weight: 600;
-    color: #444;
+    color: var(--muted);
   }
 
   .synteny-option select {
@@ -185,9 +185,9 @@ if (!features.synteny) {
     max-width: 100%;
     padding: 5px 8px;
     font-size: 13px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--field-border);
     border-radius: 3px;
-    background: white;
+    background: var(--surface);
   }
 
   .synteny-source {
@@ -204,17 +204,22 @@ if (!features.synteny) {
   .autocomplete-input-wrapper {
     display: flex;
     align-items: center;
-    border: 1px solid #ccc;
+    border: 1px solid var(--field-border);
     border-radius: 4px;
-    background: white;
+    background: var(--surface);
   }
 
   .autocomplete-input-wrapper:focus-within {
     border-color: var(--accent);
   }
 
+  .autocomplete-input-wrapper:has(.autocomplete-input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
   .autocomplete-input-wrapper.disabled {
-    background: #f5f5f5;
+    background: var(--surface-alt);
   }
 
   .autocomplete-input {
@@ -228,7 +233,7 @@ if (!features.synteny) {
   }
 
   .autocomplete-input:disabled {
-    color: #999;
+    color: var(--faint);
   }
 
   .autocomplete-clear {
@@ -237,14 +242,14 @@ if (!features.synteny) {
     border: none;
     padding: 0 8px;
     cursor: pointer;
-    color: #999;
+    color: var(--faint);
     display: flex;
     align-items: center;
     align-self: stretch;
   }
 
   .autocomplete-clear:hover {
-    color: #666;
+    color: var(--muted);
   }
 
   .autocomplete-list {
@@ -254,8 +259,8 @@ if (!features.synteny) {
     right: 0;
     max-height: 280px;
     overflow-y: auto;
-    background: white;
-    border: 1px solid #ccc;
+    background: var(--surface);
+    border: 1px solid var(--field-border);
     border-top: none;
     list-style: none;
     margin: 0;
@@ -279,7 +284,7 @@ if (!features.synteny) {
 
   .autocomplete-no-results {
     padding: 6px 8px;
-    color: #999;
+    color: var(--faint);
     font-size: 13px;
   }
 
