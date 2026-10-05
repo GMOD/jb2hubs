@@ -725,10 +725,7 @@ function GeneResults({
       {uniprotId && (
         <section className="pm-section">
           <h3 className="pm-title">
-            Protein map{' '}
-            <span className="ui-caption">
-              {uniprotId} · InterPro domains, PDBe interfaces
-            </span>
+            Protein map <span className="ui-caption">{uniprotId}</span>
           </h3>
           {regionsLoading && <p className="ui-hint">Reading InterPro…</p>}
           {regionsError ? (
@@ -755,12 +752,6 @@ function GeneResults({
               onFocus={setFocus}
             />
           )}
-          <p className="ui-caption">
-            Click a domain, a site or a partner and the session opens on it: lit
-            in all three views, and for a domain with a Pfam family, with that
-            family&rsquo;s seed as the alignment. A partner opens the complex
-            PDBe saw the two in, instead of the monomer.
-          </p>
         </section>
       )}
 

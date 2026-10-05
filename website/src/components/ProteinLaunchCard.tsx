@@ -33,13 +33,6 @@ import type { ProteinPanelRow } from './proteinMsa.ts'
 // coverage is a peptide, and the reader who wants a specific entry has the PDB.
 const MAX_EXPERIMENTAL = 6
 
-// Joins a short list into prose: "a", "a and b", "a, b and c".
-function joinList(parts: string[]) {
-  return parts.length > 1
-    ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`
-    : (parts[0] ?? '')
-}
-
 function isoformLabel(iso: Isoform) {
   return `${iso.transcript.name} · ${iso.aaLength} aa${iso.tag ? ` · ${iso.tag}` : ''}`
 }
@@ -80,7 +73,9 @@ async function superposedModels(accessions: string[]) {
 // action. Everything the session can vary on is decided here: which isoform's
 // exons, which structure (the AlphaFold model, a PDB entry, or the complex a
 // focused partner was seen in), which ortholog structures to superpose, what
-// to open on, and the view options.
+// to open on, and the view options. It says nothing when the launch is the
+// expected one: a row appears only where there is a choice, and a caption only
+// where the session will differ from what the row reads.
 export default function ProteinLaunchCard({
   structure,
   alignment,
@@ -307,7 +302,6 @@ export default function ProteinLaunchCard({
       !!model &&
       model.sequence === launched.proteinSequence
     return {
-      found,
       missingModels,
       unreachable,
       ...buildSessionUrl({
@@ -337,30 +331,30 @@ export default function ProteinLaunchCard({
     variants,
     quiet,
   ])
-  const { found, missingModels, unreachable, session, url, loc } = launch
+  const { missingModels, unreachable, session, url, loc } = launch
   const { transcript, assemblyAccession } = launched
   const { codingBp } = geneStats(transcript)
 
-  // What the session actually holds, read off the session: the structure view
-  // is omitted when there is no translation to align it to, whatever structure
-  // was picked, and the superposed models ride inside it.
-  const hasProteinView = session.views.some(v => v.type === 'ProteinView')
+  // The structure view is omitted when there is no translation to align it to,
+  // whatever structure was picked.
   const noTranslation = !!primary && !launched.proteinSequence && !translating
-  const carries = [
-    collapse ? 'the coding exons back to back' : 'the gene in its genome',
-    hasProteinView
-      ? chosen === 'alphafold'
-        ? 'the AlphaFold structure'
-        : `PDB ${chosen.toUpperCase()}`
-      : undefined,
-    hasProteinView && found.length > 0
-      ? `${found.length} superposed ortholog ${found.length === 1 ? 'structure' : 'structures'}`
-      : undefined,
-    alignment?.carries,
-    variants && launched.target.variantTrackIds.length > 0
-      ? 'variant tracks'
-      : undefined,
-  ].filter((c): c is string => !!c)
+  // Said only when the focus will not light as the chip reads: lit on load in
+  // all three views is the expected case and goes unsaid.
+  const focusCaveat = !primary
+    ? 'needs a structure'
+    : !placement
+      ? "needs the isoform's translation"
+      : selection?.length === 0
+        ? `not on ${transcript.name}, which lacks these residues`
+        : outsideEntry
+          ? `not in this entry, which covers ${entry.start}–${entry.end}`
+          : placement === 'approximate'
+            ? fromCartoon
+              ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
+              : `approximate: ${transcript.name} was not aligned to the canonical isoform the map counts on`
+            : placement === 'aligned'
+              ? `carried onto ${transcript.name} by alignment`
+              : undefined
 
   return (
     <div className="msv-result">
@@ -373,45 +367,35 @@ export default function ProteinLaunchCard({
         {transcript.strand === 1 ? '+' : '−'} · {transcript.cds.length} coding
         exons · {codingBp.toLocaleString()} bp CDS
       </p>
-      {story && <p className="msv-story">{story}</p>}
+      {story && <p className="ui-hint">{story}</p>}
 
       <div className="msv-controls">
-        {pinned ? (
-          <div className="msv-control">
+        {!pinned && isoforms.length > 1 && (
+          <label className="msv-control">
             <span className="msv-control-label">Isoform</span>
-            <span>
-              {transcript.name}{' '}
-              <span className="ui-caption">set by the alignment</span>
-            </span>
-          </div>
-        ) : (
-          isoforms.length > 1 && (
-            <label className="msv-control">
-              <span className="msv-control-label">Isoform</span>
-              <select
-                className="ui-select"
-                value={isoform.transcript.name}
-                onChange={e => {
-                  setIsoformName(e.target.value)
-                  onPick(
-                    'isoform',
-                    e.target.value === structure.transcript.name
-                      ? undefined
-                      : e.target.value,
-                  )
-                }}
-              >
-                {isoforms.map(iso => (
-                  <option
-                    key={iso.transcript.name}
-                    value={iso.transcript.name}
-                  >
-                    {isoformLabel(iso)}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )
+            <select
+              className="ui-select"
+              value={isoform.transcript.name}
+              onChange={e => {
+                setIsoformName(e.target.value)
+                onPick(
+                  'isoform',
+                  e.target.value === structure.transcript.name
+                    ? undefined
+                    : e.target.value,
+                )
+              }}
+            >
+              {isoforms.map(iso => (
+                <option
+                  key={iso.transcript.name}
+                  value={iso.transcript.name}
+                >
+                  {isoformLabel(iso)}
+                </option>
+              ))}
+            </select>
+          </label>
         )}
 
         {uniprotId && (
@@ -427,7 +411,7 @@ export default function ProteinLaunchCard({
             >
               {model && (
                 <option value="alphafold">
-                  AlphaFold {model.entity} · {model.sequence.length} aa · pLDDT{' '}
+                  AlphaFold · {model.sequence.length} aa · pLDDT{' '}
                   {model.plddt.toFixed(0)}
                 </option>
               )}
@@ -436,8 +420,7 @@ export default function ProteinLaunchCard({
                   key={e.pdbId}
                   value={e.pdbId}
                 >
-                  PDB {e.pdbId.toUpperCase()} · residues {e.start}–{e.end} (
-                  {Math.round(e.coverage * 100)}%)
+                  PDB {e.pdbId.toUpperCase()} · {e.start}–{e.end}
                   {e.resolution ? ` · ${e.resolution.toFixed(1)} Å` : ''}
                 </option>
               ))}
@@ -550,23 +533,7 @@ export default function ProteinLaunchCard({
                 {focusLabel(focus)} ×
               </button>
             </span>
-            <span className="ui-caption">
-              {!primary
-                ? 'needs a structure'
-                : !placement
-                  ? "needs the isoform's translation"
-                  : selection?.length === 0
-                    ? `not on ${transcript.name}, which lacks these residues`
-                    : outsideEntry
-                      ? `not in this entry, which covers ${entry.start}–${entry.end}`
-                      : placement === 'approximate'
-                        ? fromCartoon
-                          ? `approximate: the domain coordinates are on ${queryRow?.protein ?? 'another isoform'}`
-                          : `approximate: ${transcript.name} was not aligned to the canonical isoform the map counts on`
-                        : placement === 'aligned'
-                          ? `lit on load, carried onto ${transcript.name} by alignment`
-                          : 'lit on load in all three views'}
-            </span>
+            {focusCaveat && <span className="ui-caption">{focusCaveat}</span>}
           </div>
         )}
       </div>
@@ -590,6 +557,9 @@ export default function ProteinLaunchCard({
             Open in JBrowse ↗
           </a>
         )}
+      </div>
+      <details className="msv-options">
+        <summary>Options</summary>
         <label className="msv-collapse">
           <input
             type="checkbox"
@@ -645,14 +615,7 @@ export default function ProteinLaunchCard({
         >
           Session details
         </button>
-      </div>
-      <p className="ui-caption">
-        Opens {joinList(carries)} in one connected session
-        {focus && primary && selection?.length
-          ? `, on ${focusLabel(focus)}`
-          : ''}
-        .
-      </p>
+      </details>
 
       {detailsOpen && (
         <SessionDetailsDialog

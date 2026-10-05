@@ -16,10 +16,9 @@ if (!features.proteinBrowser) {
   <Container>
     <h1>Protein browser</h1>
     <p class="ui-lede">
-      Enter a gene and open it in JBrowse with its coding exons back to back, an
-      AlphaFold or PDB structure and a cross-species alignment beside them.
-      Hover a residue and its codon lights up in every view; mark other species
-      to superpose their structures.
+      Enter a gene and open it in JBrowse with its coding exons back to back, a
+      structure and a cross-species alignment beside them, one residue lit in
+      all three.
     </p>
     <ProteinBrowser client:only="react">
       <p
@@ -245,21 +244,7 @@ if (!features.proteinBrowser) {
   }
 
   .msv-result {
-    border: 1px solid #dce0e6;
-    border-radius: 6px;
-    padding: 1rem 1.25rem;
-    margin-top: 1rem;
-    max-width: 640px;
-  }
-  .msv-story {
-    margin: 0 0 0.75rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 13px;
-    line-height: 1.45;
-    color: #333;
-    background: var(--accent-wash);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 4px 4px 0;
+    margin-top: 1.5rem;
   }
 
   /* The protein map (ProteinMap): one protein end to end, lanes of InterPro
@@ -444,6 +429,24 @@ if (!features.proteinBrowser) {
     gap: 0.5rem 1rem;
     flex-wrap: wrap;
     margin-bottom: 0.5rem;
+  }
+  /* The view toggles and the session dump, folded: every default is on, and a
+     reader who wants one off is rarer than one who wants the button. */
+  .msv-options {
+    margin: 0.4rem 0 0;
+    font-size: 13px;
+  }
+  .msv-options > summary {
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .msv-options[open] > summary {
+    margin-bottom: 0.4rem;
+  }
+  .msv-options .msv-collapse,
+  .msv-options .ui-linkbtn {
+    display: flex;
+    margin: 0.3rem 0;
   }
   .msv-open {
     padding: 8px 18px;

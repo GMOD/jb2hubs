@@ -325,6 +325,22 @@ to read, while the same panel on a crystal or another isoform is what says which
 residues are missing. The card's checkbox is on by default. Neither is a
 different session; both are fewer things on screen.
 
+### The card says less than it decides
+
+Cut on 2026-10-04, after the page read as busy: the first screen was a
+three-line lede, a boxed story, a form of four rows, a button with four
+checkboxes and a link beside it, a caption restating the form, and a map with
+its own three-line caption. The rule now is the molstar-harness one: a row
+appears only where there is a choice (no isoform row when the alignment pins
+it), and a caption only where the launch differs from what the row reads. The
+view toggles and the session dump fold under **Options**, since every default is
+on; the "opens … in one connected session" sentence is gone, since the rows and
+the alignment disclosure already say it; the story is a plain line; the map's
+instructions moved into the help dialog, which already had them. What the reader
+loses is being told the focus is "lit on load in all three views", which is the
+expected case and so goes unsaid — the caption still appears for the approximate
+and missing cases, which are the ones worth a sentence.
+
 ### The chips carry a focus and a sentence
 
 Four human chips (`geneExamples.ts`) preset a focus and a one-line story the
