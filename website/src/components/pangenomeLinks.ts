@@ -249,9 +249,9 @@ export function locusLaunchUrl(
 // A region drawn as the graph itself: one linear view, its lanes above the
 // segments track opened as the graph. The graph track cuts the view's window,
 // re-cuts as the view moves, and past the adapter's `coarse` handover cuts the
-// bubble tier on its own. Its default layout draws an rGFA graph on the view's
-// own x and colours a node by where it sits on the reference, so the launch
-// names neither.
+// bubble tier on its own. The configs open it force-directed, the shape
+// BandageJS draws, rather than flattened onto the view's x, so the launch names
+// no layout.
 //
 // Undefined when the dataset has no hosted graph.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
