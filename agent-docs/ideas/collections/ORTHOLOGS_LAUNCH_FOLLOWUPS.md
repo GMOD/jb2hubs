@@ -1,3 +1,8 @@
+---
+name: orthologs-launch-followups
+description: What /orthologs knowingly left behind at launch: staging-gated dead ends, unkeyed NCBI access, grouping cost, smaller controls.
+---
+
 # Ortholog browser launch — follow-ups
 
 `/orthologs` went live on production 2026-07-22: `features.orthologs` is now a
@@ -21,7 +26,7 @@ Note the per-row **Synteny** and **Launch multi-species synteny view** links in
 
 They also never appeared on a default search until 2026-08-26, which is worth
 knowing before trusting a "this feature works" claim about them — see
-`SYNTENY_PAIR_NAMES.md`.
+`agent-docs/reference/SYNTENY_PAIR_NAMES.md`.
 
 `conserved-gene-order.astro` links back to `/orthologs`, which is now always
 reachable — no longer a link into a redirect.
@@ -39,7 +44,7 @@ assembler that holds the rate budget once and caches — but there is no
 `website/src/pages/api` route, so this page doesn't use it. Worth revisiting if
 real traffic produces 429s.
 
-Revisited 2026-08-27 in `GENE_PAGE_CONSOLIDATION.md`: the filler now exists
+Revisited 2026-08-27 in `agent-docs/reference/GENE_PAGE_CONSOLIDATION.md`: the filler now exists
 (`aws/ortholog-assembler/`) and serves `/conserved-gene-order` only, so what
 leaving `/orthologs` on the browser-direct path costs is measured there.
 

@@ -1,7 +1,7 @@
 # Pangenome portal and demos: where things stand after 2026-09-09
 
 Point-in-time. The durable reasoning is
-[PANGENOME_PORTAL.md](../PANGENOME_PORTAL.md); this is only what is open, in the
+[PANGENOME_PORTAL.md](../reference/PANGENOME_PORTAL.md); this is only what is open, in the
 order it is worth doing. Work spans two repos — GMOD/jb2hubs and
 GMOD/jbrowse-components — and the commits are named on each side.
 

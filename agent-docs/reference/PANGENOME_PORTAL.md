@@ -1,3 +1,8 @@
+---
+name: pangenome-portal
+description: How the human, mouse and bovine pangenomes are served by one approach, where they diverge, and where the mouse graph refuses. Read before touching a pangenome launch.
+---
+
 # Three pangenomes, one approach: human, mouse, bovine
 
 Written 2026-09-09. The goal is stated: **consistent approaches across human,
@@ -572,7 +577,7 @@ so there is nothing to log for it beyond this file.
 ## Order of work
 
 Open items and their order live in
-[handoffs/pangenome-2026-09-09.md](handoffs/pangenome-2026-09-09.md); this
+[handoffs/pangenome-2026-09-09.md](../handoffs/pangenome-2026-09-09.md); this
 section is the durable shape of the work rather than its state.
 
 Sequenced so nothing waits on the long job. Unnumbered on purpose — the order

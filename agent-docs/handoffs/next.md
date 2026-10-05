@@ -10,7 +10,7 @@ Open:
 - **Pangenome placement.** `defb` HG00097#1 and `nphp1` HG00544#1 are listed as
   known unplaced by `check-pangenome-launches`. Per-haplotype placement must
   exist before `features.pangenome` leaves staging; the defb measurement to run
-  first is in `PANGENOME_PORTAL.md`.
+  first is in `agent-docs/reference/PANGENOME_PORTAL.md`.
 - **Late October:** read the ortholog Lambda logs (`todo/slowness-synteny.md`).
 - `todo/prune-unreferenced-derived-files.md` and `todo/proteinbrowser.md` are
   unchanged.

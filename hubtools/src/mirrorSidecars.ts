@@ -26,7 +26,7 @@ import { FETCH_TIMEOUT_MS } from './util.ts'
 // preProcessSnapshot has carried that baseUri into chromSizesLocation since
 // v4.0.0 (the support floor) -- the adapter node holds both `uri` (the 2bit)
 // and `chromSizes`, so the stamp lands. See
-// agent-docs/architectural-decision-records/0003-mirror-assembly-sidecars.md.
+// agent-docs/architecture-decision-records/0003-mirror-assembly-sidecars.md.
 //
 
 /** The shape mirrorAssemblySidecars needs out of an assembly config entry. */

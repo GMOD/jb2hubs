@@ -34,7 +34,7 @@ import type { SyntenyLink } from './syntenyPairIndex.ts'
 
 // taxId -> a hosted whole-genome alignment for that reference; add entries as
 // references gain one. First slice of the GCF<->UCSC-db registry in
-// agent-docs/SYNTENY_ALIGNMENT_STRATEGY.md.
+// agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md.
 export interface RefAlignment {
   ucscDb: string
   configUrl: string

@@ -7,7 +7,7 @@
 // field that can kill a whole session rather than one track: PluginLoader runs
 // Promise.all over the list, so a single url that 404s or fails to define its
 // UMD global turns the app into an error page. See
-// agent-docs/architectural-decision-records/0002-config-compat-across-jbrowse-versions.md
+// agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md
 //
 // The bundles live in a DIFFERENT repo (jbrowse-plugin-list rehosts them to
 // jbrowse.org/plugins, and the `latest/` paths are uploaded no-cache so a

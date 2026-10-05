@@ -1,3 +1,8 @@
+---
+name: gene-page-consolidation
+description: Why /gene is a hub over /orthologs and /conserved-gene-order, what request latency decided, and what landed 2026-09-01. Read before adding a gene-first view.
+---
+
 # Gene pages: consolidating the gene-first views
 
 Written 2026-08-27. A design note: everything in the order of work is a proposal
@@ -87,7 +92,7 @@ per visitor, forever.
 
 `ncbiFetch.ts`'s own header states the principle — "per-user browsers can't
 share a rate budget, but one serverless filler can" — and
-`ORTHOLOGS_LAUNCH_FOLLOWUPS.md` records that `/orthologs` does not use it. The
+`agent-docs/ideas/collections/ORTHOLOGS_LAUNCH_FOLLOWUPS.md` records that `/orthologs` does not use it. The
 conclusion was reached, the machinery was built, and one of three consumers was
 connected.
 

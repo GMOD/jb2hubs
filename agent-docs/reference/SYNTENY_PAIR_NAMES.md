@@ -1,3 +1,8 @@
+---
+name: synteny-pair-names
+description: Why a synteny pair carries assembly names as well as accessions, and the silent bug that came of not doing so.
+---
+
 # A synteny pair is named twice, and only one of the names is an accession
 
 `website/public/synteny_pairs.json` answers "do we host a whole-genome alignment

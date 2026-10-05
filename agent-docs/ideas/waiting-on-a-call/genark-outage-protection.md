@@ -1,3 +1,8 @@
+---
+name: genark-outage-protection
+description: 50,701 GenArk assemblies fail whole when hgdownload stalls, and why the obvious fix was already reverted once.
+---
+
 # GenArk still fails whole during a UCSC outage
 
 50,701 assemblies with no protection, and nothing checks their ~101k upstream

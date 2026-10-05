@@ -79,7 +79,7 @@ Still open:
   - `accession_to_hub_dir`.
   - The `SCOPE_FILE` argument that make.sh never passes.
 - **`pangenome-build/` feeds nothing** now that the MSA panel is gone.
-  `agent-docs/PANGENOME_PORTAL.md` already asks "retire or finish". That is
+  `agent-docs/reference/PANGENOME_PORTAL.md` already asks "retire or finish". That is
   Colin's call.
 - **Could be shared:**
   - The bed/rmsk/gene scripts repeat one skeleton. A `derive_table_tracks`

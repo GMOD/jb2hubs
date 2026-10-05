@@ -1,3 +1,13 @@
+---
+name: prune-unreferenced-derived-files
+description: Stop deriving and uploading 13.09 GB the drop rules in getTrackModifications.ts discard before any config names it.
+metadata:
+  category: measure
+  area: ucsc2jbrowse
+  first_move: "Work out why the 118 unexplained files are absent from configs before gating anything."
+  order: 1
+---
+
 # Prune derived files no config references
 
 `ucsc2jbrowse` derives, stores and uploads **1,814 files / 13.09 GB** that no

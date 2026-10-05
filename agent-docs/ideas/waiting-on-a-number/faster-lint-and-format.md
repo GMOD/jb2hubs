@@ -1,3 +1,8 @@
+---
+name: faster-lint-and-format
+description: Speed up pnpm lint and format; unprofiled, so the first step is a measurement.
+---
+
 # Optimize lint and format speed
 
 Aspiration with no plan behind it yet. `pnpm lint` is type-aware oxlint

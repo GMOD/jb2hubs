@@ -1,3 +1,8 @@
+---
+name: genark-taxon-images
+description: Taxon-level (not per-accession) image lookup, implemented, and the taxonomy-walk follow-up. Read before touching GenArk wiki images.
+---
+
 # GenArk Taxon Images – PRD
 
 ## Problem

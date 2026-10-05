@@ -95,7 +95,7 @@ The full ranked list is the artifact from the session; the shape of it:
 ## Page organization: what landed
 
 The question was whether `/orthologs` and `/conserved-gene-order` should be one
-page. They should, and the reasoning is in `GENE_PAGE_CONSOLIDATION.md` (read
+page. They should, and the reasoning is in `agent-docs/reference/GENE_PAGE_CONSOLIDATION.md` (read
 its 2026-08-27 amendment: a hub, not an absorber). The shape now on `main`:
 
 - **`/gene?gene=<symbol>&ref=<taxid>`** is the hub (`pages/gene.astro`,
@@ -126,7 +126,7 @@ its 2026-08-27 amendment: a hub, not an absorber). The shape now on `main`:
   (`REDIRECT_STUBS` in `astro.config.mjs`) and the staging-only prefixes on
   production.
 
-What `GENE_PAGE_CONSOLIDATION.md` proposed and is still open: extending the
+What `agent-docs/reference/GENE_PAGE_CONSOLIDATION.md` proposed and is still open: extending the
 assembler to serve identity and the ortholog table (today the table is still
 three browser-direct NCBI calls per visitor while the figure is Lambda-served),
 prerendering `/gene/<symbol>` for human protein-coding genes, and moving the

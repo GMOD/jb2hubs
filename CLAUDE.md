@@ -17,7 +17,7 @@ and serves them via a static website.
 - `scripts/` — repo-level node utilities (`checkConfigCompat.mjs`,
   `checkPluginUrls.mjs`, `extractSyntenyTracks.ts`) invoked from `package.json`
   and `run.sh`
-- `agent-docs/` — design notes, surveys and ADRs, indexed by its own `README.md`
+- `agent-docs/` — design notes, surveys and ADRs, filed per `agent-docs/CLAUDE.md`
 
 ## Lint, format, typecheck (oxc toolchain)
 
@@ -825,7 +825,7 @@ support floor is the oldest version in its `HOST_VERSIONS` list. Reach for a
 staging sibling (above) only when losing the new content on old hosts is itself
 unacceptable — not as routine protection. Full reasoning, including why the
 config urls are deliberately **not** versioned:
-`agent-docs/architectural-decision-records/0002-config-compat-across-jbrowse-versions.md`.
+`agent-docs/architecture-decision-records/0002-config-compat-across-jbrowse-versions.md`.
 
 ### Three places this is checked, because the breakage comes from elsewhere
 
@@ -950,7 +950,7 @@ Two things that will bite a change here:
 - Relative is safe back to the v4.0.0 support floor only because jbrowse-web
   stamps `baseUri` beside the adapter's `uri` and TwoBitAdapter's
   `preProcessSnapshot` forwards it to `chromSizesLocation`. Full reasoning:
-  `agent-docs/architectural-decision-records/0003-mirror-assembly-sidecars.md`.
+  `agent-docs/architecture-decision-records/0003-mirror-assembly-sidecars.md`.
 
 ## Track data files get the same treatment, on a request budget
 
@@ -1746,7 +1746,7 @@ track, and for the ENCODE ones its trackId would otherwise match the `wgEncode*`
 rule.
 
 ENCODE's individual-experiment composites (12,729 subtracks on hg38) stay
-dropped. `agent-docs/ENCODE_TRACKS.md` records why, what was measured, and what
+dropped. `agent-docs/reference/ENCODE_TRACKS.md` records why, what was measured, and what
 would have to come first (UCSC's own faceted metadata TSVs) if they are ever
 loaded as connections.
 
@@ -2020,7 +2020,7 @@ variation — HP's panel was 457 against 5 over a rare 302 bp deletion and is no
 260 / 184 over the 1.7 kb deletion 40% of haplotypes carry. 19 of the 20 loci
 have a panel where 15 did; srgap2, whose window holds no structural record at
 all, is the one that does not. Why a panel and not the tutorial's eight, why 10
-and 8, and what a "form" is: `agent-docs/PANGENOME_PORTAL.md`.
+and 8, and what a "form" is: `agent-docs/reference/PANGENOME_PORTAL.md`.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`
@@ -2069,7 +2069,7 @@ beside it) is the landing page for the "Proteins in the Genome Browser" paper:
 gene symbol → collapsed-intron genome view + 3D structure + ortholog alignment,
 three views on one transcript model. The design record, including the two
 residue↔codon mapping bugs that shipped with every unit test green, is
-`agent-docs/PROTEIN_BROWSER.md`. Three things to hold onto:
+`agent-docs/reference/PROTEIN_BROWSER.md`. Three things to hold onto:
 
 - **`userProvidedTranscriptSequence` is the transcript's own translation**, the
   NP record of the picked isoform — never the UniProt canonical. The protein3d

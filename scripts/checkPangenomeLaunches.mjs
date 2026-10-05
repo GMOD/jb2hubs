@@ -103,7 +103,7 @@ const annotated = annotatedHaplotypes(
 
 // Panels that name a haplotype the graph places no walk for in the window. The
 // sidecar cannot tell those from a deletion, so the panel keeps them until the
-// build box publishes per-haplotype placement (agent-docs/PANGENOME_PORTAL.md).
+// build box publishes per-haplotype placement (agent-docs/reference/PANGENOME_PORTAL.md).
 const KNOWN_UNPLACED = { defb: ['HG00097#1'], nphp1: ['HG00544#1'] }
 
 const graphDisplay = {

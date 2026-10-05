@@ -1,3 +1,8 @@
+---
+name: maf-cross-view-navigation
+description: Portal half of MAF row to other-genome navigation: which tracks support it and what hubtools emits. Shipped for mouseStrains.
+---
+
 # MAF row → other genome navigation on the portal
 
 Feasibility survey, 2026-07-30. Plugin-side design lives in

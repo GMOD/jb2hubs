@@ -1,3 +1,8 @@
+---
+name: encode-tracks
+description: Which UCSC ENCODE content the portal converts and which it drops, with the 2026-07-24 numbers behind the split. Read before changing ENCODE track handling.
+---
+
 # ENCODE tracks on genomes.jbrowse.org
 
 What we do with UCSC's ENCODE tracks, why, and what was measured before

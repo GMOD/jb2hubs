@@ -43,7 +43,7 @@ export const COMPLETE_PANEL_SIZE = 10
 // same structure, and only HG002's two lack an annotation, so this decides one
 // thing: not to open a lane that reads "no annotation" when a member's would
 // not. A form with no call in the window can hold haplotypes the graph does not
-// place there at all, which nothing here can see; PANGENOME_PORTAL.md has the
+// place there at all, which nothing here can see; agent-docs/reference/PANGENOME_PORTAL.md has the
 // measurement.
 function representative(members: string[], withoutGenes: ReadonlySet<string>) {
   const sorted = [...members].sort()

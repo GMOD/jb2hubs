@@ -1,3 +1,8 @@
+---
+name: mirror-hg19-hg38-2bits
+description: Mirror the 1.5 GB hg19 and hg38 2bits to close the last UCSC dependency for the two assemblies people open.
+---
+
 # Should we mirror the hg19 and hg38 2bits?
 
 Open question, not a decision. `hg38.2bit` is 797 MB and `hg19.2bit` 778 MB:
@@ -10,5 +15,5 @@ assemblies, and what actually killed the GenArk sweep was object count
 (101,384), which two objects does not approach. So this is a different decision
 from the one the ADR made, and it wants an explicit answer rather than an
 assumption either way — including an amendment to
-[../architectural-decision-records/0003-mirror-assembly-sidecars.md](../architectural-decision-records/0003-mirror-assembly-sidecars.md)
+[../../architecture-decision-records/0003-mirror-assembly-sidecars.md](../../architecture-decision-records/0003-mirror-assembly-sidecars.md)
 if the answer is yes.

@@ -443,7 +443,7 @@ const ARABIDOPSIS_LOCI = derivedLoci(arabidopsisLociFile)
 // walks which node. `firstSeenIn` in its allele file is construction order, not
 // carriage. Recovering carriage means `minigraph --call` per assembly plus
 // `mgutils.js merge`, or a minigraph-cactus rebuild — see
-// agent-docs/PANGENOME_PORTAL.md.
+// agent-docs/reference/PANGENOME_PORTAL.md.
 export const MOUSE_DATASET: PangenomeDataset = {
   id: 'mouse',
   label: 'Mouse strain pangenome (minigraph, GRCm39)',

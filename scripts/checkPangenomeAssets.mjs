@@ -469,7 +469,7 @@ if (stale.length > 0) {
     `\nEvery url resolves, but ${stale.length} newer dataset version(s) are ` +
       `published. Bumping one means the config and the download tables ` +
       `together -- see ` +
-      `agent-docs/PANGENOME_PORTAL.md.`,
+      `agent-docs/reference/PANGENOME_PORTAL.md.`,
   )
 } else {
   console.log(

@@ -1,3 +1,8 @@
+---
+name: ncbi-gff-feature-type-survey
+description: Feature types and parent/child structure across the full RefSeq GFF3 corpus (42,704 files), for canvas glyph routing.
+---
+
 # NCBI RefSeq GFF3 Feature-Type & Parent/Child Survey
 
 Survey of the full jb2hubs RefSeq corpus to drive canvas-renderer glyph routing.

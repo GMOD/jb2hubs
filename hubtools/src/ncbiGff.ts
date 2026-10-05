@@ -65,7 +65,7 @@ function isNcbiGffTrack(track: Track) {
 // A deny list, not an allow list, and that is not the shape to prefer — an
 // allow list is the statement that survives NCBI adding a 116th type to its
 // vocabulary, and one was written here (every type with `exon` children in the
-// 42,704-file corpus survey, agent-docs/ncbi-gff-feature-type-survey.md §3c).
+// 42,704-file corpus survey, agent-docs/reference/ncbi-gff-feature-type-survey.md §3c).
 // It was removed on 2026-08-28 because **nothing reads it**:
 // `indexingFeatureTypesToInclude` is not a slot in core's `baseTrackConfig`
 // (4.3.0) and `@jbrowse/cli`'s indexing-utils (4.2.1) destructures only

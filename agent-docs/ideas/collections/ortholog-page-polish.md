@@ -1,3 +1,8 @@
+---
+name: ortholog-page-polish
+description: Gene/ortholog page rough edges: clade scoping drops the reference, no column sorting, unused GO/OMIM payload.
+---
+
 # Gene/ortholog page rough edges
 
 None of these is decided; they are what the page knowingly does not do.
@@ -16,4 +21,4 @@ oversight.
 **Unused payload.** The ortholog response carries GO terms and
 Ensembl/UniProt/OMIM ids that nothing displays.
 
-See also [../ORTHOLOGS_LAUNCH_FOLLOWUPS.md](../ORTHOLOGS_LAUNCH_FOLLOWUPS.md).
+See also [ORTHOLOGS_LAUNCH_FOLLOWUPS.md](ORTHOLOGS_LAUNCH_FOLLOWUPS.md).
