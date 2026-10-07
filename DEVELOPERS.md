@@ -170,28 +170,82 @@ pnpm check-config-compat --local       # boot the working-tree configs in every 
 `run.sh` runs both gates for you before either `uploadAll.sh`;
 `SKIP_CONFIG_GATE=1` overrides.
 
-## Nginx configuration
+## Origin server
 
-The website includes a custom 404 page (`src/pages/404.astro`) that gets built
-to `dist/404.html`. To enable it in nginx, add the following to your server
-block:
+genomes.jbrowse.org and staging.genomes.jbrowse.org are one nginx on one EC2
+instance, `i-053fb9f6fd0a37794` in us-east-1: a t2.nano (512 MB) on Ubuntu
+24.04, serving static files and nothing else. Its configuration is in
+`website/server/`, and `provision.sh` there applies all of it:
 
-```nginx
-server {
-    # ... existing config ...
-
-    root /var/www/html;
-
-    error_page 404 /404.html;
-
-    location = /404.html {
-        internal;
-    }
-}
+```bash
+scp -r website/server myserver:/tmp/server
+ssh myserver 'sudo bash /tmp/server/provision.sh'
 ```
 
-The `internal` directive ensures the 404 page can only be accessed via internal
-redirects (not directly by URL).
+`myserver` is the SSH alias `deploy.sh` uses. The instance's key pair is
+`colin_dev_2020`:
+
+```
+Host myserver
+  HostName ec2-44-223-63-202.compute-1.amazonaws.com
+  User ubuntu
+  IdentityFile ~/.ssh/colin_dev_2020.pem
+```
+
+### What is on it
+
+- **`nginx-site.conf`** is the one server block. Its `root` is the variable
+  `$web_root`, and `try_files` returns a plain 404 for a missing path.
+- **`nginx-staging-map.conf`** sets `$web_root` from the `X-Site` request
+  header: `/var/www/staging` when it says `staging`, `/var/www/html` otherwise.
+  The staging CloudFront distribution (`E3IPPUV528KQIX`) adds that header on its
+  way to the origin, which is how two sites share one server block.
+- **The custom 404 page comes from CloudFront**, not nginx. Both distributions
+  map an origin 404 to `/404.html`, which `src/pages/404.astro` builds.
+- **`grub-kho-off.cfg`** adds `kho=off` to the kernel command line.
+- **A 1 GB `/swapfile`**, listed in `/etc/fstab`.
+
+### Why `kho=off`
+
+Kernel 7.0 enables kexec handover by default, and kexec handover reserves
+scratch memory at every boot. On this instance the reservation is 354 MB of 512,
+and it returns to the allocator as CMA pages that the kernel's own allocations
+cannot use. The first boot on 7.0, on 2026-10-06, ran the out-of-memory killer
+80 times in a day and stopped answering on 2026-10-07 at 08:47 UTC, with over
+200 MB reported free. The boot log shows the difference:
+
+```
+6.17   Memory: 432388K/523892K available (... 84932K reserved ...)
+7.0    Memory:  72704K/523892K available (... 443548K reserved ...)
+7.0 with kho=off
+       Memory: 426684K/523892K available (... 89244K reserved ...)
+```
+
+The drop-in lives in `/etc/default/grub.d/`, so a kernel upgrade keeps it.
+
+### When the site stops answering
+
+The home page keeps loading from CloudFront's cache while every other path waits
+30 seconds and returns 504, so check a path nobody has cached:
+
+```bash
+curl -sI https://genomes.jbrowse.org/robots.txt | head -1
+aws --region us-east-1 ec2 describe-instance-status --instance-ids i-053fb9f6fd0a37794
+```
+
+A failed `reachability` check with the instance still `running` is the hang
+above. `aws ec2 reboot-instances` brings it back in about 30 seconds, and then:
+
+```bash
+ssh myserver 'cat /proc/cmdline; grep -E "MemAvailable|CmaFree" /proc/meminfo'
+ssh myserver 'sudo journalctl -b -1 -k -g "Killed process" | tail'
+```
+
+`CmaFree` above zero means `kho=off` is gone from the command line.
+
+**Reboot the instance; do not stop and start it.** It has no Elastic IP, and
+both distributions name the origin by its public DNS name, which a stop and
+start replaces.
 
 ## Why Astro
 
