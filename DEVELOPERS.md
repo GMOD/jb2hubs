@@ -243,6 +243,25 @@ ssh myserver 'sudo journalctl -b -1 -k -g "Killed process" | tail'
 
 `CmaFree` above zero means `kho=off` is gone from the command line.
 
+### The alarm that reboots it
+
+The CloudWatch alarm `genomes-origin-reboot-on-failed-status-check` watches the
+instance's own status check, and after five failed minutes in a row it runs the
+EC2 reboot action. Five minutes is longer than a boot takes, so a reboot does
+not trigger another. The alarm lives in AWS, not on the instance, so a rebuilt
+instance needs it made again under the new instance id:
+
+```bash
+aws --region us-east-1 cloudwatch put-metric-alarm \
+  --alarm-name genomes-origin-reboot-on-failed-status-check \
+  --namespace AWS/EC2 --metric-name StatusCheckFailed_Instance \
+  --dimensions Name=InstanceId,Value=i-053fb9f6fd0a37794 \
+  --statistic Maximum --period 60 --evaluation-periods 5 --datapoints-to-alarm 5 \
+  --threshold 1 --comparison-operator GreaterThanOrEqualToThreshold \
+  --treat-missing-data notBreaching \
+  --alarm-actions arn:aws:automate:us-east-1:ec2:reboot
+```
+
 **Reboot the instance; do not stop and start it.** It has no Elastic IP, and
 both distributions name the origin by its public DNS name, which a stop and
 start replaces.
