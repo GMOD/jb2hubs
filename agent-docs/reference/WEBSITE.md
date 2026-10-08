@@ -60,6 +60,31 @@ per file — which is what "rsync was slow" was. Making rsync worthwhile means
 previous release to hardlink what did not change; that is a real option if
 deploys need to get faster, but it is a different trade, not a drop-in.
 
+## CloudFront keys its cache on the query string
+
+Both distributions (`E12EBG02P68TDO` production, `E3IPPUV528KQIX` staging; one
+EC2 origin, staging picked by an `X-Site: staging` origin header) use the cache
+policy `genomes-caching-optimized-querystrings`
+(`1d7f303f-9966-41fa-9888-446fecbed7bc`): Managed-CachingOptimized with every
+query string in the cache key, which also forwards the query to the origin.
+
+A page here reads its question from the query (`/gene/?gene=`,
+`/pangenomes/hprc/?region=`), and nginx answers a path without its trailing
+slash with a 301 to the slash form. Until 2026-10-08 both distributions were on
+Managed-CachingOptimized, whose key has no query, and each got the redirect
+wrong its own way:
+
+- **Production forwarded the query** (origin request policy Managed-AllViewer),
+  so the 301 carried it, and CloudFront then served that one cached 301 to every
+  query for a day. Measured: after `/pangenomes/hprc?region=chr1:1-2`, both
+  `?region=ZZZ` and the bare path redirected to `?region=chr1:1-2`
+  (`Hit from cloudfront`, age 476). Any reader's slash-less link set everyone's.
+- **Staging forwarded nothing**, so its 301 dropped the query, which is what
+  made the jbrowse-components figure generator time out on a staging url.
+
+Do not move either back to a policy without the query in its key. The configs
+from before the change are on ada as `~/cloudfront-<id>-before-*.json`.
+
 ## Key website internals
 
 - `src/components/SearchPage.tsx` — client-side search over
