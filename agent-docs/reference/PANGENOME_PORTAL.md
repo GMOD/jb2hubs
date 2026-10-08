@@ -377,47 +377,105 @@ thing: not to open a lane reading "no annotation" where a member's would not. It
 is the one place the rule needs to know something the sidecar does not say,
 which is why `haplotypesWithoutGenes` is on the dataset rather than derived.
 
-**A form with no call can be made of haplotypes the graph does not place.** `.`
-says a haplotype's path does not pass through the site, and that covers two
-cases the sidecar cannot tell apart: a walk that jumps over the site, which is
-the deletion the rule counts `.` for, and no walk near the window at all. Only
-the first draws. Measured 2026-09-24 against the lane adapter's own records: at
-`defb`, whose one record 391 of 462 haplotypes skip, the adapter returns nothing
-for HG00097#1 anywhere in chr8:7,797,024-7,959,462, so the commonest form's lane
-never appears; at `nphp1`, HG00544#1's only record is reference
-110,276,210-110,335,280, right of the window, so its lane is empty although its
-annotation has NPHP1. Five panel lanes stand for a form with no call in the
-window, and all five sit in an uncalled stretch covering the whole window; rhd,
-smn and ugt2b17 draw anyway. So neither the calls nor the width of that stretch
-separates the cases, and no rule over the sidecar can. The answer is in the
-graph: placement intervals per haplotype published beside the sidecar, or a
-panel generator that asks the lane adapter in a browser, which would give the
-table an answer the **Any region** box cannot reproduce.
-`pnpm check-pangenome-launches` reports such a lane as unplaced rather than as a
-gene track that never loaded, and lists the two known ones (`defb` HG00097#1,
-`nphp1` HG00544#1, `KNOWN_UNPLACED` in the script) as notes instead of failures,
-so a third still fails.
+**The sidecar's no call is two states.** Until 2026-10-08 the sidecar wrote `.`
+for any haplotype without a call, which covered a deletion spanning the site, a
+route through a parent snarl vcfbub removed, and a haplotype the graph does not
+place. The panel could not tell them apart, so it carried three workarounds: a
+`KNOWN_UNPLACED` list in `check-pangenome-launches` for the empty lanes at defb
+and nphp1, a `hemizygousChromosomes` list that dropped the no-call form on chrX,
+and the wording "skips N sites". The sidecar's format `v2` retires all three.
 
-The defb lane is a placement artifact, not a structural form: the ~395
-haplotypes it stands for read `.` at all five records across the 130 kb window,
-in one pattern, which is what "not on the reference path here" looks like and
-not what one skipped site looks like. Preferring less-fragmented haplotypes does
-not find a placed representative (HG00097#1 has 75 contigs and HG00544#1 61,
-against a median of 81). Per-haplotype placement intervals from the build box
-were therefore written down as a prerequisite for promoting
-`features.pangenome`, which went to production on 2026-10-08 without them:
-`structuralForms` would treat an unplaced haplotype as missing in both the
-generator and the **Any region** box, not as a deletion.
+The record that separates the cases is the removed parent. vcfbub removed from
+the wave callset every snarl with an allele over 100 kb (118 of the 426 have a
+reference allele under 100 kb and an alternate over it) and kept its children.
+The release's `raw.vcf.gz` still has those parents, and at a parent a placed
+haplotype has an allele with a length while an unplaced one is missing. Measured
+on 2026-10-08 at five windows:
 
-Measured 2026-10-08 by opening every member of each no-call form as a lane on
-`main` and reading the display back. At defb (chr8:7,850,001-7,930,000) the
-adapter places 185 of the form's 395 haplotypes and returns no walk for 210, so
-the form is two things under one key: a real arrangement that 185 carry, which
-`HG00097#2` would draw, and 210 the graph does not place. At nphp1
-(chr2:110,080,001-110,210,000) it places none of the form's 5, so that form is
-no form at all. A placed representative would fix defb's lane and leave its
-share overstated twofold, and nothing over the sidecar fixes nphp1, so the
-placement data is required.
+| Case                                             | Answer                       | Evidence                                                                                                                                                                    |
+| ------------------------------------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| defb, HG00097#1, chr8:7,850,001-7,930,000        | not placed                   | Of the old form's 395 walks, 210 have no reference step in the window, 181 are placed for about 66 kb and stop at 7,916,670, and 4 cross. The 5.2 Mb parent calls 1 of 462. |
+| nphp1, HG00544#1, chr2:110,080,001-110,210,000   | not placed, sequence present | Its walk ends at reference 109,975,357 and resumes at 110,276,210 on one contig: the graph clipped the stretch. Missing at the 346 kb parent.                               |
+| FLNA, HG00126#1, chrX:154,340,001-154,440,000    | not placed, no chrX          | Missing at all 537 top-level raw records, as are all 116 of its form.                                                                                                       |
+| AMY1, form of 255, chr1:103,610,001-103,760,000  | placed, mostly three copies  | At the 176 kb parent 165 are within 142 bp of the reference length, 52 are 94 kb shorter, 12 are missing.                                                                   |
+| UGT2B17, form of 229, chr4:68,530,001-68,680,000 | deletion, 117,313 bp         | All 229 carry a -117 kb allele at the 117 kb parent.                                                                                                                        |
+
+Three other sources were weighed against the raw callset. The haplotype walks
+(`jbrowse.org/demos/hprc/….walks.bed.gz`) give placement exactly and the wrong
+answer for a deletion: at AMY1 247 of the 255 step over 94 kb of reference, yet
+only 52 are 94 kb shorter, because the other copies sit on non-reference nodes.
+The MAF summary (`….summary.bed.gz`, 1.7 MB) reproduces defb's 210 / 181 / 4
+split in a 9 to 37 KB read, and cannot tell a deletion from a clipped stretch.
+The wave and pgbi callsets hold nothing the sidecar lacks: no `*` allele, no
+parent.
+
+The build (`buildHprcSvStates.sh`, 2026-10-08, on ada):
+
+- **426 removed snarls read, 422 restored.** The kept rows name 425 parents and
+  those name 1 more; 4 fall under `MIN_CARRIERS` called haplotypes. Each read is
+  one `bcftools query` over the span of the parent's children, 4 at a time:
+  about 13 minutes for the first 416, which the script caches as allele lengths.
+  vcfwave moves a record, so a read at the first child's position alone missed
+  10 of the 425.
+- **581,424 of 8,169,115 no-call states are `_`** (7.1%), over 16,671 rows; the
+  other 7,587,691 stay `.`. The file went from 388,147 rows and 18,520,683 bytes
+  to 388,569 and 18,594,890.
+- **A restored row's state is a residual.** With the parent's whole size change
+  as its state, HP's 184 read "1.7 kb deletion, 1.7 kb deletion" and pga's 105
+  "19 kb insertion, 19 kb insertion", once at the child and once at the parent.
+  Taking out the changes at the rows directly under the parent leaves 12 of the
+  22 examples' lanes as they were.
+- **The 1 kb floor holds genome-wide with the residual**: the median restored
+  row has 448 of 462 haplotypes at the reference's structure, and 248 of 422
+  have no size 5 haplotypes share. 43 rows have 10 or more such sizes (39 at
+  chr1:16,537,879), which are loci where size is a continuum; SMN's 1.6 Mb
+  parent is one, with 23.
+
+What the 22 examples read, before and after; the 12 not listed (c4, hp, cyp2d6,
+hba, srgap2, mns, cfhr, prss, gstm1, gstt1, pga, flna) kept their lanes, flna by
+the general rule:
+
+| Example | Before                                                              | After                                                                                         |
+| ------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| ugt2b17 | 232 as the reference, 229 skips 8 sites                             | 232 as the reference, 229 120 kb deletion                                                     |
+| rhd     | 371 as the reference, 86 skips 8 sites, 5 two insertions            | 371 as the reference, 86 70 kb deletion, 5 two insertions                                     |
+| amy1    | 255 skips 64 sites, 107 skips 1 site, 78 79 bp deletion; 5 forms    | 171 as the reference, 52 94 kb deletion, 45 94 kb insertion; 14 forms                         |
+| defb    | 395 skips 1 site (empty lane), 67 as the reference                  | 67 as the reference, 5 a rarer change; 390 no lane                                            |
+| nphp1   | 329 skips 1 site, 67 as the reference; 6 forms, one an empty lane   | 326 not aligned at 2 sites, 43 as the reference, 24 39 kb deletion; 7 forms, 5 no lane        |
+| lpa     | 44 skips 27 sites, 37 11 kb insertion and skips 13; 25 forms        | 20 78 kb insertion, 12 78 kb insertion, 11 78 kb and 11 kb insertions; 27 forms               |
+| kir     | 2 of 8 lanes skip 9 and 40 sites                                    | the same forms, sized: a 15 kb deletion among 6 changes, a 79 kb deletion among 7             |
+| fcgr    | 2 of 8 lanes skip 9 sites                                           | the same forms, each with an 81 kb deletion                                                   |
+| mhc-hla | 3 of 8 lanes skip sites (180, 1, 1); 34 forms                       | 2 of 8 lanes not aligned at 1 site; 34 forms                                                  |
+| smn     | 379 skips 3 sites, 46 as the reference, 31 3.6 kb deletion; 3 forms | 97 a rarer change, 30 and 26 not aligned at 1 site, then 240, 250, 190 kb deletions; 24 forms |
+
+SMN reads busier, and that is the one example the change does not improve at a
+glance. Its three sites sit in a 1.6 Mb snarl that 283 haplotypes cross on other
+routes, 157 are not called at, and whose routes come in over 60 sizes; the old
+"379 skips 3 sites" was those 283 and 96 the graph does not place, under one
+lane. A restored row wider than the window still counts, because a deletion
+spanning a small window is exactly that case. The graph returns no walk in the
+window for the four deletion lanes (HG005#1, HG00126#2, HG00438#2, HG00133#1),
+so the launch opens 4 rows of 8; the page lists all 8 forms.
+
+A haplotype counts as not placed only with no call at any row of the window.
+Dropping the form whose key is `.` at every informative site instead took AMY1's
+12, which are missing at the 176 kb parent and called at other rows; they are a
+form of their own, "not aligned at 65 sites". The 22 examples have such
+haplotypes at five: defb 390, flna 116, smn 96, nphp1 5 and hba 2.
+
+Still owed:
+
+- **defb's count overstates "not in the graph".** About 180 of its 390
+  haplotypes are drawn for 66 kb of the 80 kb window and stop at the one site.
+  The MAF summary could say so in a second 9 to 37 KB read, and could let
+  `representative` prefer the member with the most aligned bases.
+- **nphp1's commonest lane is "not aligned at 2 sites"**: 326 haplotypes are
+  called at the window's first two sites and missing at the 346 kb parent that
+  covers the rest.
+- **Not measured:** the 277 of 19,847 no-call states at the five windows where
+  the walks and the raw callset disagree (260 at AMY1), the haplotype index's
+  overview, and whether a vcfwave row's pieces always sum to the allele they
+  were cut from, which the residual assumes.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and

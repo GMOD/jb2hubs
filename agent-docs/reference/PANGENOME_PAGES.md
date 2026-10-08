@@ -78,22 +78,32 @@ JavaScript.
 - **`regionAnswer` (`pangenomeAnswer.ts`) is the whole answer**: the window, its
   title, the forms and the launches. The box renders it and
   `check-pangenome-launches` calls it, so the check boots what the page offers.
-- **On `hemizygousChromosomes` the form with no call gets no lane.** 116 of the
-  callset's 462 haplotypes have no call anywhere on chrX, the panel stood
-  HG00126#1 for them, and every chrX window opened an empty lane; the full
-  launch check caught it at FLNA on 2026-10-08, the first time FLNA had a panel.
-  A deletion spanning a whole chrX window is dropped with them, which the
-  sidecar cannot tell apart.
+- **A haplotype with no call at any site in the window is in no form and gets no
+  lane**, on any chromosome, and the answer's sentence counts them ("116
+  haplotypes are not aligned at any of them and have no lane").
+  `structuralForms` returns them as `unplaced`. On chrX they are the 116 male
+  haplotypes without one; at defb they are 390 and at nphp1 5, the two empty
+  lanes `check-pangenome-launches` excused by name until 2026-10-08. A deletion
+  spanning a whole window is not among them: it reads `_` under the restored
+  parent that sizes it, and keeps its lane.
 - **A lane says what its form is.** `describeForm` (`pangenomePanels.ts`) reads
   the form's key against each site's size changes in the sidecar: "as the
   reference", "85 kb deletion", "inversion". Up to two size changes are listed;
-  more are counted with the largest named ("38 size changes, largest a 6.1 kb
-  deletion" at MHC class II), since a list of sizes says nothing. A site the
-  haplotype's path skips is said as "skips N sites", because the sidecar cannot
-  tell a deletion from an unplaced haplotype, and the reference bases under the
-  skipped sites are no deletion size: UGT2B17's whole-gene deletion skips 8
-  sites covering 9.6 kb, and AMY1's commonest form skips 64 covering 4.3 kb
-  (measured 2026-10-08). Saying which it is needs per-haplotype placement.
+  more are counted with the largest named ("39 size changes, largest a 19 kb
+  deletion" at MHC class II), since a list of sizes says nothing. A deletion
+  spanning nested sites is a size at its restored parent's row: UGT2B17's 229
+  read "120 kb deletion" and RHD's 86 "70 kb deletion". "Not aligned at N sites"
+  is a `.` in a form with calls elsewhere, and "a rarer change at N sites" a
+  state under `MIN_CARRIERS` at a site where most haplotypes have no call. Over
+  the 22 examples on 2026-10-08, 6 lanes still say "not aligned" (two each at
+  mhc-hla, smn and nphp1) where 26 lanes at 10 examples said "skips N sites",
+  and 2 say "rarer" (smn, defb).
+- **A lane whose form is a deletion spanning the window draws nothing, and is
+  right.** The graph has no walk for the haplotype there, so the track opens no
+  row for it: 4 of SMN's 8 lanes, each a 190 to 250 kb deletion in a 1.6 Mb
+  snarl around the 60 kb window. `structuralPanel` marks a form that bypasses
+  every site it does not delete (`mayDrawEmpty`), and `check-pangenome-launches`
+  accepts a missing row only for those, as a note.
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus. Every dataset's examples are curated loci, under
@@ -265,7 +275,7 @@ at most 10 and the commonest 8 otherwise. The panel rides the spec as
 callset**, which is what makes the same question answerable for a window nobody
 curated. `website/pangenome-config/buildHprcSvStates.sh` publishes one
 tabix-indexed file of every structural record in the callset — where it is, what
-each state does to the reference's structure, one character per haplotype, 18 MB
+each state does to the reference's structure, one character per haplotype, 19 MB
 for the genome — and `structuralForms` (`pangenomeSvStates.ts`) groups a
 window's haplotypes out of a ranged read of it, a few KB and about 300 ms. The
 box on the page (`PangenomeRegionBox.tsx`) runs it and `structuralPanel`
@@ -277,14 +287,37 @@ own.
 
 Two things the sidecar fixed rather than moved, both measured 2026-09-17. The
 old rule read the 2.3 GB callset with bcftools at five seconds a locus. And it
-filtered on `LV=0`, which is not "top level" in this file: vcfbub pops a parent
-snarl with an allele over 100 kb and keeps its children, and all 425 parents
-that nested records name genome-wide are absent, so the filter dropped real
-variation — HP's panel was 457 against 5 over a rare 302 bp deletion and is now
-260 / 184 over the 1.7 kb deletion 40% of haplotypes carry. 19 of the 20 loci
-have a panel where 15 did; srgap2, whose window holds no structural record at
-all, is the one that does not. Why a panel and not the tutorial's eight, why 10
-and 8, and what a "form" is: `agent-docs/reference/PANGENOME_PORTAL.md`.
+filtered on `LV=0`, which is not "top level" in this file: vcfbub removes a
+parent snarl with an allele over 100 kb and keeps its children, and all 425
+parents that nested records name genome-wide are absent, so the filter dropped
+real variation — HP's panel was 457 against 5 over a rare 302 bp deletion and is
+now 260 / 184 over the 1.7 kb deletion 40% of haplotypes carry. 19 of the 20
+loci have a panel where 15 did; srgap2, whose window holds no structural record
+at all, is the one that does not. Why a panel and not the tutorial's eight, why
+10 and 8, and what a "form" is: `agent-docs/reference/PANGENOME_PORTAL.md`.
+
+The sidecar's rows since format `v2` (2026-10-08), with the measurements behind
+each rule in `agent-docs/reference/PANGENOME_PORTAL.md` ("The sidecar's no call
+is two states"):
+
+- **The removed parents are rows.** The build reads each from the release's 24
+  GB `raw.vcf.gz` by a ranged query over its children and keeps its allele
+  lengths: 426 snarls, 422 rows. A parent fewer than `MIN_CARRIERS` haplotypes
+  are called at is no row, which drops defb's 5.2 Mb one.
+- **A restored row states what its children do not.** Its allele sums every
+  child's, so each haplotype's size change has the changes at the rows directly
+  under it taken out, and what remains under 1 kb (`RESTORED_STRUCTURAL_BP`) is
+  the reference's structure. 248 of the 422 rows then carry no size 5 or more
+  haplotypes share.
+- **`_` is a no call under a snarl that calls the haplotype, `.` one that no
+  snarl above calls.** `_` has no size of its own; the parent's row has it.
+  581,424 of the earlier file's 8,169,115 no-call states became `_`.
+- **A rare state folds into its site's majority, except a call into a no-call
+  majority**, which stays apart as `~` and reads "a rarer change".
+- **The object name carries the format** (`…sv-states.v2.tsv.gz`), and the build
+  copies to the bucket and never syncs, so the file deployed pages read stays.
+  Bump `FORMAT` in the script and `svStatesUrl` together whenever a row's
+  meaning changes, and upload before deploying the reader.
 
 A lane draws its haplotype's gene models when the config has a track declared
 for that haplotype's assembly alone, which is the rule `MultiWaySyntenyDisplay`

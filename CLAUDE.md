@@ -279,6 +279,10 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   not bring back a table of loci.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
+- **The sidecar's object name carries its format.** `buildHprcSvStates.sh`
+  copies to the bucket and never syncs, so the file deployed pages read stays.
+  Bump `FORMAT` and `svStatesUrl` together when a row's meaning changes, and
+  upload before deploying the reader.
 - **`features.pangenome` is live because every launch targets `main`**
   (`JBROWSE_BASE`): the graph plugin error-pages every released host. Run
   `pnpm check-pangenome-launches --host latest` before pointing `JBROWSE_BASE`

@@ -26,4 +26,3 @@ Commitment, not size, separates an item here from a proposal in
 | ---------------------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------- |
 | [Prune unreferenced derived files](todo/prune-unreferenced-derived-files.md) | ucsc2jbrowse | Work out why the 118 unexplained files are absent from configs before gating anything. |
 | [Slowness in conserved gene order](todo/slowness-synteny.md)                 | synteny      | Read the ortholog Lambda logs in late October.                                         |
-| [Website review leftovers](todo/website-review-leftovers.md)                 | pangenome    | Build per-haplotype placement intervals from the GBZ.                                  |
