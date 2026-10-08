@@ -108,11 +108,6 @@ const annotated = annotatedHaplotypes(
   HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
 )
 
-// Panels that name a haplotype the graph places no walk for in the window. The
-// sidecar cannot tell those from a deletion, so the panel keeps them until the
-// build box publishes per-haplotype placement (agent-docs/reference/PANGENOME_PORTAL.md).
-const KNOWN_UNPLACED = { defb: ['HG00097#1'], nphp1: ['HG00544#1'] }
-
 const retarget = url =>
   url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`)
 
@@ -181,7 +176,9 @@ for (const dataset of datasets) {
           name,
           url: retarget(url),
           expectLanes: answer.reading.panel.lanes.map(l => l.haplotype),
-          knownUnplaced: KNOWN_UNPLACED[example.id] ?? [],
+          mayDrawEmpty: answer.reading.panel.lanes
+            .filter(l => l.mayDrawEmpty)
+            .map(l => l.haplotype),
         })
       }
     }
@@ -293,7 +290,7 @@ async function serveLocalConfigs(page) {
 // too, since a lane that aligns and reads "no annotation" is the silent half.
 // A lane the graph places nowhere in the window has no genes to fetch either,
 // and is reported as the data it is rather than as an unfetched gene track.
-async function readLanes(page, expected) {
+async function readLanes(page, expected, mayDrawEmpty) {
   const deadline = Date.now() + TIMEOUT
   const withGenes = expected.filter(h => annotated.has(h))
   let lanes
@@ -339,7 +336,7 @@ async function readLanes(page, expected) {
     )
     const settled =
       lanes &&
-      lanes.missing.length === 0 &&
+      lanes.missing.every(h => mayDrawEmpty.includes(h)) &&
       withGenes.every(
         h => lanes.bare.includes(h) || lanes.genes[h] !== undefined,
       )
@@ -387,7 +384,7 @@ for (const {
   expectDisplays,
   expectTier,
   expectLanes,
-  knownUnplaced = [],
+  mayDrawEmpty = [],
 } of launches) {
   const page = await browser.newPage()
   const problems = []
@@ -457,36 +454,36 @@ for (const {
       }
     }
     if (expectLanes) {
-      const lanes = await readLanes(page, expectLanes)
+      const lanes = await readLanes(page, expectLanes, mayDrawEmpty)
       if (!lanes) {
         problems.push('no MultiWaySyntenyDisplay in the session')
       } else if (lanes.error) {
         problems.push(`lanes: ${lanes.error.split('\n')[0]}`)
       } else {
-        const unplaced = h => !knownUnplaced.includes(h)
         const neverDrew = lanes.missing.filter(h => !lanes.noWalk.includes(h))
         if (neverDrew.length) {
           problems.push(
             `${neverDrew.length} of ${expectLanes.length} lanes never drew: ${neverDrew.join(', ')}`,
           )
         }
-        const noWalk = lanes.noWalk.filter(unplaced)
+        const drawn = h => !mayDrawEmpty.includes(h)
+        const noWalk = lanes.noWalk.filter(drawn)
         if (noWalk.length) {
           problems.push(
             `the graph returned no walk near the window for ${noWalk.join(', ')}`,
           )
         }
-        const offWindow = lanes.offWindow.filter(unplaced)
+        const offWindow = lanes.offWindow.filter(drawn)
         if (offWindow.length) {
           problems.push(
             `the graph places ${offWindow.join(', ')} only outside the window, so the lane is empty`,
           )
         }
-        const known = [...lanes.noWalk, ...lanes.offWindow].filter(
-          h => !unplaced(h),
+        const deleted = [...lanes.noWalk, ...lanes.offWindow].filter(
+          h => !drawn(h),
         )
-        if (known.length) {
-          notes.push(`known unplaced: ${known.join(', ')}`)
+        if (deleted.length) {
+          notes.push(`deleted across the window: ${deleted.join(', ')}`)
         }
       }
       if (lanes?.bare.length) {

@@ -149,18 +149,16 @@ export interface PangenomeDataset {
   bandageGbz?: string
   loci: PangenomeLocus[]
   // The structural-state sidecar of this graph's callset, published by
-  // `pangenome-config/buildHprcSvStates.sh`. It is what makes a window nobody
-  // precomputed answerable: the page reads it for a region a reader asks for
-  // and groups the haplotypes there into structural forms.
+  // `pangenome-config/buildHprcSvStates.sh` under its format's version. It is
+  // what makes a window nobody precomputed answerable: the page reads it for a
+  // region a reader asks for and groups the haplotypes there into structural
+  // forms.
   svStatesUrl?: string
   // Haplotypes the lane track draws without gene models, so a form is not
   // stood for by one of them where another member would draw its genes.
   // `generatePangenomeHaplotypes.ts` prints them: they are the haplotypes
   // HPRC's CAT index does not annotate.
   haplotypesWithoutGenes?: string[]
-  // Chromosomes some haplotypes do not have, where a form with no call is
-  // those haplotypes and gets no lane.
-  hemizygousChromosomes?: string[]
   // The published bucket prefix the file table's urls are built from.
   filePrefix: string
   // Bytes per suffix, stated rather than fetched so a static build needs no
@@ -265,9 +263,8 @@ export const HPRC_DATASET: PangenomeDataset = {
   bandageGbz: 'hprc',
   loci: PANGENOME_LOCI,
   svStatesUrl:
-    'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.tsv.gz',
+    'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.v2.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
-  hemizygousChromosomes: ['chrX', 'chrY'],
   heading: 'Human Pangenome Reference Consortium',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
   // Measured 2026-10-07 against v2.1 (the anchored pair the graph track reads

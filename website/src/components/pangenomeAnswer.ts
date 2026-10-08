@@ -66,7 +66,6 @@ async function readForms(
     haplotypes: haplotypes.length,
     panel: structuralPanel(forms, {
       withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
-      withoutUncalled: dataset.hemizygousChromosomes?.includes(region.chrom),
     }),
     sites: forms.sites,
     rareCarriers: forms.rareCarriers.length,

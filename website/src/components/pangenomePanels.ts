@@ -10,7 +10,7 @@
 // The rule is the same wherever a window comes from: an example on the page, a
 // region a reader types and `check-pangenome-launches` all go through here.
 
-import { MIN_CARRIERS, MISSING_STATE } from './pangenomeSvStates.ts'
+import { MIN_CARRIERS } from './pangenomeSvStates.ts'
 
 import type {
   StructuralForm,
@@ -24,6 +24,9 @@ export interface PanelLane {
   shares: number
   // How the form differs from the reference, in words.
   structure: string
+  // The form bypasses every site it does not delete, so where the deletion
+  // covers the window the graph has no walk to draw: 4 of SMN's 8 lanes.
+  mayDrawEmpty: boolean
 }
 
 const bp = (n: number) =>
@@ -37,15 +40,14 @@ const sized = (delta: number) =>
 // How a form differs from the reference. Up to two size changes are listed;
 // more are counted with the largest named, since MHC class II's forms carry 38
 // and a list of sizes says nothing. The sizes are the sidecar's, already
-// rounded to two figures. A site with no call is one the haplotype's path
-// skips: a deletion spanning it, or a haplotype the graph does not place there.
-// The sidecar cannot tell which, and the reference bases under the skipped
-// sites are no deletion size either: UGT2B17's whole-gene deletion skips 8
-// sites that cover 9.6 kb.
+// rounded to two figures. A deletion spanning nested sites is a size at the
+// restored parent's row, so a site with no call left to say is one the graph
+// does not carry the haplotype through. A rarer change is a state under
+// MIN_CARRIERS at a site where most haplotypes have no call.
 export function describeForm(
-  form: Pick<StructuralForm, 'deltas' | 'inversions' | 'uncalled'>,
+  form: Pick<StructuralForm, 'deltas' | 'inversions' | 'uncalled' | 'rarer'>,
 ) {
-  const { deltas, inversions, uncalled } = form
+  const { deltas, inversions, uncalled, rarer } = form
   const changes = [
     ...(deltas.length > LISTED_CHANGES
       ? [`${deltas.length} size changes, largest a ${sized(deltas[0]!)}`]
@@ -53,8 +55,15 @@ export function describeForm(
     ...(inversions > 0
       ? [inversions === 1 ? 'inversion' : `${inversions} inversions`]
       : []),
+    ...(rarer > 0
+      ? [
+          rarer === 1
+            ? 'a rarer change at 1 site'
+            : `rarer changes at ${rarer} sites`,
+        ]
+      : []),
     ...(uncalled > 0
-      ? [`skips ${uncalled} site${uncalled === 1 ? '' : 's'}`]
+      ? [`not aligned at ${uncalled} site${uncalled === 1 ? '' : 's'}`]
       : []),
   ]
   return changes.length === 0 ? 'as the reference' : changes.join(', ')
@@ -68,8 +77,8 @@ export interface StructuralPanel {
   // forms at MIN_CARRIERS or more, whether or not they fit on the panel
   forms: number
   lanes: PanelLane[]
-  // haplotypes left off the panel for having no call at any site
-  uncalled: number
+  // haplotypes with no call at any site, which get no lane
+  unplaced: number
 }
 
 // Screen height sets both, not load time, which is flat from 8 lanes to 16:
@@ -79,12 +88,10 @@ export const COMPLETE_PANEL_SIZE = 10
 
 // The haplotype that stands for its form: the alphabetically first whose lane
 // would draw gene models, else the alphabetically first, so a rerun over the
-// same sidecar names the same lanes. Any member of a form with a call draws the
-// same structure, and only HG002's two lack an annotation, so this decides one
+// same sidecar names the same lanes. Any member of a form draws the same
+// structure, and only HG002's two lack an annotation, so this decides one
 // thing: not to open a lane that reads "no annotation" when a member's would
-// not. A form with no call in the window can hold haplotypes the graph does not
-// place there at all, which nothing here can see; agent-docs/reference/PANGENOME_PORTAL.md has the
-// measurement.
+// not.
 function representative(members: string[], withoutGenes: ReadonlySet<string>) {
   const sorted = [...members].sort()
   return sorted.find(m => !withoutGenes.has(m)) ?? sorted[0]!
@@ -95,47 +102,43 @@ function representative(members: string[], withoutGenes: ReadonlySet<string>) {
 // nothing in the window tells the haplotypes apart, which is what a locus with
 // no structural variation looks like and is not a panel.
 //
-// `withoutUncalled` leaves out the form with no call at any informative site.
-// The sidecar cannot tell a deletion spanning the window from a haplotype the
-// graph does not place there, so the form normally stays; on a chromosome half
-// the male haplotypes lack, it is 116 of HPRC's 462 in every window, and its
-// lane draws empty.
+// A haplotype with no call at any site is in no form and gets no lane: no snarl
+// in the window carries it, so the lane would draw empty. On chrX those are the
+// 116 male haplotypes without one.
 export function structuralPanel(
   result: StructuralFormsResult,
   {
     size = PANEL_SIZE,
     completeSize = COMPLETE_PANEL_SIZE,
     withoutGenes = new Set<string>(),
-    withoutUncalled = false,
   }: {
     size?: number
     completeSize?: number
     withoutGenes?: ReadonlySet<string>
-    withoutUncalled?: boolean
   } = {},
 ): StructuralPanel | undefined {
   if (result.informative === 0) {
     return undefined
   }
-  const uncalled = withoutUncalled
-    ? result.forms.find(f => f.key === MISSING_STATE.repeat(f.key.length))
-    : undefined
-  const common = result.forms.filter(
-    f => f !== uncalled && f.members.length >= MIN_CARRIERS,
-  )
+  const common = result.forms.filter(f => f.members.length >= MIN_CARRIERS)
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
     structure: describeForm(f),
+    mayDrawEmpty:
+      f.bypassed > 0 &&
+      f.deltas.length > 0 &&
+      f.deltas.every(d => d < 0) &&
+      f.bypassed + f.deltas.length === f.key.length,
   }))
   return {
     sites: result.sites,
     informative: result.informative,
     forms: common.length,
     lanes,
-    uncalled: uncalled?.members.length ?? 0,
+    unplaced: result.unplaced.length,
   }
 }
 

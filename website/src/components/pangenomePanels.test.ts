@@ -60,51 +60,98 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
   // five carry the deletion and five do not; the reference-like form leads an
   // equal-sized pair
   assert.deepEqual(panel.lanes, [
-    { haplotype: 'C#2', shares: 5, structure: 'as the reference' },
-    { haplotype: 'A#1', shares: 5, structure: '1.7 kb deletion' },
+    {
+      haplotype: 'C#2',
+      shares: 5,
+      structure: 'as the reference',
+      mayDrawEmpty: false,
+    },
+    {
+      haplotype: 'A#1',
+      shares: 5,
+      structure: '1.7 kb deletion',
+      mayDrawEmpty: false,
+    },
   ])
   assert.equal(panel.forms, 2)
 })
 
 test('a form is described by its largest changes against the reference', () => {
   assert.equal(
-    describeForm({ deltas: [], inversions: 0, uncalled: 0 }),
+    describeForm({ deltas: [], inversions: 0, uncalled: 0, rarer: 0 }),
     'as the reference',
   )
   assert.equal(
-    describeForm({ deltas: [-85_000, 300], inversions: 1, uncalled: 2 }),
-    '85 kb deletion, 300 bp insertion, inversion, skips 2 sites',
+    describeForm({
+      deltas: [-85_000, 300],
+      inversions: 1,
+      uncalled: 2,
+      rarer: 0,
+    }),
+    '85 kb deletion, 300 bp insertion, inversion, not aligned at 2 sites',
   )
   assert.equal(
-    describeForm({ deltas: [-6100, 5000, -2700], inversions: 0, uncalled: 0 }),
+    describeForm({
+      deltas: [-6100, 5000, -2700],
+      inversions: 0,
+      uncalled: 0,
+      rarer: 0,
+    }),
     '3 size changes, largest a 6.1 kb deletion',
   )
   assert.equal(
-    describeForm({ deltas: [], inversions: 1, uncalled: 1 }),
-    'inversion, skips 1 site',
+    describeForm({ deltas: [], inversions: 1, uncalled: 1, rarer: 0 }),
+    'inversion, not aligned at 1 site',
+  )
+  assert.equal(
+    describeForm({ deltas: [-3600], inversions: 0, uncalled: 0, rarer: 1 }),
+    '3.6 kb deletion, a rarer change at 1 site',
   )
 })
 
-test('on a chromosome some haplotypes lack, the uncalled form gets no lane', () => {
+test('the form the graph places at no site gets no lane', () => {
   const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
   const row = (genotypes: string) =>
     parseSvStateRow(`chrX\t100\t200\tsite\t1:-1700\t${genotypes}`)
-  const result = structuralForms(
-    [
-      row('0'.repeat(7) + '1'.repeat(7) + '.'.repeat(6)),
-      row('1'.repeat(7) + '0'.repeat(7) + '.'.repeat(6)),
-    ],
-    haplotypes,
-  )
-  assert.equal(structuralPanel(result)?.lanes.length, 3)
-  assert.equal(structuralPanel(result)?.uncalled, 0)
-  const panel = structuralPanel(result, { withoutUncalled: true })!
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        row('0'.repeat(7) + '1'.repeat(7) + '.'.repeat(6)),
+        row('1'.repeat(7) + '0'.repeat(7) + '.'.repeat(6)),
+      ],
+      haplotypes,
+    ),
+  )!
   assert.deepEqual(
     panel.lanes.map(l => l.shares),
     [7, 7],
   )
   assert.equal(panel.forms, 2)
-  assert.equal(panel.uncalled, 6)
+  assert.equal(panel.unplaced, 6)
+})
+
+test('a deletion spanning nested sites keeps its lane and says its size', () => {
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const row = (states: string, genotypes: string) =>
+    parseSvStateRow(`chr4\t100\t200\tsite\t${states}\t${genotypes}`)
+  const panel = structuralPanel(
+    structuralForms(
+      [
+        row('1:-120000', '0'.repeat(11) + '1'.repeat(9)),
+        row('1:+300', '0'.repeat(11) + '_'.repeat(9)),
+        row('1:-80', '0'.repeat(11) + '_'.repeat(9)),
+      ],
+      haplotypes,
+    ),
+  )!
+  assert.deepEqual(
+    panel.lanes.map(l => [l.shares, l.structure, l.mayDrawEmpty]),
+    [
+      [11, 'as the reference', false],
+      [9, '120 kb deletion', true],
+    ],
+  )
+  assert.equal(panel.unplaced, 0)
 })
 
 test('a window where nothing tells the haplotypes apart is no panel', () => {
