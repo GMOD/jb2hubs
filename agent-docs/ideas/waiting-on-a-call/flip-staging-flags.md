@@ -19,5 +19,7 @@ decision, and each flip is a one-line edit plus its prefix in `STAGING_ONLY`
   only after the flip. `aws/config-merger`'s in-memory config cache was written
   on 2026-09-01 and no later commit touches that directory, so check that a
   `sam deploy` shipped it first.
-- **`proteinBrowser`**: run `pnpm check-protein-launches --host latest` over the
-  full example set first. `agent-docs/todo/proteinbrowser.md` follows the flip.
+- **`proteinBrowser`**: nothing technical owed. `pnpm check-protein-launches`
+  passed all 18 launches of the full example set on `jb2/main`, the host the
+  site targets, on 2026-10-08. `agent-docs/todo/proteinbrowser.md` follows the
+  flip.
