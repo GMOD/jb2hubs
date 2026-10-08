@@ -438,8 +438,7 @@ test('haplotypeLanesUrl narrows the lane track to the locus panel, in panel orde
   assert.deepEqual(display, {
     trackId: HPRC_GRAPH_BROWSER.haplotypeLanesTrackId,
     type: 'MultiWaySyntenyDisplay',
-    laneFilter: { only: haplotypes },
-    domain: haplotypes,
+    rows: { kept: haplotypes, domain: haplotypes },
   })
   assert.equal(typeof height, 'number')
 })

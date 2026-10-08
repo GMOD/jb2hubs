@@ -434,8 +434,7 @@ test("the star opens on the page's window, one lane per species it holds", () =>
   assert.deepEqual(starTrackOf(url), {
     trackId: 'hg38_liftOver_multiway',
     type: 'MultiWaySyntenyDisplay',
-    laneFilter: { only: ['panTro6', 'canFam3'] },
-    domain: ['panTro6', 'canFam3'],
+    rows: { kept: ['panTro6', 'canFam3'], domain: ['panTro6', 'canFam3'] },
     height: 150,
   })
 })

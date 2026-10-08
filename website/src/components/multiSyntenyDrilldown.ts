@@ -104,7 +104,7 @@ export function nearestFirst<T extends { taxonId: number }>(
 
 // The reference's multi-way synteny star over the window the page draws, one
 // lane per species the page shows that the star holds, in the order of `rows`:
-// `domain` pins it, since the display otherwise sorts lanes densest-first.
+// `rows.domain` pins it, since the display otherwise sorts lanes densest-first.
 // Undefined where the reference has no star.
 export function starUrl(
   refAccession: string | undefined,
@@ -135,8 +135,7 @@ export function starUrl(
           type: 'MultiWaySyntenyDisplay',
           ...(lanes.length > 0
             ? {
-                laneFilter: { only: lanes },
-                domain: lanes,
+                rows: { kept: lanes, domain: lanes },
                 height: (lanes.length + 1) * LANE_PITCH,
               }
             : {}),

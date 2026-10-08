@@ -302,10 +302,10 @@ const GENE_ROW_HEIGHT_PX = 60
 const panelHaplotypes = (dataset: PangenomeDataset, locus: PangenomeLocus) =>
   dataset.panels?.[locus.id]?.lanes.map(l => l.haplotype) ?? []
 
-// A locus's haplotypes as lanes read from the graph. `laneFilter` decides which
-// walks are fetched and drawn and `domain` pins their order, so the config's
-// one lane track serves every locus; the track's own assemblies are only what a
-// host that drops the props would open instead.
+// A locus's haplotypes as lanes read from the graph. `rows.kept` decides which
+// walks are fetched and drawn and `rows.domain` pins their order, so the
+// config's one lane track serves every locus; the track's own assemblies are
+// only what a host that drops the props would open instead.
 //
 // Undefined without the lane track or a panel.
 export function haplotypeLanesUrl(
@@ -351,8 +351,7 @@ export function haplotypeLanesForRegion(
         {
           trackId,
           type: 'MultiWaySyntenyDisplay',
-          laneFilter: { only: haplotypes },
-          domain: haplotypes,
+          rows: { kept: haplotypes, domain: haplotypes },
           height: LANE_HEIGHT_PX * (haplotypes.length + 1),
         },
       ],

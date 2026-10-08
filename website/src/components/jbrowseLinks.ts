@@ -97,9 +97,9 @@ export interface SyntenyViewOptions {
 const SYNTENY_VIEW_DEFAULTS: SyntenyViewOptions = { cigarMode: 'matches' }
 
 // A launch URL for a LinearSyntenyView over a stack of genome panels. `tracks`
-// is either a flat list (JBrowse binds each track to its level by matching
-// assemblyNames) or one array per level. The whole-genome merge config is built
-// from the panels' assemblies. Single source for every synteny-view launch.
+// is one array per level, or a flat list, which JBrowse puts on level 0 only and
+// so suits two panels alone. The whole-genome merge config is built from the
+// panels' assemblies. Single source for every synteny-view launch.
 export function syntenyViewUrl(
   views: SyntenySubView[],
   tracks: (string | string[])[],
