@@ -20,7 +20,7 @@ come from.
 
 ## Conserved gene order
 
-The [gene page](/gene?gene=TP53&ref=9606) now draws the neighborhood of a gene
+The [gene page](/gene/?gene=TP53&ref=9606) now draws the neighborhood of a gene
 across species under its ortholog table: one row per species in taxonomic order,
 each gene an arrow, with ribbons joining orthologs. A block that has moved,
 flipped or lost a gene shows up as crossing or missing ribbons.
