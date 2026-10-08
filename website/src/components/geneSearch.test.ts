@@ -4,6 +4,7 @@ import { mock, test } from 'node:test'
 import {
   dedupeHits,
   encodeGeneRef,
+  pairGenes,
   parseGeneRef,
   queryGenes,
   rankSymbols,
@@ -116,4 +117,89 @@ test('queryGenes rejects on a failed request; searchGenes swallows it', async ()
   } finally {
     failing.mock.restore()
   }
+})
+
+// NCBI's ortholog report for TP53 filtered to human and mouse, trimmed to the
+// fields the picker reads (measured 2026-10-08).
+const TP53_REPORTS = [
+  {
+    gene: {
+      gene_id: '7157',
+      symbol: 'TP53',
+      tax_id: '9606',
+      annotations: [
+        {
+          assembly_accession: 'GCF_000001405.40',
+          genomic_locations: [
+            {
+              genomic_accession_version: 'NC_000017.11',
+              sequence_name: '17',
+              genomic_range: {
+                begin: '7668421',
+                end: '7687490',
+                orientation: 'minus',
+              },
+            },
+          ],
+        },
+        {
+          assembly_accession: 'GCF_009914755.1',
+          genomic_locations: [
+            {
+              genomic_accession_version: 'NC_060941.1',
+              sequence_name: '17',
+              genomic_range: {
+                begin: '7572544',
+                end: '7591594',
+                orientation: 'minus',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    gene: {
+      gene_id: '22059',
+      symbol: 'Trp53',
+      tax_id: '10090',
+      annotations: [
+        {
+          assembly_accession: 'GCF_000001635.27',
+          genomic_locations: [
+            {
+              genomic_accession_version: 'NC_000077.7',
+              sequence_name: '11',
+              genomic_range: {
+                begin: '69471174',
+                end: '69482699',
+                orientation: 'plus',
+              },
+            },
+          ],
+        },
+      ],
+    },
+  },
+]
+
+// A swap makes the ortholog the first assembly's gene, so the pair has to
+// carry its id as well as its symbol.
+test('pairGenes: the gene and its ortholog, ids and all', () => {
+  const { gene, ortholog } = pairGenes(TP53_REPORTS.toReversed(), '7157', false)
+  assert.equal(gene?.symbol, 'TP53')
+  assert.deepEqual([ortholog?.gene_id, ortholog?.symbol], ['22059', 'Trp53'])
+})
+
+test('pairGenes: in one taxon the gene is its own ortholog', () => {
+  const { gene, ortholog } = pairGenes(TP53_REPORTS.slice(0, 1), '7157', true)
+  assert.equal(ortholog, gene)
+})
+
+test('pairGenes: no ortholog in the partner taxon', () => {
+  assert.equal(
+    pairGenes(TP53_REPORTS.slice(0, 1), '7157', false).ortholog,
+    undefined,
+  )
 })

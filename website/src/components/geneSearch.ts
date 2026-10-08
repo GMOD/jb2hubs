@@ -14,6 +14,11 @@
 
 import { fetchOrthologReports } from './ncbiFetch.ts'
 
+import type {
+  NcbiOrthologReport,
+  NcbiOrthologResponse,
+} from './orthologSearchUtils.ts'
+
 const MYGENE = 'https://mygene.info/v3'
 
 export interface GeneHit {
@@ -121,4 +126,41 @@ export async function resolveOrthologSymbol(
     reports?: { gene?: { symbol?: string } }[]
   }>(geneId, [taxId])
   return json.reports?.[0]?.gene?.symbol
+}
+
+export type NcbiGene = NcbiOrthologReport['gene']
+
+// A synteny pair's gene in its own taxon and its ortholog in the partner's,
+// each with the id, symbol and placements NCBI reports. In one taxon the gene
+// is its own ortholog.
+export interface GenePair {
+  gene?: NcbiGene
+  ortholog?: NcbiGene
+}
+
+export function pairGenes(
+  reports: NcbiOrthologReport[],
+  geneId: string,
+  sameTaxon: boolean,
+): GenePair {
+  const genes = reports.map(r => r.gene)
+  const gene = genes.find(g => g.gene_id === geneId)
+  return {
+    gene,
+    ortholog: sameTaxon ? gene : genes.find(g => g.gene_id !== geneId),
+  }
+}
+
+// One request for both halves of a synteny pair: the taxon filter unions, and
+// the gene's own taxon returns the gene itself. Rejects on a failed request,
+// like resolveOrthologSymbol.
+export async function resolveGenePair(
+  geneId: string,
+  taxon1: number,
+  taxon2: number,
+): Promise<GenePair> {
+  const json = await fetchOrthologReports<NcbiOrthologResponse>(geneId, [
+    ...new Set([taxon1, taxon2]),
+  ])
+  return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
 }

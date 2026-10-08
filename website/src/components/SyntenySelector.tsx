@@ -15,7 +15,7 @@ import {
   encodeGeneRef,
   parseGeneRef,
   queryGenes,
-  resolveOrthologSymbol,
+  resolveGenePair,
 } from './geneSearch.ts'
 import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 
@@ -104,44 +104,42 @@ function SyntenyPicker({ data }: Props) {
   const canSearchGenes = taxon1 !== undefined
   const gene = canSearchGenes ? parseGeneRef(geneValue) : undefined
 
-  // The orthologous symbol in the second taxon, keyed on exactly the inputs it
-  // answers for: a response for an earlier gene or partner can never land on
-  // the current pair, and a failed request is an error rather than "no
-  // ortholog". A same-species pair reuses the symbol and asks nothing.
-  const ortholog = useSWRImmutable(
-    gene && taxon2 !== undefined && taxon1 !== taxon2
-      ? (['ortholog', gene.geneId, taxon2] as const)
+  // The gene and its ortholog in the second taxon, keyed on exactly the inputs
+  // they answer for: a response for an earlier gene or partner can never land
+  // on the current pair, and a failed request is an error rather than "no
+  // ortholog".
+  const pair = useSWRImmutable(
+    gene && taxon1 !== undefined && taxon2 !== undefined
+      ? (['gene-pair', gene.geneId, taxon1, taxon2] as const)
       : null,
-    ([, geneId, taxId]) => resolveOrthologSymbol(geneId, taxId),
+    ([, geneId, t1, t2]) => resolveGenePair(geneId, t1, t2),
   )
-  const symbol2 = gene
-    ? taxon1 === taxon2
-      ? gene.symbol
-      : ortholog.data
-    : undefined
+  const sameTaxon = taxon1 === taxon2
+  const ortholog = pair.data?.ortholog
+  const symbol2 = gene && sameTaxon ? gene.symbol : ortholog?.symbol
 
   function orthologNote(): ReactNode {
     let note: ReactNode = ''
-    if (gene && taxon2 !== undefined && taxon1 !== taxon2) {
-      if (ortholog.isLoading) {
+    if (gene && taxon2 !== undefined && !sameTaxon) {
+      if (pair.isLoading) {
         note = `Finding ${gene.symbol} ortholog in ${nameOf(species2)}…`
-      } else if (ortholog.error !== undefined) {
+      } else if (pair.error !== undefined) {
         note = (
           <>
-            Ortholog lookup failed ({String(ortholog.error)}).{' '}
+            Ortholog lookup failed ({String(pair.error)}).{' '}
             <button
               type="button"
               className="ui-linkbtn"
               onClick={() => {
-                void ortholog.mutate()
+                void pair.mutate()
               }}
             >
               Retry
             </button>
           </>
         )
-      } else if (ortholog.data) {
-        note = `${gene.symbol} → ${ortholog.data}`
+      } else if (ortholog) {
+        note = `${gene.symbol} → ${ortholog.symbol}`
       } else {
         note = `No ${gene.symbol} ortholog in ${nameOf(species2)}.`
       }
@@ -181,11 +179,15 @@ function SyntenyPicker({ data }: Props) {
     setTrackOverride('')
   }
 
+  // The ortholog becomes the gene of the new first assembly; with none
+  // resolved there is nothing to carry over.
   const handleSwap = () => {
     setSpecies1(species2)
     setSpecies2(species1)
     setTrackOverride('')
-    setGeneValue('')
+    setGeneValue(
+      ortholog ? encodeGeneRef(ortholog.gene_id, ortholog.symbol) : '',
+    )
   }
 
   const examples = useMemo(
