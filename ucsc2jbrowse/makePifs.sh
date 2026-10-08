@@ -13,7 +13,7 @@ source "$(dirname "$0")/common.sh"
 source "$(dirname "$0")/../lib/chainpif.sh"
 
 make_pifs_for_assembly() {
-  ./createChainTrackPifs.sh liftOver "$(basename "$1")" "$UCSC_BUILT_DIR"
+  ./createChainTrackPifs.sh "$(basename "$1")" "$UCSC_BUILT_DIR"
 }
 export -f make_pifs_for_assembly
 

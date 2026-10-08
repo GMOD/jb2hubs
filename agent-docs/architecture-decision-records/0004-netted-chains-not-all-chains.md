@@ -8,11 +8,11 @@ Accepted.
 
 ## Context
 
-`createChainTrackPifs.sh` takes a source of either `liftOver` or `vs`, and
-`makePifs.sh` only ever calls it with `liftOver`. That reads as a coverage gap
-in the pipeline. It is not one, and the `vs` files were deleted from the bucket
-deliberately — so the reasoning needs to live somewhere that stops someone
-turning the switch on.
+Until 2026-10-08 `createChainTrackPifs.sh` took a source of either `liftOver` or
+`vs`, and `makePifs.sh` only ever called it with `liftOver`. That read as a
+coverage gap in the pipeline. It is not one, and the `vs` files were deleted
+from the bucket deliberately — so the reasoning needs to live somewhere that
+stops someone turning the switch on.
 
 `liftOver` is UCSC's netted `over.chain`; `vs` is the raw `all.chain` in the
 per-pair `vsXxx` directories.

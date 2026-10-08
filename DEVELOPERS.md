@@ -84,15 +84,9 @@ cd ucsc2jbrowse
 ./uploadAll.sh
 ```
 
-After changing bed2gff or `src/geneLike.ts`, the incremental gates won't notice
-(they key off input-data hashes, not tool versions). Regenerate just the gene
-tracks for every assembly, then upload:
-
-```bash
-cd ucsc2jbrowse
-./reprocessGeneTracks.sh   # add --reindex to also rebuild the text index
-./uploadAll.sh
-```
+A change to bed2gff or `src/geneLike.ts` moves `DERIVATION_HASH`, so the next
+`make.sh` re-derives every gene track on its own (`./make.sh --explain` says so
+first).
 
 ## Website
 

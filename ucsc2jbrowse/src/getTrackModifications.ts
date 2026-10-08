@@ -119,7 +119,7 @@ const unreadableBigMafTrackIds = new Set(['cactus241wayBM'])
 // today, because hgdownload publishes no vsGCF_003668045.3 chain directory for
 // it -- that alignment lives only under /gbdb/mm39/bbi/chainNet. Its
 // `chainGCF_003668045.3` bigBed still carries the blocks, so the pair is not
-// gone, just not synteny. See createChainTrackPifs.sh's unused `vs` source.
+// gone, just not synteny. ADR 0004 records why the `vs` chains are not built.
 const CHAIN_NET_SUBTRACK = /^(net|rbestNet|synNet)([A-Z]|GC[AF]_)/
 
 interface RemovedTrack {

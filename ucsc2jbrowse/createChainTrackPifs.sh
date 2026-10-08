@@ -2,11 +2,11 @@
 #
 # createChainTrackPifs.sh
 #
-# Downloads chain files and converts them to PIF (Pairwise Indexed PAF) format.
-# This script can handle two different sources for chain files: 'liftOver' and 'vs'.
+# Downloads an assembly's liftOver chains and converts them to PIF (Pairwise
+# Indexed PAF) format. liftOver is the only source: ADR 0004 records why the raw
+# `vs*` all.chain files are not built.
 #
-# Usage: ./createChainTrackPifs.sh <source> <assembly> [outdir]
-#   source:   'liftOver' or 'vs'. This determines the URL and directory structure.
+# Usage: ./createChainTrackPifs.sh <assembly> [outdir]
 #   assembly: The assembly name (e.g., hg38).
 #   outdir:   The root output directory for all assemblies. Defaults to UCSC_BUILT_DIR.
 #
@@ -29,12 +29,11 @@ UCSC_PIFS_DIR="${UCSC_PIFS_DIR:-/mnt/sdb/cdiesh/pifs}"
 source "$SCRIPT_DIR/../lib/chainpif.sh"
 
 # --- Global Variables ---
-declare -g CONFIG_DIR SOURCE ASSEMBLY OUTDIR
+declare -g CONFIG_DIR ASSEMBLY OUTDIR
 
 # Prints usage information and exits.
 usage() {
-  echo "Usage: $0 <source> <assembly> [outdir]"
-  echo "  source:   'liftOver' or 'vs'"
+  echo "Usage: $0 <assembly> [outdir]"
   echo "  assembly: The assembly name (e.g., hg38)"
   echo "  outdir:   Root output directory. Defaults to UCSC_BUILT_DIR"
   exit 1
@@ -42,16 +41,11 @@ usage() {
 
 # Validates and sets up configuration
 setup_config() {
-  SOURCE=${1:-}
-  ASSEMBLY=${2:-}
-  OUTDIR=${3:-"${UCSC_BUILT_DIR}"}
+  ASSEMBLY=${1:-}
+  OUTDIR=${2:-"${UCSC_BUILT_DIR}"}
 
-  if [[ -z "$SOURCE" || -z "$ASSEMBLY" ]]; then
+  if [[ -z "$ASSEMBLY" ]]; then
     usage
-  fi
-
-  if [[ "$SOURCE" != "liftOver" && "$SOURCE" != "vs" ]]; then
-    log_error "Invalid source '$SOURCE'. Must be 'liftOver' or 'vs'."
   fi
 
   # CHAINS_DIR and PIFS_DIR are read by the chainpif.sh helpers.
@@ -61,8 +55,6 @@ setup_config() {
 
   mkdir -p "$CHAINS_DIR" "$PIFS_DIR" "$CONFIG_DIR"
 }
-
-# --- Source-specific Processing Functions ---
 
 # hs1 publishes seven of its liftOver chains under /gbdb only. Both listings
 # feed one directory and one stamp: as two passes, the goldenPath pass stamped
@@ -104,63 +96,9 @@ process_liftover() {
   write_pif_stamp "$stamp"
 }
 
-# Processes vs chain files
-process_vs() {
-  local vs_dir="$CONFIG_DIR/vs"
-  mkdir -p "$vs_dir"
-  local stamp="$vs_dir/.checked"
-
-  if [[ -n "${REPROCESS:-}" ]]; then
-    rm -f "$stamp"
-  elif pif_stamp_current "$stamp"; then
-    return 0
-  fi
-
-  local base_url="https://hgdownload.soe.ucsc.edu/goldenPath/$ASSEMBLY"
-
-  # Get 'vs*' subdirectories
-  local subdirs
-  subdirs=$(extract_file_urls "$base_url/" '^vs.*/$')
-
-  if [[ -z "$subdirs" ]]; then
-    log_info "No 'vs*' subdirectories found at $base_url, skipping"
-    write_pif_stamp "$stamp"
-    return 0
-  fi
-
-  echo "$subdirs" | while read -r subdir; do
-    local subdir_url="$base_url/$subdir"
-
-    # Get '*.all.chain.gz' files from the subdirectory
-    local files
-    files=$(extract_file_urls "$subdir_url/" '\.all\.chain\.gz$')
-
-    echo "$files" | while read -r file; do
-      [[ -n "$file" ]] || continue
-      process_chain_file "$subdir_url/$file" "$file" '.all.chain.gz' "$vs_dir"
-    done
-  done
-  write_pif_stamp "$stamp"
-}
-
-# Main processing dispatcher
-process_chains() {
-  case "$SOURCE" in
-  liftOver)
-    process_liftover
-    ;;
-  vs)
-    process_vs
-    ;;
-  *)
-    log_error "Invalid source '$SOURCE'. Must be 'liftOver' or 'vs'."
-    ;;
-  esac
-}
-
 main() {
   setup_config "$@"
-  process_chains
+  process_liftover
 }
 
 main "$@"

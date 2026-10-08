@@ -9,15 +9,10 @@
 # here and read by buildConfigsBatch.ts, rather than re-scanned from the 100 MB
 # file on every config build. The file is written even when empty, so its
 # presence means "derived", not "has codes".
-#
-# Optional first arg: a file listing accessions (one per line) to restrict the
-# work to. When omitted, every GFF under bgz/ is considered.
 
 set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
-
-SCOPE_FILE="${1:-}"
 
 # Reads a GFF on stdin and prints, per sequence, the dominant non-standard NCBI
 # genetic code as "seqid<TAB>code". The standard code (1) and sequences without
@@ -60,7 +55,7 @@ export -f derive_codes
 
 # Skip when sourced (by the test script) so only the functions are loaded.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  list_scoped_gz bgz "$SCOPE_FILE" | grep '\.gff\.gz$' |
+  find bgz -name "*.gff.gz" |
     while IFS= read -r gff; do
       if [ -n "${REPROCESS:-}" ] || [ ! -f "$gff.codes.tsv" ] || [ "$gff" -nt "$gff.codes.tsv" ]; then
         echo "$gff"

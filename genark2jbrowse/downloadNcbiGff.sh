@@ -4,10 +4,6 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
-# Optional first arg: a file listing accessions (one per line) to restrict the
-# download to. When omitted, every NCBI GFF in all.json is considered.
-SCOPE_FILE="${1:-}"
-
 # A GFF we do not have is fetched. One we have is fetched again only when NCBI
 # has re-annotated the assembly at the same url, which staleNcbiGffs.ts finds by
 # comparing the file's own header with the hub's ncbi.json, locally; the rest
@@ -87,11 +83,6 @@ export -f fetch_ncbi_gff
 
 # Skip when sourced (by the test script) so only the functions are loaded.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  SCOPE_ACCESSIONS='[]'
-  if [ -n "$SCOPE_FILE" ]; then
-    SCOPE_ACCESSIONS=$(jq -R -s 'split("\n") | map(select(length > 0))' "$SCOPE_FILE")
-  fi
-
   echo "Phase 1: Building queue of GFF files to download..."
   QUEUE_FILE=$(mktemp)
   STALE_FILE=$(mktemp)
@@ -108,15 +99,13 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   done <"$STALE_FILE"
 
   # Extract NCBI GFF URLs from processed JSON. Filter out null entries and null
-  # ncbiGff before test(); when a scope list is given, also restrict to those
-  # accessions (an empty list means "no restriction"). The per-file decision is
-  # a stat and a lookup, so a single inline pass beats a parallel fan-out.
+  # ncbiGff before test(). The per-file decision is a stat and a lookup, so a
+  # single inline pass beats a parallel fan-out.
   # needs_gff_fetch (lib/common.sh) is the gate ucsc2jbrowse/downloadNcbiGff.sh
   # applies per db. Output: url|common_name|filename
-  jq -r --argjson accs "$SCOPE_ACCESSIONS" '
+  jq -r '
     .[] | select(. != null)
     | select(.ncbiGff != null) | select(.ncbiGff | test("GCF_"))
-    | select(.accession as $a | ($accs | length) == 0 or ($accs | index($a)))
     | "\(.ncbiGff)\t\(.commonName)"' processedHubJson/all.json |
     {
       stale_queued=0

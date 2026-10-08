@@ -1,30 +1,26 @@
 ---
 name: shell-dead-code-and-shared-skeletons
 description:
-  The 2026-09-26 shell review left five dead scripts or paths and three
-  skeletons both pipelines repeat.
+  788 GB of vs PIFs sit unused in the UCSC built tree, and three shell skeletons
+  exist once per pipeline.
 ---
 
 # Shell review leftovers
 
-The 2026-09-26 review of the repo's 6,400 lines of shell fixed 15 bugs the same
-day. Every item below was still in the tree on 2026-10-08.
+The 2026-09-26 review of the repo's shell fixed 15 bugs the same day, and the
+dead scripts it named were deleted on 2026-10-08. Two things remain.
 
-## Dead
+## 788 GB of `vs` PIFs nothing builds, reads or uploads
 
-- `genark2jbrowse/cleanupStaleGff.sh`: nothing calls it, and it looks in `bgz/`
-  where the downloads are in `gff/`.
-- `ucsc2jbrowse/reprocessGeneTracks.sh`: skips the bgzip guard, and
-  `DEVELOPERS.md` documents a `--reindex` flag the script rejects.
-- The `vs` source in `ucsc2jbrowse/createChainTrackPifs.sh`, with its
-  `uploadAll.sh` exclude: dead since ADR 0004.
-- `accession_to_hub_dir` in `genark2jbrowse/common.sh`: defined and exported,
-  never called.
-- The `SCOPE_FILE` argument of `genark2jbrowse/deriveGeneticCodes.sh`,
-  `downloadNcbiGff.sh` and `processGffFiles.sh`: `make.sh` never passes it.
+`$UCSC_BUILT_DIR/<db>/vs/` exists for 218 assemblies on ada, 788 GB in all,
+written in July 2025 by the `vs` source `createChainTrackPifs.sh` no longer has
+(ADR 0004 records why). `uploadAll.sh` keeps them out of the bucket with
+`--exclude "*/vs/*"`. Delete the directories first and the exclude second:
+without the exclude, the next sync uploads all 788 GB.
 
-`pangenome-build/` is the sixth, and `agent-docs/reference/PANGENOME_PORTAL.md`
-already makes retiring it the default.
+`pangenome-build/` is the same kind of leftover, and
+`agent-docs/reference/PANGENOME_PORTAL.md` already makes retiring it the
+default.
 
 ## Repeated
 

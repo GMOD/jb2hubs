@@ -345,7 +345,7 @@ export -f stamp_age_days
 #     because its fetch also sorts, bgzips and indexes, and a run that died
 #     mid-derivation leaves a .gff.gz no index answers for. Accepting that
 #     .gff.gz as proof would ship an unindexable file indefinitely.
-#   - What FETCH_UPDATES then does. genark hands the url to `wget -N`, a
+#   - What FETCH_UPDATES then does. genark hands the url to `curl -z`, a
 #     conditional revalidation that re-pulls only when Last-Modified moved;
 #     ucsc re-downloads outright, `datasets download` having no conditional
 #     form. Both are "re-pull upstream NCBI GFFs", as --help says.

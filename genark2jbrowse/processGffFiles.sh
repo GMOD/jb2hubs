@@ -4,10 +4,6 @@ set -euo pipefail
 
 source "$(dirname "$0")/common.sh"
 
-# Optional first arg: a file listing accessions (one per line) to restrict
-# processing to. When omitted, every downloaded GFF is considered.
-SCOPE_FILE="${1:-}"
-
 echo "Phase 1: Building queue of GFF files to process..."
 
 # These are cheap per-file stat checks; a single inline pass is faster than a
@@ -23,7 +19,7 @@ while IFS= read -r input_file; do
   if [ ! -f "$output_bgz_file" ] || [ "$input_file" -nt "$output_bgz_file" ] || [ -n "${REPROCESS:-}" ]; then
     printf '%s\n' "$input_file"
   fi
-done < <(list_scoped_gz gff "$SCOPE_FILE") >"$QUEUE_FILE"
+done < <(find gff -name "*.gz") >"$QUEUE_FILE"
 
 # Count how many files need processing
 TOTAL=$(wc -l <"$QUEUE_FILE")
