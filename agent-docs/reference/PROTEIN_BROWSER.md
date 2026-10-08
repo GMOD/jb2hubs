@@ -149,11 +149,10 @@ track where that is the only one. Until 2026-09-12 the page also served the
 released v4.3.0, which reads no hash, has no layout tree, persists a session's
 `useWorkspaces` into the reader's localStorage, and labels the GFF3 with UUIDs;
 three host flags, a gene-track host route and an 8 KB query-string budget with a
-seed-thinning fit behind it worked around that, and all of it is gone. The one
-limit left is the msaview plugin's: its data model drops a snapshot field over
-50,000 characters, so a seed is placed against 45,000 FASTA characters
-(`SNAPSHOT_FIELD_BUDGET`) and BRAF's kinase family keeps 87 of 111 rows, tree
-pruned to them. Point `JBROWSE_BASE` at `latest` once v5.0.0 publishes.
+seed-thinning fit behind it worked around that, and all of it is gone. A seed is
+still placed against a budget, 250,000 FASTA characters (`SEED_BUDGET`), which
+no family on the example chips reaches. Point `JBROWSE_BASE` at `latest` once
+v5.0.0 publishes.
 
 `ProteinBrowser`'s "ClinVar + AlphaMissense" depends on a file this repo
 generates rather than on the host: `genomeTarget.ts` reads a UCSC assembly's
@@ -291,17 +290,17 @@ and the page shows why beside the alignment rather than linking a few chance
 residues to the genome as the domain.
 
 The query row is the aligned segment alone, named Pfam-style (`TP53/99-289`),
-and the session's MsaView is linked through the codons of that segment alone:
-`sliceCds` (`geneStructure.ts`) cuts the transcript's CDS to residues
-`start..end` with the phases recomputed, and that is the view's
-`connectedFeature`. The row's first residue is the feature's first codon, so the
-msaview plugin's mapping holds exactly, and residues outside the segment map to
-nothing — which is right, the alignment does not have them. The first draft
-carried the whole translation as the row, flanks as columns of gaps in every
-other row, and NOTCH1 is why it did not survive: 67 EGF seed rows of 50 columns
-became 67 rows of 2,600, 174 KB, and the 50 KB the msaview plugin's data model
-will keep in a snapshot held 16 of them. The segment is 4.9 KB and keeps all 67,
-tree included.
+and the session's MsaView says where in the translation it starts: its
+`querySeqOffset` is the residues before the row's first, and its
+`connectedFeature` is the whole transcript. The msaview plugin counts the row's
+residues from that offset, so the mapping holds exactly, and residues outside
+the segment map to nothing — which is right, the alignment does not have them.
+Until 2026-10-08 the page cut the transcript's CDS to the segment's codons
+instead (`sliceCds`, phases recomputed), which the offset makes unnecessary; the
+plugin's `test/sessionSnapshot.test.ts` pins the offset's behaviour. The first
+draft carried the whole translation as the row, flanks as columns of gaps in
+every other row, and NOTCH1 is why it did not survive: 67 EGF seed rows of 50
+columns became 67 rows of 2,600, 174 KB against the segment's 4.9 KB.
 
 Where the query protein is itself a seed member — P53_HUMAN is in PF00870 — its
 row is replaced rather than duplicated and the tree leaf renamed, matched on the
@@ -312,9 +311,14 @@ to, anchor first, and its tree is pruned to them (`pruneNewick`: a dropped leaf
 takes its edge, a node left with one child collapses into it with the lengths
 summed). The page says both things beside the alignment.
 
-What "fit" means is the msaview plugin's snapshot field: 45,000 characters of
-FASTA, which BRAF's kinase domain exceeds — PF07714 at 111 rows × 481 columns,
-87 rows kept, tree pruned to them. A thinned seed is still the family where a
+What "fit" means is `SEED_BUDGET`, 250,000 characters of FASTA. Until 2026-10-08
+it was 45,000, on the belief that the msaview plugin drops a snapshot field over
+50,000 characters, and BRAF's kinase domain (PF07714, 111 rows × 481 columns)
+kept 87 rows. The plugin leaves such a field out of a session it writes, not out
+of one it reads: a 120,000-character alignment in a session link loads whole and
+is kept in IndexedDB (the plugin's `test/sessionSnapshot.test.ts`). What a
+larger seed costs is that a link shared again from inside JBrowse reopens it
+only in the browser that built it. A thinned seed is still the family where a
 dropped one is nothing.
 
 The embedded viewer (react-msaview 8.1) and the session's MsaView take the same

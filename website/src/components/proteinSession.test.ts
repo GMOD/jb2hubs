@@ -269,7 +269,7 @@ test('buildSessionUrl: an inline alignment rides in the session with its domains
   assert.equal(msa.init, undefined)
 })
 
-test('buildSessionUrl: a segment alignment is linked through the codons of its residues alone', () => {
+test('buildSessionUrl: a segment alignment is linked through the whole transcript, offset to where it starts', () => {
   const { session } = buildSessionUrl({
     structure,
     msa: {
@@ -283,36 +283,19 @@ test('buildSessionUrl: a segment alignment is linked through the codons of its r
     },
   })
   const msa = viewsOf(session).find(v => v.type === 'MsaView') as unknown as {
-    connectedFeature: {
-      uniqueId: string
-      start: number
-      end: number
-      subfeatures: { start: number; end: number; phase: number }[]
-    }
+    connectedFeature: { uniqueId: string; start: number }
+    querySeqOffset?: number
     highlights?: unknown
     data?: { tree?: string }
   }
-  // residues 30-40 are coding bases 87-120 of the 180: 13 in the first exon,
-  // 20 in the second
-  assert.deepEqual(msa.connectedFeature.subfeatures, [
-    { type: 'CDS', start: 187, end: 200, strand: 1, phase: 0 },
-    { type: 'CDS', start: 1000, end: 1020, strand: 1, phase: 2 },
-  ])
-  assert.equal(msa.connectedFeature.start, 187)
-  assert.equal(msa.connectedFeature.end, 1020)
-  assert.equal(msa.connectedFeature.uniqueId, 'NM_000001.1:30-40')
+  // residue 30 is the row's first, so 29 precede it
+  assert.equal(msa.querySeqOffset, 29)
+  assert.equal(msa.connectedFeature.start, 100)
+  assert.equal(msa.connectedFeature.uniqueId, 'NM_000001.1')
   assert.deepEqual(msa.highlights, [
     { row: 'Test/30-40', start: 3, end: 3, label: 'D32' },
   ])
   assert.equal(msa.data?.tree, undefined)
-  // the structure view keeps the whole transcript
-  const protein = viewsOf(
-    buildSessionUrl({ structure, primary: alphafold }).session,
-  ).find(v => v.type === 'ProteinView')!
-  assert.equal(
-    (protein.structures?.[0]?.feature as { start?: number } | undefined)?.start,
-    100,
-  )
 })
 
 test('buildSessionUrl: quiet drops the overview bar and gridlines, and only then', () => {

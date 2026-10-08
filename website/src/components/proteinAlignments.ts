@@ -65,10 +65,13 @@ export interface LoadedAlignment {
 // the usual exon's worth of drift, and a miss is reported, not guessed.
 const SEED_WINDOW = 40
 
-// The msaview plugin's data model drops any snapshot field over 50,000
-// characters, silently, and the alignment is one field. A seed thinned to fit
-// is still the family, anchored on the rows nearest the query.
-const SNAPSHOT_FIELD_BUDGET = 45_000
+// What a launch url will carry of a seed, in FASTA characters. The msaview
+// plugin reads an inline alignment of any size and keeps it in IndexedDB
+// (its test/sessionSnapshot.test.ts boots 120,000); it leaves one over 50,000
+// out of a session it writes, so a link shared from inside JBrowse reopens a
+// larger seed only in the browser that built it. A seed thinned to fit is still
+// the family, anchored on the rows nearest the query.
+const SEED_BUDGET = 250_000
 
 // Residues either side of a focused one that the embedded viewer opens on.
 const REGION_FLANK = 30
@@ -97,7 +100,7 @@ export async function loadPfam(
       end: domain.end + SEED_WINDOW,
     },
     newick: tree,
-    maxChars: SNAPSHOT_FIELD_BUDGET,
+    maxChars: SEED_BUDGET,
   })
   // A focused residue inside the segment is marked on the query row, in the
   // row's own coordinates, and the embedded viewer opens around it.

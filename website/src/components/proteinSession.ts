@@ -15,7 +15,6 @@ import {
   type Transcript,
   blockBounds,
   collapsedLoc,
-  sliceCds,
 } from './geneStructure.ts'
 
 // Mirrors @jbrowse/core's toUrlSafeB64 (deflate + url-safe unpadded base64) so
@@ -46,7 +45,7 @@ interface InlineMsa {
   highlights?: MsaHighlight[]
   // when the query row is one segment of the translation rather than all of
   // it — a Pfam seed row is a domain — the residues (1-based inclusive) it
-  // covers, so the view's connected transcript is cut to those codons
+  // covers, so the view counts the row's residues from where the segment starts
   residueRange?: { start: number; end: number }
 }
 
@@ -130,10 +129,10 @@ export interface SessionOptions {
 
 // The transcript model the MsaView + ProteinView map a residue to its codon
 // through. 0-based interbase, CDS subfeatures only.
-function connectedFeature(transcript: Transcript, uniqueId = transcript.name) {
+function connectedFeature(transcript: Transcript) {
   const { start, end } = blockBounds(transcript.cds)
   return {
-    uniqueId,
+    uniqueId: transcript.name,
     type: 'mRNA',
     refName: transcript.refName,
     start,
@@ -194,24 +193,10 @@ function msaView(
       const { residueRange, highlights } = source.msa
       return {
         ...base,
-        // A query row that is one segment of the translation is linked
-        // through that segment's codons alone: the row's first residue has to
-        // be the feature's first codon for the plugin's mapping to hold.
-        ...(residueRange
-          ? {
-              connectedFeature: connectedFeature(
-                {
-                  ...transcript,
-                  cds: sliceCds(
-                    transcript,
-                    residueRange.start,
-                    residueRange.end,
-                  ),
-                },
-                `${transcript.name}:${residueRange.start}-${residueRange.end}`,
-              ),
-            }
-          : {}),
+        // A query row that is one segment of the translation says how many
+        // residues precede it, and the plugin maps the row through the whole
+        // transcript from there. Residues outside the row map to nothing.
+        ...(residueRange ? { querySeqOffset: residueRange.start - 1 } : {}),
         ...(highlights?.length ? { highlights } : {}),
         querySeqName: source.msa.querySeqName,
         data: {
