@@ -108,4 +108,16 @@ check "staleNcbiGffs.ts lists only the GFF NCBI has since re-annotated" \
 check "and counts the one it could not read" "yes" \
   "$(grep -q '1 would not decompress' "$tmp/stale.err" && echo yes || echo no)"
 
+# A download under a name the hub list no longer uses is not stale, it is
+# unreachable: the hub's url moved to the renamed file.
+header 'NCBI RefSeq GCF_000092205.1-RS_2024_01_01' >gff/GCF_000092205.1_Old_genomic.gff.gz
+mkdir -p processedHubJson
+printf '[{"ncbiGff":"https://ftp.ncbi.nlm.nih.gov/x/GCF_000092205.1_A_genomic.gff.gz"},{"ncbiGff":null},null]' \
+  >processedHubJson/all.json
+got=$(node "$here/src/staleNcbiGffs.ts" 2>"$tmp/stale.err")
+check "a download no hub names is not listed" \
+  "GCF_000092205.1_A_genomic.gff.gz" "$got"
+check "and is counted" "yes" \
+  "$(grep -q '5 no hub names any more' "$tmp/stale.err" && echo yes || echo no)"
+
 exit $fail

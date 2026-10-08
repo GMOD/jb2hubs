@@ -9,6 +9,10 @@
 // request. Only a provably later release counts (isLaterRelease), so
 // a stale ncbi.json, or a superseded assembly whose report no longer names a
 // release, asks NCBI for nothing.
+//
+// A download no hub names any more is skipped and counted: NCBI renamed the
+// assembly (mPanPan1-v2.0 became -v2.1), the hub's url moved with it, and the
+// old file can never be fetched again, so it read as stale on every run.
 import fs from 'fs'
 import path from 'path'
 
@@ -22,6 +26,18 @@ import {
 import type { NCBIDatasetsResponse } from 'hubtools'
 
 const GFF_DIR = 'gff'
+const HUB_LIST = 'processedHubJson/all.json'
+
+function namedDownloads() {
+  if (!fs.existsSync(HUB_LIST)) {
+    return undefined
+  }
+  return new Set(
+    readJSON<({ ncbiGff?: string | null } | null)[]>(HUB_LIST).flatMap(h =>
+      h?.ncbiGff ? [path.basename(h.ncbiGff)] : [],
+    ),
+  )
+}
 
 function publishedRelease(accession: string) {
   const chunks = accessionChunks(accession)
@@ -39,12 +55,18 @@ function publishedRelease(accession: string) {
   }
 }
 
+const named = namedDownloads()
 let checked = 0
 let unreadable = 0
+let orphaned = 0
 const stale: string[] = []
 for (const file of fs.readdirSync(GFF_DIR).sort()) {
   const accession = /^(GCF_\d+\.\d+)_.*_genomic\.gff\.gz$/.exec(file)?.[1]
   if (!accession) {
+    continue
+  }
+  if (named && !named.has(file)) {
+    orphaned++
     continue
   }
   checked++
@@ -68,5 +90,6 @@ for (const file of stale) {
 }
 console.error(
   `${stale.length} of ${checked} NCBI GFFs hold an older annotation release than NCBI now publishes` +
-    (unreadable ? `; ${unreadable} would not decompress` : ''),
+    (unreadable ? `; ${unreadable} would not decompress` : '') +
+    (orphaned ? `; ${orphaned} no hub names any more` : ''),
 )
