@@ -65,6 +65,36 @@
   border-color: var(--accent);
 }
 
+/* The gene box and its suggestion list; positioned so the listbox overlays
+   what follows instead of pushing it down as you type. */
+.ui-combobox {
+  position: relative;
+}
+.ui-listbox {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--field-border);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+}
+.ui-option {
+  padding: 5px 10px;
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+.ui-option.highlighted {
+  background: var(--accent-wash);
+}
+
 /* --- Buttons --------------------------------------------------------------- */
 .ui-btn {
   padding: 8px 18px;

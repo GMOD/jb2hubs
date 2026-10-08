@@ -1,7 +1,10 @@
+import { useState } from 'react'
+
 import useSWRImmutable from 'swr/immutable'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
+import GeneCombobox from './GeneCombobox.tsx'
 import { regionAnswer } from './pangenomeAnswer.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import { formatRegion } from './pangenomeRegion.ts'
@@ -50,6 +53,49 @@ function readingSentence(reading: Reading, referenceLabel: string) {
   return `${agree}${rare}`
 }
 
+// Mounted per question, so the box starts from what was asked and an example
+// click replaces what was typed.
+function RegionForm({
+  asked,
+  taxId,
+  placeholder,
+  busy,
+  onAsk,
+}: {
+  asked: string
+  taxId: number
+  placeholder?: string
+  busy: boolean
+  onAsk: (text: string) => void
+}) {
+  const [text, setText] = useState(asked)
+  return (
+    <form
+      className="ui-form"
+      onSubmit={e => {
+        e.preventDefault()
+        onAsk(text)
+      }}
+    >
+      <GeneCombobox
+        value={text}
+        taxId={taxId}
+        disabled={false}
+        placeholder={`Gene or region, e.g. ${placeholder}`}
+        onChange={setText}
+        onSubmit={onAsk}
+      />
+      <button
+        type="submit"
+        className="ui-btn"
+        disabled={busy}
+      >
+        {busy ? 'Reading…' : 'Show'}
+      </button>
+    </form>
+  )
+}
+
 // The one control on a pangenome page: a gene or a region in, the ways to open
 // it out. The question rides in the url as `?region=`, so an answer can be
 // linked to and reloads as itself.
@@ -86,37 +132,21 @@ export default function PangenomeRegionBox({
 
   return (
     <div>
-      <form
-        onSubmit={e => {
-          e.preventDefault()
-          const text = String(
-            new FormData(e.currentTarget).get('region') ?? '',
-          ).trim()
+      <RegionForm
+        key={asked}
+        asked={asked}
+        taxId={dataset.reference.taxonId}
+        placeholder={examples[0]?.region}
+        busy={isLoading}
+        onAsk={raw => {
+          const text = raw.trim()
           if (text === asked) {
             void mutate()
-          } else {
+          } else if (text) {
             setAsked(text)
           }
         }}
-      >
-        <label>
-          Gene or region{' '}
-          <input
-            key={asked}
-            name="region"
-            defaultValue={asked}
-            placeholder={examples[0]?.region}
-            size={34}
-            required
-          />
-        </label>{' '}
-        <button
-          type="submit"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Reading…' : 'Show'}
-        </button>
-      </form>
+      />
 
       {examples.length > 0 && (
         <p>
@@ -141,7 +171,14 @@ export default function PangenomeRegionBox({
         </p>
       )}
 
-      {error instanceof Error && <p role="alert">{error.message}</p>}
+      {error instanceof Error && (
+        <p
+          role="alert"
+          className="ui-error"
+        >
+          {error.message}
+        </p>
+      )}
 
       {answer && (
         <section aria-live="polite">

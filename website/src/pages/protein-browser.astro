@@ -31,36 +31,6 @@ if (!features.proteinBrowser) {
 </Layout>
 
 <style is:global>
-  /* The gene box and its suggestion list; positioned so the listbox overlays
-     what follows instead of pushing the examples row down as you type. */
-  .msv-combobox {
-    position: relative;
-  }
-  .msv-listbox {
-    position: absolute;
-    z-index: 20;
-    top: calc(100% + 2px);
-    left: 0;
-    right: 0;
-    margin: 0;
-    padding: 4px 0;
-    list-style: none;
-    max-height: 260px;
-    overflow-y: auto;
-    background: var(--surface);
-    border: 1px solid var(--field-border);
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
-  }
-  .msv-option {
-    padding: 5px 10px;
-    font-size: var(--text-md);
-    cursor: pointer;
-  }
-  .msv-option.highlighted {
-    background: var(--accent-wash);
-  }
-
   /* Which of the two alignments to show, offered only where both exist. */
   .msv-source {
     display: flex;

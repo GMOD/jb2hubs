@@ -1,3 +1,5 @@
+import '../styles/ui.css'
+
 import { useEffect, useState } from 'react'
 
 import { useCombobox } from '../hooks/useCombobox.ts'
@@ -11,12 +13,14 @@ export default function GeneCombobox({
   value,
   taxId,
   disabled,
+  placeholder = 'Gene symbol, e.g. TP53',
   onChange,
   onSubmit,
 }: {
   value: string
   taxId: number
   disabled: boolean
+  placeholder?: string
   onChange: (v: string) => void
   onSubmit: (v: string) => void
 }) {
@@ -31,7 +35,9 @@ export default function GeneCombobox({
   // describes what is shown. Both are facts about (`typed`, `value`) rather
   // than state to clear: derived here so the effect does the one thing it is
   // for, which is fetching.
-  const hits = typed.trim().length < 2 || value !== typed ? [] : fetchedHits
+  // A locstring is no symbol, and the pangenome box takes either.
+  const lookup = typed.trim().length >= 2 && !typed.includes(':')
+  const hits = !lookup || value !== typed ? [] : fetchedHits
 
   // A new set of suggestions starts with none highlighted, so Enter runs what
   // was typed until an arrow key picks one.
@@ -55,7 +61,7 @@ export default function GeneCombobox({
   // Debounced and race-safe: the cleanup drops a slow earlier response so it
   // cannot land on top of a newer one.
   useEffect(() => {
-    if (typed.trim().length < 2) {
+    if (!lookup) {
       return
     }
     let ignore = false
@@ -71,7 +77,7 @@ export default function GeneCombobox({
       ignore = true
       clearTimeout(timer)
     }
-  }, [typed, taxId])
+  }, [typed, taxId, lookup])
 
   function choose(symbol: string) {
     onChange(symbol)
@@ -83,7 +89,7 @@ export default function GeneCombobox({
   const showList = open && hits.length > 0 && !disabled
 
   return (
-    <div className="msv-combobox">
+    <div className="ui-combobox">
       <input
         className="ui-input"
         value={value}
@@ -95,7 +101,8 @@ export default function GeneCombobox({
           showList && highlighted >= 0 ? optionId(highlighted) : undefined
         }
         autoComplete="off"
-        placeholder="Gene symbol, e.g. TP53"
+        placeholder={placeholder}
+        aria-label={placeholder}
         disabled={disabled}
         onChange={e => {
           onChange(e.target.value)
@@ -125,7 +132,7 @@ export default function GeneCombobox({
       />
       {showList && (
         <ul
-          className="msv-listbox"
+          className="ui-listbox"
           id={listboxId}
           role="listbox"
         >
@@ -136,7 +143,7 @@ export default function GeneCombobox({
               role="option"
               aria-selected={i === highlighted}
               className={
-                i === highlighted ? 'msv-option highlighted' : 'msv-option'
+                i === highlighted ? 'ui-option highlighted' : 'ui-option'
               }
               onMouseEnter={() => {
                 setHighlighted(i)
