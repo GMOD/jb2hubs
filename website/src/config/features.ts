@@ -19,7 +19,7 @@ export const features = {
   staging,
   // The /synteny comparison browser, including its cross-species ortholog gene
   // picker (which is additionally gated on ortholog data being present).
-  synteny: staging,
+  synteny: true,
   // The /gene hub's ortholog species table (NCBI-backed; /orthologs until
   // 2026-09-01, which now redirects there). Live in production.
   orthologs: true,
