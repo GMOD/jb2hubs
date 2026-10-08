@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 import {
   type Focus,
@@ -7,7 +7,7 @@ import {
   sameFocus,
 } from './proteinFeatures.ts'
 
-import type { CSSProperties, ReactNode, Ref } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 // One protein, end to end, with what is known about where things are on it:
 // its InterPro domains, and on request its conserved sites and the residues
@@ -130,15 +130,11 @@ export default function ProteinMap({
   onFocus: (focus: Focus | undefined) => void
 }) {
   const [showSites, setShowSites] = useState(false)
-  // A request lane's button goes away with the rows it asked for, which would
-  // drop keyboard focus on the page; the first block that appears takes it.
-  const claimFocus = useRef(false)
-  const takeFocus = (el: HTMLButtonElement | null) => {
-    if (el && claimFocus.current) {
-      claimFocus.current = false
-      el.focus()
-    }
-  }
+  // A request lane's name goes away with the rows it asked for, which would
+  // drop keyboard focus on the page, so the first block that appears takes it.
+  // Sites only ever appear on request; partners also arrive for a chip's
+  // preset partner, where nothing should move.
+  const [partnersAsked, setPartnersAsked] = useState(false)
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
   )
@@ -156,12 +152,12 @@ export default function ProteinMap({
   const block = (
     region: ProteinRegion,
     style: CSSProperties,
-    ref?: Ref<HTMLButtonElement>,
+    autoFocus?: boolean,
   ) => (
     <button
       type="button"
       key={`${region.accession}-${region.start}-${region.end}`}
-      ref={ref}
+      autoFocus={autoFocus}
       className={isFocused(region) ? 'pm-block selected' : 'pm-block'}
       style={style}
       title={`${region.name} · ${region.start}–${region.end}${region.pfam ? ` · ${region.pfam}` : ''} — open the session on this`}
@@ -251,7 +247,7 @@ export default function ProteinMap({
                         width: width(r.start, r.end),
                         background: colors.get(r.accession ?? r.name),
                       },
-                      i === 0 && j === 0 ? takeFocus : undefined,
+                      i === 0 && j === 0,
                     ),
                   )}
                 </div>
@@ -262,7 +258,6 @@ export default function ProteinMap({
               name="Sites"
               hint={`${sites.length} active, binding and conserved sites from InterPro`}
               onClick={() => {
-                claimFocus.current = true
                 setShowSites(true)
               }}
             />
@@ -284,7 +279,7 @@ export default function ProteinMap({
                 <div className="pm-track">
                   <button
                     type="button"
-                    ref={i === 0 ? takeFocus : undefined}
+                    autoFocus={i === 0 && partnersAsked}
                     className={
                       isFocused(p) ? 'pm-interface selected' : 'pm-interface'
                     }
@@ -336,7 +331,7 @@ export default function ProteinMap({
             }
             onClick={() => {
               if (partners.status !== 'loading') {
-                claimFocus.current = true
+                setPartnersAsked(true)
                 onLoadPartners()
               }
             }}
