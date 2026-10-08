@@ -1,13 +1,14 @@
 ---
-title: Synteny browser, conserved gene order and the protein browser
+title: Synteny browser, conserved gene order, the protein browser and pangenomes
 date: '2026-10-08'
 description: >-
-  Three pages leave staging: a synteny browser for any two aligned assemblies, a
-  conserved gene order figure on the gene page, and a protein browser that links
-  a gene's exons, its 3D structure and an ortholog alignment.
+  Four pages leave staging: a synteny browser for any two aligned assemblies, a
+  conserved gene order figure on the gene page, a protein browser that links a
+  gene's exons, its 3D structure and an ortholog alignment, and pangenome graphs
+  you can open at any gene or region.
 ---
 
-Three pages that have been on the staging site for a while are now live.
+Four pages that have been on the staging site for a while are now live.
 
 ## Synteny browser
 
@@ -41,9 +42,35 @@ position in the fold and a column of the alignment at once. The page also maps
 domains and binding interfaces along the protein, and each can start the session
 focused on it.
 
+## Pangenomes
+
+The [pangenomes](/pangenomes) section has a page for each of four graphs: the
+[Human Pangenome Reference Consortium](/pangenomes/hprc) release 2 graph of 232
+diploid assemblies, a [mouse strain pangenome](/pangenomes/mouse), the
+[bovine super-pangenome](/pangenomes/bovine) and the
+[Arabidopsis 1001 Genomes Plus pangenome](/pangenomes/arabidopsis).
+
+Each page is one box. Type a gene or a region and it lists the ways to open that
+window in JBrowse 2: drawn as a graph, as the structural variants each haplotype
+carries, or as the graph's bubbles on the reference where there is no callset.
+The examples under the box are loci where structure is known to vary, such as
+the MHC, AMY1 and the CFH cluster on the human graph, and the most variable
+bubbles on the others.
+
+On the human graph the page also reads which structural forms the haplotypes
+carry in the window and how many share each one. A **Haplotypes** launch then
+opens one lane per form, commonest first, each drawn in its own assembly's
+coordinates with its own gene models, and a **BandageJS** link lays the same
+haplotypes out as a graph.
+
+A whole chromosome opens from its name, drawn from a coarse tier of the graph
+with one node per bubble. Each page ends with the files the graph is published
+as. The [HPRC tutorial](https://jbrowse.org/jb2/docs/tutorials/pangenome_hprc/)
+walks through the views.
+
 ## Opening these in JBrowse Desktop
 
-Each of these can hand its launch to the desktop app. The synteny browser and
+The first three can hand a launch to the desktop app. The synteny browser and
 the protein browser have an **Open in Desktop 5** link beside their launch, and
 the gene page has an **open in JBrowse Desktop** switch that sends every launch
 on it, from the ortholog table and the gene order figure alike, to Desktop. All
