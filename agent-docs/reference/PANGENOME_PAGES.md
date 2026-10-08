@@ -84,12 +84,14 @@ JavaScript.
   sidecar cannot tell apart.
 - **A lane says what its form is.** `describeForm` (`pangenomePanels.ts`) reads
   the form's key against each site's size changes in the sidecar: "as the
-  reference", "85 kb deletion", "inversion", its two largest changes and a count
-  of the rest. A site the haplotype's path skips is said as "skips N variant
-  sites", since the sidecar cannot tell a deletion from an unplaced haplotype.
-  Over the 22 examples on 2026-10-08 it reads cleanly where one event dominates
-  (HP, CFHR, C4, CYP2D6, GSTM1, FLNA) and as a list of sizes where many do (MHC,
-  LPA, HBA).
+  reference", "85 kb deletion", "inversion". Up to two size changes are listed;
+  more are counted with the largest named ("38 size changes, largest a 6.1 kb
+  deletion" at MHC class II), since a list of sizes says nothing. A site the
+  haplotype's path skips is said as "skips N sites", because the sidecar cannot
+  tell a deletion from an unplaced haplotype, and the reference bases under the
+  skipped sites are no deletion size: UGT2B17's whole-gene deletion skips 8
+  sites covering 9.6 kb, and AMY1's commonest form skips 64 covering 4.3 kb
+  (measured 2026-10-08). Saying which it is needs per-haplotype placement.
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus. A derived dataset offers its `MAX_DERIVED_EXAMPLES`

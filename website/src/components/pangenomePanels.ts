@@ -29,33 +29,35 @@ export interface PanelLane {
 const bp = (n: number) =>
   n >= 1000 ? `${Number((n / 1000).toPrecision(2))} kb` : `${n} bp`
 
-const SHOWN_CHANGES = 2
+const LISTED_CHANGES = 2
 
-// A form's largest changes against the reference. The sizes are the sidecar's,
-// already rounded to two figures. A site with no call is one the haplotype's
-// path skips: a deletion spanning it, or a haplotype the graph does not place
-// there, and the sidecar cannot tell which.
+const sized = (delta: number) =>
+  `${bp(Math.abs(delta))} ${delta < 0 ? 'deletion' : 'insertion'}`
+
+// How a form differs from the reference. Up to two size changes are listed;
+// more are counted with the largest named, since MHC class II's forms carry 38
+// and a list of sizes says nothing. The sizes are the sidecar's, already
+// rounded to two figures. A site with no call is one the haplotype's path
+// skips: a deletion spanning it, or a haplotype the graph does not place there.
+// The sidecar cannot tell which, and the reference bases under the skipped
+// sites are no deletion size either: UGT2B17's whole-gene deletion skips 8
+// sites that cover 9.6 kb.
 export function describeForm(
   form: Pick<StructuralForm, 'deltas' | 'inversions' | 'uncalled'>,
 ) {
+  const { deltas, inversions, uncalled } = form
   const changes = [
-    ...form.deltas.map(
-      d => `${bp(Math.abs(d))} ${d < 0 ? 'deletion' : 'insertion'}`,
-    ),
-    ...(form.inversions > 0
-      ? [form.inversions === 1 ? 'inversion' : `${form.inversions} inversions`]
+    ...(deltas.length > LISTED_CHANGES
+      ? [`${deltas.length} size changes, largest a ${sized(deltas[0]!)}`]
+      : deltas.map(sized)),
+    ...(inversions > 0
+      ? [inversions === 1 ? 'inversion' : `${inversions} inversions`]
       : []),
-    ...(form.uncalled > 0
-      ? [`skips ${form.uncalled} variant site${form.uncalled === 1 ? '' : 's'}`]
+    ...(uncalled > 0
+      ? [`skips ${uncalled} site${uncalled === 1 ? '' : 's'}`]
       : []),
   ]
-  const more = changes.length - SHOWN_CHANGES
-  return changes.length === 0
-    ? 'as the reference'
-    : [
-        ...changes.slice(0, SHOWN_CHANGES),
-        ...(more > 0 ? [`${more} more`] : []),
-      ].join(', ')
+  return changes.length === 0 ? 'as the reference' : changes.join(', ')
 }
 
 export interface StructuralPanel {

@@ -73,11 +73,15 @@ test('a form is described by its largest changes against the reference', () => {
   )
   assert.equal(
     describeForm({ deltas: [-85_000, 300], inversions: 1, uncalled: 2 }),
-    '85 kb deletion, 300 bp insertion, 2 more',
+    '85 kb deletion, 300 bp insertion, inversion, skips 2 sites',
+  )
+  assert.equal(
+    describeForm({ deltas: [-6100, 5000, -2700], inversions: 0, uncalled: 0 }),
+    '3 size changes, largest a 6.1 kb deletion',
   )
   assert.equal(
     describeForm({ deltas: [], inversions: 1, uncalled: 1 }),
-    'inversion, skips 1 variant site',
+    'inversion, skips 1 site',
   )
 })
 
