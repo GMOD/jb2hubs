@@ -7,7 +7,7 @@ import useSWRImmutable from 'swr/immutable'
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { fetchJson } from '../lib/fetchJson.ts'
 import { createStaticCatalog, pickDefaultTrack } from '../lib/syntenyCatalog.ts'
-import { availableExamples, featuredFirst } from '../lib/syntenyExamples.ts'
+import { assemblyOptions, availableExamples } from '../lib/syntenyExamples.ts'
 import syntenyTracksUrl from '../syntenyTracks.json?url'
 import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
@@ -19,24 +19,12 @@ import {
 } from './geneSearch.ts'
 import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 
-import type {
-  SyntenyAssembly,
-  SyntenyCatalogData,
-} from '../lib/syntenyCatalog.ts'
+import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
 import type { SyntenyExample } from '../lib/syntenyExamples.ts'
 import type { ReactNode } from 'react'
 
 interface Props {
   data: SyntenyCatalogData
-}
-
-function formatOption(asm: SyntenyAssembly) {
-  const parts = [asm.displayName]
-  if (asm.scientificName && asm.scientificName !== asm.displayName) {
-    parts.push(asm.scientificName)
-  }
-  parts.push(asm.id)
-  return parts.join('  ·  ')
 }
 
 // The catalog is a static asset rather than island props: serialized into the
@@ -268,22 +256,10 @@ function SyntenyPicker({ data }: Props) {
       : null
 
   const species1Options = useMemo(
-    () =>
-      featuredFirst(assemblies).map(asm => ({
-        value: asm.id,
-        label: formatOption(asm),
-      })),
+    () => assemblyOptions(assemblies),
     [assemblies],
   )
-
-  const species2Options = useMemo(
-    () =>
-      featuredFirst(partners).map(asm => ({
-        value: asm.id,
-        label: formatOption(asm),
-      })),
-    [partners],
-  )
+  const species2Options = useMemo(() => assemblyOptions(partners), [partners])
 
   return (
     <div className="synteny-selector">

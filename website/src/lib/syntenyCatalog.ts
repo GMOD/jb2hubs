@@ -133,6 +133,26 @@ export function isSelfPair(
   )
 }
 
+// A UCSC db names its build in its trailing number (mm39, panTro6); a GenArk
+// accession names none, so it has no build number here.
+function ucscBuild(asm: SyntenyAssembly) {
+  const match = asm.source === 'ucsc' ? /\d+$/.exec(asm.id) : null
+  return match ? Number(match[0]) : undefined
+}
+
+// Alphabetical by organism, and within one the UCSC builds newest first, ahead
+// of the GenArk assemblies, which keep the order they came in. A picker breaks
+// equally good matches by list order, so this is what makes "mouse" offer mm39
+// before mm7.
+export function byOrganismNewestFirst(a: SyntenyAssembly, b: SyntenyAssembly) {
+  const buildA = ucscBuild(a)
+  const buildB = ucscBuild(b)
+  return (
+    a.displayName.localeCompare(b.displayName) ||
+    (buildB ?? -1) - (buildA ?? -1)
+  )
+}
+
 export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   const { tracks, assemblyInfo } = data
 
@@ -164,9 +184,7 @@ export function createStaticCatalog(data: SyntenyCatalogData): SyntenyCatalog {
   }
 
   function sortedAssemblies(ids: Iterable<string>) {
-    return Array.from(ids)
-      .map(toAssembly)
-      .sort((a, b) => a.displayName.localeCompare(b.displayName))
+    return Array.from(ids).map(toAssembly).sort(byOrganismNewestFirst)
   }
 
   return {

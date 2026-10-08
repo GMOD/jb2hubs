@@ -75,3 +75,21 @@ export function featuredFirst(assemblies: SyntenyAssembly[]) {
     .sort((a, b) => rank.get(a.id)! - rank.get(b.id)!)
   return [...featured, ...assemblies.filter(a => !rank.has(a.id))]
 }
+
+function formatOption(asm: SyntenyAssembly) {
+  const parts = [asm.displayName]
+  if (asm.scientificName && asm.scientificName !== asm.displayName) {
+    parts.push(asm.scientificName)
+  }
+  parts.push(asm.id)
+  return parts.join('  ·  ')
+}
+
+// A picker's options, featured first. A picker breaks equally good matches by
+// this order, so it decides which build Enter picks.
+export function assemblyOptions(assemblies: SyntenyAssembly[]) {
+  return featuredFirst(assemblies).map(asm => ({
+    value: asm.id,
+    label: formatOption(asm),
+  }))
+}

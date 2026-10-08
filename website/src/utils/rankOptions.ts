@@ -7,14 +7,17 @@ export interface RankableOption {
 
 // intraMode 1 allows single-char typos (substitution/transposition/insertion/
 // deletion) within a term, so "brca" still finds "BRCA1" and "homosapeins"
-// finds "Homo sapiens".
-const uf = new uFuzzy({ intraMode: 1 })
+// finds "Homo sapiens". Equally good matches keep the list's own order rather
+// than uFuzzy's numeric-aware alphabetical one, which put mm7 before mm39 on
+// "mouse" and made Enter pick a 2005 assembly.
+const uf = new uFuzzy({ intraMode: 1, compare: () => 0 })
 
 // Ranked, capped fuzzy match over an arbitrary list, keyed by a text extractor.
 // Empty query returns the head of the (already-sorted) list so focusing a box
 // doesn't render thousands of rows. A query runs uFuzzy's out-of-order search
-// and returns items best-match-first. Pure + framework-agnostic so both the
-// Autocomplete and the data adapters can share it.
+// and returns items best-match-first, ties in list order. Pure +
+// framework-agnostic so both the Autocomplete and the data adapters can share
+// it.
 export function rankBy<T>(
   query: string,
   items: T[],
