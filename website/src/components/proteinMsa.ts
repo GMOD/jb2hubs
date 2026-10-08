@@ -87,6 +87,19 @@ const PANTHER_ONLY_TAXA = new Set([
   6239, // Caenorhabditis elegans
   559292, // Saccharomyces cerevisiae S288C
   3702, // Arabidopsis thaliana
+  511145, // Escherichia coli K-12 MG1655
+  224308, // Bacillus subtilis 168
+  83332, // Mycobacterium tuberculosis H37Rv
+  4896, // Schizosaccharomyces pombe
+  237561, // Candida albicans SC5314
+])
+
+// PANTHER files two of those proteomes under another taxon than NCBI files the
+// genes: E. coli under K-12 (83333) rather than its MG1655 substrain, and
+// fission yeast under strain 972h- (284812) rather than the species.
+const PANTHER_TAXON = new Map([
+  [511145, 83333],
+  [4896, 284812],
 ])
 
 function defaultOrthologSource(taxId: number): OrthologSource {
@@ -585,11 +598,14 @@ async function pantherProteins(
   const taxa = wanted
     ? [...wanted]
     : (await fetchGenomes()).map(g => g.taxId).sort(byCommonRank)
-  const rows = await fetchPantherOrthologs({
-    symbol: query,
-    taxId: refTaxonId,
-    taxa,
-  })
+  const pantherTaxon = PANTHER_TAXON.get(refTaxonId) ?? refTaxonId
+  const rows = (
+    await fetchPantherOrthologs({
+      symbol: query,
+      taxId: pantherTaxon,
+      taxa,
+    })
+  ).map(r => (r.taxId === pantherTaxon ? { ...r, taxId: refTaxonId } : r))
   if (rows.length < 2) {
     throw new Error(
       `need at least two species with orthologs to compare (found ${rows.length})`,

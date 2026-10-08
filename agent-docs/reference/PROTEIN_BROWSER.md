@@ -421,6 +421,52 @@ targeting `main` alone made the hash do the same with no POST, no external
 service and no stored copy of the session. If a release ever stops reading the
 hash again, this is the route.
 
+## Bacteria, fungi and viruses
+
+Added 2026-10-08. The species menu's second group (`MICROBE_SPECIES` in
+`orthologSearchUtils.ts`) offers E. coli K-12, B. subtilis, M. tuberculosis,
+fission yeast, C. albicans, SARS-CoV-2 and HIV-1, each with chips in
+`geneExamples.ts`. `MICROBE_SPECIES` is kept apart from `COMMON_SPECIES`, which
+the ortholog pages rank and report missing species by.
+
+Four things had to change for a prokaryotic or viral gene to open at all:
+
+- **No transcript, so no gene_table.** NCBI answers "no table for this gene
+  because it has no annotated transcribed products". `parseProductTranscripts`
+  reads the coding model off `product_report` instead: each protein with its
+  genomic intervals, named by the protein accession since no mRNA exists. The
+  blocks have to spell the protein (its residues, with or without a stop codon),
+  which keeps a ribosomal frameshift (NCBI lists SARS-CoV-2 ORF1ab's slipped
+  base 13468 in both blocks) and a mature peptide (HIV-1 matrix, cut from Gag
+  with no stop of its own), and drops a partial gene.
+- **No Swiss-Prot accession on the gene record, and a symbol search that
+  misses.** NCBI files E. coli's genes under the MG1655 substrain (511145) and
+  Swiss-Prot its proteins under K-12 (83333); fission yeast is the species
+  (4896) against the strain (284812). `uniProtForProtein` asks UniProt for the
+  entry cross-referencing the RefSeq protein, which names it whatever the taxon,
+  and p2s_mapper 1.2.1 widens the symbol search to a taxon's descendants on a
+  miss.
+- **PANTHER files those two proteomes under the other taxon too**, so
+  `PANTHER_TAXON` maps 511145 → 83333 and 4896 → 284812 and the reference row is
+  handed back under the page's taxon. Measured 2026-10-08: recA 75 species, cdc2
+  95 (human CDK2 among them), ftsZ 79, katG 15. A virus has no proteome at
+  PANTHER and no NCBI ortholog set, so its page says there is no ortholog panel
+  and offers the UniRef cluster and a Pfam seed.
+- **A hosted Pfam tree can hold leaves the live seed no longer has.** PF00521
+  (GyrA) had 68 seed rows against a 71-leaf tree and PF04565 (RpoB) 91 against
+  96, so the MsaView drew three and five blank rows. `placeQuery` now prunes the
+  tree to the rows it emits whether or not it thinned them.
+
+Two numbering notes the chips carry. M. tuberculosis rpoB's S450L is Ser456 on
+UniProt's P9WGY9, which starts six codons before the RefSeq protein the
+literature counts from, so the chip's focus is 456 and its label says both.
+AlphaFold DB now serves models for the SARS-CoV-2 and HIV-1 reference proteins
+under ids of the form `AF-0000000365840314`, so a viral chip opens a predicted
+model by default and its PDB entries from the structure menu.
+
+Not offered: phage lambda (NCBI's records type cI as `OTHER` with no product),
+and HIV-1 `pol`, which has no placed locus.
+
 ## Still open
 
 - The 3D-Beacons payload for a well-studied protein is large: TP53 is 344 KB

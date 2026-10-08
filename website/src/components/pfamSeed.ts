@@ -498,11 +498,12 @@ export function placeQuery(
     ...kept.map(s => `>${s.row.name}\n${project(s.row.aligned, false)}`),
   ].join('\n')
   const leaves = new Set([anchor.name, ...kept.map(s => s.row.name)])
+  // Pruned whether or not rows were dropped: the tree is a hosted file and the
+  // seed is read live, so a family whose seed lost rows since (PF00521 had 68
+  // against a 71-leaf tree, 2026-10-08) would draw the missing ones blank.
   const base =
     newick && leafPattern(anchor.name).test(newick)
-      ? thinned
-        ? pruneNewick(newick, leaves)
-        : newick
+      ? pruneNewick(newick, leaves)
       : undefined
   const tree = base
     ? replaced

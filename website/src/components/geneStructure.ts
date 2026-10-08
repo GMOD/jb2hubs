@@ -8,7 +8,8 @@
 //                    MANE / RefSeq Select and which protein each one encodes
 //  - NCBI E-utils  : the `gene_table` flat file -> every transcript's genomic
 //                    CDS structure (parsed here); efetch -> the picked
-//                    transcript's protein sequence
+//                    transcript's protein sequence. A bacterial or viral gene
+//                    has no table, and its CDS comes off the product_report
 //  - a hosted config: the genome the session opens on, plus the name that config
 //                    gives the gene's sequence and the gene track to draw under
 //                    the exons — see genomeTarget.ts
@@ -18,6 +19,8 @@
 //                    accession rather than assuming the canonical F1 file does
 //
 // The session itself is built in proteinSession.ts.
+
+import { searchUniProtEntries } from 'p2s_mapper'
 
 import { resolveGenomeTarget } from './genomeTarget.ts'
 import { DATASETS, EUTILS, ncbiJson, ncbiText } from './ncbiFetch.ts'
@@ -385,6 +388,107 @@ export async function fetchSelectTranscripts(
 
 const bareAccession = (acc: string) => acc.replace(/\.\d+$/, '')
 
+interface UntabledTranscript extends ParsedTranscript {
+  refName: string
+}
+
+interface ProductReport {
+  reports?: {
+    product?: {
+      transcripts?: {
+        accession_version?: string
+        genomic_locations?: {
+          genomic_accession_version?: string
+          genomic_range?: { orientation?: string }
+          exons?: { begin?: string; end?: string }[]
+        }[]
+        protein?: { accession_version?: string; length?: number }
+      }[]
+    }
+  }[]
+}
+
+// A bacterial or viral gene has no transcript record, so its gene_table reads
+// "no table for this gene because it has no annotated transcribed products".
+// The product_report still lists each protein with the genomic intervals that
+// code for it (1-based inclusive, stop codon included, as the table's are), so
+// the coding model comes from there, named by the protein since no mRNA is.
+export function parseProductTranscripts(
+  report: ProductReport,
+): UntabledTranscript[] {
+  return (report.reports?.[0]?.product?.transcripts ?? []).flatMap(t => {
+    const protein = t.protein?.accession_version
+    const location = t.genomic_locations?.[0]
+    const refName = location?.genomic_accession_version
+    const coding = (location?.exons ?? [])
+      .flatMap(e => {
+        const begin = Number(e.begin)
+        const end = Number(e.end)
+        return Number.isInteger(begin) && Number.isInteger(end) && begin > 0
+          ? [{ start: Math.min(begin, end) - 1, end: Math.max(begin, end) }]
+          : []
+      })
+      .sort((a, b) => a.start - b.start)
+    const codons = coding.reduce((n, c) => n + (c.end - c.start), 0) / 3
+    const length = t.protein?.length
+    // The blocks have to spell the protein: its residues and a stop codon, or
+    // its residues alone for a mature peptide cut from a polyprotein. A
+    // ribosomal frameshift still does, since NCBI lists the slipped base in
+    // both blocks (SARS-CoV-2 ORF1ab re-reads 13468); a partial gene or an
+    // edited transcript does not, and would put its residues on the wrong
+    // bases.
+    return protein &&
+      refName &&
+      length !== undefined &&
+      (codons === length || codons === length + 1)
+      ? [
+          {
+            refName,
+            mrna: t.accession_version ?? protein,
+            protein,
+            aaLength: length,
+            cds: assignPhases(
+              coding,
+              location.genomic_range?.orientation === 'minus' ? -1 : 1,
+            ),
+          },
+        ]
+      : []
+  })
+}
+
+async function fetchProductTranscripts(geneId: string, signal?: AbortSignal) {
+  return parseProductTranscripts(
+    await ncbiJson<ProductReport>(
+      `${DATASETS}/gene/id/${geneId}/product_report`,
+      { signal },
+    ),
+  )
+}
+
+// NCBI's gene record names a Swiss-Prot entry for few genes outside the
+// vertebrates, and a symbol search misses wherever the assembly's taxon is not
+// the one Swiss-Prot files the organism under (E. coli MG1655 is 511145, its
+// entries are K-12's, 83333). UniProt cross-references the RefSeq protein
+// itself, which names the entry whatever the taxon.
+async function uniProtForProtein(
+  protein: string,
+  symbol: string,
+  taxId: number,
+  signal?: AbortSignal,
+) {
+  const found = await searchUniProtEntries(
+    {
+      recognizedIds: [bareAccession(protein)],
+      geneName: symbol,
+      organismId: taxId,
+    },
+    { signal },
+  ).catch(() => undefined)
+  const reviewed = found?.entries.filter(e => e.isReviewed) ?? []
+  return (reviewed.length === 1 ? reviewed[0] : found?.entries[0])?.accession
+}
+
 // Representative first, then curated (NM_) before predicted (XM_), then longest.
 // The tag is matched version-tolerant: product_report and gene_table come off
 // the same annotation, but a version drift between them should cost nothing.
@@ -444,28 +548,37 @@ export async function fetchGeneStructure(
   signal?: AbortSignal,
 ): Promise<GeneStructure> {
   const gene = await resolveGene(symbol, taxId, signal)
-  const uniprotId =
+  const namedUniprotId =
     gene.uniprotId ?? (await fetchUniProtAccession(symbol, taxId, signal))
   // Neither of these is an NCBI call, so they overlap the throttled ones below.
-  const alphafoldPending = uniprotId
-    ? fetchAlphaFoldModels(uniprotId)
-    : Promise.resolve([])
-  const canonicalPending = uniprotId
-    ? fetchUniProtSequence(uniprotId)
-    : Promise.resolve(undefined)
+  const structureOf = (accession: string | undefined) => ({
+    alphafold: accession
+      ? fetchAlphaFoldModels(accession)
+      : Promise.resolve([]),
+    canonical: accession
+      ? fetchUniProtSequence(accession)
+      : Promise.resolve(undefined),
+  })
+  const named = structureOf(namedUniprotId)
   const tags = await fetchSelectTranscripts(gene.geneId, signal)
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
     { signal },
   )
+  const reference = geneTableReference(text)
+  const untabled = reference
+    ? []
+    : await fetchProductTranscripts(gene.geneId, signal)
   const placement = tablePlacement(
     gene.symbol,
     gene.placements,
-    geneTableReference(text),
+    reference ?? untabled[0]?.refName,
   )
   const target = await hostedTarget(gene.symbol, placement)
   const isoforms = orderIsoforms(
-    parseGeneTableBlocks(text, placement.strand),
+    reference
+      ? parseGeneTableBlocks(text, placement.strand)
+      : untabled.filter(t => t.refName === placement.refName),
     tags,
     {
       refName: placement.refName,
@@ -481,6 +594,12 @@ export async function fetchGeneStructure(
     picked.protein,
     signal,
   ).catch(() => undefined)
+  const uniprotId =
+    namedUniprotId ??
+    (await uniProtForProtein(picked.protein, gene.symbol, taxId, signal))
+  const { alphafold, canonical } = namedUniprotId
+    ? named
+    : structureOf(uniprotId)
   signal?.throwIfAborted()
   return {
     symbol: gene.symbol,
@@ -492,8 +611,8 @@ export async function fetchGeneStructure(
     proteinSequence,
     transcript: picked.transcript,
     isoforms,
-    canonical: await canonicalPending,
-    alphafold: await alphafoldPending,
+    canonical: await canonical,
+    alphafold: await alphafold,
   }
 }
 

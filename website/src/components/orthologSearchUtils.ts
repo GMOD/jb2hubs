@@ -106,6 +106,51 @@ export const COMMON_SPECIES: CommonSpecies[] = [
   },
 ]
 
+// Reference species the protein browser offers beside the model organisms: a
+// bacterial or viral gene has a structure and a genome to open even where no
+// ortholog table covers it. Each taxon is the one NCBI files the reference
+// genome's gene records under, checked 2026-10-08, which for E. coli is the
+// MG1655 substrain and for fission yeast the species.
+export const MICROBE_SPECIES: CommonSpecies[] = [
+  {
+    label: 'E. coli (K-12)',
+    taxId: 511145,
+    names: ['Escherichia coli', 'E. coli', 'Escherichia coli K-12 MG1655'],
+  },
+  {
+    label: 'B. subtilis (168)',
+    taxId: 224308,
+    names: ['Bacillus subtilis', 'B. subtilis'],
+  },
+  {
+    label: 'M. tuberculosis (H37Rv)',
+    taxId: 83332,
+    names: ['Mycobacterium tuberculosis', 'M. tuberculosis', 'TB'],
+  },
+  {
+    label: 'Fission yeast (S. pombe)',
+    taxId: 4896,
+    names: ['Schizosaccharomyces pombe', 'S. pombe', 'fission yeast'],
+  },
+  {
+    label: 'C. albicans',
+    taxId: 237561,
+    names: ['Candida albicans', 'Candida albicans SC5314'],
+  },
+  {
+    label: 'SARS-CoV-2',
+    taxId: 2697049,
+    names: ['Severe acute respiratory syndrome coronavirus 2', 'COVID-19'],
+  },
+  {
+    label: 'HIV-1',
+    taxId: 11676,
+    names: ['Human immunodeficiency virus 1', 'HIV'],
+  },
+]
+
+export const PROTEIN_SPECIES = [...COMMON_SPECIES, ...MICROBE_SPECIES]
+
 export const COMMON_TAX_RANK = new Map(
   COMMON_SPECIES.map((s, i) => [s.taxId, i]),
 )

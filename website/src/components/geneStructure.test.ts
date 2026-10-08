@@ -7,6 +7,7 @@ import {
   geneTableReference,
   orderIsoforms,
   parseGeneTableBlocks,
+  parseProductTranscripts,
   tablePlacement,
 } from './geneStructure.ts'
 
@@ -250,4 +251,108 @@ test('geneStats: sums CDS length and the collapse ratio', () => {
     span: 980,
     ratio: '5.4',
   })
+})
+
+function product(
+  exons: [number, number][],
+  orientation: 'plus' | 'minus',
+  protein: string,
+  length: number,
+) {
+  return {
+    genomic_locations: [
+      {
+        genomic_accession_version: 'NC_000913.3',
+        genomic_range: { orientation },
+        exons: exons.map(([begin, end]) => ({
+          begin: String(begin),
+          end: String(end),
+        })),
+      },
+    ],
+    protein: { accession_version: protein, length },
+  }
+}
+
+// E. coli recA as NCBI's product_report gives it: no mRNA, one coding block
+test('parseProductTranscripts: a bacterial gene is one CDS named by its protein', () => {
+  const [recA] = parseProductTranscripts({
+    reports: [
+      {
+        product: {
+          transcripts: [
+            product([[2822708, 2823769]], 'minus', 'NP_417179.1', 353),
+          ],
+        },
+      },
+    ],
+  })
+  assert.deepEqual(recA, {
+    refName: 'NC_000913.3',
+    mrna: 'NP_417179.1',
+    protein: 'NP_417179.1',
+    aaLength: 353,
+    cds: [{ start: 2822707, end: 2823769, phase: 0 }],
+  })
+})
+
+// SARS-CoV-2 ORF1ab: the ribosome slips back one base, and NCBI lists that
+// base, 13468, at the end of one block and the start of the next
+test('parseProductTranscripts: a ribosomal frameshift keeps both blocks in frame', () => {
+  const [orf1ab] = parseProductTranscripts({
+    reports: [
+      {
+        product: {
+          transcripts: [
+            product(
+              [
+                [266, 13468],
+                [13468, 21555],
+              ],
+              'plus',
+              'YP_009724389.1',
+              7096,
+            ),
+          ],
+        },
+      },
+    ],
+  })
+  assert.deepEqual(orf1ab?.cds, [
+    { start: 265, end: 13468, phase: 0 },
+    { start: 13467, end: 21555, phase: 0 },
+  ])
+})
+
+// HIV-1 matrix p17: cut from the Gag polyprotein, so no stop codon of its own
+test('parseProductTranscripts: a mature peptide has no stop codon to count', () => {
+  const [matrix] = parseProductTranscripts({
+    reports: [
+      {
+        product: {
+          transcripts: [product([[336, 731]], 'plus', 'NP_579876.2', 132)],
+        },
+      },
+    ],
+  })
+  assert.equal(matrix?.aaLength, 132)
+})
+
+test('parseProductTranscripts: blocks that do not spell the protein are left out', () => {
+  assert.deepEqual(
+    parseProductTranscripts({
+      reports: [
+        {
+          product: {
+            transcripts: [product([[100, 400]], 'plus', 'NP_000001.1', 353)],
+          },
+        },
+      ],
+    }),
+    [],
+  )
+})
+
+test('parseProductTranscripts: a gene with no product has no transcript', () => {
+  assert.deepEqual(parseProductTranscripts({ reports: [{ product: {} }] }), [])
 })

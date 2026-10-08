@@ -284,6 +284,110 @@ const EXAMPLES_BY_TAXON: Record<number, ProteinExample[]> = {
     { symbol: 'CO', note: 'CONSTANS — photoperiodic flowering' },
     { symbol: 'PHYB', note: 'Phytochrome B — red-light photoreceptor' },
   ],
+  // Bacteria, fungi and viruses. A bacterial or viral gene has no transcript
+  // record at NCBI, so its coding model comes off the product_report (see
+  // geneStructure.ts). Every symbol below booted in `check-protein-launches` on
+  // 2026-10-08, the focused chips with their focus.
+  511145: [
+    {
+      symbol: 'recA',
+      note: 'Recombinase — the fold RAD51 keeps from bacteria to human',
+    },
+    { symbol: 'ftsZ', note: 'Cell-division ring — the bacterial tubulin' },
+    {
+      symbol: 'gyrA',
+      note: 'DNA gyrase — S83, where quinolone resistance arises',
+      focus: { residue: 83, residueLabel: 'S83' },
+      story:
+        'S83 lines the pocket where a fluoroquinolone stacks against the cleaved DNA, and S83L is the commonest ciprofloxacin-resistance substitution in clinical E. coli.',
+    },
+    { symbol: 'rpoB', note: 'RNA polymerase β — the rifampicin target' },
+    { symbol: 'dnaK', note: 'Hsp70 chaperone, nearly unchanged across life' },
+    {
+      symbol: 'lacZ',
+      note: 'β-galactosidase — the blue of blue/white screens',
+    },
+    {
+      symbol: 'lacI',
+      note: 'Lac repressor — the first gene switch worked out',
+    },
+  ],
+  224308: [
+    { symbol: 'ftsZ', note: 'Cell-division ring — the bacterial tubulin' },
+    { symbol: 'spo0A', note: 'Master regulator of sporulation' },
+    { symbol: 'sigA', note: 'Housekeeping sigma factor' },
+    { symbol: 'comK', note: 'Competence — the switch for DNA uptake' },
+  ],
+  83332: [
+    {
+      symbol: 'katG',
+      note: 'Catalase-peroxidase — S315T, isoniazid resistance',
+      focus: { residue: 315, residueLabel: 'S315' },
+      story:
+        'KatG activates the prodrug isoniazid, and S315T, the commonest resistance mutation worldwide, narrows the channel to the haem where that happens while leaving the enzyme working.',
+    },
+    {
+      symbol: 'rpoB',
+      note: 'RNA polymerase β — S450L, rifampicin resistance',
+      // UniProt's P9WGY9 starts six codons before the RefSeq protein the
+      // literature counts from, so the map's Ser456 is the papers' S450
+      focus: { residue: 456, residueLabel: 'S450L (Ser456)' },
+      story:
+        'S450 in the literature is Ser456 on the UniProt sequence, which starts six residues earlier; it lines the rifampicin pocket beside the RNA exit path, and S450L accounts for most rifampicin-resistant tuberculosis.',
+    },
+    { symbol: 'inhA', note: 'Enoyl-ACP reductase — what isoniazid inhibits' },
+    { symbol: 'gyrA', note: 'DNA gyrase — fluoroquinolone resistance' },
+    { symbol: 'embB', note: 'Arabinosyltransferase — ethambutol resistance' },
+  ],
+  4896: [
+    {
+      symbol: 'cdc2',
+      note: 'The cell-cycle kinase, found here first — human CDK1',
+    },
+    { symbol: 'cdc25', note: 'Phosphatase that switches cdc2 on' },
+    {
+      symbol: 'wee1',
+      note: 'Kinase that holds cdc2 off — mutants divide small',
+    },
+    { symbol: 'cdc13', note: 'B-type cyclin, the partner of cdc2' },
+  ],
+  237561: [
+    {
+      symbol: 'ERG11',
+      note: 'Lanosterol 14α-demethylase — the azole target',
+      focus: { residue: 132, residueLabel: 'Y132' },
+      story:
+        'Y132 hydrogen-bonds the azole in the active site, and Y132F or Y132H is among the commonest causes of fluconazole resistance in Candida.',
+    },
+    { symbol: 'EFG1', note: 'Regulator of the yeast-to-hypha switch' },
+    { symbol: 'TUP1', note: 'Corepressor — its loss locks cells as filaments' },
+    { symbol: 'HWP1', note: 'Hyphal wall protein — adhesion to host cells' },
+    { symbol: 'ALS3', note: 'Adhesin and invasin of the hyphal surface' },
+  ],
+  2697049: [
+    {
+      symbol: 'S',
+      note: 'Spike — D614G, the first substitution to sweep the pandemic',
+      focus: { residue: 614, residueLabel: 'D614' },
+      story:
+        'D614 sits where one protomer of the trimer meets the next, away from the receptor-binding domain, and D614G replaced the original spike worldwide within months of 2020.',
+    },
+    { symbol: 'N', note: 'Nucleocapsid — packages the RNA genome' },
+    { symbol: 'M', note: 'Membrane protein — shapes the virion' },
+    { symbol: 'E', note: 'Envelope protein — a 75-residue ion channel' },
+    { symbol: 'ORF3a', note: 'Accessory ion channel' },
+  ],
+  11676: [
+    {
+      symbol: 'gag',
+      note: 'Gag polyprotein — matrix, capsid and nucleocapsid',
+    },
+    { symbol: 'env', note: 'Envelope gp160 — the entry machine' },
+    { symbol: 'nef', note: 'Downregulates CD4 and MHC-I' },
+    { symbol: 'vif', note: 'Counters the APOBEC3G restriction factor' },
+    { symbol: 'tat', note: 'Transactivator, encoded across two exons' },
+    { symbol: 'vpr', note: 'Arrests the cell cycle of the infected cell' },
+  ],
 }
 
 // Human is the fallback: a species with no curated list still gets chips, and

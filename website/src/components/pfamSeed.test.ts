@@ -137,6 +137,20 @@ test('placeQuery: the seed row that IS the query is replaced, and its leaf renam
   )
 })
 
+// the tree is a hosted file and the seed is read live, so they drift
+test('placeQuery: a leaf the seed no longer has is pruned from the tree', () => {
+  const seed = parseStockholm(stockholm)
+  const placed = placeQuery('MMACDPPEFGHKWW', seed, {
+    queryName: 'GENE',
+    newick:
+      '((ROW1_HUMAN/10-17:0.1,(ROW2_MOUSE/5-11:0.2,GONE_RAT/1-8:0.1):0.1):0.3,ROW3_FLY/1-7:0.5);',
+  })
+  assert.strictEqual(placed.thinned, false)
+  const rows = placed.fasta.match(/^>(\S+)/gm)!.map(r => r.slice(1))
+  const leaves = placed.newick?.match(/[A-Z0-9_]+\/\d+-\d+/g) ?? []
+  assert.deepStrictEqual(leaves.sort(), rows.sort())
+})
+
 test('placeQuery: a window confines the search but coordinates stay on the whole query', () => {
   const seed = parseStockholm(stockholm)
   const query = 'ACDEFGHK' + 'X'.repeat(20) + 'ACDEFGHK'

@@ -30,7 +30,12 @@ import {
   fetchGeneStructure,
 } from './geneStructure.ts'
 import { hasHundredWay } from './hundredWay.ts'
-import { COMMON_SPECIES, geneUrl } from './orthologSearchUtils.ts'
+import {
+  COMMON_SPECIES,
+  MICROBE_SPECIES,
+  PROTEIN_SPECIES,
+  geneUrl,
+} from './orthologSearchUtils.ts'
 import {
   ALIGN_SOURCES,
   type AlignSource,
@@ -122,7 +127,7 @@ function picksFromParams(p: URLSearchParams): LaunchPicks {
 function paramsFromUrl() {
   const p = new URLSearchParams(window.location.search)
   const ref = Number(p.get('ref'))
-  const known = COMMON_SPECIES.some(s => s.taxId === ref)
+  const known = PROTEIN_SPECIES.some(s => s.taxId === ref)
   return {
     gene: p.get('gene')?.trim() ?? '',
     ref: known ? ref : 9606,
@@ -161,7 +166,7 @@ function setLaunchParam(name: LaunchParam, value: string | undefined) {
 }
 
 function speciesLabel(taxId: number) {
-  return COMMON_SPECIES.find(s => s.taxId === taxId)?.label ?? `taxon ${taxId}`
+  return PROTEIN_SPECIES.find(s => s.taxId === taxId)?.label ?? `taxon ${taxId}`
 }
 
 // A progress line belongs to one query. The resolvers post through a callback
@@ -403,6 +408,16 @@ export default function ProteinBrowser() {
               {s.label}
             </option>
           ))}
+          <optgroup label="Bacteria, fungi and viruses">
+            {MICROBE_SPECIES.map(s => (
+              <option
+                key={s.taxId}
+                value={s.taxId}
+              >
+                {s.label}
+              </option>
+            ))}
+          </optgroup>
         </select>
         <button
           className="ui-btn"
