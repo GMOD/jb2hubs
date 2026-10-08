@@ -3,7 +3,8 @@ import * as path from 'path'
 
 import { hubCategories, parseAssemblyEntry } from 'hubtools'
 
-import { readJSON } from './util.ts'
+import { assertMostlyPublished } from './publishedHubs.ts'
+import { getHubBasePath, readJSON } from './util.ts'
 
 import type { UCSCGenArkAssemblyEntry } from 'hubtools'
 
@@ -36,6 +37,9 @@ const mainCategories = new Set(
 function processHubJsonFiles() {
   // Map to deduplicate by accession, preferring main category sources
   const accessionMap = new Map<string, ParsedEntry>()
+  const listed = new Set<string>()
+  const unpublished = new Set<string>()
+  const categoryFiles: [string, string][] = []
 
   // Read all files in the 'hubJson' directory
   const hubJsonFiles = fs
@@ -67,6 +71,14 @@ function processHubJsonFiles() {
           (e): e is NonNullable<ReturnType<typeof parseAssemblyEntry>> =>
             e != null,
         )
+        .filter(e => {
+          listed.add(e.accession)
+          if (fs.existsSync(`${getHubBasePath(e.accession)}/hub.txt`)) {
+            return true
+          }
+          unpublished.add(e.accession)
+          return false
+        })
         .map(e => {
           // Strip detail-only fields that are only needed on individual accession
           // pages and can be read directly from ncbi.json at page-build time.
@@ -89,11 +101,10 @@ function processHubJsonFiles() {
           return { ...summary, source: sourceCategory }
         })
 
-      // Write the processed JSON for the current category
-      fs.writeFileSync(
+      categoryFiles.push([
         `processedHubJson/${sourceCategory}.json`,
         JSON.stringify(processedCategoryEntries, null, 2),
-      )
+      ])
       console.log(`Processed ${sourceCategory}.json`)
 
       // Add to accession map, preferring main category sources
@@ -114,6 +125,16 @@ function processHubJsonFiles() {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  assertMostlyPublished(unpublished.size, listed.size)
+  if (unpublished.size) {
+    console.log(
+      `Dropped ${unpublished.size} listed hub(s) with no hub.txt: ${[...unpublished].join(' ')}`,
+    )
+  }
+  for (const [file, text] of categoryFiles) {
+    fs.writeFileSync(file, text)
   }
 
   // Write the combined 'all.json' file
