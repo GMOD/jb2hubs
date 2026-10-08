@@ -1,4 +1,4 @@
-import { useActionState, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { fetchExperimentalStructures } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
@@ -88,6 +88,7 @@ export default function ProteinLaunchCard({
   partnerPending,
   focusPending,
   onFocus,
+  proteinLength,
   story,
   picks,
   onPick,
@@ -112,6 +113,8 @@ export default function ProteinLaunchCard({
   focusPending: boolean
   // sets what the session opens on; undefined clears it
   onFocus: (focus: Focus | undefined) => void
+  // residues the map is numbered on, when there is a map
+  proteinLength?: number
   // a chip's one sentence on what there is to see, folded under More info
   story?: string
   // the isoform and structure the link the reader arrived by named
@@ -538,9 +541,10 @@ export default function ProteinLaunchCard({
             </span>
             {focusCaveat && <span className="ui-caption">{focusCaveat}</span>}
           </div>
-        ) : canonical && !focusPending ? (
+        ) : proteinLength && !focusPending ? (
           <ResidueForm
-            canonical={canonical}
+            sequence={canonical}
+            length={proteinLength}
             onFocus={onFocus}
           />
         ) : null}
@@ -679,48 +683,48 @@ function StructureLink({
   )
 }
 
-interface ResidueEntry {
-  text: string
-  error?: string
-}
-
 // The residue to open on, typed against the canonical, while nothing is
-// focused. The box lives with this form, so what was typed goes when a focus
-// replaces it. React resets the fields after every action, a failed parse
-// included, so that one hands the text back as the box's default.
+// focused. The box's state lives here, so it goes when a focus replaces the
+// form, and an uncontrolled input keeps what was typed through an error.
 function ResidueForm({
-  canonical,
+  sequence,
+  length,
   onFocus,
 }: {
-  canonical: string
+  sequence: string | undefined
+  length: number
   onFocus: (focus: Focus) => void
 }) {
-  const [{ text, error }, submit] = useActionState(
-    (_prev: ResidueEntry, data: FormData): ResidueEntry => {
-      const typed = String(data.get('residue') ?? '')
-      const parsed = parseResidue(typed, canonical, canonical.length)
-      if ('error' in parsed) {
-        return { text: typed, error: parsed.error }
-      }
-      onFocus({ kind: 'residue', ...parsed })
-      return { text: '' }
-    },
-    { text: '' },
-  )
-  const middle = Math.ceil(canonical.length / 2)
+  const [error, setError] = useState<string>()
+  const middle = Math.ceil(length / 2)
   return (
     <form
       className="msv-control"
-      action={submit}
+      onSubmit={e => {
+        e.preventDefault()
+        const typed = String(new FormData(e.currentTarget).get('residue') ?? '')
+        const parsed = parseResidue(typed, sequence, length)
+        if ('error' in parsed) {
+          setError(parsed.error)
+        } else {
+          onFocus({ kind: 'residue', ...parsed })
+        }
+      }}
     >
       <span className="msv-control-label">Opens on</span>
       <input
         name="residue"
         className="ui-input msv-residue"
         aria-label="Residue to open on"
-        placeholder={`residue 1–${canonical.length} or ${canonical[middle - 1]}${middle}`}
+        placeholder={
+          sequence
+            ? `residue 1–${length} or ${sequence[middle - 1]}${middle}`
+            : `residue 1–${length}`
+        }
         aria-invalid={!!error}
-        defaultValue={text}
+        onChange={() => {
+          setError(undefined)
+        }}
       />
       <button
         type="submit"

@@ -669,16 +669,3 @@ export function collapsedLoc(
   const locs = merged.map(e => `${refName}:${e.start + 1}-${e.end}${suffix}`)
   return (flip ? locs.reverse() : locs).join(' ')
 }
-
-interface GeneStats {
-  codingBp: number
-  span: number
-  ratio: string
-}
-
-export function geneStats(transcript: Transcript): GeneStats {
-  const codingBp = transcript.cds.reduce((n, c) => n + (c.end - c.start), 0)
-  const { start, end } = blockBounds(transcript.cds)
-  const span = end - start
-  return { codingBp, span, ratio: (span / codingBp).toFixed(1) }
-}

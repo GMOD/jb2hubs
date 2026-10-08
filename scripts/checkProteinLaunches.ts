@@ -214,7 +214,7 @@ const NUMBERING_CASES: Record<string, FocusCase[]> =
 // alignment when there is one, the complex as the structure when the focus is
 // an interface, and the focus carried onto the launched translation and lit on
 // open. This is the session whose mapping the unit tests cannot see — a seed
-// row linked through a sliced transcript, a residue highlight in row
+// row linked through the transcript at its offset, a residue highlight in row
 // coordinates, a selection resolved onto the structure — so it is booted too.
 async function focusedLaunch(
   gene: string,

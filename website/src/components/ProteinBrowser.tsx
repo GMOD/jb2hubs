@@ -702,6 +702,12 @@ function GeneResults({
     LIVE_QUERY,
   )
 
+  // what the map and a typed residue are numbered on: the canonical, else
+  // the last InterPro region's end
+  const proteinLength =
+    canonical?.length ??
+    (regions?.length ? Math.max(...regions.map(r => r.end)) : undefined)
+
   const toggleSuperpose = (uniprot: string) => {
     const next = superposed.includes(uniprot)
       ? superposed.filter(u => u !== uniprot)
@@ -733,14 +739,12 @@ function GeneResults({
         onFocus={setFocus}
         story={example?.story}
         picks={linkPicks}
+        proteinLength={proteinLength}
         onPick={setLaunchParam}
       />
 
       {uniprotId && (
         <section className="pm-section">
-          <h3 className="pm-title">
-            Protein map <span className="ui-caption">{uniprotId}</span>
-          </h3>
           {regionsLoading && <p className="ui-hint">Reading InterPro…</p>}
           {regionsError ? (
             <p className="ui-note">
@@ -749,9 +753,8 @@ function GeneResults({
           ) : null}
           {regions && (
             <ProteinMap
-              length={
-                canonical?.length ?? Math.max(0, ...regions.map(r => r.end))
-              }
+              accession={uniprotId}
+              length={proteinLength ?? 0}
               regions={regions}
               partners={partnersState}
               onLoadPartners={() => {

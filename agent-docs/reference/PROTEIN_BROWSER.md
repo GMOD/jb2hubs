@@ -338,44 +338,39 @@ different session; both are fewer things on screen.
 
 ### The card says less than it decides
 
-Cut on 2026-10-04, after the page read as busy: the first screen was a
-three-line lede, a boxed story, a form of four rows, a button with four
-checkboxes and a link beside it, a caption restating the form, and a map with
-its own three-line caption. The rule now is the molstar-harness one: a row
-appears only where there is a choice (no isoform row when the alignment pins
-it), and a caption only where the launch differs from what the row reads. The
-view toggles and the session dump fold under **Options**, since every default is
-on; the "opens … in one connected session" sentence is gone, since the rows and
-the alignment disclosure already say it; the story is a plain line; the map's
-instructions moved into the help dialog, which already had them. What the reader
-loses is being told the focus is "lit on load in all three views", which is the
-expected case and so goes unsaid — the caption still appears for the approximate
-and missing cases, which are the ones worth a sentence. A second pass the same
-day cut the chip stories to one sentence each, dropped the assembly accession
-from the meta line (the assembly name says it), moved each alignment source's
-cost note onto its radio's tooltip, and removed the cartoon's how-to caption
-(its blocks and buttons carry titles).
+The rule is the molstar-harness one: a row appears only where there is a choice,
+and a caption only where the launch differs from what the row reads. Expect
+"busy" to be the first review comment on any new control or caption, and default
+to leaving it out: the page shed a three-line lede, a boxed story, a form of
+four rows, a row of checkboxes, three captions and a how-to paragraph one pass
+at a time. What the first screen holds:
 
-A third pass on 2026-10-08, after the NOTCH1 chip still read as busy. The story
-folds under **More info**, a second disclosure beside Options: a sentence on why
-a residue matters is for the reader who asks, and clutter to the one who came to
-launch. A map block under 5% of the protein carries no label, because at that
-width a label is an ellipsis, and NOTCH1's thirty-six EGF repeats were a row of
-"EG" (117 labelled blocks, now 1); the end tick no longer overprints the last
-regular one. And both row graphics went dense: cartoon names at 11 px on 10 px
-bars 2 px apart, map lanes 14 px and site lanes 8 px. Measured on the NOTCH1
-chip at 1200 px wide: the 60-species cartoon went from 1,576 px to 957 px (25.5
-px a row to 15.2), the map from 184 px to 152, the card from 258 px to 223.
+- The gene and its transcript, then the assembly and strand. Exon count and CDS
+  length went, since they are information rather than decisions.
+- **Isoform** only while no alignment pins the transcript, **Structure** when
+  there is a UniProt entry, and **Opens on**: the focus chip, or, while nothing
+  is focused, the residue box, the one way to type a focus (the map is the
+  other). The chip's caption appears only in the approximate and missing cases;
+  lit on load in all three views is the expected case and goes unsaid.
+- The launch button, then two folds: **Options** (the view toggles, all on by
+  default, and the session dump) and **More info** (a chip's one-sentence story,
+  for the gene that came from one).
+- The map, with nothing under it. Domains always; sites and partners are lanes
+  whose name loads them, since sites are already in the InterPro answer and
+  partners are the half-megabyte PDBe read, and the first block that appears
+  takes keyboard focus from the name that went. A block under 5% of the protein
+  carries no label, because at that width a label is an ellipsis (NOTCH1's
+  thirty-six EGF repeats were a row of "EG"); the title has the name. Hover
+  darkens a block and selection rings it from inside, because lanes sit 3 px
+  apart and an outline bled into the neighbours.
+- The cartoon and the alignment fold below. Cartoon rows are 15 px, names at 11
+  px on 10 px bars, with a row's length on its tooltip rather than in a column
+  of sixty numbers beside bars whose width already says it.
 
-The same day, the rest of the list. The lede is one line, and the meta line is
-the assembly and the strand. The cartoon's per-row length is on the row's
-tooltip, not in a column of sixty numbers beside bars whose width already says
-it. The residue box moved from under the map into the card's **Opens on** row,
-which it fills while nothing is focused, so the map is a picture with nothing
-under it: sites and partners are lanes whose name loads them (sites are already
-in the InterPro answer, partners are the PDBe read), and a wait or a failure is
-written in the lane's track. Hover on a block darkens it instead of outlining
-it, since the lanes are too close for an outline.
+Measured on the NOTCH1 chip at 1200 px wide on 2026-10-08, against the page as
+it was that morning: the 60-species cartoon is 957 px (was 1,576; 25.5 px a row
+to 15.2), the map 103 px before a lane is opened (184), the card 223 px (258),
+and one labelled map block (117).
 
 ### The chips carry a focus and a sentence
 
@@ -387,10 +382,11 @@ once, a family when InterPro answers, a partner when PDBe does — and a reader
 who clears it does not get it back (`focusChoice === null`). The focus is in the
 page url too (`residue=248`, `pfam=PF00008&at=1000`, `partner=P69905`, written
 on every change), so a focused page is a link; a link naming a chip's gene and
-focus is that chip and shows its story, and any other typed or linked query has
-none. HBB and BRAF are new: HBB was dropped from the cartoon-chosen list because
-its cartoon is one flat bar, and the map is what makes it worth a chip again —
-the globin seed and the α/β interface, which Glu7 is not in.
+focus is that chip and folds its story under More info, and any other typed or
+linked query has none. HBB and BRAF are new: HBB was dropped from the
+cartoon-chosen list because its cartoon is one flat bar, and the map is what
+makes it worth a chip again — the globin seed and the α/β interface, which Glu7
+is not in.
 
 The rest of what the reader sets rides in the page url beside the focus:
 `isoform=`, `structure=` (`alphafold`, `none` or a PDB id), `align=` and
@@ -484,11 +480,11 @@ Four things had to change for a prokaryotic or viral gene to open at all:
   keeps every row. Regenerating the hosted trees would bring the rows back.
 
 A human mitochondrial gene takes the product path too, since it has no table
-either: MT-CO1 opens, and MT-ND1, whose stop codon is completed by
-polyadenylation, is refused because its blocks do not spell its protein.
-p2s_mapper 1.2.2 recognises the `YP_` and `AP_` proteins those genomes and the
-viral ones carry, which 1.2.1 never looked up; `WP_` stays out, since one such
-sequence is every strain's copy.
+either: MT-CO1 opens, and the page refuses MT-ND1, whose stop codon is completed
+by polyadenylation, because its blocks do not spell its protein. p2s_mapper
+1.2.2 recognises the `YP_` and `AP_` proteins those genomes and the viral ones
+carry, which 1.2.1 never looked up; `WP_` stays out, since one such sequence is
+every strain's copy.
 
 Two numbering notes the chips carry. M. tuberculosis rpoB's S450L is Ser456 on
 UniProt's P9WGY9, which starts six codons before the RefSeq protein the

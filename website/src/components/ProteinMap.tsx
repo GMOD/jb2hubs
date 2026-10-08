@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import {
   type Focus,
@@ -7,7 +7,7 @@ import {
   sameFocus,
 } from './proteinFeatures.ts'
 
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, ReactNode, Ref } from 'react'
 
 // One protein, end to end, with what is known about where things are on it:
 // its InterPro domains, and on request its conserved sites and the residues
@@ -81,13 +81,13 @@ export type PartnersState =
 function RequestLane({
   name,
   hint,
-  pending,
+  busy,
   note,
   onClick,
 }: {
   name: string
   hint: string
-  pending: boolean
+  busy?: boolean
   note?: ReactNode
   onClick: () => void
 }) {
@@ -97,7 +97,7 @@ function RequestLane({
         type="button"
         className="pm-lane-name pm-lane-btn"
         title={hint}
-        disabled={pending}
+        aria-busy={busy}
         onClick={onClick}
       >
         {name}…
@@ -110,6 +110,7 @@ function RequestLane({
 }
 
 export default function ProteinMap({
+  accession,
   length,
   regions,
   partners,
@@ -117,6 +118,8 @@ export default function ProteinMap({
   focus,
   onFocus,
 }: {
+  // the UniProt entry the map is drawn from
+  accession: string
   // residues in the canonical sequence
   length: number
   // InterPro domains, repeats and sites
@@ -127,6 +130,15 @@ export default function ProteinMap({
   onFocus: (focus: Focus | undefined) => void
 }) {
   const [showSites, setShowSites] = useState(false)
+  // A request lane's button goes away with the rows it asked for, which would
+  // drop keyboard focus on the page; the first block that appears takes it.
+  const claimFocus = useRef(false)
+  const takeFocus = (el: HTMLButtonElement | null) => {
+    if (el && claimFocus.current) {
+      claimFocus.current = false
+      el.focus()
+    }
+  }
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
   )
@@ -140,12 +152,16 @@ export default function ProteinMap({
   }
   const isFocused = (region: ProteinRegion) =>
     sameFocus(focus, { kind: 'region', region })
-  const sitesShown = showSites || sites.some(isFocused)
 
-  const block = (region: ProteinRegion, style: CSSProperties) => (
+  const block = (
+    region: ProteinRegion,
+    style: CSSProperties,
+    ref?: Ref<HTMLButtonElement>,
+  ) => (
     <button
       type="button"
       key={`${region.accession}-${region.start}-${region.end}`}
+      ref={ref}
       className={isFocused(region) ? 'pm-block selected' : 'pm-block'}
       style={style}
       title={`${region.name} · ${region.start}–${region.end}${region.pfam ? ` · ${region.pfam}` : ''} — open the session on this`}
@@ -167,29 +183,19 @@ export default function ProteinMap({
     (_, i) => (i + 1) * step,
   ).filter(t => t <= length - step / 2)
 
-  const partnerNote =
-    partners.status === 'loading' ? (
-      'Reading PDBe…'
-    ) : partners.status === 'error' ? (
-      <span className="pm-track-error">
-        {partners.message}{' '}
-        <button
-          type="button"
-          className="ui-linkbtn"
-          onClick={() => {
-            onLoadPartners()
-          }}
-        >
-          Try again
-        </button>
-      </span>
-    ) : undefined
-
   return (
     <div className="pm">
       <div className="pm-lanes">
         <div className="pm-lane pm-ruler">
-          <span className="pm-lane-name" />
+          <a
+            className="pm-lane-name pm-accession"
+            href={`https://www.uniprot.org/uniprotkb/${accession}/entry`}
+            title="UniProt entry"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {accession}
+          </a>
           <div className="pm-track">
             {ticks.map(t => (
               <span
@@ -229,7 +235,7 @@ export default function ProteinMap({
         ))}
 
         {sites.length > 0 &&
-          (sitesShown ? (
+          (showSites ? (
             packLanes(sites).map((lane, i) => (
               <div
                 className="pm-lane pm-lane-thin"
@@ -237,12 +243,16 @@ export default function ProteinMap({
               >
                 <span className="pm-lane-name">{i === 0 ? 'Sites' : ''}</span>
                 <div className="pm-track">
-                  {lane.map(r =>
-                    block(r, {
-                      left: pct(r.start),
-                      width: width(r.start, r.end),
-                      background: colors.get(r.accession ?? r.name),
-                    }),
+                  {lane.map((r, j) =>
+                    block(
+                      r,
+                      {
+                        left: pct(r.start),
+                        width: width(r.start, r.end),
+                        background: colors.get(r.accession ?? r.name),
+                      },
+                      i === 0 && j === 0 ? takeFocus : undefined,
+                    ),
                   )}
                 </div>
               </div>
@@ -251,8 +261,8 @@ export default function ProteinMap({
             <RequestLane
               name="Sites"
               hint={`${sites.length} active, binding and conserved sites from InterPro`}
-              pending={false}
               onClick={() => {
+                claimFocus.current = true
                 setShowSites(true)
               }}
             />
@@ -260,7 +270,7 @@ export default function ProteinMap({
 
         {partners.status === 'loaded' ? (
           partners.partners.length > 0 ? (
-            partners.partners.map(p => (
+            partners.partners.map((p, i) => (
               <div
                 className="pm-lane pm-lane-thin"
                 key={`${p.accession}-${p.name}`}
@@ -274,6 +284,7 @@ export default function ProteinMap({
                 <div className="pm-track">
                   <button
                     type="button"
+                    ref={i === 0 ? takeFocus : undefined}
                     className={
                       isFocused(p) ? 'pm-interface selected' : 'pm-interface'
                     }
@@ -310,10 +321,25 @@ export default function ProteinMap({
         ) : (
           <RequestLane
             name="Partners"
-            hint="The residues PDBe has seen touching each binding partner, in any PDB entry"
-            pending={partners.status === 'loading'}
-            note={partnerNote}
-            onClick={onLoadPartners}
+            hint={
+              partners.status === 'error'
+                ? 'PDBe did not answer; click to try again'
+                : 'The residues PDBe has seen touching each binding partner, in any PDB entry'
+            }
+            busy={partners.status === 'loading'}
+            note={
+              partners.status === 'loading' ? (
+                'Reading PDBe…'
+              ) : partners.status === 'error' ? (
+                <span className="pm-track-error">{partners.message}</span>
+              ) : undefined
+            }
+            onClick={() => {
+              if (partners.status !== 'loading') {
+                claimFocus.current = true
+                onLoadPartners()
+              }
+            }}
           />
         )}
 

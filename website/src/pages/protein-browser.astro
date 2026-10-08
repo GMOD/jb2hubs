@@ -11,13 +11,13 @@ if (!features.proteinBrowser) {
 
 <Layout
   title="Protein browser"
-  description="Enter a gene and open it in JBrowse 2 with its coding exons back to back, an AlphaFold or PDB structure and a cross-species protein alignment in one connected session — hover a residue and its codon lights up in every view."
+  description="Open a gene in JBrowse 2 with its structure and a cross-species protein alignment beside it, one residue lit in all three views."
 >
   <Container>
     <h1>Protein browser</h1>
     <p class="ui-lede">
-      Open a gene in JBrowse with its structure and a cross-species alignment,
-      one residue lit in all three.
+      Open a gene in JBrowse with its structure and a cross-species alignment
+      beside it, one residue lit in all three views.
     </p>
     <ProteinBrowser client:only="react">
       <p
@@ -246,10 +246,6 @@ if (!features.proteinBrowser) {
   .pm-section {
     margin: 1.25rem 0 1rem;
   }
-  .pm-title {
-    margin: 0 0 0.5rem;
-    font-size: 1rem;
-  }
   .pm-lanes {
     display: flex;
     flex-direction: column;
@@ -347,12 +343,13 @@ if (!features.proteinBrowser) {
     outline: 2px solid var(--text);
     outline-offset: 1px;
   }
+  /* Selection rings the block from inside, for the same reason. */
   .pm-block.selected,
   .pm-interface.selected {
     opacity: 1;
-    outline: 2px solid var(--text);
-    outline-offset: 1px;
-    box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
+    outline: 1px solid var(--text);
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 2px var(--surface);
   }
   .pm-block-label {
     pointer-events: none;
@@ -387,18 +384,23 @@ if (!features.proteinBrowser) {
   .pm-lane-btn {
     padding: 0;
     font-family: inherit;
-    text-align: right;
     color: var(--accent);
     background: none;
     border: 0;
     cursor: pointer;
   }
-  .pm-lane-btn:hover:not(:disabled) {
+  .pm-lane-btn:hover {
     text-decoration: underline;
   }
-  .pm-lane-btn:disabled {
+  .pm-lane-btn[aria-busy='true'] {
     color: var(--muted);
-    cursor: default;
+    cursor: progress;
+  }
+  .pm-accession {
+    text-decoration: none;
+  }
+  .pm-accession:hover {
+    text-decoration: underline;
   }
   .pm-track-note {
     position: absolute;
@@ -558,9 +560,9 @@ if (!features.proteinBrowser) {
   }
   .pdc-domain.selected {
     opacity: 1;
-    outline: 2px solid var(--text);
-    outline-offset: 1px;
-    box-shadow: 0 0 0 4px rgb(255 255 255 / 90%);
+    outline: 1px solid var(--text);
+    outline-offset: 0;
+    box-shadow: inset 0 0 0 2px var(--surface);
   }
   .msv-collapse {
     display: inline-flex;

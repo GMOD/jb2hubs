@@ -3,7 +3,6 @@ import { test } from 'node:test'
 
 import {
   collapsedLoc,
-  geneStats,
   geneTableReference,
   orderIsoforms,
   parseGeneTableBlocks,
@@ -243,14 +242,6 @@ test('collapsedLoc: flipping reverses the order and marks each region', () => {
     collapsedLoc(transcript, { collapse: false, flip: true }),
     'NC_000077.7:101-1080[rev]',
   )
-})
-
-test('geneStats: sums CDS length and the collapse ratio', () => {
-  assert.deepEqual(geneStats(transcript), {
-    codingBp: 180,
-    span: 980,
-    ratio: '5.4',
-  })
 })
 
 function product(
