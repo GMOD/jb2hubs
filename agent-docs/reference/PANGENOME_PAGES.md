@@ -69,6 +69,12 @@ JavaScript.
 - **`regionAnswer` (`pangenomeAnswer.ts`) is the whole answer**: the window, its
   title, the forms and the launches. The box renders it and
   `check-pangenome-launches` calls it, so the check boots what the page offers.
+- **On `hemizygousChromosomes` the form with no call gets no lane.** 116 of the
+  callset's 462 haplotypes have no call anywhere on chrX, the panel stood
+  HG00126#1 for them, and every chrX window opened an empty lane; the full
+  launch check caught it at FLNA on 2026-10-08, the first time FLNA had a panel.
+  A deletion spanning a whole chrX window is dropped with them, which the
+  sidecar cannot tell apart.
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus. A derived dataset offers its `MAX_DERIVED_EXAMPLES`
