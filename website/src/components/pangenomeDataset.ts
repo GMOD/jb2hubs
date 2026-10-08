@@ -159,6 +159,9 @@ export interface PangenomeDataset {
   // `generatePangenomeHaplotypes.ts` prints them: they are the haplotypes
   // HPRC's CAT index does not annotate.
   haplotypesWithoutGenes?: string[]
+  // Chromosomes some haplotypes do not have, where a form with no call is
+  // those haplotypes and gets no lane.
+  hemizygousChromosomes?: string[]
   // The published bucket prefix the file table's urls are built from.
   filePrefix: string
   // Bytes per suffix, stated rather than fetched so a static build needs no
@@ -265,6 +268,7 @@ export const HPRC_DATASET: PangenomeDataset = {
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],
+  hemizygousChromosomes: ['chrX', 'chrY'],
   heading: 'Human Pangenome Reference Consortium',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
   // Measured 2026-10-07 against v2.1 (the anchored pair the graph track reads

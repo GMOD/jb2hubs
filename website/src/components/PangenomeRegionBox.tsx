@@ -37,7 +37,11 @@ function readingSentence(reading: Reading, referenceLabel: string) {
       panel.lanes.length < panel.forms
         ? `, the ${panel.lanes.length} commonest below`
         : ''
-    return `${count(sites, 'structural variant site')} sort the callset's ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}`
+    const uncalled =
+      panel.uncalled > 0
+        ? ` ${count(panel.uncalled, 'haplotype')} without this chromosome have no lane.`
+        : ''
+    return `${count(sites, 'structural variant site')} sort the callset's ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}${uncalled}`
   }
   const agree =
     reading.nonReferenceMajority > 0

@@ -65,6 +65,28 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
   assert.equal(panel.forms, 2)
 })
 
+test('on a chromosome some haplotypes lack, the uncalled form gets no lane', () => {
+  const haplotypes = Array.from({ length: 20 }, (_, i) => `HG${i}#1`)
+  const row = (genotypes: string) =>
+    parseSvStateRow(`chrX\t100\t200\tsite\t1:-1700\t${genotypes}`)
+  const result = structuralForms(
+    [
+      row('0'.repeat(7) + '1'.repeat(7) + '.'.repeat(6)),
+      row('1'.repeat(7) + '0'.repeat(7) + '.'.repeat(6)),
+    ],
+    haplotypes,
+  )
+  assert.equal(structuralPanel(result)?.lanes.length, 3)
+  assert.equal(structuralPanel(result)?.uncalled, 0)
+  const panel = structuralPanel(result, { withoutUncalled: true })!
+  assert.deepEqual(
+    panel.lanes.map(l => l.shares),
+    [7, 7],
+  )
+  assert.equal(panel.forms, 2)
+  assert.equal(panel.uncalled, 6)
+})
+
 test('a window where nothing tells the haplotypes apart is no panel', () => {
   const haplotypes = ['A#1', 'A#2', 'B#1']
   assert.equal(structuralPanel(structuralForms([], haplotypes)), undefined)

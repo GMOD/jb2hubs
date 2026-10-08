@@ -10,7 +10,7 @@
 // The rule is the same wherever a window comes from: an example on the page, a
 // region a reader types and `check-pangenome-launches` all go through here.
 
-import { MIN_CARRIERS } from './pangenomeSvStates.ts'
+import { MIN_CARRIERS, MISSING_STATE } from './pangenomeSvStates.ts'
 
 import type { StructuralFormsResult } from './pangenomeSvStates.ts'
 
@@ -29,6 +29,8 @@ export interface StructuralPanel {
   // forms at MIN_CARRIERS or more, whether or not they fit on the panel
   forms: number
   lanes: PanelLane[]
+  // haplotypes left off the panel for having no call at any site
+  uncalled: number
 }
 
 // Screen height sets both, not load time, which is flat from 8 lanes to 16:
@@ -53,22 +55,35 @@ function representative(members: string[], withoutGenes: ReadonlySet<string>) {
 // of them where a window has few, else the largest `size`. Undefined where
 // nothing in the window tells the haplotypes apart, which is what a locus with
 // no structural variation looks like and is not a panel.
+//
+// `withoutUncalled` leaves out the form with no call at any informative site.
+// The sidecar cannot tell a deletion spanning the window from a haplotype the
+// graph does not place there, so the form normally stays; on a chromosome half
+// the male haplotypes lack, it is 116 of HPRC's 462 in every window, and its
+// lane draws empty.
 export function structuralPanel(
   result: StructuralFormsResult,
   {
     size = PANEL_SIZE,
     completeSize = COMPLETE_PANEL_SIZE,
     withoutGenes = new Set<string>(),
+    withoutUncalled = false,
   }: {
     size?: number
     completeSize?: number
     withoutGenes?: ReadonlySet<string>
+    withoutUncalled?: boolean
   } = {},
 ): StructuralPanel | undefined {
   if (result.informative === 0) {
     return undefined
   }
-  const common = result.forms.filter(f => f.members.length >= MIN_CARRIERS)
+  const uncalled = withoutUncalled
+    ? result.forms.find(f => f.key === MISSING_STATE.repeat(f.key.length))
+    : undefined
+  const common = result.forms.filter(
+    f => f !== uncalled && f.members.length >= MIN_CARRIERS,
+  )
   const lanes = (
     common.length <= completeSize ? common : common.slice(0, size)
   ).map(f => ({
@@ -80,6 +95,7 @@ export function structuralPanel(
     informative: result.informative,
     forms: common.length,
     lanes,
+    uncalled: uncalled?.members.length ?? 0,
   }
 }
 
