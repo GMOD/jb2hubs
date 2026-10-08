@@ -43,6 +43,25 @@ function sleep(ms: number, signal?: AbortSignal) {
   })
 }
 
+// Statuses that mean the job is over and produced no result.
+const FAILED = new Set(['ERROR', 'FAILURE', 'NOT_FOUND'])
+
+// One status read. A check that could not reach EBI says nothing about the
+// job, which runs on whatever happens to the poller's connection: EBI's cluster
+// has answered status checks with a 502 for minutes on jobs that then finished
+// (measured in jbrowse-plugin-msaview, docs/blast.md), so an unanswered check
+// reads as "still running" and the deadline is what ends a dead poll.
+async function jobStatus(jobId: string, signal?: AbortSignal) {
+  try {
+    return await text(`${CLUSTALO}/status/${jobId}`, { signal })
+  } catch (e) {
+    if (signal?.aborted) {
+      throw e
+    }
+    return undefined
+  }
+}
+
 // Align protein sequences (FASTA in, FASTA out). Sequence ids in the input FASTA
 // flow through to both the aligned output and the tree leaf names, so the caller
 // controls the labels used everywhere downstream.
@@ -63,7 +82,7 @@ export async function clustalOmega(
 
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
-    const status = await text(`${CLUSTALO}/status/${jobId}`, { signal })
+    const status = await jobStatus(jobId, signal)
     if (status === 'FINISHED') {
       const [aligned, newick] = await Promise.all([
         text(`${CLUSTALO}/result/${jobId}/fa`, { signal }),
@@ -71,7 +90,7 @@ export async function clustalOmega(
       ])
       return { aligned, newick }
     }
-    if (status !== 'RUNNING' && status !== 'QUEUED') {
+    if (status && FAILED.has(status)) {
       throw new Error(`EBI alignment job ${status}`)
     }
     await sleep(pollMs, signal)

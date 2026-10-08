@@ -382,14 +382,19 @@ function sanitize(name: string) {
 
 // Sanitized, unique single-token labels, used identically in the FASTA headers,
 // the tree leaf names, and the gff seq_ids so all three line up. Collisions
-// (e.g. two rows sanitizing to the same name) get a numeric suffix.
+// (e.g. two rows sanitizing to the same name) get a numeric suffix, which climbs
+// past labels already given out: a row really named `human_2` would otherwise
+// share its label with the second `human`, and two rows become one.
 export function dedupeLabels(names: string[]): string[] {
-  const seen = new Map<string, number>()
+  const used = new Set<string>()
   return names.map(name => {
     const base = sanitize(name)
-    const n = seen.get(base) ?? 0
-    seen.set(base, n + 1)
-    return n === 0 ? base : `${base}_${n + 1}`
+    let label = base
+    for (let n = 2; used.has(label); n++) {
+      label = `${base}_${n}`
+    }
+    used.add(label)
+    return label
   })
 }
 

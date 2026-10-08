@@ -103,6 +103,11 @@ test('dedupeLabels sanitizes and disambiguates collisions', () => {
     dedupeLabels(['Homo sapiens', 'Mus musculus', 'Homo sapiens']),
     ['Homo_sapiens', 'Mus_musculus', 'Homo_sapiens_2'],
   )
+  assert.deepEqual(dedupeLabels(['human', 'human', 'human_2']), [
+    'human',
+    'human_2',
+    'human_2_2',
+  ])
 })
 
 test('buildInputFasta uses row labels as headers and drops missing sequences', () => {
