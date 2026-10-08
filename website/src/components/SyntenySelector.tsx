@@ -13,11 +13,13 @@ import Autocomplete from './Autocomplete.tsx'
 import OpenInDesktop from './OpenInDesktop.tsx'
 import {
   encodeGeneRef,
+  geneWindow,
   parseGeneRef,
   queryGenes,
   resolveGenePair,
 } from './geneSearch.ts'
-import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
+import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
+import { loadStore } from './orthologDb.ts'
 
 import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
 import type { SyntenyExample } from '../lib/syntenyExamples.ts'
@@ -112,7 +114,13 @@ function SyntenyPicker({ data }: Props) {
     gene && taxon1 !== undefined && taxon2 !== undefined
       ? (['gene-pair', gene.geneId, taxon1, taxon2] as const)
       : null,
-    ([, geneId, t1, t2]) => resolveGenePair(geneId, t1, t2),
+    async ([, geneId, t1, t2]) => {
+      const [genes, store] = await Promise.all([
+        resolveGenePair(geneId, t1, t2),
+        loadStore().catch(() => undefined),
+      ])
+      return { ...genes, store }
+    },
   )
   const sameTaxon = taxon1 === taxon2
   const ortholog = pair.data?.ortholog
@@ -235,29 +243,50 @@ function SyntenyPicker({ data }: Props) {
     [tracks, trackOverride, species1],
   )
 
-  // Each panel opens its genome's gene track — a synteny sub-view has no
-  // defaultSession, so without one it is an empty browser at the right locus —
-  // and is navigated to its gene's symbol where it has one, which JBrowse
-  // resolves through the assembly's text index at load: the first panel as soon
-  // as a gene is picked, the second once its ortholog resolves. Otherwise the
-  // whole genome. The view options make the whole-genome synteny readable on
-  // first load (chromosome painting, diagonalized axes, bezier ribbons); see
-  // SyntenyViewOptions for which hosts honour them.
-  const panel = (assembly: string, loc: string | undefined) => ({
-    assembly,
-    ...(loc ? { loc } : {}),
-    ...panelTracks(data.assemblyInfo[assembly]?.geneTrack ?? ''),
-  })
+  // A gene launch opens each panel on its gene's neighborhood where NCBI placed
+  // the gene on that very assembly, and on the bare symbol otherwise (an old
+  // UCSC build, or before the report arrives), which JBrowse resolves through
+  // the assembly's text index to the gene body alone. Both panels share one
+  // scale, and the second is flipped when its gene runs the other way. A panel
+  // with no locus is the whole genome, where a gene track only opens a
+  // "Requested too much data" banner, so it opens none. The view options make
+  // the whole-genome synteny readable on first load (chromosome painting,
+  // diagonalized axes, bezier ribbons); see SyntenyViewOptions for which hosts
+  // honour them.
+  const store = pair.data?.store
+  const window1 =
+    store && pair.data?.gene
+      ? geneWindow(pair.data.gene, species1, store)
+      : undefined
+  const window2 =
+    store && ortholog ? geneWindow(ortholog, species2, store) : undefined
+  const loc1 = window1?.loc ?? gene?.symbol
+  const loc2 = window2
+    ? flipLoc(
+        window2.loc,
+        window1 !== undefined && window1.strand !== window2.strand,
+      )
+    : symbol2
+  const panel = (assembly: string, loc: string | undefined) =>
+    loc
+      ? {
+          assembly,
+          loc,
+          ...panelTracks(data.assemblyInfo[assembly]?.geneTrack ?? ''),
+        }
+      : { assembly }
+  const viewOptions = {
+    color: { field: 'query' },
+    drawCurves: true,
+    autoDiagonalize: true,
+    ...(gene ? { sameScale: true } : {}),
+  }
   const launchUrl =
     species1 && species2 && selectedTrack
       ? syntenyViewUrl(
-          [panel(species1, gene?.symbol), panel(species2, symbol2)],
+          [panel(species1, loc1), panel(species2, loc2)],
           [selectedTrack.trackId],
-          {
-            color: { field: 'query' },
-            drawCurves: true,
-            autoDiagonalize: true,
-          },
+          viewOptions,
         )
       : null
 

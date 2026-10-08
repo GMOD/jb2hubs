@@ -4,12 +4,16 @@ import { mock, test } from 'node:test'
 import {
   dedupeHits,
   encodeGeneRef,
+  geneWindow,
   pairGenes,
   parseGeneRef,
   queryGenes,
   rankSymbols,
   searchGenes,
 } from './geneSearch.ts'
+import { createStore } from './orthologDb.ts'
+
+import type { NcbiGene } from './geneSearch.ts'
 
 // mygene's prefix search does not lead with the obvious answer: `symbol:TP5*` in
 // human returns TP53TG3C, TP53TG1, TP53RK and buries TP53, so a reader typing
@@ -202,4 +206,39 @@ test('pairGenes: no ortholog in the partner taxon', () => {
     pairGenes(TP53_REPORTS.slice(0, 1), '7157', false).ortholog,
     undefined,
   )
+})
+
+const store = createStore({
+  schema: 'ortholog-index/2',
+  accessions: ['GCF_000001405.40', 'GCF_000001635.27', 'GCF_009914755.2'],
+  ucscDb: { 'GCF_000001405.40': 'hg38', 'GCF_000001635.27': 'mm39' },
+})
+const [tp53, trp53] = TP53_REPORTS.map(r => r.gene) as [NcbiGene, NcbiGene]
+
+// TP53 opened as 26.7 kb of human over 16.1 kb of mouse when each panel was
+// sent the bare symbol. A window 100 kb either side reads as a neighborhood.
+test('geneWindow: the gene widened by 100 kb on the assembly it is placed on', () => {
+  assert.deepEqual(geneWindow(tp53, 'hg38', store), {
+    loc: 'NC_000017.11:7568421-7787490',
+    strand: -1,
+  })
+  assert.deepEqual(geneWindow(trp53, 'mm39', store), {
+    loc: 'NC_000077.7:69371174-69582699',
+    strand: 1,
+  })
+})
+
+test('geneWindow: a GenArk panel is named by its accession', () => {
+  assert.equal(
+    geneWindow(trp53, 'GCF_000001635.27', store)?.loc,
+    'NC_000077.7:69371174-69582699',
+  )
+})
+
+// NCBI did not annotate mm10 or mm7, and placed TP53 on T2T-CHM13 v2.0, whose
+// .1 accession is not the version hosted here, so those panels keep the symbol.
+test('geneWindow: nothing for an assembly NCBI did not place the gene on', () => {
+  assert.equal(geneWindow(trp53, 'mm10', store), undefined)
+  assert.equal(geneWindow(tp53, 'GCF_009914755.2', store), undefined)
+  assert.equal(geneWindow(tp53, 'mm39', store), undefined)
 })

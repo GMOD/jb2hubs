@@ -13,7 +13,13 @@
 // costs NCBI's budget nothing.
 
 import { fetchOrthologReports } from './ncbiFetch.ts'
+import {
+  SYNTENY_FLANK_BP,
+  flankLoc,
+  isSameGenome,
+} from './orthologSearchUtils.ts'
 
+import type { AssemblyStore } from './orthologDb.ts'
 import type {
   NcbiOrthologReport,
   NcbiOrthologResponse,
@@ -163,4 +169,45 @@ export async function resolveGenePair(
     ...new Set([taxon1, taxon2]),
   ])
   return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
+}
+
+export interface GeneWindow {
+  loc: string
+  strand: 1 | -1
+}
+
+// The gene's neighborhood on a synteny panel's assembly, by the gene page's
+// rule: only a placement on exactly the version the panel opens counts, since
+// NCBI's refName is unknown to, or elsewhere on, any other version (see
+// agent-docs/reference/SYNTENY_PAIR_NAMES.md). Undefined when NCBI placed the
+// gene on no such assembly, as for every pre-RefSeq UCSC build.
+export function geneWindow(
+  gene: NcbiGene,
+  panel: string,
+  store: AssemblyStore,
+  flankBp = SYNTENY_FLANK_BP,
+): GeneWindow | undefined {
+  const placement = (gene.annotations ?? [])
+    .map(ann => ({
+      hosted: store.find(ann.assembly_accession),
+      location: ann.genomic_locations?.find(l => l.genomic_range),
+    }))
+    .find(
+      ({ hosted, location }) =>
+        hosted?.exact === true &&
+        isSameGenome(panel, hosted) &&
+        location !== undefined,
+    )?.location
+  const range = placement?.genomic_range
+  return placement && range
+    ? {
+        loc: flankLoc(
+          placement.genomic_accession_version,
+          parseInt(range.begin),
+          parseInt(range.end),
+          flankBp,
+        ),
+        strand: range.orientation === 'minus' ? -1 : 1,
+      }
+    : undefined
 }
