@@ -28,11 +28,13 @@ process_gff_file() {
   local output_sorted_gff_file="$GENCODE_PROCESSED_DIR/$sorted_gff_file"
   local output_sorted_gff_gz="$output_sorted_gff_file.gz"
 
-  # only if changed
-  wget -q -N "$url" -P "$GENCODE_DIR"
+  # A GENCODE url names its release, so a copy on disk is current and costs no
+  # request. `wget -N` revalidated every file on every run with no deadline,
+  # and one stalled EBI connection ended a run 17 minutes later.
   if [ ! -f "$downloaded_gz_file" ]; then
-    echo "Error: Download failed for $url"
-    return 1
+    curl -fsSL --connect-timeout 30 --speed-limit 1024 --speed-time 120 \
+      --retry 3 -o "$downloaded_gz_file.tmp" "$url"
+    mv "$downloaded_gz_file.tmp" "$downloaded_gz_file"
   fi
 
   if [ ! -f "$output_sorted_gff_gz" ] || [ ! -f "$output_sorted_gff_gz.csi" ]; then
