@@ -9,6 +9,8 @@ describe('assertMostlyPublished', () => {
   })
 
   it('refuses when the hubs tree is missing', () => {
-    assert.throws(() => assertMostlyPublished(53113, 53113), /refusing/)
+    assert.throws(() => {
+      assertMostlyPublished(53113, 53113)
+    }, /refusing/)
   })
 })
