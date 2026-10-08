@@ -70,9 +70,10 @@ export function refAlignmentUrl(refTaxonId: number, gene: PlacedGene) {
     : undefined
 }
 
-// MultiWaySyntenyDisplay's MIN_LANE_PITCH plus the gene-name row under each
-// lane (laneStack.ts): a track this tall per lane never scrolls
-const LANE_PITCH = 34
+// MultiWaySyntenyDisplay's MIN_LANE_PITCH plus the gene-name row and the
+// star's GC band under each lane (hubtools' starLanePitch): a track this tall
+// per lane never scrolls
+const LANE_PITCH = 50
 
 // The page's rows other than the reference, nearest it first: by the smallest
 // clade of the drawn tree holding both, then by how many rows away it sits

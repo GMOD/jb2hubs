@@ -4,9 +4,27 @@ import type { JBrowseConfig, Track } from './types.ts'
 export const MIN_MATES = 3
 // the most lanes a star opens on; the lane picker offers every other mate
 const MAX_DEFAULT_LANES = 9
-// MultiWaySyntenyDisplay's MIN_LANE_PITCH: a track this tall per lane never
-// scrolls
+// MultiWaySyntenyDisplay's MIN_LANE_PITCH, its gene-name row and its gap under
+// a layer's band (laneStack.ts, laneLayers.ts): a track this tall per lane
+// never scrolls
 const LANE_PITCH = 22
+const GENE_NAME_ROW = 12
+const LAYER_GAP = 2
+const GC_BAND = 14
+
+function gcLayer() {
+  return {
+    name: 'GC',
+    adapter: { type: 'GCContentAdapter', windowSize: 1000, windowDelta: 1000 },
+    height: GC_BAND,
+    marks: [{ mark: 'bar', encoding: { y: 'score' } }],
+  }
+}
+
+/** px a star gives each lane, by whether its lanes name their genes */
+export function starLanePitch(geneNames: boolean) {
+  return LANE_PITCH + (geneNames ? GENE_NAME_ROW : 0) + GC_BAND + LAYER_GAP
+}
 
 interface Mate {
   name: string
@@ -187,6 +205,8 @@ export function alignmentSettings(
  * labelled by organism and grouped by the anchor's multiple-alignment clades,
  * clade by clade, and it opens on `defaultLanes`; the display fetches only the
  * lanes it draws, so the other mates cost nothing until a reader picks them.
+ * Every lane draws its own genome's GC content under its genes, computed from
+ * that genome's sequence.
  *
  * Staging-only: `MultiWaySyntenyDisplay` is newer than every released host,
  * and a display type a host lacks is fatal once the track is opened.
@@ -262,8 +282,13 @@ export function multiwayStarTrack({
       {
         type: 'MultiWaySyntenyDisplay',
         displayId: `${anchor}_liftOver_multiway-MultiWaySyntenyDisplay`,
-        height: Math.ceil(((1 + lanes.length) * LANE_PITCH) / 10) * 10,
+        height:
+          Math.ceil(
+            ((1 + lanes.length) * starLanePitch(geneTrackId !== undefined)) /
+              10,
+          ) * 10,
         ...(geneTrackId ? { laneGeneTracks: [geneTrackId] } : {}),
+        laneLayers: [gcLayer()],
       },
     ],
   }

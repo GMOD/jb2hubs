@@ -123,8 +123,20 @@ describe('multiwayStarTrack', () => {
       {
         type: 'MultiWaySyntenyDisplay',
         displayId: 'hg38_liftOver_multiway-MultiWaySyntenyDisplay',
-        height: 90,
+        height: 200,
         laneGeneTracks: ['hg38-ncbiRefSeq'],
+        laneLayers: [
+          {
+            name: 'GC',
+            adapter: {
+              type: 'GCContentAdapter',
+              windowSize: 1000,
+              windowDelta: 1000,
+            },
+            height: 14,
+            marks: [{ mark: 'bar', encoding: { y: 'score' } }],
+          },
+        ],
       },
     ])
   })

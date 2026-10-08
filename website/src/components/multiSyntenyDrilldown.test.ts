@@ -436,7 +436,7 @@ test("the star opens on the page's window, one lane per species it holds", () =>
     type: 'MultiWaySyntenyDisplay',
     laneFilter: { only: ['panTro6', 'canFam3'] },
     domain: ['panTro6', 'canFam3'],
-    height: 102,
+    height: 150,
   })
 })
 
