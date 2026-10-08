@@ -356,10 +356,22 @@ from the meta line (the assembly name says it), moved each alignment source's
 cost note onto its radio's tooltip, and removed the cartoon's how-to caption
 (its blocks and buttons carry titles).
 
+A third pass on 2026-10-08, after the NOTCH1 chip still read as busy. The
+story folds under **More info**, a second disclosure beside Options: a
+sentence on why a residue matters is for the reader who asks, and clutter to
+the one who came to launch. A map block under 5% of the protein carries no
+label, because at that width a label is an ellipsis, and NOTCH1's
+thirty-six EGF repeats were a row of "EG" (117 labelled blocks, now 1); the
+end tick no longer overprints the last regular one. And both row graphics
+went dense: cartoon names at 11 px on 10 px bars 2 px apart, map lanes 14 px
+and site lanes 8 px. Measured on the NOTCH1 chip at 1200 px wide: the
+60-species cartoon went from 1,576 px to 957 px (25.5 px a row to 15.2), the
+map from 184 px to 152, the card from 258 px to 223.
+
 ### The chips carry a focus and a sentence
 
 Four human chips (`geneExamples.ts`) preset a focus and a one-line story the
-card shows: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
+card folds under More info: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
 which counts without the initiator), NOTCH1 on one of its thirty-six EGF
 repeats. A preset resolves once the map has what it names — a residue at once, a
 family when InterPro answers, a partner when PDBe does — and a reader who clears
