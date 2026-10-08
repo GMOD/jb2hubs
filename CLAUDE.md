@@ -408,8 +408,8 @@ the same 71 failed in every log going back weeks, 27s and 142 lines of
 
 `downloadNcbiGff.sh` now writes a `gff/<file>.notfound` sentinel, the way
 `ncbi.json.notfound` records a missing metadata record, and only on a 404/410 —
-classified with one HEAD, and only on a failure, so the steady state is zero
-requests rather than 71. A timeout or 5xx leaves no sentinel, so an
+read off the failed GET's own status, so the steady state is zero requests
+rather than 71. A timeout or 5xx leaves no sentinel, so an
 ftp.ncbi.nlm.nih.gov blip cannot switch off an annotation we do have a url for.
 `NOTFOUND_TTL_DAYS` (90) expires it so an annotation published later is still
 picked up, `FETCH_UPDATES=1` ignores it, and a successful fetch clears it. The
@@ -1714,7 +1714,8 @@ annotation". Both gates are local reads; neither costs a request.
   RefSeq accessions, under UCSC's dot-to-`v` mangling (`NW_013995860v1`), and it
   publishes no alias table to undo that with. Hub assemblies skip this gate —
   they have no rsync'd `database/` dir and do not need one.
-- **Overlap, after the download** (`seqids_resolve` in `downloadNcbiGff.sh`).
+- **Overlap, after the download** (`seqidsResolve` in
+  `src/addNcbiRefSeqGffTrack.ts`).
   `tabix -l` against the assembly's refNames and aliases, which answers the
   question a _partial_ `asmEquivalent` match leaves open — galGal6 matches 455
   of 464 sequences, rn6 and oryCun2 less. Zero overlap skips the add-track; the
@@ -1845,8 +1846,8 @@ Three properties are load-bearing:
 - **Both guards must run before the swap.** A local failure is invisible to a
   pipeline (its exit status is the last command, so a truncated archive with a
   healthy `ssh` exits 0 — that is how the old line could have invalidated
-  CloudFront over a half-uploaded site). So the remote side runs under
-  `set -euo pipefail`, and the file count is compared against the local one
+  CloudFront over a half-uploaded site). So the remote unpack runs under
+  pipefail, and the file count is compared against the local one
   before the symlink moves. Both were tested by injecting a truncated stream and
   a short archive: both abort with the previous release still serving.
 - **`/var/www` is owned by `ubuntu`** and the webroots are symlinks. Without the

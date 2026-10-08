@@ -175,7 +175,10 @@ if ! tar -cf - -C dist . |
 fi
 
 echo "==> verifying $release"
-remote_files=$(ssh "$SSH_HOST" "find '$release' -type f | wc -l")
+if ! remote_files=$(ssh "$SSH_HOST" "find '$release' -type f | wc -l"); then
+  echo "could not count the files in $release" >&2
+  discard_release
+fi
 if [[ $remote_files -ne $local_files ]]; then
   echo "transfer incomplete: $remote_files of $local_files files landed" >&2
   discard_release
