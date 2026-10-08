@@ -144,7 +144,7 @@ describe('syntenyTracks.json is the pruned selector shape', () => {
     assert.equal(data.assemblyInfo.hg38?.geneTrack, 'hg38-ncbiRefSeqGff')
     assert.equal(
       data.assemblyInfo['GCF_000001215.4']?.geneTrack,
-      'GCF_000001215.4-ncbiRefSeq',
+      'GCF_000001215.4-ncbiGff',
     )
   })
 
