@@ -401,16 +401,23 @@ so a third still fails.
 The defb lane is a placement artifact, not a structural form: the ~395
 haplotypes it stands for read `.` at all five records across the 130 kb window,
 in one pattern, which is what "not on the reference path here" looks like and
-not what one skipped site looks like. Choosing a different representative does
-not fix it, and neither does preferring less-fragmented haplotypes (HG00097#1
-has 75 contigs and HG00544#1 61, against a median of 81). Per-haplotype
-placement intervals from the build box were therefore written down as a
-prerequisite for promoting `features.pangenome`, which went to production on
-2026-10-08 without them: `structuralForms` would treat an unplaced haplotype as
-missing in both the generator and the **Any region** box, not as a deletion.
-Before building that, count how many of defb's form members the lane adapter
-places in chr8:7,797,024-7,959,462. Mostly unplaced means the data is required;
-mostly placed means a placed representative is enough for defb.
+not what one skipped site looks like. Preferring less-fragmented haplotypes does
+not find a placed representative (HG00097#1 has 75 contigs and HG00544#1 61,
+against a median of 81). Per-haplotype placement intervals from the build box
+were therefore written down as a prerequisite for promoting
+`features.pangenome`, which went to production on 2026-10-08 without them:
+`structuralForms` would treat an unplaced haplotype as missing in both the
+generator and the **Any region** box, not as a deletion.
+
+Measured 2026-10-08 by opening every member of each no-call form as a lane on
+`main` and reading the display back. At defb (chr8:7,850,001-7,930,000) the
+adapter places 185 of the form's 395 haplotypes and returns no walk for 210, so
+the form is two things under one key: a real arrangement that 185 carry, which
+`HG00097#2` would draw, and 210 the graph does not place. At nphp1
+(chr2:110,080,001-110,210,000) it places none of the form's 5, so that form is
+no form at all. A placed representative would fix defb's lane and leave its
+share overstated twofold, and nothing over the sidecar fixes nphp1, so the
+placement data is required.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and

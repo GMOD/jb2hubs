@@ -6,7 +6,8 @@ description:
 metadata:
   category: measure
   area: pangenome
-  first_move: 'Run the defb placement measurement in PANGENOME_PORTAL.md.'
+  first_move:
+    'Build per-haplotype placement intervals from the GBZ on the build box.'
   order: 3
 ---
 
@@ -24,5 +25,6 @@ Delete an entry when it lands, and the file when it is empty.
 - **Haplotype lanes the graph does not place.** `pnpm check-pangenome-launches`
   lists `defb` and `nphp1` as known unplaced rather than failing them. The fix
   is per-haplotype placement intervals from the build box, still owed now that
-  `features.pangenome` is on production; the defb measurement that settles how
-  much is in `agent-docs/reference/PANGENOME_PORTAL.md`.
+  `features.pangenome` is on production. The measurement in
+  `agent-docs/reference/PANGENOME_PORTAL.md` says a placed representative is not
+  enough: 210 of defb's 395 and all 5 of nphp1's have no walk.
