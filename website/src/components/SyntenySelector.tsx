@@ -463,6 +463,11 @@ function SyntenyPicker({ data }: Props) {
                   </option>
                 ))}
               </select>
+              <p className="synteny-option-help">
+                Each set of chains is netted on the genome it names first, which
+                keeps that side one-to-one. The default is the set netted on the
+                first assembly.
+              </p>
             </div>
           )}
           <div className="synteny-option">
