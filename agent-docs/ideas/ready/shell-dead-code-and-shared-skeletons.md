@@ -1,21 +1,14 @@
 ---
 name: shell-dead-code-and-shared-skeletons
 description:
-  The 2026-09-26 shell review left one deploy.sh bug, five dead scripts or
-  paths, and three skeletons both pipelines repeat.
+  The 2026-09-26 shell review left five dead scripts or paths and three
+  skeletons both pipelines repeat.
 ---
 
 # Shell review leftovers
 
 The 2026-09-26 review of the repo's 6,400 lines of shell fixed 15 bugs the same
 day. Every item below was still in the tree on 2026-10-08.
-
-## One bug
-
-`website/deploy.sh` reads the remote file count with
-`remote_files=$(ssh … "find … | wc -l")`. An ssh failure there exits under
-`set -e` without reaching `discard_release`, so the partial release stays, and
-`--rollback` refuses to move while the newest release is not the one served.
 
 ## Dead
 
