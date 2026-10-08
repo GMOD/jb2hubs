@@ -555,6 +555,7 @@ export default function ProteinLaunchCard({
                 setResidueError(parsed.error)
               } else {
                 setResidueError(undefined)
+                setResidueText('')
                 onFocus({ kind: 'residue', ...parsed })
               }
             }}
