@@ -165,9 +165,12 @@ function SyntenyPicker({ data }: Props) {
     [taxon1],
   )
 
+  // Over half the listed assemblies have exactly one partner, which is then
+  // picked for the reader.
   const handleSpecies1Change = (value: string) => {
+    const only = value ? catalog.listPartners(value, filter) : []
     setSpecies1(value)
-    setSpecies2('')
+    setSpecies2(only.length === 1 ? only[0]!.id : '')
     setTrackOverride('')
     setGeneValue('')
   }
