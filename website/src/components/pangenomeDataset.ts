@@ -94,13 +94,21 @@ export interface PangenomePublishedFile {
 }
 
 // The files a graph in this stack can publish, in the order the page tables
-// them: the graph, the five projections `build_rgfa_tabix.sh`,
+// them: the graph, the projections `gfa-to-tabix` (either layout),
 // `build_rgfa_alleles.sh` and `build_bubble_tier.sh` (jbrowse-components) emit
 // for any rGFA, and the callset. Shared rather than restated per dataset, which
 // is what lets one page table any of the three.
 const GRAPH_FILE_KINDS: { suffix: string; what: string }[] = [
   { suffix: '.rgfa.gz', what: 'the graph itself' },
-  { suffix: '.segs.bed.gz', what: 'one row per node, with its rank' },
+  {
+    suffix: '.anchored.segs.bed.gz',
+    what: 'one row per node, filed under the reference interval its bubble hangs from',
+  },
+  { suffix: '.anchored.links.bed.gz', what: 'one row per link' },
+  {
+    suffix: '.segs.bed.gz',
+    what: 'one row per node, under its own coordinate',
+  },
   { suffix: '.links.bed.gz', what: 'one row per edge per endpoint' },
   { suffix: '.bubbles.bed.gz', what: 'gfatools bubble output' },
   {
@@ -283,13 +291,14 @@ export const HPRC_DATASET: PangenomeDataset = {
   heading: 'Human Pangenome Reference Consortium',
   tutorialUrl: 'https://jbrowse.org/jb2/docs/tutorials/pangenome_hprc/',
   filePrefix: 'https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38',
-  // Measured 2026-09-10 against v2.1. No `.rgfa.gz` row — the graph the
-  // projections were cut from is release 2's own `sv.gfa.gz` on S3, linked
-  // below rather than re-hosted, and no `.vcf.gz` row for the same reason: the
-  // callset the tracks stream is the release's, at its own url.
+  // Measured 2026-10-07 against v2.1 (the anchored pair the graph track reads
+  // since gfa-to-tabix 0.2.0). No `.rgfa.gz` row — the graph the projections
+  // were cut from is release 2's own `sv.gfa.gz` on S3, linked below rather
+  // than re-hosted, and no `.vcf.gz` row for the same reason: the callset the
+  // tracks stream is the release's, at its own url.
   sizes: {
-    '.segs.bed.gz': 6_686_172,
-    '.links.bed.gz': 34_147_909,
+    '.anchored.segs.bed.gz': 11_049_618,
+    '.anchored.links.bed.gz': 20_176_290,
     '.bubbles.bed.gz': 61_453_085,
     '.alleles.bed.gz': 5_213_294,
     '.tier10000.segs.bed.gz': 104_044,
