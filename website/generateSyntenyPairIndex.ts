@@ -85,9 +85,9 @@ function toAccession(name: string) {
 // defaultSession, so a panel with no explicit track is an empty browser — which
 // is what every synteny launch used to be: right locus, nothing drawn. The
 // catalog resolves it once per assembly (see geneTrackFor in
-// scripts/extractSyntenyTracks.ts: the NCBI GFF3 on a UCSC config, the
-// ncbiRefSeq bigBed or a gene prediction on a GenArk hub), and '' means its
-// config has none.
+// scripts/extractSyntenyTracks.ts: the NCBI GFF3 where the config has one,
+// else the ncbiRefSeq bigBed or a gene prediction), and '' means its config
+// has none.
 function geneTrackFor(name: string) {
   return data.assemblyInfo[name]?.geneTrack ?? ''
 }

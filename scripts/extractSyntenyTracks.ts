@@ -76,20 +76,24 @@ function parseTaxId(taxId: string | number | undefined) {
   return Number.isInteger(n) && n > 0 ? n : undefined
 }
 
-// The gene track a synteny panel opens for this genome. The two hosting sides
-// name it differently and it is not the same file: a UCSC config carries the
-// NCBI RefSeq GFF3 as `<db>-ncbiRefSeqGff` on the 75 NCBI-derived assemblies,
-// while a GenArk hub carries UCSC's genePred-derived bigBed as
-// `<accession>-ncbiRefSeq` (`-ncbiGene` on the microbial hubs). Anything else
-// opens what the config's own defaultSession opens, which generateDefaultSessions
-// already picked as the best gene track a UCSC assembly has (refGene, ensGene,
-// ...), rather than re-implementing that order here. A GenArk defaultSession
-// names no tracks at all, and a GenBank-only hub has no NCBI annotation, so
-// the last resort is its gene predictions in UCSC's preference order.
+// The gene track a synteny panel opens for this genome: the NCBI RefSeq GFF3
+// where the config has one, which is the track its text index is built from.
+// A UCSC config names it `<db>-ncbiRefSeqGff` on the 75 NCBI-derived
+// assemblies and a GenArk hub `<accession>-ncbiGff`. Naming the hub's
+// `-ncbiRefSeq` bigBed instead opened two RefSeq tracks per panel, since a
+// panel navigated to a gene symbol also opens the track the index hit came
+// from. Without the GFF3 a hub falls back to that bigBed (`-ncbiGene` on the
+// microbial hubs). Anything else opens what the config's own defaultSession
+// opens, which generateDefaultSessions already picked as the best gene track a
+// UCSC assembly has (refGene, ensGene, ...), rather than re-implementing that
+// order here. A GenArk defaultSession names no tracks at all, and a
+// GenBank-only hub has no NCBI annotation, so the last resort is its gene
+// predictions in UCSC's preference order.
 function geneTrackFor(name: string, config: Config) {
   const ids = new Set(config.tracks?.map(t => t.trackId))
   const candidates = [
     `${name}-ncbiRefSeqGff`,
+    `${name}-ncbiGff`,
     `${name}-ncbiRefSeq`,
     `${name}-ncbiGene`,
     ...(config.defaultSession?.views?.[0]?.init?.tracks ?? []),
