@@ -729,9 +729,8 @@ function GeneResults({
         queryRow={panel?.rows.find(r => r.taxId === panel.query.refTaxonId)}
         focus={focus}
         partnerPending={partnerPending}
-        onClearFocus={() => {
-          setFocus(undefined)
-        }}
+        focusPending={partnerPending || familyPending}
+        onFocus={setFocus}
         story={example?.story}
         picks={linkPicks}
         onPick={setLaunchParam}
@@ -753,7 +752,6 @@ function GeneResults({
               length={
                 canonical?.length ?? Math.max(0, ...regions.map(r => r.end))
               }
-              sequence={canonical}
               regions={regions}
               partners={partnersState}
               onLoadPartners={() => {

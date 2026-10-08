@@ -356,32 +356,41 @@ from the meta line (the assembly name says it), moved each alignment source's
 cost note onto its radio's tooltip, and removed the cartoon's how-to caption
 (its blocks and buttons carry titles).
 
-A third pass on 2026-10-08, after the NOTCH1 chip still read as busy. The
-story folds under **More info**, a second disclosure beside Options: a
-sentence on why a residue matters is for the reader who asks, and clutter to
-the one who came to launch. A map block under 5% of the protein carries no
-label, because at that width a label is an ellipsis, and NOTCH1's
-thirty-six EGF repeats were a row of "EG" (117 labelled blocks, now 1); the
-end tick no longer overprints the last regular one. And both row graphics
-went dense: cartoon names at 11 px on 10 px bars 2 px apart, map lanes 14 px
-and site lanes 8 px. Measured on the NOTCH1 chip at 1200 px wide: the
-60-species cartoon went from 1,576 px to 957 px (25.5 px a row to 15.2), the
-map from 184 px to 152, the card from 258 px to 223.
+A third pass on 2026-10-08, after the NOTCH1 chip still read as busy. The story
+folds under **More info**, a second disclosure beside Options: a sentence on why
+a residue matters is for the reader who asks, and clutter to the one who came to
+launch. A map block under 5% of the protein carries no label, because at that
+width a label is an ellipsis, and NOTCH1's thirty-six EGF repeats were a row of
+"EG" (117 labelled blocks, now 1); the end tick no longer overprints the last
+regular one. And both row graphics went dense: cartoon names at 11 px on 10 px
+bars 2 px apart, map lanes 14 px and site lanes 8 px. Measured on the NOTCH1
+chip at 1200 px wide: the 60-species cartoon went from 1,576 px to 957 px (25.5
+px a row to 15.2), the map from 184 px to 152, the card from 258 px to 223.
+
+The same day, the rest of the list. The lede is one line, and the meta line is
+the assembly and the strand. The cartoon's per-row length is on the row's
+tooltip, not in a column of sixty numbers beside bars whose width already says
+it. The residue box moved from under the map into the card's **Opens on** row,
+which it fills while nothing is focused, so the map is a picture with nothing
+under it: sites and partners are lanes whose name loads them (sites are already
+in the InterPro answer, partners are the PDBe read), and a wait or a failure is
+written in the lane's track. Hover on a block darkens it instead of outlining
+it, since the lanes are too close for an outline.
 
 ### The chips carry a focus and a sentence
 
 Four human chips (`geneExamples.ts`) preset a focus and a one-line story the
-card folds under More info: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the literature,
-which counts without the initiator), NOTCH1 on one of its thirty-six EGF
-repeats. A preset resolves once the map has what it names — a residue at once, a
-family when InterPro answers, a partner when PDBe does — and a reader who clears
-it does not get it back (`focusChoice === null`). The focus is in the page url
-too (`residue=248`, `pfam=PF00008&at=1000`, `partner=P69905`, written on every
-change), so a focused page is a link; a link naming a chip's gene and focus is
-that chip and shows its story, and any other typed or linked query has none. HBB
-and BRAF are new: HBB was dropped from the cartoon-chosen list because its
-cartoon is one flat bar, and the map is what makes it worth a chip again — the
-globin seed and the α/β interface, which Glu7 is not in.
+card folds under More info: TP53 on R248, BRAF on V600, HBB on Glu7 (E6V in the
+literature, which counts without the initiator), NOTCH1 on one of its thirty-six
+EGF repeats. A preset resolves once the map has what it names — a residue at
+once, a family when InterPro answers, a partner when PDBe does — and a reader
+who clears it does not get it back (`focusChoice === null`). The focus is in the
+page url too (`residue=248`, `pfam=PF00008&at=1000`, `partner=P69905`, written
+on every change), so a focused page is a link; a link naming a chip's gene and
+focus is that chip and shows its story, and any other typed or linked query has
+none. HBB and BRAF are new: HBB was dropped from the cartoon-chosen list because
+its cartoon is one flat bar, and the map is what makes it worth a chip again —
+the globin seed and the α/β interface, which Glu7 is not in.
 
 The rest of what the reader sets rides in the page url beside the focus:
 `isoform=`, `structure=` (`alphafold`, `none` or a PDB id), `align=` and

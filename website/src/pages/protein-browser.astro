@@ -16,9 +16,8 @@ if (!features.proteinBrowser) {
   <Container>
     <h1>Protein browser</h1>
     <p class="ui-lede">
-      Enter a gene and open it in JBrowse with its coding exons back to back, a
-      structure and a cross-species alignment beside them, one residue lit in
-      all three.
+      Open a gene in JBrowse with its structure and a cross-species alignment,
+      one residue lit in all three.
     </p>
     <ProteinBrowser client:only="react">
       <p
@@ -205,13 +204,6 @@ if (!features.proteinBrowser) {
     border-radius: 3px;
     opacity: 0.9;
   }
-  .pdc-len {
-    flex: 0 0 auto;
-    font-size: var(--text-2xs);
-    line-height: 1;
-    color: var(--faint);
-    font-variant-numeric: tabular-nums;
-  }
   .pdc-legend {
     display: flex;
     flex-wrap: wrap;
@@ -343,9 +335,13 @@ if (!features.proteinBrowser) {
     line-height: 8px;
     font-size: 0;
   }
+  /* Lanes sit 3 px apart, so the hover cue stays inside the block. */
   .pm-block:hover,
+  .pm-interface:hover {
+    opacity: 1;
+    filter: brightness(0.8);
+  }
   .pm-block:focus-visible,
-  .pm-interface:hover,
   .pm-interface:focus-visible {
     opacity: 1;
     outline: 2px solid var(--text);
@@ -387,29 +383,38 @@ if (!features.proteinBrowser) {
     background: var(--text);
     border-radius: 1px;
   }
-  .pm-actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
-    margin: 0.5rem 0 0 150px;
-    font-size: var(--text-sm);
+  /* A lane whose name asks for its rows: sites and partners load on request. */
+  .pm-lane-btn {
+    padding: 0;
+    font-family: inherit;
+    text-align: right;
+    color: var(--accent);
+    background: none;
+    border: 0;
+    cursor: pointer;
   }
-  .pm-residue-form {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
+  .pm-lane-btn:hover:not(:disabled) {
+    text-decoration: underline;
   }
-  .pm-residue-input {
-    width: 9rem;
+  .pm-lane-btn:disabled {
+    color: var(--muted);
+    cursor: default;
+  }
+  .pm-track-note {
+    position: absolute;
+    left: 6px;
+    font-size: var(--text-2xs);
+    line-height: 14px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .pm-track-error {
+    color: var(--danger);
   }
   @media (max-width: 767px) {
     .pm-lane-name,
     .pdc-name {
       flex-basis: 80px;
-    }
-    .pm-actions {
-      margin-left: 0;
     }
   }
   .msv-result h2 {
@@ -497,6 +502,10 @@ if (!features.proteinBrowser) {
   .msv-control .ui-select {
     max-width: 100%;
   }
+  .msv-residue {
+    min-width: 0;
+    width: 13rem;
+  }
   .msv-control-label {
     flex: 0 0 5.5rem;
     font-weight: 600;
@@ -538,7 +547,10 @@ if (!features.proteinBrowser) {
   .pdc-domain.clickable {
     cursor: pointer;
   }
-  .pdc-domain.clickable:hover,
+  .pdc-domain.clickable:hover {
+    opacity: 1;
+    filter: brightness(0.8);
+  }
   .pdc-domain.clickable:focus-visible {
     opacity: 1;
     outline: 2px solid var(--text);

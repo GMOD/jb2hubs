@@ -12,12 +12,12 @@ import {
   type Isoform,
   canonicalSequence,
   fetchProteinSequence,
-  geneStats,
 } from './geneStructure.ts'
 import {
   type Focus,
   focusLabel,
   focusRanges,
+  parseResidue,
   translationRanges,
 } from './proteinFeatures.ts'
 import { type StructureSource, buildSessionUrl } from './proteinSession.ts'
@@ -86,7 +86,8 @@ export default function ProteinLaunchCard({
   queryRow,
   focus,
   partnerPending,
-  onClearFocus,
+  focusPending,
+  onFocus,
   story,
   picks,
   onPick,
@@ -107,7 +108,10 @@ export default function ProteinLaunchCard({
   // a partner the link or chip names is still being read from PDBe, and it
   // decides both the focus and the complex the session opens
   partnerPending: boolean
-  onClearFocus: () => void
+  // the chip's or link's focus is still being resolved against the map
+  focusPending: boolean
+  // sets what the session opens on; undefined clears it
+  onFocus: (focus: Focus | undefined) => void
   // a chip's one sentence on what there is to see, folded under More info
   story?: string
   // the isoform and structure the link the reader arrived by named
@@ -127,6 +131,10 @@ export default function ProteinLaunchCard({
   // best-covering experimental entry once those have loaded
   const [choice, setChoice] = useState(picks?.structure)
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const [residueText, setResidueText] = useState('')
+  const [residueError, setResidueError] = useState<string>()
+  // what the map's regions and a typed residue are numbered on
+  const canonical = canonicalSequence(structure)
 
   const isoform =
     isoforms.find(i => i.transcript.name === isoformName) ?? isoforms[0]!
@@ -257,7 +265,6 @@ export default function ProteinLaunchCard({
       !!queryRow &&
       (queryRow.protein === launchedProtein ||
         queryRow.length === translation?.length)
-    const canonical = canonicalSequence(structure)
     const numberedOn = fromCartoon
       ? (queryRow?.sequence ?? (rowIsTranslation ? translation : undefined))
       : canonical
@@ -280,7 +287,7 @@ export default function ProteinLaunchCard({
         ? translationRanges(ranges, numberedOn, canonical)
         : undefined
     return { fromCartoon, placement, selection, onCanonical }
-  }, [focus, ranges, queryRow, structure, translation, launchedName, isoforms])
+  }, [focus, ranges, queryRow, canonical, translation, launchedName, isoforms])
   // A focus outside the chosen PDB entry's UniProt span lights nothing.
   const entry = shown.find(e => e.pdbId === chosen)
   const outsideEntry =
@@ -334,7 +341,7 @@ export default function ProteinLaunchCard({
   ])
   const { missingModels, unreachable, session, url, loc } = launch
   const { transcript } = launched
-  const { codingBp } = geneStats(transcript)
+  const middle = canonical ? Math.ceil(canonical.length / 2) : 0
 
   // The structure view is omitted when there is no translation to align it to,
   // whatever structure was picked.
@@ -365,8 +372,7 @@ export default function ProteinLaunchCard({
       <p className="msv-meta">
         {launched.target.assemblyName} ·{' '}
         {launched.target.canonicalRefName(transcript.refName)}{' '}
-        {transcript.strand === 1 ? '+' : '−'} · {transcript.cds.length} coding
-        exons · {codingBp.toLocaleString()} bp CDS
+        {transcript.strand === 1 ? '+' : '−'}
       </p>
 
       <div className="msv-controls">
@@ -519,7 +525,7 @@ export default function ProteinLaunchCard({
           </p>
         )}
 
-        {focus && (
+        {focus ? (
           <div className="msv-control">
             <span className="msv-control-label">Opens on</span>
             <span className="msv-chips">
@@ -527,7 +533,7 @@ export default function ProteinLaunchCard({
                 className="ui-chip-btn"
                 title="Selected in all three views when the session opens; click to clear"
                 onClick={() => {
-                  onClearFocus()
+                  onFocus(undefined)
                 }}
               >
                 {focusLabel(focus)} ×
@@ -535,7 +541,52 @@ export default function ProteinLaunchCard({
             </span>
             {focusCaveat && <span className="ui-caption">{focusCaveat}</span>}
           </div>
-        )}
+        ) : canonical && !focusPending ? (
+          <form
+            className="msv-control"
+            onSubmit={e => {
+              e.preventDefault()
+              const parsed = parseResidue(
+                residueText,
+                canonical,
+                canonical.length,
+              )
+              if ('error' in parsed) {
+                setResidueError(parsed.error)
+              } else {
+                setResidueError(undefined)
+                onFocus({ kind: 'residue', ...parsed })
+              }
+            }}
+          >
+            <span className="msv-control-label">Opens on</span>
+            <input
+              className="ui-input msv-residue"
+              aria-label="Residue to open on"
+              placeholder={`residue 1–${canonical.length} or ${canonical[middle - 1]}${middle}`}
+              aria-invalid={!!residueError}
+              value={residueText}
+              onChange={e => {
+                setResidueText(e.target.value)
+                setResidueError(undefined)
+              }}
+            />
+            <button
+              type="submit"
+              className="ui-btn-secondary"
+            >
+              Focus
+            </button>
+            {residueError && (
+              <span
+                className="ui-error"
+                role="alert"
+              >
+                {residueError}
+              </span>
+            )}
+          </form>
+        ) : null}
       </div>
 
       <div className="msv-actions">

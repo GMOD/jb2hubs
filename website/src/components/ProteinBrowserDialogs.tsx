@@ -167,13 +167,14 @@ export function HelpDialog({ onClose }: { onClose: () => void }) {
           <ExternalLink href="https://www.ebi.ac.uk/interpro/">
             InterPro
           </ExternalLink>{' '}
-          domains and sites, and on request the residues{' '}
+          domains, and on request its sites and the residues{' '}
           <ExternalLink href="https://www.ebi.ac.uk/pdbe/pdbe-kb/">
             PDBe-KB
           </ExternalLink>{' '}
           has seen touching each binding partner in any PDB entry. Click any of
-          them and the session opens on it; a partner opens the complex the two
-          were seen in rather than the monomer. Coordinates are on the UniProt
+          them and the session opens on it, or type a residue into the
+          card&rsquo;s Opens on box; a partner opens the complex the two were
+          seen in rather than the monomer. Coordinates are on the UniProt
           canonical sequence, and the card says when the launched isoform makes
           them approximate.
         </dd>

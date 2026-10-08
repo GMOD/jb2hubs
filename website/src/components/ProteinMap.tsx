@@ -3,15 +3,14 @@ import { useState } from 'react'
 import {
   type Focus,
   type ProteinRegion,
-  parseResidue,
   residueRuns,
   sameFocus,
 } from './proteinFeatures.ts'
 
-import type { CSSProperties } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 
 // One protein, end to end, with what is known about where things are on it:
-// its InterPro domains, its conserved sites, and — on request — the residues
+// its InterPro domains, and on request its conserved sites and the residues
 // PDBe has seen touching each partner. Every block is a button that makes the
 // session open on that range, and a domain with a Pfam family offers that
 // family's seed alignment as the alignment to open with.
@@ -77,9 +76,41 @@ export type PartnersState =
   | { status: 'error'; message: string }
   | { status: 'loaded'; partners: ProteinRegion[] }
 
+// A lane whose rows load when its name is clicked, with the wait or the
+// failure written in the track.
+function RequestLane({
+  name,
+  hint,
+  pending,
+  note,
+  onClick,
+}: {
+  name: string
+  hint: string
+  pending: boolean
+  note?: ReactNode
+  onClick: () => void
+}) {
+  return (
+    <div className="pm-lane">
+      <button
+        type="button"
+        className="pm-lane-name pm-lane-btn"
+        title={hint}
+        disabled={pending}
+        onClick={onClick}
+      >
+        {name}…
+      </button>
+      <div className="pm-track">
+        {note && <span className="pm-track-note">{note}</span>}
+      </div>
+    </div>
+  )
+}
+
 export default function ProteinMap({
   length,
-  sequence,
   regions,
   partners,
   onLoadPartners,
@@ -88,9 +119,6 @@ export default function ProteinMap({
 }: {
   // residues in the canonical sequence
   length: number
-  // the canonical sequence itself, when it is known, which a typed variant's
-  // wild-type letter is checked against
-  sequence: string | undefined
   // InterPro domains, repeats and sites
   regions: ProteinRegion[]
   partners: PartnersState
@@ -98,8 +126,7 @@ export default function ProteinMap({
   focus: Focus | undefined
   onFocus: (focus: Focus | undefined) => void
 }) {
-  const [residueText, setResidueText] = useState('')
-  const [residueError, setResidueError] = useState<string>()
+  const [showSites, setShowSites] = useState(false)
   const domains = regions.filter(
     r => r.kind === 'domain' || r.kind === 'repeat',
   )
@@ -113,6 +140,7 @@ export default function ProteinMap({
   }
   const isFocused = (region: ProteinRegion) =>
     sameFocus(focus, { kind: 'region', region })
+  const sitesShown = showSites || sites.some(isFocused)
 
   const block = (region: ProteinRegion, style: CSSProperties) => (
     <button
@@ -132,13 +160,30 @@ export default function ProteinMap({
     </button>
   )
 
-  const middle = Math.ceil(length / 2)
   const step = tickStep(length)
   // the end tick names the length, so a regular tick close to it is dropped
   const ticks = Array.from(
     { length: Math.floor(length / step) },
     (_, i) => (i + 1) * step,
   ).filter(t => t <= length - step / 2)
+
+  const partnerNote =
+    partners.status === 'loading' ? (
+      'Reading PDBe…'
+    ) : partners.status === 'error' ? (
+      <span className="pm-track-error">
+        {partners.message}{' '}
+        <button
+          type="button"
+          className="ui-linkbtn"
+          onClick={() => {
+            onLoadPartners()
+          }}
+        >
+          Try again
+        </button>
+      </span>
+    ) : undefined
 
   return (
     <div className="pm">
@@ -184,62 +229,93 @@ export default function ProteinMap({
         ))}
 
         {sites.length > 0 &&
-          packLanes(sites).map((lane, i) => (
-            <div
-              className="pm-lane pm-lane-thin"
-              key={`sites-${i}`}
-            >
-              <span className="pm-lane-name">{i === 0 ? 'Sites' : ''}</span>
-              <div className="pm-track">
-                {lane.map(r =>
-                  block(r, {
-                    left: pct(r.start),
-                    width: width(r.start, r.end),
-                    background: colors.get(r.accession ?? r.name),
-                  }),
-                )}
+          (sitesShown ? (
+            packLanes(sites).map((lane, i) => (
+              <div
+                className="pm-lane pm-lane-thin"
+                key={`sites-${i}`}
+              >
+                <span className="pm-lane-name">{i === 0 ? 'Sites' : ''}</span>
+                <div className="pm-track">
+                  {lane.map(r =>
+                    block(r, {
+                      left: pct(r.start),
+                      width: width(r.start, r.end),
+                      background: colors.get(r.accession ?? r.name),
+                    }),
+                  )}
+                </div>
               </div>
-            </div>
+            ))
+          ) : (
+            <RequestLane
+              name="Sites"
+              hint={`${sites.length} active, binding and conserved sites from InterPro`}
+              pending={false}
+              onClick={() => {
+                setShowSites(true)
+              }}
+            />
           ))}
 
-        {partners.status === 'loaded' &&
-          partners.partners.map(p => (
-            <div
-              className="pm-lane pm-lane-thin"
-              key={`${p.accession}-${p.name}`}
-            >
-              <span
-                className="pm-lane-name pm-partner"
-                title={`${p.name} (${p.accession}) · ${p.residues?.length ?? 0} interface residues in ${p.pdbIds?.length ?? 0} PDB entries`}
+        {partners.status === 'loaded' ? (
+          partners.partners.length > 0 ? (
+            partners.partners.map(p => (
+              <div
+                className="pm-lane pm-lane-thin"
+                key={`${p.accession}-${p.name}`}
               >
-                {p.name}
-              </span>
-              <div className="pm-track">
-                <button
-                  type="button"
-                  className={
-                    isFocused(p) ? 'pm-interface selected' : 'pm-interface'
-                  }
-                  title={`Open the session on the ${p.name} interface (${p.start}–${p.end}), in ${p.pdbIds?.[0]?.toUpperCase() ?? 'a PDB entry'} with the partner`}
-                  aria-pressed={isFocused(p)}
-                  onClick={() => {
-                    toggle({ kind: 'region', region: p })
-                  }}
+                <span
+                  className="pm-lane-name pm-partner"
+                  title={`${p.name} (${p.accession}) · ${p.residues?.length ?? 0} interface residues in ${p.pdbIds?.length ?? 0} PDB entries`}
                 >
-                  {residueRuns(p.residues ?? []).map(run => (
-                    <span
-                      key={run.start}
-                      className="pm-run"
-                      style={{
-                        left: pct(run.start),
-                        width: width(run.start, run.end),
-                      }}
-                    />
-                  ))}
-                </button>
+                  {p.name}
+                </span>
+                <div className="pm-track">
+                  <button
+                    type="button"
+                    className={
+                      isFocused(p) ? 'pm-interface selected' : 'pm-interface'
+                    }
+                    title={`Open the session on the ${p.name} interface (${p.start}–${p.end}), in ${p.pdbIds?.[0]?.toUpperCase() ?? 'a PDB entry'} with the partner`}
+                    aria-pressed={isFocused(p)}
+                    onClick={() => {
+                      toggle({ kind: 'region', region: p })
+                    }}
+                  >
+                    {residueRuns(p.residues ?? []).map(run => (
+                      <span
+                        key={run.start}
+                        className="pm-run"
+                        style={{
+                          left: pct(run.start),
+                          width: width(run.start, run.end),
+                        }}
+                      />
+                    ))}
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="pm-lane">
+              <span className="pm-lane-name">Partners</span>
+              <div className="pm-track">
+                <span className="pm-track-note">
+                  no complex of this protein in PDBe
+                </span>
               </div>
             </div>
-          ))}
+          )
+        ) : (
+          <RequestLane
+            name="Partners"
+            hint="The residues PDBe has seen touching each binding partner, in any PDB entry"
+            pending={partners.status === 'loading'}
+            note={partnerNote}
+            onClick={onLoadPartners}
+          />
+        )}
 
         {focus?.kind === 'residue' && (
           <div className="pm-lane pm-lane-thin">
@@ -252,87 +328,6 @@ export default function ProteinMap({
               />
             </div>
           </div>
-        )}
-      </div>
-
-      <div className="pm-actions">
-        {partners.status === 'idle' && (
-          <button
-            type="button"
-            className="ui-linkbtn"
-            onClick={() => {
-              onLoadPartners()
-            }}
-          >
-            Show binding partners from PDBe
-          </button>
-        )}
-        {partners.status === 'loading' && (
-          <span className="ui-caption">Reading interfaces from PDBe…</span>
-        )}
-        {partners.status === 'error' && (
-          <span className="ui-error">
-            Could not read interfaces: {partners.message}{' '}
-            <button
-              type="button"
-              className="ui-linkbtn"
-              onClick={() => {
-                onLoadPartners()
-              }}
-            >
-              Try again
-            </button>
-          </span>
-        )}
-        {partners.status === 'loaded' && partners.partners.length === 0 && (
-          <span className="ui-caption">
-            PDBe has no structure of this protein in a complex.
-          </span>
-        )}
-        <form
-          className="pm-residue-form"
-          onSubmit={e => {
-            e.preventDefault()
-            const parsed = parseResidue(residueText, sequence, length)
-            if ('error' in parsed) {
-              setResidueError(parsed.error)
-            } else {
-              setResidueError(undefined)
-              onFocus({ kind: 'residue', ...parsed })
-            }
-          }}
-        >
-          <label className="ui-caption">
-            Residue{' '}
-            <input
-              className="ui-input pm-residue-input"
-              placeholder={
-                sequence
-                  ? `1–${length} or ${sequence[middle - 1]}${middle}`
-                  : `1–${length}`
-              }
-              aria-invalid={!!residueError}
-              value={residueText}
-              onChange={e => {
-                setResidueText(e.target.value)
-                setResidueError(undefined)
-              }}
-            />
-          </label>
-          <button
-            type="submit"
-            className="ui-btn-secondary"
-          >
-            Focus
-          </button>
-        </form>
-        {residueError && (
-          <span
-            className="ui-error"
-            role="alert"
-          >
-            {residueError}
-          </span>
         )}
       </div>
     </div>

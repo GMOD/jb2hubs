@@ -111,7 +111,7 @@ export default function ProteinDomainCartoon({
             >
               <div
                 className="pdc-name"
-                title={`${r.scientificName} · ${r.protein}`}
+                title={`${r.scientificName} · ${r.protein} · ${r.length} aa`}
               >
                 {r.commonName ?? r.scientificName}
               </div>
@@ -189,7 +189,6 @@ export default function ProteinDomainCartoon({
                       )
                     })}
                 </div>
-                <span className="pdc-len">{r.length} aa</span>
               </div>
             </div>
           )
