@@ -20,8 +20,8 @@ export interface PangenomeReference {
   label: string
   // Reference gene track in `configUrl`, opened alongside the graph variants.
   geneTrackId: string
-  // NCBI taxonomy id of the reference species, for the cross-species gene-order
-  // link (so it isn't hardcoded to human 9606).
+  // NCBI taxonomy id of the reference species, which the region box's gene
+  // lookup asks mygene.info for.
   taxonId: number
 }
 
