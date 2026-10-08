@@ -4,7 +4,8 @@ import { features } from '../config/features.ts'
 import { useDesktopLaunch } from '../hooks/useDesktopLaunch.ts'
 import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
-import { launchHref, setPrefersDesktop } from '../lib/desktopPreference.ts'
+import { launchHref } from '../lib/desktopPreference.ts'
+import { DesktopLaunchSwitch } from './DesktopLaunch.tsx'
 import {
   DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
@@ -322,21 +323,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           />
           orient to reference
         </label>
-        {features.desktopLinks && (
-          <label
-            className="msv-orient"
-            title="Send every launch on this figure to JBrowse Desktop 5.0 or newer. An older Desktop does nothing when a link is clicked."
-          >
-            <input
-              type="checkbox"
-              checked={desktop}
-              onChange={e => {
-                setPrefersDesktop(e.target.checked)
-              }}
-            />
-            open in JBrowse Desktop
-          </label>
-        )}
+        <DesktopLaunchSwitch className="msv-orient" />
         {refAlignment && refGene && (
           <button
             className="msv-align-btn"

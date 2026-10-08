@@ -5,6 +5,7 @@ import useSWRImmutable from 'swr/immutable'
 
 import { LIVE_QUERY } from '../lib/swr.ts'
 import { errorText } from './ErrorMessage.tsx'
+import OpenInDesktop from './OpenInDesktop.tsx'
 import { SessionDetailsDialog } from './ProteinBrowserDialogs.tsx'
 import {
   type GeneStructure,
@@ -548,14 +549,20 @@ export default function ProteinLaunchCard({
                 : 'Loading alignment…'}
           </span>
         ) : (
-          <a
-            className="msv-open"
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Open in JBrowse ↗
-          </a>
+          <>
+            <a
+              className="msv-open"
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Open in JBrowse ↗
+            </a>
+            <OpenInDesktop
+              className="msv-open-desktop"
+              webUrl={url}
+            />
+          </>
         )}
       </div>
       <details className="msv-options">

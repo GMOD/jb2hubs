@@ -32,6 +32,10 @@ export function specUrl(
 // (products/jbrowse-desktop/electron/launchTarget.ts). The two are separate
 // repos and cannot share the function, so `desktopLinks.test.ts` asserts the
 // property that matters: the wrapper round-trips the exact url back out.
+// A jbrowse:// link travels through argv on Windows and Linux, where the OS
+// drops an oversized one without reporting it.
+export const MAX_PROTOCOL_URL_LENGTH = 8000
+
 export function desktopUrl(webUrl: string) {
   return `jbrowse://open?url=${encodeURIComponent(webUrl)}`
 }

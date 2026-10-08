@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 
+import { LaunchLink } from './DesktopLaunch.tsx'
 import {
   MAX_PICKED_GENOMES,
   planFromSelection,
@@ -100,13 +101,9 @@ export default function MultiSyntenyPicker({
       <p className="orthologs-summary">
         {plan && plan.rows.length >= 3 ? (
           <>
-            <a
-              href={buildMultiSyntenyUrl(plan)}
-              target="_blank"
-              rel="noreferrer"
-            >
+            <LaunchLink href={buildMultiSyntenyUrl(plan)}>
               Launch multi-species synteny view
-            </a>{' '}
+            </LaunchLink>{' '}
             <span className="orthologs-chain">
               {plan.rows.map(r => r.assembly.scientificName).join(' → ')}
             </span>

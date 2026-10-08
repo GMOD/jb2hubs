@@ -1,5 +1,5 @@
 import { features } from '../config/features.ts'
-import { desktopUrl } from './jbrowseLinks.ts'
+import { MAX_PROTOCOL_URL_LENGTH, desktopUrl } from './jbrowseLinks.ts'
 
 // The tooltip is the whole pre-5.0 story: an install without the handler does
 // nothing at all when this is clicked, with no way for the page to detect it, so
@@ -18,6 +18,9 @@ const HINT =
  * `specUrl` builder already produced, so the two links cannot describe
  * different sessions.
  *
+ * Renders nothing for a session too large to hand the OS as a link, which an
+ * inline protein alignment can be.
+ *
  * `className` comes from the call site rather than a style of its own, so a
  * secondary action looks like the launch beside it (`synteny-launch`).
  */
@@ -28,10 +31,11 @@ export default function OpenInDesktop({
   webUrl: string
   className?: string
 }) {
-  return features.desktopLinks ? (
+  const href = desktopUrl(webUrl)
+  return features.desktopLinks && href.length <= MAX_PROTOCOL_URL_LENGTH ? (
     <a
       className={className}
-      href={desktopUrl(webUrl)}
+      href={href}
       title={HINT}
     >
       Open in Desktop 5 →

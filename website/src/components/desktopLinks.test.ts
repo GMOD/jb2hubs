@@ -1,7 +1,11 @@
 import assert from 'node:assert'
 import { test } from 'node:test'
 
-import { desktopUrl, syntenyViewUrl } from './jbrowseLinks.ts'
+import {
+  MAX_PROTOCOL_URL_LENGTH,
+  desktopUrl,
+  syntenyViewUrl,
+} from './jbrowseLinks.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
 import { graphLocusUrl, graphVcfLgvUrl } from './pangenomeLinks.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
@@ -17,7 +21,6 @@ import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 // ~1.9kB; this leaves 4x headroom and still fires long before any platform
 // limit. A breach means a builder started inlining a payload into the spec
 // (precomputed data belongs in a hosted config or a fetched file, not the url).
-const MAX_PROTOCOL_URL_LENGTH = 8000
 
 // Every launch url the site can hand to Desktop, built from the real datasets
 // rather than fixtures, so a change to a builder or a dataset is covered here

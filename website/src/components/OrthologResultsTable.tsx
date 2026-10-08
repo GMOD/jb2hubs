@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { downloadText } from '../lib/downloadText.ts'
 import { ncbiGeneUrl } from '../lib/externalLinks.ts'
+import { DesktopLaunchSwitch, LaunchLink } from './DesktopLaunch.tsx'
 import ExternalLink from './ExternalLink.tsx'
 import MultiSyntenyPicker from './MultiSyntenyPicker.tsx'
 import { groupByClade } from './orthologClades.ts'
@@ -60,12 +61,12 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         {r.chromosome}:{formatNumber(r.begin)}–{formatNumber(r.end)}
       </td>
       <td className="orthologs-actions">
-        <ExternalLink
+        <LaunchLink
           href={r.jbrowseUrl}
           title={`Open ${r.assembly.scientificName} at ${r.geneSymbol} (${r.chromosome}) in JBrowse`}
         >
           JBrowse
-        </ExternalLink>
+        </LaunchLink>
         {isRef && (
           <span
             className="orthologs-ref-label"
@@ -77,12 +78,12 @@ function ResultRow({ result: r, isRef, link, refResult }: ResultRowProps) {
         {link && (
           <>
             {' · '}
-            <ExternalLink
+            <LaunchLink
               href={orthoSyntenyUrl(r, link, refResult)}
               title={`Open pairwise synteny: reference vs ${r.assembly.scientificName}, both centered on ${r.geneSymbol}`}
             >
               Synteny
-            </ExternalLink>
+            </LaunchLink>
           </>
         )}
       </td>
@@ -207,6 +208,7 @@ export default function OrthologResultsTable({
           />
           With synteny ({syntenyCount})
         </label>
+        <DesktopLaunchSwitch className="orthologs-toggle" />
         <span className="orthologs-count">
           {filtered.length === results.length
             ? `${results.length} species`
