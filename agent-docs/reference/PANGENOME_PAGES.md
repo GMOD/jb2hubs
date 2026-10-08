@@ -136,16 +136,18 @@ route.
 
 `lanes()` in `website/src/components/pangenomeLinks.ts` picks the segment-level
 lanes under `MAX_DETAIL_WINDOW_BP` (150 kb) and the coarse bubble tier above it.
-A graph launch (`graphRegionUrl`) is one linear view: those lanes, then the
-segments track opened as its `LinearGraphDisplay`, which picks its own tier by
-zoom past the adapter's `coarse.aboveBpPerPx`. The segments lane and the graph
-are one track and a view shows a track once, so a graph launch has no segments
-lane, and no tier lane either: the graph's handover turns on the view's width,
-so at 1000 px HPRC's graph stays fine to ~1 Mb while a lane switched at 150 kb
-would already be coarse. Every rGFA track in the four configs is a `GraphTrack`,
-which opens as the graph, its first display, so a lane over one names
-`LinearBasicDisplay`. A GraphTrack's displays come from the plugin, not the
-config, so `pangenomeLinks.test.ts` checks every launch against the ones the
+A graph launch (`graphRegionUrl`) is one linear view: a compact gene row, the
+segments track opened as its `LinearGraphDisplay` at 420 px, then those lanes.
+The graph picks its own tier by zoom past the adapter's `coarse.aboveBpPerPx`.
+The lanes came first until 2026-10-08, which put the graph 732 px down a 900 px
+window and 1,415 px down under Arabidopsis's SyRI rows. The segments lane and
+the graph are one track and a view shows a track once, so a graph launch has no
+segments lane, and no tier lane either: the graph's handover turns on the view's
+width, so at 1000 px HPRC's graph stays fine to ~1 Mb while a lane switched at
+150 kb would already be coarse. Every rGFA track in the four configs is a
+`GraphTrack`, which opens as the graph, its first display, so a lane over one
+names `LinearBasicDisplay`. A GraphTrack's displays come from the plugin, not
+the config, so `pangenomeLinks.test.ts` checks every launch against the ones the
 plugin registers on it. Everything below fell out of the width rule on
 2026-09-10, so a change here is a change to all of it:
 
@@ -173,7 +175,7 @@ a property of a VCF, not of the wiring.
 
 Mouse, cattle and Arabidopsis each offer seven named loci, in
 `pangenomeMouseLoci.ts`, `pangenomeBovineLoci.ts` and
-`pangenomeArabidopsisLoci.ts` beside HPRC's 22 in `pangenomeLoci.ts`. Until
+`pangenomeArabidopsisLoci.ts` beside HPRC's 20 in `pangenomeLoci.ts`. Until
 2026-10-08 those three pages offered a derived catalogue under "Most variable":
 `generatePangenomeLoci.ts` ranked each graph's coarse tier by segments per
 bubble and named the entries off the reference annotation, committed as
@@ -233,6 +235,45 @@ the largest allele row, and the segments in the largest coarse-tier bubble
 Mouse `amy2` is one 225 kb bubble (113,101,029-113,326,354), so it would be a
 third coarse-tier example. Cattle `polled` is the smallest event offered: one
 202 bp record in a 60 kb window with three SVs.
+
+### Every link was booted and looked at on 2026-10-08
+
+An audit opened all 202 links the four pages offered on `main` from the build
+box, at 1400 by 900: every example's launches, its BandageJS link and every
+whole-chromosome link. Each was timed until its screenshot stopped changing.
+Medians to drawn: variants 1.7 s, graph 2.5 s, bubbles 2.5 s, a whole chromosome
+3.2 s, haplotype lanes 4.7 s, BandageJS 5.3 s; the slowest link that drew took
+7.0 s. Speed was not the problem. What a link showed was, and each of these is
+now a rule in `pangenomeLinks.ts` or a flag on a locus:
+
+- **The graph launch opens the graph first** (above).
+- **`callsetBlank` on a locus drops its variants launch**, for the example and
+  for a typed window that overlaps it, the way `graphCollapsed` drops the graph.
+  The matrix was a flat grey block at AMY1, MNS, PRSS, UGT2B17 and NPHP1, whose
+  records of 50 bp or more are absent or too small to draw at the window's zoom.
+  At SMN the callset has no record at all and the track never left "Loading…";
+  given three minutes it took the browser down. A window nobody curated can
+  still land on such a hole.
+- **SRGAP2 and DEFB (8p23.1) are no longer HPRC examples.** No launch of either
+  showed anything: a 5-node and a 7-node graph, a blank or hung matrix, and no
+  panel (SRGAP2) or one lane (DEFB). The callset has no record between
+  chr8:7,546,668 and 8,096,808.
+- **The BandageJS link names `maxNodes=40000`.** MHC class II (33,010 nodes) and
+  KIR (23,021) stopped on BandageJS's "over the 20,000 this page draws by
+  default" question, and draw in 14 s and 7 s once past it. LPA is 19,465.
+- **A window over 10 Mb opens no gene lane** (`MAX_GENE_LANE_BP`). The lane was
+  a "Too many features" banner on 58 of the 78 whole-chromosome launches, and
+  the graph labels its own genes at that zoom.
+
+Seen and left alone: Arabidopsis RPP5 (1,207 nodes) and RPP1 (1,130) and cattle
+DEFB (1,114) draw as dense knots; Arabidopsis's knob draws as a straight line,
+since the graph has no bubble for the inversion, and its Bubbles launch is the
+one that shows it; and under the HPRC matrix the UCSC insertion and deletion
+tracks are mostly 1 bp labels.
+
+Screenshotting launches in parallel needs one browser per worker, since a
+background tab does not paint. A display's `isLoading` says whether a track is
+still fetching.
 
 ### What a pangenome page is not
 

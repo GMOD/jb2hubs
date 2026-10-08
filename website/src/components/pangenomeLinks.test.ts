@@ -111,12 +111,16 @@ test('a rearrangement track opens under the lanes at either tier', () => {
   const fine = { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }
   const coarse = { chrom: 'Chr4', start: 0, end: 4_000_000 }
   for (const region of [fine, coarse]) {
-    const tracks = parseLaunch(graphLanesUrl(dataset, region)).spec.views[0]!
-      .tracks as unknown[]
-    assert.deepEqual(
-      tracks.at(-1),
-      ARABIDOPSIS_GRAPH_BROWSER.rearrangementTrack,
-    )
+    for (const url of [
+      graphLanesUrl(dataset, region),
+      graphRegionUrl(dataset, region),
+    ]) {
+      const tracks = parseLaunch(url).spec.views[0]!.tracks as unknown[]
+      assert.deepEqual(
+        tracks.at(-1),
+        ARABIDOPSIS_GRAPH_BROWSER.rearrangementTrack,
+      )
+    }
   }
 })
 
@@ -223,12 +227,30 @@ test('a wide window offers the graph alone, and a collapsed locus no graph', () 
   )
 })
 
+// UGT2B17's deletion is a path the haplotypes skip, with no record to draw.
+test('a locus whose callset matrix is blank offers no variants launch', () => {
+  const ugt2b17 = HPRC_DATASET.loci.find(l => l.id === 'ugt2b17')!
+  assert.deepEqual(
+    regionLaunches(HPRC_DATASET, ugt2b17, HAPLOTYPES).map(l => l.kind),
+    ['graph', 'haplotypes', 'bandage'],
+  )
+})
+
 const graphTrack = {
   trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
   type: 'LinearGraphDisplay',
+  height: 420,
 }
 
-test('a locus opens as one linear view with the graph under its lanes', () => {
+const geneRow = {
+  trackId: HPRC_GRAPH_BROWSER.geneTrackId,
+  type: 'LinearBasicDisplay',
+  geneGlyphMode: 'longestCoding',
+  displayMode: 'compact',
+  height: 60,
+}
+
+test('a locus opens as one linear view with the graph over its lanes', () => {
   const { config, spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, locus))
   // the graph plugin is declared only in this config, never in the UCSC ones
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
@@ -239,10 +261,10 @@ test('a locus opens as one linear view with the graph under its lanes', () => {
   assert.equal(lgv!.loc, 'chr6:32510001-32600000')
   // The segments lane is the graph track itself, so it opens once, as the graph
   assert.deepEqual(lgv!.tracks, [
-    HPRC_GRAPH_BROWSER.geneTrackId,
+    geneRow,
+    graphTrack,
     HPRC_GRAPH_BROWSER.bubblesTrackId,
     HPRC_GRAPH_BROWSER.allelesTrackId,
-    graphTrack,
   ])
 })
 
@@ -255,25 +277,26 @@ test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
 })
 
 // The graph track picks its own tier by zoom, so a wide launch opens no tier
-// lane beside it that could disagree.
-test('a wide region opens the graph alone, under the lanes that read at any width', () => {
+// lane beside it that could disagree. A chromosome opens no gene lane, which
+// would be a "Too many features" banner.
+test('a chromosome opens the graph over the lane that reads at any width', () => {
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
   const { config, spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, chr21))
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   assert.equal(spec.views.length, 1)
   const [lgv] = spec.views
   assert.equal(lgv!.loc, 'chr21:1-46709983')
-  assert.deepEqual(lgv!.tracks, [
-    'hg38_ncbiRefSeq_ucsc',
-    'hprc_bubble_score',
-    graphTrack,
-  ])
+  assert.deepEqual(lgv!.tracks, [graphTrack, 'hprc_bubble_score'])
   const lanes = parseLaunch(graphLanesUrl(HPRC_DATASET, chr21)).spec
   assert.deepEqual(lanes.views[0]!.tracks, [
-    'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
     { trackId: 'hprc_minigraph_tier', type: 'LinearBasicDisplay' },
   ])
+  const megabases = { chrom: 'chr21', start: 20_000_000, end: 25_000_000 }
+  assert.deepEqual(
+    parseLaunch(graphRegionUrl(HPRC_DATASET, megabases)).spec.views[0]!.tracks,
+    [geneRow, graphTrack, 'hprc_bubble_score'],
+  )
 })
 
 // The display types jbrowse-plugin-graphgenomeviewer registers on a
@@ -415,6 +438,7 @@ test('bandageRegionUrl cuts the window around the haplotypes given, laid out by 
     loc: `${cfhr.chrom}:${cfhr.start + 1}-${cfhr.end}`,
     haps: HAPLOTYPES.join(','),
     layout: 'force',
+    maxNodes: '40000',
   })
 })
 

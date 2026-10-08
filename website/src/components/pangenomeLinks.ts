@@ -83,45 +83,45 @@ const linearLane = (trackId: string) => ({
   type: 'LinearBasicDisplay',
 })
 
+// Past this a gene lane is a "Too many features" banner on most chromosomes
+// (58 of 78 whole-chromosome launches, measured 2026-10-08), and the graph
+// labels its own genes at that zoom.
+const MAX_GENE_LANE_BP = 10_000_000
+
 // The one rule for how a window of the graph is drawn. Up to
 // MAX_DETAIL_WINDOW_BP the segment-level lanes are legible: bubbles, alleles at
 // their real size, segments. Past it the segments track refuses with "Too many
 // features" and the allele inventory passes its fetch limit, so a wide window
 // gets the coarse tier and the segments-per-bubble curve. A whole chromosome is
 // the widest region and takes the same branch.
-//
-// Over the graph, neither the segments nor the tier lane opens. The segments
-// lane is the graph track itself, and a view shows a track once. The graph cuts
-// its own tier past the adapter's `coarse.aboveBpPerPx`, which turns on the
-// view's width, so a tier lane switched by span would disagree with it: at 1000
-// px, HPRC's graph stays fine up to ~1 Mb, and Arabidopsis's goes coarse at
-// ~117 kb.
-function lanes(
-  graph: PangenomeGraphBrowser,
-  region: GraphRegion,
-  { overGraph = false } = {},
-) {
+function lanes(graph: PangenomeGraphBrowser, region: GraphRegion) {
   const [detail, rgfa] = isWide(region)
     ? [[graph.bubbleScoreTrackId], graph.tierTrackId]
     : [[graph.bubblesTrackId, graph.allelesTrackId], graph.segmentsTrackId]
-  return [
-    graph.geneTrackId,
-    ...detail,
-    ...(overGraph ? [] : [linearLane(rgfa)]),
-    ...(graph.rearrangementTrack ? [graph.rearrangementTrack] : []),
-  ]
+  return {
+    genes: region.end - region.start <= MAX_GENE_LANE_BP,
+    detail,
+    rgfa,
+    rearrangements: graph.rearrangementTrack ? [graph.rearrangementTrack] : [],
+  }
 }
 
 // The graph's own linear lanes, out of the graph config. For a dataset with no
 // callset these are the pangenome view of a region.
 export function graphLanesUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
+  const { genes, detail, rgfa, rearrangements } = lanes(graph, region)
   return specUrl(graph.configUrl, [
     {
       type: 'LinearGenomeView',
       assembly: dataset.reference.assembly,
       loc: locOf(region),
-      tracks: lanes(graph, region),
+      tracks: [
+        ...(genes ? [graph.geneTrackId] : []),
+        ...detail,
+        linearLane(rgfa),
+        ...rearrangements,
+      ],
     },
   ])
 }
@@ -153,11 +153,34 @@ export function referenceRegionUrl(
     : undefined
 }
 
-// A region drawn as the graph: one linear view, its lanes above the segments
-// track opened as the graph. The configs open it force-directed, so the launch
-// names no layout.
+// One compact row of gene models, so what a launch is about starts near the
+// top of the window.
+const GENE_ROW_HEIGHT_PX = 60
+const geneRow = (graph: PangenomeGraphBrowser) => ({
+  trackId: graph.geneTrackId,
+  type: 'LinearBasicDisplay',
+  geneGlyphMode: 'longestCoding',
+  displayMode: 'compact',
+  height: GENE_ROW_HEIGHT_PX,
+})
+
+const GRAPH_HEIGHT_PX = 420
+
+// A region drawn as the graph: one linear view, the graph under a row of genes
+// and the lanes under the graph. With the lanes first the graph started 732 px
+// down a 900 px window, and 1,415 px down under Arabidopsis's SyRI rows
+// (measured 2026-10-08).
+//
+// No segments or tier lane opens. The segments lane is the graph track itself,
+// and a view shows a track once. The graph cuts its own tier past the adapter's
+// `coarse.aboveBpPerPx`, which turns on the view's width, so a tier lane
+// switched by span would disagree with it: at 1000 px, HPRC's graph stays fine
+// up to ~1 Mb, and Arabidopsis's goes coarse at ~117 kb.
+//
+// The configs open the graph force-directed, so the launch names no layout.
 export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
   const graph = dataset.graphBrowser
+  const { genes, detail, rearrangements } = lanes(graph, region)
   return specUrl(graph.configUrl, [
     {
       type: 'LinearGenomeView',
@@ -165,8 +188,14 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
       assembly: dataset.reference.assembly,
       loc: locOf(region),
       tracks: [
-        ...lanes(graph, region, { overGraph: true }),
-        { trackId: graph.segmentsTrackId, type: 'LinearGraphDisplay' },
+        ...(genes ? [geneRow(graph)] : []),
+        {
+          trackId: graph.segmentsTrackId,
+          type: 'LinearGraphDisplay',
+          height: GRAPH_HEIGHT_PX,
+        },
+        ...detail,
+        ...rearrangements,
       ],
     },
   ])
@@ -174,7 +203,6 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
 
 // The tutorial's eight lanes and the reference draw legibly in 460 px.
 const LANE_HEIGHT_PX = 51
-const GENE_ROW_HEIGHT_PX = 60
 
 // A window's haplotypes as lanes read from the graph. `rows.kept` decides which
 // walks are fetched and drawn and `rows.domain` pins their order, so the
@@ -198,13 +226,7 @@ export function haplotypeLanesForRegion(
       loc: locOf(region),
       tracks: [
         // The reference lane draws these genes too, but unnamed.
-        {
-          trackId: graph.geneTrackId,
-          type: 'LinearBasicDisplay',
-          geneGlyphMode: 'longestCoding',
-          displayMode: 'compact',
-          height: GENE_ROW_HEIGHT_PX,
-        },
+        geneRow(graph),
         {
           trackId,
           type: 'MultiWaySyntenyDisplay',
@@ -226,6 +248,10 @@ const BANDAGE_URL = 'https://jbrowse.org/demos/bandagejs/'
 // BandageJS's 100,000-node limit on SMN, DEFB and HP, while the window alone is
 // 1,315–33,010 nodes.
 //
+// `maxNodes` is the count past which BandageJS asks before drawing, 20,000
+// unless named. Two examples pass that and opened on the question: MHC class II
+// cuts 33,010 nodes and draws in 14 s, KIR 23,021 in 7 s (measured 2026-10-08).
+//
 // Undefined without a gbz preset or without haplotypes to draw.
 export function bandageRegionUrl(
   dataset: PangenomeDataset,
@@ -240,6 +266,7 @@ export function bandageRegionUrl(
     loc: locOf(region),
     haps: haplotypes.join(','),
     layout: 'force',
+    maxNodes: '40000',
   })
   return `${BANDAGE_URL}?${query}`
 }
@@ -251,14 +278,18 @@ export interface LaunchLink {
   url: string
 }
 
-// Whether a window falls on a locus minigraph collapses, for an example and a
-// typed gene alike. A wide window is left alone: a chromosome that holds such a
-// locus still draws from its tier.
-const graphCollapsed = (dataset: PangenomeDataset, region: GraphRegion) =>
+// Whether a window falls on a curated locus flagged as having nothing to show
+// in one launch, for an example and a typed gene alike. A wide window is left
+// alone: a chromosome that holds such a locus still draws from its tier.
+const onFlaggedLocus = (
+  dataset: PangenomeDataset,
+  region: GraphRegion,
+  flag: 'graphCollapsed' | 'callsetBlank',
+) =>
   !isWide(region) &&
   dataset.loci.some(
     l =>
-      l.graphCollapsed &&
+      l[flag] &&
       l.chrom === region.chrom &&
       l.start < region.end &&
       region.start < l.end,
@@ -277,7 +308,7 @@ export function regionLaunches(
       kind: 'graph',
       label: 'Graph',
       about: 'the region drawn as a graph',
-      url: graphCollapsed(dataset, region)
+      url: onFlaggedLocus(dataset, region, 'graphCollapsed')
         ? undefined
         : graphRegionUrl(dataset, region),
     },
@@ -286,7 +317,10 @@ export function regionLaunches(
           kind: 'variants',
           label: 'Variants',
           about: 'the structural variants each haplotype carries',
-          url: isWide(region) ? undefined : referenceRegionUrl(dataset, region),
+          url:
+            isWide(region) || onFlaggedLocus(dataset, region, 'callsetBlank')
+              ? undefined
+              : referenceRegionUrl(dataset, region),
         }
       : {
           kind: 'bubbles',

@@ -15,6 +15,12 @@ export interface PangenomeLocus {
   // (SMN1/SMN2, RHD/RHCE, the CYP clusters), so a graph launch there opens a
   // bare thread that reads as an empty result. No graph launch is offered.
   graphCollapsed?: boolean
+  // The callset's matrix is blank over the window, so no variants launch is
+  // offered: either the callset has no record there, where the launch never
+  // leaves "Loading…", or none of 50 bp or more that draws at the window's
+  // zoom. Measured 2026-10-08 on the release 2 `pgbi.vcf.gz`; each locus says
+  // which.
+  callsetBlank?: boolean
 }
 
 // The widest window drawn at segment level, and the widest the callset opens
@@ -24,6 +30,11 @@ export interface PangenomeLocus {
 // draws from the coarse tier.
 export const MAX_DETAIL_WINDOW_BP = 150_000
 
+// Measured and declined, 2026-10-08:
+// - SRGAP2 (chr1:206,190,000-206,330,000): a 5-node graph, no callset record
+//   of 50 bp or more and no structural form, so no launch showed anything.
+// - DEFB, 8p23.1 (chr8:7,850,000-7,930,000): inside a 550 kb stretch with no
+//   callset record (chr8:7,546,668-8,096,808), a 7-node graph and one lane.
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',
@@ -45,6 +56,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 103_610_000,
     end: 103_760_000,
+    // 64 records of 50 bp or more, the longest 1,456 bp: the copy-number
+    // bubble's parent has no record.
+    callsetBlank: true,
   },
   {
     id: 'c4',
@@ -80,6 +94,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     start: 70_910_000,
     end: 70_970_000,
     graphCollapsed: true,
+    // No callset record in the window.
+    callsetBlank: true,
   },
   {
     id: 'kir',
@@ -88,15 +104,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr19',
     start: 54_750_000,
     end: 54_840_000,
-  },
-  {
-    id: 'defb',
-    gene: 'DEFB (8p23.1)',
-    fullName: 'Beta-defensin cluster',
-    // DEFB103A through DEFB4A; the flanking megabase inversion is outside.
-    chrom: 'chr8',
-    start: 7_850_000,
-    end: 7_930_000,
   },
   {
     id: 'fcgr',
@@ -132,22 +139,14 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     end: 185_000,
   },
   {
-    id: 'srgap2',
-    gene: 'SRGAP2',
-    fullName: 'SRGAP2 human-specific duplications',
-    // Exons 1-3 of the nine SRGAP2B/C duplicate (the 5' third of the segment);
-    // all nine span ~202 kb, past MAX_DETAIL_WINDOW_BP.
-    chrom: 'chr1',
-    start: 206_190_000,
-    end: 206_330_000,
-  },
-  {
     id: 'mns',
     gene: 'GYPA / GYPB',
     fullName: 'MNS blood group (glycophorins)',
     chrom: 'chr4',
     start: 143_990_000,
     end: 144_140_000,
+    // 22 records of 50 bp or more, none visible at 150 kb.
+    callsetBlank: true,
   },
   {
     id: 'cfhr',
@@ -166,6 +165,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr7',
     start: 142_740_000,
     end: 142_780_000,
+    // 111 records of 50 bp or more, none visible at 40 kb.
+    callsetBlank: true,
   },
   {
     id: 'ugt2b17',
@@ -174,6 +175,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr4',
     start: 68_530_000,
     end: 68_680_000,
+    // No record of 50 bp or more: the 117 kb deletion is a skipped path.
+    callsetBlank: true,
   },
   {
     id: 'nphp1',
@@ -182,6 +185,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr2',
     start: 110_080_000,
     end: 110_210_000,
+    // 3 records of 50 bp or more, the longest 109 bp.
+    callsetBlank: true,
   },
   {
     id: 'gstm1',

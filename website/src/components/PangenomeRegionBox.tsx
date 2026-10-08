@@ -205,7 +205,8 @@ export default function PangenomeRegionBox({
             answer.region.end - answer.region.start > MAX_DETAIL_WINDOW_BP && (
               <p>
                 Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000}{' '}
-                kb. Narrow it for variants and haplotypes.
+                kb. Narrow it for variants
+                {dataset.svStatesUrl ? ' and haplotypes' : ''}.
               </p>
             )}
           {reading && (
