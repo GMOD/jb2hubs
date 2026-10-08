@@ -1,16 +1,14 @@
 ---
 name: proteinbrowser
 description:
-  Update the proteinbrowser GitHub repo with a link to the genomes.jbrowse.org
-  instance once it is ready.
+  Link genomes.jbrowse.org/protein-browser from the proteinbrowser GitHub repo,
+  now that the page is live.
 metadata:
   category: ready
   area: protein browser
-  first_move:
-    'Link the instance from the proteinbrowser repo when the page leaves
-    staging.'
+  first_move: 'Add the link to the proteinbrowser repo README.'
   order: 1
 ---
 
-update proteinbrowser github with link to the genomes.jbrowse.org instance when
-ready
+The protein browser went to production on 2026-10-08. Link
+genomes.jbrowse.org/protein-browser from the proteinbrowser GitHub repo.

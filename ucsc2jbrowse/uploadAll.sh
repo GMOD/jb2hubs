@@ -65,7 +65,6 @@ total_changed=$(rclone_sync_with_indexes \
   --exclude "*.xxh" \
   --exclude "*.checked" \
   --exclude "*_meta.json" \
-  --exclude "*/vs/*" \
   --exclude "tracks.json" \
   --exclude "list.json.raw" \
   --exclude "*.bak" \

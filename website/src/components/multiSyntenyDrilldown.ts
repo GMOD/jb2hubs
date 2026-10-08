@@ -6,6 +6,7 @@
 //  - the reference's multi-way liftOver star, laned by the page's species.
 
 import { ucscConfigPath } from '../config/jbrowse.ts'
+import { openLaunch } from '../lib/desktopPreference.ts'
 import { loadJsonOnce } from '../lib/fetchJson.ts'
 import { type StarIndex, starLane } from '../lib/syntenyStars.ts'
 import {
@@ -148,7 +149,7 @@ export function starUrl(
 export function openRefAlignment(refTaxonId: number, gene: PlacedGene) {
   const url = refAlignmentUrl(refTaxonId, gene)
   if (url) {
-    window.open(url, '_blank', 'noopener')
+    openLaunch(url)
   }
 }
 
@@ -269,7 +270,7 @@ export function subtreeSyntenyUrl(
 export async function openSubtreeSynteny(leaves: SubtreeLeaf[]) {
   const url = subtreeSyntenyUrl(leaves, await drilldownForClick())
   if (url) {
-    window.open(url, '_blank', 'noopener')
+    openLaunch(url)
   }
 }
 
@@ -398,6 +399,6 @@ export async function openGeneDrilldown(
     flipped,
   )
   if (url) {
-    window.open(url, '_blank', 'noopener')
+    openLaunch(url)
   }
 }

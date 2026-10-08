@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 
 import { features } from '../config/features.ts'
+import { useDesktopLaunch } from '../hooks/useDesktopLaunch.ts'
 import { useResetOnChange } from '../hooks/useResetOnChange.ts'
 import { useUrlState } from '../hooks/useUrlState.ts'
+import { launchHref, setPrefersDesktop } from '../lib/desktopPreference.ts'
 import {
   DEFAULT_SUBTREE_GENOMES,
   type DrilldownData,
@@ -117,17 +119,19 @@ function AnchorLegend({
 // A link when the url is known, else the element itself with its click fallback.
 function Launch({
   href,
+  desktop,
   title,
   children,
 }: {
   href: string | undefined
+  desktop: boolean
   title: string
   children: ReactNode
 }) {
   return href ? (
     <a
-      href={href}
-      target="_blank"
+      href={launchHref(href, desktop)}
+      target={desktop ? undefined : '_blank'}
       rel="noopener"
       aria-label={title}
     >
@@ -257,6 +261,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
 
   // The clade whose branch point was last clicked, so a launch that opened the
   // nearest few can be followed by one that opens them all.
+  const desktop = useDesktopLaunch()
   const [clade, setClade] = useResetOnChange<Clade | null>(
     `${queryId}:${refTaxonId}:${neighborhood.anchors.length}:${neighborhood.species.length}:${orientToRef}`,
     null,
@@ -317,6 +322,21 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           />
           orient to reference
         </label>
+        {features.desktopLinks && (
+          <label
+            className="msv-orient"
+            title="Send every launch on this figure to JBrowse Desktop 5.0 or newer. An older Desktop does nothing when a link is clicked."
+          >
+            <input
+              type="checkbox"
+              checked={desktop}
+              onChange={e => {
+                setPrefersDesktop(e.target.checked)
+              }}
+            />
+            open in JBrowse Desktop
+          </label>
+        )}
         {refAlignment && refGene && (
           <button
             className="msv-align-btn"
@@ -331,8 +351,8 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
         {starHref && (
           <a
             className="msv-align-btn"
-            href={starHref}
-            target="_blank"
+            href={launchHref(starHref, desktop)}
+            target={desktop ? undefined : '_blank'}
             rel="noopener"
             title={`Open the liftOver chains at ${neighborhood.query.symbol} in JBrowse as a multi-way synteny track, one lane per species shown here`}
           >
@@ -352,8 +372,8 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
           {clade.total} in that clade.{' '}
           {widestHref ? (
             <a
-              href={widestHref}
-              target="_blank"
+              href={launchHref(widestHref, desktop)}
+              target={desktop ? undefined : '_blank'}
               rel="noopener"
             >
               {widestLabel}
@@ -441,6 +461,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                 <Launch
                   key={i}
                   href={href}
+                  desktop={desktop}
                   title={title}
                 >
                   <g
@@ -520,6 +541,7 @@ export default function MultiSyntenyView({ neighborhood, drilldown }: Props) {
                       <Launch
                         key={g.anchorId}
                         href={href}
+                        desktop={desktop}
                         title={title}
                       >
                         <path

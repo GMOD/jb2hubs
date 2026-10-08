@@ -26,12 +26,12 @@ export const features = {
   // The /gene hub's conserved-gene-order section: tree-ordered ortholog
   // neighborhood showing microsynteny across species (/conserved-gene-order
   // until 2026-09-01, which now redirects). Gates a section, not a page.
-  multiSynteny: staging,
+  multiSynteny: true,
   // The /protein-browser view: gene -> ortholog domain-architecture cartoon,
   // connected JBrowse session (collapsed-intron genome + AlphaFold 3D), and an
   // on-demand cross-species alignment (EBI Clustal Omega) overlaid with CDD
   // domains — all synthesized live.
-  proteinBrowser: staging,
+  proteinBrowser: true,
   // The /pangenomes/* section: one page per graph, with its loci and their
   // JBrowse launches. Waits on core v5, because the graphgenomeviewer plugin
   // every graph launch loads error-pages each released host.
@@ -40,8 +40,9 @@ export const features = {
   // synteny star. Waits on core v5: only config-staging.json carries the star,
   // since a display type a released host lacks is fatal once the track opens.
   multiwayStar: staging,
-  // "Open in Desktop" beside a launch link. Staged until JBrowse Desktop 5.0
-  // ships: the jbrowse:// handler landed after v4.2.1, so on every install in
-  // the wild today the link silently does nothing.
-  desktopLinks: staging,
+  // Desktop launches: "Open in Desktop 5" beside the synteny launch, and the
+  // gene-order figure's opt-in switch. The jbrowse:// handler landed after
+  // v4.2.1, so an older install does nothing when one is clicked, which is why
+  // the label names the version and the switch is off by default.
+  desktopLinks: true,
 }

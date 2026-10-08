@@ -34,7 +34,7 @@ export default function OpenInDesktop({
       href={desktopUrl(webUrl)}
       title={HINT}
     >
-      Open in Desktop →
+      Open in Desktop 5 →
     </a>
   ) : null
 }

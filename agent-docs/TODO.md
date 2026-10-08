@@ -17,9 +17,9 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Ready to take
 
-| Item                                     | Area            | First move                                                                   |
-| ---------------------------------------- | --------------- | ---------------------------------------------------------------------------- |
-| [proteinbrowser](todo/proteinbrowser.md) | protein browser | Link the instance from the proteinbrowser repo when the page leaves staging. |
+| Item                                     | Area            | First move                                      |
+| ---------------------------------------- | --------------- | ----------------------------------------------- |
+| [proteinbrowser](todo/proteinbrowser.md) | protein browser | Add the link to the proteinbrowser repo README. |
 
 ## Measure first
 

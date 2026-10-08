@@ -19,7 +19,7 @@ const staging =
 // src/config/features.ts is on. A flag promoted to production has to come off
 // this list at the same time, or its pages stay out of the sitemap while being
 // live.
-const STAGING_ONLY = ['/protein-browser/', '/pangenomes/']
+const STAGING_ONLY = ['/pangenomes/']
 
 // Pages that only forward elsewhere, so they never belong in the sitemap,
 // staging or not: stubs kept for old links, and /ucsc/launch/, which turns a
