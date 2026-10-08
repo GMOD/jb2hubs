@@ -1,6 +1,6 @@
 // Turning what a reader types into a region of the reference.
 //
-// The loci table is twenty examples; this is what makes the rest of the genome
+// The page offers a few examples; this is what makes the rest of the genome
 // reachable, so it takes either a locstring or a gene symbol and hands back a
 // window the sidecar and the launches can both use.
 
@@ -26,15 +26,16 @@ export function parseRegion(text: string): ParsedRegion | undefined {
   return end > start ? { chrom: m[1]!, start, end } : undefined
 }
 
-// The file's own name for a chromosome a reader typed as `1`, `X` or `MT`, or
-// undefined when it has no such sequence: tabix answers an unknown name with
-// no rows, which would read as a window with no structural variation.
+// The file's own name for a chromosome a reader typed as `1`, `x`, `MT` or
+// `chr1` (Arabidopsis names it `Chr1`), or undefined when it has no such
+// sequence: tabix answers an unknown name with no rows, which would read as a
+// window with no structural variation.
 export function matchRefName(name: string, known: readonly string[]) {
-  const bare = name.replace(/^chr/i, '')
-  const upper = bare.toUpperCase()
-  return [name, `chr${bare}`, `chr${upper === 'MT' ? 'M' : upper}`].find(n =>
-    known.includes(n),
-  )
+  const bare = (n: string) => {
+    const upper = n.replace(/^chr/i, '').toUpperCase()
+    return upper === 'MT' ? 'M' : upper
+  }
+  return known.find(k => k === name) ?? known.find(k => bare(k) === bare(name))
 }
 
 export function formatRegion({ chrom, start, end }: ParsedRegion) {
@@ -57,8 +58,8 @@ export interface LookupOptions {
   signal?: AbortSignal
 }
 
-// One mygene.info query on one field, quoted so the text is one term: the
-// table's own `C4A / C4B` unquoted is a query syntax error. A 4xx other than a
+// One mygene.info query on one field, quoted so the text is one term:
+// `C4A / C4B` unquoted is a query syntax error. A 4xx other than a
 // timeout or a rate limit is mygene saying nothing matches, not a failure.
 async function mygeneHits(
   field: 'symbol' | 'alias',
@@ -85,9 +86,10 @@ async function mygeneHits(
   return json.hits ?? []
 }
 
-// Its human coordinates are GRCh38, and a symbol on an unplaced contig or a
-// patch comes back without a plain chromosome, which is not a window this
-// graph can draw.
+// Its coordinates are Ensembl's current assembly, which is the reference of
+// all four graphs (checked 2026-10-08), and a symbol on an unplaced contig or a
+// patch comes back without a plain chromosome, which is not a window a graph
+// here can draw.
 function placedRegion(hits: MyGeneHit[]): ParsedRegion | undefined {
   for (const hit of hits) {
     const positions = [hit.genomic_pos ?? []].flat()

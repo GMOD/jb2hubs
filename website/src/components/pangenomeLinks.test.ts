@@ -11,21 +11,19 @@ import {
   MOUSE_DATASET,
 } from './pangenomeDataset.ts'
 import {
-  bandageLocusUrl,
-  geneHubUrl,
+  bandageRegionUrl,
   graphLanesUrl,
   graphLocusUrl,
   graphRegionUrl,
   graphVcfLgvUrl,
   haplotypeLanesUrl,
   launchRegion,
-  locusLaunchUrl,
+  regionLaunches,
 } from './pangenomeLinks.ts'
 import {
   MAX_DETAIL_WINDOW_BP,
   PANGENOME_LOCI,
   detailWindow,
-  syntenyGene,
 } from './pangenomeLoci.ts'
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
@@ -140,9 +138,19 @@ test('an unphased callset does not ask for haplotype rows', () => {
   assert.equal(display?.renderingMode, undefined)
 })
 
-test('without a callset the primary launch is the graph configs own lanes', () => {
+const launchOf = (
+  launches: ReturnType<typeof regionLaunches>,
+  kind: (typeof launches)[number]['kind'],
+) => launches.find(l => l.kind === kind)?.url
+
+test('without a callset a region opens as the graph configs own lanes', () => {
   const narrow = MOUSE_DATASET.loci.find(l => detailWindow(l))!
-  const { config, spec } = parseLaunch(locusLaunchUrl(MOUSE_DATASET, narrow)!)
+  const launches = regionLaunches(MOUSE_DATASET, launchRegion(narrow))
+  assert.deepEqual(
+    launches.map(l => l.kind),
+    ['graph', 'bubbles'],
+  )
+  const { config, spec } = parseLaunch(launchOf(launches, 'bubbles')!)
   assert.equal(config, MOUSE_DATASET.graphBrowser!.configUrl)
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
@@ -158,7 +166,9 @@ test('without a callset the primary launch is the graph configs own lanes', () =
 // tier instead.
 test('and over a span the fine lanes cannot draw, it is the tier', () => {
   const wide = MOUSE_DATASET.loci.find(l => detailWindow(l) === undefined)!
-  const { spec } = parseLaunch(locusLaunchUrl(MOUSE_DATASET, wide)!)
+  const { spec } = parseLaunch(
+    launchOf(regionLaunches(MOUSE_DATASET, launchRegion(wide)), 'bubbles')!,
+  )
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
     'mouse_bubble_score',
@@ -166,9 +176,36 @@ test('and over a span the fine lanes cannot draw, it is the tier', () => {
   ])
 })
 
-test('and with a callset it is still the reference view', () => {
-  const url = locusLaunchUrl(HPRC_DATASET, locus)
-  assert.equal(url, graphVcfLgvUrl(HPRC_DATASET, locus))
+test('and with a callset it is the reference view, with the panel as lanes', () => {
+  const panel = HPRC_DATASET.panels![locus.id]!.lanes.map(l => l.haplotype)
+  const launches = regionLaunches(HPRC_DATASET, launchRegion(locus), panel)
+  assert.deepEqual(
+    launches.map(l => l.kind),
+    ['graph', 'variants', 'haplotypes', 'bandage'],
+  )
+  assert.equal(
+    launchOf(launches, 'variants'),
+    graphVcfLgvUrl(HPRC_DATASET, locus),
+  )
+  assert.equal(
+    launchOf(launches, 'haplotypes'),
+    haplotypeLanesUrl(HPRC_DATASET, locus),
+  )
+})
+
+// The callset has no coarse tier, and a collapsed locus no graph worth opening.
+test('a wide window offers the graph alone, and a collapsed locus no graph', () => {
+  const wide = { chrom: 'chr6', start: 28_510_000, end: 33_480_000 }
+  assert.deepEqual(
+    regionLaunches(HPRC_DATASET, wide).map(l => l.kind),
+    ['graph'],
+  )
+  assert.deepEqual(
+    regionLaunches(HPRC_DATASET, launchRegion(locus), [], {
+      graphCollapsed: true,
+    }).map(l => l.kind),
+    ['variants'],
+  )
 })
 
 test('the lanes launch is undefined without a hosted graph config', () => {
@@ -177,7 +214,7 @@ test('the lanes launch is undefined without a hosted graph config', () => {
     graphLanesUrl(noGraph, { chrom: 'chr11', start: 1, end: 1000 }),
     undefined,
   )
-  assert.equal(locusLaunchUrl(noGraph, noGraph.loci[0]!), undefined)
+  assert.deepEqual(regionLaunches(noGraph, launchRegion(noGraph.loci[0]!)), [])
 })
 
 test('a derived catalogue carries what the tier said and claims nothing else', () => {
@@ -187,13 +224,6 @@ test('a derived catalogue carries what the tier said and claims nothing else', (
       const derived = l.derived
       assert.ok(derived, `${d.id}/${l.id} is marked derived`)
       assert.ok(derived.segments > 0, `${d.id}/${l.id} has a segment count`)
-      // The tier's only variation claim is its inversion flag, so a derived
-      // locus carries that class or none. A guessed badge would read exactly
-      // like a curated one.
-      assert.ok(
-        l.variation.every(v => v === 'inversion'),
-        `${d.id}/${l.id} claims ${l.variation.join()}`,
-      )
     }
     // Ranked by segments per bubble, descending — that ordering is the whole
     // claim the catalogue makes.
@@ -202,42 +232,6 @@ test('a derived catalogue carries what the tier said and claims nothing else', (
       counts,
       [...counts].sort((a, b) => b - a),
     )
-  }
-})
-
-test('geneHubUrl seeds the marker gene and reference taxon', () => {
-  const url = geneHubUrl(HPRC_DATASET, locus)
-  assert.ok(url)
-  const { pathname, searchParams } = new URL(url, 'https://example.org')
-  assert.equal(pathname, '/gene/')
-  // MHC's first marker gene is HLA-A.
-  assert.equal(searchParams.get('gene'), 'HLA-A')
-  assert.equal(searchParams.get('ref'), String(HPRC_DATASET.reference.taxonId))
-})
-
-test('a derived locus seeds the hub from the tiers gene list, or not at all', () => {
-  // Its `gene` is a label the generator composed, so splitting THAT is what
-  // produced `Gm10439,` with the comma on it and `Vmn` from
-  // "Vmn cluster (18 genes)" -- three hub links that find nothing, and one
-  // (`chr9:87,086,686`) that is not a gene name at all.
-  for (const d of [MOUSE_DATASET, BOVINE_DATASET, ARABIDOPSIS_DATASET]) {
-    for (const l of d.loci) {
-      const gene = syntenyGene(l)
-      const genes = l.derived!.genes
-      if (genes.length === 0) {
-        assert.equal(gene, undefined, `${d.id}/${l.id} offers a hub link`)
-        assert.equal(geneHubUrl(d, l), undefined)
-      } else {
-        assert.ok(gene && genes.includes(gene), `${d.id}/${l.id} seeds ${gene}`)
-        // A cluster's alphabetically-first member is often an unnamed LOC id,
-        // which no ortholog table is keyed on.
-        assert.equal(
-          gene.startsWith('LOC'),
-          genes.every(g => g.startsWith('LOC')),
-          `${d.id}/${l.id} seeds ${gene} out of ${genes.join()}`,
-        )
-      }
-    }
   }
 })
 
@@ -469,10 +463,12 @@ test('haplotypeLanesUrl is undefined without the lane track or a panel', () => {
   )
 })
 
-test('bandageLocusUrl cuts the launch window around the locus panel, laid out by force', () => {
+const cfhrPanel = HPRC_DATASET.panels!.cfhr!.lanes.map(l => l.haplotype)
+
+test('bandageRegionUrl cuts the window around the haplotypes given, laid out by force', () => {
   const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
-  const url = new URL(bandageLocusUrl(HPRC_DATASET, cfhr)!)
   const region = launchRegion(cfhr)
+  const url = new URL(bandageRegionUrl(HPRC_DATASET, region, cfhrPanel)!)
   assert.equal(
     url.origin + url.pathname,
     'https://jbrowse.org/demos/bandagejs/',
@@ -480,26 +476,32 @@ test('bandageLocusUrl cuts the launch window around the locus panel, laid out by
   assert.deepEqual(Object.fromEntries(url.searchParams), {
     gbz: 'hprc',
     loc: `${region.chrom}:${region.start + 1}-${region.end}`,
-    haps: HPRC_DATASET.panels!.cfhr!.lanes.map(l => l.haplotype).join(','),
+    haps: cfhrPanel.join(','),
     layout: 'force',
   })
 })
 
 // BandageJS reads the gbz-base database itself, so the link needs no hosted
 // graph.
-test('bandageLocusUrl is undefined without a gbz preset or a panel', () => {
-  const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
-  assert.ok(bandageLocusUrl({ ...HPRC_DATASET, graphBrowser: undefined }, cfhr))
-  const bare = HPRC_DATASET.loci.find(l => l.id === 'srgap2')!
-  assert.equal(bandageLocusUrl(HPRC_DATASET, bare), undefined)
+test('bandageRegionUrl is undefined without a gbz preset or haplotypes', () => {
+  const region = launchRegion(HPRC_DATASET.loci.find(l => l.id === 'cfhr')!)
+  assert.ok(
+    bandageRegionUrl(
+      { ...HPRC_DATASET, graphBrowser: undefined },
+      region,
+      cfhrPanel,
+    ),
+  )
+  assert.equal(bandageRegionUrl(HPRC_DATASET, region, []), undefined)
   assert.equal(
-    bandageLocusUrl({ ...HPRC_DATASET, bandageGbz: undefined }, cfhr),
+    bandageRegionUrl(
+      { ...HPRC_DATASET, bandageGbz: undefined },
+      region,
+      cfhrPanel,
+    ),
     undefined,
   )
-  assert.ok(MOUSE_DATASET.loci.length > 0)
-  for (const l of MOUSE_DATASET.loci) {
-    assert.equal(bandageLocusUrl(MOUSE_DATASET, l), undefined)
-  }
+  assert.equal(bandageRegionUrl(MOUSE_DATASET, region, cfhrPanel), undefined)
 })
 
 // The adapter names a lane after the assembly `assemblyNameToPanSN` maps its

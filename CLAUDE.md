@@ -274,8 +274,11 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   lanes under `MAX_DETAIL_WINDOW_BP`, the coarse tier above.
 - **A haplotype the lane track maps to an assembly must be that assembly's
   alias.**
+- **The page is one box**: a gene or region in, that window's launches out
+  (`PangenomeRegionBox.tsx`), with the dataset's loci as examples under it. Do
+  not bring back a table of loci.
 - **The structural forms come from the genome-wide sidecar**
-  (`pangenomeSvStates.ts`), for curated loci and the Any region box alike.
+  (`pangenomeSvStates.ts`), for an example and a typed region alike.
 - **`features.pangenome` stays staging until core v5**: the graph plugin
   error-pages every released host.
 - **A visible change here is owed to the tutorial** in jbrowse-components

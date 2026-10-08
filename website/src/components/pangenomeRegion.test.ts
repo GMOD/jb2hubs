@@ -41,6 +41,7 @@ test('a chromosome is named the way the file names it, or not at all', () => {
   assert.equal(matchRefName('x', known), 'chrX')
   assert.equal(matchRefName('MT', known), 'chrM')
   assert.equal(matchRefName('chr99', known), undefined)
+  assert.equal(matchRefName('chr3', ['Chr3']), 'Chr3')
 })
 
 test('what is not a region is left for a gene lookup', () => {

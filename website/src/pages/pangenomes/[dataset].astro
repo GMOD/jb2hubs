@@ -1,20 +1,17 @@
 ---
-// One pangenome graph, one page: the chromosomes as graph links, the locus
-// catalogue as a table of launches, the region box, and the published files.
-// Every graph goes through this route, because they publish the same
-// projections and launch off the same builders; what is per-dataset is the
-// numbers the dataset carries. The region box is the page's only client
-// JavaScript; every other url is built here.
+// One pangenome graph, one page: the region box with the dataset's loci as its
+// examples, the chromosomes as graph links, and the published files. Every
+// graph goes through this route, because they publish the same projections and
+// launch off the same builders; what is per-dataset is the numbers the dataset
+// carries. The region box is the page's only client JavaScript.
 import Container from '../../components/Container.astro'
 import {
   PANGENOME_DATASETS,
   publishedFiles,
 } from '../../components/pangenomeDataset.ts'
 import { graphRegionUrl } from '../../components/pangenomeLinks.ts'
-import PangenomeLaunchLinks from '../../components/PangenomeLaunchLinks.tsx'
-import PangenomeRegionForms from '../../components/PangenomeRegionForms.tsx'
-import { lociColumns, lociRows } from '../../components/pangenomeLociRows.ts'
-import { MAX_DETAIL_WINDOW_BP } from '../../components/pangenomeLoci.ts'
+import PangenomeRegionBox from '../../components/PangenomeRegionBox.tsx'
+import { pangenomeExamples } from '../../components/pangenomeExamples.ts'
 import { features } from '../../config/features.ts'
 import Layout from '../../layouts/Layout.astro'
 import '../../styles/common-table.css'
@@ -44,8 +41,7 @@ const links = [
     : []),
   ...dataset.links,
 ]
-const rows = lociRows(dataset)
-const columns = lociColumns(rows)
+const examples = pangenomeExamples(dataset)
 const chromosomes = (dataset.graphBrowser?.chromosomes ?? []).flatMap(c => {
   const url = graphRegionUrl(dataset, {
     chrom: c.name,
@@ -70,7 +66,7 @@ function humanBytes(bytes: number) {
 
 <Layout
   title={dataset.heading}
-  description={`${dataset.panelDescription}, projected onto ${dataset.reference.label} and drawable as a pangenome graph at any region.`}
+  description={`${dataset.panelDescription}, as one pangenome graph on ${dataset.reference.label}, drawable at any gene or region.`}
 >
   <Container>
     <p>
@@ -78,7 +74,7 @@ function humanBytes(bytes: number) {
     </p>
     <h1>{dataset.heading}</h1>
     <p>
-      {dataset.panelDescription}, projected onto {dataset.reference.label}.
+      {dataset.panelDescription}, as one graph on {dataset.reference.label}.
     </p>
     <p>
       {links.map((l, i) => (
@@ -89,88 +85,31 @@ function humanBytes(bytes: number) {
       ))}
     </p>
 
+    <PangenomeRegionBox
+      dataset={dataset}
+      examples={examples}
+      examplesLabel={
+        dataset.loci.some(l => l.derived) ? 'Most variable' : 'Examples'
+      }
+      client:load
+    />
+
     {chromosomes.length > 0 && (
       <>
-        <h2>Graph</h2>
+        <h2>Whole chromosomes</h2>
         <p>
-          Whole chromosome:
           {chromosomes.map(c => (
             <>
-              {' '}
               <a
                 href={c.url}
                 target="_blank"
                 rel="noreferrer"
               >
                 {c.name}
-              </a>
+              </a>{' '}
             </>
           ))}
         </p>
-      </>
-    )}
-
-    {rows.length > 0 && (
-      <>
-        <h2>Loci</h2>
-        {columns.haplotypes && (
-          <p>
-            Haplotypes opens one lane per structural configuration the callset
-            finds at the locus, commonest first, each read from the graph in its
-            own assembly's coordinates.
-            {columns.bandage &&
-              ' BandageJS cuts the same haplotypes out of the graph and lays it out by force, as Bandage does.'}
-          </p>
-        )}
-        <div class="table-scroll">
-          <table>
-            <thead>
-              <tr>
-                <th>Gene</th>
-                {columns.description && <th>Description</th>}
-                {columns.variation && <th>Variation</th>}
-                <th>Window</th>
-                {columns.segments && <th>Segments</th>}
-                {columns.launches && <th>Open</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map(r => (
-                <tr>
-                  <td>{r.gene}</td>
-                  {columns.description && <td>{r.description}</td>}
-                  {columns.variation && <td>{r.variation}</td>}
-                  <td>
-                    <code>{r.window}</code>
-                  </td>
-                  {columns.segments && <td>{r.segments?.toLocaleString()}</td>}
-                  {columns.launches && (
-                    <td>
-                      <PangenomeLaunchLinks links={r.launches} />
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </>
-    )}
-
-    {dataset.svStatesUrl && (
-      <>
-        <h2>Any region</h2>
-        <p>
-          The rows above are examples. For any other window of up to{' '}
-          {MAX_DETAIL_WINDOW_BP / 1000} kb, the callset says which structural
-          forms the haplotypes it genotypes carry there and how common each is,
-          and the launches open on those. A wider window opens as the graph
-          alone.
-        </p>
-        <PangenomeRegionForms
-          dataset={dataset}
-          client:idle
-        />
       </>
     )}
 
@@ -201,14 +140,3 @@ function humanBytes(bytes: number) {
     </div>
   </Container>
 </Layout>
-
-<style>
-  /* A window is one value; the description and the row of launches wrap,
-     the launches onto two lines at most. */
-  td code {
-    white-space: nowrap;
-  }
-  td:last-child {
-    min-width: 14rem;
-  }
-</style>

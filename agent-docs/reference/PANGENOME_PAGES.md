@@ -43,22 +43,39 @@ should be reflected there.
 `/pangenomes/<id>` — `hprc`, `mouse`, `bovine`, `arabidopsis` — is a page per
 graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
 dataset. `/pangenomes` is a list of them and nothing else. A graph's page is one
-sentence, a line of links, the chromosomes as graph links, a table of its loci
-with their launches (`lociRows` in
-`website/src/components/pangenomeLociRows.ts`), the **Any region** box where the
-dataset publishes a structural-state sidecar, and the file table. Apart from
-that box the page is static HTML with one six-line style rule: the site's table
+sentence, a line of links, the **Gene or region** box with the dataset's loci as
+a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
+the chromosomes as graph links, and the file table. The box is the page's only
+client JavaScript and the page has no style rule of its own: the site's table
 rules and the browser's defaults are the whole design, on purpose, after the
 2026-09-16 review found the previous page a wall of prose and buttons.
 
-The 2026-09-16 review also removed a free-text region box that did nothing but
-build launches, since the table and the chromosome links cover those. The **Any
-region** box that came back the next day is a different thing: it answers a
-question first, which structural forms the callset's haplotypes carry in the
-window asked for (see "A locus's haplotypes are lanes" below), and its launches
-follow from that answer. It keeps the question in the url as `?region=`, reads
-windows of up to `MAX_DETAIL_WINDOW_BP` (150 kb), and offers only the graph for
-a wider one.
+The box replaced the loci table on 2026-10-08. The table was 22 rows of five
+launches on HPRC (136 links, 2,629 px) and, on the three derived catalogues,
+twenty bubbles ranked by segment count, half of them labelled "intergenic": a
+page that read as a list of hard regions. Now a reader names a gene or a region,
+or clicks an example, and the answer is that one window: what it opens as
+(`regionLaunches` in `pangenomeLinks.ts`, each launch with a line saying what it
+draws) and, where the dataset publishes a structural-state sidecar, which forms
+the haplotypes carry there (see "A locus's haplotypes are lanes" below). The
+HPRC page is 974 px before a question. What the table had that the box does not:
+the variation class column, the gene hub link, and launches that work without
+JavaScript.
+
+- **An example is its locus's launch window as a locstring**, and the box
+  recognises the text to title the answer and to drop the graph launch for a
+  `graphCollapsed` locus. A derived dataset offers its `MAX_DERIVED_EXAMPLES`
+  highest-ranked bubbles that overlap a gene, under "Most variable".
+- **Every dataset has the box.** Without a sidecar it resolves the window
+  against `graphBrowser.chromosomes` and offers the launches alone. Gene symbols
+  go through mygene.info, whose coordinates matched all four references on
+  2026-10-08 (cattle checked on BTNL2, RHOBTB2 and DEFB4A against bosTau9).
+- **The question rides in the url as `?region=`.** A window past
+  `MAX_DETAIL_WINDOW_BP` (150 kb) gets the graph, plus the bubble lanes where
+  the dataset has no callset, since a callset has no coarse tier.
+- **`panels.json` is no longer read by the page.** `check-pangenome-launches`
+  boots the haplotypes it names, and a test holds `regionLaunches` to the same
+  urls, so the check still covers what an example opens.
 
 `/pangenomes/explorer` was a separate app until that day — a card grid of loci
 with class filters and a per-locus dashboard of four bar charts computed by
@@ -66,9 +83,10 @@ with class filters and a per-locus dashboard of four bar charts computed by
 buttons on each graph's page pointing at it. All of that is gone, along with
 `portal.css`, the per-locus `*.vcfsummary.json` summaries, the `notes[]`
 caveats, the per-locus `significance` sentences and the PangyPlot fallback
-(`externalGraphBrowser`), which only the old region box ever reached; the locus
-table is what replaced it. Its redirect stub went on 2026-10-04, once neither
-the JBrowse tutorials nor the published docs linked the route.
+(`externalGraphBrowser`), which only the old region box ever reached; a locus
+table replaced it, and the box above replaced that. Its redirect stub went on
+2026-10-04, once neither the JBrowse tutorials nor the published docs linked the
+route.
 
 ### One rule decides how wide a window is drawn, and it removed four surfaces
 
@@ -132,13 +150,12 @@ Two whole features came out with them, and neither is worth rebuilding as-is:
   computed over HPRC's 232 samples. Two cohorts, one locus, and the caption was
   the only thing saying so.
 
-`markerGenes` on a `PangenomeLocus` is the surviving half of the second: it is
-read by `syntenyGene` for the gene-hub link and no longer has anything to do
-with pangene, which is why it is no longer called `pangeneGenes`.
+`markerGenes` on a `PangenomeLocus` was the surviving half of the second, read
+for the gene-hub link, and went with the loci table on 2026-10-08.
 
 ### A locus's haplotypes are lanes, and the callset picks which
 
-`haplotypes` on an HPRC locus row (`haplotypeLanesUrl`) opens the
+The Haplotypes launch (`haplotypeLanesForRegion`) opens the
 `hprc_v2_1_gbz_lanes` track, one lane per haplotype walk read from HPRC's
 `.gbz.db` in the browser, narrowed to that locus's panel in
 `website/public/pangenome-hprc/panels.json`: one haplotype per structural
@@ -154,10 +171,11 @@ each state does to the reference's structure, one character per haplotype, 18 MB
 for the genome — and `structuralForms` (`pangenomeSvStates.ts`) groups a
 window's haplotypes out of a ranged read of it, a few KB and about 300 ms.
 `generatePangenomePanels.ts` runs that over the curated loci and commits the
-result; the **Any region** box on the page (`PangenomeRegionForms.tsx`) runs the
-same two functions in the reader's browser for a locstring or a gene symbol,
-over a window of up to 150 kb. A table row and the same window typed in the box
-cannot disagree, because neither has rules of its own.
+result for `check-pangenome-launches`; the box on the page
+(`PangenomeRegionBox.tsx`) runs the same two functions in the reader's browser
+for a locstring or a gene symbol, over a window of up to 150 kb. A committed
+panel and the same window typed in the box cannot disagree, because neither has
+rules of its own.
 
 Two things the sidecar fixed rather than moved, both measured 2026-09-17. The
 old rule read the 2.3 GB callset with bcftools at five seconds a locus. And it

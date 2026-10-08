@@ -3,7 +3,7 @@
 // It is one tabix-indexed file for the genome (18 MB), so a window is a ranged
 // read of a few KB: 300 ms for a typical one and a third of a second for MHC
 // class II, the densest window in the corpus, measured over https on
-// 2026-09-17. Nothing here is per locus: the loci table's launches and a region
+// 2026-09-17. Nothing here is per locus: the committed panels and a region
 // a reader types go through the same query.
 
 import { TabixIndexedFile } from '@gmod/tabix'

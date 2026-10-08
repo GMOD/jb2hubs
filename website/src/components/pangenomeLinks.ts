@@ -5,11 +5,7 @@
 // CORS-open VCF — the launch works without first baking the track into the config.
 
 import { specUrl } from './jbrowseLinks.ts'
-import {
-  MAX_DETAIL_WINDOW_BP,
-  detailWindow,
-  syntenyGene,
-} from './pangenomeLoci.ts'
+import { MAX_DETAIL_WINDOW_BP, detailWindow } from './pangenomeLoci.ts'
 
 import type {
   PangenomeDataset,
@@ -233,19 +229,6 @@ export function launchRegion(locus: PangenomeLocus): GraphRegion {
   return { chrom: locus.chrom, start, end, label: locus.gene }
 }
 
-// The launch a locus's primary button should make: the callset beside the
-// reference genes where the dataset has one, else the graph's own lanes. Both
-// open on the same window, so the two datasets differ in what is IN the view
-// rather than in where it lands.
-export function locusLaunchUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  return dataset.graphVcf
-    ? graphVcfLgvUrl(dataset, locus)
-    : graphLanesUrl(dataset, launchRegion(locus))
-}
-
 // A region drawn as the graph itself: one linear view, its lanes above the
 // segments track opened as the graph. The graph track cuts the view's window,
 // re-cuts as the view moves, and past the adapter's `coarse` handover cuts the
@@ -319,8 +302,7 @@ export function haplotypeLanesUrl(
   )
 }
 
-// The same launch over any window, for a region a reader asked for rather than
-// a locus the table lists. Undefined without the lane track or without
+// The same launch over any window a reader asks for. Undefined without the lane track or without
 // haplotypes to draw.
 export function haplotypeLanesForRegion(
   dataset: PangenomeDataset,
@@ -390,70 +372,57 @@ export function bandageRegionUrl(
   return `${BANDAGE_URL}?${query}`
 }
 
-export function bandageLocusUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  return bandageRegionUrl(
-    dataset,
-    launchRegion(locus),
-    panelHaplotypes(dataset, locus),
-  )
-}
-
-// The launches a locus row or an asked-for region offers, in one order, and
-// only those this build can open: a builder that answers undefined (no hosted
-// graph, no panel, no callset) leaves no link rather than one to nowhere.
-export type LaunchKind =
-  | 'graph'
-  | 'linear'
-  | 'haplotypes'
-  | 'bandage'
-  | 'geneHub'
-
+// What a region opens as, in one order, and only what this build can open: a
+// builder that answers undefined (no hosted graph, no haplotypes, no callset)
+// leaves no link. The callset has no coarse tier, so a window past
+// MAX_DETAIL_WINDOW_BP offers no variants launch, where the graph's own lanes
+// switch to the tier and stay.
 export interface LaunchLink {
-  kind: LaunchKind
+  kind: 'graph' | 'variants' | 'bubbles' | 'haplotypes' | 'bandage'
   label: string
+  about: string
   url: string
-  // A JBrowse launch opens beside the page; a site route replaces it.
-  newTab: boolean
 }
 
-export function launchLinks(
-  dataset: PangenomeDataset,
-  urls: Partial<Record<LaunchKind, string>>,
-): LaunchLink[] {
-  const labels: [LaunchKind, string][] = [
-    ['graph', 'graph'],
-    ['linear', dataset.graphVcf ? 'variants' : 'bubbles'],
-    ['haplotypes', 'haplotypes'],
-    ['bandage', 'BandageJS'],
-    ['geneHub', 'gene hub'],
-  ]
-  return labels.flatMap(([kind, label]) => {
-    const url = urls[kind]
-    return url ? [{ kind, label, url, newTab: kind !== 'geneHub' }] : []
-  })
-}
-
-// The same choice locusLaunchUrl makes, for a region a reader asked for.
-export function regionLaunchUrl(
+export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
-) {
-  return dataset.graphVcf
-    ? referenceRegionUrl(dataset, region)
-    : graphLanesUrl(dataset, region)
-}
-
-// Internal cross-link into the gene hub for the locus's marker gene, seeded
-// from the reference species' taxon (not a JBrowse spec — a site route).
-// Undefined where the locus names no gene: a derived entry over an intergenic
-// bubble has none, and a hub link built from its coordinate label would be a
-// button that always comes back empty.
-export function geneHubUrl(dataset: PangenomeDataset, locus: PangenomeLocus) {
-  const gene = syntenyGene(locus)
-  return gene
-    ? `/gene/?gene=${encodeURIComponent(gene)}&ref=${dataset.reference.taxonId}`
-    : undefined
+  haplotypes: string[] = [],
+  { graphCollapsed = false } = {},
+): LaunchLink[] {
+  const wide = region.end - region.start > MAX_DETAIL_WINDOW_BP
+  const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
+    {
+      kind: 'graph',
+      label: 'Graph',
+      about: 'the region drawn as a graph',
+      url: graphCollapsed ? undefined : graphRegionUrl(dataset, region),
+    },
+    dataset.graphVcf
+      ? {
+          kind: 'variants',
+          label: 'Variants',
+          about: 'the structural variants each haplotype carries',
+          url: wide ? undefined : referenceRegionUrl(dataset, region),
+        }
+      : {
+          kind: 'bubbles',
+          label: 'Bubbles',
+          about: 'where the graph branches, as tracks on the reference',
+          url: graphLanesUrl(dataset, region),
+        },
+    {
+      kind: 'haplotypes',
+      label: 'Haplotypes',
+      about: 'one lane per structural form, commonest first',
+      url: haplotypeLanesForRegion(dataset, region, haplotypes),
+    },
+    {
+      kind: 'bandage',
+      label: 'BandageJS',
+      about: 'the same haplotypes, laid out as Bandage draws them',
+      url: bandageRegionUrl(dataset, region, haplotypes),
+    },
+  ]
+  return links.flatMap(l => (l.url ? [{ ...l, url: l.url }] : []))
 }

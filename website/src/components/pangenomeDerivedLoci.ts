@@ -3,11 +3,11 @@
 // `website/generatePangenomeLoci.ts` ranks a graph's coarse tier by segments per
 // bubble and names each entry off the reference annotation, writing
 // `public/pangenome-<id>/loci.json`. That file is the whole of what is known
-// about those loci: there is no prose and no curated variation class, because
-// nothing wrote one. This maps it onto `PangenomeLocus` without inventing any.
+// about those loci: there is no prose, because nothing wrote any. This maps it
+// onto `PangenomeLocus` without inventing any.
 //
 // Which is the point of the `derived` field rather than a dataset-level flag:
-// the table needs to know, per locus, that the tier's numbers are all there
+// the page needs to know, per locus, that the tier's numbers are all there
 // is — HPRC's catalogue is curated, and a dataset could one day hold both.
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
@@ -38,7 +38,6 @@ export function derivedLoci(file: DerivedLociFile): PangenomeLocus[] {
     chrom: l.chrom,
     start: l.start,
     end: l.end,
-    variation: [],
     derived: {
       segments: l.segments,
       genes: l.genes,

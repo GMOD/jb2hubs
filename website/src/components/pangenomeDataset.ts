@@ -141,9 +141,10 @@ export interface PangenomeDataset {
   label: string
   heading: string
   reference: PangenomeReference
-  // One line naming the assemblies the graph was built from, shown wherever the
-  // dataset is introduced. A noun phrase with no terminal punctuation and no
-  // em-dash, because every caller sets it inside a sentence of its own.
+  // One line naming the assemblies the graph adds to its reference, shown
+  // wherever the dataset is introduced. A noun phrase with no terminal
+  // punctuation and no em-dash, and without the reference, because every caller
+  // sets it inside a sentence that ends on `reference.label`.
   //
   // Not derived from the callset's sample list: two of the three datasets have
   // no callset, and one of those has no sample list at all in any file we serve.
@@ -166,9 +167,9 @@ export interface PangenomeDataset {
   bandageGbz?: string
   loci: PangenomeLocus[]
   // Per locus id, the haplotypes its lanes launch opens, read from
-  // `svStatesUrl` by `generatePangenomePanels.ts`. A locus without one has
-  // nothing in its window that tells the haplotypes apart, and gets no
-  // haplotypes launch.
+  // `svStatesUrl` by `generatePangenomePanels.ts`. The page reads the sidecar
+  // itself; `check-pangenome-launches` boots these. A locus without one has
+  // nothing in its window that tells the haplotypes apart.
   panels?: Record<string, StructuralPanel>
   // The structural-state sidecar of this graph's callset, published by
   // `pangenome-config/buildHprcSvStates.sh`. It is what makes a window nobody
@@ -463,8 +464,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
     geneTrackId: 'mm39-ncbiRefSeq',
     taxonId: 10090,
   },
-  panelDescription:
-    'GRCm39 (C57BL/6J) plus 18 inbred and wild-derived Mouse Genomes Project strains',
+  panelDescription: '18 inbred and wild-derived Mouse Genomes Project strains',
   svTrackIds: [],
   graphBrowser: MOUSE_GRAPH_BROWSER,
   loci: MOUSE_LOCI,
@@ -547,7 +547,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     taxonId: 9913,
   },
   panelDescription:
-    'ARS-UCD1.2 (Hereford) plus eight taurine and indicine breeds, yak, bison and gaur',
+    'Eight taurine and indicine cattle breeds, yak, bison and gaur',
   graphVcf: {
     trackId: 'bovine-arsucd12-minigraph-vcf',
     name: 'Bovine super-pangenome variants (minigraph, ARS-UCD1.2)',
@@ -601,8 +601,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
     geneTrackId: 'GCF_000001735.4-ncbiRefSeqCurated',
     taxonId: 3702,
   },
-  panelDescription:
-    'TAIR10 (Col-0) plus 26 1001 Genomes Plus Phase 1 accessions',
+  panelDescription: '26 1001 Genomes Plus Phase 1 accessions',
   svTrackIds: [],
   graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
   loci: ARABIDOPSIS_LOCI,

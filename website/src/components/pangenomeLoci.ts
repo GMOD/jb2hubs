@@ -1,19 +1,10 @@
 // Curated catalog of human loci where genome structure varies between
 // haplotypes — copy number, gene presence/absence, tandem repeats, inversions,
-// and allelic hyperdiversity — tabled on /pangenomes/hprc.
+// and allelic hyperdiversity — offered as examples on /pangenomes/hprc.
 //
 // Coordinates are GRCh38 / hg38 (UCSC chr-naming), matching the HPRC
 // minigraph-cactus GRCh38 VCF contigs and the hg38 UCSC JBrowse config. `id` is
 // a stable slug, which `check-pangenome-launches --loci` filters on.
-
-// Variation classes, using standard dbVar/VCF-aligned terms. A locus can carry
-// several. These describe within-species variation (polymorphism).
-export type VariationClass =
-  | 'cnv' // copy-number variation (segmental gene dosage)
-  | 'pav' // gene presence/absence (gene-content variation)
-  | 'hyperdiversity' // allelic / sequence hyperdiversity
-  | 'vntr' // variable-number tandem repeat
-  | 'inversion' // inversion polymorphism
 
 // What a dataset's coarse tier says about one bubble, for a catalogue that was
 // derived rather than curated (`website/generatePangenomeLoci.ts`) by ranking a
@@ -36,12 +27,6 @@ export interface PangenomeLocus {
   chrom: string
   start: number
   end: number
-  variation: VariationClass[]
-  // The genes this locus is about, most representative first. Read by
-  // `syntenyGene` for the cross-species link, and the reason a curated locus
-  // gets a real symbol where a derived one has to fall back to the tier's own
-  // gene list. Omitted where the locus is not gene-shaped (an intragenic VNTR).
-  markerGenes?: string[]
   // Narrower window for the two launches that draw per-haplotype data — the
   // graph and the 464-row genotype matrix — when the display span above is too
   // wide for either (see MAX_DETAIL_WINDOW_BP). Where the JBrowse HPRC tutorial
@@ -89,14 +74,6 @@ export function detailWindow(locus: PangenomeLocus) {
       : undefined
 }
 
-export const VARIATION_LABELS: Record<VariationClass, string> = {
-  cnv: 'copy number',
-  pav: 'presence/absence',
-  hyperdiversity: 'hyperdiversity',
-  vntr: 'VNTR',
-  inversion: 'inversion',
-}
-
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',
@@ -112,21 +89,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // (32,500,000-32,560,000) stopped 19 kb short of DRB1. C4 is not in here at
     // all: C4A is chr6:31,982,057-32,002,681, which is the separate `c4` locus.
     detailWindow: { start: 32_510_000, end: 32_600_000 },
-    variation: ['hyperdiversity', 'cnv'],
-    markerGenes: [
-      'HLA-A',
-      'HLA-B',
-      'HLA-C',
-      'HLA-DRB1',
-      'HLA-DRB3',
-      'HLA-DRB4',
-      'HLA-DRB5',
-      'HLA-DQA1',
-      'HLA-DQB1',
-      'HLA-DPB1',
-      'C4A',
-      'C4B',
-    ],
   },
   {
     id: 'amy1',
@@ -142,8 +104,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // and no bubble crossing either edge. The window this used to carry was the
     // tutorial's tabix query, which starts inside that bubble.
     detailWindow: { start: 103_610_000, end: 103_760_000 },
-    variation: ['cnv'],
-    markerGenes: ['AMY1C', 'AMY2A', 'AMY2B'],
   },
   {
     id: 'c4',
@@ -155,8 +115,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // The tutorial's C4 window verbatim; covers C4A (31,982,057-32,002,681) and
     // C4B (32,014,795-32,035,418).
     detailWindow: { start: 31_980_000, end: 32_050_000 },
-    variation: ['cnv', 'pav'],
-    markerGenes: ['C4A', 'C4B'],
   },
   {
     id: 'lpa',
@@ -168,7 +126,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // The tutorial's LPA KIV-2 window verbatim — the repeat inside LPA
     // (160,531,482-160,664,275), and the widest window it draws as a graph.
     detailWindow: { start: 160_525_000, end: 160_655_000 },
-    variation: ['vntr'],
   },
   {
     id: 'rhd',
@@ -181,8 +138,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // paralog pairs the tutorial names as collapsed.
     detailWindow: { start: 25_260_000, end: 25_345_000 },
     graphCollapsed: true,
-    variation: ['pav'],
-    markerGenes: ['RHD', 'RHCE'],
   },
   {
     id: 'smn',
@@ -196,8 +151,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // back, because minigraph merged SMN1 and SMN2 onto one path.
     detailWindow: { start: 70_910_000, end: 70_970_000 },
     graphCollapsed: true,
-    variation: ['cnv', 'pav'],
-    markerGenes: ['SMN1'],
   },
   {
     id: 'kir',
@@ -209,24 +162,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // The tutorial's KIR window verbatim, inside the KIR3DL3..KIR3DL2 span
     // (54,724,442-54,867,207) the display window covers whole.
     detailWindow: { start: 54_750_000, end: 54_840_000 },
-    variation: ['hyperdiversity', 'pav'],
-    markerGenes: [
-      'KIR3DL3',
-      'KIR2DL3',
-      'KIR2DL1',
-      'KIR3DL2',
-      'KIR2DL4',
-      'KIR2DS4',
-      'KIR3DL1',
-      'KIR2DL2',
-      'KIR2DL5A',
-      'KIR2DL5B',
-      'KIR2DS1',
-      'KIR2DS2',
-      'KIR2DS3',
-      'KIR2DS5',
-      'KIR3DS1',
-    ],
   },
   {
     id: 'defb',
@@ -239,15 +174,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // (7,894,677-7,896,716), with flanks; the flanking inversion is the megabase
     // display window's subject.
     detailWindow: { start: 7_850_000, end: 7_930_000 },
-    variation: ['cnv', 'inversion'],
-    markerGenes: [
-      'DEFB103A',
-      'DEFB104B',
-      'DEFB105A',
-      'DEFB106B',
-      'DEFB107B',
-      'DEFB4B',
-    ],
   },
   {
     id: 'fcgr',
@@ -259,8 +185,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // FCGR2A (161,505,457-161,519,829) through FCGR3B (161,623,196-161,631,176),
     // i.e. the whole low-affinity receptor cluster.
     detailWindow: { start: 161_495_000, end: 161_640_000 },
-    variation: ['cnv', 'pav'],
-    markerGenes: ['FCGR2A', 'FCGR2B', 'FCGR2C', 'FCGR3A', 'FCGR3B'],
   },
   {
     id: 'hp',
@@ -269,8 +193,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr16',
     start: 72_040_000,
     end: 72_090_000,
-    variation: ['cnv'],
-    markerGenes: ['HP', 'HPR'],
   },
   {
     id: 'cyp2d6',
@@ -284,8 +206,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // enough to draw, which is exactly why the button has to be suppressed
     // explicitly rather than by the width rule.
     graphCollapsed: true,
-    variation: ['cnv', 'hyperdiversity'],
-    markerGenes: ['CYP2D6', 'CYP2D7'],
   },
   {
     id: 'hba',
@@ -294,8 +214,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr16',
     start: 130_000,
     end: 185_000,
-    variation: ['cnv', 'pav'],
-    markerGenes: ['HBZ', 'HBM', 'HBA2', 'HBQ1'],
   },
   {
     id: 'srgap2',
@@ -318,8 +236,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // an explicit window, so that would be a deliberate exception, not a
     // typo). Exon coordinates from UCSC ncbiRefSeqSelect, checked 2026-08-06.
     detailWindow: { start: 206_190_000, end: 206_330_000 },
-    variation: ['cnv', 'pav'],
-    markerGenes: ['SRGAP2', 'SRGAP2B', 'SRGAP2C'],
   },
   {
     id: 'mns',
@@ -331,8 +247,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // GYPB (143,996,104-144,019,380) through GYPA (144,109,303-144,140,718) —
     // the pair the hybrid alleles recombine between.
     detailWindow: { start: 143_990_000, end: 144_140_000 },
-    variation: ['pav', 'cnv'],
-    markerGenes: ['GYPA', 'GYPB', 'GYPE'],
   },
   {
     id: 'cfhr',
@@ -347,8 +261,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // event plus CFHR3 (196,774,840-196,795,407) and CFHR1
     // (196,819,731-196,832,189) with flanks.
     detailWindow: { start: 196_740_000, end: 196_850_000 },
-    variation: ['pav', 'cnv'],
-    markerGenes: ['CFH', 'CFHR1', 'CFHR2', 'CFHR3', 'CFHR4', 'CFHR5'],
   },
   {
     id: 'prss',
@@ -357,8 +269,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr7',
     start: 142_740_000,
     end: 142_780_000,
-    variation: ['cnv', 'pav'],
-    markerGenes: ['PRSS1', 'PRSS2'],
   },
   {
     id: 'ugt2b17',
@@ -367,8 +277,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr4',
     start: 68_530_000,
     end: 68_680_000,
-    variation: ['pav', 'cnv'],
-    markerGenes: ['UGT2B17', 'UGT2B15'],
   },
   {
     id: 'nphp1',
@@ -377,8 +285,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr2',
     start: 110_080_000,
     end: 110_210_000,
-    variation: ['pav'],
-    markerGenes: ['NPHP1', 'MALL'],
   },
   {
     id: 'gstm1',
@@ -387,8 +293,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr1',
     start: 109_680_000,
     end: 109_715_000,
-    variation: ['pav'],
-    markerGenes: ['GSTM1'],
   },
   {
     id: 'gstt1',
@@ -400,8 +304,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // about half the haplotypes
     start: 23_940_000,
     end: 24_070_000,
-    variation: ['pav'],
-    markerGenes: ['GSTT1'],
   },
   {
     id: 'pga',
@@ -410,8 +312,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr11',
     start: 61_195_000,
     end: 61_258_000,
-    variation: ['cnv'],
-    markerGenes: ['PGA3', 'PGA4', 'PGA5'],
   },
   {
     id: 'flna',
@@ -422,29 +322,5 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     // graph walks reversed on about half the haplotypes
     start: 154_340_000,
     end: 154_440_000,
-    variation: ['inversion'],
-    markerGenes: ['FLNA', 'EMD'],
   },
 ]
-
-// A real NCBI gene symbol to seed the cross-species gene-order view, or
-// undefined where the locus names none and the link should not be offered.
-//
-// Three sources, strongest first. The DERIVED one is not a nicety: a derived
-// locus's `gene` is a label the generator composed, and splitting it produces
-// text that is not a symbol — "Gm10439, Gm15080, Gm15085 +8" gives `Gm10439,`
-// with the comma still on it, "Vmn cluster (18 genes)" gives `Vmn`, and an
-// intergenic entry gives `chr9:87,086,686`. All three seed a gene hub that
-// finds nothing, and the third is not even a gene. The tier's own gene list is
-// the answer, and its emptiness is what says to offer no link at all.
-export function syntenyGene(locus: PangenomeLocus) {
-  const derived = locus.derived
-  return (
-    locus.markerGenes?.[0] ??
-    // A cluster's alphabetically-first member is often an unnamed LOC id, which
-    // no other species has an ortholog table under; prefer a real symbol.
-    (derived
-      ? (derived.genes.find(g => !g.startsWith('LOC')) ?? derived.genes[0])
-      : locus.gene.split(/[\s/]/)[0])
-  )
-}
