@@ -34,7 +34,7 @@
 // Usage:
 //   node scripts/checkPangenomeLaunches.mjs                 # staging (main)
 //   node scripts/checkPangenomeLaunches.mjs --host latest   # what production would get
-//   node scripts/checkPangenomeLaunches.mjs --loci mhc-hla,lpa
+//   node scripts/checkPangenomeLaunches.mjs --dataset hprc --loci mhc-hla,lpa
 //   node scripts/checkPangenomeLaunches.mjs --local   # working-tree configs
 //
 import fs from 'node:fs'
@@ -71,6 +71,7 @@ function findChrome() {
 const { values } = parseArgs({
   options: {
     host: { type: 'string', default: 'main' },
+    dataset: { type: 'string' },
     loci: { type: 'string' },
     timeout: { type: 'string', default: '120000' },
     local: { type: 'boolean', default: false },
@@ -81,7 +82,7 @@ const HOST = `https://jbrowse.org/code/jb2/${values.host}`
 const TIMEOUT = Number(values.timeout)
 
 // The site's own builders, so this checks the real thing rather than a copy.
-const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
+const { HPRC_DATASET, HPRC_GRAPH_BROWSER, PANGENOME_DATASETS } =
   await import('../website/src/components/pangenomeDataset.ts')
 const { regionAnswer } =
   await import('../website/src/components/pangenomeAnswer.ts')
@@ -89,6 +90,8 @@ const { pangenomeExamples } =
   await import('../website/src/components/pangenomeExamples.ts')
 const { graphRegionUrl } =
   await import('../website/src/components/pangenomeLinks.ts')
+const { MAX_DETAIL_WINDOW_BP } =
+  await import('../website/src/components/pangenomeLoci.ts')
 const { annotatedHaplotypes } =
   await import('../website/src/components/pangenomePanels.ts')
 
@@ -110,74 +113,97 @@ const annotated = annotatedHaplotypes(
 // build box publishes per-haplotype placement (agent-docs/reference/PANGENOME_PORTAL.md).
 const KNOWN_UNPLACED = { defb: ['HG00097#1'], nphp1: ['HG00544#1'] }
 
-const graphDisplay = {
-  trackId: HPRC_GRAPH_BROWSER.segmentsTrackId,
-  type: 'LinearGraphDisplay',
-}
-
 const retarget = url =>
   url.replace(/\/code\/jb2\/[^/]+/, `/code/jb2/${values.host}`)
 
-// What the page answers when a reader clicks each example. BandageJS is not a
+// What each page answers when a reader clicks each example. BandageJS is not a
 // JBrowse host, so its link is the one launch not booted.
 const wanted = values.loci?.split(',')
-const examples = pangenomeExamples(HPRC_DATASET)
+const datasets = PANGENOME_DATASETS.filter(
+  d => !values.dataset || values.dataset.split(',').includes(d.id),
+)
+if (datasets.length === 0) {
+  throw new Error(`--dataset ${values.dataset} names no dataset`)
+}
 const launches = []
-for (const example of examples.filter(e => !wanted || wanted.includes(e.id))) {
-  const answer = await regionAnswer(HPRC_DATASET, examples, example.region)
-  const lanes = answer.reading?.panel?.lanes.map(l => l.haplotype) ?? []
-  for (const { kind, url } of answer.launches) {
-    const name = `${example.id}: ${kind}`
-    if (kind === 'variants') {
-      // A single-row display means the declaration was ignored, silently.
-      launches.push({
-        name,
-        url: retarget(url),
-        expectDisplays: [
-          {
-            trackId: HPRC_DATASET.graphVcf.trackId,
-            type: 'LinearMultiSampleVariantDisplay',
-          },
-        ],
-      })
-    } else if (kind === 'graph') {
-      launches.push({
-        name,
-        url: retarget(url),
-        expectDisplays: [graphDisplay],
-        expectTier: 'fine',
-      })
-    } else if (kind === 'haplotypes') {
-      // The display type alone passed while every lane errored on a clip that
-      // lost its coordinates, so this reads the lanes back: one row per panel
-      // haplotype, and no error.
-      launches.push({
-        name,
-        url: retarget(url),
-        expectLanes: lanes,
-        knownUnplaced: KNOWN_UNPLACED[example.id] ?? [],
-      })
+for (const dataset of datasets) {
+  const graph = dataset.graphBrowser
+  const graphDisplay = {
+    trackId: graph.segmentsTrackId,
+    type: 'LinearGraphDisplay',
+  }
+  const examples = pangenomeExamples(dataset)
+  for (const example of examples.filter(
+    e => !wanted || wanted.includes(e.id),
+  )) {
+    const answer = await regionAnswer(dataset, examples, example.region)
+    const { start, end } = answer.region
+    const wide = end - start > MAX_DETAIL_WINDOW_BP
+    for (const { kind, url } of answer.launches) {
+      const name = `${dataset.id}/${example.id}: ${kind}`
+      if (kind === 'variants') {
+        // A single-row display means the declaration was ignored, silently.
+        launches.push({
+          name,
+          url: retarget(url),
+          expectDisplays: [
+            {
+              trackId: dataset.graphVcf.trackId,
+              type: 'LinearMultiSampleVariantDisplay',
+            },
+          ],
+        })
+      } else if (kind === 'bubbles') {
+        launches.push({
+          name,
+          url: retarget(url),
+          expectDisplays: [
+            {
+              trackId: wide ? graph.tierTrackId : graph.segmentsTrackId,
+              type: 'LinearBasicDisplay',
+            },
+          ],
+        })
+      } else if (kind === 'graph') {
+        // The graph picks its tier by zoom, and only a curated window is known
+        // to sit under every graph's handover.
+        launches.push({
+          name,
+          url: retarget(url),
+          expectDisplays: [graphDisplay],
+          expectTier: wide || dataset !== HPRC_DATASET ? 'any' : 'fine',
+        })
+      } else if (kind === 'haplotypes') {
+        // The display type alone passed while every lane errored on a clip
+        // that lost its coordinates, so this reads the lanes back: one row per
+        // panel haplotype, and no error.
+        launches.push({
+          name,
+          url: retarget(url),
+          expectLanes: answer.reading.panel.lanes.map(l => l.haplotype),
+          knownUnplaced: KNOWN_UNPLACED[example.id] ?? [],
+        })
+      }
     }
   }
-}
 
-// One whole-chromosome launch. chr21 is the shortest autosome, so it is the
-// cheapest proof that the graph track cuts its coarse tier at that zoom; --loci
-// filtering does not apply to it.
-const chr21 = HPRC_GRAPH_BROWSER.chromosomes.find(c => c.name === 'chr21')
-if (chr21 && !wanted) {
-  launches.push({
-    name: 'chr21: whole-chromosome tier graph',
-    url: retarget(
-      graphRegionUrl(HPRC_DATASET, {
-        chrom: 'chr21',
-        start: 0,
-        end: chr21.length,
-      }),
-    ),
-    expectDisplays: [graphDisplay],
-    expectTier: 'coarse',
-  })
+  // One whole-chromosome launch, the shortest, as the cheapest proof that the
+  // graph track cuts its coarse tier at that zoom; --loci does not apply.
+  const shortest = graph.chromosomes.toSorted((a, b) => a.length - b.length)[0]
+  if (shortest && !wanted) {
+    launches.push({
+      name: `${dataset.id}/${shortest.name}: whole-chromosome tier graph`,
+      url: retarget(
+        graphRegionUrl(dataset, {
+          chrom: shortest.name,
+          start: 0,
+          end: shortest.length,
+        }),
+      ),
+      expectDisplays: [graphDisplay],
+      expectTier: 'coarse',
+    })
+  }
 }
 
 // --local answers the graph config's own url with the working-tree file, the way
@@ -409,9 +435,10 @@ for (const {
       problems.push('the spec session built no views')
     }
     if (expectTier) {
-      const graph = await readGraph(page, graphDisplay.trackId)
+      const { trackId } = expectDisplays[0]
+      const graph = await readGraph(page, trackId)
       if (!graph) {
-        problems.push(`no LinearGraphDisplay on ${graphDisplay.trackId}`)
+        problems.push(`no LinearGraphDisplay on ${trackId}`)
       } else if (graph.error) {
         problems.push(`graph: ${graph.error.split('\n')[0]}`)
       } else if (!graph.nodes) {
@@ -419,7 +446,7 @@ for (const {
           `the graph never drew${graph.tooLarge ? `: ${graph.tooLarge}` : ''}`,
         )
       } else {
-        if (graph.tier !== expectTier) {
+        if (expectTier !== 'any' && graph.tier !== expectTier) {
           problems.push(
             `the graph cut its ${graph.tier} tier, wanted ${expectTier}`,
           )

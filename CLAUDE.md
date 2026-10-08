@@ -281,8 +281,8 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
 - **`features.pangenome` stays staging until core v5**: the graph plugin
   error-pages every released host.
-- **A visible change here is owed to the tutorial** in jbrowse-components
-  (`website/docs/tutorials/genomes_pangenome.md`).
+- **A visible change here is owed to the tutorials** in jbrowse-components
+  (`website/docs/tutorials/pangenome_*.md`).
 
 Full record: `agent-docs/reference/PANGENOME_PAGES.md` and
 `agent-docs/reference/PANGENOME_PORTAL.md`.

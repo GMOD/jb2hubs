@@ -182,6 +182,7 @@ export default function PangenomeRegionBox({
                 <thead>
                   <tr>
                     <th>Lane</th>
+                    <th>Structure</th>
                     <th>Haplotypes</th>
                     <th>Share</th>
                   </tr>
@@ -192,6 +193,7 @@ export default function PangenomeRegionBox({
                       <td>
                         <code>{lane.haplotype}</code>
                       </td>
+                      <td>{lane.structure}</td>
                       <td>{lane.shares}</td>
                       <td>
                         {((100 * lane.shares) / reading.haplotypes).toFixed(1)}%

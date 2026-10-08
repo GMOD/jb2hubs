@@ -7,6 +7,7 @@ import {
   COMPLETE_PANEL_SIZE,
   PANEL_SIZE,
   annotatedHaplotypes,
+  describeForm,
   structuralPanel,
 } from './pangenomePanels.ts'
 import { parseSvStateRow, structuralForms } from './pangenomeSvStates.ts'
@@ -59,10 +60,25 @@ test('a lane says how many haplotypes it stands for, largest first', () => {
   // five carry the deletion and five do not; the reference-like form leads an
   // equal-sized pair
   assert.deepEqual(panel.lanes, [
-    { haplotype: 'C#2', shares: 5 },
-    { haplotype: 'A#1', shares: 5 },
+    { haplotype: 'C#2', shares: 5, structure: 'as the reference' },
+    { haplotype: 'A#1', shares: 5, structure: '1.7 kb deletion' },
   ])
   assert.equal(panel.forms, 2)
+})
+
+test('a form is described by its largest changes against the reference', () => {
+  assert.equal(
+    describeForm({ deltas: [], inversions: 0, uncalled: 0 }),
+    'as the reference',
+  )
+  assert.equal(
+    describeForm({ deltas: [-85_000, 300], inversions: 1, uncalled: 2 }),
+    '85 kb deletion, 300 bp insertion, 2 more',
+  )
+  assert.equal(
+    describeForm({ deltas: [], inversions: 1, uncalled: 1 }),
+    'inversion, skips 1 variant site',
+  )
 })
 
 test('on a chromosome some haplotypes lack, the uncalled form gets no lane', () => {

@@ -146,6 +146,24 @@ export interface StructuralForm {
   members: string[]
   // what they carry, one character per informative site
   key: string
+  // the key read against the reference: the size change at each site where the
+  // form is not the reference's structure, largest first, and how many sites
+  // it inverts or has no call at
+  deltas: number[]
+  inversions: number
+  uncalled: number
+}
+
+// A row's `1:-1700,2:+65000` as symbol to size change.
+function stateDeltas(states: string) {
+  return new Map(
+    states.split(',').flatMap(entry => {
+      const [symbol, delta] = entry.split(':')
+      return symbol && Number.isFinite(Number(delta))
+        ? [[symbol, Number(delta)] as const]
+        : []
+    }),
+  )
 }
 
 export interface StructuralFormsResult {
@@ -172,6 +190,7 @@ export function structuralForms(
     genotypes: string
     majority: string
     common: Set<string>
+    deltas: Map<string, number>
   }[] = []
   const carriesRare = new Set<string>()
   let nonReferenceMajority = 0
@@ -203,6 +222,7 @@ export function structuralForms(
             .filter(([state, n]) => n >= minCarriers && state !== OTHER_STATE)
             .map(([state]) => state),
         ),
+        deltas: stateDeltas(row.states),
       })
     }
   }
@@ -220,7 +240,18 @@ export function structuralForms(
     sites: rows.length,
     informative: informative.length,
     forms: [...byKey]
-      .map(([key, members]) => ({ key, members }))
+      .map(([key, members]) => {
+        const states = [...informative.keys()].map(i => key.charAt(i))
+        return {
+          key,
+          members,
+          deltas: states
+            .flatMap((state, i) => informative[i]!.deltas.get(state) ?? [])
+            .sort((a, b) => Math.abs(b) - Math.abs(a)),
+          inversions: states.filter(s => s === INVERTED_STATE).length,
+          uncalled: states.filter(s => s === MISSING_STATE).length,
+        }
+      })
       .sort(
         (a, b) =>
           b.members.length - a.members.length || (a.key < b.key ? -1 : 1),

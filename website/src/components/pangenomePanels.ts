@@ -12,13 +12,50 @@
 
 import { MIN_CARRIERS, MISSING_STATE } from './pangenomeSvStates.ts'
 
-import type { StructuralFormsResult } from './pangenomeSvStates.ts'
+import type {
+  StructuralForm,
+  StructuralFormsResult,
+} from './pangenomeSvStates.ts'
 
 export interface PanelLane {
   // PanSN prefix, `HG01123#1`, which is how the lane track names a haplotype.
   haplotype: string
   // Haplotypes carrying this form, this one included.
   shares: number
+  // How the form differs from the reference, in words.
+  structure: string
+}
+
+const bp = (n: number) =>
+  n >= 1000 ? `${Number((n / 1000).toPrecision(2))} kb` : `${n} bp`
+
+const SHOWN_CHANGES = 2
+
+// A form's largest changes against the reference. The sizes are the sidecar's,
+// already rounded to two figures. A site with no call is one the haplotype's
+// path skips: a deletion spanning it, or a haplotype the graph does not place
+// there, and the sidecar cannot tell which.
+export function describeForm(
+  form: Pick<StructuralForm, 'deltas' | 'inversions' | 'uncalled'>,
+) {
+  const changes = [
+    ...form.deltas.map(
+      d => `${bp(Math.abs(d))} ${d < 0 ? 'deletion' : 'insertion'}`,
+    ),
+    ...(form.inversions > 0
+      ? [form.inversions === 1 ? 'inversion' : `${form.inversions} inversions`]
+      : []),
+    ...(form.uncalled > 0
+      ? [`skips ${form.uncalled} variant site${form.uncalled === 1 ? '' : 's'}`]
+      : []),
+  ]
+  const more = changes.length - SHOWN_CHANGES
+  return changes.length === 0
+    ? 'as the reference'
+    : [
+        ...changes.slice(0, SHOWN_CHANGES),
+        ...(more > 0 ? [`${more} more`] : []),
+      ].join(', ')
 }
 
 export interface StructuralPanel {
@@ -89,6 +126,7 @@ export function structuralPanel(
   ).map(f => ({
     haplotype: representative(f.members, withoutGenes),
     shares: f.members.length,
+    structure: describeForm(f),
   }))
   return {
     sites: result.sites,

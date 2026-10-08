@@ -72,11 +72,36 @@ test('forms group the haplotypes that match at every informative site', () => {
   assert.deepEqual(result.rareCarriers, ['A#1'])
 })
 
+test('a form says what it changes against the reference, largest first', () => {
+  const haplotypes = ['A#1', 'A#2', 'B#1', 'B#2', 'C#1', 'C#2']
+  const row = (states: string, genotypes: string) =>
+    parseSvStateRow(`chr1\t100\t200\tid\t${states}\t${genotypes}`)
+  const result = structuralForms(
+    [
+      row('1:-1700', '110000'),
+      row('1:+65000', '110011'),
+      row('v:inv', '00vv..'),
+    ],
+    haplotypes,
+    2,
+  )
+  assert.deepEqual(
+    result.forms.map(f => [f.key, f.deltas, f.inversions, f.uncalled]),
+    [
+      ['00v', [], 1, 0],
+      ['01.', [65_000], 0, 1],
+      ['110', [65_000, -1700], 0, 0],
+    ],
+  )
+})
+
 test('a window with nothing informative is one form', () => {
   const haplotypes = ['A#1', 'A#2']
   const result = structuralForms([], haplotypes)
   assert.equal(result.sites, 0)
-  assert.deepEqual(result.forms, [{ key: '', members: haplotypes }])
+  assert.deepEqual(result.forms, [
+    { key: '', members: haplotypes, deltas: [], inversions: 0, uncalled: 0 },
+  ])
   assert.equal(result.nonReferenceMajority, 0)
 })
 

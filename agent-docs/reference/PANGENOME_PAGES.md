@@ -31,12 +31,14 @@ booting as `main` moves, and keeping it booting means bumping that pin. It
 error-pages every released host (`createSvgIcon` — re-measured 2026-08-26 on
 `latest` = v4.3.0), which is why `features.pangenome` stays staging until v5.
 
-`pnpm check-pangenome-launches` boots every launch on `main`, including one
-whole-chromosome tier launch, and reads back which tier the graph track cut; run
-it after touching `pangenome*` or the config. The genomes.jbrowse.org side of
-the JBrowse docs (`website/docs/tutorials/genomes_pangenome.md` in
-jbrowse-components) is a tutorial for these pages, so a visible change here
-should be reflected there.
+`pnpm check-pangenome-launches` boots every launch of every dataset on `main`,
+including one whole-chromosome tier launch each, and reads back which tier the
+graph track cut; run it after touching `pangenome*` or a config, with
+`--dataset` to narrow it. Until 2026-10-08 it booted HPRC alone, and the other
+three graphs' launches were tested for url shape only. The JBrowse docs'
+pangenome tutorials (`website/docs/tutorials/pangenome_hprc.md` and its
+`pangenome_*` siblings in jbrowse-components) describe these pages, so a visible
+change here should be reflected there.
 
 ### One graph, one route, and almost no prose
 
@@ -75,6 +77,14 @@ JavaScript.
   launch check caught it at FLNA on 2026-10-08, the first time FLNA had a panel.
   A deletion spanning a whole chrX window is dropped with them, which the
   sidecar cannot tell apart.
+- **A lane says what its form is.** `describeForm` (`pangenomePanels.ts`) reads
+  the form's key against each site's size changes in the sidecar: "as the
+  reference", "85 kb deletion", "inversion", its two largest changes and a count
+  of the rest. A site the haplotype's path skips is said as "skips N variant
+  sites", since the sidecar cannot tell a deletion from an unplaced haplotype.
+  Over the 22 examples on 2026-10-08 it reads cleanly where one event dominates
+  (HP, CFHR, C4, CYP2D6, GSTM1, FLNA) and as a list of sizes where many do (MHC,
+  LPA, HBA).
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus. A derived dataset offers its `MAX_DERIVED_EXAMPLES`
