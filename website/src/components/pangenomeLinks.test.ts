@@ -63,7 +63,7 @@ test('graphVcfLgvUrl opens the reference LGV at the locus with graph + SV tracks
   assert.deepEqual(view.tracks, [
     HPRC_DATASET.reference.geneTrackId,
     HPRC_VCF.trackId,
-    ...HPRC_DATASET.svTrackIds,
+    ...HPRC_DATASET.svTrackIds!,
   ])
 
   // The graph VCF isn't in the hosted config, so it must ride along as a session

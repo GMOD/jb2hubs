@@ -5,12 +5,7 @@ import { LIVE_QUERY } from '../lib/swr.ts'
 import { regionLaunches } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
-import {
-  formatRegion,
-  matchRefName,
-  parseRegion,
-  resolveRegion,
-} from './pangenomeRegion.ts'
+import { formatRegion, placeRegion, resolveRegion } from './pangenomeRegion.ts'
 import { structuralForms } from './pangenomeSvStates.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -57,30 +52,21 @@ async function regionAnswer(dataset: PangenomeDataset, text: string) {
         `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
       )
     }
-    if (!dataset.svStatesUrl) {
-      const chrom = matchRefName(
-        asked.chrom,
-        (dataset.graphBrowser?.chromosomes ?? []).map(c => c.name),
-      )
-      if (chrom === undefined) {
-        throw new Error(`${asked.chrom} is not a sequence in the graph`)
-      }
-      return { region: { ...asked, chrom } }
+    const region = placeRegion(asked, dataset.graphBrowser?.chromosomes ?? [])
+    if (!region) {
+      throw new Error(`${formatRegion(asked)} is not in the graph`)
+    }
+    if (
+      !dataset.svStatesUrl ||
+      region.end - region.start > MAX_DETAIL_WINDOW_BP
+    ) {
+      return { region }
     }
     const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
-    const svStates = openSvStates(dataset.svStatesUrl)
-    if (asked.end - asked.start > MAX_DETAIL_WINDOW_BP) {
-      return {
-        region: {
-          ...asked,
-          chrom: await svStates.chromOf(asked.chrom, signal),
-        },
-      }
-    }
-    const { chrom, haplotypes, rows } = await svStates.query(
-      asked.chrom,
-      asked.start,
-      asked.end,
+    const { haplotypes, rows } = await openSvStates(dataset.svStatesUrl).query(
+      region.chrom,
+      region.start,
+      region.end,
       signal,
     )
     const forms = structuralForms(rows, haplotypes)
@@ -93,7 +79,7 @@ async function regionAnswer(dataset: PangenomeDataset, text: string) {
       rareCarriers: forms.rareCarriers.length,
       nonReferenceMajority: forms.nonReferenceMajority,
     }
-    return { region: { ...asked, chrom }, reading }
+    return { region, reading }
   } catch (e) {
     throw new Error(deadlineMessage(e))
   }
@@ -113,12 +99,12 @@ function readingSentence(reading: Reading, referenceLabel: string) {
       panel.lanes.length < panel.forms
         ? `, the ${panel.lanes.length} commonest below`
         : ''
-    return `${count(sites, 'structural variant site')} sort the ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}`
+    return `${count(sites, 'structural variant site')} sort the callset's ${haplotypes} haplotypes into ${count(panel.forms, 'form')} that 1% or more carry${shown}.${rare}`
   }
   const agree =
     reading.nonReferenceMajority > 0
-      ? `The ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
-      : `The ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
+      ? `The callset's ${haplotypes} haplotypes share one structure here, which differs from ${referenceLabel} at ${count(reading.nonReferenceMajority, 'site')}.`
+      : `The callset's ${haplotypes} haplotypes share ${referenceLabel}'s structure here.`
   return `${agree}${rare}`
 }
 
@@ -150,8 +136,8 @@ export default function PangenomeRegionBox({
   )
 
   const example = examples.find(e => e.region === asked)
-  const title = example?.label ?? (parseRegion(asked) ? undefined : asked)
   const region = answer?.region
+  const title = example?.label ?? region?.symbol
   const reading = answer?.reading
   const lanes = reading?.panel?.lanes ?? []
   const launches = region

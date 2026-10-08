@@ -38,6 +38,22 @@ export function matchRefName(name: string, known: readonly string[]) {
   return known.find(k => k === name) ?? known.find(k => bare(k) === bare(name))
 }
 
+// A region on the graph's own sequence, cut to its length, or undefined when
+// the graph has no such sequence or the region starts past its end.
+export function placeRegion<T extends ParsedRegion>(
+  region: T,
+  sequences: readonly { name: string; length: number }[],
+): T | undefined {
+  const chrom = matchRefName(
+    region.chrom,
+    sequences.map(s => s.name),
+  )
+  const length = sequences.find(s => s.name === chrom)?.length
+  return chrom !== undefined && length !== undefined && region.start < length
+    ? { ...region, chrom, end: Math.min(region.end, length) }
+    : undefined
+}
+
 export function formatRegion({ chrom, start, end }: ParsedRegion) {
   return `${chrom}:${(start + 1).toLocaleString('en-US')}-${end.toLocaleString('en-US')}`
 }
@@ -51,6 +67,11 @@ interface MyGeneHit {
   genomic_pos?:
     | { chr?: string; start?: number; end?: number }
     | { chr?: string; start?: number; end?: number }[]
+}
+
+// The symbol is mygene's, so `her2` and `HER2` both come back as ERBB2.
+export interface GeneRegion extends ParsedRegion {
+  symbol?: string
 }
 
 export interface LookupOptions {
@@ -90,7 +111,7 @@ async function mygeneHits(
 // all four graphs (checked 2026-10-08), and a symbol on an unplaced contig or a
 // patch comes back without a plain chromosome, which is not a window a graph
 // here can draw.
-function placedRegion(hits: MyGeneHit[]): ParsedRegion | undefined {
+function placedRegion(hits: MyGeneHit[]): GeneRegion | undefined {
   for (const hit of hits) {
     const positions = [hit.genomic_pos ?? []].flat()
     for (const pos of positions) {
@@ -106,6 +127,7 @@ function placedRegion(hits: MyGeneHit[]): ParsedRegion | undefined {
           chrom: `chr${pos.chr === 'MT' ? 'M' : pos.chr}`,
           start: Math.max(0, start - 1 - GENE_FLANK_BP),
           end: end + GENE_FLANK_BP,
+          symbol: hit.symbol,
         }
       }
     }
@@ -120,7 +142,7 @@ export async function resolveGeneRegion(
   symbol: string,
   taxId: number,
   options: LookupOptions = {},
-): Promise<ParsedRegion | undefined> {
+): Promise<GeneRegion | undefined> {
   const hits = await mygeneHits('symbol', symbol, taxId, options)
   return placedRegion(
     hits.length > 0 ? hits : await mygeneHits('alias', symbol, taxId, options),
@@ -132,7 +154,7 @@ export async function resolveRegion(
   text: string,
   taxId: number,
   options: LookupOptions = {},
-) {
+): Promise<GeneRegion | undefined> {
   const parsed = parseRegion(text)
   if (parsed) {
     return parsed

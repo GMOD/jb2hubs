@@ -84,5 +84,5 @@ export function openSvStates(url: string) {
     return { chrom, haplotypes: haplotypesOf(header), rows }
   }
 
-  return { chromOf, query }
+  return { query }
 }

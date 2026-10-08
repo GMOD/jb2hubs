@@ -6,6 +6,7 @@ import {
   formatRegion,
   matchRefName,
   parseRegion,
+  placeRegion,
   resolveRegion,
 } from './pangenomeRegion.ts'
 
@@ -44,6 +45,22 @@ test('a chromosome is named the way the file names it, or not at all', () => {
   assert.equal(matchRefName('chr3', ['Chr3']), 'Chr3')
 })
 
+test('a region lands on the graphs own sequence, cut to its length', () => {
+  const sequences = [{ name: 'Chr3', length: 1000 }]
+  assert.deepEqual(
+    placeRegion({ chrom: 'chr3', start: 900, end: 5000 }, sequences),
+    { chrom: 'Chr3', start: 900, end: 1000 },
+  )
+  assert.equal(
+    placeRegion({ chrom: 'chr3', start: 1000, end: 5000 }, sequences),
+    undefined,
+  )
+  assert.equal(
+    placeRegion({ chrom: 'chr9', start: 0, end: 10 }, sequences),
+    undefined,
+  )
+})
+
 test('what is not a region is left for a gene lookup', () => {
   assert.equal(parseRegion('CFH'), undefined)
   assert.equal(parseRegion('chr1:200-100'), undefined)
@@ -66,6 +83,7 @@ test('a gene comes back as its span with flanks', async () => {
     chrom: 'chr1',
     start: 196_652_042 - GENE_FLANK_BP,
     end: 196_747_504 + GENE_FLANK_BP,
+    symbol: 'CFH',
   })
 })
 
@@ -125,6 +143,7 @@ test('text that is no symbol is tried as an alias', async () => {
     chrom: 'chr17',
     start: 39_687_913 - GENE_FLANK_BP,
     end: 39_730_426 + GENE_FLANK_BP,
+    symbol: 'ERBB2',
   })
   assert.deepEqual(asked, ['symbol:"HER2"', 'alias:"HER2"'])
 })

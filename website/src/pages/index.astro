@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 import Container from '../components/Container.astro'
 import GenArk from '../components/GenArk.astro'
+import { PANGENOME_DATASETS } from '../components/pangenomeDataset.ts'
 import { features } from '../config/features.ts'
 import { jbrowseUrl, ucscConfigPath } from '../config/jbrowse.ts'
 import { ucscBrowserUrl } from '../lib/externalLinks.ts'
@@ -97,37 +98,20 @@ const FEATURED_DBS = new Set(['hg38', 'hg19', 'hs1', 'mm39', 'mm10'])
     </div>
 
     {features.pangenome && (
-      <>
-        <div>
-          <h2>Human Pangenome Reference Consortium (HPRC)</h2>
-          <p>
-            232 diploid human genome assemblies (464 haplotypes) from HPRC
-            release 2, representing diverse global populations, with the release
-            2 Minigraph-Cactus graph against GRCh38 and CHM13.
-          </p>
-          <ul>
+      <div>
+        <h2>Pangenomes</h2>
+        <p>
+          Pangenome graphs you can open at any gene or region, as a graph or as
+          tracks on the reference.
+        </p>
+        <ul>
+          {PANGENOME_DATASETS.map(dataset => (
             <li>
-              <a href="/pangenomes/hprc">
-                Browse HPRC assemblies and pangenome graphs
-              </a>
+              <a href={`/pangenomes/${dataset.id}`}>{dataset.heading}</a>
             </li>
-          </ul>
-        </div>
-
-        <div>
-          <h2>Mouse strain assemblies</h2>
-          <p>
-            JBrowse 2 instances for inbred mouse strain assemblies from the UCSC
-            Mouse Strains Hub (16 strains, mm10-based) and the Ensembl Mouse
-            Genomes Project (18 strains, newer assemblies including two T2T).
-          </p>
-          <ul>
-            <li>
-              <a href="/pangenomes/mouse">Browse all mouse strain assemblies</a>
-            </li>
-          </ul>
-        </div>
-      </>
+          ))}
+        </ul>
+      </div>
     )}
   </Container>
 </Layout>

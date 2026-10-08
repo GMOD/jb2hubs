@@ -91,7 +91,7 @@ function referenceLgvUrl(dataset: PangenomeDataset, loc: string) {
         tracks: [
           dataset.reference.geneTrackId,
           ...(vcfTrack ? [vcfTrack.trackId] : []),
-          ...dataset.svTrackIds,
+          ...(dataset.svTrackIds ?? []),
         ],
       },
     ],
