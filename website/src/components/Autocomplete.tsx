@@ -197,11 +197,14 @@ export default function Autocomplete({
         )}
       </div>
       {showList && (
+        // Chrome puts a scrollable list in the tab order, and tabbing into it
+        // blurs the input, which unmounts the list and drops focus on <body>.
         <ul
           id={listboxId}
           className="autocomplete-list"
           role="listbox"
           aria-busy={searching}
+          tabIndex={-1}
         >
           {searching ? (
             <li className="autocomplete-no-results">Searching…</li>
