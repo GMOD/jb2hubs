@@ -269,6 +269,28 @@ function SyntenyPicker({ data }: Props) {
 
   return (
     <div className="synteny-selector">
+      {examples.length > 0 && (
+        <div
+          className="synteny-examples"
+          role="group"
+          aria-label="Example comparisons"
+        >
+          <span className="ui-caption">Examples:</span>
+          {examples.map(example => (
+            <button
+              key={example.label}
+              type="button"
+              className="ui-chip-btn"
+              onClick={() => {
+                handleExample(example)
+              }}
+            >
+              {example.label}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="synteny-pair">
         <div className="synteny-field">
           <label htmlFor="species1">First assembly</label>
@@ -340,28 +362,6 @@ function SyntenyPicker({ data }: Props) {
           </span>
         )}
       </div>
-
-      {examples.length > 0 && (
-        <div
-          className="synteny-examples"
-          role="group"
-          aria-label="Example comparisons"
-        >
-          <span className="ui-caption">Examples:</span>
-          {examples.map(example => (
-            <button
-              key={example.label}
-              type="button"
-              className="ui-chip-btn"
-              onClick={() => {
-                handleExample(example)
-              }}
-            >
-              {example.label}
-            </button>
-          ))}
-        </div>
-      )}
 
       {canSearchGenes && (
         <div className="synteny-field synteny-gene">
