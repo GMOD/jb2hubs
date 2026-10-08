@@ -151,6 +151,30 @@ test('placeQuery: a leaf the seed no longer has is pruned from the tree', () => 
   assert.deepStrictEqual(leaves.sort(), rows.sort())
 })
 
+// the other direction: PF00154 had two seed rows its 14-leaf tree lacked
+test('placeQuery: a seed row the tree does not name is left out, and the tree kept', () => {
+  const seed = parseStockholm(stockholm)
+  const placed = placeQuery('MMACDPPEFGHKWW', seed, {
+    queryName: 'GENE',
+    newick: '(ROW1_HUMAN/10-17:0.1,ROW2_MOUSE/5-11:0.2);',
+  })
+  assert.strictEqual(placed.untreed, 1)
+  assert.strictEqual(placed.kept, 2)
+  assert.strictEqual(placed.thinned, false)
+  assert.ok(!placed.fasta.includes('ROW3_FLY'))
+  const rows = placed.fasta.match(/^>(\S+)/gm)!.map(r => r.slice(1))
+  const leaves = placed.newick?.match(/[A-Z0-9_]+\/\d+-\d+/g) ?? []
+  assert.deepStrictEqual(leaves.sort(), rows.sort())
+})
+
+test('placeQuery: with no tree every seed row is kept', () => {
+  const placed = placeQuery('MMACDPPEFGHKWW', parseStockholm(stockholm), {
+    queryName: 'GENE',
+  })
+  assert.strictEqual(placed.untreed, 0)
+  assert.strictEqual(placed.kept, 3)
+})
+
 test('placeQuery: a window confines the search but coordinates stay on the whole query', () => {
   const seed = parseStockholm(stockholm)
   const query = 'ACDEFGHK' + 'X'.repeat(20) + 'ACDEFGHK'

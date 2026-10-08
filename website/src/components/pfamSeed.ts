@@ -264,6 +264,8 @@ export interface PlacedQuery {
   // how many seed rows the alignment carries, of how many the seed has
   kept: number
   total: number
+  // seed rows left out because the tree given does not name them
+  untreed: number
   // whether rows were dropped to fit `maxChars`
   thinned: boolean
   // whether the anchor row was the query protein itself, and so replaced
@@ -361,6 +363,19 @@ function serializeNewick(n: NewickNode): string {
 
 const sumLengths = (a?: string, b?: string) =>
   a === undefined ? b : b === undefined ? a : String(Number(a) + Number(b))
+
+function newickLeaves(newick: string) {
+  const names = new Set<string>()
+  const walk = (n: NewickNode) => {
+    if (n.children) {
+      n.children.forEach(walk)
+    } else {
+      names.add(n.name)
+    }
+  }
+  walk(parseNewick(newick))
+  return names
+}
 
 // The tree cut down to the named leaves: a dropped leaf takes its edge with
 // it, and a node left with one child collapses into that child with the two
@@ -479,17 +494,30 @@ export function placeQuery(
   const queryRow = rows.some(r => r.name === `${queryName}/${segment}`)
     ? `${queryName}_query/${segment}`
     : `${queryName}/${segment}`
+  // The tree is a hosted file and the seed is read live, so they drift both
+  // ways: PF00521 had 68 seed rows against a 71-leaf tree that lacked four of
+  // them (2026-10-08). A row the tree does not name cannot be drawn under it,
+  // so with a tree those rows are left out, and the tree is pruned of leaves
+  // the seed no longer has. An anchor the tree lacks leaves the tree out
+  // instead, since the query hangs off the anchor's leaf.
+  const treeLeaves =
+    newick && leafPattern(anchor.name).test(newick)
+      ? newickLeaves(newick)
+      : undefined
+  const drawable = treeLeaves
+    ? ranked.filter(s => treeLeaves.has(s.row.name))
+    : ranked
   let budget = maxChars === undefined ? Infinity : maxChars
   budget -= rowCost(queryRow)
   const kept: typeof ranked = []
-  for (const s of ranked) {
+  for (const s of drawable) {
     if (budget - rowCost(s.row.name) < 0) {
       break
     }
     budget -= rowCost(s.row.name)
     kept.push(s)
   }
-  const thinned = kept.length < ranked.length
+  const thinned = kept.length < drawable.length
   // Back in the seed's own order, which is the tree's leaf order.
   kept.sort((a, b) => a.i - b.i)
 
@@ -498,13 +526,7 @@ export function placeQuery(
     ...kept.map(s => `>${s.row.name}\n${project(s.row.aligned, false)}`),
   ].join('\n')
   const leaves = new Set([anchor.name, ...kept.map(s => s.row.name)])
-  // Pruned whether or not rows were dropped: the tree is a hosted file and the
-  // seed is read live, so a family whose seed lost rows since (PF00521 had 68
-  // against a 71-leaf tree, 2026-10-08) would draw the missing ones blank.
-  const base =
-    newick && leafPattern(anchor.name).test(newick)
-      ? pruneNewick(newick, leaves)
-      : undefined
+  const base = treeLeaves && newick ? pruneNewick(newick, leaves) : undefined
   const tree = base
     ? replaced
       ? renameLeaf(base, anchor.name, queryRow)
@@ -523,6 +545,7 @@ export function placeQuery(
     domain: { start: firstQ + 1, end: lastQ + 1 },
     kept: kept.length,
     total: seed.rows.length,
+    untreed: ranked.length - drawable.length,
     thinned,
     replaced,
   }

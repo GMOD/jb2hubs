@@ -452,10 +452,22 @@ Four things had to change for a prokaryotic or viral gene to open at all:
   95 (human CDK2 among them), ftsZ 79, katG 15. A virus has no proteome at
   PANTHER and no NCBI ortholog set, so its page says there is no ortholog panel
   and offers the UniRef cluster and a Pfam seed.
-- **A hosted Pfam tree can hold leaves the live seed no longer has.** PF00521
-  (GyrA) had 68 seed rows against a 71-leaf tree and PF04565 (RpoB) 91 against
-  96, so the MsaView drew three and five blank rows. `placeQuery` now prunes the
-  tree to the rows it emits whether or not it thinned them.
+- **A hosted Pfam tree and the live seed drift both ways.** PF00521 (GyrA) had
+  68 seed rows against a 71-leaf tree that lacked four of them, and PF00154
+  (RecA) two of thirteen (2026-10-08): the MsaView drew the stale leaves blank
+  and had nowhere to hang the unnamed rows. `placeQuery` now leaves out the seed
+  rows the tree does not name (`untreed`, which the note beside the alignment
+  reports) and prunes the tree to what stays. Pruning alone, the first attempt,
+  returned no tree for every such family, because `pruneNewick` refuses a tree
+  missing a kept row. An anchor the tree lacks still leaves the tree out and
+  keeps every row. Regenerating the hosted trees would bring the rows back.
+
+A human mitochondrial gene takes the product path too, since it has no table
+either: MT-CO1 opens, and MT-ND1, whose stop codon is completed by
+polyadenylation, is refused because its blocks do not spell its protein.
+p2s_mapper 1.2.2 recognises the `YP_` and `AP_` proteins those genomes and the
+viral ones carry, which 1.2.1 never looked up; `WP_` stays out, since one such
+sequence is every strain's copy.
 
 Two numbering notes the chips carry. M. tuberculosis rpoB's S450L is Ser456 on
 UniProt's P9WGY9, which starts six codons before the RefSeq protein the

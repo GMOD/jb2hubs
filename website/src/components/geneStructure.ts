@@ -265,7 +265,7 @@ export function tablePlacement(
     throw new Error(
       reference
         ? `NCBI's exon table for "${symbol}" is on ${reference}, which none of its placements (${placements.map(p => p.refName).join(', ')}) name`
-        : `NCBI's gene_table for "${symbol}" names no genomic sequence, so there are no exons to place`,
+        : `NCBI has no exon table for "${symbol}", and its product report gives no coding blocks that spell the protein, so there are no exons to place`,
     )
   }
   return placement
@@ -358,21 +358,33 @@ export function parseGeneTableBlocks(
 // Select exists for human alone; RefSeq Select covers the other annotated
 // species. Best-effort: with no flags the pick falls back to the longest
 // curated isoform, which is what it always was.
-export async function fetchSelectTranscripts(
-  geneId: string,
-  signal?: AbortSignal,
-): Promise<Map<string, TranscriptTag>> {
-  const json = await ncbiJson<{
-    reports?: {
-      product?: {
-        transcripts?: { accession_version?: string; select_category?: string }[]
-      }
-    }[]
-  }>(`${DATASETS}/gene/id/${geneId}/product_report`, { signal }).catch(
-    () => undefined,
-  )
+interface ProductReport {
+  reports?: {
+    product?: {
+      transcripts?: {
+        accession_version?: string
+        select_category?: string
+        genomic_locations?: {
+          genomic_accession_version?: string
+          genomic_range?: { orientation?: string }
+          exons?: { begin?: string; end?: string }[]
+        }[]
+        protein?: { accession_version?: string; length?: number }
+      }[]
+    }
+  }[]
+}
+
+async function fetchProductReport(geneId: string, signal?: AbortSignal) {
+  return ncbiJson<ProductReport>(
+    `${DATASETS}/gene/id/${geneId}/product_report`,
+    { signal },
+  ).catch(() => undefined)
+}
+
+export function selectTags(report: ProductReport | undefined) {
   const tags = new Map<string, TranscriptTag>()
-  for (const t of json?.reports?.[0]?.product?.transcripts ?? []) {
+  for (const t of report?.reports?.[0]?.product?.transcripts ?? []) {
     const tag: TranscriptTag | undefined =
       t.select_category === 'MANE_SELECT'
         ? 'MANE Select'
@@ -392,22 +404,6 @@ interface UntabledTranscript extends ParsedTranscript {
   refName: string
 }
 
-interface ProductReport {
-  reports?: {
-    product?: {
-      transcripts?: {
-        accession_version?: string
-        genomic_locations?: {
-          genomic_accession_version?: string
-          genomic_range?: { orientation?: string }
-          exons?: { begin?: string; end?: string }[]
-        }[]
-        protein?: { accession_version?: string; length?: number }
-      }[]
-    }
-  }[]
-}
-
 // A bacterial or viral gene has no transcript record, so its gene_table reads
 // "no table for this gene because it has no annotated transcribed products".
 // The product_report still lists each protein with the genomic intervals that
@@ -416,54 +412,61 @@ interface ProductReport {
 export function parseProductTranscripts(
   report: ProductReport,
 ): UntabledTranscript[] {
-  return (report.reports?.[0]?.product?.transcripts ?? []).flatMap(t => {
-    const protein = t.protein?.accession_version
-    const location = t.genomic_locations?.[0]
-    const refName = location?.genomic_accession_version
-    const coding = (location?.exons ?? [])
-      .flatMap(e => {
-        const begin = Number(e.begin)
-        const end = Number(e.end)
-        return Number.isInteger(begin) && Number.isInteger(end) && begin > 0
-          ? [{ start: Math.min(begin, end) - 1, end: Math.max(begin, end) }]
-          : []
-      })
-      .sort((a, b) => a.start - b.start)
-    const codons = coding.reduce((n, c) => n + (c.end - c.start), 0) / 3
-    const length = t.protein?.length
-    // The blocks have to spell the protein: its residues and a stop codon, or
-    // its residues alone for a mature peptide cut from a polyprotein. A
-    // ribosomal frameshift still does, since NCBI lists the slipped base in
-    // both blocks (SARS-CoV-2 ORF1ab re-reads 13468); a partial gene or an
-    // edited transcript does not, and would put its residues on the wrong
-    // bases.
-    return protein &&
-      refName &&
-      length !== undefined &&
-      (codons === length || codons === length + 1)
-      ? [
-          {
-            refName,
-            mrna: t.accession_version ?? protein,
-            protein,
-            aaLength: length,
-            cds: assignPhases(
-              coding,
-              location.genomic_range?.orientation === 'minus' ? -1 : 1,
-            ),
-          },
-        ]
-      : []
-  })
-}
-
-async function fetchProductTranscripts(geneId: string, signal?: AbortSignal) {
-  return parseProductTranscripts(
-    await ncbiJson<ProductReport>(
-      `${DATASETS}/gene/id/${geneId}/product_report`,
-      { signal },
+  // One per sequence the product is placed on: NCBI lists a gene's placement
+  // on each assembly it annotates, and the caller keeps the hosted one.
+  return (report.reports?.[0]?.product?.transcripts ?? []).flatMap(t =>
+    (t.genomic_locations ?? []).flatMap(location =>
+      productTranscript(t, location),
     ),
   )
+}
+
+type ProductTranscript = NonNullable<
+  NonNullable<
+    NonNullable<ProductReport['reports']>[number]['product']
+  >['transcripts']
+>[number]
+
+function productTranscript(
+  t: ProductTranscript,
+  location: NonNullable<ProductTranscript['genomic_locations']>[number],
+): UntabledTranscript[] {
+  const protein = t.protein?.accession_version
+  const refName = location.genomic_accession_version
+  const coding = (location.exons ?? [])
+    .flatMap(e => {
+      const begin = Number(e.begin)
+      const end = Number(e.end)
+      return Number.isInteger(begin) && Number.isInteger(end) && begin > 0
+        ? [{ start: Math.min(begin, end) - 1, end: Math.max(begin, end) }]
+        : []
+    })
+    .sort((a, b) => a.start - b.start)
+  const codons = coding.reduce((n, c) => n + (c.end - c.start), 0) / 3
+  const length = t.protein?.length
+  // The blocks have to spell the protein: its residues and a stop codon, or
+  // its residues alone for a mature peptide cut from a polyprotein. A
+  // ribosomal frameshift still does, since NCBI lists the slipped base in
+  // both blocks (SARS-CoV-2 ORF1ab re-reads 13468); a partial gene or an
+  // edited transcript does not, and would put its residues on the wrong
+  // bases.
+  return protein &&
+    refName &&
+    length !== undefined &&
+    (codons === length || codons === length + 1)
+    ? [
+        {
+          refName,
+          mrna: t.accession_version ?? protein,
+          protein,
+          aaLength: length,
+          cds: assignPhases(
+            coding,
+            location.genomic_range?.orientation === 'minus' ? -1 : 1,
+          ),
+        },
+      ]
+    : []
 }
 
 // NCBI's gene record names a Swiss-Prot entry for few genes outside the
@@ -560,19 +563,20 @@ export async function fetchGeneStructure(
       : Promise.resolve(undefined),
   })
   const named = structureOf(namedUniprotId)
-  const tags = await fetchSelectTranscripts(gene.geneId, signal)
+  const report = await fetchProductReport(gene.geneId, signal)
+  const tags = selectTags(report)
   const text = await ncbiText(
     `${EUTILS}/efetch.fcgi?db=gene&id=${gene.geneId}&rettype=gene_table&retmode=text`,
     { signal },
   )
   const reference = geneTableReference(text)
-  const untabled = reference
-    ? []
-    : await fetchProductTranscripts(gene.geneId, signal)
+  const untabled = reference ? [] : parseProductTranscripts(report ?? {})
   const placement = tablePlacement(
     gene.symbol,
     gene.placements,
-    reference ?? untabled[0]?.refName,
+    reference ??
+      untabled.find(t => gene.placements.some(p => p.refName === t.refName))
+        ?.refName,
   )
   const target = await hostedTarget(gene.symbol, placement)
   const isoforms = orderIsoforms(

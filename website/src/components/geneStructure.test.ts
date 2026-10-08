@@ -163,7 +163,7 @@ test('tablePlacement: refuses a table on a sequence no placement names', () => {
   )
   assert.throws(
     () => tablePlacement('MT-CO1', zebrafishPlacements, undefined),
-    /no genomic sequence/,
+    /no exon table/,
   )
 })
 
@@ -355,4 +355,35 @@ test('parseProductTranscripts: blocks that do not spell the protein are left out
 
 test('parseProductTranscripts: a gene with no product has no transcript', () => {
   assert.deepEqual(parseProductTranscripts({ reports: [{ product: {} }] }), [])
+})
+
+// zebrafish sox10 is placed on two assemblies, and the hosted one need not lead
+test('parseProductTranscripts: one transcript per sequence the product is placed on', () => {
+  const [location] = product(
+    [[100, 402]],
+    'plus',
+    'NP_000001.1',
+    100,
+  ).genomic_locations
+  const transcripts = parseProductTranscripts({
+    reports: [
+      {
+        product: {
+          transcripts: [
+            {
+              protein: { accession_version: 'NP_000001.1', length: 100 },
+              genomic_locations: [
+                { ...location, genomic_accession_version: 'NC_141023.1' },
+                { ...location, genomic_accession_version: 'NC_133178.1' },
+              ],
+            },
+          ],
+        },
+      },
+    ],
+  })
+  assert.deepEqual(
+    transcripts.map(t => t.refName),
+    ['NC_141023.1', 'NC_133178.1'],
+  )
 })

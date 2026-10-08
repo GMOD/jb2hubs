@@ -129,6 +129,9 @@ export async function loadPfam(
   const thinNote = placed.thinned
     ? ` ${placed.kept} of the seed's ${placed.total} rows, those nearest ${symbol}, fit in a launch${placed.newick ? ', with the tree pruned to them' : '; the tree is left out with the rest'}.`
     : ''
+  const untreedNote = placed.untreed
+    ? ` ${placed.untreed} seed ${placed.untreed === 1 ? 'row' : 'rows'} the family's tree does not name ${placed.untreed === 1 ? 'is' : 'are'} left out.`
+    : ''
   return {
     source: {
       kind: 'inline',
@@ -147,7 +150,7 @@ export async function loadPfam(
       proteinSequence,
       transcript: structure.transcript,
     },
-    note: anchorNote + thinNote,
+    note: anchorNote + thinNote + untreedNote,
     ...(focused
       ? {
           region: {
