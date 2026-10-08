@@ -602,9 +602,9 @@ Three things the 2026-09-09 publish found:
 - **CloudFront matches an invalidation wildcard only as the last character.**
   `/pangenome/*/config.json` is accepted, reports `Completed` and invalidates
   nothing; `/pangenome/*` works.
-- **The derived catalogue's gene track is per dataset.** bosTau9 publishes no
-  `ncbiRefSeqSelect`, so a hardcoded track name labels every locus
-  "(intergenic)".
+- **A gene track name is per dataset.** bosTau9 publishes no `ncbiRefSeqSelect`,
+  so the derived-catalogue generator (removed 2026-10-08) labelled every locus
+  "(intergenic)" off a hardcoded track name.
 
 Sequenced so nothing waits on the long job. Unnumbered on purpose — the order
 has already changed once.

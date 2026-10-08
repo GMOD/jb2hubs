@@ -2,12 +2,11 @@
 // new graph is another PangenomeDataset; the components and link builders read
 // only this shape.
 
-import arabidopsisLociFile from '../../public/pangenome-arabidopsis/loci.json' with { type: 'json' }
-import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type: 'json' }
-import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
 import { genarkConfigPath, ucscConfigPath } from '../config/jbrowse.ts'
-import { derivedLoci } from './pangenomeDerivedLoci.ts'
+import { ARABIDOPSIS_PANGENOME_LOCI } from './pangenomeArabidopsisLoci.ts'
+import { BOVINE_PANGENOME_LOCI } from './pangenomeBovineLoci.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
+import { MOUSE_PANGENOME_LOCI } from './pangenomeMouseLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
@@ -398,16 +397,6 @@ export const ARABIDOPSIS_GRAPH_BROWSER: PangenomeGraphBrowser = {
   ],
 }
 
-// Derived catalogues, not curated ones: `website/generatePangenomeLoci.ts`
-// ranks each graph's coarse tier by segments per bubble and names the entries
-// off the reference annotation, and its output is committed under
-// `website/public/pangenome-<id>/loci.json`. Imported at build so the loci are
-// a plain array here like HPRC's, and served at the same path so the generator
-// has one output rather than two.
-const MOUSE_LOCI = derivedLoci(mouseLociFile)
-const BOVINE_LOCI = derivedLoci(bovineLociFile)
-const ARABIDOPSIS_LOCI = derivedLoci(arabidopsisLociFile)
-
 // The mouse strain graph: UCSC mm39 plus 18 Mouse Genomes Project strain
 // assemblies, aligned here with `minigraph -cxggs` and projected onto GRCm39.
 // Built in jbrowse-components (`scripts/build_mouse_pangenome.sh`) and hosted
@@ -433,7 +422,7 @@ export const MOUSE_DATASET: PangenomeDataset = {
   },
   panelDescription: '18 inbred and wild-derived Mouse Genomes Project strains',
   graphBrowser: MOUSE_GRAPH_BROWSER,
-  loci: MOUSE_LOCI,
+  loci: MOUSE_PANGENOME_LOCI,
   heading: 'Mouse strain pangenome',
   filePrefix: 'https://jbrowse.org/demos/mouse_pangenome/mouse-mm39-minigraph',
   // Measured 2026-09-09. No `.vcf.gz` row, because there is no callset.
@@ -526,7 +515,7 @@ export const BOVINE_DATASET: PangenomeDataset = {
     rowColor: BOVINE_ROW_COLOR,
   },
   graphBrowser: BOVINE_GRAPH_BROWSER,
-  loci: BOVINE_LOCI,
+  loci: BOVINE_PANGENOME_LOCI,
   heading: 'Bovine super-pangenome',
   filePrefix:
     'https://jbrowse.org/demos/bovine_pangenome/bovine-arsucd12-minigraph',
@@ -572,7 +561,7 @@ export const ARABIDOPSIS_DATASET: PangenomeDataset = {
   },
   panelDescription: '26 1001 Genomes Plus Phase 1 accessions',
   graphBrowser: ARABIDOPSIS_GRAPH_BROWSER,
-  loci: ARABIDOPSIS_LOCI,
+  loci: ARABIDOPSIS_PANGENOME_LOCI,
   heading: 'Arabidopsis 1001 Genomes Plus pangenome',
   filePrefix:
     'https://jbrowse.org/demos/arabidopsis_pangenome/arabidopsis-tair10-minigraph',

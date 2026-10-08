@@ -156,12 +156,11 @@ test('without a callset a region opens as the graph configs own lanes', () => {
   ])
 })
 
-// The same builder, the other branch. `loci[0]` is the 2.24 Mb Vmn cluster, and
-// this launch used to open the allele inventory — an AlignmentsTrack over 379
-// rows — across the whole of it, which is past its fetch limit. It opens the
-// tier instead.
+// The same builder, the other branch, over a 2.24 Mb window. This launch used
+// to open the allele inventory — an AlignmentsTrack over 379 rows — across the
+// whole of it, which is past its fetch limit. It opens the tier instead.
 test('and over a span the fine lanes cannot draw, it is the tier', () => {
-  const wide = MOUSE_DATASET.loci.find(l => spanOf(l) > MAX_DETAIL_WINDOW_BP)!
+  const wide = { chrom: 'chr7', start: 84_600_000, end: 86_840_000 }
   const { spec } = parseLaunch(
     launchOf(regionLaunches(MOUSE_DATASET, wide), 'bubbles')!,
   )
@@ -222,24 +221,6 @@ test('a wide window offers the graph alone, and a collapsed locus no graph', () 
     }).map(l => l.kind),
     ['graph'],
   )
-})
-
-test('a derived catalogue carries what the tier said and claims nothing else', () => {
-  for (const d of [MOUSE_DATASET, BOVINE_DATASET, ARABIDOPSIS_DATASET]) {
-    assert.ok(d.loci.length > 0, `${d.id} has a catalogue`)
-    for (const l of d.loci) {
-      const derived = l.derived
-      assert.ok(derived, `${d.id}/${l.id} is marked derived`)
-      assert.ok(derived.segments > 0, `${d.id}/${l.id} has a segment count`)
-    }
-    // Ranked by segments per bubble, descending — that ordering is the whole
-    // claim the catalogue makes.
-    const counts = d.loci.map(l => l.derived!.segments)
-    assert.deepEqual(
-      counts,
-      [...counts].sort((a, b) => b - a),
-    )
-  }
 })
 
 const graphTrack = {

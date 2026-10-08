@@ -1,23 +1,13 @@
-// Curated human loci where genome structure varies between haplotypes, offered
-// as examples on /pangenomes/hprc. Coordinates are GRCh38 with UCSC names,
-// 0-based half-open. `id` is a stable slug `check-pangenome-launches --loci`
-// filters on.
-
-// What a dataset's coarse tier says about one bubble, for a catalogue derived
-// by `website/generatePangenomeLoci.ts` rather than curated.
-export interface DerivedBubble {
-  // `cn:i:`, the metric the catalogue is ranked by. gfatools clamps `cw` (path
-  // count) at INT32_MAX for every bubble at the top of the ranking.
-  segments: number
-  // Reference genes the bubble overlaps; empty where it is intergenic.
-  genes: string[]
-}
+// Curated loci where genome structure varies between haplotypes, offered as
+// examples on /pangenomes/<id>. Coordinates are 0-based half-open, on the
+// dataset's own sequence names. `id` is a stable slug
+// `check-pangenome-launches --loci` filters on. The human loci are below, on
+// GRCh38; the other graphs' are in `pangenome{Mouse,Bovine,Arabidopsis}Loci.ts`.
 
 export interface PangenomeLocus {
   id: string
   gene: string
-  // Curated entries only.
-  fullName?: string
+  fullName: string
   chrom: string
   start: number
   end: number
@@ -25,14 +15,13 @@ export interface PangenomeLocus {
   // (SMN1/SMN2, RHD/RHCE, the CYP clusters), so a graph launch there opens a
   // bare thread that reads as an empty result. No graph launch is offered.
   graphCollapsed?: boolean
-  derived?: DerivedBubble
 }
 
 // The widest window drawn at segment level, and the widest the callset opens
 // on. Past it a graph is one unreadable thread, and the 464-haplotype callset
 // (~200 bytes/bp of VCF text over these loci) is behind "too much data". The
-// HPRC tutorial's cuts run 70–130 kb. Every curated window fits; a wider
-// derived bubble draws from the coarse tier.
+// HPRC tutorial's cuts run 70–130 kb. Every human window fits; a wider one
+// draws from the coarse tier.
 export const MAX_DETAIL_WINDOW_BP = 150_000
 
 export const PANGENOME_LOCI: PangenomeLocus[] = [

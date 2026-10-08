@@ -102,11 +102,9 @@ function RegionForm({
 export default function PangenomeRegionBox({
   dataset,
   examples,
-  examplesLabel,
 }: {
   dataset: PangenomeDataset
   examples: PangenomeExample[]
-  examplesLabel: string
 }) {
   const [asked, setAsked] = useUrlState('region', '')
   const {
@@ -150,7 +148,7 @@ export default function PangenomeRegionBox({
 
       {examples.length > 0 && (
         <p>
-          {examplesLabel}:
+          Examples:
           {examples.map(e => (
             <span key={e.id}>
               {' '}

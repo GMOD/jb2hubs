@@ -72,7 +72,9 @@ JavaScript.
 - **A curated locus is one window of at most `MAX_DETAIL_WINDOW_BP`.** Each used
   to carry a display span too (MHC's 5 Mb) with the launch window as a
   `detailWindow` inside it; nothing opened the span once the table went, so it
-  went on 2026-10-08, and a test holds every curated window to the limit.
+  went on 2026-10-08, and a test holds every HPRC window to the limit. Two
+  non-human examples are wider on purpose, cattle `defb` and Arabidopsis `knob`,
+  and `pangenomeExamples.test.ts` lists them by id.
 - **`regionAnswer` (`pangenomeAnswer.ts`) is the whole answer**: the window, its
   title, the forms and the launches. The box renders it and
   `check-pangenome-launches` calls it, so the check boots what the page offers.
@@ -94,8 +96,8 @@ JavaScript.
   (measured 2026-10-08). Saying which it is needs per-haplotype placement.
 - **An example is its locus's window as a locstring**, and the box recognises
   the text to title the answer and to drop the graph launch for a
-  `graphCollapsed` locus. A derived dataset offers its `MAX_DERIVED_EXAMPLES`
-  highest-ranked bubbles that overlap a gene, under "Most variable".
+  `graphCollapsed` locus. Every dataset's examples are curated loci, under
+  "Examples" (see "Every dataset's examples are curated" below).
 - **Every dataset has the box.** Without a sidecar it resolves the window
   against `graphBrowser.chromosomes` and offers the launches alone. Gene symbols
   go through mygene.info, whose coordinates matched all four references on
@@ -144,8 +146,8 @@ plugin registers on it. Everything below fell out of the width rule on
 - **A wide catalog locus has a launch at all.** `graphLocusUrl` used to return
   undefined without a detail window, and `locusLaunchUrl` opened the allele
   inventory (an AlignmentsTrack, 379 rows over mouse's top entry) across
-  multi-megabase spans. Half of each derived catalogue is such a cluster — 10 of
-  mouse's 20, 12 of cattle's.
+  multi-megabase spans. Half of each derived catalogue the non-human pages then
+  listed was such a cluster — 10 of mouse's 20, 12 of cattle's.
 - **No region has an upper bound.** `MAX_GRAPH_REGION_BP` existed because the
   view refuses a cut past its `maxRegionBp`; a coarse cut has no bp cap.
 - **There is no landing locus.** `landingRegion` and then `preferredLocus`
@@ -156,6 +158,71 @@ plugin registers on it. Everything below fell out of the width rule on
 The one asymmetry that stays: the callset does **not** get a coarse tier, so
 `regionLaunches` offers no variants launch past `MAX_DETAIL_WINDOW_BP`. That is
 a property of a VCF, not of the wiring.
+
+### Every dataset's examples are curated
+
+Mouse, cattle and Arabidopsis each offer seven named loci, in
+`pangenomeMouseLoci.ts`, `pangenomeBovineLoci.ts` and
+`pangenomeArabidopsisLoci.ts` beside HPRC's 22 in `pangenomeLoci.ts`. Until
+2026-10-08 those three pages offered a derived catalogue under "Most variable":
+`generatePangenomeLoci.ts` ranked each graph's coarse tier by segments per
+bubble and named the entries off the reference annotation, committed as
+`public/pangenome-<id>/loci.json`. The ranking found real places and labelled
+them "Gm10439 +10", "LOC790886" and "AT4G05215 +19": RPP5 was the derived entry
+"AT4G02965 +23". The ranking also never found a single-event locus (Nnt, Mx1,
+POLLED, RPM1), each one allele in a quiet window with a segment count of 3 to 9.
+The generator, the three files and the `derived` field went with the catalogue.
+
+Each curated window was measured on 2026-10-08 with ranged `tabix` reads of the
+dataset's published `.bubbles.bed.gz`, `.alleles.bed.gz` and
+`.tier10000.segs.bed.gz`, plus `.vcf.gz` for cattle and `syri_regions.bed.gz`
+for Arabidopsis. Gene coordinates came from the UCSC REST API's `ncbiRefSeq`
+track (mm39, bosTau9) and mygene.info species 3702 (TAIR10). No bubble crosses a
+window's edge, the rule AMY1's comment states for HPRC. The measured sizes are
+comments on each locus, and the loci measured and declined are listed at the top
+of each file.
+
+Three traps when re-measuring a window against the published files:
+
+- **The bubble and tier files name sequences in PanSN** (`mm39#0#chr4`,
+  `bosTau9#0#chr6`, `TAIR10#1#Chr4`), and the allele files and the VCF use the
+  bare name. A bare-name query against the bubble index returns nothing, which
+  reads as a flat graph.
+- **`tabix` on a url writes the `.tbi` into the working directory.** Run it from
+  a scratch directory.
+- **The mouse and Arabidopsis graphs record no carriage.** The allele file's
+  `firstSeenIn` is the first assembly, in build order, to add the node, so it
+  can rule a strain out and never rules one in. Only cattle, through the VCF,
+  says which breed carries what.
+
+**The descriptions name the locus and claim nothing about strains or breeds.**
+The proposal's phenotype and carrier claims were cited from memory, and only the
+KIT one (Milia et al. 2025, Genome Res 35:1041) was checked. Verify a citation
+before a description says which strain or breed carries an allele.
+
+Windows measured the same way and not offered, any of which can swap in. The
+columns are the bubble index's rows in the window, allele rows of 1 kb or more,
+the largest allele row, and the segments in the largest coarse-tier bubble
+(blank where none reaches the tier's 10 kb floor):
+
+| dataset     | id      | window                       | bubbles | ≥1 kb | largest     | top bubble |
+| ----------- | ------- | ---------------------------- | ------- | ----- | ----------- | ---------- |
+| mouse       | `rd1`   | chr5:108,520,000-108,590,000 | 19      | 1     | 8,647 ins   |            |
+| mouse       | `mup20` | chr4:61,860,000-61,990,000   | 4       | 12    | 81,139 del  | 30 seg     |
+| mouse       | `raet1` | chr10:21,955,000-22,093,000  | 28      | 13    | 73,095 ins  | 25 seg     |
+| mouse       | `h2-ea` | chr17:34,500,500-34,620,000  | 30      | 4     | 7,833 del   |            |
+| mouse       | `amy2`  | chr3:113,098,000-113,335,000 | 2       | 18    | 127,314 del | 121 seg    |
+| cattle      | `lyz`   | chr5:44,205,000-44,345,000   | 11      | 9     | 69,315 del  | 32 seg     |
+| cattle      | `ulbp`  | chr9:84,665,000-84,795,000   | 6       | 4     | 109,893 del | 25 seg     |
+| Arabidopsis | `rps5`  | Chr1:4,135,000-4,157,000     | 10      | 5     | 6,065 ins   | 8 seg      |
+| Arabidopsis | `maf`   | Chr5:25,970,000-26,010,000   | 7       | 10    | 15,980 ins  | 41 seg     |
+| Arabidopsis | `aop`   | Chr4:1,335,000-1,365,000     | 7       | 9     | 22,087 ins  | 46 seg     |
+| Arabidopsis | `acd6`  | Chr4:8,280,000-8,313,000     | 13      | 10    | 5,902 ins   | 47 seg     |
+| Arabidopsis | `rps4`  | Chr5:18,295,000-18,340,000   | 8       | 9     | 13,774 del  | 73 seg     |
+
+Mouse `amy2` is one 225 kb bubble (113,101,029-113,326,354), so it would be a
+third coarse-tier example. Cattle `polled` is the smallest event offered: one
+202 bp record in a 60 kb window with three SVs.
 
 ### What a pangenome page is not
 

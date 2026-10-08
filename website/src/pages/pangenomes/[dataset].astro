@@ -78,14 +78,7 @@ function humanBytes(bytes: number) {
       ))}
     </p>
 
-    <PangenomeRegionBox
-      dataset={dataset}
-      examples={examples}
-      examplesLabel={
-        dataset.loci.some(l => l.derived) ? 'Most variable' : 'Examples'
-      }
-      client:load
-    />
+    <PangenomeRegionBox dataset={dataset} examples={examples} client:load />
 
     <h2>Whole chromosomes</h2>
     <p>
