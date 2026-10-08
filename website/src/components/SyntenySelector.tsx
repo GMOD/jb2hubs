@@ -18,7 +18,7 @@ import {
   queryGenes,
   resolveGenePair,
 } from './geneSearch.ts'
-import { panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
+import { flipLoc, panelTracks, syntenyViewUrl } from './jbrowseLinks.ts'
 import { loadStore } from './orthologDb.ts'
 
 import type { SyntenyCatalogData } from '../lib/syntenyCatalog.ts'
@@ -246,14 +246,14 @@ function SyntenyPicker({ data }: Props) {
   // A gene launch opens each panel on its gene's neighborhood where NCBI placed
   // the gene on that very assembly, and on the bare symbol otherwise (an old
   // UCSC build, or before the report arrives), which JBrowse resolves through
-  // the assembly's text index to the gene body alone. Measured on `main`
-  // 2026-10-08, `sameScale` zoomed both TP53 panels out to whole chromosomes,
-  // and a `[rev]` loc in a synteny panel opened the mirrored offset of an
-  // unreversed region, so neither is sent. A panel with no locus is the whole
-  // genome, where a gene track only opens a "Requested too much data" banner,
-  // so it opens none. The view options make the whole-genome synteny readable
-  // on first load (chromosome painting, diagonalized axes, bezier ribbons); see
-  // SyntenyViewOptions for which hosts honour them.
+  // the assembly's text index to the gene body alone. The second is flipped
+  // when its gene runs the other way. `sameScale` stays off: on `main` it
+  // zoomed both TP53 panels out to whole chromosomes (2026-10-08). A panel
+  // with no locus is the whole genome, where a gene track only opens a
+  // "Requested too much data" banner, so it opens none. The view options make
+  // the whole-genome synteny readable on first load (chromosome painting,
+  // diagonalized axes, bezier ribbons); see SyntenyViewOptions for which hosts
+  // honour them.
   const store = pair.data?.store
   const window1 =
     store && pair.data?.gene
@@ -261,8 +261,13 @@ function SyntenyPicker({ data }: Props) {
       : undefined
   const window2 =
     store && ortholog ? geneWindow(ortholog, species2, store) : undefined
-  const loc1 = window1 ?? gene?.symbol
-  const loc2 = window2 ?? symbol2
+  const loc1 = window1?.loc ?? gene?.symbol
+  const loc2 = window2
+    ? flipLoc(
+        window2.loc,
+        window1 !== undefined && window1.strand !== window2.strand,
+      )
+    : symbol2
   const panel = (assembly: string, loc: string | undefined) =>
     loc
       ? {
