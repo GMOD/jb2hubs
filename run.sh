@@ -169,8 +169,6 @@ fi
 # skips S3 because the data is shared with production -- but these configs are
 # exactly what a staging launch fetches, from that same shared bucket, so
 # "skip the upload" would leave staging linking a file that does not exist.
-# Publishing one to production is inert while `features.pangenome` is closed
-# there.
 #
 # `upload_if_changed` inside it makes this a no-op on a run that changed
 # nothing: it compares byte-for-byte against a stamp and neither uploads nor

@@ -279,8 +279,10 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   not bring back a table of loci.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
-- **`features.pangenome` stays staging until core v5**: the graph plugin
-  error-pages every released host.
+- **`features.pangenome` is live because every launch targets `main`**
+  (`JBROWSE_BASE`): the graph plugin error-pages every released host. Run
+  `pnpm check-pangenome-launches --host latest` before pointing `JBROWSE_BASE`
+  at a release.
 - **A visible change here is owed to the tutorials** in jbrowse-components
   (`website/docs/tutorials/pangenome_*.md`).
 

@@ -1,29 +1,10 @@
-import fs from 'node:fs'
-
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
 import { defineConfig } from 'astro/config'
 
-// This file is loaded by node before Astro applies --mode, so import.meta.env
-// (what src/config/features.ts reads) is not available here. Read the same
-// .env.<mode> file Astro will, keyed on the --mode the CLI was given, so the
-// flag has one source: PUBLIC_STAGING in .env.staging.
-const modeFlag = process.argv.indexOf('--mode')
-const mode = modeFlag === -1 ? 'production' : process.argv[modeFlag + 1]
-const envFile = new URL(`./.env.${mode}`, import.meta.url)
-const staging =
-  fs.existsSync(envFile) &&
-  /^PUBLIC_STAGING=true$/m.test(fs.readFileSync(envFile, 'utf-8'))
-
-// Routes whose page redirects home unless the matching flag in
-// src/config/features.ts is on. A flag promoted to production has to come off
-// this list at the same time, or its pages stay out of the sitemap while being
-// live.
-const STAGING_ONLY = ['/pangenomes/']
-
-// Pages that only forward elsewhere, so they never belong in the sitemap,
-// staging or not: stubs kept for old links, and /ucsc/launch/, which turns a
-// UCSC hgTracks query into a JBrowse launch.
+// Pages that only forward elsewhere, so they never belong in the sitemap:
+// stubs kept for old links, and /ucsc/launch/, which turns a UCSC hgTracks
+// query into a JBrowse launch.
 const REDIRECT_STUBS = [
   '/orthologs/',
   '/conserved-gene-order/',
@@ -55,13 +36,7 @@ export default defineConfig({
       babel: { plugins: ['babel-plugin-react-compiler'] },
     }),
     sitemap({
-      filter: page => {
-        const { pathname } = new URL(page)
-        return (
-          !REDIRECT_STUBS.includes(pathname) &&
-          (staging || !STAGING_ONLY.some(prefix => pathname.startsWith(prefix)))
-        )
-      },
+      filter: page => !REDIRECT_STUBS.includes(new URL(page).pathname),
     }),
   ],
 })

@@ -404,12 +404,13 @@ in one pattern, which is what "not on the reference path here" looks like and
 not what one skipped site looks like. Choosing a different representative does
 not fix it, and neither does preferring less-fragmented haplotypes (HG00097#1
 has 75 contigs and HG00544#1 61, against a median of 81). Per-haplotype
-placement intervals from the build box are therefore a prerequisite for
-promoting `features.pangenome`: `structuralForms` would treat an unplaced
-haplotype as missing in both the generator and the **Any region** box, not as a
-deletion. Before building that, count how many of defb's form members the lane
-adapter places in chr8:7,797,024-7,959,462. Mostly unplaced means the data is
-required; mostly placed means a placed representative is enough for defb.
+placement intervals from the build box were therefore written down as a
+prerequisite for promoting `features.pangenome`, which went to production on
+2026-10-08 without them: `structuralForms` would treat an unplaced haplotype as
+missing in both the generator and the **Any region** box, not as a deletion.
+Before building that, count how many of defb's form members the lane adapter
+places in chr8:7,797,024-7,959,462. Mostly unplaced means the data is required;
+mostly placed means a placed representative is enough for defb.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and
@@ -619,8 +620,8 @@ has already changed once.
   **Ordering hazard:** `pangenomeDataset.ts` names `hprc_minigraph_tier`, which
   the _live_ config does not have until `website/pangenome-config/upload.sh`
   runs. Upload before deploying, or the whole-chromosome launches name a trackId
-  their config lacks. Only staging is affected today, since `features.pangenome`
-  is closed on production.
+  their config lacks. Production is affected too since `features.pangenome`
+  opened there on 2026-10-08.
 
 - **Commit the two builders.** _Landed 2026-09-09, jbrowse-components
   `d89f7c3025`._ `scripts/build_mouse_pangenome.sh` (constructs the graph) and

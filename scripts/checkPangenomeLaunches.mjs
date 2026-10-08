@@ -32,8 +32,8 @@
 // release, since every launch below targets `main` until then.
 //
 // Usage:
-//   node scripts/checkPangenomeLaunches.mjs                 # staging (main)
-//   node scripts/checkPangenomeLaunches.mjs --host latest   # what production would get
+//   node scripts/checkPangenomeLaunches.mjs                 # main, what the site launches
+//   node scripts/checkPangenomeLaunches.mjs --host latest   # the newest release
 //   node scripts/checkPangenomeLaunches.mjs --dataset hprc --loci mhc-hla,lpa
 //   node scripts/checkPangenomeLaunches.mjs --local   # working-tree configs
 //

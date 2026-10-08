@@ -180,8 +180,8 @@ export interface PangenomeDataset {
 // browser). It was seeded from jbrowse.org/demos/hprc/config.json and keeps
 // that file's track ids, plus the bubble tier and variability curve the HPRC
 // tutorial builds but the demo omits. The data files stay in the demos
-// bucket, built in the jbrowse-components repo. Upload before deploying
-// staging, or every graph launch fails to fetch its config.
+// bucket, built in the jbrowse-components repo. Upload before deploying, or
+// every graph launch fails to fetch its config.
 //
 // The plugin url is the unversioned entry point, deliberately not one of the
 // content-hashed builds beside it: the plugin links an unreleased
@@ -190,9 +190,9 @@ export interface PangenomeDataset {
 //
 // Every launch goes to `main` (`JBROWSE_BASE`), which has what the plugin
 // reads off the host. No released host does: v4.3.0 error-pages on it
-// (`(0,N.createSvgIcon) is not a function`), which is why the whole section is
-// staging-only until v5, and why this config is not held to the v4.0.0 floor in
-// CLAUDE.md's "Old JBrowse versions read these configs".
+// (`(0,N.createSvgIcon) is not a function`), which is why this config is not
+// held to the v4.0.0 floor in CLAUDE.md's "Old JBrowse versions read these
+// configs", and why `JBROWSE_BASE` cannot move to a release before v5.
 const minigraphTracks = (prefix: string) => ({
   segmentsTrackId: `${prefix}_minigraph_segments`,
   bubblesTrackId: `${prefix}_minigraph_bubbles`,

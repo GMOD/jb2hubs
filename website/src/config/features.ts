@@ -32,10 +32,10 @@ export const features = {
   // on-demand cross-species alignment (EBI Clustal Omega) overlaid with CDD
   // domains — all synthesized live.
   proteinBrowser: true,
-  // The /pangenomes/* section: one page per graph, with its loci and their
-  // JBrowse launches. Waits on core v5, because the graphgenomeviewer plugin
-  // every graph launch loads error-pages each released host.
-  pangenome: staging,
+  // The /pangenomes/* section: one page per graph, drawable at any gene or
+  // region. Every graph launch loads the graphgenomeviewer plugin, which boots
+  // on `main`, the build `JBROWSE_BASE` targets, and error-pages v4.3.0.
+  pangenome: true,
   // The conserved-gene-order section's launch into the reference's multi-way
   // synteny star. Waits on core v5: only config-staging.json carries the star,
   // since a display type a released host lacks is fatal once the track opens.

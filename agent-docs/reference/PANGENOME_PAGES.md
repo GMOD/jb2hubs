@@ -29,7 +29,10 @@ jbrowse-plugin-list rehosts the release its `GraphGenomeView` entry pins. The
 plugin links an unreleased `@jbrowse/render-core`, so a pinned release stops
 booting as `main` moves, and keeping it booting means bumping that pin. It
 error-pages every released host (`createSvgIcon` — re-measured 2026-08-26 on
-`latest` = v4.3.0), which is why `features.pangenome` stays staging until v5.
+`latest` = v4.3.0). `features.pangenome` waited on v5 for that reason until
+2026-10-08, when it went to production: since 2026-09-12 every launch on the
+site targets `main`, where the plugin boots, so the constraint moved onto
+`JBROWSE_BASE`, which cannot point at a release the plugin error-pages.
 
 `pnpm check-pangenome-launches` boots every launch of every dataset on `main`,
 including one whole-chromosome tier launch each, and reads back which tier the

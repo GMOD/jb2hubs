@@ -23,6 +23,6 @@ Delete an entry when it lands, and the file when it is empty.
 
 - **Haplotype lanes the graph does not place.** `pnpm check-pangenome-launches`
   lists `defb` and `nphp1` as known unplaced rather than failing them. The fix
-  is per-haplotype placement intervals from the build box, needed before
-  `features.pangenome` leaves staging; the defb measurement that settles how
+  is per-haplotype placement intervals from the build box, still owed now that
+  `features.pangenome` is on production; the defb measurement that settles how
   much is in `agent-docs/reference/PANGENOME_PORTAL.md`.
