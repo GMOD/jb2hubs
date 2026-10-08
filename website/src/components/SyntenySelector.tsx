@@ -99,8 +99,9 @@ function SyntenyPicker({ data }: Props) {
 
   const taxon1 = data.assemblyInfo[species1]?.taxonId
   const taxon2 = data.assemblyInfo[species2]?.taxonId
-  // Gene centering is offered whenever both assemblies map to an NCBI taxon.
-  const canSearchGenes = taxon1 !== undefined && taxon2 !== undefined
+  // The gene is searched in the first assembly's taxon, so the box shows as
+  // soon as that has one: the gene page links here with a gene and no partner.
+  const canSearchGenes = taxon1 !== undefined
   const gene = canSearchGenes ? parseGeneRef(geneValue) : undefined
 
   // The orthologous symbol in the second taxon, keyed on exactly the inputs it
@@ -121,7 +122,7 @@ function SyntenyPicker({ data }: Props) {
 
   function orthologNote(): ReactNode {
     let note: ReactNode = ''
-    if (gene && taxon1 !== taxon2) {
+    if (gene && taxon2 !== undefined && taxon1 !== taxon2) {
       if (ortholog.isLoading) {
         note = `Finding ${gene.symbol} ortholog in ${nameOf(species2)}…`
       } else if (ortholog.error !== undefined) {
@@ -324,7 +325,9 @@ function SyntenyPicker({ data }: Props) {
           !species2 &&
           `${partners.length} ${
             partners.length === 1 ? 'assembly has' : 'assemblies have'
-          } a synteny comparison with ${nameOf(species1)}.`}
+          } a synteny comparison with ${nameOf(species1)}.${
+            gene ? ` Pick one and the view will center on ${gene.symbol}.` : ''
+          }`}
         {species1 && species2 && (
           <span>
             Comparing <strong>{labelOf(species1)}</strong> ⇄{' '}
@@ -360,7 +363,7 @@ function SyntenyPicker({ data }: Props) {
           <label htmlFor="gene">Center on orthologous gene (optional)</label>
           <Autocomplete
             id="gene"
-            key={`gene-${species1}-${species2}`}
+            key={`gene-${species1}`}
             options={gene ? [{ value: geneValue, label: gene.symbol }] : []}
             queryOptions={queryGeneOptions}
             value={geneValue}
