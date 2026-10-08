@@ -111,7 +111,8 @@ not a claim.
 Why it was allowed to persist is the part still worth holding: both versions are
 live in `demos/hprc/` (v2.0 `segs.bed.gz` 6,693,943 bytes, v2.1 6,686,172), so
 nothing errored — we were quietly serving the older graph. **No gate could ever
-have noticed**, which is the same class as CLAUDE.md's "the plugin bundles are
+have noticed**, which is the same class as
+`agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md`'s "the plugin bundles are
 published from another repo": a config here goes stale from a push there, and
 push-triggered CI structurally cannot see it. What notices now is
 `check-pangenome-assets`, which reports a newer published version as STALE, and
@@ -735,8 +736,9 @@ here and in the tutorials; the pages carry no caveat prose since 2026-09-16.
   do not leave it as a third half-built mouse route.
 
   The case for finishing it got weaker on 2026-09-10: the site's per-locus MSA
-  panel is deleted (see CLAUDE.md, "What the /pangenomes page is not"), so the
-  step that never ran no longer has a consumer. Retiring is now the default.
+  panel is deleted (see `agent-docs/reference/PANGENOME_PAGES.md`, "What a
+  pangenome page is not"), so the step that never ran no longer has a consumer.
+  Retiring is now the default.
 
 - `agent-docs/MOUSE_PANGENOME_PLAN.md` — deleted 2026-09-16; this file
   superseded it, and the mouse loci are generated now.

@@ -74,7 +74,7 @@
 // gate_configs -- so treating a network failure as a dead reference makes one
 // hgdownload wobble block a deploy. Which is not hypothetical: minutes after
 // this check first found anything, hgdownload's primary stopped completing TLS
-// (the stall CLAUDE.md documents at length) while hgdownload2 served all three
+// (the stall agent-docs/reference/TRACK_URL_CHECKS.md documents) while hgdownload2 served all three
 // 2bits at 200, and this script exited 1 on three perfectly good urls.
 //
 // So it classifies the way checkTrackUrls.mjs does, for the same reasons and

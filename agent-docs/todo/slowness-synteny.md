@@ -56,7 +56,8 @@ Still open:
   in the request — is the shape of the fix, and it changes what every merge
   caller receives, so it is a decision rather than a patch.
 - **N × chrom.sizes/chromAlias from hgdownload** per launch is the GenArk
-  sidecar trade recorded in `../../CLAUDE.md`; nothing here changes it.
+  sidecar trade recorded in
+  `agent-docs/reference/CONFIG_COMPAT_AND_SIDECARS.md`; nothing here changes it.
 - **The 29 s API Gateway limit** against a 120 s Lambda: a slow cold miss is a
   504 the client retries once. Measure in CloudWatch before moving either. With
   the gene-order figure staging-only, 2026-09-24 saw 23 invocations: none over

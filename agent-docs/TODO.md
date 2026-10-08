@@ -17,10 +17,9 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Ready to take
 
-| Item                                     | Area            | First move                                                                                                           |
-| ---------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
-| [proteinbrowser](todo/proteinbrowser.md) | protein browser | Link the instance from the proteinbrowser repo when the page leaves staging.                                         |
-| [Trim CLAUDE.md](todo/trim-claude-md.md) | docs            | Move the incident narratives and dated measurements to agent-docs/reference/, keeping each rule, invariant and trap. |
+| Item                                     | Area            | First move                                                                   |
+| ---------------------------------------- | --------------- | ---------------------------------------------------------------------------- |
+| [proteinbrowser](todo/proteinbrowser.md) | protein browser | Link the instance from the proteinbrowser repo when the page leaves staging. |
 
 ## Measure first
 

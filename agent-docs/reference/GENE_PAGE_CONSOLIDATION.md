@@ -248,8 +248,8 @@ keeping a page of its own.
 `/pangenomes/*` is a different product: collection-first, HPRC- and
 mouse-specific, and not linked from the nav at all. It does not compete for the
 gene-page slot and is blocked on `@jbrowse/core` v5 regardless (see the
-pangenome section of `../CLAUDE.md`). Four pages for an unlinked staging feature
-is worth its own look, but not as part of this.
+`agent-docs/reference/PANGENOME_PAGES.md`). Four pages for an unlinked staging
+feature is worth its own look, but not as part of this.
 
 ## Two release blockers to plan around, not wait on
 

@@ -139,7 +139,8 @@ The response-headers-policy commands need an AWS CLI newer than 2.0.4, e.g.
 
 `.astro` frontmatter is **not** typechecked (`astro check` was dropped with the
 move to TypeScript 7), so anything type-sensitive belongs in a `.ts`/`.tsx`
-module the page imports. See CLAUDE.md for the full toolchain notes.
+module the page imports. See agent-docs/reference/TOOLCHAIN.md for the full
+toolchain notes.
 
 ## Checks
 

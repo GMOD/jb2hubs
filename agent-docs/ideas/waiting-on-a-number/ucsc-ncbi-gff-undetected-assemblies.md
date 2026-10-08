@@ -10,9 +10,9 @@ description:
 
 `ucsc2jbrowse/src/deriveNcbiAccessions.ts` detects which UCSC assemblies are
 NCBI-derived, and 74 committed configs carry a `<db>-ncbiRefSeqGff` track as of
-2026-10-08. The design is in `CLAUDE.md` under "Which UCSC assemblies are
-NCBI-derived is derived, not listed". Two leads stayed open when it landed on
-2026-08-26.
+2026-10-08. The design is in `agent-docs/reference/UCSC_PIPELINE.md` under
+"Which UCSC assemblies are NCBI-derived is derived, not listed". Two leads
+stayed open when it landed on 2026-08-26.
 
 - **aptMan1's refNames are RefSeq accessions under UCSC's dot-to-`v` mangling**
   (`NW_013995860v1` for `NW_013995860.1`), and UCSC publishes no alias table to
