@@ -439,25 +439,31 @@ function SyntenyPicker({ data }: Props) {
         <summary>Options</summary>
         <div className="synteny-options-body">
           {tracks.length > 1 && (
-            <div className="synteny-option">
-              <label htmlFor="track">Alignment</label>
-              <select
-                id="track"
-                value={selectedTrack?.trackId ?? ''}
-                onChange={e => {
-                  setTrackOverride(e.target.value)
-                }}
+            <div>
+              <div className="synteny-option">
+                <label htmlFor="track">Alignment</label>
+                <select
+                  id="track"
+                  aria-describedby="track-help"
+                  value={selectedTrack?.trackId ?? ''}
+                  onChange={e => {
+                    setTrackOverride(e.target.value)
+                  }}
+                >
+                  {tracks.map(track => (
+                    <option
+                      key={track.trackId}
+                      value={track.trackId}
+                    >
+                      {track.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <p
+                id="track-help"
+                className="synteny-option-help"
               >
-                {tracks.map(track => (
-                  <option
-                    key={track.trackId}
-                    value={track.trackId}
-                  >
-                    {track.name}
-                  </option>
-                ))}
-              </select>
-              <p className="synteny-option-help">
                 Each set of chains is netted on the genome it names first, which
                 keeps that side one-to-one. The default is the set netted on the
                 first assembly.
