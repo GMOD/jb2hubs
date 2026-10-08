@@ -218,19 +218,16 @@ const [tp53, trp53] = TP53_REPORTS.map(r => r.gene) as [NcbiGene, NcbiGene]
 // TP53 opened as 26.7 kb of human over 16.1 kb of mouse when each panel was
 // sent the bare symbol. A window 100 kb either side reads as a neighborhood.
 test('geneWindow: the gene widened by 100 kb on the assembly it is placed on', () => {
-  assert.deepEqual(geneWindow(tp53, 'hg38', store), {
-    loc: 'NC_000017.11:7568421-7787490',
-    strand: -1,
-  })
-  assert.deepEqual(geneWindow(trp53, 'mm39', store), {
-    loc: 'NC_000077.7:69371174-69582699',
-    strand: 1,
-  })
+  assert.equal(geneWindow(tp53, 'hg38', store), 'NC_000017.11:7568421-7787490')
+  assert.equal(
+    geneWindow(trp53, 'mm39', store),
+    'NC_000077.7:69371174-69582699',
+  )
 })
 
 test('geneWindow: a GenArk panel is named by its accession', () => {
   assert.equal(
-    geneWindow(trp53, 'GCF_000001635.27', store)?.loc,
+    geneWindow(trp53, 'GCF_000001635.27', store),
     'NC_000077.7:69371174-69582699',
   )
 })

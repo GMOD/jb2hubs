@@ -171,11 +171,6 @@ export async function resolveGenePair(
   return pairGenes(json.reports ?? [], geneId, taxon1 === taxon2)
 }
 
-export interface GeneWindow {
-  loc: string
-  strand: 1 | -1
-}
-
 // The gene's neighborhood on a synteny panel's assembly, by the gene page's
 // rule: only a placement on exactly the version the panel opens counts, since
 // NCBI's refName is unknown to, or elsewhere on, any other version (see
@@ -186,7 +181,7 @@ export function geneWindow(
   panel: string,
   store: AssemblyStore,
   flankBp = SYNTENY_FLANK_BP,
-): GeneWindow | undefined {
+): string | undefined {
   const placement = (gene.annotations ?? [])
     .map(ann => ({
       hosted: store.find(ann.assembly_accession),
@@ -200,14 +195,11 @@ export function geneWindow(
     )?.location
   const range = placement?.genomic_range
   return placement && range
-    ? {
-        loc: flankLoc(
-          placement.genomic_accession_version,
-          parseInt(range.begin),
-          parseInt(range.end),
-          flankBp,
-        ),
-        strand: range.orientation === 'minus' ? -1 : 1,
-      }
+    ? flankLoc(
+        placement.genomic_accession_version,
+        parseInt(range.begin),
+        parseInt(range.end),
+        flankBp,
+      )
     : undefined
 }
