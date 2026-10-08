@@ -206,24 +206,11 @@ export function referenceRegionUrl(
   return dataset.graphVcf ? referenceLgvUrl(dataset, locOf(region)) : undefined
 }
 
-// The graph variants (plus SV tracks) open at a catalog locus.
-//
-// The window is the locus's detail window where it has one. The callset is
-// fetched per view and runs ~200 bytes/bp of VCF text over these loci, so a
-// multi-Mb span (MHC's is 4.97 Mb, holding 109,988 records) opens the lane
-// behind the "too much data" banner — the button's own subject, undrawn. Every
-// window the tutorial draws this callset on is 70–130 kb.
-export function graphVcfLgvUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  return referenceLgvUrl(dataset, locOf(launchRegion(locus)))
-}
-
 // The window a locus launch opens on: its detail window where it has one (or is
 // narrow enough to be its own), else the whole display span. A wide span is not
-// a problem for the lanes any more — `lanes()` switches to the coarse tier —
-// but it still is for the callset, which is why `graphVcfLgvUrl` says so.
+// a problem for the lanes, which switch to the coarse tier, but it still is for
+// the callset: ~200 bytes/bp of VCF text over these loci, so MHC's 4.97 Mb
+// (109,988 records) opens the lane behind "too much data".
 export function launchRegion(locus: PangenomeLocus): GraphRegion {
   const { start, end } = detailWindow(locus) ?? locus
   return { chrom: locus.chrom, start, end, label: locus.gene }
@@ -257,53 +244,16 @@ export function graphRegionUrl(dataset: PangenomeDataset, region: GraphRegion) {
   ])
 }
 
-// A catalog locus as the graph. Undefined only when the graph is known to
-// collapse the locus (`graphCollapsed`): minigraph merges near-identical
-// segmental duplications onto one path, so a launch there opens a bare thread
-// and reads as an empty result rather than as a collapsed one.
-//
-// A wide locus is no longer excluded — it draws its coarse tier. That is what
-// makes every card in a derived catalogue openable, which half of both of them
-// were not: 10 of mouse's 20 entries and 12 of cattle's are multi-megabase
-// clusters with no detail window.
-export function graphLocusUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  return locus.graphCollapsed
-    ? undefined
-    : graphRegionUrl(dataset, launchRegion(locus))
-}
-
 // The tutorial's eight lanes and the reference draw legibly in 460 px.
 const LANE_HEIGHT_PX = 51
 const GENE_ROW_HEIGHT_PX = 60
 
-// The dataset's panel for a locus: one haplotype per structural configuration,
-// commonest first. Empty where nothing in the window tells the haplotypes
-// apart, which leaves no forms to choose between.
-const panelHaplotypes = (dataset: PangenomeDataset, locus: PangenomeLocus) =>
-  dataset.panels?.[locus.id]?.lanes.map(l => l.haplotype) ?? []
-
-// A locus's haplotypes as lanes read from the graph. `rows.kept` decides which
+// A window's haplotypes as lanes read from the graph. `rows.kept` decides which
 // walks are fetched and drawn and `rows.domain` pins their order, so the
-// config's one lane track serves every locus; the track's own assemblies are
+// config's one lane track serves every window; the track's own assemblies are
 // only what a host that drops the props would open instead.
 //
-// Undefined without the lane track or a panel.
-export function haplotypeLanesUrl(
-  dataset: PangenomeDataset,
-  locus: PangenomeLocus,
-) {
-  return haplotypeLanesForRegion(
-    dataset,
-    launchRegion(locus),
-    panelHaplotypes(dataset, locus),
-  )
-}
-
-// The same launch over any window a reader asks for. Undefined without the lane track or without
-// haplotypes to draw.
+// Undefined without the lane track or without haplotypes to draw.
 export function haplotypeLanesForRegion(
   dataset: PangenomeDataset,
   region: GraphRegion,

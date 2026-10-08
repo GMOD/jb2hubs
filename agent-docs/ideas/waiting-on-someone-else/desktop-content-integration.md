@@ -32,7 +32,7 @@ and a merged multi-hub config from the merge lambda. Builders that all funnel
 through it:
 
 - `specUrl`, `syntenyViewUrl`, `mergeConfig` — `jbrowseLinks.ts`
-- `graphBrowserUrl`, `graphVcfLgvUrl`, `referenceLgvUrl` — `pangenomeLinks.ts`
+- `regionLaunches` and the builders under it — `pangenomeLinks.ts`
 - ortholog result launches — `GenePage.tsx` (formerly `GenePage.tsx`)
 
 The plain genome list is the _only_ launch that uses just a hosted config with

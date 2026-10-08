@@ -32,6 +32,6 @@ more. The Walk dropdown also repeats labels where a walk comes back in pieces
 for mhc-hla, and possibly folded into `haplotypes` rather than a fourth link,
 since it costs so little.
 
-**Mouse and bovine.** Bovine has a callset, so `generatePangenomePanels.ts`
-would run over it with `phased` off, but neither graph has a `.gbz.db`, so there
+**Mouse and bovine.** Bovine has a callset, so a structural-state sidecar could
+be built for it with `phased` off, but neither graph has a `.gbz.db`, so there
 is no lane track for a panel to open. Nothing to do until one is built.

@@ -73,9 +73,11 @@ JavaScript.
 - **The question rides in the url as `?region=`.** A window past
   `MAX_DETAIL_WINDOW_BP` (150 kb) gets the graph, plus the bubble lanes where
   the dataset has no callset, since a callset has no coarse tier.
-- **`panels.json` is no longer read by the page.** `check-pangenome-launches`
-  boots the haplotypes it names, and a test holds `regionLaunches` to the same
-  urls, so the check still covers what an example opens.
+- **No panel is committed.** `panels.json` and `generatePangenomePanels.ts` went
+  on 2026-10-08, once only the check and the unit tests read them.
+  `check-pangenome-launches` asks the live sidecar for each example's window the
+  way the box does and boots what `regionLaunches` returns, so the check opens
+  the urls the page offers. The unit tests use a fixed haplotype list.
 
 `/pangenomes/explorer` was a separate app until that day — a card grid of loci
 with class filters and a per-locus dashboard of four bar charts computed by
@@ -122,8 +124,9 @@ plugin registers on it. Everything below fell out of the width rule on
   row.
 
 The one asymmetry that stays: the callset does **not** get a coarse tier, so
-`graphVcfLgvUrl` still opens on `launchRegion` and a wide locus's variant lane
-is still gated. That is a property of a VCF, not of the wiring.
+`regionLaunches` offers no variants launch past `MAX_DETAIL_WINDOW_BP` and an
+example opens on `launchRegion`, its locus's detail window. That is a property
+of a VCF, not of the wiring.
 
 ### What a pangenome page is not
 
@@ -157,11 +160,10 @@ for the gene-hub link, and went with the loci table on 2026-10-08.
 
 The Haplotypes launch (`haplotypeLanesForRegion`) opens the
 `hprc_v2_1_gbz_lanes` track, one lane per haplotype walk read from HPRC's
-`.gbz.db` in the browser, narrowed to that locus's panel in
-`website/public/pangenome-hprc/panels.json`: one haplotype per structural
-**form** in the launch window, commonest first, every form where there are at
-most 10 and the commonest 8 otherwise. The panel rides the spec as
-`laneFilter.only` and `domain`, so one track in the config serves every locus.
+`.gbz.db` in the browser, narrowed to the window's panel: one haplotype per
+structural **form** in the window, commonest first, every form where there are
+at most 10 and the commonest 8 otherwise. The panel rides the spec as
+`rows.kept` and `rows.domain`, so one track in the config serves every window.
 
 **The forms come from a genome-wide sidecar, not from a per-locus read of the
 callset**, which is what makes the same question answerable for a window nobody
@@ -169,13 +171,13 @@ curated. `website/pangenome-config/buildHprcSvStates.sh` publishes one
 tabix-indexed file of every structural record in the callset — where it is, what
 each state does to the reference's structure, one character per haplotype, 18 MB
 for the genome — and `structuralForms` (`pangenomeSvStates.ts`) groups a
-window's haplotypes out of a ranged read of it, a few KB and about 300 ms.
-`generatePangenomePanels.ts` runs that over the curated loci and commits the
-result for `check-pangenome-launches`; the box on the page
-(`PangenomeRegionBox.tsx`) runs the same two functions in the reader's browser
-for a locstring or a gene symbol, over a window of up to 150 kb. A committed
-panel and the same window typed in the box cannot disagree, because neither has
-rules of its own.
+window's haplotypes out of a ranged read of it, a few KB and about 300 ms. The
+box on the page (`PangenomeRegionBox.tsx`) runs it and `structuralPanel`
+(`pangenomePanels.ts`) in the reader's browser for an example, a locstring or a
+gene symbol, over a window of up to 150 kb, and `check-pangenome-launches` runs
+the same two functions over each example before booting it. An example and the
+same window typed in the box cannot disagree, because neither has rules of its
+own.
 
 Two things the sidecar fixed rather than moved, both measured 2026-09-17. The
 old rule read the 2.3 GB callset with bcftools at five seconds a locus. And it

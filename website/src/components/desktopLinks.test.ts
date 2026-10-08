@@ -7,7 +7,7 @@ import {
   syntenyViewUrl,
 } from './jbrowseLinks.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
-import { graphLocusUrl, graphVcfLgvUrl } from './pangenomeLinks.ts'
+import { launchRegion, regionLaunches } from './pangenomeLinks.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 // Guards the jbrowse:// launch links against the two ways they break silently.
@@ -27,10 +27,9 @@ import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 // without anyone remembering to update a list of examples.
 function everyLaunchUrl() {
   return [
-    ...PANGENOME_LOCI.flatMap(locus => [
-      graphVcfLgvUrl(HPRC_DATASET, locus),
-      graphLocusUrl(HPRC_DATASET, locus),
-    ]),
+    ...PANGENOME_LOCI.flatMap(locus =>
+      regionLaunches(HPRC_DATASET, launchRegion(locus)).map(l => l.url),
+    ),
     syntenyViewUrl(
       [
         { assembly: 'hg38', loc: 'chr6:29,700,000-33,500,000' },
@@ -39,7 +38,7 @@ function everyLaunchUrl() {
       ['hg38_to_hs1_liftOver'],
       { color: { field: 'query' }, drawCurves: true, autoDiagonalize: true },
     ),
-  ].filter(url => url !== undefined)
+  ]
 }
 
 test('desktopUrl round-trips the launch url unchanged', () => {

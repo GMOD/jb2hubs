@@ -2,7 +2,7 @@ import assert from 'node:assert'
 import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 
-import { HPRC_DATASET, HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
+import { HPRC_GRAPH_BROWSER } from './pangenomeDataset.ts'
 import {
   COMPLETE_PANEL_SIZE,
   PANEL_SIZE,
@@ -102,16 +102,4 @@ test('the lane track maps every haplotype, and all but HG002 have gene models', 
   assert.ok(mapped.length >= 464, `${mapped.length} haplotypes mapped`)
   const annotated = annotatedHaplotypes(config, trackId)
   assert.deepEqual(mapped.filter(h => !annotated.has(h)).sort(), UNANNOTATED)
-})
-
-test('every haplotype a panel names has gene models but HG002', () => {
-  const annotated = annotatedHaplotypes(config, trackId)
-  const named = Object.values(HPRC_DATASET.panels!).flatMap(p =>
-    p.lanes.map(l => l.haplotype),
-  )
-  assert.ok(named.length > 0)
-  assert.ok(
-    named.every(h => annotated.has(h) || UNANNOTATED.includes(h)),
-    named.filter(h => !annotated.has(h)).join(', '),
-  )
 })

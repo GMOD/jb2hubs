@@ -83,10 +83,18 @@ const TIMEOUT = Number(values.timeout)
 // The site's own builders, so this checks the real thing rather than a copy.
 const { HPRC_DATASET, HPRC_GRAPH_BROWSER } =
   await import('../website/src/components/pangenomeDataset.ts')
-const { graphLocusUrl, graphRegionUrl, graphVcfLgvUrl, haplotypeLanesUrl } =
+const { pangenomeExamples } =
+  await import('../website/src/components/pangenomeExamples.ts')
+const { graphRegionUrl, launchRegion, regionLaunches } =
   await import('../website/src/components/pangenomeLinks.ts')
-const { annotatedHaplotypes } =
+const { annotatedHaplotypes, structuralPanel } =
   await import('../website/src/components/pangenomePanels.ts')
+const { formatRegion, parseRegion } =
+  await import('../website/src/components/pangenomeRegion.ts')
+const { structuralForms } =
+  await import('../website/src/components/pangenomeSvStates.ts')
+const { openSvStates } =
+  await import('../website/src/components/pangenomeSvStatesFile.ts')
 
 // The haplotypes the working-tree config gives gene models. Against the served
 // config (no --local) a lane in this set that draws bare is a config that has
@@ -117,40 +125,76 @@ const retarget = url =>
 const wanted = values.loci?.split(',')
 const loci = HPRC_DATASET.loci.filter(l => !wanted || wanted.includes(l.id))
 
+// What PangenomeRegionBox answers when a reader clicks the locus's example: the
+// example's own text, the panel read from the live sidecar, and the launches
+// `regionLaunches` builds from both.
+const examples = pangenomeExamples(HPRC_DATASET)
+const svStates = openSvStates(HPRC_DATASET.svStatesUrl)
+const withoutGenes = new Set(HPRC_DATASET.haplotypesWithoutGenes ?? [])
+
+async function exampleAnswer(locus) {
+  const text = formatRegion(launchRegion(locus))
+  const example = examples.find(e => e.region === text)
+  const asked = parseRegion(text)
+  if (!example || !asked) {
+    throw new Error(`${locus.id} is not an example on the page`)
+  }
+  const { chrom, haplotypes, rows } = await svStates.query(
+    asked.chrom,
+    asked.start,
+    asked.end,
+  )
+  const lanes =
+    structuralPanel(structuralForms(rows, haplotypes), {
+      withoutGenes,
+    })?.lanes.map(l => l.haplotype) ?? []
+  return {
+    lanes,
+    links: regionLaunches(
+      HPRC_DATASET,
+      { ...asked, chrom, label: example.label },
+      lanes,
+      { graphCollapsed: example.graphCollapsed },
+    ),
+  }
+}
+
+// BandageJS is not a JBrowse host, so its link is the one launch not booted.
 const launches = []
 for (const locus of loci) {
-  launches.push({
-    name: `${locus.id}: variants`,
-    url: retarget(graphVcfLgvUrl(HPRC_DATASET, locus)),
-    // The callset is the button's subject; a single-row display means the
-    // declaration was ignored, which is a silent failure.
-    expectDisplays: [
-      {
-        trackId: HPRC_DATASET.graphVcf.trackId,
-        type: 'LinearMultiSampleVariantDisplay',
-      },
-    ],
-  })
-  const graph = graphLocusUrl(HPRC_DATASET, locus)
-  if (graph) {
-    launches.push({
-      name: `${locus.id}: graph`,
-      url: retarget(graph),
-      expectDisplays: [graphDisplay],
-      expectTier: 'fine',
-    })
-  }
-  // The display type alone passed while every lane errored on a clip that
-  // lost its coordinates, so this reads the lanes back: one row per panel
-  // haplotype, and no error.
-  const haplotypes = haplotypeLanesUrl(HPRC_DATASET, locus)
-  if (haplotypes) {
-    launches.push({
-      name: `${locus.id}: haplotypes`,
-      url: retarget(haplotypes),
-      expectLanes: HPRC_DATASET.panels[locus.id].lanes.map(l => l.haplotype),
-      knownUnplaced: KNOWN_UNPLACED[locus.id] ?? [],
-    })
+  const { lanes, links } = await exampleAnswer(locus)
+  for (const { kind, url } of links) {
+    const name = `${locus.id}: ${kind}`
+    if (kind === 'variants') {
+      // A single-row display means the declaration was ignored, silently.
+      launches.push({
+        name,
+        url: retarget(url),
+        expectDisplays: [
+          {
+            trackId: HPRC_DATASET.graphVcf.trackId,
+            type: 'LinearMultiSampleVariantDisplay',
+          },
+        ],
+      })
+    } else if (kind === 'graph') {
+      launches.push({
+        name,
+        url: retarget(url),
+        expectDisplays: [graphDisplay],
+        expectTier: 'fine',
+      })
+    } else if (kind === 'haplotypes') {
+      // The display type alone passed while every lane errored on a clip that
+      // lost its coordinates, so this reads the lanes back: one row per panel
+      // haplotype, and no error.
+      launches.push({
+        name,
+        url: retarget(url),
+        expectLanes: lanes,
+        knownUnplaced: KNOWN_UNPLACED[locus.id] ?? [],
+      })
+    }
   }
 }
 

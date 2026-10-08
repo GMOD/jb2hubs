@@ -4,14 +4,12 @@
 
 import arabidopsisLociFile from '../../public/pangenome-arabidopsis/loci.json' with { type: 'json' }
 import bovineLociFile from '../../public/pangenome-bovine/loci.json' with { type: 'json' }
-import hprcPanelsFile from '../../public/pangenome-hprc/panels.json' with { type: 'json' }
 import mouseLociFile from '../../public/pangenome-mouse/loci.json' with { type: 'json' }
 import { genarkConfigPath, ucscConfigPath } from '../config/jbrowse.ts'
 import { derivedLoci } from './pangenomeDerivedLoci.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 import type { PangenomeLocus } from './pangenomeLoci.ts'
-import type { StructuralPanel } from './pangenomePanels.ts'
 
 export interface PangenomeReference {
   // JBrowse assembly name the graph is projected onto (e.g. 'hg38').
@@ -160,15 +158,10 @@ export interface PangenomeDataset {
   // published as whole GFA files.
   bandageGbz?: string
   loci: PangenomeLocus[]
-  // Per locus id, the haplotypes its lanes launch opens, read from
-  // `svStatesUrl` by `generatePangenomePanels.ts`. The page reads the sidecar
-  // itself; `check-pangenome-launches` boots these. A locus without one has
-  // nothing in its window that tells the haplotypes apart.
-  panels?: Record<string, StructuralPanel>
   // The structural-state sidecar of this graph's callset, published by
   // `pangenome-config/buildHprcSvStates.sh`. It is what makes a window nobody
   // precomputed answerable: the page reads it for a region a reader asks for
-  // and groups the haplotypes the same way the panels above were grouped.
+  // and groups the haplotypes there into structural forms.
   svStatesUrl?: string
   // Haplotypes the lane track draws without gene models, so a form is not
   // stood for by one of them where another member would draw its genes.
@@ -278,7 +271,6 @@ export const HPRC_DATASET: PangenomeDataset = {
   graphBrowser: HPRC_GRAPH_BROWSER,
   bandageGbz: 'hprc',
   loci: PANGENOME_LOCI,
-  panels: hprcPanelsFile.panels,
   svStatesUrl:
     'https://jbrowse.org/pangenome/hprc-grch38/sv-states/hprc-v2.1-mc-grch38.sv-states.tsv.gz',
   haplotypesWithoutGenes: ['HG002#1', 'HG002#2'],

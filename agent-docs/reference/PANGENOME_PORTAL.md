@@ -413,12 +413,13 @@ required; mostly placed means a placed representative is enough for defb.
 
 **The rule is genome-wide now, and the per-locus panels are its output rather
 than its home.** `structuralForms` reads the sidecar for any window and
-`structuralPanel` picks the lanes; `generatePangenomePanels.ts` runs both over
-the curated loci at build time and the page's **Any region** box runs both in
-the browser. That replaced a bcftools read of the 2.3 GB callset per locus, and
-with it the `LV=0` filter whose blind spot is documented above: 19 of the 20
-loci have a panel where 15 did, and the four that gained one — rhd, smn, defb,
-ugt2b17 — each gained it on the deletion the filter was hiding.
+`structuralPanel` picks the lanes; the page's **Gene or region** box runs both
+in the browser, and `check-pangenome-launches` runs both over the curated loci
+(`generatePangenomePanels.ts` committed that output until 2026-10-08). That
+replaced a bcftools read of the 2.3 GB callset per locus, and with it the `LV=0`
+filter whose blind spot is documented above: 19 of the 20 loci have a panel
+where 15 did, and the four that gained one — rhd, smn, defb, ugt2b17 — each
+gained it on the deletion the filter was hiding.
 
 The annotation is HPRC's release 2 CAT, and it has to be rehosted rather than
 pointed at: each file on S3 is plain gzip in gene order, so no index can be

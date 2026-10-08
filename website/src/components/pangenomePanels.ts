@@ -7,9 +7,8 @@
 // another. What a reader wants is one lane per way the haplotypes differ
 // structurally there, commonest first, each labelled with how many share it.
 //
-// The rule is the same wherever a window comes from, so the committed
-// panels (`generatePangenomePanels.ts`, `panels.json`) and a region a reader
-// asks for on the page both go through here.
+// The rule is the same wherever a window comes from: an example on the page, a
+// region a reader types and `check-pangenome-launches` all go through here.
 
 import { MIN_CARRIERS } from './pangenomeSvStates.ts'
 
