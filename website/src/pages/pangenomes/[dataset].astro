@@ -36,15 +36,15 @@ if (!features.pangenome) {
 
 const { dataset } = Astro.props
 const examples = pangenomeExamples(dataset)
-const chromosomes = (dataset.graphBrowser?.chromosomes ?? []).flatMap(c => {
-  const url = graphRegionUrl(dataset, {
+const chromosomes = dataset.graphBrowser.chromosomes.map(c => ({
+  name: c.name,
+  url: graphRegionUrl(dataset, {
     chrom: c.name,
     start: 0,
     end: c.length,
     label: c.name,
-  })
-  return url ? [{ name: c.name, url }] : []
-})
+  }),
+}))
 
 function humanBytes(bytes: number) {
   const scale = [
@@ -88,24 +88,20 @@ function humanBytes(bytes: number) {
       client:load
     />
 
-    {chromosomes.length > 0 && (
-      <>
-        <h2>Whole chromosomes</h2>
-        <p>
-          {chromosomes.map(c => (
-            <>
-              <a
-                href={c.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {c.name}
-              </a>{' '}
-            </>
-          ))}
-        </p>
-      </>
-    )}
+    <h2>Whole chromosomes</h2>
+    <p>
+      {chromosomes.map(c => (
+        <>
+          <a
+            href={c.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {c.name}
+          </a>{' '}
+        </>
+      ))}
+    </p>
 
     <h2>Files</h2>
     <div class="table-scroll">

@@ -7,7 +7,7 @@ import {
   syntenyViewUrl,
 } from './jbrowseLinks.ts'
 import { HPRC_DATASET } from './pangenomeDataset.ts'
-import { launchRegion, regionLaunches } from './pangenomeLinks.ts'
+import { regionLaunches } from './pangenomeLinks.ts'
 import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 
 // Guards the jbrowse:// launch links against the two ways they break silently.
@@ -28,7 +28,7 @@ import { PANGENOME_LOCI } from './pangenomeLoci.ts'
 function everyLaunchUrl() {
   return [
     ...PANGENOME_LOCI.flatMap(locus =>
-      regionLaunches(HPRC_DATASET, launchRegion(locus)).map(l => l.url),
+      regionLaunches(HPRC_DATASET, locus).map(l => l.url),
     ),
     syntenyViewUrl(
       [

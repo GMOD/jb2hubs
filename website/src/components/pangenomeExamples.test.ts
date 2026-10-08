@@ -14,6 +14,7 @@ test('a curated locus is an example under its own name, on its launch window', (
   const examples = pangenomeExamples(HPRC_DATASET)
   assert.equal(examples.length, HPRC_DATASET.loci.length)
   assert.deepEqual(examples[0], {
+    id: 'mhc-hla',
     label: 'HLA / MHC',
     description: 'Major histocompatibility complex',
     region: 'chr6:32,510,001-32,600,000',

@@ -1,142 +1,86 @@
-// Curated catalog of human loci where genome structure varies between
-// haplotypes — copy number, gene presence/absence, tandem repeats, inversions,
-// and allelic hyperdiversity — offered as examples on /pangenomes/hprc.
-//
-// Coordinates are GRCh38 / hg38 (UCSC chr-naming), matching the HPRC
-// minigraph-cactus GRCh38 VCF contigs and the hg38 UCSC JBrowse config. `id` is
-// a stable slug, which `check-pangenome-launches --loci` filters on.
+// Curated human loci where genome structure varies between haplotypes, offered
+// as examples on /pangenomes/hprc. Coordinates are GRCh38 with UCSC names,
+// 0-based half-open. `id` is a stable slug `check-pangenome-launches --loci`
+// filters on.
 
-// What a dataset's coarse tier says about one bubble, for a catalogue that was
-// derived rather than curated (`website/generatePangenomeLoci.ts`) by ranking a
-// 50-200 KB tier file: its presence says the tier's numbers are all there is.
+// What a dataset's coarse tier says about one bubble, for a catalogue derived
+// by `website/generatePangenomeLoci.ts` rather than curated.
 export interface DerivedBubble {
-  // Segments the bubble holds. This is `cn:i:`, and the metric the catalogue is
-  // ranked by; `cw` (path count) is clamped at INT32_MAX by gfatools for every
-  // bubble at the top of the ranking, so it carries no information there.
+  // `cn:i:`, the metric the catalogue is ranked by. gfatools clamps `cw` (path
+  // count) at INT32_MAX for every bubble at the top of the ranking.
   segments: number
-  // Reference genes the bubble overlaps, which is what `gene` is named from.
-  // Empty where the bubble is intergenic.
+  // Reference genes the bubble overlaps; empty where it is intergenic.
   genes: string[]
 }
 
 export interface PangenomeLocus {
   id: string
   gene: string
-  // Curated entries only; a derived entry has nothing but its gene label.
+  // Curated entries only.
   fullName?: string
   chrom: string
   start: number
   end: number
-  // Narrower window for the two launches that draw per-haplotype data — the
-  // graph and the 464-row genotype matrix — when the display span above is too
-  // wide for either (see MAX_DETAIL_WINDOW_BP). Where the JBrowse HPRC tutorial
-  // cuts this locus in 150 kb or less, it is that window verbatim; AMY1 and
-  // CFHR, which it draws wider, say why they differ.
-  detailWindow?: { start: number; end: number }
-  // Set where minigraph is known to collapse this locus, so no graph launch is
-  // offered however narrow the window. The HPRC tutorial's "The Layout dropdown"
-  // names the class: near-identical segmental duplications merge onto one path,
-  // "which rules this graph out for the whole class of genes defined by one:
-  // SMN1/SMN2, RHD/RHCE, PMS2/PMS2CL and the CYP clusters among them". A quiet
-  // window there means collapsed, not checked-and-invariant, so a graph button
-  // would open a bare thread and read as an empty result.
+  // Minigraph merges near-identical segmental duplications onto one path
+  // (SMN1/SMN2, RHD/RHCE, the CYP clusters), so a graph launch there opens a
+  // bare thread that reads as an empty result. No graph launch is offered.
   graphCollapsed?: boolean
-  // Set on a locus that came out of the tier ranking rather than out of a
-  // curated list. See DerivedBubble.
   derived?: DerivedBubble
 }
 
-// Two different limits that land in the same place, which is why one constant
-// serves both launches:
-//
-// - A graph draws a window at a time, and the layout scales itself to a target
-//   node size — so ten times the nodes is the same ink at a tenth the size, and
-//   a megabase-wide locus draws as one unreadable thread rather than as loops.
-// - The 464-haplotype callset is fetched per view: over this locus set the wave
-//   VCF runs ~200 bytes/bp of VCF text, so a multi-Mb window is past both the
-//   adapter's `fetchSizeLimit` and the feature-density gate, and the lane opens
-//   behind the "too much data" banner instead of drawing.
-//
-// The tutorial's segment-level cuts run 70–130 kb, and 150 kb is the ceiling
-// allowed here. A locus wider than that without an explicit `detailWindow`
-// draws its graph from the coarse tier, and its variants open on the full span.
+// The widest window drawn at segment level, and the widest the callset opens
+// on. Past it a graph is one unreadable thread, and the 464-haplotype callset
+// (~200 bytes/bp of VCF text over these loci) is behind "too much data". The
+// HPRC tutorial's cuts run 70–130 kb. Every curated window fits; a wider
+// derived bubble draws from the coarse tier.
 export const MAX_DETAIL_WINDOW_BP = 150_000
-
-/**
- * The window to cut a subgraph from and to open the genotype matrix on, or
- * undefined if this locus is too wide and names none.
- */
-export function detailWindow(locus: PangenomeLocus) {
-  return locus.detailWindow
-    ? locus.detailWindow
-    : locus.end - locus.start <= MAX_DETAIL_WINDOW_BP
-      ? { start: locus.start, end: locus.end }
-      : undefined
-}
 
 export const PANGENOME_LOCI: PangenomeLocus[] = [
   {
     id: 'mhc-hla',
     gene: 'HLA / MHC',
     fullName: 'Major histocompatibility complex',
+    // Class II, HLA-DRB5 through HLA-DRB1: the tutorial's window. The whole
+    // MHC is 5 Mb.
     chrom: 'chr6',
-    start: 28_510_000,
-    end: 33_480_000,
-    // The class II stretch, which is where the graph's structure is legible; the
-    // full 5 Mb MHC is a linear view's job. The tutorial's MHC class II window
-    // verbatim — it covers HLA-DRB5 (32,517,353-32,530,287) *and* HLA-DRB1
-    // (32,578,775-32,589,848), where the window this used to carry
-    // (32,500,000-32,560,000) stopped 19 kb short of DRB1. C4 is not in here at
-    // all: C4A is chr6:31,982,057-32,002,681, which is the separate `c4` locus.
-    detailWindow: { start: 32_510_000, end: 32_600_000 },
+    start: 32_510_000,
+    end: 32_600_000,
   },
   {
     id: 'amy1',
     gene: 'AMY1',
     fullName: 'Salivary amylase cluster',
+    // Holds the whole copy-number bubble (chr1:103,620,901-103,732,636 in the
+    // v2.1 bubble index) and AMY1C, with no bubble crossing either edge. A cut
+    // that starts inside a bubble draws its allele as a short arm.
     chrom: 'chr1',
-    start: 103_540_000,
-    end: 103_830_000,
-    // Not the tutorial's window, which is 350 kb on purpose: a cut has to hold
-    // the whole bubble or its allele draws as a short arm. The copy-number
-    // bubble is chr1:103,620,901-103,732,636 in the v2.1 bubble index, AMY2A
-    // through AMY1B, and this window holds it, AMY1C (103,749,654-103,758,692)
-    // and no bubble crossing either edge. The window this used to carry was the
-    // tutorial's tabix query, which starts inside that bubble.
-    detailWindow: { start: 103_610_000, end: 103_760_000 },
+    start: 103_610_000,
+    end: 103_760_000,
   },
   {
     id: 'c4',
     gene: 'C4A / C4B',
     fullName: 'Complement component 4',
     chrom: 'chr6',
-    start: 31_950_000,
-    end: 32_080_000,
-    // The tutorial's C4 window verbatim; covers C4A (31,982,057-32,002,681) and
-    // C4B (32,014,795-32,035,418).
-    detailWindow: { start: 31_980_000, end: 32_050_000 },
+    start: 31_980_000,
+    end: 32_050_000,
   },
   {
     id: 'lpa',
     gene: 'LPA',
     fullName: 'Lipoprotein(a) — kringle IV repeats',
+    // The KIV-2 repeat inside LPA.
     chrom: 'chr6',
-    start: 160_500_000,
-    end: 160_700_000,
-    // The tutorial's LPA KIV-2 window verbatim — the repeat inside LPA
-    // (160,531,482-160,664,275), and the widest window it draws as a graph.
-    detailWindow: { start: 160_525_000, end: 160_655_000 },
+    start: 160_525_000,
+    end: 160_655_000,
   },
   {
     id: 'rhd',
     gene: 'RHD / RHCE',
     fullName: 'Rh blood group',
     chrom: 'chr1',
-    start: 25_250_000,
-    end: 25_460_000,
-    // RHD (25,272,509-25,330,445) with flanks. No graph: RHD/RHCE is one of the
-    // paralog pairs the tutorial names as collapsed.
-    detailWindow: { start: 25_260_000, end: 25_345_000 },
+    start: 25_260_000,
+    end: 25_345_000,
     graphCollapsed: true,
   },
   {
@@ -144,12 +88,8 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     gene: 'SMN1 / SMN2',
     fullName: 'Survival motor neuron paralogs',
     chrom: 'chr5',
-    start: 70_040_000,
-    end: 70_960_000,
-    // SMN1 (70,925,087-70,953,015) with flanks. No graph: the tutorial queries
-    // chr5:70,925,000-70,954,000 against the allele inventory and gets nothing
-    // back, because minigraph merged SMN1 and SMN2 onto one path.
-    detailWindow: { start: 70_910_000, end: 70_970_000 },
+    start: 70_910_000,
+    end: 70_970_000,
     graphCollapsed: true,
   },
   {
@@ -157,34 +97,25 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     gene: 'KIR',
     fullName: 'Killer-cell immunoglobulin-like receptors',
     chrom: 'chr19',
-    start: 54_720_000,
-    end: 54_870_000,
-    // The tutorial's KIR window verbatim, inside the KIR3DL3..KIR3DL2 span
-    // (54,724,442-54,867,207) the display window covers whole.
-    detailWindow: { start: 54_750_000, end: 54_840_000 },
+    start: 54_750_000,
+    end: 54_840_000,
   },
   {
     id: 'defb',
     gene: 'DEFB (8p23.1)',
     fullName: 'Beta-defensin cluster',
+    // DEFB103A through DEFB4A; the flanking megabase inversion is outside.
     chrom: 'chr8',
-    start: 6_900_000,
-    end: 7_900_000,
-    // The defensin cluster itself, DEFB103A (7,881,392-7,882,663) through DEFB4A
-    // (7,894,677-7,896,716), with flanks; the flanking inversion is the megabase
-    // display window's subject.
-    detailWindow: { start: 7_850_000, end: 7_930_000 },
+    start: 7_850_000,
+    end: 7_930_000,
   },
   {
     id: 'fcgr',
     gene: 'FCGR (1q23.3)',
     fullName: 'Fc-gamma receptor cluster',
     chrom: 'chr1',
-    start: 161_500_000,
-    end: 161_700_000,
-    // FCGR2A (161,505,457-161,519,829) through FCGR3B (161,623,196-161,631,176),
-    // i.e. the whole low-affinity receptor cluster.
-    detailWindow: { start: 161_495_000, end: 161_640_000 },
+    start: 161_495_000,
+    end: 161_640_000,
   },
   {
     id: 'hp',
@@ -201,10 +132,6 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     chrom: 'chr22',
     start: 42_120_000,
     end: 42_140_000,
-    // No graph: CYP2D6/CYP2D7 is a CYP cluster, which the tutorial names among
-    // the paralog pairs minigraph collapses onto one path. The window is small
-    // enough to draw, which is exactly why the button has to be suppressed
-    // explicitly rather than by the width rule.
     graphCollapsed: true,
   },
   {
@@ -219,48 +146,29 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'srgap2',
     gene: 'SRGAP2',
     fullName: 'SRGAP2 human-specific duplications',
+    // Exons 1-3 of the nine SRGAP2B/C duplicate (the 5' third of the segment);
+    // all nine span ~202 kb, past MAX_DETAIL_WINDOW_BP.
     chrom: 'chr1',
     start: 206_190_000,
-    end: 206_470_000,
-    // The 5' end of SRGAP2 (NM_015326.5, chr1:206,203,540-206,464,436, `+`
-    // strand — so 5' really is the low coordinate). The gene is 261 kb and no
-    // window holds all of it.
-    //
-    // Be precise about what this covers, because the obvious description
-    // overstates it: SRGAP2B/C are truncated copies of exons 1-9, which span
-    // 206,203,540-206,405,248 — about 202 kb, corroborated by SRGAP2C's own
-    // 208 kb span at chr1:121,184,975-121,392,874. This window holds exons 1-3
-    // of those 9, i.e. the 5' third of the duplicated segment, not the whole of
-    // it. Covering all nine would need ~210 kb and blow past
-    // MAX_DETAIL_WINDOW_BP (which `detailWindow()` does not actually enforce on
-    // an explicit window, so that would be a deliberate exception, not a
-    // typo). Exon coordinates from UCSC ncbiRefSeqSelect, checked 2026-08-06.
-    detailWindow: { start: 206_190_000, end: 206_330_000 },
+    end: 206_330_000,
   },
   {
     id: 'mns',
     gene: 'GYPA / GYPB',
     fullName: 'MNS blood group (glycophorins)',
     chrom: 'chr4',
-    start: 143_860_000,
-    end: 144_150_000,
-    // GYPB (143,996,104-144,019,380) through GYPA (144,109,303-144,140,718) —
-    // the pair the hybrid alleles recombine between.
-    detailWindow: { start: 143_990_000, end: 144_140_000 },
+    start: 143_990_000,
+    end: 144_140_000,
   },
   {
     id: 'cfhr',
     gene: 'CFH / CFHR',
     fullName: 'Complement factor H-related cluster',
+    // The CFHR3–CFHR1 deletion, one 84,684 bp record at chr1:196,753,075, with
+    // both genes and flanks.
     chrom: 'chr1',
-    start: 196_640_000,
-    end: 197_020_000,
-    // The CFHR3–CFHR1 deletion the tutorial's CFHR figure is built on, in less
-    // than the tutorial's 200 kb cut: the wave VCF writes it as one record at
-    // chr1:196,753,075 with an 84,684 bp REF, so this window holds the whole
-    // event plus CFHR3 (196,774,840-196,795,407) and CFHR1
-    // (196,819,731-196,832,189) with flanks.
-    detailWindow: { start: 196_740_000, end: 196_850_000 },
+    start: 196_740_000,
+    end: 196_850_000,
   },
   {
     id: 'prss',
@@ -298,10 +206,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'gstt1',
     gene: 'GSTT1',
     fullName: 'Glutathione S-transferase theta 1',
+    // GRCh38 carries GSTT1 only on chr22_KI270879v1_alt, so on chr22 the gene
+    // is a side branch beside GSTT4, walked by about half the haplotypes.
     chrom: 'chr22',
-    // GRCh38 carries GSTT1 only on the alt contig chr22_KI270879v1_alt, so on
-    // chr22 the gene is a side branch of the graph beside GSTT4, walked by
-    // about half the haplotypes
     start: 23_940_000,
     end: 24_070_000,
   },
@@ -317,9 +224,9 @@ export const PANGENOME_LOCI: PangenomeLocus[] = [
     id: 'flna',
     gene: 'FLNA / EMD',
     fullName: 'Filamin A and emerin',
+    // The block between the inverted repeats flanking FLNA and EMD, which the
+    // graph walks reversed on about half the haplotypes.
     chrom: 'chrX',
-    // the block between the inverted repeats flanking FLNA and EMD, which the
-    // graph walks reversed on about half the haplotypes
     start: 154_340_000,
     end: 154_440_000,
   },

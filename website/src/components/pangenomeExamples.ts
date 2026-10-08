@@ -1,17 +1,16 @@
 // The examples under the region box on /pangenomes/<id>: a short row of names,
 // each of which asks the box for its window.
 
-import { launchRegion } from './pangenomeLinks.ts'
 import { formatRegion } from './pangenomeRegion.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeLocus } from './pangenomeLoci.ts'
 
 export interface PangenomeExample {
+  id: string
   label: string
   description: string
-  // The window the example asks for, as the box takes it. For a curated locus
-  // it is narrower than the locus: MHC opens its class II stretch, not 5 Mb.
+  // The window the example asks for, as the box takes it.
   region: string
   graphCollapsed: boolean
 }
@@ -33,35 +32,41 @@ function derivedLabel(locus: PangenomeLocus, genes: string[]) {
   return genes.length > 1 ? `${first} +${genes.length - 1}` : first
 }
 
+function example(
+  locus: PangenomeLocus,
+  label: string,
+  description: string,
+): PangenomeExample {
+  return {
+    id: locus.id,
+    label,
+    description,
+    region: formatRegion(locus),
+    graphCollapsed: locus.graphCollapsed ?? false,
+  }
+}
+
 export function pangenomeExamples(
   dataset: PangenomeDataset,
 ): PangenomeExample[] {
-  const curated = dataset.loci.filter(l => !l.derived)
-  const derived = dataset.loci.flatMap(l =>
-    l.derived && l.derived.genes.length > 0
-      ? [
-          {
-            locus: l,
-            label: derivedLabel(l, l.derived.genes),
-            description: `one bubble of ${l.derived.segments.toLocaleString('en-US')} segments`,
-          },
-        ]
-      : [],
-  )
   const named = new Set<string>()
   return [
-    ...curated.map(l => ({
-      locus: l,
-      label: l.gene,
-      description: l.fullName ?? '',
-    })),
-    ...derived
-      .filter(d => !named.has(d.label) && named.add(d.label))
+    ...dataset.loci
+      .filter(l => !l.derived)
+      .map(l => example(l, l.gene, l.fullName ?? '')),
+    ...dataset.loci
+      .flatMap(l =>
+        l.derived && l.derived.genes.length > 0
+          ? [
+              example(
+                l,
+                derivedLabel(l, l.derived.genes),
+                `one bubble of ${l.derived.segments.toLocaleString('en-US')} segments`,
+              ),
+            ]
+          : [],
+      )
+      .filter(e => !named.has(e.label) && named.add(e.label))
       .slice(0, MAX_DERIVED_EXAMPLES),
-  ].map(({ locus, label, description }) => ({
-    label,
-    description,
-    region: formatRegion(launchRegion(locus)),
-    graphCollapsed: locus.graphCollapsed ?? false,
-  }))
+  ]
 }

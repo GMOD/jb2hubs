@@ -2,15 +2,13 @@ import useSWRImmutable from 'swr/immutable'
 
 import { useUrlState } from '../hooks/useUrlState.ts'
 import { LIVE_QUERY } from '../lib/swr.ts'
-import { regionLaunches } from './pangenomeLinks.ts'
+import { regionAnswer } from './pangenomeAnswer.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
-import { structuralPanel } from './pangenomePanels.ts'
-import { formatRegion, placeRegion, resolveRegion } from './pangenomeRegion.ts'
-import { structuralForms } from './pangenomeSvStates.ts'
+import { formatRegion } from './pangenomeRegion.ts'
 
+import type { Reading } from './pangenomeAnswer.ts'
 import type { PangenomeDataset } from './pangenomeDataset.ts'
 import type { PangenomeExample } from './pangenomeExamples.ts'
-import type { StructuralPanel } from './pangenomePanels.ts'
 
 // mygene.info answers in well under a second and a sidecar read in a third of
 // one; past this, the button would say "Reading…" for as long as either stalls.
@@ -23,66 +21,6 @@ function deadlineMessage(e: unknown) {
     : e instanceof Error
       ? e.message
       : String(e)
-}
-
-interface Reading {
-  haplotypes: number
-  panel?: StructuralPanel
-  sites: number
-  rareCarriers: number
-  nonReferenceMajority: number
-}
-
-// A dataset with a structural-state sidecar also says which forms the
-// haplotypes carry in the window. The sidecar reader, and @gmod/tabix with it,
-// loads on the first question, since most readers never ask one.
-//
-// A window past MAX_DETAIL_WINDOW_BP gets no reading. Its forms would be
-// hundreds of singletons, the callset opens behind "too much data", and the
-// lanes pass the GBZ reader's node limit, so all it is offered is the graph,
-// which draws a window that wide from its coarse tier.
-async function regionAnswer(dataset: PangenomeDataset, text: string) {
-  try {
-    const signal = AbortSignal.timeout(DEADLINE_MS)
-    const asked = await resolveRegion(text, dataset.reference.taxonId, {
-      signal,
-    })
-    if (!asked) {
-      throw new Error(
-        `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
-      )
-    }
-    const region = placeRegion(asked, dataset.graphBrowser?.chromosomes ?? [])
-    if (!region) {
-      throw new Error(`${formatRegion(asked)} is not in the graph`)
-    }
-    if (
-      !dataset.svStatesUrl ||
-      region.end - region.start > MAX_DETAIL_WINDOW_BP
-    ) {
-      return { region }
-    }
-    const { openSvStates } = await import('./pangenomeSvStatesFile.ts')
-    const { haplotypes, rows } = await openSvStates(dataset.svStatesUrl).query(
-      region.chrom,
-      region.start,
-      region.end,
-      signal,
-    )
-    const forms = structuralForms(rows, haplotypes)
-    const reading: Reading = {
-      haplotypes: haplotypes.length,
-      panel: structuralPanel(forms, {
-        withoutGenes: new Set(dataset.haplotypesWithoutGenes ?? []),
-      }),
-      sites: forms.sites,
-      rareCarriers: forms.rareCarriers.length,
-      nonReferenceMajority: forms.nonReferenceMajority,
-    }
-    return { region, reading }
-  } catch (e) {
-    throw new Error(deadlineMessage(e))
-  }
 }
 
 const count = (n: number, noun: string) =>
@@ -109,11 +47,8 @@ function readingSentence(reading: Reading, referenceLabel: string) {
 }
 
 // The one control on a pangenome page: a gene or a region in, the ways to open
-// it out. The examples are the dataset's loci, and each asks the same question
-// a reader would type.
-//
-// The question rides in the url as `?region=`, so an answer can be linked to
-// and reloads as itself.
+// it out. The question rides in the url as `?region=`, so an answer can be
+// linked to and reloads as itself.
 export default function PangenomeRegionBox({
   dataset,
   examples,
@@ -131,27 +66,19 @@ export default function PangenomeRegionBox({
     mutate,
   } = useSWRImmutable(
     asked ? ['pangenome-region', dataset.id, asked] : null,
-    ([, , text]) => regionAnswer(dataset, text),
+    ([, , text]) =>
+      regionAnswer(
+        dataset,
+        examples,
+        text,
+        AbortSignal.timeout(DEADLINE_MS),
+      ).catch((e: unknown) => {
+        throw new Error(deadlineMessage(e))
+      }),
     LIVE_QUERY,
   )
-
-  const example = examples.find(e => e.region === asked)
-  const region = answer?.region
-  const title = example?.label ?? region?.symbol
   const reading = answer?.reading
   const lanes = reading?.panel?.lanes ?? []
-  const launches = region
-    ? regionLaunches(
-        dataset,
-        { ...region, label: title ?? formatRegion(region) },
-        lanes.map(l => l.haplotype),
-        { graphCollapsed: example?.graphCollapsed },
-      )
-    : []
-  const tooWideForCallset =
-    region &&
-    dataset.graphVcf &&
-    region.end - region.start > MAX_DETAIL_WINDOW_BP
 
   return (
     <div>
@@ -191,12 +118,12 @@ export default function PangenomeRegionBox({
         <p>
           {examplesLabel}:
           {examples.map(e => (
-            <span key={e.region}>
+            <span key={e.id}>
               {' '}
               <a
                 href={`?region=${encodeURIComponent(e.region)}`}
                 title={e.description}
-                aria-current={e === example ? 'true' : undefined}
+                aria-current={e.region === asked ? 'true' : undefined}
                 style={{ whiteSpace: 'nowrap' }}
                 onClick={event => {
                   event.preventDefault()
@@ -212,17 +139,17 @@ export default function PangenomeRegionBox({
 
       {error instanceof Error && <p role="alert">{error.message}</p>}
 
-      {region && (
+      {answer && (
         <section aria-live="polite">
-          <h2>{title ?? formatRegion(region)}</h2>
-          {title && (
+          <h2>{answer.title ?? formatRegion(answer.region)}</h2>
+          {answer.title && (
             <p>
-              {example?.description && `${example.description}, `}
-              <code>{formatRegion(region)}</code>
+              {answer.example?.description && `${answer.example.description}, `}
+              <code>{formatRegion(answer.region)}</code>
             </p>
           )}
           <ul>
-            {launches.map(l => (
+            {answer.launches.map(l => (
               <li key={l.kind}>
                 <a
                   href={l.url}
@@ -235,12 +162,13 @@ export default function PangenomeRegionBox({
               </li>
             ))}
           </ul>
-          {tooWideForCallset && (
-            <p>
-              Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000}{' '}
-              kb. Narrow it for variants and haplotypes.
-            </p>
-          )}
+          {dataset.graphVcf &&
+            answer.region.end - answer.region.start > MAX_DETAIL_WINDOW_BP && (
+              <p>
+                Only the graph draws a window over {MAX_DETAIL_WINDOW_BP / 1000}{' '}
+                kb. Narrow it for variants and haplotypes.
+              </p>
+            )}
           {reading && (
             <p>{readingSentence(reading, dataset.reference.label)}</p>
           )}

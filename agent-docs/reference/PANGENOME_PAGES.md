@@ -62,8 +62,15 @@ HPRC page is 974 px before a question. What the table had that the box does not:
 the variation class column, the gene hub link, and launches that work without
 JavaScript.
 
-- **An example is its locus's launch window as a locstring**, and the box
-  recognises the text to title the answer and to drop the graph launch for a
+- **A curated locus is one window of at most `MAX_DETAIL_WINDOW_BP`.** Each used
+  to carry a display span too (MHC's 5 Mb) with the launch window as a
+  `detailWindow` inside it; nothing opened the span once the table went, so it
+  went on 2026-10-08, and a test holds every curated window to the limit.
+- **`regionAnswer` (`pangenomeAnswer.ts`) is the whole answer**: the window, its
+  title, the forms and the launches. The box renders it and
+  `check-pangenome-launches` calls it, so the check boots what the page offers.
+- **An example is its locus's window as a locstring**, and the box recognises
+  the text to title the answer and to drop the graph launch for a
   `graphCollapsed` locus. A derived dataset offers its `MAX_DERIVED_EXAMPLES`
   highest-ranked bubbles that overlap a gene, under "Most variable".
 - **Every dataset has the box.** Without a sidecar it resolves the window
@@ -124,9 +131,8 @@ plugin registers on it. Everything below fell out of the width rule on
   row.
 
 The one asymmetry that stays: the callset does **not** get a coarse tier, so
-`regionLaunches` offers no variants launch past `MAX_DETAIL_WINDOW_BP` and an
-example opens on `launchRegion`, its locus's detail window. That is a property
-of a VCF, not of the wiring.
+`regionLaunches` offers no variants launch past `MAX_DETAIL_WINDOW_BP`. That is
+a property of a VCF, not of the wiring.
 
 ### What a pangenome page is not
 

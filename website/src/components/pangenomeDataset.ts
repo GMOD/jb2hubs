@@ -45,35 +45,27 @@ export interface PangenomeGraphVcf {
   rowColor?: { field: string; domain: string[]; range: string[] }
 }
 
-// The hosted config that can draw the graph itself, as opposed to its
-// reference-projected VCF. Deliberately a different config from
-// `reference.configUrl`: the graph plugin is declared only here, so a
-// dead plugin url costs the graph launch rather than every launch on the site
-// (a config's `plugins[]` is the one field that can error-page a whole session).
+// The hosted config that draws the graph and its projections. A different
+// config from `reference.configUrl`: the graph plugin is declared only here, so
+// a dead plugin url costs these launches and not every launch on the site.
 export interface PangenomeGraphBrowser {
   configUrl: string
   // rGFA segments track, which a graph launch opens as the graph
   segmentsTrackId: string
   bubblesTrackId: string
   geneTrackId: string
-  // Optional allele-inventory track: one row per allele the graph holds, stated
-  // against the reference span it replaces. It carries a CIGAR, so an
-  // AlignmentsTrack draws each insertion at its real magnitude rather than as a
-  // 1 bp box — which is what makes an allele's size readable beside the graph
-  // node it belongs to. Omitted where a graph has no such projection built.
-  allelesTrackId?: string
-  // Optional level-of-detail tier: one node per top-level bubble, which draws a
-  // whole chromosome in a few hundred nodes. Enables the chromosome launches.
-  tierTrackId?: string
-  // Optional segments-per-bubble curve, drawn beside the tier as where the
-  // graph varies and by how much.
-  bubbleScoreTrackId?: string
-  // Chromosomes the tier can draw whole, with the lengths their launches open
-  // on.
-  chromosomes?: { name: string; length: number }[]
-  // Optional GBZ lane track: one lane per haplotype walk, each in its own
-  // contig's coordinates, read from the graph database at query time. A locus
-  // launch narrows it to the dataset's panel for that locus.
+  // One row per allele, with a CIGAR, so an AlignmentsTrack draws each
+  // insertion at its real size.
+  allelesTrackId: string
+  // One node per top-level bubble, which draws a whole chromosome in a few
+  // hundred nodes.
+  tierTrackId: string
+  // Segments per bubble, drawn beside the tier.
+  bubbleScoreTrackId: string
+  // The sequences the graph holds, with their lengths.
+  chromosomes: { name: string; length: number }[]
+  // GBZ lane track: one lane per haplotype walk, each in its own contig's
+  // coordinates, read from the graph database at query time.
   haplotypeLanesTrackId?: string
   // Optional rearrangements called between the assemblies, opened under the
   // lanes in both tiers: the Arabidopsis graph has no bubble for its chromosome
@@ -151,8 +143,7 @@ export interface PangenomeDataset {
   // Structural-variation tracks (already in `reference.configUrl`) to open with
   // the graph — these carry the headline insertions/deletions/inversions/dups.
   svTrackIds?: string[]
-  // Omitted where a dataset has no hosted graph projection to draw.
-  graphBrowser?: PangenomeGraphBrowser
+  graphBrowser: PangenomeGraphBrowser
   // The `gbz=` preset BandageJS cuts this graph's windows from. BandageJS cuts
   // a region only out of a gbz-base database, and the other graphs here are
   // published as whole GFA files.

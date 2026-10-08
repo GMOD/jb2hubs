@@ -15,15 +15,12 @@ import {
   graphLanesUrl,
   graphRegionUrl,
   haplotypeLanesForRegion,
-  launchRegion,
   referenceRegionUrl,
   regionLaunches,
 } from './pangenomeLinks.ts'
-import {
-  MAX_DETAIL_WINDOW_BP,
-  PANGENOME_LOCI,
-  detailWindow,
-} from './pangenomeLoci.ts'
+import { MAX_DETAIL_WINDOW_BP, PANGENOME_LOCI } from './pangenomeLoci.ts'
+
+import type { GraphRegion } from './pangenomeLinks.ts'
 
 // A JBrowse launch URL is `<base>?config=<enc>&session=spec-<enc(json)>`. Decode
 // both back so the tests assert on the real spec the browser will expand.
@@ -41,7 +38,8 @@ function parseLaunch(url: string) {
 }
 
 const locus = HPRC_DATASET.loci.find(l => l.id === 'mhc-hla')!
-const cfhr = launchRegion(HPRC_DATASET.loci.find(l => l.id === 'cfhr')!)
+const cfhr = HPRC_DATASET.loci.find(l => l.id === 'cfhr')!
+const spanOf = (r: GraphRegion) => r.end - r.start
 
 // The four forms the sidecar gave CFHR's window on 2026-10-04. Fixed here: a
 // unit test reads no sidecar, and the builders take any haplotypes.
@@ -49,8 +47,8 @@ const HAPLOTYPES = ['HG00097#1', 'HG00253#2', 'HG00133#1', 'HG00235#2']
 
 const variantsUrl = (
   dataset: Parameters<typeof referenceRegionUrl>[0],
-  l: Parameters<typeof launchRegion>[0],
-) => referenceRegionUrl(dataset, launchRegion(l))!
+  region: GraphRegion,
+) => referenceRegionUrl(dataset, region)!
 
 // HPRC is the one dataset here with a callset; `graphVcf` is optional on the
 // type because mouse's graph records no haplotype paths to project.
@@ -63,10 +61,7 @@ test('the variants launch opens the reference LGV at the locus with graph + SV t
   const view = spec.views[0]!
   assert.equal(view.type, 'LinearGenomeView')
   assert.equal(view.assembly, HPRC_DATASET.reference.assembly)
-  // The detail window, not the 5 Mb display span: the callset cannot be fetched
-  // over the latter, so the button's own subject would open undrawn.
-  const window = detailWindow(locus)!
-  assert.equal(view.loc, `${locus.chrom}:${window.start + 1}-${window.end}`)
+  assert.equal(view.loc, `${locus.chrom}:${locus.start + 1}-${locus.end}`)
 
   // Reference genes, the graph VCF, then every SV track — in that order.
   assert.deepEqual(view.tracks, [
@@ -116,7 +111,7 @@ test('a rearrangement track opens under the lanes at either tier', () => {
   const fine = { chrom: 'Chr4', start: 1_700_000, end: 1_750_000 }
   const coarse = { chrom: 'Chr4', start: 0, end: 4_000_000 }
   for (const region of [fine, coarse]) {
-    const tracks = parseLaunch(graphLanesUrl(dataset, region)!).spec.views[0]!
+    const tracks = parseLaunch(graphLanesUrl(dataset, region)).spec.views[0]!
       .tracks as unknown[]
     assert.deepEqual(
       tracks.at(-1),
@@ -143,14 +138,16 @@ const launchOf = (
 ) => launches.find(l => l.kind === kind)?.url
 
 test('without a callset a region opens as the graph configs own lanes', () => {
-  const narrow = MOUSE_DATASET.loci.find(l => detailWindow(l))!
-  const launches = regionLaunches(MOUSE_DATASET, launchRegion(narrow))
+  const narrow = MOUSE_DATASET.loci.find(
+    l => spanOf(l) <= MAX_DETAIL_WINDOW_BP,
+  )!
+  const launches = regionLaunches(MOUSE_DATASET, narrow)
   assert.deepEqual(
     launches.map(l => l.kind),
     ['graph', 'bubbles'],
   )
   const { config, spec } = parseLaunch(launchOf(launches, 'bubbles')!)
-  assert.equal(config, MOUSE_DATASET.graphBrowser!.configUrl)
+  assert.equal(config, MOUSE_DATASET.graphBrowser.configUrl)
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
     'mouse_minigraph_bubbles',
@@ -164,9 +161,9 @@ test('without a callset a region opens as the graph configs own lanes', () => {
 // rows — across the whole of it, which is past its fetch limit. It opens the
 // tier instead.
 test('and over a span the fine lanes cannot draw, it is the tier', () => {
-  const wide = MOUSE_DATASET.loci.find(l => detailWindow(l) === undefined)!
+  const wide = MOUSE_DATASET.loci.find(l => spanOf(l) > MAX_DETAIL_WINDOW_BP)!
   const { spec } = parseLaunch(
-    launchOf(regionLaunches(MOUSE_DATASET, launchRegion(wide)), 'bubbles')!,
+    launchOf(regionLaunches(MOUSE_DATASET, wide), 'bubbles')!,
   )
   assert.deepEqual(spec.views[0]!.tracks, [
     'mm39_ncbiRefSeq_ucsc',
@@ -204,20 +201,11 @@ test('a wide window offers the graph alone, and a collapsed locus no graph', () 
     ['graph'],
   )
   assert.deepEqual(
-    regionLaunches(HPRC_DATASET, launchRegion(locus), [], {
+    regionLaunches(HPRC_DATASET, locus, [], {
       graphCollapsed: true,
     }).map(l => l.kind),
     ['variants'],
   )
-})
-
-test('the lanes launch is undefined without a hosted graph config', () => {
-  const noGraph = { ...MOUSE_DATASET, graphBrowser: undefined }
-  assert.equal(
-    graphLanesUrl(noGraph, { chrom: 'chr11', start: 1, end: 1000 }),
-    undefined,
-  )
-  assert.deepEqual(regionLaunches(noGraph, launchRegion(noGraph.loci[0]!)), [])
 })
 
 test('a derived catalogue carries what the tier said and claims nothing else', () => {
@@ -244,16 +232,13 @@ const graphTrack = {
 }
 
 test('a locus opens as one linear view with the graph under its lanes', () => {
-  const url = graphRegionUrl(HPRC_DATASET, launchRegion(locus))
-  assert.ok(url, 'MHC has a detailWindow, so a URL is produced')
-  const { config, spec } = parseLaunch(url)
+  const { config, spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, locus))
   // the graph plugin is declared only in this config, never in the UCSC ones
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
 
   assert.equal(spec.views.length, 1)
   const [lgv] = spec.views
   assert.equal(lgv!.type, 'LinearGenomeView')
-  // the narrow detailWindow, not the 5 Mb display window the locus lists
   assert.equal(lgv!.loc, 'chr6:32510001-32600000')
   // The segments lane is the graph track itself, so it opens once, as the graph
   assert.deepEqual(lgv!.tracks, [
@@ -266,21 +251,17 @@ test('a locus opens as one linear view with the graph under its lanes', () => {
 
 test('graphRegionUrl draws an arbitrary window, labelled as given', () => {
   const region = { chrom: 'chr1', start: 100, end: 5_100, label: 'anywhere' }
-  const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region)!)
+  const { spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, region))
   const [lgv] = spec.views
   assert.equal(lgv!.loc, 'chr1:101-5100')
   assert.equal(lgv!.displayName, 'anywhere graph')
-  assert.equal(
-    graphRegionUrl({ ...HPRC_DATASET, graphBrowser: undefined }, region),
-    undefined,
-  )
 })
 
 // The graph track picks its own tier by zoom, so a wide launch opens no tier
 // lane beside it that could disagree.
 test('a wide region opens the graph alone, under the lanes that read at any width', () => {
   const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
-  const { config, spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, chr21)!)
+  const { config, spec } = parseLaunch(graphRegionUrl(HPRC_DATASET, chr21))
   assert.equal(config, HPRC_GRAPH_BROWSER.configUrl)
   assert.equal(spec.views.length, 1)
   const [lgv] = spec.views
@@ -290,26 +271,11 @@ test('a wide region opens the graph alone, under the lanes that read at any widt
     'hprc_bubble_score',
     graphTrack,
   ])
-  const lanes = parseLaunch(graphLanesUrl(HPRC_DATASET, chr21)!).spec
+  const lanes = parseLaunch(graphLanesUrl(HPRC_DATASET, chr21)).spec
   assert.deepEqual(lanes.views[0]!.tracks, [
     'hg38_ncbiRefSeq_ucsc',
     'hprc_bubble_score',
     { trackId: 'hprc_minigraph_tier', type: 'LinearBasicDisplay' },
-  ])
-})
-
-test('a graph with no tier opens the fine lanes however wide the ask', () => {
-  const noTier = {
-    ...HPRC_DATASET,
-    graphBrowser: { ...HPRC_GRAPH_BROWSER, tierTrackId: undefined },
-  }
-  const chr21 = { chrom: 'chr21', start: 0, end: 46_709_983 }
-  const { spec } = parseLaunch(graphRegionUrl(noTier, chr21)!)
-  assert.deepEqual(spec.views[0]!.tracks, [
-    HPRC_GRAPH_BROWSER.geneTrackId,
-    HPRC_GRAPH_BROWSER.bubblesTrackId,
-    HPRC_GRAPH_BROWSER.allelesTrackId,
-    graphTrack,
   ])
 })
 
@@ -330,7 +296,7 @@ test('every rGFA track a launch opens names a display its track has', () => {
   ] as const
   for (const [dataset, region] of launches) {
     const base = /pangenome\/([^/]+)\/config\.json$/.exec(
-      dataset.graphBrowser!.configUrl,
+      dataset.graphBrowser.configUrl,
     )![1]
     const config = JSON.parse(
       readFileSync(
@@ -347,8 +313,8 @@ test('every rGFA track a launch opens names a display its track has', () => {
     }
     const byId = new Map(config.tracks.map(t => [t.trackId, t]))
     for (const url of [
-      graphRegionUrl(dataset, region)!,
-      graphLanesUrl(dataset, region)!,
+      graphRegionUrl(dataset, region),
+      graphLanesUrl(dataset, region),
     ]) {
       for (const entry of parseLaunch(url).spec.views[0]!.tracks as (
         | string
@@ -373,19 +339,6 @@ test('every rGFA track a launch opens names a display its track has', () => {
         }
       }
     }
-  }
-})
-
-// Half of each derived catalogue is a multi-megabase cluster, and every one of
-// them used to have no graph launch at all. They draw their tier now.
-test('a wide catalog locus gets a launch rather than nothing', () => {
-  const wide = MOUSE_DATASET.loci.filter(l => detailWindow(l) === undefined)
-  assert.ok(wide.length > 0, 'the mouse catalogue has wide entries')
-  for (const l of wide) {
-    assert.ok(
-      graphRegionUrl(MOUSE_DATASET, launchRegion(l)),
-      `${l.id} (${l.end - l.start} bp) has no graph launch`,
-    )
   }
 })
 
@@ -440,14 +393,6 @@ test('the haplotypes launch is undefined without the lane track or haplotypes', 
   assert.equal(haplotypeLanesForRegion(HPRC_DATASET, cfhr, []), undefined)
   assert.equal(
     haplotypeLanesForRegion(
-      { ...HPRC_DATASET, graphBrowser: undefined },
-      cfhr,
-      HAPLOTYPES,
-    ),
-    undefined,
-  )
-  assert.equal(
-    haplotypeLanesForRegion(
       {
         ...HPRC_DATASET,
         graphBrowser: {
@@ -476,16 +421,7 @@ test('bandageRegionUrl cuts the window around the haplotypes given, laid out by 
   })
 })
 
-// BandageJS reads the gbz-base database itself, so the link needs no hosted
-// graph.
 test('bandageRegionUrl is undefined without a gbz preset or haplotypes', () => {
-  assert.ok(
-    bandageRegionUrl(
-      { ...HPRC_DATASET, graphBrowser: undefined },
-      cfhr,
-      HAPLOTYPES,
-    ),
-  )
   assert.equal(bandageRegionUrl(HPRC_DATASET, cfhr, []), undefined)
   assert.equal(
     bandageRegionUrl(
@@ -530,13 +466,6 @@ test('every haplotype the lane track maps to an assembly is that assembly alias'
   }
 })
 
-test('the one locus flagged as collapsed in the graph is narrow enough to draw', () => {
-  // So only the flag stops CYP2D6's graph launch, not the width rule.
-  const collapsed = PANGENOME_LOCI.find(l => l.id === 'cyp2d6')!
-  assert.ok(collapsed.graphCollapsed)
-  assert.ok(detailWindow(collapsed))
-})
-
 test('every launched region is bare digits, in every locale', () => {
   // toLocaleString would group with '.' or a space under de-DE/fr-FR/ru-RU, and
   // JBrowse's locstring parser strips commas only — so a grouped region is one
@@ -545,44 +474,18 @@ test('every launched region is bare digits, in every locale', () => {
   for (const l of PANGENOME_LOCI) {
     for (const url of [
       variantsUrl(HPRC_DATASET, l),
-      graphRegionUrl(HPRC_DATASET, launchRegion(l)),
+      graphRegionUrl(HPRC_DATASET, l),
     ]) {
-      if (url) {
-        for (const view of parseLaunch(url).spec.views) {
-          if (typeof view.loc === 'string') {
-            assert.match(view.loc, region, `${l.id} launches loc "${view.loc}"`)
-          }
-        }
+      for (const view of parseLaunch(url).spec.views) {
+        assert.match(String(view.loc), region, `${l.id}: "${view.loc}"`)
       }
     }
   }
 })
 
-test('every locus either draws a window a graph can hold, or none at all', () => {
+// Past it the graph is a thread and the callset is behind "too much data".
+test('every curated locus is a window drawn at segment level', () => {
   for (const l of PANGENOME_LOCI) {
-    const url = graphRegionUrl(HPRC_DATASET, launchRegion(l))
-    if (url) {
-      const { spec } = parseLaunch(url)
-      const [, start, end] = /:(\d+)-(\d+)$/.exec(spec.views[0]!.loc as string)!
-      const span = Number(end) - Number(start) + 1
-      // A wide locus with no explicit detailWindow must produce no launch rather
-      // than one that opens and draws an unreadable thread.
-      assert.ok(
-        span <= MAX_DETAIL_WINDOW_BP,
-        `${l.id} launches a ${span} bp graph window`,
-      )
-    }
-  }
-})
-
-test('every locus opens its variants on a window the callset can be fetched over', () => {
-  for (const l of PANGENOME_LOCI) {
-    const { spec } = parseLaunch(variantsUrl(HPRC_DATASET, l))
-    const [, start, end] = /:(\d+)-(\d+)$/.exec(spec.views[0]!.loc as string)!
-    const span = Number(end) - Number(start) + 1
-    assert.ok(
-      span <= MAX_DETAIL_WINDOW_BP,
-      `${l.id} opens its callset over ${span} bp`,
-    )
+    assert.ok(spanOf(l) <= MAX_DETAIL_WINDOW_BP, `${l.id}: ${spanOf(l)} bp`)
   }
 })
