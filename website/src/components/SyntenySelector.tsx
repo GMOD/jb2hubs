@@ -246,8 +246,9 @@ function SyntenyPicker({ data }: Props) {
   // A gene launch opens each panel on its gene's neighborhood where NCBI placed
   // the gene on that very assembly, and on the bare symbol otherwise (an old
   // UCSC build, or before the report arrives), which JBrowse resolves through
-  // the assembly's text index to the gene body alone. Both panels share one
-  // scale, and the second is flipped when its gene runs the other way. A panel
+  // the assembly's text index to the gene body alone. The second is flipped
+  // when its gene runs the other way. `sameScale` stays off: on `main` it
+  // zoomed both TP53 panels out to whole chromosomes (2026-10-08). A panel
   // with no locus is the whole genome, where a gene track only opens a
   // "Requested too much data" banner, so it opens none. The view options make
   // the whole-genome synteny readable on first load (chromosome painting,
@@ -275,18 +276,16 @@ function SyntenyPicker({ data }: Props) {
           ...panelTracks(data.assemblyInfo[assembly]?.geneTrack ?? ''),
         }
       : { assembly }
-  const viewOptions = {
-    color: { field: 'query' },
-    drawCurves: true,
-    autoDiagonalize: true,
-    ...(gene ? { sameScale: true } : {}),
-  }
   const launchUrl =
     species1 && species2 && selectedTrack
       ? syntenyViewUrl(
           [panel(species1, loc1), panel(species2, loc2)],
           [selectedTrack.trackId],
-          viewOptions,
+          {
+            color: { field: 'query' },
+            drawCurves: true,
+            autoDiagonalize: true,
+          },
         )
       : null
 
