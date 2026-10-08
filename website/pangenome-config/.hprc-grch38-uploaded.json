@@ -11643,11 +11643,11 @@
     {
       "type": "GraphTrack",
       "trackId": "hprc_minigraph_segments",
-      "name": "HPRC release 2 graph (rGFA segments)",
+      "name": "HPRC v2.1 graph (rGFA segments)",
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "RgfaTabixAdapter",
-        "uri": "https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38",
+        "uri": "https://jbrowse.org/demos/hprc/hprc-v2.1-mc-grch38.anchored",
         "assemblyNameToPanSN": {
           "hg38": "GRCh38"
         },
@@ -11658,12 +11658,19 @@
       },
       "displayDefaults": {
         "color": "jexl:get(feature,'rank')==0?'rgb(52,152,219)':'rgb(237,137,44)'"
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearGraphDisplay",
+          "displayId": "hprc_minigraph_segments-LinearGraphDisplay",
+          "layoutMode": "force"
+        }
+      ]
     },
     {
       "type": "GraphTrack",
       "trackId": "hprc_minigraph_tier",
-      "name": "HPRC release 2 graph: bubble tier (one node per bubble)",
+      "name": "HPRC v2.1 graph: bubble tier (one node per bubble)",
       "assemblyNames": ["hg38"],
       "adapter": {
         "type": "RgfaTabixAdapter",
@@ -11671,7 +11678,14 @@
         "assemblyNameToPanSN": {
           "hg38": "GRCh38"
         }
-      }
+      },
+      "displays": [
+        {
+          "type": "LinearGraphDisplay",
+          "displayId": "hprc_minigraph_tier-LinearGraphDisplay",
+          "layoutMode": "force"
+        }
+      ]
     },
     {
       "type": "FeatureTrack",
@@ -12235,7 +12249,8 @@
       "displays": [
         {
           "type": "LinearGraphDisplay",
-          "displayId": "hprc_v2_1_gbz_lanes-LinearGraphDisplay"
+          "displayId": "hprc_v2_1_gbz_lanes-LinearGraphDisplay",
+          "layoutMode": "force"
         },
         {
           "type": "MultiWaySyntenyDisplay",
