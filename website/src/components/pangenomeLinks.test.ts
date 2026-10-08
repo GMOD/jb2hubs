@@ -200,11 +200,27 @@ test('a wide window offers the graph alone, and a collapsed locus no graph', () 
     regionLaunches(HPRC_DATASET, wide).map(l => l.kind),
     ['graph'],
   )
+  const cyp2d6 = HPRC_DATASET.loci.find(l => l.id === 'cyp2d6')!
   assert.deepEqual(
-    regionLaunches(HPRC_DATASET, locus, [], {
-      graphCollapsed: true,
+    regionLaunches(HPRC_DATASET, cyp2d6).map(l => l.kind),
+    ['variants'],
+  )
+  // The same gene typed into the box is a window with other edges.
+  assert.deepEqual(
+    regionLaunches(HPRC_DATASET, {
+      chrom: cyp2d6.chrom,
+      start: cyp2d6.start - 5000,
+      end: cyp2d6.end + 5000,
     }).map(l => l.kind),
     ['variants'],
+  )
+  assert.deepEqual(
+    regionLaunches(HPRC_DATASET, {
+      chrom: cyp2d6.chrom,
+      start: 0,
+      end: 50_818_468,
+    }).map(l => l.kind),
+    ['graph'],
   )
 })
 

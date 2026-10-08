@@ -18,9 +18,7 @@ test('a curated locus is an example under its own name, on its launch window', (
     label: 'HLA / MHC',
     description: 'Major histocompatibility complex',
     region: 'chr6:32,510,001-32,600,000',
-    graphCollapsed: false,
   })
-  assert.equal(examples.find(e => e.label === 'CYP2D6')?.graphCollapsed, true)
 })
 
 test('a derived catalogue offers its top bubbles that overlap a gene, once each', () => {

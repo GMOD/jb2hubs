@@ -8,6 +8,7 @@ import {
   parseRegion,
   placeRegion,
   resolveRegion,
+  wholeSequence,
 } from './pangenomeRegion.ts'
 
 test('a locstring is read the way a browser shows it, and comes back 0-based', () => {
@@ -59,6 +60,16 @@ test('a region lands on the graphs own sequence, cut to its length', () => {
     placeRegion({ chrom: 'chr9', start: 0, end: 10 }, sequences),
     undefined,
   )
+})
+
+test('a bare sequence name is the whole sequence', () => {
+  const sequences = [{ name: 'chr6', length: 1000 }]
+  assert.deepEqual(wholeSequence(' 6 ', sequences), {
+    chrom: 'chr6',
+    start: 0,
+    end: 1000,
+  })
+  assert.equal(wholeSequence('CFH', sequences), undefined)
 })
 
 test('what is not a region is left for a gene lookup', () => {

@@ -251,6 +251,19 @@ export interface LaunchLink {
   url: string
 }
 
+// Whether a window falls on a locus minigraph collapses, for an example and a
+// typed gene alike. A wide window is left alone: a chromosome that holds such a
+// locus still draws from its tier.
+const graphCollapsed = (dataset: PangenomeDataset, region: GraphRegion) =>
+  !isWide(region) &&
+  dataset.loci.some(
+    l =>
+      l.graphCollapsed &&
+      l.chrom === region.chrom &&
+      l.start < region.end &&
+      region.start < l.end,
+  )
+
 // What a region opens as, in one order. The callset has no coarse tier, so a
 // wide window offers no variants launch, where the graph's own lanes switch to
 // the tier and stay.
@@ -258,14 +271,15 @@ export function regionLaunches(
   dataset: PangenomeDataset,
   region: GraphRegion,
   haplotypes: string[] = [],
-  { graphCollapsed = false } = {},
 ): LaunchLink[] {
   const links: (Omit<LaunchLink, 'url'> & { url: string | undefined })[] = [
     {
       kind: 'graph',
       label: 'Graph',
       about: 'the region drawn as a graph',
-      url: graphCollapsed ? undefined : graphRegionUrl(dataset, region),
+      url: graphCollapsed(dataset, region)
+        ? undefined
+        : graphRegionUrl(dataset, region),
     },
     dataset.graphVcf
       ? {

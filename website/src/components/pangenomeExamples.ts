@@ -12,7 +12,6 @@ export interface PangenomeExample {
   description: string
   // The window the example asks for, as the box takes it.
   region: string
-  graphCollapsed: boolean
 }
 
 // A derived catalogue is twenty bubbles ranked by segment count, half of them
@@ -42,7 +41,6 @@ function example(
     label,
     description,
     region: formatRegion(locus),
-    graphCollapsed: locus.graphCollapsed ?? false,
   }
 }
 

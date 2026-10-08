@@ -6,7 +6,12 @@
 import { regionLaunches } from './pangenomeLinks.ts'
 import { MAX_DETAIL_WINDOW_BP } from './pangenomeLoci.ts'
 import { structuralPanel } from './pangenomePanels.ts'
-import { formatRegion, placeRegion, resolveRegion } from './pangenomeRegion.ts'
+import {
+  formatRegion,
+  placeRegion,
+  resolveRegion,
+  wholeSequence,
+} from './pangenomeRegion.ts'
 import { structuralForms } from './pangenomeSvStates.ts'
 
 import type { PangenomeDataset } from './pangenomeDataset.ts'
@@ -75,7 +80,9 @@ export async function regionAnswer(
   text: string,
   signal?: AbortSignal,
 ): Promise<RegionAnswer> {
-  const asked = await resolveRegion(text, dataset.reference.taxonId, { signal })
+  const asked =
+    wholeSequence(text, dataset.graphBrowser.chromosomes) ??
+    (await resolveRegion(text, dataset.reference.taxonId, { signal }))
   if (!asked) {
     throw new Error(
       `"${text}" is neither a region nor a gene placed on ${dataset.reference.label}`,
@@ -98,7 +105,6 @@ export async function regionAnswer(
       dataset,
       { ...region, label: title ?? formatRegion(region) },
       reading?.panel?.lanes.map(l => l.haplotype),
-      { graphCollapsed: example?.graphCollapsed },
     ),
   }
 }

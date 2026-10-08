@@ -54,6 +54,21 @@ export function placeRegion<T extends ParsedRegion>(
     : undefined
 }
 
+// A bare sequence name, `chr6` or `6`, is the whole of it.
+export function wholeSequence(
+  text: string,
+  sequences: readonly { name: string; length: number }[],
+): GeneRegion | undefined {
+  const chrom = matchRefName(
+    text.trim(),
+    sequences.map(s => s.name),
+  )
+  const length = sequences.find(s => s.name === chrom)?.length
+  return chrom !== undefined && length !== undefined
+    ? { chrom, start: 0, end: length }
+    : undefined
+}
+
 export function formatRegion({ chrom, start, end }: ParsedRegion) {
   return `${chrom}:${(start + 1).toLocaleString('en-US')}-${end.toLocaleString('en-US')}`
 }
