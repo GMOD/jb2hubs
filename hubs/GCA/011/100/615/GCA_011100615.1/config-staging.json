@@ -648,8 +648,27 @@
         {
           "type": "MultiWaySyntenyDisplay",
           "displayId": "GCA_011100615.1_liftOver_multiway-MultiWaySyntenyDisplay",
-          "height": 90,
-          "laneGeneTracks": ["GCA_011100615.1-ensGene"]
+          "height": 200,
+          "laneGeneTracks": ["GCA_011100615.1-ensGene"],
+          "laneLayers": [
+            {
+              "name": "GC",
+              "adapter": {
+                "type": "GCContentAdapter",
+                "windowSize": 1000,
+                "windowDelta": 1000
+              },
+              "height": 14,
+              "marks": [
+                {
+                  "mark": "bar",
+                  "encoding": {
+                    "y": "score"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ]
     }
