@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useActionState, useMemo, useState } from 'react'
 
 import { fetchExperimentalStructures } from 'p2s_mapper'
 import useSWRImmutable from 'swr/immutable'
@@ -131,8 +131,6 @@ export default function ProteinLaunchCard({
   // best-covering experimental entry once those have loaded
   const [choice, setChoice] = useState(picks?.structure)
   const [detailsOpen, setDetailsOpen] = useState(false)
-  const [residueText, setResidueText] = useState('')
-  const [residueError, setResidueError] = useState<string>()
   // what the map's regions and a typed residue are numbered on
   const canonical = canonicalSequence(structure)
 
@@ -341,7 +339,6 @@ export default function ProteinLaunchCard({
   ])
   const { missingModels, unreachable, session, url, loc } = launch
   const { transcript } = launched
-  const middle = canonical ? Math.ceil(canonical.length / 2) : 0
 
   // The structure view is omitted when there is no translation to align it to,
   // whatever structure was picked.
@@ -542,51 +539,10 @@ export default function ProteinLaunchCard({
             {focusCaveat && <span className="ui-caption">{focusCaveat}</span>}
           </div>
         ) : canonical && !focusPending ? (
-          <form
-            className="msv-control"
-            onSubmit={e => {
-              e.preventDefault()
-              const parsed = parseResidue(
-                residueText,
-                canonical,
-                canonical.length,
-              )
-              if ('error' in parsed) {
-                setResidueError(parsed.error)
-              } else {
-                setResidueError(undefined)
-                setResidueText('')
-                onFocus({ kind: 'residue', ...parsed })
-              }
-            }}
-          >
-            <span className="msv-control-label">Opens on</span>
-            <input
-              className="ui-input msv-residue"
-              aria-label="Residue to open on"
-              placeholder={`residue 1–${canonical.length} or ${canonical[middle - 1]}${middle}`}
-              aria-invalid={!!residueError}
-              value={residueText}
-              onChange={e => {
-                setResidueText(e.target.value)
-                setResidueError(undefined)
-              }}
-            />
-            <button
-              type="submit"
-              className="ui-btn-secondary"
-            >
-              Focus
-            </button>
-            {residueError && (
-              <span
-                className="ui-error"
-                role="alert"
-              >
-                {residueError}
-              </span>
-            )}
-          </form>
+          <ResidueForm
+            canonical={canonical}
+            onFocus={onFocus}
+          />
         ) : null}
       </div>
 
@@ -720,5 +676,66 @@ function StructureLink({
     >
       {model ? 'AlphaFold DB' : pdbId ? 'PDBe' : 'UniProt'} ↗
     </a>
+  )
+}
+
+interface ResidueEntry {
+  text: string
+  error?: string
+}
+
+// The residue to open on, typed against the canonical, while nothing is
+// focused. The box lives with this form, so what was typed goes when a focus
+// replaces it. React resets the fields after every action, a failed parse
+// included, so that one hands the text back as the box's default.
+function ResidueForm({
+  canonical,
+  onFocus,
+}: {
+  canonical: string
+  onFocus: (focus: Focus) => void
+}) {
+  const [{ text, error }, submit] = useActionState(
+    (_prev: ResidueEntry, data: FormData): ResidueEntry => {
+      const typed = String(data.get('residue') ?? '')
+      const parsed = parseResidue(typed, canonical, canonical.length)
+      if ('error' in parsed) {
+        return { text: typed, error: parsed.error }
+      }
+      onFocus({ kind: 'residue', ...parsed })
+      return { text: '' }
+    },
+    { text: '' },
+  )
+  const middle = Math.ceil(canonical.length / 2)
+  return (
+    <form
+      className="msv-control"
+      action={submit}
+    >
+      <span className="msv-control-label">Opens on</span>
+      <input
+        name="residue"
+        className="ui-input msv-residue"
+        aria-label="Residue to open on"
+        placeholder={`residue 1–${canonical.length} or ${canonical[middle - 1]}${middle}`}
+        aria-invalid={!!error}
+        defaultValue={text}
+      />
+      <button
+        type="submit"
+        className="ui-btn-secondary"
+      >
+        Focus
+      </button>
+      {error && (
+        <span
+          className="ui-error"
+          role="alert"
+        >
+          {error}
+        </span>
+      )}
+    </form>
   )
 }
