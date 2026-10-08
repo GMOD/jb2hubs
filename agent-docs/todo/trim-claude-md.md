@@ -1,10 +1,15 @@
 ---
 name: trim-claude-md
-description: The root CLAUDE.md is 20,855 words loaded into every session, and four of its claims no longer match the code. Colin asked on 2026-09-26 for it to be trimmed.
+description:
+  The root CLAUDE.md is 20,855 words loaded into every session, and four of its
+  claims no longer match the code. Colin asked on 2026-09-26 for it to be
+  trimmed.
 metadata:
   category: ready
   area: docs
-  first_move: "Move the incident narratives and dated measurements to agent-docs/reference/, keeping each rule, invariant and trap."
+  first_move:
+    'Move the incident narratives and dated measurements to
+    agent-docs/reference/, keeping each rule, invariant and trap.'
   order: 2
 ---
 

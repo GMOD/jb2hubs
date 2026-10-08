@@ -1,10 +1,12 @@
 ---
 name: slowness-synteny
-description: Conserved gene order's request waterfall, measured and mostly drained; the ortholog Lambda logs decide what is left.
+description:
+  Conserved gene order's request waterfall, measured and mostly drained; the
+  ortholog Lambda logs decide what is left.
 metadata:
   category: measure
   area: synteny
-  first_move: "Read the ortholog Lambda logs in late October."
+  first_move: 'Read the ortholog Lambda logs in late October.'
   order: 2
 ---
 

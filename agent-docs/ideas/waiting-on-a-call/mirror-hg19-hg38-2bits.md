@@ -1,6 +1,8 @@
 ---
 name: mirror-hg19-hg38-2bits
-description: Mirror the 1.5 GB hg19 and hg38 2bits to close the last UCSC dependency for the two assemblies people open.
+description:
+  Mirror the 1.5 GB hg19 and hg38 2bits to close the last UCSC dependency for
+  the two assemblies people open.
 ---
 
 # Should we mirror the hg19 and hg38 2bits?

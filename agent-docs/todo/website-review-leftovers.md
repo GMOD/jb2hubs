@@ -1,10 +1,12 @@
 ---
 name: website-review-leftovers
-description: What the 2026-09-23 website review left open: haplotype lanes the pangenome graph does not place.
+description:
+  'What the 2026-09-23 website review left open: haplotype lanes the pangenome
+  graph does not place.'
 metadata:
   category: measure
   area: pangenome
-  first_move: "Run the defb placement measurement in PANGENOME_PORTAL.md."
+  first_move: 'Run the defb placement measurement in PANGENOME_PORTAL.md.'
   order: 3
 ---
 

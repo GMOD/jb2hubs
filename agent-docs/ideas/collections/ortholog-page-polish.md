@@ -1,6 +1,8 @@
 ---
 name: ortholog-page-polish
-description: Gene/ortholog page rough edges: clade scoping drops the reference, no column sorting, unused GO/OMIM payload.
+description:
+  'Gene/ortholog page rough edges: clade scoping drops the reference, no column
+  sorting, unused GO/OMIM payload.'
 ---
 
 # Gene/ortholog page rough edges

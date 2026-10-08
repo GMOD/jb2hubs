@@ -1,6 +1,8 @@
 ---
 name: pangenome-walks-beside-lanes
-description: Add the graph's walks as a force-layout pane beside a locus's haplotype lanes; measured cost and the mouse/bovine gap.
+description:
+  Add the graph's walks as a force-layout pane beside a locus's haplotype lanes;
+  measured cost and the mouse/bovine gap.
 ---
 
 # The graph's walks beside a locus's haplotype lanes

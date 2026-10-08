@@ -1,6 +1,8 @@
 ---
 name: synteny-alignment-strategy
-description: Alignment tiers behind the multi-way gene-order view and its pairwise drill-downs. Read before changing /synteny-multi sources.
+description:
+  Alignment tiers behind the multi-way gene-order view and its pairwise
+  drill-downs. Read before changing /synteny-multi sources.
 ---
 
 # Synteny alignment strategy for the multi-way gene-order view

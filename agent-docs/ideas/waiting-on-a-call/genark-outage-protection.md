@@ -1,6 +1,8 @@
 ---
 name: genark-outage-protection
-description: 50,701 GenArk assemblies fail whole when hgdownload stalls, and why the obvious fix was already reverted once.
+description:
+  50,701 GenArk assemblies fail whole when hgdownload stalls, and why the
+  obvious fix was already reverted once.
 ---
 
 # GenArk still fails whole during a UCSC outage

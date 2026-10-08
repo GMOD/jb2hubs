@@ -1,6 +1,8 @@
 ---
 name: desktop-content-integration
-description: JBrowse Desktop only launches a hosted config, so spec-session features here are web-only. The keystone and its dependency order.
+description:
+  JBrowse Desktop only launches a hosted config, so spec-session features here
+  are web-only. The keystone and its dependency order.
 ---
 
 # Desktop ↔ genomes.jbrowse.org integration

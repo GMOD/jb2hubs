@@ -1,6 +1,8 @@
 ---
 name: shell-dead-code-and-shared-skeletons
-description: The 2026-09-26 shell review left one deploy.sh bug, five dead scripts or paths, and three skeletons both pipelines repeat.
+description:
+  The 2026-09-26 shell review left one deploy.sh bug, five dead scripts or
+  paths, and three skeletons both pipelines repeat.
 ---
 
 # Shell review leftovers

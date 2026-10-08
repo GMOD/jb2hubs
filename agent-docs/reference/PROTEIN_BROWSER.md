@@ -1,6 +1,8 @@
 ---
 name: protein-browser
-description: The /protein-browser landing page: the two residue-to-codon mapping bugs, which structure APIs are asked and why, how launches are verified.
+description:
+  'The /protein-browser landing page: the two residue-to-codon mapping bugs,
+  which structure APIs are asked and why, how launches are verified.'
 ---
 
 # The protein browser as a landing page

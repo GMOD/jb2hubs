@@ -1,6 +1,8 @@
 ---
 name: synteny-ux-review
-description: Nothing-decided review of the ortholog page's use of 'synteny', three unpicked defaults, launch-url length and the cigarMode 'matches' measurement.
+description:
+  Nothing-decided review of the ortholog page's use of 'synteny', three unpicked
+  defaults, launch-url length and the cigarMode 'matches' measurement.
 ---
 
 # The synteny surface, reviewed end to end

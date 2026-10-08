@@ -53,7 +53,7 @@ Three things are worth knowing up front:
 | `bed2gff/`         | Vendored Rust fork used by the UCSC gene-track pipeline (see `bed2gff/VENDORED.md`)                                                              |
 | `pangenome-build/` | Standalone impg pangenome build behind the mouse-strain explorer; runs on a compute host, not part of `run.sh`                                   |
 | `aws/`             | Two Lambdas: `config-merger` (multi-assembly configs on the fly) and `ortholog-assembler` (`/synteny-multi` backend)                             |
-| `agent-docs/`      | Design notes, handoffs and ADRs — filed per [agent-docs/CLAUDE.md](agent-docs/CLAUDE.md)                                                       |
+| `agent-docs/`      | Design notes, handoffs and ADRs — filed per [agent-docs/CLAUDE.md](agent-docs/CLAUDE.md)                                                         |
 
 Further reading: [DEVELOPERS.md](DEVELOPERS.md) for prerequisites and how to run
 things, [CLAUDE.md](CLAUDE.md) for the invariants and gotchas that bite when

@@ -1,6 +1,7 @@
 ---
 name: faster-lint-and-format
-description: Speed up pnpm lint and format; unprofiled, so the first step is a measurement.
+description:
+  Speed up pnpm lint and format; unprofiled, so the first step is a measurement.
 ---
 
 # Optimize lint and format speed

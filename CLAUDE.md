@@ -17,7 +17,8 @@ and serves them via a static website.
 - `scripts/` — repo-level node utilities (`checkConfigCompat.mjs`,
   `checkPluginUrls.mjs`, `extractSyntenyTracks.ts`) invoked from `package.json`
   and `run.sh`
-- `agent-docs/` — design notes, surveys and ADRs, filed per `agent-docs/CLAUDE.md`
+- `agent-docs/` — design notes, surveys and ADRs, filed per
+  `agent-docs/CLAUDE.md`
 
 ## Lint, format, typecheck (oxc toolchain)
 
@@ -409,13 +410,13 @@ the same 71 failed in every log going back weeks, 27s and 142 lines of
 `downloadNcbiGff.sh` now writes a `gff/<file>.notfound` sentinel, the way
 `ncbi.json.notfound` records a missing metadata record, and only on a 404/410 —
 read off the failed GET's own status, so the steady state is zero requests
-rather than 71. A timeout or 5xx leaves no sentinel, so an
-ftp.ncbi.nlm.nih.gov blip cannot switch off an annotation we do have a url for.
-`NOTFOUND_TTL_DAYS` (90) expires it so an annotation published later is still
-picked up, `FETCH_UPDATES=1` ignores it, and a successful fetch clears it. The
-count of suppressed urls is printed, because a suppression nobody can see is how
-a whole class of assembly quietly stops getting an annotation. mtime is a safe
-clock here, unlike in `buildNcbiQueue.ts`, because `gff/` is gitignored and so
+rather than 71. A timeout or 5xx leaves no sentinel, so an ftp.ncbi.nlm.nih.gov
+blip cannot switch off an annotation we do have a url for. `NOTFOUND_TTL_DAYS`
+(90) expires it so an annotation published later is still picked up,
+`FETCH_UPDATES=1` ignores it, and a successful fetch clears it. The count of
+suppressed urls is printed, because a suppression nobody can see is how a whole
+class of assembly quietly stops getting an annotation. mtime is a safe clock
+here, unlike in `buildNcbiQueue.ts`, because `gff/` is gitignored and so
 survives no clone to have its mtimes reset.
 
 ### A GFF NCBI re-annotated in place is fetched again
@@ -1715,11 +1716,11 @@ annotation". Both gates are local reads; neither costs a request.
   publishes no alias table to undo that with. Hub assemblies skip this gate —
   they have no rsync'd `database/` dir and do not need one.
 - **Overlap, after the download** (`seqidsResolve` in
-  `src/addNcbiRefSeqGffTrack.ts`).
-  `tabix -l` against the assembly's refNames and aliases, which answers the
-  question a _partial_ `asmEquivalent` match leaves open — galGal6 matches 455
-  of 464 sequences, rn6 and oryCun2 less. Zero overlap skips the add-track; the
-  GFF stays cached, so the next run re-checks it for free.
+  `src/addNcbiRefSeqGffTrack.ts`). `tabix -l` against the assembly's refNames
+  and aliases, which answers the question a _partial_ `asmEquivalent` match
+  leaves open — galGal6 matches 455 of 464 sequences, rn6 and oryCun2 less. Zero
+  overlap skips the add-track; the GFF stays cached, so the next run re-checks
+  it for free.
 
 Not being able to answer is deliberately not the same as answering no. A hub
 assembly on a cold tree has nothing mirrored beside its config yet, and refusing
@@ -1747,9 +1748,9 @@ track, and for the ENCODE ones its trackId would otherwise match the `wgEncode*`
 rule.
 
 ENCODE's individual-experiment composites (12,729 subtracks on hg38) stay
-dropped. `agent-docs/reference/ENCODE_TRACKS.md` records why, what was measured, and what
-would have to come first (UCSC's own faceted metadata TSVs) if they are ever
-loaded as connections.
+dropped. `agent-docs/reference/ENCODE_TRACKS.md` records why, what was measured,
+and what would have to come first (UCSC's own faceted metadata TSVs) if they are
+ever loaded as connections.
 
 ## The UCSC genome list timestamps itself, and that rebuilt the website every run
 
@@ -1847,9 +1848,9 @@ Three properties are load-bearing:
   pipeline (its exit status is the last command, so a truncated archive with a
   healthy `ssh` exits 0 — that is how the old line could have invalidated
   CloudFront over a half-uploaded site). So the remote unpack runs under
-  pipefail, and the file count is compared against the local one
-  before the symlink moves. Both were tested by injecting a truncated stream and
-  a short archive: both abort with the previous release still serving.
+  pipefail, and the file count is compared against the local one before the
+  symlink moves. Both were tested by injecting a truncated stream and a short
+  archive: both abort with the previous release still serving.
 - **`/var/www` is owned by `ubuntu`** and the webroots are symlinks. Without the
   first the swap cannot happen unprivileged; without the second `mv -T` refuses.
   The script migrates a real-directory webroot on its own, so a rebuilt server

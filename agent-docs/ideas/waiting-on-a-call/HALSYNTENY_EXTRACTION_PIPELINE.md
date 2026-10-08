@@ -1,14 +1,17 @@
 ---
 name: halsynteny-extraction-pipeline
-description: Source pairwise synteny from a Cactus/HAL alignment as a third static converter. Design only; nothing built.
+description:
+  Source pairwise synteny from a Cactus/HAL alignment as a third static
+  converter. Design only; nothing built.
 ---
 
 # halSynteny extraction as a static pipeline stage
 
 Decision-oriented notes for sourcing pairwise synteny tracks from a Cactus/HAL
 multiple alignment (`halSynteny`) and folding them into the existing
-static-generation pipeline. Sibling to `agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md`, which
-frames halSynteny as drill-down tier 2; this doc is how it actually _builds_.
+static-generation pipeline. Sibling to
+`agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md`, which frames halSynteny as
+drill-down tier 2; this doc is how it actually _builds_.
 
 ## Where this fits: a third converter, not a service
 
@@ -48,8 +51,8 @@ Two reasons that matter after the `planMultiSynteny` work:
 - **It emits GCF-native tracks, sidestepping the identity blocker.** The
   deferred UCSC-chain bridge died because `syntenyTracks.json` is keyed in
   UCSC-db/GCA space and won't bind GCF-loaded GenArk assemblies (see
-  `agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md`, "Attempted 2026-06"). halSynteny output is in
-  the HAL's own genome+sequence space, so we set
+  `agent-docs/reference/SYNTENY_ALIGNMENT_STRATEGY.md`, "Attempted 2026-06").
+  halSynteny output is in the HAL's own genome+sequence space, so we set
   `queryAssembly`/`targetAssembly` to GCF accessions when building the track —
   no GCA↔GCF↔UCSC-db identity layer needed. The only mapping required is a
   finite **HAL-genome-name → GCF accession** table (one row per genome), plus

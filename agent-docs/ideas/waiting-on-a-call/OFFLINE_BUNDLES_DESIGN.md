@@ -1,6 +1,8 @@
 ---
 name: offline-bundles
-description: Per-assembly zip bundles a Desktop user opens offline: Lambda-built, user-chosen track pack, size-capped. Design only; nothing built.
+description:
+  'Per-assembly zip bundles a Desktop user opens offline: Lambda-built,
+  user-chosen track pack, size-capped. Design only; nothing built.'
 ---
 
 # Offline bundles for JBrowse Desktop — design

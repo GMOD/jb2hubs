@@ -1,6 +1,8 @@
 ---
 name: orthologs-launch-followups
-description: What /orthologs knowingly left behind at launch: staging-gated dead ends, unkeyed NCBI access, grouping cost, smaller controls.
+description:
+  'What /orthologs knowingly left behind at launch: staging-gated dead ends,
+  unkeyed NCBI access, grouping cost, smaller controls.'
 ---
 
 # Ortholog browser launch — follow-ups
@@ -44,9 +46,10 @@ assembler that holds the rate budget once and caches — but there is no
 `website/src/pages/api` route, so this page doesn't use it. Worth revisiting if
 real traffic produces 429s.
 
-Revisited 2026-08-27 in `agent-docs/reference/GENE_PAGE_CONSOLIDATION.md`: the filler now exists
-(`aws/ortholog-assembler/`) and serves `/conserved-gene-order` only, so what
-leaving `/orthologs` on the browser-direct path costs is measured there.
+Revisited 2026-08-27 in `agent-docs/reference/GENE_PAGE_CONSOLIDATION.md`: the
+filler now exists (`aws/ortholog-assembler/`) and serves `/conserved-gene-order`
+only, so what leaving `/orthologs` on the browser-direct path costs is measured
+there.
 
 ## Grouping costs one taxonomy request per search
 

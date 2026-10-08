@@ -1,6 +1,8 @@
 ---
 name: todo
-description: Index of the open action items in todo/, grouped by what to do first. Read when picking up work, and before filing anything new here.
+description:
+  Index of the open action items in todo/, grouped by what to do first. Read
+  when picking up work, and before filing anything new here.
 ---
 
 # Todo
@@ -15,15 +17,15 @@ Commitment, not size, separates an item here from a proposal in
 
 ## Ready to take
 
-| Item | Area | First move |
-| --- | --- | --- |
-| [proteinbrowser](todo/proteinbrowser.md) | protein browser | Link the instance from the proteinbrowser repo when the page leaves staging. |
-| [Trim CLAUDE.md](todo/trim-claude-md.md) | docs | Move the incident narratives and dated measurements to agent-docs/reference/, keeping each rule, invariant and trap. |
+| Item                                     | Area            | First move                                                                                                           |
+| ---------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| [proteinbrowser](todo/proteinbrowser.md) | protein browser | Link the instance from the proteinbrowser repo when the page leaves staging.                                         |
+| [Trim CLAUDE.md](todo/trim-claude-md.md) | docs            | Move the incident narratives and dated measurements to agent-docs/reference/, keeping each rule, invariant and trap. |
 
 ## Measure first
 
-| Item | Area | First move |
-| --- | --- | --- |
+| Item                                                                         | Area         | First move                                                                             |
+| ---------------------------------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------- |
 | [Prune unreferenced derived files](todo/prune-unreferenced-derived-files.md) | ucsc2jbrowse | Work out why the 118 unexplained files are absent from configs before gating anything. |
-| [Slowness in conserved gene order](todo/slowness-synteny.md) | synteny | Read the ortholog Lambda logs in late October. |
-| [Website review leftovers](todo/website-review-leftovers.md) | pangenome | Run the defb placement measurement in PANGENOME_PORTAL.md. |
+| [Slowness in conserved gene order](todo/slowness-synteny.md)                 | synteny      | Read the ortholog Lambda logs in late October.                                         |
+| [Website review leftovers](todo/website-review-leftovers.md)                 | pangenome    | Run the defb placement measurement in PANGENOME_PORTAL.md.                             |
