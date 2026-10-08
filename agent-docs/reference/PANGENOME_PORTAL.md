@@ -1,6 +1,9 @@
 ---
 name: pangenome-portal
-description: How the human, mouse and bovine pangenomes are served by one approach, where they diverge, and where the mouse graph refuses. Read before touching a pangenome launch.
+description:
+  How the human, mouse and bovine pangenomes are served by one approach, where
+  they diverge, and where the mouse graph refuses. Read before touching a
+  pangenome launch.
 ---
 
 # Three pangenomes, one approach: human, mouse, bovine
@@ -576,9 +579,22 @@ so there is nothing to log for it beyond this file.
 
 ## Order of work
 
-Open items and their order live in
-[handoffs/pangenome-2026-09-09.md](../handoffs/pangenome-2026-09-09.md); this
-section is the durable shape of the work rather than its state.
+Still open on 2026-10-08: mouse's variant route below, and running the locus
+derivation on HPRC, whose minigraph tier would say how much of the curated
+catalogue the ranking recovers.
+
+Three things the 2026-09-09 publish found:
+
+- **`s3://jbrowse.org/pangenome/bovine-bostau9/config.json` is an orphan.** The
+  bovine config was renamed to `bovine-arsucd12` and the old key still
+  answers 200. Nothing names it. Deleting it retires a published url, so it is
+  Colin's call.
+- **CloudFront matches an invalidation wildcard only as the last character.**
+  `/pangenome/*/config.json` is accepted, reports `Completed` and invalidates
+  nothing; `/pangenome/*` works.
+- **The derived catalogue's gene track is per dataset.** bosTau9 publishes no
+  `ncbiRefSeqSelect`, so a hardcoded track name labels every locus
+  "(intergenic)".
 
 Sequenced so nothing waits on the long job. Unnumbered on purpose — the order
 has already changed once.
