@@ -105,7 +105,7 @@ export function exampleMatching(
 
 export interface ProteinExample extends Example {
   focus?: ExampleFocus
-  // one sentence on what there is to see once the session opens
+  // one sentence on what there is to see, folded under the card's More info
   story?: string
 }
 

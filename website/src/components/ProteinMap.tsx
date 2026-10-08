@@ -63,6 +63,10 @@ function packLanes<T extends { start: number; end: number }>(items: T[]) {
   return lanes.map(l => l.items)
 }
 
+// A block narrower than this share of the protein shows no label: at that
+// width a label is an ellipsis, and the title carries the name.
+const MIN_LABELLED = 0.05
+
 function tickStep(length: number) {
   return length > 2000 ? 500 : length > 800 ? 200 : length > 300 ? 100 : 50
 }
@@ -122,16 +126,19 @@ export default function ProteinMap({
         toggle({ kind: 'region', region })
       }}
     >
-      <span className="pm-block-label">{region.name}</span>
+      {(region.end - region.start + 1) / length >= MIN_LABELLED && (
+        <span className="pm-block-label">{region.name}</span>
+      )}
     </button>
   )
 
   const middle = Math.ceil(length / 2)
   const step = tickStep(length)
+  // the end tick names the length, so a regular tick close to it is dropped
   const ticks = Array.from(
     { length: Math.floor(length / step) },
     (_, i) => (i + 1) * step,
-  )
+  ).filter(t => t <= length - step / 2)
 
   return (
     <div className="pm">

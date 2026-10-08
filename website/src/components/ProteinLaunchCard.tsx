@@ -108,7 +108,7 @@ export default function ProteinLaunchCard({
   // decides both the focus and the complex the session opens
   partnerPending: boolean
   onClearFocus: () => void
-  // a chip's one sentence on what there is to see
+  // a chip's one sentence on what there is to see, folded under More info
   story?: string
   // the isoform and structure the link the reader arrived by named
   picks?: { isoform?: string; structure?: string }
@@ -368,7 +368,6 @@ export default function ProteinLaunchCard({
         {transcript.strand === 1 ? '+' : '−'} · {transcript.cds.length} coding
         exons · {codingBp.toLocaleString()} bp CDS
       </p>
-      {story && <p className="ui-hint">{story}</p>}
 
       <div className="msv-controls">
         {!pinned && isoforms.length > 1 && (
@@ -565,7 +564,7 @@ export default function ProteinLaunchCard({
           </>
         )}
       </div>
-      <details className="msv-options">
+      <details className="msv-fold">
         <summary>Options</summary>
         <label className="msv-collapse">
           <input
@@ -623,6 +622,12 @@ export default function ProteinLaunchCard({
           Session details
         </button>
       </details>
+      {story && (
+        <details className="msv-fold">
+          <summary>More info</summary>
+          <p>{story}</p>
+        </details>
+      )}
 
       {detailsOpen && (
         <SessionDetailsDialog

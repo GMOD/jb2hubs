@@ -161,12 +161,12 @@ if (!features.proteinBrowser) {
 
   /* Domain-architecture cartoon (ProteinDomainCartoon) */
   .pdc {
-    margin: 0.75rem 0 1rem;
+    margin: 0.5rem 0 0.75rem;
   }
   .pdc-rows {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
   }
   .pdc-row {
     display: flex;
@@ -175,7 +175,8 @@ if (!features.proteinBrowser) {
   }
   .pdc-name {
     flex: 0 0 140px;
-    font-size: var(--text-sm);
+    font-size: var(--text-2xs);
+    line-height: 1.2;
     text-align: right;
     white-space: nowrap;
     overflow: hidden;
@@ -190,7 +191,7 @@ if (!features.proteinBrowser) {
   }
   .pdc-bar {
     position: relative;
-    height: 16px;
+    height: 10px;
     background: var(--surface-alt);
     border: 1px solid var(--border);
     border-radius: 3px;
@@ -198,7 +199,7 @@ if (!features.proteinBrowser) {
   .pdc-domain {
     position: absolute;
     top: -1px;
-    height: 16px;
+    height: 10px;
     border: 0;
     padding: 0;
     border-radius: 3px;
@@ -207,6 +208,7 @@ if (!features.proteinBrowser) {
   .pdc-len {
     flex: 0 0 auto;
     font-size: var(--text-2xs);
+    line-height: 1;
     color: var(--faint);
     font-variant-numeric: tabular-nums;
   }
@@ -214,7 +216,7 @@ if (!features.proteinBrowser) {
     display: flex;
     flex-wrap: wrap;
     gap: 4px 14px;
-    margin-top: 12px;
+    margin-top: 8px;
     font-size: var(--text-xs);
     color: var(--muted);
   }
@@ -259,7 +261,7 @@ if (!features.proteinBrowser) {
   .pm-lanes {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
   }
   .pm-lane {
     display: flex;
@@ -281,16 +283,16 @@ if (!features.proteinBrowser) {
   .pm-track {
     position: relative;
     flex: 1 1 auto;
-    height: 20px;
+    height: 14px;
     min-width: 0;
     background: var(--surface-alt);
     border-radius: 3px;
   }
   .pm-lane-thin .pm-track {
-    height: 12px;
+    height: 8px;
   }
   .pm-ruler .pm-track {
-    height: 16px;
+    height: 14px;
     background: none;
     border-bottom: 1px solid var(--field-border);
   }
@@ -298,6 +300,7 @@ if (!features.proteinBrowser) {
     position: absolute;
     top: 0;
     font-size: 0.625rem;
+    line-height: 1.2;
     color: var(--faint);
     transform: translateX(-50%);
     font-variant-numeric: tabular-nums;
@@ -306,8 +309,8 @@ if (!features.proteinBrowser) {
     content: '';
     position: absolute;
     left: 50%;
-    bottom: -4px;
-    height: 3px;
+    bottom: -5px;
+    height: 4px;
     border-left: 1px solid var(--field-border);
   }
   .pm-tick-end {
@@ -328,7 +331,7 @@ if (!features.proteinBrowser) {
     border-radius: 3px;
     color: var(--surface);
     font-size: var(--text-2xs);
-    line-height: 20px;
+    line-height: 14px;
     text-align: left;
     overflow: hidden;
     white-space: nowrap;
@@ -337,7 +340,7 @@ if (!features.proteinBrowser) {
     cursor: pointer;
   }
   .pm-lane-thin .pm-block {
-    line-height: 12px;
+    line-height: 8px;
     font-size: 0;
   }
   .pm-block:hover,
@@ -377,9 +380,9 @@ if (!features.proteinBrowser) {
   }
   .pm-residue {
     position: absolute;
-    top: -3px;
+    top: -2px;
     width: 3px;
-    height: 18px;
+    height: calc(100% + 4px);
     margin-left: -1px;
     background: var(--text);
     border-radius: 1px;
@@ -389,7 +392,7 @@ if (!features.proteinBrowser) {
     align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem 1.25rem;
-    margin: 0.6rem 0 0 150px;
+    margin: 0.5rem 0 0 150px;
     font-size: var(--text-sm);
   }
   .pm-residue-form {
@@ -430,23 +433,28 @@ if (!features.proteinBrowser) {
     flex-wrap: wrap;
     margin-bottom: 0.5rem;
   }
-  /* The view toggles and the session dump, folded: every default is on, and a
-     reader who wants one off is rarer than one who wants the button. */
-  .msv-options {
+  /* The view toggles, the session dump and a chip's story, folded: every
+     default is on, and the story is for the reader who asks. */
+  .msv-fold {
     margin: 0.4rem 0 0;
     font-size: var(--text-sm);
   }
-  .msv-options > summary {
+  .msv-fold > summary {
     color: var(--muted);
     cursor: pointer;
   }
-  .msv-options[open] > summary {
+  .msv-fold[open] > summary {
     margin-bottom: 0.4rem;
   }
-  .msv-options .msv-collapse,
-  .msv-options .ui-linkbtn {
+  .msv-fold .msv-collapse,
+  .msv-fold .ui-linkbtn {
     display: flex;
     margin: 0.3rem 0;
+  }
+  .msv-fold > p {
+    max-width: 62ch;
+    margin: 0;
+    color: var(--muted);
   }
   .msv-open {
     padding: 8px 18px;
@@ -509,9 +517,9 @@ if (!features.proteinBrowser) {
     justify-content: center;
   }
   .pdc-superpose {
-    padding: 0 4px;
-    font-size: 0.625rem;
-    line-height: 16px;
+    padding: 0 3px;
+    font-size: 0.5625rem;
+    line-height: 11px;
     color: var(--muted);
     background: var(--surface);
     border: 1px solid var(--field-border);
