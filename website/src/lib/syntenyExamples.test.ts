@@ -67,7 +67,9 @@ describe('a species name picks its newest build', () => {
     Mouse: ['Mus musculus', 'ucsc', ['mm7', 'mm8', 'mm9', 'mm10', 'mm39']],
     Rat: ['Rattus norvegicus', 'ucsc', ['rn3', 'rn4', 'rn5', 'rn6', 'rn7']],
     Human: ['Homo sapiens', 'ucsc', ['hg19', 'hs1', 'hg38']],
+    'human (H9 T2T hap1 2026)': ['Homo sapiens', 'genark', ['GCA_054883195.1']],
     Horse: ['Equus caballus', 'ucsc', ['equCab2', 'equCab3']],
+    'horse (Twilight 2018)': ['Equus caballus', 'genark', ['GCF_002863925.1']],
     'Deer mouse': [
       'Peromyscus maniculatus',
       'genark',
@@ -116,7 +118,7 @@ describe('a species name picks its newest build', () => {
   it('an organism nothing features still lists its newest build first', () => {
     assert.deepEqual(
       rankOptions('horse', options).map(o => o.value),
-      ['equCab3', 'equCab2'],
+      ['equCab3', 'equCab2', 'GCF_002863925.1'],
     )
   })
 

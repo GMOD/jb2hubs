@@ -9,7 +9,9 @@ export interface RankableOption {
 // deletion) within a term, so "brca" still finds "BRCA1" and "homosapeins"
 // finds "Homo sapiens". Equally good matches keep the list's own order rather
 // than uFuzzy's numeric-aware alphabetical one, which put mm7 before mm39 on
-// "mouse" and made Enter pick a 2005 assembly.
+// "mouse" and made Enter pick a 2005 assembly. rankBy folds case before
+// searching, since uFuzzy prefers the item whose case matches the query and
+// "human" then ranked GenArk's "human (H9 T2T hap1 2026)" over hg38's "Human".
 const uf = new uFuzzy({ intraMode: 1, compare: () => 0 })
 
 // Ranked, capped fuzzy match over an arbitrary list, keyed by a text extractor.
@@ -28,8 +30,8 @@ export function rankBy<T>(
   if (!q) {
     return items.slice(0, limit)
   }
-  const haystack = items.map(getText)
-  const [idxs, info, order] = uf.search(haystack, q, 1)
+  const haystack = items.map(item => getText(item).toLowerCase())
+  const [idxs, info, order] = uf.search(haystack, q.toLowerCase(), 1)
   if (idxs === null) {
     return []
   }
