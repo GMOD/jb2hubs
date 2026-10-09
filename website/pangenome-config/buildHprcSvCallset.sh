@@ -72,7 +72,8 @@ split_chrom() {
         next
       }
       /^#/ { print; next }
-      $8 ~ /(^|;)INV(;|$)/ { $8 = $8 ";SVTYPE=INV" }
+      # vcfwave writes the flag bare and as INV=YES (174 and 157 records)
+      $8 ~ /(^|;)INV(=YES)?(;|$)/ { $8 = $8 ";SVTYPE=INV" }
       { print }' |
     bcftools view -Oz -o "$out.part"
   mv "$out.part" "$out"
