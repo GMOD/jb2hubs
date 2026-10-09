@@ -103,10 +103,7 @@ describe('buildHubConfig', () => {
       `trix/${acc}.ix`,
     )
     assert.equal('geneticCodes' in (config.assemblies![0] as object), false)
-    assert.equal(
-      'circularRefNames' in (config.assemblies![0] as object),
-      false,
-    )
+    assert.equal('circularRefNames' in (config.assemblies![0] as object), false)
   })
 
   it("stamps the GFF header's annotation on the track, and nothing without one", () => {

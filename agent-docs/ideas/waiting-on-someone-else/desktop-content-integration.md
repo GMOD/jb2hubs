@@ -90,8 +90,8 @@ Desktop's start screen only knows `categories.json` (a list of _genome lists_,
 built by `genark2jbrowse/src/generateCategoriesJson.ts`). Generalize that
 manifest: alongside genome categories, enumerate pangenome datasets, synteny
 pairs, and variable loci as launchable resources. The dialog then becomes a
-**content catalog** rather than a genome list, and adding a website content type
-= adding an index entry, not a desktop code change.
+**content catalog** rather than a genome list, and adding a website content
+type = adding an index entry, not a desktop code change.
 
 ### 4. Orthologs needs an explicit decision
 

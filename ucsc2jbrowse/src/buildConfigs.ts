@@ -43,8 +43,8 @@ import {
   stagingEnhanceOptions,
 } from 'hubtools'
 
-import { addMitochondrion, prefetchMitoCodes } from './addMitochondrion.ts'
 import { addMetadata } from './addMetadata.ts'
+import { addMitochondrion, prefetchMitoCodes } from './addMitochondrion.ts'
 import { addNcbiRefSeqGffTrack } from './addNcbiRefSeqGffTrack.ts'
 import { addOrigAssemblyToTrackName } from './addOrigAssemblyToTrackName.ts'
 import { addDerivedTabixTracks } from './addTabixTrackToConfig.ts'
