@@ -129,6 +129,71 @@ test('parseInterProRegions: InterPro domains and sites, with the Pfam under each
   assert.strictEqual(regions[0]!.name, 'p53, DNA-binding domain')
 })
 
+test('parseInterProRegions: one block per place, the Pfam entry kept', () => {
+  const regions = parseInterProRegions([
+    {
+      results: [
+        entry(
+          'IPR000719',
+          'interpro',
+          'domain',
+          'Protein kinase domain',
+          null,
+          [712, 979],
+        ),
+        entry(
+          'IPR020635',
+          'interpro',
+          'domain',
+          'Tyrosine kinase, catalytic',
+          null,
+          [712, 975],
+        ),
+        entry(
+          'IPR001245',
+          'interpro',
+          'domain',
+          'Ser-Thr/Tyr kinase, catalytic',
+          null,
+          [713, 965],
+        ),
+        entry(
+          'PF07714',
+          'pfam',
+          'domain',
+          'PK_Tyr_Ser-Thr',
+          'IPR001245',
+          [713, 965],
+        ),
+        entry(
+          'IPR006211',
+          'interpro',
+          'domain',
+          'Furin-like cysteine-rich',
+          null,
+          [177, 338],
+        ),
+        entry(
+          'IPR017441',
+          'interpro',
+          'binding_site',
+          'ATP-binding site',
+          null,
+          [718, 745],
+        ),
+      ],
+    },
+  ])
+  assert.deepStrictEqual(
+    regions.map(r => [r.accession, r.pfam]),
+    [
+      ['IPR006211', undefined],
+      ['IPR001245', 'PF07714'],
+      ['IPR017441', undefined],
+    ],
+  )
+})
+
 test('parseInterProRegions: family and superfamily entries are not regions', () => {
   const kinds = parseInterProRegions([tp53Page]).map(r => r.accession)
   assert.ok(!kinds.includes('IPR002117'))

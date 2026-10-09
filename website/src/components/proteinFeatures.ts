@@ -141,7 +141,44 @@ export function parseInterProRegions(pages: InterProPage[]): ProteinRegion[] {
       })
     }
   }
-  return regions.sort((a, b) => a.start - b.start || b.end - a.end)
+  return collapseRedundant(regions).sort(
+    (a, b) => a.start - b.start || b.end - a.end,
+  )
+}
+
+// How much of the longer of two domains the shorter has to cover for them to
+// be one place on the protein.
+const SAME_PLACE = 0.8
+
+const domainLike = (r: ProteinRegion) =>
+  r.kind === 'domain' || r.kind === 'repeat'
+
+function samePlace(a: ProteinRegion, b: ProteinRegion) {
+  const shared = Math.min(a.end, b.end) - Math.max(a.start, b.start) + 1
+  return (
+    shared / Math.max(a.end - a.start + 1, b.end - b.start + 1) >= SAME_PLACE
+  )
+}
+
+// InterPro integrates several databases' views of one domain into separate
+// entries, so EGFR's kinase took three lanes: Protein kinase domain,
+// Tyrosine-protein kinase catalytic domain, and the Pfam one. A domain or
+// repeat with no Pfam family goes where another covers the same residues;
+// every Pfam one stays, since a focus opens its seed and a chip or link may
+// name it (NOTCH1's EGF repeats carry both PF00008 and PF07645). Sites are
+// left alone.
+export function collapseRedundant(regions: ProteinRegion[]) {
+  const kept: ProteinRegion[] = []
+  for (const r of [...regions].sort((a, b) => +!!b.pfam - +!!a.pfam)) {
+    if (
+      !domainLike(r) ||
+      !!r.pfam ||
+      !kept.some(k => domainLike(k) && samePlace(k, r))
+    ) {
+      kept.push(r)
+    }
+  }
+  return kept
 }
 
 const MAX_INTERPRO_PAGES = 10
