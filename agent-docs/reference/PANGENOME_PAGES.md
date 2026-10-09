@@ -50,12 +50,13 @@ graph, rendered by `website/src/pages/pangenomes/[dataset].astro` from the
 dataset. `/pangenomes` is a list of them and nothing else. A graph's page is one
 sentence, a line of links, the **Gene or region** box with the dataset's loci as
 a row of examples under it (`PangenomeRegionBox.tsx`, `pangenomeExamples.ts`),
-the chromosomes as graph links, and the file table. The box is the page's only
-client JavaScript and the page has no style rule of its own: the site's table
-rules, the shared query row (`GeneCombobox` and `.ui-form` from `ui.css`, the
-controls /gene and /protein-browser use, so a gene symbol is suggested as it is
-typed) and the browser's defaults are the whole design, on purpose, after the
-2026-09-16 review found the previous page a wall of prose and buttons.
+the chromosomes as questions to the box (`?region=chr1`), and the file table.
+The box is the page's only client JavaScript and the page has no style rule of
+its own: the site's table rules, the shared query row (`GeneCombobox` and
+`.ui-form` from `ui.css`, the controls /gene and /protein-browser use, so a gene
+symbol is suggested as it is typed), `ui.css`'s `.ui-views` and `.ui-embed` for
+the viewer, and the browser's defaults are the whole design, on purpose, after
+the 2026-09-16 review found the previous page a wall of prose and buttons.
 
 The box replaced the loci table on 2026-10-08. The table was 22 rows of five
 launches on HPRC (136 links, 2,629 px) and, on the three derived catalogues,
@@ -68,6 +69,17 @@ the haplotypes carry there (see "A locus's haplotypes are lanes" below). The
 HPRC page is 974 px before a question. What the table had that the box does not:
 the variation class column, the gene hub link, and launches that work without
 JavaScript.
+
+**The answer is drawn in the page.** Until 2026-10-09 it was a list of links,
+each opening JBrowse in a new tab under a button that said "Show". Now a row of
+chips, one per launch, picks which one an iframe under it loads, with an "Open
+in full JBrowse" link beside them (`LaunchViewer` in `PangenomeRegionBox.tsx`).
+The pick rides in the url as `?view=` and holds across questions. The frame
+loads the launch url itself, so `check-pangenome-launches` still boots what the
+page shows. An iframe and not `@jbrowse/react-linear-genome-view`, because the
+graph plugin boots only on jbrowse-web `main` (see above) and the site's
+`@jbrowse/core` is 4.3.0. jbrowse.org sends no `X-Frame-Options` or CSP header,
+checked 2026-10-09; one added there would blank the viewer and leave the link.
 
 - **A curated locus is one window of at most `MAX_DETAIL_WINDOW_BP`.** Each used
   to carry a display span too (MHC's 5 Mb) with the launch window as a
@@ -140,19 +152,26 @@ route.
 `lanes()` in `website/src/components/pangenomeLinks.ts` picks the segment-level
 lanes under `MAX_DETAIL_WINDOW_BP` (150 kb) and the coarse bubble tier above it.
 A graph launch (`graphRegionUrl`) is one linear view: a compact gene row, the
-segments track opened as its `LinearGraphDisplay` at 420 px, then those lanes.
-The graph picks its own tier by zoom past the adapter's `coarse.aboveBpPerPx`.
-The lanes came first until 2026-10-08, which put the graph 732 px down a 900 px
-window and 1,415 px down under Arabidopsis's SyRI rows. The segments lane and
-the graph are one track and a view shows a track once, so a graph launch has no
-segments lane, and no tier lane either: the graph's handover turns on the view's
-width, so at 1000 px HPRC's graph stays fine to ~1 Mb while a lane switched at
-150 kb would already be coarse. Every rGFA track in the four configs is a
-`GraphTrack`, which opens as the graph, its first display, so a lane over one
-names `LinearBasicDisplay`. A GraphTrack's displays come from the plugin, not
-the config, so `pangenomeLinks.test.ts` checks every launch against the ones the
-plugin registers on it. Everything below fell out of the width rule on
-2026-09-10, so a change here is a change to all of it:
+segments track opened as its `LinearGraphDisplay` at 420 px, the callset's
+haplotype matrix where the window can draw it (`drawsCallset`), then those
+lanes. The narrow lanes were bubbles and the allele inventory, an
+AlignmentsTrack of one row per allele, until 2026-10-09: it said nothing about
+who carries an allele and confused readers, and the matrix says exactly that.
+Mouse and Arabidopsis have no callset, so their narrow lane is the bubbles
+alone; a matrix there needs `minigraph --call` per assembly (see
+`pangenomeDataset.ts`). The graph picks its own tier by zoom past the adapter's
+`coarse.aboveBpPerPx`. The lanes came first until 2026-10-08, which put the
+graph 732 px down a 900 px window and 1,415 px down under Arabidopsis's SyRI
+rows. The segments lane and the graph are one track and a view shows a track
+once, so a graph launch has no segments lane, and no tier lane either: the
+graph's handover turns on the view's width, so at 1000 px HPRC's graph stays
+fine to ~1 Mb while a lane switched at 150 kb would already be coarse. Every
+rGFA track in the four configs is a `GraphTrack`, which opens as the graph, its
+first display, so a lane over one names `LinearBasicDisplay`. A GraphTrack's
+displays come from the plugin, not the config, so `pangenomeLinks.test.ts`
+checks every launch against the ones the plugin registers on it. Everything
+below fell out of the width rule on 2026-09-10, so a change here is a change to
+all of it:
 
 - **`graphChromosomeUrl` is gone.** A chromosome is the widest region and takes
   the coarse branch, so the whole-chromosome launch and the region launch are
@@ -171,8 +190,9 @@ plugin registers on it. Everything below fell out of the width rule on
   row.
 
 The one asymmetry that stays: the callset does **not** get a coarse tier, so
-`regionLaunches` offers no variants launch past `MAX_DETAIL_WINDOW_BP`. That is
-a property of a VCF, not of the wiring.
+`regionLaunches` offers no variants launch past `MAX_DETAIL_WINDOW_BP`, and the
+graph launch carries no matrix there. That is a property of a VCF, not of the
+wiring.
 
 ### Every dataset's examples are curated
 

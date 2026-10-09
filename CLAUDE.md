@@ -274,9 +274,11 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   lanes under `MAX_DETAIL_WINDOW_BP`, the coarse tier above.
 - **A haplotype the lane track maps to an assembly must be that assembly's
   alias.**
-- **The page is one box**: a gene or region in, that window's launches out
-  (`PangenomeRegionBox.tsx`), with the dataset's loci as examples under it. Do
-  not bring back a table of loci.
+- **The page is one box**: a gene or region in, that window drawn in the page
+  out (`PangenomeRegionBox.tsx`, an iframe of the chosen launch url beside a
+  link to full JBrowse), with the dataset's loci as examples under it. Do not
+  bring back a table of loci.
+- **A graph launch shows the callset's matrix, not the allele inventory.**
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
 - **The sidecar's object name carries its format.** `buildHprcSvStates.sh`
