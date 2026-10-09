@@ -243,16 +243,19 @@ export const HPRC_DATASET: PangenomeDataset = {
     '232 phased diploid assemblies from diverse human populations, 464 haplotypes',
   graphVcf: {
     trackId: 'hprc-v2.1-mc-grch38-pangenome-vcf',
-    name: 'HPRC pangenome variants, normalized with vcfwave (minigraph-cactus v2.1, GRCh38)',
-    // The release's normalized callset: each bubble allele realigned to the
-    // reference by vcfwave, so a deletion spans the bases it removes and an
-    // insertion sits at one. Not pgbi.vcf.gz, PanGenie's input, whose records
-    // are whole bubble alleles: a 6 kb REF against a 40 kb ALT drew an
-    // insertion as a block over sequence the haplotype keeps. wave carries a
-    // CHM13 column, which sorts below the panel's rows.
-    url: 'https://s3-us-west-2.amazonaws.com/human-pangenomics/pangenomes/freeze/release2/minigraph-cactus/v2.1/hprc-v2.1-mc-grch38/hprc-v2.1-mc-grch38.wave.vcf.gz',
+    name: 'HPRC pangenome structural variants, normalized with vcfwave (minigraph-cactus v2.1, GRCh38)',
+    // The release's normalized callset, wave.vcf.gz, one allele per record
+    // and its structural alleles alone, published by
+    // pangenome-config/buildHprcSvCallset.sh. vcfwave realigns each bubble
+    // allele to the reference, so a deletion spans the bases it removes and
+    // an insertion sits at one; pgbi.vcf.gz, PanGenie's input, has whole
+    // bubble alleles, and a 6 kb REF against a 40 kb ALT drew an insertion as
+    // a block over sequence the haplotype keeps. One allele per record is
+    // what makes the matrix's svType color each carrier's own: the release
+    // merges a position's alleles, and C4's 33 kb module record, deletion and
+    // insertion together, drew "Other / mixed".
+    url: 'https://jbrowse.org/pangenome/hprc-grch38/sv-callset/hprc-v2.1-mc-grch38.sv-split.v1.vcf.gz',
     phased: true,
-    // MHC class II's window is 16 MB of records, LPA's 9.4 MB
     fetchSizeLimit: 20_000_000,
   },
   // Not `hg38-hprcInsertsV1` or `hg38-hprcDeletionsV1`: over an example's

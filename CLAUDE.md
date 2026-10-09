@@ -225,9 +225,9 @@ Full record: `agent-docs/reference/TRACK_URL_CHECKS.md`.
   derived `.bed.gz`/`.gff.gz`.
 - **Nothing checks that a derived file holds records.**
   `find $UCSC_BUILT_DIR -size -100c` over the `.gz` files is the cheap version.
-- **`addMitochondrion.ts` reads `chrom.sizes` from the mirrored sidecar on disk**
-  and caches NCBI answers in `.mitoCodes.json`, negatives only for taxa NCBI
-  actually served.
+- **`addMitochondrion.ts` reads `chrom.sizes` from the mirrored sidecar on
+  disk** and caches NCBI answers in `.mitoCodes.json`, negatives only for taxa
+  NCBI actually served.
 - **The assembly runners name the assemblies that failed.** A count hides a
   systematic breakage.
 
@@ -274,10 +274,11 @@ Full record: `agent-docs/reference/WEBSITE.md`.
   in the hash: CloudFront refuses a request line past ~8 KB.
 - **The structural forms come from the genome-wide sidecar**
   (`pangenomeSvStates.ts`), for an example and a typed region alike.
-- **The sidecar's object name carries its format.** `buildHprcSvStates.sh`
-  copies to the bucket and never syncs, so the file deployed pages read stays.
-  Bump `FORMAT` and `svStatesUrl` together when a row's meaning changes, and
-  upload before deploying the reader.
+- **The sidecar's object name carries its format**, and so does the matrix's
+  callset. `buildHprcSvStates.sh` and `buildHprcSvCallset.sh` copy to the bucket
+  and never sync, so the file deployed pages read stays. Bump `FORMAT` and the
+  url (`svStatesUrl`, `graphVcf.url`) together when a record's meaning changes,
+  and upload before deploying the reader.
 - **`features.pangenome` is live because every launch targets `main`**
   (`JBROWSE_BASE`): the graph plugin error-pages every released host. Run
   `pnpm check-pangenome-launches --host latest` before pointing `JBROWSE_BASE`
